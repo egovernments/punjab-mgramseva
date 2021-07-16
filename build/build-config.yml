@@ -1,0 +1,18 @@
+#
+# config:
+# -   name: < Name of the job, foo/bar would create job named bar inside folder foo >
+#     build:
+#     - work-dir: < Working directory of the app to be built >
+#       dockerfile: < Path to the dockerfile, optional, assumes dockerfile in working directory if not provided >
+#       image-name: < Docker image name  >
+# -
+# -
+config:
+  - name: "builds/mGramSea/municipal-services/ws-services"
+    build:
+      - work-dir: "municipal-services/ws-services"
+        image-name: "ws-services"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "municipal-services/ws-services/src/main/resources/db"
+        image-name: "ws-services-db"
+
