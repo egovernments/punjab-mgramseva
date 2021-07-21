@@ -183,28 +183,26 @@ public class ChallanConfiguration {
     @Value("${egov.localityservice.host}")
     private String boundaryHost;
 
-    @Value("${egov.locality.search.endpoint}")
-    private String fetchBoundaryEndpoint;
-    
+	@Value("${egov.locality.search.endpoint}")
+	private String fetchBoundaryEndpoint;
 
-	// Vendor  
+	// Vendor
 	@Value("${egov.vendor.host}")
 	private String vendorHost;
 
 	@Value("${egov.vendor.context.path}")
 	private String vendorContextPath;
-	
+
 	@Value("${egov.vendor.search.path}")
 	private String vendorSearchEndpoint;
-	
+
 	@Value("${egov.collection.service.host}")
 	private String paymentContextPath;
-	
-	@Value("${egov.collection.service.search.endpoint}")
+
+	@Value("${egov.collection.service.create.endpoint}")
 	private String paymentCreateEndpoint;
-	
-    @Value("${egov.services.billing_service.search}")
-    private String searchBill;
-	
+
+	@Value("${egov.billing.service.search.path}")
+	private String searchBill;
 	
 }
