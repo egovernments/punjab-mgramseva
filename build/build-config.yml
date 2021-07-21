@@ -29,4 +29,8 @@ config:
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "core-services/egov-idgen/src/main/resources/db"
         image-name: "egov-idgen-db"
-
+-   name: builds/mGramSeva/frontend/employee
+    build:
+    - work-dir: frontend/mgramseva/web/rainmaker/
+      dockerfile: frontend/mgramseva/web/rainmaker/docker/employee/Dockerfile
+      image-name: employee
