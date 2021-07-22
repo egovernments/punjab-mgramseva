@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/app_config.dart';
+import 'package:mgramseva/providers/consumer_details.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/screeens/ConnectionResults.dart';
 import 'package:mgramseva/screeens/Dashboard.dart';
@@ -67,6 +68,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
         providers: [
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
+        ChangeNotifierProvider(create: (_) => ConsumerProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
