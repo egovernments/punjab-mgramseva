@@ -7,4 +7,6 @@ class Routes {
   static const String editprofile = EditProfile.routeName;
   static const String home = Home.routeName;
 
+
+  static const String LOGIN = 'login';
 }
