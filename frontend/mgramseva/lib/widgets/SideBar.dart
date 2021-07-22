@@ -59,22 +59,22 @@ class SideBar extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                LanguageCard(
-                  'English',
-                  'EN',
-                  true,
-                  () => {},
-                  20,
-                  5,
-                  5,
-                ),
-                LanguageCard('हिंदी', 'HI', false, () => {}, 20, 5, 5),
-                LanguageCard('ਪੰਜਾਬੀ', "pn", false, () => {}, 20, 5, 5)
-              ],
-            )
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     LanguageCard(
+            //       'English',
+            //       'EN',
+            //       true,
+            //       () => {},
+            //       20,
+            //       5,
+            //       5,
+            //     ),
+            //     LanguageCard('हिंदी', 'HI', false, () => {}, 20, 5, 5),
+            //     LanguageCard('ਪੰਜਾਬੀ', "pn", false, () => {}, 20, 5, 5)
+            //   ],
+            // )
           ],
         ),
         leading: Icon(

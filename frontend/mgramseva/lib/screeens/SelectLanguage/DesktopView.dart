@@ -52,21 +52,21 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                             ],
                           )
                       ])),
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        for (var language in data?['languages'])
-                          LanguageCard(
-                              language['label'],
-                              language['value'],
-                              isSelected == language['value'],
-                              this.widgetFun,
-                              12,
-                              10,
-                              10)
-                      ])),
+              // Padding(
+              //     padding: const EdgeInsets.all(8.0),
+              //     child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //         children: [
+              //           for (var language in data?['languages'])
+              //             LanguageCard(
+              //                 language['label'],
+              //                 language['value'],
+              //                 isSelected == language['value'],
+              //                 this.widgetFun,
+              //                 12,
+              //                 10,
+              //                 10)
+              //         ])),
               Padding(
                   padding: EdgeInsets.all(15),
                   child: Button('CORE_COMMON_CONTINUE',

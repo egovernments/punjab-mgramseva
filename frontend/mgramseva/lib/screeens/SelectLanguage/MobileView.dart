@@ -1,14 +1,14 @@
+
 import 'package:flutter/material.dart';
+import 'package:mgramseva/models/language.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
 
 class LanguageSelectMobileView extends StatelessWidget {
-  final data;
-  final String isSelected;
-   final Function widgetFun;
-  LanguageSelectMobileView(this.data, this.isSelected, this.widgetFun);
+  final StateInfo stateInfo;
+  LanguageSelectMobileView(this.stateInfo);
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +26,14 @@ class LanguageSelectMobileView extends StatelessWidget {
                   child:  Image(
                       width: 120,
                       image:NetworkImage(
-                 data?['logoUrl'],
+                 stateInfo.logoUrl ?? '',
                  )),
                 ),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                          for (var language in data?['languages'])
-                           LanguageCard(language['label'],language['value'], isSelected==language['value'], this.widgetFun, 4, 10, 10)
+                          for (var language in stateInfo.languages ?? [])
+                           LanguageCard(language, stateInfo.languages ?? [], 4, 10, 10)
                         ]),
           Padding(padding:
                    EdgeInsets.all(15),child:    Button(
