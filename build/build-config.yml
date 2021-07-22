@@ -29,3 +29,22 @@ config:
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "core-services/egov-idgen/src/main/resources/db"
         image-name: "egov-idgen-db"
+  - name: "builds/mGramSeva/core-services/egov-user"
+    build:
+      - work-dir: "core-services/egov-user"
+        image-name: "egov-user"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core-services/egov-user/src/main/resources/db"
+        image-name: "egov-user-db"
+  - name: "builds/mGramSeva/municipal-services/ws-calculator"
+    build:
+      - work-dir: "ws-calculator"
+        image-name: "ws-calculator"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "municipal-servicesws-calculator/src/main/resources/db"
+        image-name: "ws-calculator-db"
+  - name: "builds/mGramSeva/municipal-services/echallan-calculator"
+    build:
+      - work-dir: "echallan-calculator"
+        image-name: "echallan-calculator"
+        dockerfile: "build/maven/Dockerfile"
