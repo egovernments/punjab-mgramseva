@@ -29,7 +29,7 @@ Future<http.Response> login(url, details, context) async {
 // Write value
 
     if (kIsWeb) {
-      window.localStorage['token'] = json.decode(response.body)['access_token'];
+      // window.localStorage['token'] = json.decode(response.body)['access_token'];
     } else {
       storage.write(
           key: 'token', value: json.decode(response.body)['access_token']);

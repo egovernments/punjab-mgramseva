@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/app_config.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/screeens/ConnectionResults.dart';
@@ -20,6 +21,7 @@ import 'package:mgramseva/screeens/Updatepassword.dart';
 import 'package:mgramseva/screeens/changepassword.dart';
 import 'package:mgramseva/screeens/home.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -69,6 +71,7 @@ class _MyAppState extends State<MyApp> {
         providers: [
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => ConsumerProvider()),
+        ChangeNotifierProvider(create: (_) => CommonProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -93,6 +96,7 @@ class _MyAppState extends State<MyApp> {
           }
           return supportedLocales.first;
         },
+        navigatorKey: navigatorKey,
         initialRoute: '/',
         routes: {
           '/': (context) => SelectLanguage((val) => setLocale(Locale(val, 'IN'))),

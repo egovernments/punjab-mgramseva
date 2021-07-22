@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:mgramseva/app_config.dart';
@@ -18,9 +19,11 @@ class BaseService{
     var uri;
 
     if(queryParameters == null) {
-      uri = Uri.parse('$apiBaseUrl$url');
+      uri = Uri.parse('${baseUrl != null ? baseUrl : apiBaseUrl}$url');
     }else{
-     uri = Uri.https(apiBaseUrl, url!,  queryParameters);
+      String queryString = Uri(queryParameters: queryParameters).query;
+      uri = Uri.parse('${baseUrl != null ? baseUrl : apiBaseUrl}$url?$queryString');
+      // uri = Uri.https(apiBaseUrl, url!,  queryParameters);
     }
 
 
@@ -31,6 +34,11 @@ class BaseService{
     // dio.options.headers =  {
     //   "Connection" : 'Keep-Alive'
     // };
+
+    var header = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+    };
+
     http.Response response;
     switch (method) {
       case RequestType.GET:
@@ -47,6 +55,7 @@ class BaseService{
       case RequestType.POST:
         response =
         await http.post(uri,
+            headers: header,
             body : json.encode(body));
         return json.decode(
             utf8.decode(response.bodyBytes));
