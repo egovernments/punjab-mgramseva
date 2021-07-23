@@ -3,6 +3,7 @@ import 'package:mgramseva/utils/models.dart';
 class Constants {
 
   static const String LOGIN_KEY = 'login_key';
+  static const String LANGUAGE_KEY = 'language_key';
 
   static List<KeyValue> GENDER = [
     KeyValue('Male', 'male'),

@@ -57,7 +57,7 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                       children: [
                         for (var language in stateInfo.languages ?? [])
                           LanguageCard(language, stateInfo.languages ?? [], 12,
-                              10, 10, changeLanguage)
+                              10, 10)
                       ])),
               Padding(
                   padding: EdgeInsets.all(15),

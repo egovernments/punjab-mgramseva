@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/main.dart';
 import 'package:mgramseva/model/localization/language.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
+import 'package:provider/provider.dart';
 
 class SideBar extends StatelessWidget {
   Function _onSelectItem;
@@ -71,7 +73,7 @@ class SideBar extends StatelessWidget {
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               for (var language in stateInfo.languages ?? [])
                 LanguageCard(language, stateInfo.languages ?? [], 20, 5, 5,
-                    (value) => {myAppstate.setLocale(Locale(value, 'IN'))})
+                   )
             ])
           ],
         ),
@@ -107,10 +109,8 @@ class SideBar extends StatelessWidget {
           color: iconColor,
         ),
         onTap: () {
-          // Update the state of the app
-          // ...
-          // Then close the drawer
-          Navigator.pop(context);
+          var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+          commonProvider.onLogout();
         },
       ),
     ]);
