@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/screeens/Home.dart';
+import 'package:mgramseva/screeens/Login/Login.dart';
+import 'package:mgramseva/screeens/SearchConnection.dart';
+import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
+import 'package:mgramseva/main.dart';
 import 'package:mgramseva/screeens/Changepassword.dart';
 import 'package:mgramseva/screeens/ConnectionResults.dart';
 import 'package:mgramseva/screeens/Dashboard.dart';
 import 'package:mgramseva/screeens/EditProfile.dart';
 import 'package:mgramseva/screeens/ExpenseDetails.dart';
 import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
-import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/screeens/HouseholdDetail.dart';
-import 'package:mgramseva/screeens/Login/Login.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
-import 'package:mgramseva/screeens/SearchConnection.dart';
-import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
 import 'package:mgramseva/screeens/Updatepassword.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -19,6 +20,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
 
   switch (settings.name) {
+    case Routes.LANDING_PAGE:
+      return MaterialPageRoute(builder: (_) => LandingPage());
     case Routes.LOGIN :
       return MaterialPageRoute(builder: (_) => Login());
     case Routes.HOME :

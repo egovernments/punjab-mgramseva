@@ -9,6 +9,8 @@ class Routes {
   static const String home = Home.routeName;
 
   ///Authentication
+  static const String LANDING_PAGE = '/';
+
   static const String LOGIN = 'login';
 
   static const String HOME = 'home';
