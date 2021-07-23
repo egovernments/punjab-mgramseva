@@ -2,10 +2,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/authentication.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/Home.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:provider/provider.dart';
 
 class AuthenticationProvider with ChangeNotifier {
 
@@ -37,10 +41,10 @@ class AuthenticationProvider with ChangeNotifier {
 
       Navigator.pop(context);
       if(loginResponse != null){
-        Navigator.of(context)
-            .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
-              return Home(0);
-        }));
+        var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+        commonProvider.loginCredentails = loginResponse;
+
+        Navigator.of(context).pushNamedAndRemoveUntil(Routes.HOME, (route) => false);
       }else{
         Notifiers.getToastMessage('Unable to login');
       }

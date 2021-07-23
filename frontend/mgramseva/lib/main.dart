@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/authentication.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details.dart';
@@ -9,6 +10,7 @@ import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/ConnectionResults.dart';
 import 'package:mgramseva/screeens/ConsumerDetails.dart';
 import 'package:mgramseva/screeens/Dashboard.dart';
@@ -27,6 +29,8 @@ import 'package:mgramseva/screeens/changepassword.dart';
 import 'package:mgramseva/screeens/home.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -110,9 +114,9 @@ class _MyAppState extends State<MyApp> {
         navigatorKey: navigatorKey,
         initialRoute: '/',
         routes: {
-          '/': (context) => SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
+          '/': (context) => LandingPage(),
           'login': (context) => Login(),
-          'home': (context) => Home(0),
+          Routes.HOME : (context) => Home(0),
           'household/search': (context) => SearchConnection(),
           'editProfile': (context) => EditProfile(),
           'changepassword': (context) => ChangePassword(),
@@ -147,3 +151,55 @@ class _MyAppState extends State<MyApp> {
         ));
   }
 }
+
+
+class LandingPage extends StatefulWidget {
+  const LandingPage({Key? key}) : super(key: key);
+
+  @override
+  _LandingPageState createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
+
+  @override
+  void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+
+    super.initState();
+  }
+
+  afterViewBuild() {
+    var commonProvider =
+    Provider.of<CommonProvider>(context, listen: false);
+    commonProvider.getLoginCredentails();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var commonProvider =
+    Provider.of<CommonProvider>(context, listen: false);
+
+    return StreamBuilder(
+        stream: commonProvider.userLoggedStreamCtrl.stream,
+        builder: (context, AsyncSnapshot snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+
+            /// While waiting for the data to load, show a loading spinner.
+              return Loaders.circularLoader();
+            default:
+              if (snapshot.hasError) {
+                return Notifiers.networkErrorPage(
+                    context, () {});
+              } else {
+                if (snapshot.data != null) {
+                  return Home(0);
+                }
+                return SelectLanguage((){});
+              }
+          }
+        });
+  }
+}
+
