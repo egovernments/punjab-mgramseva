@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/home.dart';
+//import 'package:mgramseva/screeens/home.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
+import 'package:mgramseva/widgets/HomeBack.dart';
+import 'package:mgramseva/widgets/PasswordHint.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/homeBack.dart';
-import 'package:mgramseva/widgets/passwordHint.dart';
+//import 'package:mgramseva/widgets/homeBack.dart';
+//import 'package:mgramseva/widgets/passwordHint.dart';
+
+import 'Home.dart';
 
 class ChangePassword extends StatefulWidget {
   static const String routeName = '/changepassword';

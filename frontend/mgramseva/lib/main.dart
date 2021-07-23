@@ -10,23 +10,11 @@ import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
+import 'package:mgramseva/router.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/ConnectionResults.dart';
-import 'package:mgramseva/screeens/ConsumerDetails.dart';
-import 'package:mgramseva/screeens/Dashboard.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
-import 'package:mgramseva/screeens/Login/Login.dart';
-import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
-import 'package:mgramseva/screeens/SearchConnection.dart';
+import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
-
-import 'package:mgramseva/screeens/EditProfile.dart';
-import 'package:mgramseva/screeens/ExpenseDetails.dart';
-import 'package:mgramseva/screeens/HouseholdDetail.dart';
-import 'package:mgramseva/screeens/Updatepassword.dart';
-import 'package:mgramseva/screeens/changepassword.dart';
-import 'package:mgramseva/screeens/home.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -113,23 +101,7 @@ class _MyAppState extends State<MyApp> {
         },
         navigatorKey: navigatorKey,
         initialRoute: '/',
-        routes: {
-          '/': (context) => LandingPage(),
-          'login': (context) => Login(),
-          Routes.HOME : (context) => Home(0),
-          'household/search': (context) => SearchConnection(),
-          'editProfile': (context) => EditProfile(),
-          'changepassword': (context) => ChangePassword(),
-          'updatepassword': (context) => UpdatePassword(),
-          // 'consumer/create': (context) => Consumer(),
-          'resetpassword': (context) => ResetPassword(),
-          'consumer/search': (context) => SearchConnection(),
-          'expenses/add': (context) => ExpenseDetails(),
-          'household/details': (context) => HouseholdDetail(),
-          'dashboard': (context) => Dashboard(),
-          'search/consumer': (context) => SearchConsumerResult(),
-          'bill/generate': (context) => GenerateBill()
-        },
+        onGenerateRoute: generateRoute,
         theme: ThemeData(
             // This is the theme of your application.
             //
