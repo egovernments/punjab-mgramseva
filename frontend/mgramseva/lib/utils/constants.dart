@@ -4,6 +4,7 @@ class Constants {
 
   static const String LOGIN_KEY = 'login_key';
   static const String LANGUAGE_KEY = 'language_key';
+  static const String STATES_KEY = 'states_key';
 
   static List<KeyValue> GENDER = [
     KeyValue('Male', 'male'),

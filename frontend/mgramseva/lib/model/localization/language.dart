@@ -169,7 +169,7 @@ class Languages {
   Languages.fromJson(Map<String, dynamic> json) {
     label = json['label'];
     value = json['value'];
-    // isSelected = json['isSelected'];
+    isSelected = json['isSelected'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
