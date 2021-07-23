@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 class LanguageProvider with ChangeNotifier {
 
   var streamController = StreamController.broadcast();
-  late Languages selectedLanguage;
+  Languages? selectedLanguage;
 
   dispose(){
     streamController.close();
@@ -37,14 +37,21 @@ class LanguageProvider with ChangeNotifier {
 
       if(localizationList.mdmsRes?.commonMasters?.stateInfo != null){
         localizationList.mdmsRes?.commonMasters?.stateInfo?.first.languages?.first.isSelected = true;
-        selectedLanguage = localizationList.mdmsRes?.commonMasters?.stateInfo?.first.languages?.first ?? Languages();
+
+
+        if(selectedLanguage == null) {
+          selectedLanguage =
+              localizationList.mdmsRes?.commonMasters?.stateInfo?.first
+                  .languages?.first ?? Languages();
+        }
 
         var commonProvider = Provider.of<CommonProvider>(navigatorKey.currentContext!, listen: false);
         // await commonProvider.getLocalizationLabels();
-        await ApplicationLocalizations(Locale(selectedLanguage.label!, selectedLanguage.value)).load();
+        await ApplicationLocalizations(Locale(selectedLanguage?.label ?? '', selectedLanguage?.value)).load();
       }
       streamController.add(localizationList.mdmsRes?.commonMasters?.stateInfo ?? <StateInfo>[]);
     } catch(e){
+      print(e);
       streamController.addError('error');
     }
   }
@@ -55,7 +62,7 @@ class LanguageProvider with ChangeNotifier {
     language.isSelected = true;
     // getLocalizationData();
     selectedLanguage = language;
-    await ApplicationLocalizations(Locale(selectedLanguage.label!, selectedLanguage.value)).load();
+    await ApplicationLocalizations(Locale(selectedLanguage?.label ?? '', selectedLanguage?.value)).load();
     notifyListeners();
   }
 }

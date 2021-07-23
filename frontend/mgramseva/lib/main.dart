@@ -168,7 +168,7 @@ class _LandingPageState extends State<LandingPage> {
                 if (snapshot.data != null) {
                   return Home(0);
                 }
-                return SelectLanguage((){});
+                return SelectLanguage();
               }
           }
         });

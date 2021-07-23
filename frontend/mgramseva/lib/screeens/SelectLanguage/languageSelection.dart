@@ -12,8 +12,6 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class SelectLanguage extends StatefulWidget {
-  final Function changelanguage;
-  SelectLanguage(this.changelanguage);
   @override
   State<StatefulWidget> createState() => _SelectLanguage();
 }
@@ -57,7 +55,7 @@ class _SelectLanguage extends State<SelectLanguage> {
   Widget _buildView(List<StateInfo> stateList) {
     return  LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 760) {
-        return LanguageSelectMobileView(stateList.first, () {});
+        return LanguageSelectMobileView(stateList.first);
       } else {
         return  LanguageSelectionDesktopView(stateList.first, () {});
       }

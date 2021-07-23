@@ -37,7 +37,7 @@ class CommonProvider with ChangeNotifier {
 
       var query = {
         'module' : 'mgramseva-common',
-        'locale' : languageProvider.selectedLanguage.value,
+        'locale' : languageProvider.selectedLanguage?.value ?? '',
         'tenantId' : 'pb'
       };
 
@@ -59,24 +59,24 @@ class CommonProvider with ChangeNotifier {
     try {
       // var jsonData = labels.map<LocalizationLabel>((e) => e?.toJson()).toList();
       if (kIsWeb) {
-        window.localStorage[languageProvider.selectedLanguage.value!] = 'null';
+        window.localStorage[languageProvider.selectedLanguage?.value ?? ''] = 'null';
       } else {
         await storage.write(
-            key: languageProvider.selectedLanguage.value!, value: '');
+            key: languageProvider.selectedLanguage?.value ?? '', value: '');
       }
     }catch(e) {
 
     }
   }
 
-  set loginCredentails(UserDetails loginDetails) {
+  set loginCredentails(UserDetails? loginDetails) {
 
     if(kIsWeb){
-     window.localStorage[Constants.LOGIN_KEY] = jsonEncode(loginDetails.toJson());
+     window.localStorage[Constants.LOGIN_KEY] = loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
     }else{
       storage.write(
           key: Constants.LOGIN_KEY,
-          value:  jsonEncode(loginDetails.toJson()));
+          value: loginDetails == null ? null : jsonEncode(loginDetails.toJson()));
     }
   }
 
@@ -91,7 +91,7 @@ class CommonProvider with ChangeNotifier {
             key: Constants.LOGIN_KEY);
       }
 
-      if(loginResponse != null){
+      if(loginResponse != null && loginResponse){
         var decodedResponse = UserDetails.fromJson(jsonDecode(loginResponse));
         userDetails = decodedResponse;
         userLoggedStreamCtrl.add(decodedResponse);
@@ -101,5 +101,10 @@ class CommonProvider with ChangeNotifier {
     }catch(e) {
       userLoggedStreamCtrl.add(null);
     }
+  }
+
+
+  void onLogout() {
+    loginCredentails = null;
   }
 }
