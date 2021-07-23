@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/main.dart';
+import 'package:mgramseva/model/localization/language.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
 
 class SideBar extends StatelessWidget {
@@ -7,6 +10,12 @@ class SideBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var stateInfo = StateInfo(languages: [
+      Languages(label: 'English', value: 'en_IN', isSelected: false),
+      Languages(label: 'हिंदी', value: 'hi_IN', isSelected: false),
+      Languages(label: 'ਪੰਜਾਬੀ', value: 'pn_IN', isSelected: false),
+    ]);
+
     const iconColor = Color(0xff505A5F);
     return new ListView(children: <Widget>[
       Container(
@@ -59,22 +68,11 @@ class SideBar extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                LanguageCard(
-                  'English',
-                  'EN',
-                  true,
-                  () => {},
-                  20,
-                  5,
-                  5,
-                ),
-                LanguageCard('हिंदी', 'HI', false, () => {}, 20, 5, 5),
-                LanguageCard('ਪੰਜਾਬੀ', "pn", false, () => {}, 20, 5, 5)
-              ],
-            )
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              for (var language in stateInfo.languages ?? [])
+                LanguageCard(language, stateInfo.languages ?? [], 20, 5, 5,
+                    (value) => {myAppstate.setLocale(Locale(value, 'IN'))})
+            ])
           ],
         ),
         leading: Icon(

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/userProfile/user_profile.dart';
+import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/screeens/Changepassword.dart';
+import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/homeBack.dart';
+import 'package:provider/provider.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 
 class EditProfile extends StatefulWidget {
   static const String routeName = 'editProfile';
@@ -12,11 +18,6 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  List<Map<String, dynamic>> options = [
-    {"key": "MALE", "label": "Male"},
-    {"key": "FEMALE", "label": "Female"},
-    {"key": "Transgender", "label": "Transgender "}
-  ];
   var name = new TextEditingController();
   var phoneNumber = new TextEditingController();
   String _gender = 'FEMALE';
@@ -30,11 +31,20 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    print(_gender);
-    return SingleChildScrollView(
-      child: Container(
-          child: Column(
+  void initState() {
+    // var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    super.initState();
+  }
+
+  afterViewBuild() {
+    var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
+    userProvider.getUserProfileDetails();
+  }
+
+  Widget _builduserView(UserProfile profileDetails) {
+    return Container(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -42,13 +52,23 @@ class _EditProfileState extends State<EditProfile> {
           Card(
               child: Column(
             children: [
-              BuildTextField(context, 'Name', name, '', '', saveInput, true),
-              BuildTextField(context, 'Phone Number', phoneNumber, '', '',
-                  saveInput, true),
-              RadioButtonFieldBuilder(
-                  context, 'Gender', _gender, '', '', true, options, saveInput),
               BuildTextField(
-                  context, 'Email ID', phoneNumber, '', '', saveInput, true),
+                'Name',
+                profileDetails.nameCtrl,
+                isRequired: true,
+              ),
+              BuildTextField(
+                'Phone Number',
+                profileDetails.phoneNumberCtrl,
+                isRequired: true,
+              ),
+              RadioButtonFieldBuilder(context, 'Gender', _gender, '', '', true,
+                  Constants.GENDER, saveInput),
+              BuildTextField(
+                'Email ID',
+                profileDetails.emailIdCtrl,
+                isRequired: true,
+              ),
               GestureDetector(
                 onTap: () => Navigator.push<bool>(
                     context,
@@ -82,7 +102,32 @@ class _EditProfileState extends State<EditProfile> {
             ],
           ))
         ],
-      )),
+      ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
+
+    return SingleChildScrollView(
+        child: StreamBuilder(
+            stream: userProvider.streamController.stream,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return _builduserView(snapshot.data);
+              } else if (snapshot.hasError) {
+                return Notifiers.networkErrorPage(context, () {});
+              } else {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return Loaders.CircularLoader();
+                  case ConnectionState.active:
+                    return Loaders.CircularLoader();
+                  default:
+                    return Container();
+                }
+              }
+            }));
   }
 }

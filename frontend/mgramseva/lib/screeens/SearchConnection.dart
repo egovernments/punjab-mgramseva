@@ -66,22 +66,35 @@ class _SearchConnectionState extends State<SearchConnection> {
                       SubLabelText(
                         "Enter the consumer's mobile number or name or connection ID to get more details . Please enter only one",
                       ),
-                      BuildTextField(context, 'Owner Mobile Number', name, '',
-                          '+91-', saveInput, true),
+                      BuildTextField(
+                        'Owner Mobile Number',
+                        name,
+                        prefixText: '+91-',
+                        isRequired: true,
+                      ),
                       Text('\n-(or)-', textAlign: TextAlign.center),
-                      BuildTextField(context, 'Name of the Consumer', name, '',
-                          '', saveInput, true),
+                      BuildTextField(
+                        'Name of the Consumer',
+                        name,
+                        isRequired: true,
+                      ),
                       Visibility(
                           visible: !isVisible,
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text('\n-(or)-', textAlign: TextAlign.center),
-                                BuildTextField(context, 'Old Connection ID',
-                                    name, '', '', saveInput, true),
+                                BuildTextField(
+                                  'Old Connection ID',
+                                  name,
+                                  isRequired: true,
+                                ),
                                 Text('\n-(or)-', textAlign: TextAlign.center),
-                                BuildTextField(context, 'New Connection ID',
-                                    name, '', '', saveInput, true),
+                                BuildTextField(
+                                  'New Connection ID',
+                                  name,
+                                  isRequired: true,
+                                ),
                               ])),
                       new InkWell(
                         child: Padding(

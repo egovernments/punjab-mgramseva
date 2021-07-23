@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/screeens/Home.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/DatePickerFieldBuilder.dart';
@@ -14,19 +15,13 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 
-class Consumer extends StatefulWidget {
+class ConsumerDetails extends StatefulWidget {
   State<StatefulWidget> createState() {
-    return _ConsumerState();
+    return _ConsumerDetailsState();
   }
 }
 
-class _ConsumerState extends State<Consumer> {
-  List<Map<String, dynamic>> options = [
-    {"key": "MALE", "label": "Male"},
-    {"key": "FEMALE", "label": "Female"},
-    {"key": "Transgender", "label": "Transgender "}
-  ];
-
+class _ConsumerDetailsState extends State<ConsumerDetails> {
   var name = new TextEditingController();
   String _gender = 'FEMALE';
 
@@ -70,29 +65,52 @@ class _ConsumerState extends State<Consumer> {
                         LabelText("Consumer Details"),
                         SubLabelText(
                             "Provide below Information to create a consumer record"),
-                        BuildTextField(context, 'Consumer Name', name, '', '',
-                            saveInput, true),
+                        BuildTextField(
+                          'Consumer Name',
+                          name,
+                          isRequired: true,
+                        ),
                         RadioButtonFieldBuilder(context, 'Gender', _gender, '',
-                            '', true, options, saveInput),
-                        BuildTextField(context, 'Father Name', name, '', '',
-                            saveInput, true),
-                        BuildTextField(context, 'Phone Name', name, '', '+91-',
-                            saveInput, true),
-                        BuildTextField(context, 'Old Connection ID', name, '',
-                            '', saveInput, true),
-                        BuildTextField(context, 'Door Number', name, '', '',
-                            saveInput, true),
-                        BuildTextField(context, 'Street Name', name, '', '',
-                            saveInput, true),
-                        BuildTextField(context, 'Gram Panchayat Name', name, '',
-                            '', saveInput, true),
-                        SelectFieldBuilder(context, 'Property Type', name, '',
-                            '', saveInput, options, true),
-                        SelectFieldBuilder(context, 'Service Type', name, '',
-                            '', saveInput, options, true),
+                            '', true, Constants.GENDER, saveInput),
+                        BuildTextField(
+                          'Father Name',
+                          name,
+                          isRequired: true,
+                        ),
+                        BuildTextField(
+                          'Phone Name',
+                          name,
+                          prefixText: '+91-',
+                        ),
+                        BuildTextField(
+                          'Old Connection ID',
+                          name,
+                          isRequired: true,
+                        ),
+                        BuildTextField(
+                          'Door Number',
+                          name,
+                          isRequired: true,
+                        ),
+                        BuildTextField(
+                          'Street Name',
+                          name,
+                        ),
+                        BuildTextField(
+                          'Gram Panchayat Name',
+                          name,
+                          isRequired: true,
+                        ),
+                        // SelectFieldBuilder(context, 'Property Type', name, '',
+                        //     '', saveInput, options, true),
+                        // SelectFieldBuilder(context, 'Service Type', name, '',
+                        //     '', saveInput, options, true),
                         BasicDateField("Previous Meter Reading Date", true),
-                        BuildTextField(context, 'Areas (₹)', name, '', '',
-                            saveInput, true),
+                        BuildTextField(
+                          'Areas (₹)',
+                          name,
+                          isRequired: true,
+                        ),
                         SizedBox(
                           height: 20,
                         ),

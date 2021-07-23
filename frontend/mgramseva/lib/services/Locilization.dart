@@ -2,8 +2,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:mgramseva/app_config.dart';
-import 'package:mgramseva/services/LocalStorage.dart';
+import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:universal_html/html.dart';
@@ -14,7 +13,7 @@ import 'package:universal_html/html.dart';
 // final storage = new FlutterSecureStorage();
 
 Future getLocilisation(String locale) async {
- var  res = window.localStorage['localisation_' + locale.toString()];
+  var res = window.localStorage['localisation_' + locale.toString()];
   if (res == null) {
     final requestInfo =
         RequestInfo('Rainmaker', .01, "", "_search", 1, "", "", "");
@@ -22,8 +21,8 @@ Future getLocilisation(String locale) async {
     // print(requestInfo.toJson());
     var response = await http.post(
         Uri.parse(apiBaseUrl.toString() +
-            Urls['localization'].toString() +
-            "?module=rainmaker-common&locale=" +
+            Url.LOCALIZATION +
+            "?module=mgramseva-common&locale=" +
             locale +
             "&tenantId=pb"),
         headers: {
