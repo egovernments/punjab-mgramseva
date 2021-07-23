@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
+import 'package:mgramseva/screeens/SearchConnection.dart';
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -13,7 +14,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => Login());
     case Routes.HOME :
       return MaterialPageRoute(builder: (_) => Home(0));
+    case Routes.HOUSE_HOLD :
+      return MaterialPageRoute(builder: (_) => SearchConnection());
     default :
-      return MaterialPageRoute(builder: (_) => SelectLanguage((){}));
+      return MaterialPageRoute(builder: (_) => SelectLanguage());
   }
   }

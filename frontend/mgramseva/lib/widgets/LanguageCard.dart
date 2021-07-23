@@ -16,10 +16,8 @@ class LanguageCard extends StatelessWidget {
   final double cpadding;
   final double cmargin;
 
-  final Function widgetFun;
-
   LanguageCard(this.language, this.languages, this.widthprect, this.cpadding,
-      this.cmargin, this.widgetFun);
+      this.cmargin);
 
   @override
   Widget build(BuildContext context) {
