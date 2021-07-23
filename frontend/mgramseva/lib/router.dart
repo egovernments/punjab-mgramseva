@@ -49,6 +49,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case Routes.BILL_GENERATE :
       return MaterialPageRoute(builder: (_) => GenerateBill());
     default :
-      return MaterialPageRoute(builder: (_) => SelectLanguage((){}));
+      return MaterialPageRoute(builder: (_) => SelectLanguage());
   }
   }
