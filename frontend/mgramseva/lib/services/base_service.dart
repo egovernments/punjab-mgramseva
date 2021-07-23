@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:mgramseva/app_config.dart';
+import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/models.dart';
 
 class BaseService{
@@ -14,6 +15,7 @@ class BaseService{
     dynamic body,
     String? contentType,
     Map<String, dynamic>? queryParameters,
+    Map<String, String>? headers,
     RequestType method = RequestType.GET,
   }) async {
     var uri;
@@ -35,7 +37,7 @@ class BaseService{
     //   "Connection" : 'Keep-Alive'
     // };
 
-    var header = {
+    var header = headers ??  {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
@@ -43,30 +45,42 @@ class BaseService{
     switch (method) {
       case RequestType.GET:
           response = await http.get(uri);
-          return json.decode(
-              utf8.decode(response.bodyBytes));
         break;
       case RequestType.PUT:
         response =
         await http.put(uri, body : json.encode(body));
-        return json.decode(
-            utf8.decode(response.bodyBytes));
         break;
       case RequestType.POST:
         response =
         await http.post(uri,
             headers: header,
-            body : json.encode(body));
-        return json.decode(
-            utf8.decode(response.bodyBytes));
+            body : body);
         break;
       case RequestType.DELETE:
         response =
         await http.delete(uri,
              body : json.encode(body));
-        return json.decode(
-            utf8.decode(response.bodyBytes));
     }
+    return _response(response);
   }
 
+}
+
+dynamic _response(http.Response response) {
+  switch (response.statusCode) {
+    case 200:
+      return json.decode(
+          utf8.decode(response.bodyBytes));
+      break;
+    case 400:
+      CustomException('', response.statusCode, ExceptionType.FETCHDATA);
+      break;
+    case 401:
+    case 403:
+    CustomException('', response.statusCode, ExceptionType.UNAUTHORIZED);
+    break;
+    case 500:
+    default:
+    CustomException('', response.statusCode, ExceptionType.INVALIDINPUT);
+  }
 }

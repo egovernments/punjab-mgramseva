@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:mgramseva/models/language.dart';
 import 'package:mgramseva/models/localization_label.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -11,7 +13,7 @@ class CoreRepository extends BaseService {
   Future<List<LocalizationLabel>> getLocilisation(Map<String, dynamic> query, RequestInfo body) async {
     late List<LocalizationLabel> labelList;
     //
-    var res = await makeRequest(url: Url.LOCALIZATION, queryParameters: query!, body: body.toJson(), method: RequestType.POST);
+    var res = await makeRequest(url: Url.LOCALIZATION, queryParameters: query!, body: jsonEncode(body.toJson()), method: RequestType.POST);
       if (res != null) {
         labelList = res['messages'].map<LocalizationLabel>((e) => LocalizationLabel.fromJson(e)).toList();
       }
@@ -21,7 +23,7 @@ class CoreRepository extends BaseService {
   Future<LanguageList> getStates(Map body) async {
     late LanguageList languageList;
     var res = await makeRequest(
-        url: Url.MDMS, body: body, method: RequestType.POST);
+        url: Url.MDMS, body: jsonEncode(body), method: RequestType.POST);
 
     if (res != null) {
       languageList = LanguageList.fromJson(res);

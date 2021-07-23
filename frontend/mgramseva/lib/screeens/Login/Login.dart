@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/app_config.dart';
+import 'package:mgramseva/providers/authentication.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/services/user.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -9,6 +10,7 @@ import 'package:mgramseva/widgets/HeadingText.dart';
 import 'package:mgramseva/widgets/MobileView.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/screeens/ForgotPassword/ForgotPassword.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -28,20 +30,8 @@ class _LoginState extends State<Login> {
 
   saveandLogin(context) async {
     if (formKey.currentState!.validate()) {
-      await login(
-              (apiBaseUrl.toString() + Urls['Authenticate'].toString()),
-              {
-                "username": userNamecontroller.text.toString(),
-                "password": passwordcontroller.text.toString(),
-                "scope": "read",
-                "grant_type": "password",
-                "tenantId": "pb",
-                "userType": "EMPLOYEE"
-              },
-              context)
-          .then((value) {
-        print(value);
-      });
+      var authProvider = Provider.of<AuthenticationProvider>(context, listen: false);
+      authProvider.validateLogin(context, userNamecontroller.text.trim(), passwordcontroller.text.trim());
     }
   }
 

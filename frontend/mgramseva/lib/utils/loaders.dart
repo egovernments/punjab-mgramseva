@@ -34,7 +34,7 @@ class Loaders{
                       Center(
                         child: Column(children: [
                           SpinKitThreeBounce(
-                            // color: CustomColors.LOGIN_OTP_BACKGROUND,
+                            color: Theme.of(context).accentColor,
                             size: 30.0,
 //                            controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200)),
                           ),

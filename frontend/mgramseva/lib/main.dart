@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/app_config.dart';
+import 'package:mgramseva/providers/authentication.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details.dart';
 import 'package:mgramseva/providers/language.dart';
@@ -72,6 +73,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => ConsumerProvider()),
         ChangeNotifierProvider(create: (_) => CommonProvider()),
+        ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
