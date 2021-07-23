@@ -3,10 +3,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'house_connection.g.dart';
 
-
 @JsonSerializable()
 class HouseConnection {
-
   @JsonKey(name: "consumerName")
   String? consumerName;
 
@@ -66,7 +64,7 @@ class HouseConnection {
 
   HouseConnection();
 
-  setText(){
+  setText() {
     consumerNameCtrl.text = consumerName ?? '';
     fatherOrSpouseCtrl.text = fatherOrSpouse ?? '';
     phoneNumberCtrl.text = phoneNumber ?? '';
@@ -78,7 +76,7 @@ class HouseConnection {
     arrearsCtrl.text = arrears?.toString() ?? '';
   }
 
-  getText(){
+  getText() {
     consumerName = consumerNameCtrl.text;
     fatherOrSpouse = fatherOrSpouseCtrl.text;
     phoneNumber = phoneNumberCtrl.text;
@@ -87,7 +85,9 @@ class HouseConnection {
     phoneNumber = phoneNumberCtrl.text;
     doorNumber = doorNumberCtrl.text;
     streetNameOrNumber = streetNameOrNumberCtrl.text;
-    arrears = arrearsCtrl.text.trim().isNotEmpty ? double.parse(arrearsCtrl.text.trim()) : 0.0;
+    arrears = arrearsCtrl.text.trim().isNotEmpty
+        ? double.parse(arrearsCtrl.text.trim())
+        : 0.0;
   }
 
   factory HouseConnection.fromJson(Map<String, dynamic> json) =>

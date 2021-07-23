@@ -62,8 +62,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
                 )),
-            BuildTextField(context, 'Phone Number', mobileNumber, '', '+91-',
-                saveInput, true),
+            BuildTextField(
+              'Phone Number',
+              mobileNumber,
+              isRequired: true,
+            ),
             SizedBox(
               height: 10,
             ),

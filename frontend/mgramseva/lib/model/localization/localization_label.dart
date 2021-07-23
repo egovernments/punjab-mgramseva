@@ -3,10 +3,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'localization_label.g.dart';
 
-
 @JsonSerializable()
 class LocalizationLabel {
-
   @JsonKey(name: "code")
   String? code;
 
@@ -25,5 +23,4 @@ class LocalizationLabel {
       _$LocalizationLabelFromJson(json);
 
   Map<String, dynamic> toJson() => _$LocalizationLabelToJson(this);
-
 }

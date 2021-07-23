@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/models/language.dart';
+import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/screeens/SelectLanguage/DesktopView.dart';
 import 'package:mgramseva/screeens/SelectLanguage/MobileView.dart';
@@ -57,9 +57,9 @@ class _SelectLanguage extends State<SelectLanguage> {
   Widget _buildView(List<StateInfo> stateList) {
     return  LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 760) {
-        return LanguageSelectMobileView(stateList.first);
+        return LanguageSelectMobileView(stateList.first, () {});
       } else {
-        return  LanguageSelectionDesktopView(stateList.first);
+        return  LanguageSelectionDesktopView(stateList.first, () {});
       }
     });
   }

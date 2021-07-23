@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/models.dart';
 
 class RadioButtonFieldBuilder extends StatelessWidget {
   final BuildContext context;
@@ -9,7 +10,7 @@ class RadioButtonFieldBuilder extends StatelessWidget {
 
   final String input;
   final String prefixText;
-  final List options;
+  final List<KeyValue> options;
   final widget1;
 
   RadioButtonFieldBuilder(this.context, this.labelText, this.controller,
@@ -49,8 +50,8 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                   children: options.map(
                 (data) {
                   return new RadioListTile(
-                    title: new Text(data["label"]),
-                    value: data["key"],
+                    title: new Text(data.label),
+                    value: data.key,
                     groupValue: controller,
                     onChanged: widget1,
                   );
@@ -73,8 +74,8 @@ class RadioButtonFieldBuilder extends StatelessWidget {
               children: options.map(
             (data) {
               return new RadioListTile(
-                title: new Text(data["label"]),
-                value: data["key"],
+                title: new Text(data.label),
+                value: data.key,
                 groupValue: controller,
                 onChanged: widget1,
               );

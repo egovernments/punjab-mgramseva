@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/connection/house_connection.dart';
+import 'package:mgramseva/model/userProfile/user_profile.dart';
 
-class ConsumerProvider with ChangeNotifier {
+class UserProfileProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
 
   dispose() {
@@ -11,9 +11,9 @@ class ConsumerProvider with ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> getConsumerDetails() async {
+  Future<void> getUserProfileDetails() async {
     try {
-      streamController.add(HouseConnection());
+      streamController.add(UserProfile());
     } catch (e) {
       streamController.addError('error');
     }

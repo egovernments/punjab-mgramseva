@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/models/language.dart';
+import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/services/MDMS.dart';

@@ -7,7 +7,7 @@ class LanguageList {
   LanguageList.fromJson(Map<String, dynamic> json) {
     responseInfo = json['ResponseInfo'];
     mdmsRes =
-    json['MdmsRes'] != null ? new MdmsRes.fromJson(json['MdmsRes']) : null;
+        json['MdmsRes'] != null ? new MdmsRes.fromJson(json['MdmsRes']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -76,19 +76,19 @@ class StateInfo {
   List<Languages>? languages;
   // List<LocalizationModules>? localizationModules;
 
-  StateInfo(
-      {this.name,
-        this.code,
-        this.qrCodeURL,
-        this.bannerUrl,
-        this.logoUrl,
-        this.logoUrlWhite,
-        this.hasLocalisation,
-        this.enableWhatsApp,
-        this.defaultUrl,
-        this.languages,
-        // this.localizationModules
-      });
+  StateInfo({
+    this.name,
+    this.code,
+    this.qrCodeURL,
+    this.bannerUrl,
+    this.logoUrl,
+    this.logoUrlWhite,
+    this.hasLocalisation,
+    this.enableWhatsApp,
+    this.defaultUrl,
+    this.languages,
+    // this.localizationModules
+  });
 
   StateInfo.fromJson(Map<String, dynamic> json) {
     name = json['name'];

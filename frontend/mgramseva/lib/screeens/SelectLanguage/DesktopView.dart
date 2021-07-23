@@ -1,7 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/models/language.dart';
+import 'package:mgramseva/model/localization/language.dart';
+
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/Button.dart';
@@ -10,8 +11,8 @@ import 'package:mgramseva/widgets/ListLabelText.dart';
 
 class LanguageSelectionDesktopView extends StatelessWidget {
   final StateInfo stateInfo;
-
-  LanguageSelectionDesktopView(this.stateInfo);
+  Function changeLanguage;
+  LanguageSelectionDesktopView(this.stateInfo, this.changeLanguage);
 
   @override
   Widget build(BuildContext context) {
@@ -49,21 +50,15 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                             ],
                           )
                       ])),
-              // Padding(
-              //     padding: const EdgeInsets.all(8.0),
-              //     child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              //         children: [
-              //           for (var language in data?['languages'])
-              //             LanguageCard(
-              //                 language['label'],
-              //                 language['value'],
-              //                 isSelected == language['value'],
-              //                 this.widgetFun,
-              //                 12,
-              //                 10,
-              //                 10)
-              //         ])),
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        for (var language in stateInfo.languages ?? [])
+                          LanguageCard(language, stateInfo.languages ?? [], 12,
+                              10, 10, changeLanguage)
+                      ])),
               Padding(
                   padding: EdgeInsets.all(15),
                   child: Button('CORE_COMMON_CONTINUE',

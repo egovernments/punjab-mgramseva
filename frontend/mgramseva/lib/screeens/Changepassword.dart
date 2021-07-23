@@ -74,12 +74,22 @@ class _ChangePasswordState extends State<ChangePassword> {
                   Card(
                       child: Column(
                     children: [
-                      BuildTextField(context, 'Current  Password', name, '', '',
-                          saveInput, true),
-                      BuildTextField(context, ' Set a New Password',
-                          newpassword, '', '', saveInput, true),
-                      BuildTextField(context, 'Confirm New Password',
-                          confirmpassword, '', '', saveInput, true),
+                      BuildTextField(
+                        'Current  Password',
+                        name,
+                        isRequired: true,
+                        onChange: saveInput(context),
+                      ),
+                      BuildTextField(
+                        ' Set a New Password',
+                        newpassword,
+                        isRequired: true,
+                      ),
+                      BuildTextField(
+                        'Confirm New Password',
+                        confirmpassword,
+                        isRequired: true,
+                      ),
                       SizedBox(
                         height: 20,
                       ),

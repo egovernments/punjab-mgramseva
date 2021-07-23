@@ -1,12 +1,16 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/app_config.dart';
 import 'package:mgramseva/providers/authentication.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/Env/app_config.dart';
+import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/expenses_details_provider.dart';
+import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/screeens/ConnectionResults.dart';
+import 'package:mgramseva/screeens/ConsumerDetails.dart';
 import 'package:mgramseva/screeens/Dashboard.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
@@ -14,7 +18,7 @@ import 'package:mgramseva/screeens/Login/Login.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/SearchConnection.dart';
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
-import 'package:mgramseva/screeens/Consumer.dart';
+
 import 'package:mgramseva/screeens/EditProfile.dart';
 import 'package:mgramseva/screeens/ExpenseDetails.dart';
 import 'package:mgramseva/screeens/HouseholdDetail.dart';
@@ -51,9 +55,14 @@ MaterialColor createMaterialColor(Color color) {
   return MaterialColor(color.value, swatch);
 }
 
+_MyAppState myAppstate = '' as _MyAppState;
+
 class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _MyAppState createState() {
+    myAppstate = _MyAppState();
+    return myAppstate;
+  }
 }
 
 class _MyAppState extends State<MyApp> {
@@ -134,8 +143,7 @@ class _MyAppState extends State<MyApp> {
             highlightColor: createMaterialColor(Color(0XFFC7E0F1)),
             hintColor: createMaterialColor(Color(0XFF3498DB))),
 
-        // home: SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
-      ),
-    );
+          // home: SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
+        ));
   }
 }

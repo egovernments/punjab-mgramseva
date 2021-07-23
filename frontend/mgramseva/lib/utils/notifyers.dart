@@ -19,10 +19,8 @@ class Notifiers {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-           "Unable to connect to the server",
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 18),
+            "Unable to connect to the server",
+            style: TextStyle(color: Colors.black, fontSize: 18),
           ),
           Padding(
             padding: EdgeInsets.all(12.0),

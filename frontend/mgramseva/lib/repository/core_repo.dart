@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:mgramseva/models/language.dart';
-import 'package:mgramseva/models/localization_label.dart';
+import 'package:mgramseva/model/localization/language.dart';
+import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';

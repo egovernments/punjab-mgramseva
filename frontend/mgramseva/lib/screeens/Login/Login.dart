@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/app_config.dart';
 import 'package:mgramseva/providers/authentication.dart';
+import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/services/user.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -51,16 +51,18 @@ class _LoginState extends State<Login> {
                     .translate("CORE_COMMON_LOGIN")),
                 // BuildTextField(
                 //     context, 'Phone Number', mobileNumber, '', '+91-', saveInput),
-                BuildTextField(context, 'CORE_LOGIN_USERNAME',
-                    userNamecontroller, '', '', saveInput, true),
                 BuildTextField(
-                    context,
-                    'CORE_LOGIN_PASSWORD',
-                    passwordcontroller,
-                    '',
-                    '',
-                    (value) => saveInput(value),
-                    true),
+                  'CORE_LOGIN_USERNAME',
+                  userNamecontroller,
+                  isRequired: true,
+                  onChange: (dynamic) => saveInput(dynamic),
+                ),
+                BuildTextField(
+                  'CORE_LOGIN_PASSWORD',
+                  passwordcontroller,
+                  isRequired: true,
+                  onChange: (dynamic) => saveInput(dynamic),
+                ),
                 GestureDetector(
                   onTap: () => Navigator.push<bool>(
                       context,
