@@ -9,16 +9,6 @@ class UserProfile {
   @JsonKey(name: "user")
   List<User>? user;
   UserProfile();
-
-  @JsonKey(ignore: true)
-  var nameCtrl = TextEditingController();
-
-  @JsonKey(ignore: true)
-  var phoneNumberCtrl = TextEditingController();
-
-  @JsonKey(ignore: true)
-  var emailIdCtrl = TextEditingController();
-
   factory UserProfile.fromJson(Map<String, dynamic> json) =>
       _$UserProfileFromJson(json);
 
@@ -135,7 +125,28 @@ class User {
   @JsonKey(name: "pwdExpiryDate")
   String? pwdExpiryDate;
 
+  @JsonKey(ignore: true)
+  var nameCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var phoneNumberCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var emailIdCtrl = TextEditingController();
+
   User();
+
+  getText() {
+    name = nameCtrl.text;
+    mobileNumber = phoneNumberCtrl.text;
+    emailId = emailIdCtrl.text;
+  }
+
+  setText() {
+    nameCtrl.text = name ?? '';
+    phoneNumberCtrl.text = mobileNumber ?? '';
+    emailIdCtrl.text = emailId ?? '';
+  }
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

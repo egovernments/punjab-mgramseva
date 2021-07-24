@@ -83,75 +83,76 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-        ChangeNotifierProvider(create: (_) => LanguageProvider()),
-        ChangeNotifierProvider(create: (_) => ConsumerProvider()),
-        ChangeNotifierProvider(create: (_) => CommonProvider()),
-        ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
-      ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        supportedLocales: [
-          Locale('en', 'IN'),
-          Locale('hi', 'IN'),
-          Locale.fromSubtags(languageCode: 'pn')
+          ChangeNotifierProvider(create: (_) => LanguageProvider()),
+          ChangeNotifierProvider(create: (_) => ConsumerProvider()),
+          ChangeNotifierProvider(create: (_) => UserProfileProvider()),
+          ChangeNotifierProvider(create: (_) => CommonProvider()),
+          ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
         ],
-        locale: _locale,
-        localizationsDelegates: [
-          ApplicationLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        localeResolutionCallback: (locale, supportedLocales) {
-          for (var supportedLocaleLanguage in supportedLocales) {
-            if (supportedLocaleLanguage.languageCode == locale?.languageCode &&
-                supportedLocaleLanguage.countryCode == locale?.countryCode) {
-              return supportedLocaleLanguage;
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          supportedLocales: [
+            Locale('en', 'IN'),
+            Locale('hi', 'IN'),
+            Locale.fromSubtags(languageCode: 'pn')
+          ],
+          locale: _locale,
+          localizationsDelegates: [
+            ApplicationLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          localeResolutionCallback: (locale, supportedLocales) {
+            for (var supportedLocaleLanguage in supportedLocales) {
+              if (supportedLocaleLanguage.languageCode ==
+                      locale?.languageCode &&
+                  supportedLocaleLanguage.countryCode == locale?.countryCode) {
+                return supportedLocaleLanguage;
+              }
             }
-          }
-          return supportedLocales.first;
-        },
-        navigatorKey: navigatorKey,
-        initialRoute: '/',
-        routes: {
-          '/': (context) => LandingPage(),
-          'login': (context) => Login(),
-          Routes.HOME : (context) => Home(0),
-          'household/search': (context) => SearchConnection(),
-          'editProfile': (context) => EditProfile(),
-          'changepassword': (context) => ChangePassword(),
-          'updatepassword': (context) => UpdatePassword(),
-          // 'consumer/create': (context) => Consumer(),
-          'resetpassword': (context) => ResetPassword(),
-          'consumer/search': (context) => SearchConnection(),
-          'expenses/add': (context) => ExpenseDetails(),
-          'household/details': (context) => HouseholdDetail(),
-          'dashboard': (context) => Dashboard(),
-          'search/consumer': (context) => SearchConsumerResult(),
-          'bill/generate': (context) => GenerateBill()
-        },
-        theme: ThemeData(
-            // This is the theme of your application.
-            //
-            // Try running your application with "flutter run". You'll see the
-            // application has a blue toolbar. Then, without quitting the app, try
-            // changing the primarySwatch below to Colors.green and then invoke
-            // "hot reload" (press "r" in the console where you ran "flutter run",
-            // or simply save your changes to "hot reload" in a Flutter IDE).
-            // Notice that the counter didn't reset back to zero; the application
-            // is not restarted.
-            textTheme: Theme.of(context).textTheme.apply(
-                  fontFamily: 'Roboto',
-                ),
-            primarySwatch: createMaterialColor(Color(0XFFf47738)),
-            highlightColor: createMaterialColor(Color(0XFFC7E0F1)),
-            hintColor: createMaterialColor(Color(0XFF3498DB))),
+            return supportedLocales.first;
+          },
+          navigatorKey: navigatorKey,
+          initialRoute: '/',
+          routes: {
+            '/': (context) => LandingPage(),
+            'login': (context) => Login(),
+            Routes.HOME: (context) => Home(0),
+            'household/search': (context) => SearchConnection(),
+            'editProfile': (context) => EditProfile(),
+            'changepassword': (context) => ChangePassword(),
+            'updatepassword': (context) => UpdatePassword(),
+            // 'consumer/create': (context) => Consumer(),
+            'resetpassword': (context) => ResetPassword(),
+            'consumer/search': (context) => SearchConnection(),
+            'expenses/add': (context) => ExpenseDetails(),
+            'household/details': (context) => HouseholdDetail(),
+            'dashboard': (context) => Dashboard(),
+            'search/consumer': (context) => SearchConsumerResult(),
+            'bill/generate': (context) => GenerateBill()
+          },
+          theme: ThemeData(
+              // This is the theme of your application.
+              //
+              // Try running your application with "flutter run". You'll see the
+              // application has a blue toolbar. Then, without quitting the app, try
+              // changing the primarySwatch below to Colors.green and then invoke
+              // "hot reload" (press "r" in the console where you ran "flutter run",
+              // or simply save your changes to "hot reload" in a Flutter IDE).
+              // Notice that the counter didn't reset back to zero; the application
+              // is not restarted.
+              textTheme: Theme.of(context).textTheme.apply(
+                    fontFamily: 'Roboto',
+                  ),
+              primarySwatch: createMaterialColor(Color(0XFFf47738)),
+              highlightColor: createMaterialColor(Color(0XFFC7E0F1)),
+              hintColor: createMaterialColor(Color(0XFF3498DB))),
 
           // home: SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
         ));
   }
 }
-
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
@@ -161,7 +162,6 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
@@ -170,15 +170,13 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   afterViewBuild() {
-    var commonProvider =
-    Provider.of<CommonProvider>(context, listen: false);
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     commonProvider.getLoginCredentails();
   }
 
   @override
   Widget build(BuildContext context) {
-    var commonProvider =
-    Provider.of<CommonProvider>(context, listen: false);
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
     return StreamBuilder(
         stream: commonProvider.userLoggedStreamCtrl.stream,
@@ -186,12 +184,11 @@ class _LandingPageState extends State<LandingPage> {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
 
-            /// While waiting for the data to load, show a loading spinner.
+              /// While waiting for the data to load, show a loading spinner.
               return Loaders.circularLoader();
             default:
               if (snapshot.hasError) {
-                return Notifiers.networkErrorPage(
-                    context, () {});
+                return Notifiers.networkErrorPage(context, () {});
               } else {
                 if (snapshot.data != null) {
                   return Home(0);
@@ -202,4 +199,3 @@ class _LandingPageState extends State<LandingPage> {
         });
   }
 }
-

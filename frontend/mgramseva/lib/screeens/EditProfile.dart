@@ -24,7 +24,6 @@ class _EditProfileState extends State<EditProfile> {
 
   final formKey = GlobalKey<FormState>();
   saveInput(context) async {
-    print(context);
     setState(() {
       _gender = context;
     });
@@ -32,17 +31,21 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   void initState() {
-    // var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
   afterViewBuild() {
     var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
-    userProvider.getUserProfileDetails();
+    userProvider.getUserProfileDetails({
+      "tenantId": "pb",
+      "id": [92],
+      "mobileNumber": "8004375123"
+    });
   }
 
   Widget _builduserView(UserProfile profileDetails) {
+    print(profileDetails.user![0].getText());
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -54,19 +57,19 @@ class _EditProfileState extends State<EditProfile> {
             children: [
               BuildTextField(
                 'Name',
-                profileDetails.nameCtrl,
+                profileDetails.user![0].nameCtrl,
                 isRequired: true,
               ),
               BuildTextField(
                 'Phone Number',
-                profileDetails.phoneNumberCtrl,
+                profileDetails.user![0].phoneNumberCtrl,
                 isRequired: true,
               ),
               RadioButtonFieldBuilder(context, 'Gender', _gender, '', '', true,
                   Constants.GENDER, saveInput),
               BuildTextField(
                 'Email ID',
-                profileDetails.emailIdCtrl,
+                profileDetails.user![0].emailIdCtrl,
                 isRequired: true,
               ),
               GestureDetector(
