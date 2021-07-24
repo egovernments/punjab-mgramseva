@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mgramseva/model/localization/language.dart';
 
 part 'user_details.g.dart';
 
@@ -16,6 +17,8 @@ class UserDetails {
   String? scope;
   @JsonKey(name: "UserRequest")
   UserRequest? userRequest;
+  @JsonKey(name: "selectedLanguage")
+  Languages? selectedLanguage;
   UserDetails();
 
   factory UserDetails.fromJson(Map<String, dynamic> json) =>

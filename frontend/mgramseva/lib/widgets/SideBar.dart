@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/main.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
 import 'package:provider/provider.dart';
@@ -12,11 +13,6 @@ class SideBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var stateInfo = StateInfo(languages: [
-      Languages(label: 'English', value: 'en_IN', isSelected: false),
-      Languages(label: 'हिंदी', value: 'hi_IN', isSelected: false),
-      Languages(label: 'ਪੰਜਾਬੀ', value: 'pn_IN', isSelected: false),
-    ]);
 
     const iconColor = Color(0xff505A5F);
     return new ListView(children: <Widget>[
@@ -71,8 +67,8 @@ class SideBar extends StatelessWidget {
               height: 10,
             ),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              for (var language in stateInfo.languages ?? [])
-                LanguageCard(language, stateInfo.languages ?? [], 20, 5, 5,
+              for (var language in Provider.of<LanguageProvider>(context, listen: false).stateInfo?.languages ?? [])
+                LanguageCard(language, Provider.of<LanguageProvider>(context, listen: false).stateInfo?.languages ?? [], 20, 5, 5,
                    )
             ])
           ],
