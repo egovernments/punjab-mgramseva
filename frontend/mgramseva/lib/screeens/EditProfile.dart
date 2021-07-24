@@ -20,14 +20,8 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   var name = new TextEditingController();
   var phoneNumber = new TextEditingController();
-  String _gender = 'FEMALE';
 
   final formKey = GlobalKey<FormState>();
-  saveInput(context) async {
-    setState(() {
-      _gender = context;
-    });
-  }
 
   @override
   void initState() {
@@ -44,8 +38,7 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
-  Widget _builduserView(UserProfile profileDetails) {
-    print(profileDetails.user![0].getText());
+  Widget _builduserView(User profileDetails) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -57,19 +50,21 @@ class _EditProfileState extends State<EditProfile> {
             children: [
               BuildTextField(
                 'Name',
-                profileDetails.user![0].nameCtrl,
+                profileDetails.nameCtrl,
                 isRequired: true,
               ),
               BuildTextField(
                 'Phone Number',
-                profileDetails.user![0].phoneNumberCtrl,
+                profileDetails.phoneNumberCtrl,
                 isRequired: true,
               ),
-              RadioButtonFieldBuilder(context, 'Gender', _gender, '', '', true,
-                  Constants.GENDER, saveInput),
+              Consumer<UserProfileProvider>(
+                builder : (_, userProvider, child ) => RadioButtonFieldBuilder(context, 'Gender', profileDetails.gender, '', '', true,
+                    Constants.GENDER, (val) => userProvider.onChangeOfGender(val, profileDetails),
+                )),
               BuildTextField(
                 'Email ID',
-                profileDetails.user![0].emailIdCtrl,
+                profileDetails.emailIdCtrl,
                 isRequired: true,
               ),
               GestureDetector(
