@@ -39,6 +39,7 @@ class ButtonGroup extends StatelessWidget {
                                   fontWeight: FontWeight.w500),
                             )),
                       )),
+                      SizedBox(width: 5),
                       Expanded(
                           child: new ElevatedButton(
                         style: ElevatedButton.styleFrom(),

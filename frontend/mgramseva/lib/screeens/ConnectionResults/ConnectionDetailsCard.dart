@@ -28,60 +28,60 @@ class SearchConnectionDetailCard extends StatelessWidget {
         LabelText(ConsumerSearchDetailsList.length.toString() != null
             ? ConsumerSearchDetailsList.length.toString() + " consumer(s) Found"
             : "0" + " consumer(s) Found"),
-        Container(
-            height: MediaQuery.of(context).size.height - 200,
-            child: ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: ConsumerSearchDetailsList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                      child: Padding(
-                          padding: EdgeInsets.all(15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _getDetailtext(
-                                  "New Connection ID",
-                                  ConsumerSearchDetailsList[index]
-                                          ['connectionId']
-                                      .toString(),
-                                  context),
-                              _getDetailtext(
-                                  "Old Connection ID",
-                                  ConsumerSearchDetailsList[index]
-                                          ['oldConnectioId']
-                                      .toString(),
-                                  context),
-                              _getDetailtext(
-                                  "Consumer’s Name",
-                                  ConsumerSearchDetailsList[index]
-                                          ['consumername']
-                                      .toString(),
-                                  context),
-                              _getDetailtext(
-                                  "Phone Number",
-                                  ConsumerSearchDetailsList[index]['mobnumber']
-                                      .toString(),
-                                  context),
-                              _getDetailtext(
-                                  "Household Address",
-                                  ConsumerSearchDetailsList[index]
-                                          ['householdAddress']
-                                      .toString(),
-                                  context),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              ShortButton(
-                                  'View Household Details',
-                                  () => Navigator.pushNamed(
-                                      context, 'household/details')),
-                              SizedBox(
-                                height: 20,
-                              ),
-                            ],
-                          )));
-                }))
+        Expanded(
+          child: ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: ConsumerSearchDetailsList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Card(
+                    child: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _getDetailtext(
+                                "New Connection ID",
+                                ConsumerSearchDetailsList[index]
+                                        ['connectionId']
+                                    .toString(),
+                                context),
+                            _getDetailtext(
+                                "Old Connection ID",
+                                ConsumerSearchDetailsList[index]
+                                        ['oldConnectioId']
+                                    .toString(),
+                                context),
+                            _getDetailtext(
+                                "Consumer’s Name",
+                                ConsumerSearchDetailsList[index]
+                                        ['consumername']
+                                    .toString(),
+                                context),
+                            _getDetailtext(
+                                "Phone Number",
+                                ConsumerSearchDetailsList[index]['mobnumber']
+                                    .toString(),
+                                context),
+                            _getDetailtext(
+                                "Household Address",
+                                ConsumerSearchDetailsList[index]
+                                        ['householdAddress']
+                                    .toString(),
+                                context),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            ShortButton(
+                                'View Household Details',
+                                () => Navigator.pushNamed(
+                                    context, 'household/details')),
+                            SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        )));
+              }),
+        )
       ]);
     });
   }

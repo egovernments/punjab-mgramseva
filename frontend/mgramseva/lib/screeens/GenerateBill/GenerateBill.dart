@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/GenerateBill/widgets/MeterReading.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
@@ -20,24 +21,24 @@ class GenerateBill extends StatefulWidget {
 }
 
 class _GenerateBillState extends State<GenerateBill> {
-  List<Map<String, dynamic>> services = [
-    {"key": "BILLING_SERVICE", "label": "Billing Service"},
-    {"key": "PROPERTY_SERVICE", "label": "Property Service"},
-    {"key": "RENTAL_SERVICE", "label": "Rental Service"},
+  var services = [
+    KeyValue("BILLING_SERVICE", "Billing Service"),
+  KeyValue("PROPERTY_SERVICE", "Property Service"),
+  KeyValue("RENTAL_SERVICE", "Rental Service"),
   ];
 
-  List<Map<String, dynamic>> property = [
-    {"key": "RESIDENTIAL", "label": "Residential"},
-    {"key": "NON_RESIDENTIAL", "label": "Non Residential"},
+  var property = [
+  KeyValue("RESIDENTIAL", "Residential"),
+  KeyValue("NON_RESIDENTIAL", "Non Residential"),
   ];
-  List<Map<String, dynamic>> servicetype = [
-    {"key": "METER_CONNECTION", "label": "Meter Connection"},
-    {"key": "NON_METER_CONNECTION", "label": "Non Meter Connection"},
+ var servicetype = [
+  KeyValue("METER_CONNECTION", "Meter Connection"),
+  KeyValue("NON_METER_CONNECTION", "Non Meter Connection"),
   ];
-  List<Map<String, dynamic>> metnum = [
-    {"key": "1234456", "label": "1234456"},
-    {"key": "1233456", "label": "1233456"},
-    {"key": "1234556", "label": "1234556"},
+ var metnum = [
+  KeyValue("1234456",  "1234456"),
+  KeyValue("1233456", "1233456"),
+  KeyValue("1234556", "1234556"),
   ];
   var serviceCat = new TextEditingController();
   var serviceType = new TextEditingController();
