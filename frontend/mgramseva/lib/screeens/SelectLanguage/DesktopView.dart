@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/localization/language.dart';
+
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/Button.dart';
@@ -8,10 +10,10 @@ import 'package:mgramseva/widgets/LanguageCard.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 
 class LanguageSelectionDesktopView extends StatelessWidget {
-  final data;
-  final String isSelected;
-  final Function widgetFun;
-  LanguageSelectionDesktopView(this.data, this.isSelected, this.widgetFun);
+  final StateInfo stateInfo;
+  Function changeLanguage;
+  LanguageSelectionDesktopView(this.stateInfo, this.changeLanguage);
+
   @override
   Widget build(BuildContext context) {
     return BackgroundContainer(Center(
@@ -29,7 +31,7 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                       Image(
                           width: 150,
                           image: NetworkImage(
-                            data?['logoUrl'],
+                            stateInfo.logoUrl!,
                           )),
                       ListLabelText("|"),
                       ListLabelText("STATE_LABEL")
@@ -40,14 +42,10 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        for (var language in data?['languages'])
+                        for (Languages language in stateInfo.languages ?? [])
                           Row(
                             children: [
-                              Text(ApplicationLocalizations.of(context)
-                                  .translate("LANGUAGE_" +
-                                      language['value']
-                                          .toString()
-                                          .toUpperCase())),
+                              Text('${language.label}'),
                               Text("  |  ")
                             ],
                           )
@@ -57,15 +55,9 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        for (var language in data?['languages'])
-                          LanguageCard(
-                              language['label'],
-                              language['value'],
-                              isSelected == language['value'],
-                              this.widgetFun,
-                              12,
-                              10,
-                              10)
+                        for (var language in stateInfo.languages ?? [])
+                          LanguageCard(language, stateInfo.languages ?? [], 12,
+                              10, 10)
                       ])),
               Padding(
                   padding: EdgeInsets.all(15),

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/home.dart';
+//import 'package:mgramseva/screeens/home.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
+import 'package:mgramseva/widgets/HomeBack.dart';
+import 'package:mgramseva/widgets/PasswordHint.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/homeBack.dart';
-import 'package:mgramseva/widgets/passwordHint.dart';
+
+import 'Home.dart';
+//import 'package:mgramseva/widgets/homeBack.dart';
+//import 'package:mgramseva/widgets/passwordHint.dart';
 
 class ChangePassword extends StatefulWidget {
   static const String routeName = '/changepassword';
@@ -74,12 +78,22 @@ class _ChangePasswordState extends State<ChangePassword> {
                   Card(
                       child: Column(
                     children: [
-                      BuildTextField(context, 'Current  Password', name, '', '',
-                          saveInput, true),
-                      BuildTextField(context, ' Set a New Password',
-                          newpassword, '', '', saveInput, true),
-                      BuildTextField(context, 'Confirm New Password',
-                          confirmpassword, '', '', saveInput, true),
+                      BuildTextField(
+                        'Current  Password',
+                        name,
+                        isRequired: true,
+                        onChange: saveInput(context),
+                      ),
+                      BuildTextField(
+                        ' Set a New Password',
+                        newpassword,
+                        isRequired: true,
+                      ),
+                      BuildTextField(
+                        'Confirm New Password',
+                        confirmpassword,
+                        isRequired: true,
+                      ),
                       SizedBox(
                         height: 20,
                       ),
