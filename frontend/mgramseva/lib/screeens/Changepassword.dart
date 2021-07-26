@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/home.dart';
+import 'package:mgramseva/services/user.dart';
+//import 'package:mgramseva/screeens/home.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
+import 'package:mgramseva/widgets/HomeBack.dart';
+import 'package:mgramseva/widgets/PasswordHint.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/homeBack.dart';
-import 'package:mgramseva/widgets/passwordHint.dart';
+//import 'package:mgramseva/widgets/homeBack.dart';
+//import 'package:mgramseva/widgets/passwordHint.dart';
+
+import 'Home.dart';
 
 class ChangePassword extends StatefulWidget {
   static const String routeName = '/changepassword';
@@ -28,6 +33,19 @@ class _ChangePasswordState extends State<ChangePassword> {
     setState(() {
       password = context;
     });
+  }
+
+  saveInputandchangepass(context) async {
+    var data =
+      {
+        "existingPassword": "eGov@123",
+        "newPassword": "eGov@1234",
+        "mobileNumber": "9191919146",
+        "tenantId": "pb",
+        "type": "EMPLOYEE"
+      };
+    updatepassword(data, context);
+
   }
 
   _onSelectItem(int index, context) {
@@ -78,7 +96,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         'Current  Password',
                         name,
                         isRequired: true,
-                        onChange: saveInput(context),
+                        //onChange: saveInput(context),
                       ),
                       BuildTextField(
                         ' Set a New Password',
@@ -102,6 +120,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                 ],
               ))
             ]))),
-        bottomNavigationBar: BottomButtonBar('Submit', () => {}));
+        bottomNavigationBar: BottomButtonBar('Submit', () => saveInputandchangepass(context)));
   }
 }
