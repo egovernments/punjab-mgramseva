@@ -4,6 +4,7 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/urls.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:provider/provider.dart';
 import "package:universal_html/html.dart" hide Text, Navigator;
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -81,32 +82,4 @@ Future resetNewPassword(details) async {
           body: json.encode({"RequestInfo": requestInfo.toJson(), ...details}));
 
   print('Response status: ${response.statusCode}');
-}
-
-Future updatepassword(details, context) async {
-  print(details);
-  final requestInfo = RequestInfo('ap.public', .01, "", "POST", 1, "", "",
-      "6d82567a-c768-4cab-b432-f83116f3357a");
-  var response = await http.post(
-      Uri.parse(apiBaseUrl.toString() + UserUrl.CHANGE_PASSWORD),
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json',
-      },
-      body: json.encode({"RequestInfo": requestInfo.toJson(), ...details}));
-
-  print('Response status: ${response.statusCode}');
-}
-
-Future updateprofile(details, context) async {
-  print(details);
-  final requestInfo = RequestInfo('Rainmaker', .01, "", "_search", "", "", "", "6d82567a-c768-4cab-b432-f83116f3357a");
-  var response = await http.post(
-      Uri.parse(apiBaseUrl.toString() + UserUrl.EDIT_PROFILE),
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json',
-      },
-      body: json.encode({"RequestInfo": requestInfo.toJson(), ...details}));
-  print('Response status: ${response.statusCode}');
-
-  print('Response body: ${response.body}');
 }

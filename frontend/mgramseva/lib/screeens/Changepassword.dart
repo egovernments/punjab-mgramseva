@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/services/user.dart';
-import 'package:mgramseva/widgets/BaseAppBar.dart';
-import 'package:mgramseva/widgets/BottonButtonBar.dart';
-import 'package:mgramseva/widgets/FormWrapper.dart';
+import 'package:mgramseva/model/changePasswordDetails/changePassword_details.dart';
+import 'package:mgramseva/providers/changePassword_details_provider.dart';
+import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
-import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'Home.dart';
+import 'package:provider/provider.dart';
 
 class ChangePassword extends StatefulWidget {
   static const String routeName = '/changepassword';
@@ -20,11 +19,13 @@ class ChangePassword extends StatefulWidget {
 
 class _ChangePasswordState extends State<ChangePassword> {
   var password = "";
-  var name = new TextEditingController();
-  var newpassword = new TextEditingController();
-  var confirmpassword = new TextEditingController();
-
   final formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   saveInput(context) async {
     setState(() {
       password = context;
@@ -32,90 +33,81 @@ class _ChangePasswordState extends State<ChangePassword> {
   }
 
   saveInputandchangepass(context) async {
-    var data =
-      {
-        "existingPassword": "eGov@123",
-        "newPassword": "eGov@1234",
-        "mobileNumber": "9191919146",
-        "tenantId": "pb",
-        "type": "EMPLOYEE"
-      };
-    updatepassword(data, context);
-
+    var changePasswordProvider = Provider.of<ChangePasswordProvider>(context, listen: false);
+    changePasswordProvider.changePassword(
+        {
+          "existingPassword":"PGLME16",
+          "newPassword":"eGov@1234",
+          "tenantId":"pb",
+          "type":"EMPLOYEE"
+        });
   }
 
-  _onSelectItem(int index, context) {
-    print(index);
-    print(Routes.home);
-    // setState(() => _selectedDrawerIndex = index);
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => Home(index),
-        ),
-        ModalRoute.withName(Routes.home));
-    //  Navigator.push<bool>(
-    //                                   context,
-    //                                   MaterialPageRoute(
-    //                                       builder: (BuildContext context) =>
-    //                                           Home(index)));
-// close the drawer
+
+  Widget builduserView(ChangePasswordDetails passwordDetails) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          HomeBack(),
+          Card(
+              child: Column(
+                children: [
+                  BuildTextField(
+                    'Current  Password',
+                    passwordDetails.currentpasswordCtrl,
+                    isRequired: true,
+                    //onChange: saveInput(context),
+                  ),
+                  BuildTextField(
+                    ' Set a New Password',
+                    passwordDetails.newpasswordCtrl,
+                    isRequired: true,
+                  ),
+                  BuildTextField(
+                    'Confirm New Password',
+                    passwordDetails.confirmpasswordCtrl,
+                    isRequired: true,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Button('Change Password', () => saveInputandchangepass(context)),
+                  PasswordHint(password)
+                ],
+              ))
+        ],
+      ),
+    );
+
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: BaseAppBar(
-          Text('mGramSeva'),
-          AppBar(),
-          <Widget>[Icon(Icons.more_vert)],
-        ),
-        drawer: Container(
-          width: MediaQuery.of(context).size.width * .7,
-          margin: EdgeInsets.only(top: 60),
-          child:
-              Drawer(child: SideBar((value) => _onSelectItem(value, context))),
-        ),
-        body: SingleChildScrollView(
-            child: FormWrapper(Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-              HomeBack(),
-              Container(
-                  child: Column(
-                children: [
-                  Card(
-                      child: Column(
-                    children: [
-                      BuildTextField(
-                        'Current  Password',
-                        name,
-                        isRequired: true,
-                        //onChange: saveInput(context),
-                      ),
-                      BuildTextField(
-                        ' Set a New Password',
-                        newpassword,
-                        isRequired: true,
-                      ),
-                      BuildTextField(
-                        'Confirm New Password',
-                        confirmpassword,
-                        isRequired: true,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      PasswordHint(password)
-                    ],
-                  ))
-                ],
-              ))
-            ]))),
-        bottomNavigationBar: BottomButtonBar('Submit', () => saveInputandchangepass(context)));
+    var changePasswordProvider = Provider.of<ChangePasswordProvider>(context, listen: false);
+    return SingleChildScrollView(
+        child: StreamBuilder(
+            stream: changePasswordProvider.streamController.stream,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return builduserView(snapshot.data);
+              } else if (snapshot.hasError) {
+                return Notifiers.networkErrorPage(context, () {});
+              } else {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return Loaders.CircularLoader();
+                  case ConnectionState.active:
+                    return Loaders.CircularLoader();
+                  default:
+                    return Container();
+                }
+              }
+            }));
   }
 }

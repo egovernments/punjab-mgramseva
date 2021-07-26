@@ -1,4 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:flutter/material.dart';
+
 
 part 'changePassword_details.g.dart';
 
@@ -14,6 +16,12 @@ class ChangePasswordDetails {
   String? tenantId;
   @JsonKey(name: "type")
   String? type;
+  @JsonKey(ignore: true)
+  var currentpasswordCtrl = new TextEditingController();
+  @JsonKey(ignore: true)
+  var newpasswordCtrl = new TextEditingController();
+  @JsonKey(ignore: true)
+  var confirmpasswordCtrl = new TextEditingController();
 
   ChangePasswordDetails();
 
