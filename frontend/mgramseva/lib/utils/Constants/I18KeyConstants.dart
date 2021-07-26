@@ -14,4 +14,8 @@ class Login {
 class Common {
   const Common();
   String get CONTINUE => 'CORE_COMMON_CONTINUE';
+  String get LOGOUT => 'CORE_COMMON_LOGOUT';
+  String get EDIT_PROFILE => 'CORE_COMMON_EDIT_PROFILE';
+  String get LANGUAGE => 'LANGUAGE';
+  String get HOME => 'HOME';
 }

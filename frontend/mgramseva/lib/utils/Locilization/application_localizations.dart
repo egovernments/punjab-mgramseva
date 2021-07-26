@@ -17,12 +17,14 @@ class ApplicationLocalizations {
         context, ApplicationLocalizations)!;
   }
 
-   List<LocalizationLabel> _localizedStrings = <LocalizationLabel>[];
+  List<LocalizationLabel> _localizedStrings = <LocalizationLabel>[];
 
   Future<bool> load() async {
-    if(navigatorKey.currentContext == null) return false;
-    var commonProvider = Provider.of<CommonProvider>(navigatorKey.currentContext!, listen: false);
-    _localizedStrings = await  commonProvider.getLocalizationLabels();
+    if (navigatorKey.currentContext == null) return false;
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    _localizedStrings = await commonProvider.getLocalizationLabels();
     return true;
     // if (kIsWeb) {
     //   String? res = window.localStorage['localisation_' + locale.toString()];
@@ -39,17 +41,19 @@ class ApplicationLocalizations {
     //     _localizedStrings = [];
     //   }
     // }
-
-    return true;
   }
 
   // called from every widget which needs a localized text
   translate(String _localizedValues) {
-    var commonProvider = Provider.of<CommonProvider>(navigatorKey.currentContext!, listen: false);
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
 
-    var index = commonProvider.localizedStrings.indexWhere(
-        (medium) => medium.code == _localizedValues);
-    return index != -1 ? commonProvider.localizedStrings[index].message : _localizedValues;
+    var index = commonProvider.localizedStrings
+        .indexWhere((medium) => medium.code == _localizedValues);
+    return index != -1
+        ? commonProvider.localizedStrings[index].message
+        : _localizedValues;
   }
 
   static const LocalizationsDelegate<ApplicationLocalizations> delegate =

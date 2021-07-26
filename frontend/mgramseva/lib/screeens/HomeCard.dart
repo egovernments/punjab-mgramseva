@@ -64,7 +64,8 @@ class _HomeCard extends State<HomeCard> {
     for (var i = 0; i < items.length; i++) {
       childs.add(new GridTile(
         child: new GestureDetector(
-            onTap: () => Navigator.pushNamed(context, items[i]["link"]),
+            onTap: () => Navigator.pushNamed(context, items[i]["link"],
+                arguments: 'expenses'),
             child: new Card(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 child: Column(
