@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/authentication.dart';
-import 'package:mgramseva/Env/app_config.dart';
-import 'package:mgramseva/services/urls.dart';
-import 'package:mgramseva/services/user.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
@@ -30,8 +28,10 @@ class _LoginState extends State<Login> {
 
   saveandLogin(context) async {
     if (formKey.currentState!.validate()) {
-      var authProvider = Provider.of<AuthenticationProvider>(context, listen: false);
-      authProvider.validateLogin(context, userNamecontroller.text.trim(), passwordcontroller.text.trim());
+      var authProvider =
+          Provider.of<AuthenticationProvider>(context, listen: false);
+      authProvider.validateLogin(context, userNamecontroller.text.trim(),
+          passwordcontroller.text.trim());
     }
   }
 
@@ -48,17 +48,17 @@ class _LoginState extends State<Login> {
                           TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
                 ),
                 HeadingText(ApplicationLocalizations.of(context)
-                    .translate("CORE_COMMON_LOGIN")),
+                    .translate(i18.login.LOGIN_LABEL)),
                 // BuildTextField(
                 //     context, 'Phone Number', mobileNumber, '', '+91-', saveInput),
                 BuildTextField(
-                  'CORE_LOGIN_USERNAME',
+                  i18.login.LOGIN_NAME,
                   userNamecontroller,
                   isRequired: true,
                   onChange: (dynamic) => saveInput(dynamic),
                 ),
                 BuildTextField(
-                  'CORE_LOGIN_PASSWORD',
+                  i18.login.LOGIN_PASSWORD,
                   passwordcontroller,
                   isRequired: true,
                   onChange: (dynamic) => saveInput(dynamic),
@@ -75,7 +75,7 @@ class _LoginState extends State<Login> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             ApplicationLocalizations.of(context)
-                                .translate('CORE_COMMON_FORGOT_PASSWORD'),
+                                .translate(i18.login.FORGOT_PASSWORD),
                             style: TextStyle(
                                 color: Theme.of(context).primaryColor),
                           ))),
@@ -83,7 +83,7 @@ class _LoginState extends State<Login> {
                 Padding(
                     padding: EdgeInsets.all(15),
                     child: Button(
-                        "CORE_COMMON_CONTINUE", () => saveandLogin(context))),
+                        i18.common.CONTINUE, () => saveandLogin(context))),
                 SizedBox(
                   height: 10,
                 )
