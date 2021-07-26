@@ -11,6 +11,7 @@ import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mgramseva/routers/Routers.dart';
 
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
 import 'package:mgramseva/screeens/home.dart';
@@ -103,8 +104,8 @@ class _MyAppState extends State<MyApp> {
                     return supportedLocales.first;
                   },
                   navigatorKey: navigatorKey,
-                  initialRoute: '/',
-                  onGenerateRoute: generateRoute,
+                  initialRoute: Routes.LANDING_PAGE,
+                  onGenerateRoute: router.generateRoute,
                   theme: ThemeData(
                       // This is the theme of your application.
                       //
