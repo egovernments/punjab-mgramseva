@@ -7,11 +7,37 @@ ThemeData get theme => ThemeData(
    highlightColor: createMaterialColor(Color(0XFFC7E0F1)),
    hintColor: createMaterialColor(Color(0XFF3498DB)),
    // accentColor:  Color(0xff0B4B66),
+
    appBarTheme: AppBarTheme(
      backgroundColor:  Color(0xff0B4B66),
      centerTitle: false,
    ),
-  backgroundColor: Color.fromRGBO(238, 238, 238, 1));
+
+  /// Background color
+  // scaffoldBackgroundColor: Color.fromRGBO(238, 238, 238, 1),
+
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      padding: EdgeInsets.symmetric(vertical: 15),
+      textStyle: TextStyle(
+          fontSize: 19, fontWeight: FontWeight.w500)
+    )
+  ),
+
+    outlinedButtonTheme: OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(0)),
+      textStyle: TextStyle(
+          color: Color(0XFFf47738),
+          fontSize: 19,
+          fontWeight: FontWeight.w500),
+      padding: EdgeInsets.symmetric(vertical : 15),
+    )
+),
+
+
+);
 
 
    MaterialColor createMaterialColor(Color color) {

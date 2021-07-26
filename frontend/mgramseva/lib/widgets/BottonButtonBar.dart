@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class BottomButtonBar extends StatelessWidget {
   final String label;
-  final Function buttonfunction;
-  BottomButtonBar(this.label, this.buttonfunction);
+  final VoidCallback callBack;
+  BottomButtonBar(this.label, this.callBack);
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -16,26 +16,15 @@ class BottomButtonBar extends StatelessWidget {
                     margin: EdgeInsets.only(
                         left: MediaQuery.of(context).size.width - 300,
                         right: 20),
-                    child: new ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(18),
-                      ),
-                      child: new Text(label,
-                          style: TextStyle(
-                              fontSize: 19, fontWeight: FontWeight.w500)),
-                      onPressed: () => buttonfunction(),
+                    child:  ElevatedButton(
+                      child:  Text(label),
+                      onPressed: callBack,
                     ));
               } else {
-                return Container(
-                    child: new ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(18),
-                  ),
-                  child: new Text(this.label,
-                      style:
-                          TextStyle(fontSize: 19, fontWeight: FontWeight.w500)),
-                  onPressed: () => buttonfunction(),
-                ));
+                return ElevatedButton(
+                  child:  Text(this.label,),
+                  onPressed:  callBack,
+                );
               }
             })));
   }

@@ -10,7 +10,6 @@ class ButtonGroup extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Container(),
           Container(
             alignment: Alignment.centerLeft,
             width: constraints.maxWidth > 760
@@ -29,26 +28,14 @@ class ButtonGroup extends StatelessWidget {
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(0.0))),
                         ),
-                        child: Padding(
-                            padding: EdgeInsets.all(15),
-                            child: const Text(
-                              "Share Bill",
-                              style: TextStyle(
-                                  color: Color(0XFFf47738),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500),
-                            )),
+                        child: const Text(
+                          "Share Bill",
+                        ),
                       )),
-                      SizedBox(width: 5),
                       Expanded(
                           child: new ElevatedButton(
-                        style: ElevatedButton.styleFrom(),
-                        child: Padding(
-                            padding: EdgeInsets.only(top: 15, bottom: 15),
-                            child: new Text(label,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500))),
+                        child: new Text(label,
+                        ),
                         onPressed: () => Navigator.pushNamed(context, "home"),
                       ))
                     ],
