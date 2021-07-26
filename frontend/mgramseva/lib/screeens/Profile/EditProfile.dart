@@ -4,10 +4,9 @@ import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/screeens/Changepassword.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-//import 'package:mgramseva/widgets/homeBack.dart';
+import 'package:mgramseva/widgets/homeBack.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 
@@ -19,9 +18,6 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  var name = new TextEditingController();
-  var phoneNumber = new TextEditingController();
-
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -60,9 +56,17 @@ class _EditProfileState extends State<EditProfile> {
                 isRequired: true,
               ),
               Consumer<UserProfileProvider>(
-                builder : (_, userProvider, child ) => RadioButtonFieldBuilder(context, 'Gender', profileDetails.gender, '', '', true,
-                    Constants.GENDER, (val) => userProvider.onChangeOfGender(val, profileDetails),
-                )),
+                  builder: (_, userProvider, child) => RadioButtonFieldBuilder(
+                        context,
+                        'Gender',
+                        profileDetails.gender,
+                        '',
+                        '',
+                        true,
+                        Constants.GENDER,
+                        (val) =>
+                            userProvider.onChangeOfGender(val, profileDetails),
+                      )),
               BuildTextField(
                 'Email ID',
                 profileDetails.emailIdCtrl,
