@@ -49,7 +49,6 @@ class CommonProvider with ChangeNotifier {
     }
 
     try{
-      var requestInfo = RequestInfo('Rainmaker', .01, "", "_search", 1, "", "", "");
 
       var query = {
         'module' : 'mgramseva-common',
@@ -57,7 +56,7 @@ class CommonProvider with ChangeNotifier {
         'tenantId' : 'pb'
       };
 
-      var response = await CoreRepository().getLocilisation(query, requestInfo);
+      var response = await CoreRepository().getLocilisation(query);
       if(response != null){
         labels = localizedStrings = response;
         setLocalizationLabels(response);

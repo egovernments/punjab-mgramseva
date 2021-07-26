@@ -6,8 +6,10 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/authentication.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/Home.dart';
+import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 
@@ -48,6 +50,13 @@ class AuthenticationProvider with ChangeNotifier {
       }else{
         Notifiers.getToastMessage('Unable to login');
       }
+    } on CustomException catch(e){
+      Navigator.pop(context);
+      if(e.exceptionType == ExceptionType.UNAUTHORIZED){
+       Notifiers.getToastMessage('${e.message ??  "Credentials"}');
+     }else{
+       Notifiers.getToastMessage('Unable to login');
+     }
     } catch(e) {
       Navigator.pop(context);
       Notifiers.getToastMessage('Unable to login');
