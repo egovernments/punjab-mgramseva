@@ -1,36 +1,55 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/localization/language.dart';
+import 'package:mgramseva/providers/language.dart';
+
+// import 'package:mgramseva/screeens/Consumer.dart';
+import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart' hide Text;
 
 class LanguageCard extends StatelessWidget {
-  final String text;
-  final String value;
-  final bool selected;
+  // final String text;
+  // final String value;
+  final Languages language;
+  final List<Languages> languages;
   final int widthprect;
   final double cpadding;
   final double cmargin;
 
-  final Function widgetFun;
-  LanguageCard(this.text, this.value, this.selected, this.widgetFun,
-      this.widthprect, this.cpadding, this.cmargin);
+  LanguageCard(this.language, this.languages, this.widthprect, this.cpadding,
+      this.cmargin);
 
   @override
   Widget build(BuildContext context) {
-    return new GestureDetector(
-        onTap: () => this.widgetFun(this.value),
+    if (kIsWeb) {
+      var value = window.localStorage['SelectedLocal'];
+      if (value == language.value) {
+        this.language.isSelected = true;
+      }
+    }
+    return Consumer<LanguageProvider>(
+      builder: (_, languageProvider, child) => GestureDetector(
+        onTap: () {
+          languageProvider.onSelectionOfLanguage(
+              language, languages);
+        },
         child: Container(
             margin: new EdgeInsets.all(cmargin),
             width: MediaQuery.of(context).size.width / widthprect,
             padding: new EdgeInsets.all(cpadding),
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
-                color: this.selected
+                color: language.isSelected
                     ? Theme.of(context).primaryColor
                     : Colors.white),
             child: Center(
-                child: new Text(
-              this.text,
+                child: Text(
+              '${language.label}',
               style: new TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: this.selected ? Colors.white : Colors.black),
-            ))));
+                  color: language.isSelected ? Colors.white : Colors.black),
+            ))),
+      ),
+    );
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:mgramseva/widgets/Back.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
@@ -67,10 +65,11 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400)),
                               )),
-                          BuildTextField(context, 'Enter New Password',
-                              mobileNumber, '', '', saveInput, true),
-                          BuildTextField(context, 'Confirm New  Password',
-                              mobileNumber, '', '', saveInput, true),
+                          BuildTextField('Enter New Password', mobileNumber),
+                          BuildTextField(
+                            'Confirm New  Password',
+                            mobileNumber,
+                          ),
                           SizedBox(
                             height: 10,
                           ),

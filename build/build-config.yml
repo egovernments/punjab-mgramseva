@@ -48,3 +48,8 @@ config:
       - work-dir: "echallan-calculator"
         image-name: "echallan-calculator"
         dockerfile: "build/maven/Dockerfile"
+  - name: "builds/mGramSeva/frontend/egov-web-ui"
+    build:
+      - work-dir: "frontend/mgramseva"
+        image-name: "egov-web-ui"
+        dockerfile: "frontend/mgramseva/Dockerfile"

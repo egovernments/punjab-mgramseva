@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 final String assetName = 'assets/svg/HHRegister.svg';
 
@@ -43,7 +44,7 @@ class _HomeCard extends State<HomeCard> {
       "link": "bill/generate"
     },
     {
-      "label": "Create Consumer",
+      "label": "CORE_CONSUMER_CREATE",
       "icon": "assets/svg/createconsumer.svg",
       "link": "consumer/create"
     },
@@ -63,7 +64,8 @@ class _HomeCard extends State<HomeCard> {
     for (var i = 0; i < items.length; i++) {
       childs.add(new GridTile(
         child: new GestureDetector(
-            onTap: () => Navigator.pushNamed(context, items[i]["link"]),
+            onTap: () => Navigator.pushNamed(context, items[i]["link"],
+                arguments: 'expenses'),
             child: new Card(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 child: Column(
@@ -76,7 +78,8 @@ class _HomeCard extends State<HomeCard> {
                       margin: EdgeInsets.all(10),
                       child: Center(
                           child: new Text(
-                        items[i]["label"],
+                        ApplicationLocalizations.of(context)
+                            .translate(items[i]["label"]),
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w400),
                         textAlign: TextAlign.center,
