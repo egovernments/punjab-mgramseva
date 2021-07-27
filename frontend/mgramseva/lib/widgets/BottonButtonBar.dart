@@ -6,26 +6,31 @@ class BottomButtonBar extends StatelessWidget {
   BottomButtonBar(this.label, this.callBack);
   @override
   Widget build(BuildContext context) {
-    return Card(
-        elevation: 18.0,
-        child: Padding(
-            padding: EdgeInsets.all(10),
-            child: LayoutBuilder(builder: (context, constraints) {
-              if (constraints.maxWidth > 760) {
-                return Container(
-                    margin: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width - 300,
-                        right: 20),
-                    child:  ElevatedButton(
-                      child:  Text(label),
-                      onPressed: callBack,
-                    ));
-              } else {
-                return ElevatedButton(
-                  child:  Text(this.label,),
-                  onPressed:  callBack,
-                );
-              }
-            })));
+    return Padding(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: LayoutBuilder(builder: (context, constraints) {
+          if (constraints.maxWidth > 760) {
+            return Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                  margin: EdgeInsets.only(
+                      right: 20),
+                  width: 300,
+                  child:  ElevatedButton(
+                    child:  Text(label),
+                    onPressed: callBack,
+                  )),
+            );
+          } else {
+            return Container(
+              width: constraints.maxWidth,
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              child: ElevatedButton(
+                child:  Text(this.label,),
+                onPressed:  callBack,
+              ),
+            );
+          }
+        }));
   }
 }

@@ -91,11 +91,8 @@ class _GenerateBillState extends State<GenerateBill> {
                         '', saveInput, metnum, true),
                     MeterReading("Previous Meter Reading"),
                     MeterReading("New Meter Reading"),
-                    SizedBox(
-                      height: 20,
-                    )
+                   BottomButtonBar('Generate Bill', () => {})
                   ]))
-            ]))),
-        bottomNavigationBar: BottomButtonBar('Generate Bill', () => {}));
+            ]))));
   }
 }

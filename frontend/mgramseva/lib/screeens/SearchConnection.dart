@@ -116,13 +116,9 @@ class _SearchConnectionState extends State<SearchConnection> {
                           });
                         },
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
+                     BottomButtonBar('Search', () => _onSubmit(context))
                     ]))
               ]),
-        )),
-        bottomNavigationBar:
-            BottomButtonBar('Search', () => _onSubmit(context)));
+        )));
   }
 }

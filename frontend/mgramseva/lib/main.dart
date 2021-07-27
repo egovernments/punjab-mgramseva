@@ -87,7 +87,7 @@ class _MyAppState extends State<MyApp> {
                     return supportedLocales.first;
                   },
                   navigatorKey: navigatorKey,
-                  initialRoute: Routes.LANDING_PAGE,
+                  initialRoute: Routes.HOME,
                   onGenerateRoute: router.generateRoute,
                   theme: theme,
                   // home: SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
