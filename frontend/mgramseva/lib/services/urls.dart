@@ -11,4 +11,6 @@ class UserUrl {
   static const String OTP_RESET_PASSWORD = 'user-otp/v1/_send';
   static const String AUTHENTICATE = 'user/oauth/token';
   static const String USER_PROFILE = 'user/_search';
+  static const String EDIT_PROFILE = 'user/profile/_update';
+  static const String CHANGE_PASSWORD = 'user/password/update';
 }

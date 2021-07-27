@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:mgramseva/providers/authentication.dart';
+import 'package:mgramseva/providers/changePassword_details_provider.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details.dart';
 import 'package:mgramseva/providers/language.dart';
@@ -12,9 +13,9 @@ import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/screeens/Home.dart';
 
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
-import 'package:mgramseva/screeens/home.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -76,6 +77,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => UserProfileProvider()),
           ChangeNotifierProvider(create: (_) => CommonProvider()),
           ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
+          ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(
