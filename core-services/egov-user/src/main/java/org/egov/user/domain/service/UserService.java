@@ -466,12 +466,21 @@ public class UserService {
 
     /**
      * Deactivate failed login attempts for provided user
-     *
+     * If the failed attment count is zero insert one failed attempt with active false, to indicate that user logged in atleast once.
      * @param user whose failed login attempts are to be reset
      */
     public void resetFailedLoginAttempts(User user) {
-        if (user.getUuid() != null)
-            userRepository.resetFailedLoginAttemptsForUser(user.getUuid());
+        if (user.getUuid() != null) {
+        	
+        	int count = userRepository.getLoginAttemptCount(user.getUuid());
+        	if(count > 0) {
+        		userRepository.insertFailedLoginAttempt(new FailedLoginAttempt(user.getUuid(), "FIRST LOGIN",
+                        System.currentTimeMillis(), false));
+        	}
+
+       	 	userRepository.resetFailedLoginAttemptsForUser(user.getUuid());
+        }
+           
     }
 
     /**

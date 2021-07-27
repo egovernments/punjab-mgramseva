@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static org.egov.user.repository.builder.UserTypeQueryBuilder.SELECT_FAILED_ATTEMPTS_BY_USER_SQL;
 import static org.egov.user.repository.builder.UserTypeQueryBuilder.SELECT_NEXT_SEQUENCE_USER;
+import static org.egov.user.repository.builder.UserTypeQueryBuilder.SELECT_ATTEMPTS_BY_USER;
 import static org.springframework.util.StringUtils.isEmpty;
 
 @Repository
@@ -90,10 +91,21 @@ public class UserRepository {
 
         users = jdbcTemplate.query(queryStr, preparedStatementValues.toArray(), userResultSetExtractor);
         enrichRoles(users);
-
+        enrichFirstLogin(users);
         return users;
     }
 
+    public void enrichFirstLogin(List<User> users) {
+
+        if (users.isEmpty())
+            return;
+
+
+        for (User user : users) {
+            int count = getLoginAttemptCount(user.getUuid());
+            user.setFirtimeLogin( count ==0);
+        }
+    }
 
     /**
      * get list of all userids with role in given tenant
@@ -313,6 +325,15 @@ public class UserRepository {
 
         return namedParameterJdbcTemplate.query(SELECT_FAILED_ATTEMPTS_BY_USER_SQL, params,
                 new BeanPropertyRowMapper<>(FailedLoginAttempt.class));
+
+    }
+
+    public int getLoginAttemptCount(String uuid) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("user_uuid", uuid);
+
+        return namedParameterJdbcTemplate.queryForObject(SELECT_ATTEMPTS_BY_USER, params,
+                Integer.class);
 
     }
 
