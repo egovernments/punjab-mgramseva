@@ -126,7 +126,8 @@ public class UserService {
     public User getUniqueUser(String userName, String tenantId, UserType userType) {
 
         UserSearchCriteria userSearchCriteria = UserSearchCriteria.builder()
-                .userName(userName)
+                .mobileNumber(userName)
+                // .userName(userName)
                 .tenantId(getStateLevelTenantForCitizen(tenantId, userType))
                 .type(userType)
                 .build();
@@ -473,7 +474,7 @@ public class UserService {
         if (user.getUuid() != null) {
         	
         	int count = userRepository.getLoginAttemptCount(user.getUuid());
-        	if(count > 0) {
+        	if(count <=0) {
         		userRepository.insertFailedLoginAttempt(new FailedLoginAttempt(user.getUuid(), "FIRST LOGIN",
                         System.currentTimeMillis(), false));
         	}
