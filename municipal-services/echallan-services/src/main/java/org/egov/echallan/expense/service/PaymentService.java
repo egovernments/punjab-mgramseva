@@ -62,7 +62,7 @@ public class PaymentService {
 
 			// Call Collection
 
-			StringBuilder uri = new StringBuilder("http://localhost:8092/collection-services/payments/_create");
+			StringBuilder uri = new StringBuilder(config.getPaymentContextPath()).append(config.getPaymentCreateEndpoint());
 			Object result = serviceRequestRepository.fetchResult(uri,
 					PaymentRequest.builder().payment(payment).requestInfo(request.getRequestInfo()).build());
 
