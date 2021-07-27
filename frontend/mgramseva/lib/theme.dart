@@ -18,6 +18,8 @@ ThemeData get theme => ThemeData(
 
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0)),
       padding: EdgeInsets.symmetric(vertical: 15),
       textStyle: TextStyle(
           fontSize: 19, fontWeight: FontWeight.w500)

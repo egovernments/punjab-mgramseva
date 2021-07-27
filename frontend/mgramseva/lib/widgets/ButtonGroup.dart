@@ -21,15 +21,20 @@ class ButtonGroup extends StatelessWidget {
                   child: Row(
                     children: <Widget>[
                       Expanded(
-                          child: OutlinedButton(
+                          child: OutlinedButton.icon(
                         onPressed: null,
                         style: ButtonStyle(
+                          padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 0)),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(0.0))),
                         ),
-                        child: const Text(
-                          "Share Bill",
+                        icon:  (Image.asset('assets/png/whats_app.png')),
+                        label: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          child: const Text(
+                            "Share Bill",
+                          ),
                         ),
                       )),
                       Expanded(
