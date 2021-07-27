@@ -5,7 +5,7 @@ part 'user_details.g.dart';
 
 @JsonSerializable()
 class UserDetails {
-  @JsonKey(name: "accessToken")
+  @JsonKey(name: "access_token")
   String? accessToken;
   @JsonKey(name: "tokenType")
   String? tokenType;

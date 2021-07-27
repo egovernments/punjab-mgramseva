@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/screeens/Changepassword.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
@@ -50,12 +51,12 @@ class _EditProfileState extends State<EditProfile> {
               child: Column(
             children: [
               BuildTextField(
-                'Name',
+                i18.common.NAME,
                 profileDetails.nameCtrl,
                 isRequired: true,
               ),
               BuildTextField(
-                'Phone Number',
+                i18.common.PHONE_NUMBER,
                 profileDetails.phoneNumberCtrl,
                 isRequired: true,
               ),
@@ -64,7 +65,7 @@ class _EditProfileState extends State<EditProfile> {
                     Constants.GENDER, (val) => userProvider.onChangeOfGender(val, profileDetails),
                 )),
               BuildTextField(
-                'Email ID',
+                i18.common.EMAIL,
                 profileDetails.emailIdCtrl,
                 isRequired: true,
               ),
@@ -79,7 +80,7 @@ class _EditProfileState extends State<EditProfile> {
                     child: new Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Change Password',
+                          i18.password.CHANGE_PASSWORD,
                           style:
                               TextStyle(color: Theme.of(context).primaryColor),
                         ))),
@@ -90,7 +91,7 @@ class _EditProfileState extends State<EditProfile> {
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.all(15),
                     ),
-                    child: new Text('Save',
+                    child: new Text(i18.common.SAVE,
                         style: TextStyle(
                             fontSize: 19, fontWeight: FontWeight.w500)),
                     onPressed: () => {},

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/services/user.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
 import 'package:mgramseva/widgets/MobileView.dart';
@@ -72,7 +73,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             Padding(
                 padding: EdgeInsets.all(15),
                 child: Button(
-                    "CORE_COMMON_CONTINUE", () => saveInputandcall(context))),
+                    i18.common.CONTINUE, () => saveInputandcall(context))),
           ],
         ))));
   }
