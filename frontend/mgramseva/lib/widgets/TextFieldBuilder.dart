@@ -45,10 +45,6 @@ class _BuildTextField extends State<BuildTextField> {
         },
         decoration: InputDecoration(
           prefixText: widget.prefixText,
-          prefixStyle: TextStyle(color: Colors.black),
-          contentPadding:
-              new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(1.0)),
         ),
         onChanged: widget.onChange);
 // Label Text

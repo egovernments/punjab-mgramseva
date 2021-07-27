@@ -16,6 +16,13 @@ ThemeData get theme => ThemeData(
   /// Background color
   // scaffoldBackgroundColor: Color.fromRGBO(238, 238, 238, 1),
 
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      textStyle: TextStyle(color: Colors.black, fontSize: 16),
+      // padding: EdgeInsets.symmetric(vertical: 10),
+    )
+  ),
+
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
@@ -38,6 +45,22 @@ ThemeData get theme => ThemeData(
     )
 ),
 
+
+  inputDecorationTheme: InputDecorationTheme(
+    contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.zero)),
+    prefixStyle: TextStyle(color: Colors.black),
+    errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.zero),
+        borderSide: BorderSide( color: Colors.red)),
+    focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.zero),
+        borderSide: BorderSide(color: Colors.red)),
+    errorStyle: TextStyle(fontSize: 15, fontStyle: FontStyle.italic),
+    disabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.zero),
+        borderSide: BorderSide(color: Colors.grey)),
+  )
 
 );
 
