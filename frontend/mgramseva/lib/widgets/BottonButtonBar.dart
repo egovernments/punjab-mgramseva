@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/color_codes.dart';
+import 'package:mgramseva/utils/common_styles.dart';
 
 class BottomButtonBar extends StatelessWidget {
   final String label;
@@ -14,7 +15,7 @@ class BottomButtonBar extends StatelessWidget {
             return Align(
               alignment: Alignment.centerRight,
               child: Container(
-                  decoration: decoration,
+                  decoration: CommonStyles.buttonBottomDecoration,
                   margin: EdgeInsets.only(
                       right: 20),
                   width: 300,
@@ -22,7 +23,7 @@ class BottomButtonBar extends StatelessWidget {
             );
           } else {
             return Container(
-              decoration: decoration,
+              decoration: CommonStyles.buttonBottomDecoration,
               width: constraints.maxWidth,
               margin: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               child: _buildButton()
@@ -38,7 +39,4 @@ class BottomButtonBar extends StatelessWidget {
     );
   }
 
-  BoxDecoration get decoration => BoxDecoration(
-      border: Border(bottom: BorderSide(color: ColorCodes.BUTTON_BOTTOM_COLOR, width: 2))
-  );
 }

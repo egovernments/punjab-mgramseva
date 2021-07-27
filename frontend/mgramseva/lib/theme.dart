@@ -1,6 +1,7 @@
 
 
    import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/color_codes.dart';
 
 ThemeData get theme => ThemeData(
    primarySwatch: createMaterialColor(Color(0XFFf47738)),
@@ -60,6 +61,11 @@ ThemeData get theme => ThemeData(
     disabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.zero),
         borderSide: BorderSide(color: Colors.grey)),
+  ),
+
+  iconTheme: IconThemeData(
+    color: ColorCodes.HOME_ICON,
+    // size: 25
   )
 
 );
