@@ -95,7 +95,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
             RadioButtonFieldBuilder(context, 'Amount Paid', _amountType, '', '',
                 true, Constants.AMOUNTTYPE, saveInput),
             FilePickerDemo(),
-            BottomButtonBar('Submit', () => {})
+                    SizedBox(
+                      height: 20,
+                    ),
           ]))
         ]));
   }
@@ -131,6 +133,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                         return Container();
                     }
                   }
-                })));
+                })),
+        bottomNavigationBar: BottomButtonBar('Submit', () => {}),
+    );
   }
 }

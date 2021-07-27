@@ -118,11 +118,14 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           name,
                           isRequired: true,
                         ),
-                      BottomButtonBar('Submit', () => {})
+                            SizedBox(
+                              height: 20,
+                            ),
                       ])),
                 ])),
           ],
         )),
+      bottomNavigationBar: BottomButtonBar('Submit', () => {})
        );
   }
 }
