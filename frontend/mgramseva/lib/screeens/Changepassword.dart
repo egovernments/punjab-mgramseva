@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/changePasswordDetails/changePassword_details.dart';
 import 'package:mgramseva/providers/changePassword_details_provider.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/Button.dart';
@@ -23,6 +24,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   @override
   void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
@@ -32,15 +34,22 @@ class _ChangePasswordState extends State<ChangePassword> {
     });
   }
 
-  saveInputandchangepass(context) async {
+  afterViewBuild() {
+    var passwordProvider = Provider.of<ChangePasswordProvider>(context, listen: false);
+    passwordProvider.getChangePassword();
+  }
+
+  saveInputandchangepass(context, passwordDetails, ChangePasswordDetails password) async {
+    print(password.existingPassword);
     var changePasswordProvider = Provider.of<ChangePasswordProvider>(context, listen: false);
-    changePasswordProvider.changePassword(
-        {
-          "existingPassword":"PGLME16",
-          "newPassword":"eGov@1234",
-          "tenantId":"pb",
-          "type":"EMPLOYEE"
-        });
+    var data = {
+      "existingPassword": password.existingPassword,
+      "newPassword": password.newPassword,
+      "tenantId":"pb",
+      "type":"EMPLOYEE"
+    };
+
+    changePasswordProvider.changePassword(data);
   }
 
 
@@ -55,18 +64,18 @@ class _ChangePasswordState extends State<ChangePassword> {
               child: Column(
                 children: [
                   BuildTextField(
-                    'Current  Password',
+                    i18.password.CURRENT_PASSWORD,
                     passwordDetails.currentpasswordCtrl,
                     isRequired: true,
                     //onChange: saveInput(context),
                   ),
                   BuildTextField(
-                    ' Set a New Password',
+                    i18.password.NEW_PASSWORD,
                     passwordDetails.newpasswordCtrl,
                     isRequired: true,
                   ),
                   BuildTextField(
-                    'Confirm New Password',
+                    i18.password.CONFIRM_PASSWORD,
                     passwordDetails.confirmpasswordCtrl,
                     isRequired: true,
                   ),
@@ -76,7 +85,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   SizedBox(
                     height: 20,
                   ),
-                  Button('Change Password', () => saveInputandchangepass(context)),
+                  Button(i18.password.CHANGE_PASSWORD, () => saveInputandchangepass(context, passwordDetails.getText(), passwordDetails)),
                   PasswordHint(password)
                 ],
               ))
@@ -94,6 +103,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         child: StreamBuilder(
             stream: changePasswordProvider.streamController.stream,
             builder: (context, AsyncSnapshot snapshot) {
+
               if (snapshot.hasData) {
                 return builduserView(snapshot.data);
               } else if (snapshot.hasError) {

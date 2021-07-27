@@ -25,6 +25,12 @@ class ChangePasswordDetails {
 
   ChangePasswordDetails();
 
+  getText(){
+    print(currentpasswordCtrl.text);
+    existingPassword = currentpasswordCtrl.text;
+    newPassword = newpasswordCtrl.text;
+  }
+
   factory ChangePasswordDetails.fromJson(Map<String, dynamic> json) =>
       _$ChangePasswordDetailsFromJson(json);
 

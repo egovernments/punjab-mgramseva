@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 
 class ChangePasswordRepository extends BaseService {
   Future<ChangePasswordDetails> updatePassword(Map body) async {
+    print("body-->");
+    print(body);
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);

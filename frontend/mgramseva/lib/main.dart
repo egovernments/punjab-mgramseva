@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:mgramseva/providers/authentication.dart';
+import 'package:mgramseva/providers/changePassword_details_provider.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details.dart';
 import 'package:mgramseva/providers/language.dart';
@@ -76,6 +77,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => UserProfileProvider()),
           ChangeNotifierProvider(create: (_) => CommonProvider()),
           ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
+          ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(
