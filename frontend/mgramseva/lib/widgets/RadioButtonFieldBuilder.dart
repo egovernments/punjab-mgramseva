@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/models.dart';
 
 class RadioButtonFieldBuilder extends StatelessWidget {
   final BuildContext context;
   final String labelText;
-  final String controller;
+  final String? controller;
   final bool isRequired;
 
   final String input;
   final String prefixText;
-  final List options;
-  final widget1;
+  final List<KeyValue> options;
+  final ValueChanged widget1;
 
   RadioButtonFieldBuilder(this.context, this.labelText, this.controller,
       this.input, this.prefixText, this.isRequired, this.options, this.widget1);
@@ -49,8 +50,8 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                   children: options.map(
                 (data) {
                   return new RadioListTile(
-                    title: new Text(data["label"]),
-                    value: data["key"],
+                    title: new Text(data.label),
+                    value: data.key,
                     groupValue: controller,
                     onChanged: widget1,
                   );
@@ -73,8 +74,8 @@ class RadioButtonFieldBuilder extends StatelessWidget {
               children: options.map(
             (data) {
               return new RadioListTile(
-                title: new Text(data["label"]),
-                value: data["key"],
+                title: new Text(data.label),
+                value: data.key,
                 groupValue: controller,
                 onChanged: widget1,
               );

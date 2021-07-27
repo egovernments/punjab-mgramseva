@@ -78,10 +78,18 @@ class _ResetPasswordState extends State<ResetPassword> {
                   'Resend OTP',
                   style: TextStyle(color: Theme.of(context).primaryColor),
                 )),
-            BuildTextField(context, 'Enter New Password', newpassword, '', '',
-                saveInputpassword, true),
-            BuildTextField(context, 'Confirm New  Password', confirmpassword,
-                '', '', saveInputpassword, true),
+            BuildTextField(
+              'Enter New Password',
+              newpassword,
+              isRequired: true,
+              onChange: (value) => saveInputpassword(value),
+            ),
+            BuildTextField(
+              'Confirm New  Password',
+              confirmpassword,
+              isRequired: true,
+              onChange: (value) => saveInputpassword(value),
+            ),
             SizedBox(
               height: 10,
             ),

@@ -1,23 +1,25 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/app_config.dart';
-import 'package:mgramseva/screeens/ConnectionResults.dart';
-import 'package:mgramseva/screeens/Dashboard.dart';
+
+import 'package:mgramseva/providers/authentication.dart';
+import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/consumer_details.dart';
+import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/Env/app_config.dart';
+
+import 'package:mgramseva/providers/user_profile_provider.dart';
+import 'package:mgramseva/router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
-import 'package:mgramseva/screeens/Login/Login.dart';
-import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
-import 'package:mgramseva/screeens/SearchConnection.dart';
+import 'package:mgramseva/routers/Routers.dart';
+
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
-import 'package:mgramseva/screeens/Consumer.dart';
-import 'package:mgramseva/screeens/EditProfile.dart';
-import 'package:mgramseva/screeens/ExpenseDetails.dart';
-import 'package:mgramseva/screeens/HouseholdDetail.dart';
-import 'package:mgramseva/screeens/Updatepassword.dart';
-import 'package:mgramseva/screeens/changepassword.dart';
 import 'package:mgramseva/screeens/home.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/notifyers.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   setEnvironment(Environment.dev);
@@ -45,9 +47,14 @@ MaterialColor createMaterialColor(Color color) {
   return MaterialColor(color.value, swatch);
 }
 
+_MyAppState myAppstate = '' as _MyAppState;
+
 class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _MyAppState createState() {
+    myAppstate = _MyAppState();
+    return myAppstate;
+  }
 }
 
 class _MyAppState extends State<MyApp> {
@@ -62,65 +69,107 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      supportedLocales: [
-        Locale('en', 'IN'),
-        Locale('hi', 'IN'),
-        Locale.fromSubtags(languageCode: 'pn')
-      ],
-      locale: _locale,
-      localizationsDelegates: [
-        ApplicationLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      localeResolutionCallback: (locale, supportedLocales) {
-        for (var supportedLocaleLanguage in supportedLocales) {
-          if (supportedLocaleLanguage.languageCode == locale?.languageCode &&
-              supportedLocaleLanguage.countryCode == locale?.countryCode) {
-            return supportedLocaleLanguage;
-          }
-        }
-        return supportedLocales.first;
-      },
-      initialRoute: '/',
-      routes: {
-        '/': (context) => SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
-        'login': (context) => Login(),
-        'home': (context) => Home(0),
-        'household/search': (context) => SearchConnection(),
-        'editProfile': (context) => EditProfile(),
-        'changepassword': (context) => ChangePassword(),
-        'updatepassword': (context) => UpdatePassword(),
-        'consumer/create': (context) => Consumer(),
-        'resetpassword': (context) => ResetPassword(),
-        'consumer/search': (context) => SearchConnection(),
-        'expenses/add': (context) => ExpenseDetails(),
-        'household/details': (context) => HouseholdDetail(),
-        'dashboard': (context) => Dashboard(),
-        'search/consumer': (context) => SearchConsumerResult(),
-        'bill/generate': (context) => GenerateBill()
-      },
-      theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
-          textTheme: Theme.of(context).textTheme.apply(
-                fontFamily: 'Roboto',
-              ),
-          primarySwatch: createMaterialColor(Color(0XFFf47738)),
-          highlightColor: createMaterialColor(Color(0XFFC7E0F1)),
-          hintColor: createMaterialColor(Color(0XFF3498DB))),
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => LanguageProvider()),
+          ChangeNotifierProvider(create: (_) => ConsumerProvider()),
+          ChangeNotifierProvider(create: (_) => UserProfileProvider()),
+          ChangeNotifierProvider(create: (_) => CommonProvider()),
+          ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
+        ],
+        child: Consumer<LanguageProvider>(
+            builder: (_, userProvider, child) => MaterialApp(
+                  title: 'mGramSeva',
+                  supportedLocales: [
+                    Locale('en', 'IN'),
+                    Locale('hi', 'IN'),
+                    Locale.fromSubtags(languageCode: 'pn')
+                  ],
+                  locale: _locale,
+                  localizationsDelegates: [
+                    ApplicationLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  localeResolutionCallback: (locale, supportedLocales) {
+                    for (var supportedLocaleLanguage in supportedLocales) {
+                      if (supportedLocaleLanguage.languageCode ==
+                              locale?.languageCode &&
+                          supportedLocaleLanguage.countryCode ==
+                              locale?.countryCode) {
+                        return supportedLocaleLanguage;
+                      }
+                    }
+                    return supportedLocales.first;
+                  },
+                  navigatorKey: navigatorKey,
+                  initialRoute: Routes.LANDING_PAGE,
+                  onGenerateRoute: router.generateRoute,
+                  theme: ThemeData(
+                      // This is the theme of your application.
+                      //
+                      // Try running your application with "flutter run". You'll see the
+                      // application has a blue toolbar. Then, without quitting the app, try
+                      // changing the primarySwatch below to Colors.green and then invoke
+                      // "hot reload" (press "r" in the console where you ran "flutter run",
+                      // or simply save your changes to "hot reload" in a Flutter IDE).
+                      // Notice that the counter didn't reset back to zero; the application
+                      // is not restarted.
+                      textTheme: Theme.of(context).textTheme.apply(
+                            fontFamily: 'Roboto',
+                          ),
+                      primarySwatch: createMaterialColor(Color(0XFFf47738)),
+                      highlightColor: createMaterialColor(Color(0XFFC7E0F1)),
+                      hintColor: createMaterialColor(Color(0XFF3498DB))),
 
-      // home: SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
-    );
+                  // home: SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
+                )));
+  }
+}
+
+class LandingPage extends StatefulWidget {
+  const LandingPage({Key? key}) : super(key: key);
+
+  @override
+  _LandingPageState createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
+  @override
+  void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+
+    super.initState();
+  }
+
+  afterViewBuild() {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+    commonProvider.getLoginCredentails();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+
+    return StreamBuilder(
+        stream: commonProvider.userLoggedStreamCtrl.stream,
+        builder: (context, AsyncSnapshot snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+
+              /// While waiting for the data to load, show a loading spinner.
+              return Loaders.circularLoader();
+            default:
+              if (snapshot.hasError) {
+                return Notifiers.networkErrorPage(context, () {});
+              } else {
+                if (snapshot.data != null) {
+                  return Home(0);
+                }
+                return SelectLanguage();
+              }
+          }
+        });
   }
 }

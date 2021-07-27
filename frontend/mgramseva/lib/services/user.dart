@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:mgramseva/app_config.dart';
+import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/urls.dart';
@@ -29,10 +29,12 @@ Future<http.Response> login(url, details, context) async {
 // Write value
 
     if (kIsWeb) {
-      window.localStorage['token'] = json.decode(response.body)['access_token'];
+      window.localStorage['User'] =
+          json.decode(response.body)['UserRequest'].toString();
     } else {
       storage.write(
-          key: 'token', value: json.decode(response.body)['access_token']);
+          key: 'User',
+          value: json.decode(response.body)['UserRequest'].toString());
     }
     Navigator.of(context)
         .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
@@ -53,7 +55,7 @@ Future otpforresetpassword(details, context) async {
   final requestInfo = RequestInfo('Rainmaker', .01, "", "_search", 1, "", "",
       "2cc113a0-e3c8-4665-9a41-21746e27f2fb");
   var response = await http.post(
-      Uri.parse(apiBaseUrl.toString() + Urls['OTP_RESET_PASSWORD'].toString()),
+      Uri.parse(apiBaseUrl.toString() + UserUrl.OTP_RESET_PASSWORD),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
         "Access-Control-Allow-Origin": "*",
@@ -68,12 +70,13 @@ Future otpforresetpassword(details, context) async {
 Future resetNewPassword(details) async {
   final requestInfo =
       RequestInfo('Rainmaker', .01, "", "_search", 1, "", "", "");
-  var response = await http.post(
-      Uri.parse(apiBaseUrl.toString() + Urls['RESET_NEW_PASSWORD'].toString()),
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json',
-      },
-      body: json.encode({"RequestInfo": requestInfo.toJson(), ...details}));
+
+  var response =
+      await http.post(Uri.parse(apiBaseUrl.toString() + UserUrl.RESET_PASSWORD),
+          headers: {
+            HttpHeaders.contentTypeHeader: 'application/json',
+          },
+          body: json.encode({"RequestInfo": requestInfo.toJson(), ...details}));
 
   print('Response status: ${response.statusCode}');
 }

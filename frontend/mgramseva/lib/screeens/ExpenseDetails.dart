@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
+import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/Home.dart';
+import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/DatePickerFieldBuilder.dart';
@@ -14,6 +19,7 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
+import 'package:provider/provider.dart';
 
 class ExpenseDetails extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -22,16 +28,6 @@ class ExpenseDetails extends StatefulWidget {
 }
 
 class _ExpenseDetailsState extends State<ExpenseDetails> {
-  List<Map<String, dynamic>> options = [
-    {"key": "YES", "label": "Yes"},
-    {"key": "NO", "label": "No"},
-  ];
-  List<Map<String, dynamic>> amountType = [
-    {"key": "FULL", "label": "Full"},
-    {"key": "PARTIAL", "label": "Partial"},
-  ];
-
-  var name = new TextEditingController();
   String _gender = 'YES';
   String _amountType = "FULL";
 
@@ -50,7 +46,68 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   }
 
   @override
+  void initState() {
+    // var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    super.initState();
+  }
+
+  afterViewBuild() {
+    var userProvider =
+        Provider.of<ExpensesDetailsProvider>(context, listen: false);
+    userProvider.getExpensesDetails();
+  }
+
+  Widget _builduserView(ExpensesDetailsModel expenseDetails) {
+    return FormWrapper(Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          HomeBack(),
+          Card(
+              child:
+                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+            LabelText("Expense Details"),
+            SubLabelText("Provide below Information to create Expense record"),
+            BuildTextField(
+              'Vendor Name',
+              expenseDetails.vendorNameCtrl,
+              isRequired: true,
+            ),
+            SelectFieldBuilder(
+                context,
+                'Type of Expense',
+                expenseDetails.expenseTypeCtrl,
+                '',
+                '',
+                saveInput,
+                Constants.EXPENSESTYPE,
+                true),
+            BuildTextField(
+              'Amount (₹)',
+              expenseDetails.amountCtrl,
+              isRequired: true,
+            ),
+            BasicDateField('Bill Issued Date', true),
+            RadioButtonFieldBuilder(context, 'Bill Paid', _gender, '', '', true,
+                Constants.AMOUNTTYPE, saveInput),
+            RadioButtonFieldBuilder(context, 'Amount Paid', _amountType, '', '',
+                true, Constants.AMOUNTTYPE, saveInput),
+            FilePickerDemo(),
+            SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              height: 20,
+            )
+          ]))
+        ]));
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var expensesDetailsProvider =
+        Provider.of<ExpensesDetailsProvider>(context, listen: false);
     return Scaffold(
         appBar: BaseAppBar(
           Text('mGramSeva'),
@@ -61,38 +118,24 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
           Drawer(child: SideBar((value) => _onSelectItem(value, context))),
         ),
         body: SingleChildScrollView(
-            child: FormWrapper(Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-              HomeBack(),
-              Card(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                    LabelText("Expense Details"),
-                    SubLabelText(
-                        "Provide below Information to create Expense record"),
-                    BuildTextField(
-                        context, 'Vendor Name', name, '', '', saveInput, true),
-                    SelectFieldBuilder(context, 'Type of Expense', name, '', '',
-                        saveInput, options, true),
-                    BuildTextField(
-                        context, 'Amount (₹)', name, '', '', saveInput, true),
-                    BasicDateField('Bill Issued Date', true),
-                    RadioButtonFieldBuilder(context, 'Bill Paid', _gender, '',
-                        '', true, options, saveInput),
-                    RadioButtonFieldBuilder(context, 'Amount Paid', _amountType,
-                        '', '', true, amountType, saveInput),
-                    FilePickerDemo(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    )
-                  ]))
-            ]))),
+            child: StreamBuilder(
+                stream: expensesDetailsProvider.streamController.stream,
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    return _builduserView(snapshot.data);
+                  } else if (snapshot.hasError) {
+                    return Notifiers.networkErrorPage(context, () {});
+                  } else {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return Loaders.CircularLoader();
+                      case ConnectionState.active:
+                        return Loaders.CircularLoader();
+                      default:
+                        return Container();
+                    }
+                  }
+                })),
         bottomNavigationBar: BottomButtonBar('Submit', () => {}));
   }
 }

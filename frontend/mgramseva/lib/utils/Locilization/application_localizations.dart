@@ -2,41 +2,58 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mgramseva/services/Locilization.dart';
-import 'package:universal_html/html.dart';
+import 'package:mgramseva/model/localization/localization_label.dart';
+import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/utils/global_variables.dart';
+import 'package:provider/provider.dart';
 
 class ApplicationLocalizations {
   ApplicationLocalizations(this.locale);
 
-  final Locale locale;
+  final Locale? locale;
 
   static ApplicationLocalizations of(BuildContext context) {
     return Localizations.of<ApplicationLocalizations>(
         context, ApplicationLocalizations)!;
   }
 
-  late List _localizedStrings;
+  List<LocalizationLabel> _localizedStrings = <LocalizationLabel>[];
 
   Future<bool> load() async {
-    getLocilisation(locale.toString());
-    if (kIsWeb) {
-      String? res = window.localStorage['localisation_' + locale.toString()];
-      if (res != null) {
-        _localizedStrings = jsonDecode(res);
-      } else {
-        _localizedStrings = [];
-      }
-    }
-
+    if (navigatorKey.currentContext == null) return false;
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    _localizedStrings = await commonProvider.getLocalizationLabels();
     return true;
+    // if (kIsWeb) {
+    //   String? res = window.localStorage['localisation_' + locale.toString()];
+    //   if (res != null) {
+    //     _localizedStrings = jsonDecode(res);
+    //   } else {
+    //     _localizedStrings = [];
+    //   }
+    // }else{
+    //   String? res = await storage.read(key: 'localisation_' + locale.toString());
+    //   if(res != null){
+    //     _localizedStrings = jsonDecode(res);
+    //   } else {
+    //     _localizedStrings = [];
+    //   }
+    // }
   }
 
   // called from every widget which needs a localized text
   translate(String _localizedValues) {
-    var res = _localizedStrings.firstWhere(
-        (medium) => medium['code'] == _localizedValues,
-        orElse: () => null)?['message'];
-    return res == null ? _localizedValues : res;
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+
+    var index = commonProvider.localizedStrings
+        .indexWhere((medium) => medium.code == _localizedValues);
+    return index != -1
+        ? commonProvider.localizedStrings[index].message
+        : _localizedValues;
   }
 
   static const LocalizationsDelegate<ApplicationLocalizations> delegate =

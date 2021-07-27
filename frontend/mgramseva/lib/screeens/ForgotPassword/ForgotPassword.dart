@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/services/user.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
+import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/MobileView.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
@@ -43,11 +44,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         child: Card(
             child: (Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("mGramSeva",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
-            ),
+            Logo(),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text("Forgot Password ? ",
@@ -62,8 +59,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
                 )),
-            BuildTextField(context, 'Phone Number', mobileNumber, '', '+91-',
-                saveInput, true),
+            BuildTextField(
+              'Phone Number',
+              mobileNumber,
+              isRequired: true,
+            ),
             SizedBox(
               height: 10,
             ),

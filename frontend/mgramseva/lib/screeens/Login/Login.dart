@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/app_config.dart';
-import 'package:mgramseva/services/urls.dart';
-import 'package:mgramseva/services/user.dart';
+import 'package:mgramseva/providers/authentication.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
 import 'package:mgramseva/widgets/HeadingText.dart';
+import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/MobileView.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/screeens/ForgotPassword/ForgotPassword.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -28,20 +29,10 @@ class _LoginState extends State<Login> {
 
   saveandLogin(context) async {
     if (formKey.currentState!.validate()) {
-      await login(
-              (apiBaseUrl.toString() + Urls['Authenticate'].toString()),
-              {
-                "username": userNamecontroller.text.toString(),
-                "password": passwordcontroller.text.toString(),
-                "scope": "read",
-                "grant_type": "password",
-                "tenantId": "pb",
-                "userType": "EMPLOYEE"
-              },
-              context)
-          .then((value) {
-        print(value);
-      });
+      var authProvider =
+          Provider.of<AuthenticationProvider>(context, listen: false);
+      authProvider.validateLogin(context, userNamecontroller.text.trim(),
+          passwordcontroller.text.trim());
     }
   }
 
@@ -51,26 +42,23 @@ class _LoginState extends State<Login> {
             key: formKey,
             child: (Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("mGramSeva",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
-                ),
+                Logo(),
                 HeadingText(ApplicationLocalizations.of(context)
-                    .translate("CORE_COMMON_LOGIN")),
+                    .translate(i18.login.LOGIN_LABEL)),
                 // BuildTextField(
                 //     context, 'Phone Number', mobileNumber, '', '+91-', saveInput),
-                BuildTextField(context, 'CORE_LOGIN_USERNAME',
-                    userNamecontroller, '', '', saveInput, true),
                 BuildTextField(
-                    context,
-                    'CORE_LOGIN_PASSWORD',
-                    passwordcontroller,
-                    '',
-                    '',
-                    (value) => saveInput(value),
-                    true),
+                  i18.login.LOGIN_NAME,
+                  userNamecontroller,
+                  isRequired: true,
+                  onChange: (dynamic) => saveInput(dynamic),
+                ),
+                BuildTextField(
+                  i18.login.LOGIN_PASSWORD,
+                  passwordcontroller,
+                  isRequired: true,
+                  onChange: (dynamic) => saveInput(dynamic),
+                ),
                 GestureDetector(
                   onTap: () => Navigator.push<bool>(
                       context,
@@ -83,7 +71,7 @@ class _LoginState extends State<Login> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             ApplicationLocalizations.of(context)
-                                .translate('CORE_COMMON_FORGOT_PASSWORD'),
+                                .translate(i18.login.FORGOT_PASSWORD),
                             style: TextStyle(
                                 color: Theme.of(context).primaryColor),
                           ))),
@@ -91,7 +79,7 @@ class _LoginState extends State<Login> {
                 Padding(
                     padding: EdgeInsets.all(15),
                     child: Button(
-                        "CORE_COMMON_CONTINUE", () => saveandLogin(context))),
+                        i18.common.CONTINUE, () => saveandLogin(context))),
                 SizedBox(
                   height: 10,
                 )
