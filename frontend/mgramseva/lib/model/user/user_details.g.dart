@@ -8,24 +8,28 @@ part of 'user_details.dart';
 
 UserDetails _$UserDetailsFromJson(Map<String, dynamic> json) {
   return UserDetails()
-    ..accessToken = json['accessToken'] as String?
+    ..accessToken = json['access_token'] as String?
     ..tokenType = json['tokenType'] as String?
     ..refreshToken = json['refreshToken'] as String?
     ..expiresIn = json['expiresIn'] as int?
     ..scope = json['scope'] as String?
     ..userRequest = json['UserRequest'] == null
         ? null
-        : UserRequest.fromJson(json['UserRequest'] as Map<String, dynamic>);
+        : UserRequest.fromJson(json['UserRequest'] as Map<String, dynamic>)
+    ..selectedLanguage = json['selectedLanguage'] == null
+        ? null
+        : Languages.fromJson(json['selectedLanguage'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$UserDetailsToJson(UserDetails instance) =>
     <String, dynamic>{
-      'accessToken': instance.accessToken,
+      'access_token': instance.accessToken,
       'tokenType': instance.tokenType,
       'refreshToken': instance.refreshToken,
       'expiresIn': instance.expiresIn,
       'scope': instance.scope,
       'UserRequest': instance.userRequest,
+      'selectedLanguage': instance.selectedLanguage,
     };
 
 UserRequest _$UserRequestFromJson(Map<String, dynamic> json) {
