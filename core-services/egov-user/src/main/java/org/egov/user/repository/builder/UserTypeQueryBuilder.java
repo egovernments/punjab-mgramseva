@@ -81,6 +81,9 @@ public class UserTypeQueryBuilder {
     public static final String SELECT_FAILED_ATTEMPTS_BY_USER_SQL = "select user_uuid, ip, attempt_date, active from " +
             "eg_user_login_failed_attempts WHERE user_uuid = :user_uuid AND attempt_date >= :attempt_date AND active " +
             "= 'true' ";
+    
+    public static final String SELECT_ATTEMPTS_BY_USER = "select count(*) from " +
+            "eg_user_login_failed_attempts WHERE user_uuid = :user_uuid ";
 
     public static final String INSERT_FAILED_ATTEMPTS_SQL = " INSERT INTO eg_user_login_failed_attempts (user_uuid, " +
             "ip, attempt_date, active) VALUES ( :user_uuid, :ip , :attempt_date, :active ) ";
