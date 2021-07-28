@@ -14,7 +14,7 @@ class ChangePasswordRepository extends BaseService {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    final requestInfo = RequestInfo('ap.public', .01, "", "create", 1, "", "",
+    final requestInfo = RequestInfo('Rainmaker', .01, "", "create", "", "", "",
         commonProvider.userDetails!.accessToken);
     late ChangePasswordDetails changePasswordDetails;
     var res = await makeRequest(

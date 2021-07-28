@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/screeens/EditProfile.dart';
+import 'package:mgramseva/screeens/Profile/EditProfile.dart';
 import 'package:mgramseva/screeens/HomeCard.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';

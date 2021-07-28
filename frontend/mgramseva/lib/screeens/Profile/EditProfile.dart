@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/userProfile/user_profile.dart';
-import 'package:mgramseva/providers/user_profile_provider.dart';
-import 'package:mgramseva/screeens/Changepassword.dart';
+import 'package:mgramseva/model/userEditProfile/user_edit_profile.dart';
+import 'package:mgramseva/providers/user_edit_profile_provider.dart';
+import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
@@ -18,6 +19,9 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  var name = new TextEditingController();
+  var phoneNumber = new TextEditingController();
+
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -27,15 +31,53 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   afterViewBuild() {
-    var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
-    userProvider.getUserProfileDetails({
-      "tenantId": "pb",
-      "id": [92],
-      "mobileNumber": "8004375123"
-    });
+    var editProvider = Provider.of<UserEditProfileProvider>(context, listen: false);
+    editProvider.getEditUser();
   }
 
-  Widget _builduserView(User profileDetails) {
+  saveInputandedit(context, editUserChanges, EditUser editUser) async {
+    var edituserProvider = Provider.of<UserEditProfileProvider>(context, listen: false);
+    var data = {
+      "user":   {
+        "id": 117,
+        "userName": "gpadmin3",
+        "salutation": null,
+        "name": editUser.name,
+        "gender": "MALE",
+        "mobileNumber": "9191919149",
+        "emailId": editUser.emailId,
+        "active": true,
+        "type": "EMPLOYEE",
+        "accountLocked": false,
+        "accountLockedDate": 0,
+        "createdBy": 92,
+        "lastModifiedBy": 92,
+        "tenantId": "pb",
+
+        "roles": [
+          {
+            "code": "GP_ADMIN",
+            "name": "GP Admin",
+            "tenantId": "pb.lodhipur"
+          },
+          {
+            "code": "EMPLOYEE",
+            "name": "Employee",
+            "tenantId": "pb.lodhipur"
+          },
+          {
+            "code": "EMPLOYEE",
+            "name": "Employee",
+            "tenantId": "pb.sukhsal"
+          }
+        ],
+        "uuid": "7ebc0c21-4cc2-4a0b-9a8f-e6001adcf064"
+      }
+    };
+    edituserProvider.editUserProfileDetails(data);
+  }
+
+  Widget _builduserView(EditUser editUserChanges) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -46,30 +88,22 @@ class _EditProfileState extends State<EditProfile> {
               child: Column(
             children: [
               BuildTextField(
-                'Name',
-                profileDetails.nameCtrl,
+                i18.common.NAME,
+                editUserChanges.nameCtrl,
                 isRequired: true,
               ),
               BuildTextField(
-                'Phone Number',
-                profileDetails.phoneNumberCtrl,
+                i18.common.PHONE_NUMBER,
+                editUserChanges.phoneNumberCtrl,
                 isRequired: true,
               ),
-              Consumer<UserProfileProvider>(
-                  builder: (_, userProvider, child) => RadioButtonFieldBuilder(
-                        context,
-                        'Gender',
-                        profileDetails.gender,
-                        '',
-                        '',
-                        true,
-                        Constants.GENDER,
-                        (val) =>
-                            userProvider.onChangeOfGender(val, profileDetails),
-                      )),
+              Consumer<UserEditProfileProvider>(
+                builder : (_, userProvider, child ) => RadioButtonFieldBuilder(context, 'Gender', editUserChanges.gender, '', '', true,
+                    Constants.GENDER, (val) => userProvider.onChangeOfGender(val, editUserChanges),
+                )),
               BuildTextField(
-                'Email ID',
-                profileDetails.emailIdCtrl,
+                i18.common.EMAIL,
+                editUserChanges.emailIdCtrl,
                 isRequired: true,
               ),
               GestureDetector(
@@ -83,7 +117,7 @@ class _EditProfileState extends State<EditProfile> {
                     child: new Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Change Password',
+                          i18.password.CHANGE_PASSWORD,
                           style:
                               TextStyle(color: Theme.of(context).primaryColor),
                         ))),
@@ -97,7 +131,7 @@ class _EditProfileState extends State<EditProfile> {
                     child: new Text('Save',
                         style: TextStyle(
                             fontSize: 19, fontWeight: FontWeight.w500)),
-                    onPressed: () => {},
+                    onPressed: () => {saveInputandedit(context, editUserChanges.getText(), editUserChanges)},
                   )),
               SizedBox(
                 height: 20,
@@ -111,11 +145,11 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
-    var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
+    var edituserProvider = Provider.of<UserEditProfileProvider>(context, listen: false);
 
     return SingleChildScrollView(
         child: StreamBuilder(
-            stream: userProvider.streamController.stream,
+            stream: edituserProvider.streamController.stream,
             builder: (context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
                 return _builduserView(snapshot.data);

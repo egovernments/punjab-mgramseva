@@ -1,15 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/main.dart';
-import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
-import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
 import 'package:provider/provider.dart';
 
-class SideBar extends StatelessWidget {
-  Function _onSelectItem;
+class SideBar extends StatefulWidget {
+  final Function _onSelectItem;
+
   SideBar(this._onSelectItem);
+
+  State<StatefulWidget> createState() {
+    return _SidebarState(this._onSelectItem);
+  }
+}
+
+class _SidebarState extends State<SideBar> {
+  Function _onSelectItem;
+  _SidebarState(this._onSelectItem);
+
+  @override
+  void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    super.initState();
+  }
+  afterViewBuild() {
+    var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
+    userProvider.getUserProfileDetails({
+      "tenantId": "pb",
+      "id": [117],
+      "mobileNumber": "9191919149"
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
