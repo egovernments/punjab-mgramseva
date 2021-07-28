@@ -13,9 +13,7 @@ class Back extends StatelessWidget {
         iconSize: 25,
         color: Colors.white,
         splashColor: Colors.purple,
-        onPressed: () {
-          return Navigator.pop(context);
-        },
+        onPressed: () => Navigator.pop(context)
       ),
     );
   }

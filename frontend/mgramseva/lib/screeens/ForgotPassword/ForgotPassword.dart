@@ -38,7 +38,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   getForgotPasswordCard() {
     return new Container(
-        height: 380,
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(8),
         child: Card(

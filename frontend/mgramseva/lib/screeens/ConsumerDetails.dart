@@ -17,6 +17,7 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
+import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
 class ConsumerDetails extends StatefulWidget {
@@ -63,7 +64,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  HomeBack(),
+                  HomeBack(widget: Help()),
                   Card(
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -117,16 +118,14 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           name,
                           isRequired: true,
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                      ]))
+                            SizedBox(
+                              height: 20,
+                            ),
+                      ])),
                 ])),
           ],
         )),
-        bottomNavigationBar: BottomButtonBar('Submit', () => {}));
+      bottomNavigationBar: BottomButtonBar('Submit', () => {})
+       );
   }
 }

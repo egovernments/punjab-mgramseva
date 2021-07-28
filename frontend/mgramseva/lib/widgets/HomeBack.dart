@@ -1,26 +1,38 @@
 import 'package:flutter/material.dart';
 
 class HomeBack extends StatelessWidget {
+
+  final Widget? widget;
+
+  const HomeBack({Key? key, this.widget}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(10),
-        child: TextButton(
-          child: Row(
-            children: [
-              Icon(
-                Icons.arrow_left,
-                color: Colors.black,
-              ),
-              Text(
-                "Back",
-                style: TextStyle(color: Colors.black),
-              )
-            ],
+    return Padding(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          mainAxisAlignment: widget == null ? MainAxisAlignment.start : MainAxisAlignment.spaceBetween,
+          children : [
+            TextButton(
+            child: Wrap(
+              alignment: WrapAlignment.start,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Icon(
+                  Icons.arrow_left,
+                  color: Colors.black,
+                ),
+                Text(
+                  "Back",
+                  style: TextStyle(color: Colors.black),
+                )
+              ],
+            ),
+            onPressed: () =>  Navigator.pop(context)
           ),
-          onPressed: () {
-            return Navigator.pop(context);
-          },
+            if(widget != null)
+              widget!
+          ]
         ));
   }
 }
