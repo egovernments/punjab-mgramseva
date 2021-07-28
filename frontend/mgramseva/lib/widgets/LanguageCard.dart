@@ -21,6 +21,7 @@ class LanguageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(widthprect);
     if (kIsWeb) {
       var value = window.localStorage['SelectedLocal'];
       if (value == language.value) {
@@ -30,12 +31,13 @@ class LanguageCard extends StatelessWidget {
     return Consumer<LanguageProvider>(
       builder: (_, languageProvider, child) => GestureDetector(
         onTap: () {
-          languageProvider.onSelectionOfLanguage(
-              language, languages);
+          languageProvider.onSelectionOfLanguage(language, languages);
         },
         child: Container(
             margin: new EdgeInsets.all(cmargin),
-            width: MediaQuery.of(context).size.width / widthprect,
+            width: widthprect == 20
+                ? MediaQuery.of(context).size.width / 5.2
+                : MediaQuery.of(context).size.width / widthprect,
             padding: new EdgeInsets.all(cpadding),
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),

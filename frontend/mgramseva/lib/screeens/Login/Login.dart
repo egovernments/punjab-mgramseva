@@ -52,9 +52,10 @@ class _LoginState extends State<Login> {
                 // BuildTextField(
                 //     context, 'Phone Number', mobileNumber, '', '+91-', saveInput),
                 BuildTextField(
-                  i18.login.LOGIN_NAME,
+                  i18.login.LOGIN_MOBILENO,
                   userNamecontroller,
                   isRequired: true,
+                  prefixText: "+91 - ",
                   onChange: (dynamic) => saveInput(dynamic),
                 ),
                 BuildTextField(

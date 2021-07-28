@@ -8,7 +8,7 @@ class DrawerWrapper extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
           width: constraints.maxWidth < 760
-              ? MediaQuery.of(context).size.width * .7
+              ? MediaQuery.of(context).size.width * .9
               : MediaQuery.of(context).size.width / 4,
           margin: EdgeInsets.only(top: 60),
           child: widget);
