@@ -8,6 +8,7 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/Env/app_config.dart';
+import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/router.dart';
@@ -78,6 +79,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => CommonProvider()),
           ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
           ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
+          ChangeNotifierProvider(create: (_) => UserEditProfileProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(
