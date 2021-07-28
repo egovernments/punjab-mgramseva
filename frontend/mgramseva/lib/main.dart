@@ -17,7 +17,6 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/Home.dart';
 
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
-import 'package:mgramseva/screeens/home.dart';
 import 'package:mgramseva/theme.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/global_variables.dart';
