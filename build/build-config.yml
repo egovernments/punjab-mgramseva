@@ -52,4 +52,4 @@
       build:
         - work-dir: "frontend/mgramseva"
           image-name: "egov-web-ui"
-          dockerfile: "frontend/mgramseva/Dockerfile"
+          dockerfile: "frontend/mgramseva/docker/Dockerfile"
