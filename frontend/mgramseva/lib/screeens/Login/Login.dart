@@ -5,6 +5,7 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
 import 'package:mgramseva/widgets/HeadingText.dart';
+import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/MobileView.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/screeens/ForgotPassword/ForgotPassword.dart';
@@ -41,18 +42,13 @@ class _LoginState extends State<Login> {
             key: formKey,
             child: (Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("mGramSeva",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
-                ),
+                Logo(),
                 HeadingText(ApplicationLocalizations.of(context)
                     .translate(i18.login.LOGIN_LABEL)),
                 // BuildTextField(
                 //     context, 'Phone Number', mobileNumber, '', '+91-', saveInput),
                 BuildTextField(
-                  i18.login.LOGIN_MOBILENO,
+                  i18.login.LOGIN_PHONE_NO,
                   userNamecontroller,
                   isRequired: true,
                   prefixText: "+91 - ",

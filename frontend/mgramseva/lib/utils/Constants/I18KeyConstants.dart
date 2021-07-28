@@ -8,7 +8,7 @@ class Login {
   const Login();
   String get LOGIN_LABEL => 'CORE_COMMON_LOGIN';
   String get LOGIN_NAME => 'CORE_LOGIN_USERNAME';
-  String get LOGIN_MOBILENO => 'CORE_LOGIN_MOBILENO';
+  String get LOGIN_PHONE_NO => 'LOGIN_PHONE_NO';
   String get LOGIN_PASSWORD => 'CORE_LOGIN_PASSWORD';
   String get FORGOT_PASSWORD => 'CORE_COMMON_FORGOT_PASSWORD';
 }

@@ -21,7 +21,6 @@ class LanguageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(widthprect);
     if (kIsWeb) {
       var value = window.localStorage['SelectedLocal'];
       if (value == language.value) {
