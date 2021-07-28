@@ -51,6 +51,15 @@ class ExpensesDetailsModel {
   @JsonKey(ignore: true)
   var amountCtrl = TextEditingController();
 
+  @JsonKey(ignore: true)
+  var billDateCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var paidDateCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var dueDateCtrl = TextEditingController();
+
   ExpensesDetailsModel();
 
   setText() {

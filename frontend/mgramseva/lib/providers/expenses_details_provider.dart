@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:provider/provider.dart';
 
@@ -16,14 +17,6 @@ class ExpensesDetailsProvider with ChangeNotifier {
   dispose() {
     streamController.close();
     super.dispose();
-  }
-
-  void validateExpensesDetails() {
-    if(formKey.currentState!.validate()) {
-      addExpensesDetails();
-    }else{
-     autoValidation = true;
-    }
   }
 
   Future<void> getExpensesDetails() async {
@@ -43,4 +36,22 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
     }
   }
+
+  void validateExpensesDetails() {
+    if(formKey.currentState!.validate()) {
+      addExpensesDetails();
+    }else{
+      autoValidation = true;
+    }
+    notifyListeners();
+  }
+
+  void onChangeOfDate(DateTime? dateTime, TextEditingController ctrl) {
+     // ctrl.text = DateFormats.getFilteredDate(dateTime.toString());
+  }
+
+  void onChangeOfBillPaid() {
+
+  }
+
 }

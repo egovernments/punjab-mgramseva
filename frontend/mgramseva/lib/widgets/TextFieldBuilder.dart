@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class BuildTextField extends StatefulWidget {
@@ -11,6 +12,9 @@ class BuildTextField extends StatefulWidget {
   final Function(String)? onSubmit;
   final String pattern;
   final String message;
+  final List<FilteringTextInputFormatter>? inputFormatter;
+  final Function(String?)? validator;
+
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
       this.prefixText = '',
@@ -18,7 +22,7 @@ class BuildTextField extends StatefulWidget {
       this.isRequired = false,
       this.onSubmit,
       this.pattern = '',
-      this.message = ''});
+      this.message = '', this.inputFormatter, this.validator});
   @override
   State<StatefulWidget> createState() => _BuildTextField();
 }
@@ -30,8 +34,9 @@ class _BuildTextField extends State<BuildTextField> {
     Widget textFormwidget = TextFormField(
         controller: widget.controller,
         keyboardType: TextInputType.name,
+        inputFormatters: widget.inputFormatter,
         autofocus: false,
-        validator: (value) {
+        validator: widget.validator != null ? (val) => widget.validator!(val) :  (value) {
           if (value!.isEmpty && widget.isRequired) {
             return ApplicationLocalizations.of(context)
                 .translate(widget.labelText + '_REQUIRED');

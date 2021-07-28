@@ -12,36 +12,6 @@ class DateFormats {
     }
   }
 
-  static getKyFilteredDate(String date) {
-    if (date == null || date.trim().isEmpty) return '';
-
-    try {
-      DateFormat inputFormat;
-      if(date.contains('-')){
-        inputFormat = DateFormat('dd-MM-yyyy');
-      }else{
-        inputFormat = DateFormat('dd/MM/yyyy');
-      }
-      var inputDate = inputFormat.parse(date);
-      return DateFormat("yyyy-MM-dd").format(inputDate);
-    } on Exception catch (e) {
-      return '';
-    }
-  }
-
-  static getDoiFilteredDate(String date) {
-    if (date == null || date.trim().isEmpty) return '';
-
-    try {
-      DateFormat inputFormat;
-      inputFormat = DateFormat('dd-MM-yyyy');
-      var inputDate = inputFormat.parse(date);
-      return DateFormat("dd/MM/yyyy").format(inputDate);
-    } on Exception catch (e) {
-      return '';
-    }
-  }
-
   static getDateFromString(String date) {
     if (date == null || date.trim().isEmpty) return null;
     try {
@@ -49,15 +19,6 @@ class DateFormats {
       return dateTime ?? null;
     } on Exception catch (e) {
       return null;
-    }
-  }
-
-  static getDayNameWithMonth(String date){
-    try{
-      var dateTime = getDateFromString(date);
-      return '${DateFormat('EEE d MMMM').format(dateTime)}';
-    } on Exception catch(e, stackTrace){
-      return '';
     }
   }
 
@@ -80,48 +41,15 @@ class DateFormats {
     }
   }
 
-
-  static String getHalfMonthDateFormat(String date, {isTimeRequired = false}){
-    try {
-      var dateTime = getDateFromString(date);
-      var day = dateTime.day;
-      var month = dateTime.month;
-      var year = dateTime.year;
-
-      if(isTimeRequired){
-        return '$day $month $year, ${getTime(date)}';
-      }
-      return '$day $month)} $year';
-    } on Exception catch (e) {
-      return '';
-    }
+  static int dateToTimeStamp(DateTime dateTime) {
+   return dateTime.toUtc().millisecondsSinceEpoch;
   }
 
-
-  static String getCheckInDateFormat(DateTime date) {
-    try{
-      List<String> dateTime = date.toLocal().toString().split(' ');
-      return '${dateTime.first}T${dateTime.last}Z';
-    } on Exception catch(e){
-      return '';
-    }
-  }
-
-
-  static String getFollowUpTime(String date, String time) {
-    if (date == null || date.trim().isEmpty) return '';
-
+  static String timeStampToDate(int timeInMillis, {String? format}) {
     try {
-      DateFormat inputFormat;
-      if(date.contains('-')){
-        inputFormat = DateFormat('dd-MM-yyyy');
-      }else{
-        inputFormat = DateFormat('dd/MM/yyyy');
-      }
-      var inputDate = inputFormat.parse(date);
-      List<String> dateTime = inputDate.toLocal().toString().split(' ');
-      return '${dateTime.first}T$time:12.121Z';
-    } on Exception catch (e) {
+      var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
+      return DateFormat(format ?? 'dd-MM-yyyy').format(date);
+    }catch(e){
       return '';
     }
   }

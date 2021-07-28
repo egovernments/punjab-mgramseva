@@ -94,8 +94,6 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   }
 
   Widget _buildUserView(ExpensesDetailsModel expenseDetails) {
-    var expensesDetailsProvider =
-    Provider.of<ExpensesDetailsProvider>(context, listen: false);
 
     return FormWrapper(Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -104,43 +102,46 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
           HomeBack(),
           Card(
               child:
-              Form(
-                autovalidateMode: expensesDetailsProvider.autoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
-                child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                  LabelText("Expense Details"),
-                  SubLabelText("Provide below Information to create Expense record"),
-                  BuildTextField(
-                    'Vendor Name',
-                    expenseDetails.vendorNameCtrl,
-                    isRequired: true,
-                  ),
-                  SelectFieldBuilder(
-                      context,
-                      'Type of Expense',
-                      expenseDetails.expenseTypeCtrl,
-                      '',
-                      '',
-                      saveInput,
-                      Constants.EXPENSESTYPE,
-                      true),
-                  BuildTextField(
-                    'Amount (₹)',
-                    expenseDetails.amountCtrl,
-                    isRequired: true,
-                  ),
-                  BasicDateField('Bill Issued Date', true),
-                  RadioButtonFieldBuilder(context, 'Bill Paid', _gender, '', '', true,
-                      Constants.AMOUNTTYPE, saveInput),
-                  RadioButtonFieldBuilder(context, 'Amount Paid', _amountType, '', '',
-                      true, Constants.AMOUNTTYPE, saveInput),
-                  FilePickerDemo(),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  )
-                ]),
+              Consumer<ExpensesDetailsProvider>(
+                builder: (_, expensesDetailsProvider, child) => Form(
+                  key: expensesDetailsProvider.formKey,
+                  autovalidateMode: expensesDetailsProvider.autoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
+                  child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                    LabelText("Expense Details"),
+                    SubLabelText("Provide below Information to create Expense record"),
+                    BuildTextField(
+                      'Vendor Name',
+                      expenseDetails.vendorNameCtrl,
+                      isRequired: true,
+                    ),
+                    SelectFieldBuilder(
+                        context,
+                        'Type of Expense',
+                        expenseDetails.expenseTypeCtrl,
+                        '',
+                        '',
+                        saveInput,
+                        Constants.EXPENSESTYPE,
+                        true),
+                    BuildTextField(
+                      'Amount (₹)',
+                      expenseDetails.amountCtrl,
+                      isRequired: true,
+                    ),
+                    BasicDateField('Bill Issued Date', true, expenseDetails.billDateCtrl),
+                    RadioButtonFieldBuilder(context, 'Bill Paid', _gender, '', '', true,
+                        Constants.AMOUNTTYPE, saveInput),
+                    RadioButtonFieldBuilder(context, 'Amount Paid', _amountType, '', '',
+                        true, Constants.AMOUNTTYPE, saveInput),
+                    FilePickerDemo(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    )
+                  ]),
+                ),
               ))
         ]));
   }

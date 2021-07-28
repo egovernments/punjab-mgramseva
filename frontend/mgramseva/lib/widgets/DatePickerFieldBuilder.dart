@@ -4,11 +4,15 @@ import 'package:intl/intl.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class BasicDateField extends StatelessWidget {
-  final format = DateFormat("yyyy-MM-dd");
+  final format = DateFormat("dd-MM-yyyy");
   final label;
   final isRequired;
+  final DateTime? firstDate;
+  final DateTime? lastDate;
+  final Function(DateTime?)? onChangeOfDate;
+  final TextEditingController controller;
 
-  BasicDateField(this.label, this.isRequired);
+  BasicDateField(this.label,  this.isRequired, this.controller, {this.firstDate, this.lastDate, this.onChangeOfDate});
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +26,15 @@ class BasicDateField extends StatelessWidget {
             new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(1.0)),
       ),
+      controller: controller,
       onShowPicker: (context, currentValue) {
         return showDatePicker(
           context: context,
-          firstDate: DateTime(1900),
+          firstDate: firstDate ?? DateTime(1900),
           initialDate: currentValue ?? DateTime.now(),
-          lastDate: DateTime(2100),
+          lastDate: lastDate ?? DateTime(2100),
         );
-      },
+      },onChanged: onChangeOfDate
     );
 
     Widget textLabelwidget = Row(children: <Widget>[
