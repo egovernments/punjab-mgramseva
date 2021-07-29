@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/userProfile/user_profile.dart';
+import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
-import 'package:mgramseva/screeens/Changepassword.dart';
+import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
@@ -18,6 +20,7 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -30,9 +33,18 @@ class _EditProfileState extends State<EditProfile> {
     var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
     userProvider.getUserProfileDetails({
       "tenantId": "pb",
-      "id": [92],
-      "mobileNumber": "8004375123"
+      "id": [117],
+      "mobileNumber": "9191919149"
     });
+  }
+  saveInputandedit(context, profileDetails, User profile) async {
+    var editProfileProvider = Provider.of<UserEditProfileProvider>(context, listen: false);
+    editProfileProvider.editUserProfileDetails(
+      {
+        "user":
+        profile.toJson()
+      }
+    );
   }
 
   Widget _builduserView(User profileDetails) {
@@ -44,66 +56,58 @@ class _EditProfileState extends State<EditProfile> {
           HomeBack(),
           Card(
               child: Column(
-            children: [
-              BuildTextField(
-                'Name',
-                profileDetails.nameCtrl,
-                isRequired: true,
-              ),
-              BuildTextField(
-                'Phone Number',
-                profileDetails.phoneNumberCtrl,
-                isRequired: true,
-              ),
-              Consumer<UserProfileProvider>(
-                  builder: (_, userProvider, child) => RadioButtonFieldBuilder(
-                        context,
-                        'Gender',
-                        profileDetails.gender,
-                        '',
-                        '',
-                        true,
-                        Constants.GENDER,
-                        (val) =>
-                            userProvider.onChangeOfGender(val, profileDetails),
+                children: [
+                  BuildTextField(
+                    i18.common.NAME,
+                    profileDetails.nameCtrl,
+                    isRequired: true,
+                  ),
+                  BuildTextField(
+                    i18.common.PHONE_NUMBER,
+                    profileDetails.phoneNumberCtrl,
+                    isRequired: true,
+                  ),
+                  Consumer<UserProfileProvider>(
+                      builder : (_, userProvider, child ) => RadioButtonFieldBuilder(context, i18.common.GENDER, profileDetails.gender, '', '', true,
+                        Constants.GENDER, (val) => userProvider.onChangeOfGender(val, profileDetails),
                       )),
-              BuildTextField(
-                'Email ID',
-                profileDetails.emailIdCtrl,
-                isRequired: true,
-              ),
-              GestureDetector(
-                onTap: () => Navigator.push<bool>(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => ChangePassword())),
-                child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 25, top: 10, bottom: 10, right: 25),
-                    child: new Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Change Password',
-                          style:
+                  BuildTextField(
+                    i18.common.EMAIL,
+                    profileDetails.emailIdCtrl,
+                    isRequired: true,
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.push<bool>(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => ChangePassword())),
+                    child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 25, top: 10, bottom: 10, right: 25),
+                        child: new Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              i18.password.CHANGE_PASSWORD,
+                              style:
                               TextStyle(color: Theme.of(context).primaryColor),
-                        ))),
-              ),
-              FractionallySizedBox(
-                  widthFactor: 0.90,
-                  child: new ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.all(15),
-                    ),
-                    child: new Text('Save',
-                        style: TextStyle(
-                            fontSize: 19, fontWeight: FontWeight.w500)),
-                    onPressed: () => {},
-                  )),
-              SizedBox(
-                height: 20,
-              )
-            ],
-          ))
+                            ))),
+                  ),
+                  FractionallySizedBox(
+                      widthFactor: 0.90,
+                      child: new ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.all(15),
+                        ),
+                        child: new Text(i18.common.SAVE,
+                            style: TextStyle(
+                                fontSize: 19, fontWeight: FontWeight.w500)),
+                        onPressed: () => {saveInputandedit(context, profileDetails.getText(), profileDetails)},
+                      )),
+                  SizedBox(
+                    height: 20,
+                  )
+                ],
+              ))
         ],
       ),
     );

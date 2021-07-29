@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/main.dart';
-import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
-import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
 import 'package:provider/provider.dart';
 
 class SideBar extends StatelessWidget {
   final Function _onSelectItem;
   SideBar(this._onSelectItem);
-
+  
   @override
   Widget build(BuildContext context) {
     const iconColor = Color(0xff505A5F);

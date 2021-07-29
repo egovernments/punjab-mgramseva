@@ -1,5 +1,5 @@
-import 'package:mgramseva/screeens/EditProfile.dart';
-import 'package:mgramseva/screeens/Changepassword.dart';
+import 'package:mgramseva/screeens/Profile/EditProfile.dart';
+import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
 import 'package:mgramseva/screeens/Home.dart';
 
 class Routes {

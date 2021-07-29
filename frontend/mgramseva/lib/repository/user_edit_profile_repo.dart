@@ -1,4 +1,4 @@
-import 'package:mgramseva/model/changePasswordDetails/changePassword_details.dart';
+import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
@@ -7,24 +7,25 @@ import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 
-class ChangePasswordRepository extends BaseService {
-  Future<ChangePasswordDetails> updatePassword(Map body) async {
-    print("body-->");
-    print(body);
+class UserEditProfileRepository extends BaseService {
+
+  Future<UserProfile> editProfile(Map body) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
     final requestInfo = RequestInfo('Rainmaker', .01, "", "create", "", "", "",
         commonProvider.userDetails!.accessToken);
-    late ChangePasswordDetails changePasswordDetails;
+    late UserProfile userProfile;
     var res = await makeRequest(
-        url: UserUrl.CHANGE_PASSWORD,
+        url: UserUrl.EDIT_PROFILE,
         body: body,
         requestInfo: requestInfo,
         method: RequestType.POST);
     if (res != null) {
-      changePasswordDetails = ChangePasswordDetails.fromJson(res);
+      userProfile = UserProfile.fromJson(res);
+      userProfile.user![0].setText();
     }
-    return changePasswordDetails;
+    return userProfile;
   }
+
 }
