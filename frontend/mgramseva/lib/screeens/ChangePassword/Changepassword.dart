@@ -16,7 +16,6 @@ import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
 
 class ChangePassword extends StatefulWidget {
-  static const String routeName = '/changepassword';
 
   State<StatefulWidget> createState() {
     return _ChangePasswordState();
@@ -45,7 +44,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         MaterialPageRoute(
           builder: (BuildContext context) => Home(index),
         ),
-        ModalRoute.withName(Routes.home));
+        ModalRoute.withName(Routes.HOME));
   }
 
   afterViewBuild() {

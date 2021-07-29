@@ -3,10 +3,6 @@ import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
 import 'package:mgramseva/screeens/Home.dart';
 
 class Routes {
-  static const String changepassword = ChangePassword.routeName;
-  static const String editprofile = EditProfile.routeName;
-  static const String home = Home.routeName;
-
   ///Authentication
   static const String LANDING_PAGE = '/';
 

@@ -26,7 +26,7 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
         MaterialPageRoute(
           builder: (BuildContext context) => Home(index),
         ),
-        ModalRoute.withName(Routes.home));
+        ModalRoute.withName(Routes.HOME));
   }
 
   @override

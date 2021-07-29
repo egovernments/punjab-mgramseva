@@ -88,7 +88,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
         MaterialPageRoute(
           builder: (BuildContext context) => Home(index),
         ),
-        ModalRoute.withName(Routes.home));
+        ModalRoute.withName(Routes.HOME));
   }
 
   saveInput(context) async {
