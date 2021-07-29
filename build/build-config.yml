@@ -7,30 +7,49 @@
 #       image-name: < Docker image name  >
 # -
 # -
-config:
-  - name: "builds/mGramSeva/municipal-services/ws-services"
-    build:
-      - work-dir: "municipal-services/ws-services"
-        image-name: "ws-services"
-        dockerfile: "build/maven/Dockerfile"
-      - work-dir: "municipal-services/ws-services/src/main/resources/db"
-        image-name: "ws-services-db"
-  - name: "builds/mGramSeva/municipal-services/echallan-services"
-    build:
-      - work-dir: "municipal-services/echallan-services"
-        image-name: "echallan-services"
-        dockerfile: "build/maven/Dockerfile"
-      - work-dir: "municipal-services/echallan-services/src/main/resources/db"
-        image-name: "echallan-services-db"
-  - name: "builds/mGramSeva/core-services/egov-idgen"
-    build:
-      - work-dir: "core-services/egov-idgen"
-        image-name: "egov-idgen"
-        dockerfile: "build/maven/Dockerfile"
-      - work-dir: "core-services/egov-idgen/src/main/resources/db"
-        image-name: "egov-idgen-db"
--   name: builds/mGramSeva/frontend/employee
-    build:
-    - work-dir: frontend/mgramseva/web/rainmaker/
-      dockerfile: frontend/mgramseva/web/rainmaker/docker/employee/Dockerfile
-      image-name: employee
+  config:
+    - name: "builds/mGramSeva/municipal-services/ws-services"
+      build:
+        - work-dir: "municipal-services/ws-services"
+          image-name: "ws-services"
+          dockerfile: "build/maven/Dockerfile"
+        - work-dir: "municipal-services/ws-services/src/main/resources/db"
+          image-name: "ws-services-db"
+    - name: "builds/mGramSeva/municipal-services/echallan-services"
+      build:
+        - work-dir: "municipal-services/echallan-services"
+          image-name: "echallan-services"
+          dockerfile: "build/maven/Dockerfile"
+        - work-dir: "municipal-services/echallan-services/src/main/resources/db"
+          image-name: "echallan-services-db"
+    - name: "builds/mGramSeva/core-services/egov-idgen"
+      build:
+        - work-dir: "core-services/egov-idgen"
+          image-name: "egov-idgen"
+          dockerfile: "build/maven/Dockerfile"
+        - work-dir: "core-services/egov-idgen/src/main/resources/db"
+          image-name: "egov-idgen-db"
+    - name: "builds/mGramSeva/core-services/egov-user"
+      build:
+        - work-dir: "core-services/egov-user"
+          image-name: "egov-user"
+          dockerfile: "build/maven/Dockerfile"
+        - work-dir: "core-services/egov-user/src/main/resources/db"
+          image-name: "egov-user-db"
+    - name: "builds/mGramSeva/municipal-services/ws-calculator"
+      build:
+        - work-dir: "ws-calculator"
+          image-name: "ws-calculator"
+          dockerfile: "build/maven/Dockerfile"
+        - work-dir: "municipal-servicesws-calculator/src/main/resources/db"
+          image-name: "ws-calculator-db"
+    - name: "builds/mGramSeva/municipal-services/echallan-calculator"
+      build:
+        - work-dir: "echallan-calculator"
+          image-name: "echallan-calculator"
+          dockerfile: "build/maven/Dockerfile"
+    - name: "builds/mGramSeva/frontend/egov-web-ui"
+      build:
+        - work-dir: "frontend/mgramseva"
+          image-name: "egov-web-ui"
+          dockerfile: "frontend/mgramseva/docker/Dockerfile"

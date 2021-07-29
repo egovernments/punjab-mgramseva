@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/services/user.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
 import 'package:mgramseva/widgets/MobileView.dart';
@@ -18,27 +20,30 @@ class ForgotPassword extends StatefulWidget {
 class _ForgotPasswordState extends State<ForgotPassword> {
   var mobileNumber = new TextEditingController();
   final formKey = GlobalKey<FormState>();
-
-  saveInput(context) async {
-    print(context);
-  }
+  var autoValidation = false;
 
   saveInputandcall(context) async {
-    var data = {
-      "otp": {
-        "mobileNumber": "9686151676",
-        "tenantId": "pb",
-        "type": "passwordreset",
-        "userType": "EMPLOYEE"
-      }
-    };
 
-    otpforresetpassword(data, context);
+    if(formKey.currentState!.validate()) {
+      var data = {
+        "otp": {
+          "mobileNumber": "9686151676",
+          "tenantId": "pb",
+          "type": "passwordreset",
+          "userType": "EMPLOYEE"
+        }
+      };
+
+      otpforresetpassword(data, context);
+    }else{
+      setState(() {
+        autoValidation = true;
+      });
+    }
   }
 
   getForgotPasswordCard() {
     return new Container(
-        height: 380,
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(8),
         child: Card(
@@ -63,10 +68,19 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
                 )),
-            BuildTextField(
-              'Phone Number',
-              mobileNumber,
-              isRequired: true,
+            Form(
+              key: formKey,
+              autovalidateMode: autoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
+              child: BuildTextField(
+                'Phone Number',
+                mobileNumber,
+                prefixText: '+91',
+                isRequired: true,
+                inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+                maxLength: 10,
+                validator: Validators.mobileNumberValidator,
+                textInputType: TextInputType.phone,
+              ),
             ),
             SizedBox(
               height: 10,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
@@ -19,6 +21,7 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
+import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
 class ExpenseDetails extends StatefulWidget {
@@ -28,80 +31,20 @@ class ExpenseDetails extends StatefulWidget {
 }
 
 class _ExpenseDetailsState extends State<ExpenseDetails> {
-  String _gender = 'YES';
   String _amountType = "FULL";
 
-  _onSelectItem(int index, context) {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => Home(index),
-        ),
-        ModalRoute.withName(Routes.home));
-  }
-
-  final formKey = GlobalKey<FormState>();
-  saveInput(context) async {
-    print(context);
-  }
 
   @override
   void initState() {
-    // var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
   afterViewBuild() {
-    var userProvider =
-        Provider.of<ExpensesDetailsProvider>(context, listen: false);
-    userProvider.getExpensesDetails();
-  }
-
-  Widget _builduserView(ExpensesDetailsModel expenseDetails) {
-    return FormWrapper(Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          HomeBack(),
-          Card(
-              child:
-                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-            LabelText("Expense Details"),
-            SubLabelText("Provide below Information to create Expense record"),
-            BuildTextField(
-              'Vendor Name',
-              expenseDetails.vendorNameCtrl,
-              isRequired: true,
-            ),
-            SelectFieldBuilder(
-                context,
-                'Type of Expense',
-                expenseDetails.expenseTypeCtrl,
-                '',
-                '',
-                saveInput,
-                Constants.EXPENSESTYPE,
-                true),
-            BuildTextField(
-              'Amount (₹)',
-              expenseDetails.amountCtrl,
-              isRequired: true,
-            ),
-            BasicDateField('Bill Issued Date', true),
-            RadioButtonFieldBuilder(context, 'Bill Paid', _gender, '', '', true,
-                Constants.AMOUNTTYPE, saveInput),
-            RadioButtonFieldBuilder(context, 'Amount Paid', _amountType, '', '',
-                true, Constants.AMOUNTTYPE, saveInput),
-            FilePickerDemo(),
-            SizedBox(
-              height: 20,
-            ),
-            SizedBox(
-              height: 20,
-            )
-          ]))
-        ]));
+        Provider.of<ExpensesDetailsProvider>(context, listen: false)
+    ..formKey = GlobalKey<FormState>()
+    ..autoValidation = false
+    ..getExpensesDetails();
   }
 
   @override
@@ -122,7 +65,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                 stream: expensesDetailsProvider.streamController.stream,
                 builder: (context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData) {
-                    return _builduserView(snapshot.data);
+                    return _buildUserView(snapshot.data);
                   } else if (snapshot.hasError) {
                     return Notifiers.networkErrorPage(context, () {});
                   } else {
@@ -136,6 +79,80 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     }
                   }
                 })),
-        bottomNavigationBar: BottomButtonBar('Submit', () => {}));
+        bottomNavigationBar: BottomButtonBar('Submit', expensesDetailsProvider.validateExpensesDetails));
   }
+
+  _onSelectItem(int index, context) {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => Home(index),
+        ),
+        ModalRoute.withName(Routes.home));
+  }
+
+  saveInput(context) async {
+    print(context);
+  }
+
+  Widget _buildUserView(ExpensesDetailsModel expenseDetails) {
+
+    return FormWrapper(Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          HomeBack(widget: Help()),
+          Card(
+              child:
+              Consumer<ExpensesDetailsProvider>(
+                builder: (_, expensesDetailsProvider, child) => Form(
+                  key: expensesDetailsProvider.formKey,
+                  autovalidateMode: expensesDetailsProvider.autoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
+                  child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                    LabelText("Expense Details"),
+                    SubLabelText("Provide below Information to create Expense record"),
+                    SelectFieldBuilder(
+                        context,
+                        'Type of Expense',
+                        expenseDetails.expenseTypeCtrl,
+                        '',
+                        '',
+                        saveInput,
+                        Constants.EXPENSESTYPE,
+                        true),
+                    BuildTextField(
+                      'Vendor Name',
+                      expenseDetails.vendorNameCtrl,
+                      isRequired: true,
+                    ),
+                    BuildTextField(
+                      'Amount (₹)',
+                      expenseDetails.amountCtrl,
+                      isRequired: true,
+                      textInputType: TextInputType.number,
+                      inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9.]"))],
+                    ),
+                    BasicDateField('Bill Date', true, expenseDetails.billDateCtrl,
+                        firstDate: expenseDetails.billIssuedDateCtrl.text.trim().isEmpty ? null : DateFormats.getFormattedDateToDateTime(expenseDetails.billIssuedDateCtrl.text.trim(), ),
+                        lastDate: DateTime.now(), onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
+                    BasicDateField('Party Bill Date', false, expenseDetails.billIssuedDateCtrl, lastDate: expenseDetails.billDateCtrl.text.trim().isEmpty ? DateTime.now() : DateFormats.getFormattedDateToDateTime(expenseDetails.billDateCtrl.text.trim()),
+                        onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
+                    RadioButtonFieldBuilder(context, 'Bill Paid', expenseDetails.isBillPaid, '', '', true,
+                        Constants.EXPENSESTYPE, expensesDetailsProvider.onChangeOfBillPaid),
+                   if(expenseDetails.isBillPaid ?? false) BasicDateField('Payment Date', false, expenseDetails.paidDateCtrl,
+                       firstDate: DateFormats.getFormattedDateToDateTime(expenseDetails.billIssuedDateCtrl.text.trim()),  lastDate: DateTime.now(), onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
+                    FilePickerDemo(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    )
+                  ]),
+                ),
+              ))
+        ]));
+  }
+
+
 }

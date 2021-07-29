@@ -4,6 +4,9 @@ class Url {
   static const String LOCALIZATION = 'localization/messages/v1/_search';
 
   static const String MDMS = 'egov-mdms-service/v1/_search';
+
+  /// Expenses
+  static const String ADD_EXPENSES = 'echallan-services/eChallan/v1/_create';
 }
 
 class UserUrl {

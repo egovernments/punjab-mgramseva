@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/providers/authentication.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
 import 'package:mgramseva/widgets/HeadingText.dart';
+import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/MobileView.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/screeens/ForgotPassword/ForgotPassword.dart';
@@ -21,17 +24,23 @@ class _LoginState extends State<Login> {
   var userNamecontroller = new TextEditingController();
   var passwordcontroller = new TextEditingController();
   final formKey = GlobalKey<FormState>();
+  var autoValidation = false;
 
-  saveInput(context) async {
-    print(context);
+  @override
+  void initState() {
+    super.initState();
   }
 
   saveandLogin(context) async {
+    var authProvider =
+    Provider.of<AuthenticationProvider>(context, listen: false);
+
     if (formKey.currentState!.validate()) {
-      var authProvider =
-          Provider.of<AuthenticationProvider>(context, listen: false);
       authProvider.validateLogin(context, userNamecontroller.text.trim(),
           passwordcontroller.text.trim());
+    }else{
+      autoValidation = true;
+      authProvider.callNotifyer();
     }
   }
 
@@ -39,29 +48,29 @@ class _LoginState extends State<Login> {
     return Card(
         child: Form(
             key: formKey,
+            autovalidateMode: autoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
             child: (Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("mGramSeva",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
-                ),
+                Logo(),
                 HeadingText(ApplicationLocalizations.of(context)
                     .translate(i18.login.LOGIN_LABEL)),
-                // BuildTextField(
-                //     context, 'Phone Number', mobileNumber, '', '+91-', saveInput),
                 BuildTextField(
-                  i18.login.LOGIN_NAME,
+                  i18.login.LOGIN_PHONE_NO,
                   userNamecontroller,
+                  prefixText: '+91',
                   isRequired: true,
-                  onChange: (dynamic) => saveInput(dynamic),
+                  inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+                  maxLength: 10,
+                  validator: Validators.mobileNumberValidator,
+                  textInputType: TextInputType.phone,
                 ),
                 BuildTextField(
                   i18.login.LOGIN_PASSWORD,
                   passwordcontroller,
                   isRequired: true,
-                  onChange: (dynamic) => saveInput(dynamic),
+                  obscureText: true,
+                  maxLines: 1,
+                  inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9@. ]"))],
                 ),
                 GestureDetector(
                   onTap: () => Navigator.push<bool>(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/screeens/ConsumerDetails.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
 import 'package:mgramseva/screeens/SearchConnection.dart';
@@ -74,6 +75,10 @@ class router {
         return MaterialPageRoute(
             builder: (_) => GenerateBill(),
             settings: RouteSettings(name: Routes.BILL_GENERATE));
+      case Routes.CONSUMER_CREATE:
+        return MaterialPageRoute(
+            builder: (_) => ConsumerDetails(),
+            settings: RouteSettings(name: Routes.CONSUMER_CREATE));
       default:
         return MaterialPageRoute(
           builder: (_) => SelectLanguage(),

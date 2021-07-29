@@ -38,5 +38,7 @@ class Routes {
 
   static const String BILL_GENERATE = 'bill/generate';
 
+  static const String CONSUMER_CREATE = 'consumer/create';
+
   /// Consumer
 }

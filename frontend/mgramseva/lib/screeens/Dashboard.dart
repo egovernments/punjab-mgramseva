@@ -66,7 +66,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                      HomeBack(),
+                      HomeBack(widget: _buildShare),
                       DashboardCard(dashboardcarddetails),
                       SizedBox(height: 15),
                       DefaultTabController(
@@ -110,4 +110,6 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                       BillsTable()
                     ])))));
   }
+
+  Widget get _buildShare => TextButton.icon(onPressed: (){}, icon: Image.asset('assets/png/whats_app.png'), label: Text('Share'));
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/models.dart';
 
 class SelectFieldBuilder extends StatelessWidget {
   final BuildContext context;
@@ -8,7 +9,7 @@ class SelectFieldBuilder extends StatelessWidget {
   final String input;
   final String prefixText;
   final Function widget;
-  final List options;
+  final List<KeyValue> options;
   final bool isRequired;
 
   SelectFieldBuilder(this.context, this.labelText, this.controller, this.input,
@@ -36,11 +37,18 @@ class SelectFieldBuilder extends StatelessWidget {
             new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(1.0)),
       ),
+      validator:  (val){
+        if(isRequired != null && isRequired && val == null){
+          return ApplicationLocalizations.of(context)
+              .translate(labelText + '_REQUIRED');
+        }
+        return null;
+      },
       items: options.map((value) {
         print(value);
-        return DropdownMenuItem<String>(
-          value: value['key'],
-          child: new Text(value['label']),
+        return DropdownMenuItem(
+          value: value.key,
+          child: new Text(value.label),
         );
       }).toList(),
       onChanged: (_) {},

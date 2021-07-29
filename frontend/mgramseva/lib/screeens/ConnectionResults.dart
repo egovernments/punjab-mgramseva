@@ -43,7 +43,7 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
         body: FormWrapper(Container(
             child: Column(children: [
           HomeBack(),
-          SearchConnectionDetailCard(),
+          Expanded(child: SearchConnectionDetailCard()),
         ]))));
   }
 }

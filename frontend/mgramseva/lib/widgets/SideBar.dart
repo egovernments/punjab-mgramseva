@@ -7,15 +7,13 @@ import 'package:provider/provider.dart';
 
 class SideBar extends StatelessWidget {
   final Function _onSelectItem;
-
   SideBar(this._onSelectItem);
-
-
-
+  
   @override
   Widget build(BuildContext context) {
-
     const iconColor = Color(0xff505A5F);
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+    print(commonProvider);
     return new ListView(children: <Widget>[
       Container(
           height: 200.0,
@@ -26,7 +24,9 @@ class SideBar extends StatelessWidget {
               children: [
                 Center(
                     child: Text(
-                  'Harpreet',
+                  commonProvider.userDetails != null
+                      ? commonProvider.userDetails!.userRequest!.name.toString()
+                      : "",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                 )),
                 SizedBox(
@@ -34,7 +34,10 @@ class SideBar extends StatelessWidget {
                 ),
                 Center(
                     child: Text(
-                  '9535676456',
+                  commonProvider.userDetails != null
+                      ? commonProvider.userDetails!.userRequest!.mobileNumber
+                          .toString()
+                      : "",
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                 ))
               ],
@@ -68,9 +71,21 @@ class SideBar extends StatelessWidget {
               height: 10,
             ),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              for (var language in Provider.of<LanguageProvider>(context, listen: false).stateInfo?.languages ?? [])
-                LanguageCard(language, Provider.of<LanguageProvider>(context, listen: false).stateInfo?.languages ?? [], 20, 5, 5,
-                   )
+              for (var language
+                  in Provider.of<LanguageProvider>(context, listen: false)
+                          .stateInfo
+                          ?.languages ??
+                      [])
+                LanguageCard(
+                  language,
+                  Provider.of<LanguageProvider>(context, listen: false)
+                          .stateInfo
+                          ?.languages ??
+                      [],
+                  20,
+                  5,
+                  5,
+                )
             ])
           ],
         ),
@@ -106,7 +121,8 @@ class SideBar extends StatelessWidget {
           color: iconColor,
         ),
         onTap: () {
-          var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+          var commonProvider =
+              Provider.of<CommonProvider>(context, listen: false);
           commonProvider.onLogout();
         },
       ),

@@ -53,7 +53,7 @@ class AuthenticationProvider with ChangeNotifier {
     } on CustomException catch(e){
       Navigator.pop(context);
       if(e.exceptionType == ExceptionType.UNAUTHORIZED){
-       Notifiers.getToastMessage('${e.message ??  "Credentials"}');
+       Notifiers.getToastMessage('${e?.message ??  "Invalid Credentials"}');
      }else{
        Notifiers.getToastMessage('Unable to login');
      }
@@ -63,5 +63,7 @@ class AuthenticationProvider with ChangeNotifier {
     }
   }
 
-
+  void callNotifyer(){
+    notifyListeners();
+  }
 }
