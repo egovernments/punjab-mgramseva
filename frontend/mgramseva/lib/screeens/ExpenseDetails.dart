@@ -44,7 +44,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
         Provider.of<ExpensesDetailsProvider>(context, listen: false)
     ..formKey = GlobalKey<FormState>()
     ..autoValidation = false
-    ..getExpensesDetails();
+    ..getExpensesDetails()
+    ..getExpenses();
   }
 
   @override
@@ -91,9 +92,6 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
         ModalRoute.withName(Routes.HOME));
   }
 
-  saveInput(context) async {
-    print(context);
-  }
 
   Widget _buildUserView(ExpensesDetailsModel expenseDetails) {
 
@@ -112,13 +110,12 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     LabelText("Expense Details"),
                     SubLabelText("Provide below Information to create Expense record"),
                     SelectFieldBuilder(
-                        context,
                         'Type of Expense',
-                        expenseDetails.expenseTypeCtrl,
+                        expenseDetails.expenseType,
                         '',
                         '',
-                        saveInput,
-                        Constants.EXPENSESTYPE,
+                        expensesDetailsProvider.onChangeOfExpenses,
+                        expensesDetailsProvider.getExpenseTypeList(),
                         true),
                     BuildTextField(
                       'Vendor Name',

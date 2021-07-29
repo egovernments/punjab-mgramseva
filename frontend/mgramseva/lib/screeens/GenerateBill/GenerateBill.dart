@@ -81,18 +81,28 @@ class _GenerateBillState extends State<GenerateBill> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                     LabelText("Generate Consumer Bill"),
-                    SelectFieldBuilder(context, 'Service Category', serviceCat,
-                        '', '', saveInput, services, true),
-                    SelectFieldBuilder(context, 'Property Type', serviceType,
-                        '', '', saveInput, property, true),
-                    SelectFieldBuilder(context, 'Service Type', propertyType,
-                        '', '', saveInput, servicetype, true),
-                    SelectFieldBuilder(context, 'Meter Number', meterNumber, '',
-                        '', saveInput, metnum, true),
+                    SelectFieldBuilder('Service Category', serviceCat.text,
+                        '', '', saveInput, getDropDownList(services), true, ),
+                    SelectFieldBuilder('Property Type', serviceType.text,
+                        '', '', saveInput, getDropDownList(property), true),
+                    SelectFieldBuilder('Service Type', propertyType.text,
+                        '', '', saveInput, getDropDownList(servicetype), true),
+                    SelectFieldBuilder('Meter Number', meterNumber.text, '',
+                        '', saveInput, getDropDownList(metnum), true),
                     MeterReading("Previous Meter Reading"),
                     MeterReading("New Meter Reading"),
                    BottomButtonBar('Generate Bill', () => {})
                   ]))
             ]))));
   }
+
+
+  List<DropdownMenuItem<Object>> getDropDownList(List<KeyValue>? list){
+      return (list ?? <KeyValue>[]).map((value) {
+        return DropdownMenuItem(
+          value: value.key,
+          child: new Text(value.label!),
+        );
+      }).toList();
+    }
 }

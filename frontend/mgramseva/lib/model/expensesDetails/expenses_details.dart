@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 
 part 'expenses_details.g.dart';
 
@@ -46,9 +47,6 @@ class ExpensesDetailsModel {
   var vendorNameCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
-  var expenseTypeCtrl = TextEditingController();
-
-  @JsonKey(ignore: true)
   var amountCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
@@ -64,18 +62,23 @@ class ExpensesDetailsModel {
 
   setText() {
     vendorName = vendorNameCtrl.text;
-    expenseType = expenseTypeCtrl.text;
     expensesAmount?.amount = amountCtrl.text;
+    billDate = DateFormats.dateToTimeStamp(billDateCtrl.text);
+    if(billIssuedDateCtrl.text.trim().isNotEmpty)
+      billIssuedDate = DateFormats.dateToTimeStamp(billIssuedDateCtrl.text);
+    if(paidDateCtrl.text.trim().isNotEmpty)
+      paidDate = DateFormats.dateToTimeStamp(paidDateCtrl.text);
   }
 
   getText() {
     vendorNameCtrl.text = vendorName ?? '';
-    expenseTypeCtrl.text = expenseType ?? '';
     amountCtrl.text = expensesAmount?.amount ?? '';
   }
 
   factory ExpensesDetailsModel.fromJson(Map<String, dynamic> json) =>
       _$ExpensesDetailsModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExpensesDetailsModelToJson(this);
 }
 
 @JsonSerializable()
@@ -90,4 +93,6 @@ class ExpensesAmount {
 
   factory ExpensesAmount.fromJson(Map<String, dynamic> json) =>
       _$ExpensesAmountFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExpensesAmountToJson(this);
 }
