@@ -290,7 +290,7 @@ public class UserTypeQueryBuilder {
                 + "type=:Type,guardian=:Guardian,guardianrelation=:GuardianRelation,signature=:Signature," +
                 "accountlocked=:AccountLocked, accountlockeddate=:AccountLockedDate, bloodgroup=:BloodGroup," +
                 "photo=:Photo, identificationmark=:IdentificationMark,lastmodifieddate=:LastModifiedDate," +
-                "lastmodifiedby=:LastModifiedBy where username=:username and tenantid=:tenantid and type=:type and defaultpwdchgd=:defaultpwdchgd";
+                "lastmodifiedby=:LastModifiedBy where username=:username and tenantid=:tenantid and type=:type and defaultpwdchgd=:defaultpwdchgd ";
     }
 
 
