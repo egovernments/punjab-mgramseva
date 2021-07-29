@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static org.egov.user.repository.builder.UserTypeQueryBuilder.SELECT_FAILED_ATTEMPTS_BY_USER_SQL;
 import static org.egov.user.repository.builder.UserTypeQueryBuilder.SELECT_NEXT_SEQUENCE_USER;
-import static org.egov.user.repository.builder.UserTypeQueryBuilder.SELECT_ATTEMPTS_BY_USER;
 import static org.springframework.util.StringUtils.isEmpty;
 
 @Repository
@@ -91,21 +90,10 @@ public class UserRepository {
 
         users = jdbcTemplate.query(queryStr, preparedStatementValues.toArray(), userResultSetExtractor);
         enrichRoles(users);
-        enrichFirstLogin(users);
         return users;
     }
 
-    public void enrichFirstLogin(List<User> users) {
 
-        if (users.isEmpty())
-            return;
-
-
-        for (User user : users) {
-            int count = getLoginAttemptCount(user.getUuid());
-            user.setFirstTimeLogin(count ==0);
-        }
-    }
 
     /**
      * get list of all userids with role in given tenant
@@ -189,6 +177,7 @@ public class UserRepository {
         updateuserInputs.put("type", oldUser.getType().toString());
         updateuserInputs.put("tenantid", oldUser.getTenantId());
         updateuserInputs.put("AadhaarNumber", user.getAadhaarNumber());
+        updateuserInputs.put("defaultpwdchgd", user.isDefaultPwdChgd());
 
         if (isNull(user.getAccountLocked()))
             updateuserInputs.put("AccountLocked", oldUser.getAccountLocked());
@@ -328,14 +317,7 @@ public class UserRepository {
 
     }
 
-    public int getLoginAttemptCount(String uuid) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("user_uuid", uuid);
-
-        return namedParameterJdbcTemplate.queryForObject(SELECT_ATTEMPTS_BY_USER, params,
-                Integer.class);
-
-    }
+   
 
     public FailedLoginAttempt insertFailedLoginAttempt(FailedLoginAttempt failedLoginAttempt) {
         Map<String, Object> inputs = new HashMap<>();

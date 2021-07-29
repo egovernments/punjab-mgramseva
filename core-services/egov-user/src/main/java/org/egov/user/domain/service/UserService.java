@@ -434,6 +434,7 @@ public class UserService {
         validateExistingPassword(user, updatePasswordRequest.getExistingPassword());
         validatePassword(updatePasswordRequest.getNewPassword());
         user.updatePassword(encryptPwd(updatePasswordRequest.getNewPassword()));
+        user.setDefaultPwdChgd(Boolean.TRUE);
         userRepository.update(user, user);
     }
 
@@ -464,6 +465,7 @@ public class UserService {
         /* encrypt here */
         /* encrypted value is stored in DB*/
         user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
+        user.setDefaultPwdChgd(Boolean.TRUE);
         userRepository.update(user, user);
     }
 
@@ -475,14 +477,7 @@ public class UserService {
      */
     public void resetFailedLoginAttempts(User user) {
         if (user.getUuid() != null) {
-        	
-        	int count = userRepository.getLoginAttemptCount(user.getUuid());
-        	if(count <=0) {
-        		userRepository.insertFailedLoginAttempt(new FailedLoginAttempt(user.getUuid(), "FIRST LOGIN",
-                        System.currentTimeMillis(), false));
-        	}
-
-       	 	userRepository.resetFailedLoginAttemptsForUser(user.getUuid());
+          	 userRepository.resetFailedLoginAttemptsForUser(user.getUuid());
         }
            
     }

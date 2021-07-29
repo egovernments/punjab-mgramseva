@@ -83,7 +83,7 @@ public class User {
     private Long loggedInUserId;
     private boolean otpValidationMandatory;
     private boolean mobileValidationMandatory = true;
-    private boolean firstTimeLogin=false;
+    private boolean defaultPwdChgd=false;
 
     public User addAddressItem(Address addressItem) {
         if (this.addresses == null) {
