@@ -127,7 +127,7 @@ public class UserService {
 
         UserSearchCriteria userSearchCriteria = UserSearchCriteria.builder()
                 .mobileNumber(userName)
-                // .userName(userName)
+                .userName(userName)
                 .tenantId(getStateLevelTenantForCitizen(tenantId, userType))
                 .type(userType)
                 .build();
@@ -203,9 +203,12 @@ public class UserService {
      * @return
      */
     public User createUser(User user, RequestInfo requestInfo) {
+        // copy mobie number to username, so that login with mobile number will work.
+        user.setUsername(user.getMobileNumber());
         user.setUuid(UUID.randomUUID().toString());
         user.validateNewUser(createUserValidateName);
         conditionallyValidateOtp(user);
+
         /* encrypt here */
         user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
         validateUserUniqueness(user);
