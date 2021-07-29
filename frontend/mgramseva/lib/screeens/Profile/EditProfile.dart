@@ -14,8 +14,9 @@ import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 
+import 'widgets/EditProfileSuccessPage.dart';
+
 class EditProfile extends StatefulWidget {
-  static const String routeName = 'editProfile';
   State<StatefulWidget> createState() {
     return _EditProfileState();
   }
@@ -52,6 +53,10 @@ class _EditProfileState extends State<EditProfile> {
             profile.toJson()
           }
       );
+      Navigator.of(context)
+        .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
+      return EditProfileSuccess(i18.profileEdit.PROFILE_EDIT_SUCCESS, i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT);
+    }));
     }else{
       userProvider.autoValidation = true;
       userProvider.callNotfyer();

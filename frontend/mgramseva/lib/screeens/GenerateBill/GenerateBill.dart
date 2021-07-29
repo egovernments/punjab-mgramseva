@@ -51,7 +51,7 @@ class _GenerateBillState extends State<GenerateBill> {
         MaterialPageRoute(
           builder: (BuildContext context) => Home(index),
         ),
-        ModalRoute.withName(Routes.home));
+        ModalRoute.withName(Routes.HOME));
   }
 
   final formKey = GlobalKey<FormState>();

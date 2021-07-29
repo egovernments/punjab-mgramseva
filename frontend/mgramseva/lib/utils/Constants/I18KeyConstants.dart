@@ -6,6 +6,7 @@ class i18 {
   static Expense expense = const Expense();
   static CreateConsumer consumer = const CreateConsumer();
   static SearchConnection searchConnection = const SearchConnection();
+  static ProfileEdit profileEdit = const ProfileEdit();
 
 }
 
@@ -32,7 +33,8 @@ class Common {
   String get MALE => 'CORE_COMMON_GENDER_MALE';
   String get FEMALE => 'CORE_COMMON_GENDER_FEMALE';
   String get TRANSGENDER => 'CORE_COMMON_GENDER_TRANSGENDER';
-
+  String get BACK_HOME => 'CORE_COMMON_BACK_HOME_BUTTON';
+  String get MGRAM_SEVA => 'CORE_COMMON_MGRAM_SEVA_LABEL';
 }
 
 
@@ -75,4 +77,10 @@ class SearchConnection{
   String get NEW_CONNECTION_ID => 'SEARCH_CONNECTION_NEW_CONNECTION_ID';
   String get SEARCH_BAR => 'SEARCH_CONNECTION_SEARCH';
 
+}
+
+class ProfileEdit{
+  const ProfileEdit();
+  String get PROFILE_EDIT_SUCCESS => 'EDIT_PROFILE_SUCCESS_LABEL';
+  String get PROFILE_EDITED_SUCCESS_SUBTEXT => 'EDIT_PROFILE_SUCCESS_SUB_TEXT';
 }
