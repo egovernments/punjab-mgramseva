@@ -63,5 +63,7 @@ class AuthenticationProvider with ChangeNotifier {
     }
   }
 
-
+  void callNotifyer(){
+    notifyListeners();
+  }
 }

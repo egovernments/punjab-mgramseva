@@ -36,4 +36,15 @@ class Validators {
         type == 'Confirm Password')
       return (value.length < 8) ? 'Please provide  8 characters' : null;
   }
+
+  static String? mobileNumberValidator(String? v) {
+    if (v!.trim().isEmpty) {
+      return 'Please enter Mobile number';
+    } else if (!RegExp(r'^[0-9]+$').hasMatch(v)) {
+      return 'Please enter Numbers only';
+    } else if (v.trim().length != 10) {
+      return 'Mobile number should be 10 digits';
+    }
+    return null;
+  }
 }
