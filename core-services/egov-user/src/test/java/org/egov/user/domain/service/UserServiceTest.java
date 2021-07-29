@@ -113,17 +113,17 @@ public class UserServiceTest {
         assertEquals(expectedEntityUser, returnedUser);
     }
 
-    @Test
-    public void test_should_set_pre_defined_expiry_on_creating_user() {
-        org.egov.user.domain.model.User domainUser = mock(User.class);
-        when(otpRepository.isOtpValidationComplete(getExpectedRequest())).thenReturn(true);
-        final User expectedEntityUser = User.builder().build();
-        when(userRepository.create(domainUser)).thenReturn(expectedEntityUser);
-        when(encryptionDecryptionUtil.encryptObject(domainUser, "User", User.class)).thenReturn(domainUser);
-        userService.createUser(domainUser, any());
-
-        verify(domainUser).setDefaultPasswordExpiry(DEFAULT_PASSWORD_EXPIRY_IN_DAYS);
-    }
+//    @Test
+//    public void test_should_set_pre_defined_expiry_on_creating_user() {
+//        org.egov.user.domain.model.User domainUser = mock(User.class);
+//        when(otpRepository.isOtpValidationComplete(getExpectedRequest())).thenReturn(true);
+//        final User expectedEntityUser = User.builder().build();
+//        when(userRepository.create(domainUser)).thenReturn(expectedEntityUser);
+//        when(encryptionDecryptionUtil.encryptObject(domainUser, "User", User.class)).thenReturn(domainUser);
+//        userService.createUser(domainUser, any());
+//
+//        verify(domainUser).setDefaultPasswordExpiry(DEFAULT_PASSWORD_EXPIRY_IN_DAYS);
+//    }
 
     @Test
     public void test_should_create_a_valid_citizen() {
