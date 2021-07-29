@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class BuildTextField extends StatefulWidget {
@@ -11,6 +12,13 @@ class BuildTextField extends StatefulWidget {
   final Function(String)? onSubmit;
   final String pattern;
   final String message;
+  final List<FilteringTextInputFormatter>? inputFormatter;
+  final Function(String?)? validator;
+  final int? maxLength;
+  final int? maxLines;
+  final TextCapitalization? textCapitalization;
+  final bool? obscureText;
+  final TextInputType? textInputType;
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
       this.prefixText = '',
@@ -18,7 +26,7 @@ class BuildTextField extends StatefulWidget {
       this.isRequired = false,
       this.onSubmit,
       this.pattern = '',
-      this.message = ''});
+      this.message = '', this.inputFormatter, this.validator, this.maxLength, this.maxLines, this.textCapitalization, this.obscureText, this.textInputType});
   @override
   State<StatefulWidget> createState() => _BuildTextField();
 }
@@ -29,10 +37,15 @@ class _BuildTextField extends State<BuildTextField> {
     // TextForm
     Widget textFormwidget = TextFormField(
         controller: widget.controller,
-        keyboardType: TextInputType.name,
+        keyboardType: widget.textInputType ?? TextInputType.text,
+        inputFormatters: widget.inputFormatter,
         autofocus: false,
-        validator: (value) {
-          if (value!.isEmpty && widget.isRequired) {
+        maxLength: widget.maxLength,
+        maxLines: widget.maxLines,
+        textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
+        obscureText: widget.obscureText ?? false,
+        validator: widget.validator != null ? (val) => widget.validator!(val) :  (value) {
+          if (value!.trim().isEmpty && widget.isRequired) {
             return ApplicationLocalizations.of(context)
                 .translate(widget.labelText + '_REQUIRED');
           } else if (widget.pattern != '' && widget.isRequired) {

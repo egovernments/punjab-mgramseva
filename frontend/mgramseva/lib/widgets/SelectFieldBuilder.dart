@@ -37,9 +37,16 @@ class SelectFieldBuilder extends StatelessWidget {
             new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(1.0)),
       ),
+      validator:  (val){
+        if(isRequired != null && isRequired && val == null){
+          return ApplicationLocalizations.of(context)
+              .translate(labelText + '_REQUIRED');
+        }
+        return null;
+      },
       items: options.map((value) {
         print(value);
-        return DropdownMenuItem<String>(
+        return DropdownMenuItem(
           value: value.key,
           child: new Text(value.label),
         );

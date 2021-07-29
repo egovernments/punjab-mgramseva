@@ -112,7 +112,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                         //     '', saveInput, options, true),
                         // SelectFieldBuilder(context, 'Service Type', name, '',
                         //     '', saveInput, options, true),
-                        BasicDateField("Previous Meter Reading Date", true),
+                        BasicDateField("Previous Meter Reading Date", true, TextEditingController()),
                         BuildTextField(
                           'Areas (₹)',
                           name,

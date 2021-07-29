@@ -5,7 +5,7 @@ import 'package:mgramseva/utils/models.dart';
 class RadioButtonFieldBuilder extends StatelessWidget {
   final BuildContext context;
   final String labelText;
-  final String? controller;
+  final dynamic? controller;
   final bool isRequired;
 
   final String input;

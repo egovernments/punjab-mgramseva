@@ -61,6 +61,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
           ChangeNotifierProvider(create: (_) => ExpensesDetailsProvider()),
           ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
+          ChangeNotifierProvider(create: (_) => ExpensesDetailsProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(
