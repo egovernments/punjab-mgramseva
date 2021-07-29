@@ -25,7 +25,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
         MaterialPageRoute(
           builder: (BuildContext context) => Home(index),
         ),
-        ModalRoute.withName(Routes.home));
+        ModalRoute.withName(Routes.HOME));
   }
 
   @override
