@@ -10,7 +10,7 @@ class BuildTextField extends StatefulWidget {
   final String prefixText;
   final Function(String)? onChange;
   final Function(String)? onSubmit;
-  final String pattern;
+  final String? pattern;
   final String message;
   final List<FilteringTextInputFormatter>? inputFormatter;
   final Function(String?)? validator;
@@ -19,6 +19,8 @@ class BuildTextField extends StatefulWidget {
   final TextCapitalization? textCapitalization;
   final bool? obscureText;
   final TextInputType? textInputType;
+  final bool? isDisabled;
+  final bool? readOnly;
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
       this.prefixText = '',
@@ -26,7 +28,7 @@ class BuildTextField extends StatefulWidget {
       this.isRequired = false,
       this.onSubmit,
       this.pattern = '',
-      this.message = '', this.inputFormatter, this.validator, this.maxLength, this.maxLines, this.textCapitalization, this.obscureText, this.textInputType});
+      this.message = '', this.inputFormatter, this.validator, this.maxLength, this.maxLines, this.textCapitalization, this.obscureText, this.textInputType, this.isDisabled, this.readOnly});
   @override
   State<StatefulWidget> createState() => _BuildTextField();
 }
@@ -44,12 +46,13 @@ class _BuildTextField extends State<BuildTextField> {
         maxLines: widget.maxLines,
         textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
         obscureText: widget.obscureText ?? false,
+        readOnly: widget.readOnly ?? false,
         validator: widget.validator != null ? (val) => widget.validator!(val) :  (value) {
           if (value!.trim().isEmpty && widget.isRequired) {
             return ApplicationLocalizations.of(context)
                 .translate(widget.labelText + '_REQUIRED');
-          } else if (widget.pattern != '' && widget.isRequired) {
-            return (new RegExp(widget.pattern).hasMatch(value))
+          } else if (widget.pattern != null && widget.pattern != '') {
+            return (new RegExp(widget.pattern!).hasMatch(value))
                 ? null
                 : ApplicationLocalizations.of(context)
                     .translate(widget.message);
@@ -57,11 +60,16 @@ class _BuildTextField extends State<BuildTextField> {
           return null;
         },
         decoration: InputDecoration(
+          errorMaxLines: 2,
+          enabled: widget.isDisabled ?? true,
+          fillColor:  widget.isDisabled != null && widget.isDisabled! ? Colors.grey : Colors.white,
           prefixText: widget.prefixText,
         ),
         onChanged: widget.onChange);
 // Label Text
-    Widget textLabelwidget = Row(children: <Widget>[
+    Widget textLabelwidget = Wrap(
+        direction: Axis.horizontal,
+        children: <Widget>[
       Text(ApplicationLocalizations.of(context).translate(widget.labelText),
           textAlign: TextAlign.left,
           style: TextStyle(
