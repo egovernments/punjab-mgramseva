@@ -208,7 +208,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 .name(user.getName()).mobileNumber(user.getMobileNumber()).emailId(user.getEmailId())
                 .locale(user.getLocale()).active(user.getActive()).type(user.getType().name())
                 .roles(toAuthRole(user.getRoles())).tenantId(user.getTenantId())
-                .firstTimeLogin(user.isFirstTimeLogin())
                 .build();
 
         if(user.getPermanentAddress()!=null)

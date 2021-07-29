@@ -66,7 +66,7 @@ public class UserTypeQueryBuilder {
             ".bloodgroup, u.photo, u.identificationmark,  u.tenantid, u.id, u.uuid, addr.id as addr_id, addr.type as " +
             "addr_type, addr .address as addr_address,  addr.city as addr_city, addr.pincode as addr_pincode, addr" +
             ".tenantid as " +
-            "addr_tenantid, addr.userid as addr_userid, ur.role_code as role_code, ur.role_tenantid as role_tenantid \n" +
+            "addr_tenantid, addr.userid as addr_userid, ur.role_code as role_code, ur.role_tenantid as role_tenantid,u.defaultpwdchgd \n" +
             "\tFROM eg_user u LEFT OUTER JOIN eg_user_address addr ON u.id = addr.userid AND u.tenantid = addr" +
             ".tenantid LEFT OUTER JOIN eg_userrole_v1 ur ON u.id = ur.user_id AND u.tenantid = ur.user_tenantid  ";
 
@@ -82,8 +82,7 @@ public class UserTypeQueryBuilder {
             "eg_user_login_failed_attempts WHERE user_uuid = :user_uuid AND attempt_date >= :attempt_date AND active " +
             "= 'true' ";
     
-    public static final String SELECT_ATTEMPTS_BY_USER = "select count(*) from " +
-            "eg_user_login_failed_attempts WHERE user_uuid = :user_uuid ";
+
 
     public static final String INSERT_FAILED_ATTEMPTS_SQL = " INSERT INTO eg_user_login_failed_attempts (user_uuid, " +
             "ip, attempt_date, active) VALUES ( :user_uuid, :ip , :attempt_date, :active ) ";
@@ -291,7 +290,7 @@ public class UserTypeQueryBuilder {
                 + "type=:Type,guardian=:Guardian,guardianrelation=:GuardianRelation,signature=:Signature," +
                 "accountlocked=:AccountLocked, accountlockeddate=:AccountLockedDate, bloodgroup=:BloodGroup," +
                 "photo=:Photo, identificationmark=:IdentificationMark,lastmodifieddate=:LastModifiedDate," +
-                "lastmodifiedby=:LastModifiedBy where username=:username and tenantid=:tenantid and type=:type";
+                "lastmodifiedby=:LastModifiedBy where username=:username and tenantid=:tenantid and type=:type and defaultpwdchgd=:defaultpwdchgd";
     }
 
 

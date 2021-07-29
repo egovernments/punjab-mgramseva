@@ -20,7 +20,7 @@ public class UserRowMapper implements RowMapper<User> {
                 .mobileNumber(rs.getString("mobilenumber")).altContactNumber(rs.getString("altcontactnumber"))
                 .emailId(rs.getString("emailid")).active(rs.getBoolean("active")).name(rs.getString("name")).lastModifiedBy(rs.getLong("lastmodifiedby")).lastModifiedDate(rs.getTimestamp("lastmodifieddate"))
                 .pan(rs.getString("pan")).aadhaarNumber(rs.getString("aadhaarnumber")).createdBy(rs.getLong("createdby")).createdDate(rs.getTimestamp("createddate"))
-                .guardian(rs.getString("guardian")).signature(rs.getString("signature"))
+                .guardian(rs.getString("guardian")).signature(rs.getString("signature")).defaultPwdChgd(rs.getBoolean("defaultpwdchgd"))
                 .accountLocked(rs.getBoolean("accountlocked")).photo(rs.getString("photo")).identificationMark(rs.getString("identificationmark")).uuid(rs.getString("uuid")).build();
 
         for (UserType type : UserType.values()) {
