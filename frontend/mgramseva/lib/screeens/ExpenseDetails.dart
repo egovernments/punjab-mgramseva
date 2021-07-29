@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
@@ -29,7 +31,6 @@ class ExpenseDetails extends StatefulWidget {
 }
 
 class _ExpenseDetailsState extends State<ExpenseDetails> {
-  String _gender = 'YES';
   String _amountType = "FULL";
 
 
@@ -110,11 +111,6 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                   child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
                     LabelText("Expense Details"),
                     SubLabelText("Provide below Information to create Expense record"),
-                    BuildTextField(
-                      'Vendor Name',
-                      expenseDetails.vendorNameCtrl,
-                      isRequired: true,
-                    ),
                     SelectFieldBuilder(
                         context,
                         'Type of Expense',
@@ -125,15 +121,26 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                         Constants.EXPENSESTYPE,
                         true),
                     BuildTextField(
+                      'Vendor Name',
+                      expenseDetails.vendorNameCtrl,
+                      isRequired: true,
+                    ),
+                    BuildTextField(
                       'Amount (₹)',
                       expenseDetails.amountCtrl,
                       isRequired: true,
+                      textInputType: TextInputType.number,
+                      inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9.]"))],
                     ),
-                    BasicDateField('Bill Issued Date', true, expenseDetails.billDateCtrl),
-                    RadioButtonFieldBuilder(context, 'Bill Paid', _gender, '', '', true,
-                        Constants.AMOUNTTYPE, saveInput),
-                    RadioButtonFieldBuilder(context, 'Amount Paid', _amountType, '', '',
-                        true, Constants.AMOUNTTYPE, saveInput),
+                    BasicDateField('Bill Date', true, expenseDetails.billDateCtrl,
+                        firstDate: expenseDetails.billIssuedDateCtrl.text.trim().isEmpty ? null : DateFormats.getFormattedDateToDateTime(expenseDetails.billIssuedDateCtrl.text.trim(), ),
+                        lastDate: DateTime.now(), onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
+                    BasicDateField('Party Bill Date', false, expenseDetails.billIssuedDateCtrl, lastDate: expenseDetails.billDateCtrl.text.trim().isEmpty ? DateTime.now() : DateFormats.getFormattedDateToDateTime(expenseDetails.billDateCtrl.text.trim()),
+                        onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
+                    RadioButtonFieldBuilder(context, 'Bill Paid', expenseDetails.isBillPaid, '', '', true,
+                        Constants.EXPENSESTYPE, expensesDetailsProvider.onChangeOfBillPaid),
+                   if(expenseDetails.isBillPaid ?? false) BasicDateField('Payment Date', false, expenseDetails.paidDateCtrl,
+                       firstDate: DateFormats.getFormattedDateToDateTime(expenseDetails.billIssuedDateCtrl.text.trim()),  lastDate: DateTime.now(), onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
                     FilePickerDemo(),
                     SizedBox(
                       height: 20,

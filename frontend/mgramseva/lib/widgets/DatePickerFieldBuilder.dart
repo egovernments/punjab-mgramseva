@@ -9,10 +9,11 @@ class BasicDateField extends StatelessWidget {
   final isRequired;
   final DateTime? firstDate;
   final DateTime? lastDate;
+  final DateTime? initialDate;
   final Function(DateTime?)? onChangeOfDate;
   final TextEditingController controller;
 
-  BasicDateField(this.label,  this.isRequired, this.controller, {this.firstDate, this.lastDate, this.onChangeOfDate});
+  BasicDateField(this.label,  this.isRequired, this.controller, {this.firstDate, this.lastDate, this.onChangeOfDate, this.initialDate});
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +28,18 @@ class BasicDateField extends StatelessWidget {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(1.0)),
       ),
       controller: controller,
+      validator: (val){
+        if(isRequired != null && isRequired && val == null){
+          return ApplicationLocalizations.of(context)
+              .translate(label + '_REQUIRED');
+        }
+        return null;
+      },
       onShowPicker: (context, currentValue) {
         return showDatePicker(
           context: context,
           firstDate: firstDate ?? DateTime(1900),
-          initialDate: currentValue ?? DateTime.now(),
+          initialDate: initialDate ?? lastDate ?? currentValue ?? DateTime.now(),
           lastDate: lastDate ?? DateTime(2100),
         );
       },onChanged: onChangeOfDate

@@ -18,7 +18,7 @@ ExpensesDetailsModel _$ExpensesDetailsModelFromJson(Map<String, dynamic> json) {
         : ExpensesAmount.fromJson(json['amount'] as Map<String, dynamic>)
     ..billDate = json['billDate'] as int?
     ..paidDate = json['paidDate'] as int?
-    ..dueDate = json['dueDate'] as int?
+    ..billIssuedDate = json['billIssuedDate'] as int?
     ..isBillPaid = json['isBillPaid'] as bool? ?? false
     ..isFullPaid = json['isFullPaid'] as bool? ?? false
     ..isPartialPaid = json['isPartialPaid'] as bool? ?? false;
@@ -35,7 +35,7 @@ Map<String, dynamic> _$ExpensesDetailsModelToJson(
       'amount': instance.expensesAmount,
       'billDate': instance.billDate,
       'paidDate': instance.paidDate,
-      'dueDate': instance.dueDate,
+      'billIssuedDate': instance.billIssuedDate,
       'isBillPaid': instance.isBillPaid,
       'isFullPaid': instance.isFullPaid,
       'isPartialPaid': instance.isPartialPaid,

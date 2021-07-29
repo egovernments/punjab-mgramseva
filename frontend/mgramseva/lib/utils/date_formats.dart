@@ -12,7 +12,7 @@ class DateFormats {
     }
   }
 
-  static getDateFromString(String date) {
+  static DateTime? getDateFromString(String date) {
     if (date == null || date.trim().isEmpty) return null;
     try {
       var dateTime = DateTime.parse(date).toLocal();
@@ -22,11 +22,27 @@ class DateFormats {
     }
   }
 
+  static DateTime? getFormattedDateToDateTime(String date) {
+
+    try {
+      DateFormat inputFormat;
+      if(date.contains('-')){
+        inputFormat = DateFormat('dd-MM-yyyy');
+      }else{
+        inputFormat = DateFormat('dd/MM/yyyy');
+      }
+      var inputDate = inputFormat.parse(date);
+      return inputDate;
+    } on Exception catch (e) {
+      return null;
+    }
+  }
+
   static String getTime(String date){
     if(date == null || date.trim().isEmpty) return '';
     try{
       var dateTime = getDateFromString(date);
-      return DateFormat.Hms().format(dateTime);
+      return DateFormat.Hms().format(dateTime!);
     } on Exception catch(e, stackTrace){
       return '';
     }
@@ -35,7 +51,7 @@ class DateFormats {
   static String getLocalTime(String date){
     try{
       var dateTime = getDateFromString(date);
-      return DateFormat.jm().format(dateTime);
+      return DateFormat.jm().format(dateTime!);
     } on Exception catch(e, stackTrace){
       return '';
     }

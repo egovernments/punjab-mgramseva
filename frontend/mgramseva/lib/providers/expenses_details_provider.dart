@@ -46,12 +46,20 @@ class ExpensesDetailsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void onChangeOfDate(DateTime? dateTime, TextEditingController ctrl) {
+  void onChangeOfDate(DateTime? dateTime) {
      // ctrl.text = DateFormats.getFilteredDate(dateTime.toString());
+    notifyListeners();
   }
 
-  void onChangeOfBillPaid() {
-
+  void onChangeOfBillPaid(val) {
+    if(expenditureDetails.billDateCtrl.text.trim().isNotEmpty || expenditureDetails.paidDateCtrl.text.trim().isNotEmpty) {
+      expenditureDetails.isBillPaid = val;
+    }else{
+      autoValidation = true;
+    }
+    notifyListeners();
   }
+
+
 
 }

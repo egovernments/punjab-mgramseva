@@ -30,8 +30,8 @@ class ExpensesDetailsModel {
   @JsonKey(name: "paidDate")
   int? paidDate;
 
-  @JsonKey(name: "dueDate")
-  int? dueDate;
+  @JsonKey(name: "billIssuedDate")
+  int? billIssuedDate;
 
   @JsonKey(name: "isBillPaid", defaultValue: false)
   bool? isBillPaid;
@@ -58,7 +58,7 @@ class ExpensesDetailsModel {
   var paidDateCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
-  var dueDateCtrl = TextEditingController();
+  var billIssuedDateCtrl = TextEditingController();
 
   ExpensesDetailsModel();
 

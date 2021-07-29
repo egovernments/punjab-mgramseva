@@ -7,7 +7,7 @@ enum ExceptionType {UNAUTHORIZED, BADREQUEST, INVALIDINPUT, FETCHDATA}
 
 class KeyValue {
   String label;
-  String key;
+  dynamic key;
   KeyValue(this.label, this.key);
 }
 
