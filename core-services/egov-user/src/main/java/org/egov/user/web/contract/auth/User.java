@@ -25,4 +25,5 @@ public class User implements Serializable {
     private boolean active;
     private String tenantId;
     private String permanentCity;
+    private boolean firstTimeLogin;
 }

@@ -103,7 +103,7 @@ public class UserRepository {
 
         for (User user : users) {
             int count = getLoginAttemptCount(user.getUuid());
-            user.setFirtimeLogin( count ==0);
+            user.setFirstTimeLogin(count ==0);
         }
     }
 

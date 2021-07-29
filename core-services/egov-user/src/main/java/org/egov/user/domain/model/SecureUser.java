@@ -73,6 +73,7 @@ public class SecureUser implements UserDetails {
                 .collect(Collectors.toList());
     }
 
+    public boolean getFirstTimeLogin() { return user.isFirstTimeLogin();}
     public String getTenantId() {
         return user.getTenantId();
     }
