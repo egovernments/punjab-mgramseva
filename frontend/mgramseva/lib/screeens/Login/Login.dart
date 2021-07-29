@@ -7,6 +7,7 @@ import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
 import 'package:mgramseva/widgets/HeadingText.dart';
+import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/MobileView.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/screeens/ForgotPassword/ForgotPassword.dart';
@@ -50,16 +51,11 @@ class _LoginState extends State<Login> {
             autovalidateMode: autoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
             child: (Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("mGramSeva",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
-                ),
+                Logo(),
                 HeadingText(ApplicationLocalizations.of(context)
                     .translate(i18.login.LOGIN_LABEL)),
                 BuildTextField(
-                  i18.common.PHONE_NUMBER,
+                  i18.login.LOGIN_PHONE_NO,
                   userNamecontroller,
                   prefixText: '+91',
                   isRequired: true,

@@ -19,6 +19,7 @@ class UserProfileProvider with ChangeNotifier {
         streamController.add(userResponse.user?.first);
       }
     } catch (e) {
+      print("its an error");
       print(e);
       streamController.addError('error');
     }
@@ -28,5 +29,4 @@ class UserProfileProvider with ChangeNotifier {
     user.gender = gender;
     notifyListeners();
   }
-
 }
