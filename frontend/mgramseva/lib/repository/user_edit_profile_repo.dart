@@ -1,4 +1,4 @@
-import 'package:mgramseva/model/userEditProfile/user_edit_profile.dart';
+import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
@@ -8,24 +8,24 @@ import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 
 class UserEditProfileRepository extends BaseService {
-  Future<EditUser> editProfile(Map body) async {
-    print("repobody--->");
-    print(body);
+
+  Future<UserProfile> editProfile(Map body) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
     final requestInfo = RequestInfo('Rainmaker', .01, "", "create", "", "", "",
         commonProvider.userDetails!.accessToken);
-    late EditUser userEditProfile;
+    late UserProfile userProfile;
     var res = await makeRequest(
         url: UserUrl.EDIT_PROFILE,
         body: body,
         requestInfo: requestInfo,
         method: RequestType.POST);
     if (res != null) {
-      userEditProfile = EditUser.fromJson(res);
+      userProfile = UserProfile.fromJson(res);
+      userProfile.user![0].setText();
     }
-    return userEditProfile;
+    return userProfile;
   }
 
 }
