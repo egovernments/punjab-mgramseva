@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/changePasswordDetails/changePassword_details.dart';
+import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/changePassword_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/Home.dart';
@@ -55,14 +56,14 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   saveInputandchangepass(
       context, passwordDetails, ChangePasswordDetails password) async {
-    print(password.existingPassword);
     var changePasswordProvider =
         Provider.of<ChangePasswordProvider>(context, listen: false);
     var data = {
+      "userName":"9191919149",
       "existingPassword": password.existingPassword,
       "newPassword": password.newPassword,
-      "tenantId": "pb",
-      "type": "EMPLOYEE"
+      "tenantId":"pb",
+      "type":"EMPLOYEE"
     };
 
     changePasswordProvider.changePassword(data);
