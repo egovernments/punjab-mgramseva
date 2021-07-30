@@ -84,7 +84,7 @@ class CommonProvider with ChangeNotifier {
   }
 
   set loginCredentails(UserDetails? loginDetails) {
-
+    userDetails = loginDetails;
     if(kIsWeb){
      window.localStorage[Constants.LOGIN_KEY] = loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
     }else{

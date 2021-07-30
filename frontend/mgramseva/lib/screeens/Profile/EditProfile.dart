@@ -4,17 +4,19 @@ import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
+import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
+import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 
-import 'widgets/EditProfileSuccessPage.dart';
 
 class EditProfile extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -32,13 +34,15 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   afterViewBuild() {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+    print(commonProvider.userDetails!.userRequest!.tenantId);
     Provider.of<UserProfileProvider>(context, listen: false)
     ..formKey = GlobalKey<FormState>()
     ..autoValidation = false
     ..getUserProfileDetails({
-      "tenantId": "pb",
-      "id": [117],
-      "mobileNumber": "9191919149"
+      "tenantId": commonProvider.userDetails!.userRequest!.tenantId,
+      "id": [commonProvider.userDetails!.userRequest!.id],
+      "mobileNumber": commonProvider.userDetails!.userRequest!.mobileNumber
     });
   }
   saveInputandedit(context, profileDetails, User profile) async {
@@ -55,7 +59,7 @@ class _EditProfileState extends State<EditProfile> {
       );
       Navigator.of(context)
         .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
-      return EditProfileSuccess(i18.profileEdit.PROFILE_EDIT_SUCCESS, i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT);
+      return CommonSuccess(i18.profileEdit.PROFILE_EDIT_SUCCESS, i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT, i18.common.BACK_HOME ,() => Home(0));
     }));
     }else{
       userProvider.autoValidation = true;
@@ -64,10 +68,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Widget _builduserView(User profileDetails) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      return Column(
         children: [
           HomeBack(),
           Consumer<UserProfileProvider>(
@@ -139,8 +140,7 @@ class _EditProfileState extends State<EditProfile> {
             ),
           )
         ],
-      ),
-    );
+      );
   }
 
   @override
