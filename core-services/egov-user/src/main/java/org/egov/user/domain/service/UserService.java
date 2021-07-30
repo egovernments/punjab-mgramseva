@@ -433,8 +433,8 @@ public class UserService {
 
         validateExistingPassword(user, updatePasswordRequest.getExistingPassword());
         validatePassword(updatePasswordRequest.getNewPassword());
-        user.updatePassword(encryptPwd(updatePasswordRequest.getNewPassword()));
         user.setDefaultPwdChgd(Boolean.TRUE);
+        user.updatePassword(encryptPwd(updatePasswordRequest.getNewPassword()));
         userRepository.update(user, user);
     }
 
@@ -464,8 +464,9 @@ public class UserService {
         user.updatePassword(encryptPwd(request.getNewPassword()));
         /* encrypt here */
         /* encrypted value is stored in DB*/
-        user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
         user.setDefaultPwdChgd(Boolean.TRUE);
+        user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
+
         userRepository.update(user, user);
     }
 
