@@ -60,6 +60,12 @@ public class ChallanRowMapper  implements ResultSetExtractor<List<Challan>> {
                 		.description(rs.getString("description"))
                 		.applicationStatus(StatusEnum.valueOf(rs.getString("applicationstatus")))
                 		.filestoreid(rs.getString("filestoreid"))
+                		.vendor(rs.getString("vendor"))
+                		.typeOfExpense(rs.getString("typeOfExpense"))
+                		.billDate(rs.getLong("billDate"))
+                		.billIssuedDate(rs.getLong("billIssuedDate"))
+                		.paidDate(rs.getLong("paidDate"))
+                		.isBillPaid(rs.getBoolean("isBillPaid"))
                         .id(id)
                         .build();
                 if(pgObj!=null){
