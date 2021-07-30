@@ -6,16 +6,18 @@ import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/SuccessPage.dart';
 
-class EditProfileSuccess extends StatelessWidget {
+class CommonSuccess extends StatelessWidget {
   final String label;
   final String subtext;
-  EditProfileSuccess(this.label, this.subtext);
+  final String backtobutton;
+  final Widget Function() navigatepage;
+  CommonSuccess(this.label, this.subtext, this.backtobutton, this.navigatepage);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: BaseAppBar(
-          Text('mGramSeva'),
+          Text(i18.common.MGRAM_SEVA),
           AppBar(),
           <Widget>[Icon(Icons.more_vert)],
         ),
@@ -25,13 +27,6 @@ class EditProfileSuccess extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   HomeBack(),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      margin: const EdgeInsets.all(8.0),
-                    child: Text("mGramSeva",
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, )),
-                  )),
                   Card(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -55,7 +50,7 @@ class EditProfileSuccess extends StatelessWidget {
                                 style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.all(15),
                                 ),
-                                child: new Text(i18.common.BACK_HOME,
+                                child: new Text(backtobutton,
                                     style: TextStyle(
                                         fontSize: 19,
                                         fontWeight: FontWeight.w500)),
@@ -63,7 +58,7 @@ class EditProfileSuccess extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (BuildContext context) =>
-                                            Home(0))),
+                                            navigatepage())),
                               )),
                           SizedBox(height: 20,),
                         ],
