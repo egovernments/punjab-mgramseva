@@ -36,6 +36,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
   Future<void> getExpensesDetails() async {
     try {
+      expenditureDetails.getText();
       streamController.add(expenditureDetails);
     } catch (e) {
       streamController.addError('error');
@@ -46,7 +47,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     var commonProvider = Provider.of<CommonProvider>(navigatorKey.currentContext!, listen: false);
     expenditureDetails
     ..businessService = commonProvider.getMdmsId(languageList, 'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
-    ..expensesAmount?.taxHeadCode = commonProvider.getMdmsId(languageList, 'EXPENSE.${expenditureDetails.expenseType}', MDMSType.TaxHeadCode)
+    ..expensesAmount?.first.taxHeadCode = commonProvider.getMdmsId(languageList, 'EXPENSE.${expenditureDetails.expenseType}', MDMSType.TaxHeadCode)
     ..consumerType = 'EXPENSE'
     ..tenantId = 'pb';
 

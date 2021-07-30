@@ -131,7 +131,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     ),
                     BuildTextField(
                       'Amount (₹)',
-                      expenseDetails.amountCtrl,
+                      expenseDetails.expensesAmount!.first!.amountCtrl,
                       isRequired: true,
                       textInputType: TextInputType.number,
                       inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9.]"))],

@@ -23,7 +23,7 @@ class ExpensesDetailsModel {
   String? vendorName;
 
   @JsonKey(name: "amount")
-  ExpensesAmount? expensesAmount = ExpensesAmount();
+  List<ExpensesAmount>? expensesAmount = <ExpensesAmount>[];
 
   @JsonKey(name: "billDate")
   int? billDate;
@@ -37,17 +37,8 @@ class ExpensesDetailsModel {
   @JsonKey(name: "isBillPaid", defaultValue: false)
   bool? isBillPaid;
 
-  @JsonKey(name: "isFullPaid", defaultValue: false)
-  bool? isFullPaid;
-
-  @JsonKey(name: "isPartialPaid", defaultValue: false)
-  bool? isPartialPaid;
-
   @JsonKey(ignore: true)
   var vendorNameCtrl = TextEditingController();
-
-  @JsonKey(ignore: true)
-  var amountCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
   var billDateCtrl = TextEditingController();
@@ -62,7 +53,7 @@ class ExpensesDetailsModel {
 
   setText() {
     vendorName = vendorNameCtrl.text;
-    expensesAmount?.amount = amountCtrl.text;
+    expensesAmount?.first.amount = expensesAmount?.first.amountCtrl.text;
     billDate = DateFormats.dateToTimeStamp(billDateCtrl.text);
     if(billIssuedDateCtrl.text.trim().isNotEmpty)
       billIssuedDate = DateFormats.dateToTimeStamp(billIssuedDateCtrl.text);
@@ -71,8 +62,13 @@ class ExpensesDetailsModel {
   }
 
   getText() {
+
+    if(expensesAmount == null || expensesAmount!.isEmpty){
+      expensesAmount?.add(ExpensesAmount());
+    }
+
     vendorNameCtrl.text = vendorName ?? '';
-    amountCtrl.text = expensesAmount?.amount ?? '';
+    expensesAmount?.first.amountCtrl.text = expensesAmount?.first.amount ?? '';
   }
 
   factory ExpensesDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -88,6 +84,9 @@ class ExpensesAmount {
 
   @JsonKey(name: "amount")
   String? amount;
+
+  @JsonKey(ignore: true)
+  var amountCtrl = TextEditingController();
 
   ExpensesAmount();
 
