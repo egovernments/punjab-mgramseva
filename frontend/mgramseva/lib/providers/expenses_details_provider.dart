@@ -7,10 +7,14 @@ import 'package:mgramseva/model/mdms/expense_type.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/services/MDMS.dart';
+import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
+
+import 'common_provider.dart';
 
 class ExpensesDetailsProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -33,9 +37,19 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   Future<void> addExpensesDetails() async {
+    var commonProvider = Provider.of<CommonProvider>(navigatorKey.currentContext!, listen: false);
+    expenditureDetails
+    ..businessService = commonProvider.getMdmsId(languageList, 'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
+    ..expensesAmount?.taxHeadCode = commonProvider.getMdmsId(languageList, 'EXPENSE.${expenditureDetails.expenseType}', MDMSType.TaxHeadCode)
+    ..consumerType = 'EXPENSE' ?? commonProvider.getMdmsId(languageList, 'EXPENSE.${expenditureDetails.expenseType}', MDMSType.ConsumerType)
+    ..tenantId = 'pb';
+
+
     expenditureDetails.setText();
+    expenditureDetails.vendorName = '1ba69f7d-103e-4680-bfb0-bb86975e16e7';
+
     try {
-     var res = ExpensesRepository().addExpenses(expenditureDetails.toJson());
+     var res = ExpensesRepository().addExpenses({'Challan' : expenditureDetails.toJson()});
     }on CustomException catch(e){
 
     } catch(e){

@@ -23,7 +23,7 @@ class ExpensesDetailsModel {
   String? vendorName;
 
   @JsonKey(name: "amount")
-  ExpensesAmount? expensesAmount;
+  ExpensesAmount? expensesAmount = ExpensesAmount();
 
   @JsonKey(name: "billDate")
   int? billDate;

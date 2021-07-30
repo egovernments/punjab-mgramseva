@@ -32,7 +32,7 @@ Map<String, dynamic> _$ExpensesDetailsModelToJson(
       'consumerType': instance.consumerType,
       'typeOfExpense': instance.expenseType,
       'vendor': instance.vendorName,
-      'amount': instance.expensesAmount,
+      'amount': instance.expensesAmount?.toJson(),
       'billDate': instance.billDate,
       'paidDate': instance.paidDate,
       'billIssuedDate': instance.billIssuedDate,

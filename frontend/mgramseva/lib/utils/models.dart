@@ -5,6 +5,8 @@ enum RequestType { GET, PUT, POST, DELETE }
 
 enum ExceptionType {UNAUTHORIZED, BADREQUEST, INVALIDINPUT, FETCHDATA}
 
+enum MDMSType {BusinessService, ConsumerType, TaxHeadCode}
+
 class KeyValue {
   String label;
   dynamic key;
