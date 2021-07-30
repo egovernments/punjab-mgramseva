@@ -21,6 +21,7 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
+import 'package:mgramseva/widgets/auto_complete.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -45,10 +46,11 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
         Provider.of<ExpensesDetailsProvider>(context, listen: false)
     ..formKey = GlobalKey<FormState>()
     ..suggestionsBoxController = SuggestionsBoxController()
+    ..expenditureDetails = ExpensesDetailsModel()
     ..autoValidation = false
     ..getExpensesDetails()
     ..getExpenses()
-    ..getVendorList('as');
+    ..fetchVendors();
   }
 
   @override
@@ -120,6 +122,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                         expensesDetailsProvider.onChangeOfExpenses,
                         expensesDetailsProvider.getExpenseTypeList(),
                         true),
+                    AutoCompleteView(labelText: 'Vendor Name', controller: expenseDetails.vendorNameCtrl, suggestionsBoxController: expensesDetailsProvider.suggestionsBoxController,
+                    onSuggestionSelected: expensesDetailsProvider.onSuggestionSelected, callBack: expensesDetailsProvider.onSearchVendorList, listTile: buildTile, isRequired: true),
                     BuildTextField(
                       'Vendor Name',
                       expenseDetails.vendorNameCtrl,
@@ -154,5 +158,6 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
         ]));
   }
 
+  Widget buildTile(context, vendor) => Text('${vendor?.name}');
 
 }

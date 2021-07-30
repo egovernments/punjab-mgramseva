@@ -35,7 +35,6 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   Future<void> getExpensesDetails() async {
-    expenditureDetails = ExpensesDetailsModel();
     try {
       streamController.add(expenditureDetails);
     } catch (e) {
@@ -64,29 +63,38 @@ class ExpensesDetailsProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> getVendorList(String pattern) async{
+  Future<List<dynamic>> onSearchVendorList(pattern) async{
 
-    var filteredList = vendorList.where((vendor) => vendor.name.contains(pattern)).toList();
-
-    if(filteredList.isNotEmpty){
-      return filteredList;
+    if(vendorList.isEmpty){
+      vendorList = await fetchVendors();
     }
 
-    var query = {
-      'tenantId' : 'pb',
-      'offset' : vendorList.length.toString(),
-      'limit' : (vendorList.length + Constants.PAGINATION_LIMIT).toString()
-    };
+    return vendorList.where((vendor) => vendor.name.contains(pattern)).toList();
+  }
+
+
+  Future<List<Vendor>> fetchVendors() async {
 
     try{
+      var query = {
+        'tenantId' : 'pb',
+        'offset' : vendorList.length.toString(),
+        'limit' : (vendorList.length + Constants.PAGINATION_LIMIT).toString()
+      };
+
       var res = await ExpensesRepository().getVendor(query);
       if(res != null){
         vendorList.addAll(res);
+        notifyListeners();
       }
-      return filteredList;
+      return vendorList;
     }catch(e){
-      return <dynamic>[];
+      return <Vendor>[];
     }
+  }
+
+  void onSuggestionSelected(vendor){
+
   }
 
   Future<void> getExpenses() async {

@@ -84,19 +84,20 @@ dynamic _response(http.Response response) {
   var data = json.decode(
       utf8.decode(response.bodyBytes));
 
+  var errorMessage = data?['Errors']?[0]?['message'] ?? data?['Errors']?[0]?['description'];
   switch (response.statusCode) {
     case 200:
       return data;
       break;
     case 400:
-    throw  CustomException(data['message'] ?? data['description'], response.statusCode, ExceptionType.FETCHDATA);
+    throw  CustomException(errorMessage, response.statusCode, ExceptionType.FETCHDATA);
       break;
     case 401:
     case 403:
-   throw CustomException(data['message'] ?? data['description'], response.statusCode, ExceptionType.UNAUTHORIZED);
+   throw CustomException(errorMessage, response.statusCode, ExceptionType.UNAUTHORIZED);
     break;
     case 500:
     default:
-  throw  CustomException(data['message'] ?? data['description'], response.statusCode, ExceptionType.INVALIDINPUT);
+  throw  CustomException(errorMessage, response.statusCode, ExceptionType.INVALIDINPUT);
   }
 }
