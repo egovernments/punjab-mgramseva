@@ -7,6 +7,7 @@ class Url {
 
   /// Expenses
   static const String ADD_EXPENSES = 'echallan-services/eChallan/v1/_create';
+  static const String VENDOR_SEARCH = 'vendor/v1/_plainsearch';
 }
 
 class UserUrl {

@@ -23,6 +23,7 @@ import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class ExpenseDetails extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -43,9 +44,11 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   afterViewBuild() {
         Provider.of<ExpensesDetailsProvider>(context, listen: false)
     ..formKey = GlobalKey<FormState>()
+    ..suggestionsBoxController = SuggestionsBoxController()
     ..autoValidation = false
     ..getExpensesDetails()
-    ..getExpenses();
+    ..getExpenses()
+    ..getVendorList('as');
   }
 
   @override

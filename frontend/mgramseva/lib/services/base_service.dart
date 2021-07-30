@@ -81,23 +81,22 @@ class BaseService{
 }
 
 dynamic _response(http.Response response) {
+  var data = json.decode(
+      utf8.decode(response.bodyBytes));
+
   switch (response.statusCode) {
     case 200:
-      return json.decode(
-          utf8.decode(response.bodyBytes));
+      return data;
       break;
     case 400:
-    throw  CustomException(json.decode(
-        utf8.decode(response.bodyBytes))['error_description'], response.statusCode, ExceptionType.FETCHDATA);
+    throw  CustomException(data['message'] ?? data['description'], response.statusCode, ExceptionType.FETCHDATA);
       break;
     case 401:
     case 403:
-   throw CustomException(json.decode(
-       utf8.decode(response.bodyBytes))['error_description'], response.statusCode, ExceptionType.UNAUTHORIZED);
+   throw CustomException(data['message'] ?? data['description'], response.statusCode, ExceptionType.UNAUTHORIZED);
     break;
     case 500:
     default:
-  throw  CustomException(json.decode(
-      utf8.decode(response.bodyBytes))['error_description'], response.statusCode, ExceptionType.INVALIDINPUT);
+  throw  CustomException(data['message'] ?? data['description'], response.statusCode, ExceptionType.INVALIDINPUT);
   }
 }

@@ -1,13 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
+import 'package:mgramseva/model/expensesDetails/vendor.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/expense_type.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -22,6 +25,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
   late GlobalKey<FormState> formKey;
   var autoValidation = false;
   LanguageList? languageList;
+  var vendorList = <Vendor>[];
+  late SuggestionsBoxController suggestionsBoxController;
+
 
   dispose() {
     streamController.close();
@@ -29,6 +35,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   Future<void> getExpensesDetails() async {
+    expenditureDetails = ExpensesDetailsModel();
     try {
       streamController.add(expenditureDetails);
     } catch (e) {
@@ -41,7 +48,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     expenditureDetails
     ..businessService = commonProvider.getMdmsId(languageList, 'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
     ..expensesAmount?.taxHeadCode = commonProvider.getMdmsId(languageList, 'EXPENSE.${expenditureDetails.expenseType}', MDMSType.TaxHeadCode)
-    ..consumerType = 'EXPENSE' ?? commonProvider.getMdmsId(languageList, 'EXPENSE.${expenditureDetails.expenseType}', MDMSType.ConsumerType)
+    ..consumerType = 'EXPENSE'
     ..tenantId = 'pb';
 
 
@@ -54,6 +61,31 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
     } catch(e){
 
+    }
+  }
+
+  Future<dynamic> getVendorList(String pattern) async{
+
+    var filteredList = vendorList.where((vendor) => vendor.name.contains(pattern)).toList();
+
+    if(filteredList.isNotEmpty){
+      return filteredList;
+    }
+
+    var query = {
+      'tenantId' : 'pb',
+      'offset' : vendorList.length.toString(),
+      'limit' : (vendorList.length + Constants.PAGINATION_LIMIT).toString()
+    };
+
+    try{
+      var res = await ExpensesRepository().getVendor(query);
+      if(res != null){
+        vendorList.addAll(res);
+      }
+      return filteredList;
+    }catch(e){
+      return <dynamic>[];
     }
   }
 
