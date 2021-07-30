@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/changePasswordDetails/changePassword_details.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/changePassword_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/Home.dart';
@@ -9,6 +10,7 @@ import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/Button.dart';
+import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
@@ -56,20 +58,25 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   saveInputandchangepass(
       context, passwordDetails, ChangePasswordDetails password) async {
-    print(password.existingPassword);
     var changePasswordProvider =
         Provider.of<ChangePasswordProvider>(context, listen: false);
-
     if(formKey.currentState!.validate()) {
-      var data = {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+    var data = {
+        "userName": commonProvider.userDetails!.userRequest!.userName,
         "existingPassword": password.existingPassword,
         "newPassword": password.newPassword,
-        "tenantId": "pb",
-        "type": "EMPLOYEE"
+        "tenantId": commonProvider.userDetails!.userRequest!.tenantId,
+        "type": commonProvider.userDetails!.userRequest!.type
       };
 
       changePasswordProvider.changePassword(data);
-    }else{
+    Navigator.of(context)
+        .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
+      return CommonSuccess(i18.profileEdit.PROFILE_EDIT_SUCCESS, i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT, i18.common.BACK_HOME ,() => Home(0));
+        }));
+    }
+    else{
       changePasswordProvider.autoValidation = true;
       changePasswordProvider.callNotifyer();
     }
@@ -135,7 +142,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         Provider.of<ChangePasswordProvider>(context, listen: false);
     return Scaffold(
         appBar: BaseAppBar(
-          Text('mGramSeva'),
+          Text(i18.common.MGRAM_SEVA),
           AppBar(),
           <Widget>[Icon(Icons.more_vert)],
         ),
