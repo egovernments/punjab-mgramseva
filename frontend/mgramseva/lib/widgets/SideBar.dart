@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 class SideBar extends StatelessWidget {
   final Function _onSelectItem;
   SideBar(this._onSelectItem);
-  
+
   @override
   Widget build(BuildContext context) {
     const iconColor = Color(0xff505A5F);
@@ -82,9 +82,9 @@ class SideBar extends StatelessWidget {
                           .stateInfo
                           ?.languages ??
                       [],
-                  20,
-                  5,
-                  5,
+                  70,
+                  4,
+                  4,
                 )
             ])
           ],

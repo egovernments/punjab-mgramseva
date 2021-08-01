@@ -29,6 +29,9 @@ class WaterConnection {
   @JsonKey(name: "processInstance")
   ProcessInstance? processInstance;
 
+  @JsonKey(ignore: true)
+  var arrearsCtrl = TextEditingController();
+
   WaterConnection();
   factory WaterConnection.fromJson(Map<String, dynamic> json) =>
       _$WaterConnectionFromJson(json);

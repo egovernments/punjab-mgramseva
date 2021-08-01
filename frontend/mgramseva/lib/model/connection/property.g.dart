@@ -100,7 +100,9 @@ Owners _$OwnersFromJson(Map<String, dynamic> json) {
     ..emailId = json['emailId'] as String?
     ..isCorrespondenceAddress = json['isCorrespondenceAddress'] as bool?
     ..mobileNumber = json['mobileNumber'] as String?
+    ..fatherOrHusbandName = json['fatherOrHusbandName'] as String?
     ..name = json['name'] as String?
+    ..gender = json['gender'] as String?
     ..ownerType = json['ownerType'] as String?
     ..documents = (json['documents'] as List<dynamic>?)
         ?.map((e) => Documents.fromJson(e as Map<String, dynamic>))
@@ -114,7 +116,9 @@ Map<String, dynamic> _$OwnersToJson(Owners instance) => <String, dynamic>{
       'emailId': instance.emailId,
       'isCorrespondenceAddress': instance.isCorrespondenceAddress,
       'mobileNumber': instance.mobileNumber,
+      'fatherOrHusbandName': instance.fatherOrHusbandName,
       'name': instance.name,
+      'gender': instance.gender,
       'ownerType': instance.ownerType,
       'documents': instance.documents,
     };

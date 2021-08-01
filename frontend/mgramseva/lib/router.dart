@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/ConsumerDetails.dart';
+import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetails.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
 import 'package:mgramseva/screeens/SearchConnection.dart';

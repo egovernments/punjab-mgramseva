@@ -41,6 +41,8 @@ class Property {
   Property();
   factory Property.fromJson(Map<String, dynamic> json) =>
       _$PropertyFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PropertyToJson(this);
 }
 
 @JsonSerializable()
@@ -58,9 +60,22 @@ class Address {
   @JsonKey(name: "documents")
   List<Documents>? documents;
 
+  @JsonKey(ignore: true)
+  var doorNumberCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var streetNameOrNumberCtrl = TextEditingController();
+
   Address();
+
+  setText() {
+    doorNo = doorNumberCtrl.text;
+    street = streetNameOrNumberCtrl.text;
+  }
+
   factory Address.fromJson(Map<String, dynamic> json) =>
       _$AddressFromJson(json);
+  Map<String, dynamic> toJson() => _$AddressToJson(this);
 }
 
 @JsonSerializable()
@@ -89,8 +104,14 @@ class Owners {
   bool? isCorrespondenceAddress;
   @JsonKey(name: "mobileNumber")
   String? mobileNumber;
+  @JsonKey(name: "fatherOrHusbandName")
+  String? fatherOrHusbandName;
   @JsonKey(name: "name")
   String? name;
+
+  @JsonKey(name: "gender")
+  String? gender;
+
   @JsonKey(name: "ownerType")
   String? ownerType;
   @JsonKey(name: "documents")
@@ -100,10 +121,22 @@ class Owners {
   var consumerNameCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
+  var fatherOrSpouseCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
   var phoneNumberCtrl = TextEditingController();
 
   Owners();
+
+  setText() {
+    name = consumerNameCtrl.text;
+    mobileNumber = phoneNumberCtrl.text;
+    fatherOrHusbandName = fatherOrSpouseCtrl.text;
+  }
+
+  getText() {}
   factory Owners.fromJson(Map<String, dynamic> json) => _$OwnersFromJson(json);
+  Map<String, dynamic> toJson() => _$OwnersToJson(this);
 }
 
 @JsonSerializable()
