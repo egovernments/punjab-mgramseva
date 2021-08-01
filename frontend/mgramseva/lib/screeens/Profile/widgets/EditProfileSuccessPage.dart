@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/Back.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/SuccessPage.dart';
 
 class EditProfileSuccess extends StatelessWidget {
-  final String label;
-  final String subtext;
-  EditProfileSuccess(this.label, this.subtext);
+  final dynamic successHandler;
+  EditProfileSuccess(this.successHandler);
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +36,14 @@ class EditProfileSuccess extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          SuccessPage(label),
+                          SuccessPage(successHandler.header),
                           Align(
                               alignment: Alignment.center,
                               child: Container(
                                 margin: const EdgeInsets.only(
                                     left: 20, bottom: 20, top: 20),
                                 child: Text(
-                                    subtext,
+                                    successHandler.subtitle,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400)),

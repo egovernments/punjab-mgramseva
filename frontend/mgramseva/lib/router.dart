@@ -82,7 +82,7 @@ class router {
             settings: RouteSettings(name: Routes.CONSUMER_CREATE));
       case Routes.SUCCESS_VIEW:
         return MaterialPageRoute(
-            builder: (_) => EditProfileSuccess('dfgfd', 'dds'),
+            builder: (_) => EditProfileSuccess(settings.arguments),
             settings: RouteSettings(name: Routes.SUCCESS_VIEW));
       default:
         return MaterialPageRoute(

@@ -12,20 +12,15 @@ import 'package:provider/provider.dart';
 
 class ExpensesRepository extends BaseService {
 
-  Future<bool> addExpenses(Map body) async {
+  Future<Map> addExpenses(Map body) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    var result = false;
 
     var res = await makeRequest(
         url: Url.ADD_EXPENSES, body: body, method: RequestType.POST, requestInfo: RequestInfo('Rainmaker', .01, "", "create", "", "", "",
         commonProvider.userDetails!.accessToken));
-
-    if (res != null) {
-      result = true;
-    }
-    return result;
+    return res;
   }
 
 

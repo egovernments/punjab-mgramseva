@@ -6,6 +6,7 @@ import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
@@ -48,7 +49,7 @@ class _EditProfileState extends State<EditProfile> {
     );
     Navigator.of(context)
         .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
-      return EditProfileSuccess(i18.profileEdit.PROFILE_EDIT_SUCCESS, i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT);
+      return EditProfileSuccess(SuccessHandler(i18.profileEdit.PROFILE_EDIT_SUCCESS, i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT));
     }));
   }
 

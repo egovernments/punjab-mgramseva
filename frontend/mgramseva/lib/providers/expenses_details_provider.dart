@@ -63,7 +63,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
       var res = await ExpensesRepository().addExpenses({'Challan' : expenditureDetails.toJson()});
       navigatorKey.currentState?.pop();
-      navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW);
+      var challanDetails = res?['challans']?[0];
+      navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW, arguments: SuccessHandler('Expenditure Entry Successful',
+          'Expenditure entry has been made against ${challanDetails['challanNo']} under maintenance category for Rs. ${challanDetails['amount']['amount']} '));
       return;
     }on CustomException catch(e){
       Notifiers.getToastMessage('Unable to create the expense');

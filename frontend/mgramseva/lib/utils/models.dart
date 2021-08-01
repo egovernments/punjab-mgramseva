@@ -20,3 +20,10 @@ class HomeItem {
 
   const HomeItem(this.label, this.iconData, this.link);
 }
+
+
+class SuccessHandler {
+  final String header;
+  final String subtitle;
+  SuccessHandler(this.header, this.subtitle);
+}
