@@ -36,7 +36,6 @@ class AutoCompleteView extends StatelessWidget {
           TypeAheadField(
           textFieldConfiguration: TextFieldConfiguration(
               controller: controller,
-              autofocus: true,
               style: DefaultTextStyle.of(context).style.copyWith(
                   fontStyle: FontStyle.italic
               ),

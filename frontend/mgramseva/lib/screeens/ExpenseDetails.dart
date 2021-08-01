@@ -5,6 +5,7 @@ import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
@@ -125,11 +126,6 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     AutoCompleteView(labelText: 'Vendor Name', controller: expenseDetails.vendorNameCtrl, suggestionsBoxController: expensesDetailsProvider.suggestionsBoxController,
                     onSuggestionSelected: expensesDetailsProvider.onSuggestionSelected, callBack: expensesDetailsProvider.onSearchVendorList, listTile: buildTile, isRequired: true),
                     BuildTextField(
-                      'Vendor Name',
-                      expenseDetails.vendorNameCtrl,
-                      isRequired: true,
-                    ),
-                    BuildTextField(
                       'Amount (₹)',
                       expenseDetails.expensesAmount!.first!.amountCtrl,
                       isRequired: true,
@@ -143,7 +139,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                         onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
                     RadioButtonFieldBuilder(context, 'Bill Paid', expenseDetails.isBillPaid, '', '', true,
                         Constants.EXPENSESTYPE, expensesDetailsProvider.onChangeOfBillPaid),
-                   if(expenseDetails.isBillPaid ?? false) BasicDateField('Payment Date', false, expenseDetails.paidDateCtrl,
+                   if(expenseDetails.isBillPaid ?? false) BasicDateField('Payment Date', true, expenseDetails.paidDateCtrl,
                        firstDate: DateFormats.getFormattedDateToDateTime(expenseDetails.billIssuedDateCtrl.text.trim()),  lastDate: DateTime.now(), onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
                     FilePickerDemo(),
                     SizedBox(

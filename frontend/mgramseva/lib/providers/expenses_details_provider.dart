@@ -8,13 +8,16 @@ import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/expense_type.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 
 import 'common_provider.dart';
@@ -56,18 +59,24 @@ class ExpensesDetailsProvider with ChangeNotifier {
     expenditureDetails.vendorName = '1ba69f7d-103e-4680-bfb0-bb86975e16e7';
 
     try {
-     var res = ExpensesRepository().addExpenses({'Challan' : expenditureDetails.toJson()});
+      Loaders.showLoadingDialog(navigatorKey.currentContext!, label : 'Creating the Expense');
+
+      var res = await ExpensesRepository().addExpenses({'Challan' : expenditureDetails.toJson()});
+      navigatorKey.currentState?.pop();
+      navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW);
+      return;
     }on CustomException catch(e){
-
+      Notifiers.getToastMessage('Unable to create the expense');
     } catch(e){
-
+      Notifiers.getToastMessage('Unable to create the expense');
     }
+    navigatorKey.currentState?.pop();
   }
 
   Future<List<dynamic>> onSearchVendorList(pattern) async{
 
     if(vendorList.isEmpty){
-      vendorList = await fetchVendors();
+      await fetchVendors();
     }
 
     return vendorList.where((vendor) => vendor.name.contains(pattern)).toList();
