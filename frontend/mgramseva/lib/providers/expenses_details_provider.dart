@@ -79,11 +79,23 @@ class ExpensesDetailsProvider with ChangeNotifier {
       await fetchVendors();
     }
 
+    if(pattern.toString().trim().isEmpty) return <Vendor>[];
+
     return vendorList.where((vendor) => vendor.name.contains(pattern)).toList();
   }
 
 
   Future<List<Vendor>> fetchVendors() async {
+
+    // await Future.delayed(Duration(seconds: 5));
+    // return vendorList = [
+    //   Vendor('srinu', 's'),
+    //   Vendor('ramesh', 's'),
+    //   Vendor('vishu', 's'),
+    //   Vendor('gani', 's'),
+    //   Vendor('madhav', 's'),
+    //   Vendor('Sudheer', 's'),
+    // ];
 
     try{
       var query = {
@@ -104,7 +116,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   void onSuggestionSelected(vendor){
-
+    expenditureDetails.vendorNameCtrl.text = vendor?.name ?? '';
   }
 
   Future<void> getExpenses() async {

@@ -154,6 +154,6 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
         ]));
   }
 
-  Widget buildTile(context, vendor) => Text('${vendor?.name}');
+  Widget buildTile(context, vendor) => Container(padding: EdgeInsets.symmetric(vertical: 6, horizontal: 5), child: Text('${vendor?.name}', style: TextStyle(fontSize: 18)));
 
 }
