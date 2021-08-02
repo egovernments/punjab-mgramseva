@@ -57,10 +57,10 @@ class _EditProfileState extends State<EditProfile> {
             profile.toJson()
           }
       );
-      Navigator.of(context)
-        .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
-      return CommonSuccess(i18.profileEdit.PROFILE_EDIT_SUCCESS, i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT, i18.common.BACK_HOME ,() => Home(0));
-    }));
+      Navigator.push<bool>(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => CommonSuccess(i18.profileEdit.PROFILE_EDIT_SUCCESS, i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT, i18.common.BACK_HOME ,() => Home(0))));
     }else{
       userProvider.autoValidation = true;
       userProvider.callNotfyer();
@@ -95,7 +95,7 @@ class _EditProfileState extends State<EditProfile> {
                         textInputType: TextInputType.phone,
                         isDisabled: true,
                       ),
-                      RadioButtonFieldBuilder(context, 'Gender', profileDetails.gender, '', '', false,
+                      RadioButtonFieldBuilder(context, i18.common.GENDER, profileDetails.gender, '', '', false,
                         Constants.GENDER, (val) => userProvider.onChangeOfGender(val, profileDetails),
                       ),
                       BuildTextField(

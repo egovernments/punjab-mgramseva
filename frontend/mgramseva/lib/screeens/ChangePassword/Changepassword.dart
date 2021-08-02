@@ -71,10 +71,10 @@ class _ChangePasswordState extends State<ChangePassword> {
       };
 
       changePasswordProvider.changePassword(data);
-    Navigator.of(context)
-        .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
-      return CommonSuccess(i18.profileEdit.PROFILE_EDIT_SUCCESS, i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT, i18.common.BACK_HOME ,() => Home(0));
-        }));
+    Navigator.push<bool>(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => CommonSuccess(i18.password.CHANGE_PASSWORD_SUCCESS, i18.password.CHANGE_PASSWORD_SUCCESS_SUBTEXT, i18.common.BACK_HOME ,() => Home(0))));
     }
     else{
       changePasswordProvider.autoValidation = true;
