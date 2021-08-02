@@ -205,4 +205,10 @@ public class ChallanConfiguration {
 	@Value("${egov.billing.service.search.path}")
 	private String searchBill;
 	
+	@Value("${egov.collection.service.search}")
+	private String paymentSearchEndpoint;
+	
+	@Value("${egov.collection.service.update}")
+	private String paymentUpdateEndpoint;
+	
 }

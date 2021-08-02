@@ -26,8 +26,9 @@ public class ChallanQueryBuilder {
     private static final String QUERY = "SELECT challan.*,chaladdr.*,challan.id as challan_id,challan.tenantid as challan_tenantId,challan.lastModifiedTime as " +
             "challan_lastModifiedTime,challan.createdBy as challan_createdBy,challan.lastModifiedBy as challan_lastModifiedBy,challan.createdTime as " +
             "challan_createdTime,chaladdr.id as chaladdr_id," +
-            "challan.accountId as uuid,challan.description as description  FROM eg_echallan challan"
-            +INNER_JOIN_STRING
+            "challan.accountId as uuid,challan.description as description,challan.typeOfExpense as typeOfExpense, challan.billDate as billDate,  "
+            + " challan.billIssuedDate as billIssuedDate, challan.paidDate as paidDate, challan.isBillPaid as isBillPaid , challan.vendor as vendor FROM eg_echallan challan"
+            +" LEFT OUTER JOIN "
             +"eg_challan_address chaladdr ON chaladdr.echallanid = challan.id";
 
 
