@@ -59,8 +59,8 @@ class ExpensesDetailsProvider with ChangeNotifier {
       ..consumerType = 'EXPENSE'
       ..tenantId = 'pb'
       ..setText()
-    // ..vendorName = expenditureDetails?.selectedVendor?.code ?? expenditureDetails.vendorNameCtrl.text;
-    ..vendorName = '1ba69f7d-103e-4680-bfb0-bb86975e16e7';
+    ..vendorName = expenditureDetails?.selectedVendor?.id ?? expenditureDetails.vendorNameCtrl.text;
+
 
     try {
       Loaders.showLoadingDialog(navigatorKey.currentContext!,
@@ -90,7 +90,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
     if (pattern.toString().trim().isEmpty) return <Vendor>[];
 
-    return vendorList.where((vendor) => vendor.name.contains(pattern)).toList();
+    return vendorList.where((vendor) => vendor.name.toLowerCase().contains(pattern.toString().toLowerCase())).toList();
   }
 
   Future<List<Vendor>> fetchVendors() async {
@@ -98,7 +98,6 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var query = {
         'tenantId': 'pb',
         'offset': vendorList.length.toString(),
-        'limit': (vendorList.length + Constants.PAGINATION_LIMIT).toString()
       };
 
       var res = await ExpensesRepository().getVendor(query);
@@ -113,7 +112,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   void onSuggestionSelected(vendor) {
-    expenditureDetails.vendorNameCtrl.text = vendor?.name ?? '';
+    expenditureDetails
+    ..selectedVendor = vendor
+    ..vendorNameCtrl.text = vendor?.name ?? '';
 
   }
 

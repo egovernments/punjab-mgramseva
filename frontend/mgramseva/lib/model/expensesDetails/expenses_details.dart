@@ -37,6 +37,9 @@ class ExpensesDetailsModel {
   @JsonKey(name: "isBillPaid", defaultValue: false)
   bool? isBillPaid;
 
+  @JsonKey(name: "filestoreid")
+  String? fileStoreId;
+
   @JsonKey(ignore: true)
    Vendor? selectedVendor;
 

@@ -10,10 +10,10 @@ class Vendor {
   @JsonKey(name: "name")
   String name;
 
-  @JsonKey(name: "code")
-  String code;
+  @JsonKey(name: "id")
+  String id;
 
-  Vendor(this.name, this.code);
+  Vendor(this.name, this.id);
 
   factory Vendor.fromJson(Map<String, dynamic> json) =>
       _$VendorFromJson(json);
