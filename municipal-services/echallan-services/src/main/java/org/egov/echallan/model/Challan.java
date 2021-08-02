@@ -12,13 +12,16 @@
 
 package org.egov.echallan.model;
 
-import java.util.Objects;
+import java.math.BigDecimal;
+import java.util.List;
 
-import org.egov.common.contract.response.ResponseInfo;
+import javax.validation.Valid;
+
 import org.egov.echallan.web.models.calculation.Calculation;
+import org.hibernate.validator.constraints.SafeHtml;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.AllArgsConstructor;
@@ -26,11 +29,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.SafeHtml;
-
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Capture the challan details 
@@ -164,4 +162,10 @@ public class Challan {
 
 	@JsonProperty("isBillPaid")
 	private Boolean isBillPaid;
+	
+	@JsonProperty("vendorName")
+	private String vendorName;
+	
+	@JsonProperty("totalAmount")
+	private BigDecimal totalAmount;
 }
