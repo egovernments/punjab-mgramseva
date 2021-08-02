@@ -101,7 +101,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   RadioButtonFieldBuilder(
                     context,
-                    'Gender',
+                    i18.common.GENDER,
                     profileDetails.gender,
                     '',
                     '',
