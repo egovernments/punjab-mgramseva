@@ -1,7 +1,19 @@
 package org.egov.echallan.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
+import org.egov.echallan.expense.service.PaymentService;
 import org.egov.echallan.model.AuditDetails;
 import org.egov.echallan.model.Challan;
 import org.egov.echallan.model.Challan.StatusEnum;
@@ -13,23 +25,13 @@ import org.egov.echallan.repository.IdGenRepository;
 import org.egov.echallan.repository.ServiceRequestRepository;
 import org.egov.echallan.util.CommonUtils;
 import org.egov.echallan.web.models.Idgen.IdResponse;
+import org.egov.echallan.web.models.collection.Bill;
 import org.egov.echallan.web.models.user.User;
 import org.egov.echallan.web.models.user.UserDetailResponse;
-import org.egov.mdms.model.MasterDetail;
-import org.egov.mdms.model.MdmsCriteria;
-import org.egov.mdms.model.MdmsCriteriaReq;
-import org.egov.mdms.model.ModuleDetail;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import com.jayway.jsonpath.JsonPath;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.egov.echallan.util.ChallanConstants.*;
 
 @Service
 public class EnrichmentService {
@@ -40,16 +42,18 @@ public class EnrichmentService {
     private UserService userService;
     private ChallanRepository challanRepository;
     private ServiceRequestRepository serviceRequestRepository;
+    private PaymentService paymentService;
     
     @Autowired
     public EnrichmentService(IdGenRepository idGenRepository, ChallanConfiguration config, CommonUtils commonUtils, UserService userService, 
-    		ChallanRepository challanRepository,ServiceRequestRepository serviceRequestRepository) {
+    		ChallanRepository challanRepository,ServiceRequestRepository serviceRequestRepository, PaymentService paymentService) {
         this.idGenRepository = idGenRepository;
         this.config = config;
         this.commUtils = commonUtils;
         this.userService = userService;
         this.challanRepository = challanRepository;
         this.serviceRequestRepository = serviceRequestRepository;
+        this.paymentService = paymentService;
     }
 
     public void enrichCreateRequest(ChallanRequest challanRequest) {
@@ -150,10 +154,11 @@ public class EnrichmentService {
     }
     public List<Challan> enrichChallanSearch(List<Challan> challans, SearchCriteria criteria, RequestInfo requestInfo){
 
-       
+        
         SearchCriteria searchCriteria = enrichChallanSearchCriteriaWithOwnerids(criteria,challans);
         UserDetailResponse userDetailResponse = userService.getUser(searchCriteria,requestInfo);
         enrichOwner(userDetailResponse,challans);
+        enrichBillAmount(challans,requestInfo);
         return challans;
     }
     
@@ -180,6 +185,18 @@ public class EnrichmentService {
 	    	 challanRepository.setInactiveFileStoreId(challan.getTenantId().split("\\.")[0], Collections.singletonList(fileStoreId));
 	     }
 	     challan.setFilestoreid(null);
+	}
+	
+	private void enrichBillAmount(List<Challan> challans, RequestInfo requestInfo) {
+		for(Challan challan:challans)
+		{
+			ChallanRequest request = ChallanRequest.builder().requestInfo(requestInfo).challan(challan).build();
+			List<Bill> billList = paymentService.fetchBill(request);
+			if (!billList.isEmpty()) {
+				challan.setTotalAmount(billList.get(0).getTotalAmount());
+			}
+		}
+
 	}
 
 }

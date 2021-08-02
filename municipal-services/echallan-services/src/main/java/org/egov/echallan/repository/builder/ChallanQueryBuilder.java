@@ -23,14 +23,21 @@ public class ChallanQueryBuilder {
 
     private static final String INNER_JOIN_STRING = " INNER JOIN ";
 
-    private static final String QUERY = "SELECT challan.*,chaladdr.*,challan.id as challan_id,challan.tenantid as challan_tenantId,challan.lastModifiedTime as " +
+   /* private static final String QUERY = "SELECT challan.*,chaladdr.*,challan.id as challan_id,challan.tenantid as challan_tenantId,challan.lastModifiedTime as " +
             "challan_lastModifiedTime,challan.createdBy as challan_createdBy,challan.lastModifiedBy as challan_lastModifiedBy,challan.createdTime as " +
             "challan_createdTime,chaladdr.id as chaladdr_id," +
             "challan.accountId as uuid,challan.description as description,challan.typeOfExpense as typeOfExpense, challan.billDate as billDate,  "
             + " challan.billIssuedDate as billIssuedDate, challan.paidDate as paidDate, challan.isBillPaid as isBillPaid , challan.vendor as vendor FROM eg_echallan challan"
             +" LEFT OUTER JOIN "
-            +"eg_challan_address chaladdr ON chaladdr.echallanid = challan.id";
-
+            +" eg_challan_address chaladdr ON chaladdr.echallanid = challan.id  ";*/
+    
+	private static final String QUERY = "SELECT challan.*,chaladdr.*,challan.id as challan_id,challan.tenantid as challan_tenantId,challan.lastModifiedTime as "
+			+ "challan_lastModifiedTime,challan.createdBy as challan_createdBy,challan.lastModifiedBy as challan_lastModifiedBy,challan.createdTime as "
+			+ "challan_createdTime,chaladdr.id as chaladdr_id,"
+			+ "challan.accountId as uuid,challan.description as description,challan.typeOfExpense as typeOfExpense, challan.billDate as billDate,  "
+			+ " challan.billIssuedDate as billIssuedDate, challan.paidDate as paidDate, challan.isBillPaid as isBillPaid , challan.vendor as vendor, vendor.name as vendorName "
+			+ " FROM eg_echallan challan" + " LEFT OUTER JOIN "
+			+ " eg_challan_address chaladdr ON chaladdr.echallanid = challan.id   INNER JOIN eg_vendor vendor on vendor.id = challan.vendor ";
 
       private final String paginationWrapper = "SELECT * FROM " +
               "(SELECT *, DENSE_RANK() OVER (ORDER BY challan_lastModifiedTime DESC , challan_id) offset_ FROM " +
@@ -94,6 +101,19 @@ public class ChallanQueryBuilder {
                 addClauseIfRequired(preparedStmtList, builder);
                 builder.append("  challan.applicationstatus = ? ");
                 preparedStmtList.add(criteria.getStatus());
+            }
+            
+            if(criteria.getExpenseType() != null){
+            	addClauseIfRequired(preparedStmtList, builder);
+            	builder.append( " challan.typeOfExpense = ? ");
+            	preparedStmtList.add(criteria.getExpenseType());
+            }
+            
+            if(criteria.getVendorName() != null)
+            {
+            	addClauseIfRequired(preparedStmtList, builder);
+            	builder.append( " vendor.name = ? ");
+            	preparedStmtList.add(criteria.getVendorName());
             }
 
 

@@ -139,7 +139,7 @@ public class ChallanService {
 			userService.setAccountUser(request);
 			enrichmentService.enrichUpdateRequest(request);
 			calculationService.addCalculation(request);
-			if (searchResult.get(0).getApplicationStatus() == StatusEnum.ACTIVE)
+			if (request.getChallan().getApplicationStatus() == StatusEnum.PAID && searchResult.get(0).getApplicationStatus() == StatusEnum.ACTIVE)
 				paymentService.createPayment(request);
 			if (searchResult.get(0).getApplicationStatus() == StatusEnum.PAID)
 				paymentService.updatePayment(request);
