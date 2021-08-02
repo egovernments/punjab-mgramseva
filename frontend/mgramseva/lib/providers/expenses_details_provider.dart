@@ -72,8 +72,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var challanDetails = res['challans']?[0];
       navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW,
           arguments: SuccessHandler('Expenditure Entry Successful',
-              'Expenditure entry has been made against ${challanDetails['challanNo']} under maintenance category for Rs. ${challanDetails['amount']['amount']} ', i18.common.BACK_HOME));
-      return;
+              'Expenditure entry has been made against ${challanDetails['challanNo']} under maintenance category for Rs. ${challanDetails['amount'][0]['amount']} ', i18.common.BACK_HOME));
     } on CustomException catch (e) {
       navigatorKey.currentState?.pop();
       Notifiers.getToastMessage('Unable to create the expense');

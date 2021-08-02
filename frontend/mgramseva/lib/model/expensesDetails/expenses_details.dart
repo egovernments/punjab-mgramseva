@@ -23,7 +23,7 @@ class ExpensesDetailsModel {
   String? vendorName;
 
   @JsonKey(name: "amount")
-  List<ExpensesAmount>? expensesAmount = <ExpensesAmount>[];
+  List<ExpensesAmount> expensesAmount = <ExpensesAmount>[];
 
   @JsonKey(name: "billDate")
   int? billDate;

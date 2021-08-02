@@ -38,7 +38,7 @@ class ExpensesRepository extends BaseService {
         url: Url.VENDOR_SEARCH, body: body, queryParameters: query, method: RequestType.POST, requestInfo: RequestInfo('Rainmaker', .01, "", "create", "", "", "",
         commonProvider.userDetails!.accessToken, ));
 
-    if (res != null && res['vendor']) {
+    if (res != null && res['vendor'] != null) {
       vendorList = res['vendor'].map<Vendor>((e) => Vendor.fromJson(e)).toList();
     }
     return vendorList;
