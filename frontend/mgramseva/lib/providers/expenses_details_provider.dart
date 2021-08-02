@@ -18,6 +18,7 @@ import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 import 'common_provider.dart';
 
@@ -71,7 +72,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var challanDetails = res['challans']?[0];
       navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW,
           arguments: SuccessHandler('Expenditure Entry Successful',
-              'Expenditure entry has been made against ${challanDetails['challanNo']} under maintenance category for Rs. ${challanDetails['amount']['amount']} '));
+              'Expenditure entry has been made against ${challanDetails['challanNo']} under maintenance category for Rs. ${challanDetails['amount']['amount']} ', i18.common.BACK_HOME));
       return;
     } on CustomException catch (e) {
       Notifiers.getToastMessage('Unable to create the expense');

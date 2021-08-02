@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/GenerateBill/widgets/MeterReading.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
@@ -45,14 +46,6 @@ class _GenerateBillState extends State<GenerateBill> {
   var propertyType = new TextEditingController();
   var meterNumber = new TextEditingController();
 
-  _onSelectItem(int index, context) {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => Home(index),
-        ),
-        ModalRoute.withName(Routes.HOME));
-  }
 
   final formKey = GlobalKey<FormState>();
   saveInput(context) async {
@@ -68,7 +61,7 @@ class _GenerateBillState extends State<GenerateBill> {
           <Widget>[Icon(Icons.more_vert)],
         ),
         drawer: DrawerWrapper(
-          Drawer(child: SideBar((value) => _onSelectItem(value, context))),
+          Drawer(child: SideBar()),
         ),
         body: SingleChildScrollView(
             child: FormWrapper(Column(

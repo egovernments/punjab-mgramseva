@@ -5,10 +5,13 @@ import 'package:mgramseva/providers/changePassword_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
+import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
@@ -31,7 +34,9 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    var passwordProvider =
+    Provider.of<ChangePasswordProvider>(context, listen: false);
+    passwordProvider.changePasswordDetails = ChangePasswordDetails();
     super.initState();
   }
 
@@ -39,21 +44,6 @@ class _ChangePasswordState extends State<ChangePassword> {
     setState(() {
       password = context;
     });
-  }
-
-  _onSelectItem(int index, context) {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => Home(index),
-        ),
-        ModalRoute.withName(Routes.HOME));
-  }
-
-  afterViewBuild() {
-    var passwordProvider =
-        Provider.of<ChangePasswordProvider>(context, listen: false);
-    passwordProvider.getChangePassword();
   }
 
   saveInputandchangepass(
@@ -70,11 +60,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         "type": commonProvider.userDetails!.userRequest!.type
       };
 
-      changePasswordProvider.changePassword(data);
-    Navigator.of(context)
-        .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
-      return CommonSuccess(i18.profileEdit.PROFILE_EDIT_SUCCESS, i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT, i18.common.BACK_HOME ,() => Home(0));
-        }));
+      changePasswordProvider.changePassword(data, context);
     }
     else{
       changePasswordProvider.autoValidation = true;
@@ -122,10 +108,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                   SizedBox(
                     height: 20,
                   ),
-                  Button(
-                      i18.password.CHANGE_PASSWORD,
-                      () => saveInputandchangepass(
-                          context, passwordDetails.getText(), passwordDetails)),
                   PasswordHint(password)
                 ],
               )),
@@ -147,26 +129,14 @@ class _ChangePasswordState extends State<ChangePassword> {
           <Widget>[Icon(Icons.more_vert)],
         ),
         drawer: DrawerWrapper(
-          Drawer(child: SideBar((value) => _onSelectItem(value, context))),
+          Drawer(child: SideBar()),
         ),
         body: SingleChildScrollView(
-            child: StreamBuilder(
-                stream: changePasswordProvider.streamController.stream,
-                builder: (context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData) {
-                    return builduserView(snapshot.data);
-                  } else if (snapshot.hasError) {
-                    return Notifiers.networkErrorPage(context, () {});
-                  } else {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return Loaders.CircularLoader();
-                      case ConnectionState.active:
-                        return Loaders.CircularLoader();
-                      default:
-                        return Container();
-                    }
-                  }
-                })));
+            child: builduserView(changePasswordProvider.changePasswordDetails)),
+        bottomNavigationBar: BottomButtonBar(
+        i18.password.CHANGE_PASSWORD,
+            () => saveInputandchangepass(
+            context, changePasswordProvider.changePasswordDetails.getText(), changePasswordProvider.changePasswordDetails))
+    );
   }
 }

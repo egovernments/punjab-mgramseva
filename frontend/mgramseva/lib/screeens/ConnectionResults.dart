@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/ConnectionResults/ConnectionDetailsCard.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
@@ -20,14 +21,6 @@ class SearchConsumerResult extends StatefulWidget {
 }
 
 class _SearchConsumerResultState extends State<SearchConsumerResult> {
-  _onSelectItem(int index, context) {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => Home(index),
-        ),
-        ModalRoute.withName(Routes.HOME));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +31,7 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
           <Widget>[Icon(Icons.more_vert)],
         ),
         drawer: DrawerWrapper(
-          Drawer(child: SideBar((value) => _onSelectItem(value, context))),
+          Drawer(child: SideBar()),
         ),
         body: FormWrapper(Container(
             child: Column(children: [
