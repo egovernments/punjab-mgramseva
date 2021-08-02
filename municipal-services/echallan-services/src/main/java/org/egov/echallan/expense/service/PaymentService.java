@@ -50,7 +50,7 @@ public class PaymentService {
 	public PaymentResponse createPayment(ChallanRequest request) {
 		Challan challan = request.getChallan();
 		PaymentResponse response = null;
-		if (challan.getApplicationStatus() == StatusEnum.PAID && challan.getIsBillPaid()) {
+		if ( challan.getIsBillPaid()) {
 
 			Payment payment = Payment.builder().tenantId(challan.getTenantId()).paymentMode("CASH")
 					.mobileNumber(challan.getCitizen().getMobileNumber()).paidBy(challan.getCitizen().getName())
