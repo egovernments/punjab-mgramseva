@@ -8,13 +8,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
 import org.egov.echallan.model.Challan;
 import org.egov.echallan.model.ChallanRequest;
 import org.egov.echallan.model.RequestInfoWrapper;
+import org.egov.echallan.model.Challan.StatusEnum;
 import org.egov.echallan.repository.ServiceRequestRepository;
 import org.egov.echallan.web.models.vendor.Vendor;
 import org.egov.echallan.web.models.vendor.VendorResponse;
@@ -69,13 +69,13 @@ public class ExpenseValidator {
 			errorMap.put("NULL_BillDate", "Bill date is mandatory");
 		else if (challan.getBillDate() > currentTime)
 			errorMap.put("BillDate_CurrentDate", "Bill date should be before current date");
-		else if (isNull(challan.getBillIssuedDate()) && challan.getBillIssuedDate() > challan.getBillDate())
+		else if (!isNull(challan.getBillIssuedDate()) && challan.getBillIssuedDate() > challan.getBillDate())
 			errorMap.put("BillIssuedDate_After_BillDate", " Party bill date should be before bill date.");
 
 		if (challan.getIsBillPaid() && isNull(challan.getPaidDate()))
 			errorMap.put("NULL_PaidDate", "Paid date is mandatory");
 
-		if (challan.getIsBillPaid() && (!isNull(challan.getPaidDate())) && (!Objects.isNull(challan.getBillDate()))
+		if (challan.getIsBillPaid() && (!isNull(challan.getPaidDate())) && (!isNull(challan.getBillDate()))
 				&& challan.getPaidDate() < challan.getBillDate())
 			errorMap.put("PaidDate_Before_BillDate", "Paid date should be after billdate");
 
@@ -113,6 +113,33 @@ public class ExpenseValidator {
 		} catch (IllegalArgumentException e) {
 			throw new CustomException("IllegalArgumentException", "ObjectMapper convert to vendor");
 		}
+
+	}
+
+	public void validateUpdateRequest(ChallanRequest request, List<Challan> searchResult) {
+		Challan challan = request.getChallan();
+		Map<String, String> errorMap = new HashMap<>();
+		if (searchResult.size() == 0)
+			errorMap.put("INVALID_UPDATE_REQ_NOT_EXIST", "The Challan to be updated is not in database");
+		Challan searchchallan = searchResult.get(0);
+
+		if (searchchallan.getApplicationStatus() == StatusEnum.PAID) {
+			if (!challan.getTypeOfExpense().equalsIgnoreCase(searchchallan.getTypeOfExpense()))
+				errorMap.put("INVALID_UPDATE_REQ_NOTMATCHED_TYPEEXPENSE", " Update type of expense is not allowed");
+			if (!challan.getVendor().equalsIgnoreCase(searchchallan.getVendor()))
+				errorMap.put("INVALID_UPDATE_REQ_NOTMATCHED_VENDOR", " Update vendor is not allowed");
+			if (!challan.getBillDate().equals(searchchallan.getBillDate()))
+				errorMap.put("INVALID_UPDATE_REQ_NOTMATCHED_BILLDATE", " Update bill date is not allowed");
+			if (!challan.getBillIssuedDate().equals(searchchallan.getBillIssuedDate()))
+				errorMap.put("INVALID_UPDATE_REQ_NOTMATCHED_BILLISSUEDATE", " Update party bill date is not allowed");
+			if (!challan.getPaidDate().equals(searchchallan.getPaidDate()))
+				errorMap.put("INVALID_UPDATE_REQ_NOTMATCHED_PAIDDATE", " Update Paid date is not allowed");
+			if (!challan.getIsBillPaid() == searchchallan.getIsBillPaid())
+				errorMap.put("INVALID_UPDATE_REQ_NOTMATCHED_BILLPAID", " Update bill paid is not allowed");
+		}
+
+		if (!errorMap.isEmpty())
+			throw new CustomException(errorMap);
 
 	}
 
