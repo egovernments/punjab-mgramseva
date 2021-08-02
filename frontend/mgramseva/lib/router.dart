@@ -15,11 +15,12 @@ import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
 import 'package:mgramseva/screeens/HouseholdDetail.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/Updatepassword.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 
 class router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     /// Here we'll handle all the routing
-
+    currentRoute = settings.name;
     switch (settings.name) {
       case Routes.LANDING_PAGE:
         return MaterialPageRoute(builder: (_) => LandingPage());
@@ -29,7 +30,7 @@ class router {
             settings: RouteSettings(name: Routes.LOGIN));
       case Routes.HOME:
         return MaterialPageRoute(
-            builder: (_) => Home(0),
+            builder: (_) => Home(),
             settings: RouteSettings(name: Routes.HOME));
       case Routes.HOUSEHOLD:
         return MaterialPageRoute(

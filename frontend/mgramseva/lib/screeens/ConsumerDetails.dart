@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/consumer_details.dart';
 import 'package:mgramseva/screeens/Home.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -30,15 +31,6 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   var name = new TextEditingController();
   String _gender = 'FEMALE';
 
-  _onSelectItem(int index, context) {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => Home(index),
-        ),
-        ModalRoute.withName(Routes.HOME));
-  }
-
   final formKey = GlobalKey<FormState>();
   saveInput(context) async {
     print(context);
@@ -55,7 +47,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
           <Widget>[Icon(Icons.more_vert)],
         ),
         drawer: DrawerWrapper(
-          Drawer(child: SideBar((value) => _onSelectItem(value, context))),
+          Drawer(child: SideBar()),
         ),
         body: SingleChildScrollView(
             child: Column(
