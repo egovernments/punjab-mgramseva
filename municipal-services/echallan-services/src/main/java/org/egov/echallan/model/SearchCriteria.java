@@ -63,6 +63,9 @@ public class SearchCriteria {
 	@JsonProperty("expenseType")
 	private String expenseType;
 	
+	@JsonProperty("vendorName")
+	private String vendorName;
+	
 	public boolean isEmpty() {
         return (this.tenantId == null && this.ids == null  && this.mobileNumber == null 
         );

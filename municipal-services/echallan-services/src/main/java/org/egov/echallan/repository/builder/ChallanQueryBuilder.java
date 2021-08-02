@@ -108,6 +108,13 @@ public class ChallanQueryBuilder {
             	builder.append( " challan.typeOfExpense = ? ");
             	preparedStmtList.add(criteria.getExpenseType());
             }
+            
+            if(criteria.getVendorName() != null)
+            {
+            	addClauseIfRequired(preparedStmtList, builder);
+            	builder.append( " vendor.name = ? ");
+            	preparedStmtList.add(criteria.getVendorName());
+            }
 
 
         }
