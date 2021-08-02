@@ -42,13 +42,15 @@ class LanguageSelectMobileView extends StatelessWidget {
                               ],
                             )
                         ])),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      for (var language in stateInfo.languages ?? [])
-                        LanguageCard(
-                            language, stateInfo.languages ?? [], 4, 10, 10)
-                    ]),
+                Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          for (var language in stateInfo.languages ?? [])
+                            LanguageCard(
+                                language, stateInfo.languages ?? [], 85, 10, 10)
+                        ])),
                 Padding(
                     padding: EdgeInsets.all(15),
                     child: Consumer<LanguageProvider>(

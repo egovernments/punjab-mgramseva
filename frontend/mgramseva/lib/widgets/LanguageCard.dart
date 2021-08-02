@@ -12,7 +12,7 @@ class LanguageCard extends StatelessWidget {
   // final String value;
   final Languages language;
   final List<Languages> languages;
-  final int widthprect;
+  final double widthprect;
   final double cpadding;
   final double cmargin;
 
@@ -34,9 +34,7 @@ class LanguageCard extends StatelessWidget {
         },
         child: Container(
             margin: new EdgeInsets.all(cmargin),
-            width: widthprect == 20
-                ? MediaQuery.of(context).size.width / 5.2
-                : MediaQuery.of(context).size.width / widthprect,
+            width: widthprect,
             padding: new EdgeInsets.all(cpadding),
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),

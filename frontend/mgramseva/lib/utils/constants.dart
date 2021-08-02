@@ -3,6 +3,8 @@ import 'package:mgramseva/utils/models.dart';
 
 class Constants {
 
+  static const int PAGINATION_LIMIT = 75;
+
   static const String LOGIN_KEY = 'login_key';
   static const String LANGUAGE_KEY = 'language_key';
   static const String STATES_KEY = 'states_key';
