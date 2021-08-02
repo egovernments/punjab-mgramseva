@@ -57,10 +57,10 @@ class ExpensesDetailsProvider with ChangeNotifier {
           'EXPENSE.${expenditureDetails.expenseType}',
           MDMSType.TaxHeadCode)
       ..consumerType = 'EXPENSE'
-      ..tenantId = 'pb';
+      ..tenantId = 'pb'
+      ..setText()
+    ..vendorName = expenditureDetails?.selectedVendor?.id ?? expenditureDetails.vendorNameCtrl.text;
 
-    expenditureDetails.setText();
-    expenditureDetails.vendorName = '1ba69f7d-103e-4680-bfb0-bb86975e16e7';
 
     try {
       Loaders.showLoadingDialog(navigatorKey.currentContext!,
@@ -72,14 +72,14 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var challanDetails = res['challans']?[0];
       navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW,
           arguments: SuccessHandler('Expenditure Entry Successful',
-              'Expenditure entry has been made against ${challanDetails['challanNo']} under maintenance category for Rs. ${challanDetails['amount']['amount']} ', i18.common.BACK_HOME));
-      return;
+              'Expenditure entry has been made against ${challanDetails['challanNo']} under maintenance category for Rs. ${challanDetails['amount'][0]['amount']} ', i18.common.BACK_HOME));
     } on CustomException catch (e) {
+      navigatorKey.currentState?.pop();
       Notifiers.getToastMessage('Unable to create the expense');
-    } catch (e) {
+    }  catch(e){
       Notifiers.getToastMessage('Unable to create the expense');
+      navigatorKey.currentState?.pop();
     }
-    navigatorKey.currentState?.pop();
   }
 
   Future<List<dynamic>> onSearchVendorList(pattern) async {
@@ -89,25 +89,14 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
     if (pattern.toString().trim().isEmpty) return <Vendor>[];
 
-    return vendorList.where((vendor) => vendor.name.contains(pattern)).toList();
+    return vendorList.where((vendor) => vendor.name.toLowerCase().contains(pattern.toString().toLowerCase())).toList();
   }
 
   Future<List<Vendor>> fetchVendors() async {
-    // await Future.delayed(Duration(seconds: 5));
-    // return vendorList = [
-    //   Vendor('srinu', 's'),
-    //   Vendor('ramesh', 's'),
-    //   Vendor('vishu', 's'),
-    //   Vendor('gani', 's'),
-    //   Vendor('madhav', 's'),
-    //   Vendor('Sudheer', 's'),
-    // ];
-
     try {
       var query = {
         'tenantId': 'pb',
         'offset': vendorList.length.toString(),
-        'limit': (vendorList.length + Constants.PAGINATION_LIMIT).toString()
       };
 
       var res = await ExpensesRepository().getVendor(query);
@@ -122,7 +111,10 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   void onSuggestionSelected(vendor) {
-    expenditureDetails.vendorNameCtrl.text = vendor?.name ?? '';
+    expenditureDetails
+    ..selectedVendor = vendor
+    ..vendorNameCtrl.text = vendor?.name ?? '';
+
   }
 
   Future<void> getExpenses() async {
