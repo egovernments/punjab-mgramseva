@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/expensesDetails/vendor.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 
 part 'expenses_details.g.dart';
@@ -36,6 +37,9 @@ class ExpensesDetailsModel {
 
   @JsonKey(name: "isBillPaid", defaultValue: false)
   bool? isBillPaid;
+
+  @JsonKey(ignore: true)
+   Vendor? selectedVendor;
 
   @JsonKey(ignore: true)
   var vendorNameCtrl = TextEditingController();

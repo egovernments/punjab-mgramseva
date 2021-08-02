@@ -52,11 +52,12 @@ class ExpensesDetailsProvider with ChangeNotifier {
     ..businessService = commonProvider.getMdmsId(languageList, 'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
     ..expensesAmount?.first.taxHeadCode = commonProvider.getMdmsId(languageList, 'EXPENSE.${expenditureDetails.expenseType}', MDMSType.TaxHeadCode)
     ..consumerType = 'EXPENSE'
-    ..tenantId = 'pb';
+    ..tenantId = 'pb'
 
 
-    expenditureDetails.setText();
-    expenditureDetails.vendorName = '1ba69f7d-103e-4680-bfb0-bb86975e16e7';
+    ..setText()
+    // ..vendorName = expenditureDetails?.selectedVendor?.code ?? expenditureDetails.vendorNameCtrl.text;
+    ..vendorName = '1ba69f7d-103e-4680-bfb0-bb86975e16e7';
 
     try {
       Loaders.showLoadingDialog(navigatorKey.currentContext!, label : 'Creating the Expense');
@@ -65,14 +66,15 @@ class ExpensesDetailsProvider with ChangeNotifier {
       navigatorKey.currentState?.pop();
       var challanDetails = res?['challans']?[0];
       navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW, arguments: SuccessHandler('Expenditure Entry Successful',
-          'Expenditure entry has been made against ${challanDetails['challanNo']} under maintenance category for Rs. ${challanDetails['amount']['amount']} '));
+          'Expenditure entry has been made against ${challanDetails['challanNo']} under maintenance category for Rs. ${challanDetails['amount'][0]['amount']} '));
       return;
     }on CustomException catch(e){
       Notifiers.getToastMessage('Unable to create the expense');
+      navigatorKey.currentState?.pop();
     } catch(e){
       Notifiers.getToastMessage('Unable to create the expense');
+      navigatorKey.currentState?.pop();
     }
-    navigatorKey.currentState?.pop();
   }
 
   Future<List<dynamic>> onSearchVendorList(pattern) async{
@@ -119,6 +121,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
   void onSuggestionSelected(vendor){
     expenditureDetails.vendorNameCtrl.text = vendor?.name ?? '';
+
   }
 
   Future<void> getExpenses() async {
