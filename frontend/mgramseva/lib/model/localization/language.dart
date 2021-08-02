@@ -1,3 +1,6 @@
+import 'package:mgramseva/model/mdms/business_service.dart';
+import 'package:mgramseva/model/mdms/expense_type.dart';
+
 class LanguageList {
   dynamic? responseInfo;
   MdmsRes? mdmsRes;
@@ -22,12 +25,20 @@ class LanguageList {
 
 class MdmsRes {
   CommonMasters? commonMasters;
+  BillingService? billingService;
+  Expense? expense;
 
   MdmsRes({this.commonMasters});
 
   MdmsRes.fromJson(Map<String, dynamic> json) {
     commonMasters = json['common-masters'] != null
         ? new CommonMasters.fromJson(json['common-masters'])
+        : null;
+    billingService = json['BillingService'] != null
+        ? new BillingService.fromJson(json['BillingService'])
+        : null;
+    expense = json['Expense'] != null
+        ? new Expense.fromJson(json['Expense'])
         : null;
   }
 

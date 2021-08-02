@@ -8,7 +8,6 @@ import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
-import 'package:mgramseva/widgets/DatePickerFieldBuilder.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
@@ -55,10 +54,10 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
     var consumerProvider =
         Provider.of<ConsumerProvider>(context, listen: false);
     consumerProvider.getConsumerDetails();
+    consumerProvider.fetchBoundary();
   }
 
   Widget buildconsumerView(Property property) {
-    print(property.owners);
     return Column(
       children: [
         FormWrapper(Column(
@@ -120,8 +119,16 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                     //   name,
                     //   isRequired: true,
                     // ),
-                    // SelectFieldBuilder(context, 'Property Type', name, '',
-                    //     '', saveInput, options, true),
+                    Consumer<ConsumerProvider>(
+                        builder: (_, consumerProvider, child) =>
+                            SelectFieldBuilder(
+                                'Ward Name/ Number',
+                                property.address!.localityCtrl,
+                                '',
+                                '',
+                                consumerProvider.onChangeOflocaity,
+                                consumerProvider.getBoundaryList(),
+                                true)),
                     // SelectFieldBuilder(context, 'Service Type', name, '',
                     //     '', saveInput, options, true),
                     // BasicDateField("Previous Meter Reading Date", true,
@@ -158,7 +165,6 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                 child: StreamBuilder(
                     stream: userProvider.streamController.stream,
                     builder: (context, AsyncSnapshot snapshot) {
-                      print(snapshot.hasData);
                       if (snapshot.hasData) {
                         return buildconsumerView(snapshot.data);
                       } else if (snapshot.hasError) {

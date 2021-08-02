@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/property.dart';
-import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/model/connection/tenant_boundary.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
-import 'package:mgramseva/utils/global_variables.dart';
-import 'package:provider/provider.dart';
 
 class ConsumerProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
+
+  var boundaryList = <Boundary>[];
   var property = Property.fromJson({
     "landArea": "1",
     "tenantId": "pb.lodhipur",
@@ -30,12 +30,6 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   Future<void> getConsumerDetails() async {
-    var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
-
-// commonProvider.getMdmsId(languageList, 'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
-
     try {
       streamController.add(property);
     } catch (e) {
@@ -56,5 +50,39 @@ class ConsumerProvider with ChangeNotifier {
   void onChangeOfGender(String gender, Owners owners) {
     owners.gender = gender;
     notifyListeners();
+  }
+
+  Future<void> fetchBoundary() async {
+    try {
+      var result = await ConsumerRepository().getLocations({
+        "hierarchyTypeCode": "REVENUE",
+        "boundaryType": "Locality",
+        "tenantId": "pb.lodhipur"
+      });
+      boundaryList.addAll(
+          TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!);
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void onChangeOflocaity(val) {
+    print(val);
+    property.address!.locality != val;
+    // expenditureDetails.expenseType = val;
+    notifyListeners();
+  }
+
+  List<DropdownMenuItem<Object>> getBoundaryList() {
+    if (boundaryList.length > 0) {
+      return (boundaryList).map((value) {
+        return DropdownMenuItem(
+          value: value.code,
+          child: new Text(value.name!),
+        );
+      }).toList();
+    }
+    return <DropdownMenuItem<Object>>[];
   }
 }

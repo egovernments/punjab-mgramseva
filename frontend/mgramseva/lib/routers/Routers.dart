@@ -36,5 +36,7 @@ class Routes {
 
   static const String CONSUMER_CREATE = 'consumer/create';
 
+  static const String SUCCESS_VIEW = 'success_view';
+
   /// Consumer
 }

@@ -38,6 +38,7 @@ class Property {
   @JsonKey(name: "channel")
   String? channel;
 
+  onChangeOflocaity() {}
   Property();
   factory Property.fromJson(Map<String, dynamic> json) =>
       _$PropertyFromJson(json);
@@ -65,6 +66,9 @@ class Address {
 
   @JsonKey(ignore: true)
   var streetNameOrNumberCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var localityCtrl;
 
   Address();
 

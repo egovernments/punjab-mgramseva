@@ -15,6 +15,7 @@ import 'package:mgramseva/services/LocalStorage.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
@@ -138,5 +139,28 @@ class CommonProvider with ChangeNotifier {
     loginCredentails = null;
     navigatorKey.currentState
         ?.pushNamedAndRemoveUntil(Routes.LOGIN, (route) => false);
+  }
+
+  String? getMdmsId(LanguageList? mdms, String code, MDMSType mdmsType) {
+    try {
+      switch (mdmsType) {
+        case MDMSType.BusinessService:
+          return mdms?.mdmsRes?.billingService?.businessServiceList
+              ?.firstWhere((e) => e.businessService == code)
+              .code;
+        case MDMSType.ConsumerType:
+          return mdms?.mdmsRes?.billingService?.businessServiceList
+              ?.firstWhere((e) => e.businessService == code)
+              .code;
+        case MDMSType.TaxHeadCode:
+          return mdms?.mdmsRes?.billingService?.taxHeadMasterList
+              ?.firstWhere((e) => e.service == code)
+              .code;
+        default:
+          return '';
+      }
+    } catch (e) {
+      return '';
+    }
   }
 }

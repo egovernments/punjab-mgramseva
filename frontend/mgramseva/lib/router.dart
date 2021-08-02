@@ -3,6 +3,7 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetails.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
+import 'package:mgramseva/screeens/Profile/widgets/EditProfileSuccessPage.dart';
 import 'package:mgramseva/screeens/SearchConnection.dart';
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
 import 'package:mgramseva/main.dart';
@@ -79,6 +80,10 @@ class router {
         return MaterialPageRoute(
             builder: (_) => ConsumerDetails(),
             settings: RouteSettings(name: Routes.CONSUMER_CREATE));
+      case Routes.SUCCESS_VIEW:
+        return MaterialPageRoute(
+            builder: (_) => EditProfileSuccess(settings.arguments),
+            settings: RouteSettings(name: Routes.SUCCESS_VIEW));
       default:
         return MaterialPageRoute(
           builder: (_) => SelectLanguage(),

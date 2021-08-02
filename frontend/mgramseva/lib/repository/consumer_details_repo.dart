@@ -24,4 +24,19 @@ class ConsumerRepository extends BaseService {
     }
     return result;
   }
+
+  Future getLocations(Map body) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    var res = await makeRequest(
+        url: Url.EGOV_LOCATIONS,
+        queryParameters: body.map((key, value) =>
+            MapEntry(key, value == null ? null : value.toString())),
+        method: RequestType.POST,
+        requestInfo: RequestInfo('mgramseva-common', .01, "", "_create", 1, "",
+            "", commonProvider.userDetails!.accessToken));
+
+    return res;
+  }
 }

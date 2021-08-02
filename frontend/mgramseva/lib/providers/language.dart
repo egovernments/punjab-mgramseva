@@ -29,7 +29,7 @@ class LanguageProvider with ChangeNotifier {
   Future<void> getLocalizationData() async {
 
     try {
-      var localizationList = await CoreRepository().getStates(initRequestBody({"tenantId":"pb"}));
+      var localizationList = await CoreRepository().getMdms(initRequestBody({"tenantId":"pb"}));
       stateInfo = localizationList.mdmsRes?.commonMasters?.stateInfo?.first;
       if(stateInfo != null){
         stateInfo?.languages?.first.isSelected = true;
