@@ -144,7 +144,7 @@ class _LandingPageState extends State<LandingPage> {
                 return Notifiers.networkErrorPage(context, () {});
               } else {
                 if (snapshot.data != null) {
-                  return Home(0);
+                  return Home();
                 }
                 return SelectLanguage();
               }

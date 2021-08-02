@@ -25,5 +25,6 @@ class HomeItem {
 class SuccessHandler {
   final String header;
   final String subtitle;
-  SuccessHandler(this.header, this.subtitle);
+  final String backButtonText;
+  SuccessHandler(this.header, this.subtitle, this.backButtonText);
 }

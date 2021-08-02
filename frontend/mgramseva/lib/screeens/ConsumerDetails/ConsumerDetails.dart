@@ -28,13 +28,12 @@ class ConsumerDetails extends StatefulWidget {
 }
 
 class _ConsumerDetailsState extends State<ConsumerDetails> {
-  String _gender = 'FEMALE';
 
   _onSelectItem(int index, context) {
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => Home(index),
+          builder: (BuildContext context) => Home(),
         ),
         ModalRoute.withName(Routes.HOME));
   }
@@ -158,7 +157,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
           <Widget>[Icon(Icons.more_vert)],
         ),
         drawer: DrawerWrapper(
-          Drawer(child: SideBar((value) => _onSelectItem(value, context))),
+          Drawer(child: SideBar()),
         ),
         body: SingleChildScrollView(
             child: Container(

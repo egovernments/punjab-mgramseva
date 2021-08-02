@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
+import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/common_methods.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
 import 'package:provider/provider.dart';
 
 class SideBar extends StatelessWidget {
-  final Function _onSelectItem;
-  SideBar(this._onSelectItem);
-
+  SideBar();
+  
   @override
   Widget build(BuildContext context) {
     const iconColor = Color(0xff505A5F);
@@ -55,7 +57,8 @@ class SideBar extends StatelessWidget {
           // Update the state of the app
           // ...
           // Then close the drawer
-          _onSelectItem(0);
+          if(currentRoute != Routes.HOME)
+          CommonMethods.home();
         },
       ),
       ListTile(
@@ -93,13 +96,7 @@ class SideBar extends StatelessWidget {
           Icons.translate,
           color: iconColor,
         ),
-        onTap: () {
-          // Update the state of the app
-          // ...
-          // Then close the drawer
-
-          Navigator.pop(context);
-        },
+        onTap: () => Navigator.pop(context)
       ),
       ListTile(
         title: Text('Edit Profile'),
@@ -107,12 +104,7 @@ class SideBar extends StatelessWidget {
           Icons.assignment_ind,
           color: iconColor,
         ),
-        onTap: () {
-          // Update the state of the app
-          // ...
-          // Then close the drawer
-          _onSelectItem(2);
-        },
+        onTap: () => Navigator.pushNamed(context, Routes.EDIT_PROFILE)
       ),
       ListTile(
         title: Text('Log Out'),

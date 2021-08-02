@@ -56,7 +56,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
           <Widget>[],
         ),
         drawer: DrawerWrapper(
-          Drawer(child: SideBar(_onSelectItem)),
+          Drawer(child: SideBar()),
         ),
         body: SingleChildScrollView(
             child: Container(
