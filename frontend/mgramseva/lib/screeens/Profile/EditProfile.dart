@@ -65,7 +65,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Widget _builduserView(User profileDetails) {
-    return SingleChildScrollView(
+    return Container(
       child: Column(
         children: [
           HomeBack(),
@@ -143,7 +143,6 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                         child: new Text(i18.common.SAVE,
                             style: TextStyle(
-                                color: Theme.of(context).primaryColor,
                                 fontSize: 19, fontWeight: FontWeight.w500)),
                         onPressed: () => saveInputandedit(
                             context, profileDetails.getText(), profileDetails),
