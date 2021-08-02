@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/ConsumerDetails.dart';
+import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetails.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
 import 'package:mgramseva/screeens/SearchConnection.dart';
@@ -16,6 +16,8 @@ import 'package:mgramseva/screeens/HouseholdDetail.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/Updatepassword.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+
+import 'widgets/CommonSuccessPage.dart';
 
 class router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -80,6 +82,10 @@ class router {
         return MaterialPageRoute(
             builder: (_) => ConsumerDetails(),
             settings: RouteSettings(name: Routes.CONSUMER_CREATE));
+      case Routes.SUCCESS_VIEW:
+        return MaterialPageRoute(
+            builder: (_) => CommonSuccess(settings.arguments),
+            settings: RouteSettings(name: Routes.SUCCESS_VIEW));
       default:
         return MaterialPageRoute(
           builder: (_) => SelectLanguage(),

@@ -5,6 +5,7 @@ import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
@@ -21,8 +22,10 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
+import 'package:mgramseva/widgets/auto_complete.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class ExpenseDetails extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -43,8 +46,12 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   afterViewBuild() {
         Provider.of<ExpensesDetailsProvider>(context, listen: false)
     ..formKey = GlobalKey<FormState>()
+    ..suggestionsBoxController = SuggestionsBoxController()
+    ..expenditureDetails = ExpensesDetailsModel()
     ..autoValidation = false
-    ..getExpensesDetails();
+    ..getExpensesDetails()
+    ..getExpenses()
+    ..fetchVendors();
   }
 
   @override
@@ -103,22 +110,18 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     LabelText("Expense Details"),
                     SubLabelText("Provide below Information to create Expense record"),
                     SelectFieldBuilder(
-                        context,
                         'Type of Expense',
-                        expenseDetails.expenseTypeCtrl,
+                        expenseDetails.expenseType,
                         '',
                         '',
-                        saveInput,
-                        Constants.EXPENSESTYPE,
+                        expensesDetailsProvider.onChangeOfExpenses,
+                        expensesDetailsProvider.getExpenseTypeList(),
                         true),
-                    BuildTextField(
-                      'Vendor Name',
-                      expenseDetails.vendorNameCtrl,
-                      isRequired: true,
-                    ),
+                    AutoCompleteView(labelText: 'Vendor Name', controller: expenseDetails.vendorNameCtrl, suggestionsBoxController: expensesDetailsProvider.suggestionsBoxController,
+                    onSuggestionSelected: expensesDetailsProvider.onSuggestionSelected, callBack: expensesDetailsProvider.onSearchVendorList, listTile: buildTile, isRequired: true),
                     BuildTextField(
                       'Amount (₹)',
-                      expenseDetails.amountCtrl,
+                      expenseDetails.expensesAmount!.first.amountCtrl,
                       isRequired: true,
                       textInputType: TextInputType.number,
                       inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9.]"))],
@@ -130,7 +133,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                         onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
                     RadioButtonFieldBuilder(context, 'Bill Paid', expenseDetails.isBillPaid, '', '', true,
                         Constants.EXPENSESTYPE, expensesDetailsProvider.onChangeOfBillPaid),
-                   if(expenseDetails.isBillPaid ?? false) BasicDateField('Payment Date', false, expenseDetails.paidDateCtrl,
+                   if(expenseDetails.isBillPaid ?? false) BasicDateField('Payment Date', true, expenseDetails.paidDateCtrl,
                        firstDate: DateFormats.getFormattedDateToDateTime(expenseDetails.billIssuedDateCtrl.text.trim()),  lastDate: DateTime.now(), onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
                     FilePickerDemo(),
                     SizedBox(
@@ -145,5 +148,6 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
         ]));
   }
 
+  Widget buildTile(context, vendor) => Container(padding: EdgeInsets.symmetric(vertical: 6, horizontal: 5), child: Text('${vendor?.name}', style: TextStyle(fontSize: 18)));
 
 }

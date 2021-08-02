@@ -24,22 +24,22 @@ class GenerateBill extends StatefulWidget {
 class _GenerateBillState extends State<GenerateBill> {
   var services = [
     KeyValue("BILLING_SERVICE", "Billing Service"),
-  KeyValue("PROPERTY_SERVICE", "Property Service"),
-  KeyValue("RENTAL_SERVICE", "Rental Service"),
+    KeyValue("PROPERTY_SERVICE", "Property Service"),
+    KeyValue("RENTAL_SERVICE", "Rental Service"),
   ];
 
   var property = [
-  KeyValue("RESIDENTIAL", "Residential"),
-  KeyValue("NON_RESIDENTIAL", "Non Residential"),
+    KeyValue("RESIDENTIAL", "Residential"),
+    KeyValue("NON_RESIDENTIAL", "Non Residential"),
   ];
- var servicetype = [
-  KeyValue("METER_CONNECTION", "Meter Connection"),
-  KeyValue("NON_METER_CONNECTION", "Non Meter Connection"),
+  var servicetype = [
+    KeyValue("METER_CONNECTION", "Meter Connection"),
+    KeyValue("NON_METER_CONNECTION", "Non Meter Connection"),
   ];
- var metnum = [
-  KeyValue("1234456",  "1234456"),
-  KeyValue("1233456", "1233456"),
-  KeyValue("1234556", "1234556"),
+  var metnum = [
+    KeyValue("1234456", "1234456"),
+    KeyValue("1233456", "1233456"),
+    KeyValue("1234556", "1234556"),
   ];
   var serviceCat = new TextEditingController();
   var serviceType = new TextEditingController();
@@ -74,18 +74,34 @@ class _GenerateBillState extends State<GenerateBill> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                     LabelText("Generate Consumer Bill"),
-                    SelectFieldBuilder(context, 'Service Category', serviceCat,
-                        '', '', saveInput, services, true),
-                    SelectFieldBuilder(context, 'Property Type', serviceType,
-                        '', '', saveInput, property, true),
-                    SelectFieldBuilder(context, 'Service Type', propertyType,
-                        '', '', saveInput, servicetype, true),
-                    SelectFieldBuilder(context, 'Meter Number', meterNumber, '',
-                        '', saveInput, metnum, true),
+                    SelectFieldBuilder(
+                      'Service Category',
+                      serviceCat.text,
+                      '',
+                      '',
+                      saveInput,
+                      getDropDownList(services),
+                      true,
+                    ),
+                    SelectFieldBuilder('Property Type', serviceType.text, '',
+                        '', saveInput, getDropDownList(property), true),
+                    SelectFieldBuilder('Service Type', propertyType.text, '',
+                        '', saveInput, getDropDownList(servicetype), true),
+                    SelectFieldBuilder('Meter Number', meterNumber.text, '', '',
+                        saveInput, getDropDownList(metnum), true),
                     MeterReading("Previous Meter Reading"),
                     MeterReading("New Meter Reading"),
-                   BottomButtonBar('Generate Bill', () => {})
+                    BottomButtonBar('Generate Bill', () => {})
                   ]))
             ]))));
+  }
+
+  List<DropdownMenuItem<Object>> getDropDownList(List<KeyValue>? list) {
+    return (list ?? <KeyValue>[]).map((value) {
+      return DropdownMenuItem(
+        value: value.key,
+        child: new Text(value.label),
+      );
+    }).toList();
   }
 }

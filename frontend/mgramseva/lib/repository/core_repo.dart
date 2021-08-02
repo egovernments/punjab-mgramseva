@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
@@ -23,7 +24,7 @@ class CoreRepository extends BaseService {
     return labelList;
   }
 
-  Future<LanguageList> getStates(Map body) async {
+  Future<LanguageList> getMdms(Map body) async {
     late LanguageList languageList;
     var res = await makeRequest(
         url: Url.MDMS, body: body, method: RequestType.POST, requestInfo: RequestInfo('mgramseva-common', .01, "", "_search", 1, "", "", ""));

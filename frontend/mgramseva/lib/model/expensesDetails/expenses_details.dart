@@ -1,11 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 
 part 'expenses_details.g.dart';
 
 @JsonSerializable()
 class ExpensesDetailsModel {
-
   @JsonKey(name: "tenantId")
   String? tenantId;
 
@@ -22,7 +22,7 @@ class ExpensesDetailsModel {
   String? vendorName;
 
   @JsonKey(name: "amount")
-  ExpensesAmount? expensesAmount;
+  List<ExpensesAmount>? expensesAmount = <ExpensesAmount>[];
 
   @JsonKey(name: "billDate")
   int? billDate;
@@ -36,20 +36,8 @@ class ExpensesDetailsModel {
   @JsonKey(name: "isBillPaid", defaultValue: false)
   bool? isBillPaid;
 
-  @JsonKey(name: "isFullPaid", defaultValue: false)
-  bool? isFullPaid;
-
-  @JsonKey(name: "isPartialPaid", defaultValue: false)
-  bool? isPartialPaid;
-
   @JsonKey(ignore: true)
   var vendorNameCtrl = TextEditingController();
-
-  @JsonKey(ignore: true)
-  var expenseTypeCtrl = TextEditingController();
-
-  @JsonKey(ignore: true)
-  var amountCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
   var billDateCtrl = TextEditingController();
@@ -64,18 +52,27 @@ class ExpensesDetailsModel {
 
   setText() {
     vendorName = vendorNameCtrl.text;
-    expenseType = expenseTypeCtrl.text;
-    expensesAmount?.amount = amountCtrl.text;
+    expensesAmount?.first.amount = expensesAmount?.first.amountCtrl.text;
+    billDate = DateFormats.dateToTimeStamp(billDateCtrl.text);
+    if (billIssuedDateCtrl.text.trim().isNotEmpty)
+      billIssuedDate = DateFormats.dateToTimeStamp(billIssuedDateCtrl.text);
+    if (paidDateCtrl.text.trim().isNotEmpty)
+      paidDate = DateFormats.dateToTimeStamp(paidDateCtrl.text);
   }
 
   getText() {
+    if (expensesAmount == null || expensesAmount!.isEmpty) {
+      expensesAmount?.add(ExpensesAmount());
+    }
+
     vendorNameCtrl.text = vendorName ?? '';
-    expenseTypeCtrl.text = expenseType ?? '';
-    amountCtrl.text = expensesAmount?.amount ?? '';
+    expensesAmount?.first.amountCtrl.text = expensesAmount?.first.amount ?? '';
   }
 
   factory ExpensesDetailsModel.fromJson(Map<String, dynamic> json) =>
       _$ExpensesDetailsModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExpensesDetailsModelToJson(this);
 }
 
 @JsonSerializable()
@@ -86,8 +83,13 @@ class ExpensesAmount {
   @JsonKey(name: "amount")
   String? amount;
 
+  @JsonKey(ignore: true)
+  var amountCtrl = TextEditingController();
+
   ExpensesAmount();
 
   factory ExpensesAmount.fromJson(Map<String, dynamic> json) =>
       _$ExpensesAmountFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExpensesAmountToJson(this);
 }

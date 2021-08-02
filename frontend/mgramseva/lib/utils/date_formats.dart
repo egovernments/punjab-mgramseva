@@ -57,8 +57,13 @@ class DateFormats {
     }
   }
 
-  static int dateToTimeStamp(DateTime dateTime) {
-   return dateTime.toUtc().millisecondsSinceEpoch;
+  static int dateToTimeStamp(String dateTime) {
+    try {
+      return getFormattedDateToDateTime(dateTime)!.toUtc()
+          .millisecondsSinceEpoch;
+    } catch(e) {
+      return 0;
+    }
   }
 
   static String timeStampToDate(int timeInMillis, {String? format}) {
