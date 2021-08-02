@@ -7,6 +7,8 @@ import 'package:mgramseva/repository/changePassword_details_repo.dart';
 
 class ChangePasswordProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
+  var formKey = GlobalKey<FormState>();
+  var autoValidation = false;
 
   dispose() {
     streamController.close();
@@ -33,5 +35,10 @@ class ChangePasswordProvider with ChangeNotifier {
       streamController.addError('error');
     }
   }
+
+  callNotifyer() {
+    notifyListeners();
+  }
+
 }
 

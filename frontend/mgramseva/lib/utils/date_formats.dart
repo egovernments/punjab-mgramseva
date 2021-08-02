@@ -16,7 +16,7 @@ class DateFormats {
     if (date == null || date.trim().isEmpty) return null;
     try {
       var dateTime = DateTime.parse(date).toLocal();
-      return dateTime ?? null;
+      return dateTime;
     } on Exception catch (e) {
       return null;
     }

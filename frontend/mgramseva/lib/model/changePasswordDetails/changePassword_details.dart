@@ -6,12 +6,12 @@ part 'changePassword_details.g.dart';
 
 @JsonSerializable()
 class ChangePasswordDetails {
+  @JsonKey(name: "userName")
+  String? userName;
   @JsonKey(name: "existingPassword")
   String? existingPassword;
   @JsonKey(name: "newPassword")
   String? newPassword;
-  @JsonKey(name: "mobileNumber")
-  String? mobileNumber;
   @JsonKey(name: "tenantId")
   String? tenantId;
   @JsonKey(name: "type")
@@ -26,7 +26,6 @@ class ChangePasswordDetails {
   ChangePasswordDetails();
 
   getText(){
-    print(currentpasswordCtrl.text);
     existingPassword = currentpasswordCtrl.text;
     newPassword = newpasswordCtrl.text;
   }
