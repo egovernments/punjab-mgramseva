@@ -53,10 +53,10 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
         appBar: BaseAppBar(
           Text('mGramSeva'),
           AppBar(),
-          <Widget>[Icon(Icons.more_vert)],
+          <Widget>[],
         ),
         drawer: DrawerWrapper(
-          Drawer(child: SideBar(_onSelectItem)),
+          Drawer(child: SideBar()),
         ),
         body: SingleChildScrollView(
             child: Container(
@@ -111,5 +111,8 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                     ])))));
   }
 
-  Widget get _buildShare => TextButton.icon(onPressed: (){}, icon: Image.asset('assets/png/whats_app.png'), label: Text('Share'));
+  Widget get _buildShare => TextButton.icon(
+      onPressed: () {},
+      icon: Image.asset('assets/png/whats_app.png'),
+      label: Text('Share'));
 }

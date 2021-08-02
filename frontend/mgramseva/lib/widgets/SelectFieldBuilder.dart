@@ -11,8 +11,8 @@ class SelectFieldBuilder extends StatelessWidget {
   final List<DropdownMenuItem<Object>> options;
   final bool isRequired;
 
-  SelectFieldBuilder(this.labelText, this.value, this.input,
-      this.prefixText, this.widget, this.options, this.isRequired);
+  SelectFieldBuilder(this.labelText, this.value, this.input, this.prefixText,
+      this.widget, this.options, this.isRequired);
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +37,15 @@ class SelectFieldBuilder extends StatelessWidget {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(1.0)),
       ),
       value: value,
-      validator:  (val){
-        if(isRequired != null && isRequired && val == null){
+      validator: (val) {
+        if (isRequired != null && isRequired && val == null) {
           return ApplicationLocalizations.of(context)
               .translate(labelText + '_REQUIRED');
         }
         return null;
       },
       items: options,
-      onChanged: widget,
+      onChanged: (value) => widget(value),
     );
 
     return LayoutBuilder(builder: (context, constraints) {

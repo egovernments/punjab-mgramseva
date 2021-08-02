@@ -70,7 +70,6 @@ class _LoginState extends State<Login> {
                   isRequired: true,
                   obscureText: true,
                   maxLines: 1,
-                  inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9@. ]"))],
                 ),
                 GestureDetector(
                   onTap: () => Navigator.push<bool>(

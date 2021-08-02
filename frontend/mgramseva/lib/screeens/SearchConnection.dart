@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
@@ -27,14 +28,6 @@ class _SearchConnectionState extends State<SearchConnection> {
 
   var name = new TextEditingController();
   var isVisible = true;
-  _onSelectItem(int index, context) {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => Home(index),
-        ),
-        ModalRoute.withName(Routes.HOME));
-  }
 
   final formKey = GlobalKey<FormState>();
   saveInput(context) async {
@@ -50,7 +43,7 @@ class _SearchConnectionState extends State<SearchConnection> {
           <Widget>[Icon(Icons.more_vert)],
         ),
         drawer: DrawerWrapper(
-          Drawer(child: SideBar((value) => _onSelectItem(value, context))),
+          Drawer(child: SideBar()),
         ),
         body: SingleChildScrollView(
             child: FormWrapper(

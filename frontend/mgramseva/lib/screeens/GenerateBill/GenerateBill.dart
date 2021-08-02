@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/GenerateBill/widgets/MeterReading.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
@@ -23,36 +24,28 @@ class GenerateBill extends StatefulWidget {
 class _GenerateBillState extends State<GenerateBill> {
   var services = [
     KeyValue("BILLING_SERVICE", "Billing Service"),
-  KeyValue("PROPERTY_SERVICE", "Property Service"),
-  KeyValue("RENTAL_SERVICE", "Rental Service"),
+    KeyValue("PROPERTY_SERVICE", "Property Service"),
+    KeyValue("RENTAL_SERVICE", "Rental Service"),
   ];
 
   var property = [
-  KeyValue("RESIDENTIAL", "Residential"),
-  KeyValue("NON_RESIDENTIAL", "Non Residential"),
+    KeyValue("RESIDENTIAL", "Residential"),
+    KeyValue("NON_RESIDENTIAL", "Non Residential"),
   ];
- var servicetype = [
-  KeyValue("METER_CONNECTION", "Meter Connection"),
-  KeyValue("NON_METER_CONNECTION", "Non Meter Connection"),
+  var servicetype = [
+    KeyValue("METER_CONNECTION", "Meter Connection"),
+    KeyValue("NON_METER_CONNECTION", "Non Meter Connection"),
   ];
- var metnum = [
-  KeyValue("1234456",  "1234456"),
-  KeyValue("1233456", "1233456"),
-  KeyValue("1234556", "1234556"),
+  var metnum = [
+    KeyValue("1234456", "1234456"),
+    KeyValue("1233456", "1233456"),
+    KeyValue("1234556", "1234556"),
   ];
   var serviceCat = new TextEditingController();
   var serviceType = new TextEditingController();
   var propertyType = new TextEditingController();
   var meterNumber = new TextEditingController();
 
-  _onSelectItem(int index, context) {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => Home(index),
-        ),
-        ModalRoute.withName(Routes.HOME));
-  }
 
   final formKey = GlobalKey<FormState>();
   saveInput(context) async {
@@ -68,7 +61,7 @@ class _GenerateBillState extends State<GenerateBill> {
           <Widget>[Icon(Icons.more_vert)],
         ),
         drawer: DrawerWrapper(
-          Drawer(child: SideBar((value) => _onSelectItem(value, context))),
+          Drawer(child: SideBar()),
         ),
         body: SingleChildScrollView(
             child: FormWrapper(Column(
@@ -81,28 +74,34 @@ class _GenerateBillState extends State<GenerateBill> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                     LabelText("Generate Consumer Bill"),
-                    SelectFieldBuilder('Service Category', serviceCat.text,
-                        '', '', saveInput, getDropDownList(services), true, ),
-                    SelectFieldBuilder('Property Type', serviceType.text,
-                        '', '', saveInput, getDropDownList(property), true),
-                    SelectFieldBuilder('Service Type', propertyType.text,
-                        '', '', saveInput, getDropDownList(servicetype), true),
-                    SelectFieldBuilder('Meter Number', meterNumber.text, '',
-                        '', saveInput, getDropDownList(metnum), true),
+                    SelectFieldBuilder(
+                      'Service Category',
+                      serviceCat.text,
+                      '',
+                      '',
+                      saveInput,
+                      getDropDownList(services),
+                      true,
+                    ),
+                    SelectFieldBuilder('Property Type', serviceType.text, '',
+                        '', saveInput, getDropDownList(property), true),
+                    SelectFieldBuilder('Service Type', propertyType.text, '',
+                        '', saveInput, getDropDownList(servicetype), true),
+                    SelectFieldBuilder('Meter Number', meterNumber.text, '', '',
+                        saveInput, getDropDownList(metnum), true),
                     MeterReading("Previous Meter Reading"),
                     MeterReading("New Meter Reading"),
-                   BottomButtonBar('Generate Bill', () => {})
+                    BottomButtonBar('Generate Bill', () => {})
                   ]))
             ]))));
   }
 
-
-  List<DropdownMenuItem<Object>> getDropDownList(List<KeyValue>? list){
-      return (list ?? <KeyValue>[]).map((value) {
-        return DropdownMenuItem(
-          value: value.key,
-          child: new Text(value.label!),
-        );
-      }).toList();
-    }
+  List<DropdownMenuItem<Object>> getDropDownList(List<KeyValue>? list) {
+    return (list ?? <KeyValue>[]).map((value) {
+      return DropdownMenuItem(
+        value: value.key,
+        child: new Text(value.label),
+      );
+    }).toList();
+  }
 }

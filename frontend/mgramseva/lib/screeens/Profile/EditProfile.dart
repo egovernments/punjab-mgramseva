@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
+import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
+import 'package:mgramseva/utils/validators/Validators.dart';
+import 'package:mgramseva/widgets/BaseAppBar.dart';
+import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/notifyers.dart';
-
-import 'widgets/EditProfileSuccessPage.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 
 class EditProfile extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -22,9 +26,6 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-
-  final formKey = GlobalKey<FormState>();
-
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
@@ -32,55 +33,91 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   afterViewBuild() {
-    var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
-    userProvider.getUserProfileDetails({
-      "tenantId": "pb",
-      "id": [117],
-      "mobileNumber": "9191919149"
-    });
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+    print(commonProvider.userDetails!.userRequest!.tenantId);
+    Provider.of<UserProfileProvider>(context, listen: false)
+      ..formKey = GlobalKey<FormState>()
+      ..autoValidation = false
+      ..getUserProfileDetails({
+        "tenantId": commonProvider.userDetails!.userRequest!.tenantId,
+        "id": [commonProvider.userDetails!.userRequest!.id],
+        "mobileNumber": commonProvider.userDetails!.userRequest!.mobileNumber
+      });
   }
+
   saveInputandedit(context, profileDetails, User profile) async {
-    var editProfileProvider = Provider.of<UserEditProfileProvider>(context, listen: false);
-    editProfileProvider.editUserProfileDetails(
-      {
-        "user":
-        profile.toJson()
-      }
-    );
-    Navigator.of(context)
-        .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
-      return EditProfileSuccess(SuccessHandler(i18.profileEdit.PROFILE_EDIT_SUCCESS, i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT));
-    }));
+    var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
+
+    if (userProvider.formKey.currentState!.validate()) {
+      var editProfileProvider =
+          Provider.of<UserEditProfileProvider>(context, listen: false);
+      editProfileProvider.editUserProfileDetails({"user": profile.toJson()});
+      Navigator.of(context).pushReplacement(
+          new MaterialPageRoute(builder: (BuildContext context) {
+        return CommonSuccess(SuccessHandler(
+            i18.profileEdit.PROFILE_EDIT_SUCCESS,
+            i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT, i18.common.BACK_HOME));
+      }));
+    } else {
+      userProvider.autoValidation = true;
+      userProvider.callNotfyer();
+    }
   }
 
   Widget _builduserView(User profileDetails) {
-    return Container(
+    return SingleChildScrollView(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           HomeBack(),
-          Card(
-              child: Column(
+          Consumer<UserProfileProvider>(
+            builder: (_, userProvider, child) => Form(
+              autovalidateMode: userProvider.autoValidation
+                  ? AutovalidateMode.always
+                  : AutovalidateMode.disabled,
+              key: userProvider.formKey,
+              child: Card(
+                  child: Column(
                 children: [
                   BuildTextField(
                     i18.common.NAME,
                     profileDetails.nameCtrl,
+                    inputFormatter: [
+                      FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]"))
+                    ],
                     isRequired: true,
                   ),
                   BuildTextField(
                     i18.common.PHONE_NUMBER,
                     profileDetails.phoneNumberCtrl,
+                    prefixText: '+91',
                     isRequired: true,
+                    inputFormatter: [
+                      FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                    ],
+                    maxLength: 10,
+                    validator: Validators.mobileNumberValidator,
+                    textInputType: TextInputType.phone,
+                    isDisabled: true,
                   ),
-                  Consumer<UserProfileProvider>(
-                      builder : (_, userProvider, child ) => RadioButtonFieldBuilder(context, i18.common.GENDER, profileDetails.gender, '', '', true,
-                        Constants.GENDER, (val) => userProvider.onChangeOfGender(val, profileDetails),
-                      )),
+                  RadioButtonFieldBuilder(
+                    context,
+                    'Gender',
+                    profileDetails.gender,
+                    '',
+                    '',
+                    false,
+                    Constants.GENDER,
+                    (val) => userProvider.onChangeOfGender(val, profileDetails),
+                  ),
                   BuildTextField(
                     i18.common.EMAIL,
                     profileDetails.emailIdCtrl,
-                    isRequired: true,
+                    inputFormatter: [
+                      FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9@. ]"))
+                    ],
+                    message: 'Invalid email format, example@mail.com',
+                    pattern:
+                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
                   ),
                   GestureDetector(
                     onTap: () => Navigator.push<bool>(
@@ -94,8 +131,8 @@ class _EditProfileState extends State<EditProfile> {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               i18.password.CHANGE_PASSWORD,
-                              style:
-                              TextStyle(color: Theme.of(context).primaryColor),
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor),
                             ))),
                   ),
                   FractionallySizedBox(
@@ -107,13 +144,16 @@ class _EditProfileState extends State<EditProfile> {
                         child: new Text(i18.common.SAVE,
                             style: TextStyle(
                                 fontSize: 19, fontWeight: FontWeight.w500)),
-                        onPressed: () => {saveInputandedit(context, profileDetails.getText(), profileDetails)},
+                        onPressed: () => saveInputandedit(
+                            context, profileDetails.getText(), profileDetails),
                       )),
                   SizedBox(
                     height: 20,
                   )
                 ],
-              ))
+              )),
+            ),
+          )
         ],
       ),
     );
@@ -123,7 +163,14 @@ class _EditProfileState extends State<EditProfile> {
   Widget build(BuildContext context) {
     var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
 
-    return SingleChildScrollView(
+    return Scaffold(
+      appBar : BaseAppBar(
+        Text(i18.common.MGRAM_SEVA),
+        AppBar(),
+        <Widget>[Icon(Icons.more_vert)],
+      ),
+      body: Container(
+        alignment: Alignment.center,
         child: StreamBuilder(
             stream: userProvider.streamController.stream,
             builder: (context, AsyncSnapshot snapshot) {
@@ -141,6 +188,8 @@ class _EditProfileState extends State<EditProfile> {
                     return Container();
                 }
               }
-            }));
+            }),
+      ),
+    );
   }
 }

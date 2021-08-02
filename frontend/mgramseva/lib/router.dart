@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/ConsumerDetails.dart';
+import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetails.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
-import 'package:mgramseva/screeens/Profile/widgets/EditProfileSuccessPage.dart';
 import 'package:mgramseva/screeens/SearchConnection.dart';
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
 import 'package:mgramseva/main.dart';
@@ -16,11 +15,14 @@ import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
 import 'package:mgramseva/screeens/HouseholdDetail.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/Updatepassword.dart';
+import 'package:mgramseva/utils/global_variables.dart';
+
+import 'widgets/CommonSuccessPage.dart';
 
 class router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     /// Here we'll handle all the routing
-
+    currentRoute = settings.name;
     switch (settings.name) {
       case Routes.LANDING_PAGE:
         return MaterialPageRoute(builder: (_) => LandingPage());
@@ -30,7 +32,7 @@ class router {
             settings: RouteSettings(name: Routes.LOGIN));
       case Routes.HOME:
         return MaterialPageRoute(
-            builder: (_) => Home(0),
+            builder: (_) => Home(),
             settings: RouteSettings(name: Routes.HOME));
       case Routes.HOUSEHOLD:
         return MaterialPageRoute(
@@ -82,7 +84,7 @@ class router {
             settings: RouteSettings(name: Routes.CONSUMER_CREATE));
       case Routes.SUCCESS_VIEW:
         return MaterialPageRoute(
-            builder: (_) => EditProfileSuccess(settings.arguments),
+            builder: (_) => CommonSuccess(settings.arguments),
             settings: RouteSettings(name: Routes.SUCCESS_VIEW));
       default:
         return MaterialPageRoute(

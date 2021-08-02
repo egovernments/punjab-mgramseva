@@ -9,9 +9,9 @@ part of 'changePassword_details.dart';
 ChangePasswordDetails _$ChangePasswordDetailsFromJson(
     Map<String, dynamic> json) {
   return ChangePasswordDetails()
+    ..userName = json['userName'] as String?
     ..existingPassword = json['existingPassword'] as String?
     ..newPassword = json['newPassword'] as String?
-    ..mobileNumber = json['mobileNumber'] as String?
     ..tenantId = json['tenantId'] as String?
     ..type = json['type'] as String?;
 }
@@ -19,9 +19,9 @@ ChangePasswordDetails _$ChangePasswordDetailsFromJson(
 Map<String, dynamic> _$ChangePasswordDetailsToJson(
         ChangePasswordDetails instance) =>
     <String, dynamic>{
+      'userName': instance.userName,
       'existingPassword': instance.existingPassword,
       'newPassword': instance.newPassword,
-      'mobileNumber': instance.mobileNumber,
       'tenantId': instance.tenantId,
       'type': instance.type,
     };

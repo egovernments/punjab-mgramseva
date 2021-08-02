@@ -65,7 +65,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
           <Widget>[Icon(Icons.more_vert)],
         ),
         drawer: DrawerWrapper(
-          Drawer(child: SideBar((value) => _onSelectItem(value, context))),
+          Drawer(child: SideBar()),
         ),
         body: SingleChildScrollView(
             child: StreamBuilder(
@@ -89,15 +89,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
         bottomNavigationBar: BottomButtonBar('Submit', expensesDetailsProvider.validateExpensesDetails));
   }
 
-  _onSelectItem(int index, context) {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => Home(index),
-        ),
-        ModalRoute.withName(Routes.HOME));
+  saveInput(context) async {
+    print(context);
   }
-
 
   Widget _buildUserView(ExpensesDetailsModel expenseDetails) {
 
@@ -127,7 +121,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     onSuggestionSelected: expensesDetailsProvider.onSuggestionSelected, callBack: expensesDetailsProvider.onSearchVendorList, listTile: buildTile, isRequired: true),
                     BuildTextField(
                       'Amount (₹)',
-                      expenseDetails.expensesAmount!.first!.amountCtrl,
+                      expenseDetails.expensesAmount!.first.amountCtrl,
                       isRequired: true,
                       textInputType: TextInputType.number,
                       inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9.]"))],

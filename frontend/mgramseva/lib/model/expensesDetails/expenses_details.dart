@@ -7,7 +7,6 @@ part 'expenses_details.g.dart';
 
 @JsonSerializable()
 class ExpensesDetailsModel {
-
   @JsonKey(name: "tenantId")
   String? tenantId;
 
@@ -59,15 +58,14 @@ class ExpensesDetailsModel {
     vendorName = vendorNameCtrl.text;
     expensesAmount?.first.amount = expensesAmount?.first.amountCtrl.text;
     billDate = DateFormats.dateToTimeStamp(billDateCtrl.text);
-    if(billIssuedDateCtrl.text.trim().isNotEmpty)
+    if (billIssuedDateCtrl.text.trim().isNotEmpty)
       billIssuedDate = DateFormats.dateToTimeStamp(billIssuedDateCtrl.text);
-    if(paidDateCtrl.text.trim().isNotEmpty)
+    if (paidDateCtrl.text.trim().isNotEmpty)
       paidDate = DateFormats.dateToTimeStamp(paidDateCtrl.text);
   }
 
   getText() {
-
-    if(expensesAmount == null || expensesAmount!.isEmpty){
+    if (expensesAmount == null || expensesAmount!.isEmpty) {
       expensesAmount?.add(ExpensesAmount());
     }
 

@@ -47,4 +47,15 @@ class Validators {
     }
     return null;
   }
+
+  static String? passwordComparision(String? val, String label, [String? val1]){
+    if(val!.trim().isEmpty){
+      return '$label';
+    }else if(!(RegExp(r'^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$').hasMatch(val))){
+      return 'Invalid format';
+    }else if(val1 != null && val.trim() != val1.trim()){
+      return 'New Password and Confirm password should be same';
+    }
+    return null;
+  }
 }
