@@ -135,7 +135,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     BasicDateField('Bill Date', true, expenseDetails.billDateCtrl,
                         firstDate: expenseDetails.billIssuedDateCtrl.text.trim().isEmpty ? null : DateFormats.getFormattedDateToDateTime(expenseDetails.billIssuedDateCtrl.text.trim(), ),
                         lastDate: DateTime.now(), onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
-                    BasicDateField('Party Bill Date', false, expenseDetails.billIssuedDateCtrl, lastDate: expenseDetails.billDateCtrl.text.trim().isEmpty ? DateTime.now() : DateFormats.getFormattedDateToDateTime(expenseDetails.billDateCtrl.text.trim()),
+                    BasicDateField('Party Bill Date', true, expenseDetails.billIssuedDateCtrl, lastDate: expenseDetails.billDateCtrl.text.trim().isEmpty ? DateTime.now() : DateFormats.getFormattedDateToDateTime(expenseDetails.billDateCtrl.text.trim()),
                         onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
                     RadioButtonFieldBuilder(context, 'Bill Paid', expenseDetails.isBillPaid, '', '', true,
                         Constants.EXPENSESTYPE, expensesDetailsProvider.onChangeOfBillPaid),

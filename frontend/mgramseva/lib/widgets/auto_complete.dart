@@ -33,7 +33,7 @@ class AutoCompleteView extends StatelessWidget {
                     style: TextStyle(
                         fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),
               ])),
-          TypeAheadField(
+          TypeAheadFormField(
           textFieldConfiguration: TextFieldConfiguration(
               controller: controller,
               decoration: InputDecoration(
@@ -46,7 +46,13 @@ class AutoCompleteView extends StatelessWidget {
             return await callBack(pattern);
           },
           itemBuilder: listTile,
-          onSuggestionSelected: onSuggestionSelected
+          onSuggestionSelected: onSuggestionSelected,
+          validator: isRequired == null || !isRequired! ? null :  (val){
+            if(val == null || val!.trim().isEmpty){
+              return '$labelText _required';
+            }
+            return null;
+          },
         ),
     ]
       ),

@@ -69,6 +69,7 @@ class ExpensesDetailsModel {
 
     vendorNameCtrl.text = vendorName ?? '';
     expensesAmount?.first.amountCtrl.text = expensesAmount?.first.amount ?? '';
+    isBillPaid ??= false;
   }
 
   factory ExpensesDetailsModel.fromJson(Map<String, dynamic> json) =>
