@@ -8,6 +8,7 @@ class i18 {
   static CreateConsumer consumer = const CreateConsumer();
   static SearchConnection searchConnection = const SearchConnection();
   static ProfileEdit profileEdit = const ProfileEdit();
+  static _Payment payment = const _Payment();
 
 }
 
@@ -37,6 +38,16 @@ class Common {
   String get BACK_HOME => 'CORE_COMMON_BACK_HOME_BUTTON';
   String get MGRAM_SEVA => 'CORE_COMMON_MGRAM_SEVA_LABEL';
   String get COLLECT_PAYMENT => 'COLLECT_PAYMENT';
+  String get PAYMENT => 'COLLECT_PAYMENT';
+
+  String get CONNECTION_ID => 'CONNECTION_ID'; //Connection ID
+  String get CONSUMER_NAME => 'CONSUMER_NAME'; //Consumer Name
+  String get TOTAL_DUE_AMOUNT => 'TOTAL_DUE_AMOUNT'; //Total Amount Due
+  String get PAYMENT_AMOUNT => 'PAYMENT_AMOUNT'; //Payment Amount
+  String get PAYMENT_METHOD => 'PAYMENT_METHOD'; //Payment Method
+  String get PAYMENT_INFORMATION => 'PAYMENT_INFORMATION'; //Payment Information
+  String get WATER_CHARGES => 'WATER_CHARGES'; //Please enter Mobile number
+  String get ARREARS => 'ARREARS'; //Please enter Mobile number
 
   /// File Picker
   String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED'; ///Temporary files removed with success.
@@ -119,5 +130,16 @@ class _Validators {
   /// Re confirm password
   String get INVALID_FORMAT => 'INVALID_FORMAT'; // Invalid format
   String get CONFIRM_RECONFIRM_SHOULD_SAME => 'CONFIRM_RECONFIRM_SHOULD_SAME'; //New Password and Confirm password should be same
+
+}
+
+class _Payment {
+  const _Payment();
+
+  String get HIDE_DETAILS => 'HIDE_DETAILS'; //Hide Details
+  String get VIEW_DETAILS => 'VIEW_DETAILS'; //View Details
+  String get BILL_ID_NUMBER => 'VIEW_DETAILS'; //Bill ID No
+  String get BILL_PERIOD => 'BILL_PERIOD'; //Bill Period
+  String get FREE_ESTIMATE => 'FREE_ESTIMATE'; //Fee Estimate
 
 }

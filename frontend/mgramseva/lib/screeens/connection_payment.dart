@@ -91,21 +91,21 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         child: Column(
           crossAxisAlignment : CrossAxisAlignment.start,
           children : [
-              _buildLabelValue('Connection ID', '${connectionPayment.connectionId}'),
-              _buildLabelValue('Consumer Name', '${connectionPayment.consumerName}'),
+              _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.CONNECTION_ID)}', '${connectionPayment.connectionId}'),
+              _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.CONSUMER_NAME)}', '${connectionPayment.consumerName}'),
               Consumer<ConsumerPaymentProvider>(
                 builder: (_, consumerPaymentProvider, child) => Visibility(
                     visible: connectionPayment.viewDetails,
                     child: _buildViewDetails(connectionPayment)
                 ),
               ),
-              _buildLabelValue('Total Amount Due', '₹ ${connectionPayment.totalDueAmount}'),
+              _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.TOTAL_DUE_AMOUNT)}', '₹ ${connectionPayment.totalDueAmount}'),
             Consumer<ConsumerPaymentProvider>(
               builder: (_, consumerPaymentProvider, child) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: InkWell(
                   onTap: () =>  Provider.of<ConsumerPaymentProvider>(context, listen: false).onClickOfViewOrHideDetails(connectionPayment),
-                  child: Text(connectionPayment.viewDetails ? 'Hide Details' : 'View Details',
+                  child: Text(connectionPayment.viewDetails ? '${ApplicationLocalizations.of(context).translate(i18.payment.HIDE_DETAILS)}' : '${ApplicationLocalizations.of(context).translate(i18.payment.VIEW_DETAILS)}',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Theme.of(context).primaryColor),
                   ),
                 ),
@@ -122,9 +122,9 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
       builder: (_, consumerPaymentProvider, child) => Card(
         child : Wrap(
           children: [
-            RadioButtonFieldBuilder(context, 'Payment Amount', connectionPayment.paymentAmount, '', '', true,
+            RadioButtonFieldBuilder(context, '${ApplicationLocalizations.of(context).translate(i18.common.PAYMENT_AMOUNT)}', connectionPayment.paymentAmount, '', '', true,
                 Constants.PAYMENT_AMOUNT, (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(connectionPayment, val, true)),
-             RadioButtonFieldBuilder(context, 'Payment Method', connectionPayment.paymentMethod, '', '', true,
+             RadioButtonFieldBuilder(context, '${ApplicationLocalizations.of(context).translate(i18.common.PAYMENT_METHOD)}', connectionPayment.paymentMethod, '', '', true,
           Constants.PAYMENT_METHOD, (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(connectionPayment, val))
           ],
         )
@@ -142,17 +142,17 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             child: Column(
              crossAxisAlignment : CrossAxisAlignment.start,
             children : [
-              subTitle('Payment Information'),
-            _buildLabelValue('Bill ID No', '${connectionPayment.billIdNo}'),
-            _buildLabelValue('Bill Period', '${connectionPayment.billPeriod}'),
+              subTitle('${ApplicationLocalizations.of(context).translate(i18.common.PAYMENT_INFORMATION)}'),
+            _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.payment.BILL_ID_NUMBER)}', '${connectionPayment.billIdNo}'),
+            _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.payment.BILL_PERIOD)}', '${connectionPayment.billPeriod}'),
             ]),
           ),
           Column(
             crossAxisAlignment : CrossAxisAlignment.start,
             children: [
-              subTitle('Fee Estimate:', 18),
-              _buildLabelValue('Water Charges', '₹ ${connectionPayment.waterCharges}'),
-              _buildLabelValue('Arrears', '₹ ${connectionPayment.arrears}'),
+              subTitle('${ApplicationLocalizations.of(context).translate(i18.payment.FREE_ESTIMATE)}:', 18),
+              _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.WATER_CHARGES)}', '₹ ${connectionPayment.waterCharges}'),
+              _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.ARREARS)}', '₹ ${connectionPayment.arrears}'),
               _buildWaterCharges(connectionPayment.waterChargesList ?? <WaterCharges>[], constraints)
             ],
           )
@@ -199,11 +199,11 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
     return TableRow(
       children: [
         TableCell(
-          child: constraints.maxWidth > 760 ? Text('Water Charges ${waterCharges.date}', style: style) : Wrap(
+          child: constraints.maxWidth > 760 ? Text('${ApplicationLocalizations.of(context).translate(i18.common.WATER_CHARGES)} ${waterCharges.date}', style: style) : Wrap(
             direction: Axis.vertical,
             spacing: 3,
             children: [
-              Text('Water Charges', style: style),
+              Text('${ApplicationLocalizations.of(context).translate(i18.common.WATER_CHARGES)}', style: style),
               Text('${waterCharges.date}', style : style),
             ],
           ),
