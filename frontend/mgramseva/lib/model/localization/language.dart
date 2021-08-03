@@ -35,7 +35,6 @@ class MdmsRes {
   MdmsRes({this.commonMasters});
 
   MdmsRes.fromJson(Map<String, dynamic> json) {
-    print(json);
     commonMasters = json['common-masters'] != null
         ? new CommonMasters.fromJson(json['common-masters'])
         : null;

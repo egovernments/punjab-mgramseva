@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/model/connection/property.dart';
-import 'package:mgramseva/providers/consumer_details.dart';
+import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -41,6 +42,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
     Provider.of<ConsumerProvider>(context, listen: false)
       ..getConsumerDetails()
       ..fetchBoundary()
+      ..autoValidation = false
       ..formKey = GlobalKey<FormState>()
       ..getPropertyTypeandConnectionType();
   }
@@ -51,6 +53,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
         FormWrapper(Consumer<ConsumerProvider>(
             builder: (_, consumerProvider, child) => Form(
                 key: consumerProvider.formKey,
+                autovalidateMode: consumerProvider.autoValidation
+                    ? AutovalidateMode.always
+                    : AutovalidateMode.disabled,
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,6 +71,10 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             BuildTextField(
                               i18.consumer.CONSUMER_NAME,
                               property.owners!.first.consumerNameCtrl,
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[A-Za-z ]"))
+                              ],
                               isRequired: true,
                             ),
                             Consumer<ConsumerProvider>(
@@ -86,11 +95,22 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               i18.consumer.FATHER_SPOUSE_NAME,
                               property.owners!.first.fatherOrSpouseCtrl,
                               isRequired: true,
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[A-Za-z ]"))
+                              ],
                             ),
                             BuildTextField(
                               i18.common.PHONE_NUMBER,
                               property.owners!.first.phoneNumberCtrl,
                               prefixText: '+91-',
+                              isRequired: true,
+                              textInputType: TextInputType.number,
+                              maxLength: 10,
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[0-9]"))
+                              ],
                             ),
                             Consumer<ConsumerProvider>(
                                 builder: (_, consumerProvider, child) =>
@@ -103,11 +123,11 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             BuildTextField(
                               i18.consumer.DOOR_NO,
                               property.address.doorNumberCtrl,
-                              isRequired: true,
                             ),
                             BuildTextField(
                               i18.consumer.STREET_NUM_NAME,
                               property.address.streetNameOrNumberCtrl,
+                              isRequired: true,
                             ),
                             // BuildTextField(
                             //   'Gram Panchayat Name',
@@ -170,6 +190,13 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                         .waterconnection
                                                         .meterIdCtrl,
                                                     isRequired: true,
+                                                    textInputType:
+                                                        TextInputType.number,
+                                                    inputFormatter: [
+                                                      FilteringTextInputFormatter
+                                                          .allow(
+                                                              RegExp("[0-9.]"))
+                                                    ],
                                                   ),
                                                 ],
                                               )
@@ -178,6 +205,11 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                           i18.consumer.ARREARS,
                                           consumerProvider
                                               .waterconnection.arrearsCtrl,
+                                          textInputType: TextInputType.number,
+                                          inputFormatter: [
+                                            FilteringTextInputFormatter.allow(
+                                                RegExp("[0-9.]"))
+                                          ],
                                           isRequired: true,
                                         )
                                       ],
@@ -224,7 +256,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                         }
                       }
                     }))),
-        bottomNavigationBar: BottomButtonBar(
-            i18.common.SUBMIT, () => {userProvider.validateExpensesDetails()}));
+        bottomNavigationBar: BottomButtonBar(i18.common.SUBMIT,
+            () => {userProvider.validateExpensesDetails(context)}));
   }
 }

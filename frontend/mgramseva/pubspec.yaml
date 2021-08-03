@@ -32,6 +32,7 @@ dependencies:
   horizontal_data_table: ^3.4.2
   file_picker: ^3.0.3
   http: ^0.13.3
+  flutter_portal: ^0.4.0
   provider: ^5.0.0
   fluttertoast: ^8.0.7
   flutter_spinkit: ^5.0.0

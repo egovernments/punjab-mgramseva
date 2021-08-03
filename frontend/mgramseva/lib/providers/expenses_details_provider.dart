@@ -77,9 +77,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
               i18.common.BACK_HOME));
     } on CustomException catch (e) {
       navigatorKey.currentState?.pop();
-      Notifiers.getToastMessage('Unable to create the expense');
+      Notifiers.getToastMessage('Unable to create the expense', 'ERROR');
     } catch (e) {
-      Notifiers.getToastMessage('Unable to create the expense');
+      Notifiers.getToastMessage('Unable to create the expense', 'ERROR');
       navigatorKey.currentState?.pop();
     }
   }

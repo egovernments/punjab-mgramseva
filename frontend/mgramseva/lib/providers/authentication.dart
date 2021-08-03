@@ -45,18 +45,19 @@ class AuthenticationProvider with ChangeNotifier {
         Navigator.of(context)
             .pushNamedAndRemoveUntil(Routes.HOME, (route) => false);
       } else {
-        Notifiers.getToastMessage('Unable to login');
+        Notifiers.getToastMessage('Unable to login', 'ERROR');
       }
     } on CustomException catch (e) {
       Navigator.pop(context);
       if (e.exceptionType == ExceptionType.UNAUTHORIZED) {
-        Notifiers.getToastMessage('${e.message ?? "Invalid Credentials"}');
+        Notifiers.getToastMessage(
+            '${e.message ?? "Invalid Credentials"}', 'ERROR');
       } else {
-        Notifiers.getToastMessage('Unable to login');
+        Notifiers.getToastMessage('Unable to login', 'ERROR');
       }
     } catch (e) {
       Navigator.pop(context);
-      Notifiers.getToastMessage('Unable to login');
+      Notifiers.getToastMessage('Unable to login', 'ERROR');
     }
   }
 

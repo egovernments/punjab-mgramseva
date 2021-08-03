@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class SubLabelText extends StatelessWidget {
   final input;
@@ -11,7 +12,7 @@ class SubLabelText extends StatelessWidget {
             child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Text(
-            input,
+            ApplicationLocalizations.of(context).translate(input),
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             textAlign: TextAlign.left,
           ),

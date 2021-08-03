@@ -11,10 +11,15 @@ import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/services/MDMS.dart';
+import 'package:mgramseva/utils/custom_exception.dart';
+import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 
 class ConsumerProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
   late GlobalKey<FormState> formKey;
+  var autoValidation = false;
   LanguageList? languageList;
   var waterconnection = WaterConnection.fromJson({
     "tenantId": "pb.lodhipur",
@@ -52,7 +57,7 @@ class ConsumerProvider with ChangeNotifier {
     }
   }
 
-  void validateExpensesDetails() async {
+  void validateExpensesDetails(context) async {
     if (formKey.currentState!.validate()) {
       property.owners!.first.setText();
       property.address.setText();
@@ -64,16 +69,22 @@ class ConsumerProvider with ChangeNotifier {
         waterconnection.processInstance = processInstance;
       }
 
-      // notifyListeners();
       try {
-        var result = await ConsumerRepository().addProperty(property.toJson());
+        Loaders.showLoadingDialog(context);
+        var result1 = await ConsumerRepository().addProperty(property.toJson());
         // result.then((value) => {print(value['Properties'].first.propertyId)});
-        waterconnection.propertyId = result['Properties'].first!['propertyId'];
-        result =
+        waterconnection.propertyId = result1['Properties'].first!['propertyId'];
+        var result2 =
             await ConsumerRepository().addconnection(waterconnection.toJson());
+        Navigator.pop(context);
+        if (result2 != null) {
+          Notifiers.getToastMessage('Registered Successfully', 'SUCCESS');
+        }
       } catch (e) {
-        print(e);
+        Navigator.pop(context);
       }
+    } else {
+      autoValidation = true;
     }
   }
 
@@ -154,8 +165,9 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   onChangeOfConnectionType(val) {
-    print(val);
     waterconnection.connectionType = val;
+    waterconnection.meterIdCtrl.clear();
+    waterconnection.previousReadingDateCtrl.clear();
     notifyListeners();
   }
 

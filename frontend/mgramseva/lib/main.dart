@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/authentication.dart';
 import 'package:mgramseva/providers/changePassword_details_provider.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/providers/consumer_details.dart';
+import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/Env/app_config.dart';
@@ -27,7 +27,7 @@ import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 void main() {
-   setPathUrlStrategy();
+  setPathUrlStrategy();
   setEnvironment(Environment.dev);
 
   runApp(new MyApp());
@@ -64,7 +64,6 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
           ChangeNotifierProvider(create: (_) => ExpensesDetailsProvider()),
           ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
-
           ChangeNotifierProvider(create: (_) => UserEditProfileProvider()),
           ChangeNotifierProvider(create: (_) => ExpensesDetailsProvider()),
         ],
