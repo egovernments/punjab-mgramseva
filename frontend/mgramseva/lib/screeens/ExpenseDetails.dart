@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/Home.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -26,6 +27,7 @@ import 'package:mgramseva/widgets/auto_complete.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class ExpenseDetails extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -86,7 +88,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     }
                   }
                 })),
-        bottomNavigationBar: BottomButtonBar('Submit', expensesDetailsProvider.validateExpensesDetails));
+        bottomNavigationBar: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.SUBMIT)}', () => expensesDetailsProvider.validateExpensesDetails(context)));
   }
 
   saveInput(context) async {
@@ -107,33 +109,34 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                   key: expensesDetailsProvider.formKey,
                   autovalidateMode: expensesDetailsProvider.autoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
                   child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                    LabelText("Expense Details"),
-                    SubLabelText("Provide below Information to create Expense record"),
+                    LabelText("${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_DETAILS)}"),
+                    SubLabelText("${ApplicationLocalizations.of(context).translate(i18.expense.PROVIDE_INFO_TO_CREATE_EXPENSE)}"),
                     SelectFieldBuilder(
-                        'Type of Expense',
+                        '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)}',
                         expenseDetails.expenseType,
                         '',
                         '',
                         expensesDetailsProvider.onChangeOfExpenses,
                         expensesDetailsProvider.getExpenseTypeList(),
                         true),
-                    AutoCompleteView(labelText: 'Vendor Name', controller: expenseDetails.vendorNameCtrl, suggestionsBoxController: expensesDetailsProvider.suggestionsBoxController,
+                    AutoCompleteView(labelText: '${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)}', controller: expenseDetails.vendorNameCtrl, suggestionsBoxController: expensesDetailsProvider.suggestionsBoxController,
                     onSuggestionSelected: expensesDetailsProvider.onSuggestionSelected, callBack: expensesDetailsProvider.onSearchVendorList, listTile: buildTile, isRequired: true),
                     BuildTextField(
-                      'Amount (₹)',
+                      '${ApplicationLocalizations.of(context).translate(i18.expense.AMOUNT)}',
                       expenseDetails.expensesAmount!.first.amountCtrl,
                       isRequired: true,
                       textInputType: TextInputType.number,
                       inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9.]"))],
+                      labelSuffix: '(₹)',
                     ),
-                    BasicDateField('Bill Date', true, expenseDetails.billDateCtrl,
+                    BasicDateField('${ApplicationLocalizations.of(context).translate(i18.expense.BILL_DATE)}', true, expenseDetails.billDateCtrl,
                         firstDate: expenseDetails.billIssuedDateCtrl.text.trim().isEmpty ? null : DateFormats.getFormattedDateToDateTime(expenseDetails.billIssuedDateCtrl.text.trim(), ),
                         lastDate: DateTime.now(), onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
-                    BasicDateField('Party Bill Date', true, expenseDetails.billIssuedDateCtrl, lastDate: expenseDetails.billDateCtrl.text.trim().isEmpty ? DateTime.now() : DateFormats.getFormattedDateToDateTime(expenseDetails.billDateCtrl.text.trim()),
+                    BasicDateField('${ApplicationLocalizations.of(context).translate(i18.expense.PARTY_BILL_DATE)}', true, expenseDetails.billIssuedDateCtrl, lastDate: expenseDetails.billDateCtrl.text.trim().isEmpty ? DateTime.now() : DateFormats.getFormattedDateToDateTime(expenseDetails.billDateCtrl.text.trim()),
                         onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
-                    RadioButtonFieldBuilder(context, 'Bill Paid', expenseDetails.isBillPaid, '', '', true,
+                    RadioButtonFieldBuilder(context, '${ApplicationLocalizations.of(context).translate(i18.expense.BILL_PAID)}', expenseDetails.isBillPaid, '', '', true,
                         Constants.EXPENSESTYPE, expensesDetailsProvider.onChangeOfBillPaid),
-                   if(expenseDetails.isBillPaid ?? false) BasicDateField('Payment Date', true, expenseDetails.paidDateCtrl,
+                   if(expenseDetails.isBillPaid ?? false) BasicDateField('${ApplicationLocalizations.of(context).translate(i18.expense.PAYMENT_DATE)}', true, expenseDetails.paidDateCtrl,
                        firstDate: DateFormats.getFormattedDateToDateTime(expenseDetails.billIssuedDateCtrl.text.trim()),  lastDate: DateTime.now(), onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
                     FilePickerDemo(),
                     SizedBox(
