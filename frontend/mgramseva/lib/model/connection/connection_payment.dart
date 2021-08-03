@@ -41,6 +41,9 @@ class ConnectionPayment {
   @JsonKey(ignore: true)
   String paymentMethod = Constants.PAYMENT_METHOD.first.key;
 
+  @JsonKey(ignore: true)
+  bool viewDetails = false;
+
   ConnectionPayment();
 
   setText() {

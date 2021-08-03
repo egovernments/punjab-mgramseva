@@ -1,3 +1,4 @@
+import 'package:mgramseva/model/connection/connection_payment.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_payment.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
@@ -41,7 +42,8 @@ class ConsumerRepository extends BaseService {
     return res;
   }
 
-  Future<ConsumerPayment?> getConsumerPaymentDetails() async {
+  Future<ConnectionPayment?> getConsumerPaymentDetails() async {
+    ConnectionPayment? connectionPayment;
     // var commonProvider = Provider.of<CommonProvider>(
     //     navigatorKey.currentContext!,
     //     listen: false);
@@ -53,10 +55,27 @@ class ConsumerRepository extends BaseService {
     //     requestInfo: RequestInfo('mgramseva-common', .01, "", "_create", 1, "",
     //         "", commonProvider.userDetails!.accessToken));
 
-    // var res = {
-    //
-    // };
-    //
-    // return res;
+    var res = {
+      'connectionId' : 'ESDRD2433',
+      'consumerName' : 'eGOV',
+      'totalAmount' : 1234,
+      'billIdNo' : 'WE2323',
+      'billPeriod' : 'Jan 2020 2021',
+      'waterCharges' : 1234,
+      'arrears' : 400,
+      'waterChargesList' : [
+        {
+          'waterCharge' : 123,
+          'date' : 'Feb 2021 2022'
+        },
+
+      ],
+      'totalDueAmount' : 1234
+    };
+
+    if(res != null){
+      connectionPayment = ConnectionPayment.fromJson(res);
+    }
+    return connectionPayment;
   }
 }
