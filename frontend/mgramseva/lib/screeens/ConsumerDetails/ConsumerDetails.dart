@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/property.dart';
 import 'package:mgramseva/providers/consumer_details.dart';
-import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
-import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
@@ -70,11 +68,10 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                    LabelText("Consumer Details"),
-                    SubLabelText(
-                        "Provide below Information to create a consumer record"),
+                    LabelText(i18.consumer.CONSUMER_DETAILS_LABEL),
+                    SubLabelText(i18.consumer.CONSUMER_DETAILS_SUB_LABEL),
                     BuildTextField(
-                      'Consumer Name',
+                      i18.consumer.CONSUMER_NAME,
                       property.owners!.first.consumerNameCtrl,
                       isRequired: true,
                     ),
@@ -92,28 +89,28 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                   val, property.owners!.first),
                             )),
                     BuildTextField(
-                      'Father Name',
+                      i18.consumer.FATHER_SPOUSE_NAME,
                       property.owners!.first.fatherOrSpouseCtrl,
                       isRequired: true,
                     ),
                     BuildTextField(
-                      'Phone Name',
+                      i18.common.PHONE_NUMBER,
                       property.owners!.first.phoneNumberCtrl,
                       prefixText: '+91-',
                     ),
                     Consumer<ConsumerProvider>(
                         builder: (_, consumerProvider, child) => BuildTextField(
-                              'Old Connection ID',
+                              i18.consumer.OLD_CONNECTION_ID,
                               consumerProvider.waterconnection.meterIdCtrl,
                               isRequired: true,
                             )),
                     BuildTextField(
-                      'Door Number',
+                      i18.consumer.DOOR_NO,
                       property.address.doorNumberCtrl,
                       isRequired: true,
                     ),
                     BuildTextField(
-                      'Street Name',
+                      i18.consumer.STREET_NUM_NAME,
                       property.address.streetNameOrNumberCtrl,
                     ),
                     // BuildTextField(
@@ -124,7 +121,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                     Consumer<ConsumerProvider>(
                         builder: (_, consumerProvider, child) =>
                             SelectFieldBuilder(
-                                'Ward Name/ Number',
+                                i18.consumer.WARD,
                                 property.address.localityCtrl,
                                 '',
                                 '',
@@ -134,19 +131,27 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                     Consumer<ConsumerProvider>(
                         builder: (_, consumerProvider, child) =>
                             SelectFieldBuilder(
-                                'Property Type',
+                                i18.consumer.PROPERTY_TYPE,
                                 property.propertyType,
                                 '',
                                 '',
                                 consumerProvider.onChangeOfPropertyType,
                                 consumerProvider.getPropertTypeList(),
                                 true)),
-                    // SelectFieldBuilder(context, 'Service Type', name, '',
-                    //     '', saveInput, options, true),
+                    Consumer<ConsumerProvider>(
+                        builder: (_, consumerProvider, child) =>
+                            SelectFieldBuilder(
+                                i18.consumer.SERVICE_TYPE,
+                                consumerProvider.waterconnection.action,
+                                '',
+                                '',
+                                saveInput,
+                                [],
+                                true)),
 
                     Consumer<ConsumerProvider>(
                         builder: (_, consumerProvider, child) => BasicDateField(
-                            'Previous Meter Reading Date',
+                            i18.consumer.PREV_METER_READING_DATE,
                             true,
                             consumerProvider
                                 .waterconnection.previousReadingDateCtrl,
@@ -157,7 +162,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
 
                     Consumer<ConsumerProvider>(
                         builder: (_, consumerProvider, child) => BuildTextField(
-                              'Areas (₹)',
+                              i18.consumer.ARREARS,
                               consumerProvider.waterconnection.arrearsCtrl,
                               isRequired: true,
                             )),
@@ -176,7 +181,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
 
     return Scaffold(
         appBar: BaseAppBar(
-          Text('mGramSeva'),
+          Text(i18.common.MGRAM_SEVA),
           AppBar(),
           <Widget>[Icon(Icons.more_vert)],
         ),
@@ -204,6 +209,6 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                       }
                     }))),
         bottomNavigationBar: BottomButtonBar(
-            'Submit', () => {userProvider.validateExpensesDetails()}));
+            i18.common.SUBMIT, () => {userProvider.validateExpensesDetails()}));
   }
 }

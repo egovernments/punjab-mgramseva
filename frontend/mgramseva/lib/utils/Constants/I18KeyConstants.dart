@@ -7,7 +7,6 @@ class i18 {
   static CreateConsumer consumer = const CreateConsumer();
   static SearchConnection searchConnection = const SearchConnection();
   static ProfileEdit profileEdit = const ProfileEdit();
-
 }
 
 class Login {
@@ -37,7 +36,6 @@ class Common {
   String get MGRAM_SEVA => 'CORE_COMMON_MGRAM_SEVA_LABEL';
 }
 
-
 class Password {
   const Password();
   String get CHANGE_PASSWORD => 'CORE_COMMON_CHANGE_PASSWORD';
@@ -45,10 +43,11 @@ class Password {
   String get NEW_PASSWORD => 'CORE_LOGIN_NEW_PASSWORD';
   String get CONFIRM_PASSWORD => 'CORE_LOGIN_CONFIRM_NEW_PASSWORD';
   String get CHANGE_PASSWORD_SUCCESS => 'CHANGE_PASSWORD_SUCCESS_LABEL';
-  String get CHANGE_PASSWORD_SUCCESS_SUBTEXT => 'CHANGE_PASSWORD_SUCCESS_SUB_TEXT';
+  String get CHANGE_PASSWORD_SUCCESS_SUBTEXT =>
+      'CHANGE_PASSWORD_SUCCESS_SUB_TEXT';
 }
 
-class Expense{
+class Expense {
   const Expense();
   String get VENDOR_NAME => 'CORE_EXPENSE_VENDOR_NAME';
   String get EXPENSE_TYPE => 'CORE_EXPENSE_TYPE_OF_EXPENSES';
@@ -59,7 +58,7 @@ class Expense{
   String get ATTACH_BILL => 'CORE_EXPENSE_ATTACH_BILL';
 }
 
-class CreateConsumer{
+class CreateConsumer {
   const CreateConsumer();
   String get CONSUMER_NAME => 'CREATE_CONSUMER_NAME';
   String get FATHER_SPOUSE_NAME => 'CONSUMER_FATHER_SPOUSE_NAME';
@@ -67,21 +66,25 @@ class CreateConsumer{
   String get DOOR_NO => 'CONSUMER_DOOR_NO';
   String get STREET_NUM_NAME => 'CONSUMER_STREETNUM_STREETNAME';
   String get WARD => 'CONSUMER_WARD_LABEL';
+  String get PROPERTY_TYPE => 'CONSUMER_PROPERTY_TYPE';
+  String get CONSUMER_DETAILS_LABEL => 'CONSUMER_DETAILS_LABEL';
+  String get CONSUMER_DETAILS_SUB_LABEL => 'CONSUMER_DETAILS_SUB_LABEL';
   String get GP_NAME => 'CONSUMER_GP_NAME';
-  String get Arrears => 'CONSUMER_ARREARS';
+  String get ARREARS => 'CONSUMER_ARREARS';
+  String get SERVICE_TYPE => 'CONSUMER_SERVICE_TYPE';
+  String get PREV_METER_READING_DATE => 'CONSUMER_PREV_METER_READING_DATE';
 }
 
-class SearchConnection{
+class SearchConnection {
   const SearchConnection();
   String get OWNER_MOB_NUM => 'SEARCH_CONNECTION_OWNER_MOB_NUM';
   String get CONSUMER_NAME => 'SEARCH_CONNECTION_NAME_OF_CONSUMER';
   String get OLD_CONNECTION_ID => 'SEARCH_CONNECTION_OLD_CONNECTION_ID';
   String get NEW_CONNECTION_ID => 'SEARCH_CONNECTION_NEW_CONNECTION_ID';
   String get SEARCH_BAR => 'SEARCH_CONNECTION_SEARCH';
-
 }
 
-class ProfileEdit{
+class ProfileEdit {
   const ProfileEdit();
   String get PROFILE_EDIT_SUCCESS => 'EDIT_PROFILE_SUCCESS_LABEL';
   String get PROFILE_EDITED_SUCCESS_SUBTEXT => 'EDIT_PROFILE_SUCCESS_SUB_TEXT';
