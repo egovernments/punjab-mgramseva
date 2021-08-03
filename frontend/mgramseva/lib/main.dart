@@ -69,7 +69,6 @@ class _MyAppState extends State<MyApp> {
 
           ChangeNotifierProvider(create: (_) => UserEditProfileProvider()),
           ChangeNotifierProvider(create: (_) => ExpensesDetailsProvider()),
-          ChangeNotifierProvider(create: (_) => ConsumerPayment()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(
