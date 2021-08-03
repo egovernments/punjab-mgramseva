@@ -49,7 +49,7 @@ class AutoCompleteView extends StatelessWidget {
           onSuggestionSelected: onSuggestionSelected,
           validator: isRequired == null || !isRequired! ? null :  (val){
             if(val == null || val!.trim().isEmpty){
-              return '$labelText _required';
+              return '${labelText}_REQUIRED';
             }
             return null;
           },

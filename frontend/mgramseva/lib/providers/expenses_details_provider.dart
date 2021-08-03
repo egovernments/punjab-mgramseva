@@ -10,6 +10,7 @@ import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
@@ -45,9 +46,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addExpensesDetails() async {
+  Future<void> addExpensesDetails(BuildContext context) async {
     var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
+        context,
         listen: false);
     expenditureDetails
       ..businessService = commonProvider.getMdmsId(languageList,
@@ -63,22 +64,24 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
 
     try {
-      Loaders.showLoadingDialog(navigatorKey.currentContext!,
-          label: 'Creating the Expense');
+      Loaders.showLoadingDialog(context);
 
       var res = await ExpensesRepository()
           .addExpenses({'Challan': expenditureDetails.toJson()});
-      navigatorKey.currentState?.pop();
+      Navigator.pop(context);
       var challanDetails = res['challans']?[0];
       navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW,
-          arguments: SuccessHandler('Expenditure Entry Successful',
-              'Expenditure entry has been made against ${challanDetails['challanNo']} under maintenance category for Rs. ${challanDetails['amount'][0]['amount']} ', i18.common.BACK_HOME));
+          arguments: SuccessHandler('${ApplicationLocalizations.of(context)
+              .translate(i18.expense.EXPENDITURE_SUCESS)}',
+              '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_AGAINST)} ${challanDetails['challanNo']} ${ApplicationLocalizations.of(context).translate(i18.expense.UNDER_MAINTAINANCE)} Rs. ${challanDetails['amount'][0]['amount']} ', i18.common.BACK_HOME));
     } on CustomException catch (e) {
-      navigatorKey.currentState?.pop();
-      Notifiers.getToastMessage('Unable to create the expense');
+      Navigator.pop(context);
+      Notifiers.getToastMessage('${ApplicationLocalizations.of(context)
+          .translate(i18.expense.UNABLE_TO_CREATE_EXPENSE)}');
     }  catch(e){
-      Notifiers.getToastMessage('Unable to create the expense');
-      navigatorKey.currentState?.pop();
+      Notifiers.getToastMessage('${ApplicationLocalizations.of(context)
+          .translate(i18.expense.UNABLE_TO_CREATE_EXPENSE)}');
+      Navigator.pop(context);
     }
   }
 
@@ -127,9 +130,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
     }
   }
 
-  void validateExpensesDetails() {
+  void validateExpensesDetails(BuildContext context) {
     if (formKey.currentState!.validate()) {
-      addExpensesDetails();
+      addExpensesDetails(context);
     } else {
       autoValidation = true;
     }
