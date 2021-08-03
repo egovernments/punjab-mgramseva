@@ -74,20 +74,22 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
            crossAxisAlignment: CrossAxisAlignment.start,
            children: [
              HomeBack(widget: Help()),
-             Column(
-               children: [
-                 _buildCoonectionDetails(connectionPayment),
-                 _buildPaymentDetails(connectionPayment)
-               ],
+             LayoutBuilder(
+                 builder: (_, constraints) => Column(
+                 children: [
+                   _buildCoonectionDetails(connectionPayment, constraints),
+                   _buildPaymentDetails(connectionPayment, constraints)
+                 ],
+               ),
              )
            ])),
      );
   }
 
-  Widget _buildCoonectionDetails(ConnectionPayment connectionPayment) {
+  Widget _buildCoonectionDetails(ConnectionPayment connectionPayment, BoxConstraints constraints) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.only(left: 24, top: 10, right: 20),
+        padding: const EdgeInsets.only(left: 24, top: 8, bottom: 8, right: 10),
         child: Column(
           crossAxisAlignment : CrossAxisAlignment.start,
           children : [
@@ -111,13 +113,13 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                 ),
               ),
             )
-      ]
+        ]
         ),
       ),
     );
   }
 
-  Widget _buildPaymentDetails(ConnectionPayment connectionPayment) {
+  Widget _buildPaymentDetails(ConnectionPayment connectionPayment, BoxConstraints constraints) {
     return Consumer<ConsumerPaymentProvider>(
       builder: (_, consumerPaymentProvider, child) => Card(
         child : Wrap(
@@ -138,7 +140,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         crossAxisAlignment : CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical : 8.0),
+            padding: const EdgeInsets.only(top: 20, bottom: 10),
             child: Column(
              crossAxisAlignment : CrossAxisAlignment.start,
             children : [
@@ -147,14 +149,17 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.payment.BILL_PERIOD)}', '${connectionPayment.billPeriod}'),
             ]),
           ),
-          Column(
-            crossAxisAlignment : CrossAxisAlignment.start,
-            children: [
-              subTitle('${ApplicationLocalizations.of(context).translate(i18.payment.FREE_ESTIMATE)}:', 18),
-              _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.WATER_CHARGES)}', '₹ ${connectionPayment.waterCharges}'),
-              _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.ARREARS)}', '₹ ${connectionPayment.arrears}'),
-              _buildWaterCharges(connectionPayment.waterChargesList ?? <WaterCharges>[], constraints)
-            ],
+          Padding(
+            padding: const EdgeInsets.only(top: 20, bottom: 10),
+            child: Column(
+              crossAxisAlignment : CrossAxisAlignment.start,
+              children: [
+                subTitle('${ApplicationLocalizations.of(context).translate(i18.payment.FREE_ESTIMATE)}:', 18),
+                _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.WATER_CHARGES)}', '₹ ${connectionPayment.waterCharges}'),
+                _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.ARREARS)}', '₹ ${connectionPayment.arrears}'),
+                _buildWaterCharges(connectionPayment.waterChargesList ?? <WaterCharges>[], constraints)
+              ],
+            ),
           )
         ],
       ),
@@ -177,7 +182,21 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   }
 
   Widget _buildLabelValue(String label, String value) {
-    return Table(
+    return LayoutBuilder(
+      builder: (_, constraints) => constraints.maxWidth > 760 ? Row(
+        children: [
+          Container(
+              width: MediaQuery.of(context).size.width / 3,
+              padding: EdgeInsets.only(top: 18, bottom: 3),
+              child: new Align(
+                  alignment: Alignment.centerLeft,
+                  child: subTitle('$label', 16))),
+          Container(
+              width: MediaQuery.of(context).size.width / 2.5,
+              padding: EdgeInsets.only(top: 18, bottom: 3, left: 24),
+              child: Text('$value',  style: TextStyle(fontSize: 16))),
+        ],
+      ) : Table(
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children : [
           TableRow(
@@ -191,7 +210,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
          TableCell(
              child: Text('$value',  style: TextStyle(fontSize: 16))
          )
-       ])]);
+       ])]));
   }
 
   TableRow _buildWaterChargesRow(WaterCharges waterCharges, BoxConstraints constraints) {
