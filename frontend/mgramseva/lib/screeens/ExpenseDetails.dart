@@ -88,7 +88,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     }
                   }
                 })),
-        bottomNavigationBar: BottomButtonBar('Submit', () => expensesDetailsProvider.validateExpensesDetails(context)));
+        bottomNavigationBar: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.SUBMIT)}', () => expensesDetailsProvider.validateExpensesDetails(context)));
   }
 
   saveInput(context) async {
