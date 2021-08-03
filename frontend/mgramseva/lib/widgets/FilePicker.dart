@@ -94,32 +94,28 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
           decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
           child: Row(
             children: [
-              Container(
-                  margin: EdgeInsets.all(10),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Color(0XFFD6D5D4)),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero,
+              Expanded(
+                child: Container(
+                    margin: EdgeInsets.all(10),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        padding: MaterialStateProperty.all(EdgeInsets.zero),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Color(0XFFD6D5D4)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
+                            ),
+                          )
                           ),
-                        )
-// )
-//                               ElevatedButton.styleFrom(
-//                                 primary:Color(0XFFD6D5D4),
-//                                 padding: EdgeInsets.all(20),
-
-                        ),
-                    onPressed: () => _openFileExplorer(),
-                    child: Padding(
-                        padding: const EdgeInsets.only(left: 24, right: 24),
-                        child: Text(
-                          "${ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_FILE)}",
-                          style: TextStyle(color: Colors.black, fontSize: 16),
-                        )),
-                  )),
+                      onPressed: () => _openFileExplorer(),
+                      child: Text(
+                        "${ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_FILE)}",
+                        style: TextStyle(color: Colors.black, fontSize: 16),
+                      ),
+                    )),
+              ),
               Text(
                 "${ApplicationLocalizations.of(context).translate(i18.common.NO_FILE_UPLOADED)}",
                 style: TextStyle(color: Colors.black, fontSize: 16),
