@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/expensesDetails/vendor.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 
 part 'expenses_details.g.dart';
@@ -22,7 +23,7 @@ class ExpensesDetailsModel {
   String? vendorName;
 
   @JsonKey(name: "amount")
-  List<ExpensesAmount>? expensesAmount = <ExpensesAmount>[];
+  List<ExpensesAmount> expensesAmount = <ExpensesAmount>[];
 
   @JsonKey(name: "billDate")
   int? billDate;
@@ -35,6 +36,12 @@ class ExpensesDetailsModel {
 
   @JsonKey(name: "isBillPaid", defaultValue: false)
   bool? isBillPaid;
+
+  @JsonKey(name: "filestoreid")
+  String? fileStoreId;
+
+  @JsonKey(ignore: true)
+   Vendor? selectedVendor;
 
   @JsonKey(ignore: true)
   var vendorNameCtrl = TextEditingController();
@@ -67,6 +74,7 @@ class ExpensesDetailsModel {
 
     vendorNameCtrl.text = vendorName ?? '';
     expensesAmount?.first.amountCtrl.text = expensesAmount?.first.amount ?? '';
+    isBillPaid ??= false;
   }
 
   factory ExpensesDetailsModel.fromJson(Map<String, dynamic> json) =>

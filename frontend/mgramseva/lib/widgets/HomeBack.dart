@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class HomeBack extends StatelessWidget {
 
   final Widget? widget;
+  final VoidCallback? callback;
 
-  const HomeBack({Key? key, this.widget}) : super(key: key);
+  const HomeBack({Key? key, this.widget, this.callback}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class HomeBack extends StatelessWidget {
                 )
               ],
             ),
-            onPressed: () =>  Navigator.pop(context)
+            onPressed: callback ?? () =>  Navigator.pop(context)
           ),
             if(widget != null)
               widget!

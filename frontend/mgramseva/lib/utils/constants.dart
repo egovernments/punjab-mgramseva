@@ -28,7 +28,7 @@ class Constants {
     HomeItem("Household Register", HomeIcons.hhregister, ''),
     HomeItem("Collect Payments", HomeIcons.collectpayment, 'household/search'),
     HomeItem("Download Bills & Receipts", HomeIcons.printreciept, ''),
-    HomeItem("Add Expense Record", HomeIcons.addexpenses, 'expenses/add'),
+    HomeItem("ADD_EXPENSES_RECORD", HomeIcons.addexpenses, 'expenses/add'),
     HomeItem("Update Expenses", HomeIcons.updateexpenses, ''),
     HomeItem("Generate Demand", HomeIcons.generaedemand, 'bill/generate'),
     HomeItem("CORE_CONSUMER_CREATE", HomeIcons.createconsumer, 'consumer/create'),

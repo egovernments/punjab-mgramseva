@@ -1,6 +1,8 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class FilePickerDemo extends StatefulWidget {
   @override
@@ -56,8 +58,8 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
         SnackBar(
           backgroundColor: result! ? Colors.green : Colors.red,
           content: Text((result
-              ? 'Temporary files removed with success.'
-              : 'Failed to clean temporary files')),
+              ? '${ApplicationLocalizations.of(context).translate(i18.common.TEMPORARY_FILES_REMOVED)}'
+              : '${ApplicationLocalizations.of(context).translate(i18.common.FALIED_TO_FETCH_TEMPORARY_FILES)}')),
         ),
       );
     });
@@ -78,7 +80,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
           padding: EdgeInsets.only(top: 18, bottom: 3),
           child: new Align(
               alignment: Alignment.centerLeft,
-              child: Text("Attach Bill",
+              child: Text("${ApplicationLocalizations.of(context).translate(i18.common.ATTACH_BILL)}",
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       fontWeight: FontWeight.w400,
@@ -91,11 +93,14 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
           height: 50,
           decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
                   margin: EdgeInsets.all(10),
+                  alignment: Alignment.centerLeft,
                   child: ElevatedButton(
                     style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 10)),
                         backgroundColor:
                             MaterialStateProperty.all<Color>(Color(0XFFD6D5D4)),
                         shape:
@@ -104,22 +109,15 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                             borderRadius: BorderRadius.zero,
                           ),
                         )
-// )
-//                               ElevatedButton.styleFrom(
-//                                 primary:Color(0XFFD6D5D4),
-//                                 padding: EdgeInsets.all(20),
-
                         ),
                     onPressed: () => _openFileExplorer(),
-                    child: Padding(
-                        padding: const EdgeInsets.only(left: 24, right: 24),
-                        child: const Text(
-                          "Choose File",
-                          style: TextStyle(color: Colors.black, fontSize: 16),
-                        )),
+                    child: Text(
+                      "${ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_FILE)}",
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                    ),
                   )),
               Text(
-                "No File Uploaded",
+                "${ApplicationLocalizations.of(context).translate(i18.common.NO_FILE_UPLOADED)}",
                 style: TextStyle(color: Colors.black, fontSize: 16),
               )
             ],
@@ -140,68 +138,6 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                   child: constraints.maxWidth > 760
                       ? Row(children: _getConatiner(constraints, context))
                       : Column(children: _getConatiner(constraints, context))
-                  // Padding(
-                  //   padding: const EdgeInsets.only(top: 50.0, bottom: 20.0),
-                  //   child: Column(
-                  //     children: <Widget>[
-                  //       ElevatedButton(
-                  //         onPressed: () => _openFileExplorer(),
-                  //         child: const Text("Open file picker"),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  // Builder(
-                  //   builder: (BuildContext context) => _loadingPath
-                  //       ? Padding(
-                  //           padding: const EdgeInsets.only(bottom: 10.0),
-                  //           child: const CircularProgressIndicator(),
-                  //         )
-                  //       : _directoryPath != null
-                  //           ? ListTile(
-                  //               title: const Text('Directory path'),
-                  //               subtitle: Text(_directoryPath!),
-                  //             )
-                  //           : _paths != null
-                  //               ? Container(
-                  //                   padding: const EdgeInsets.only(bottom: 30.0),
-                  //                   height:
-                  //                       MediaQuery.of(context).size.height * 0.50,
-                  //                   child: Scrollbar(
-                  //                       child: ListView.separated(
-                  //                     itemCount:
-                  //                         _paths != null && _paths!.isNotEmpty
-                  //                             ? _paths!.length
-                  //                             : 1,
-                  //                     itemBuilder:
-                  //                         (BuildContext context, int index) {
-                  //                       final bool isMultiPath =
-                  //                           _paths != null && _paths!.isNotEmpty;
-                  //                       final String name = 'File $index: ' +
-                  //                           (isMultiPath
-                  //                               ? _paths!
-                  //                                   .map((e) => e.name)
-                  //                                   .toList()[index]
-                  //                               : _fileName ?? '...');
-                  //                       final path = _paths!
-                  //                           .map((e) => e.path)
-                  //                           .toList()[index]
-                  //                           .toString();
-
-                  //                       return ListTile(
-                  //                         title: Text(
-                  //                           name,
-                  //                         ),
-                  //                         subtitle: Text(path),
-                  //                       );
-                  //                     },
-                  //                     separatorBuilder:
-                  //                         (BuildContext context, int index) =>
-                  //                             const Divider(),
-                  //                   )),
-                  //                 )
-                  //               : const SizedBox(),
-                  // ),
                   ,
                 ),
               )));
