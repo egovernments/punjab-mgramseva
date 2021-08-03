@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_portal/flutter_portal.dart';
 import 'package:mgramseva/screeens/Profile/EditProfile.dart';
 import 'package:mgramseva/screeens/HomeCard.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';

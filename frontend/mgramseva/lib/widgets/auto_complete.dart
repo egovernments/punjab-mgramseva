@@ -95,7 +95,7 @@ class AutoCompleteView extends StatelessWidget {
       validator: isRequired == null || !isRequired!
           ? null
           : (val) {
-              if (val == null || val!.trim().isEmpty) {
+              if (val == null || val.trim().isEmpty) {
                 return '${labelText}_REQUIRED';
               }
               return null;
