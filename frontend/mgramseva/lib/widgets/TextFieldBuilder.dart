@@ -21,6 +21,7 @@ class BuildTextField extends StatefulWidget {
   final TextInputType? textInputType;
   final bool? isDisabled;
   final bool? readOnly;
+  final String? labelSuffix;
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
       this.prefixText = '',
@@ -28,7 +29,7 @@ class BuildTextField extends StatefulWidget {
       this.isRequired = false,
       this.onSubmit,
       this.pattern = '',
-      this.message = '', this.inputFormatter, this.validator, this.maxLength, this.maxLines, this.textCapitalization, this.obscureText, this.textInputType, this.isDisabled, this.readOnly});
+      this.message = '', this.inputFormatter, this.validator, this.maxLength, this.maxLines, this.textCapitalization, this.obscureText, this.textInputType, this.isDisabled, this.readOnly, this.labelSuffix});
   @override
   State<StatefulWidget> createState() => _BuildTextField();
 }
@@ -70,7 +71,7 @@ class _BuildTextField extends State<BuildTextField> {
     Widget textLabelwidget = Wrap(
         direction: Axis.horizontal,
         children: <Widget>[
-      Text(ApplicationLocalizations.of(context).translate(widget.labelText),
+      Text('${ApplicationLocalizations.of(context).translate(widget.labelText)} ${widget.labelSuffix ?? ''}',
           textAlign: TextAlign.left,
           style: TextStyle(
               fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),

@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class BasicDateField extends StatelessWidget {
-  final format = DateFormat("dd-MM-yyyy");
+  final format = DateFormat("dd/MM/yyyy");
   final label;
   final isRequired;
   final DateTime? firstDate;

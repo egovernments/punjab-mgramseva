@@ -1,3 +1,7 @@
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/global_variables.dart';
+
 class Validators {
 
   static validate(value, type) {
@@ -39,11 +43,11 @@ class Validators {
 
   static String? mobileNumberValidator(String? v) {
     if (v!.trim().isEmpty) {
-      return 'Please enter Mobile number';
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ENTER_MOBILE_NUMBER)}';
     } else if (!RegExp(r'^[0-9]+$').hasMatch(v)) {
-      return 'Please enter Numbers only';
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ENTER_NUMBERS_ONLY)}';
     } else if (v.trim().length != 10) {
-      return 'Mobile number should be 10 digits';
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.MOBILE_NUMBER_SHOULD_BE_10_DIGIT)}';
     }
     return null;
   }
@@ -52,9 +56,9 @@ class Validators {
     if(val!.trim().isEmpty){
       return '$label';
     }else if(!(RegExp(r'^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$').hasMatch(val))){
-      return 'Invalid format';
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.INVALID_FORMAT)}';
     }else if(val1 != null && val.trim() != val1.trim()){
-      return 'New Password and Confirm password should be same';
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.CONFIRM_RECONFIRM_SHOULD_SAME)}';
     }
     return null;
   }
