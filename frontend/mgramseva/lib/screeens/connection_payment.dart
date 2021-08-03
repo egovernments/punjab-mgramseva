@@ -35,6 +35,8 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
 
   @override
   Widget build(BuildContext context) {
+    var consumerPaymentProvider = Provider.of<ConsumerPaymentProvider>(context, listen: false);
+    late ConnectionPayment connectionDetails;
     return Scaffold(
         appBar: BaseAppBar(
           Text('mGramSeva'),
@@ -42,9 +44,10 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
           <Widget>[Icon(Icons.more_vert)],
         ),
       body: StreamBuilder(
-          stream: Provider.of<ConsumerPaymentProvider>(context, listen: false).paymentStreamController.stream,
+          stream: consumerPaymentProvider.paymentStreamController.stream,
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
+              connectionDetails = snapshot.data;
               return _buildView(snapshot.data);
             } else if (snapshot.hasError) {
               return Notifiers.networkErrorPage(
@@ -60,7 +63,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               }
             }
           }),
-        bottomNavigationBar: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}', (){} ),
+        bottomNavigationBar: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}', () => consumerPaymentProvider.updatePaymentInformation(connectionDetails)),
     );
   }
 
@@ -96,13 +99,15 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                     child: _buildViewDetails(connectionPayment)
                 ),
               ),
-              _buildLabelValue('Total Amount Due', '${connectionPayment.totalDueAmount}'),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: InkWell(
-                onTap: () =>  Provider.of<ConsumerPaymentProvider>(context, listen: false).onClickOfViewOrHideDetails(connectionPayment),
-                child: Text(connectionPayment.viewDetails ? 'Hide Details' : 'View Details',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Theme.of(context).primaryColor),
+              _buildLabelValue('Total Amount Due', '₹ ${connectionPayment.totalDueAmount}'),
+            Consumer<ConsumerPaymentProvider>(
+              builder: (_, consumerPaymentProvider, child) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: InkWell(
+                  onTap: () =>  Provider.of<ConsumerPaymentProvider>(context, listen: false).onClickOfViewOrHideDetails(connectionPayment),
+                  child: Text(connectionPayment.viewDetails ? 'Hide Details' : 'View Details',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Theme.of(context).primaryColor),
+                  ),
                 ),
               ),
             )
@@ -138,16 +143,16 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
              crossAxisAlignment : CrossAxisAlignment.start,
             children : [
               subTitle('Payment Information'),
-            _buildLabelValue('Bill ID No', '${connectionPayment.connectionId}'),
-            _buildLabelValue('Bill Period', '${connectionPayment.connectionId}'),
+            _buildLabelValue('Bill ID No', '${connectionPayment.billIdNo}'),
+            _buildLabelValue('Bill Period', '${connectionPayment.billPeriod}'),
             ]),
           ),
           Column(
             crossAxisAlignment : CrossAxisAlignment.start,
             children: [
               subTitle('Fee Estimate:', 18),
-              _buildLabelValue('Water Charges', '${connectionPayment.connectionId}'),
-              _buildLabelValue('Arrears', '${connectionPayment.connectionId}'),
+              _buildLabelValue('Water Charges', '₹ ${connectionPayment.waterCharges}'),
+              _buildLabelValue('Arrears', '₹ ${connectionPayment.arrears}'),
               _buildWaterCharges(connectionPayment.waterChargesList ?? <WaterCharges>[], constraints)
             ],
           )
@@ -204,7 +209,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
           ),
         ),
         TableCell(
-          child : Text('${waterCharges.waterCharge}')
+          child : Text('₹ ${waterCharges.waterCharge}')
         )
       ]
     );

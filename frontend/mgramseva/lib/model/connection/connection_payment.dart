@@ -39,7 +39,7 @@ class ConnectionPayment {
   String paymentAmount = Constants.PAYMENT_AMOUNT.first.key ;
 
   @JsonKey(ignore: true)
-  String paymentMethod = Constants.PAYMENT_METHOD.first.key;
+  String paymentMethod = Constants.PAYMENT_METHOD.last.key;
 
   @JsonKey(ignore: true)
   bool viewDetails = false;
