@@ -93,31 +93,29 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
           height: 50,
           decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Expanded(
-                child: Container(
-                    margin: EdgeInsets.all(10),
-                    alignment: Alignment.center,
-                    width: constraints.maxWidth > 760 ? 200 : null,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 10)),
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Color(0XFFD6D5D4)),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero,
-                            ),
-                          )
+              Container(
+                  margin: EdgeInsets.all(10),
+                  alignment: Alignment.centerLeft,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 10)),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Color(0XFFD6D5D4)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero,
                           ),
-                      onPressed: () => _openFileExplorer(),
-                      child: Text(
-                        "${ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_FILE)}",
-                        style: TextStyle(color: Colors.black, fontSize: 16),
-                      ),
-                    )),
-              ),
+                        )
+                        ),
+                    onPressed: () => _openFileExplorer(),
+                    child: Text(
+                      "${ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_FILE)}",
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                    ),
+                  )),
               Text(
                 "${ApplicationLocalizations.of(context).translate(i18.common.NO_FILE_UPLOADED)}",
                 style: TextStyle(color: Colors.black, fontSize: 16),
@@ -140,68 +138,6 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                   child: constraints.maxWidth > 760
                       ? Row(children: _getConatiner(constraints, context))
                       : Column(children: _getConatiner(constraints, context))
-                  // Padding(
-                  //   padding: const EdgeInsets.only(top: 50.0, bottom: 20.0),
-                  //   child: Column(
-                  //     children: <Widget>[
-                  //       ElevatedButton(
-                  //         onPressed: () => _openFileExplorer(),
-                  //         child: const Text("Open file picker"),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  // Builder(
-                  //   builder: (BuildContext context) => _loadingPath
-                  //       ? Padding(
-                  //           padding: const EdgeInsets.only(bottom: 10.0),
-                  //           child: const CircularProgressIndicator(),
-                  //         )
-                  //       : _directoryPath != null
-                  //           ? ListTile(
-                  //               title: const Text('Directory path'),
-                  //               subtitle: Text(_directoryPath!),
-                  //             )
-                  //           : _paths != null
-                  //               ? Container(
-                  //                   padding: const EdgeInsets.only(bottom: 30.0),
-                  //                   height:
-                  //                       MediaQuery.of(context).size.height * 0.50,
-                  //                   child: Scrollbar(
-                  //                       child: ListView.separated(
-                  //                     itemCount:
-                  //                         _paths != null && _paths!.isNotEmpty
-                  //                             ? _paths!.length
-                  //                             : 1,
-                  //                     itemBuilder:
-                  //                         (BuildContext context, int index) {
-                  //                       final bool isMultiPath =
-                  //                           _paths != null && _paths!.isNotEmpty;
-                  //                       final String name = 'File $index: ' +
-                  //                           (isMultiPath
-                  //                               ? _paths!
-                  //                                   .map((e) => e.name)
-                  //                                   .toList()[index]
-                  //                               : _fileName ?? '...');
-                  //                       final path = _paths!
-                  //                           .map((e) => e.path)
-                  //                           .toList()[index]
-                  //                           .toString();
-
-                  //                       return ListTile(
-                  //                         title: Text(
-                  //                           name,
-                  //                         ),
-                  //                         subtitle: Text(path),
-                  //                       );
-                  //                     },
-                  //                     separatorBuilder:
-                  //                         (BuildContext context, int index) =>
-                  //                             const Divider(),
-                  //                   )),
-                  //                 )
-                  //               : const SizedBox(),
-                  // ),
                   ,
                 ),
               )));
