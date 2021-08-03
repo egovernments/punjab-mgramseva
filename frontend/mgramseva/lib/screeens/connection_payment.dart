@@ -84,16 +84,28 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   Widget _buildCoonectionDetails(ConnectionPayment connectionPayment) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.only(left: 24, top: 10),
+        padding: const EdgeInsets.only(left: 24, top: 10, right: 20),
         child: Column(
+          crossAxisAlignment : CrossAxisAlignment.start,
           children : [
               _buildLabelValue('Connection ID', '${connectionPayment.connectionId}'),
               _buildLabelValue('Consumer Name', '${connectionPayment.consumerName}'),
-              Visibility(
-                  visible: connectionPayment.viewDetails,
-                  child: _buildViewDetails(connectionPayment)
+              Consumer<ConsumerPaymentProvider>(
+                builder: (_, consumerPaymentProvider, child) => Visibility(
+                    visible: connectionPayment.viewDetails,
+                    child: _buildViewDetails(connectionPayment)
+                ),
               ),
               _buildLabelValue('Total Amount Due', '${connectionPayment.totalDueAmount}'),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: InkWell(
+                onTap: () =>  Provider.of<ConsumerPaymentProvider>(context, listen: false).onClickOfViewOrHideDetails(connectionPayment),
+                child: Text(connectionPayment.viewDetails ? 'Hide Details' : 'View Details',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Theme.of(context).primaryColor),
+                ),
+              ),
+            )
       ]
         ),
       ),
@@ -116,23 +128,87 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   }
 
   Widget _buildViewDetails(ConnectionPayment connectionPayment){
-    return
+    return LayoutBuilder(
+      builder: (_, constraints) => Column(
+        crossAxisAlignment : CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical : 8.0),
+            child: Column(
+             crossAxisAlignment : CrossAxisAlignment.start,
+            children : [
+              subTitle('Payment Information'),
+            _buildLabelValue('Bill ID No', '${connectionPayment.connectionId}'),
+            _buildLabelValue('Bill Period', '${connectionPayment.connectionId}'),
+            ]),
+          ),
+          Column(
+            crossAxisAlignment : CrossAxisAlignment.start,
+            children: [
+              subTitle('Fee Estimate:', 18),
+              _buildLabelValue('Water Charges', '${connectionPayment.connectionId}'),
+              _buildLabelValue('Arrears', '${connectionPayment.connectionId}'),
+              _buildWaterCharges(connectionPayment.waterChargesList ?? <WaterCharges>[], constraints)
+            ],
+          )
+        ],
+      ),
+    );
   }
 
 
+  Widget _buildWaterCharges(List<WaterCharges> waterCharges, BoxConstraints constraints) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+      margin: EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(238, 238, 238, 1),
+        borderRadius: BorderRadius.circular(4)
+      ),
+      child: Table(
+        children: waterCharges.map<TableRow>((e) => _buildWaterChargesRow(e, constraints)).toList()
+      )
+    );
+  }
+
   Widget _buildLabelValue(String label, String value) {
     return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children : [
           TableRow(
        children: [
          TableCell(
            child: Container(
-               padding: EdgeInsets.symmetric(vertical: 8),
-               child: Text('$label', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)))
+             alignment: Alignment.centerLeft,
+               padding: EdgeInsets.symmetric(vertical: 10),
+               child: subTitle('$label', 16))
          ),
          TableCell(
-             child: Text('$value',  style: TextStyle(fontSize: 18))
+             child: Text('$value',  style: TextStyle(fontSize: 16))
          )
        ])]);
   }
+
+  TableRow _buildWaterChargesRow(WaterCharges waterCharges, BoxConstraints constraints) {
+    var style = TextStyle(fontSize: 14, color: Color.fromRGBO(80, 90, 95, 1));
+    return TableRow(
+      children: [
+        TableCell(
+          child: constraints.maxWidth > 760 ? Text('Water Charges ${waterCharges.date}', style: style) : Wrap(
+            direction: Axis.vertical,
+            spacing: 3,
+            children: [
+              Text('Water Charges', style: style),
+              Text('${waterCharges.date}', style : style),
+            ],
+          ),
+        ),
+        TableCell(
+          child : Text('${waterCharges.waterCharge}')
+        )
+      ]
+    );
+  }
+
+  Text subTitle(String label, [double? size]) => Text('$label', style: TextStyle(fontSize: size ?? 24, fontWeight: FontWeight.w700));
 }
