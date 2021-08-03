@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mgramseva/model/connection/property.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 
 part 'water_connection.g.dart';
 
@@ -32,9 +33,24 @@ class WaterConnection {
   @JsonKey(ignore: true)
   var arrearsCtrl = TextEditingController();
 
+  @JsonKey(ignore: true)
+  var meterIdCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var previousReadingDateCtrl = TextEditingController();
+
+  setText() {
+    meterId = meterIdCtrl.text;
+    arrears = int.parse(arrearsCtrl.text);
+    previousReadingDate =
+        DateFormats.dateToTimeStamp(previousReadingDateCtrl.text);
+  }
+
   WaterConnection();
+
   factory WaterConnection.fromJson(Map<String, dynamic> json) =>
       _$WaterConnectionFromJson(json);
+  Map<String, dynamic> toJson() => _$WaterConnectionToJson(this);
 }
 
 @JsonSerializable()
@@ -45,4 +61,5 @@ class ProcessInstance {
   ProcessInstance();
   factory ProcessInstance.fromJson(Map<String, dynamic> json) =>
       _$ProcessInstanceFromJson(json);
+  Map<String, dynamic> toJson() => _$ProcessInstanceToJson(this);
 }

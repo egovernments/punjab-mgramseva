@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/property.dart';
 import 'package:mgramseva/providers/consumer_details.dart';
+import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
+import 'package:mgramseva/widgets/DatePickerFieldBuilder.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
@@ -28,7 +31,6 @@ class ConsumerDetails extends StatefulWidget {
 }
 
 class _ConsumerDetailsState extends State<ConsumerDetails> {
-
   _onSelectItem(int index, context) {
     Navigator.pushAndRemoveUntil(
         context,
@@ -50,10 +52,10 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   }
 
   afterViewBuild() {
-    var consumerProvider =
-        Provider.of<ConsumerProvider>(context, listen: false);
-    consumerProvider.getConsumerDetails();
-    consumerProvider.fetchBoundary();
+    Provider.of<ConsumerProvider>(context, listen: false)
+      ..getConsumerDetails()
+      ..fetchBoundary()
+      ..getPropertyType();
   }
 
   Widget buildconsumerView(Property property) {
@@ -99,19 +101,20 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                       property.owners!.first.phoneNumberCtrl,
                       prefixText: '+91-',
                     ),
-                    // BuildTextField(
-                    //   'Old Connection ID',
-                    //   name,
-                    //   isRequired: true,
-                    // ),
+                    Consumer<ConsumerProvider>(
+                        builder: (_, consumerProvider, child) => BuildTextField(
+                              'Old Connection ID',
+                              consumerProvider.waterconnection.meterIdCtrl,
+                              isRequired: true,
+                            )),
                     BuildTextField(
                       'Door Number',
-                      property.address!.doorNumberCtrl,
+                      property.address.doorNumberCtrl,
                       isRequired: true,
                     ),
                     BuildTextField(
                       'Street Name',
-                      property.address!.streetNameOrNumberCtrl,
+                      property.address.streetNameOrNumberCtrl,
                     ),
                     // BuildTextField(
                     //   'Gram Panchayat Name',
@@ -122,21 +125,42 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                         builder: (_, consumerProvider, child) =>
                             SelectFieldBuilder(
                                 'Ward Name/ Number',
-                                property.address!.localityCtrl,
+                                property.address.localityCtrl,
                                 '',
                                 '',
                                 consumerProvider.onChangeOflocaity,
                                 consumerProvider.getBoundaryList(),
                                 true)),
+                    Consumer<ConsumerProvider>(
+                        builder: (_, consumerProvider, child) =>
+                            SelectFieldBuilder(
+                                'Property Type',
+                                property.propertyType,
+                                '',
+                                '',
+                                consumerProvider.onChangeOfPropertyType,
+                                consumerProvider.getPropertTypeList(),
+                                true)),
                     // SelectFieldBuilder(context, 'Service Type', name, '',
                     //     '', saveInput, options, true),
+
+                    Consumer<ConsumerProvider>(
+                        builder: (_, consumerProvider, child) => BasicDateField(
+                            'Previous Meter Reading Date',
+                            true,
+                            consumerProvider
+                                .waterconnection.previousReadingDateCtrl,
+                            lastDate: DateTime.now(),
+                            onChangeOfDate: consumerProvider.onChangeOfDate)),
                     // BasicDateField("Previous Meter Reading Date", true,
                     //     TextEditingController()),
-                    // BuildTextField(
-                    //   'Areas (₹)',
-                    //   name,
-                    //   isRequired: true,
-                    // ),
+
+                    Consumer<ConsumerProvider>(
+                        builder: (_, consumerProvider, child) => BuildTextField(
+                              'Areas (₹)',
+                              consumerProvider.waterconnection.arrearsCtrl,
+                              isRequired: true,
+                            )),
                     SizedBox(
                       height: 20,
                     ),

@@ -52,15 +52,15 @@ class ExpensesDetailsProvider with ChangeNotifier {
     expenditureDetails
       ..businessService = commonProvider.getMdmsId(languageList,
           'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
-      ..expensesAmount?.first.taxHeadCode = commonProvider.getMdmsId(
+      ..expensesAmount.first.taxHeadCode = commonProvider.getMdmsId(
           languageList,
           'EXPENSE.${expenditureDetails.expenseType}',
           MDMSType.TaxHeadCode)
       ..consumerType = 'EXPENSE'
       ..tenantId = 'pb'
       ..setText()
-    ..vendorName = expenditureDetails?.selectedVendor?.id ?? expenditureDetails.vendorNameCtrl.text;
-
+      ..vendorName = expenditureDetails.selectedVendor?.id ??
+          expenditureDetails.vendorNameCtrl.text;
 
     try {
       Loaders.showLoadingDialog(navigatorKey.currentContext!,
@@ -71,12 +71,14 @@ class ExpensesDetailsProvider with ChangeNotifier {
       navigatorKey.currentState?.pop();
       var challanDetails = res['challans']?[0];
       navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW,
-          arguments: SuccessHandler('Expenditure Entry Successful',
-              'Expenditure entry has been made against ${challanDetails['challanNo']} under maintenance category for Rs. ${challanDetails['amount'][0]['amount']} ', i18.common.BACK_HOME));
+          arguments: SuccessHandler(
+              'Expenditure Entry Successful',
+              'Expenditure entry has been made against ${challanDetails['challanNo']} under maintenance category for Rs. ${challanDetails['amount'][0]['amount']} ',
+              i18.common.BACK_HOME));
     } on CustomException catch (e) {
       navigatorKey.currentState?.pop();
       Notifiers.getToastMessage('Unable to create the expense');
-    }  catch(e){
+    } catch (e) {
       Notifiers.getToastMessage('Unable to create the expense');
       navigatorKey.currentState?.pop();
     }
@@ -89,7 +91,11 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
     if (pattern.toString().trim().isEmpty) return <Vendor>[];
 
-    return vendorList.where((vendor) => vendor.name.toLowerCase().contains(pattern.toString().toLowerCase())).toList();
+    return vendorList
+        .where((vendor) => vendor.name
+            .toLowerCase()
+            .contains(pattern.toString().toLowerCase()))
+        .toList();
   }
 
   Future<List<Vendor>> fetchVendors() async {
@@ -112,9 +118,8 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
   void onSuggestionSelected(vendor) {
     expenditureDetails
-    ..selectedVendor = vendor
-    ..vendorNameCtrl.text = vendor?.name ?? '';
-
+      ..selectedVendor = vendor
+      ..vendorNameCtrl.text = vendor?.name ?? '';
   }
 
   Future<void> getExpenses() async {

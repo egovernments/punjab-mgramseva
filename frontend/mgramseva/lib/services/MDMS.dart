@@ -61,6 +61,22 @@ Map getExpenseMDMS(String tenantId) {
   };
 }
 
+Map getPropertyTypeMDMS(String tenantId) {
+  return {
+    "MdmsCriteria": {
+      "tenantId": tenantId,
+      "moduleDetails": [
+        {
+          "moduleName": "PropertyTax",
+          "masterDetails": [
+            {"name": "PropertyType"},
+          ]
+        },
+      ]
+    }
+  };
+}
+
 Future getMDMD() async {
   final requestInfo =
       RequestInfo('Rainmaker', .01, "", "_search", 1, "", "", "");
