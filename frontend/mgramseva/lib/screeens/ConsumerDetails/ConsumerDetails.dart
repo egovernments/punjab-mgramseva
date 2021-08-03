@@ -59,118 +59,129 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   Widget buildconsumerView(Property property) {
     return Column(
       children: [
-        FormWrapper(Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              HomeBack(widget: Help()),
-              Card(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                    LabelText(i18.consumer.CONSUMER_DETAILS_LABEL),
-                    SubLabelText(i18.consumer.CONSUMER_DETAILS_SUB_LABEL),
-                    BuildTextField(
-                      i18.consumer.CONSUMER_NAME,
-                      property.owners!.first.consumerNameCtrl,
-                      isRequired: true,
-                    ),
-                    Consumer<ConsumerProvider>(
-                        builder: (_, consumerProvider, child) =>
-                            RadioButtonFieldBuilder(
-                              context,
-                              i18.common.GENDER,
-                              property.owners!.first.gender,
-                              '',
-                              '',
-                              true,
-                              Constants.GENDER,
-                              (val) => consumerProvider.onChangeOfGender(
-                                  val, property.owners!.first),
-                            )),
-                    BuildTextField(
-                      i18.consumer.FATHER_SPOUSE_NAME,
-                      property.owners!.first.fatherOrSpouseCtrl,
-                      isRequired: true,
-                    ),
-                    BuildTextField(
-                      i18.common.PHONE_NUMBER,
-                      property.owners!.first.phoneNumberCtrl,
-                      prefixText: '+91-',
-                    ),
-                    Consumer<ConsumerProvider>(
-                        builder: (_, consumerProvider, child) => BuildTextField(
-                              i18.consumer.OLD_CONNECTION_ID,
-                              consumerProvider.waterconnection.meterIdCtrl,
+        FormWrapper(Consumer<ConsumerProvider>(
+            builder: (_, consumerProvider, child) => Form(
+                key: consumerProvider.formKey,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      HomeBack(widget: Help()),
+                      Card(
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                            LabelText(i18.consumer.CONSUMER_DETAILS_LABEL),
+                            SubLabelText(
+                                i18.consumer.CONSUMER_DETAILS_SUB_LABEL),
+                            BuildTextField(
+                              i18.consumer.CONSUMER_NAME,
+                              property.owners!.first.consumerNameCtrl,
                               isRequired: true,
-                            )),
-                    BuildTextField(
-                      i18.consumer.DOOR_NO,
-                      property.address.doorNumberCtrl,
-                      isRequired: true,
-                    ),
-                    BuildTextField(
-                      i18.consumer.STREET_NUM_NAME,
-                      property.address.streetNameOrNumberCtrl,
-                    ),
-                    // BuildTextField(
-                    //   'Gram Panchayat Name',
-                    //   name,
-                    //   isRequired: true,
-                    // ),
-                    Consumer<ConsumerProvider>(
-                        builder: (_, consumerProvider, child) =>
-                            SelectFieldBuilder(
-                                i18.consumer.WARD,
-                                property.address.localityCtrl,
-                                '',
-                                '',
-                                consumerProvider.onChangeOflocaity,
-                                consumerProvider.getBoundaryList(),
-                                true)),
-                    Consumer<ConsumerProvider>(
-                        builder: (_, consumerProvider, child) =>
-                            SelectFieldBuilder(
-                                i18.consumer.PROPERTY_TYPE,
-                                property.propertyType,
-                                '',
-                                '',
-                                consumerProvider.onChangeOfPropertyType,
-                                consumerProvider.getPropertTypeList(),
-                                true)),
-                    Consumer<ConsumerProvider>(
-                        builder: (_, consumerProvider, child) =>
-                            SelectFieldBuilder(
-                                i18.consumer.SERVICE_TYPE,
-                                consumerProvider.waterconnection.action,
-                                '',
-                                '',
-                                saveInput,
-                                [],
-                                true)),
-
-                    Consumer<ConsumerProvider>(
-                        builder: (_, consumerProvider, child) => BasicDateField(
-                            i18.consumer.PREV_METER_READING_DATE,
-                            true,
-                            consumerProvider
-                                .waterconnection.previousReadingDateCtrl,
-                            lastDate: DateTime.now(),
-                            onChangeOfDate: consumerProvider.onChangeOfDate)),
-                    // BasicDateField("Previous Meter Reading Date", true,
-                    //     TextEditingController()),
-
-                    Consumer<ConsumerProvider>(
-                        builder: (_, consumerProvider, child) => BuildTextField(
-                              i18.consumer.ARREARS,
-                              consumerProvider.waterconnection.arrearsCtrl,
+                            ),
+                            Consumer<ConsumerProvider>(
+                                builder: (_, consumerProvider, child) =>
+                                    RadioButtonFieldBuilder(
+                                      context,
+                                      i18.common.GENDER,
+                                      property.owners!.first.gender,
+                                      '',
+                                      '',
+                                      true,
+                                      Constants.GENDER,
+                                      (val) =>
+                                          consumerProvider.onChangeOfGender(
+                                              val, property.owners!.first),
+                                    )),
+                            BuildTextField(
+                              i18.consumer.FATHER_SPOUSE_NAME,
+                              property.owners!.first.fatherOrSpouseCtrl,
                               isRequired: true,
-                            )),
-                    SizedBox(
-                      height: 20,
-                    ),
-                  ])),
-            ])),
+                            ),
+                            BuildTextField(
+                              i18.common.PHONE_NUMBER,
+                              property.owners!.first.phoneNumberCtrl,
+                              prefixText: '+91-',
+                            ),
+                            Consumer<ConsumerProvider>(
+                                builder: (_, consumerProvider, child) =>
+                                    BuildTextField(
+                                      i18.consumer.OLD_CONNECTION_ID,
+                                      consumerProvider
+                                          .waterconnection.meterIdCtrl,
+                                      isRequired: true,
+                                    )),
+                            BuildTextField(
+                              i18.consumer.DOOR_NO,
+                              property.address.doorNumberCtrl,
+                              isRequired: true,
+                            ),
+                            BuildTextField(
+                              i18.consumer.STREET_NUM_NAME,
+                              property.address.streetNameOrNumberCtrl,
+                            ),
+                            // BuildTextField(
+                            //   'Gram Panchayat Name',
+                            //   name,
+                            //   isRequired: true,
+                            // ),
+                            Consumer<ConsumerProvider>(
+                                builder: (_, consumerProvider, child) =>
+                                    SelectFieldBuilder(
+                                        i18.consumer.WARD,
+                                        property.address.localityCtrl,
+                                        '',
+                                        '',
+                                        consumerProvider.onChangeOflocaity,
+                                        consumerProvider.getBoundaryList(),
+                                        true)),
+                            Consumer<ConsumerProvider>(
+                                builder: (_, consumerProvider, child) =>
+                                    SelectFieldBuilder(
+                                        i18.consumer.PROPERTY_TYPE,
+                                        property.propertyType,
+                                        '',
+                                        '',
+                                        consumerProvider.onChangeOfPropertyType,
+                                        consumerProvider.getPropertTypeList(),
+                                        true)),
+                            Consumer<ConsumerProvider>(
+                                builder: (_, consumerProvider, child) =>
+                                    SelectFieldBuilder(
+                                        i18.consumer.SERVICE_TYPE,
+                                        consumerProvider.waterconnection.action,
+                                        '',
+                                        '',
+                                        saveInput,
+                                        [],
+                                        true)),
+
+                            Consumer<ConsumerProvider>(
+                                builder: (_, consumerProvider, child) =>
+                                    BasicDateField(
+                                        i18.consumer.PREV_METER_READING_DATE,
+                                        true,
+                                        consumerProvider.waterconnection
+                                            .previousReadingDateCtrl,
+                                        lastDate: DateTime.now(),
+                                        onChangeOfDate:
+                                            consumerProvider.onChangeOfDate)),
+                            // BasicDateField("Previous Meter Reading Date", true,
+                            //     TextEditingController()),
+
+                            Consumer<ConsumerProvider>(
+                                builder: (_, consumerProvider, child) =>
+                                    BuildTextField(
+                                      i18.consumer.ARREARS,
+                                      consumerProvider
+                                          .waterconnection.arrearsCtrl,
+                                      isRequired: true,
+                                    )),
+                            SizedBox(
+                              height: 20,
+                            ),
+                          ])),
+                    ])))),
       ],
     );
   }

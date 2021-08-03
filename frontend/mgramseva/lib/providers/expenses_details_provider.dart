@@ -52,6 +52,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     expenditureDetails
       ..businessService = commonProvider.getMdmsId(languageList,
           'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
+      ..formKey = GlobalKey<FormState>()
       ..expensesAmount.first.taxHeadCode = commonProvider.getMdmsId(
           languageList,
           'EXPENSE.${expenditureDetails.expenseType}',

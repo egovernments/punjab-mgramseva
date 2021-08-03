@@ -13,6 +13,7 @@ import 'package:mgramseva/services/MDMS.dart';
 
 class ConsumerProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
+  late GlobalKey<FormState> formKey;
   LanguageList? languageList;
   var waterconnection = WaterConnection.fromJson({
     "tenantId": "pb.lodhipur",
@@ -60,15 +61,17 @@ class ConsumerProvider with ChangeNotifier {
       processInstance.action = 'INITIATE';
       waterconnection.processInstance = processInstance;
     }
-    // notifyListeners();
-    try {
-      var result = await ConsumerRepository().addProperty(property.toJson());
-      // result.then((value) => {print(value['Properties'].first.propertyId)});
-      waterconnection.propertyId = result['Properties'].first!['propertyId'];
-      result =
-          await ConsumerRepository().addconnection(waterconnection.toJson());
-    } catch (e) {
-      print(e);
+    if (formKey.currentState!.validate()) {
+      // notifyListeners();
+      try {
+        var result = await ConsumerRepository().addProperty(property.toJson());
+        // result.then((value) => {print(value['Properties'].first.propertyId)});
+        waterconnection.propertyId = result['Properties'].first!['propertyId'];
+        result =
+            await ConsumerRepository().addconnection(waterconnection.toJson());
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
