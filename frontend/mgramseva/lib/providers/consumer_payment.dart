@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/connection_payment.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 
-class ConsumerPayment with ChangeNotifier {
+class ConsumerPaymentProvider with ChangeNotifier {
 
   var paymentStreamController = StreamController.broadcast();
 
@@ -18,10 +18,10 @@ class ConsumerPayment with ChangeNotifier {
 
   Future<void> getConsumerPaymentDetails() async {
     try{
-      var paymentDetails = ConsumerRepository().getConsumerPaymentDetails();
+      var paymentDetails = await ConsumerRepository().getConsumerPaymentDetails();
       paymentStreamController.add(paymentDetails);
     }catch(e){
-
+     print(e);
     }
   }
 
