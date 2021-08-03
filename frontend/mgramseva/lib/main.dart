@@ -18,6 +18,7 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/Home.dart';
 
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
+import 'package:mgramseva/screeens/connection_payment.dart';
 import 'package:mgramseva/theme.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -66,9 +67,9 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
           ChangeNotifierProvider(create: (_) => ExpensesDetailsProvider()),
           ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
-
           ChangeNotifierProvider(create: (_) => UserEditProfileProvider()),
           ChangeNotifierProvider(create: (_) => ExpensesDetailsProvider()),
+          ChangeNotifierProvider(create: (_) => ConsumerPaymentProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(
@@ -97,6 +98,7 @@ class _MyAppState extends State<MyApp> {
                     return supportedLocales.first;
                   },
                   navigatorKey: navigatorKey,
+                   home: ConnectionPaymentView(),
                   initialRoute: Routes.LANDING_PAGE,
                   onGenerateRoute: router.generateRoute,
                   theme: theme,

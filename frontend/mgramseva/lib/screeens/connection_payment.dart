@@ -3,10 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/connection_payment.dart';
 import 'package:mgramseva/providers/consumer_payment.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
+import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
@@ -56,7 +59,8 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                   return Container();
               }
             }
-          })
+          }),
+        bottomNavigationBar: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}', (){} ),
     );
   }
 
@@ -79,12 +83,19 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
 
   Widget _buildCoonectionDetails(ConnectionPayment connectionPayment) {
     return Card(
-      child: Wrap(
-        children: [
-          _buildLabelValue('safs', 'safds'),
-          _buildLabelValue('safs', 'safds'),
-          _buildLabelValue('safs', 'safds'),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.only(left: 24, top: 10),
+        child: Column(
+          children : [
+              _buildLabelValue('Connection ID', '${connectionPayment.connectionId}'),
+              _buildLabelValue('Consumer Name', '${connectionPayment.consumerName}'),
+              Visibility(
+                  visible: connectionPayment.viewDetails,
+                  child: _buildViewDetails(connectionPayment)
+              ),
+              _buildLabelValue('Total Amount Due', '${connectionPayment.totalDueAmount}'),
+      ]
+        ),
       ),
     );
   }
@@ -104,19 +115,24 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
     );
   }
 
+  Widget _buildViewDetails(ConnectionPayment connectionPayment){
+    return
+  }
+
 
   Widget _buildLabelValue(String label, String value) {
-    return Table(children: [
-     TableRow(
+    return Table(
+        children : [
+          TableRow(
        children: [
          TableCell(
-           child: Text('$label', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+           child: Container(
+               padding: EdgeInsets.symmetric(vertical: 8),
+               child: Text('$label', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)))
          ),
          TableCell(
              child: Text('$value',  style: TextStyle(fontSize: 18))
          )
-       ]
-     )
-    ]);
+       ])]);
   }
 }

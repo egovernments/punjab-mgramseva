@@ -25,6 +25,15 @@ class ConsumerPaymentProvider with ChangeNotifier {
     }
   }
 
+  Future<void> updatePaymentInformation() async {
+    try{
+      var paymentDetails = await ConsumerRepository().getConsumerPaymentDetails();
+      paymentStreamController.add(paymentDetails);
+    }catch(e){
+      print(e);
+    }
+}
+
   onClickOfViewOrHideDetails(ConnectionPayment connectionPayment) {
     connectionPayment.viewDetails = !connectionPayment.viewDetails;
     notifyListeners();
