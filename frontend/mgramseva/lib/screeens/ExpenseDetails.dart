@@ -38,7 +38,6 @@ class ExpenseDetails extends StatefulWidget {
 class _ExpenseDetailsState extends State<ExpenseDetails> {
   String _amountType = "FULL";
 
-
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
@@ -46,14 +45,14 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   }
 
   afterViewBuild() {
-        Provider.of<ExpensesDetailsProvider>(context, listen: false)
-    ..formKey = GlobalKey<FormState>()
-    ..suggestionsBoxController = SuggestionsBoxController()
-    ..expenditureDetails = ExpensesDetailsModel()
-    ..autoValidation = false
-    ..getExpensesDetails()
-    ..getExpenses()
-    ..fetchVendors();
+    Provider.of<ExpensesDetailsProvider>(context, listen: false)
+      ..formKey = GlobalKey<FormState>()
+      ..suggestionsBoxController = SuggestionsBoxController()
+      ..expenditureDetails = ExpensesDetailsModel()
+      ..autoValidation = false
+      ..getExpensesDetails()
+      ..getExpenses()
+      ..fetchVendors();
   }
 
   @override
@@ -88,7 +87,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     }
                   }
                 })),
-        bottomNavigationBar: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.SUBMIT)}', () => expensesDetailsProvider.validateExpensesDetails(context)));
+        bottomNavigationBar: BottomButtonBar(
+            '${ApplicationLocalizations.of(context).translate(i18.common.SUBMIT)}',
+            () => expensesDetailsProvider.validateExpensesDetails(context)));
   }
 
   saveInput(context) async {
@@ -96,61 +97,106 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   }
 
   Widget _buildUserView(ExpensesDetailsModel expenseDetails) {
-
     return FormWrapper(Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           HomeBack(widget: Help()),
           Card(
+              child: Consumer<ExpensesDetailsProvider>(
+            builder: (_, expensesDetailsProvider, child) => Form(
+              key: expensesDetailsProvider.formKey,
+              autovalidateMode: expensesDetailsProvider.autoValidation
+                  ? AutovalidateMode.always
+                  : AutovalidateMode.disabled,
               child:
-              Consumer<ExpensesDetailsProvider>(
-                builder: (_, expensesDetailsProvider, child) => Form(
-                  key: expensesDetailsProvider.formKey,
-                  autovalidateMode: expensesDetailsProvider.autoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
-                  child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                    LabelText("${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_DETAILS)}"),
-                    SubLabelText("${ApplicationLocalizations.of(context).translate(i18.expense.PROVIDE_INFO_TO_CREATE_EXPENSE)}"),
-                    SelectFieldBuilder(
-                        '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)}',
-                        expenseDetails.expenseType,
-                        '',
-                        '',
-                        expensesDetailsProvider.onChangeOfExpenses,
-                        expensesDetailsProvider.getExpenseTypeList(),
-                        true),
-                    AutoCompleteView(labelText: '${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)}', controller: expenseDetails.vendorNameCtrl, suggestionsBoxController: expensesDetailsProvider.suggestionsBoxController,
-                    onSuggestionSelected: expensesDetailsProvider.onSuggestionSelected, callBack: expensesDetailsProvider.onSearchVendorList, listTile: buildTile, isRequired: true),
-                    BuildTextField(
-                      '${ApplicationLocalizations.of(context).translate(i18.expense.AMOUNT)}',
-                      expenseDetails.expensesAmount!.first.amountCtrl,
-                      isRequired: true,
-                      textInputType: TextInputType.number,
-                      inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9.]"))],
-                      labelSuffix: '(₹)',
-                    ),
-                    BasicDateField('${ApplicationLocalizations.of(context).translate(i18.expense.BILL_DATE)}', true, expenseDetails.billDateCtrl,
-                        firstDate: expenseDetails.billIssuedDateCtrl.text.trim().isEmpty ? null : DateFormats.getFormattedDateToDateTime(expenseDetails.billIssuedDateCtrl.text.trim(), ),
-                        lastDate: DateTime.now(), onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
-                    BasicDateField('${ApplicationLocalizations.of(context).translate(i18.expense.PARTY_BILL_DATE)}', true, expenseDetails.billIssuedDateCtrl, lastDate: expenseDetails.billDateCtrl.text.trim().isEmpty ? DateTime.now() : DateFormats.getFormattedDateToDateTime(expenseDetails.billDateCtrl.text.trim()),
-                        onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
-                    RadioButtonFieldBuilder(context, '${ApplicationLocalizations.of(context).translate(i18.expense.BILL_PAID)}', expenseDetails.isBillPaid, '', '', true,
-                        Constants.EXPENSESTYPE, expensesDetailsProvider.onChangeOfBillPaid),
-                   if(expenseDetails.isBillPaid ?? false) BasicDateField('${ApplicationLocalizations.of(context).translate(i18.expense.PAYMENT_DATE)}', true, expenseDetails.paidDateCtrl,
-                       firstDate: DateFormats.getFormattedDateToDateTime(expenseDetails.billIssuedDateCtrl.text.trim()),  lastDate: DateTime.now(), onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
-                    FilePickerDemo(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    )
-                  ]),
+                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                LabelText(
+                    "${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_DETAILS)}"),
+                SubLabelText(
+                    "${ApplicationLocalizations.of(context).translate(i18.expense.PROVIDE_INFO_TO_CREATE_EXPENSE)}"),
+                SelectFieldBuilder(
+                    '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)}',
+                    expenseDetails.expenseType,
+                    '',
+                    '',
+                    expensesDetailsProvider.onChangeOfExpenses,
+                    expensesDetailsProvider.getExpenseTypeList(),
+                    true),
+                AutoCompleteView(
+                    labelText:
+                        '${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)}',
+                    controller: expenseDetails.vendorNameCtrl,
+                    suggestionsBoxController:
+                        expensesDetailsProvider.suggestionsBoxController,
+                    onSuggestionSelected:
+                        expensesDetailsProvider.onSuggestionSelected,
+                    callBack: expensesDetailsProvider.onSearchVendorList,
+                    listTile: buildTile,
+                    isRequired: true),
+                BuildTextField(
+                  '${ApplicationLocalizations.of(context).translate(i18.expense.AMOUNT)}',
+                  expenseDetails.expensesAmount!.first.amountCtrl,
+                  isRequired: true,
+                  textInputType: TextInputType.number,
+                  inputFormatter: [
+                    FilteringTextInputFormatter.allow(RegExp("[0-9.]"))
+                  ],
+                  labelSuffix: '(₹)',
                 ),
-              ))
+                BasicDateField(
+                    '${ApplicationLocalizations.of(context).translate(i18.expense.BILL_DATE)}',
+                    true,
+                    expenseDetails.billDateCtrl,
+                    firstDate:
+                        expenseDetails.billIssuedDateCtrl.text.trim().isEmpty
+                            ? null
+                            : DateFormats.getFormattedDateToDateTime(
+                                expenseDetails.billIssuedDateCtrl.text.trim(),
+                              ),
+                    lastDate: DateTime.now(),
+                    onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
+                BasicDateField(
+                    '${ApplicationLocalizations.of(context).translate(i18.expense.PARTY_BILL_DATE)}',
+                    true,
+                    expenseDetails.billIssuedDateCtrl,
+                    lastDate: expenseDetails.billDateCtrl.text.trim().isEmpty
+                        ? DateTime.now()
+                        : DateFormats.getFormattedDateToDateTime(
+                            expenseDetails.billDateCtrl.text.trim()),
+                    onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
+                RadioButtonFieldBuilder(
+                    context,
+                    '${ApplicationLocalizations.of(context).translate(i18.expense.BILL_PAID)}',
+                    expenseDetails.isBillPaid,
+                    '',
+                    '',
+                    true,
+                    Constants.EXPENSESTYPE,
+                    expensesDetailsProvider.onChangeOfBillPaid),
+                if (expenseDetails.isBillPaid ?? false)
+                  BasicDateField(
+                      '${ApplicationLocalizations.of(context).translate(i18.expense.PAYMENT_DATE)}',
+                      true,
+                      expenseDetails.paidDateCtrl,
+                      firstDate: DateFormats.getFormattedDateToDateTime(
+                          expenseDetails.billIssuedDateCtrl.text.trim()),
+                      lastDate: DateTime.now(),
+                      onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
+                FilePickerDemo(),
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  height: 20,
+                )
+              ]),
+            ),
+          ))
         ]));
   }
 
-  Widget buildTile(context, vendor) => Container(padding: EdgeInsets.symmetric(vertical: 6, horizontal: 5), child: Text('${vendor?.name}', style: TextStyle(fontSize: 18)));
-
+  Widget buildTile(context, vendor) => Container(
+      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 5),
+      child: Text('${vendor?.name}', style: TextStyle(fontSize: 18)));
 }

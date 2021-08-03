@@ -9,9 +9,7 @@ part of 'property.dart';
 Property _$PropertyFromJson(Map<String, dynamic> json) {
   return Property()
     ..tenantId = json['tenantId'] as String?
-    ..address = json['address'] == null
-        ? null
-        : Address.fromJson(json['address'] as Map<String, dynamic>)
+    ..address = Address.fromJson(json['address'] as Map<String, dynamic>)
     ..ownershipCategory = json['ownershipCategory'] as String?
     ..owners = (json['owners'] as List<dynamic>?)
         ?.map((e) => Owners.fromJson(e as Map<String, dynamic>))

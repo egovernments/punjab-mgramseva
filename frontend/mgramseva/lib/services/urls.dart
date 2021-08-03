@@ -9,6 +9,8 @@ class Url {
   static const String ADD_EXPENSES = 'echallan-services/eChallan/v1/_create';
   // Proprety Create
   static const String ADD_PROPERTY = 'property-services/property/_create';
+  // Connection Create
+  static const String ADD_WC_CONNECTION = 'ws-services/wc/_create';
   static const String VENDOR_SEARCH = 'vendor/v1/_search';
   static const String EGOV_LOCATIONS =
       'egov-location/location/v11/boundarys/_search';
