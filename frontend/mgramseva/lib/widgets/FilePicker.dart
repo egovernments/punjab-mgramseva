@@ -97,9 +97,11 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
               Expanded(
                 child: Container(
                     margin: EdgeInsets.all(10),
+                    alignment: Alignment.center,
+                    width: constraints.maxWidth > 760 ? 200 : null,
                     child: ElevatedButton(
                       style: ButtonStyle(
-                        padding: MaterialStateProperty.all(EdgeInsets.zero),
+                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 10)),
                           backgroundColor:
                               MaterialStateProperty.all<Color>(Color(0XFFD6D5D4)),
                           shape:
