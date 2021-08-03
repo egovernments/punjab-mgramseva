@@ -9,17 +9,17 @@ class Constants {
   static const String LANGUAGE_KEY = 'language_key';
   static const String STATES_KEY = 'states_key';
 
-  static List<KeyValue> GENDER = [
+  static const List<KeyValue> GENDER = [
     KeyValue('Male', 'male'),
     KeyValue('Female', 'female'),
     KeyValue('Transgender', 'Transgender'),
   ];
 
-  static List<KeyValue> EXPENSESTYPE = [
+  static const List<KeyValue> EXPENSESTYPE = [
     KeyValue('YES', true),
     KeyValue('NO', false),
   ];
-  static List<KeyValue> AMOUNTTYPE = [
+  static const List<KeyValue> AMOUNTTYPE = [
     KeyValue('FULL', 'Full'),
     KeyValue('PARTIAL', 'Partial'),
   ];
@@ -34,5 +34,16 @@ class Constants {
     HomeItem("CORE_CONSUMER_CREATE", HomeIcons.createconsumer, 'consumer/create'),
     HomeItem("Update Consumer Details", HomeIcons.updateconsumer, 'consumer/search'),
     HomeItem("GPWSC Dashboard", HomeIcons.dashboard, 'dashboard'),
+  ];
+
+  static const List<KeyValue> PAYMENT_AMOUNT = [
+    KeyValue('Full Amount', 'fullAmount'),
+    KeyValue('Custom Amount', 'customAmount'),
+  ];
+
+  static const List<KeyValue> PAYMENT_METHOD = [
+    KeyValue('Online', 'online'),
+    KeyValue('Cheque', 'cheque'),
+    KeyValue('Cash', 'cash'),
   ];
 }

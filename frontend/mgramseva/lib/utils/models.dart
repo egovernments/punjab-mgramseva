@@ -8,9 +8,9 @@ enum ExceptionType {UNAUTHORIZED, BADREQUEST, INVALIDINPUT, FETCHDATA}
 enum MDMSType {BusinessService, ConsumerType, TaxHeadCode}
 
 class KeyValue {
-  String label;
-  dynamic key;
-  KeyValue(this.label, this.key);
+  final String label;
+  final dynamic key;
+  const KeyValue(this.label, this.key);
 }
 
 class HomeItem {
