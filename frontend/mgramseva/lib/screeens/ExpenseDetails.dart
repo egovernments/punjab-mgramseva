@@ -122,11 +122,12 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     AutoCompleteView(labelText: '${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)}', controller: expenseDetails.vendorNameCtrl, suggestionsBoxController: expensesDetailsProvider.suggestionsBoxController,
                     onSuggestionSelected: expensesDetailsProvider.onSuggestionSelected, callBack: expensesDetailsProvider.onSearchVendorList, listTile: buildTile, isRequired: true),
                     BuildTextField(
-                      '${ApplicationLocalizations.of(context).translate(i18.expense.AMOUNT)} (₹)',
+                      '${ApplicationLocalizations.of(context).translate(i18.expense.AMOUNT)}',
                       expenseDetails.expensesAmount!.first.amountCtrl,
                       isRequired: true,
                       textInputType: TextInputType.number,
                       inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9.]"))],
+                      labelSuffix: '(₹)',
                     ),
                     BasicDateField('${ApplicationLocalizations.of(context).translate(i18.expense.BILL_DATE)}', true, expenseDetails.billDateCtrl,
                         firstDate: expenseDetails.billIssuedDateCtrl.text.trim().isEmpty ? null : DateFormats.getFormattedDateToDateTime(expenseDetails.billIssuedDateCtrl.text.trim(), ),

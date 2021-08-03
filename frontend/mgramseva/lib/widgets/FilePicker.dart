@@ -1,6 +1,8 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class FilePickerDemo extends StatefulWidget {
   @override
@@ -56,8 +58,8 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
         SnackBar(
           backgroundColor: result! ? Colors.green : Colors.red,
           content: Text((result
-              ? 'Temporary files removed with success.'
-              : 'Failed to clean temporary files')),
+              ? '${ApplicationLocalizations.of(context).translate(i18.common.TEMPORARY_FILES_REMOVED)}'
+              : '${ApplicationLocalizations.of(context).translate(i18.common.FALIED_TO_FETCH_TEMPORARY_FILES)}')),
         ),
       );
     });
@@ -78,7 +80,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
           padding: EdgeInsets.only(top: 18, bottom: 3),
           child: new Align(
               alignment: Alignment.centerLeft,
-              child: Text("Attach Bill",
+              child: Text("${ApplicationLocalizations.of(context).translate(i18.common.ATTACH_BILL)}",
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       fontWeight: FontWeight.w400,
@@ -113,13 +115,13 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                     onPressed: () => _openFileExplorer(),
                     child: Padding(
                         padding: const EdgeInsets.only(left: 24, right: 24),
-                        child: const Text(
-                          "Choose File",
+                        child: Text(
+                          "${ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_FILE)}",
                           style: TextStyle(color: Colors.black, fontSize: 16),
                         )),
                   )),
               Text(
-                "No File Uploaded",
+                "${ApplicationLocalizations.of(context).translate(i18.common.NO_FILE_UPLOADED)}",
                 style: TextStyle(color: Colors.black, fontSize: 16),
               )
             ],

@@ -36,6 +36,14 @@ class Common {
   String get TRANSGENDER => 'CORE_COMMON_GENDER_TRANSGENDER';
   String get BACK_HOME => 'CORE_COMMON_BACK_HOME_BUTTON';
   String get MGRAM_SEVA => 'CORE_COMMON_MGRAM_SEVA_LABEL';
+
+  /// File Picker
+  String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED'; ///Temporary files removed with success.
+  String get FALIED_TO_FETCH_TEMPORARY_FILES => 'FALIED_TO_FETCH_TEMPORARY_FILES'; /// Failed to clean temporary files
+  String get ATTACH_BILL => 'ATTACH_BILL'; /// Attach Bill
+  String get CHOOSE_FILE => 'CHOOSE_FILE'; /// Choose File
+  String get NO_FILE_UPLOADED => 'NO_FILE_UPLOADED'; /// No File Uploaded
+
 }
 
 

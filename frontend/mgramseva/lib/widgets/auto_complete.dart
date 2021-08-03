@@ -73,6 +73,8 @@ class AutoCompleteView extends StatelessWidget {
     return TypeAheadFormField(
       textFieldConfiguration: TextFieldConfiguration(
           controller: controller,
+          style: TextStyle(
+          color: Colors.black, fontSize: 19, fontWeight: FontWeight.w500),
           decoration: InputDecoration(
               border: OutlineInputBorder()
           )
