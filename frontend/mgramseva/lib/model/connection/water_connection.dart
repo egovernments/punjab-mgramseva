@@ -19,6 +19,10 @@ class WaterConnection {
   String? proposedTaps;
   @JsonKey(name: "arrears")
   int? arrears;
+  @JsonKey(name: "connectionType")
+  String? connectionType;
+  @JsonKey(name: "oldConnectionNo")
+  String? oldConnectionNo;
   @JsonKey(name: "meterId")
   String? meterId;
   @JsonKey(name: "previousReadingDate")
@@ -39,7 +43,11 @@ class WaterConnection {
   @JsonKey(ignore: true)
   var previousReadingDateCtrl = TextEditingController();
 
+  @JsonKey(ignore: true)
+  var OldConnectionCtrl = TextEditingController();
+
   setText() {
+    oldConnectionNo = OldConnectionCtrl.text;
     meterId = meterIdCtrl.text;
     arrears = int.parse(arrearsCtrl.text);
     previousReadingDate =
@@ -62,4 +70,21 @@ class ProcessInstance {
   factory ProcessInstance.fromJson(Map<String, dynamic> json) =>
       _$ProcessInstanceFromJson(json);
   Map<String, dynamic> toJson() => _$ProcessInstanceToJson(this);
+}
+
+@JsonSerializable()
+class AdditionalDetails {
+  @JsonKey(name: "initialMeterReading")
+  String? initialMeterReading;
+  @JsonKey(ignore: true)
+  var initialMeterReadingCtrl = TextEditingController();
+  String? action;
+  setText() {
+    initialMeterReading = initialMeterReadingCtrl.text;
+  }
+
+  AdditionalDetails();
+  factory AdditionalDetails.fromJson(Map<String, dynamic> json) =>
+      _$AdditionalDetailsFromJson(json);
+  Map<String, dynamic> toJson() => _$AdditionalDetailsToJson(this);
 }

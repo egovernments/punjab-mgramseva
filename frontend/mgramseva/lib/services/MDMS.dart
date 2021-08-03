@@ -61,11 +61,17 @@ Map getExpenseMDMS(String tenantId) {
   };
 }
 
-Map getPropertyTypeMDMS(String tenantId) {
+Map getConnectionTypePropertyTypeMDMS(String tenantId) {
   return {
     "MdmsCriteria": {
       "tenantId": tenantId,
       "moduleDetails": [
+        {
+          "moduleName": "ws-services-masters",
+          "masterDetails": [
+            {"name": "connectionType"},
+          ]
+        },
         {
           "moduleName": "PropertyTax",
           "masterDetails": [

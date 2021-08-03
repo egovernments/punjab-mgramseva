@@ -16,6 +16,8 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) {
         : Documents.fromJson(json['documents'] as Map<String, dynamic>)
     ..proposedTaps = json['proposedTaps'] as String?
     ..arrears = json['arrears'] as int?
+    ..connectionType = json['connectionType'] as String?
+    ..oldConnectionNo = json['oldConnectionNo'] as String?
     ..meterId = json['meterId'] as String?
     ..previousReadingDate = json['previousReadingDate'] as int?
     ..proposedPipeSize = json['proposedPipeSize'] as int?
@@ -37,6 +39,8 @@ Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
       'documents': instance.documents,
       'proposedTaps': instance.proposedTaps,
       'arrears': instance.arrears,
+      'connectionType': instance.connectionType,
+      'oldConnectionNo': instance.oldConnectionNo,
       'meterId': instance.meterId,
       'previousReadingDate': instance.previousReadingDate,
       'proposedPipeSize': instance.proposedPipeSize,
@@ -50,5 +54,17 @@ ProcessInstance _$ProcessInstanceFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ProcessInstanceToJson(ProcessInstance instance) =>
     <String, dynamic>{
+      'action': instance.action,
+    };
+
+AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) {
+  return AdditionalDetails()
+    ..initialMeterReading = json['initialMeterReading'] as String?
+    ..action = json['action'] as String?;
+}
+
+Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
+    <String, dynamic>{
+      'initialMeterReading': instance.initialMeterReading,
       'action': instance.action,
     };

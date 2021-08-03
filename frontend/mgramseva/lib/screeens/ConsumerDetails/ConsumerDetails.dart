@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/property.dart';
 import 'package:mgramseva/providers/consumer_details.dart';
-import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -16,7 +15,6 @@ import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/SelectFieldBuilder.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
-import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/help.dart';
@@ -29,16 +27,6 @@ class ConsumerDetails extends StatefulWidget {
 }
 
 class _ConsumerDetailsState extends State<ConsumerDetails> {
-  _onSelectItem(int index, context) {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => Home(),
-        ),
-        ModalRoute.withName(Routes.HOME));
-  }
-
-  final formKey = GlobalKey<FormState>();
   saveInput(context) async {
     print(context);
   }
@@ -53,7 +41,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
     Provider.of<ConsumerProvider>(context, listen: false)
       ..getConsumerDetails()
       ..fetchBoundary()
-      ..getPropertyType();
+      ..formKey = GlobalKey<FormState>()
+      ..getPropertyTypeandConnectionType();
   }
 
   Widget buildconsumerView(Property property) {
@@ -108,7 +97,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     BuildTextField(
                                       i18.consumer.OLD_CONNECTION_ID,
                                       consumerProvider
-                                          .waterconnection.meterIdCtrl,
+                                          .waterconnection.OldConnectionCtrl,
                                       isRequired: true,
                                     )),
                             BuildTextField(
@@ -146,36 +135,52 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                         consumerProvider.getPropertTypeList(),
                                         true)),
                             Consumer<ConsumerProvider>(
-                                builder: (_, consumerProvider, child) =>
-                                    SelectFieldBuilder(
-                                        i18.consumer.SERVICE_TYPE,
-                                        consumerProvider.waterconnection.action,
-                                        '',
-                                        '',
-                                        saveInput,
-                                        [],
-                                        true)),
-
-                            Consumer<ConsumerProvider>(
-                                builder: (_, consumerProvider, child) =>
-                                    BasicDateField(
-                                        i18.consumer.PREV_METER_READING_DATE,
-                                        true,
+                                builder: (_, consumerProvider, child) => Column(
+                                      children: [
+                                        SelectFieldBuilder(
+                                            i18.consumer.SERVICE_TYPE,
+                                            consumerProvider
+                                                .waterconnection.connectionType,
+                                            '',
+                                            '',
+                                            consumerProvider
+                                                .onChangeOfConnectionType,
+                                            consumerProvider
+                                                .getConnectionTypeList(),
+                                            true),
                                         consumerProvider.waterconnection
-                                            .previousReadingDateCtrl,
-                                        lastDate: DateTime.now(),
-                                        onChangeOfDate:
-                                            consumerProvider.onChangeOfDate)),
-                            // BasicDateField("Previous Meter Reading Date", true,
-                            //     TextEditingController()),
-
-                            Consumer<ConsumerProvider>(
-                                builder: (_, consumerProvider, child) =>
-                                    BuildTextField(
-                                      i18.consumer.ARREARS,
-                                      consumerProvider
-                                          .waterconnection.arrearsCtrl,
-                                      isRequired: true,
+                                                    .connectionType ==
+                                                'Metered'
+                                            ? Column(
+                                                children: [
+                                                  BasicDateField(
+                                                      i18.consumer
+                                                          .PREV_METER_READING_DATE,
+                                                      true,
+                                                      consumerProvider
+                                                          .waterconnection
+                                                          .previousReadingDateCtrl,
+                                                      lastDate: DateTime.now(),
+                                                      onChangeOfDate:
+                                                          consumerProvider
+                                                              .onChangeOfDate),
+                                                  BuildTextField(
+                                                    i18.consumer.METER_NUMBER,
+                                                    consumerProvider
+                                                        .waterconnection
+                                                        .meterIdCtrl,
+                                                    isRequired: true,
+                                                  ),
+                                                ],
+                                              )
+                                            : Container(),
+                                        BuildTextField(
+                                          i18.consumer.ARREARS,
+                                          consumerProvider
+                                              .waterconnection.arrearsCtrl,
+                                          isRequired: true,
+                                        )
+                                      ],
                                     )),
                             SizedBox(
                               height: 20,

@@ -6,6 +6,7 @@ import 'package:mgramseva/model/connection/property.dart';
 import 'package:mgramseva/model/connection/tenant_boundary.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/localization/language.dart';
+import 'package:mgramseva/model/mdms/connection_type.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
@@ -52,16 +53,17 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   void validateExpensesDetails() async {
-    property.owners!.first.setText();
-    property.address.setText();
-    property.address.city = 'lodhipur';
-    waterconnection.setText();
-    if (waterconnection.processInstance == null) {
-      var processInstance = ProcessInstance();
-      processInstance.action = 'INITIATE';
-      waterconnection.processInstance = processInstance;
-    }
     if (formKey.currentState!.validate()) {
+      property.owners!.first.setText();
+      property.address.setText();
+      property.address.city = 'lodhipur';
+      waterconnection.setText();
+      if (waterconnection.processInstance == null) {
+        var processInstance = ProcessInstance();
+        processInstance.action = 'INITIATE';
+        waterconnection.processInstance = processInstance;
+      }
+
       // notifyListeners();
       try {
         var result = await ConsumerRepository().addProperty(property.toJson());
@@ -85,11 +87,11 @@ class ConsumerProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getPropertyType() async {
+  Future<void> getPropertyTypeandConnectionType() async {
     try {
-      var res = await CoreRepository().getMdms(getPropertyTypeMDMS('pb'));
+      var res = await CoreRepository()
+          .getMdms(getConnectionTypePropertyTypeMDMS('pb'));
       languageList = res;
-      notifyListeners();
     } catch (e) {
       print(e);
     }
@@ -119,7 +121,6 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   onChangeOfPropertyType(val) {
-    print(val);
     property.propertyType = val;
     // property.address.locality?.code = val.code;
     // property.address.locality?.area = val.area;
@@ -142,6 +143,26 @@ class ConsumerProvider with ChangeNotifier {
     if (languageList?.mdmsRes?.propertyTax?.PropertyTypeList != null) {
       return (languageList?.mdmsRes?.propertyTax?.PropertyTypeList ??
               <PropertyType>[])
+          .map((value) {
+        return DropdownMenuItem(
+          value: value.code,
+          child: new Text(value.name!),
+        );
+      }).toList();
+    }
+    return <DropdownMenuItem<Object>>[];
+  }
+
+  onChangeOfConnectionType(val) {
+    print(val);
+    waterconnection.connectionType = val;
+    notifyListeners();
+  }
+
+  List<DropdownMenuItem<Object>> getConnectionTypeList() {
+    if (languageList?.mdmsRes?.connection?.connectionTypeList != null) {
+      return (languageList?.mdmsRes?.connection?.connectionTypeList ??
+              <ConnectionType>[])
           .map((value) {
         return DropdownMenuItem(
           value: value.code,

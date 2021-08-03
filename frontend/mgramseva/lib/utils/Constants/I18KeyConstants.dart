@@ -73,6 +73,7 @@ class CreateConsumer {
   String get ARREARS => 'CONSUMER_ARREARS';
   String get SERVICE_TYPE => 'CONSUMER_SERVICE_TYPE';
   String get PREV_METER_READING_DATE => 'CONSUMER_PREV_METER_READING_DATE';
+  String get METER_NUMBER => 'CONSUMER_METER_NUMBER';
 }
 
 class SearchConnection {

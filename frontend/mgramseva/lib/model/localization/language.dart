@@ -1,4 +1,5 @@
 import 'package:mgramseva/model/mdms/business_service.dart';
+import 'package:mgramseva/model/mdms/connection_type.dart';
 import 'package:mgramseva/model/mdms/expense_type.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
 
@@ -29,10 +30,12 @@ class MdmsRes {
   BillingService? billingService;
   Expense? expense;
   PropertyTax? propertyTax;
+  Connection? connection;
 
   MdmsRes({this.commonMasters});
 
   MdmsRes.fromJson(Map<String, dynamic> json) {
+    print(json);
     commonMasters = json['common-masters'] != null
         ? new CommonMasters.fromJson(json['common-masters'])
         : null;
@@ -43,6 +46,9 @@ class MdmsRes {
         json['Expense'] != null ? new Expense.fromJson(json['Expense']) : null;
     propertyTax = json['PropertyTax'] != null
         ? new PropertyTax.fromJson(json['PropertyTax'])
+        : null;
+    connection = json['ws-services-masters'] != null
+        ? new Connection.fromJson(json['ws-services-masters'])
         : null;
   }
 
