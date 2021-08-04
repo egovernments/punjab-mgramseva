@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/utils/date_formats.dart';
+import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
 
@@ -14,6 +15,11 @@ class ExpenseResults extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
   return  Scaffold(
+      appBar: BaseAppBar(
+        Text('mGramSeva'),
+        AppBar(),
+        <Widget>[Icon(Icons.more_vert)],
+      ),
      body : LayoutBuilder(builder: (context, constraints) {
        return Column(children: [
          // ignore: unnecessary_null_comparison
@@ -31,7 +37,7 @@ class ExpenseResults extends StatelessWidget {
                            crossAxisAlignment: CrossAxisAlignment.start,
                            children: [
                              _getDetailtext(
-                                 "Venoor Name",
+                                 "Vendor Name",
                                  expense.vendorName,
                                  context),
                              _getDetailtext(
@@ -52,7 +58,7 @@ class ExpenseResults extends StatelessWidget {
                                  context),
                              _getDetailtext(
                                  "Status",
-                                 DateFormats.timeStampToDate(expense.billDate!.toInt()),
+                                 expense.status,
                                  context),
                              SizedBox(
                                height: 20,
@@ -85,7 +91,7 @@ class ExpenseResults extends StatelessWidget {
               label,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             )),
-        Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))
+        Text('$value', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))
       ],
     ));
   }

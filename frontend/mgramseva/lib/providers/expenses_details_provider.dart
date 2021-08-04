@@ -93,8 +93,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
       var res = await ExpensesRepository()
           .searchExpense({});
+      Navigator.pop(context);
       if(res != null && res.isNotEmpty){
-       Navigator.pushNamed(context, Routes.EXPENSE_SEARCH, arguments: res);
+       Navigator.pushNamed(context, Routes.EXPENSE_RESULT, arguments: res);
       }else{
 
       }
