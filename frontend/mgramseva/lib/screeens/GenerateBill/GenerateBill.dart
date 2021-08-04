@@ -52,10 +52,10 @@ class _GenerateBillState extends State<GenerateBill> {
   _onSubmit(context) {
     if (formKey.currentState!.validate() && serviceType == "METER CONNECTION") {
       if(om_1.text.isEmpty || om_2.text.isEmpty || om_3.text.isEmpty || om_4.text.isEmpty || om_5.text.isEmpty) {
-        Notifiers.getToastMessage('Old Meter Reading is Invalid');
+        Notifiers.getToastMessage(context, 'Old Meter Reading is Invalid', 'ERROR');
       }
       else if (nm_1.text.isEmpty || nm_2.text.isEmpty || nm_3.text.isEmpty || nm_4.text.isEmpty || nm_5.text.isEmpty){
-        Notifiers.getToastMessage('New Meter Reading is Invalid');
+        Notifiers.getToastMessage(context, 'New Meter Reading is Invalid', 'ERROR');
       }
       else {
         var oldMeter = om_1.text + om_2.text + om_3.text + om_4.text +
@@ -73,7 +73,7 @@ class _GenerateBillState extends State<GenerateBill> {
         }
         else {
           Notifiers.getToastMessage(
-              'New Meter reading should be greater than old meter reading');
+              context, 'New Meter reading should be greater than old meter reading', 'ERROR');
         }
       }
     }
@@ -133,7 +133,10 @@ class _GenerateBillState extends State<GenerateBill> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HomeBack(),
-              Card(
+              Container(
+                  height: 1260,
+                  width: MediaQuery.of(context).size.width,
+                child: Card(
                   child: Form(
                       key: formKey,
                       autovalidateMode: autoValidation
@@ -171,7 +174,7 @@ class _GenerateBillState extends State<GenerateBill> {
                             serviceType != "METER CONNECTION"
                                 ? Container()
                                 : Container(
-                              height: 500,
+                                width: MediaQuery.of(context).size.width,
                                 child: Column(
                                 children: [
                                   BuildTextField(
@@ -193,7 +196,7 @@ class _GenerateBillState extends State<GenerateBill> {
                             serviceType != "NON METER CONNECTION"
                                 ? Container()
                                 : Container(
-                                height: 500,
+                                width: MediaQuery.of(context).size.width,
                                   child : Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
@@ -214,7 +217,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                       getDropDownList(Constants.BILLINGCYCLE),
                                       true),
                                 ])),
-                          ])))
+                          ]))))
             ])));
   }
 
