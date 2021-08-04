@@ -145,6 +145,7 @@ class User {
     nameCtrl.text = name ?? '';
     phoneNumberCtrl.text = mobileNumber ?? '';
     emailIdCtrl.text = emailId ?? '';
+    gender = gender ?? '';
   }
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

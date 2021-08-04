@@ -4,7 +4,6 @@ import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
-import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -48,6 +47,7 @@ class _EditProfileState extends State<EditProfile> {
   saveInputandedit(context, profileDetails, User profile) async {
     var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
 
+
     if (userProvider.formKey.currentState!.validate()) {
       var editProfileProvider =
           Provider.of<UserEditProfileProvider>(context, listen: false);
@@ -65,7 +65,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Widget _builduserView(User profileDetails) {
-    return SingleChildScrollView(
+    return Container(
       child: Column(
         children: [
           HomeBack(),
@@ -101,7 +101,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   RadioButtonFieldBuilder(
                     context,
-                    'Gender',
+                    i18.common.GENDER,
                     profileDetails.gender,
                     '',
                     '',
@@ -135,7 +135,7 @@ class _EditProfileState extends State<EditProfile> {
                                   color: Theme.of(context).primaryColor),
                             ))),
                   ),
-                  FractionallySizedBox(
+                    FractionallySizedBox(
                       widthFactor: 0.90,
                       child: new ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -147,8 +147,8 @@ class _EditProfileState extends State<EditProfile> {
                         onPressed: () => saveInputandedit(
                             context, profileDetails.getText(), profileDetails),
                       )),
-                  SizedBox(
-                    height: 20,
+                    SizedBox(
+                      height: 20,
                   )
                 ],
               )),
