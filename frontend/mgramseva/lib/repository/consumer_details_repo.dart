@@ -7,22 +7,17 @@ import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 
 class ConsumerRepository extends BaseService {
-  Future<bool> addProperty(Map body) async {
+  Future addProperty(Map body) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    var result = false;
     var res = await makeRequest(
         url: Url.ADD_PROPERTY,
-        body: body,
+        body: {"Property": body},
         method: RequestType.POST,
-        requestInfo: RequestInfo('mgramseva-common', .01, "", "_create", 1, "",
-            "", commonProvider.userDetails!.accessToken));
-
-    if (res != null) {
-      result = true;
-    }
-    return result;
+        requestInfo: RequestInfo('mgramseva', "", "", "", "", "", "",
+            commonProvider.userDetails!.accessToken));
+    return res;
   }
 
   Future getLocations(Map body) async {
@@ -37,6 +32,19 @@ class ConsumerRepository extends BaseService {
         requestInfo: RequestInfo('mgramseva-common', .01, "", "_create", 1, "",
             "", commonProvider.userDetails!.accessToken));
 
+    return res;
+  }
+
+  Future addconnection(Map body) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    var res = await makeRequest(
+        url: Url.ADD_WC_CONNECTION,
+        body: {"WaterConnection": body},
+        method: RequestType.POST,
+        requestInfo: RequestInfo('mgramseva-common', .01, "", "_create", 1, "",
+            "", commonProvider.userDetails!.accessToken));
     return res;
   }
 }

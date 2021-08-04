@@ -47,21 +47,19 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   Future<void> addExpensesDetails(BuildContext context) async {
-    var commonProvider = Provider.of<CommonProvider>(
-        context,
-        listen: false);
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     expenditureDetails
       ..businessService = commonProvider.getMdmsId(languageList,
           'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
-      ..expensesAmount?.first.taxHeadCode = commonProvider.getMdmsId(
+      ..expensesAmount.first.taxHeadCode = commonProvider.getMdmsId(
           languageList,
           'EXPENSE.${expenditureDetails.expenseType}',
           MDMSType.TaxHeadCode)
       ..consumerType = 'EXPENSE'
       ..tenantId = 'pb'
       ..setText()
-    ..vendorName = expenditureDetails?.selectedVendor?.id ?? expenditureDetails.vendorNameCtrl.text;
-
+      ..vendorName = expenditureDetails.selectedVendor?.id ??
+          expenditureDetails.vendorNameCtrl.text;
 
     try {
       Loaders.showLoadingDialog(context);
@@ -71,16 +69,21 @@ class ExpensesDetailsProvider with ChangeNotifier {
       Navigator.pop(context);
       var challanDetails = res['challans']?[0];
       navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW,
-          arguments: SuccessHandler('${ApplicationLocalizations.of(context)
-              .translate(i18.expense.EXPENDITURE_SUCESS)}',
-              '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_AGAINST)} ${challanDetails['challanNo']} ${ApplicationLocalizations.of(context).translate(i18.expense.UNDER_MAINTAINANCE)} Rs. ${challanDetails['amount'][0]['amount']} ', i18.common.BACK_HOME));
+          arguments: SuccessHandler(
+              '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}',
+              '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_AGAINST)} ${challanDetails['challanNo']} ${ApplicationLocalizations.of(context).translate(i18.expense.UNDER_MAINTAINANCE)} Rs. ${challanDetails['amount'][0]['amount']} ',
+              i18.common.BACK_HOME));
     } on CustomException catch (e) {
       Navigator.pop(context);
-      Notifiers.getToastMessage('${ApplicationLocalizations.of(context)
-          .translate(i18.expense.UNABLE_TO_CREATE_EXPENSE)}');
-    }  catch(e){
-      Notifiers.getToastMessage('${ApplicationLocalizations.of(context)
-          .translate(i18.expense.UNABLE_TO_CREATE_EXPENSE)}');
+      Notifiers.getToastMessage(
+          context,
+          '${ApplicationLocalizations.of(context).translate(i18.expense.UNABLE_TO_CREATE_EXPENSE)}',
+          'ERROR');
+    } catch (e) {
+      Notifiers.getToastMessage(
+          context,
+          '${ApplicationLocalizations.of(context).translate(i18.expense.UNABLE_TO_CREATE_EXPENSE)}',
+          'ERROR');
       Navigator.pop(context);
     }
   }
@@ -92,7 +95,11 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
     if (pattern.toString().trim().isEmpty) return <Vendor>[];
 
-    return vendorList.where((vendor) => vendor.name.toLowerCase().contains(pattern.toString().toLowerCase())).toList();
+    return vendorList
+        .where((vendor) => vendor.name
+            .toLowerCase()
+            .contains(pattern.toString().toLowerCase()))
+        .toList();
   }
 
   Future<List<Vendor>> fetchVendors() async {
@@ -115,9 +122,8 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
   void onSuggestionSelected(vendor) {
     expenditureDetails
-    ..selectedVendor = vendor
-    ..vendorNameCtrl.text = vendor?.name ?? '';
-
+      ..selectedVendor = vendor
+      ..vendorNameCtrl.text = vendor?.name ?? '';
   }
 
   Future<void> getExpenses() async {

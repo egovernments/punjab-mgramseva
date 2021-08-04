@@ -8,7 +8,7 @@ class Property {
   @JsonKey(name: "tenantId")
   String? tenantId;
   @JsonKey(name: "address")
-  Address? address;
+  Address address = Address();
   @JsonKey(name: "ownershipCategory")
   String? ownershipCategory;
   @JsonKey(name: "owners")
@@ -92,6 +92,7 @@ class Locality {
   Locality();
   factory Locality.fromJson(Map<String, dynamic> json) =>
       _$LocalityFromJson(json);
+  Map<String, dynamic> toJson() => _$LocalityToJson(this);
 }
 
 @JsonSerializable()

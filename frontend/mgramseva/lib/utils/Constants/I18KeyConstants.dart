@@ -9,6 +9,7 @@ class i18 {
   static SearchConnection searchConnection = const SearchConnection();
   static ProfileEdit profileEdit = const ProfileEdit();
   static DemandGenerate demandGenerate = const DemandGenerate();
+
 }
 
 class Login {
@@ -38,14 +39,24 @@ class Common {
   String get MGRAM_SEVA => 'CORE_COMMON_MGRAM_SEVA_LABEL';
 
   /// File Picker
-  String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED'; ///Temporary files removed with success.
-  String get FALIED_TO_FETCH_TEMPORARY_FILES => 'FALIED_TO_FETCH_TEMPORARY_FILES'; /// Failed to clean temporary files
-  String get ATTACH_BILL => 'ATTACH_BILL'; /// Attach Bill
-  String get CHOOSE_FILE => 'CHOOSE_FILE'; /// Choose File
-  String get NO_FILE_UPLOADED => 'NO_FILE_UPLOADED'; /// No File Uploaded
+  String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED';
+
+  ///Temporary files removed with success.
+  String get FALIED_TO_FETCH_TEMPORARY_FILES =>
+      'FALIED_TO_FETCH_TEMPORARY_FILES';
+
+  /// Failed to clean temporary files
+  String get ATTACH_BILL => 'ATTACH_BILL';
+
+  /// Attach Bill
+  String get CHOOSE_FILE => 'CHOOSE_FILE';
+
+  /// Choose File
+  String get NO_FILE_UPLOADED => 'NO_FILE_UPLOADED';
+
+  /// No File Uploaded
 
 }
-
 
 class Password {
   const Password();
@@ -54,10 +65,11 @@ class Password {
   String get NEW_PASSWORD => 'CORE_LOGIN_NEW_PASSWORD';
   String get CONFIRM_PASSWORD => 'CORE_LOGIN_CONFIRM_NEW_PASSWORD';
   String get CHANGE_PASSWORD_SUCCESS => 'CHANGE_PASSWORD_SUCCESS_LABEL';
-  String get CHANGE_PASSWORD_SUCCESS_SUBTEXT => 'CHANGE_PASSWORD_SUCCESS_SUB_TEXT';
+  String get CHANGE_PASSWORD_SUCCESS_SUBTEXT =>
+      'CHANGE_PASSWORD_SUCCESS_SUB_TEXT';
 }
 
-class Expense{
+class Expense {
   const Expense();
   String get VENDOR_NAME => 'CORE_EXPENSE_VENDOR_NAME';
   String get EXPENSE_TYPE => 'CORE_EXPENSE_TYPE_OF_EXPENSES';
@@ -74,11 +86,14 @@ class Expense{
   String get UNABLE_TO_CREATE_EXPENSE => 'CORE_EXPENSE_UNABLE_TO_EXPENSE';
   String get PAYMENT_DATE => 'CORE_EXPENSE_PAYMENT_DATE';
   String get EXPENSE_DETAILS => 'CORE_EXPENSE_EXPENSE_DETAILS';
-  String get PROVIDE_INFO_TO_CREATE_EXPENSE => 'CORE_EXPENSE_PROVIDE_INFO_TO_CREATE_EXPENSE';
-  String get ADD_EXPENSES_RECORD => 'ADD_EXPENSES_RECORD'; /// Add Expense Record
+  String get PROVIDE_INFO_TO_CREATE_EXPENSE =>
+      'CORE_EXPENSE_PROVIDE_INFO_TO_CREATE_EXPENSE';
+  String get ADD_EXPENSES_RECORD => 'ADD_EXPENSES_RECORD';
+
+  /// Add Expense Record
 }
 
-class CreateConsumer{
+class CreateConsumer {
   const CreateConsumer();
   String get CONSUMER_NAME => 'CREATE_CONSUMER_NAME';
   String get FATHER_SPOUSE_NAME => 'CONSUMER_FATHER_SPOUSE_NAME';
@@ -86,38 +101,47 @@ class CreateConsumer{
   String get DOOR_NO => 'CONSUMER_DOOR_NO';
   String get STREET_NUM_NAME => 'CONSUMER_STREETNUM_STREETNAME';
   String get WARD => 'CONSUMER_WARD_LABEL';
+  String get PROPERTY_TYPE => 'CONSUMER_PROPERTY_TYPE';
+  String get CONSUMER_DETAILS_LABEL => 'CONSUMER_DETAILS_LABEL';
+  String get CONSUMER_DETAILS_SUB_LABEL => 'CONSUMER_DETAILS_SUB_LABEL';
   String get GP_NAME => 'CONSUMER_GP_NAME';
-  String get Arrears => 'CONSUMER_ARREARS';
+  String get ARREARS => 'CONSUMER_ARREARS';
+  String get SERVICE_TYPE => 'CONSUMER_SERVICE_TYPE';
+  String get PREV_METER_READING_DATE => 'CONSUMER_PREV_METER_READING_DATE';
+  String get METER_NUMBER => 'CONSUMER_METER_NUMBER';
+  String get REGISTER_SUCCESS => 'CONSUMER_REGISTER_SUCCESS_LABEL';
 }
 
-class SearchConnection{
+class SearchConnection {
   const SearchConnection();
   String get OWNER_MOB_NUM => 'SEARCH_CONNECTION_OWNER_MOB_NUM';
   String get CONSUMER_NAME => 'SEARCH_CONNECTION_NAME_OF_CONSUMER';
   String get OLD_CONNECTION_ID => 'SEARCH_CONNECTION_OLD_CONNECTION_ID';
   String get NEW_CONNECTION_ID => 'SEARCH_CONNECTION_NEW_CONNECTION_ID';
   String get SEARCH_BAR => 'SEARCH_CONNECTION_SEARCH';
-
 }
 
-class ProfileEdit{
+class ProfileEdit {
   const ProfileEdit();
   String get PROFILE_EDIT_SUCCESS => 'EDIT_PROFILE_SUCCESS_LABEL';
   String get PROFILE_EDITED_SUCCESS_SUBTEXT => 'EDIT_PROFILE_SUCCESS_SUB_TEXT';
 }
 
 class _Validators {
-
   const _Validators();
 
   /// Mobile number validations
-  String get ENTER_MOBILE_NUMBER => 'ENTER_MOBILE_NUMBER'; //Please enter Mobile number
-  String get ENTER_NUMBERS_ONLY => 'ENTER_NUMBERS_ONLY'; //Please enter Numbers only
-  String get MOBILE_NUMBER_SHOULD_BE_10_DIGIT => 'MOBILE_NUMBER_SHOULD_BE_10_DIGIT'; //Mobile number should be 10 digits
+  String get ENTER_MOBILE_NUMBER =>
+      'ENTER_MOBILE_NUMBER'; //Please enter Mobile number
+  String get ENTER_NUMBERS_ONLY =>
+      'ENTER_NUMBERS_ONLY'; //Please enter Numbers only
+  String get MOBILE_NUMBER_SHOULD_BE_10_DIGIT =>
+      'MOBILE_NUMBER_SHOULD_BE_10_DIGIT'; //Mobile number should be 10 digits
 
   /// Re confirm password
   String get INVALID_FORMAT => 'INVALID_FORMAT'; // Invalid format
-  String get CONFIRM_RECONFIRM_SHOULD_SAME => 'CONFIRM_RECONFIRM_SHOULD_SAME'; //New Password and Confirm password should be same
+  String get CONFIRM_RECONFIRM_SHOULD_SAME =>
+      'CONFIRM_RECONFIRM_SHOULD_SAME'; //New Password and Confirm password should be same
 
 }
 

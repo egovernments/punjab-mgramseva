@@ -66,7 +66,7 @@ class RadioButtonFieldBuilder extends StatelessWidget {
               child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    labelText,
+                    ApplicationLocalizations.of(context).translate(labelText),
                     textAlign: TextAlign.left,
                     style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
                   ))),

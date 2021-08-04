@@ -41,7 +41,7 @@ class ExpensesDetailsModel {
   String? fileStoreId;
 
   @JsonKey(ignore: true)
-   Vendor? selectedVendor;
+  Vendor? selectedVendor;
 
   @JsonKey(ignore: true)
   var vendorNameCtrl = TextEditingController();
@@ -59,7 +59,7 @@ class ExpensesDetailsModel {
 
   setText() {
     vendorName = vendorNameCtrl.text;
-    expensesAmount?.first.amount = expensesAmount?.first.amountCtrl.text;
+    expensesAmount.first.amount = expensesAmount.first.amountCtrl.text;
     billDate = DateFormats.dateToTimeStamp(billDateCtrl.text);
     if (billIssuedDateCtrl.text.trim().isNotEmpty)
       billIssuedDate = DateFormats.dateToTimeStamp(billIssuedDateCtrl.text);
@@ -68,12 +68,12 @@ class ExpensesDetailsModel {
   }
 
   getText() {
-    if (expensesAmount == null || expensesAmount!.isEmpty) {
-      expensesAmount?.add(ExpensesAmount());
+    if (expensesAmount == null || expensesAmount.isEmpty) {
+      expensesAmount.add(ExpensesAmount());
     }
 
     vendorNameCtrl.text = vendorName ?? '';
-    expensesAmount?.first.amountCtrl.text = expensesAmount?.first.amount ?? '';
+    expensesAmount.first.amountCtrl.text = expensesAmount.first.amount ?? '';
     isBillPaid ??= false;
   }
 

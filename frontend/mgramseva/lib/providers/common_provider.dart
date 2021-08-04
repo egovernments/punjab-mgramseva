@@ -55,7 +55,7 @@ class CommonProvider with ChangeNotifier {
 
     try {
       var query = {
-        'module': 'mgramseva-common',
+        'module': 'mgramseva-common,mgramseva-consumer',
         'locale': languageProvider.selectedLanguage?.value ?? '',
         'tenantId': 'pb'
       };
@@ -86,7 +86,8 @@ class CommonProvider with ChangeNotifier {
             value: jsonEncode(labels.map((e) => e.toJson()).toList()));
       }
     } catch (e) {
-      Notifiers.getToastMessage('Unable to store the details');
+      // Notifiers.getToastMessage(
+      //     context, 'Unable to store the details', 'ERROR');
     }
   }
 

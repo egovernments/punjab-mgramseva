@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mgramseva/widgets/Tost/toster.dart';
 
 class Notifiers {
-  static getToastMessage(String message) {
-    Fluttertoast.showToast(
-        msg: message,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.black,
-        textColor: Colors.white,
-        fontSize: 16.0);
+  static getToastMessage(BuildContext context, String message, type) {
+    ToastUtils.showCustomToast(context, message, type);
   }
 
   static Widget networkErrorPage(context, VoidCallback callBack) {
