@@ -1,15 +1,14 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mgramseva/services/user.dart';
+import 'package:mgramseva/providers/forgot_password_provider.dart';
+
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
 import 'package:mgramseva/widgets/MobileView.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
+import 'package:provider/provider.dart';
 
 class ForgotPassword extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -23,18 +22,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   var autoValidation = false;
 
   saveInputandcall(context) async {
-
+    var otpProvider =
+    Provider.of<ForgotPasswordProvider>(context, listen: false);
     if(formKey.currentState!.validate()) {
-      var data = {
-        "otp": {
-          "mobileNumber": "9686151676",
-          "tenantId": "pb",
-          "type": "passwordreset",
-          "userType": "EMPLOYEE"
-        }
-      };
-
-      otpforresetpassword(data, context);
+      otpProvider.otpforresetpassword(context, mobileNumber.text.trim());
+      //Navigator.of(context).pushNamedAndRemoveUntil(Routes.RESET_PASSWORD, (route) => false);
     }else{
       setState(() {
         autoValidation = true;

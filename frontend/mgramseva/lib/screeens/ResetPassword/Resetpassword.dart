@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:mgramseva/services/user.dart';
-import 'package:mgramseva/widgets/Back.dart';
+import 'package:mgramseva/providers/reset_password_provider.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
 import 'package:mgramseva/widgets/HeadingText.dart';
@@ -10,7 +7,7 @@ import 'package:mgramseva/widgets/MobileView.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/EnterOtp.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
-import 'package:mgramseva/screeens/Passwordsuccess.dart';
+import 'package:provider/provider.dart';
 
 class ResetPassword extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -37,16 +34,8 @@ class _ResetPasswordState extends State<ResetPassword> {
   }
 
   saveInputandReset(context) async {
-    await resetNewPassword(
-      {
-        // "username": userNamecontroller.text.toString(),
-        "password": newpassword.text.toString(),
-        "tenantId": "pb",
-        "userType": "EMPLOYEE"
-      },
-    ).then((value) {
-      print(value);
-    });
+    var resetprovider = Provider.of<ResetPasswordProvider>(context, listen: false);
+    resetprovider.resetpassword(context, otpfiled_1.text,otpfiled_2.text,otpfiled_3.text,otpfiled_4.text, newpassword.text.trim());
   }
 
   getresetcard() {
