@@ -6,13 +6,13 @@ import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 
 import 'common_provider.dart';
+
 class ForgotPasswordProvider with ChangeNotifier {
   otpforresetpassword(BuildContext context, String mobileNumber) async {
-
     /// Unfocus the text field
     FocusScope.of(context).unfocus();
 
-    try{
+    try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
@@ -20,7 +20,7 @@ class ForgotPasswordProvider with ChangeNotifier {
         "otp": {
           "mobileNumber": mobileNumber,
           "tenantId": commonProvider.userDetails!.userRequest!.tenantId,
-          "type":"passwordreset",
+          "type": "passwordreset",
           "userType": commonProvider.userDetails!.userRequest!.type
         }
       };
@@ -28,18 +28,19 @@ class ForgotPasswordProvider with ChangeNotifier {
       var otpResponse = await ForgotPasswordRepository().forgotPassword(body);
       Navigator.pop(context);
 
-      if(otpResponse != null){
-        Navigator.of(context).pushNamedAndRemoveUntil(Routes.RESET_PASSWORD, (route) => false);
-      }else{
-        Notifiers.getToastMessage('Error');
+      if (otpResponse != null) {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(Routes.RESET_PASSWORD, (route) => false);
+      } else {
+        // Notifiers.getToastMessage('Error');
       }
-    }  catch(e) {
+    } catch (e) {
       Navigator.pop(context);
-      Notifiers.getToastMessage('Error');
+      // Notifiers.getToastMessage('Error');
     }
   }
 
-  void callNotifyer(){
+  void callNotifyer() {
     notifyListeners();
   }
 }
