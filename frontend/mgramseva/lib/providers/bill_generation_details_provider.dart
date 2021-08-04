@@ -48,7 +48,7 @@ void onChangeOfBillCycle(val){
           billGenerateDetails.om_4Ctrl.text.isEmpty ||
           billGenerateDetails.om_5Ctrl.text.isEmpty) {
         Notifiers.getToastMessage(
-            context, 'Old Meter Reading is Invalid', 'ERROR');
+            context, i18.demandGenerate.OLD_METER_READING_INVALID, 'ERROR');
       }
       else if (billGenerateDetails.nm_1Ctrl.text.isEmpty ||
           billGenerateDetails.nm_2Ctrl.text.isEmpty ||
@@ -56,7 +56,7 @@ void onChangeOfBillCycle(val){
           billGenerateDetails.nm_4Ctrl.text.isEmpty ||
           billGenerateDetails.nm_5Ctrl.text.isEmpty) {
         Notifiers.getToastMessage(
-            context, 'New Meter Reading is Invalid', 'ERROR');
+            context, i18.demandGenerate.NEW_METER_READING_INVALID, 'ERROR');
       }
       else {
         var oldMeter = billGenerateDetails.om_1Ctrl.text +
@@ -82,7 +82,7 @@ void onChangeOfBillCycle(val){
         else {
           Notifiers.getToastMessage(
               context,
-              'New Meter reading should be greater than old meter reading',
+              i18.demandGenerate.NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING,
               'ERROR');
         }
       }
