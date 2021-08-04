@@ -17,7 +17,9 @@ class SelectFieldBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 // Label Text
-    Widget textLabelwidget = Row(children: <Widget>[
+    Widget textLabelwidget = Wrap(
+        direction: Axis.horizontal,
+        children: <Widget>[
       Text(ApplicationLocalizations.of(context).translate(labelText),
           textAlign: TextAlign.left,
           style: TextStyle(
@@ -57,7 +59,9 @@ class SelectFieldBuilder extends StatelessWidget {
             Container(
                 width: MediaQuery.of(context).size.width / 3,
                 padding: EdgeInsets.only(top: 18, bottom: 3),
-                child: textLabelwidget),
+                child: new Align(
+                    alignment: Alignment.centerLeft,
+                    child: textLabelwidget)),
             Container(
                 width: MediaQuery.of(context).size.width / 2.5,
                 padding: EdgeInsets.only(top: 18, bottom: 3),
@@ -71,7 +75,9 @@ class SelectFieldBuilder extends StatelessWidget {
           child: Column(children: [
             Container(
                 padding: EdgeInsets.only(top: 18, bottom: 3),
-                child: textLabelwidget),
+                child: new Align(
+                    alignment: Alignment.centerLeft,
+                    child: textLabelwidget)),
             dropDown,
           ]),
         );

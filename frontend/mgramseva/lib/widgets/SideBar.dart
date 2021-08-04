@@ -3,6 +3,7 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
@@ -48,7 +49,7 @@ class SideBar extends StatelessWidget {
           margin: EdgeInsets.all(0.0),
           padding: EdgeInsets.all(0.0)),
       ListTile(
-        title: Text('Home'),
+        title: Text(i18.common.HOME),
         leading: Icon(
           Icons.home,
           color: iconColor,
@@ -69,7 +70,7 @@ class SideBar extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
-            Text('Language'),
+            Text(i18.common.LANGUAGE),
             SizedBox(
               height: 10,
             ),
@@ -99,7 +100,7 @@ class SideBar extends StatelessWidget {
         onTap: () => Navigator.pop(context)
       ),
       ListTile(
-        title: Text('Edit Profile'),
+        title: Text(i18.common.EDIT_PROFILE),
         leading: Icon(
           Icons.assignment_ind,
           color: iconColor,
@@ -107,7 +108,7 @@ class SideBar extends StatelessWidget {
         onTap: () => Navigator.pushNamed(context, Routes.EDIT_PROFILE)
       ),
       ListTile(
-        title: Text('Log Out'),
+        title: Text(i18.common.LOGOUT),
         leading: Icon(
           Icons.logout,
           color: iconColor,
