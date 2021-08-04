@@ -86,7 +86,8 @@ class CommonProvider with ChangeNotifier {
             value: jsonEncode(labels.map((e) => e.toJson()).toList()));
       }
     } catch (e) {
-      Notifiers.getToastMessage('Unable to store the details', 'ERROR');
+      // Notifiers.getToastMessage(
+      //     context, 'Unable to store the details', 'ERROR');
     }
   }
 
