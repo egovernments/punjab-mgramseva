@@ -1,4 +1,5 @@
 import 'package:mgramseva/icons/home_icons_icons.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/models.dart';
 
 class Constants {
@@ -29,7 +30,7 @@ class Constants {
     HomeItem("Collect Payments", HomeIcons.collectpayment, 'household/search'),
     HomeItem("Download Bills & Receipts", HomeIcons.printreciept, ''),
     HomeItem("ADD_EXPENSES_RECORD", HomeIcons.addexpenses, 'expenses/add'),
-    HomeItem("Update Expenses", HomeIcons.updateexpenses, ''),
+    HomeItem("UPDATE_EXPENSE", HomeIcons.updateexpenses, Routes.EXPENSE_SEARCH),
     HomeItem("Generate Demand", HomeIcons.generaedemand, 'bill/generate'),
     HomeItem("CORE_CONSUMER_CREATE", HomeIcons.createconsumer, 'consumer/create'),
     HomeItem("Update Consumer Details", HomeIcons.updateconsumer, 'consumer/search'),

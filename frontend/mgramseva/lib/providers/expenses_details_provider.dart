@@ -86,6 +86,24 @@ class ExpensesDetailsProvider with ChangeNotifier {
     }
   }
 
+  Future<void> searchExpense(Map query, BuildContext context) async {
+    Future.delayed(Duration(seconds: 5));
+    try{
+      Loaders.showLoadingDialog(context);
+
+      var res = await ExpensesRepository()
+          .searchExpense({});
+      if(res != null && res.isNotEmpty){
+       Navigator.pushNamed(context, Routes.EXPENSE_SEARCH, arguments: res);
+      }else{
+
+      }
+    }catch(e) {
+      Navigator.pop(context);
+    }
+
+  }
+
   Future<List<dynamic>> onSearchVendorList(pattern) async {
     if (vendorList.isEmpty) {
       await fetchVendors();

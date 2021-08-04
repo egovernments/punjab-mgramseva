@@ -43,4 +43,24 @@ class ExpensesRepository extends BaseService {
     }
     return vendorList;
   }
+
+  Future<List<dynamic>?> searchExpense(Map<String, dynamic> query) async {
+    List<Vendor>? vendorList;
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+
+    var body = {
+      'userInfo' : commonProvider.userDetails?.userRequest?.toJson()
+    };
+
+    var res = await makeRequest(
+        url: Url.VENDOR_SEARCH, body: body, queryParameters: query, method: RequestType.POST, requestInfo: RequestInfo('Rainmaker', .01, "", "create", "", "", "",
+      commonProvider.userDetails!.accessToken, ));
+
+    if (res != null && res['vendor'] != null) {
+      vendorList = res['vendor'].map<Vendor>((e) => Vendor.fromJson(e)).toList();
+    }
+    return vendorList;
+  }
 }

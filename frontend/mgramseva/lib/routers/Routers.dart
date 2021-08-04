@@ -24,7 +24,14 @@ class Routes {
 
   static const String CONSUMER_SEARCH = 'consumer/search';
 
+
+  /// Expense
   static const String EXPENSES_ADD = 'expenses/add';
+
+  static const String EXPENSE_SEARCH = 'expenses/search';
+
+  static const String EXPENSE_RESULT = 'expenses/result';
+
 
   static const String HOUSEHOLD_DETAILS = 'household/details';
 
