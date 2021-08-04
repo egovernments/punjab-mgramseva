@@ -33,12 +33,12 @@ class _LoginState extends State<Login> {
 
   saveandLogin(context) async {
     var authProvider =
-    Provider.of<AuthenticationProvider>(context, listen: false);
+        Provider.of<AuthenticationProvider>(context, listen: false);
 
     if (formKey.currentState!.validate()) {
       authProvider.validateLogin(context, userNamecontroller.text.trim(),
           passwordcontroller.text.trim());
-    }else{
+    } else {
       autoValidation = true;
       authProvider.callNotifyer();
     }
@@ -48,7 +48,9 @@ class _LoginState extends State<Login> {
     return Card(
         child: Form(
             key: formKey,
-            autovalidateMode: autoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
+            autovalidateMode: autoValidation
+                ? AutovalidateMode.always
+                : AutovalidateMode.disabled,
             child: (Column(
               children: [
                 Logo(),
@@ -59,7 +61,9 @@ class _LoginState extends State<Login> {
                   userNamecontroller,
                   prefixText: '+91',
                   isRequired: true,
-                  inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+                  inputFormatter: [
+                    FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                  ],
                   maxLength: 10,
                   validator: Validators.mobileNumberValidator,
                   textInputType: TextInputType.phone,

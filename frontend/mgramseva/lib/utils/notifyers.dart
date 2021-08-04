@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mgramseva/widgets/Tost/toster.dart';
 
 class Notifiers {
-  static getToastMessage(String message, type) {
-    Fluttertoast.showToast(
-        msg: message,
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 30,
-        backgroundColor: type == 'ERROR' ? Colors.red : Colors.green,
-        textColor: Colors.white,
-        webBgColor: type == 'ERROR' ? "#FF0000" : "#00703C",
-        webPosition: "center",
-        webShowClose: true,
-        fontSize: 16.0);
+  static getToastMessage(BuildContext context, String message, type) {
+    ToastUtils.showCustomToast(context, message, type);
+    // Fluttertoast.showToast(
+    //     msg: Text("HEllo"),
+    //     toastLength: Toast.LENGTH_LONG,
+    //     gravity: ToastGravity.BOTTOM,
+    //     timeInSecForIosWeb: 30,
+    //     backgroundColor: type == 'ERROR' ? Colors.red : Colors.green,
+    //     textColor: Colors.white,
+    //     webBgColor: type == 'ERROR' ? "#FF0000" : "#00703C",
+    //     webPosition: "center",
+    //     webShowClose: true,
+    //     fontSize: 16.0);
   }
 
   static Widget networkErrorPage(context, VoidCallback callBack) {

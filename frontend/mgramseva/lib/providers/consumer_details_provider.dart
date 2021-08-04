@@ -78,7 +78,8 @@ class ConsumerProvider with ChangeNotifier {
             await ConsumerRepository().addconnection(waterconnection.toJson());
         Navigator.pop(context);
         if (result2 != null) {
-          Notifiers.getToastMessage('Registered Successfully', 'SUCCESS');
+          Notifiers.getToastMessage(
+              context, 'Registered Successfully', 'SUCCESS');
         }
       } catch (e) {
         Navigator.pop(context);
