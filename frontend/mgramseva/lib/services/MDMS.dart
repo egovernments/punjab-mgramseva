@@ -83,6 +83,22 @@ Map getConnectionTypePropertyTypeMDMS(String tenantId) {
   };
 }
 
+Map getTenantsMDMS(String tenantId) {
+  return {
+    "MdmsCriteria": {
+      "tenantId": tenantId,
+      "moduleDetails": [
+        {
+          "moduleName": "tenant",
+          "masterDetails": [
+            {"name": "tenants"}
+          ],
+        },
+      ]
+    }
+  };
+}
+
 Future getMDMD() async {
   final requestInfo =
       RequestInfo('Rainmaker', .01, "", "_search", 1, "", "", "");
