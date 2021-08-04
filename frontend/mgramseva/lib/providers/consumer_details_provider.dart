@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:mgramseva/constants/houseconnectiondetails.dart';
 import 'package:mgramseva/model/connection/property.dart';
 import 'package:mgramseva/model/connection/tenant_boundary.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
@@ -11,8 +9,7 @@ import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/services/MDMS.dart';
-import 'package:mgramseva/utils/custom_exception.dart';
-import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 
@@ -78,7 +75,8 @@ class ConsumerProvider with ChangeNotifier {
             await ConsumerRepository().addconnection(waterconnection.toJson());
         Navigator.pop(context);
         if (result2 != null) {
-          Notifiers.getToastMessage('Registered Successfully', 'SUCCESS');
+          Notifiers.getToastMessage(
+              context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
         }
       } catch (e) {
         Navigator.pop(context);

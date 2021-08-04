@@ -37,11 +37,22 @@ class Common {
   String get MGRAM_SEVA => 'CORE_COMMON_MGRAM_SEVA_LABEL';
 
   /// File Picker
-  String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED'; ///Temporary files removed with success.
-  String get FALIED_TO_FETCH_TEMPORARY_FILES => 'FALIED_TO_FETCH_TEMPORARY_FILES'; /// Failed to clean temporary files
-  String get ATTACH_BILL => 'ATTACH_BILL'; /// Attach Bill
-  String get CHOOSE_FILE => 'CHOOSE_FILE'; /// Choose File
-  String get NO_FILE_UPLOADED => 'NO_FILE_UPLOADED'; /// No File Uploaded
+  String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED';
+
+  ///Temporary files removed with success.
+  String get FALIED_TO_FETCH_TEMPORARY_FILES =>
+      'FALIED_TO_FETCH_TEMPORARY_FILES';
+
+  /// Failed to clean temporary files
+  String get ATTACH_BILL => 'ATTACH_BILL';
+
+  /// Attach Bill
+  String get CHOOSE_FILE => 'CHOOSE_FILE';
+
+  /// Choose File
+  String get NO_FILE_UPLOADED => 'NO_FILE_UPLOADED';
+
+  /// No File Uploaded
 
 }
 
@@ -73,8 +84,11 @@ class Expense {
   String get UNABLE_TO_CREATE_EXPENSE => 'CORE_EXPENSE_UNABLE_TO_EXPENSE';
   String get PAYMENT_DATE => 'CORE_EXPENSE_PAYMENT_DATE';
   String get EXPENSE_DETAILS => 'CORE_EXPENSE_EXPENSE_DETAILS';
-  String get PROVIDE_INFO_TO_CREATE_EXPENSE => 'CORE_EXPENSE_PROVIDE_INFO_TO_CREATE_EXPENSE';
-  String get ADD_EXPENSES_RECORD => 'ADD_EXPENSES_RECORD'; /// Add Expense Record
+  String get PROVIDE_INFO_TO_CREATE_EXPENSE =>
+      'CORE_EXPENSE_PROVIDE_INFO_TO_CREATE_EXPENSE';
+  String get ADD_EXPENSES_RECORD => 'ADD_EXPENSES_RECORD';
+
+  /// Add Expense Record
 }
 
 class CreateConsumer {
@@ -93,6 +107,7 @@ class CreateConsumer {
   String get SERVICE_TYPE => 'CONSUMER_SERVICE_TYPE';
   String get PREV_METER_READING_DATE => 'CONSUMER_PREV_METER_READING_DATE';
   String get METER_NUMBER => 'CONSUMER_METER_NUMBER';
+  String get REGISTER_SUCCESS => 'CONSUMER_REGISTER_SUCCESS_LABEL';
 }
 
 class SearchConnection {
@@ -111,16 +126,19 @@ class ProfileEdit {
 }
 
 class _Validators {
-
   const _Validators();
 
   /// Mobile number validations
-  String get ENTER_MOBILE_NUMBER => 'ENTER_MOBILE_NUMBER'; //Please enter Mobile number
-  String get ENTER_NUMBERS_ONLY => 'ENTER_NUMBERS_ONLY'; //Please enter Numbers only
-  String get MOBILE_NUMBER_SHOULD_BE_10_DIGIT => 'MOBILE_NUMBER_SHOULD_BE_10_DIGIT'; //Mobile number should be 10 digits
+  String get ENTER_MOBILE_NUMBER =>
+      'ENTER_MOBILE_NUMBER'; //Please enter Mobile number
+  String get ENTER_NUMBERS_ONLY =>
+      'ENTER_NUMBERS_ONLY'; //Please enter Numbers only
+  String get MOBILE_NUMBER_SHOULD_BE_10_DIGIT =>
+      'MOBILE_NUMBER_SHOULD_BE_10_DIGIT'; //Mobile number should be 10 digits
 
   /// Re confirm password
   String get INVALID_FORMAT => 'INVALID_FORMAT'; // Invalid format
-  String get CONFIRM_RECONFIRM_SHOULD_SAME => 'CONFIRM_RECONFIRM_SHOULD_SAME'; //New Password and Confirm password should be same
+  String get CONFIRM_RECONFIRM_SHOULD_SAME =>
+      'CONFIRM_RECONFIRM_SHOULD_SAME'; //New Password and Confirm password should be same
 
 }
