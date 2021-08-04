@@ -98,7 +98,6 @@ class _MyAppState extends State<MyApp> {
                     return supportedLocales.first;
                   },
                   navigatorKey: navigatorKey,
-                   home: ConnectionPaymentView(),
                   initialRoute: Routes.LANDING_PAGE,
                   onGenerateRoute: router.generateRoute,
                   theme: theme,
