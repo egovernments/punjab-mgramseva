@@ -101,7 +101,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                     child: _buildViewDetails(connectionPayment)
                 ),
               ),
-              _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.TOTAL_DUE_AMOUNT)}', '₹ ${connectionPayment.totalDueAmount}'),
+              _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.TOTAL_DUE_AMOUNT)}', '₹ ${connectionPayment.totalDueAmount}', FontWeight.w700),
             Consumer<ConsumerPaymentProvider>(
               builder: (_, consumerPaymentProvider, child) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
@@ -168,6 +168,8 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
 
 
   Widget _buildWaterCharges(List<WaterCharges> waterCharges, BoxConstraints constraints) {
+    var style = TextStyle(fontSize: 14, color: Color.fromRGBO(80, 90, 95, 1));
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
       margin: EdgeInsets.symmetric(vertical: 5),
@@ -175,13 +177,58 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         color: Color.fromRGBO(238, 238, 238, 1),
         borderRadius: BorderRadius.circular(4)
       ),
-      child: Table(
-        children: waterCharges.map<TableRow>((e) => _buildWaterChargesRow(e, constraints)).toList()
-      )
+      child: constraints.maxWidth > 760 ?
+          Column(
+            children: List.generate(waterCharges.length, (index) {
+              var waterCharge = waterCharges[index];
+              return Row(
+                children: [
+                  Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      padding: EdgeInsets.only(top: 18, bottom: 3),
+                      child: new Align(
+                          alignment: Alignment.centerLeft,
+                          child: Wrap(
+                            direction: Axis.vertical,
+                            spacing: 3,
+                            children: [
+                              Text('${ApplicationLocalizations.of(context).translate(i18.common.WATER_CHARGES)}', style: style),
+                              Text('${waterCharge.date}', style : style),
+                            ],
+                          ))),
+                  Container(
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      padding: EdgeInsets.only(top: 18, bottom: 3),
+                      child: Text('₹ ${waterCharge.waterCharge}')),
+                ],
+              );
+            }
+          ))
+     : Table(
+          children : List.generate(waterCharges.length, (index) {
+            var waterCharge = waterCharges[index];
+            return TableRow(
+                children: [
+                  TableCell(
+                    child:  Wrap(
+                      direction: Axis.vertical,
+                      spacing: 3,
+                      children: [
+                        Text('${ApplicationLocalizations.of(context).translate(i18.common.WATER_CHARGES)}', style: style),
+                        Text('${waterCharge.date}', style : style),
+                      ],
+                    ),
+                  ),
+                  TableCell(
+                      child : Text('₹ ${waterCharge.waterCharge}')
+                  )
+                ]
+            );
+          }).toList())
     );
   }
 
-  Widget _buildLabelValue(String label, String value) {
+  Widget _buildLabelValue(String label, String value, [FontWeight? fontWeight]) {
     return LayoutBuilder(
       builder: (_, constraints) => constraints.maxWidth > 760 ? Row(
         children: [
@@ -194,7 +241,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
           Container(
               width: MediaQuery.of(context).size.width / 2.5,
               padding: EdgeInsets.only(top: 18, bottom: 3, left: 24),
-              child: Text('$value',  style: TextStyle(fontSize: 16))),
+              child: Text('$value',  style: TextStyle(fontSize: 16, fontWeight: fontWeight))),
         ],
       ) : Table(
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
@@ -208,30 +255,9 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                child: subTitle('$label', 16))
          ),
          TableCell(
-             child: Text('$value',  style: TextStyle(fontSize: 16))
+             child: Text('$value',  style: TextStyle(fontSize: 16, fontWeight: fontWeight))
          )
        ])]));
-  }
-
-  TableRow _buildWaterChargesRow(WaterCharges waterCharges, BoxConstraints constraints) {
-    var style = TextStyle(fontSize: 14, color: Color.fromRGBO(80, 90, 95, 1));
-    return TableRow(
-      children: [
-        TableCell(
-          child: constraints.maxWidth > 760 ? Text('${ApplicationLocalizations.of(context).translate(i18.common.WATER_CHARGES)} ${waterCharges.date}', style: style) : Wrap(
-            direction: Axis.vertical,
-            spacing: 3,
-            children: [
-              Text('${ApplicationLocalizations.of(context).translate(i18.common.WATER_CHARGES)}', style: style),
-              Text('${waterCharges.date}', style : style),
-            ],
-          ),
-        ),
-        TableCell(
-          child : Text('₹ ${waterCharges.waterCharge}')
-        )
-      ]
-    );
   }
 
   Text subTitle(String label, [double? size]) => Text('$label', style: TextStyle(fontSize: size ?? 24, fontWeight: FontWeight.w700));
