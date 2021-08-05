@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetails.dart';
 import 'package:mgramseva/screeens/Home.dart';
@@ -17,6 +18,8 @@ import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/Updatepassword.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 
+import 'screeens/expense/expense_results.dart';
+import 'screeens/expense/search_expense.dart';
 import 'widgets/CommonSuccessPage.dart';
 
 class router {
@@ -86,6 +89,18 @@ class router {
         return MaterialPageRoute(
             builder: (_) => CommonSuccess(settings.arguments),
             settings: RouteSettings(name: Routes.SUCCESS_VIEW));
+      case Routes.EXPENSE_SEARCH:
+        return MaterialPageRoute(
+            builder: (_) => SearchExpense(),
+            settings: RouteSettings(name: Routes.EXPENSE_SEARCH));
+      case Routes.EXPENSE_RESULT:
+        if(settings.arguments == null)
+          return MaterialPageRoute(
+              builder: (_) => SearchExpense(),
+              settings: RouteSettings(name: Routes.EXPENSE_SEARCH));
+        return MaterialPageRoute(
+            builder: (_) => ExpenseResults(searchResult: settings.arguments as List<ExpensesDetailsModel>),
+            settings: RouteSettings(name: Routes.EXPENSE_RESULT));
       default:
         return MaterialPageRoute(
           builder: (_) => SelectLanguage(),
