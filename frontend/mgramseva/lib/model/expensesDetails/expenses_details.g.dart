@@ -14,8 +14,8 @@ ExpensesDetailsModel _$ExpensesDetailsModelFromJson(Map<String, dynamic> json) {
     ..expenseType = json['typeOfExpense'] as String?
     ..vendorId = json['vendor'] as String?
     ..vendorName = json['vendorName'] as String?
-    ..expensesAmount = (json['amount'] as List<dynamic>)
-        .map((e) => ExpensesAmount.fromJson(e as Map<String, dynamic>))
+    ..expensesAmount = (json['amount'] as List<dynamic>?)
+        ?.map((e) => ExpensesAmount.fromJson(e as Map<String, dynamic>))
         .toList()
     ..billDate = json['billDate'] as int?
     ..paidDate = json['paidDate'] as int?

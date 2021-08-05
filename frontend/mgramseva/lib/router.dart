@@ -17,6 +17,7 @@ import 'package:mgramseva/screeens/HouseholdDetail.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/Updatepassword.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/models.dart';
 
 import 'screeens/expense/expense_results.dart';
 import 'screeens/expense/search_expense.dart';
@@ -99,7 +100,7 @@ class router {
               builder: (_) => SearchExpense(),
               settings: RouteSettings(name: Routes.EXPENSE_SEARCH));
         return MaterialPageRoute(
-            builder: (_) => ExpenseResults(searchResult: settings.arguments as List<ExpensesDetailsModel>),
+            builder: (_) => ExpenseResults(searchResult: settings.arguments as SearchResult),
             settings: RouteSettings(name: Routes.EXPENSE_RESULT));
       default:
         return MaterialPageRoute(
