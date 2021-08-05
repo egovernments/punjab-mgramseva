@@ -115,7 +115,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   Future<List<Vendor>> fetchVendors() async {
     try {
       var query = {
-        'tenantId': 'pb',
+        // 'tenantId': 'pb',
         'offset': vendorList.length.toString(),
       };
 

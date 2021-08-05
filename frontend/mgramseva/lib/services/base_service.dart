@@ -71,7 +71,9 @@ class BaseService {
           response = await http.delete(uri, body: json.encode(body));
       }
       return _response(response);
-    } catch (e){
+    } on CustomException catch (e){
+        throw e;
+    }catch(e){
       throw CustomException(
           '', 502, ExceptionType.CONNECTIONISSUE);
     }

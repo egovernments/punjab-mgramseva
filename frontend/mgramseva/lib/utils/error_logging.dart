@@ -13,7 +13,7 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 class ErrorHandler  {
 
   static void logError(String error, [StackTrace? stackTrace]){
-
+    print(error);
   }
 
   static bool handleApiException(BuildContext context, CustomException e, [StackTrace? stackTrace]) {
