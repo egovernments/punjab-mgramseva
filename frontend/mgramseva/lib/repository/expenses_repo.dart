@@ -51,37 +51,16 @@ class ExpensesRepository extends BaseService {
         navigatorKey.currentContext!,
         listen: false);
 
-    // var res = await makeRequest(
-    //     url: Url.VENDOR_SEARCH, body: body, queryParameters: query, method: RequestType.POST, requestInfo: RequestInfo('Rainmaker', .01, "", "create", "", "", "",
-    //   commonProvider.userDetails!.accessToken, ));
-
-    var res = {
-      'expense' : [
-        {
-          'vendor': 'dsfds',
-          'billId': 'ewrew3',
-          'typeOfExpense': 'ewrew',
-          'billDate': 1628070747868,
-          'amount': [ {
-            'amount': '123'
-          }],
-          'status': 'unpaid'
-        },
-        {
-          'vendor': 'dsfds',
-          'billId': 'ewrew3',
-          'typeOfExpense': 'ewrew',
-          'billDate': 1628070747868,
-          'amount': [ {
-            'amount': '123'
-          }],
-          'status': 'unpaid'
-        }
-      ]
+    var body = {
+      'userInfo' : commonProvider.userDetails?.userRequest?.toJson()
     };
 
+    var res = await makeRequest(
+        url: Url.EXPENSE_SEARCH, queryParameters: query, body: body, method: RequestType.POST, requestInfo: RequestInfo('Rainmaker', .01, "", "create", "", "", "",
+      commonProvider.userDetails!.accessToken, ));
+
     if (res != null) {
-      expenseResult = res['expense']?.map<ExpensesDetailsModel>((e) => ExpensesDetailsModel.fromJson(e)).toList();
+      expenseResult = res['challans']?.map<ExpensesDetailsModel>((e) => ExpensesDetailsModel.fromJson(e)).toList();
     }
     return expenseResult;
   }
