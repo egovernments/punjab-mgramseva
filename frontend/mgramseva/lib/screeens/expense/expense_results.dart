@@ -21,9 +21,26 @@ class ExpenseResults extends StatelessWidget {
         <Widget>[Icon(Icons.more_vert)],
       ),
      body : LayoutBuilder(builder: (context, constraints) {
-       return Column(children: [
+       return Column(
+           crossAxisAlignment: CrossAxisAlignment.start,
+           children: [
          // ignore: unnecessary_null_comparison
          LabelText("${searchResult.length} consumer(s) Found"),
+         Padding(
+           padding: const EdgeInsets.all(15.0),
+           child: RichText(
+               textAlign: TextAlign.left,
+               text: TextSpan(
+             style: TextStyle(fontSize: 14),
+             children: [
+               TextSpan(text: 'Following expenditure bills match search critera',
+               ),
+               TextSpan(text: ' Phone Number +91 - 7731045306',
+                   style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)
+               )
+             ]
+           )),
+         ),
          Expanded(
            child: ListView.builder(
                padding: const EdgeInsets.all(8),

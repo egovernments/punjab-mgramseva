@@ -94,6 +94,10 @@ class router {
             builder: (_) => SearchExpense(),
             settings: RouteSettings(name: Routes.EXPENSE_SEARCH));
       case Routes.EXPENSE_RESULT:
+        if(settings.arguments == null)
+          return MaterialPageRoute(
+              builder: (_) => SearchExpense(),
+              settings: RouteSettings(name: Routes.EXPENSE_SEARCH));
         return MaterialPageRoute(
             builder: (_) => ExpenseResults(searchResult: settings.arguments as List<ExpensesDetailsModel>),
             settings: RouteSettings(name: Routes.EXPENSE_RESULT));
