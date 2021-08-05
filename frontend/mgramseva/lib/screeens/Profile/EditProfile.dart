@@ -169,7 +169,8 @@ class _EditProfileState extends State<EditProfile> {
         AppBar(),
         <Widget>[Icon(Icons.more_vert)],
       ),
-      body: Container(
+      body: SingleChildScrollView(
+        child: Container(
         alignment: Alignment.center,
         child: StreamBuilder(
             stream: userProvider.streamController.stream,
@@ -189,6 +190,7 @@ class _EditProfileState extends State<EditProfile> {
                 }
               }
             }),
+      ),
       ),
     );
   }

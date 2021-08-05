@@ -62,4 +62,14 @@ class Validators {
     }
     return null;
   }
+
+  static String? meterNumberValidator(String? v) {
+    if (v!.trim().isEmpty) {
+      return 'Please enter Meter number';
+    } else if (!RegExp(r'^[0-9]+$').hasMatch(v)) {
+      return 'Please enter Numbers only';
+    }
+    return null;
+  }
+
 }

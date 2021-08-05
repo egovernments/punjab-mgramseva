@@ -26,14 +26,39 @@ class Constants {
   ];
 
   static const List<HomeItem> HOME_ITEMS = [
-    HomeItem("Household Register", HomeIcons.hhregister, ''),
-    HomeItem("Collect Payments", HomeIcons.collectpayment, 'household/search'),
-    HomeItem("Download Bills & Receipts", HomeIcons.printreciept, ''),
+    HomeItem("CORE_HOUSEHOLD_REGISTER", HomeIcons.hhregister, ''),
+    HomeItem("CORE_COLLECT_PAYMENTS", HomeIcons.collectpayment, 'household/search'),
+    HomeItem("DOWNLOAD_BILLS_AND_RECEIPTS", HomeIcons.printreciept, ''),
     HomeItem("ADD_EXPENSES_RECORD", HomeIcons.addexpenses, 'expenses/add'),
-    HomeItem("UPDATE_EXPENSE", HomeIcons.updateexpenses, Routes.EXPENSE_SEARCH),
-    HomeItem("Generate Demand", HomeIcons.generaedemand, 'bill/generate'),
+    HomeItem("CORE_UPDATE_EXPENSES", HomeIcons.updateexpenses, Routes.EXPENSE_SEARCH),
+    HomeItem("CORE_GENERATE_DEMAND", HomeIcons.generaedemand, 'bill/generate'),
     HomeItem("CORE_CONSUMER_CREATE", HomeIcons.createconsumer, 'consumer/create'),
-    HomeItem("Update Consumer Details", HomeIcons.updateconsumer, 'consumer/search'),
-    HomeItem("GPWSC Dashboard", HomeIcons.dashboard, 'dashboard'),
+    HomeItem("CORE_UPDATE_CONSUMER_DETAILS", HomeIcons.updateconsumer, 'consumer/search'),
+    HomeItem("CORE_GPWSC_DASHBOARD", HomeIcons.dashboard, 'dashboard'),
+  ];
+
+  static List<KeyValue> SERVICECATEGORY = [
+    KeyValue("Billing Service", "BILLING SERVICE"),
+    KeyValue("Property Service", "PROPERTY SERVICE"),
+    KeyValue("Rental Service", "RENTAL SERVICE"),
+  ];
+
+  static List<KeyValue> PROPERTYTYPE = [
+    KeyValue("Residential", "RESIDENTIAL"),
+    KeyValue("Non Residential", "NON RESIDENTIAL"),
+  ];
+  static List<KeyValue> SERVICETYPE = [
+    KeyValue("Meter Connection", "METER CONNECTION"),
+    KeyValue("Non Meter Connection", "NON METER CONNECTION"),
+  ];
+  static List<KeyValue> BILLINGYEAR = [
+    KeyValue("2020-2021", "2020-2021"),
+    KeyValue("2021-2022", "2021-2022"),
+  ];
+
+  static List<KeyValue> BILLINGCYCLE = [
+    KeyValue("Sept-Oct", "SEPT-OCT"),
+    KeyValue("Mar-Apr", "MAR-APR"),
+    KeyValue("July-Aug", "JULY-AUG"),
   ];
 }

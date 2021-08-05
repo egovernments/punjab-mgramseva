@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:mgramseva/providers/authentication.dart';
+import 'package:mgramseva/providers/bill_generation_details_provider.dart';
 import 'package:mgramseva/providers/changePassword_details_provider.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
@@ -70,6 +71,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => ExpensesDetailsProvider()),
           ChangeNotifierProvider(create: (_) => ForgotPasswordProvider()),
           ChangeNotifierProvider(create: (_) => ResetPasswordProvider()),
+          ChangeNotifierProvider(create: (_) => BillGenerationProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(

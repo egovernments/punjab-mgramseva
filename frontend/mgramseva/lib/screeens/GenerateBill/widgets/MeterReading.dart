@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class MeterReading extends StatelessWidget {
   final label;
-  MeterReading(this.label);
+  final controller1;
+  final controller2;
+  final controller3;
+  final controller4;
+  final controller5;
+  MeterReading(this.label, this.controller1, this.controller2, this.controller3, this.controller4, this.controller5);
 
   _getConatiner(constraints, context) {
     return [
@@ -29,11 +35,11 @@ class MeterReading extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              MeterReadingDigitTextFieldBox(true, false),
-              MeterReadingDigitTextFieldBox(false, false),
-              MeterReadingDigitTextFieldBox(false, false),
-              MeterReadingDigitTextFieldBox(false, false),
-              MeterReadingDigitTextFieldBox(false, true),
+              MeterReadingDigitTextFieldBox(this.controller1, true, false),
+              MeterReadingDigitTextFieldBox(this.controller2, false, false),
+              MeterReadingDigitTextFieldBox(this.controller3, false, false),
+              MeterReadingDigitTextFieldBox(this.controller4, false, false),
+              MeterReadingDigitTextFieldBox(this.controller5, false, true),
             ],
           ))
     ];
@@ -57,7 +63,8 @@ class MeterReading extends StatelessWidget {
 class MeterReadingDigitTextFieldBox extends StatelessWidget {
   final bool first;
   final bool last;
-  const MeterReadingDigitTextFieldBox(this.first, this.last) : super();
+  final controller;
+  const MeterReadingDigitTextFieldBox( this.controller, this.first, this.last) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +72,8 @@ class MeterReadingDigitTextFieldBox extends StatelessWidget {
       height: 60,
       child: AspectRatio(
         aspectRatio: 0.9,
-        child: TextField(
+        child: TextFormField(
+          controller: controller,
           autofocus: true,
           onChanged: (value) {
             if (value.length == 1 && last == false) {
@@ -80,6 +88,7 @@ class MeterReadingDigitTextFieldBox extends StatelessWidget {
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
           maxLength: 1,
+          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+$'))],
           decoration: InputDecoration(
             // contentPadding: EdgeInsets.all(0),
             counter: Offstage(),
