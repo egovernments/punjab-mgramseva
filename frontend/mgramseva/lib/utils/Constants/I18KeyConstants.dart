@@ -57,7 +57,16 @@ class Common {
   /// Choose File
   String get NO_FILE_UPLOADED => 'NO_FILE_UPLOADED';
 
-  /// No File Uploaded
+  String get ELECTRICITY_HINT => 'ELECTRICITY_HINT'; /// Eg: Electricity
+  String get BILL_HINT => 'BILL_HINT'; /// Eg: EB-2021-22/08/21/0123
+  String get SHOW_MORE => 'SHOW_MORE'; /// Show more
+  String get SHOW_LESS => 'SHOW_LESS'; /// Show Less
+  String get BILL_ID => 'BILL_ID'; /// Bill ID
+  String get OR => 'OR'; /// Or
+  String get SEARCH => 'SEARCH'; /// Search
+  String get AMOUNT => 'AMOUNT'; /// Amount
+  String get STATUS => 'STATUS'; /// Status
+  String get CONSUMERS_FOUND => 'CONSUMERS_FOUND'; /// consumer(s) Found
 
 }
 
@@ -92,6 +101,10 @@ class Expense {
   String get PROVIDE_INFO_TO_CREATE_EXPENSE =>
       'CORE_EXPENSE_PROVIDE_INFO_TO_CREATE_EXPENSE';
   String get ADD_EXPENSES_RECORD => 'ADD_EXPENSES_RECORD';
+  String get SEARCH_EXPENSE_BILL => 'SEARCH_EXPENSE_BILL'; /// Search Expense Bills
+  String get ENTER_VENDOR_BILL_EXPENSE => 'ENTER_VENDOR_BILL_EXPENSE'; /// Enter the Vendor Name or Expenditure type or Bill ID to get more details. Please enter only one
+  String get UPDATE_EXPENDITURE => 'UPDATE_EXPENDITURE'; /// Update Expenditure
+  String get FOLLOWING_EXPENDITURE_BILL_MATCH => 'FOLLOWING_EXPENDITURE_BILL_MATCH'; /// Following expenditure bills match search critera
 
   /// Add Expense Record
 }

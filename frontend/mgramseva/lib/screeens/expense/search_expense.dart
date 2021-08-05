@@ -59,15 +59,15 @@ class _SearchExpenseState extends State<SearchExpense> {
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              LabelText("Search Expense Bills"),
+                              LabelText("${ApplicationLocalizations.of(context).translate(i18.expense.SEARCH_EXPENSE_BILL)}"),
                               SubLabelText(
-                                "Enter the Vendor Name or Expenditure type or Bill ID to get more details. Please enter only one",
+                                "${ApplicationLocalizations.of(context).translate(i18.expense.ENTER_VENDOR_BILL_EXPENSE)}",
                               ),
                               BuildTextField(
-                                'Vendor Name',
+                                '${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)}',
                                 vendorNameCtrl,
                               ),
-                              Text('\n-(or)-', textAlign: TextAlign.center),
+                              Text('\n-(${ApplicationLocalizations.of(context).translate(i18.common.OR)})-', textAlign: TextAlign.center),
                               Consumer<ExpensesDetailsProvider>(
                                 builder : (_, expensesDetailsProvider, child) => SelectFieldBuilder(
                                     '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)}',
@@ -76,18 +76,18 @@ class _SearchExpenseState extends State<SearchExpense> {
                                     '',
                                     onChangeOfExpense,
                                     expensesDetailsProvider.getExpenseTypeList(),
-                                    false, hint: 'Eg: Electricity',),
+                                    false, hint: '${ApplicationLocalizations.of(context).translate(i18.common.ELECTRICITY_HINT)}',),
                               ),
                               Visibility(
                                   visible: isVisible,
                                   child: Column(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Text('\n-(or)-', textAlign: TextAlign.center),
+                                        Text('\n-(${ApplicationLocalizations.of(context).translate(i18.common.OR)})-', textAlign: TextAlign.center),
                                         BuildTextField(
-                                          'Bill ID',
+                                          '${ApplicationLocalizations.of(context).translate(i18.common.BILL_ID)}',
                                           billIdCtrl,
-                                          hint: 'Eg: EB-2021-22/08/21/0123',
+                                          hint: '${ApplicationLocalizations.of(context).translate(i18.common.BILL_HINT)}',
                                         ),
                                       ])),
                                InkWell(
@@ -97,7 +97,7 @@ class _SearchExpenseState extends State<SearchExpense> {
                                   child: new Row(
                                     children: [
                                       new Text(
-                                        isVisible ?  "\nShow Less" : "\nShow more",
+                                        isVisible ?  "\n${ApplicationLocalizations.of(context).translate(i18.common.SHOW_LESS)}" : "\n${ApplicationLocalizations.of(context).translate(i18.common.SHOW_MORE)}",
                                         style: new TextStyle(
                                             color: Colors.deepOrangeAccent),
                                       )
@@ -113,7 +113,7 @@ class _SearchExpenseState extends State<SearchExpense> {
                             ]))
                   ]),
             )),
-    bottomNavigationBar:   BottomButtonBar('Search', onSubmit),
+    bottomNavigationBar:   BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.SEARCH)}', onSubmit),
     );
   }
 

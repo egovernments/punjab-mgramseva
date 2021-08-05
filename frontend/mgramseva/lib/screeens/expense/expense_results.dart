@@ -2,10 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
+import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class ExpenseResults extends StatelessWidget {
   final List<ExpensesDetailsModel> searchResult;
@@ -25,7 +28,7 @@ class ExpenseResults extends StatelessWidget {
            crossAxisAlignment: CrossAxisAlignment.start,
            children: [
          // ignore: unnecessary_null_comparison
-         LabelText("${searchResult.length} consumer(s) Found"),
+         LabelText("${searchResult.length} ${ApplicationLocalizations.of(context).translate(i18.common.CONSUMERS_FOUND)}"),
          Padding(
            padding: const EdgeInsets.all(15.0),
            child: RichText(
@@ -33,9 +36,9 @@ class ExpenseResults extends StatelessWidget {
                text: TextSpan(
              style: TextStyle(fontSize: 14),
              children: [
-               TextSpan(text: 'Following expenditure bills match search critera',
+               TextSpan(text: '${ApplicationLocalizations.of(context).translate(i18.expense.FOLLOWING_EXPENDITURE_BILL_MATCH)}',
                ),
-               TextSpan(text: ' Phone Number +91 - 7731045306',
+               TextSpan(text: '${ApplicationLocalizations.of(context).translate(i18.common.PHONE_NUMBER)} +91 - 7731045306',
                    style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)
                )
              ]
@@ -54,36 +57,36 @@ class ExpenseResults extends StatelessWidget {
                            crossAxisAlignment: CrossAxisAlignment.start,
                            children: [
                              _getDetailtext(
-                                 "Vendor Name",
+                                 "${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)}",
                                  expense.vendorName,
                                  context),
                              _getDetailtext(
-                                 "Bill ID",
+                                 "${ApplicationLocalizations.of(context).translate(i18.common.BILL_ID)}",
                                  expense.billId,
                                  context),
                              _getDetailtext(
-                                 "Type of Expense",
+                                 "${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)}",
                                  expense.expenseType,
                                  context),
                              _getDetailtext(
-                                 "Amount",
+                                 "${ApplicationLocalizations.of(context).translate(i18.common.AMOUNT)}",
                                  expense.expensesAmount.first.amount,
                                  context),
                              _getDetailtext(
-                                 "Bill Date",
+                                 "${ApplicationLocalizations.of(context).translate(i18.expense.BILL_DATE)}",
                                 DateFormats.timeStampToDate(expense.billDate!.toInt()),
                                  context),
                              _getDetailtext(
-                                 "Status",
+                                 "${ApplicationLocalizations.of(context).translate(i18.common.STATUS)}",
                                  expense.status,
                                  context),
                              SizedBox(
                                height: 20,
                              ),
                              ShortButton(
-                                 'Update Expenditure',
+                                 '${ApplicationLocalizations.of(context).translate(i18.expense.UPDATE_EXPENDITURE)}',
                                      () => Navigator.pushNamed(
-                                     context, 'household/details')),
+                                     context, Routes.HOUSEHOLD_DETAILS)),
                              SizedBox(
                                height: 20,
                              ),
