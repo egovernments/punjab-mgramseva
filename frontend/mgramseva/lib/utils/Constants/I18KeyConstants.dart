@@ -9,6 +9,7 @@ class i18 {
   static SearchConnection searchConnection = const SearchConnection();
   static ProfileEdit profileEdit = const ProfileEdit();
   static DemandGenerate demandGenerate = const DemandGenerate();
+  static _NetWorkException netWorkException = const _NetWorkException();
 
 }
 
@@ -165,5 +166,12 @@ class DemandGenerate{
   String get OLD_METER_READING_INVALID => 'OLD_METER_READING_INVALID_MSG';  //Old Meter Reading is Invalid
   String get NEW_METER_READING_INVALID => 'NEW_METER_READING_INVALID_MSG';  //New Meter Reading is Invalid
   String get NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING => 'NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING';  //New Meter Reading should be greater than Old meter Reading
+}
+
+class _NetWorkException {
+  const _NetWorkException();
+
+  String get CHECK_CONNECTION => 'CHECK_CONNECTION'; /// Check your network connection
+
 }
 

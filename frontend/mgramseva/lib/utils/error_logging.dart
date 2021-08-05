@@ -3,9 +3,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 
+import 'Locilization/application_localizations.dart';
 import 'global_variables.dart';
 import 'models.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class ErrorHandler  {
 
@@ -25,6 +28,11 @@ class ErrorHandler  {
       logError(e.message ?? '', stackTrace);
        return true;
       case ExceptionType.CONNECTIONISSUE:
+        Notifiers.getToastMessage(
+            context,
+            e.message ?? '${ApplicationLocalizations.of(context).translate(
+                i18.netWorkException.CHECK_CONNECTION)}',
+            'ERROR');
         return false;
       default :
         return true;

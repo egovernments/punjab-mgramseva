@@ -5,6 +5,7 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/authentication.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -47,16 +48,17 @@ class AuthenticationProvider with ChangeNotifier {
       } else {
         Notifiers.getToastMessage(context, 'Unable to login', 'ERROR');
       }
-    } on CustomException catch (e) {
+    } on CustomException catch (e,s) {
       Navigator.pop(context);
       if (e.exceptionType == ExceptionType.UNAUTHORIZED) {
         Notifiers.getToastMessage(
             context, '${e.message ?? "Invalid Credentials"}', 'ERROR');
-      } else {
+      } else if(ErrorHandler.handleApiException(context, e, s)) {
         Notifiers.getToastMessage(context, 'Unable to login', 'ERROR');
       }
-    } catch (e) {
+    } catch (e,s) {
       Navigator.pop(context);
+      ErrorHandler.logError(e.toString(),s);
       Notifiers.getToastMessage(context, 'Unable to login', 'ERROR');
     }
   }
