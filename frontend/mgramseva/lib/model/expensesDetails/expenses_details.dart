@@ -26,7 +26,7 @@ class ExpensesDetailsModel {
   String? vendorName;
 
   @JsonKey(name: "amount")
-  List<ExpensesAmount> expensesAmount = <ExpensesAmount>[];
+  List<ExpensesAmount>? expensesAmount = <ExpensesAmount>[];
 
   @JsonKey(name: "billDate")
   int? billDate;
@@ -71,7 +71,7 @@ class ExpensesDetailsModel {
 
   setText() {
     vendorId = vendorNameCtrl.text;
-    expensesAmount.first.amount = expensesAmount.first.amountCtrl.text;
+    expensesAmount?.first.amount = expensesAmount?.first.amountCtrl.text;
     billDate = DateFormats.dateToTimeStamp(billDateCtrl.text);
     if (billIssuedDateCtrl.text.trim().isNotEmpty)
       billIssuedDate = DateFormats.dateToTimeStamp(billIssuedDateCtrl.text);
@@ -80,12 +80,12 @@ class ExpensesDetailsModel {
   }
 
   getText() {
-    if (expensesAmount == null || expensesAmount.isEmpty) {
-      expensesAmount.add(ExpensesAmount());
+    if (expensesAmount == null || expensesAmount!.isEmpty) {
+      expensesAmount?.add(ExpensesAmount());
     }
 
     vendorNameCtrl.text = vendorId ?? '';
-    expensesAmount.first.amountCtrl.text = expensesAmount.first.amount ?? '';
+    expensesAmount?.first.amountCtrl.text = expensesAmount?.first.amount ?? '';
     isBillPaid ??= false;
   }
 

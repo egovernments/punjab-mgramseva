@@ -51,7 +51,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     expenditureDetails
       ..businessService = commonProvider.getMdmsId(languageList,
           'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
-      ..expensesAmount.first.taxHeadCode = commonProvider.getMdmsId(
+      ..expensesAmount?.first.taxHeadCode = commonProvider.getMdmsId(
           languageList,
           'EXPENSE.${expenditureDetails.expenseType}',
           MDMSType.TaxHeadCode)
@@ -88,20 +88,31 @@ class ExpensesDetailsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> searchExpense(Map<String, dynamic> query, BuildContext context) async {
+  Future<void> searchExpense(Map<String, dynamic> query, String criteria, BuildContext context) async {
 
-    try{
+    try {
       Loaders.showLoadingDialog(context);
 
       var res = await ExpensesRepository()
           .searchExpense(query);
       Navigator.pop(context);
-      if(res != null && res.isNotEmpty){
-       Navigator.pushNamed(context, Routes.EXPENSE_RESULT, arguments: res);
-      }else{
-       Notifiers.getToastMessage(context, 'No Connections found.', 'ERROR');
+      if (res != null && res.isNotEmpty) {
+        Navigator.pushNamed(context, Routes.EXPENSE_RESULT,
+            arguments: SearchResult(criteria, res));
+      } else {
+        Notifiers.getToastMessage(context,
+            '${ApplicationLocalizations.of(context).translate(
+                i18.expense.NO_EXPENSES_FOUND)}', 'ERROR');
       }
+    } on CustomException catch(e,s){
+      Notifiers.getToastMessage(context,
+          '${ApplicationLocalizations.of(context).translate(
+              i18.expense.UNABLE_TO_SEARCH_EXPENSE)}', 'ERROR');
+      Navigator.pop(context);
     }catch(e) {
+      Notifiers.getToastMessage(context,
+          '${ApplicationLocalizations.of(context).translate(
+              i18.expense.UNABLE_TO_SEARCH_EXPENSE)}', 'ERROR');
       Navigator.pop(context);
     }
 

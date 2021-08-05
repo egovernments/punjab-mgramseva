@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
@@ -124,21 +125,40 @@ class _SearchExpenseState extends State<SearchExpense> {
   }
 
   void onSubmit() {
+    FocusScope.of(context).nextFocus();
 
     if(vendorNameCtrl.text.trim().isNotEmpty || expenseType != null || billIdCtrl.text.trim().isNotEmpty) {
       var query = {
         'tenantId' :  'pb',
+        'vendorName' : vendorNameCtrl.text.trim(),
         'expenseType' : expenseType,
-        'challanNo' : billIdCtrl.text.trim(),
-        'vendorName' : vendorNameCtrl.text.trim()
+        'challanNo' : billIdCtrl.text.trim()
       };
 
       query.removeWhere((key, value) => value == null || value.trim().isEmpty);
 
-      Provider.of<ExpensesDetailsProvider>(context, listen: false)
-          .searchExpense(query, context);
-    }else{
+      var criteria = '';
 
+      query.forEach((key, value) {
+        switch(key){
+          case 'expenseType' :
+            criteria += '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)} $expenseType \t';
+            break;
+          case 'challanNo' :
+            criteria += '${ApplicationLocalizations.of(context).translate(i18.common.BILL_ID)} ${billIdCtrl.text}';
+            break;
+          case 'vendorName' :
+            criteria += '${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)} ${vendorNameCtrl.text} \t';
+            break;
+        }
+      });
+
+      Provider.of<ExpensesDetailsProvider>(context, listen: false)
+          .searchExpense(query, criteria, context);
+    }else{
+      Notifiers.getToastMessage(context,
+          '${ApplicationLocalizations.of(context).translate(
+              i18.expense.NO_FIELDS_FILLED)}', 'ERROR');
     }
   }
 }
