@@ -20,6 +20,9 @@ class ExpensesDetailsModel {
   String? expenseType;
 
   @JsonKey(name: "vendor")
+  String? vendorId;
+
+  @JsonKey(name: "vendorName")
   String? vendorName;
 
   @JsonKey(name: "amount")
@@ -34,11 +37,14 @@ class ExpensesDetailsModel {
   @JsonKey(name: "billIssuedDate")
   int? billIssuedDate;
 
-  @JsonKey(name: "billId")
-  String? billId;
+  @JsonKey(name: "challanNo")
+  String? challanNo;
 
-  @JsonKey(name: "status")
-  String? status;
+  @JsonKey(name: "applicationStatus")
+  String? applicationStatus;
+
+  @JsonKey(name: "totalAmount")
+  double? totalAmount;
 
   @JsonKey(name: "isBillPaid", defaultValue: false)
   bool? isBillPaid;
@@ -64,7 +70,7 @@ class ExpensesDetailsModel {
   ExpensesDetailsModel();
 
   setText() {
-    vendorName = vendorNameCtrl.text;
+    vendorId = vendorNameCtrl.text;
     expensesAmount.first.amount = expensesAmount.first.amountCtrl.text;
     billDate = DateFormats.dateToTimeStamp(billDateCtrl.text);
     if (billIssuedDateCtrl.text.trim().isNotEmpty)
@@ -78,7 +84,7 @@ class ExpensesDetailsModel {
       expensesAmount.add(ExpensesAmount());
     }
 
-    vendorNameCtrl.text = vendorName ?? '';
+    vendorNameCtrl.text = vendorId ?? '';
     expensesAmount.first.amountCtrl.text = expensesAmount.first.amount ?? '';
     isBillPaid ??= false;
   }

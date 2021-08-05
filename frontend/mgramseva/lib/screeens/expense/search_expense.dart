@@ -127,7 +127,13 @@ class _SearchExpenseState extends State<SearchExpense> {
 
     if(vendorNameCtrl.text.trim().isNotEmpty || expenseType != null || billIdCtrl.text.trim().isNotEmpty) {
       var query = {
+        'tenantId' :  'pb',
+        'expenseType' : expenseType,
+        'challanNo' : billIdCtrl.text.trim(),
+        'vendorName' : vendorNameCtrl.text.trim()
       };
+
+      query.removeWhere((key, value) => value == null || value.trim().isEmpty);
 
       Provider.of<ExpensesDetailsProvider>(context, listen: false)
           .searchExpense(query, context);

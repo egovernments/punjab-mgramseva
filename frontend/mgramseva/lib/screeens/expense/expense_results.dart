@@ -58,11 +58,11 @@ class ExpenseResults extends StatelessWidget {
                            children: [
                              _getDetailtext(
                                  "${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)}",
-                                 expense.vendorName,
+                                 expense.vendorId,
                                  context),
                              _getDetailtext(
                                  "${ApplicationLocalizations.of(context).translate(i18.common.BILL_ID)}",
-                                 expense.billId,
+                                 expense.challanNo,
                                  context),
                              _getDetailtext(
                                  "${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)}",
@@ -78,7 +78,7 @@ class ExpenseResults extends StatelessWidget {
                                  context),
                              _getDetailtext(
                                  "${ApplicationLocalizations.of(context).translate(i18.common.STATUS)}",
-                                 expense.status,
+                                 expense.applicationStatus,
                                  context),
                              SizedBox(
                                height: 20,

@@ -58,7 +58,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       ..consumerType = 'EXPENSE'
       ..tenantId = 'pb'
       ..setText()
-      ..vendorName = expenditureDetails.selectedVendor?.id ??
+      ..vendorId = expenditureDetails.selectedVendor?.id ??
           expenditureDetails.vendorNameCtrl.text;
 
     try {
@@ -88,18 +88,18 @@ class ExpensesDetailsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> searchExpense(Map query, BuildContext context) async {
-    Future.delayed(Duration(seconds: 5));
+  Future<void> searchExpense(Map<String, dynamic> query, BuildContext context) async {
+
     try{
       Loaders.showLoadingDialog(context);
 
       var res = await ExpensesRepository()
-          .searchExpense({});
+          .searchExpense(query);
       Navigator.pop(context);
       if(res != null && res.isNotEmpty){
        Navigator.pushNamed(context, Routes.EXPENSE_RESULT, arguments: res);
       }else{
-
+       Notifiers.getToastMessage(context, 'No Connections found.', 'ERROR');
       }
     }catch(e) {
       Navigator.pop(context);
