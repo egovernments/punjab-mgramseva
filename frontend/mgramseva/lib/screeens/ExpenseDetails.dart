@@ -50,7 +50,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
       ..suggestionsBoxController = SuggestionsBoxController()
       ..expenditureDetails = ExpensesDetailsModel()
       ..autoValidation = false
-      ..getExpensesDetails()
+      ..getExpensesDetails(context)
       ..getExpenses()
       ..fetchVendors();
   }
@@ -75,7 +75,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                   if (snapshot.hasData) {
                     return _buildUserView(snapshot.data);
                   } else if (snapshot.hasError) {
-                    return Notifiers.networkErrorPage(context, () {});
+                    return Notifiers.networkErrorPage(context, () => expensesDetailsProvider.getExpensesDetails(context));
                   } else {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:

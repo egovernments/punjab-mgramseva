@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 enum RequestType { GET, PUT, POST, DELETE }
 
-enum ExceptionType {UNAUTHORIZED, BADREQUEST, INVALIDINPUT, FETCHDATA}
+enum ExceptionType {UNAUTHORIZED, BADREQUEST, INVALIDINPUT, FETCHDATA, OTHER, CONNECTIONISSUE}
 
 enum MDMSType {BusinessService, ConsumerType, TaxHeadCode}
 

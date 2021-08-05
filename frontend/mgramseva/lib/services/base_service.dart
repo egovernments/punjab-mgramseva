@@ -56,20 +56,25 @@ class BaseService {
         };
 
     http.Response response;
-    switch (method) {
-      case RequestType.GET:
-        response = await http.get(uri);
-        break;
-      case RequestType.PUT:
-        response = await http.put(uri, body: json.encode(body));
-        break;
-      case RequestType.POST:
-        response = await http.post(uri, headers: header, body: body);
-        break;
-      case RequestType.DELETE:
-        response = await http.delete(uri, body: json.encode(body));
+    try {
+      switch (method) {
+        case RequestType.GET:
+          response = await http.get(uri);
+          break;
+        case RequestType.PUT:
+          response = await http.put(uri, body: json.encode(body));
+          break;
+        case RequestType.POST:
+          response = await http.post(uri, headers: header, body: body);
+          break;
+        case RequestType.DELETE:
+          response = await http.delete(uri, body: json.encode(body));
+      }
+      return _response(response);
+    } catch (e){
+      throw CustomException(
+          '', 502, ExceptionType.CONNECTIONISSUE);
     }
-    return _response(response);
   }
 }
 
@@ -81,7 +86,6 @@ dynamic _response(http.Response response) {
   switch (response.statusCode) {
     case 200:
       return data;
-      break;
     case 201:
       return data;
     case 400:
@@ -94,8 +98,10 @@ dynamic _response(http.Response response) {
           errorMessage, response.statusCode, ExceptionType.UNAUTHORIZED);
       break;
     case 500:
-    default:
       throw CustomException(
           errorMessage, response.statusCode, ExceptionType.INVALIDINPUT);
+    default :
+      throw CustomException(
+          errorMessage, response.statusCode, ExceptionType.OTHER);
   }
 }
