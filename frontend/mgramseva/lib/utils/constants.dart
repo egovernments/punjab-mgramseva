@@ -29,7 +29,7 @@ class Constants {
     HomeItem("CORE_HOUSEHOLD_REGISTER", HomeIcons.hhregister, ''),
     HomeItem("CORE_COLLECT_PAYMENTS", HomeIcons.collectpayment, 'household/search'),
     HomeItem("DOWNLOAD_BILLS_AND_RECEIPTS", HomeIcons.printreciept, ''),
-    HomeItem("ADD_EXPENSES_RECORD", HomeIcons.addexpenses, 'expenses/add'),
+    HomeItem("ADD_EXPENSES_RECORD", HomeIcons.addexpenses, Routes.EXPENSES_ADD),
     HomeItem("CORE_UPDATE_EXPENSES", HomeIcons.updateexpenses, Routes.EXPENSE_SEARCH),
     HomeItem("CORE_GENERATE_DEMAND", HomeIcons.generaedemand, 'bill/generate'),
     HomeItem("CORE_CONSUMER_CREATE", HomeIcons.createconsumer, 'consumer/create'),

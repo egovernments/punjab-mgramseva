@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/providers/authentication.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
@@ -76,10 +77,7 @@ class _LoginState extends State<Login> {
                   maxLines: 1,
                 ),
                 GestureDetector(
-                  onTap: () => Navigator.push<bool>(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => ForgotPassword())),
+                  onTap: () => Navigator.pushNamed(context, Routes.FORGOT_PASSWORD),
                   child: Padding(
                       padding: const EdgeInsets.only(
                           left: 25, top: 10, bottom: 10, right: 25),

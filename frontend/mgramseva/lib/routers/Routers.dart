@@ -6,17 +6,21 @@ class Routes {
   ///Authentication
   static const String LANDING_PAGE = '/';
 
-  static const String LOGIN = 'login';
+  static const String LOGIN = '/login';
 
-  static const String HOME = 'home';
+  static const String SELECT_LANGUAGE = '/selectLanguage';
+
+  static const String HOME = '/home';
+
+  static const String FORGOT_PASSWORD = 'forgotPassword';
 
   static const String HOUSE_HOLD = 'household/search';
 
   static const String HOUSEHOLD = 'household/search';
 
-  static const String EDIT_PROFILE = 'editProfile';
+  static const String EDIT_PROFILE = '/home/editProfile';
 
-  static const String CHANGE_PASSWORD = 'changepassword';
+  static const String CHANGE_PASSWORD = '/home/editProfile/changepassword';
 
   static const String UPDATE_PASSWORD = 'updatepassword';
 
@@ -26,11 +30,11 @@ class Routes {
 
 
   /// Expense
-  static const String EXPENSES_ADD = 'expenses/add';
+  static const String EXPENSES_ADD = '/home/addExpense';
 
-  static const String EXPENSE_SEARCH = 'expenses/search';
+  static const String EXPENSE_SEARCH = '/home/searchExpense';
 
-  static const String EXPENSE_RESULT = 'expenses/result';
+  static const String EXPENSE_RESULT = '/home/searchExpense/result';
 
 
   static const String HOUSEHOLD_DETAILS = 'household/details';
