@@ -26,5 +26,6 @@ class SuccessHandler {
   final String header;
   final String subtitle;
   final String backButtonText;
-  SuccessHandler(this.header, this.subtitle, this.backButtonText);
+  final String routeParentPath;
+  SuccessHandler(this.header, this.subtitle, this.backButtonText, this.routeParentPath);
 }

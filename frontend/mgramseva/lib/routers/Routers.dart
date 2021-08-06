@@ -12,7 +12,7 @@ class Routes {
 
   static const String HOME = '/home';
 
-  static const String FORGOT_PASSWORD = 'forgotPassword';
+  static const String FORGOT_PASSWORD = '/forgotPassword';
 
   static const String HOUSE_HOLD = 'household/search';
 
@@ -24,7 +24,7 @@ class Routes {
 
   static const String UPDATE_PASSWORD = 'updatepassword';
 
-  static const String RESET_PASSWORD = 'resetpassword';
+  static const String RESET_PASSWORD = '$FORGOT_PASSWORD/resetPassword';
 
   static const String CONSUMER_SEARCH = 'consumer/search';
 
@@ -45,9 +45,9 @@ class Routes {
 
   static const String BILL_GENERATE = 'bill/generate';
 
-  static const String CONSUMER_CREATE = 'consumer/create';
+  static const String CONSUMER_CREATE = '/home/consumerCreate';
 
-  static const String SUCCESS_VIEW = 'success_view';
+  static const String SUCCESS_VIEW = '/success';
 
   /// Consumer
 }

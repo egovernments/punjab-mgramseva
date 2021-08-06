@@ -53,12 +53,10 @@ class _EditProfileState extends State<EditProfile> {
       var editProfileProvider =
           Provider.of<UserEditProfileProvider>(context, listen: false);
       editProfileProvider.editUserProfileDetails({"user": profile.toJson()});
-      Navigator.of(context).pushReplacement(
-          new MaterialPageRoute(builder: (BuildContext context) {
-        return CommonSuccess(SuccessHandler(
-            i18.profileEdit.PROFILE_EDIT_SUCCESS,
-            i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT, i18.common.BACK_HOME));
-      }));
+      Navigator.pushNamedAndRemoveUntil(context, Routes.SUCCESS_VIEW, (route) => false,
+         arguments : SuccessHandler(
+              i18.profileEdit.PROFILE_EDIT_SUCCESS,
+              i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT, i18.common.BACK_HOME, Routes.EDIT_PROFILE));
     } else {
       userProvider.autoValidation = true;
       userProvider.callNotfyer();

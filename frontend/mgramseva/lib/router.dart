@@ -21,6 +21,7 @@ import 'package:mgramseva/screeens/HouseholdDetail.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/Updatepassword.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart';
 
@@ -37,32 +38,22 @@ class router {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!, listen: false);
 
-    Map? query;
-    String? path;
     Uri uri = Uri.parse(settings.name ?? '');
+    Map? query = uri.queryParameters;
+    String? path = uri.path;
 
     if(kIsWeb){
      var userDetails = commonProvider.getWebLoginStatus();
      if(userDetails != null) {
-       return MaterialPageRoute(
-           builder: (_) => Home(),
-           settings: RouteSettings(name: Routes.HOME));
+       path = Routes.HOME;
      }else{
-       return MaterialPageRoute(
-         builder: (_) => SelectLanguage(),
-         settings: RouteSettings(name: Routes.SELECT_LANGUAGE)
-       );
+       path = Routes.SELECT_LANGUAGE;
      }
     }
 
-      query = uri.queryParameters;
-      print( uri.path);
-      path = uri.path.replaceAll('mgramseva/', '');
-      print(path);
-
     /// Here we'll handle all the routing
     currentRoute = settings.name;
-    switch (settings.name) {
+    switch (path) {
       case Routes.LANDING_PAGE:
         return MaterialPageRoute(builder: (_) => LandingPage());
       case Routes.LOGIN:
@@ -97,10 +88,6 @@ class router {
         return MaterialPageRoute(
             builder: (_) => UpdatePassword(),
             settings: RouteSettings(name: Routes.UPDATE_PASSWORD));
-      case Routes.RESET_PASSWORD:
-        return MaterialPageRoute(
-            builder: (_) => ResetPassword(),
-            settings: RouteSettings(name: Routes.RESET_PASSWORD));
       case Routes.CONSUMER_SEARCH:
         return MaterialPageRoute(
             builder: (_) => SearchConnection(),
@@ -131,8 +118,8 @@ class router {
             settings: RouteSettings(name: Routes.CONSUMER_CREATE));
       case Routes.SUCCESS_VIEW:
         return MaterialPageRoute(
-            builder: (_) => CommonSuccess(settings.arguments),
-            settings: RouteSettings(name: Routes.SUCCESS_VIEW));
+            builder: (_) => CommonSuccess(settings.arguments as SuccessHandler),
+            settings: RouteSettings(name: '${(settings.arguments as SuccessHandler).routeParentPath}${Routes.SUCCESS_VIEW}'));
       case Routes.EXPENSE_SEARCH:
         return MaterialPageRoute(
             builder: (_) => SearchExpense(),
@@ -145,14 +132,17 @@ class router {
         return MaterialPageRoute(
             builder: (_) => ExpenseResults(searchResult: settings.arguments as List<ExpensesDetailsModel>),
             settings: RouteSettings(name: Routes.EXPENSE_RESULT));
+
+        /// Redirecting routes
+      case Routes.RESET_PASSWORD :
+        if(settings.arguments == null)
+          return MaterialPageRoute(
+              builder: (_) => ForgotPassword(),
+              settings: RouteSettings(name: Routes.FORGOT_PASSWORD));
+        return MaterialPageRoute(
+            builder: (_) => ResetPassword(),
+            settings: RouteSettings(name: Routes.RESET_PASSWORD));
       default:
-
-        // if(){
-        //
-        // }else if(){
-        //
-        // }
-
         return MaterialPageRoute(
           builder: (_) => SelectLanguage(),
         );

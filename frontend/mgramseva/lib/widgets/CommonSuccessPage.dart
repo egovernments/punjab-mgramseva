@@ -7,7 +7,7 @@ import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/SuccessPage.dart';
 
 class CommonSuccess extends StatelessWidget {
-  final  dynamic successHandler;
+  final  SuccessHandler successHandler;
 
   CommonSuccess(this.successHandler);
 

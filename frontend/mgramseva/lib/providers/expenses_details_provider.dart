@@ -72,7 +72,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
           arguments: SuccessHandler(
               '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}',
               '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_AGAINST)} ${challanDetails['challanNo']} ${ApplicationLocalizations.of(context).translate(i18.expense.UNDER_MAINTAINANCE)} Rs. ${challanDetails['amount'][0]['amount']} ',
-              i18.common.BACK_HOME));
+              i18.common.BACK_HOME, Routes.EXPENSES_ADD));
     } on CustomException catch (e) {
       Navigator.pop(context);
       Notifiers.getToastMessage(

@@ -32,7 +32,7 @@ class Constants {
     HomeItem("ADD_EXPENSES_RECORD", HomeIcons.addexpenses, Routes.EXPENSES_ADD),
     HomeItem("CORE_UPDATE_EXPENSES", HomeIcons.updateexpenses, Routes.EXPENSE_SEARCH),
     HomeItem("CORE_GENERATE_DEMAND", HomeIcons.generaedemand, 'bill/generate'),
-    HomeItem("CORE_CONSUMER_CREATE", HomeIcons.createconsumer, 'consumer/create'),
+    HomeItem("CORE_CONSUMER_CREATE", HomeIcons.createconsumer, Routes.CONSUMER_CREATE),
     HomeItem("CORE_UPDATE_CONSUMER_DETAILS", HomeIcons.updateconsumer, 'consumer/search'),
     HomeItem("CORE_GPWSC_DASHBOARD", HomeIcons.dashboard, 'dashboard'),
   ];
