@@ -66,12 +66,12 @@ public class EditNotificationService {
 					notificationUtil.sendEventNotification(eventRequest);
 				}
 			}
-			if (config.getIsSMSEnabled() != null && config.getIsSMSEnabled()) {
+			/*if (config.getIsSMSEnabled() != null && config.getIsSMSEnabled()) {
 				List<SMSRequest> smsRequests = getSmsRequest(request, property);
 				if (!CollectionUtils.isEmpty(smsRequests)) {
 					notificationUtil.sendSMS(smsRequests);
 				}
-			}
+			}*/
 		} catch (Exception ex) {
 			log.error("Exception when trying to send notification. ", ex);
 		}

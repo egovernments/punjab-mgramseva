@@ -105,12 +105,12 @@ public class WorkflowNotificationService {
 						notificationUtil.sendEventNotification(eventRequest);
 					}
 			}
-			if (config.getIsSMSEnabled() != null && config.getIsSMSEnabled()) {
+			/*if (config.getIsSMSEnabled() != null && config.getIsSMSEnabled()) {
 					List<SMSRequest> smsRequests = getSmsRequest(request, topic, property, applicationStatus);
 					if (!CollectionUtils.isEmpty(smsRequests)) {
 						notificationUtil.sendSMS(smsRequests);
 					}
-			}
+			}*/
 
 		} catch (Exception ex) {
 			log.error("Error occured while processing the record from topic : " + topic, ex);
