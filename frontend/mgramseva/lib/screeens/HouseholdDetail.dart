@@ -12,7 +12,6 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/routers/Routers.dart';
 
 class HouseholdDetail extends StatefulWidget {
-  static const String routeName = 'household/details';
   @override
   State<StatefulWidget> createState() {
     return _HouseholdDetailState();

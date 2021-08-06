@@ -26,6 +26,7 @@ import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart';
 
 import 'model/localization/language.dart';
+import 'model/success_handler.dart';
 import 'model/user/user_details.dart';
 import 'providers/language.dart';
 import 'screeens/ForgotPassword/ForgotPassword.dart';
@@ -39,7 +40,7 @@ class router {
         navigatorKey.currentContext!, listen: false);
 
     Uri uri = Uri.parse(settings.name ?? '');
-    Map? query = uri.queryParameters;
+    Map<String, dynamic>? query = uri.queryParameters;
     String? path = uri.path;
 
     if(kIsWeb){
@@ -116,10 +117,21 @@ class router {
         return MaterialPageRoute(
             builder: (_) => ConsumerDetails(),
             settings: RouteSettings(name: Routes.CONSUMER_CREATE));
-      case Routes.SUCCESS_VIEW:
+      case Routes.SUCCESS_VIEW: case '/home/editProfile/success' :
+        String routePath;
+        SuccessHandler successHandler;
+
+        if(settings.arguments != null){
+          successHandler = settings.arguments as SuccessHandler;
+          routePath = '${(settings.arguments as SuccessHandler).routeParentPath}${Routes.SUCCESS_VIEW}?${Uri(queryParameters: successHandler.toJson()).query}';
+          query = (settings.arguments as SuccessHandler).toJson();
+        }else{
+          routePath = settings.name!;
+          successHandler = SuccessHandler.fromJson(query);
+        }
         return MaterialPageRoute(
-            builder: (_) => CommonSuccess(settings.arguments as SuccessHandler),
-            settings: RouteSettings(name: '${(settings.arguments as SuccessHandler).routeParentPath}${Routes.SUCCESS_VIEW}'));
+            builder: (_) => CommonSuccess(successHandler),
+            settings: RouteSettings(name: '$routePath'));
       case Routes.EXPENSE_SEARCH:
         return MaterialPageRoute(
             builder: (_) => SearchExpense(),

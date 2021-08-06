@@ -20,12 +20,3 @@ class HomeItem {
 
   const HomeItem(this.label, this.iconData, this.link);
 }
-
-
-class SuccessHandler {
-  final String header;
-  final String subtitle;
-  final String backButtonText;
-  final String routeParentPath;
-  SuccessHandler(this.header, this.subtitle, this.backButtonText, this.routeParentPath);
-}
