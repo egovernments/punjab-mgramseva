@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -89,6 +90,11 @@ class _SearchExpenseState extends State<SearchExpense> {
                                           '${ApplicationLocalizations.of(context).translate(i18.common.BILL_ID)}',
                                           billIdCtrl,
                                           hint: '${ApplicationLocalizations.of(context).translate(i18.common.BILL_HINT)}',
+                                          textCapitalization: TextCapitalization.characters,
+                                          inputFormatter: [
+                                            FilteringTextInputFormatter.allow(
+                                                RegExp("[A-Z0-9-]"))
+                                          ],
                                         ),
                                       ])),
                                InkWell(

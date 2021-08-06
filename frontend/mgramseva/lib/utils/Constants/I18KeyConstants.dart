@@ -58,7 +58,7 @@ class Common {
   String get NO_FILE_UPLOADED => 'NO_FILE_UPLOADED';
 
   String get ELECTRICITY_HINT => 'ELECTRICITY_HINT'; /// Eg: Electricity
-  String get BILL_HINT => 'BILL_HINT'; /// Eg: EB-2021-22/08/21/0123
+  String get BILL_HINT => 'BILL_HINT'; /// Eg: EB-2021-22-0052
   String get SHOW_MORE => 'SHOW_MORE'; /// Show more
   String get SHOW_LESS => 'SHOW_LESS'; /// Show Less
   String get BILL_ID => 'BILL_ID'; /// Bill ID
