@@ -36,6 +36,8 @@ class Routes {
 
   static const String EXPENSE_RESULT = '/home/searchExpense/result';
 
+  static const String EXPENSE_UPDATE = '/home/searchExpense/result/updateExpense';
+
 
   static const String HOUSEHOLD_DETAILS = 'household/details';
 

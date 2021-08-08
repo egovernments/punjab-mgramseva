@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/Button.dart';
@@ -56,10 +57,7 @@ class LanguageSelectMobileView extends StatelessWidget {
                     child: Consumer<LanguageProvider>(
                       builder: (_, languageProvider, child) => Button(
                           'CORE_COMMON_CONTINUE',
-                          () => Navigator.push<bool>(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) => Login()))),
+                          () => Navigator.pushNamed(context, Routes.LOGIN)),
                     ))
               ]))))))
     ]));

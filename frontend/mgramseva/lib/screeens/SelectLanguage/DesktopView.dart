@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
@@ -58,7 +59,7 @@ class LanguageSelectionDesktopView extends StatelessWidget {
               Padding(
                   padding: EdgeInsets.all(15),
                   child: Button('CORE_COMMON_CONTINUE',
-                      () => Navigator.pushNamed(context, "login"))),
+                      () => Navigator.pushNamed(context, Routes.LOGIN))),
               SizedBox(
                 height: 10,
               )

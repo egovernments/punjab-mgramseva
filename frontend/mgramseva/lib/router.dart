@@ -22,6 +22,7 @@ import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/Updatepassword.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
+import 'package:mgramseva/widgets/not_available.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart';
 
@@ -45,10 +46,10 @@ class router {
 
     if(kIsWeb){
      var userDetails = commonProvider.getWebLoginStatus();
-     if(userDetails != null) {
-       path = Routes.HOME;
-     }else{
+     if(userDetails == null && Routes.LOGIN != settings.name) {
        path = Routes.SELECT_LANGUAGE;
+     }else if(Routes.LOGIN == settings.name){
+       path = Routes.LOGIN;
      }
     }
 
@@ -97,6 +98,20 @@ class router {
         return MaterialPageRoute(
             builder: (_) => ExpenseDetails(),
             settings: RouteSettings(name: Routes.EXPENSES_ADD));
+      case Routes.EXPENSE_UPDATE:
+         String? id;
+        if(settings.arguments != null){
+          id = settings.arguments as String;
+        }else{
+          if(queryValidator(Routes.EXPENSE_UPDATE, query)){
+            id = query['id'];
+          }else{
+            return pageNotAvailable;
+          }
+        }
+        return MaterialPageRoute(
+            builder: (_) => ExpenseDetails(id: id),
+            settings: RouteSettings(name: '${Routes.EXPENSE_UPDATE}?id=$id'));
       case Routes.HOUSEHOLD_DETAILS:
         return MaterialPageRoute(
             builder: (_) => HouseholdDetail(),
@@ -160,4 +175,21 @@ class router {
         );
     }
   }
+
+
+  static bool queryValidator(String route, Map? query){
+    if(query == null) return false;
+
+    switch(route){
+      case Routes.EXPENSE_UPDATE :
+        if(query.keys.contains('id')) return true;
+        return false;
+      default :
+        return false;
+    }
+  }
+
+  static get pageNotAvailable => MaterialPageRoute(
+      builder: (_) => PageNotAvailable(),
+    );
 }
