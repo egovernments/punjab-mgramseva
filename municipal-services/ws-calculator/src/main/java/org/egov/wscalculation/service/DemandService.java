@@ -117,15 +117,15 @@ public class DemandService {
 			Long fromDateSearch = null;
 			Long toDateSearch = null;
 			Set<String> consumerCodes;
-			if (isForConnectionNo) {
+//			if (isForConnectionNo) {
 				fromDateSearch = fromDate;
 				toDateSearch = toDate;
 				consumerCodes = calculations.stream().map(calculation -> calculation.getConnectionNo())
 						.collect(Collectors.toSet());
-			} else {
-				consumerCodes = calculations.stream().map(calculation -> calculation.getApplicationNO())
-						.collect(Collectors.toSet());
-			}
+//			} else {
+//				consumerCodes = calculations.stream().map(calculation -> calculation.getApplicationNO())
+//						.collect(Collectors.toSet());
+//			}
 			
 			List<Demand> demands = searchDemand(tenantId, consumerCodes, fromDateSearch, toDateSearch, requestInfo);
 			Set<String> connectionNumbersFromDemands = new HashSet<>();
@@ -136,7 +136,7 @@ public class DemandService {
 			// If demand already exists add it updateCalculations else
 			// createCalculations
 			for (Calculation calculation : calculations) {
-				if (!connectionNumbersFromDemands.contains(isForConnectionNo ? calculation.getConnectionNo() : calculation.getApplicationNO()))
+				if (!connectionNumbersFromDemands.contains( calculation.getConnectionNo() ))
 					createCalculations.add(calculation);
 				else
 					updateCalculations.add(calculation);
@@ -172,8 +172,7 @@ public class DemandService {
 					.requestInfo(requestInfo).build();
 			Property property = wsCalculationUtil.getProperty(waterConnectionRequest);
 			String tenantId = calculation.getTenantId();
-			String consumerCode = isForConnectionNO ? calculation.getConnectionNo()
-					: calculation.getApplicationNO();
+			String consumerCode = calculation.getConnectionNo();
 			User owner = property.getOwners().get(0).toCommonUser();
 			if (!CollectionUtils.isEmpty(waterConnectionRequest.getWaterConnection().getConnectionHolders())) {
 				owner = waterConnectionRequest.getWaterConnection().getConnectionHolders().get(0).toCommonUser();
@@ -191,10 +190,8 @@ public class DemandService {
 			Long fromDate = (Long) financialYearMaster.get(WSCalculationConstant.STARTING_DATE_APPLICABLES);
 			Long toDate = (Long) financialYearMaster.get(WSCalculationConstant.ENDING_DATE_APPLICABLES);
 			Long expiryDate = (Long) financialYearMaster.get(WSCalculationConstant.Demand_Expiry_Date_String);
-			BigDecimal minimumPayableAmount = isForConnectionNO ? configs.getMinimumPayableAmount()
-					: calculation.getTotalAmount();
-			String businessService = isForConnectionNO ? configs.getBusinessService()
-					: WSCalculationConstant.ONE_TIME_FEE_SERVICE_FIELD;
+			BigDecimal minimumPayableAmount =  configs.getMinimumPayableAmount();
+			String businessService = configs.getBusinessService();
 
 			addRoundOffTaxHead(calculation.getTenantId(), demandDetails);
 
@@ -495,9 +492,7 @@ public class DemandService {
 		Long toDateSearch = isForConnectionNo ? toDate : null;
 
 		for (Calculation calculation : calculations) {
-			Set<String> consumerCodes = isForConnectionNo
-					? Collections.singleton(calculation.getWaterConnection().getConnectionNo())
-					: Collections.singleton(calculation.getWaterConnection().getApplicationNo());
+			Set<String> consumerCodes = Collections.singleton(calculation.getWaterConnection().getConnectionNo());
 			List<Demand> searchResult = searchDemand(calculation.getTenantId(), consumerCodes, fromDateSearch,
 					toDateSearch, requestInfo);
 			if (CollectionUtils.isEmpty(searchResult))
@@ -516,17 +511,17 @@ public class DemandService {
 
 				}
 
-				if(connection.getApplicationType().equalsIgnoreCase("MODIFY_WATER_CONNECTION")){
-					WaterConnectionRequest waterConnectionRequest = WaterConnectionRequest.builder().waterConnection(connection)
-							.requestInfo(requestInfo).build();
-					Property property = wsCalculationUtil.getProperty(waterConnectionRequest);
-					User owner = property.getOwners().get(0).toCommonUser();
-					if (!CollectionUtils.isEmpty(waterConnectionRequest.getWaterConnection().getConnectionHolders())) {
-						owner = waterConnectionRequest.getWaterConnection().getConnectionHolders().get(0).toCommonUser();
-					}
-					if(!(demand.getPayer().getUuid().equalsIgnoreCase(owner.getUuid())))
-						demand.setPayer(owner);
-				}
+//				if(connection.getApplicationType().equalsIgnoreCase("MODIFY_WATER_CONNECTION")){
+//					WaterConnectionRequest waterConnectionRequest = WaterConnectionRequest.builder().waterConnection(connection)
+//							.requestInfo(requestInfo).build();
+//					Property property = wsCalculationUtil.getProperty(waterConnectionRequest);
+//					User owner = property.getOwners().get(0).toCommonUser();
+//					if (!CollectionUtils.isEmpty(waterConnectionRequest.getWaterConnection().getConnectionHolders())) {
+//						owner = waterConnectionRequest.getWaterConnection().getConnectionHolders().get(0).toCommonUser();
+//					}
+//					if(!(demand.getPayer().getUuid().equalsIgnoreCase(owner.getUuid())))
+//						demand.setPayer(owner);
+//				}
 
 
 			}

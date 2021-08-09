@@ -31,6 +31,7 @@ public class MeterInfoValidator implements WaterActionValidator {
 			handleUpdateApplicationRequest(waterConnectionRequest, errorMap);
 			break;
 		default:
+			handleCreateConnectionRequest(waterConnectionRequest, errorMap);
 			break;
 		}
 		if (!errorMap.isEmpty())
@@ -41,6 +42,17 @@ public class MeterInfoValidator implements WaterActionValidator {
 	private void handleUpdateApplicationRequest(WaterConnectionRequest waterConnectionRequest,
 			Map<String, String> errorMap) {
 		if (WCConstants.ACTIVATE_CONNECTION_CONST
+				.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getProcessInstance().getAction())) {
+			if (WCConstants.METERED_CONNECTION
+					.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getConnectionType())) {
+				validateMeteredConnectionRequst(waterConnectionRequest, errorMap);
+			}
+		}
+	}
+	
+	private void handleCreateConnectionRequest(WaterConnectionRequest waterConnectionRequest,
+			Map<String, String> errorMap) {
+		if (WCConstants.SUBMIT_CONNECTION
 				.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getProcessInstance().getAction())) {
 			if (WCConstants.METERED_CONNECTION
 					.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getConnectionType())) {

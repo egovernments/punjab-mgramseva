@@ -88,6 +88,7 @@ public class Connection {
 	@JsonProperty("connectionNo")
 	private String connectionNo = null;
 
+	@NotNull
 	@SafeHtml
 	@JsonProperty("oldConnectionNo")
 	private String oldConnectionNo = null;
@@ -118,6 +119,7 @@ public class Connection {
 	private String connectionCategory = null;
 
 	@SafeHtml
+	@NotNull
 	@JsonProperty("connectionType")
 	private String connectionType = null;
 
@@ -146,9 +148,11 @@ public class Connection {
 	
 	 
 	@JsonProperty("previousReadingDate")
+	@NotNull
 	private Long previousReadingDate = null;
 	
 	@JsonProperty("arrears")
+	@NotNull
 	private BigDecimal arrears = null;
 	
 

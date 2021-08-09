@@ -61,7 +61,7 @@ public class EstimationService {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Map<String, List> getEstimationMap(CalculationCriteria criteria, RequestInfo requestInfo,
-			Map<String, Object> masterData) {
+			Map<String, Object> masterData,boolean isconnectionCalculation) {
 		String tenantId = requestInfo.getUserInfo().getTenantId();
 		if (criteria.getWaterConnection() == null && !StringUtils.isEmpty(criteria.getConnectionNo())) {
 			List<WaterConnection> waterConnectionList = calculatorUtil.getWaterConnection(requestInfo, criteria.getConnectionNo(), tenantId);
@@ -87,8 +87,13 @@ public class EstimationService {
 		// mDataService.setWaterConnectionMasterValues(requestInfo, tenantId,
 		// billingSlabMaster,
 		// timeBasedExemptionMasterMap);
-		BigDecimal taxAmt = getWaterEstimationCharge(criteria.getWaterConnection(), criteria, billingSlabMaster, billingSlabIds,
-				requestInfo);
+		BigDecimal taxAmt = BigDecimal.ZERO;
+		if(!isconnectionCalculation) {
+			taxAmt = criteria.getWaterConnection().getArrears();
+		}else {
+			taxAmt = getWaterEstimationCharge(criteria.getWaterConnection(), criteria, billingSlabMaster, billingSlabIds,
+					requestInfo);
+		}
 		List<TaxHeadEstimate> taxHeadEstimates = getEstimatesForTax(taxAmt, criteria.getWaterConnection(),
 				timeBasedExemptionMasterMap, RequestInfoWrapper.builder().requestInfo(requestInfo).build());
 
@@ -275,10 +280,13 @@ public class EstimationService {
 		return 0.0;
 	}
 	
-	public Map<String, Object> getQuarterStartAndEndDate(Map<String, Object> billingPeriod){
+	public Map<String, Object> getQuarterStartAndEndDate(Map<String, Object> billingPeriod,Long lastMeterReadingDate){
 		Date date = new Date();
 		Calendar fromDateCalendar = Calendar.getInstance();
 		fromDateCalendar.setTime(date);
+		if(lastMeterReadingDate != null || lastMeterReadingDate >00 ) {
+			fromDateCalendar.setTimeInMillis(lastMeterReadingDate);
+		}
 		fromDateCalendar.set(Calendar.MONTH, fromDateCalendar.get(Calendar.MONTH)/3 * 3);
 		fromDateCalendar.set(Calendar.DAY_OF_MONTH, 1);
 		setTimeToBeginningOfDay(fromDateCalendar);
@@ -292,10 +300,13 @@ public class EstimationService {
 		return billingPeriod;
 	}
 	
-	public Map<String, Object> getMonthStartAndEndDate(Map<String, Object> billingPeriod){
+	public Map<String, Object> getMonthStartAndEndDate(Map<String, Object> billingPeriod,Long lastMeterReadingDate){
 		Date date = new Date();
 		Calendar monthStartDate = Calendar.getInstance();
 		monthStartDate.setTime(date);
+		if(lastMeterReadingDate != null || lastMeterReadingDate >00 ) {
+			monthStartDate.setTimeInMillis(lastMeterReadingDate);
+		}
 		monthStartDate.set(Calendar.DAY_OF_MONTH, monthStartDate.getActualMinimum(Calendar.DAY_OF_MONTH));
 		setTimeToBeginningOfDay(monthStartDate);
 	    
@@ -354,6 +365,12 @@ public class EstimationService {
 		return estimatesAndBillingSlabs;
 	}
 	
+	private List<TaxHeadEstimate> getTaxHeadForIntialCharge(CalculationCriteria criteria,
+			Map<String, Object> masterData, RequestInfo requestInfo){
+		
+		
+		return null;
+	}
 	
 	/**
 	 * 

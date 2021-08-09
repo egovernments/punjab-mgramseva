@@ -89,10 +89,10 @@ public class WaterServiceImpl implements WaterService {
 			List<WaterConnection> previousConnectionsList = getAllWaterApplications(waterConnectionRequest);
 
 			// Validate any process Instance exists with WF
-			if (!CollectionUtils.isEmpty(previousConnectionsList)) {
-				workflowService.validateInProgressWF(previousConnectionsList, waterConnectionRequest.getRequestInfo(),
-						waterConnectionRequest.getWaterConnection().getTenantId());
-			}
+//			if (!CollectionUtils.isEmpty(previousConnectionsList)) {
+//				workflowService.validateInProgressWF(previousConnectionsList, waterConnectionRequest.getRequestInfo(),
+//						waterConnectionRequest.getWaterConnection().getTenantId());
+//			}
 			reqType = WCConstants.MODIFY_CONNECTION;
 		}
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, reqType);
@@ -108,6 +108,7 @@ public class WaterServiceImpl implements WaterService {
 			wfIntegrator.callWorkFlow(waterConnectionRequest, property);
 		System.out.println("calling save user   "); 
 		waterDao.saveWaterConnection(waterConnectionRequest);
+		calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property);
 		return Arrays.asList(waterConnectionRequest.getWaterConnection());
 	}
 

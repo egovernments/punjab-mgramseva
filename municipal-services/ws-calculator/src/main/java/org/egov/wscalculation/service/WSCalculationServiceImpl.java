@@ -70,18 +70,18 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		List<Calculation> calculations;
 
 		Map<String, Object> masterMap;
-		if (request.getIsconnectionCalculation()) {
+//		if (request.getIsconnectionCalculation()) {
 			//Calculate and create demand for connection
 			masterMap = masterDataService.loadMasterData(request.getRequestInfo(),
 					request.getCalculationCriteria().get(0).getTenantId());
 			calculations = getCalculations(request, masterMap);
-		} else {
-			//Calculate and create demand for application
-			masterMap = masterDataService.loadExemptionMaster(request.getRequestInfo(),
-					request.getCalculationCriteria().get(0).getTenantId());
-			calculations = getFeeCalculation(request, masterMap);
-		}
-		demandService.generateDemand(request.getRequestInfo(), calculations, masterMap, request.getIsconnectionCalculation());
+//		} else {
+//			//Calculate and create demand for application
+//			masterMap = masterDataService.loadMasterData(request.getRequestInfo(),
+//					request.getCalculationCriteria().get(0).getTenantId());
+//			calculations = getCalculations(request, masterMap);
+//		}
+		demandService.generateDemand(request.getRequestInfo(), calculations, masterMap,false);
 		unsetWaterConnection(calculations);
 		return calculations;
 	}
@@ -193,6 +193,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 				.build();
 	}
 	
+	
 	/**
 	 * 
 	 * @param request would be calculations request
@@ -203,10 +204,10 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		List<Calculation> calculations = new ArrayList<>(request.getCalculationCriteria().size());
 		for (CalculationCriteria criteria : request.getCalculationCriteria()) {
 			Map<String, List> estimationMap = estimationService.getEstimationMap(criteria, request.getRequestInfo(),
-					masterMap);
+					masterMap,request.getIsconnectionCalculation());
 			ArrayList<?> billingFrequencyMap = (ArrayList<?>) masterMap
 					.get(WSCalculationConstant.Billing_Period_Master);
-			masterDataService.enrichBillingPeriod(criteria, billingFrequencyMap, masterMap);
+			masterDataService.enrichBillingPeriod(criteria, billingFrequencyMap, masterMap,request.getIsconnectionCalculation());
 			Calculation calculation = getCalculation(request.getRequestInfo(), criteria, estimationMap, masterMap, true);
 			calculations.add(calculation);
 		}
@@ -292,15 +293,28 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	 * @return list of calculation based on estimation criteria
 	 */
 	List<Calculation> getFeeCalculation(CalculationReq request, Map<String, Object> masterMap) {
+
 		List<Calculation> calculations = new ArrayList<>(request.getCalculationCriteria().size());
 		for (CalculationCriteria criteria : request.getCalculationCriteria()) {
-			Map<String, List> estimationMap = estimationService.getFeeEstimation(criteria, request.getRequestInfo(),
-					masterMap);
-			masterDataService.enrichBillingPeriodForFee(masterMap);
-			Calculation calculation = getCalculation(request.getRequestInfo(), criteria, estimationMap, masterMap, false);
+			Map<String, List> estimationMap = estimationService.getEstimationMap(criteria, request.getRequestInfo(),
+					masterMap,request.getIsconnectionCalculation());
+			ArrayList<?> billingFrequencyMap = (ArrayList<?>) masterMap
+					.get(WSCalculationConstant.Billing_Period_Master);
+			masterDataService.enrichBillingPeriod(criteria, billingFrequencyMap, masterMap,request.getIsconnectionCalculation());
+			Calculation calculation = getCalculation(request.getRequestInfo(), criteria, estimationMap, masterMap, true);
 			calculations.add(calculation);
 		}
 		return calculations;
+		
+		//		List<Calculation> calculations = new ArrayList<>(request.getCalculationCriteria().size());
+//		for (CalculationCriteria criteria : request.getCalculationCriteria()) {
+//			Map<String, List> estimationMap = estimationService.getFeeEstimation(criteria, request.getRequestInfo(),
+//					masterMap);
+//			masterDataService.enrichBillingPeriodForFee(masterMap);
+//			Calculation calculation = getCalculation(request.getRequestInfo(), criteria, estimationMap, masterMap, false);
+//			calculations.add(calculation);
+//		}
+//		return calculations;
 	}
 	
 	public void unsetWaterConnection(List<Calculation> calculation) {
