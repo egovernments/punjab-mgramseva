@@ -73,7 +73,7 @@ class SelectFieldBuilder extends StatelessWidget {
                 child: Column(
                   children: [
                     dropDown,
-                    CommonWidgets().buildHint(hint)
+                    CommonWidgets().buildHint(hint, context)
                   ],
                 )),
           ]),
@@ -88,7 +88,7 @@ class SelectFieldBuilder extends StatelessWidget {
                 padding: EdgeInsets.only(top: 18, bottom: 3),
                 child: textLabelwidget),
             dropDown,
-            CommonWidgets().buildHint(hint)
+            CommonWidgets().buildHint(hint, context)
           ]),
         );
       }

@@ -101,7 +101,7 @@ class _BuildTextField extends State<BuildTextField> {
                     padding: EdgeInsets.only(top: 18, bottom: 3),
                     child: Column(children: [
                       textFormwidget,
-                      CommonWidgets().buildHint(widget.hint)
+                      CommonWidgets().buildHint(widget.hint, context)
                     ],)),
               ],
             ));
@@ -117,7 +117,7 @@ class _BuildTextField extends State<BuildTextField> {
                         alignment: Alignment.centerLeft,
                         child: textLabelwidget)),
                 textFormwidget,
-                CommonWidgets().buildHint(widget.hint)
+                CommonWidgets().buildHint(widget.hint, context)
               ],
             ));
       }

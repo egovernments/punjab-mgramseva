@@ -51,14 +51,14 @@ class ExpensesDetailsProvider with ChangeNotifier {
     expenditureDetails
       ..businessService = commonProvider.getMdmsId(languageList,
           'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
-      ..expensesAmount.first.taxHeadCode = commonProvider.getMdmsId(
+      ..expensesAmount?.first.taxHeadCode = commonProvider.getMdmsId(
           languageList,
           'EXPENSE.${expenditureDetails.expenseType}',
           MDMSType.TaxHeadCode)
       ..consumerType = 'EXPENSE'
       ..tenantId = 'pb'
       ..setText()
-      ..vendorName = expenditureDetails.selectedVendor?.id ??
+      ..vendorId = expenditureDetails.selectedVendor?.id ??
           expenditureDetails.vendorNameCtrl.text;
 
     try {
@@ -77,31 +77,40 @@ class ExpensesDetailsProvider with ChangeNotifier {
       Navigator.pop(context);
       Notifiers.getToastMessage(
           context,
-          '${ApplicationLocalizations.of(context).translate(i18.expense.UNABLE_TO_CREATE_EXPENSE)}',
+          i18.expense.UNABLE_TO_CREATE_EXPENSE,
           'ERROR');
     } catch (e) {
       Notifiers.getToastMessage(
           context,
-          '${ApplicationLocalizations.of(context).translate(i18.expense.UNABLE_TO_CREATE_EXPENSE)}',
+          i18.expense.UNABLE_TO_CREATE_EXPENSE,
           'ERROR');
       Navigator.pop(context);
     }
   }
 
-  Future<void> searchExpense(Map query, BuildContext context) async {
-    Future.delayed(Duration(seconds: 5));
-    try{
+  Future<void> searchExpense(Map<String, dynamic> query, String criteria, BuildContext context) async {
+
+    try {
       Loaders.showLoadingDialog(context);
 
       var res = await ExpensesRepository()
-          .searchExpense({});
+          .searchExpense(query);
       Navigator.pop(context);
-      if(res != null && res.isNotEmpty){
-       Navigator.pushNamed(context, Routes.EXPENSE_RESULT, arguments: res);
-      }else{
-
+      if (res != null && res.isNotEmpty) {
+        Navigator.pushNamed(context, Routes.EXPENSE_RESULT,
+            arguments: SearchResult(criteria, res));
+      } else {
+        Notifiers.getToastMessage(context,
+            '${ApplicationLocalizations.of(context).translate(
+                i18.expense.NO_EXPENSES_FOUND)}', 'ERROR');
       }
+    } on CustomException catch(e,s){
+      Notifiers.getToastMessage(context,
+              i18.expense.UNABLE_TO_SEARCH_EXPENSE, 'ERROR');
+      Navigator.pop(context);
     }catch(e) {
+      Notifiers.getToastMessage(context,
+              i18.expense.UNABLE_TO_SEARCH_EXPENSE, 'ERROR');
       Navigator.pop(context);
     }
 
