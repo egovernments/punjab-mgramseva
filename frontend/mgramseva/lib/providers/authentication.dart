@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/authentication.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class AuthenticationProvider with ChangeNotifier {
   validateLogin(BuildContext context, String userName, String password) async {
@@ -52,14 +54,14 @@ class AuthenticationProvider with ChangeNotifier {
       Navigator.pop(context);
       if (e.exceptionType == ExceptionType.UNAUTHORIZED) {
         Notifiers.getToastMessage(
-            context, '${e.message ?? "Invalid Credentials"}', 'ERROR');
+            context, '${e.message ?? i18.login.INVALID_CREDENTIALS}', 'ERROR');
       } else if(ErrorHandler.handleApiException(context, e, s)) {
-        Notifiers.getToastMessage(context, 'Unable to login', 'ERROR');
+        Notifiers.getToastMessage(context, i18.login.UNABLE_TO_LOGIN, 'ERROR');
       }
     } catch (e,s) {
       Navigator.pop(context);
       ErrorHandler.logError(e.toString(),s);
-      Notifiers.getToastMessage(context, 'Unable to login', 'ERROR');
+      Notifiers.getToastMessage(context, i18.login.UNABLE_TO_LOGIN, 'ERROR');
     }
   }
 

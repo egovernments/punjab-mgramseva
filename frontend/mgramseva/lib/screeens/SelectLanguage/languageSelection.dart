@@ -22,7 +22,7 @@ class _SelectLanguage extends State<SelectLanguage> {
   void initState() {
     super.initState();
     var languageProvider = Provider.of<LanguageProvider>(context, listen: false);
-    languageProvider.getLocalizationData();
+    languageProvider.getLocalizationData(context);
   }
 
   @override
@@ -37,7 +37,7 @@ class _SelectLanguage extends State<SelectLanguage> {
             return _buildView(snapshot.data);
           } else if (snapshot.hasError) {
             return Notifiers.networkErrorPage(
-                context, (){});
+                context, ()=> languageProvider.getLocalizationData(context));
           } else {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:

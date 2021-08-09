@@ -20,6 +20,8 @@ class Login {
   String get LOGIN_PHONE_NO => 'LOGIN_PHONE_NO';
   String get LOGIN_PASSWORD => 'CORE_LOGIN_PASSWORD';
   String get FORGOT_PASSWORD => 'CORE_COMMON_FORGOT_PASSWORD';
+  String get UNABLE_TO_LOGIN => 'UNABLE_TO_LOGIN';
+  String get INVALID_CREDENTIALS => 'INVALID_CREDENTIALS';
 }
 
 class Common {
@@ -80,6 +82,8 @@ class Password {
   String get CHANGE_PASSWORD_SUCCESS => 'CHANGE_PASSWORD_SUCCESS_LABEL';
   String get CHANGE_PASSWORD_SUCCESS_SUBTEXT =>
       'CHANGE_PASSWORD_SUCCESS_SUB_TEXT';
+  String get UNABLE_TO_RESET_THE_PASSWORD => 'UNABLE_TO_RESET_THE_PASSWORD'; /// unable to reset the password
+
 }
 
 class Expense {
@@ -142,6 +146,7 @@ class ProfileEdit {
   const ProfileEdit();
   String get PROFILE_EDIT_SUCCESS => 'EDIT_PROFILE_SUCCESS_LABEL';
   String get PROFILE_EDITED_SUCCESS_SUBTEXT => 'EDIT_PROFILE_SUCCESS_SUB_TEXT';
+  String get UNABLE_TO_UPDATE_DETAILS => 'UNABLE_TO_UPDATE_DETAILS'; /// unable to update the profile details
 }
 
 class _Validators {

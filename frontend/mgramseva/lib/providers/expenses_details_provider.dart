@@ -84,14 +84,13 @@ class ExpensesDetailsProvider with ChangeNotifier {
       if(ErrorHandler.handleApiException(context, e,s)) {
         Notifiers.getToastMessage(
             context,
-           e.message ?? '${ApplicationLocalizations.of(context).translate(
-                i18.expense.UNABLE_TO_CREATE_EXPENSE)}',
+           e.message ?? i18.expense.UNABLE_TO_CREATE_EXPENSE,
             'ERROR');
       }
     } catch (e, s) {
       Notifiers.getToastMessage(
           context,
-          '${ApplicationLocalizations.of(context).translate(i18.expense.UNABLE_TO_CREATE_EXPENSE)}',
+          i18.expense.UNABLE_TO_CREATE_EXPENSE,
           'ERROR');
       ErrorHandler.logError(e.toString(),s);
       Navigator.pop(context);

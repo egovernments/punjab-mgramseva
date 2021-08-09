@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/repository/user_profile_repo.dart';
+import 'package:mgramseva/utils/custom_exception.dart';
+import 'package:mgramseva/utils/error_logging.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 
 class UserProfileProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -14,15 +17,17 @@ class UserProfileProvider with ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> getUserProfileDetails(body) async {
+  Future<void> getUserProfileDetails(body, BuildContext context) async {
     try {
       var userResponse = await UserProfileRepository().getProfile(body);
       if (userResponse != null) {
         streamController.add(userResponse.user?.first);
       }
-    } catch (e) {
-      print("its an error");
-      print(e);
+    }on CustomException catch (e,s) {
+      ErrorHandler.handleApiException(context, e,s);
+      streamController.addError('error');
+    }catch (e,s) {
+      ErrorHandler.logError(e.toString(),s);
       streamController.addError('error');
     }
   }

@@ -37,11 +37,7 @@ class _EditProfileState extends State<EditProfile> {
     Provider.of<UserProfileProvider>(context, listen: false)
       ..formKey = GlobalKey<FormState>()
       ..autoValidation = false
-      ..getUserProfileDetails({
-        "tenantId": commonProvider.userDetails!.userRequest!.tenantId,
-        "id": [commonProvider.userDetails!.userRequest!.id],
-        "mobileNumber": commonProvider.userDetails!.userRequest!.mobileNumber
-      });
+      ..getUserProfileDetails(query, context);
   }
 
   saveInputandedit(context, profileDetails, User profile) async {
@@ -51,7 +47,7 @@ class _EditProfileState extends State<EditProfile> {
     if (userProvider.formKey.currentState!.validate()) {
       var editProfileProvider =
           Provider.of<UserEditProfileProvider>(context, listen: false);
-      editProfileProvider.editUserProfileDetails({"user": profile.toJson()});
+      editProfileProvider.editUserProfileDetails({"user": profile.toJson()}, context);
       Navigator.of(context).pushReplacement(
           new MaterialPageRoute(builder: (BuildContext context) {
         return CommonSuccess(SuccessHandler(
@@ -178,7 +174,7 @@ class _EditProfileState extends State<EditProfile> {
               if (snapshot.hasData) {
                 return _builduserView(snapshot.data);
               } else if (snapshot.hasError) {
-                return Notifiers.networkErrorPage(context, () {});
+                return Notifiers.networkErrorPage(context, () => userProvider.getUserProfileDetails(query, context));
               } else {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -193,5 +189,15 @@ class _EditProfileState extends State<EditProfile> {
       ),
       ),
     );
+  }
+
+  Map  get query {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+
+    return {
+    "tenantId": commonProvider.userDetails!.userRequest!.tenantId,
+    "id": [commonProvider.userDetails!.userRequest!.id],
+    "mobileNumber": commonProvider.userDetails!.userRequest!.mobileNumber
+  };
   }
 }

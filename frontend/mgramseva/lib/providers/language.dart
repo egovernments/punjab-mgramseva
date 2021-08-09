@@ -13,6 +13,8 @@ import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/custom_exception.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:universal_html/html.dart';
 
 class LanguageProvider with ChangeNotifier {
@@ -26,7 +28,7 @@ class LanguageProvider with ChangeNotifier {
   }
 
 
-  Future<void> getLocalizationData() async {
+  Future<void> getLocalizationData(BuildContext context) async {
 
     try {
       var localizationList = await CoreRepository().getMdms(initRequestBody({"tenantId":"pb"}));
@@ -37,8 +39,11 @@ class LanguageProvider with ChangeNotifier {
         await ApplicationLocalizations(Locale(selectedLanguage?.label ?? '', selectedLanguage?.value)).load();
       }
       streamController.add(localizationList.mdmsRes?.commonMasters?.stateInfo ?? <StateInfo>[]);
-    } catch(e){
-      print(e);
+    } on CustomException catch (e,s) {
+      ErrorHandler.handleApiException(context, e,s);
+      streamController.addError('error');
+    }catch (e,s) {
+      ErrorHandler.logError(e.toString(),s);
       streamController.addError('error');
     }
   }

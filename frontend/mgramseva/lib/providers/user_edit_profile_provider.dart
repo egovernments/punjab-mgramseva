@@ -3,6 +3,12 @@ import 'dart:async';
 import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/repository/user_edit_profile_repo.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/custom_exception.dart';
+import 'package:mgramseva/utils/error_logging.dart';
+import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class UserEditProfileProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -12,15 +18,32 @@ class UserEditProfileProvider with ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> editUserProfileDetails(body) async {
+  Future<void> editUserProfileDetails(body, BuildContext context) async {
     try {
+      Loaders.showLoadingDialog(context);
+
       var edituserResponse = await UserEditProfileRepository().editProfile(body);
+      Navigator.pop(context);
       if (edituserResponse != null) {
         streamController.add(edituserResponse);
       }
-    } catch (e) {
-      print(e);
-      streamController.addError('error');
+    } on CustomException catch (e,s) {
+      Navigator.pop(context);
+
+      if(ErrorHandler.handleApiException(context, e,s)) {
+        Notifiers.getToastMessage(
+            context,
+            e.message ??
+                i18.profileEdit.UNABLE_TO_UPDATE_DETAILS,
+            'ERROR');
+      }
+    } catch (e, s) {
+      Notifiers.getToastMessage(
+          context,
+          i18.profileEdit.UNABLE_TO_UPDATE_DETAILS,
+          'ERROR');
+      ErrorHandler.logError(e.toString(),s);
+      Navigator.pop(context);
     }
   }
 
