@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -198,7 +199,7 @@ public class MasterDataService {
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> enrichBillingPeriod(CalculationCriteria criteria, ArrayList<?> mdmsResponse,
-			Map<String, Object> masterMap) {
+			Map<String, Object> masterMap,boolean isconnectionCalculation) {
 		log.info("Billing Frequency Map {}", mdmsResponse.toString());
 		Map<String, Object> master = new HashMap<>();
 		for (Object o : mdmsResponse) {
@@ -208,18 +209,32 @@ public class MasterDataService {
 				break;
 			}
 		}
+		Long lastMeterReadingDate =criteria.getWaterConnection().getPreviousReadingDate();
 		Map<String, Object> billingPeriod = new HashMap<>();
 		if (master.get(WSCalculationConstant.ConnectionType).toString()
 				.equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
+			if(!isconnectionCalculation) {
+				
+				Calendar date = Calendar.getInstance();
+				date.setTimeInMillis(lastMeterReadingDate);
+				date.set(Calendar.DAY_OF_YEAR, 1);
+				criteria.setFrom(date.getTimeInMillis());
+				criteria.setTo(lastMeterReadingDate);
+			}
 			billingPeriod.put(WSCalculationConstant.STARTING_DATE_APPLICABLES, criteria.getFrom());
 			billingPeriod.put(WSCalculationConstant.ENDING_DATE_APPLICABLES, criteria.getTo());
+		
+			
 		} else {
+			if(!isconnectionCalculation) {
+				lastMeterReadingDate = null;
+			}
 			if (WSCalculationConstant.Monthly_Billing_Period
 					.equalsIgnoreCase(master.get(WSCalculationConstant.Billing_Cycle_String).toString())) {
-				estimationService.getMonthStartAndEndDate(billingPeriod);
+				estimationService.getMonthStartAndEndDate(billingPeriod,lastMeterReadingDate);
 			} else if (WSCalculationConstant.Quaterly_Billing_Period
 					.equalsIgnoreCase(master.get(WSCalculationConstant.Billing_Cycle_String).toString())) {
-				estimationService.getQuarterStartAndEndDate(billingPeriod);
+				estimationService.getQuarterStartAndEndDate(billingPeriod,lastMeterReadingDate);
 			} else {
 				LocalDateTime demandEndDate = LocalDateTime.now();
 				demandEndDate = setCurrentDateValueToStartingOfDay(demandEndDate);
@@ -425,5 +440,6 @@ public class MasterDataService {
 		}
 		return master;
 	}
+
 	
 }

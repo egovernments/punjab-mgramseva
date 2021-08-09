@@ -50,9 +50,14 @@ public class WaterConnectionValidator {
 		ValidatorResult isPropertyValidated = propertyValidator.validate(waterConnectionRequest, reqType);
 		if (!isPropertyValidated.isStatus())
 			errorMap.putAll(isPropertyValidated.getErrorMessage());
-		ValidatorResult isWaterFieldValidated = waterFieldValidator.validate(waterConnectionRequest, reqType);
-		if (!isWaterFieldValidated.isStatus())
-			errorMap.putAll(isWaterFieldValidated.getErrorMessage());
+		// GPWSC system does not this functionality
+//		ValidatorResult isWaterFieldValidated = waterFieldValidator.validate(waterConnectionRequest, reqType);
+//		if (!isWaterFieldValidated.isStatus())
+//			errorMap.putAll(isWaterFieldValidated.getErrorMessage());
+		Long previousMetereReading =waterConnectionRequest.getWaterConnection().getPreviousReadingDate() ;
+		if(previousMetereReading == null || previousMetereReading.intValue() <=0) {
+			errorMap.put("PREVIOUS_METER_READIN_INVALID","Previous Meter reading date cannot be null");
+		}
 		ValidatorResult isMeterInfoValidated = meterInfoValidator.validate(waterConnectionRequest, reqType);
 		if (!isMeterInfoValidated.isStatus())
 			errorMap.putAll(isMeterInfoValidated.getErrorMessage());
