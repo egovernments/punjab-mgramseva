@@ -61,18 +61,18 @@ class _SearchExpenseState extends State<SearchExpense> {
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              LabelText("${ApplicationLocalizations.of(context).translate(i18.expense.SEARCH_EXPENSE_BILL)}"),
+                              LabelText(i18.expense.SEARCH_EXPENSE_BILL),
                               SubLabelText(
-                                "${ApplicationLocalizations.of(context).translate(i18.expense.ENTER_VENDOR_BILL_EXPENSE)}",
+                                i18.expense.ENTER_VENDOR_BILL_EXPENSE,
                               ),
                               BuildTextField(
-                                '${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)}',
+                                i18.expense.VENDOR_NAME,
                                 vendorNameCtrl,
                               ),
                               Text('\n-(${ApplicationLocalizations.of(context).translate(i18.common.OR)})-', textAlign: TextAlign.center),
                               Consumer<ExpensesDetailsProvider>(
                                 builder : (_, expensesDetailsProvider, child) => SelectFieldBuilder(
-                                    '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)}',
+                                    i18.expense.EXPENSE_TYPE,
                                     expenseType,
                                     '',
                                     '',
@@ -87,9 +87,9 @@ class _SearchExpenseState extends State<SearchExpense> {
                                       children: [
                                         Text('\n-(${ApplicationLocalizations.of(context).translate(i18.common.OR)})-', textAlign: TextAlign.center),
                                         BuildTextField(
-                                          '${ApplicationLocalizations.of(context).translate(i18.common.BILL_ID)}',
+                                          i18.common.BILL_ID,
                                           billIdCtrl,
-                                          hint: '${ApplicationLocalizations.of(context).translate(i18.common.BILL_HINT)}',
+                                          hint: i18.common.BILL_HINT,
                                           textCapitalization: TextCapitalization.characters,
                                           inputFormatter: [
                                             FilteringTextInputFormatter.allow(
@@ -120,7 +120,7 @@ class _SearchExpenseState extends State<SearchExpense> {
                             ]))
                   ]),
             )),
-    bottomNavigationBar:   BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.SEARCH)}', onSubmit),
+    bottomNavigationBar:   BottomButtonBar(i18.common.SEARCH, onSubmit),
     );
   }
 
@@ -129,6 +129,8 @@ class _SearchExpenseState extends State<SearchExpense> {
     expenseType = val;
   });
   }
+
+
 
   void onSubmit() {
     FocusScope.of(context).nextFocus();
@@ -163,8 +165,7 @@ class _SearchExpenseState extends State<SearchExpense> {
           .searchExpense(query, criteria, context);
     }else{
       Notifiers.getToastMessage(context,
-          '${ApplicationLocalizations.of(context).translate(
-              i18.expense.NO_FIELDS_FILLED)}', 'ERROR');
+          i18.expense.NO_FIELDS_FILLED, 'ERROR');
     }
   }
 }
