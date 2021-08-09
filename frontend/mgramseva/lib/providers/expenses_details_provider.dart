@@ -6,6 +6,7 @@ import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/model/expensesDetails/vendor.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/expense_type.dart';
+import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
@@ -72,7 +73,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
           arguments: SuccessHandler(
               '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}',
               '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_AGAINST)} ${challanDetails['challanNo']} ${ApplicationLocalizations.of(context).translate(i18.expense.UNDER_MAINTAINANCE)} Rs. ${challanDetails['amount'][0]['amount']} ',
-              i18.common.BACK_HOME));
+              i18.common.BACK_HOME, Routes.EXPENSES_ADD));
     } on CustomException catch (e) {
       Navigator.pop(context);
       Notifiers.getToastMessage(

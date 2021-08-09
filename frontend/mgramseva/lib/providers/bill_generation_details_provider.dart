@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill_generation_details/bill_generation_details.dart';
+import 'package:mgramseva/model/success_handler.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -76,7 +78,7 @@ void onChangeOfBillCycle(val){
                 return CommonSuccess(SuccessHandler(
                     i18.demandGenerate.GENERATE_BILL_SUCCESS,
                     i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT,
-                    i18.common.BACK_HOME));
+                    i18.common.BACK_HOME, Routes.BILL_GENERATE));
               }));
         }
         else {
@@ -94,7 +96,7 @@ void onChangeOfBillCycle(val){
             return CommonSuccess(SuccessHandler(
                 i18.demandGenerate.GENERATE_BILL_SUCCESS,
                 i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT,
-                i18.common.BACK_HOME));
+                i18.common.BACK_HOME, Routes.BILL_GENERATE));
           }));
     }
     else {

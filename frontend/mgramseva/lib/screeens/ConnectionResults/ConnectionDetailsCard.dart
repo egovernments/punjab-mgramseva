@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/constants/consumersearchdetails.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
 
@@ -74,7 +75,7 @@ class SearchConnectionDetailCard extends StatelessWidget {
                             ShortButton(
                                 'View Household Details',
                                 () => Navigator.pushNamed(
-                                    context, 'household/details')),
+                                    context, Routes.HOUSEHOLD_DETAILS)),
                             SizedBox(
                               height: 20,
                             ),

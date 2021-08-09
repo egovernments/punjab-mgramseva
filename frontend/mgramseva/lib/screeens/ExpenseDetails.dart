@@ -30,6 +30,9 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class ExpenseDetails extends StatefulWidget {
+  final String? id;
+
+  const ExpenseDetails({Key? key, this.id}) : super(key: key);
   State<StatefulWidget> createState() {
     return _ExpenseDetailsState();
   }
