@@ -77,12 +77,12 @@ class ExpensesDetailsProvider with ChangeNotifier {
       Navigator.pop(context);
       Notifiers.getToastMessage(
           context,
-          '${ApplicationLocalizations.of(context).translate(i18.expense.UNABLE_TO_CREATE_EXPENSE)}',
+          i18.expense.UNABLE_TO_CREATE_EXPENSE,
           'ERROR');
     } catch (e) {
       Notifiers.getToastMessage(
           context,
-          '${ApplicationLocalizations.of(context).translate(i18.expense.UNABLE_TO_CREATE_EXPENSE)}',
+          i18.expense.UNABLE_TO_CREATE_EXPENSE,
           'ERROR');
       Navigator.pop(context);
     }
@@ -106,13 +106,11 @@ class ExpensesDetailsProvider with ChangeNotifier {
       }
     } on CustomException catch(e,s){
       Notifiers.getToastMessage(context,
-          '${ApplicationLocalizations.of(context).translate(
-              i18.expense.UNABLE_TO_SEARCH_EXPENSE)}', 'ERROR');
+              i18.expense.UNABLE_TO_SEARCH_EXPENSE, 'ERROR');
       Navigator.pop(context);
     }catch(e) {
       Notifiers.getToastMessage(context,
-          '${ApplicationLocalizations.of(context).translate(
-              i18.expense.UNABLE_TO_SEARCH_EXPENSE)}', 'ERROR');
+              i18.expense.UNABLE_TO_SEARCH_EXPENSE, 'ERROR');
       Navigator.pop(context);
     }
 
