@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
@@ -59,18 +61,18 @@ class _SearchExpenseState extends State<SearchExpense> {
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              LabelText("${ApplicationLocalizations.of(context).translate(i18.expense.SEARCH_EXPENSE_BILL)}"),
+                              LabelText(i18.expense.SEARCH_EXPENSE_BILL),
                               SubLabelText(
-                                "${ApplicationLocalizations.of(context).translate(i18.expense.ENTER_VENDOR_BILL_EXPENSE)}",
+                                i18.expense.ENTER_VENDOR_BILL_EXPENSE,
                               ),
                               BuildTextField(
-                                '${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)}',
+                                i18.expense.VENDOR_NAME,
                                 vendorNameCtrl,
                               ),
                               Text('\n-(${ApplicationLocalizations.of(context).translate(i18.common.OR)})-', textAlign: TextAlign.center),
                               Consumer<ExpensesDetailsProvider>(
                                 builder : (_, expensesDetailsProvider, child) => SelectFieldBuilder(
-                                    '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)}',
+                                    i18.expense.EXPENSE_TYPE,
                                     expenseType,
                                     '',
                                     '',
@@ -85,9 +87,14 @@ class _SearchExpenseState extends State<SearchExpense> {
                                       children: [
                                         Text('\n-(${ApplicationLocalizations.of(context).translate(i18.common.OR)})-', textAlign: TextAlign.center),
                                         BuildTextField(
-                                          '${ApplicationLocalizations.of(context).translate(i18.common.BILL_ID)}',
+                                          i18.common.BILL_ID,
                                           billIdCtrl,
-                                          hint: '${ApplicationLocalizations.of(context).translate(i18.common.BILL_HINT)}',
+                                          hint: i18.common.BILL_HINT,
+                                          textCapitalization: TextCapitalization.characters,
+                                          inputFormatter: [
+                                            FilteringTextInputFormatter.allow(
+                                                RegExp("[A-Z0-9-]"))
+                                          ],
                                         ),
                                       ])),
                                InkWell(
@@ -113,7 +120,7 @@ class _SearchExpenseState extends State<SearchExpense> {
                             ]))
                   ]),
             )),
-    bottomNavigationBar:   BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.SEARCH)}', onSubmit),
+    bottomNavigationBar:   BottomButtonBar(i18.common.SEARCH, onSubmit),
     );
   }
 
@@ -123,16 +130,42 @@ class _SearchExpenseState extends State<SearchExpense> {
   });
   }
 
+
+
   void onSubmit() {
+    FocusScope.of(context).nextFocus();
 
     if(vendorNameCtrl.text.trim().isNotEmpty || expenseType != null || billIdCtrl.text.trim().isNotEmpty) {
       var query = {
+        'tenantId' :  'pb',
+        'vendorName' : vendorNameCtrl.text.trim(),
+        'expenseType' : expenseType,
+        'challanNo' : billIdCtrl.text.trim()
       };
 
-      Provider.of<ExpensesDetailsProvider>(context, listen: false)
-          .searchExpense(query, context);
-    }else{
+      query.removeWhere((key, value) => value == null || value.trim().isEmpty);
 
+      var criteria = '';
+
+      query.forEach((key, value) {
+        switch(key){
+          case 'expenseType' :
+            criteria += '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)} $expenseType \t';
+            break;
+          case 'challanNo' :
+            criteria += '${ApplicationLocalizations.of(context).translate(i18.common.BILL_ID)} ${billIdCtrl.text}';
+            break;
+          case 'vendorName' :
+            criteria += '${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)} ${vendorNameCtrl.text} \t';
+            break;
+        }
+      });
+
+      Provider.of<ExpensesDetailsProvider>(context, listen: false)
+          .searchExpense(query, criteria, context);
+    }else{
+      Notifiers.getToastMessage(context,
+          i18.expense.NO_FIELDS_FILLED, 'ERROR');
     }
   }
 }

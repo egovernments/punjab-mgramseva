@@ -61,7 +61,7 @@ class Common {
   String get NO_FILE_UPLOADED => 'NO_FILE_UPLOADED';
 
   String get ELECTRICITY_HINT => 'ELECTRICITY_HINT'; /// Eg: Electricity
-  String get BILL_HINT => 'BILL_HINT'; /// Eg: EB-2021-22/08/21/0123
+  String get BILL_HINT => 'BILL_HINT'; /// Eg: EB-2021-22-0052
   String get SHOW_MORE => 'SHOW_MORE'; /// Show more
   String get SHOW_LESS => 'SHOW_LESS'; /// Show Less
   String get BILL_ID => 'BILL_ID'; /// Bill ID
@@ -70,6 +70,7 @@ class Common {
   String get AMOUNT => 'AMOUNT'; /// Amount
   String get STATUS => 'STATUS'; /// Status
   String get CONSUMERS_FOUND => 'CONSUMERS_FOUND'; /// consumer(s) Found
+  String get EXPENSES_FOUND => 'EXPENSES_FOUND'; /// Expense(s) Found
 
 }
 
@@ -110,6 +111,9 @@ class Expense {
   String get ENTER_VENDOR_BILL_EXPENSE => 'ENTER_VENDOR_BILL_EXPENSE'; /// Enter the Vendor Name or Expenditure type or Bill ID to get more details. Please enter only one
   String get UPDATE_EXPENDITURE => 'UPDATE_EXPENDITURE'; /// Update Expenditure
   String get FOLLOWING_EXPENDITURE_BILL_MATCH => 'FOLLOWING_EXPENDITURE_BILL_MATCH'; /// Following expenditure bills match search critera
+  String get NO_EXPENSES_FOUND => 'NO_EXPENSES_FOUND'; /// No Expenses found
+  String get UNABLE_TO_SEARCH_EXPENSE => 'UNABLE_TO_SEARCH_EXPENSE'; /// Unable to Search the Expenses
+  String get NO_FIELDS_FILLED => 'NO_FIELDS_FILLED'; /// No Field was filled
 
   /// Add Expense Record
 }
