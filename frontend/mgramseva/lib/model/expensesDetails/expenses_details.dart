@@ -34,6 +34,12 @@ class ExpensesDetailsModel {
   @JsonKey(name: "billIssuedDate")
   int? billIssuedDate;
 
+  @JsonKey(name: "billId")
+  String? billId;
+
+  @JsonKey(name: "status")
+  String? status;
+
   @JsonKey(name: "isBillPaid", defaultValue: false)
   bool? isBillPaid;
 

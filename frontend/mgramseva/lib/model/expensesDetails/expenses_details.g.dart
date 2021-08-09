@@ -19,6 +19,8 @@ ExpensesDetailsModel _$ExpensesDetailsModelFromJson(Map<String, dynamic> json) {
     ..billDate = json['billDate'] as int?
     ..paidDate = json['paidDate'] as int?
     ..billIssuedDate = json['billIssuedDate'] as int?
+    ..billId = json['billId'] as String?
+    ..status = json['status'] as String?
     ..isBillPaid = json['isBillPaid'] as bool? ?? false
     ..fileStoreId = json['filestoreid'] as String?;
 }
@@ -35,6 +37,8 @@ Map<String, dynamic> _$ExpensesDetailsModelToJson(
       'billDate': instance.billDate,
       'paidDate': instance.paidDate,
       'billIssuedDate': instance.billIssuedDate,
+      'billId': instance.billId,
+      'status': instance.status,
       'isBillPaid': instance.isBillPaid,
       'filestoreid': instance.fileStoreId,
     };
