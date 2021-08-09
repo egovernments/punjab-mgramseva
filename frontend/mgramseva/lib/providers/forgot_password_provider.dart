@@ -30,7 +30,7 @@ class ForgotPasswordProvider with ChangeNotifier {
 
       if (otpResponse != null) {
         Navigator.of(context)
-            .pushNamedAndRemoveUntil(Routes.RESET_PASSWORD, (route) => false);
+            .pushNamed(Routes.RESET_PASSWORD);
       } else {
         // Notifiers.getToastMessage('Error');
       }

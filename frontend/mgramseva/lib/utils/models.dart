@@ -22,16 +22,10 @@ class HomeItem {
 }
 
 
-class SuccessHandler {
-  final String header;
-  final String subtitle;
-  final String backButtonText;
-  SuccessHandler(this.header, this.subtitle, this.backButtonText);
-}
-
 class SearchResult {
  final String label;
  final List<dynamic> result;
 
   SearchResult(this.label, this.result);
 }
+
