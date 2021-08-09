@@ -29,7 +29,7 @@ class ExpenseResults extends StatelessWidget {
            crossAxisAlignment: CrossAxisAlignment.start,
            children: [
          // ignore: unnecessary_null_comparison
-         LabelText("${searchResult.result.length} ${ApplicationLocalizations.of(context).translate(i18.common.EXPENSES_FOUND)}"),
+         LabelText("${searchResult.result.length} ${i18.common.EXPENSES_FOUND}"),
          Padding(
            padding: const EdgeInsets.all(15.0),
            child: RichText(
@@ -58,34 +58,34 @@ class ExpenseResults extends StatelessWidget {
                            crossAxisAlignment: CrossAxisAlignment.start,
                            children: [
                              _getDetailtext(
-                                 "${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)}",
+                                 i18.expense.VENDOR_NAME,
                                  expense.vendorName,
                                  context),
                              _getDetailtext(
-                                 "${ApplicationLocalizations.of(context).translate(i18.common.BILL_ID)}",
+                                 i18.common.BILL_ID,
                                  expense.challanNo,
                                  context),
                              _getDetailtext(
-                                 "${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)}",
+                                 i18.expense.EXPENSE_TYPE,
                                  expense.expenseType,
                                  context),
                              _getDetailtext(
-                                 "${ApplicationLocalizations.of(context).translate(i18.common.AMOUNT)}",
+                                 i18.common.AMOUNT,
                                  expense.totalAmount,
                                  context),
                              _getDetailtext(
-                                 "${ApplicationLocalizations.of(context).translate(i18.expense.BILL_DATE)}",
+                                 i18.expense.BILL_DATE,
                                 DateFormats.timeStampToDate(expense.billDate!.toInt()),
                                  context),
                              _getDetailtext(
-                                 "${ApplicationLocalizations.of(context).translate(i18.common.STATUS)}",
+                                 i18.common.STATUS,
                                  expense.applicationStatus,
                                  context),
                              SizedBox(
                                height: 20,
                              ),
                              ShortButton(
-                                 '${ApplicationLocalizations.of(context).translate(i18.expense.UPDATE_EXPENDITURE)}',
+                                 i18.expense.UPDATE_EXPENDITURE,
                                      () => Navigator.pushNamed(
                                      context, Routes.HOUSEHOLD_DETAILS)),
                              SizedBox(
@@ -109,7 +109,7 @@ class ExpenseResults extends StatelessWidget {
         Container(
             padding: EdgeInsets.only(top: 16, bottom: 16),
             child: Text(
-              label,
+              '${ApplicationLocalizations.of(context).translate(label)}',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             )),
         Text('$value', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))
