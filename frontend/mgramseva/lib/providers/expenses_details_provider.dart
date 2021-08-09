@@ -39,10 +39,20 @@ class ExpensesDetailsProvider with ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> getExpensesDetails(BuildContext context) async {
+  Future<void> getExpensesDetails(BuildContext context, ExpensesDetailsModel? expensesDetails, String? id) async {
     try {
-      expenditureDetails.getText();
-      streamController.add(expenditureDetails);
+
+      if(expensesDetails != null){
+        expenditureDetails = expensesDetails;
+      }else if(id != null){
+        var expenditure = await ExpensesRepository().searchExpense({'challanNo' : id});
+        if(expenditure != null && expenditure.isNotEmpty){
+          expenditureDetails = expenditure!.first;
+        }
+      }
+
+      this.expenditureDetails.getText();
+      streamController.add(this.expenditureDetails);
     } on CustomException catch (e,s){
       ErrorHandler.handleApiException(context, e,s);
       streamController.addError('error');

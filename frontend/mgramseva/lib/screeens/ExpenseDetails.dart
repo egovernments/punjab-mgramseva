@@ -31,15 +31,15 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class ExpenseDetails extends StatefulWidget {
   final String? id;
+  final ExpensesDetailsModel? expensesDetails;
 
-  const ExpenseDetails({Key? key, this.id}) : super(key: key);
+  const ExpenseDetails({Key? key, this.id, this.expensesDetails}) : super(key: key);
   State<StatefulWidget> createState() {
     return _ExpenseDetailsState();
   }
 }
 
 class _ExpenseDetailsState extends State<ExpenseDetails> {
-  String _amountType = "FULL";
 
   @override
   void initState() {
@@ -53,7 +53,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
       ..suggestionsBoxController = SuggestionsBoxController()
       ..expenditureDetails = ExpensesDetailsModel()
       ..autoValidation = false
-      ..getExpensesDetails(context)
+      ..getExpensesDetails(context, widget.expensesDetails, widget.id)
       ..getExpenses()
       ..fetchVendors();
   }
@@ -78,7 +78,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                   if (snapshot.hasData) {
                     return _buildUserView(snapshot.data);
                   } else if (snapshot.hasError) {
-                    return Notifiers.networkErrorPage(context, () => expensesDetailsProvider.getExpensesDetails(context));
+                    return Notifiers.networkErrorPage(context, () => expensesDetailsProvider.getExpensesDetails(context, widget.expensesDetails, widget.id));
                   } else {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:

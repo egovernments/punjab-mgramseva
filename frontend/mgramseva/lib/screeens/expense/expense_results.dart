@@ -87,7 +87,7 @@ class ExpenseResults extends StatelessWidget {
                              ShortButton(
                                  i18.expense.UPDATE_EXPENDITURE,
                                      () => Navigator.pushNamed(
-                                     context, Routes.HOUSEHOLD_DETAILS)),
+                                     context, Routes.EXPENSE_UPDATE, arguments: expense)),
                              SizedBox(
                                height: 20,
                              ),

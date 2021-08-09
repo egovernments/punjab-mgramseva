@@ -7,6 +7,7 @@ import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +20,7 @@ class ExpensesRepository extends BaseService {
         listen: false);
 
     var res = await makeRequest(
-        url: Url.ADD_EXPENSES, body: body, method: RequestType.POST, requestInfo: RequestInfo('Rainmaker', .01, "", "create", "", "", "",
+        url: Url.ADD_EXPENSES, body: body, method: RequestType.POST, requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "create", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
         commonProvider.userDetails!.accessToken));
     return res;
   }
@@ -36,7 +37,7 @@ class ExpensesRepository extends BaseService {
      };
 
     var res = await makeRequest(
-        url: Url.VENDOR_SEARCH, body: body, queryParameters: query, method: RequestType.POST, requestInfo: RequestInfo('Rainmaker', .01, "", "create", "", "", "",
+        url: Url.VENDOR_SEARCH, body: body, queryParameters: query, method: RequestType.POST, requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "create", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
         commonProvider.userDetails!.accessToken, ));
 
     if (res != null && res['vendor'] != null) {
@@ -56,7 +57,7 @@ class ExpensesRepository extends BaseService {
     };
 
     var res = await makeRequest(
-        url: Url.EXPENSE_SEARCH, queryParameters: query, body: body, method: RequestType.POST, requestInfo: RequestInfo('Rainmaker', .01, "", "create", "", "", "",
+        url: Url.EXPENSE_SEARCH, queryParameters: query, body: body, method: RequestType.POST, requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "create",APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
       commonProvider.userDetails!.accessToken, ));
 
     if (res != null) {

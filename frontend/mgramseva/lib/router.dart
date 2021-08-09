@@ -101,7 +101,7 @@ class router {
       case Routes.EXPENSE_UPDATE:
          String? id;
         if(settings.arguments != null){
-          id = settings.arguments as String;
+          id = (settings.arguments as ExpensesDetailsModel).challanNo;
         }else{
           if(queryValidator(Routes.EXPENSE_UPDATE, query)){
             id = query['id'];
@@ -110,7 +110,7 @@ class router {
           }
         }
         return MaterialPageRoute(
-            builder: (_) => ExpenseDetails(id: id),
+            builder: (_) => ExpenseDetails(id: id, expensesDetails: settings.arguments as ExpensesDetailsModel),
             settings: RouteSettings(name: '${Routes.EXPENSE_UPDATE}?id=$id'));
       case Routes.HOUSEHOLD_DETAILS:
         return MaterialPageRoute(

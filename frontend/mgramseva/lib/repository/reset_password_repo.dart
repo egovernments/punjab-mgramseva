@@ -3,6 +3,7 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +13,7 @@ class ResetPasswordRepository extends BaseService {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    final requestInfo = RequestInfo('Rainmaker', .01, "", "create", 1, "", "",
+    final requestInfo = RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "create", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
         commonProvider.userDetails!.accessToken);
     late ResetPasswordDetails resetPasswordDetails;
     var res = await makeRequest(
