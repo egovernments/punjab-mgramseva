@@ -139,7 +139,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     isRequired: true),
                 BuildTextField(
                   '${ApplicationLocalizations.of(context).translate(i18.expense.AMOUNT)}',
-                  expenseDetails.expensesAmount.first.amountCtrl,
+                  expenseDetails.expensesAmount!.first.amountCtrl,
                   isRequired: true,
                   textInputType: TextInputType.number,
                   inputFormatter: [

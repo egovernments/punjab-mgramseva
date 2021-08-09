@@ -5,13 +5,14 @@ import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class ExpenseResults extends StatelessWidget {
-  final List<ExpensesDetailsModel> searchResult;
+  final SearchResult searchResult;
 
   const ExpenseResults({Key? key, required this.searchResult}) : super(key: key);
 
@@ -28,18 +29,18 @@ class ExpenseResults extends StatelessWidget {
            crossAxisAlignment: CrossAxisAlignment.start,
            children: [
          // ignore: unnecessary_null_comparison
-         LabelText("${searchResult.length} ${ApplicationLocalizations.of(context).translate(i18.common.CONSUMERS_FOUND)}"),
+         LabelText("${searchResult.result.length} ${i18.common.EXPENSES_FOUND}"),
          Padding(
            padding: const EdgeInsets.all(15.0),
            child: RichText(
                textAlign: TextAlign.left,
                text: TextSpan(
-             style: TextStyle(fontSize: 14),
+             style: TextStyle(fontSize: 14 , color: Color.fromRGBO(80, 90, 95, 1)),
              children: [
                TextSpan(text: '${ApplicationLocalizations.of(context).translate(i18.expense.FOLLOWING_EXPENDITURE_BILL_MATCH)}',
                ),
-               TextSpan(text: '${ApplicationLocalizations.of(context).translate(i18.common.PHONE_NUMBER)} +91 - 7731045306',
-                   style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)
+               TextSpan(text: '\t${searchResult.label}',
+                   style: TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic, height: 1.5)
                )
              ]
            )),
@@ -47,9 +48,9 @@ class ExpenseResults extends StatelessWidget {
          Expanded(
            child: ListView.builder(
                padding: const EdgeInsets.all(8),
-               itemCount: searchResult.length,
+               itemCount: searchResult.result.length,
                itemBuilder: (BuildContext context, int index) {
-                 var expense = searchResult[index];
+                 var expense = searchResult.result[index] as ExpensesDetailsModel;
                  return Card(
                      child: Padding(
                          padding: EdgeInsets.all(15),
@@ -57,34 +58,34 @@ class ExpenseResults extends StatelessWidget {
                            crossAxisAlignment: CrossAxisAlignment.start,
                            children: [
                              _getDetailtext(
-                                 "${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)}",
+                                 i18.expense.VENDOR_NAME,
                                  expense.vendorName,
                                  context),
                              _getDetailtext(
-                                 "${ApplicationLocalizations.of(context).translate(i18.common.BILL_ID)}",
-                                 expense.billId,
+                                 i18.common.BILL_ID,
+                                 expense.challanNo,
                                  context),
                              _getDetailtext(
-                                 "${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)}",
+                                 i18.expense.EXPENSE_TYPE,
                                  expense.expenseType,
                                  context),
                              _getDetailtext(
-                                 "${ApplicationLocalizations.of(context).translate(i18.common.AMOUNT)}",
-                                 expense.expensesAmount.first.amount,
+                                 i18.common.AMOUNT,
+                                 expense.totalAmount,
                                  context),
                              _getDetailtext(
-                                 "${ApplicationLocalizations.of(context).translate(i18.expense.BILL_DATE)}",
+                                 i18.expense.BILL_DATE,
                                 DateFormats.timeStampToDate(expense.billDate!.toInt()),
                                  context),
                              _getDetailtext(
-                                 "${ApplicationLocalizations.of(context).translate(i18.common.STATUS)}",
-                                 expense.status,
+                                 i18.common.STATUS,
+                                 expense.applicationStatus,
                                  context),
                              SizedBox(
                                height: 20,
                              ),
                              ShortButton(
-                                 '${ApplicationLocalizations.of(context).translate(i18.expense.UPDATE_EXPENDITURE)}',
+                                 i18.expense.UPDATE_EXPENDITURE,
                                      () => Navigator.pushNamed(
                                      context, Routes.HOUSEHOLD_DETAILS)),
                              SizedBox(
@@ -108,7 +109,7 @@ class ExpenseResults extends StatelessWidget {
         Container(
             padding: EdgeInsets.only(top: 16, bottom: 16),
             child: Text(
-              label,
+              '${ApplicationLocalizations.of(context).translate(label)}',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             )),
         Text('$value', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))

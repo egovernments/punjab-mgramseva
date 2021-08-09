@@ -20,3 +20,12 @@ class HomeItem {
 
   const HomeItem(this.label, this.iconData, this.link);
 }
+
+
+class SearchResult {
+ final String label;
+ final List<dynamic> result;
+
+  SearchResult(this.label, this.result);
+}
+

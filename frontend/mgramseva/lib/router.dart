@@ -157,7 +157,7 @@ class router {
               builder: (_) => SearchExpense(),
               settings: RouteSettings(name: Routes.EXPENSE_SEARCH));
         return MaterialPageRoute(
-            builder: (_) => ExpenseResults(searchResult: settings.arguments as List<ExpensesDetailsModel>),
+            builder: (_) => ExpenseResults(searchResult: settings.arguments as SearchResult),
             settings: RouteSettings(name: Routes.EXPENSE_RESULT));
 
         /// Redirecting routes
