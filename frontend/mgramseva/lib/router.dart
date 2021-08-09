@@ -132,7 +132,7 @@ class router {
         return MaterialPageRoute(
             builder: (_) => ConsumerDetails(),
             settings: RouteSettings(name: Routes.CONSUMER_CREATE));
-      case Routes.SUCCESS_VIEW: case '/home/editProfile/success' :
+      case Routes.SUCCESS_VIEW: case Routes.EDIT_PROFILE_SUCCESS :case Routes.CHANGE_PASSWORD_SUCCESS : case Routes.EXPENSES_ADD_SUCCESS :
         String routePath;
         SuccessHandler successHandler;
 
