@@ -15,6 +15,7 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -38,11 +39,28 @@ class ExpensesDetailsProvider with ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> getExpensesDetails() async {
+  Future<void> getExpensesDetails(BuildContext context, ExpensesDetailsModel? expensesDetails, String? id) async {
     try {
-      expenditureDetails.getText();
-      streamController.add(expenditureDetails);
-    } catch (e) {
+
+      if(expensesDetails != null){
+        expenditureDetails = expensesDetails;
+      }else if(id != null){
+        var expenditure = await ExpensesRepository().searchExpense({'challanNo' : id});
+        if(expenditure != null && expenditure.isNotEmpty){
+          expenditureDetails = expenditure!.first;
+        }else{
+          streamController.add(i18.expense.NO_EXPENSE_RECORD_FOUND);
+          return;
+        }
+      }
+
+      this.expenditureDetails.getText();
+      streamController.add(this.expenditureDetails);
+    } on CustomException catch (e,s){
+      ErrorHandler.handleApiException(context, e,s);
+      streamController.addError('error');
+    } catch (e, s) {
+      ErrorHandler.logError(e.toString(),s);
       streamController.addError('error');
     }
   }
@@ -74,17 +92,21 @@ class ExpensesDetailsProvider with ChangeNotifier {
               '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}',
               '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_AGAINST)} ${challanDetails['challanNo']} ${ApplicationLocalizations.of(context).translate(i18.expense.UNDER_MAINTAINANCE)} Rs. ${challanDetails['amount'][0]['amount']} ',
               i18.common.BACK_HOME, Routes.EXPENSES_ADD));
-    } on CustomException catch (e) {
+    } on CustomException catch (e,s) {
       Navigator.pop(context);
+
+      if(ErrorHandler.handleApiException(context, e,s)) {
+        Notifiers.getToastMessage(
+            context,
+           e.message,
+            'ERROR');
+      }
+    } catch (e, s) {
       Notifiers.getToastMessage(
           context,
-          i18.expense.UNABLE_TO_CREATE_EXPENSE,
+          e.toString(),
           'ERROR');
-    } catch (e) {
-      Notifiers.getToastMessage(
-          context,
-          i18.expense.UNABLE_TO_CREATE_EXPENSE,
-          'ERROR');
+      ErrorHandler.logError(e.toString(),s);
       Navigator.pop(context);
     }
   }
@@ -102,16 +124,15 @@ class ExpensesDetailsProvider with ChangeNotifier {
             arguments: SearchResult(criteria, res));
       } else {
         Notifiers.getToastMessage(context,
-            '${ApplicationLocalizations.of(context).translate(
-                i18.expense.NO_EXPENSES_FOUND)}', 'ERROR');
+            i18.expense.NO_EXPENSES_FOUND, 'ERROR');
       }
     } on CustomException catch(e,s){
       Notifiers.getToastMessage(context,
-              i18.expense.UNABLE_TO_SEARCH_EXPENSE, 'ERROR');
+              e.message, 'ERROR');
       Navigator.pop(context);
     }catch(e) {
       Notifiers.getToastMessage(context,
-              i18.expense.UNABLE_TO_SEARCH_EXPENSE, 'ERROR');
+              e.toString(), 'ERROR');
       Navigator.pop(context);
     }
 
@@ -144,7 +165,8 @@ class ExpensesDetailsProvider with ChangeNotifier {
         notifyListeners();
       }
       return vendorList;
-    } catch (e) {
+    } catch (e,s) {
+      ErrorHandler.logError(e.toString(),s);
       return <Vendor>[];
     }
   }
@@ -160,8 +182,8 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var res = await CoreRepository().getMdms(getExpenseMDMS('pb'));
       languageList = res;
       notifyListeners();
-    } catch (e) {
-      print(e);
+    } catch (e,s) {
+      ErrorHandler.logError(e.toString(),s);
     }
   }
 

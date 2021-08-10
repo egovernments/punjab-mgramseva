@@ -39,11 +39,7 @@ class _EditProfileState extends State<EditProfile> {
     Provider.of<UserProfileProvider>(context, listen: false)
       ..formKey = GlobalKey<FormState>()
       ..autoValidation = false
-      ..getUserProfileDetails({
-        "tenantId": commonProvider.userDetails!.userRequest!.tenantId,
-        "id": [commonProvider.userDetails!.userRequest!.id],
-        "mobileNumber": commonProvider.userDetails!.userRequest!.mobileNumber
-      });
+      ..getUserProfileDetails(query, context);
   }
 
   saveInputandedit(context, profileDetails, User profile) async {
@@ -165,27 +161,37 @@ class _EditProfileState extends State<EditProfile> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          alignment: Alignment.center,
-          child: StreamBuilder(
-              stream: userProvider.streamController.stream,
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  return _builduserView(snapshot.data);
-                } else if (snapshot.hasError) {
-                  return Notifiers.networkErrorPage(context, () {});
-                } else {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return Loaders.CircularLoader();
-                    case ConnectionState.active:
-                      return Loaders.CircularLoader();
-                    default:
-                      return Container();
-                  }
+        alignment: Alignment.center,
+        child: StreamBuilder(
+            stream: userProvider.streamController.stream,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return _builduserView(snapshot.data);
+              } else if (snapshot.hasError) {
+                return Notifiers.networkErrorPage(context, () => userProvider.getUserProfileDetails(query, context));
+              } else {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return Loaders.CircularLoader();
+                  case ConnectionState.active:
+                    return Loaders.CircularLoader();
+                  default:
+                    return Container();
                 }
-              }),
+              }
+              })
         ),
       ),
     );
+  }
+
+  Map  get query {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+
+    return {
+    "tenantId": commonProvider.userDetails!.userRequest!.tenantId,
+    "id": [commonProvider.userDetails!.userRequest!.id],
+    "mobileNumber": commonProvider.userDetails!.userRequest!.mobileNumber
+  };
   }
 }

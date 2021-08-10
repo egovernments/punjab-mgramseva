@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/repository/reset_password_repo.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/custom_exception.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 import 'common_provider.dart';
 
@@ -11,6 +16,7 @@ class ResetPasswordProvider with ChangeNotifier {
       String otp4, String newPassword) async {
     /// Unfocus the text field
     FocusScope.of(context).unfocus();
+    Loaders.showLoadingDialog(context);
 
     try {
       var commonProvider = Provider.of<CommonProvider>(
@@ -27,12 +33,21 @@ class ResetPasswordProvider with ChangeNotifier {
       var resetResponse = await ResetPasswordRepository().forgotPassword(body);
       Navigator.pop(context);
 
-      /*if(resetResponse != null){
+    } on CustomException catch (e,s) {
+      Navigator.pop(context);
 
-      }else{
-        Notifiers.getToastMessage('Error');
-      }*/
-    } catch (e) {
+      if(ErrorHandler.handleApiException(context, e,s)) {
+        Notifiers.getToastMessage(
+            context,
+            e.message,
+            'ERROR');
+      }
+    } catch (e, s) {
+      Notifiers.getToastMessage(
+          context,
+          e.toString(),
+          'ERROR');
+      ErrorHandler.logError(e.toString(),s);
       Navigator.pop(context);
     }
   }

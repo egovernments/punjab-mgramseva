@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:mgramseva/Env/app_config.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 
 class BaseService {
@@ -56,20 +58,27 @@ class BaseService {
         };
 
     http.Response response;
-    switch (method) {
-      case RequestType.GET:
-        response = await http.get(uri);
-        break;
-      case RequestType.PUT:
-        response = await http.put(uri, body: json.encode(body));
-        break;
-      case RequestType.POST:
-        response = await http.post(uri, headers: header, body: body);
-        break;
-      case RequestType.DELETE:
-        response = await http.delete(uri, body: json.encode(body));
+    try {
+      switch (method) {
+        case RequestType.GET:
+          response = await http.get(uri);
+          break;
+        case RequestType.PUT:
+          response = await http.put(uri, body: json.encode(body));
+          break;
+        case RequestType.POST:
+          response = await http.post(uri, headers: header, body: body);
+          break;
+        case RequestType.DELETE:
+          response = await http.delete(uri, body: json.encode(body));
+      }
+      return _response(response);
+    } on CustomException catch (e){
+        throw e;
+    }catch(e){
+      throw CustomException(
+          '', 502, ExceptionType.CONNECTIONISSUE);
     }
-    return _response(response);
   }
 }
 
@@ -77,11 +86,10 @@ dynamic _response(http.Response response) {
   var data = json.decode(utf8.decode(response.bodyBytes));
 
   var errorMessage =
-      data?['Errors']?[0]?['message'] ?? data?['Errors']?[0]?['description'];
+      data?['Errors']?[0]?['message'] ?? data?['Errors']?[0]?['description'] ?? data?['error_description'];
   switch (response.statusCode) {
     case 200:
       return data;
-      break;
     case 201:
       return data;
     case 400:
@@ -90,12 +98,18 @@ dynamic _response(http.Response response) {
       break;
     case 401:
     case 403:
+
+      if(currentRoute != Routes.LOGIN)
+        navigatorKey.currentState?.pushNamedAndRemoveUntil(Routes.LOGIN, (route) => false);
+
       throw CustomException(
           errorMessage, response.statusCode, ExceptionType.UNAUTHORIZED);
       break;
     case 500:
-    default:
       throw CustomException(
           errorMessage, response.statusCode, ExceptionType.INVALIDINPUT);
+    default :
+      throw CustomException(
+          errorMessage, response.statusCode, ExceptionType.OTHER);
   }
 }

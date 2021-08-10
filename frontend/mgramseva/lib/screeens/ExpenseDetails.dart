@@ -4,6 +4,7 @@ import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -29,14 +30,16 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class ExpenseDetails extends StatefulWidget {
   final String? id;
+  final ExpensesDetailsModel? expensesDetails;
 
-  const ExpenseDetails({Key? key, this.id}) : super(key: key);
+  const ExpenseDetails({Key? key, this.id, this.expensesDetails}) : super(key: key);
   State<StatefulWidget> createState() {
     return _ExpenseDetailsState();
   }
 }
 
 class _ExpenseDetailsState extends State<ExpenseDetails> {
+
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
@@ -49,7 +52,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
       ..suggestionsBoxController = SuggestionsBoxController()
       ..expenditureDetails = ExpensesDetailsModel()
       ..autoValidation = false
-      ..getExpensesDetails()
+      ..getExpensesDetails(context, widget.expensesDetails, widget.id)
       ..getExpenses()
       ..fetchVendors();
   }
@@ -68,9 +71,12 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                 stream: expensesDetailsProvider.streamController.stream,
                 builder: (context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData) {
+                    if(snapshot.data is String){
+                      return CommonWidgets.buildEmptyMessage(snapshot.data, context);
+                    }
                     return _buildUserView(snapshot.data);
                   } else if (snapshot.hasError) {
-                    return Notifiers.networkErrorPage(context, () {});
+                    return Notifiers.networkErrorPage(context, () => expensesDetailsProvider.getExpensesDetails(context, widget.expensesDetails, widget.id));
                   } else {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:

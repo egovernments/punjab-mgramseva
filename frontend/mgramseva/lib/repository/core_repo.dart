@@ -5,6 +5,8 @@ import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
+import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 
 class CoreRepository extends BaseService {
@@ -14,7 +16,7 @@ class CoreRepository extends BaseService {
     var res = await makeRequest(
         url: Url.LOCALIZATION,
         queryParameters: query,
-        requestInfo: RequestInfo('Rainmaker', 1, "", "_search", 1, "", "", ""),
+        requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "_search", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID, ""),
         method: RequestType.POST);
     if (res != null) {
       labelList = res['messages']
@@ -27,12 +29,7 @@ class CoreRepository extends BaseService {
   Future<LanguageList> getMdms(Map body) async {
     late LanguageList languageList;
     var res = await makeRequest(
-        url: Url.MDMS,
-        body: body,
-        method: RequestType.POST,
-        requestInfo:
-            RequestInfo('mgramseva-common', 1, "", "_search", 1, "", "", ""));
-
+        url: Url.MDMS, body: body, method: RequestType.POST, requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "_search", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID, ""));
     if (res != null) {
       languageList = LanguageList.fromJson(res);
     }

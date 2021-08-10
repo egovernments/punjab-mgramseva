@@ -5,6 +5,14 @@ import 'package:mgramseva/model/changePasswordDetails/changePassword_details.dar
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/changePassword_details_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/custom_exception.dart';
+import 'package:mgramseva/utils/error_logging.dart';
+import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/models.dart';
+import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -18,11 +26,10 @@ class ChangePasswordProvider with ChangeNotifier {
 
   Future<void> changePassword(body, BuildContext context) async {
     try {
-      Loaders.showLoadingDialog(navigatorKey.currentContext!);
+      Loaders.showLoadingDialog(context);
 
-      var changePasswordResponse =
-          await ChangePasswordRepository().updatePassword(body);
-      navigatorKey.currentState?.pop();
+      var changePasswordResponse = await ChangePasswordRepository().updatePassword(body);
+      Navigator.pop(context);
       if (changePasswordResponse != null) {
         Navigator.pushNamedAndRemoveUntil(
             context, Routes.SUCCESS_VIEW, (route) => false,
@@ -32,9 +39,21 @@ class ChangePasswordProvider with ChangeNotifier {
                 i18.common.BACK_HOME,
                 Routes.CHANGE_PASSWORD));
       }
-    } on CustomException catch (e) {
-      Notifiers.getToastMessage(context, e.message.toString(), 'ERROR');
-      navigatorKey.currentState?.pop();
+    } on CustomException catch (e,s) {
+      Navigator.pop(context);
+      if(ErrorHandler.handleApiException(context, e,s)) {
+        Notifiers.getToastMessage(
+            context,
+            e.message,
+            'ERROR');
+      }
+    } catch (e, s) {
+      Navigator.pop(context);
+      Notifiers.getToastMessage(
+          context,
+          e.toString(),
+          'ERROR');
+      ErrorHandler.logError(e.toString(),s);
     }
   }
 

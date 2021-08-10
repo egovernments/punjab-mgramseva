@@ -66,7 +66,8 @@ class DateFormats {
     }
   }
 
-  static String timeStampToDate(int timeInMillis, {String? format}) {
+  static String timeStampToDate(int? timeInMillis, {String? format}) {
+    if(timeInMillis == null) return '';
     try {
       var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
       return DateFormat(format ?? 'dd-MM-yyyy').format(date);

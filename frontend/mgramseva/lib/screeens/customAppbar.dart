@@ -31,7 +31,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
-
     super.initState();
   }
 

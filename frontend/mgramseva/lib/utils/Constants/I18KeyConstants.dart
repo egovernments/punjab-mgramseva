@@ -10,6 +10,7 @@ class i18 {
       const SearchWaterConnection();
   static ProfileEdit profileEdit = const ProfileEdit();
   static DemandGenerate demandGenerate = const DemandGenerate();
+  static _NetWorkException netWorkException = const _NetWorkException();
 }
 
 class Login {
@@ -19,6 +20,7 @@ class Login {
   String get LOGIN_PHONE_NO => 'LOGIN_PHONE_NO';
   String get LOGIN_PASSWORD => 'CORE_LOGIN_PASSWORD';
   String get FORGOT_PASSWORD => 'CORE_COMMON_FORGOT_PASSWORD';
+  String get INVALID_CREDENTIALS => 'INVALID_CREDENTIALS';
 }
 
 class Common {
@@ -103,6 +105,7 @@ class Password {
   String get CHANGE_PASSWORD_SUCCESS => 'CHANGE_PASSWORD_SUCCESS_LABEL';
   String get CHANGE_PASSWORD_SUCCESS_SUBTEXT =>
       'CHANGE_PASSWORD_SUCCESS_SUB_TEXT';
+
 }
 
 class Expense {
@@ -119,12 +122,12 @@ class Expense {
   String get EXPENDITURE_SUCESS => 'CORE_EXPENSE_EXPENDITURE_SUCESS';
   String get EXPENDITURE_AGAINST => 'CORE_EXPENSE_EXPENDITURE_AGAINST';
   String get UNDER_MAINTAINANCE => 'CORE_EXPENSE_UNDER_MAINTAINANCE';
-  String get UNABLE_TO_CREATE_EXPENSE => 'CORE_EXPENSE_UNABLE_TO_EXPENSE';
   String get PAYMENT_DATE => 'CORE_EXPENSE_PAYMENT_DATE';
   String get EXPENSE_DETAILS => 'CORE_EXPENSE_EXPENSE_DETAILS';
   String get PROVIDE_INFO_TO_CREATE_EXPENSE =>
       'CORE_EXPENSE_PROVIDE_INFO_TO_CREATE_EXPENSE';
   String get ADD_EXPENSES_RECORD => 'ADD_EXPENSES_RECORD';
+  String get NO_EXPENSE_RECORD_FOUND => 'NO_EXPENSE_RECORD_FOUND'; /// No Record were Found with this Challan No
   String get SEARCH_EXPENSE_BILL => 'SEARCH_EXPENSE_BILL';
 
   /// Search Expense Bills
@@ -145,10 +148,6 @@ class Expense {
 
   /// Unable to Search the Expenses
   String get NO_FIELDS_FILLED => 'NO_FIELDS_FILLED';
-
-  /// No Field was filled
-
-  /// Add Expense Record
 }
 
 class CreateConsumer {
@@ -235,4 +234,11 @@ class DemandGenerate {
       'NEW_METER_READING_INVALID_MSG'; //New Meter Reading is Invalid
   String get NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING =>
       'NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING'; //New Meter Reading should be greater than Old meter Reading
+}
+
+class _NetWorkException {
+  const _NetWorkException();
+
+  String get CHECK_CONNECTION => 'CHECK_CONNECTION'; /// Check your network connection
+
 }

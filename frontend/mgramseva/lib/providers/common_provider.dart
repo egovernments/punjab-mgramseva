@@ -114,7 +114,7 @@ class CommonProvider with ChangeNotifier {
       }
     } catch (e) {
       Notifiers.getToastMessage(
-          context, 'Unable to store the details', 'ERROR');
+          navigatorKey.currentState!.context, 'Unable to store the details', 'ERROR');
     }
   }
 

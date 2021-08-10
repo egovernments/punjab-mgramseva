@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -25,6 +27,7 @@ import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
 import 'package:mgramseva/theme.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -34,6 +37,19 @@ import 'package:url_strategy/url_strategy.dart';
 void main() {
   setPathUrlStrategy();
   setEnvironment(Environment.dev);
+
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.dumpErrorToConsole(details);
+      ErrorHandler.logError(details.exception.toString(), details.stack);
+      // exit(1); /// to close the app smoothly
+    };
+    runApp(MyApp());
+  }, (Object error, StackTrace stack) {
+    ErrorHandler.logError(error.toString(), stack);
+    // exit(1); /// to close the app smoothly
+  });
 
   runApp(new MyApp());
 }
@@ -75,6 +91,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => ResetPasswordProvider()),
           ChangeNotifierProvider(create: (_) => TenantsProvider()),
           ChangeNotifierProvider(create: (_) => BillGenerationProvider()),
+          ChangeNotifierProvider(create: (_) => TenantsProvider()),
           ChangeNotifierProvider(create: (_) => SearchConnectionProvider()),
         ],
         child: Consumer<LanguageProvider>(
