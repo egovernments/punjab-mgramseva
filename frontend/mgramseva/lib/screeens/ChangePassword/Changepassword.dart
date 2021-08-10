@@ -7,6 +7,7 @@ import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
+import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
@@ -14,7 +15,6 @@ import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
 
 class ChangePassword extends StatefulWidget {
-
   State<StatefulWidget> createState() {
     return _ChangePasswordState();
   }
@@ -27,7 +27,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   void initState() {
     var passwordProvider =
-    Provider.of<ChangePasswordProvider>(context, listen: false);
+        Provider.of<ChangePasswordProvider>(context, listen: false);
     passwordProvider.changePasswordDetails = ChangePasswordDetails();
     super.initState();
   }
@@ -42,9 +42,9 @@ class _ChangePasswordState extends State<ChangePassword> {
       context, passwordDetails, ChangePasswordDetails password) async {
     var changePasswordProvider =
         Provider.of<ChangePasswordProvider>(context, listen: false);
-    if(formKey.currentState!.validate()) {
-    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    var data = {
+    if (formKey.currentState!.validate()) {
+      var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+      var data = {
         "userName": commonProvider.userDetails!.userRequest!.userName,
         "existingPassword": password.existingPassword,
         "newPassword": password.newPassword,
@@ -53,8 +53,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       };
 
       changePasswordProvider.changePassword(data, context);
-    }
-    else{
+    } else {
       changePasswordProvider.autoValidation = true;
       changePasswordProvider.callNotifyer();
     }
@@ -62,7 +61,8 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   Widget builduserView(ChangePasswordDetails passwordDetails) {
     return Container(
-      child: Column(
+        child: FormWrapper(
+      Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -70,28 +70,40 @@ class _ChangePasswordState extends State<ChangePassword> {
           Consumer<ChangePasswordProvider>(
             builder: (_, changePasswordProvider, child) => Form(
               key: formKey,
-              autovalidateMode: changePasswordProvider.autoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
+              autovalidateMode: changePasswordProvider.autoValidation
+                  ? AutovalidateMode.always
+                  : AutovalidateMode.disabled,
               child: Card(
                   child: Column(
                 children: [
                   BuildTextField(
                     i18.password.CURRENT_PASSWORD,
                     passwordDetails.currentpasswordCtrl,
+                    obscureText: true,
                     isRequired: true,
+                    maxLines: 1,
                     onChange: (value) => saveInput(value),
                   ),
                   BuildTextField(
                     i18.password.NEW_PASSWORD,
                     passwordDetails.newpasswordCtrl,
+                    obscureText: true,
                     isRequired: true,
-                    validator: (val) => Validators.passwordComparision(val, 'Please enter New password'),
+                    maxLines: 1,
+                    validator: (val) => Validators.passwordComparision(
+                        val, 'Please enter New password'),
                     onChange: (value) => saveInput(value),
                   ),
                   BuildTextField(
                     i18.password.CONFIRM_PASSWORD,
                     passwordDetails.confirmpasswordCtrl,
+                    obscureText: true,
                     isRequired: true,
-                    validator: (val) => Validators.passwordComparision(val, 'Please enter Confirm password', passwordDetails.newpasswordCtrl.text),
+                    maxLines: 1,
+                    validator: (val) => Validators.passwordComparision(
+                        val,
+                        'Please enter Confirm password',
+                        passwordDetails.newpasswordCtrl.text),
                     onChange: (value) => saveInput(value),
                   ),
                   SizedBox(
@@ -107,7 +119,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           )
         ],
       ),
-    );
+    ));
   }
 
   @override
@@ -126,9 +138,10 @@ class _ChangePasswordState extends State<ChangePassword> {
         body: SingleChildScrollView(
             child: builduserView(changePasswordProvider.changePasswordDetails)),
         bottomNavigationBar: BottomButtonBar(
-        i18.password.CHANGE_PASSWORD,
+            i18.password.CHANGE_PASSWORD,
             () => saveInputandchangepass(
-            context, changePasswordProvider.changePasswordDetails.getText(), changePasswordProvider.changePasswordDetails))
-    );
+                context,
+                changePasswordProvider.changePasswordDetails.getText(),
+                changePasswordProvider.changePasswordDetails)));
   }
 }

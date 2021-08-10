@@ -11,6 +11,9 @@ class Url {
   static const String ADD_PROPERTY = 'property-services/property/_create';
   // Connection Create
   static const String ADD_WC_CONNECTION = 'ws-services/wc/_create';
+
+  // Connection Fetch
+  static const String FETCH_WC_CONNECTION = 'ws-services/wc/_search';
   static const String VENDOR_SEARCH = 'vendor/v1/_search';
   static const String EGOV_LOCATIONS =
       'egov-location/location/v11/boundarys/_search';

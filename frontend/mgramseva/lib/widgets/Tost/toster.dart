@@ -36,10 +36,10 @@ class ToastUtils {
         builder: ((context) => Positioned(
               bottom: 50.0,
               width: MediaQuery.of(context).size.width > 720
-                  ? MediaQuery.of(context).size.width / 3
+                  ? MediaQuery.of(context).size.width / 4
                   : MediaQuery.of(context).size.width,
               left: MediaQuery.of(context).size.width > 720
-                  ? MediaQuery.of(context).size.width / 3
+                  ? MediaQuery.of(context).size.width / 2.55
                   : 0,
               child: (Material(
                 elevation: 10.0,

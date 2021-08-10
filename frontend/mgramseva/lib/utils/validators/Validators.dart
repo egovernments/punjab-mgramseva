@@ -3,7 +3,6 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 
 class Validators {
-
   static validate(value, type) {
     print(type);
     if (type == 'Email') {
@@ -33,7 +32,7 @@ class Validators {
               ? 'Enter a valid Name'
               : null
           : 'Enter a valid Name';
-    }  else if (type == 'Password') {
+    } else if (type == 'Password') {
       return (value.length < 8) ? 'Please provide  8 characters' : null;
     } else if (type == 'Old Password' ||
         type == 'New Password' ||
@@ -52,13 +51,25 @@ class Validators {
     return null;
   }
 
-  static String? passwordComparision(String? val, String label, [String? val1]){
-    if(val!.trim().isEmpty){
+  static String? passwordComparision(String? val, String label,
+      [String? val1]) {
+    if (val!.trim().isEmpty) {
       return '$label';
-    }else if(!(RegExp(r'^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$').hasMatch(val))){
+    } else if (!(RegExp(
+            r'^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$')
+        .hasMatch(val))) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.INVALID_FORMAT)}';
-    }else if(val1 != null && val.trim() != val1.trim()){
+    } else if (val1 != null && val.trim() != val1.trim()) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.CONFIRM_RECONFIRM_SHOULD_SAME)}';
+    }
+    return null;
+  }
+
+  static String? meterNumberValidator(String? v) {
+    if (v!.trim().isEmpty) {
+      return 'Please enter Meter number';
+    } else if (!RegExp(r'^[0-9]+$').hasMatch(v)) {
+      return 'Please enter Numbers only';
     }
     return null;
   }

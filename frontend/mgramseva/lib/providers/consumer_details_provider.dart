@@ -6,39 +6,47 @@ import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/connection_type.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:provider/provider.dart';
+import 'package:mgramseva/model/connection/water_connection.dart' as addition;
 
 class ConsumerProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
   late GlobalKey<FormState> formKey;
   var autoValidation = false;
-  LanguageList? languageList;
-  var waterconnection = WaterConnection.fromJson({
-    "tenantId": "pb.lodhipur",
-    "action": "INITIATE",
-    "proposedTaps": "10",
-    "proposedPipeSize": 10,
-  });
+  late WaterConnection waterconnection;
   var boundaryList = <Boundary>[];
-  var property = Property.fromJson({
-    "landArea": "1",
-    "tenantId": "pb.lodhipur",
-    "usageCategory": "RESIDENTIAL",
-    "creationReason": "CREATE",
-    "noOfFloors": 1,
-    "source": "MUNICIPAL_RECORDS",
-    "channel": "CITIZEN",
-    "ownershipCategory": "INDIVIDUAL",
-    "owners": [
-      Owners.fromJson({"ownerType": "NONE"}).toJson()
-    ],
-    "address": Address().toJson()
-  });
+  late Property property;
+  LanguageList? languageList;
+  setModel() {
+    waterconnection = WaterConnection.fromJson({
+      "action": "INITIATE",
+      "proposedTaps": 10,
+      "proposedPipeSize": 10,
+      "additionalDetails": {"initialMeterReading": "0"}
+    });
+
+    property = Property.fromJson({
+      "landArea": "1",
+      "usageCategory": "RESIDENTIAL",
+      "creationReason": "CREATE",
+      "noOfFloors": 1,
+      "source": "MUNICIPAL_RECORDS",
+      "channel": "CITIZEN",
+      "ownershipCategory": "INDIVIDUAL",
+      "owners": [
+        Owners.fromJson({"ownerType": "NONE"}).toJson()
+      ],
+      "address": Address().toJson()
+    });
+  }
 
   dispose() {
     streamController.close();
@@ -55,28 +63,54 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   void validateExpensesDetails(context) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     if (formKey.currentState!.validate()) {
       property.owners!.first.setText();
       property.address.setText();
+      property.tenantId = commonProvider.userDetails!.selectedtenant!.code;
       property.address.city = 'lodhipur';
       waterconnection.setText();
       if (waterconnection.processInstance == null) {
         var processInstance = ProcessInstance();
         processInstance.action = 'INITIATE';
         waterconnection.processInstance = processInstance;
+        waterconnection.tenantId =
+            commonProvider.userDetails!.selectedtenant!.code;
+        waterconnection.connectionHolders = property.owners;
+        if (waterconnection.additionalDetails == null) {
+          waterconnection.additionalDetails =
+              addition.AdditionalDetails.fromJson({
+            "locality": property.address.locality!.code,
+            "initialMeterReading": 0,
+          });
+          print(waterconnection.additionalDetails!.locality);
+        } else {
+          print(waterconnection.additionalDetails!.locality);
+          waterconnection.additionalDetails!.locality =
+              property.address.locality!.code;
+
+          print(waterconnection.additionalDetails!.locality);
+        }
       }
 
       try {
+        print(waterconnection.toJson());
         Loaders.showLoadingDialog(context);
         var result1 = await ConsumerRepository().addProperty(property.toJson());
         // result.then((value) => {print(value['Properties'].first.propertyId)});
         waterconnection.propertyId = result1['Properties'].first!['propertyId'];
         var result2 =
             await ConsumerRepository().addconnection(waterconnection.toJson());
-        Navigator.pop(context);
         if (result2 != null) {
+          setModel();
+
+          streamController.add(property);
           Notifiers.getToastMessage(
               context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
+          property.address.city = "";
+          property.address.localityCtrl.text = "";
         }
       } catch (e) {
         Navigator.pop(context);
@@ -107,12 +141,15 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   Future<void> fetchBoundary() async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     boundaryList = [];
     try {
       var result = await ConsumerRepository().getLocations({
         "hierarchyTypeCode": "REVENUE",
         "boundaryType": "Locality",
-        "tenantId": "pb.lodhipur"
+        "tenantId": commonProvider.userDetails!.selectedtenant!.code
       });
       boundaryList.addAll(
           TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!);

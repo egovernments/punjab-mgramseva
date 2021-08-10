@@ -30,7 +30,7 @@ class Routes {
 
   static const String DASHBOARD = 'dashboard';
 
-  static const String SEARCH_CONSUMER = 'search/consumer';
+  static const String SEARCH_CONSUMER_RESULT = 'search/consumer';
 
   static const String BILL_GENERATE = 'bill/generate';
 

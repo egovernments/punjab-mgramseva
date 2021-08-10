@@ -40,6 +40,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
 
   afterViewBuild() {
     Provider.of<ConsumerProvider>(context, listen: false)
+      ..setModel()
       ..getConsumerDetails()
       ..fetchBoundary()
       ..autoValidation = false

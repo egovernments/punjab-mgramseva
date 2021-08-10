@@ -3,7 +3,7 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetails.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
-import 'package:mgramseva/screeens/SearchConnection.dart';
+import 'package:mgramseva/screeens/ConnectionResults/SearchConnection.dart';
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
 import 'package:mgramseva/main.dart';
 import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
@@ -21,6 +21,8 @@ import 'widgets/CommonSuccessPage.dart';
 
 class router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    print(settings.arguments);
+
     /// Here we'll handle all the routing
     currentRoute = settings.name;
     switch (settings.name) {
@@ -32,11 +34,10 @@ class router {
             settings: RouteSettings(name: Routes.LOGIN));
       case Routes.HOME:
         return MaterialPageRoute(
-            builder: (_) => Home(),
-            settings: RouteSettings(name: Routes.HOME));
+            builder: (_) => Home(), settings: RouteSettings(name: Routes.HOME));
       case Routes.HOUSEHOLD:
         return MaterialPageRoute(
-            builder: (_) => SearchConnection(),
+            builder: (_) => SearchConsumerConnection(),
             settings: RouteSettings(name: Routes.HOUSEHOLD));
       case Routes.EDIT_PROFILE:
         return MaterialPageRoute(
@@ -56,7 +57,7 @@ class router {
             settings: RouteSettings(name: Routes.RESET_PASSWORD));
       case Routes.CONSUMER_SEARCH:
         return MaterialPageRoute(
-            builder: (_) => SearchConnection(),
+            builder: (_) => SearchConsumerConnection(),
             settings: RouteSettings(name: Routes.CONSUMER_SEARCH));
       case Routes.EXPENSES_ADD:
         return MaterialPageRoute(
@@ -70,10 +71,10 @@ class router {
         return MaterialPageRoute(
             builder: (_) => Dashboard(),
             settings: RouteSettings(name: Routes.DASHBOARD));
-      case Routes.SEARCH_CONSUMER:
+      case Routes.SEARCH_CONSUMER_RESULT:
         return MaterialPageRoute(
             builder: (_) => SearchConsumerResult(),
-            settings: RouteSettings(name: Routes.SEARCH_CONSUMER));
+            settings: RouteSettings(name: Routes.SEARCH_CONSUMER_RESULT));
       case Routes.BILL_GENERATE:
         return MaterialPageRoute(
             builder: (_) => GenerateBill(),

@@ -14,7 +14,7 @@ class LanguageSelectionDesktopView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BackgroundContainer(Center(
         child: new Container(
-            height: 340,
+            height: 300,
             width: 500,
             padding: EdgeInsets.all(15),
             child: Card(
@@ -29,8 +29,8 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                           image: NetworkImage(
                             stateInfo.logoUrl!,
                           )),
-                      ListLabelText("|"),
-                      ListLabelText("STATE_LABEL")
+                      // ListLabelText("|"),
+                      // ListLabelText("STATE_LABEL")
                     ],
                   )),
               Padding(

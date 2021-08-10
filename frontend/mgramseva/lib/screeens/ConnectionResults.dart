@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mgramseva/model/connection/water_connections.dart';
+import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/ConnectionResults/ConnectionDetailsCard.dart';
+import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/common_methods.dart';
+import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
+import 'package:provider/provider.dart';
 
 import 'Home.dart';
 
@@ -21,22 +27,53 @@ class SearchConsumerResult extends StatefulWidget {
 }
 
 class _SearchConsumerResultState extends State<SearchConsumerResult> {
+  @override
+  void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    super.initState();
+  }
+
+  afterViewBuild() {
+    Provider.of<SearchConnectionProvider>(context, listen: false)..getresults();
+  }
+
+  buildconsumerView(WaterConnections waterconnsctions) {
+    print(waterconnsctions.waterConnection!.length);
+    return SearchConnectionDetailCard(waterconnsctions);
+  }
 
   @override
   Widget build(BuildContext context) {
+    var waterconnectionsProvider =
+        Provider.of<SearchConnectionProvider>(context, listen: false);
+
     return Scaffold(
-        appBar: BaseAppBar(
-          Text('mGramSeva'),
-          AppBar(),
-          <Widget>[Icon(Icons.more_vert)],
-        ),
+        appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),
         body: FormWrapper(Container(
             child: Column(children: [
           HomeBack(),
-          Expanded(child: SearchConnectionDetailCard()),
+          Expanded(
+              child: StreamBuilder(
+                  stream: waterconnectionsProvider.streamController.stream,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return buildconsumerView(snapshot.data);
+                    } else if (snapshot.hasError) {
+                      return Notifiers.networkErrorPage(context, () {});
+                    } else {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return Loaders.CircularLoader();
+                        case ConnectionState.active:
+                          return Loaders.CircularLoader();
+                        default:
+                          return Container();
+                      }
+                    }
+                  }))
         ]))));
   }
 }

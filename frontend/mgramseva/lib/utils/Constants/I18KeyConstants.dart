@@ -6,8 +6,10 @@ class i18 {
 
   static Expense expense = const Expense();
   static CreateConsumer consumer = const CreateConsumer();
-  static SearchConnection searchConnection = const SearchConnection();
+  static SearchWaterConnection searchWaterConnection =
+      const SearchWaterConnection();
   static ProfileEdit profileEdit = const ProfileEdit();
+  static DemandGenerate demandGenerate = const DemandGenerate();
 }
 
 class Login {
@@ -35,6 +37,10 @@ class Common {
   String get TRANSGENDER => 'CORE_COMMON_GENDER_TRANSGENDER';
   String get BACK_HOME => 'CORE_COMMON_BACK_HOME_BUTTON';
   String get MGRAM_SEVA => 'CORE_COMMON_MGRAM_SEVA_LABEL';
+  String get HOME => 'CORE_COMMON_HOME';
+  String get EDIT_PROFILE => 'CORE_COMMON_EDIT_PROFILE';
+  String get LANGUAGE => 'CORE_COMMON_LANGUAGE';
+  String get PROFILE_PASSWORD_SUCCESS_LABEL => 'PROFILE_PASSWORD_SUCCESS_LABEL';
 
   /// File Picker
   String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED';
@@ -110,13 +116,23 @@ class CreateConsumer {
   String get REGISTER_SUCCESS => 'CONSUMER_REGISTER_SUCCESS_LABEL';
 }
 
-class SearchConnection {
-  const SearchConnection();
+class SearchWaterConnection {
+  const SearchWaterConnection();
   String get OWNER_MOB_NUM => 'SEARCH_CONNECTION_OWNER_MOB_NUM';
   String get CONSUMER_NAME => 'SEARCH_CONNECTION_NAME_OF_CONSUMER';
   String get OLD_CONNECTION_ID => 'SEARCH_CONNECTION_OLD_CONNECTION_ID';
   String get NEW_CONNECTION_ID => 'SEARCH_CONNECTION_NEW_CONNECTION_ID';
-  String get SEARCH_BAR => 'SEARCH_CONNECTION_SEARCH';
+  String get SEARCH_CONNECTION_LABEL => 'SEARCH_CONNECTION_LABEL';
+  String get SEARCH_CONNECTION_BUTTON => 'SEARCH';
+  String get SEARCH_CONNECTION_SUBLABEL => 'SEARCH_CONNECTION_SUBLABEL';
+  String get HOUSE_DETAILS_VIEW => 'HOUSE_DETAILS_VIEW';
+  String get EDIT_HOUSE_DETAILS_VIEW => 'EDIT_HOUSE_DETAILS_VIEW';
+  String get HOUSE_ADDRESS => 'HOUSE_ADDRESS';
+  String get CONNECTION_TYPE => 'CONNECTION_TYPE';
+  String get PROPERTY_TYPE => 'PROPERTY_TYPE';
+  String get CONNECTION_FOUND => 'CONNECTION_FOUND';
+  String get CONNECTION_CRITERIA => 'CONNECTION_CRITERIA';
+  String get NO_CONNECTION_FOUND => 'NO_CONNECTION_FOUND';
 }
 
 class ProfileEdit {
@@ -141,4 +157,28 @@ class _Validators {
   String get CONFIRM_RECONFIRM_SHOULD_SAME =>
       'CONFIRM_RECONFIRM_SHOULD_SAME'; //New Password and Confirm password should be same
 
+}
+
+class DemandGenerate {
+  const DemandGenerate();
+  String get GENERATE_BILL_HEADER => 'GENERATE_CONSUMER_BILL_HEADER';
+  String get SERVICE_CATEGORY_LABEL => 'GENERATE_DEMAND_SERVICE_CATEGORY_LABEL';
+  String get PROPERTY_TYPE_LABEL => 'GENERATE_DEMAND_PROPERTY_TYPE_LABEL';
+  String get SERVICE_TYPE_LABEL => 'GENERATE_DEMAND_SERVICE_TYPE_LABEL';
+  String get METER_NUMBER_LABEL => 'GENERATE_DEMAND_METER_NUMBER_LABEL';
+  String get BILLING_YEAR_LABEL => 'GENERATE_DEMAND_BILLING_YEAR_LABEL';
+  String get BILLING_CYCLE_LABEL => 'GENERATE_DEMAND_BILLING_CYCLE_LABEL';
+  String get PREV_METER_READING_LABEL =>
+      'GENERATE_DEMAND_PREV_METER_READING_LABEL';
+  String get NEW_METER_READING_LABEL =>
+      'GENERATE_DEMAND_NEW_METER_READING_LABEL';
+  String get GENERATE_BILL_BUTTON => 'GENERATE_DEMAND_GEN_BILL_BUTTON';
+  String get GENERATE_BILL_SUCCESS => 'BILL_GENERATED_SUCCESSFULLY_LABEL';
+  String get GENERATE_BILL_SUCCESS_SUBTEXT => 'BILL_GENERATED_SUCCESS_SUBTEXT';
+  String get OLD_METER_READING_INVALID =>
+      'OLD_METER_READING_INVALID_MSG'; //Old Meter Reading is Invalid
+  String get NEW_METER_READING_INVALID =>
+      'NEW_METER_READING_INVALID_MSG'; //New Meter Reading is Invalid
+  String get NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING =>
+      'NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING'; //New Meter Reading should be greater than Old meter Reading
 }

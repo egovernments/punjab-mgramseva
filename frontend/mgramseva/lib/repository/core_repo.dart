@@ -14,7 +14,7 @@ class CoreRepository extends BaseService {
     var res = await makeRequest(
         url: Url.LOCALIZATION,
         queryParameters: query,
-        requestInfo: RequestInfo('Rainmaker', .01, "", "_search", 1, "", "", ""),
+        requestInfo: RequestInfo('Rainmaker', 1, "", "_search", 1, "", "", ""),
         method: RequestType.POST);
     if (res != null) {
       labelList = res['messages']
@@ -27,7 +27,11 @@ class CoreRepository extends BaseService {
   Future<LanguageList> getMdms(Map body) async {
     late LanguageList languageList;
     var res = await makeRequest(
-        url: Url.MDMS, body: body, method: RequestType.POST, requestInfo: RequestInfo('mgramseva-common', .01, "", "_search", 1, "", "", ""));
+        url: Url.MDMS,
+        body: body,
+        method: RequestType.POST,
+        requestInfo:
+            RequestInfo('mgramseva-common', 1, "", "_search", 1, "", "", ""));
 
     if (res != null) {
       languageList = LanguageList.fromJson(res);
