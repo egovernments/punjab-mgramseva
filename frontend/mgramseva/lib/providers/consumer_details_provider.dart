@@ -34,7 +34,7 @@ class ConsumerProvider with ChangeNotifier {
     });
 
     property = Property.fromJson({
-      "landArea": "1",
+      "landArea": 1,
       "usageCategory": "RESIDENTIAL",
       "creationReason": "CREATE",
       "noOfFloors": 1,
@@ -51,6 +51,12 @@ class ConsumerProvider with ChangeNotifier {
   dispose() {
     streamController.close();
     super.dispose();
+  }
+
+  Future<void> setWaterConnection(data) async {
+    waterconnection = data;
+    waterconnection.getText();
+    notifyListeners();
   }
 
   Future<void> getConsumerDetails() async {
@@ -70,7 +76,7 @@ class ConsumerProvider with ChangeNotifier {
       property.owners!.first.setText();
       property.address.setText();
       property.tenantId = commonProvider.userDetails!.selectedtenant!.code;
-      property.address.city = 'lodhipur';
+      property.address.city = commonProvider.userDetails!.selectedtenant!.name;
       waterconnection.setText();
       if (waterconnection.processInstance == null) {
         var processInstance = ProcessInstance();
@@ -85,27 +91,20 @@ class ConsumerProvider with ChangeNotifier {
             "locality": property.address.locality!.code,
             "initialMeterReading": 0,
           });
-          print(waterconnection.additionalDetails!.locality);
         } else {
-          print(waterconnection.additionalDetails!.locality);
           waterconnection.additionalDetails!.locality =
               property.address.locality!.code;
-
-          print(waterconnection.additionalDetails!.locality);
         }
       }
 
       try {
-        print(waterconnection.toJson());
         Loaders.showLoadingDialog(context);
         var result1 = await ConsumerRepository().addProperty(property.toJson());
-        // result.then((value) => {print(value['Properties'].first.propertyId)});
         waterconnection.propertyId = result1['Properties'].first!['propertyId'];
         var result2 =
             await ConsumerRepository().addconnection(waterconnection.toJson());
         if (result2 != null) {
           setModel();
-
           streamController.add(property);
           Notifiers.getToastMessage(
               context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
@@ -140,6 +139,21 @@ class ConsumerProvider with ChangeNotifier {
     }
   }
 
+  Future<Property?> getProperty(Map<String, dynamic> query) async {
+    try {
+      var res = await ConsumerRepository().getProperty(query);
+      property = new Property.fromJson(res['Properties'].first);
+      property.owners!.first.getText();
+      property.address.getText();
+      streamController.add(property);
+      property.address.localityCtrl = boundaryList.firstWhere(
+          (element) => element.code == property.address.locality!.code);
+      onChangeOflocaity(property.address.localityCtrl);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> fetchBoundary() async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
@@ -168,14 +182,13 @@ class ConsumerProvider with ChangeNotifier {
 
   onChangeOfPropertyType(val) {
     property.propertyType = val;
-    // property.address.locality?.code = val.code;
-    // property.address.locality?.area = val.area;
     notifyListeners();
   }
 
   List<DropdownMenuItem<Object>> getBoundaryList() {
     if (boundaryList.length > 0) {
       return (boundaryList).map((value) {
+        print(value);
         return DropdownMenuItem(
           value: value,
           child: new Text(value.name!),

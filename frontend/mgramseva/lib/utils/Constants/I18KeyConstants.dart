@@ -105,7 +105,6 @@ class Password {
   String get CHANGE_PASSWORD_SUCCESS => 'CHANGE_PASSWORD_SUCCESS_LABEL';
   String get CHANGE_PASSWORD_SUCCESS_SUBTEXT =>
       'CHANGE_PASSWORD_SUCCESS_SUB_TEXT';
-
 }
 
 class Expense {
@@ -127,7 +126,9 @@ class Expense {
   String get PROVIDE_INFO_TO_CREATE_EXPENSE =>
       'CORE_EXPENSE_PROVIDE_INFO_TO_CREATE_EXPENSE';
   String get ADD_EXPENSES_RECORD => 'ADD_EXPENSES_RECORD';
-  String get NO_EXPENSE_RECORD_FOUND => 'NO_EXPENSE_RECORD_FOUND'; /// No Record were Found with this Challan No
+  String get NO_EXPENSE_RECORD_FOUND => 'NO_EXPENSE_RECORD_FOUND';
+
+  /// No Record were Found with this Challan No
   String get SEARCH_EXPENSE_BILL => 'SEARCH_EXPENSE_BILL';
 
   /// Search Expense Bills
@@ -161,6 +162,8 @@ class CreateConsumer {
   String get PROPERTY_TYPE => 'CONSUMER_PROPERTY_TYPE';
   String get CONSUMER_DETAILS_LABEL => 'CONSUMER_DETAILS_LABEL';
   String get CONSUMER_DETAILS_SUB_LABEL => 'CONSUMER_DETAILS_SUB_LABEL';
+  String get CONSUMER_EDIT_DETAILS_LABEL => 'CONSUMER_EDIT_DETAILS_LABEL';
+  String get CONSUMER_EDIT_DETAILS_SUB_LABEL => 'CONSUMER_DETAILS_SUB_LABEL';
   String get GP_NAME => 'CONSUMER_GP_NAME';
   String get ARREARS => 'CONSUMER_ARREARS';
   String get SERVICE_TYPE => 'CONSUMER_SERVICE_TYPE';
@@ -239,6 +242,8 @@ class DemandGenerate {
 class _NetWorkException {
   const _NetWorkException();
 
-  String get CHECK_CONNECTION => 'CHECK_CONNECTION'; /// Check your network connection
+  String get CHECK_CONNECTION => 'CHECK_CONNECTION';
+
+  /// Check your network connection
 
 }

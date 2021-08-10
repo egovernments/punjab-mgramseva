@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/model/connection/property.dart';
+import 'package:mgramseva/model/connection/water_connection.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
@@ -22,6 +25,11 @@ import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
 class ConsumerDetails extends StatefulWidget {
+  final String? id;
+  final WaterConnection? waterconnection;
+
+  const ConsumerDetails({Key? key, this.id, this.waterconnection})
+      : super(key: key);
   State<StatefulWidget> createState() {
     return _ConsumerDetailsState();
   }
@@ -34,7 +42,28 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    if (widget.waterconnection != null) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        var commonProvider = Provider.of<CommonProvider>(
+            navigatorKey.currentContext!,
+            listen: false);
+        Provider.of<ConsumerProvider>(context, listen: false)
+          ..setModel()
+          ..setWaterConnection(widget.waterconnection)
+          ..getProperty({
+            "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+            "propertyIds": widget.waterconnection!.propertyId
+          })
+          ..fetchBoundary()
+          ..autoValidation = false
+          ..formKey = GlobalKey<FormState>()
+          ..getPropertyTypeandConnectionType();
+      });
+    } else if (widget.id != null) {
+    } else {
+      WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    }
+
     super.initState();
   }
 

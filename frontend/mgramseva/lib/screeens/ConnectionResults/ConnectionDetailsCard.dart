@@ -131,9 +131,9 @@ class SearchConnectionDetailCard extends StatelessWidget {
                             ShortButton(
                                 i18.searchWaterConnection.HOUSE_DETAILS_EDIT,
                                 () => Navigator.pushNamed(
-                                      context,
-                                      Routes.CONSUMER_CREATE,
-                                    )),
+                                    context, Routes.CONSUMER_UPDATE,
+                                    arguments: waterconnections
+                                        .waterConnection![index])),
                             SizedBox(
                               height: 20,
                             ),

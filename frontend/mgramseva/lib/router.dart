@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
@@ -90,24 +91,52 @@ class router {
         return MaterialPageRoute(
             builder: (_) => SearchConsumerConnection(),
             settings: RouteSettings(name: Routes.CONSUMER_SEARCH));
+
+      /// Consumer Update
+      case Routes.CONSUMER_UPDATE:
+        String? id;
+        if (settings.arguments != null) {
+          id = (settings.arguments as WaterConnection).applicationNo;
+        } else {
+          if (queryValidator(Routes.CONSUMER_UPDATE, query)) {
+            id = query['applicationNo'];
+          } else {
+            return pageNotAvailable;
+          }
+        }
+        return MaterialPageRoute(
+            builder: (_) => ConsumerDetails(
+                id: id,
+                waterconnection: settings.arguments != null
+                    ? settings.arguments as WaterConnection
+                    : null),
+            settings: RouteSettings(
+                name: '${Routes.CONSUMER_UPDATE}?applicationNo=$id'));
+
       case Routes.EXPENSES_ADD:
         return MaterialPageRoute(
             builder: (_) => ExpenseDetails(),
             settings: RouteSettings(name: Routes.EXPENSES_ADD));
       case Routes.EXPENSE_UPDATE:
-         String? id;
-        if(settings.arguments != null){
+        String? id;
+        if (settings.arguments != null) {
           id = (settings.arguments as ExpensesDetailsModel).challanNo;
-        }else{
-          if(queryValidator(Routes.EXPENSE_UPDATE, query)){
+        } else {
+          if (queryValidator(Routes.EXPENSE_UPDATE, query)) {
             id = query['challanNo'];
-          }else{
+          } else {
             return pageNotAvailable;
           }
         }
         return MaterialPageRoute(
-            builder: (_) => ExpenseDetails(id: id, expensesDetails: settings.arguments != null ? settings.arguments as ExpensesDetailsModel : null),
-            settings: RouteSettings(name: '${Routes.EXPENSE_UPDATE}?challanNo=$id'));
+            builder: (_) => ExpenseDetails(
+                id: id,
+                expensesDetails: settings.arguments != null
+                    ? settings.arguments as ExpensesDetailsModel
+                    : null),
+            settings:
+                RouteSettings(name: '${Routes.EXPENSE_UPDATE}?challanNo=$id'));
+
       case Routes.HOUSEHOLD_DETAILS:
         return MaterialPageRoute(
             builder: (_) => HouseholdDetail(),
@@ -184,13 +213,12 @@ class router {
     }
   }
 
+  static bool queryValidator(String route, Map? query) {
+    if (query == null) return false;
 
-  static bool queryValidator(String route, Map? query){
-    if(query == null) return false;
-
-    switch(route){
-      case Routes.EXPENSE_UPDATE :
-        if(query.keys.contains('challanNo')) return true;
+    switch (route) {
+      case Routes.EXPENSE_UPDATE:
+        if (query.keys.contains('challanNo')) return true;
         return false;
       default:
         return false;

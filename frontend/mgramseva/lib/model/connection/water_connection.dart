@@ -11,6 +11,8 @@ class WaterConnection {
   String? connectionNo;
   @JsonKey(name: "propertyId")
   String? propertyId;
+  @JsonKey(name: "applicationNo")
+  String? applicationNo;
   @JsonKey(name: "tenantId")
   String? tenantId;
   @JsonKey(name: "action")
@@ -59,6 +61,14 @@ class WaterConnection {
     arrears = int.parse(arrearsCtrl.text);
     previousReadingDate =
         DateFormats.dateToTimeStamp(previousReadingDateCtrl.text);
+  }
+
+  getText() {
+    OldConnectionCtrl.text = oldConnectionNo ?? "";
+    meterIdCtrl.text = meterId ?? "";
+    arrearsCtrl.text = arrears.toString() ?? "";
+    previousReadingDateCtrl.text =
+        DateFormats.timeStampToDate(previousReadingDate) ?? "";
   }
 
   WaterConnection();

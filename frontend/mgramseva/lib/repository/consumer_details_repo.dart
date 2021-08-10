@@ -16,7 +16,14 @@ class ConsumerRepository extends BaseService {
         url: Url.ADD_PROPERTY,
         body: {"Property": body},
         method: RequestType.POST,
-        requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
             commonProvider.userDetails!.accessToken));
     return res;
   }
@@ -30,7 +37,15 @@ class ConsumerRepository extends BaseService {
         queryParameters: body.map((key, value) =>
             MapEntry(key, value == null ? null : value.toString())),
         method: RequestType.POST,
-        requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "_create",APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID, commonProvider.userDetails!.accessToken));
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "_create",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
+            commonProvider.userDetails!.accessToken));
     return res;
   }
 
@@ -44,6 +59,29 @@ class ConsumerRepository extends BaseService {
         method: RequestType.POST,
         requestInfo: RequestInfo('mgramseva-common', 1, "", "_create", 1, "",
             "", commonProvider.userDetails!.accessToken));
+    return res;
+  }
+
+  Future getProperty(Map<String, dynamic> query) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    var body = {'userInfo': commonProvider.userDetails?.userRequest?.toJson()};
+
+    var res = await makeRequest(
+        url: Url.GET_PROPERTY,
+        body: body,
+        queryParameters: query,
+        method: RequestType.POST,
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "_search",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
+            commonProvider.userDetails!.accessToken));
     return res;
   }
 }

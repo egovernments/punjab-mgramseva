@@ -11,6 +11,9 @@ class Url {
 
   // Proprety Create
   static const String ADD_PROPERTY = 'property-services/property/_create';
+  //Property Fetch
+
+  static const String GET_PROPERTY = 'property-services/property/_search';
   // Connection Create
   static const String ADD_WC_CONNECTION = 'ws-services/wc/_create';
 

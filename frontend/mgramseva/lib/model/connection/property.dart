@@ -20,7 +20,7 @@ class Property {
   @JsonKey(name: "units")
   List<Units>? units;
   @JsonKey(name: "landArea")
-  String? landArea;
+  int? landArea;
   @JsonKey(name: "propertyType")
   String? propertyType;
   @JsonKey(name: "noOfFloors")
@@ -75,6 +75,11 @@ class Address {
   setText() {
     doorNo = doorNumberCtrl.text;
     street = streetNameOrNumberCtrl.text;
+  }
+
+  getText() {
+    doorNumberCtrl.text = doorNo ?? '';
+    streetNameOrNumberCtrl.text = street ?? '';
   }
 
   factory Address.fromJson(Map<String, dynamic> json) =>
@@ -139,7 +144,12 @@ class Owners {
     fatherOrHusbandName = fatherOrSpouseCtrl.text;
   }
 
-  getText() {}
+  getText() {
+    consumerNameCtrl.text = name ?? '';
+    phoneNumberCtrl.text = mobileNumber ?? '';
+    fatherOrSpouseCtrl.text = fatherOrHusbandName ?? '';
+  }
+
   factory Owners.fromJson(Map<String, dynamic> json) => _$OwnersFromJson(json);
   Map<String, dynamic> toJson() => _$OwnersToJson(this);
 }
