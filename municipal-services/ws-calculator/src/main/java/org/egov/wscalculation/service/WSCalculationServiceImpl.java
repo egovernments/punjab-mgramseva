@@ -15,6 +15,7 @@ import org.egov.mdms.model.MdmsCriteriaReq;
 import org.egov.tracer.model.CustomException;
 import org.egov.wscalculation.constants.WSCalculationConstant;
 import org.egov.wscalculation.web.models.AdhocTaxReq;
+import org.egov.wscalculation.web.models.BulkDemand;
 import org.egov.wscalculation.web.models.Calculation;
 import org.egov.wscalculation.web.models.CalculationCriteria;
 import org.egov.wscalculation.web.models.CalculationReq;
@@ -273,7 +274,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	/**
 	 * Generate Demand Based on Time (Monthly, Quarterly, Yearly)
 	 */
-	public void generateDemandBasedOnTimePeriod(RequestInfo requestInfo) {
+	public void generateDemandBasedOnTimePeriod(RequestInfo requestInfo, boolean manual) {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime date = LocalDateTime.now();
 		log.info("Time schedule start for water demand generation on : " + date.format(dateTimeFormatter));
@@ -286,6 +287,15 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		});
 	}
 	
+	public void generateBulkDemandForTenant(BulkDemand bulkDemand) {
+		String tenantId = bulkDemand.getTenantId();
+		if(tenantId != null && tenantId.split("\\.").length >1) {
+			demandService.generateBulkDemandForTenantId(bulkDemand);
+		}else {
+			throw new CustomException("INVALD_TENANT", "Cannot generate bulk dmeand for this tenant");
+		}
+		
+	}
 	/**
 	 * 
 	 * @param request - Calculation Request Object
@@ -339,6 +349,13 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 				.connectionNo(adhocTaxReq.getConsumerCode()).taxHeadEstimates(estimates).build();
 		List<Calculation> calculations = Collections.singletonList(calculation);
 		return demandService.updateDemandForAdhocTax(adhocTaxReq.getRequestInfo(), calculations);
+	}
+
+
+	@Override
+	public void generateDemandBasedOnTimePeriod(RequestInfo requestInfo) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

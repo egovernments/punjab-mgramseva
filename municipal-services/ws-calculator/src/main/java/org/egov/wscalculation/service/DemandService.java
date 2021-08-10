@@ -18,7 +18,9 @@ import org.egov.wscalculation.repository.ServiceRequestRepository;
 import org.egov.wscalculation.repository.WSCalculationDao;
 import org.egov.wscalculation.util.CalculatorUtil;
 import org.egov.wscalculation.util.WSCalculationUtil;
+import org.egov.wscalculation.validator.WSCalculationValidator;
 import org.egov.wscalculation.validator.WSCalculationWorkflowValidator;
+import org.egov.wscalculation.web.models.BulkDemand;
 import org.egov.wscalculation.web.models.Calculation;
 import org.egov.wscalculation.web.models.CalculationCriteria;
 import org.egov.wscalculation.web.models.CalculationReq;
@@ -89,6 +91,9 @@ public class DemandService {
 
     @Autowired
 	private WSCalculationWorkflowValidator wsCalulationWorkflowValidator;
+
+	@Autowired
+	private WSCalculationValidator wsCalculationValidator;
 
 	/**
 	 * Creates or updates Demand
@@ -649,6 +654,8 @@ public class DemandService {
 	}
 	
 	
+	
+	
 	/**
 	 * 
 	 * @param tenantId
@@ -662,6 +669,38 @@ public class DemandService {
 
 	/**
 	 * 
+	 * @param tenantId
+	 *            TenantId for getting master data.
+	 */
+	public void generateBulkDemandForTenantId(BulkDemand bulkDemand) {
+		RequestInfo requestInfo = bulkDemand.getRequestInfo();
+		String tenantId = bulkDemand.getTenantId();
+		requestInfo.getUserInfo().setTenantId(tenantId);
+		Map<String, Object> billingMasterData = calculatorUtils.loadBillingFrequencyMasterData(requestInfo, tenantId);
+		generateBulkDemandForULB(billingMasterData, bulkDemand);
+	}
+	
+	public void generateBulkDemandForULB(Map<String, Object> master,BulkDemand bulkDemand) {
+		log.info("Billing master data values for non metered connection:: {}", master);
+		wsCalculationValidator.validateBillingPeriod(bulkDemand.getBillingCycle());
+		List<String> connectionNos = waterCalculatorDao.getConnectionsNoList(bulkDemand.getTenantId(),
+				WSCalculationConstant.nonMeterdConnection);
+		String assessmentYear = estimationService.getAssessmentYear();
+		for (String connectionNo : connectionNos) {
+			CalculationCriteria calculationCriteria = CalculationCriteria.builder().tenantId(bulkDemand.getTenantId())
+					.assessmentYear(assessmentYear).connectionNo(connectionNo).build();
+			List<CalculationCriteria> calculationCriteriaList = new ArrayList<>();
+			calculationCriteriaList.add(calculationCriteria);
+			CalculationReq calculationReq = CalculationReq.builder().calculationCriteria(calculationCriteriaList)
+					.requestInfo(bulkDemand.getRequestInfo()).isconnectionCalculation(true).build();
+			wsCalculationProducer.push(configs.getCreateDemand(), calculationReq);
+			// log.info("Prepared Statement" + calculationRes.toString());
+
+		}
+	}
+	
+	/**
+	 * 
 	 * @param master Master MDMS Data
 	 * @param requestInfo Request Info
 	 * @param tenantId Tenant Id
@@ -669,7 +708,7 @@ public class DemandService {
 	public void generateDemandForULB(Map<String, Object> master, RequestInfo requestInfo, String tenantId) {
 		log.info("Billing master data values for non metered connection:: {}", master);
 		long startDay = (((int) master.get(WSCalculationConstant.Demand_Generate_Date_String)) / 86400000);
-		if(isCurrentDateIsMatching((String) master.get(WSCalculationConstant.Billing_Cycle_String), startDay)) {
+		if(isCurrentDateIsMatching((String) master.get(WSCalculationConstant.Billing_Cycle_String), startDay) ) {
 			List<String> connectionNos = waterCalculatorDao.getConnectionsNoList(tenantId,
 					WSCalculationConstant.nonMeterdConnection);
 			String assessmentYear = estimationService.getAssessmentYear();

@@ -52,6 +52,10 @@ public class SearchCriteria {
 	@JsonProperty("mobileNumber")
 	private String mobileNumber;
 	
+
+	@JsonProperty("name")
+	private String name;
+	
 	@JsonProperty("propertyId")
 	private String propertyId;
 

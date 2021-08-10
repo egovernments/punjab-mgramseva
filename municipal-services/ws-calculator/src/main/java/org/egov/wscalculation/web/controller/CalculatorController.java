@@ -6,6 +6,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.egov.wscalculation.web.models.AdhocTaxReq;
+import org.egov.wscalculation.web.models.BulkDemand;
+import org.egov.wscalculation.web.models.BulkDemandResponse;
 import org.egov.wscalculation.web.models.Calculation;
 import org.egov.wscalculation.web.models.CalculationReq;
 import org.egov.wscalculation.web.models.CalculationRes;
@@ -79,6 +81,14 @@ public class CalculatorController {
 				.responseInfo(
 				responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true))
 				.build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	
+	@PostMapping("/_bulkDemand")
+	public ResponseEntity<BulkDemandResponse> bulkDemand(@Valid @RequestBody BulkDemand bulkDemand) {
+		wSCalculationService.generateBulkDemandForTenant(bulkDemand);
+		BulkDemandResponse response = BulkDemandResponse.builder().message("Bulk demand generation process stated, you will be notified shortly!")
+				.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(bulkDemand.getRequestInfo(), true)).build();
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
