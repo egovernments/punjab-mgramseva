@@ -7,6 +7,8 @@ part 'water_connection.g.dart';
 
 @JsonSerializable()
 class WaterConnection {
+  @JsonKey(name: "connectionNo")
+  String? connectionNo;
   @JsonKey(name: "propertyId")
   String? propertyId;
   @JsonKey(name: "tenantId")
@@ -16,7 +18,7 @@ class WaterConnection {
   @JsonKey(name: "documents")
   Documents? documents;
   @JsonKey(name: "proposedTaps")
-  String? proposedTaps;
+  int? proposedTaps;
   @JsonKey(name: "arrears")
   int? arrears;
   @JsonKey(name: "connectionType")
@@ -28,9 +30,14 @@ class WaterConnection {
   @JsonKey(name: "previousReadingDate")
   int? previousReadingDate;
   @JsonKey(name: "proposedPipeSize")
-  int? proposedPipeSize;
+  double? proposedPipeSize;
+
+  @JsonKey(name: "connectionHolders")
+  List<Owners>? connectionHolders = [Owners()];
+
   @JsonKey(name: "additionalDetails")
   AdditionalDetails? additionalDetails;
+
   @JsonKey(name: "processInstance")
   ProcessInstance? processInstance;
 
@@ -76,6 +83,9 @@ class ProcessInstance {
 class AdditionalDetails {
   @JsonKey(name: "initialMeterReading")
   String? initialMeterReading;
+
+  @JsonKey(name: "locality")
+  String? locality;
   @JsonKey(ignore: true)
   var initialMeterReadingCtrl = TextEditingController();
   String? action;

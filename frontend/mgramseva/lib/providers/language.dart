@@ -1,12 +1,9 @@
-
-
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
-import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/services/LocalStorage.dart';
 import 'package:mgramseva/services/MDMS.dart';
@@ -18,11 +15,10 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:universal_html/html.dart';
 
 class LanguageProvider with ChangeNotifier {
-
   var streamController = StreamController.broadcast();
   StateInfo? stateInfo;
 
-  dispose(){
+  dispose() {
     streamController.close();
     super.dispose();
   }
@@ -33,10 +29,12 @@ class LanguageProvider with ChangeNotifier {
     try {
       var localizationList = await CoreRepository().getMdms(initRequestBody({"tenantId":"pb"}));
       stateInfo = localizationList.mdmsRes?.commonMasters?.stateInfo?.first;
-      if(stateInfo != null){
+      if (stateInfo != null) {
         stateInfo?.languages?.first.isSelected = true;
         setSelectedState(stateInfo!);
-        await ApplicationLocalizations(Locale(selectedLanguage?.label ?? '', selectedLanguage?.value)).load();
+        await ApplicationLocalizations(
+                Locale(selectedLanguage?.label ?? '', selectedLanguage?.value))
+            .load();
       }
       streamController.add(localizationList.mdmsRes?.commonMasters?.stateInfo ?? <StateInfo>[]);
     } on CustomException catch (e,s) {
@@ -44,29 +42,32 @@ class LanguageProvider with ChangeNotifier {
       streamController.addError('error');
     }catch (e,s) {
       ErrorHandler.logError(e.toString(),s);
-      streamController.addError('error');
+      streamController.add('error');
     }
   }
 
-  void onSelectionOfLanguage(Languages language, List<Languages> languages) async {
-    if(language.isSelected) return;
+  void onSelectionOfLanguage(
+      Languages language, List<Languages> languages) async {
+    if (language.isSelected) return;
     languages.forEach((element) => element.isSelected = false);
     language.isSelected = true;
     setSelectedState(stateInfo!);
-    await ApplicationLocalizations(Locale(selectedLanguage?.label ?? '', selectedLanguage?.value)).load();
+    await ApplicationLocalizations(
+            Locale(selectedLanguage?.label ?? '', selectedLanguage?.value))
+        .load();
     notifyListeners();
   }
 
+  void setSelectedState(StateInfo stateInfo) {
+    if (kIsWeb) {
+      window.localStorage[Constants.STATES_KEY] =
+          jsonEncode(stateInfo.toJson());
+    } else {
+      storage.write(
+          key: Constants.STATES_KEY, value: jsonEncode(stateInfo.toJson()));
+    }
+  }
 
-   void setSelectedState(StateInfo stateInfo) {
-     if(kIsWeb){
-       window.localStorage[Constants.STATES_KEY] = jsonEncode(stateInfo.toJson());
-     }else{
-       storage.write(
-           key: Constants.STATES_KEY,
-           value: jsonEncode(stateInfo.toJson()));
-     }
-   }
-
-  Languages? get selectedLanguage => stateInfo?.languages?.firstWhere((element) => element.isSelected);
+  Languages? get selectedLanguage =>
+      stateInfo?.languages?.firstWhere((element) => element.isSelected);
 }

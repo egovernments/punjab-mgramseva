@@ -19,6 +19,7 @@ class TenantsProvider with ChangeNotifier {
       var userResponse = await TenantRepo().fetchTenants(getTenantsMDMS('pb'));
       print(userResponse);
       if (userResponse != null) {
+        tenants = userResponse;
         streamController.add(userResponse);
       }
     } catch (e) {

@@ -61,8 +61,8 @@ class AuthenticationProvider with ChangeNotifier {
       Notifiers.getToastMessage(context, e.toString(), 'ERROR');
     }
   }
-
   void callNotifyer() {
     notifyListeners();
   }
+
 }

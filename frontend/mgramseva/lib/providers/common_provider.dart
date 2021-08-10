@@ -5,10 +5,7 @@ import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/user/user_details.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/localization_label.dart';
-
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/LocalStorage.dart';
@@ -55,7 +52,8 @@ class CommonProvider with ChangeNotifier {
 
     try {
       var query = {
-        'module': 'mgramseva-common,mgramseva-consumer',
+        'module':
+            'mgramseva-common,mgramseva-consumer,mgramseva-expenses,mgramseva-water-connection',
         'locale': languageProvider.selectedLanguage?.value ?? '',
         'tenantId': 'pb'
       };
@@ -69,6 +67,35 @@ class CommonProvider with ChangeNotifier {
       print(e);
     }
     return labels;
+  }
+  setSelectedTenant(UserDetails? loginDetails) {
+    if (kIsWeb) {
+      window.localStorage[Constants.LOGIN_KEY] =
+          loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
+    } else {
+      storage.write(
+          key: Constants.LOGIN_KEY,
+          value:
+              loginDetails == null ? null : jsonEncode(loginDetails.toJson()));
+    }
+  }
+
+  setTenant(tenant) {
+    userDetails!.selectedtenant = tenant;
+    setSelectedState(userDetails!);
+    notifyListeners();
+  }
+
+  void setSelectedState(UserDetails? loginDetails) {
+    if (kIsWeb) {
+      window.localStorage[Constants.LOGIN_KEY] =
+          loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
+    } else {
+      storage.write(
+          key: Constants.LOGIN_KEY,
+          value:
+              loginDetails == null ? null : jsonEncode(loginDetails.toJson()));
+    }
   }
 
   setLocalizationLabels(List<LocalizationLabel> labels) async {
@@ -86,8 +113,8 @@ class CommonProvider with ChangeNotifier {
             value: jsonEncode(labels.map((e) => e.toJson()).toList()));
       }
     } catch (e) {
-      // Notifiers.getToastMessage(
-      //     context, 'Unable to store the details', 'ERROR');
+      Notifiers.getToastMessage(
+          navigatorKey.currentState!.context, 'Unable to store the details', 'ERROR');
     }
   }
 
@@ -102,6 +129,7 @@ class CommonProvider with ChangeNotifier {
           value:
               loginDetails == null ? null : jsonEncode(loginDetails.toJson()));
     }
+    notifyListeners();
   }
 
   Future<void> getLoginCredentails() async {
@@ -113,6 +141,7 @@ class CommonProvider with ChangeNotifier {
     try {
       if (kIsWeb) {
         loginResponse = window.localStorage[Constants.LOGIN_KEY];
+
         stateResponse = window.localStorage[Constants.STATES_KEY];
       } else {
         loginResponse = await storage.read(key: Constants.LOGIN_KEY);

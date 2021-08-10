@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/widgets/Tost/toster.dart';
 
 class Notifiers {
   static getToastMessage(BuildContext context, String message, type) {
-    ToastUtils.showCustomToast(context, message, type);
+    ToastUtils.showCustomToast(
+        context, ApplicationLocalizations.of(context).translate(message), type);
   }
 
   static Widget networkErrorPage(context, VoidCallback callBack) {
