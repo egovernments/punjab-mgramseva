@@ -36,15 +36,14 @@ class ChangePasswordProvider with ChangeNotifier {
       if(ErrorHandler.handleApiException(context, e,s)) {
         Notifiers.getToastMessage(
             context,
-            e.message ??
-                i18.profileEdit.UNABLE_TO_UPDATE_DETAILS,
+            e.message,
             'ERROR');
       }
     } catch (e, s) {
       Navigator.pop(context);
       Notifiers.getToastMessage(
           context,
-          i18.profileEdit.UNABLE_TO_UPDATE_DETAILS,
+          e.toString(),
           'ERROR');
       ErrorHandler.logError(e.toString(),s);
     }

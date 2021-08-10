@@ -20,7 +20,6 @@ class Login {
   String get LOGIN_PHONE_NO => 'LOGIN_PHONE_NO';
   String get LOGIN_PASSWORD => 'CORE_LOGIN_PASSWORD';
   String get FORGOT_PASSWORD => 'CORE_COMMON_FORGOT_PASSWORD';
-  String get UNABLE_TO_LOGIN => 'UNABLE_TO_LOGIN';
   String get INVALID_CREDENTIALS => 'INVALID_CREDENTIALS';
 }
 
@@ -83,7 +82,6 @@ class Password {
   String get CHANGE_PASSWORD_SUCCESS => 'CHANGE_PASSWORD_SUCCESS_LABEL';
   String get CHANGE_PASSWORD_SUCCESS_SUBTEXT =>
       'CHANGE_PASSWORD_SUCCESS_SUB_TEXT';
-  String get UNABLE_TO_RESET_THE_PASSWORD => 'UNABLE_TO_RESET_THE_PASSWORD'; /// unable to reset the password
 
 }
 
@@ -101,7 +99,6 @@ class Expense {
   String get EXPENDITURE_SUCESS => 'CORE_EXPENSE_EXPENDITURE_SUCESS';
   String get EXPENDITURE_AGAINST => 'CORE_EXPENSE_EXPENDITURE_AGAINST';
   String get UNDER_MAINTAINANCE => 'CORE_EXPENSE_UNDER_MAINTAINANCE';
-  String get UNABLE_TO_CREATE_EXPENSE => 'CORE_EXPENSE_UNABLE_TO_EXPENSE';
   String get PAYMENT_DATE => 'CORE_EXPENSE_PAYMENT_DATE';
   String get EXPENSE_DETAILS => 'CORE_EXPENSE_EXPENSE_DETAILS';
   String get PROVIDE_INFO_TO_CREATE_EXPENSE =>
@@ -112,7 +109,6 @@ class Expense {
   String get UPDATE_EXPENDITURE => 'UPDATE_EXPENDITURE'; /// Update Expenditure
   String get FOLLOWING_EXPENDITURE_BILL_MATCH => 'FOLLOWING_EXPENDITURE_BILL_MATCH'; /// Following expenditure bills match search critera
   String get NO_EXPENSES_FOUND => 'NO_EXPENSES_FOUND'; /// No Expenses found
-  String get UNABLE_TO_SEARCH_EXPENSE => 'UNABLE_TO_SEARCH_EXPENSE'; /// Unable to Search the Expenses
   String get NO_FIELDS_FILLED => 'NO_FIELDS_FILLED'; /// No Field was filled
   String get NO_EXPENSE_RECORD_FOUND => 'NO_EXPENSE_RECORD_FOUND'; /// No Record were Found with this Challan No
 
@@ -151,7 +147,6 @@ class ProfileEdit {
   const ProfileEdit();
   String get PROFILE_EDIT_SUCCESS => 'EDIT_PROFILE_SUCCESS_LABEL';
   String get PROFILE_EDITED_SUCCESS_SUBTEXT => 'EDIT_PROFILE_SUCCESS_SUB_TEXT';
-  String get UNABLE_TO_UPDATE_DETAILS => 'UNABLE_TO_UPDATE_DETAILS'; /// unable to update the profile details
 }
 
 class _Validators {

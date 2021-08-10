@@ -98,13 +98,13 @@ class ExpensesDetailsProvider with ChangeNotifier {
       if(ErrorHandler.handleApiException(context, e,s)) {
         Notifiers.getToastMessage(
             context,
-           e.message ?? i18.expense.UNABLE_TO_CREATE_EXPENSE,
+           e.message,
             'ERROR');
       }
     } catch (e, s) {
       Notifiers.getToastMessage(
           context,
-          i18.expense.UNABLE_TO_CREATE_EXPENSE,
+          e.toString(),
           'ERROR');
       ErrorHandler.logError(e.toString(),s);
       Navigator.pop(context);
@@ -128,11 +128,11 @@ class ExpensesDetailsProvider with ChangeNotifier {
       }
     } on CustomException catch(e,s){
       Notifiers.getToastMessage(context,
-              i18.expense.UNABLE_TO_SEARCH_EXPENSE, 'ERROR');
+              e.message, 'ERROR');
       Navigator.pop(context);
     }catch(e) {
       Notifiers.getToastMessage(context,
-              i18.expense.UNABLE_TO_SEARCH_EXPENSE, 'ERROR');
+              e.toString(), 'ERROR');
       Navigator.pop(context);
     }
 
