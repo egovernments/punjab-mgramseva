@@ -10,7 +10,8 @@ import 'package:mgramseva/widgets/SubLabel.dart';
 
 class SearchConnectionDetailCard extends StatelessWidget {
   final WaterConnections waterconnections;
-  SearchConnectionDetailCard(this.waterconnections);
+  final Map arguments;
+  SearchConnectionDetailCard(this.waterconnections, this.arguments);
   _getDetailtext(label, value, context, constraints) {
     return constraints.maxWidth > 720
         ? (Row(
@@ -68,7 +69,11 @@ class SearchConnectionDetailCard extends StatelessWidget {
                 ApplicationLocalizations.of(context)
                     .translate(i18.searchWaterConnection.CONNECTION_FOUND)),
         SubLabelText(ApplicationLocalizations.of(context)
-            .translate(i18.searchWaterConnection.CONNECTION_CRITERIA)),
+                .translate(i18.searchWaterConnection.CONNECTION_CRITERIA) +
+            " " +
+            arguments.keys.first.toString() +
+            " as " +
+            arguments.values.first.toString()),
         Expanded(
           child: ListView.builder(
               padding: const EdgeInsets.all(8),
@@ -124,10 +129,11 @@ class SearchConnectionDetailCard extends StatelessWidget {
                               height: 20,
                             ),
                             ShortButton(
-                                i18.searchWaterConnection
-                                    .EDIT_HOUSE_DETAILS_VIEW,
+                                i18.searchWaterConnection.HOUSE_DETAILS_EDIT,
                                 () => Navigator.pushNamed(
-                                    context, Routes.CONSUMER_CREATE)),
+                                      context,
+                                      Routes.CONSUMER_CREATE,
+                                    )),
                             SizedBox(
                               height: 20,
                             ),

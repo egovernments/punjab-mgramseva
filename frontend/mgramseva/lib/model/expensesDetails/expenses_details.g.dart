@@ -12,13 +12,17 @@ ExpensesDetailsModel _$ExpensesDetailsModelFromJson(Map<String, dynamic> json) {
     ..businessService = json['businessService'] as String?
     ..consumerType = json['consumerType'] as String?
     ..expenseType = json['typeOfExpense'] as String?
-    ..vendorName = json['vendor'] as String?
-    ..expensesAmount = (json['amount'] as List<dynamic>)
-        .map((e) => ExpensesAmount.fromJson(e as Map<String, dynamic>))
+    ..vendorId = json['vendor'] as String?
+    ..vendorName = json['vendorName'] as String?
+    ..expensesAmount = (json['amount'] as List<dynamic>?)
+        ?.map((e) => ExpensesAmount.fromJson(e as Map<String, dynamic>))
         .toList()
     ..billDate = json['billDate'] as int?
     ..paidDate = json['paidDate'] as int?
     ..billIssuedDate = json['billIssuedDate'] as int?
+    ..challanNo = json['challanNo'] as String?
+    ..applicationStatus = json['applicationStatus'] as String?
+    ..totalAmount = (json['totalAmount'] as num?)?.toDouble()
     ..isBillPaid = json['isBillPaid'] as bool? ?? false
     ..fileStoreId = json['filestoreid'] as String?;
 }
@@ -30,11 +34,15 @@ Map<String, dynamic> _$ExpensesDetailsModelToJson(
       'businessService': instance.businessService,
       'consumerType': instance.consumerType,
       'typeOfExpense': instance.expenseType,
-      'vendor': instance.vendorName,
+      'vendor': instance.vendorId,
+      'vendorName': instance.vendorName,
       'amount': instance.expensesAmount,
       'billDate': instance.billDate,
       'paidDate': instance.paidDate,
       'billIssuedDate': instance.billIssuedDate,
+      'challanNo': instance.challanNo,
+      'applicationStatus': instance.applicationStatus,
+      'totalAmount': instance.totalAmount,
       'isBillPaid': instance.isBillPaid,
       'filestoreid': instance.fileStoreId,
     };

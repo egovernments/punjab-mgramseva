@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_widgets.dart';
 
 class BuildTextField extends StatefulWidget {
   final String labelText;
@@ -23,6 +24,8 @@ class BuildTextField extends StatefulWidget {
   final bool? isDisabled;
   final bool? readOnly;
   final String? labelSuffix;
+  final String? hint;
+
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
       this.prefixText = '',
@@ -31,7 +34,6 @@ class BuildTextField extends StatefulWidget {
       this.onSubmit,
       this.pattern = '',
       this.message = '',
-      this.focusNode,
       this.inputFormatter,
       this.validator,
       this.maxLength,
@@ -41,7 +43,9 @@ class BuildTextField extends StatefulWidget {
       this.textInputType,
       this.isDisabled,
       this.readOnly,
-      this.labelSuffix});
+      this.labelSuffix,
+      this.hint,
+      this.focusNode});
   @override
   State<StatefulWidget> createState() => _BuildTextField();
 }
@@ -119,7 +123,12 @@ class _BuildTextField extends State<BuildTextField> {
                 Container(
                     width: MediaQuery.of(context).size.width / 2.5,
                     padding: EdgeInsets.only(top: 18, bottom: 3),
-                    child: textFormwidget),
+                    child: Column(
+                      children: [
+                        textFormwidget,
+                        CommonWidgets().buildHint(widget.hint, context)
+                      ],
+                    )),
               ],
             ));
       } else {
@@ -134,6 +143,7 @@ class _BuildTextField extends State<BuildTextField> {
                         alignment: Alignment.centerLeft,
                         child: textLabelwidget)),
                 textFormwidget,
+                CommonWidgets().buildHint(widget.hint, context)
               ],
             ));
       }

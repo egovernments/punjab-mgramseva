@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
@@ -9,7 +10,7 @@ import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/SuccessPage.dart';
 
 class CommonSuccess extends StatelessWidget {
-  final dynamic successHandler;
+  final SuccessHandler successHandler;
 
   CommonSuccess(this.successHandler);
 

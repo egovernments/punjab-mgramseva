@@ -169,6 +169,29 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
+  UserDetails? getWebLoginStatus() {
+    var languageProvider = Provider.of<LanguageProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+
+    dynamic loginResponse;
+    dynamic stateResponse;
+
+    loginResponse = window.localStorage[Constants.LOGIN_KEY];
+    stateResponse = window.localStorage[Constants.STATES_KEY];
+
+    if (stateResponse != null && stateResponse.trim().isNotEmpty) {
+      languageProvider.stateInfo =
+          StateInfo.fromJson(jsonDecode(stateResponse));
+    }
+
+    if (loginResponse != null && loginResponse.trim().isNotEmpty) {
+      var decodedResponse = UserDetails.fromJson(jsonDecode(loginResponse));
+      userDetails = decodedResponse;
+    }
+    return userDetails;
+  }
+
   void onLogout() {
     loginCredentails = null;
     navigatorKey.currentState

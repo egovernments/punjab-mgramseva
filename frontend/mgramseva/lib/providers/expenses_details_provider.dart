@@ -6,6 +6,7 @@ import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/model/expensesDetails/vendor.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/expense_type.dart';
+import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
@@ -51,14 +52,14 @@ class ExpensesDetailsProvider with ChangeNotifier {
     expenditureDetails
       ..businessService = commonProvider.getMdmsId(languageList,
           'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
-      ..expensesAmount.first.taxHeadCode = commonProvider.getMdmsId(
+      ..expensesAmount?.first.taxHeadCode = commonProvider.getMdmsId(
           languageList,
           'EXPENSE.${expenditureDetails.expenseType}',
           MDMSType.TaxHeadCode)
       ..consumerType = 'EXPENSE'
       ..tenantId = 'pb'
       ..setText()
-      ..vendorName = expenditureDetails.selectedVendor?.id ??
+      ..vendorId = expenditureDetails.selectedVendor?.id ??
           expenditureDetails.vendorNameCtrl.text;
 
     try {
@@ -72,20 +73,48 @@ class ExpensesDetailsProvider with ChangeNotifier {
           arguments: SuccessHandler(
               '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}',
               '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_AGAINST)} ${challanDetails['challanNo']} ${ApplicationLocalizations.of(context).translate(i18.expense.UNDER_MAINTAINANCE)} Rs. ${challanDetails['amount'][0]['amount']} ',
-              i18.common.BACK_HOME));
+              i18.common.BACK_HOME, Routes.EXPENSES_ADD));
     } on CustomException catch (e) {
       Navigator.pop(context);
       Notifiers.getToastMessage(
           context,
-          '${ApplicationLocalizations.of(context).translate(i18.expense.UNABLE_TO_CREATE_EXPENSE)}',
+          i18.expense.UNABLE_TO_CREATE_EXPENSE,
           'ERROR');
     } catch (e) {
       Notifiers.getToastMessage(
           context,
-          '${ApplicationLocalizations.of(context).translate(i18.expense.UNABLE_TO_CREATE_EXPENSE)}',
+          i18.expense.UNABLE_TO_CREATE_EXPENSE,
           'ERROR');
       Navigator.pop(context);
     }
+  }
+
+  Future<void> searchExpense(Map<String, dynamic> query, String criteria, BuildContext context) async {
+
+    try {
+      Loaders.showLoadingDialog(context);
+
+      var res = await ExpensesRepository()
+          .searchExpense(query);
+      Navigator.pop(context);
+      if (res != null && res.isNotEmpty) {
+        Navigator.pushNamed(context, Routes.EXPENSE_RESULT,
+            arguments: SearchResult(criteria, res));
+      } else {
+        Notifiers.getToastMessage(context,
+            '${ApplicationLocalizations.of(context).translate(
+                i18.expense.NO_EXPENSES_FOUND)}', 'ERROR');
+      }
+    } on CustomException catch(e,s){
+      Notifiers.getToastMessage(context,
+              i18.expense.UNABLE_TO_SEARCH_EXPENSE, 'ERROR');
+      Navigator.pop(context);
+    }catch(e) {
+      Notifiers.getToastMessage(context,
+              i18.expense.UNABLE_TO_SEARCH_EXPENSE, 'ERROR');
+      Navigator.pop(context);
+    }
+
   }
 
   Future<List<dynamic>> onSearchVendorList(pattern) async {

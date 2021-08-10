@@ -19,7 +19,8 @@ import 'Home.dart';
 
 class SearchConsumerResult extends StatefulWidget {
   static const String routeName = 'search/consumer';
-
+  final Map arguments;
+  SearchConsumerResult(this.arguments);
   @override
   State<StatefulWidget> createState() {
     return _SearchConsumerResultState();
@@ -39,7 +40,7 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
 
   buildconsumerView(WaterConnections waterconnsctions) {
     print(waterconnsctions.waterConnection!.length);
-    return SearchConnectionDetailCard(waterconnsctions);
+    return SearchConnectionDetailCard(waterconnsctions, widget.arguments);
   }
 
   @override

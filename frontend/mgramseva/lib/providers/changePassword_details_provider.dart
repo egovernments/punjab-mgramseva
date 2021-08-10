@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/changePasswordDetails/changePassword_details.dart';
+import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/changePassword_details_repo.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -22,9 +24,13 @@ class ChangePasswordProvider with ChangeNotifier {
           await ChangePasswordRepository().updatePassword(body);
       navigatorKey.currentState?.pop();
       if (changePasswordResponse != null) {
-        Notifiers.getToastMessage(
-            context, i18.common.PROFILE_PASSWORD_SUCCESS_LABEL, 'SUCCESS');
-        navigatorKey.currentState?.pop();
+        Navigator.pushNamedAndRemoveUntil(
+            context, Routes.SUCCESS_VIEW, (route) => false,
+            arguments: SuccessHandler(
+                i18.profileEdit.PROFILE_EDIT_SUCCESS,
+                i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT,
+                i18.common.BACK_HOME,
+                Routes.CHANGE_PASSWORD));
       }
     } on CustomException catch (e) {
       Notifiers.getToastMessage(context, e.message.toString(), 'ERROR');

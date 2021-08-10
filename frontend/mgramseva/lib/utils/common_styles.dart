@@ -7,4 +7,6 @@ class CommonStyles {
   static BoxDecoration get buttonBottomDecoration => const BoxDecoration(
       border: Border(bottom: BorderSide(color: ColorCodes.BUTTON_BOTTOM, width: 2))
   );
+
+  static TextStyle get hintStyle => TextStyle(fontSize: 14, fontWeight: FontWeight.normal);
 }

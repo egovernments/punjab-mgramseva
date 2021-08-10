@@ -1,4 +1,5 @@
 import 'package:mgramseva/icons/home_icons_icons.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/models.dart';
 
 class Constants {
@@ -28,10 +29,10 @@ class Constants {
     HomeItem("CORE_HOUSEHOLD_REGISTER", HomeIcons.hhregister, ''),
     HomeItem("CORE_COLLECT_PAYMENTS", HomeIcons.collectpayment, 'household/search'),
     HomeItem("DOWNLOAD_BILLS_AND_RECEIPTS", HomeIcons.printreciept, ''),
-    HomeItem("ADD_EXPENSES_RECORD", HomeIcons.addexpenses, 'expenses/add'),
-    HomeItem("CORE_UPDATE_EXPENSES", HomeIcons.updateexpenses, ''),
+    HomeItem("ADD_EXPENSES_RECORD", HomeIcons.addexpenses, Routes.EXPENSES_ADD),
+    HomeItem("CORE_UPDATE_EXPENSES", HomeIcons.updateexpenses, Routes.EXPENSE_SEARCH),
     HomeItem("CORE_GENERATE_DEMAND", HomeIcons.generaedemand, 'bill/generate'),
-    HomeItem("CORE_CONSUMER_CREATE", HomeIcons.createconsumer, 'consumer/create'),
+    HomeItem("CORE_CONSUMER_CREATE", HomeIcons.createconsumer, Routes.CONSUMER_CREATE),
     HomeItem("CORE_UPDATE_CONSUMER_DETAILS", HomeIcons.updateconsumer, 'consumer/search'),
     HomeItem("CORE_GPWSC_DASHBOARD", HomeIcons.dashboard, 'dashboard'),
   ];

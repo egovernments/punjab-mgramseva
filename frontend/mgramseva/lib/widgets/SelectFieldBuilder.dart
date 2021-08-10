@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_styles.dart';
+import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/models.dart';
 
 class SelectFieldBuilder extends StatelessWidget {
@@ -10,9 +12,10 @@ class SelectFieldBuilder extends StatelessWidget {
   final Function(dynamic) widget;
   final List<DropdownMenuItem<Object>> options;
   final bool isRequired;
+  final String? hint;
 
   SelectFieldBuilder(this.labelText, this.value, this.input, this.prefixText,
-      this.widget, this.options, this.isRequired);
+      this.widget, this.options, this.isRequired, {this.hint});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +27,13 @@ class SelectFieldBuilder extends StatelessWidget {
           textAlign: TextAlign.left,
           style: TextStyle(
               fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),
-      Text(isRequired ? '* ' : ' ',
-          textAlign: TextAlign.left,
-          style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),
+      Visibility(
+        visible: isRequired,
+        child: Text('* ',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+                fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),
+      ),
     ]);
     //DropDown
     Widget dropDown = DropdownButtonFormField(
@@ -57,15 +63,19 @@ class SelectFieldBuilder extends StatelessWidget {
               const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
           child: Row(children: [
             Container(
+                alignment: Alignment.centerLeft,
                 width: MediaQuery.of(context).size.width / 3,
                 padding: EdgeInsets.only(top: 18, bottom: 3),
-                child: new Align(
-                    alignment: Alignment.centerLeft,
-                    child: textLabelwidget)),
+                child: textLabelwidget),
             Container(
                 width: MediaQuery.of(context).size.width / 2.5,
                 padding: EdgeInsets.only(top: 18, bottom: 3),
-                child: dropDown),
+                child: Column(
+                  children: [
+                    dropDown,
+                    CommonWidgets().buildHint(hint, context)
+                  ],
+                )),
           ]),
         );
       } else {
@@ -74,11 +84,11 @@ class SelectFieldBuilder extends StatelessWidget {
               const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
           child: Column(children: [
             Container(
+                alignment: Alignment.centerLeft,
                 padding: EdgeInsets.only(top: 18, bottom: 3),
-                child: new Align(
-                    alignment: Alignment.centerLeft,
-                    child: textLabelwidget)),
+                child: textLabelwidget),
             dropDown,
+            CommonWidgets().buildHint(hint, context)
           ]),
         );
       }
