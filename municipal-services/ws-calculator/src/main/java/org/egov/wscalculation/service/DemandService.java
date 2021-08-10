@@ -682,7 +682,7 @@ public class DemandService {
 	
 	public void generateBulkDemandForULB(Map<String, Object> master,BulkDemand bulkDemand) {
 		log.info("Billing master data values for non metered connection:: {}", master);
-		wsCalculationValidator.validateBillingPeriod(bulkDemand.getBillingCycle());
+		wsCalculationValidator.validateBillingPeriod(bulkDemand.getBillingPeriod());
 		List<String> connectionNos = waterCalculatorDao.getConnectionsNoList(bulkDemand.getTenantId(),
 				WSCalculationConstant.nonMeterdConnection);
 		String assessmentYear = estimationService.getAssessmentYear();

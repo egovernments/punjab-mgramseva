@@ -28,7 +28,7 @@ public class BulkDemand {
 	@JsonProperty("connectionCategory")
 	private String connectionCategory;
 	
-	@JsonProperty("billingCycle")
-	private String billingCycle;
+	@JsonProperty("billingPeriod")
+	private String billingPeriod;
 
 }
