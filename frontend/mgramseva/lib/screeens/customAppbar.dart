@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   CustomAppBar()
-      : preferredSize = Size.fromHeight(56),
+      : preferredSize = Size.fromHeight(kToolbarHeight),
         super();
 
   @override
@@ -39,7 +39,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    print(tenantProvider.tenants);
     if (tenantProvider.tenants == null) {
       tenantProvider.getTenants();
     }
@@ -48,7 +47,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
           .map((e) => e.tenantId)
           .toSet()
           .toList();
-      print(r);
 
       if (r != null && tenantProvider.tenants != null) {
         final resulst = tenantProvider.tenants!.tenantsList!
@@ -69,7 +67,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
         builder: (BuildContext context) {
           return Stack(children: <Widget>[
             Container(
-                height: 140,
                 margin: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width > 720
                         ? MediaQuery.of(context).size.width -
@@ -126,7 +123,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    print("call for function");
     final r = commonProvider.userDetails!.userRequest!.roles!
         .map((e) => e.tenantId)
         .toSet()
@@ -165,7 +161,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
       actions: [
         Container(
             height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width / 3,
             child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.end,
