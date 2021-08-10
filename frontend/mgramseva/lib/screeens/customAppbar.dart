@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   CustomAppBar()
-      : preferredSize = Size.fromHeight(kToolbarHeight),
+      : preferredSize = Size.fromHeight(56),
         super();
 
   @override
@@ -43,8 +43,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     if (tenantProvider.tenants == null) {
       tenantProvider.getTenants();
     }
-    print("tenants details");
-    print(commonProvider.userDetails!.selectedtenant);
     if (commonProvider.userDetails!.selectedtenant == null) {
       final r = commonProvider.userDetails!.userRequest!.roles!
           .map((e) => e.tenantId)
@@ -66,8 +64,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
-          return Positioned(
-              child: Stack(children: <Widget>[
+          return Stack(children: <Widget>[
             Container(
                 margin: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width > 720
@@ -117,7 +114,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         )));
                   }),
                 ))
-          ]));
+          ]);
         });
   }
 
