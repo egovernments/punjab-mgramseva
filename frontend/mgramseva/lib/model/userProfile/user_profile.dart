@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:mgramseva/model/user/user_details.dart';
 
 part 'user_profile.g.dart';
 
@@ -107,7 +106,7 @@ class User {
   @JsonKey(name: "tenantId")
   String? tenantId;
 
-  @JsonKey(name: "code")
+  @JsonKey(name: "roles")
   List<Roles>? roles;
 
   @JsonKey(name: "uuid")
@@ -146,9 +145,25 @@ class User {
     nameCtrl.text = name ?? '';
     phoneNumberCtrl.text = mobileNumber ?? '';
     emailIdCtrl.text = emailId ?? '';
+    gender = gender ?? '';
   }
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
+}
+
+@JsonSerializable()
+class Roles {
+  @JsonKey(name: "name")
+  String? name;
+  @JsonKey(name: "code")
+  String? code;
+  @JsonKey(name: "tenantId")
+  String? tenantId;
+  Roles();
+
+  factory Roles.fromJson(Map<String, dynamic> json) => _$RolesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RolesToJson(this);
 }

@@ -22,7 +22,8 @@ class UserProfileRepository extends BaseService {
     late UserProfile userProfile;
     var res = await makeRequest(
         url: UserUrl.USER_PROFILE,
-        body: json.encode({"RequestInfo": requestInfo.toJson(), ...body}),
+        body: body,
+        requestInfo: requestInfo,
         method: RequestType.POST);
     if (res != null) {
       userProfile = UserProfile.fromJson(res);

@@ -1,13 +1,11 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
-
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class LanguageSelectionDesktopView extends StatelessWidget {
   final StateInfo stateInfo;
@@ -18,7 +16,7 @@ class LanguageSelectionDesktopView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BackgroundContainer(Center(
         child: new Container(
-            height: 340,
+            height: 300,
             width: 500,
             padding: EdgeInsets.all(15),
             child: Card(
@@ -33,8 +31,8 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                           image: NetworkImage(
                             stateInfo.logoUrl!,
                           )),
-                      ListLabelText("|"),
-                      ListLabelText("STATE_LABEL")
+                      // ListLabelText("|"),
+                      // ListLabelText("STATE_LABEL")
                     ],
                   )),
               Padding(
@@ -57,12 +55,12 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                       children: [
                         for (var language in stateInfo.languages ?? [])
                           LanguageCard(
-                              language, stateInfo.languages ?? [], 12, 10, 10)
+                              language, stateInfo.languages ?? [], 120, 10, 10)
                       ])),
               Padding(
                   padding: EdgeInsets.all(15),
-                  child: Button('CORE_COMMON_CONTINUE',
-                      () => Navigator.pushNamed(context, "login"))),
+                  child: Button(i18.common.CONTINUE,
+                      () => Navigator.pushNamed(context, Routes.LOGIN))),
               SizedBox(
                 height: 10,
               )

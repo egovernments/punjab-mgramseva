@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/language.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:provider/provider.dart';
 
 class Logo extends StatelessWidget {

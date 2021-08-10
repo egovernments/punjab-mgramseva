@@ -1,8 +1,12 @@
 import 'dart:io';
 import 'package:mgramseva/Env/app_config.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/urls.dart';
+import 'package:mgramseva/utils/common_methods.dart';
+import 'package:mgramseva/utils/global_variables.dart';
+import 'package:provider/provider.dart';
 import "package:universal_html/html.dart" hide Text, Navigator;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -36,10 +40,7 @@ Future<http.Response> login(url, details, context) async {
           key: 'User',
           value: json.decode(response.body)['UserRequest'].toString());
     }
-    Navigator.of(context)
-        .pushReplacement(new MaterialPageRoute(builder: (BuildContext context) {
-      return new Home(0);
-    }));
+    CommonMethods.home();
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

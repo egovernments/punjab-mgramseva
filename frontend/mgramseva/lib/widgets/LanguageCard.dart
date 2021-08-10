@@ -12,7 +12,7 @@ class LanguageCard extends StatelessWidget {
   // final String value;
   final Languages language;
   final List<Languages> languages;
-  final int widthprect;
+  final double widthprect;
   final double cpadding;
   final double cmargin;
 
@@ -30,12 +30,11 @@ class LanguageCard extends StatelessWidget {
     return Consumer<LanguageProvider>(
       builder: (_, languageProvider, child) => GestureDetector(
         onTap: () {
-          languageProvider.onSelectionOfLanguage(
-              language, languages);
+          languageProvider.onSelectionOfLanguage(language, languages);
         },
         child: Container(
             margin: new EdgeInsets.all(cmargin),
-            width: MediaQuery.of(context).size.width / widthprect,
+            width: widthprect,
             padding: new EdgeInsets.all(cpadding),
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),

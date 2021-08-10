@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mgramseva/icons/home_icons_icons.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/constants.dart';
 
 final String assetName = 'assets/svg/HHRegister.svg';
 
@@ -12,74 +14,25 @@ class HomeCard extends StatefulWidget {
 }
 
 class _HomeCard extends State<HomeCard> {
-  List items = [
-    {
-      "label": "Household Register",
-      "icon": "assets/svg/HHRegister.svg",
-      "link": ""
-    },
-    {
-      "label": "Collect Payments",
-      "icon": "assets/svg/collectPayment.svg",
-      "link": "household/search"
-    },
-    {
-      "label": "Download Bills & Receipts",
-      "icon": "assets/svg/printReciept.svg",
-      "link": ""
-    },
-    {
-      "label": "Add Expense Record",
-      "icon": "assets/svg/addexpenses.svg",
-      "link": "expenses/add"
-    },
-    {
-      "label": "Update Expenses",
-      "icon": "assets/svg/updateexpenses.svg",
-      "link": ""
-    },
-    {
-      "label": "Generate Demand",
-      "icon": "assets/svg/generaedemand.svg",
-      "link": "bill/generate"
-    },
-    {
-      "label": "CORE_CONSUMER_CREATE",
-      "icon": "assets/svg/createconsumer.svg",
-      "link": "consumer/create"
-    },
-    {
-      "label": "Update Consumer Details",
-      "icon": "assets/svg/updateconsumer.svg",
-      "link": "consumer/search"
-    },
-    {
-      "label": "GPWSC Dashboard",
-      "icon": "assets/svg/dashboard.svg",
-      "link": "dashboard"
-    },
-  ];
+
   List<Widget> getList() {
-    List<Widget> childs = [];
-    for (var i = 0; i < items.length; i++) {
-      childs.add(new GridTile(
+      return Constants.HOME_ITEMS.map((item) =>  GridTile(
         child: new GestureDetector(
-            onTap: () => Navigator.pushNamed(context, items[i]["link"],
-                arguments: 'expenses'),
+            onTap: () => Navigator.pushNamed(context, item.link),
             child: new Card(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(items[i]["icon"],
-                        semanticsLabel: 'Acme Logo'),
+                    Icon(item.iconData, size: 35),
                     Container(
+
                       margin: EdgeInsets.all(10),
                       child: Center(
                           child: new Text(
                         ApplicationLocalizations.of(context)
-                            .translate(items[i]["label"]),
+                            .translate(item.label),
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w400),
                         textAlign: TextAlign.center,
@@ -87,9 +40,7 @@ class _HomeCard extends State<HomeCard> {
                     )
                   ],
                 ))),
-      ));
-    }
-    return childs;
+      )).toList();
   }
 
   @override

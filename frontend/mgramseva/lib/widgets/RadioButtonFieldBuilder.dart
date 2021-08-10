@@ -5,7 +5,7 @@ import 'package:mgramseva/utils/models.dart';
 class RadioButtonFieldBuilder extends StatelessWidget {
   final BuildContext context;
   final String labelText;
-  final String? controller;
+  final dynamic? controller;
   final bool isRequired;
 
   final String input;
@@ -66,7 +66,7 @@ class RadioButtonFieldBuilder extends StatelessWidget {
               child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    labelText,
+                    ApplicationLocalizations.of(context).translate(labelText),
                     textAlign: TextAlign.left,
                     style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
                   ))),

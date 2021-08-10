@@ -6,6 +6,8 @@ import 'package:mgramseva/repository/user_profile_repo.dart';
 
 class UserProfileProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
+  var formKey = GlobalKey<FormState>();
+  var autoValidation = false;
 
   dispose() {
     streamController.close();
@@ -19,6 +21,7 @@ class UserProfileProvider with ChangeNotifier {
         streamController.add(userResponse.user?.first);
       }
     } catch (e) {
+      print("its an error");
       print(e);
       streamController.addError('error');
     }
@@ -26,6 +29,9 @@ class UserProfileProvider with ChangeNotifier {
 
   void onChangeOfGender(String gender, User user) {
     user.gender = gender;
+    notifyListeners();
+  }
+  void callNotfyer() {
     notifyListeners();
   }
 }

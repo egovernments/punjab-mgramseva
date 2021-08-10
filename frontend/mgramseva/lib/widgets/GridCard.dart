@@ -15,8 +15,7 @@ class GridCard extends StatelessWidget {
                   crossAxisCount: 3,
                   childAspectRatio:  constraints.maxWidth < 760 ? 1.2 : 6,
                   shrinkWrap: true,
-                  children: <Widget>[
-                    ...data.map((
+                  children: data.map((
                       Map e,
                     ) {
                       Widget _tile = GridTile(
@@ -27,6 +26,7 @@ class GridCard extends StatelessWidget {
                             ),
                             margin: EdgeInsets.zero,
                             child: Container(
+                              alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   border: Border(
                                     top: i != 0 && i != 2 && i != 1
@@ -42,7 +42,7 @@ class GridCard extends StatelessWidget {
                                   ),
                                   color: Colors.white,
                                 ),
-                                padding: EdgeInsets.all(12),
+                                padding: EdgeInsets.all(2),
                                 child: new Center(
                                   child: Column(
                                       mainAxisAlignment:
@@ -67,8 +67,8 @@ class GridCard extends StatelessWidget {
                       );
                       i++;
                       return _tile;
-                    })
-                  ]);
+                    }).toList()
+                  );
     });
   }
 }
