@@ -36,7 +36,6 @@ class UserProfileProvider with ChangeNotifier {
     user.gender = gender;
     notifyListeners();
   }
-
   void callNotfyer() {
     notifyListeners();
   }

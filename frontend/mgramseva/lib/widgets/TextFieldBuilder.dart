@@ -13,6 +13,7 @@ class BuildTextField extends StatefulWidget {
   final Function(String)? onSubmit;
   final String? pattern;
   final String message;
+  final FocusNode? focusNode;
   final List<FilteringTextInputFormatter>? inputFormatter;
   final Function(String?)? validator;
   final int? maxLength;
@@ -32,7 +33,19 @@ class BuildTextField extends StatefulWidget {
       this.isRequired = false,
       this.onSubmit,
       this.pattern = '',
-      this.message = '', this.inputFormatter, this.validator, this.maxLength, this.maxLines, this.textCapitalization, this.obscureText, this.textInputType, this.isDisabled, this.readOnly, this.labelSuffix, this.hint});
+      this.message = '',
+      this.inputFormatter,
+      this.validator,
+      this.maxLength,
+      this.maxLines,
+      this.textCapitalization,
+      this.obscureText,
+      this.textInputType,
+      this.isDisabled,
+      this.readOnly,
+      this.labelSuffix,
+      this.hint,
+      this.focusNode});
   @override
   State<StatefulWidget> createState() => _BuildTextField();
 }
@@ -42,39 +55,50 @@ class _BuildTextField extends State<BuildTextField> {
   Widget build(BuildContext context) {
     // TextForm
     Widget textFormwidget = TextFormField(
+        enabled: widget.isDisabled != null
+            ? (widget.isDisabled == true)
+                ? false
+                : true
+            : true,
         controller: widget.controller,
         keyboardType: widget.textInputType ?? TextInputType.text,
         inputFormatters: widget.inputFormatter,
         autofocus: false,
         maxLength: widget.maxLength,
         maxLines: widget.maxLines,
-        textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
+        focusNode: widget.focusNode,
+        textCapitalization:
+            widget.textCapitalization ?? TextCapitalization.none,
         obscureText: widget.obscureText ?? false,
         readOnly: widget.readOnly ?? false,
-        validator: widget.validator != null ? (val) => widget.validator!(val) :  (value) {
-          if (value!.trim().isEmpty && widget.isRequired) {
-            return ApplicationLocalizations.of(context)
-                .translate(widget.labelText + '_REQUIRED');
-          } else if (widget.pattern != null && widget.pattern != '') {
-            return (new RegExp(widget.pattern!).hasMatch(value))
-                ? null
-                : ApplicationLocalizations.of(context)
-                    .translate(widget.message);
-          }
-          return null;
-        },
+        validator: widget.validator != null
+            ? (val) => widget.validator!(val)
+            : (value) {
+                if (value!.trim().isEmpty && widget.isRequired) {
+                  return ApplicationLocalizations.of(context)
+                      .translate(widget.labelText + '_REQUIRED');
+                } else if (widget.pattern != null && widget.pattern != '') {
+                  return (new RegExp(widget.pattern!).hasMatch(value))
+                      ? null
+                      : ApplicationLocalizations.of(context)
+                          .translate(widget.message);
+                }
+                return null;
+              },
         decoration: InputDecoration(
           errorMaxLines: 2,
           enabled: widget.isDisabled ?? true,
-          fillColor:  widget.isDisabled != null && widget.isDisabled! ? Colors.grey : Colors.white,
+          fillColor: widget.isDisabled != null && widget.isDisabled!
+              ? Colors.grey
+              : Colors.white,
           prefixText: widget.prefixText,
         ),
         onChanged: widget.onChange);
 // Label Text
-    Widget textLabelwidget = Wrap(
-        direction: Axis.horizontal,
-        children: <Widget>[
-      Text('${ApplicationLocalizations.of(context).translate(widget.labelText)} ${widget.labelSuffix ?? ''}',
+    Widget textLabelwidget =
+        Wrap(direction: Axis.horizontal, children: <Widget>[
+      Text(
+          '${ApplicationLocalizations.of(context).translate(widget.labelText)} ${widget.labelSuffix ?? ''}',
           textAlign: TextAlign.left,
           style: TextStyle(
               fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),
@@ -99,10 +123,12 @@ class _BuildTextField extends State<BuildTextField> {
                 Container(
                     width: MediaQuery.of(context).size.width / 2.5,
                     padding: EdgeInsets.only(top: 18, bottom: 3),
-                    child: Column(children: [
-                      textFormwidget,
-                      CommonWidgets().buildHint(widget.hint, context)
-                    ],)),
+                    child: Column(
+                      children: [
+                        textFormwidget,
+                        CommonWidgets().buildHint(widget.hint, context)
+                      ],
+                    )),
               ],
             ));
       } else {

@@ -9,6 +9,11 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/models.dart';
+import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 
 class UserEditProfileProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -25,6 +30,8 @@ class UserEditProfileProvider with ChangeNotifier {
       var edituserResponse = await UserEditProfileRepository().editProfile(body);
       Navigator.pop(context);
       if (edituserResponse != null) {
+        Notifiers.getToastMessage(
+            context, i18.profileEdit.PROFILE_EDIT_SUCCESS, 'SUCCESS');
         streamController.add(edituserResponse);
       }
     } on CustomException catch (e,s) {
@@ -58,5 +65,4 @@ class UserEditProfileProvider with ChangeNotifier {
     user.gender = gender;
     notifyListeners();
   }
-
 }

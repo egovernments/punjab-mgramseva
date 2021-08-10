@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class SuccessPage extends StatelessWidget {
   final label;
@@ -16,10 +17,16 @@ class SuccessPage extends StatelessWidget {
           children: [
             new Align(
               alignment: Alignment.center,
-              child: Text(label, textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 32,)),
+              child: Text(ApplicationLocalizations.of(context).translate(label),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 32,
+                  )),
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Icon(
               Icons.check_circle,
               color: Colors.white,

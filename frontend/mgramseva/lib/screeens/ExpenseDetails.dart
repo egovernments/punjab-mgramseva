@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
-import 'package:mgramseva/screeens/Home.dart';
+import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
-import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
@@ -21,7 +20,6 @@ import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/SelectFieldBuilder.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
-import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/auto_complete.dart';
@@ -64,11 +62,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
     var expensesDetailsProvider =
         Provider.of<ExpensesDetailsProvider>(context, listen: false);
     return Scaffold(
-        appBar: BaseAppBar(
-          Text('mGramSeva'),
-          AppBar(),
-          <Widget>[Icon(Icons.more_vert)],
-        ),
+        appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),
@@ -94,8 +88,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     }
                   }
                 })),
-        bottomNavigationBar: BottomButtonBar(
-            '${ApplicationLocalizations.of(context).translate(i18.common.SUBMIT)}',
+        bottomNavigationBar: BottomButtonBar(i18.common.SUBMIT,
             () => expensesDetailsProvider.validateExpensesDetails(context)));
   }
 
@@ -118,12 +111,10 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                   : AutovalidateMode.disabled,
               child:
                   Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                LabelText(
-                    "${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_DETAILS)}"),
-                SubLabelText(
-                    "${ApplicationLocalizations.of(context).translate(i18.expense.PROVIDE_INFO_TO_CREATE_EXPENSE)}"),
+                LabelText(i18.expense.EXPENSE_DETAILS),
+                SubLabelText(i18.expense.PROVIDE_INFO_TO_CREATE_EXPENSE),
                 SelectFieldBuilder(
-                    '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)}',
+                    i18.expense.EXPENSE_TYPE,
                     expenseDetails.expenseType,
                     '',
                     '',
@@ -131,8 +122,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     expensesDetailsProvider.getExpenseTypeList(),
                     true),
                 AutoCompleteView(
-                    labelText:
-                        '${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)}',
+                    labelText: i18.expense.VENDOR_NAME,
                     controller: expenseDetails.vendorNameCtrl,
                     suggestionsBoxController:
                         expensesDetailsProvider.suggestionsBoxController,
@@ -142,7 +132,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     listTile: buildTile,
                     isRequired: true),
                 BuildTextField(
-                  '${ApplicationLocalizations.of(context).translate(i18.expense.AMOUNT)}',
+                  '${i18.expense.AMOUNT}',
                   expenseDetails.expensesAmount!.first.amountCtrl,
                   isRequired: true,
                   textInputType: TextInputType.number,
@@ -152,9 +142,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                   labelSuffix: '(₹)',
                 ),
                 BasicDateField(
-                    '${ApplicationLocalizations.of(context).translate(i18.expense.BILL_DATE)}',
-                    true,
-                    expenseDetails.billDateCtrl,
+                    i18.expense.BILL_DATE, true, expenseDetails.billDateCtrl,
                     firstDate:
                         expenseDetails.billIssuedDateCtrl.text.trim().isEmpty
                             ? null
@@ -163,9 +151,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               ),
                     lastDate: DateTime.now(),
                     onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
-                BasicDateField(
-                    '${ApplicationLocalizations.of(context).translate(i18.expense.PARTY_BILL_DATE)}',
-                    true,
+                BasicDateField(i18.expense.PARTY_BILL_DATE, true,
                     expenseDetails.billIssuedDateCtrl,
                     lastDate: expenseDetails.billDateCtrl.text.trim().isEmpty
                         ? DateTime.now()
@@ -174,7 +160,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     onChangeOfDate: expensesDetailsProvider.onChangeOfDate),
                 RadioButtonFieldBuilder(
                     context,
-                    '${ApplicationLocalizations.of(context).translate(i18.expense.BILL_PAID)}',
+                    i18.expense.BILL_PAID,
                     expenseDetails.isBillPaid,
                     '',
                     '',
@@ -182,9 +168,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     Constants.EXPENSESTYPE,
                     expensesDetailsProvider.onChangeOfBillPaid),
                 if (expenseDetails.isBillPaid ?? false)
-                  BasicDateField(
-                      '${ApplicationLocalizations.of(context).translate(i18.expense.PAYMENT_DATE)}',
-                      true,
+                  BasicDateField(i18.expense.PAYMENT_DATE, true,
                       expenseDetails.paidDateCtrl,
                       firstDate: DateFormats.getFormattedDateToDateTime(
                           expenseDetails.billIssuedDateCtrl.text.trim()),

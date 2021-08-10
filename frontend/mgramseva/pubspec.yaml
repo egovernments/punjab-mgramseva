@@ -78,8 +78,6 @@ flutter:
   fonts:
     - family: Roboto
       fonts:
-        - asset: assets/fonts/Roboto/Roboto-Black.ttf
-        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
         - asset: assets/fonts/Roboto/Roboto-Medium.ttf
     - family: HomeIcons
       fonts:

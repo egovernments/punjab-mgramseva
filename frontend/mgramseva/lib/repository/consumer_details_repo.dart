@@ -31,7 +31,6 @@ class ConsumerRepository extends BaseService {
             MapEntry(key, value == null ? null : value.toString())),
         method: RequestType.POST,
         requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "_create",APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID, commonProvider.userDetails!.accessToken));
-
     return res;
   }
 
@@ -43,7 +42,7 @@ class ConsumerRepository extends BaseService {
         url: Url.ADD_WC_CONNECTION,
         body: {"WaterConnection": body},
         method: RequestType.POST,
-        requestInfo: RequestInfo('mgramseva-common', .01, "", "_create", 1, "",
+        requestInfo: RequestInfo('mgramseva-common', 1, "", "_create", 1, "",
             "", commonProvider.userDetails!.accessToken));
     return res;
   }
