@@ -12,7 +12,7 @@ class RequestInfo {
 
   Map<String, dynamic> toJson() => {
         "apiId": apiId == null ? null : apiId,
-        "ver": ver == null ? null : ver,
+        "ver": ver == null ? 1 : ver,
         "ts": ts == null ? null : ts,
         "action": action == null ? null : action,
         "did": did == null ? null : did,

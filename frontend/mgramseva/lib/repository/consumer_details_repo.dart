@@ -15,7 +15,7 @@ class ConsumerRepository extends BaseService {
         url: Url.ADD_PROPERTY,
         body: {"Property": body},
         method: RequestType.POST,
-        requestInfo: RequestInfo('mgramseva', "", "", "", "", "", "",
+        requestInfo: RequestInfo('mgramseva', 1, "", "", 1, "", "",
             commonProvider.userDetails!.accessToken));
     return res;
   }
@@ -29,7 +29,7 @@ class ConsumerRepository extends BaseService {
         queryParameters: body.map((key, value) =>
             MapEntry(key, value == null ? null : value.toString())),
         method: RequestType.POST,
-        requestInfo: RequestInfo('mgramseva-common', .01, "", "_create", 1, "",
+        requestInfo: RequestInfo('mgramseva-common', 1, "", "_create", 1, "",
             "", commonProvider.userDetails!.accessToken));
 
     return res;
@@ -43,7 +43,7 @@ class ConsumerRepository extends BaseService {
         url: Url.ADD_WC_CONNECTION,
         body: {"WaterConnection": body},
         method: RequestType.POST,
-        requestInfo: RequestInfo('mgramseva-common', .01, "", "_create", 1, "",
+        requestInfo: RequestInfo('mgramseva-common', 1, "", "_create", 1, "",
             "", commonProvider.userDetails!.accessToken));
     return res;
   }

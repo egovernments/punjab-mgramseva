@@ -14,7 +14,7 @@ class BottomButtonBar extends StatelessWidget {
       return Container(
           height: constraints.maxWidth > 760 ? 60 : null,
           child: Card(
-            elevation: 18.0,
+            elevation: 0.0,
             child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 2),
                 child: LayoutBuilder(builder: (context, constraints) {

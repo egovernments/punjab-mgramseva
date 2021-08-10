@@ -12,6 +12,8 @@ import 'package:mgramseva/providers/forgot_password_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/providers/reset_password_provider.dart';
+import 'package:mgramseva/providers/search_connection_provider.dart';
+import 'package:mgramseva/providers/tenants_provider.dart';
 import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 
 import 'package:mgramseva/providers/user_profile_provider.dart';
@@ -71,7 +73,9 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => ExpensesDetailsProvider()),
           ChangeNotifierProvider(create: (_) => ForgotPasswordProvider()),
           ChangeNotifierProvider(create: (_) => ResetPasswordProvider()),
+          ChangeNotifierProvider(create: (_) => TenantsProvider()),
           ChangeNotifierProvider(create: (_) => BillGenerationProvider()),
+          ChangeNotifierProvider(create: (_) => SearchConnectionProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(

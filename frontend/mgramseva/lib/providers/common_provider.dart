@@ -55,7 +55,8 @@ class CommonProvider with ChangeNotifier {
 
     try {
       var query = {
-        'module': 'mgramseva-common,mgramseva-consumer',
+        'module':
+            'mgramseva-common,mgramseva-consumer,mgramseva-expenses,mgramseva-water-connection',
         'locale': languageProvider.selectedLanguage?.value ?? '',
         'tenantId': 'pb'
       };
@@ -69,6 +70,36 @@ class CommonProvider with ChangeNotifier {
       print(e);
     }
     return labels;
+  }
+
+  setSelectedTenant(UserDetails? loginDetails) {
+    if (kIsWeb) {
+      window.localStorage[Constants.LOGIN_KEY] =
+          loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
+    } else {
+      storage.write(
+          key: Constants.LOGIN_KEY,
+          value:
+              loginDetails == null ? null : jsonEncode(loginDetails.toJson()));
+    }
+  }
+
+  setTenant(tenant) {
+    userDetails!.selectedtenant = tenant;
+    setSelectedState(userDetails!);
+    notifyListeners();
+  }
+
+  void setSelectedState(UserDetails? loginDetails) {
+    if (kIsWeb) {
+      window.localStorage[Constants.LOGIN_KEY] =
+          loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
+    } else {
+      storage.write(
+          key: Constants.LOGIN_KEY,
+          value:
+              loginDetails == null ? null : jsonEncode(loginDetails.toJson()));
+    }
   }
 
   setLocalizationLabels(List<LocalizationLabel> labels) async {
@@ -102,6 +133,7 @@ class CommonProvider with ChangeNotifier {
           value:
               loginDetails == null ? null : jsonEncode(loginDetails.toJson()));
     }
+    notifyListeners();
   }
 
   Future<void> getLoginCredentails() async {
@@ -113,6 +145,7 @@ class CommonProvider with ChangeNotifier {
     try {
       if (kIsWeb) {
         loginResponse = window.localStorage[Constants.LOGIN_KEY];
+
         stateResponse = window.localStorage[Constants.STATES_KEY];
       } else {
         loginResponse = await storage.read(key: Constants.LOGIN_KEY);
