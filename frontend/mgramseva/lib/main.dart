@@ -41,12 +41,12 @@ void main() {
     FlutterError.onError = (FlutterErrorDetails details) {
       FlutterError.dumpErrorToConsole(details);
       ErrorHandler.logError(details.exception.toString(), details.stack);
-      exit(1);
+      // exit(1); /// to close the app smoothly
     };
     runApp(MyApp());
   }, (Object error, StackTrace stack) {
     ErrorHandler.logError(error.toString(), stack);
-    exit(1);
+    // exit(1); /// to close the app smoothly
   });
 
   runApp(new MyApp());

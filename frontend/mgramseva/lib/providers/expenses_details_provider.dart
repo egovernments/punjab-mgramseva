@@ -48,6 +48,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
         var expenditure = await ExpensesRepository().searchExpense({'challanNo' : id});
         if(expenditure != null && expenditure.isNotEmpty){
           expenditureDetails = expenditure!.first;
+        }else{
+          streamController.add(i18.expense.NO_EXPENSE_RECORD_FOUND);
+          return;
         }
       }
 
@@ -121,8 +124,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
             arguments: SearchResult(criteria, res));
       } else {
         Notifiers.getToastMessage(context,
-            '${ApplicationLocalizations.of(context).translate(
-                i18.expense.NO_EXPENSES_FOUND)}', 'ERROR');
+            i18.expense.NO_EXPENSES_FOUND, 'ERROR');
       }
     } on CustomException catch(e,s){
       Notifiers.getToastMessage(context,

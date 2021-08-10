@@ -114,6 +114,7 @@ class Expense {
   String get NO_EXPENSES_FOUND => 'NO_EXPENSES_FOUND'; /// No Expenses found
   String get UNABLE_TO_SEARCH_EXPENSE => 'UNABLE_TO_SEARCH_EXPENSE'; /// Unable to Search the Expenses
   String get NO_FIELDS_FILLED => 'NO_FIELDS_FILLED'; /// No Field was filled
+  String get NO_EXPENSE_RECORD_FOUND => 'NO_EXPENSE_RECORD_FOUND'; /// No Record were Found with this Challan No
 
   /// Add Expense Record
 }
