@@ -116,7 +116,7 @@ public class WSCalculationValidator {
 	/**
 	 * Billing Period Validation
 	 */
-	private void validateBillingPeriod(String billingPeriod) {
+	public void validateBillingPeriod(String billingPeriod) {
 		if (StringUtils.isEmpty(billingPeriod))
 			 throw new CustomException("BILLING_PERIOD_PARSING_ISSUE", "Billing can not empty!!");
 		try {
