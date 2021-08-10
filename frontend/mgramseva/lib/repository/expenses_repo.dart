@@ -14,14 +14,14 @@ import 'package:provider/provider.dart';
 
 class ExpensesRepository extends BaseService {
 
-  Future<Map> addExpenses(Map body) async {
+  Future<Map> addExpenses(Map body, bool isUpdate) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
 
     var res = await makeRequest(
-        url: Url.ADD_EXPENSES, body: body, method: RequestType.POST, requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "create", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
-        commonProvider.userDetails!.accessToken));
+        url: isUpdate ? Url.UPDATE_EXPENSE : Url.ADD_EXPENSES, body: body, method: RequestType.POST, requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "create", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
+        commonProvider.userDetails!.accessToken, commonProvider.userDetails?.userRequest?.toJson()));
     return res;
   }
 

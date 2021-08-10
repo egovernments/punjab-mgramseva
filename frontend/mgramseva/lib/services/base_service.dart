@@ -99,8 +99,8 @@ dynamic _response(http.Response response) {
     case 401:
     case 403:
 
-      if(currentRoute != Routes.LOGIN)
-        navigatorKey.currentState?.pushNamedAndRemoveUntil(Routes.LOGIN, (route) => false);
+      // if(currentRoute != Routes.LOGIN)
+      //   navigatorKey.currentState?.pushNamedAndRemoveUntil(Routes.LOGIN, (route) => false);
 
       throw CustomException(
           errorMessage, response.statusCode, ExceptionType.UNAUTHORIZED);

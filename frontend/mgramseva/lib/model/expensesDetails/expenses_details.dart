@@ -7,6 +7,12 @@ part 'expenses_details.g.dart';
 
 @JsonSerializable()
 class ExpensesDetailsModel {
+  @JsonKey(name: "citizen")
+  Citizen? citizen;
+
+  @JsonKey(name: "id")
+  String? id;
+
   @JsonKey(name: "tenantId")
   String? tenantId;
 
@@ -39,6 +45,9 @@ class ExpensesDetailsModel {
 
   @JsonKey(name: "challanNo")
   String? challanNo;
+
+  @JsonKey(name: "accountId")
+  String? accountId;
 
   @JsonKey(name: "applicationStatus")
   String? applicationStatus;
@@ -116,4 +125,30 @@ class ExpensesAmount {
       _$ExpensesAmountFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExpensesAmountToJson(this);
+}
+
+
+@JsonSerializable()
+class Citizen {
+  @JsonKey(name: "id")
+  int? id;
+
+  @JsonKey(name: "uuid")
+  String? uuid;
+
+  @JsonKey(name: "userName")
+  String? userName;
+
+  @JsonKey(name: "name")
+  String? name;
+
+  @JsonKey(name: "mobileNumber")
+  String? mobileNumber;
+
+  Citizen();
+
+  factory Citizen.fromJson(Map<String, dynamic> json) =>
+      _$CitizenFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CitizenToJson(this);
 }

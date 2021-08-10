@@ -65,26 +65,21 @@ class ExpensesDetailsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addExpensesDetails(BuildContext context) async {
-    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    expenditureDetails
-      ..businessService = commonProvider.getMdmsId(languageList,
-          'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
-      ..expensesAmount?.first.taxHeadCode = commonProvider.getMdmsId(
-          languageList,
-          'EXPENSE.${expenditureDetails.expenseType}',
-          MDMSType.TaxHeadCode)
-      ..consumerType = 'EXPENSE'
-      ..tenantId = 'pb'
-      ..setText()
-      ..vendorId = expenditureDetails.selectedVendor?.id ??
-          expenditureDetails.vendorNameCtrl.text;
+  Future<void> addExpensesDetails(BuildContext context, [isUpdate = false]) async {
+    late Map body;
+    setEnteredDetails(context);
+
+    if(isUpdate){
+     body = expenditureDetails.toJson();
+    }else{
+      body = {'Challan': expenditureDetails.toJson()};
+    }
 
     try {
       Loaders.showLoadingDialog(context);
 
       var res = await ExpensesRepository()
-          .addExpenses({'Challan': expenditureDetails.toJson()});
+          .addExpenses(body, isUpdate);
       Navigator.pop(context);
       var challanDetails = res['challans']?[0];
       navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW,
@@ -109,6 +104,22 @@ class ExpensesDetailsProvider with ChangeNotifier {
       ErrorHandler.logError(e.toString(),s);
       Navigator.pop(context);
     }
+  }
+
+  void setEnteredDetails(BuildContext context){
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+    expenditureDetails
+      ..businessService = commonProvider.getMdmsId(languageList,
+          'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
+      ..expensesAmount?.first.taxHeadCode = commonProvider.getMdmsId(
+          languageList,
+          'EXPENSE.${expenditureDetails.expenseType}',
+          MDMSType.TaxHeadCode)
+      ..consumerType = 'EXPENSE'
+      ..tenantId = 'pb'
+      ..setText()
+      ..vendorId = expenditureDetails.selectedVendor?.id ??
+          expenditureDetails.vendorNameCtrl.text;
   }
 
   Future<void> searchExpense(Map<String, dynamic> query, String criteria, BuildContext context) async {

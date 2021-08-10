@@ -8,6 +8,7 @@ class Url {
   /// Expenses
   static const String ADD_EXPENSES = 'echallan-services/eChallan/v1/_create';
   static const String EXPENSE_SEARCH = 'echallan-services/eChallan/v1/_search';
+  static const String UPDATE_EXPENSE = 'echallan-services/eChallan/v1/_update';
 
   // Proprety Create
   static const String ADD_PROPERTY = 'property-services/property/_create';
