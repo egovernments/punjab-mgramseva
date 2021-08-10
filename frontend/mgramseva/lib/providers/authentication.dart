@@ -48,6 +48,7 @@ class AuthenticationProvider with ChangeNotifier {
         Notifiers.getToastMessage(context, 'Unable to login', 'ERROR');
       }
     } on CustomException catch (e) {
+
       Navigator.pop(context);
       if (e.exceptionType == ExceptionType.UNAUTHORIZED) {
         Notifiers.getToastMessage(
@@ -60,8 +61,8 @@ class AuthenticationProvider with ChangeNotifier {
       Notifiers.getToastMessage(context, 'Unable to login', 'ERROR');
     }
   }
-
   void callNotifyer() {
     notifyListeners();
   }
+
 }

@@ -8,12 +8,12 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.expense.service.PaymentService;
 import org.egov.echallan.expense.validator.ExpenseValidator;
 import org.egov.echallan.model.Challan;
+import org.egov.echallan.model.Challan.StatusEnum;
 import org.egov.echallan.model.ChallanRequest;
 import org.egov.echallan.model.SearchCriteria;
 import org.egov.echallan.repository.ChallanRepository;
 import org.egov.echallan.util.CommonUtils;
 import org.egov.echallan.validator.ChallanValidator;
-import org.egov.echallan.web.models.collection.PaymentResponse;
 import org.egov.echallan.web.models.user.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -130,14 +130,21 @@ public class ChallanService {
 	    }
 	 
 	 public Challan update(ChallanRequest request) {
-		 Object mdmsData = utils.mDMSCall(request);
-		 validator.validateFields(request, mdmsData);
-		 List<Challan> searchResult = searchChallans(request);
-		 validator.validateUpdateRequest(request,searchResult);
-		 enrichmentService.enrichUpdateRequest(request);
-		 calculationService.addCalculation(request);
-		 repository.update(request);
-		 return request.getChallan();
+			Object mdmsData = utils.mDMSCall(request);
+			expenseValidator.validateFields(request, mdmsData);
+			validator.validateFields(request, mdmsData);
+			List<Challan> searchResult = searchChallans(request);
+			validator.validateUpdateRequest(request, searchResult);
+			expenseValidator.validateUpdateRequest(request, searchResult);
+			userService.setAccountUser(request);
+			enrichmentService.enrichUpdateRequest(request);
+			calculationService.addCalculation(request);
+			if (request.getChallan().getApplicationStatus() == StatusEnum.PAID && searchResult.get(0).getApplicationStatus() == StatusEnum.ACTIVE)
+				paymentService.createPayment(request);
+			if (searchResult.get(0).getApplicationStatus() == StatusEnum.PAID)
+				paymentService.updatePayment(request);
+			repository.update(request);
+			return request.getChallan();
 		}
 
 	

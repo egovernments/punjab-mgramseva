@@ -1,5 +1,6 @@
 package org.egov.echallan.expense.service;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.egov.echallan.config.ChallanConfiguration;
@@ -14,6 +15,8 @@ import org.egov.echallan.web.models.collection.Payment;
 import org.egov.echallan.web.models.collection.PaymentDetail;
 import org.egov.echallan.web.models.collection.PaymentRequest;
 import org.egov.echallan.web.models.collection.PaymentResponse;
+import org.egov.echallan.web.models.collection.PaymentWorkflow;
+import org.egov.echallan.web.models.collection.PaymentWorkflowRequest;
 import org.egov.tracer.model.CustomException;
 import org.egov.tracer.model.ServiceCallException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +50,11 @@ public class PaymentService {
 	public PaymentResponse createPayment(ChallanRequest request) {
 		Challan challan = request.getChallan();
 		PaymentResponse response = null;
-		if (challan.getIsBillPaid()) {
+		if ( challan.getIsBillPaid()) {
 
 			Payment payment = Payment.builder().tenantId(challan.getTenantId()).paymentMode("CASH")
-					.mobileNumber(challan.getCitizen().getMobileNumber()).paidBy(challan.getCitizen().getName()).build();
+					.mobileNumber(challan.getCitizen().getMobileNumber()).paidBy(challan.getCitizen().getName())
+					.build();
 
 			List<Bill> billList = fetchBill(request);
 			if (!billList.isEmpty()) {
@@ -62,7 +66,8 @@ public class PaymentService {
 
 			// Call Collection
 
-			StringBuilder uri = new StringBuilder("http://localhost:8092/collection-services/payments/_create");
+			StringBuilder uri = new StringBuilder(config.getPaymentContextPath())
+					.append(config.getPaymentCreateEndpoint());
 			Object result = serviceRequestRepository.fetchResult(uri,
 					PaymentRequest.builder().payment(payment).requestInfo(request.getRequestInfo()).build());
 
@@ -102,6 +107,41 @@ public class PaymentService {
 					challan.getTenantId(), e);
 			throw new CustomException("BILLING_SERVICE_ERROR", "Failed to fetch bill, unknown error occurred");
 		}
+	}
+
+	public PaymentResponse updatePayment(ChallanRequest request) {
+		Challan challan = request.getChallan();
+		PaymentResponse response = null;
+		if (challan.getApplicationStatus() == StatusEnum.CANCELLED) {
+			PaymentWorkflow paymentWorkflow = PaymentWorkflow.builder().tenantId(challan.getTenantId())
+					.reason("Expense challan cancelled").action(PaymentWorkflow.PaymentAction.CANCEL)
+					.paymentId(searchPayment(request)).build();
+
+			StringBuilder uri = new StringBuilder(config.getPaymentContextPath())
+					.append(config.getPaymentUpdateEndpoint());
+
+			Object result = serviceRequestRepository.fetchResult(uri, PaymentWorkflowRequest.builder()
+					.paymentWorkflows(Arrays.asList(paymentWorkflow)).requestInfo(request.getRequestInfo()).build());
+			try {
+				response = mapper.convertValue(result, PaymentResponse.class);
+			} catch (IllegalArgumentException e) {
+				log.error("Error parsing update payment response Challan id : " + challan.getId());
+				throw new CustomException("PARSING ERROR", "Unable to parse payment response");
+			}
+		}
+
+		return response;
+	}
+
+	public String searchPayment(ChallanRequest request) {
+		StringBuilder uri = new StringBuilder(config.getPaymentContextPath()).append(config.getPaymentSearchEndpoint())
+				.append("?consumerCodes=").append(request.getChallan().getChallanNo()).append(" &tenantId=")
+				.append(request.getChallan().getTenantId());
+		RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(request.getRequestInfo())
+				.build();
+		Object response = serviceRequestRepository.fetchResult(uri, requestInfoWrapper);
+		PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
+		return paymentResponse.getPayments().get(0).getId();
 	}
 
 }

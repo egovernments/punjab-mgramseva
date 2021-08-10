@@ -12,9 +12,11 @@ import 'package:provider/provider.dart';
 
 class UserProfileRepository extends BaseService {
   Future<UserProfile> getProfile(Map body) async {
+    print(navigatorKey.currentContext!);
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+
     final requestInfo = RequestInfo('ap.public', .01, "", "POST", 1, "", "",
         commonProvider.userDetails!.accessToken);
     late UserProfile userProfile;

@@ -5,10 +5,7 @@ import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/user/user_details.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/localization_label.dart';
-
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/LocalStorage.dart';
@@ -71,7 +68,6 @@ class CommonProvider with ChangeNotifier {
     }
     return labels;
   }
-
   setSelectedTenant(UserDetails? loginDetails) {
     if (kIsWeb) {
       window.localStorage[Constants.LOGIN_KEY] =
@@ -117,8 +113,8 @@ class CommonProvider with ChangeNotifier {
             value: jsonEncode(labels.map((e) => e.toJson()).toList()));
       }
     } catch (e) {
-      // Notifiers.getToastMessage(
-      //     context, 'Unable to store the details', 'ERROR');
+      Notifiers.getToastMessage(
+          context, 'Unable to store the details', 'ERROR');
     }
   }
 
