@@ -49,10 +49,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
           .toSet()
           .toList();
       print(r);
-      final resulst = tenantProvider.tenants!.tenantsList!
-          .where((element) => r.contains(element.code))
-          .toList();
-      showdialog(resulst);
+
+      if (r != null && tenantProvider.tenants != null) {
+        final resulst = tenantProvider.tenants!.tenantsList!
+            .where((element) => r.contains(element.code))
+            .toList();
+        showdialog(resulst);
+      }
     }
   }
 
@@ -66,6 +69,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         builder: (BuildContext context) {
           return Stack(children: <Widget>[
             Container(
+                height: 140,
                 margin: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width > 720
                         ? MediaQuery.of(context).size.width -
@@ -122,6 +126,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+    print("call for function");
     final r = commonProvider.userDetails!.userRequest!.roles!
         .map((e) => e.tenantId)
         .toSet()
@@ -159,33 +164,35 @@ class _CustomAppBarState extends State<CustomAppBar> {
           .translate(i18.common.MGRAM_SEVA)),
       actions: [
         Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.height,
             child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-              tenantProvider.tenants != null
-                  ? buildtenantsView(tenantProvider.tenants!)
-                  : StreamBuilder(
-                      stream: tenantProvider.streamController.stream,
-                      builder: (context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          return buildtenantsView(snapshot.data);
-                        } else if (snapshot.hasError) {
-                          return Notifiers.networkErrorPage(context, () {});
-                        } else {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.waiting:
-                              return Loaders.CircularLoader();
-                            case ConnectionState.active:
-                              return Loaders.CircularLoader();
-                            default:
-                              return Container(
-                                child: Text(""),
-                              );
-                          }
-                        }
-                      })
-            ]))
+                  tenantProvider.tenants != null
+                      ? buildtenantsView(tenantProvider.tenants!)
+                      : StreamBuilder(
+                          stream: tenantProvider.streamController.stream,
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              return buildtenantsView(snapshot.data);
+                            } else if (snapshot.hasError) {
+                              return Notifiers.networkErrorPage(context, () {});
+                            } else {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.waiting:
+                                  return Loaders.CircularLoader();
+                                case ConnectionState.active:
+                                  return Loaders.CircularLoader();
+                                default:
+                                  return Container(
+                                    child: Text(""),
+                                  );
+                              }
+                            }
+                          })
+                ]))
       ],
     );
   }
