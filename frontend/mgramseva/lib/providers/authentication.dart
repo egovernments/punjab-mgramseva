@@ -52,16 +52,13 @@ class AuthenticationProvider with ChangeNotifier {
       }
     } on CustomException catch (e,s) {
       Navigator.pop(context);
-      if (e.exceptionType == ExceptionType.UNAUTHORIZED) {
-        Notifiers.getToastMessage(
-            context, '${e.message ?? i18.login.INVALID_CREDENTIALS}', 'ERROR');
-      } else if(ErrorHandler.handleApiException(context, e, s)) {
-        Notifiers.getToastMessage(context, i18.login.UNABLE_TO_LOGIN, 'ERROR');
+      if(ErrorHandler.handleApiException(context, e, s)) {
+        Notifiers.getToastMessage(context, e.message, 'ERROR');
       }
     } catch (e,s) {
       Navigator.pop(context);
       ErrorHandler.logError(e.toString(),s);
-      Notifiers.getToastMessage(context, i18.login.UNABLE_TO_LOGIN, 'ERROR');
+      Notifiers.getToastMessage(context, e.toString(), 'ERROR');
     }
   }
 

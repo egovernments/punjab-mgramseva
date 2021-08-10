@@ -104,14 +104,14 @@ class router {
           id = (settings.arguments as ExpensesDetailsModel).challanNo;
         }else{
           if(queryValidator(Routes.EXPENSE_UPDATE, query)){
-            id = query['id'];
+            id = query['challanNo'];
           }else{
             return pageNotAvailable;
           }
         }
         return MaterialPageRoute(
-            builder: (_) => ExpenseDetails(id: id, expensesDetails: settings.arguments as ExpensesDetailsModel),
-            settings: RouteSettings(name: '${Routes.EXPENSE_UPDATE}?id=$id'));
+            builder: (_) => ExpenseDetails(id: id, expensesDetails: settings.arguments != null ? settings.arguments as ExpensesDetailsModel : null),
+            settings: RouteSettings(name: '${Routes.EXPENSE_UPDATE}?challanNo=$id'));
       case Routes.HOUSEHOLD_DETAILS:
         return MaterialPageRoute(
             builder: (_) => HouseholdDetail(),
@@ -182,7 +182,7 @@ class router {
 
     switch(route){
       case Routes.EXPENSE_UPDATE :
-        if(query.keys.contains('id')) return true;
+        if(query.keys.contains('challanNo')) return true;
         return false;
       default :
         return false;

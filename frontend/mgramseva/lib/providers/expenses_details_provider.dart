@@ -48,6 +48,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
         var expenditure = await ExpensesRepository().searchExpense({'challanNo' : id});
         if(expenditure != null && expenditure.isNotEmpty){
           expenditureDetails = expenditure!.first;
+        }else{
+          streamController.add(i18.expense.NO_EXPENSE_RECORD_FOUND);
+          return;
         }
       }
 
@@ -95,13 +98,13 @@ class ExpensesDetailsProvider with ChangeNotifier {
       if(ErrorHandler.handleApiException(context, e,s)) {
         Notifiers.getToastMessage(
             context,
-           e.message ?? i18.expense.UNABLE_TO_CREATE_EXPENSE,
+           e.message,
             'ERROR');
       }
     } catch (e, s) {
       Notifiers.getToastMessage(
           context,
-          i18.expense.UNABLE_TO_CREATE_EXPENSE,
+          e.toString(),
           'ERROR');
       ErrorHandler.logError(e.toString(),s);
       Navigator.pop(context);
@@ -121,16 +124,15 @@ class ExpensesDetailsProvider with ChangeNotifier {
             arguments: SearchResult(criteria, res));
       } else {
         Notifiers.getToastMessage(context,
-            '${ApplicationLocalizations.of(context).translate(
-                i18.expense.NO_EXPENSES_FOUND)}', 'ERROR');
+            i18.expense.NO_EXPENSES_FOUND, 'ERROR');
       }
     } on CustomException catch(e,s){
       Notifiers.getToastMessage(context,
-              i18.expense.UNABLE_TO_SEARCH_EXPENSE, 'ERROR');
+              e.message, 'ERROR');
       Navigator.pop(context);
     }catch(e) {
       Notifiers.getToastMessage(context,
-              i18.expense.UNABLE_TO_SEARCH_EXPENSE, 'ERROR');
+              e.toString(), 'ERROR');
       Navigator.pop(context);
     }
 

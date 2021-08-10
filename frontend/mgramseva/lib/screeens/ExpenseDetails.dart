@@ -4,6 +4,7 @@ import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -76,6 +77,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                 stream: expensesDetailsProvider.streamController.stream,
                 builder: (context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData) {
+                    if(snapshot.data is String){
+                      return CommonWidgets.buildEmptyMessage(snapshot.data, context);
+                    }
                     return _buildUserView(snapshot.data);
                   } else if (snapshot.hasError) {
                     return Notifiers.networkErrorPage(context, () => expensesDetailsProvider.getExpensesDetails(context, widget.expensesDetails, widget.id));

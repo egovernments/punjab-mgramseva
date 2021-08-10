@@ -39,14 +39,13 @@ class ResetPasswordProvider with ChangeNotifier {
       if(ErrorHandler.handleApiException(context, e,s)) {
         Notifiers.getToastMessage(
             context,
-            e.message ??
-                i18.password.UNABLE_TO_RESET_THE_PASSWORD,
+            e.message,
             'ERROR');
       }
     } catch (e, s) {
       Notifiers.getToastMessage(
           context,
-          i18.password.UNABLE_TO_RESET_THE_PASSWORD,
+          e.toString(),
           'ERROR');
       ErrorHandler.logError(e.toString(),s);
       Navigator.pop(context);
