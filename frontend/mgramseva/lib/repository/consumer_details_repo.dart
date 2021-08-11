@@ -2,66 +2,67 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
-import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 
 class ConsumerRepository extends BaseService {
-  Future addProperty(Map body) async {
+  getReguestInfo(String criteria) {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+    return RequestInfo(
+        APIConstants.API_MODULE_NAME,
+        APIConstants.API_VERSION,
+        APIConstants.API_TS,
+        criteria,
+        APIConstants.API_DID,
+        APIConstants.API_KEY,
+        APIConstants.API_MESSAGE_ID,
+        commonProvider.userDetails!.accessToken);
+  }
+
+  //Add Property API
+  Future addProperty(Map body) async {
     var res = await makeRequest(
         url: Url.ADD_PROPERTY,
         body: {"Property": body},
         method: RequestType.POST,
-        requestInfo: RequestInfo(
-            APIConstants.API_MODULE_NAME,
-            APIConstants.API_VERSION,
-            APIConstants.API_TS,
-            "",
-            APIConstants.API_DID,
-            APIConstants.API_KEY,
-            APIConstants.API_MESSAGE_ID,
-            commonProvider.userDetails!.accessToken));
+        requestInfo: getReguestInfo('_create'));
     return res;
   }
 
-  Future getLocations(Map body) async {
-    var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
+  //Update Property API
+  Future updateProperty(Map body) async {
     var res = await makeRequest(
-        url: Url.EGOV_LOCATIONS,
-        queryParameters: body.map((key, value) =>
-            MapEntry(key, value == null ? null : value.toString())),
+        url: Url.UPDATE_PROPERTY,
+        body: {"Property": body},
         method: RequestType.POST,
-        requestInfo: RequestInfo(
-            APIConstants.API_MODULE_NAME,
-            APIConstants.API_VERSION,
-            APIConstants.API_TS,
-            "_create",
-            APIConstants.API_DID,
-            APIConstants.API_KEY,
-            APIConstants.API_MESSAGE_ID,
-            commonProvider.userDetails!.accessToken));
+        requestInfo: getReguestInfo('_update'));
     return res;
   }
 
+//Adding Water Connection
   Future addconnection(Map body) async {
-    var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
     var res = await makeRequest(
         url: Url.ADD_WC_CONNECTION,
         body: {"WaterConnection": body},
         method: RequestType.POST,
-        requestInfo: RequestInfo('mgramseva-common', 1, "", "_create", 1, "",
-            "", commonProvider.userDetails!.accessToken));
+        requestInfo: getReguestInfo('_create'));
     return res;
   }
 
+  //Update Water Connection
+  Future updateconnection(Map body) async {
+    var res = await makeRequest(
+        url: Url.UPDATE_WC_CONNECTION,
+        body: {"WaterConnection": body},
+        method: RequestType.POST,
+        requestInfo: getReguestInfo('_update'));
+    return res;
+  }
+
+//Fetching of Property
   Future getProperty(Map<String, dynamic> query) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
@@ -73,15 +74,18 @@ class ConsumerRepository extends BaseService {
         body: body,
         queryParameters: query,
         method: RequestType.POST,
-        requestInfo: RequestInfo(
-            APIConstants.API_MODULE_NAME,
-            APIConstants.API_VERSION,
-            APIConstants.API_TS,
-            "_search",
-            APIConstants.API_DID,
-            APIConstants.API_KEY,
-            APIConstants.API_MESSAGE_ID,
-            commonProvider.userDetails!.accessToken));
+        requestInfo: getReguestInfo('_search'));
+    return res;
+  }
+
+  //Getting LocationDetails
+  Future getLocations(Map body) async {
+    var res = await makeRequest(
+        url: Url.EGOV_LOCATIONS,
+        queryParameters: body.map((key, value) =>
+            MapEntry(key, value == null ? null : value.toString())),
+        method: RequestType.POST,
+        requestInfo: getReguestInfo('_search'));
     return res;
   }
 }

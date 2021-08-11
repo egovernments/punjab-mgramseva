@@ -5,6 +5,20 @@ part 'property.g.dart';
 
 @JsonSerializable()
 class Property {
+  @JsonKey(name: "id")
+  String? id;
+  @JsonKey(name: "propertyId")
+  String? propertyId;
+  @JsonKey(name: "status")
+  String? status;
+
+  @JsonKey(name: "workflow")
+  String? workflow;
+
+  @JsonKey(name: "acknowldgementNumber")
+  String? acknowldgementNumber;
+  @JsonKey(name: "accountId")
+  String? accountId;
   @JsonKey(name: "tenantId")
   String? tenantId;
   @JsonKey(name: "address")

@@ -17,6 +17,8 @@ class WaterConnection {
   String? tenantId;
   @JsonKey(name: "action")
   String? action;
+  @JsonKey(name: "meterInstallationDate")
+  int? meterInstallationDate;
   @JsonKey(name: "documents")
   Documents? documents;
   @JsonKey(name: "proposedTaps")
@@ -64,11 +66,14 @@ class WaterConnection {
   }
 
   getText() {
+    print(previousReadingDate);
     OldConnectionCtrl.text = oldConnectionNo ?? "";
     meterIdCtrl.text = meterId ?? "";
     arrearsCtrl.text = arrears.toString() ?? "";
-    previousReadingDateCtrl.text =
-        DateFormats.timeStampToDate(previousReadingDate) ?? "";
+
+    previousReadingDateCtrl.text = previousReadingDate == null
+        ? DateFormats.timeStampToDate(meterInstallationDate)
+        : DateFormats.timeStampToDate(previousReadingDate);
   }
 
   WaterConnection();
@@ -92,7 +97,7 @@ class ProcessInstance {
 @JsonSerializable()
 class AdditionalDetails {
   @JsonKey(name: "initialMeterReading")
-  String? initialMeterReading;
+  int? initialMeterReading;
 
   @JsonKey(name: "locality")
   String? locality;
@@ -100,7 +105,8 @@ class AdditionalDetails {
   var initialMeterReadingCtrl = TextEditingController();
   String? action;
   setText() {
-    initialMeterReading = initialMeterReadingCtrl.text;
+    initialMeterReading =
+        DateFormats.dateToTimeStamp(initialMeterReadingCtrl.text);
   }
 
   AdditionalDetails();

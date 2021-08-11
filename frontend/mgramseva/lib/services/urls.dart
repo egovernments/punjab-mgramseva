@@ -12,10 +12,14 @@ class Url {
   // Proprety Create
   static const String ADD_PROPERTY = 'property-services/property/_create';
   //Property Fetch
-
   static const String GET_PROPERTY = 'property-services/property/_search';
+//Property  Update
+  static const String UPDATE_PROPERTY = 'property-services/property/_update';
   // Connection Create
   static const String ADD_WC_CONNECTION = 'ws-services/wc/_create';
+
+  // Connection Create
+  static const String UPDATE_WC_CONNECTION = 'ws-services/wc/_create';
 
   // Connection Fetch
   static const String FETCH_WC_CONNECTION = 'ws-services/wc/_search';

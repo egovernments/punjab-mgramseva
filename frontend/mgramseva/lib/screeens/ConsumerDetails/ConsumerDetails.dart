@@ -20,6 +20,7 @@ import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/SelectFieldBuilder.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
+import 'package:mgramseva/widgets/TableText.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
@@ -50,6 +51,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
         Provider.of<ConsumerProvider>(context, listen: false)
           ..setModel()
           ..setWaterConnection(widget.waterconnection)
+          ..fetchDates()
           ..getProperty({
             "tenantId": commonProvider.userDetails!.selectedtenant!.code,
             "propertyIds": widget.waterconnection!.propertyId
@@ -71,6 +73,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
     Provider.of<ConsumerProvider>(context, listen: false)
       ..setModel()
       ..getConsumerDetails()
+      ..fetchDates()
       ..fetchBoundary()
       ..autoValidation = false
       ..formKey = GlobalKey<FormState>()
@@ -95,9 +98,23 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                            LabelText(i18.consumer.CONSUMER_DETAILS_LABEL),
-                            SubLabelText(
-                                i18.consumer.CONSUMER_DETAILS_SUB_LABEL),
+                            //Heading
+                            LabelText(consumerProvider.isEdit
+                                ? i18.consumer.CONSUMER_EDIT_DETAILS_LABEL
+                                : i18.consumer.CONSUMER_DETAILS_LABEL),
+                            //Sub Heading
+                            SubLabelText(consumerProvider.isEdit
+                                ? i18.consumer.CONSUMER_EDIT_DETAILS_SUB_LABEL
+                                : i18.consumer.CONSUMER_DETAILS_SUB_LABEL),
+                            //Conniction ID displayed based in Edit Mode
+                            consumerProvider.isEdit
+                                ? BuildTableText(
+                                    i18.consumer.CONSUMER_CONNECTION_ID,
+                                    consumerProvider
+                                        .waterconnection.connectionNo
+                                        .toString())
+                                : Container(child: Text("")),
+                            //Consumer Name Field
                             BuildTextField(
                               i18.consumer.CONSUMER_NAME,
                               property.owners!.first.consumerNameCtrl,
@@ -107,6 +124,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               ],
                               isRequired: true,
                             ),
+                            //Consumer Gender Field
                             Consumer<ConsumerProvider>(
                                 builder: (_, consumerProvider, child) =>
                                     RadioButtonFieldBuilder(
@@ -121,6 +139,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                           consumerProvider.onChangeOfGender(
                                               val, property.owners!.first),
                                     )),
+                            //Consumer Father or Spouse Field
                             BuildTextField(
                               i18.consumer.FATHER_SPOUSE_NAME,
                               property.owners!.first.fatherOrSpouseCtrl,
@@ -130,6 +149,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     RegExp("[A-Za-z ]"))
                               ],
                             ),
+                            //Consumer Phone Number Field
                             BuildTextField(
                               i18.common.PHONE_NUMBER,
                               property.owners!.first.phoneNumberCtrl,
@@ -142,6 +162,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     RegExp("[0-9]"))
                               ],
                             ),
+                            //Consumer Old Connection Field
                             Consumer<ConsumerProvider>(
                                 builder: (_, consumerProvider, child) =>
                                     BuildTextField(
@@ -150,10 +171,12 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                           .waterconnection.OldConnectionCtrl,
                                       isRequired: true,
                                     )),
+                            //Consumer Door Number Field
                             BuildTextField(
                               i18.consumer.DOOR_NO,
                               property.address.doorNumberCtrl,
                             ),
+                            //Consumer Street Field
                             BuildTextField(
                               i18.consumer.STREET_NUM_NAME,
                               property.address.streetNameOrNumberCtrl,
@@ -164,6 +187,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             //   name,
                             //   isRequired: true,
                             // ),
+
+                            //Consumer Ward Field
                             Consumer<ConsumerProvider>(
                                 builder: (_, consumerProvider, child) =>
                                     SelectFieldBuilder(
@@ -174,6 +199,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                         consumerProvider.onChangeOflocaity,
                                         consumerProvider.getBoundaryList(),
                                         true)),
+                            //Consumer Property Type Field
                             Consumer<ConsumerProvider>(
                                 builder: (_, consumerProvider, child) =>
                                     SelectFieldBuilder(
@@ -184,6 +210,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                         consumerProvider.onChangeOfPropertyType,
                                         consumerProvider.getPropertTypeList(),
                                         true)),
+                            //Consumer Service Type Field
                             Consumer<ConsumerProvider>(
                                 builder: (_, consumerProvider, child) => Column(
                                       children: [
@@ -203,6 +230,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                 'Metered'
                                             ? Column(
                                                 children: [
+                                                  //Consumer Previous MeterReading Date Picker Field
                                                   BasicDateField(
                                                       i18.consumer
                                                           .PREV_METER_READING_DATE,
@@ -230,7 +258,23 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                   ),
                                                 ],
                                               )
-                                            : Container(),
+                                            : Consumer<
+                                                    ConsumerProvider>(
+                                                builder: (_, consumerProvider,
+                                                        child) =>
+                                                    SelectFieldBuilder(
+                                                        i18.consumer
+                                                            .CONSUMER_BILLING_CYCLE,
+                                                        consumerProvider
+                                                            .waterconnection
+                                                            .meterInstallationDate,
+                                                        '',
+                                                        '',
+                                                        consumerProvider
+                                                            .onChangeBillingcycle,
+                                                        consumerProvider
+                                                            .getBillingCycle(),
+                                                        true)),
                                         BuildTextField(
                                           i18.consumer.ARREARS,
                                           consumerProvider
