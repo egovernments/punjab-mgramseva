@@ -45,6 +45,7 @@ public class CalculationService {
 			CalculationCriteria criteria = CalculationCriteria.builder()
 					.applicationNo(request.getWaterConnection().getApplicationNo())
 					.waterConnection(request.getWaterConnection())
+					.connectionNo(request.getWaterConnection().getConnectionNo())
 					.tenantId(property.getTenantId()).build();
 			CalculationReq calRequest = CalculationReq.builder().calculationCriteria(Arrays.asList(criteria))
 					.requestInfo(request.getRequestInfo()).isconnectionCalculation(false).build();

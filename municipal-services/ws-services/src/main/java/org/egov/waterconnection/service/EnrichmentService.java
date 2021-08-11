@@ -213,7 +213,7 @@ public class EnrichmentService {
 	 * @param waterConnectionRequest WaterConnectionRequest Object
 	 */
 	public void postStatusEnrichment(WaterConnectionRequest waterConnectionRequest) {
-		if (WCConstants.ACTIVATE_CONNECTION
+		if (WCConstants.SUBMIT_CONNECTION
 				.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getProcessInstance().getAction())) {
 			setConnectionNO(waterConnectionRequest);
 		}
