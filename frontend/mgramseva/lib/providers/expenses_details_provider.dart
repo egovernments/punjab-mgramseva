@@ -65,7 +65,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addExpensesDetails(BuildContext context, [isUpdate = false]) async {
+  Future<void> addExpensesDetails(BuildContext context, bool isUpdate) async {
     late Map body;
     setEnteredDetails(context);
 
@@ -83,10 +83,15 @@ class ExpensesDetailsProvider with ChangeNotifier {
       Navigator.pop(context);
       var challanDetails = res['challans']?[0];
       navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW,
-          arguments: SuccessHandler(
-              '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}',
+          arguments: isUpdate ?
+          SuccessHandler(
+              i18.expense.MODIFIED_EXPENDITURE_SUCCESSFULLY,
+              '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_BILL_ID)} ${challanDetails['challanNo']} ${ApplicationLocalizations.of(context).translate(i18.expense.HAS_BEEN_MODIFIED)} ',
+              i18.common.BACK_HOME, isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD)
+              : SuccessHandler(
+              i18.expense.EXPENDITURE_SUCESS,
               '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_AGAINST)} ${challanDetails['challanNo']} ${ApplicationLocalizations.of(context).translate(i18.expense.UNDER_MAINTAINANCE)} Rs. ${challanDetails['amount'][0]['amount']} ',
-              i18.common.BACK_HOME, Routes.EXPENSES_ADD));
+              i18.common.BACK_HOME, isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD));
     } on CustomException catch (e,s) {
       Navigator.pop(context);
 
@@ -198,9 +203,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
     }
   }
 
-  void validateExpensesDetails(BuildContext context) {
+  void validateExpensesDetails(BuildContext context, [isUpdate = false]) {
     if (formKey.currentState!.validate()) {
-      addExpensesDetails(context);
+      addExpensesDetails(context, isUpdate);
     } else {
       autoValidation = true;
     }

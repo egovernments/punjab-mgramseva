@@ -89,7 +89,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                   }
                 })),
         bottomNavigationBar: BottomButtonBar(i18.common.SUBMIT,
-            () => expensesDetailsProvider.validateExpensesDetails(context)));
+            () => expensesDetailsProvider.validateExpensesDetails(context, isUpdate)));
   }
 
   saveInput(context) async {
@@ -190,4 +190,6 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   Widget buildTile(context, vendor) => Container(
       padding: EdgeInsets.symmetric(vertical: 6, horizontal: 5),
       child: Text('${vendor?.name}', style: TextStyle(fontSize: 18)));
+
+  bool get isUpdate => widget.id != null || widget.expensesDetails != null;
 }

@@ -148,6 +148,15 @@ class Expense {
 
   /// Unable to Search the Expenses
   String get NO_FIELDS_FILLED => 'NO_FIELDS_FILLED';
+
+  ///Modified expenditure successfully
+  String get MODIFIED_EXPENDITURE_SUCCESSFULLY => 'MODIFIED_EXPENDITURE_SUCCESSFULLY';
+
+  ///Expenditure Bill with id
+  String get EXPENDITURE_BILL_ID => 'EXPENDITURE_BILL_ID';
+
+  ///Has been modified
+  String get HAS_BEEN_MODIFIED => 'HAS_BEEN_MODIFIED';
 }
 
 class CreateConsumer {
