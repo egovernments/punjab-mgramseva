@@ -67,11 +67,15 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
   Future<void> addExpensesDetails(BuildContext context, bool isUpdate) async {
     late Map body;
-    setEnteredDetails(context, isUpdate);
+    if(isNewVendor()){
+      if(!(await createVendor(context))) return;
+    }
 
-      body = {'Challan': expenditureDetails.toJson()};
+    setEnteredDetails(context, isUpdate);
+    body = {'Challan': expenditureDetails.toJson()};
 
     try {
+
       Loaders.showLoadingDialog(context);
 
       var res = await ExpensesRepository()
@@ -137,6 +141,82 @@ class ExpensesDetailsProvider with ChangeNotifier {
     print(fileStoreIds);
   }
 
+
+  Future<bool> createVendor(BuildContext context) async {
+    bool status = false;
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+
+    var body = {
+     "vendor": {
+       "tenantId": commonProvider.userDetails?.selectedtenant?.code,
+       "name": expenditureDetails.vendorNameCtrl.text,
+       "address": {
+         "tenantId": commonProvider.userDetails?.selectedtenant?.code,
+         "doorNo": null,
+         "plotNo": null,
+         "landmark": null,
+         "city": null,
+         "district": null,
+         "region": null,
+         "state": "punjab",
+         "country": "in",
+         "pincode": null,
+         "additionDetails": null,
+         "buildingName":null,
+         "street": null,
+         "locality": {
+           "code": commonProvider.userDetails?.selectedtenant?.city?.code,
+           "name": null,
+           "label": null,
+           "latitude": null,
+           "longitude": null,
+           "area": "null",
+           "pincode": null,
+           "boundaryNum": 1,
+           "children": []
+         },
+         "geoLocation": {
+           "latitude": 0,
+           "longitude": 0,
+           "additionalDetails": {}
+         }
+       },
+       "owner": {
+         "tenantId": "pb.lodhipur",
+         "name": expenditureDetails.vendorNameCtrl.text,
+         "fatherOrHusbandName": "defaultName",
+         "relationship": "FATHER",
+         "gender": "MALE",
+         "dob": 550261800000,
+         "emailId": "example@gmail.com",
+         "mobileNumber": expenditureDetails.mobileNumberController.text
+       },
+       "vehicles": [],
+       "drivers": [],
+       "source": "WhatsApp"
+     }
+   };
+
+   try {
+     Loaders.showLoadingDialog(context);
+
+     var res = await ExpensesRepository()
+         .createVendor(body);
+     if(res != null){
+       expenditureDetails.selectedVendor = Vendor(res['name'], res['id']);
+       status = true;
+     }
+   } on CustomException catch(e,s){
+     Notifiers.getToastMessage(context,
+         e.message, 'ERROR');
+   }catch(e) {
+     Notifiers.getToastMessage(context,
+         e.toString(), 'ERROR');
+   }
+   Navigator.pop(context);
+   return status;
+  }
+
   Future<void> searchExpense(Map<String, dynamic> query, String criteria, BuildContext context) async {
 
     try {
@@ -165,6 +245,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   Future<List<dynamic>> onSearchVendorList(pattern) async {
+    notifyListeners();
     if (vendorList.isEmpty) {
       await fetchVendors();
     }
@@ -176,6 +257,17 @@ class ExpensesDetailsProvider with ChangeNotifier {
             .toLowerCase()
             .contains(pattern.toString().toLowerCase()))
         .toList();
+  }
+
+  bool isNewVendor(){
+    var vendorName = expenditureDetails.vendorNameCtrl.text.trim();
+    if(vendorName.isEmpty) {
+      return false;
+    }else if(vendorList.isEmpty || (vendorList.indexWhere((e) => e.name.toLowerCase().trim() == vendorName)) == -1){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   Future<List<Vendor>> fetchVendors() async {

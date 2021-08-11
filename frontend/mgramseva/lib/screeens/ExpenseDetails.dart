@@ -9,6 +9,7 @@ import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/DatePickerFieldBuilder.dart';
@@ -137,13 +138,25 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     callBack: expensesDetailsProvider.onSearchVendorList,
                     listTile: buildTile,
                     isRequired: true, isEnabled : expenseDetails.allowEdit),
+                    if(expensesDetailsProvider.isNewVendor()) BuildTextField(
+                      '${i18.common.MOBILE_NUMBER}',
+                      expenseDetails.mobileNumberController,
+                      isRequired: true,
+                      prefixText: '+91',
+                      textInputType: TextInputType.number,
+                      validator: Validators.mobileNumberValidator,
+                      maxLength: 10,
+                      inputFormatter: [
+                        FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                      ],
+                    ),
                 BuildTextField(
                   '${i18.expense.AMOUNT}',
                   expenseDetails.expensesAmount!.first.amountCtrl,
                   isRequired: true,
                   textInputType: TextInputType.number,
                   inputFormatter: [
-                    FilteringTextInputFormatter.allow(RegExp("[0-9.]"))
+                    FilteringTextInputFormatter.allow(RegExp("[0-9]"))
                   ],
                   labelSuffix: '(₹)',
                   isDisabled: (expenseDetails.allowEdit ?? true) ? false : true,

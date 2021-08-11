@@ -94,6 +94,9 @@ class ExpensesDetailsModel {
   @JsonKey(ignore: true)
   var challanNumberCtrl = TextEditingController();
 
+  @JsonKey(ignore: true)
+  var mobileNumberController = TextEditingController();
+
   ExpensesDetailsModel();
 
   setText() {
