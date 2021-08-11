@@ -234,6 +234,7 @@ class DemandGenerate {
       'NEW_METER_READING_INVALID_MSG'; //New Meter Reading is Invalid
   String get NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING =>
       'NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING'; //New Meter Reading should be greater than Old meter Reading
+  String get METER_READING_DATE => 'GENERATE_DEMAND_METER_READING_DATE';
 }
 
 class _NetWorkException {

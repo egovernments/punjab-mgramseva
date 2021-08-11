@@ -84,7 +84,21 @@ Map getConnectionTypePropertyTypeMDMS(String tenantId) {
     }
   };
 }
-
+Map getTaxPeriodMDMS(String tenantId) {
+  return {
+    "MdmsCriteria": {
+      "tenantId": tenantId,
+      "moduleDetails": [
+        {
+          "moduleName": "BillingService",
+          "masterDetails": [
+            {"name": "TaxPeriod"}
+          ],
+        },
+      ]
+    }
+  };
+}
 Map getTenantsMDMS(String tenantId) {
   return {
     "MdmsCriteria": {
