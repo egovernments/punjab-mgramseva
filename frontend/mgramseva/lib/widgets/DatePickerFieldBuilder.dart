@@ -12,12 +12,15 @@ class BasicDateField extends StatelessWidget {
   final DateTime? initialDate;
   final Function(DateTime?)? onChangeOfDate;
   final TextEditingController controller;
+  final bool? isEnabled;
 
-  BasicDateField(this.label,  this.isRequired, this.controller, {this.firstDate, this.lastDate, this.onChangeOfDate, this.initialDate});
+  BasicDateField(this.label,  this.isRequired, this.controller, {this.firstDate, this.lastDate, this.onChangeOfDate, this.initialDate, this.isEnabled});
 
   @override
   Widget build(BuildContext context) {
-    Widget datePicker = DateTimeField(
+    Widget datePicker = AbsorbPointer(
+      absorbing: !(isEnabled ?? true),
+        child : DateTimeField(
       format: format,
       decoration: InputDecoration(
         prefixText: "",
@@ -29,7 +32,7 @@ class BasicDateField extends StatelessWidget {
       ),
       controller: controller,
       validator: (val){
-        if(isRequired != null && isRequired && val == null){
+        if(isRequired != null && isRequired && controller.text.trim().isEmpty){
           return ApplicationLocalizations.of(context)
               .translate(label + '_REQUIRED');
         }
@@ -43,7 +46,7 @@ class BasicDateField extends StatelessWidget {
           lastDate: lastDate ?? DateTime(2100),
         );
       },onChanged: onChangeOfDate
-    );
+    ));
 
     Widget textLabelwidget = Row(children: <Widget>[
       Text(ApplicationLocalizations.of(context).translate(label),

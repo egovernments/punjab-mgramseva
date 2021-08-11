@@ -5,6 +5,8 @@ class Url {
 
   static const String MDMS = 'egov-mdms-service/v1/_search';
 
+  static const String FILE_UPLOAD = 'filestore/v1/files';
+
   /// Expenses
   static const String ADD_EXPENSES = 'echallan-services/eChallan/v1/_create';
   static const String EXPENSE_SEARCH = 'echallan-services/eChallan/v1/_search';

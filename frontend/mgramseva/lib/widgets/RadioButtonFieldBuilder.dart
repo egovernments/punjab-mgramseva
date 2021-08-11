@@ -12,9 +12,10 @@ class RadioButtonFieldBuilder extends StatelessWidget {
   final String prefixText;
   final List<KeyValue> options;
   final ValueChanged widget1;
+  final bool? isEnabled;
 
   RadioButtonFieldBuilder(this.context, this.labelText, this.controller,
-      this.input, this.prefixText, this.isRequired, this.options, this.widget1);
+      this.input, this.prefixText, this.isRequired, this.options, this.widget1, {this.isEnabled});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,7 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                     title: new Text(data.label),
                     value: data.key,
                     groupValue: controller,
-                    onChanged: widget1,
+                    onChanged: (isEnabled ?? true) ? widget1 : null,
                   );
                 },
               ).toList())),
@@ -77,7 +78,7 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                 title: new Text(data.label),
                 value: data.key,
                 groupValue: controller,
-                onChanged: widget1,
+                onChanged: (isEnabled ?? true) ? widget1 : null,
               );
             },
           ).toList()),

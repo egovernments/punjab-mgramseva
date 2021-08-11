@@ -1,10 +1,16 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 
 class FilePickerDemo extends StatefulWidget {
+  final Function callBack;
+  final String? moduleName;
+
+  const FilePickerDemo({Key? key, required this.callBack, this.moduleName}) : super(key: key);
   @override
   _FilePickerDemoState createState() => _FilePickerDemoState();
 }
@@ -38,6 +44,11 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
             : null,
       ))
           ?.files;
+
+      if(_paths != null){
+      var response = await CoreRepository().uploadFiles(_paths, widget.moduleName ?? APIConstants.API_MODULE_NAME);
+      widget.callBack(response);
+      }
     } on PlatformException catch (e) {
       print("Unsupported operation" + e.toString());
     } catch (ex) {

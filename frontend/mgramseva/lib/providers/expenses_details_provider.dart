@@ -67,13 +67,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
   Future<void> addExpensesDetails(BuildContext context, bool isUpdate) async {
     late Map body;
-    setEnteredDetails(context);
+    setEnteredDetails(context, isUpdate);
 
-    if(isUpdate){
-     body = expenditureDetails.toJson();
-    }else{
       body = {'Challan': expenditureDetails.toJson()};
-    }
 
     try {
       Loaders.showLoadingDialog(context);
@@ -111,7 +107,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     }
   }
 
-  void setEnteredDetails(BuildContext context){
+  void setEnteredDetails(BuildContext context, bool isUpdate){
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     expenditureDetails
       ..businessService = commonProvider.getMdmsId(languageList,
@@ -125,6 +121,20 @@ class ExpensesDetailsProvider with ChangeNotifier {
       ..setText()
       ..vendorId = expenditureDetails.selectedVendor?.id ??
           expenditureDetails.vendorNameCtrl.text;
+
+    if(isUpdate) {
+      if (expenditureDetails.isBillPaid!) {
+        expenditureDetails.applicationStatus = 'PAID';
+      }
+
+      if (expenditureDetails.isBillCancelled!){
+        expenditureDetails.applicationStatus = 'CANCELLED';
+      }
+    }
+  }
+
+  void fileStoreIdCallBack(Map fileStoreIds) {
+    print(fileStoreIds);
   }
 
   Future<void> searchExpense(Map<String, dynamic> query, String criteria, BuildContext context) async {
@@ -172,7 +182,6 @@ class ExpensesDetailsProvider with ChangeNotifier {
     try {
       var query = {
         'tenantId': 'pb',
-        'offset': vendorList.length.toString(),
       };
 
       var res = await ExpensesRepository().getVendor(query);
@@ -214,6 +223,11 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
   void onChangeOfDate(DateTime? dateTime) {
     // ctrl.text = DateFormats.getFilteredDate(dateTime.toString());
+    notifyListeners();
+  }
+
+  void onChangeOfCheckBox(bool? value) {
+    expenditureDetails.isBillCancelled = value;
     notifyListeners();
   }
 

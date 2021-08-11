@@ -10,6 +10,7 @@ class AutoCompleteView extends StatelessWidget {
   final Function(dynamic) onSuggestionSelected;
   final Widget Function(BuildContext, dynamic) listTile;
   final SuggestionsBoxController? suggestionsBoxController;
+  final bool? isEnabled;
 
   const AutoCompleteView(
       {Key? key,
@@ -19,7 +20,7 @@ class AutoCompleteView extends StatelessWidget {
       required this.listTile,
       required this.controller,
       this.suggestionsBoxController,
-      this.isRequired})
+      this.isRequired, this.isEnabled})
       : super(key: key);
 
   @override
@@ -81,6 +82,7 @@ class AutoCompleteView extends StatelessWidget {
   Widget _autoComplete(BuildContext context) {
     return TypeAheadFormField(
       textFieldConfiguration: TextFieldConfiguration(
+        enabled: (isEnabled ?? true),
           controller: controller,
           style: TextStyle(
               color: Colors.black, fontSize: 19, fontWeight: FontWeight.w500),

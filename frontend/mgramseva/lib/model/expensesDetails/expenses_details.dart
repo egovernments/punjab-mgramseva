@@ -10,6 +10,9 @@ class ExpensesDetailsModel {
   @JsonKey(name: "citizen")
   Citizen? citizen;
 
+  @JsonKey(name: "auditDetails")
+  AuditDetails? auditDetails;
+
   @JsonKey(name: "id")
   String? id;
 
@@ -61,8 +64,20 @@ class ExpensesDetailsModel {
   @JsonKey(name: "filestoreid")
   String? fileStoreId;
 
+  @JsonKey(name: "taxPeriodFrom")
+  int? taxPeriodFrom;
+
+  @JsonKey(name: "taxPeriodTo")
+  int? taxPeriodTo;
+
   @JsonKey(ignore: true)
   Vendor? selectedVendor;
+
+  @JsonKey(ignore: true)
+  bool? isBillCancelled = false;
+
+  @JsonKey(ignore: true)
+  bool? allowEdit = true;
 
   @JsonKey(ignore: true)
   var vendorNameCtrl = TextEditingController();
@@ -75,6 +90,9 @@ class ExpensesDetailsModel {
 
   @JsonKey(ignore: true)
   var billIssuedDateCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var challanNumberCtrl = TextEditingController();
 
   ExpensesDetailsModel();
 
@@ -100,6 +118,15 @@ class ExpensesDetailsModel {
     paidDateCtrl.text = DateFormats.timeStampToDate(paidDate);
     billIssuedDateCtrl.text = DateFormats.timeStampToDate(billIssuedDate);
     isBillPaid ??= false;
+    challanNumberCtrl.text = challanNo?.toString() ?? '';
+
+    if(selectedVendor == null && challanNo != null){
+      selectedVendor = Vendor(vendorName ?? '', vendorId ?? '');
+    }
+
+    if(isBillPaid!){
+      allowEdit = false;
+    }
   }
 
   factory ExpensesDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -151,4 +178,26 @@ class Citizen {
       _$CitizenFromJson(json);
 
   Map<String, dynamic> toJson() => _$CitizenToJson(this);
+}
+
+@JsonSerializable()
+class AuditDetails {
+  @JsonKey(name: "createdBy")
+  String? createdBy;
+
+  @JsonKey(name: "lastModifiedBy")
+  String? lastModifiedBy;
+
+  @JsonKey(name: "createdTime")
+  int? createdTime;
+
+  @JsonKey(name: "lastModifiedTime")
+  int? lastModifiedTime;
+
+  AuditDetails();
+
+  factory AuditDetails.fromJson(Map<String, dynamic> json) =>
+      _$AuditDetailsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AuditDetailsToJson(this);
 }

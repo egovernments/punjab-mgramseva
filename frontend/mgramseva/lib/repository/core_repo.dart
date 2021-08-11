@@ -1,13 +1,17 @@
 import 'dart:convert';
-import 'dart:io';
+import 'package:file_picker/file_picker.dart';
+import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/localization/localization_label.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class CoreRepository extends BaseService {
   Future<List<LocalizationLabel>> getLocilisation(
@@ -34,5 +38,33 @@ class CoreRepository extends BaseService {
       languageList = LanguageList.fromJson(res);
     }
     return languageList;
+  }
+
+  Future<Map?> uploadFiles(List<PlatformFile>? _paths, String moduleName) async {
+    Map? respStr;
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+
+    var postUri = Uri.parse("$apiBaseUrl${Url.FILE_UPLOAD}");
+    var request = new http.MultipartRequest("POST", postUri);
+    if(_paths != null && _paths.isNotEmpty) {
+      for(var i = 0; i <= _paths.length; i++) {
+        http.MultipartFile multipartFile$i = await http.MultipartFile.fromPath(
+            'file',
+            "${_paths[i].name}");
+        // http.MultipartFile multipartFile$i = await http.MultipartFile.fromPath(
+        //     'file',
+        //     "${_paths[i].name}");
+        request.files.add(multipartFile$i);
+      }
+      request.fields['tenantId'] =  commonProvider.userDetails!.selectedtenant!.code!;
+      request.fields['module'] = moduleName;
+    }
+    request.send().then((response) async{
+      if (response.statusCode == 201) print("Uploaded!");
+      respStr = json.decode(await response.stream.bytesToString());
+    });
+    return respStr;
   }
 }
