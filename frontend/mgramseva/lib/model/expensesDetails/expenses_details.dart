@@ -126,6 +126,9 @@ class ExpensesDetailsModel {
 
     if(isBillPaid!){
       allowEdit = false;
+    }else{
+      paidDateCtrl.text = '';
+      allowEdit = true;
     }
   }
 

@@ -156,10 +156,16 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                             : DateFormats.getFormattedDateToDateTime(
                                 expenseDetails.billIssuedDateCtrl.text.trim(),
                               ),
+                    initialDate: DateFormats.getFormattedDateToDateTime(
+                      expenseDetails.billDateCtrl.text.trim(),
+                    ),
                     lastDate: DateTime.now(),
                     onChangeOfDate: expensesDetailsProvider.onChangeOfDate, isEnabled: expenseDetails.allowEdit),
-                BasicDateField(i18.expense.PARTY_BILL_DATE, true,
+                BasicDateField(i18.expense.PARTY_BILL_DATE, false,
                     expenseDetails.billIssuedDateCtrl,
+                    initialDate: DateFormats.getFormattedDateToDateTime(
+                      expenseDetails.billIssuedDateCtrl.text.trim(),
+                    ),
                     lastDate: expenseDetails.billDateCtrl.text.trim().isEmpty
                         ? DateTime.now()
                         : DateFormats.getFormattedDateToDateTime(
@@ -180,6 +186,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                       firstDate: DateFormats.getFormattedDateToDateTime(
                           expenseDetails.billIssuedDateCtrl.text.trim()),
                       lastDate: DateTime.now(),
+                      initialDate: DateFormats.getFormattedDateToDateTime(
+                          expenseDetails.paidDateCtrl.text.trim()),
                       onChangeOfDate: expensesDetailsProvider.onChangeOfDate, isEnabled: expenseDetails.allowEdit),
                 FilePickerDemo(callBack: expensesDetailsProvider.fileStoreIdCallBack),
                 if(isUpdate)
