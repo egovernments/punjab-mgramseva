@@ -52,13 +52,21 @@ class Constants {
     KeyValue("Non Meter Connection", "NON METER CONNECTION"),
   ];
   static List<KeyValue> BILLINGYEAR = [
-    KeyValue("2020-2021", "2020-2021"),
-    KeyValue("2021-2022", "2021-2022"),
+    KeyValue("2021", "2021"),
   ];
 
   static List<KeyValue> BILLINGCYCLE = [
-    KeyValue("Sept-Oct", "SEPT-OCT"),
+    KeyValue("Jan-Feb", "JAN-FEB"),
+    KeyValue("Feb-Mar", "FEB-MAR"),
     KeyValue("Mar-Apr", "MAR-APR"),
+    KeyValue("Apr-May", "APR-MAY"),
+    KeyValue("May-June", "MAY-JUNE"),
+    KeyValue("June-July", "JUNE-JULY"),
     KeyValue("July-Aug", "JULY-AUG"),
+    KeyValue("Aug-Sept", "AUG-SEPT"),
+    KeyValue("Sept-Oct", "SEPT-OCT"),
+    KeyValue("Oct-Nov", "OCT-NOV"),
+    KeyValue("Nov-Dec", "NOV-DEC"),
+    KeyValue("Dec-Jan", "DEC-JAN"),
   ];
 }
