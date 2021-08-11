@@ -55,7 +55,7 @@ public class WaterConnectionValidator {
 //		if (!isWaterFieldValidated.isStatus())
 //			errorMap.putAll(isWaterFieldValidated.getErrorMessage());
 		Long previousMetereReading =waterConnectionRequest.getWaterConnection().getPreviousReadingDate() ;
-		if(previousMetereReading == null || previousMetereReading.intValue() <=0) {
+		if(previousMetereReading == null || previousMetereReading <=0) {
 			errorMap.put("PREVIOUS_METER_READIN_INVALID","Previous Meter reading date cannot be null");
 		}
 		ValidatorResult isMeterInfoValidated = meterInfoValidator.validate(waterConnectionRequest, reqType);
