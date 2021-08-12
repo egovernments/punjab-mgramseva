@@ -263,7 +263,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     var vendorName = expenditureDetails.vendorNameCtrl.text.trim();
     if(vendorName.isEmpty) {
       return false;
-    }else if(vendorList.isEmpty || (vendorList.indexWhere((e) => e.name.toLowerCase().trim() == vendorName)) == -1){
+    }else if(vendorList.isEmpty || (vendorList.indexWhere((e) => e.name.toLowerCase().trim() == vendorName.toLowerCase())) == -1){
       return true;
     }else{
       return false;
@@ -292,6 +292,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     expenditureDetails
       ..selectedVendor = vendor
       ..vendorNameCtrl.text = vendor?.name ?? '';
+    notifyListeners();
   }
 
   Future<void> getExpenses() async {

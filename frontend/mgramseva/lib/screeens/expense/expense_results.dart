@@ -81,13 +81,19 @@ class ExpenseResults extends StatelessWidget {
                                  i18.common.STATUS,
                                  expense.applicationStatus,
                                  context),
-                             SizedBox(
-                               height: 20,
+                             Visibility(
+                               visible: expense.applicationStatus != 'CANCELLED',
+                               child: SizedBox(
+                                 height: 20,
+                               ),
                              ),
-                             ShortButton(
-                                 i18.expense.UPDATE_EXPENDITURE,
-                                     () => Navigator.pushNamed(
-                                     context, Routes.EXPENSE_UPDATE, arguments: expense)),
+                             Visibility(
+                               visible: expense.applicationStatus != 'CANCELLED',
+                               child: ShortButton(
+                                   i18.expense.UPDATE_EXPENDITURE,
+                                       () => Navigator.pushNamed(
+                                       context, Routes.EXPENSE_UPDATE, arguments: expense)),
+                             ),
                              SizedBox(
                                height: 20,
                              ),

@@ -118,8 +118,8 @@ class ExpensesDetailsModel {
     vendorNameCtrl.text = vendorName ?? '';
     expensesAmount?.first.amountCtrl.text = expensesAmount?.first.amount ?? totalAmount?.toString() ?? '';
     billDateCtrl.text = DateFormats.timeStampToDate(billDate);
-    paidDateCtrl.text = DateFormats.timeStampToDate(paidDate);
-    billIssuedDateCtrl.text = DateFormats.timeStampToDate(billIssuedDate);
+    paidDateCtrl.text = paidDate == 0 ? '' : DateFormats.timeStampToDate(paidDate);
+    billIssuedDateCtrl.text = billIssuedDate == 0 ? '' : DateFormats.timeStampToDate(billIssuedDate);
     isBillPaid ??= false;
     challanNumberCtrl.text = challanNo?.toString() ?? '';
 

@@ -89,8 +89,11 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     }
                   }
                 })),
-        bottomNavigationBar: BottomButtonBar(i18.common.SUBMIT,
-            () => expensesDetailsProvider.validateExpensesDetails(context, isUpdate)));
+        bottomNavigationBar: Consumer<ExpensesDetailsProvider>(
+          builder: (_, expensesDetailsProvider, child) => BottomButtonBar(i18.common.SUBMIT,
+              (isUpdate && (expensesDetailsProvider.expenditureDetails?.allowEdit ?? false)) || ((isUpdate && !(expensesDetailsProvider.expenditureDetails?.allowEdit ?? false) && (expensesDetailsProvider.expenditureDetails?.isBillCancelled ?? false)) || !isUpdate) ?
+              () => expensesDetailsProvider.validateExpensesDetails(context, isUpdate) : null),
+        ));
   }
 
   saveInput(context) async {
@@ -197,7 +200,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                   BasicDateField(i18.expense.PAYMENT_DATE, true,
                       expenseDetails.paidDateCtrl,
                       firstDate: DateFormats.getFormattedDateToDateTime(
-                          expenseDetails.billIssuedDateCtrl.text.trim()),
+                          expenseDetails.billDateCtrl.text.trim()),
                       lastDate: DateTime.now(),
                       initialDate: DateFormats.getFormattedDateToDateTime(
                           expenseDetails.paidDateCtrl.text.trim()),
