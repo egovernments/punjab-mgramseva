@@ -5,8 +5,8 @@ import 'package:mgramseva/model/bill_generation_details/bill_generation_details.
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/connection_type.dart';
-import 'package:mgramseva/model/mdms/expense_type.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
+import 'package:mgramseva/model/mdms/tax_head_master.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/bill_generation_details_repo.dart';
@@ -14,8 +14,8 @@ import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/global_variables.dart';
-import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +30,9 @@ class BillGenerationProvider with ChangeNotifier {
   var billGenerateDetails = BillGenerationDetails();
   var waterconnection = WaterConnection();
   late List dates = [];
+  var selectedBillYear;
+  var selectedBillPeriod ;
+  var meterReadingDate;
   List months = [
     'Jan',
     'Feb',
@@ -65,58 +68,36 @@ class BillGenerationProvider with ChangeNotifier {
   }
 
   onChangeOfServiceCat(val){
-    print(val.toString());
     billGenerateDetails.serviceCat = val;
     notifyListeners();
   }
   onChangeOfProperty(val){
-    print(val.toString());
     billGenerateDetails.propertyType = val;
     notifyListeners();
   }
   void onChangeOfBillYear(val){
-    print(val.toString());
-    billGenerateDetails.billYear = val;
+    selectedBillYear = val;
+    billGenerateDetails.billYear = val.code;
     notifyListeners();
   }
   void onChangeOfBillCycle(val){
-    print(val.toString());
+    //var d = val as DateTime;
+    selectedBillPeriod = (DateFormats.getFilteredDate(
+        val.toLocal().toString(),
+        dateFormat: "dd/MM/yyyy")) + "-" + DateFormats.getFilteredDate((new DateTime(val.year, val.month + 1, val.day)).toLocal().toString(), dateFormat: "dd/MM/yyyy");
     billGenerateDetails.billCycle = val;
     notifyListeners();
   }
   void onChangeOfDate(value) {
-    print(value);
     notifyListeners();
   }
-  Future<void> getPropertyTypeandConnectionType() async {
+  Future<void> getServiceTypePropertyTypeandConnectionType() async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
       var res = await CoreRepository()
-          .getMdms(getConnectionTypePropertyTypeMDMS(commonProvider.userDetails!.userRequest!.tenantId.toString()));
-      languageList = res;
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> getExpenses() async {
-    try {
-      var commonProvider = Provider.of<CommonProvider>(
-          navigatorKey.currentContext!,
-          listen: false);
-      var res = await CoreRepository().getMdms(getExpenseMDMS(commonProvider.userDetails!.userRequest!.tenantId.toString()));
-      languageList = res;
-      notifyListeners();
-    } catch (e) {
-      print(e);
-    }
-  }
-  Future<void> getFinancialYears() async {
-    try {
-      var res = await CoreRepository()
-          .getMdms(getTaxPeriodMDMS('pb'));
+          .getMdms(getServiceTypeConnectionTypePropertyTypeMDMS(commonProvider.userDetails!.userRequest!.tenantId.toString()));
       languageList = res;
     } catch (e) {
       print(e);
@@ -153,20 +134,22 @@ class BillGenerationProvider with ChangeNotifier {
             billGenerateDetails.nm_3Ctrl.text +
             billGenerateDetails.nm_4Ctrl.text +
             billGenerateDetails.nm_5Ctrl.text;
-        print(oldMeter);
         if (int.parse(oldMeter) < int.parse(newMeter)) {
           try {
+            var commonProvider = Provider.of<CommonProvider>(
+                navigatorKey.currentContext!,
+                listen: false);
             var res1 = {
-              "meterReading": {
-                "currentReading": 150,
-                "currentReadingDate": 1559413799000,
+              "meterReadings": {
+                "currentReading": int.parse(newMeter),
+                "currentReadingDate": DateFormats.dateToTimeStamp(billGenerateDetails.meterReadingDateCtrl.text),
                 "billingPeriod": "01/05/2021 - 01/06/2021",
                 "meterStatus": "Working",
-                "connectionNo": "WS_AP/400/2021-22/0083",
-                "lastReading": 123,
-                "lastReadingDate": 1556735399000,
+                "connectionNo": "WS/400/2021-22/0160",
+                "lastReading": int.parse(oldMeter),
+                "lastReadingDate": 1627756200000,
                 "generateDemand":true,
-                "tenantId": "pb.lodhipur"
+                "tenantId": commonProvider.userDetails!.selectedtenant!.code
               }
             };
             var billResponse1 = await BillGenerateRepository().calculateMeterConnection(res1);
@@ -201,7 +184,7 @@ class BillGenerationProvider with ChangeNotifier {
             listen: false);
         var res2 = {
           "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-          "billingPeriod": "01/05/2019 - 01/06/2019"
+          "billingPeriod": selectedBillPeriod
         };
         var billResponse2 = await BillGenerateRepository().bulkDemand(res2);
         Navigator.pop(context);
@@ -257,16 +240,16 @@ class BillGenerationProvider with ChangeNotifier {
           <TaxPeriod>[])
           .map((value) {
         return DropdownMenuItem(
-          value: value.code,
+          value: value,
           child: new Text(value.financialYear!),
         );
       }).toList();
     }
     return <DropdownMenuItem<Object>>[];
   }
-  List<DropdownMenuItem<Object>> getExpenseTypeList() {
-    if (languageList?.mdmsRes?.expense?.expenseList != null) {
-      return (languageList?.mdmsRes?.expense?.expenseList ?? <ExpenseType>[])
+  List<DropdownMenuItem<Object>> getServiceCategoryList() {
+    if (languageList?.mdmsRes?.billingService?.taxHeadMasterList != null) {
+      return (languageList?.mdmsRes?.billingService?.taxHeadMasterList ?? <TaxHeadMaster>[])
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
@@ -278,16 +261,41 @@ class BillGenerationProvider with ChangeNotifier {
   }
   Future<void> fetchDates() async {
     var date = new DateTime.now();
+    dates = [];
     for (var i = 0; i < 12; i++) {
       var prevMonth = new DateTime(date.year, date.month - i + 1, 1);
       var r = {"code": prevMonth, "name": prevMonth};
       dates.add(r);
     }
   }
+
   List<DropdownMenuItem<Object>> getBillingCycle() {
+    dates = [];
+   // print(languageList?.mdmsRes?.billingService?.taxPeriodList!.first.toJson());
+    if (billGenerateDetails.billYear!=null && selectedBillYear!=null) {
+      var date2 = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(selectedBillYear.toDate));
+      var date1 = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(selectedBillYear.fromDate));
+      print(date1);
+      print(date2);
+      var d = date2 as DateTime;
+      var now = date1 as DateTime;
+      var years = d.year - now.year;
+      var months = now.month - d.month;
+      //print(DateFormats.getFilteredDate(date2, dateFormat: 'YYYY-MM-dd'));
+      for (var i = 0; i < years * 12; i++) {
+        var prevMonth = new DateTime(now.year, date1.month + i, 1);
+        var r = {"code": prevMonth, "name": prevMonth};
+        dates.add(r);
+      }
+    }
     if (dates.length > 0) {
       return (dates ?? <Map>[]).map((value) {
         var d = value['name'] as DateTime;
+        print(DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(
+            d.toLocal().toString(),
+            dateFormat: "dd/MM/yyyy")));
         return DropdownMenuItem(
           value: value['code'],
           child: new Text(months[d.month - 1] + " - " + d.year.toString()),
@@ -296,17 +304,7 @@ class BillGenerationProvider with ChangeNotifier {
     }
     return <DropdownMenuItem<Object>>[];
   }
-  List<DropdownMenuItem<Object>> getDropDownList(List<KeyValue>? list) {
-    if (list?.length != 0) {
-      return (list ?? <KeyValue>[]).map((value) {
-        return DropdownMenuItem(
-          value: value.key,
-          child: new Text(value.label),
-        );
-      }).toList();
-    }
-    return <DropdownMenuItem<Object>>[];
-  }
+
 
 
 

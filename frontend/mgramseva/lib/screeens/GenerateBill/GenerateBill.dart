@@ -3,7 +3,6 @@ import 'package:mgramseva/model/bill_generation_details/bill_generation_details.
 import 'package:mgramseva/providers/bill_generation_details_provider.dart';
 import 'package:mgramseva/screeens/GenerateBill/widgets/MeterReading.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
@@ -37,12 +36,11 @@ class _GenerateBillState extends State<GenerateBill> {
       ..getBillDetails()
       ..autoValidation = false
       ..formKey = GlobalKey<FormState>()
-      ..fetchDates()
-      ..getExpenses()
-      ..getFinancialYears()
-      ..getPropertyTypeandConnectionType();
+      ..getServiceTypePropertyTypeandConnectionType();
+
 
   }
+
   var metVal = "";
 
   saveInput(context) async {
@@ -79,7 +77,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                               '',
                                               '',
                                               billgenerationprovider.onChangeOfServiceCat,
-                                              billgenerationprovider.getDropDownList(Constants.SERVICECATEGORY),
+                                              billgenerationprovider.getServiceCategoryList(),
                                               true,
                                             )),
                                     Consumer<BillGenerationProvider>(
@@ -143,7 +141,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                   builder: (_, billgenerationprovider, child) =>
                                                       SelectFieldBuilder(
                                                           i18.demandGenerate.BILLING_YEAR_LABEL,
-                                                          billgenerationprovider.billGenerateDetails.billYear,
+                                                          billgenerationprovider.selectedBillYear,
                                                           '',
                                                           '',
                                                           billgenerationprovider.onChangeOfBillYear,
