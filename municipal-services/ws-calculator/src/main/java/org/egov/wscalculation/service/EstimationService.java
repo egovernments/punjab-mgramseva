@@ -304,7 +304,7 @@ public class EstimationService {
 		Date date = new Date();
 		Calendar monthStartDate = Calendar.getInstance();
 		monthStartDate.setTime(date);
-		if(lastMeterReadingDate != null || lastMeterReadingDate >00 ) {
+		if(lastMeterReadingDate != null || lastMeterReadingDate >0 ) {
 			monthStartDate.setTimeInMillis(lastMeterReadingDate);
 		}
 		monthStartDate.set(Calendar.DAY_OF_MONTH, monthStartDate.getActualMinimum(Calendar.DAY_OF_MONTH));
