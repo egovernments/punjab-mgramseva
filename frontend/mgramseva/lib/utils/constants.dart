@@ -1,5 +1,6 @@
 import 'package:mgramseva/icons/home_icons_icons.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/models.dart';
 
 class Constants {
@@ -63,13 +64,13 @@ class Constants {
   ];
 
   static List<KeyValue> PAYMENT_AMOUNT = [
-    KeyValue('Full Amount', 'fullAmount'),
-    KeyValue('Custom Amount', 'customAmount'),
+    KeyValue(i18.common.FULL_AMOUNT, 'fullAmount'),
+    KeyValue(i18.common.CUSTOM_AMOUNT, 'customAmount'),
   ];
 
   static List<KeyValue> PAYMENT_METHOD = [
-    KeyValue('Online', 'online'),
-    KeyValue('Cheque', 'cheque'),
-    KeyValue('Cash', 'cash'),
+    KeyValue(i18.common.ONLINE, 'online'),
+    KeyValue(i18.common.CHEQUE, 'cheque'),
+    KeyValue(i18.common.CASH, 'cash'),
   ];
 }

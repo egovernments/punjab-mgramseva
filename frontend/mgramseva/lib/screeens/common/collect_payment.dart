@@ -16,6 +16,8 @@ import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
+import '../customAppbar.dart';
+
 class ConnectionPaymentView extends StatefulWidget {
   const ConnectionPaymentView({Key? key}) : super(key: key);
 
@@ -38,11 +40,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
     var consumerPaymentProvider = Provider.of<CollectPaymentProvider>(context, listen: false);
     late FetchBill fetchBill;
     return Scaffold(
-      appBar: BaseAppBar(
-        Text('mGramSeva'),
-        AppBar(),
-        <Widget>[Icon(Icons.more_vert)],
-      ),
+      appBar: CustomAppBar(),
       body: StreamBuilder(
           stream: consumerPaymentProvider.paymentStreamController.stream,
           builder: (context, AsyncSnapshot snapshot) {
@@ -93,15 +91,15 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         child: Column(
             crossAxisAlignment : CrossAxisAlignment.start,
             children : [
-              _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.CONNECTION_ID)}', '${fetchBill.id}'),
-              _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.CONSUMER_NAME)}', '${fetchBill.payerName}'),
+              _buildLabelValue(i18.common.CONNECTION_ID, '${fetchBill.id}'),
+              _buildLabelValue(i18.common.CONSUMER_NAME, '${fetchBill.payerName}'),
               Consumer<CollectPaymentProvider>(
                 builder: (_, consumerPaymentProvider, child) => Visibility(
                     visible: fetchBill.viewDetails,
                     child: _buildViewDetails(fetchBill)
                 ),
               ),
-              _buildLabelValue('${ApplicationLocalizations.of(context).translate(i18.common.TOTAL_DUE_AMOUNT)}', '₹ ${fetchBill.totalAmount}', FontWeight.w700),
+              _buildLabelValue(i18.common.TOTAL_DUE_AMOUNT, '₹ ${fetchBill.totalAmount}', FontWeight.w700),
               Consumer<CollectPaymentProvider>(
                 builder: (_, consumerPaymentProvider, child) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
@@ -124,9 +122,9 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
       builder: (_, consumerPaymentProvider, child) => Card(
           child : Wrap(
             children: [
-              RadioButtonFieldBuilder(context, '${ApplicationLocalizations.of(context).translate(i18.common.PAYMENT_AMOUNT)}', fetchBill.paymentAmount, '', '', true,
+              RadioButtonFieldBuilder(context, i18.common.PAYMENT_AMOUNT, fetchBill.paymentAmount, '', '', true,
                   Constants.PAYMENT_AMOUNT, (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(fetchBill, val, true)),
-              RadioButtonFieldBuilder(context, '${ApplicationLocalizations.of(context).translate(i18.common.PAYMENT_METHOD)}', fetchBill.paymentMethod, '', '', true,
+              RadioButtonFieldBuilder(context, i18.common.PAYMENT_METHOD, fetchBill.paymentMethod, '', '', true,
                   Constants.PAYMENT_METHOD, (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(fetchBill, val))
             ],
           )
@@ -144,7 +142,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             child: Column(
                 crossAxisAlignment : CrossAxisAlignment.start,
                 children : [
-                  subTitle('${ApplicationLocalizations.of(context).translate(i18.common.PAYMENT_INFORMATION)}'),
+                  subTitle(i18.common.PAYMENT_INFORMATION),
                   _buildLabelValue(i18.payment.BILL_ID_NUMBER, '${fetchBill.billDetails?.first?.billId}'),
                   _buildLabelValue(i18.payment.BILL_PERIOD, '${fetchBill.billDetails?.first?.fromPeriod} - ${fetchBill.billDetails?.first?.toPeriod}'),
                 ]),

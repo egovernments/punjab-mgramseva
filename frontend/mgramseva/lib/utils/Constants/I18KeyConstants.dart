@@ -102,6 +102,11 @@ class Common {
   String get WATER_CHARGES => 'WATER_CHARGES'; //Please enter Mobile number
   String get ARREARS => 'ARREARS'; //Please enter Mobile number
   String get COLLECT_PAYMENT => 'COLLECT_PAYMENT';
+  String get ONLINE => 'ONLINE';
+  String get CHEQUE => 'CHEQUE';
+  String get CASH => 'CASH';
+  String get FULL_AMOUNT => 'FULL_AMOUNT';
+  String get CUSTOM_AMOUNT => 'CUSTOM_AMOUNT';
 
 }
 
