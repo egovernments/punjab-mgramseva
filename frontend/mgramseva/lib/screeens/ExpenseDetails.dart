@@ -205,6 +205,25 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                       initialDate: DateFormats.getFormattedDateToDateTime(
                           expenseDetails.paidDateCtrl.text.trim()),
                       onChangeOfDate: expensesDetailsProvider.onChangeOfDate, isEnabled: expenseDetails.allowEdit),
+                if(isUpdate && expenseDetails.fileStoreList != null)
+                  Container(
+                    margin: const EdgeInsets.only(
+                        top: 20.0, bottom: 5, right: 20, left: 20),
+                    alignment: Alignment.centerLeft,
+                    child: Wrap(
+                      direction: Axis.vertical,
+                      children: [
+                        Text('Attachments', style: TextStyle(fontSize: 19, fontWeight: FontWeight.normal)),
+                        Wrap( children : expenseDetails.fileStoreList!.map<Widget>((e) => InkWell(
+                          onTap: ()=> expensesDetailsProvider.onTapOfAttachment(e),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: Text('${e.tenantId}'),
+                          ),
+                        )).toList())
+                      ],
+                    ),
+                  ),
                 FilePickerDemo(callBack: expensesDetailsProvider.fileStoreIdCallBack),
                 if(isUpdate)
                   Container(

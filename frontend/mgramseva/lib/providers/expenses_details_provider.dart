@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/model/expensesDetails/vendor.dart';
+import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/expense_type.dart';
 import 'package:mgramseva/model/success_handler.dart';
@@ -24,6 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 import 'common_provider.dart';
+import 'package:universal_html/html.dart' as html;
 
 class ExpensesDetailsProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -44,10 +46,12 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
       if(expensesDetails != null){
         expenditureDetails = expensesDetails;
+        getStoreFileDetails();
       }else if(id != null){
         var expenditure = await ExpensesRepository().searchExpense({'challanNo' : id});
         if(expenditure != null && expenditure.isNotEmpty){
           expenditureDetails = expenditure!.first;
+          getStoreFileDetails();
         }else{
           streamController.add(i18.expense.NO_EXPENSE_RECORD_FOUND);
           return;
@@ -62,6 +66,15 @@ class ExpensesDetailsProvider with ChangeNotifier {
     } catch (e, s) {
       ErrorHandler.logError(e.toString(),s);
       streamController.addError('error');
+    }
+  }
+
+  void getStoreFileDetails() async {
+    // if(expenditureDetails.fileStoreId == null) return;
+    try{
+      expenditureDetails.fileStoreList = await CoreRepository().fetchFiles([expenditureDetails.fileStoreId!]);
+    }catch(e,s){
+      ErrorHandler.logError(e.toString(),s);
     }
   }
 
@@ -317,6 +330,13 @@ class ExpensesDetailsProvider with ChangeNotifier {
   void onChangeOfDate(DateTime? dateTime) {
     // ctrl.text = DateFormats.getFilteredDate(dateTime.toString());
     notifyListeners();
+  }
+
+  void onTapOfAttachment(FileStore store) {
+      if(store.url == null) return;
+      html.AnchorElement anchorElement = new html.AnchorElement(href: store.url);
+      anchorElement.download = store.url;
+      anchorElement.click();
   }
 
   void onChangeOfCheckBox(bool? value) {

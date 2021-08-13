@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:mgramseva/Env/app_config.dart';
+import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -66,5 +67,20 @@ class CoreRepository extends BaseService {
       respStr = json.decode(await response.stream.bytesToString());
     });
     return respStr;
+  }
+
+
+  Future<List<FileStore>?> fetchFiles(List<String> storeId) async {
+     List<FileStore>? fileStoreIds;
+
+    var res = await makeRequest(
+        url: '${Url.FILE_FETCH}?tenantId=pb&fileStoreIds=${storeId.join(',')}', method: RequestType.GET);
+
+    if (res != null) {
+      fileStoreIds = res['fileStoreIds']
+          .map<FileStore>((e) => FileStore.fromJson(e))
+          .toList();
+    }
+    return fileStoreIds;
   }
 }
