@@ -11,6 +11,7 @@ class i18 {
   static ProfileEdit profileEdit = const ProfileEdit();
   static DemandGenerate demandGenerate = const DemandGenerate();
   static _NetWorkException netWorkException = const _NetWorkException();
+  static _Payment payment = const _Payment();
 }
 
 class Login {
@@ -92,7 +93,15 @@ class Common {
   /// consumer(s) Found
   String get EXPENSES_FOUND => 'EXPENSES_FOUND';
 
-  /// Expense(s) Found
+  String get CONNECTION_ID => 'CONNECTION_ID'; //Connection ID
+  String get CONSUMER_NAME => 'CONSUMER_NAME'; //Consumer Name
+  String get TOTAL_DUE_AMOUNT => 'TOTAL_DUE_AMOUNT'; //Total Amount Due
+  String get PAYMENT_AMOUNT => 'PAYMENT_AMOUNT'; //Payment Amount
+  String get PAYMENT_METHOD => 'PAYMENT_METHOD'; //Payment Method
+  String get PAYMENT_INFORMATION => 'PAYMENT_INFORMATION'; //Payment Information
+  String get WATER_CHARGES => 'WATER_CHARGES'; //Please enter Mobile number
+  String get ARREARS => 'ARREARS'; //Please enter Mobile number
+  String get COLLECT_PAYMENT => 'COLLECT_PAYMENT';
 
 }
 
@@ -240,5 +249,16 @@ class _NetWorkException {
   const _NetWorkException();
 
   String get CHECK_CONNECTION => 'CHECK_CONNECTION'; /// Check your network connection
+
+}
+
+class _Payment {
+  const _Payment();
+
+  String get HIDE_DETAILS => 'HIDE_DETAILS'; //Hide Details
+  String get VIEW_DETAILS => 'VIEW_DETAILS'; //View Details
+  String get BILL_ID_NUMBER => 'VIEW_DETAILS'; //Bill ID No
+  String get BILL_PERIOD => 'BILL_PERIOD'; //Bill Period
+  String get FREE_ESTIMATE => 'FREE_ESTIMATE'; //Fee Estimate
 
 }

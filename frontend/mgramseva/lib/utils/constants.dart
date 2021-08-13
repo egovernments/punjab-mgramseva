@@ -61,4 +61,15 @@ class Constants {
     KeyValue("Mar-Apr", "MAR-APR"),
     KeyValue("July-Aug", "JULY-AUG"),
   ];
+
+  static List<KeyValue> PAYMENT_AMOUNT = [
+    KeyValue('Full Amount', 'fullAmount'),
+    KeyValue('Custom Amount', 'customAmount'),
+  ];
+
+  static List<KeyValue> PAYMENT_METHOD = [
+    KeyValue('Online', 'online'),
+    KeyValue('Cheque', 'cheque'),
+    KeyValue('Cash', 'cash'),
+  ];
 }
