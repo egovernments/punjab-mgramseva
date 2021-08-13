@@ -1,29 +1,31 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 
 class FilePickerDemo extends StatefulWidget {
-  final Function callBack;
+  final Function(List<FileStore>?) callBack;
   final String? moduleName;
+  final List<String>? extensions;
 
-  const FilePickerDemo({Key? key, required this.callBack, this.moduleName}) : super(key: key);
+  const FilePickerDemo({Key? key, required this.callBack, this.moduleName, this.extensions}) : super(key: key);
   @override
   _FilePickerDemoState createState() => _FilePickerDemoState();
 }
 
 class _FilePickerDemoState extends State<FilePickerDemo> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  String? _fileName;
-  List<PlatformFile>? _paths;
+  List<PlatformFile> _selectedFiles = <PlatformFile>[];
+  List<FileStore> _fileStoreList = <FileStore>[];
   String? _directoryPath;
   String? _extension;
   bool _loadingPath = false;
   bool _multiPick = false;
-  FileType _pickingType = FileType.any;
+  FileType _pickingType = FileType.custom;
   TextEditingController _controller = TextEditingController();
 
   @override
@@ -36,18 +38,26 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
     setState(() => _loadingPath = true);
     try {
       _directoryPath = null;
-      _paths = (await FilePicker.platform.pickFiles(
+      var paths = (await FilePicker.platform.pickFiles(
         type: _pickingType,
         allowMultiple: _multiPick,
-        allowedExtensions: (_extension?.isNotEmpty ?? false)
+        allowedExtensions: widget.extensions ?? ((_extension?.isNotEmpty ?? false)
             ? _extension?.replaceAll(' ', '').split(',')
-            : null,
+            : null),
       ))
           ?.files;
 
-      if(_paths != null){
-      var response = await CoreRepository().uploadFiles(_paths, widget.moduleName ?? APIConstants.API_MODULE_NAME);
-      widget.callBack(response);
+      if(paths != null){
+        if(_multiPick){
+          _selectedFiles.addAll(paths);
+        }else{
+          _selectedFiles = paths;
+        }
+
+      var response = await CoreRepository().uploadFiles(paths, widget.moduleName ?? APIConstants.API_MODULE_NAME);
+        print(response.map((e) => e.toJson()));
+        _fileStoreList.addAll(response);
+      widget.callBack(_fileStoreList);
       }
     } on PlatformException catch (e) {
       print("Unsupported operation" + e.toString());
@@ -57,9 +67,6 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
     if (!mounted) return;
     setState(() {
       _loadingPath = false;
-      print(_paths!.first.extension);
-      _fileName =
-          _paths != null ? _paths!.map((e) => e.name).toString() : '...';
     });
   }
 
@@ -101,7 +108,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
           width: constraints.maxWidth > 760
               ? MediaQuery.of(context).size.width / 2.5
               : MediaQuery.of(context).size.width,
-          height: 50,
+          // height: 50,
           decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -127,13 +134,40 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                       style: TextStyle(color: Colors.black, fontSize: 16),
                     ),
                   )),
-              Text(
+            _selectedFiles.isNotEmpty ?
+            Expanded(
+              child: SingleChildScrollView(
+                child: Wrap(
+                    direction: Axis.horizontal,
+                    spacing: 3,
+                    children : List.generate(_selectedFiles.length, (index) => Wrap(
+                      direction: Axis.horizontal,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 2,
+                      children: [
+                        Text(_selectedFiles[index].name),
+                        IconButton(
+                            padding: EdgeInsets.all(5),
+                            onPressed: ()=> onClickOfClear(index), icon: Icon(Icons.cancel))
+                      ],
+                    )).toList()),
+              ),
+            )
+            : Text(
                 "${ApplicationLocalizations.of(context).translate(i18.common.NO_FILE_UPLOADED)}",
                 style: TextStyle(color: Colors.black, fontSize: 16),
               )
             ],
           ))
     ];
+  }
+
+  void onClickOfClear(int index){
+    setState(() {
+      _selectedFiles.removeAt(index);
+      _fileStoreList.removeAt(index);
+    });
+    widget.callBack(_fileStoreList);
   }
 
   @override

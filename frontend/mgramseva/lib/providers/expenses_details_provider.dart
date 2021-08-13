@@ -150,8 +150,12 @@ class ExpensesDetailsProvider with ChangeNotifier {
     }
   }
 
-  void fileStoreIdCallBack(Map fileStoreIds) {
-    print(fileStoreIds);
+  void fileStoreIdCallBack(List<FileStore>? fileStoreIds) {
+    if(fileStoreIds != null && fileStoreIds.isNotEmpty){
+      expenditureDetails.fileStoreId = fileStoreIds.first.id;
+    }else{
+      expenditureDetails.fileStoreId = null;
+    }
   }
 
 

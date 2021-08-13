@@ -224,7 +224,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                       ],
                     ),
                   ),
-                FilePickerDemo(callBack: expensesDetailsProvider.fileStoreIdCallBack),
+                FilePickerDemo(callBack: expensesDetailsProvider.fileStoreIdCallBack, extensions: ['jpg', 'pdf', 'png'],),
                 if(isUpdate)
                   Container(
                     alignment: Alignment.centerLeft,

@@ -41,7 +41,7 @@ class CoreRepository extends BaseService {
     return languageList;
   }
 
-  Future<Map?> uploadFiles(List<PlatformFile>? _paths, String moduleName) async {
+  Future<List<FileStore>> uploadFiles(List<PlatformFile>? _paths, String moduleName) async {
     Map? respStr;
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
@@ -58,11 +58,16 @@ class CoreRepository extends BaseService {
       request.fields['tenantId'] = commonProvider.userDetails!.selectedtenant!.code!;
       request.fields['module'] = moduleName;
     }
-    request.send().then((response) async{
+    await request.send().then((response) async{
       if (response.statusCode == 201)
       respStr = json.decode(await response.stream.bytesToString());
     });
-    return respStr;
+    if(respStr?['fileStoreIds'] != null) {
+      return respStr?['fileStoreIds']
+          .map<FileStore>((e) => FileStore.fromJson(e))
+          .toList();
+    }
+    return <FileStore>[];
   }
 
 
