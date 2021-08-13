@@ -59,6 +59,8 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 				currentWaterConnection.setProposedTaps(rs.getInt("proposedTaps"));
 				currentWaterConnection.setRoadCuttingArea(rs.getFloat("roadcuttingarea"));
 				currentWaterConnection.setRoadType(rs.getString("roadtype"));
+                currentWaterConnection.setPreviousReadingDate(rs.getLong("previousreadingdate"));
+                currentWaterConnection.setArrears(rs.getBigDecimal("arrears"));
 				PGobject pgObj = (PGobject) rs.getObject("additionaldetails");
 				ObjectNode additionalDetails = null;
 				if (pgObj != null) {
