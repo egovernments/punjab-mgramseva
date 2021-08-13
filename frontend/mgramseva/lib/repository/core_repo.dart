@@ -50,20 +50,16 @@ class CoreRepository extends BaseService {
     var postUri = Uri.parse("$apiBaseUrl${Url.FILE_UPLOAD}");
     var request = new http.MultipartRequest("POST", postUri);
     if(_paths != null && _paths.isNotEmpty) {
-      for(var i = 0; i <= _paths.length; i++) {
-        http.MultipartFile multipartFile$i = await http.MultipartFile.fromPath(
-            'file',
-            "${_paths[i].name}");
-        // http.MultipartFile multipartFile$i = await http.MultipartFile.fromPath(
-        //     'file',
-        //     "${_paths[i].name}");
-        request.files.add(multipartFile$i);
+      for(var i = 0; i < _paths.length; i++) {
+        var path = _paths[i];
+        http.MultipartFile multipartFile = http.MultipartFile.fromBytes('file', path.bytes!, filename: '${path.name}.${path.extension}');
+        request.files.add(multipartFile);
       }
-      request.fields['tenantId'] =  commonProvider.userDetails!.selectedtenant!.code!;
+      request.fields['tenantId'] = commonProvider.userDetails!.selectedtenant!.code!;
       request.fields['module'] = moduleName;
     }
     request.send().then((response) async{
-      if (response.statusCode == 201) print("Uploaded!");
+      if (response.statusCode == 201)
       respStr = json.decode(await response.stream.bytesToString());
     });
     return respStr;
