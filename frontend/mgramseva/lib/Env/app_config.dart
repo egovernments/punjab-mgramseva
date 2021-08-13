@@ -26,7 +26,7 @@ dynamic get apiBaseUrl {
 
 Map<String, dynamic> devConstants = {
 
-_baseUrl: window.location.host + "/",
+_baseUrl: window.location.origin + "/",
 };
 
 Map<String, dynamic> stageConstants = {
