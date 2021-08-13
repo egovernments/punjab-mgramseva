@@ -1,47 +1,62 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/payment_collection.dart';
+import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 
 class CollectPaymentProvider with ChangeNotifier {
 
   var paymentStreamController = StreamController.broadcast();
+  var demandStreamCtrl = StreamController.broadcast();
 
   @override
   void dispose() {
     paymentStreamController.close();
+    demandStreamCtrl.close();
     super.dispose();
   }
 
 
-  Future<void> getConsumerPaymentDetails() async {
+  Future<void> getBillDetails() async {
     try{
-      var paymentDetails = await ConsumerRepository().getConsumerPaymentDetails();
+      var paymentDetails = await ConsumerRepository().getBillDetails();
+      if(paymentDetails != null) {
+        paymentStreamController.add(paymentDetails.first);
+        getDemandDetails();
+      }
+
+    }catch(e){
+      print(e);
+    }
+  }
+
+  Future<void> getDemandDetails() async {
+    try{
+      var paymentDetails = await ConsumerRepository().getDemandDetails();
       paymentStreamController.add(paymentDetails);
     }catch(e){
       print(e);
     }
   }
 
-  Future<void> updatePaymentInformation(CollectPayment connectionPayment) async {
+  Future<void> updatePaymentInformation(FetchBill fetchBill) async {
     try{
-      var paymentDetails = await ConsumerRepository().getConsumerPaymentDetails();
+      var paymentDetails = await ConsumerRepository().getBillDetails();
     }catch(e){
       print(e);
     }
   }
 
-  onClickOfViewOrHideDetails(CollectPayment connectionPayment) {
-    connectionPayment.viewDetails = !connectionPayment.viewDetails;
+  onClickOfViewOrHideDetails(FetchBill fetchBill) {
+    fetchBill.viewDetails = !fetchBill.viewDetails;
     notifyListeners();
   }
 
-  onChangeOfPaymentAmountOrMethod(CollectPayment connectionPayment, String val, [isPaymentAmount = false]) {
+  onChangeOfPaymentAmountOrMethod(FetchBill fetchBill, String val, [isPaymentAmount = false]) {
     if(isPaymentAmount){
-      connectionPayment.paymentAmount = val;
+      fetchBill.paymentAmount = val;
     }else{
-      connectionPayment.paymentMethod = val;
+      fetchBill.paymentMethod = val;
     }
     notifyListeners();
   }
