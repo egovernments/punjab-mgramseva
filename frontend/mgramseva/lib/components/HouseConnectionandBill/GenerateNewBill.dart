@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/constants/houseconnectiondetails.dart';
+import 'package:mgramseva/model/bill/billing.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
 
 class GenerateNewBill extends StatelessWidget {
+  final BillList? billList;
+
+  const GenerateNewBill(this.billList);
+
   _getLabeltext(label, value, context) {
     return (Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,6 +31,9 @@ class GenerateNewBill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(billList!.bill!.first.meterReadings == null);
+    // (billList!.bill!.sort((a, b) => a.taxPeriodFrom! - b.taxPeriodFrom!));
+    // print(billList!.bill!.map((e) => e.demandDetails!.first.taxAmount));
     return Column(
       children: [
         ListLabelText("Generate Bill"),
@@ -34,12 +43,22 @@ class GenerateNewBill extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _getLabeltext("Last Bill Generation Date",
-                        connectiondetails['ConsumerName'], context),
-                    _getLabeltext("Previous Meter Reading",
-                        connectiondetails['FatherName'], context),
+                    _getLabeltext(
+                        "Last Bill Generation Date",
+                        DateFormats.timeStampToDate(
+                                billList!.bill!.first.billDate)
+                            .toString(),
+                        context),
+                    _getLabeltext(
+                        "Previous Meter Reading",
+                        billList!.bill!.first.meterReadings == null
+                            ? ""
+                            : DateFormats.timeStampToDate(billList!.bill!.first
+                                    .meterReadings!.first.currentReadingDate)
+                                .toString(),
+                        context),
                     _getLabeltext("Pending Amount",
-                        connectiondetails['Phone Number'], context),
+                        billList!.bill!.first.totalAmount.toString(), context),
                     ShortButton("Generate New Bill",
                         () => {Navigator.pushNamed(context, 'bill/generate')})
                   ],

@@ -25,6 +25,7 @@ import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/not_available.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart';
 import 'model/success_handler.dart';
 
 import 'screeens/ForgotPassword/ForgotPassword.dart';
@@ -73,7 +74,7 @@ class router {
             builder: (_) => Home(), settings: RouteSettings(name: Routes.HOME));
       case Routes.HOUSEHOLD:
         return MaterialPageRoute(
-            builder: (_) => SearchConsumerConnection(),
+            builder: (_) => SearchConsumerConnection(settings.arguments as Map),
             settings: RouteSettings(name: Routes.HOUSEHOLD));
       case Routes.EDIT_PROFILE:
         return MaterialPageRoute(
@@ -89,7 +90,7 @@ class router {
             settings: RouteSettings(name: Routes.UPDATE_PASSWORD));
       case Routes.CONSUMER_SEARCH:
         return MaterialPageRoute(
-            builder: (_) => SearchConsumerConnection(),
+            builder: (_) => SearchConsumerConnection(settings.arguments as Map),
             settings: RouteSettings(name: Routes.CONSUMER_SEARCH));
 
       /// Consumer Update
@@ -113,6 +114,7 @@ class router {
             settings: RouteSettings(
                 name: '${Routes.CONSUMER_UPDATE}?applicationNo=$id'));
 
+      ///Add Expenses
       case Routes.EXPENSES_ADD:
         return MaterialPageRoute(
             builder: (_) => ExpenseDetails(),
@@ -137,10 +139,27 @@ class router {
             settings:
                 RouteSettings(name: '${Routes.EXPENSE_UPDATE}?challanNo=$id'));
 
+      ///View HosueHold Details
       case Routes.HOUSEHOLD_DETAILS:
+        String? id;
+        if (settings.arguments != null) {
+          id = (settings.arguments as WaterConnection).connectionNo;
+        } else {
+          if (queryValidator(Routes.EXPENSE_UPDATE, query)) {
+            id = query[''];
+          } else {
+            return pageNotAvailable;
+          }
+        }
         return MaterialPageRoute(
-            builder: (_) => HouseholdDetail(),
-            settings: RouteSettings(name: Routes.HOUSEHOLD_DETAILS));
+            builder: (_) => HouseholdDetail(
+                id: id,
+                waterconnection: settings.arguments != null
+                    ? settings.arguments as WaterConnection
+                    : null),
+            settings: RouteSettings(
+                name: '${Routes.HOUSEHOLD_DETAILS}?applicationNo=$id'));
+
       case Routes.DASHBOARD:
         return MaterialPageRoute(
             builder: (_) => Dashboard(),
@@ -148,13 +167,14 @@ class router {
       case Routes.SEARCH_CONSUMER_RESULT:
         if (settings.arguments == null) {
           return MaterialPageRoute(
-              builder: (_) => SearchConsumerConnection(),
+              builder: (_) =>
+                  SearchConsumerConnection(settings.arguments as Map),
               settings: RouteSettings(name: Routes.CONSUMER_SEARCH));
         }
         return MaterialPageRoute(
             builder: (_) => SearchConsumerResult(settings.arguments as Map),
             settings: RouteSettings(
-              name: Routes.SEARCH_CONSUMER_RESULT,
+              name: '${Routes.SEARCH_CONSUMER_RESULT}',
             ));
       case Routes.BILL_GENERATE:
         return MaterialPageRoute(

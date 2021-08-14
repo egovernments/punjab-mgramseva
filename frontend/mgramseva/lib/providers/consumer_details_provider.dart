@@ -24,6 +24,8 @@ class ConsumerProvider with ChangeNotifier {
   var autoValidation = false;
   late WaterConnection waterconnection;
   var boundaryList = <Boundary>[];
+  var selectedcycle;
+  var selectedbill;
   late Property property;
   late List dates = [];
   late bool isEdit = false;
@@ -88,6 +90,7 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   void validateExpensesDetails(context) async {
+    waterconnection.setText();
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -104,6 +107,7 @@ class ConsumerProvider with ChangeNotifier {
         waterconnection.tenantId =
             commonProvider.userDetails!.selectedtenant!.code;
         waterconnection.connectionHolders = property.owners;
+        waterconnection.propertyType = property.propertyType;
         if (waterconnection.connectionType == 'Metered') {
           waterconnection.meterInstallationDate =
               waterconnection.previousReadingDate;
@@ -117,10 +121,13 @@ class ConsumerProvider with ChangeNotifier {
               addition.AdditionalDetails.fromJson({
             "locality": property.address.locality!.code,
             "initialMeterReading": 1,
+            "propertyType": property.propertyType
           });
         } else {
           waterconnection.additionalDetails!.locality =
               property.address.locality!.code;
+          waterconnection.additionalDetails!.propertyType =
+              property.propertyType;
         }
       }
 
@@ -145,10 +152,10 @@ class ConsumerProvider with ChangeNotifier {
           }
         } else {
           property.workflow = null;
+          //var result2 = await ConsumerRepository()
+          //  .updateconnection(waterconnection.toJson());
           var result1 =
               await ConsumerRepository().updateProperty(property.toJson());
-          //var result2 = await ConsumerRepository()
-          //.updateconnection(waterconnection.toJson());
         }
       } catch (e) {
         Navigator.pop(context);
@@ -167,7 +174,7 @@ class ConsumerProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getPropertyTypeandConnectionType() async {
+  Future<void> getConnectionTypePropertyTypeTaxPeriod() async {
     try {
       var res = await CoreRepository().getMdms(
           getConnectionTypePropertyTypeTaxPeriodMDMS(
@@ -266,10 +273,16 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   onChangeBillingcycle(val) {
-    var date = val as DateTime;
-    waterconnection.meterInstallationDate = (DateFormats.dateToTimeStamp(
-        DateFormats.getFilteredDate(date.toLocal().toString(),
-            dateFormat: "dd/MM/yyyy")));
+    print(val);
+    selectedcycle = val;
+    var date = val;
+    waterconnection.meterInstallationDateCtrl.text = selectedcycle;
+    // waterconnection.meterInstallationDate = (DateFormats.dateToTimeStamp(
+    //   DateFormats.getFilteredDate(date.toLocal().toString(),
+    //     dateFormat: "dd/MM/yyyy")));
+    //waterconnection.previousReadingDate = (DateFormats.dateToTimeStamp(
+    //  DateFormats.getFilteredDate(date.toLocal().toString(),
+    //    dateFormat: "dd/MM/yyyy")));
   }
 
 //Displaying ConnectionType data Fetched From MDMD (Ex Metered, Non Metered..)
@@ -287,28 +300,33 @@ class ConsumerProvider with ChangeNotifier {
     return <DropdownMenuItem<Object>>[];
   }
 
-  Future<void> fetchDates() async {
-    var date = new DateTime.now();
-    for (var i = 0; i < 12; i++) {
-      var prevMonth = new DateTime(date.year, 3 + i + 1, 1);
-      var r = {"code": prevMonth, "name": prevMonth};
-
-      dates.add(r);
-    }
-  }
-
   //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
   List<DropdownMenuItem<Object>> getBillingCycle() {
+    print(languageList?.mdmsRes?.taxPeriodList!.TaxPeriodList!.first.toJson());
+    if (languageList?.mdmsRes?.taxPeriodList!.TaxPeriodList! != null &&
+        dates.length == 0) {
+      var date2 = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(languageList!
+              .mdmsRes?.taxPeriodList!.TaxPeriodList!.first.toDate));
+      var date1 = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(languageList!
+              .mdmsRes?.taxPeriodList!.TaxPeriodList!.first.fromDate));
+      var d = date2 as DateTime;
+      var now = date1 as DateTime;
+      var years = d.year - now.year;
+      var months = now.month - d.month;
+      for (var i = 0; i < years * 12; i++) {
+        var prevMonth = new DateTime(now.year, date1.month + i, 1);
+        var r = {"code": prevMonth, "name": prevMonth};
+        dates.add(r);
+      }
+    }
     if (dates.length > 0 && waterconnection.connectionType == 'Non Metered') {
-      return (dates ?? <Map>[]).map((value) {
-        var d = value['name'] as DateTime;
-        print(DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(
-            d.toLocal().toString(),
-            dateFormat: "dd/MM/yyyy")));
+      return (dates).map((value) {
+        var d = value['name'];
+        print(d);
         return DropdownMenuItem(
-          value: (DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(
-              d.toLocal().toString(),
-              dateFormat: "dd/MM/yyyy"))),
+          value: value['code'].toLocal().toString(),
           child: new Text(months[d.month - 1] + " - " + d.year.toString()),
         );
       }).toList();

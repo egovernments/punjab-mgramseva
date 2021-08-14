@@ -27,14 +27,10 @@ class ErrorHandler {
       case ExceptionType.OTHER:
       case ExceptionType.FETCHDATA:
       case ExceptionType.BADREQUEST:
-        logError(e.message ?? '', stackTrace);
+        logError(e.message, stackTrace);
         return true;
       case ExceptionType.CONNECTIONISSUE:
-        Notifiers.getToastMessage(
-            context,
-            e.message ??
-                '${ApplicationLocalizations.of(context).translate(i18.netWorkException.CHECK_CONNECTION)}',
-            'ERROR');
+        Notifiers.getToastMessage(context, e.message, 'ERROR');
         return false;
       default:
         return true;

@@ -51,15 +51,14 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
         Provider.of<ConsumerProvider>(context, listen: false)
           ..setModel()
           ..setWaterConnection(widget.waterconnection)
-          ..fetchDates()
+          ..getConnectionTypePropertyTypeTaxPeriod()
           ..getProperty({
             "tenantId": commonProvider.userDetails!.selectedtenant!.code,
             "propertyIds": widget.waterconnection!.propertyId
           })
           ..fetchBoundary()
           ..autoValidation = false
-          ..formKey = GlobalKey<FormState>()
-          ..getPropertyTypeandConnectionType();
+          ..formKey = GlobalKey<FormState>();
       });
     } else if (widget.id != null) {
     } else {
@@ -72,12 +71,11 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   afterViewBuild() {
     Provider.of<ConsumerProvider>(context, listen: false)
       ..setModel()
+      ..getConnectionTypePropertyTypeTaxPeriod()
       ..getConsumerDetails()
-      ..fetchDates()
       ..fetchBoundary()
       ..autoValidation = false
-      ..formKey = GlobalKey<FormState>()
-      ..getPropertyTypeandConnectionType();
+      ..formKey = GlobalKey<FormState>();
   }
 
   Widget buildconsumerView(Property property) {
@@ -266,8 +264,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                         i18.consumer
                                                             .CONSUMER_BILLING_CYCLE,
                                                         consumerProvider
-                                                            .waterconnection
-                                                            .meterInstallationDate,
+                                                            .selectedcycle,
                                                         '',
                                                         '',
                                                         consumerProvider

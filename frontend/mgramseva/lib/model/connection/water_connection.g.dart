@@ -8,6 +8,7 @@ part of 'water_connection.dart';
 
 WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) {
   return WaterConnection()
+    ..id = json['id'] as String?
     ..connectionNo = json['connectionNo'] as String?
     ..propertyId = json['propertyId'] as String?
     ..applicationNo = json['applicationNo'] as String?
@@ -22,6 +23,7 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) {
     ..connectionType = json['connectionType'] as String?
     ..oldConnectionNo = json['oldConnectionNo'] as String?
     ..meterId = json['meterId'] as String?
+    ..propertyType = json['propertyType'] as String?
     ..previousReadingDate = json['previousReadingDate'] as int?
     ..proposedPipeSize = (json['proposedPipeSize'] as num?)?.toDouble()
     ..connectionHolders = (json['connectionHolders'] as List<dynamic>?)
@@ -39,6 +41,7 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'connectionNo': instance.connectionNo,
       'propertyId': instance.propertyId,
       'applicationNo': instance.applicationNo,
@@ -51,6 +54,7 @@ Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
       'connectionType': instance.connectionType,
       'oldConnectionNo': instance.oldConnectionNo,
       'meterId': instance.meterId,
+      'propertyType': instance.propertyType,
       'previousReadingDate': instance.previousReadingDate,
       'proposedPipeSize': instance.proposedPipeSize,
       'connectionHolders': instance.connectionHolders,
@@ -71,6 +75,7 @@ AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) {
   return AdditionalDetails()
     ..initialMeterReading = json['initialMeterReading'] as int?
     ..locality = json['locality'] as String?
+    ..propertyType = json['propertyType'] as String?
     ..action = json['action'] as String?;
 }
 
@@ -78,5 +83,6 @@ Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
     <String, dynamic>{
       'initialMeterReading': instance.initialMeterReading,
       'locality': instance.locality,
+      'propertyType': instance.propertyType,
       'action': instance.action,
     };
