@@ -19,6 +19,10 @@ class Url {
   static const String VENDOR_SEARCH = 'vendor/v1/_search';
   static const String EGOV_LOCATIONS =
       'egov-location/location/v11/boundarys/_search';
+
+  /// Connection bill payment
+  static const String FETCH_BILL = 'billing-service/bill/v2/_fetchbill';
+  static const String FETCH_DEMAND = 'billing-service/demand/_search';
 }
 
 class UserUrl {

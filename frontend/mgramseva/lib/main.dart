@@ -35,6 +35,7 @@ import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'providers/collect_payment.dart';
+import 'screeens/common/collect_payment.dart';
 
 void main() {
   setPathUrlStrategy();
@@ -169,7 +170,7 @@ class _LandingPageState extends State<LandingPage> {
                 return Notifiers.networkErrorPage(context, () {});
               } else {
                 if (snapshot.data != null) {
-                  return Home();
+                  return ConnectionPaymentView();
                 }
                 return SelectLanguage();
               }

@@ -49,37 +49,50 @@ class ConsumerRepository extends BaseService {
     return res;
   }
 
-  Future<List<FetchBill>?> getBillDetails() async {
+  Future<List<FetchBill>?> getBillDetails(Map<String, dynamic> query) async {
     List<FetchBill>? fetchBill;
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    var res = await makeRequest(
-        url: Url.EGOV_LOCATIONS,
-        method: RequestType.POST,
-        requestInfo: RequestInfo('mgramseva-common', .01, "", "_create", 1, "",
-            "", commonProvider.userDetails!.accessToken));
 
+    var body = {
+      'userInfo' : commonProvider.userDetails?.userRequest?.toJson()
+    };
+
+    var res = await makeRequest(
+        url: Url.FETCH_BILL,
+        method: RequestType.POST,
+        queryParameters: query,
+        body: body,
+        requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
+            commonProvider.userDetails!.accessToken));
 
     if(res != null){
-      fetchBill = res['Bill']?.map<FetchBill>((e) => FetchBill.fromJson(res)).toList();
+      fetchBill = res['Bill']?.map<FetchBill>((e) => FetchBill.fromJson(e)).toList();
     }
     return fetchBill;
   }
 
-  Future<Demand?> getDemandDetails() async {
-    Demand? demand;
+  Future<List<Demand>?> getDemandDetails(Map<String, dynamic> query) async {
+    List<Demand>? demand;
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+
+    var body = {
+      'userInfo' : commonProvider.userDetails?.userRequest?.toJson()
+    };
+
     var res = await makeRequest(
-        url: Url.EGOV_LOCATIONS,
+        url: Url.FETCH_DEMAND,
         method: RequestType.POST,
-        requestInfo: RequestInfo('mgramseva-common', .01, "", "_create", 1, "",
-            "", commonProvider.userDetails!.accessToken));
+        body: body,
+        queryParameters: query,
+        requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
+            commonProvider.userDetails!.accessToken));
 
     if(res != null){
-      demand = Demand.fromJson(res);
+      demand = res['Demands']?.map<Demand>((e) => Demand.fromJson(e)).toList();
     }
     return demand;
   }

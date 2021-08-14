@@ -31,7 +31,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   @override
   void initState() {
     var consumerPaymentProvider = Provider.of<CollectPaymentProvider>(context, listen: false);
-    consumerPaymentProvider.getBillDetails();
+    consumerPaymentProvider.getBillDetails(context);
     super.initState();
   }
 
@@ -49,7 +49,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               return _buildView(snapshot.data);
             } else if (snapshot.hasError) {
               return Notifiers.networkErrorPage(
-                  context, () => consumerPaymentProvider.getBillDetails());
+                  context, () => consumerPaymentProvider.getBillDetails(context));
             } else {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
@@ -104,7 +104,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                 builder: (_, consumerPaymentProvider, child) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: InkWell(
-                    onTap: () =>  Provider.of<CollectPaymentProvider>(context, listen: false).onClickOfViewOrHideDetails(fetchBill),
+                    onTap: () =>  Provider.of<CollectPaymentProvider>(context, listen: false).onClickOfViewOrHideDetails(fetchBill, context),
                     child: Text(fetchBill.viewDetails ? '${ApplicationLocalizations.of(context).translate(i18.payment.HIDE_DETAILS)}' : '${ApplicationLocalizations.of(context).translate(i18.payment.VIEW_DETAILS)}',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Theme.of(context).primaryColor),
                     ),
@@ -159,7 +159,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
            return  _buildLabelValue(billAccountDetails!.taxHeadCode,
                 '₹ ${billAccountDetails!.amount}');
           }),
-                _buildDemandStream(constraints)
+               if(fetchBill.demand != null) _buildWaterCharges(fetchBill.demand!, constraints)
               ],
             ),
           )
@@ -167,31 +167,6 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
       ),
     );
   }
-
-  Widget _buildDemandStream(BoxConstraints constraints) {
-    var consumerPaymentProvider = Provider.of<CollectPaymentProvider>(context, listen: false);
-
-    return StreamBuilder(
-        stream: consumerPaymentProvider.demandStreamCtrl.stream,
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return _buildWaterCharges(snapshot.data, constraints);
-          } else if (snapshot.hasError) {
-            return Notifiers.networkErrorPage(
-                context, () => consumerPaymentProvider.getBillDetails());
-          } else {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return Loaders.CircularLoader();
-              case ConnectionState.active:
-                return Loaders.CircularLoader();
-              default:
-                return Container();
-            }
-          }
-        });
-  }
-
 
   Widget _buildWaterCharges(Demand demand, BoxConstraints constraints) {
     var style = TextStyle(fontSize: 14, color: Color.fromRGBO(80, 90, 95, 1));

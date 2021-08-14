@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mgramseva/utils/constants.dart';
 
+import 'demand.dart';
+
 part 'fetch_bill.g.dart';
 
 @JsonSerializable()
@@ -45,6 +47,9 @@ class FetchBill {
 
   @JsonKey(ignore: true)
   String paymentMethod = Constants.PAYMENT_METHOD.last.key;
+
+  @JsonKey(ignore: true)
+  Demand? demand;
 
   FetchBill();
 
@@ -115,7 +120,7 @@ class BillAccountDetails {
   double amount = 0.0;
 
   @JsonKey(name: "adjustedAmount")
-  String? adjustedAmount;
+  double? adjustedAmount;
 
   @JsonKey(name: "taxHeadCode")
   String taxHeadCode = '';

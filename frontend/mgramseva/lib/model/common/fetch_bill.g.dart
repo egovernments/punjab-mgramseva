@@ -71,7 +71,7 @@ BillAccountDetails _$BillAccountDetailsFromJson(Map<String, dynamic> json) {
     ..demandDetailId = json['demandDetailId'] as String?
     ..order = json['order'] as int?
     ..amount = (json['amount'] as num).toDouble()
-    ..adjustedAmount = json['adjustedAmount'] as String?
+    ..adjustedAmount = (json['adjustedAmount'] as num?)?.toDouble()
     ..taxHeadCode = json['taxHeadCode'] as String;
 }
 
