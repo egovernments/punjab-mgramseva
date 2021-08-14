@@ -262,7 +262,7 @@ class _Payment {
 
   String get HIDE_DETAILS => 'HIDE_DETAILS'; //Hide Details
   String get VIEW_DETAILS => 'VIEW_DETAILS'; //View Details
-  String get BILL_ID_NUMBER => 'VIEW_DETAILS'; //Bill ID No
+  String get BILL_ID_NUMBER => 'BILL_ID_NUMBER'; //Bill ID No
   String get BILL_PERIOD => 'BILL_PERIOD'; //Bill Period
   String get FREE_ESTIMATE => 'FREE_ESTIMATE'; //Fee Estimate
 

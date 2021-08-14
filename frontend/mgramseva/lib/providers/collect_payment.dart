@@ -61,7 +61,7 @@ class CollectPaymentProvider with ChangeNotifier {
     };
 
     try{
-      var paymentDetails = await ConsumerRepository().getBillDetails({});
+      var paymentDetails = await ConsumerRepository().collectPayment(payment);
     }catch(e){
       print(e);
     }

@@ -96,4 +96,23 @@ class ConsumerRepository extends BaseService {
     }
     return demand;
   }
+
+  Future<List<FetchBill>?> collectPayment(Map body) async {
+    List<FetchBill>? fetchBill;
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+
+    var res = await makeRequest(
+        url: Url.COLLECT_PAYMENT,
+        method: RequestType.POST,
+        body: body,
+        requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
+            commonProvider.userDetails!.accessToken));
+
+    if(res != null){
+      fetchBill = res['Bill']?.map<FetchBill>((e) => FetchBill.fromJson(e)).toList();
+    }
+    return fetchBill;
+  }
 }

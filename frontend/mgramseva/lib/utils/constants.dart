@@ -69,8 +69,8 @@ class Constants {
   ];
 
   static List<KeyValue> PAYMENT_METHOD = [
-    KeyValue(i18.common.ONLINE, 'online'),
-    KeyValue(i18.common.CHEQUE, 'cheque'),
-    KeyValue(i18.common.CASH, 'cash'),
+    KeyValue(i18.common.ONLINE, 'ONLINE'),
+    KeyValue(i18.common.CHEQUE, 'CHEQUE'),
+    KeyValue(i18.common.CASH, 'CASH'),
   ];
 }

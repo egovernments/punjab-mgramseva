@@ -76,4 +76,13 @@ class DateFormats {
     }
   }
 
+  static String getMonthWithDay(int? timeInMillis){
+    if(timeInMillis == null) return '';
+    try{
+      var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
+      return '${DateFormat.MMMM().format(date)} ${date.day}';
+    }catch(e){
+      return '';
+    }
+  }
 }

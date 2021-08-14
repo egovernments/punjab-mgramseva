@@ -6,6 +6,7 @@ import 'package:mgramseva/providers/collect_payment.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
@@ -91,7 +92,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         child: Column(
             crossAxisAlignment : CrossAxisAlignment.start,
             children : [
-              _buildLabelValue(i18.common.CONNECTION_ID, '${fetchBill.id}'),
+              _buildLabelValue(i18.common.CONNECTION_ID, '${fetchBill.consumerCode}'),
               _buildLabelValue(i18.common.CONSUMER_NAME, '${fetchBill.payerName}'),
               Consumer<CollectPaymentProvider>(
                 builder: (_, consumerPaymentProvider, child) => Visibility(
@@ -143,8 +144,8 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                 crossAxisAlignment : CrossAxisAlignment.start,
                 children : [
                   subTitle(i18.common.PAYMENT_INFORMATION),
-                  _buildLabelValue(i18.payment.BILL_ID_NUMBER, '${fetchBill.billDetails?.first?.billId}'),
-                  _buildLabelValue(i18.payment.BILL_PERIOD, '${fetchBill.billDetails?.first?.fromPeriod} - ${fetchBill.billDetails?.first?.toPeriod}'),
+                  _buildLabelValue(i18.payment.BILL_ID_NUMBER, '${fetchBill.billNumber}'),
+                  _buildLabelValue(i18.payment.BILL_PERIOD, '${DateFormats.getMonthWithDay(fetchBill.billDetails?.first?.fromPeriod)} - ${DateFormats.getMonthWithDay(fetchBill.billDetails?.first?.toPeriod)}'),
                 ]),
           ),
           Padding(
@@ -189,14 +190,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                       padding: EdgeInsets.only(top: 18, bottom: 3),
                       child: new Align(
                           alignment: Alignment.centerLeft,
-                          child: Wrap(
-                            direction: Axis.vertical,
-                            spacing: 3,
-                            children: [
-                              Text('${ApplicationLocalizations.of(context).translate(demandDetails.taxHeadMasterCode)}', style: style),
-                              Text('${demand.taxPeriodFrom}-${demand.taxPeriodTo}', style : style),
-                            ],
-                          ))),
+                          child: _buildDemandDetails(demand, demandDetails))),
                   Container(
                       width: MediaQuery.of(context).size.width / 2.5,
                       padding: EdgeInsets.only(top: 18, bottom: 3),
@@ -206,19 +200,13 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             }
             ))
             : Table(
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children : List.generate(demand.demandDetails?.length ?? 0, (index) {
               var demandDetails = demand.demandDetails![index];
               return TableRow(
                   children: [
                     TableCell(
-                      child:  Wrap(
-                        direction: Axis.vertical,
-                        spacing: 3,
-                        children: [
-                          Text('${ApplicationLocalizations.of(context).translate(demandDetails.taxHeadMasterCode)}', style: style),
-                          Text('${demand.taxPeriodFrom}-${demand.taxPeriodTo}', style : style),
-                        ],
-                      ),
+                      child: _buildDemandDetails(demand, demandDetails)
                     ),
                     TableCell(
                         child : Text('₹ ${demandDetails.taxAmount}')
@@ -226,6 +214,24 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                   ]
               );
             }).toList())
+    );
+  }
+
+  Widget _buildDemandDetails(Demand demand, DemandDetails demandDetails) {
+    var style = TextStyle(fontSize: 14, color: Color.fromRGBO(80, 90, 95, 1));
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Wrap(
+        direction: Axis.vertical,
+        spacing: 3,
+        children: [
+          Text('${ApplicationLocalizations.of(context).translate(
+              demandDetails.taxHeadMasterCode)}', style: style),
+          Text('${DateFormats.getMonthWithDay(demand.taxPeriodFrom)}-${DateFormats
+              .getMonthWithDay(demand.taxPeriodTo)}', style: style),
+        ],
+      ),
     );
   }
 
