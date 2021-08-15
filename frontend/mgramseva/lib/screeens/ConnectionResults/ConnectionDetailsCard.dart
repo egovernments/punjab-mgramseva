@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
@@ -58,6 +60,7 @@ class SearchConnectionDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(arguments['Mode']);
     return LayoutBuilder(builder: (context, constraints) {
       return Column(children: [
         LabelText(waterconnections.waterConnection!.length.toString() != null
@@ -129,11 +132,18 @@ class SearchConnectionDetailCard extends StatelessWidget {
                               height: 20,
                             ),
                             ShortButton(
-                                i18.searchWaterConnection.HOUSE_DETAILS_EDIT,
+                                arguments['Mode'] == 'collect'
+                                    ? i18.searchWaterConnection
+                                        .HOUSE_DETAILS_VIEW
+                                    : i18.searchWaterConnection
+                                        .HOUSE_DETAILS_EDIT,
                                 () => Navigator.pushNamed(
-                                      context,
-                                      Routes.CONSUMER_CREATE,
-                                    )),
+                                    context,
+                                    (arguments['Mode'] == 'collect'
+                                        ? Routes.HOUSEHOLD_DETAILS
+                                        : Routes.CONSUMER_UPDATE),
+                                    arguments: waterconnections
+                                        .waterConnection![index])),
                             SizedBox(
                               height: 20,
                             ),

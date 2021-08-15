@@ -8,6 +8,12 @@ part of 'property.dart';
 
 Property _$PropertyFromJson(Map<String, dynamic> json) {
   return Property()
+    ..id = json['id'] as String?
+    ..propertyId = json['propertyId'] as String?
+    ..status = json['status'] as String?
+    ..workflow = json['workflow'] as String?
+    ..acknowldgementNumber = json['acknowldgementNumber'] as String?
+    ..accountId = json['accountId'] as String?
     ..tenantId = json['tenantId'] as String?
     ..address = Address.fromJson(json['address'] as Map<String, dynamic>)
     ..ownershipCategory = json['ownershipCategory'] as String?
@@ -23,7 +29,7 @@ Property _$PropertyFromJson(Map<String, dynamic> json) {
     ..units = (json['units'] as List<dynamic>?)
         ?.map((e) => Units.fromJson(e as Map<String, dynamic>))
         .toList()
-    ..landArea = json['landArea'] as String?
+    ..landArea = json['landArea'] as int?
     ..propertyType = json['propertyType'] as String?
     ..noOfFloors = json['noOfFloors'] as int?
     ..superBuiltUpArea = json['superBuiltUpArea'] as String?
@@ -38,6 +44,12 @@ Property _$PropertyFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$PropertyToJson(Property instance) => <String, dynamic>{
+      'id': instance.id,
+      'propertyId': instance.propertyId,
+      'status': instance.status,
+      'workflow': instance.workflow,
+      'acknowldgementNumber': instance.acknowldgementNumber,
+      'accountId': instance.accountId,
       'tenantId': instance.tenantId,
       'address': instance.address,
       'ownershipCategory': instance.ownershipCategory,

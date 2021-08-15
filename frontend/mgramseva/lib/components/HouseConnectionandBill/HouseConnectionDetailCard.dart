@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/constants/houseconnectiondetails.dart';
+import 'package:mgramseva/model/connection/water_connection.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class HouseConnectionDetailCard extends StatelessWidget {
+  final WaterConnection? waterconnection;
+  HouseConnectionDetailCard({this.waterconnection});
   _getLabeltext(label, value, context) {
     return (Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -10,7 +15,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
             padding: EdgeInsets.only(top: 16, bottom: 16),
             width: MediaQuery.of(context).size.width / 3,
             child: Text(
-              label,
+              ApplicationLocalizations.of(context).translate(label),
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             )),
         Container(
@@ -44,25 +49,31 @@ class HouseConnectionDetailCard extends StatelessWidget {
                         alignment: Alignment.topCenter,
                         padding: EdgeInsets.only(top: 16, bottom: 16),
                         child: Text(
-                          " WS-12342-001",
+                          waterconnection!.connectionNo!,
                           style: TextStyle(
                               fontSize: 24, fontWeight: FontWeight.w700),
                         )),
                   ],
                 ),
-                _getLabeltext("Consumer’s Name",
-                    connectiondetails['ConsumerName'], context),
+                _getLabeltext(i18.searchWaterConnection.CONSUMER_NAME,
+                    waterconnection!.connectionHolders!.first.name, context),
                 _getLabeltext(
-                    "Father's Name", connectiondetails['FatherName'], context),
+                    "Father's Name",
+                    waterconnection!
+                        .connectionHolders!.first.fatherOrHusbandName,
+                    context),
                 _getLabeltext(
-                    "Phone Number", connectiondetails['Phone Number'], context),
-                _getLabeltext("Old Connection ID",
-                    connectiondetails['Old Connection ID'], context),
-                _getLabeltext("Address", connectiondetails['Address'], context),
-                _getLabeltext("Property Type",
-                    connectiondetails['Property Type'], context),
+                    i18.searchWaterConnection.OWNER_MOB_NUM,
+                    waterconnection!.connectionHolders!.first.mobileNumber,
+                    context),
+                _getLabeltext(i18.searchWaterConnection.OLD_CONNECTION_ID,
+                    waterconnection!.oldConnectionNo, context),
+                _getLabeltext(i18.searchWaterConnection.HOUSE_ADDRESS,
+                    waterconnection!.additionalDetails!.locality, context),
+                // _getLabeltext("Property Type",
+                //   waterconnection!.additionalDetails!.propertyType, context),
                 _getLabeltext(
-                    "Service Type", connectiondetails['Service Type'], context)
+                    "Service Type", waterconnection!.connectionType, context)
               ],
             )));
   }

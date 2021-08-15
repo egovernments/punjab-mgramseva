@@ -9,6 +9,8 @@ class i18 {
   static SearchWaterConnection searchWaterConnection =
       const SearchWaterConnection();
   static ProfileEdit profileEdit = const ProfileEdit();
+  static BillDetails billDetails = const BillDetails();
+  static GenerateBillDetails generateBillDetails = const GenerateBillDetails();
   static DemandGenerate demandGenerate = const DemandGenerate();
   static _NetWorkException netWorkException = const _NetWorkException();
   static _Payment payment = const _Payment();
@@ -119,7 +121,6 @@ class Password {
   String get CHANGE_PASSWORD_SUCCESS => 'CHANGE_PASSWORD_SUCCESS_LABEL';
   String get CHANGE_PASSWORD_SUCCESS_SUBTEXT =>
       'CHANGE_PASSWORD_SUCCESS_SUB_TEXT';
-
 }
 
 class Expense {
@@ -141,7 +142,9 @@ class Expense {
   String get PROVIDE_INFO_TO_CREATE_EXPENSE =>
       'CORE_EXPENSE_PROVIDE_INFO_TO_CREATE_EXPENSE';
   String get ADD_EXPENSES_RECORD => 'ADD_EXPENSES_RECORD';
-  String get NO_EXPENSE_RECORD_FOUND => 'NO_EXPENSE_RECORD_FOUND'; /// No Record were Found with this Challan No
+  String get NO_EXPENSE_RECORD_FOUND => 'NO_EXPENSE_RECORD_FOUND';
+
+  /// No Record were Found with this Challan No
   String get SEARCH_EXPENSE_BILL => 'SEARCH_EXPENSE_BILL';
 
   /// Search Expense Bills
@@ -175,12 +178,17 @@ class CreateConsumer {
   String get PROPERTY_TYPE => 'CONSUMER_PROPERTY_TYPE';
   String get CONSUMER_DETAILS_LABEL => 'CONSUMER_DETAILS_LABEL';
   String get CONSUMER_DETAILS_SUB_LABEL => 'CONSUMER_DETAILS_SUB_LABEL';
+  String get CONSUMER_EDIT_DETAILS_LABEL => 'CONSUMER_EDIT_DETAILS_LABEL';
+  String get CONSUMER_EDIT_DETAILS_SUB_LABEL =>
+      'CONSUMER_DETAILS_EDIT_SUB_LABEL';
   String get GP_NAME => 'CONSUMER_GP_NAME';
   String get ARREARS => 'CONSUMER_ARREARS';
+  String get CONSUMER_CONNECTION_ID => 'CONSUMER_CONNECTION_ID';
   String get SERVICE_TYPE => 'CONSUMER_SERVICE_TYPE';
   String get PREV_METER_READING_DATE => 'CONSUMER_PREV_METER_READING_DATE';
   String get METER_NUMBER => 'CONSUMER_METER_NUMBER';
   String get REGISTER_SUCCESS => 'CONSUMER_REGISTER_SUCCESS_LABEL';
+  String get CONSUMER_BILLING_CYCLE => 'CONSUMER_BILLING_CYCLE';
 }
 
 class SearchWaterConnection {
@@ -250,10 +258,31 @@ class DemandGenerate {
       'NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING'; //New Meter Reading should be greater than Old meter Reading
 }
 
+class BillDetails {
+  const BillDetails();
+  String get NEW_CONSUMERGENERATE_BILL_LABEL =>
+      'NEW_CONSUMER_GENERATE_BILL_LABEL';
+  String get LAST_BILL_GENERATED_DATE => 'LAST_BILL_GENERATED_DATE';
+  String get CURRENT_BILL => 'CURRENT_BILL';
+  String get ARRERS_DUES => 'ARRERS_DUES';
+  String get TOTAL_AMOUNT => 'TOTAL_AMOUNT';
+  String get COLLECT_PAYMENT => 'COLLECT_PAYMENT';
+}
+
+class GenerateBillDetails {
+  const GenerateBillDetails();
+  String get GENERATE_BILL_LABEL => 'GENERATE_BILL_LABEL';
+  String get LAST_BILL_GENERATION_DATE => 'LAST_BILL_GENERATION_DATE';
+  String get PREVIOUS_METER_READING => 'PREVIOUS_METER_READING';
+  String get PENDING_AMOUNT => 'PENDING_AMOUNT';
+  String get DAYS_AGO => 'DAYS_AGO';
+  String get GENERATE_NEW_BTN_LABEL => 'GENERATE_NEW_BTN_LABEL';
+}
+
 class _NetWorkException {
   const _NetWorkException();
 
-  String get CHECK_CONNECTION => 'CHECK_CONNECTION'; /// Check your network connection
+  String get CHECK_CONNECTION => 'CHECK_CONNECTION';
 
 }
 
