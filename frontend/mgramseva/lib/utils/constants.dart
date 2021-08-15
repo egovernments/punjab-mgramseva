@@ -53,28 +53,6 @@ class Constants {
     KeyValue("Residential", "RESIDENTIAL"),
     KeyValue("Non Residential", "NON RESIDENTIAL"),
   ];
-  static List<KeyValue> SERVICETYPE = [
-    KeyValue("Meter Connection", "METER CONNECTION"),
-    KeyValue("Non Meter Connection", "NON METER CONNECTION"),
-  ];
-  static List<KeyValue> BILLINGYEAR = [
-    KeyValue("2021", "2021"),
-  ];
-
-  static List<KeyValue> BILLINGCYCLE = [
-    KeyValue("Jan-Feb", "JAN-FEB"),
-    KeyValue("Feb-Mar", "FEB-MAR"),
-    KeyValue("Mar-Apr", "MAR-APR"),
-    KeyValue("Apr-May", "APR-MAY"),
-    KeyValue("May-June", "MAY-JUNE"),
-    KeyValue("June-July", "JUNE-JULY"),
-    KeyValue("July-Aug", "JULY-AUG"),
-    KeyValue("Aug-Sept", "AUG-SEPT"),
-    KeyValue("Sept-Oct", "SEPT-OCT"),
-    KeyValue("Oct-Nov", "OCT-NOV"),
-    KeyValue("Nov-Dec", "NOV-DEC"),
-    KeyValue("Dec-Jan", "DEC-JAN"),
-  ];
 
   static List<KeyValue> PAYMENT_AMOUNT = [
     KeyValue(i18.common.FULL_AMOUNT, 'fullAmount'),
