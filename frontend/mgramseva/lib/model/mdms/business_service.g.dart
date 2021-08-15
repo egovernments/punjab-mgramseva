@@ -13,6 +13,9 @@ BillingService _$BillingServiceFromJson(Map<String, dynamic> json) {
         .toList()
     ..taxHeadMasterList = (json['TaxHeadMaster'] as List<dynamic>?)
         ?.map((e) => TaxHeadMaster.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..taxPeriodList = (json['TaxPeriod'] as List<dynamic>?)
+        ?.map((e) => TaxPeriod.fromJson(e as Map<String, dynamic>))
         .toList();
 }
 
@@ -20,6 +23,7 @@ Map<String, dynamic> _$BillingServiceToJson(BillingService instance) =>
     <String, dynamic>{
       'BusinessService': instance.businessServiceList,
       'TaxHeadMaster': instance.taxHeadMasterList,
+      'TaxPeriod': instance.taxPeriodList,
     };
 
 BusinessService _$BusinessServiceFromJson(Map<String, dynamic> json) {

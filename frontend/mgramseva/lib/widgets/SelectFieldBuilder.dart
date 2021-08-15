@@ -13,9 +13,10 @@ class SelectFieldBuilder extends StatelessWidget {
   final List<DropdownMenuItem<Object>> options;
   final bool isRequired;
   final String? hint;
+  final bool? readOnly;
 
   SelectFieldBuilder(this.labelText, this.value, this.input, this.prefixText,
-      this.widget, this.options, this.isRequired, {this.hint});
+      this.widget, this.options, this.isRequired, {this.hint, this.readOnly});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,9 @@ class SelectFieldBuilder extends StatelessWidget {
         return null;
       },
       items: options,
-      onChanged: (value) => widget(value),
+
+      onChanged:
+          readOnly == true ? null : (value) => widget(value)  ,
     );
 
     return LayoutBuilder(builder: (context, constraints) {

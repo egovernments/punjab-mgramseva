@@ -7,13 +7,11 @@ import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/services/urls.dart';
-
 class BillGenerateRepository extends BaseService {
   getRequestInfo() {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-
     return RequestInfo(
         APIConstants.API_MODULE_NAME,
         APIConstants.API_VERSION,
@@ -24,7 +22,6 @@ class BillGenerateRepository extends BaseService {
         APIConstants.API_MESSAGE_ID,
         commonProvider.userDetails!.accessToken);
   }
-
   Future<BillGenerationDetails> calculateMeterConnection(Map body) async {
     final requestInfo = getRequestInfo();
     late BillGenerationDetails billGenerationDetails;
@@ -38,8 +35,19 @@ class BillGenerateRepository extends BaseService {
     }
     return billGenerationDetails;
   }
-
   Future<BillGenerationDetails> bulkDemand(Map body) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    final requestInfo = RequestInfo(
+        APIConstants.API_MODULE_NAME,
+        APIConstants.API_VERSION,
+        APIConstants.API_TS,
+        "create",
+        APIConstants.API_DID,
+        APIConstants.API_KEY,
+        APIConstants.API_MESSAGE_ID,
+        commonProvider.userDetails!.accessToken);
     late BillGenerationDetails billGenDetails;
     var res = await makeRequest(
         url: Url.BULK_DEMAND,
@@ -51,7 +59,6 @@ class BillGenerateRepository extends BaseService {
     }
     return billGenDetails;
   }
-
   Future<MeterDemand> searchmetetedDemand(
       Map<String, dynamic> queryparams) async {
     late MeterDemand meterDemand;
@@ -64,6 +71,7 @@ class BillGenerateRepository extends BaseService {
     if (res != null) {
       meterDemand = MeterDemand.fromJson(res);
       (res);
+      meterDemand.meterReadings!.sort((a, b) => b.currentReading!.compareTo(a.currentReading!));
     }
     return meterDemand;
   }
