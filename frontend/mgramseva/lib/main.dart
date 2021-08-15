@@ -172,7 +172,7 @@ class _LandingPageState extends State<LandingPage> {
                 return Notifiers.networkErrorPage(context, () {});
               } else {
                 if (snapshot.data != null) {
-                  return ConnectionPaymentView();
+                  return Home();
                 }
                 return SelectLanguage();
               }
