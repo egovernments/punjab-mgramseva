@@ -32,7 +32,6 @@ class GenerateBill extends StatefulWidget {
 class _GenerateBillState extends State<GenerateBill> {
   @override
   void initState() {
-    print("Bill generate init fun");
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }

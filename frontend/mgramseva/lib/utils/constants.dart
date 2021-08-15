@@ -35,7 +35,7 @@ class Constants {
     HomeItem("CORE_UPDATE_EXPENSES", HomeIcons.updateexpenses,
         Routes.EXPENSE_SEARCH, {}),
     HomeItem(
-        "CORE_GENERATE_DEMAND", HomeIcons.generaedemand, 'bill/generate', {}),
+        "CORE_GENERATE_DEMAND", HomeIcons.generaedemand, Routes.MANUAL_BILL_GENERATE, {}),
     HomeItem("CORE_CONSUMER_CREATE", HomeIcons.createconsumer,
         Routes.CONSUMER_CREATE, {}),
     HomeItem("CORE_UPDATE_CONSUMER_DETAILS", HomeIcons.updateconsumer,

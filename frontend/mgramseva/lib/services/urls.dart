@@ -37,10 +37,6 @@ class Url {
   static const String VENDOR_SEARCH = 'vendor/v1/_search';
   static const String EGOV_LOCATIONS =
       'egov-location/location/v11/boundarys/_search';
-
-  //Demand Generation
-  static const String METER_CONNECTION_DEMAND = 'ws-calculator/meterConnection/_create';
-  static const String BULK_DEMAND = 'ws-calculator/waterCalculator/_bulkDemand';
 }
 
 class UserUrl {
