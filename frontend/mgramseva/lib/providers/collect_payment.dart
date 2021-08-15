@@ -11,6 +11,9 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:provider/provider.dart';
+
+import 'common_provider.dart';
 
 class CollectPaymentProvider with ChangeNotifier {
 
@@ -25,12 +28,6 @@ class CollectPaymentProvider with ChangeNotifier {
 
   Future<void> getBillDetails(BuildContext context, Map<String, dynamic> query) async {
 
-    // var query = {
-    //   'consumerCode' : 'WS/400/2021-22/0162',
-    //   'businessService' : 'WS',
-    //   'tenantId' : 'pb.lodhipur'
-    // };
-
     try{
       var paymentDetails = await ConsumerRepository().getBillDetails(query);
       if(paymentDetails != null) {
@@ -39,7 +36,9 @@ class CollectPaymentProvider with ChangeNotifier {
         paymentStreamController.add(paymentDetails.first);
       }
     }on CustomException catch (e,s){
-      ErrorHandler.handleApiException(context, e,s);
+      if(ErrorHandler.handleApiException(context, e,s)){
+        Notifiers.getToastMessage(context, e.message, 'ERROR');
+      }
       paymentStreamController.addError('error');
     } catch (e, s) {
       ErrorHandler.logError(e.toString(),s);
@@ -48,10 +47,11 @@ class CollectPaymentProvider with ChangeNotifier {
   }
 
   Future<void> updatePaymentInformation(FetchBill fetchBill, BuildContext context) async {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
     var payment = {
       "Payment": {
-        "tenantId": "pb",
+        "tenantId": commonProvider.userDetails?.selectedtenant?.code,
         "paymentMode": fetchBill.paymentMethod,
         "paidBy": fetchBill.payerName,
         "mobileNumber": fetchBill.mobileNumber,
@@ -78,7 +78,7 @@ class CollectPaymentProvider with ChangeNotifier {
             arguments: SuccessHandler(
                 i18.common.PAYMENT_COMPLETE,
                 '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${fetchBill.mobileNumber})',
-                i18.common.BACK_HOME, Routes.PAYMENT_SUCCESS, subHeader: '${ApplicationLocalizations.of(context).translate(i18.common.RECEIPT_NO)} \n ${paymentDetails.first['paymentDetails'][0]['receiptNumber']}',
+                i18.common.BACK_HOME, Routes.HOUSEHOLD_DETAILS_SUCCESS, subHeader: '${ApplicationLocalizations.of(context).translate(i18.common.RECEIPT_NO)} \n ${paymentDetails.first['paymentDetails'][0]['receiptNumber']}',
               downloadLink: '', whatsAppShare: ''
             ));
       }

@@ -196,7 +196,7 @@ class router {
         if (settings.arguments != null) {
           successHandler = settings.arguments as SuccessHandler;
           routePath =
-              '${(settings.arguments as SuccessHandler).routeParentPath}${Routes.SUCCESS_VIEW}?${Uri(queryParameters: successHandler.toJson()).query}';
+              '${(settings.arguments as SuccessHandler).routeParentPath}?${Uri(queryParameters: successHandler.toJson()).query}';
           query = (settings.arguments as SuccessHandler).toJson();
         } else {
           routePath = settings.name!;

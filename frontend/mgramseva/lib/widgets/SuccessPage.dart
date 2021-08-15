@@ -36,7 +36,7 @@ class SuccessPage extends StatelessWidget {
             if(subText != null) Container(
               padding: EdgeInsets.only(top: 8),
               alignment: Alignment.center,
-              child: Text(ApplicationLocalizations.of(context).translate(label),
+              child: Text(ApplicationLocalizations.of(context).translate(subText ?? ''),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,

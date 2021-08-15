@@ -90,6 +90,6 @@ class NewConsumerBill extends StatelessWidget {
       'businessService' : bill.businessService,
       'tenantId' : commonProvider.userDetails?.selectedtenant?.code
     };
-    Navigator.pushNamed(context, Routes.BILL_GENERATE, arguments: query);
+    Navigator.pushNamed(context, Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT, arguments: query);
   }
 }

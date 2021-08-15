@@ -139,8 +139,8 @@ class ConsumerRepository extends BaseService {
     return demand;
   }
 
-  Future<List<Map>?> collectPayment(Map body) async {
-    List<Map>? response;
+  Future<List<dynamic>?> collectPayment(Map body) async {
+    List<dynamic>? response;
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
