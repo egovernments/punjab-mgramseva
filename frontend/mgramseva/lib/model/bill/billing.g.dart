@@ -40,7 +40,11 @@ Bill _$BillFromJson(Map<String, dynamic> json) {
         : AuditDetails.fromJson(json['auditDetails'] as Map<String, dynamic>)
     ..meterReadings = (json['meterReadings'] as List<dynamic>?)
         ?.map((e) => MeterReadings.fromJson(e as Map<String, dynamic>))
-        .toList();
+        .toList()
+    ..waterConnection = json['waterconnection'] == null
+        ? null
+        : WaterConnection.fromJson(
+            json['waterconnection'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$BillToJson(Bill instance) => <String, dynamic>{
@@ -60,6 +64,7 @@ Map<String, dynamic> _$BillToJson(Bill instance) => <String, dynamic>{
       'fileStoreId': instance.fileStoreId,
       'auditDetails': instance.auditDetails,
       'meterReadings': instance.meterReadings,
+      'waterconnection': instance.waterConnection,
     };
 
 BillDetails _$BillDetailsFromJson(Map<String, dynamic> json) {

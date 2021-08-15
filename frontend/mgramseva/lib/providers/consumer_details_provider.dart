@@ -152,6 +152,7 @@ class ConsumerProvider with ChangeNotifier {
           }
         } else {
           property.workflow = null;
+          property.creationReason = 'UPDATE';
           //var result2 = await ConsumerRepository()
           //  .updateconnection(waterconnection.toJson());
           var result1 =

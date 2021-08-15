@@ -9,6 +9,8 @@ class i18 {
   static SearchWaterConnection searchWaterConnection =
       const SearchWaterConnection();
   static ProfileEdit profileEdit = const ProfileEdit();
+  static BillDetails billDetails = const BillDetails();
+  static GenerateBillDetails generateBillDetails = const GenerateBillDetails();
   static DemandGenerate demandGenerate = const DemandGenerate();
   static _NetWorkException netWorkException = const _NetWorkException();
 }
@@ -240,6 +242,27 @@ class DemandGenerate {
       'NEW_METER_READING_INVALID_MSG'; //New Meter Reading is Invalid
   String get NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING =>
       'NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING'; //New Meter Reading should be greater than Old meter Reading
+}
+
+class BillDetails {
+  const BillDetails();
+  String get NEW_CONSUMERGENERATE_BILL_LABEL =>
+      'NEW_CONSUMER_GENERATE_BILL_LABEL';
+  String get LAST_BILL_GENERATED_DATE => 'LAST_BILL_GENERATED_DATE';
+  String get CURRENT_BILL => 'CURRENT_BILL';
+  String get ARRERS_DUES => 'ARRERS_DUES';
+  String get TOTAL_AMOUNT => 'TOTAL_AMOUNT';
+  String get COLLECT_PAYMENT => 'COLLECT_PAYMENT';
+}
+
+class GenerateBillDetails {
+  const GenerateBillDetails();
+  String get GENERATE_BILL_LABEL => 'GENERATE_BILL_LABEL';
+  String get LAST_BILL_GENERATION_DATE => 'LAST_BILL_GENERATION_DATE';
+  String get PREVIOUS_METER_READING => 'PREVIOUS_METER_READING';
+  String get PENDING_AMOUNT => 'PENDING_AMOUNT';
+  String get DAYS_AGO => 'DAYS_AGO';
+  String get GENERATE_NEW_BTN_LABEL => 'GENERATE_NEW_BTN_LABEL';
 }
 
 class _NetWorkException {

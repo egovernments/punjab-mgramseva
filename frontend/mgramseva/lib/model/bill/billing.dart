@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mgramseva/model/bill/meter_demand_details.dart';
+import 'package:mgramseva/model/connection/water_connection.dart';
 part 'billing.g.dart';
 
 @JsonSerializable()
@@ -48,6 +49,9 @@ class Bill {
   AuditDetails? auditDetails;
   @JsonKey(name: "meterReadings")
   List<MeterReadings>? meterReadings;
+
+  @JsonKey(name: "waterconnection")
+  WaterConnection? waterConnection;
   Bill();
 
   factory Bill.fromJson(Map<String, dynamic> json) => _$BillFromJson(json);

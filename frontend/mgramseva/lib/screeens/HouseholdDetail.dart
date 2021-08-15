@@ -6,6 +6,8 @@ import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
+import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
+import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
@@ -40,7 +42,12 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   buildDemandView(BillList data) {
     print(data.bill);
     return Column(
-      children: [GenerateNewBill(data), NewConsumerBill(data)],
+      children: [
+        data.bill!.first.waterConnection!.connectionType == 'Metered'
+            ? GenerateNewBill(data)
+            : Text(""),
+        NewConsumerBill(data)
+      ],
     );
   }
 
@@ -49,11 +56,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
     return Scaffold(
-        appBar: BaseAppBar(
-          Text('mGramSeva'),
-          AppBar(),
-          <Widget>[Icon(Icons.more_vert)],
-        ),
+        appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),

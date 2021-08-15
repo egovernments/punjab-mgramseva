@@ -189,14 +189,16 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             //Consumer Ward Field
                             Consumer<ConsumerProvider>(
                                 builder: (_, consumerProvider, child) =>
-                                    SelectFieldBuilder(
-                                        i18.consumer.WARD,
-                                        property.address.localityCtrl,
-                                        '',
-                                        '',
-                                        consumerProvider.onChangeOflocaity,
-                                        consumerProvider.getBoundaryList(),
-                                        true)),
+                                    consumerProvider.boundaryList.length > 0
+                                        ? SelectFieldBuilder(
+                                            i18.consumer.WARD,
+                                            property.address.localityCtrl,
+                                            '',
+                                            '',
+                                            consumerProvider.onChangeOflocaity,
+                                            consumerProvider.getBoundaryList(),
+                                            true)
+                                        : Text("")),
                             //Consumer Property Type Field
                             Consumer<ConsumerProvider>(
                                 builder: (_, consumerProvider, child) =>
