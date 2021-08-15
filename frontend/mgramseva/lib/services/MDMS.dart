@@ -63,7 +63,7 @@ Map getExpenseMDMS(String tenantId) {
   };
 }
 
-Map getConnectionTypePropertyTypeMDMS(String tenantId) {
+Map getConnectionTypePropertyTypeTaxPeriodMDMS(String tenantId, int datestamp) {
   return {
     "MdmsCriteria": {
       "tenantId": tenantId,
@@ -80,6 +80,16 @@ Map getConnectionTypePropertyTypeMDMS(String tenantId) {
             {"name": "PropertyType"},
           ]
         },
+        {
+          "moduleName": "BillingService",
+          "masterDetails": [
+            {
+              "name": "TaxPeriod",
+              "filter":
+                  "[?(@.service=='WS' &&  @.fromDate <= $datestamp &&  @.toDate >= $datestamp)]"
+            }
+          ]
+        }
       ]
     }
   };
@@ -133,8 +143,15 @@ Map getServiceTypeConnectionTypePropertyTypeMDMS(String tenantId) {
 }
 
 Future getMDMD() async {
-  final requestInfo =
-      RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "_search", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID, "");
+  final requestInfo = RequestInfo(
+      APIConstants.API_MODULE_NAME,
+      APIConstants.API_VERSION,
+      APIConstants.API_TS,
+      "_search",
+      APIConstants.API_DID,
+      APIConstants.API_KEY,
+      APIConstants.API_MESSAGE_ID,
+      "");
   var response = await http.post(Uri.parse(apiBaseUrl.toString() + Url.MDMS),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json',

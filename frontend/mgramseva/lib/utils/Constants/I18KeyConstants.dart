@@ -9,8 +9,11 @@ class i18 {
   static SearchWaterConnection searchWaterConnection =
       const SearchWaterConnection();
   static ProfileEdit profileEdit = const ProfileEdit();
+  static BillDetails billDetails = const BillDetails();
+  static GenerateBillDetails generateBillDetails = const GenerateBillDetails();
   static DemandGenerate demandGenerate = const DemandGenerate();
   static _NetWorkException netWorkException = const _NetWorkException();
+  static _Payment payment = const _Payment();
 }
 
 class Login {
@@ -95,7 +98,20 @@ class Common {
   /// consumer(s) Found
   String get EXPENSES_FOUND => 'EXPENSES_FOUND';
 
-  /// Expense(s) Found
+  String get CONNECTION_ID => 'CONNECTION_ID'; //Connection ID
+  String get CONSUMER_NAME => 'CONSUMER_NAME'; //Consumer Name
+  String get TOTAL_DUE_AMOUNT => 'TOTAL_DUE_AMOUNT'; //Total Amount Due
+  String get PAYMENT_AMOUNT => 'PAYMENT_AMOUNT'; //Payment Amount
+  String get PAYMENT_METHOD => 'PAYMENT_METHOD'; //Payment Method
+  String get PAYMENT_INFORMATION => 'PAYMENT_INFORMATION'; //Payment Information
+  String get WATER_CHARGES => 'WATER_CHARGES'; //Please enter Mobile number
+  String get ARREARS => 'ARREARS'; //Please enter Mobile number
+  String get COLLECT_PAYMENT => 'COLLECT_PAYMENT';
+  String get ONLINE => 'ONLINE';
+  String get CHEQUE => 'CHEQUE';
+  String get CASH => 'CASH';
+  String get FULL_AMOUNT => 'FULL_AMOUNT';
+  String get CUSTOM_AMOUNT => 'CUSTOM_AMOUNT';
 
 }
 
@@ -113,7 +129,6 @@ class Password {
   String get PASS_HINT_ATLEAST_ONE_LETTER => 'CORE_PASS_HINT_ATLEAST_ONE_LETTER';
   String get PASS_HINT_ATLEAST_ONE_NUMBER => 'CORE_PASS_HINT_ATLEAST_ONE_NUMBER';
   String get PASS_HINT_ATLEAST_ONE_SPECIAL_CHARACTER => 'CORE_PASS_HINT_ATLEAST_ONE_SPECIAL_CHARACTER';
-
 
 }
 
@@ -136,7 +151,9 @@ class Expense {
   String get PROVIDE_INFO_TO_CREATE_EXPENSE =>
       'CORE_EXPENSE_PROVIDE_INFO_TO_CREATE_EXPENSE';
   String get ADD_EXPENSES_RECORD => 'ADD_EXPENSES_RECORD';
-  String get NO_EXPENSE_RECORD_FOUND => 'NO_EXPENSE_RECORD_FOUND'; /// No Record were Found with this Challan No
+  String get NO_EXPENSE_RECORD_FOUND => 'NO_EXPENSE_RECORD_FOUND';
+
+  /// No Record were Found with this Challan No
   String get SEARCH_EXPENSE_BILL => 'SEARCH_EXPENSE_BILL';
 
   /// Search Expense Bills
@@ -170,12 +187,17 @@ class CreateConsumer {
   String get PROPERTY_TYPE => 'CONSUMER_PROPERTY_TYPE';
   String get CONSUMER_DETAILS_LABEL => 'CONSUMER_DETAILS_LABEL';
   String get CONSUMER_DETAILS_SUB_LABEL => 'CONSUMER_DETAILS_SUB_LABEL';
+  String get CONSUMER_EDIT_DETAILS_LABEL => 'CONSUMER_EDIT_DETAILS_LABEL';
+  String get CONSUMER_EDIT_DETAILS_SUB_LABEL =>
+      'CONSUMER_DETAILS_EDIT_SUB_LABEL';
   String get GP_NAME => 'CONSUMER_GP_NAME';
   String get ARREARS => 'CONSUMER_ARREARS';
+  String get CONSUMER_CONNECTION_ID => 'CONSUMER_CONNECTION_ID';
   String get SERVICE_TYPE => 'CONSUMER_SERVICE_TYPE';
   String get PREV_METER_READING_DATE => 'CONSUMER_PREV_METER_READING_DATE';
   String get METER_NUMBER => 'CONSUMER_METER_NUMBER';
   String get REGISTER_SUCCESS => 'CONSUMER_REGISTER_SUCCESS_LABEL';
+  String get CONSUMER_BILLING_CYCLE => 'CONSUMER_BILLING_CYCLE';
 }
 
 class SearchWaterConnection {
@@ -248,9 +270,41 @@ class DemandGenerate {
   String get GENERATE_DEMAND_SUCCESS_SUBTEXT => 'DEMAND_GENERATED_SUCCESS_SUBTEXT';
 }
 
+class BillDetails {
+  const BillDetails();
+  String get NEW_CONSUMERGENERATE_BILL_LABEL =>
+      'NEW_CONSUMER_GENERATE_BILL_LABEL';
+  String get LAST_BILL_GENERATED_DATE => 'LAST_BILL_GENERATED_DATE';
+  String get CURRENT_BILL => 'CURRENT_BILL';
+  String get ARRERS_DUES => 'ARRERS_DUES';
+  String get TOTAL_AMOUNT => 'TOTAL_AMOUNT';
+  String get COLLECT_PAYMENT => 'COLLECT_PAYMENT';
+}
+
+class GenerateBillDetails {
+  const GenerateBillDetails();
+  String get GENERATE_BILL_LABEL => 'GENERATE_BILL_LABEL';
+  String get LAST_BILL_GENERATION_DATE => 'LAST_BILL_GENERATION_DATE';
+  String get PREVIOUS_METER_READING => 'PREVIOUS_METER_READING';
+  String get PENDING_AMOUNT => 'PENDING_AMOUNT';
+  String get DAYS_AGO => 'DAYS_AGO';
+  String get GENERATE_NEW_BTN_LABEL => 'GENERATE_NEW_BTN_LABEL';
+}
+
 class _NetWorkException {
   const _NetWorkException();
 
-  String get CHECK_CONNECTION => 'CHECK_CONNECTION'; /// Check your network connection
+  String get CHECK_CONNECTION => 'CHECK_CONNECTION';
+
+}
+
+class _Payment {
+  const _Payment();
+
+  String get HIDE_DETAILS => 'HIDE_DETAILS'; //Hide Details
+  String get VIEW_DETAILS => 'VIEW_DETAILS'; //View Details
+  String get BILL_ID_NUMBER => 'VIEW_DETAILS'; //Bill ID No
+  String get BILL_PERIOD => 'BILL_PERIOD'; //Bill Period
+  String get FREE_ESTIMATE => 'FREE_ESTIMATE'; //Fee Estimate
 
 }

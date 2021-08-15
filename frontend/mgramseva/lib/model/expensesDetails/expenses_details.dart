@@ -81,12 +81,12 @@ class ExpensesDetailsModel {
 
   getText() {
     if (expensesAmount == null || expensesAmount!.isEmpty) {
-      expensesAmount = <ExpensesAmount>[]
-      ..add(ExpensesAmount());
+      expensesAmount = <ExpensesAmount>[]..add(ExpensesAmount());
     }
 
     vendorNameCtrl.text = vendorName ?? '';
-    expensesAmount?.first.amountCtrl.text = expensesAmount?.first.amount ?? totalAmount?.toString() ?? '';
+    expensesAmount?.first.amountCtrl.text =
+        expensesAmount?.first.amount ?? totalAmount?.toString() ?? '';
     billDateCtrl.text = DateFormats.timeStampToDate(billDate);
     paidDateCtrl.text = DateFormats.timeStampToDate(paidDate);
     billIssuedDateCtrl.text = DateFormats.timeStampToDate(billIssuedDate);

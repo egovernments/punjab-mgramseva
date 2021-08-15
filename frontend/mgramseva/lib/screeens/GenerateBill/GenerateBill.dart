@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/bill_generation_details/bill_generation_details.dart';
+import 'package:mgramseva/model/bill/bill_generation_details/bill_generation_details.dart';
+import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/bill_generation_details_provider.dart';
 import 'package:mgramseva/screeens/GenerateBill/widgets/MeterReading.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -19,6 +20,10 @@ import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
 
 class GenerateBill extends StatefulWidget {
+  final String? id;
+  final WaterConnection? waterconnection;
+  const GenerateBill({Key? key, this.id, this.waterconnection})
+      : super(key: key);
   State<StatefulWidget> createState() {
     return _GenerateBillState();
   }
@@ -27,21 +32,18 @@ class GenerateBill extends StatefulWidget {
 class _GenerateBillState extends State<GenerateBill> {
   @override
   void initState() {
+    print("Bill generate init fun");
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
   afterViewBuild() {
     Provider.of<BillGenerationProvider>(context, listen: false)
-      ..setModel()
-      ..getBillDetails()
+      ..setModel(widget.id, widget.waterconnection)
+      ..getServiceTypePropertyTypeandConnectionType()
       ..autoValidation = false
-      ..formKey = GlobalKey<FormState>()
-      ..getServiceTypePropertyTypeandConnectionType();
-
-
+      ..formKey = GlobalKey<FormState>();
   }
-
   var metVal = "";
 
   saveInput(context) async {
@@ -159,15 +161,16 @@ class _GenerateBillState extends State<GenerateBill> {
                                                           billgenerationprovider.onChangeOfBillCycle,
                                                           billgenerationprovider.getBillingCycle(),
                                                           true)),
+
                                             ])),
-                                  ]))))
-              )])));
+                              ])))))
+        ])));
   }
 
   @override
   Widget build(BuildContext context) {
     var billgenerateProvider =
-    Provider.of<BillGenerationProvider>(context, listen: false);
+        Provider.of<BillGenerationProvider>(context, listen: false);
     return Scaffold(
         appBar: BaseAppBar(
           Text(i18.common.MGRAM_SEVA),

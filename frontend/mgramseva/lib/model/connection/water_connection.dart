@@ -7,14 +7,20 @@ part 'water_connection.g.dart';
 
 @JsonSerializable()
 class WaterConnection {
+  @JsonKey(name: "id")
+  String? id;
   @JsonKey(name: "connectionNo")
   String? connectionNo;
   @JsonKey(name: "propertyId")
   String? propertyId;
+  @JsonKey(name: "applicationNo")
+  String? applicationNo;
   @JsonKey(name: "tenantId")
   String? tenantId;
   @JsonKey(name: "action")
   String? action;
+  @JsonKey(name: "meterInstallationDate")
+  int? meterInstallationDate;
   @JsonKey(name: "documents")
   Documents? documents;
   @JsonKey(name: "proposedTaps")
@@ -27,6 +33,8 @@ class WaterConnection {
   String? oldConnectionNo;
   @JsonKey(name: "meterId")
   String? meterId;
+  @JsonKey(name: "propertyType")
+  String? propertyType;
   @JsonKey(name: "previousReadingDate")
   int? previousReadingDate;
   @JsonKey(name: "proposedPipeSize")
@@ -53,12 +61,33 @@ class WaterConnection {
   @JsonKey(ignore: true)
   var OldConnectionCtrl = TextEditingController();
 
+  @JsonKey(ignore: true)
+  var meterInstallationDateCtrl = TextEditingController();
+
   setText() {
+    print(previousReadingDateCtrl.text);
     oldConnectionNo = OldConnectionCtrl.text;
     meterId = meterIdCtrl.text != "" ? meterIdCtrl.text : null;
     arrears = int.parse(arrearsCtrl.text);
     previousReadingDate =
         DateFormats.dateToTimeStamp(previousReadingDateCtrl.text);
+    meterInstallationDate = DateFormats.dateToTimeStamp(
+        DateFormats.getFilteredDate(meterInstallationDateCtrl.text,
+            dateFormat: "dd/MM/yyyy"));
+  }
+
+  getText() {
+    print(previousReadingDate);
+    OldConnectionCtrl.text = oldConnectionNo ?? "";
+    meterIdCtrl.text = meterId ?? "";
+    arrearsCtrl.text = arrears.toString();
+
+    previousReadingDateCtrl.text = previousReadingDate == null
+        ? DateFormats.timeStampToDate(meterInstallationDate)
+        : DateFormats.timeStampToDate(previousReadingDate);
+
+    meterInstallationDateCtrl.text =
+        DateFormats.timeStampToDate(meterInstallationDate).toString();
   }
 
   WaterConnection();
@@ -82,15 +111,19 @@ class ProcessInstance {
 @JsonSerializable()
 class AdditionalDetails {
   @JsonKey(name: "initialMeterReading")
-  String? initialMeterReading;
+  int? initialMeterReading;
 
   @JsonKey(name: "locality")
   String? locality;
+
+  @JsonKey(name: "propertyType")
+  String? propertyType;
   @JsonKey(ignore: true)
   var initialMeterReadingCtrl = TextEditingController();
   String? action;
   setText() {
-    initialMeterReading = initialMeterReadingCtrl.text;
+    initialMeterReading =
+        DateFormats.dateToTimeStamp(initialMeterReadingCtrl.text);
   }
 
   AdditionalDetails();

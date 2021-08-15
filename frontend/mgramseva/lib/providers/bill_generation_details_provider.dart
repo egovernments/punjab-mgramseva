@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/bill_generation_details/bill_generation_details.dart';
+import 'package:mgramseva/model/bill/bill_generation_details/bill_generation_details.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/connection_type.dart';
@@ -11,11 +11,11 @@ import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/bill_generation_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
+import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
-import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/CommonSuccessPage.dart';
@@ -35,6 +35,7 @@ class BillGenerationProvider with ChangeNotifier {
   var selectedBillYear;
   var selectedBillPeriod ;
   var meterReadingDate;
+  var prevReadingDate;
   List months = [
     'Jan',
     'Feb',
@@ -49,26 +50,101 @@ class BillGenerationProvider with ChangeNotifier {
     'Nov',
     'Dec'
   ];
-  setModel(){
+  setModel(String? id, WaterConnection? waterConnection) async{
     billGenerateDetails = BillGenerationDetails();
     billGenerateDetails.serviceCat = "WS_CHARGE";
+    if(id == null)
+      {
+        billGenerateDetails.serviceType = 'Non Metered';
+      }
+    if(waterConnection == null)
+      {
+        var commonProvider = Provider.of<CommonProvider>(
+            navigatorKey.currentContext!,
+            listen: false);
+        id!.split('_').join('/');
+        try {
+          var res = await SearchConnectionRepository().getconnection({
+            "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+            ...{'connectionNumber': id!.split('_').join('/')},
+
+          });
+          waterconnection = res.waterConnection!.first;
+          billGenerateDetails.propertyType =
+              waterconnection!.additionalDetails!.propertyType;
+          billGenerateDetails.serviceType = waterconnection.connectionType;
+          if (waterconnection.connectionType == 'Metered') {
+            waterconnection = res.waterConnection!.first;
+            var meterRes = await BillGenerateRepository().searchmetetedDemand({
+              "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+              ...{'connectionNos': id!.split('_').join('/')},
+
+            });
+            if (meterRes.meterReadings!.length > 0) {
+              setMeterReading(meterRes);
+            }
+            else{
+              prevReadingDate = waterConnection!.previousReadingDate;
+            }
+          }
+          else{}
+
+          }
+        catch(e){
+
+        }
+      }
+    else {
+      billGenerateDetails.propertyType =
+          waterConnection!.additionalDetails!.propertyType;
+      billGenerateDetails.serviceType = waterConnection.connectionType;
+      billGenerateDetails.meterNumberCtrl.text = waterConnection.meterId!;
+      waterconnection = waterConnection;
+      if (waterconnection.connectionType == 'Metered') {
+        var commonProvider = Provider.of<CommonProvider>(
+            navigatorKey.currentContext!,
+            listen: false);
+        var meterRes = await BillGenerateRepository().searchmetetedDemand({
+          "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+          ...{'connectionNos': id!.split('_').join('/')},
+
+        });
+        if (meterRes.meterReadings!.length > 0) {
+          setMeterReading(meterRes);
+        }
+        else{
+          prevReadingDate = waterConnection!.previousReadingDate;
+        }
+      }
+
+      else{}
+    }
+  }
+
+  setMeterReading(meterRes)
+  {
+    if (meterRes.meterReadings!.length > 0) {
+      billGenerateDetails.meterNumberCtrl.text = waterconnection.meterId!;
+      billGenerateDetails.om_1Ctrl.text =
+      meterRes.meterReadings!.first.currentReading.toString()[0];
+      billGenerateDetails.om_2Ctrl.text =
+      meterRes.meterReadings!.first.currentReading.toString()[1];
+      billGenerateDetails.om_3Ctrl.text =
+      meterRes.meterReadings!.first.currentReading.toString()[2];
+      billGenerateDetails.om_4Ctrl.text =
+      meterRes.meterReadings!.first.currentReading.toString()[3];
+      billGenerateDetails.om_5Ctrl.text =
+      meterRes.meterReadings!.first.currentReading.toString()[4];
+      prevReadingDate = meterRes.meterReadings!.first.currentReadingDate;
+    }
   }
 
   dispose() {
     streamController.close();
     super.dispose();
   }
-  Future<void> getBillDetails() async {
-    try {
-      streamController.add(billGenerateDetails);
-    } catch (e) {
-      print(e);
-      streamController.addError('error');
-    }
-  }
 
   onChangeOfServiceType (val){
-    print(val.toString());
     billGenerateDetails.serviceType = val;
     notifyListeners();
   }
@@ -105,6 +181,7 @@ class BillGenerationProvider with ChangeNotifier {
       var res = await CoreRepository()
           .getMdms(getServiceTypeConnectionTypePropertyTypeMDMS(commonProvider.userDetails!.userRequest!.tenantId.toString()));
       languageList = res;
+      streamController.add(billGenerateDetails);
     } catch (e) {
       print(e);
     }
@@ -149,13 +226,13 @@ class BillGenerationProvider with ChangeNotifier {
               "meterReadings": {
                 "currentReading": int.parse(newMeter),
                 "currentReadingDate": DateFormats.dateToTimeStamp(billGenerateDetails.meterReadingDateCtrl.text),
-                "billingPeriod": "01/06/2021 - 01/07/2021",
+                "billingPeriod": "${DateFormats.timeStampToDate(prevReadingDate)} - ${DateFormats.timeStampToDate(DateFormats.dateToTimeStamp(billGenerateDetails.meterReadingDateCtrl.text))}",
                 "meterStatus": "Working",
-                "connectionNo": "WS/400/2021-22/0162",
+                "connectionNo": waterconnection.connectionNo,
                 "lastReading": int.parse(oldMeter),
-                "lastReadingDate": 1628447400000,
+                "lastReadingDate": waterconnection.previousReadingDate,
                 "generateDemand":true,
-                "tenantId": "pb.lodhipur"
+                "tenantId": commonProvider.userDetails!.selectedtenant!.code
               }
             };
             var billResponse1 = await BillGenerateRepository().calculateMeterConnection(res1);
@@ -297,9 +374,6 @@ class BillGenerationProvider with ChangeNotifier {
     if (dates.length > 0) {
       return (dates ?? <Map>[]).map((value) {
         var d = value['name'] as DateTime;
-        print(DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(
-            d.toLocal().toString(),
-            dateFormat: "dd/MM/yyyy")));
         return DropdownMenuItem(
           value: value['code'],
           child: new Text(months[d.month - 1] + " - " + months[d.month] + " " + d.year.toString()),

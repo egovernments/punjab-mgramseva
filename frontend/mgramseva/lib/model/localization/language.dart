@@ -2,6 +2,7 @@ import 'package:mgramseva/model/mdms/business_service.dart';
 import 'package:mgramseva/model/mdms/connection_type.dart';
 import 'package:mgramseva/model/mdms/expense_type.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
+import 'package:mgramseva/model/mdms/tax_period.dart';
 
 class LanguageList {
   dynamic? responseInfo;
@@ -31,6 +32,7 @@ class MdmsRes {
   Expense? expense;
   PropertyTax? propertyTax;
   Connection? connection;
+  TaxPeriodListModel? taxPeriodList;
 
   MdmsRes({this.commonMasters});
 
@@ -48,6 +50,9 @@ class MdmsRes {
         : null;
     connection = json['ws-services-masters'] != null
         ? new Connection.fromJson(json['ws-services-masters'])
+        : null;
+    taxPeriodList = json['BillingService'] != null
+        ? new TaxPeriodListModel.fromJson(json['BillingService'])
         : null;
   }
 
