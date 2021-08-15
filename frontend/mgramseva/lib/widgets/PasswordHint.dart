@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class PasswordHint extends StatelessWidget {
   final inputPassword;
@@ -17,7 +19,7 @@ class PasswordHint extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.info, color: Theme.of(context).hintColor),
-              Text("Password Hint",
+              Text(ApplicationLocalizations.of(context).translate(i18.password.PASSWORD_HINT),
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
@@ -30,7 +32,7 @@ class PasswordHint extends StatelessWidget {
           Row(
             children: [
               Text(
-                "Minimum 6 digits",
+                ApplicationLocalizations.of(context).translate(i18.password.PASS_HINT_MIN_SIX_DIGITS),
                 style: TextStyle(
                     fontSize: 16,
                     color: new RegExp(r'^(?=.{6,})').hasMatch(inputPassword)
@@ -48,7 +50,7 @@ class PasswordHint extends StatelessWidget {
           SizedBox(height: 5),
           Row(children: [
             Text(
-              "Atleast one special character",
+              ApplicationLocalizations.of(context).translate(i18.password.PASS_HINT_ATLEAST_ONE_SPECIAL_CHARACTER),
               style: TextStyle(
                   fontSize: 16,
                   color: RegExp(r'^(?=.*[^A-Za-z0-9])').hasMatch(inputPassword)
@@ -65,7 +67,7 @@ class PasswordHint extends StatelessWidget {
           SizedBox(height: 5),
           Row(children: [
             Text(
-              "Atleast one letter",
+              ApplicationLocalizations.of(context).translate(i18.password.PASS_HINT_ATLEAST_ONE_LETTER),
               style: TextStyle(
                   fontSize: 16,
                   color: RegExp(r'^(?=.*[a-zA-Z])').hasMatch(inputPassword)
@@ -82,7 +84,7 @@ class PasswordHint extends StatelessWidget {
           SizedBox(height: 5),
           Row(children: [
             Text(
-              "Atleast one number (0-9)",
+              ApplicationLocalizations.of(context).translate(i18.password.PASS_HINT_ATLEAST_ONE_NUMBER),
               style: TextStyle(
                   fontSize: 16,
                   color: RegExp(r'^(?=.*?[0-9])').hasMatch(inputPassword)

@@ -33,6 +33,7 @@ class _GenerateBillState extends State<GenerateBill> {
 
   afterViewBuild() {
     Provider.of<BillGenerationProvider>(context, listen: false)
+      ..setModel()
       ..getBillDetails()
       ..autoValidation = false
       ..formKey = GlobalKey<FormState>()
@@ -79,6 +80,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                               billgenerationprovider.onChangeOfServiceCat,
                                               billgenerationprovider.getServiceCategoryList(),
                                               true,
+                                              readOnly: true,
                                             )),
                                     Consumer<BillGenerationProvider>(
                                         builder: (_, billgenerationprovider, child) =>
@@ -141,7 +143,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                   builder: (_, billgenerationprovider, child) =>
                                                       SelectFieldBuilder(
                                                           i18.demandGenerate.BILLING_YEAR_LABEL,
-                                                          billgenerationprovider.selectedBillYear,
+                                                          billgenerationprovider.billGenerateDetails.billYear,
                                                           '',
                                                           '',
                                                           billgenerationprovider.onChangeOfBillYear,

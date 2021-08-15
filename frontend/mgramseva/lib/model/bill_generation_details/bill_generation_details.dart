@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 
 part 'bill_generation_details.g.dart';
@@ -33,7 +34,7 @@ class BillGenerationDetails {
   @JsonKey(name: "propertyType")
   String? propertyType;
   @JsonKey(name: "billYear")
-  String? billYear;
+  TaxPeriod? billYear;
   @JsonKey(name: "billCycle")
   String? billCycle;
   @JsonKey(name: "meterNumber")

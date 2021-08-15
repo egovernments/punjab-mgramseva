@@ -15,9 +15,11 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/CommonSuccessPage.dart';
+import 'package:mgramseva/widgets/ErrorMessagePAge.dart';
 import 'package:provider/provider.dart';
 
 import 'common_provider.dart';
@@ -27,7 +29,7 @@ class BillGenerationProvider with ChangeNotifier {
   LanguageList? languageList;
   late GlobalKey<FormState> formKey;
   var autoValidation = false;
-  var billGenerateDetails = BillGenerationDetails();
+  late BillGenerationDetails billGenerateDetails;
   var waterconnection = WaterConnection();
   late List dates = [];
   var selectedBillYear;
@@ -47,6 +49,10 @@ class BillGenerationProvider with ChangeNotifier {
     'Nov',
     'Dec'
   ];
+  setModel(){
+    billGenerateDetails = BillGenerationDetails();
+    billGenerateDetails.serviceCat = "WS_CHARGE";
+  }
 
   dispose() {
     streamController.close();
@@ -77,7 +83,7 @@ class BillGenerationProvider with ChangeNotifier {
   }
   void onChangeOfBillYear(val){
     selectedBillYear = val;
-    billGenerateDetails.billYear = val.code;
+    billGenerateDetails.billYear = selectedBillYear;
     notifyListeners();
   }
   void onChangeOfBillCycle(val){
@@ -143,13 +149,13 @@ class BillGenerationProvider with ChangeNotifier {
               "meterReadings": {
                 "currentReading": int.parse(newMeter),
                 "currentReadingDate": DateFormats.dateToTimeStamp(billGenerateDetails.meterReadingDateCtrl.text),
-                "billingPeriod": "01/05/2021 - 01/06/2021",
+                "billingPeriod": "01/06/2021 - 01/07/2021",
                 "meterStatus": "Working",
-                "connectionNo": "WS/400/2021-22/0160",
+                "connectionNo": "WS/400/2021-22/0162",
                 "lastReading": int.parse(oldMeter),
-                "lastReadingDate": 1627756200000,
+                "lastReadingDate": 1628447400000,
                 "generateDemand":true,
-                "tenantId": commonProvider.userDetails!.selectedtenant!.code
+                "tenantId": "pb.lodhipur"
               }
             };
             var billResponse1 = await BillGenerateRepository().calculateMeterConnection(res1);
@@ -165,13 +171,16 @@ class BillGenerationProvider with ChangeNotifier {
             }
           }
           catch (e) {
-            navigatorKey.currentState?.pop();
+            Navigator.of(context).pushReplacement(
+                new MaterialPageRoute(builder: (BuildContext context) {
+                  return ErrorPage(e.toString());
+                }));
           }
         }
         else {
           Notifiers.getToastMessage(
               context,
-              i18.demandGenerate.NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING,
+              i18.demandGenerate.NEW_METER_READING_INVALID,
               'ERROR');
         }
       }
@@ -192,14 +201,17 @@ class BillGenerationProvider with ChangeNotifier {
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
                 return CommonSuccess(SuccessHandler(
-                    i18.demandGenerate.GENERATE_BILL_SUCCESS,
-                    i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT,
+                    i18.demandGenerate.GENERATE_DEMAND_SUCCESS,
+                    i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT,
                     i18.common.BACK_HOME, Routes.BILL_GENERATE));
               }));
         }
       }
       catch (e) {
-        navigatorKey.currentState?.pop();
+        Navigator.of(context).pushReplacement(
+            new MaterialPageRoute(builder: (BuildContext context) {
+              return ErrorPage(e.toString());
+            }));
       }
     }
     else {
@@ -259,32 +271,24 @@ class BillGenerationProvider with ChangeNotifier {
     }
     return <DropdownMenuItem<Object>>[];
   }
-  Future<void> fetchDates() async {
-    var date = new DateTime.now();
-    dates = [];
-    for (var i = 0; i < 12; i++) {
-      var prevMonth = new DateTime(date.year, date.month - i + 1, 1);
-      var r = {"code": prevMonth, "name": prevMonth};
-      dates.add(r);
-    }
-  }
 
   List<DropdownMenuItem<Object>> getBillingCycle() {
     dates = [];
-   // print(languageList?.mdmsRes?.billingService?.taxPeriodList!.first.toJson());
     if (billGenerateDetails.billYear!=null && selectedBillYear!=null) {
       var date2 = DateFormats.getFormattedDateToDateTime(
-          DateFormats.timeStampToDate(selectedBillYear.toDate));
+          DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch));
       var date1 = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(selectedBillYear.fromDate));
-      print(date1);
-      print(date2);
       var d = date2 as DateTime;
       var now = date1 as DateTime;
+      var days = d.day - now.day;
       var years = d.year - now.year;
-      var months = now.month - d.month;
-      //print(DateFormats.getFilteredDate(date2, dateFormat: 'YYYY-MM-dd'));
-      for (var i = 0; i < years * 12; i++) {
+      var months = d.month - now.month;
+      if(months < 0 || (months == 0 && days < 0)){
+        years--;
+        months += (days < 0 ? 11:12);
+      }
+      for (var i = 0; i < months; i++) {
         var prevMonth = new DateTime(now.year, date1.month + i, 1);
         var r = {"code": prevMonth, "name": prevMonth};
         dates.add(r);
@@ -298,7 +302,7 @@ class BillGenerationProvider with ChangeNotifier {
             dateFormat: "dd/MM/yyyy")));
         return DropdownMenuItem(
           value: value['code'],
-          child: new Text(months[d.month - 1] + " - " + d.year.toString()),
+          child: new Text(months[d.month - 1] + " - " + months[d.month] + " " + d.year.toString()),
         );
       }).toList();
     }

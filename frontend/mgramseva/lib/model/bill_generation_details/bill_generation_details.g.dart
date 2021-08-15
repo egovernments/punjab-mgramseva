@@ -22,7 +22,9 @@ BillGenerationDetails _$BillGenerationDetailsFromJson(
     ..serviceCat = json['serviceCat'] as String?
     ..serviceType = json['serviceType'] as String?
     ..propertyType = json['propertyType'] as String?
-    ..billYear = json['billYear'] as String?
+    ..billYear = json['billYear'] == null
+        ? null
+        : TaxPeriod.fromJson(json['billYear'] as Map<String, dynamic>)
     ..billCycle = json['billCycle'] as String?
     ..meterNumber = json['meterNumber'] as String?
     ..oldMeterReading = json['oldMeterReading'] as String?
