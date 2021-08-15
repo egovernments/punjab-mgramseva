@@ -62,7 +62,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               }
             }
           }),
-      bottomNavigationBar: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}', () => consumerPaymentProvider.updatePaymentInformation(fetchBill)),
+      bottomNavigationBar: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}', () => consumerPaymentProvider.updatePaymentInformation(fetchBill, context)),
     );
   }
 

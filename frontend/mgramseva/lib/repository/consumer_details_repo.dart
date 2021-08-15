@@ -97,8 +97,8 @@ class ConsumerRepository extends BaseService {
     return demand;
   }
 
-  Future<List<FetchBill>?> collectPayment(Map body) async {
-    List<FetchBill>? fetchBill;
+  Future<List<Map>?> collectPayment(Map body) async {
+    List<Map>? response;
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -111,8 +111,8 @@ class ConsumerRepository extends BaseService {
             commonProvider.userDetails!.accessToken));
 
     if(res != null){
-      fetchBill = res['Bill']?.map<FetchBill>((e) => FetchBill.fromJson(e)).toList();
+      response = res['Payments'];
     }
-    return fetchBill;
+    return response;
   }
 }

@@ -2,9 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart';
+import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
+import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 
 class CollectPaymentProvider with ChangeNotifier {
 
@@ -41,29 +47,55 @@ class CollectPaymentProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updatePaymentInformation(FetchBill fetchBill) async {
+  Future<void> updatePaymentInformation(FetchBill fetchBill, BuildContext context) async {
 
     var payment = {
       "Payment": {
         "tenantId": "pb",
-        "paymentMode": "CASH",
-        "paidBy": "xyz",
-        "mobileNumber": "901025689787",
-        "totalAmountPaid": 100,
+        "paymentMode": fetchBill.paymentMethod,
+        "paidBy": fetchBill.payerName,
+        "mobileNumber": fetchBill.mobileNumber,
+        "totalAmountPaid": fetchBill.totalAmount,
         "paymentDetails": [
           {
-            "businessService": "FSM.TRIP_CHARGES",
-            "billId": "2c515ec9-3ea4-4580-a1df-fd0d481f6666",
-            "totalAmountPaid": 100
+            "businessService": fetchBill.businessService,
+            "billId": fetchBill.billDetails?.first.billId,
+            "totalAmountPaid": fetchBill.totalAmount
           }
         ]
       }
     };
 
     try{
+      Loaders.showLoadingDialog(context);
+
       var paymentDetails = await ConsumerRepository().collectPayment(payment);
-    }catch(e){
-      print(e);
+      if(paymentDetails != null && paymentDetails.isNotEmpty){
+
+        Navigator.pop(context);
+
+       Navigator.pushNamed(context, Routes.SUCCESS_VIEW,
+            arguments: SuccessHandler(
+                i18.common.PAYMENT_COMPLETE,
+                '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${fetchBill.mobileNumber})',
+                i18.common.BACK_HOME, Routes.PAYMENT_SUCCESS, subHeader: '${ApplicationLocalizations.of(context).translate(i18.common.RECEIPT_NO)} \n ${paymentDetails.first['paymentDetails'][0]['receiptNumber']}',
+            ));
+      }
+    }on CustomException catch (e,s) {
+      Navigator.pop(context);
+      if(ErrorHandler.handleApiException(context, e,s)) {
+        Notifiers.getToastMessage(
+            context,
+            e.message,
+            'ERROR');
+      }
+    } catch (e, s) {
+      Navigator.pop(context);
+      Notifiers.getToastMessage(
+          context,
+          e.toString(),
+          'ERROR');
+      ErrorHandler.logError(e.toString(),s);
     }
   }
 
