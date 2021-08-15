@@ -1,3 +1,5 @@
+import 'package:mgramseva/model/common/demand.dart';
+import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
@@ -87,5 +89,40 @@ class ConsumerRepository extends BaseService {
         method: RequestType.POST,
         requestInfo: getReguestInfo('_search'));
     return res;
+  }
+
+  Future<List<FetchBill>?> getBillDetails() async {
+    List<FetchBill>? fetchBill;
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    var res = await makeRequest(
+        url: Url.EGOV_LOCATIONS,
+        method: RequestType.POST,
+        requestInfo: RequestInfo('mgramseva-common', .01, "", "_create", 1, "",
+            "", commonProvider.userDetails!.accessToken));
+
+
+    if(res != null){
+      fetchBill = res['Bill']?.map<FetchBill>((e) => FetchBill.fromJson(res)).toList();
+    }
+    return fetchBill;
+  }
+
+  Future<Demand?> getDemandDetails() async {
+    Demand? demand;
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    var res = await makeRequest(
+        url: Url.EGOV_LOCATIONS,
+        method: RequestType.POST,
+        requestInfo: RequestInfo('mgramseva-common', .01, "", "_create", 1, "",
+            "", commonProvider.userDetails!.accessToken));
+
+    if(res != null){
+      demand = Demand.fromJson(res);
+    }
+    return demand;
   }
 }

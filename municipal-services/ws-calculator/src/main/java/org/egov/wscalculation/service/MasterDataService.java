@@ -217,7 +217,8 @@ public class MasterDataService {
 				
 				Calendar date = Calendar.getInstance();
 				date.setTimeInMillis(lastMeterReadingDate);
-				date.set(Calendar.DAY_OF_YEAR, 1);
+				date.set(Calendar.MONTH,Calendar.APRIL);
+				date.set(Calendar.DAY_OF_MONTH, 1);
 				criteria.setFrom(date.getTimeInMillis());
 				criteria.setTo(lastMeterReadingDate);
 			}

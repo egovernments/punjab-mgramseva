@@ -35,6 +35,8 @@ import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
+import 'providers/collect_payment.dart';
+
 void main() {
   setPathUrlStrategy();
   setEnvironment(Environment.dev);
@@ -95,6 +97,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => TenantsProvider()),
           ChangeNotifierProvider(create: (_) => HouseHoldProvider()),
           ChangeNotifierProvider(create: (_) => SearchConnectionProvider()),
+          ChangeNotifierProvider(create: (_) => CollectPaymentProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(

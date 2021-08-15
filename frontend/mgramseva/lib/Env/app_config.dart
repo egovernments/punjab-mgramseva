@@ -1,6 +1,6 @@
 import 'package:universal_html/html.dart';
-
 const _baseUrl = "baseUrl";
+
 
 enum Environment { dev, stage, prod }
 
@@ -25,7 +25,8 @@ dynamic get apiBaseUrl {
 }
 
 Map<String, dynamic> devConstants = {
-  _baseUrl: "https://mgramseva-dev.egov.org.in/",
+
+_baseUrl: window.location.origin + "/",
 };
 
 Map<String, dynamic> stageConstants = {

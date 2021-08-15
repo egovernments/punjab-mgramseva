@@ -1,5 +1,6 @@
 import 'package:mgramseva/icons/home_icons_icons.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/models.dart';
 
 class Constants {
@@ -65,5 +66,16 @@ class Constants {
     KeyValue("Sept-Oct", "SEPT-OCT"),
     KeyValue("Mar-Apr", "MAR-APR"),
     KeyValue("July-Aug", "JULY-AUG"),
+  ];
+
+  static List<KeyValue> PAYMENT_AMOUNT = [
+    KeyValue(i18.common.FULL_AMOUNT, 'fullAmount'),
+    KeyValue(i18.common.CUSTOM_AMOUNT, 'customAmount'),
+  ];
+
+  static List<KeyValue> PAYMENT_METHOD = [
+    KeyValue(i18.common.ONLINE, 'online'),
+    KeyValue(i18.common.CHEQUE, 'cheque'),
+    KeyValue(i18.common.CASH, 'cash'),
   ];
 }
