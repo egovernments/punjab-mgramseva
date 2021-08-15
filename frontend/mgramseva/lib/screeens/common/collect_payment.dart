@@ -6,6 +6,7 @@ import 'package:mgramseva/providers/collect_payment.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
@@ -19,7 +20,8 @@ import 'package:provider/provider.dart';
 import '../customAppbar.dart';
 
 class ConnectionPaymentView extends StatefulWidget {
-  const ConnectionPaymentView({Key? key}) : super(key: key);
+  final Map<String, dynamic> query;
+  const ConnectionPaymentView({Key? key, required this.query}) : super(key: key);
 
   @override
   _ConnectionPaymentViewState createState() => _ConnectionPaymentViewState();
@@ -31,7 +33,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   @override
   void initState() {
     var consumerPaymentProvider = Provider.of<CollectPaymentProvider>(context, listen: false);
-    consumerPaymentProvider.getBillDetails();
+    consumerPaymentProvider.getBillDetails(context, widget.query);
     super.initState();
   }
 
@@ -49,7 +51,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               return _buildView(snapshot.data);
             } else if (snapshot.hasError) {
               return Notifiers.networkErrorPage(
-                  context, () => consumerPaymentProvider.getBillDetails());
+                  context, () => consumerPaymentProvider.getBillDetails(context, widget.query));
             } else {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
@@ -61,7 +63,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               }
             }
           }),
-      bottomNavigationBar: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}', () => consumerPaymentProvider.updatePaymentInformation(fetchBill)),
+      bottomNavigationBar: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}', () => consumerPaymentProvider.updatePaymentInformation(fetchBill, context)),
     );
   }
 
@@ -91,7 +93,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         child: Column(
             crossAxisAlignment : CrossAxisAlignment.start,
             children : [
-              _buildLabelValue(i18.common.CONNECTION_ID, '${fetchBill.id}'),
+              _buildLabelValue(i18.common.CONNECTION_ID, '${fetchBill.consumerCode}'),
               _buildLabelValue(i18.common.CONSUMER_NAME, '${fetchBill.payerName}'),
               Consumer<CollectPaymentProvider>(
                 builder: (_, consumerPaymentProvider, child) => Visibility(
@@ -104,7 +106,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                 builder: (_, consumerPaymentProvider, child) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: InkWell(
-                    onTap: () =>  Provider.of<CollectPaymentProvider>(context, listen: false).onClickOfViewOrHideDetails(fetchBill),
+                    onTap: () =>  Provider.of<CollectPaymentProvider>(context, listen: false).onClickOfViewOrHideDetails(fetchBill, context),
                     child: Text(fetchBill.viewDetails ? '${ApplicationLocalizations.of(context).translate(i18.payment.HIDE_DETAILS)}' : '${ApplicationLocalizations.of(context).translate(i18.payment.VIEW_DETAILS)}',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Theme.of(context).primaryColor),
                     ),
@@ -143,8 +145,8 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                 crossAxisAlignment : CrossAxisAlignment.start,
                 children : [
                   subTitle(i18.common.PAYMENT_INFORMATION),
-                  _buildLabelValue(i18.payment.BILL_ID_NUMBER, '${fetchBill.billDetails?.first?.billId}'),
-                  _buildLabelValue(i18.payment.BILL_PERIOD, '${fetchBill.billDetails?.first?.fromPeriod} - ${fetchBill.billDetails?.first?.toPeriod}'),
+                  _buildLabelValue(i18.payment.BILL_ID_NUMBER, '${fetchBill.billNumber}'),
+                  _buildLabelValue(i18.payment.BILL_PERIOD, '${DateFormats.getMonthWithDay(fetchBill.billDetails?.first?.fromPeriod)} - ${DateFormats.getMonthWithDay(fetchBill.billDetails?.first?.toPeriod)}'),
                 ]),
           ),
           Padding(
@@ -159,7 +161,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
            return  _buildLabelValue(billAccountDetails!.taxHeadCode,
                 '₹ ${billAccountDetails!.amount}');
           }),
-                _buildDemandStream(constraints)
+               if(fetchBill.demand != null) _buildWaterCharges(fetchBill.demand!, constraints)
               ],
             ),
           )
@@ -167,31 +169,6 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
       ),
     );
   }
-
-  Widget _buildDemandStream(BoxConstraints constraints) {
-    var consumerPaymentProvider = Provider.of<CollectPaymentProvider>(context, listen: false);
-
-    return StreamBuilder(
-        stream: consumerPaymentProvider.demandStreamCtrl.stream,
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return _buildWaterCharges(snapshot.data, constraints);
-          } else if (snapshot.hasError) {
-            return Notifiers.networkErrorPage(
-                context, () => consumerPaymentProvider.getBillDetails());
-          } else {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return Loaders.CircularLoader();
-              case ConnectionState.active:
-                return Loaders.CircularLoader();
-              default:
-                return Container();
-            }
-          }
-        });
-  }
-
 
   Widget _buildWaterCharges(Demand demand, BoxConstraints constraints) {
     var style = TextStyle(fontSize: 14, color: Color.fromRGBO(80, 90, 95, 1));
@@ -214,14 +191,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                       padding: EdgeInsets.only(top: 18, bottom: 3),
                       child: new Align(
                           alignment: Alignment.centerLeft,
-                          child: Wrap(
-                            direction: Axis.vertical,
-                            spacing: 3,
-                            children: [
-                              Text('${ApplicationLocalizations.of(context).translate(demandDetails.taxHeadMasterCode)}', style: style),
-                              Text('${demand.taxPeriodFrom}-${demand.taxPeriodTo}', style : style),
-                            ],
-                          ))),
+                          child: _buildDemandDetails(demand, demandDetails))),
                   Container(
                       width: MediaQuery.of(context).size.width / 2.5,
                       padding: EdgeInsets.only(top: 18, bottom: 3),
@@ -231,19 +201,13 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             }
             ))
             : Table(
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children : List.generate(demand.demandDetails?.length ?? 0, (index) {
               var demandDetails = demand.demandDetails![index];
               return TableRow(
                   children: [
                     TableCell(
-                      child:  Wrap(
-                        direction: Axis.vertical,
-                        spacing: 3,
-                        children: [
-                          Text('${ApplicationLocalizations.of(context).translate(demandDetails.taxHeadMasterCode)}', style: style),
-                          Text('${demand.taxPeriodFrom}-${demand.taxPeriodTo}', style : style),
-                        ],
-                      ),
+                      child: _buildDemandDetails(demand, demandDetails)
                     ),
                     TableCell(
                         child : Text('₹ ${demandDetails.taxAmount}')
@@ -251,6 +215,24 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                   ]
               );
             }).toList())
+    );
+  }
+
+  Widget _buildDemandDetails(Demand demand, DemandDetails demandDetails) {
+    var style = TextStyle(fontSize: 14, color: Color.fromRGBO(80, 90, 95, 1));
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Wrap(
+        direction: Axis.vertical,
+        spacing: 3,
+        children: [
+          Text('${ApplicationLocalizations.of(context).translate(
+              demandDetails.taxHeadMasterCode)}', style: style),
+          Text('${DateFormats.getMonthWithDay(demand.taxPeriodFrom)}-${DateFormats
+              .getMonthWithDay(demand.taxPeriodTo)}', style: style),
+        ],
+      ),
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 
 class DateFormats {
+
   static getFilteredDate(String date, {String? dateFormat}) {
     if (date == null || date.trim().isEmpty) return '';
     try {
@@ -71,6 +72,16 @@ class DateFormats {
       var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
       return DateFormat(format ?? 'dd/MM/yyyy').format(date);
     } catch (e) {
+      return '';
+    }
+  }
+
+  static String getMonthWithDay(int? timeInMillis){
+    if(timeInMillis == null) return '';
+    try{
+      var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
+      return '${DateFormat.MMMM().format(date)} ${date.day}';
+    }catch(e){
       return '';
     }
   }

@@ -37,7 +37,7 @@ class CommonSuccess extends StatelessWidget {
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SuccessPage(successHandler.header),
+                    SuccessPage(successHandler.header, subText: successHandler.subHeader),
                     Align(
                         alignment: Alignment.center,
                         child: Container(
@@ -49,8 +49,38 @@ class CommonSuccess extends StatelessWidget {
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.w400)),
                         )),
-                    SizedBox(
-                      height: 20,
+                    Visibility(
+                      visible: successHandler.downloadLink == null && successHandler.whatsAppShare == null,
+                      child: SizedBox(
+                        height: 20,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Visibility(
+                          visible: successHandler.downloadLink != null,
+                          child: TextButton.icon(onPressed: (){},
+                          icon: Icon(Icons.download_sharp),
+                            label: Text( ApplicationLocalizations.of(context)
+                                .translate(i18.common.DOWNLOAD), style: TextStyle(fontSize: 19)),
+                          ),
+                        ),
+                        Visibility(
+                          visible: successHandler.whatsAppShare != null,
+                          child: TextButton.icon(
+                            onPressed: (){},
+                            icon:  (Image.asset('assets/png/whats_app.png')),
+                            label: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                              child: Text(
+                                  ApplicationLocalizations.of(context)
+                                      .translate(i18.common.SHARE_BILL)
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                     BottomButtonBar(
                       successHandler.backButtonText,

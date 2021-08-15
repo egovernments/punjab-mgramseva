@@ -112,6 +112,10 @@ class Common {
   String get CASH => 'CASH';
   String get FULL_AMOUNT => 'FULL_AMOUNT';
   String get CUSTOM_AMOUNT => 'CUSTOM_AMOUNT';
+  String get PAYMENT_COMPLETE => 'PAYMENT_COMPLETE'; /// Payment complete
+  String get RECEIPT_NO => 'RECEIPT_NO'; /// Payment complete
+  String get DOWNLOAD => 'DOWNLOAD'; /// Payment complete
+  String get SHARE_BILL => 'SHARE_BILL'; /// Payment complete
 
 }
 
@@ -303,8 +307,9 @@ class _Payment {
 
   String get HIDE_DETAILS => 'HIDE_DETAILS'; //Hide Details
   String get VIEW_DETAILS => 'VIEW_DETAILS'; //View Details
-  String get BILL_ID_NUMBER => 'VIEW_DETAILS'; //Bill ID No
+  String get BILL_ID_NUMBER => 'BILL_ID_NUMBER'; //Bill ID No
   String get BILL_PERIOD => 'BILL_PERIOD'; //Bill Period
   String get FREE_ESTIMATE => 'FREE_ESTIMATE'; //Fee Estimate
+  String get RECEIPT_REFERENCE_WITH_MOBILE_NUMBER => 'RECEIPT_REFERENCE_WITH_MOBILE_NUMBER'; //Fee Estimate
 
 }

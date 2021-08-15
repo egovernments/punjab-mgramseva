@@ -36,6 +36,7 @@ import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'providers/collect_payment.dart';
+import 'screeens/common/collect_payment.dart';
 
 void main() {
   setPathUrlStrategy();

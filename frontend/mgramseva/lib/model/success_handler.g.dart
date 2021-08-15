@@ -12,13 +12,19 @@ SuccessHandler _$SuccessHandlerFromJson(Map<String, dynamic> json) {
     json['subtitle'] as String,
     json['backButtonText'] as String,
     json['routeParentPath'] as String,
+    subHeader: json['subHeader'] as String?,
+    whatsAppShare: json['whatsAppShare'] as String?,
+    downloadLink: json['downloadLink'] as String?,
   );
 }
 
 Map<String, dynamic> _$SuccessHandlerToJson(SuccessHandler instance) =>
     <String, dynamic>{
       'header': instance.header,
+      'subHeader': instance.subHeader,
       'subtitle': instance.subtitle,
       'backButtonText': instance.backButtonText,
       'routeParentPath': instance.routeParentPath,
+      'whatsAppShare': instance.whatsAppShare,
+      'downloadLink': instance.downloadLink,
     };

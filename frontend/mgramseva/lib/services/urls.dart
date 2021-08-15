@@ -37,6 +37,9 @@ class Url {
   static const String VENDOR_SEARCH = 'vendor/v1/_search';
   static const String EGOV_LOCATIONS =
       'egov-location/location/v11/boundarys/_search';
+
+  /// Connection bill payment
+  static const String COLLECT_PAYMENT = 'collection-services/payments/_create';
 }
 
 class UserUrl {
