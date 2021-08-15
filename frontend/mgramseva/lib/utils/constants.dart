@@ -35,7 +35,7 @@ class Constants {
     HomeItem("CORE_UPDATE_EXPENSES", HomeIcons.updateexpenses,
         Routes.EXPENSE_SEARCH, {}),
     HomeItem(
-        "CORE_GENERATE_DEMAND", HomeIcons.generaedemand, 'bill/generate', {}),
+        "CORE_GENERATE_DEMAND", HomeIcons.generaedemand, Routes.MANUAL_BILL_GENERATE, {}),
     HomeItem("CORE_CONSUMER_CREATE", HomeIcons.createconsumer,
         Routes.CONSUMER_CREATE, {}),
     HomeItem("CORE_UPDATE_CONSUMER_DETAILS", HomeIcons.updateconsumer,
@@ -52,20 +52,6 @@ class Constants {
   static List<KeyValue> PROPERTYTYPE = [
     KeyValue("Residential", "RESIDENTIAL"),
     KeyValue("Non Residential", "NON RESIDENTIAL"),
-  ];
-  static List<KeyValue> SERVICETYPE = [
-    KeyValue("Meter Connection", "METER CONNECTION"),
-    KeyValue("Non Meter Connection", "NON METER CONNECTION"),
-  ];
-  static List<KeyValue> BILLINGYEAR = [
-    KeyValue("2020-2021", "2020-2021"),
-    KeyValue("2021-2022", "2021-2022"),
-  ];
-
-  static List<KeyValue> BILLINGCYCLE = [
-    KeyValue("Sept-Oct", "SEPT-OCT"),
-    KeyValue("Mar-Apr", "MAR-APR"),
-    KeyValue("July-Aug", "JULY-AUG"),
   ];
 
   static List<KeyValue> PAYMENT_AMOUNT = [

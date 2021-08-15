@@ -110,6 +110,37 @@ Map getTenantsMDMS(String tenantId) {
     }
   };
 }
+Map getServiceTypeConnectionTypePropertyTypeMDMS(String tenantId) {
+  return {
+    "MdmsCriteria": {
+      "tenantId": tenantId,
+      "moduleDetails": [
+        {
+          "moduleName": "ws-services-masters",
+          "masterDetails": [
+            {"name": "connectionType"},
+          ]
+        },
+        {
+          "moduleName": "PropertyTax",
+          "masterDetails": [
+            {"name": "PropertyType"},
+          ]
+        },
+        {
+          "moduleName": "BillingService",
+          "masterDetails": [
+            {"name": "TaxHeadMaster"},
+            {
+              "name": "TaxPeriod",
+              "filter": "[?(@.service=='WS')]"
+            }
+          ],
+        },
+      ]
+    }
+  };
+}
 
 Future getMDMD() async {
   final requestInfo = RequestInfo(

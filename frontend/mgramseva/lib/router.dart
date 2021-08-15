@@ -42,7 +42,6 @@ class router {
     Uri uri = Uri.parse(settings.name ?? '');
     Map<String, dynamic>? query = uri.queryParameters;
     String? path = uri.path;
-
     if (kIsWeb) {
       var userDetails = commonProvider.getWebLoginStatus();
       if (userDetails == null && Routes.LOGIN != settings.name) {
@@ -177,9 +176,24 @@ class router {
               name: '${Routes.SEARCH_CONSUMER_RESULT}',
             ));
       case Routes.BILL_GENERATE:
+        String? id;
+        if (settings.arguments != null) {
+          id = (settings.arguments as WaterConnection).connectionNo!.split('/').join("_");
+        } else {
+          if (queryValidator(Routes.BILL_GENERATE, query)) {
+            id = query['applicationNo'];
+          } else {
+            return pageNotAvailable;
+          }
+        }
         return MaterialPageRoute(
-            builder: (_) => GenerateBill(),
-            settings: RouteSettings(name: Routes.BILL_GENERATE));
+            builder: (_) => GenerateBill(
+                id: id,
+                waterconnection: settings.arguments != null
+                    ? settings.arguments as WaterConnection
+                    : null),
+            settings: RouteSettings(
+                name: '${Routes.BILL_GENERATE}?applicationNo=$id'));
       case Routes.CONSUMER_CREATE:
         return MaterialPageRoute(
             builder: (_) => ConsumerDetails(),
@@ -226,6 +240,10 @@ class router {
         return MaterialPageRoute(
             builder: (_) => ResetPassword(),
             settings: RouteSettings(name: Routes.RESET_PASSWORD));
+      case Routes.MANUAL_BILL_GENERATE:
+        return MaterialPageRoute(
+            builder: (_) => GenerateBill(),
+            settings: RouteSettings(name: Routes.MANUAL_BILL_GENERATE));
       default:
         return MaterialPageRoute(
           builder: (_) => SelectLanguage(),
@@ -239,6 +257,9 @@ class router {
     switch (route) {
       case Routes.EXPENSE_UPDATE:
         if (query.keys.contains('challanNo')) return true;
+        return false;
+      case Routes.BILL_GENERATE:
+        if (query.keys.contains('applicationNo')) return true;
         return false;
       default:
         return false;

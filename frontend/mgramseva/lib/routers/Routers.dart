@@ -45,7 +45,9 @@ class Routes {
 
   static const String DASHBOARD = 'dashboard';
 
-  static const String BILL_GENERATE = 'bill/generate';
+  static const String BILL_GENERATE = '/bill/generate';
+
+  static const String MANUAL_BILL_GENERATE = 'bill/manual/generate';
 
   ///  Consumer
   static const String CONSUMER_CREATE = '/home/consumer/create';

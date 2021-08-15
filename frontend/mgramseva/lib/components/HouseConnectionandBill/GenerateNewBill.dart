@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill/billing.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
@@ -57,8 +58,13 @@ class GenerateNewBill extends StatelessWidget {
                         context),
                     _getLabeltext(i18.generateBillDetails.PENDING_AMOUNT,
                         billList!.bill!.first.totalAmount.toString(), context),
-                    ShortButton(i18.generateBillDetails.GENERATE_NEW_BTN_LABEL,
-                        () => {Navigator.pushNamed(context, 'bill/generate')})
+                    ShortButton(
+                        i18.generateBillDetails.GENERATE_NEW_BTN_LABEL,
+                            () => {
+                          Navigator.pushNamed(context, Routes.BILL_GENERATE,
+                              arguments:
+                              billList!.bill!.first.waterConnection)
+                        })
                   ],
                 )))
       ],
