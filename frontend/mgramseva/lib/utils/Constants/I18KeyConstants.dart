@@ -111,6 +111,8 @@ class Common {
   String get CUSTOM_AMOUNT => 'CUSTOM_AMOUNT';
   String get PAYMENT_COMPLETE => 'PAYMENT_COMPLETE'; /// Payment complete
   String get RECEIPT_NO => 'RECEIPT_NO'; /// Payment complete
+  String get DOWNLOAD => 'DOWNLOAD'; /// Payment complete
+  String get SHARE_BILL => 'SHARE_BILL'; /// Payment complete
 
 }
 

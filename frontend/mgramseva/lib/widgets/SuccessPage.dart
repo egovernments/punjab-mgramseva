@@ -3,7 +3,8 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class SuccessPage extends StatelessWidget {
   final label;
-  SuccessPage(this.label);
+  final String? subText;
+  SuccessPage(this.label, {this.subText});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,17 @@ class SuccessPage extends StatelessWidget {
               Icons.check_circle,
               color: Colors.white,
               size: 32,
-            )
+            ),
+            if(subText != null) Container(
+              padding: EdgeInsets.only(top: 8),
+              alignment: Alignment.center,
+              child: Text(ApplicationLocalizations.of(context).translate(label),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  )),
+            ),
           ],
         ));
   }

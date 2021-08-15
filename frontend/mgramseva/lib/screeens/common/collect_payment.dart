@@ -20,7 +20,8 @@ import 'package:provider/provider.dart';
 import '../customAppbar.dart';
 
 class ConnectionPaymentView extends StatefulWidget {
-  const ConnectionPaymentView({Key? key}) : super(key: key);
+  final Map<String, dynamic> query;
+  const ConnectionPaymentView({Key? key, required this.query}) : super(key: key);
 
   @override
   _ConnectionPaymentViewState createState() => _ConnectionPaymentViewState();
@@ -32,7 +33,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   @override
   void initState() {
     var consumerPaymentProvider = Provider.of<CollectPaymentProvider>(context, listen: false);
-    consumerPaymentProvider.getBillDetails(context);
+    consumerPaymentProvider.getBillDetails(context, widget.query);
     super.initState();
   }
 
@@ -50,7 +51,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               return _buildView(snapshot.data);
             } else if (snapshot.hasError) {
               return Notifiers.networkErrorPage(
-                  context, () => consumerPaymentProvider.getBillDetails(context));
+                  context, () => consumerPaymentProvider.getBillDetails(context, widget.query));
             } else {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:

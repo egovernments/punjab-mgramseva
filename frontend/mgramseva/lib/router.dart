@@ -29,6 +29,7 @@ import 'package:universal_html/html.dart';
 import 'model/success_handler.dart';
 
 import 'screeens/ForgotPassword/ForgotPassword.dart';
+import 'screeens/common/collect_payment.dart';
 import 'screeens/expense/expense_results.dart';
 import 'screeens/expense/search_expense.dart';
 import 'widgets/CommonSuccessPage.dart';
@@ -145,8 +146,8 @@ class router {
         if (settings.arguments != null) {
           id = (settings.arguments as WaterConnection).connectionNo;
         } else {
-          if (queryValidator(Routes.EXPENSE_UPDATE, query)) {
-            id = query[''];
+          if (queryValidator(Routes.HOUSEHOLD_DETAILS, query)) {
+            id = query['applicationNo'];
           } else {
             return pageNotAvailable;
           }
@@ -188,6 +189,7 @@ class router {
       case Routes.EDIT_PROFILE_SUCCESS:
       case Routes.CHANGE_PASSWORD_SUCCESS:
       case Routes.EXPENSES_ADD_SUCCESS:
+      case Routes.HOUSEHOLD_DETAILS_SUCCESS:
         String routePath;
         SuccessHandler successHandler;
 
@@ -216,6 +218,21 @@ class router {
             builder: (_) => ExpenseResults(
                 searchResult: settings.arguments as SearchResult),
             settings: RouteSettings(name: Routes.EXPENSE_RESULT));
+      case Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT:
+        late Map<String, dynamic> localQuery;
+        if (settings.arguments == null) {
+          if (queryValidator(Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT, query)) {
+            localQuery = query;
+          } else {
+            return pageNotAvailable;
+          }
+        }else{
+          localQuery = settings.arguments as Map<String, dynamic>;
+        }
+        return MaterialPageRoute(
+            builder: (_) => ConnectionPaymentView(query: localQuery),
+            settings: RouteSettings(name: '${Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT}?${Uri(queryParameters: localQuery).query}'));
+
 
       /// Redirecting routes
       case Routes.RESET_PASSWORD:
@@ -239,6 +256,12 @@ class router {
     switch (route) {
       case Routes.EXPENSE_UPDATE:
         if (query.keys.contains('challanNo')) return true;
+        return false;
+      case Routes.HOUSEHOLD_DETAILS:
+        if (query.keys.contains('applicationNo')) return true;
+        return false;
+      case Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT:
+        if (query.keys.contains('consumerCode') && query.keys.contains('businessService') && query.keys.contains('tenantId')) return true;
         return false;
       default:
         return false;

@@ -23,13 +23,13 @@ class CollectPaymentProvider with ChangeNotifier {
   }
 
 
-  Future<void> getBillDetails(BuildContext context) async {
+  Future<void> getBillDetails(BuildContext context, Map<String, dynamic> query) async {
 
-    var query = {
-      'consumerCode' : 'WS/400/2021-22/0162',
-      'businessService' : 'WS',
-      'tenantId' : 'pb.lodhipur'
-    };
+    // var query = {
+    //   'consumerCode' : 'WS/400/2021-22/0162',
+    //   'businessService' : 'WS',
+    //   'tenantId' : 'pb.lodhipur'
+    // };
 
     try{
       var paymentDetails = await ConsumerRepository().getBillDetails(query);
@@ -79,6 +79,7 @@ class CollectPaymentProvider with ChangeNotifier {
                 i18.common.PAYMENT_COMPLETE,
                 '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${fetchBill.mobileNumber})',
                 i18.common.BACK_HOME, Routes.PAYMENT_SUCCESS, subHeader: '${ApplicationLocalizations.of(context).translate(i18.common.RECEIPT_NO)} \n ${paymentDetails.first['paymentDetails'][0]['receiptNumber']}',
+              downloadLink: '', whatsAppShare: ''
             ));
       }
     }on CustomException catch (e,s) {

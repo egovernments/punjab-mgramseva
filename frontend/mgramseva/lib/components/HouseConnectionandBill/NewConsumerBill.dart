@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill/billing.dart';
+import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/widgets/ButtonGroup.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
+import 'package:provider/provider.dart';
 
 class NewConsumerBill extends StatelessWidget {
   final BillList? billList;
@@ -72,9 +75,21 @@ class NewConsumerBill extends StatelessWidget {
                             i18.billDetails.TOTAL_AMOUNT,
                             billList!.bill!.first.totalAmount.toString(),
                             context),
-                        ButtonGroup(i18.billDetails.COLLECT_PAYMENT),
+                        ButtonGroup(i18.billDetails.COLLECT_PAYMENT, ()=> onClickOfCollectPayment(billList!.bill!.first, context)),
                       ])))
             ],
           );
+  }
+
+  void onClickOfCollectPayment(Bill bill, BuildContext context) {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+
+
+    Map<String, dynamic> query ={
+      'consumerCode' : bill.consumerCode,
+      'businessService' : bill.businessService,
+      'tenantId' : commonProvider.userDetails?.selectedtenant?.code
+    };
+    Navigator.pushNamed(context, Routes.BILL_GENERATE, arguments: query);
   }
 }

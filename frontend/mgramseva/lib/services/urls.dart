@@ -39,8 +39,6 @@ class Url {
       'egov-location/location/v11/boundarys/_search';
 
   /// Connection bill payment
-  static const String FETCH_BILL = 'billing-service/bill/v2/_fetchbill';
-  static const String FETCH_DEMAND = 'billing-service/demand/_search';
   static const String COLLECT_PAYMENT = 'collection-services/payments/_create';
 }
 
