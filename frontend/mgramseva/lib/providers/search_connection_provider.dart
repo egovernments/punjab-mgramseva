@@ -48,7 +48,7 @@ class SearchConnectionProvider with ChangeNotifier {
     return streamController.add(waterConnections);
   }
 
-  void validatesearchConnectionDetails(context) async {
+  void validatesearchConnectionDetails(context, arguments) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -67,10 +67,9 @@ class SearchConnectionProvider with ChangeNotifier {
           connectionresults.then((value) => {
                 if (value.waterConnection!.length > 0)
                   {
-                    print(value),
                     waterConnections = value,
                     Navigator.pushNamed(context, Routes.SEARCH_CONSUMER_RESULT,
-                        arguments: inputJson)
+                        arguments: {...inputJson, ...arguments})
                   }
                 else
                   {

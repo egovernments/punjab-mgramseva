@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class ButtonGroup extends StatelessWidget {
   final String label;
-  ButtonGroup(this.label);
+  final VoidCallback callBack;
+  ButtonGroup(this.label, this.callBack);
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -41,7 +42,7 @@ class ButtonGroup extends StatelessWidget {
                           child: new ElevatedButton(
                         child: new Text(label,
                         ),
-                        onPressed: () => Navigator.pushNamed(context, "home"),
+                        onPressed: callBack,
                       ))
                     ],
                   ),

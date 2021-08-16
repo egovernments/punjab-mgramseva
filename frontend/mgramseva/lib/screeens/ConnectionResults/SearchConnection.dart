@@ -18,6 +18,8 @@ import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
 class SearchConsumerConnection extends StatefulWidget {
+  final Map arguments;
+  SearchConsumerConnection(this.arguments);
   State<StatefulWidget> createState() {
     return _SearchConsumerConnectionState();
   }
@@ -32,6 +34,7 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
 
   @override
   void initState() {
+    print(widget.arguments);
     super.initState();
   }
 
@@ -165,8 +168,8 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
       ))),
       bottomNavigationBar: BottomButtonBar(
           i18.searchWaterConnection.SEARCH_CONNECTION_BUTTON,
-          () => searchConnectionProvider
-              .validatesearchConnectionDetails(context)),
+          () => searchConnectionProvider.validatesearchConnectionDetails(
+              context, widget.arguments)),
     );
   }
 }

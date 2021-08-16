@@ -63,7 +63,7 @@ Map getExpenseMDMS(String tenantId) {
   };
 }
 
-Map getConnectionTypePropertyTypeMDMS(String tenantId) {
+Map getConnectionTypePropertyTypeTaxPeriodMDMS(String tenantId, int datestamp) {
   return {
     "MdmsCriteria": {
       "tenantId": tenantId,
@@ -80,6 +80,16 @@ Map getConnectionTypePropertyTypeMDMS(String tenantId) {
             {"name": "PropertyType"},
           ]
         },
+        {
+          "moduleName": "BillingService",
+          "masterDetails": [
+            {
+              "name": "TaxPeriod",
+              "filter":
+                  "[?(@.service=='WS' &&  @.fromDate <= $datestamp &&  @.toDate >= $datestamp)]"
+            }
+          ]
+        }
       ]
     }
   };
@@ -100,10 +110,48 @@ Map getTenantsMDMS(String tenantId) {
     }
   };
 }
+Map getServiceTypeConnectionTypePropertyTypeMDMS(String tenantId) {
+  return {
+    "MdmsCriteria": {
+      "tenantId": tenantId,
+      "moduleDetails": [
+        {
+          "moduleName": "ws-services-masters",
+          "masterDetails": [
+            {"name": "connectionType"},
+          ]
+        },
+        {
+          "moduleName": "PropertyTax",
+          "masterDetails": [
+            {"name": "PropertyType"},
+          ]
+        },
+        {
+          "moduleName": "BillingService",
+          "masterDetails": [
+            {"name": "TaxHeadMaster"},
+            {
+              "name": "TaxPeriod",
+              "filter": "[?(@.service=='WS')]"
+            }
+          ],
+        },
+      ]
+    }
+  };
+}
 
 Future getMDMD() async {
-  final requestInfo =
-      RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "_search", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID, "");
+  final requestInfo = RequestInfo(
+      APIConstants.API_MODULE_NAME,
+      APIConstants.API_VERSION,
+      APIConstants.API_TS,
+      "_search",
+      APIConstants.API_DID,
+      APIConstants.API_KEY,
+      APIConstants.API_MESSAGE_ID,
+      "");
   var response = await http.post(Uri.parse(apiBaseUrl.toString() + Url.MDMS),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/json',

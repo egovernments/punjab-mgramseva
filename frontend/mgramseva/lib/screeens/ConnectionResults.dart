@@ -45,6 +45,7 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
 
   @override
   Widget build(BuildContext context) {
+    print(['Mode']);
     var waterconnectionsProvider =
         Provider.of<SearchConnectionProvider>(context, listen: false);
 

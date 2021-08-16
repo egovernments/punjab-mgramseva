@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mgramseva/model/mdms/tax_head_master.dart';
+import 'package:mgramseva/model/mdms/tax_period.dart';
 
 part 'business_service.g.dart';
 
@@ -12,6 +13,9 @@ class BillingService {
 
   @JsonKey(name: "TaxHeadMaster")
   List<TaxHeadMaster>? taxHeadMasterList;
+
+  @JsonKey(name: "TaxPeriod")
+  List<TaxPeriod>? taxPeriodList;
 
   BillingService();
 

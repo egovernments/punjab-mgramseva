@@ -23,12 +23,11 @@ class DateFormats {
   }
 
   static DateTime? getFormattedDateToDateTime(String date) {
-
     try {
       DateFormat inputFormat;
-      if(date.contains('-')){
+      if (date.contains('-')) {
         inputFormat = DateFormat('dd-MM-yyyy');
-      }else{
+      } else {
         inputFormat = DateFormat('dd/MM/yyyy');
       }
       var inputDate = inputFormat.parse(date);
@@ -38,42 +37,52 @@ class DateFormats {
     }
   }
 
-  static String getTime(String date){
-    if(date == null || date.trim().isEmpty) return '';
-    try{
+  static String getTime(String date) {
+    if (date == null || date.trim().isEmpty) return '';
+    try {
       var dateTime = getDateFromString(date);
       return DateFormat.Hms().format(dateTime!);
-    } on Exception catch(e, stackTrace){
+    } on Exception catch (e, stackTrace) {
       return '';
     }
   }
 
-  static String getLocalTime(String date){
-    try{
+  static String getLocalTime(String date) {
+    try {
       var dateTime = getDateFromString(date);
       return DateFormat.jm().format(dateTime!);
-    } on Exception catch(e, stackTrace){
+    } on Exception catch (e, stackTrace) {
       return '';
     }
   }
 
   static int dateToTimeStamp(String dateTime) {
     try {
-      return getFormattedDateToDateTime(dateTime)!.toUtc()
+      return getFormattedDateToDateTime(dateTime)!
+          .toUtc()
           .millisecondsSinceEpoch;
-    } catch(e) {
+    } catch (e) {
       return 0;
     }
   }
 
   static String timeStampToDate(int? timeInMillis, {String? format}) {
-    if(timeInMillis == null) return '';
+    if (timeInMillis == null) return '';
     try {
       var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
-      return DateFormat(format ?? 'dd-MM-yyyy').format(date);
-    }catch(e){
+      return DateFormat(format ?? 'dd/MM/yyyy').format(date);
+    } catch (e) {
       return '';
     }
   }
 
+  static String getMonthWithDay(int? timeInMillis){
+    if(timeInMillis == null) return '';
+    try{
+      var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
+      return '${DateFormat.MMMM().format(date)} ${date.day}';
+    }catch(e){
+      return '';
+    }
+  }
 }

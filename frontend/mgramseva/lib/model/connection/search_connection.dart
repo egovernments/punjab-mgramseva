@@ -4,14 +4,14 @@ part 'search_connection.g.dart';
 
 @JsonSerializable()
 class SearchConnection {
-  @JsonKey(name: "oldConnectionNo")
-  String? oldConnectionNo;
+  @JsonKey(name: "oldConnectionNumber")
+  String? oldConnectionNumber;
 
   @JsonKey(name: "name")
   String? name;
 
-  @JsonKey(name: "connectionNo")
-  String? connectionNo;
+  @JsonKey(name: "connectionNumber")
+  String? connectionNumber;
 
   @JsonKey(name: "mobileNumber")
   String? mobileNumber;
@@ -50,9 +50,9 @@ class SearchConnection {
 
   setValues() {
     name = nameCtrl.text;
-    connectionNo = newConnectionCtrl.text;
+    connectionNumber = newConnectionCtrl.text;
     mobileNumber = mobileCtrl.text;
-    oldConnectionNo = oldConnectionCtrl.text;
+    oldConnectionNumber = oldConnectionCtrl.text;
   }
 
   SearchConnection();

@@ -11,6 +11,7 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/providers/forgot_password_provider.dart';
+import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/providers/reset_password_provider.dart';
@@ -33,6 +34,9 @@ import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
+
+import 'providers/collect_payment.dart';
+import 'screeens/common/collect_payment.dart';
 
 void main() {
   setPathUrlStrategy();
@@ -92,7 +96,9 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => TenantsProvider()),
           ChangeNotifierProvider(create: (_) => BillGenerationProvider()),
           ChangeNotifierProvider(create: (_) => TenantsProvider()),
+          ChangeNotifierProvider(create: (_) => HouseHoldProvider()),
           ChangeNotifierProvider(create: (_) => SearchConnectionProvider()),
+          ChangeNotifierProvider(create: (_) => CollectPaymentProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(

@@ -1,7 +1,3 @@
-import 'package:mgramseva/screeens/Profile/EditProfile.dart';
-import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
-import 'package:mgramseva/screeens/Home.dart';
-
 class Routes {
   ///Authentication
   static const String LANDING_PAGE = '/';
@@ -14,7 +10,7 @@ class Routes {
 
   static const String FORGOT_PASSWORD = '/forgotPassword';
 
-  static const String HOUSE_HOLD = 'household/search';
+  // static const String HOUSE_HOLD = 'household/search';
 
   static const String HOUSEHOLD = 'household/search';
 
@@ -42,18 +38,29 @@ class Routes {
 
   static const String EXPENSE_RESULT = '/home/searchExpense/result';
 
-  static const String EXPENSE_UPDATE = '/home/searchExpense/result/updateExpense';
+  static const String EXPENSE_UPDATE =
+      '/home/searchExpense/result/updateExpense';
 
-  static const String HOUSEHOLD_DETAILS = 'household/details';
+  static const String HOUSEHOLD_DETAILS = '/household/details';
+
+  static const String HOUSEHOLD_DETAILS_COLLECT_PAYMENT = '/household/details/collectPayment';
+
+  static const String HOUSEHOLD_DETAILS_SUCCESS = '$HOUSEHOLD_DETAILS_COLLECT_PAYMENT/success';
 
   static const String DASHBOARD = 'dashboard';
 
-  static const String SEARCH_CONSUMER_RESULT = 'search/consumer';
+  static const String BILL_GENERATE = '/bill/generate';
 
-  static const String BILL_GENERATE = 'bill/generate';
+  static const String MANUAL_BILL_GENERATE = 'bill/manual/generate';
 
-  static const String CONSUMER_CREATE = '/home/consumerCreate';
+  ///  Consumer
+  static const String CONSUMER_CREATE = '/home/consumer/create';
+
+  static const String CONSUMER_UPDATE = '/home/consumer/update';
+
+  static const String SEARCH_CONSUMER_RESULT = '/home/consumer/search';
+
+  static const String PAYMENT_SUCCESS = 'paymentSuccess';
 
   static const String SUCCESS_VIEW = '/success';
-
 }
