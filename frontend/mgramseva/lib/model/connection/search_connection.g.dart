@@ -8,16 +8,16 @@ part of 'search_connection.dart';
 
 SearchConnection _$SearchConnectionFromJson(Map<String, dynamic> json) {
   return SearchConnection()
-    ..oldConnectionNo = json['oldConnectionNo'] as String?
+    ..oldConnectionNumber = json['oldConnectionNumber'] as String?
     ..name = json['name'] as String?
-    ..connectionNo = json['connectionNo'] as String?
+    ..connectionNumber = json['connectionNumber'] as String?
     ..mobileNumber = json['mobileNumber'] as String?;
 }
 
 Map<String, dynamic> _$SearchConnectionToJson(SearchConnection instance) =>
     <String, dynamic>{
-      'oldConnectionNo': instance.oldConnectionNo,
+      'oldConnectionNumber': instance.oldConnectionNumber,
       'name': instance.name,
-      'connectionNo': instance.connectionNo,
+      'connectionNumber': instance.connectionNumber,
       'mobileNumber': instance.mobileNumber,
     };

@@ -86,29 +86,31 @@ class _GenerateBillState extends State<GenerateBill> {
                                     Consumer<BillGenerationProvider>(
                                         builder: (_, billgenerationprovider, child) =>
                                             SelectFieldBuilder(
-                                                i18.demandGenerate.PROPERTY_TYPE_LABEL,
-                                                billgenerationprovider.billGenerateDetails.propertyType,
-                                                '',
-                                                '',
-                                                billgenerationprovider.onChangeOfProperty,
-                                                billgenerationprovider.getPropertyTypeList(),
-                                                true)),
-                                    Consumer<BillGenerationProvider>(
-                                        builder: (_, billgenerationprovider, child) =>
-                                            SelectFieldBuilder(
                                                 i18.demandGenerate.SERVICE_TYPE_LABEL,
                                                 billgenerationprovider.billGenerateDetails.serviceType,
                                                 '',
                                                 '',
                                                 billgenerationprovider.onChangeOfServiceType,
                                                 billgenerationprovider.getConnectionTypeList(),
-                                                true)),
+                                                true,
+                                            readOnly: true,)),
                                     billgenerationprovider.billGenerateDetails.serviceType != "Metered"
                                         ? Container()
                                         : Container(
                                         width: MediaQuery.of(context).size.width,
                                         child: Column(
                                             children: [
+                                              Consumer<BillGenerationProvider>(
+                                                  builder: (_, billgenerationprovider, child) =>
+                                                      SelectFieldBuilder(
+                                                        i18.demandGenerate.PROPERTY_TYPE_LABEL,
+                                                        billgenerationprovider.billGenerateDetails.propertyType,
+                                                        '',
+                                                        '',
+                                                        billgenerationprovider.onChangeOfProperty,
+                                                        billgenerationprovider.getPropertyTypeList(),
+                                                        true,
+                                                        readOnly: true,)),
                                               Consumer<BillGenerationProvider>(
                                                   builder: (_, billgenerationprovider, child) =>
                                                       BuildTextField(
@@ -118,6 +120,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                         validator: Validators.meterNumberValidator,
                                                         textInputType: TextInputType.number,
                                                         onChange: (value) => saveInput(value),
+                                                        readOnly: widget.id == null ? false : true
                                                       )),
                                               MeterReading(i18.demandGenerate
                                                   .PREV_METER_READING_LABEL, billgenerationprovider.billGenerateDetails.om_1Ctrl, billgenerationprovider.billGenerateDetails.om_2Ctrl,

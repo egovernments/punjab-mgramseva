@@ -17,6 +17,7 @@ import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/widgets/ErrorMessagePAge.dart';
@@ -219,6 +220,7 @@ class BillGenerationProvider with ChangeNotifier {
             billGenerateDetails.nm_5Ctrl.text;
         if (int.parse(oldMeter) < int.parse(newMeter)) {
           try {
+            Loaders.showLoadingDialog(context);
             var commonProvider = Provider.of<CommonProvider>(
                 navigatorKey.currentContext!,
                 listen: false);
@@ -265,6 +267,7 @@ class BillGenerationProvider with ChangeNotifier {
     else if (formKey.currentState!.validate() &&
         billGenerateDetails.serviceType == "Non Metered") {
       try {
+        Loaders.showLoadingDialog(context);
         var commonProvider = Provider.of<CommonProvider>(
             navigatorKey.currentContext!,
             listen: false);
