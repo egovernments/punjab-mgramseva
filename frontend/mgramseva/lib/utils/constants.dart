@@ -28,7 +28,7 @@ class Constants {
   static const List<HomeItem> HOME_ITEMS = [
     HomeItem("CORE_HOUSEHOLD_REGISTER", HomeIcons.hhregister, '', {}),
     HomeItem("CORE_COLLECT_PAYMENTS", HomeIcons.collectpayment,
-        'household/search', {'Mode': "collect"}),
+        Routes.HOUSEHOLD, {'Mode': "collect"}),
     HomeItem("DOWNLOAD_BILLS_AND_RECEIPTS", HomeIcons.printreciept, '', {}),
     HomeItem(
         "ADD_EXPENSES_RECORD", HomeIcons.addexpenses, Routes.EXPENSES_ADD, {}),

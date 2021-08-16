@@ -26,7 +26,7 @@ class WaterConnection {
   @JsonKey(name: "proposedTaps")
   int? proposedTaps;
   @JsonKey(name: "arrears")
-  int? arrears;
+  double? arrears;
   @JsonKey(name: "connectionType")
   String? connectionType;
   @JsonKey(name: "oldConnectionNo")
@@ -68,7 +68,7 @@ class WaterConnection {
     print(previousReadingDateCtrl.text);
     oldConnectionNo = OldConnectionCtrl.text;
     meterId = meterIdCtrl.text != "" ? meterIdCtrl.text : null;
-    arrears = int.parse(arrearsCtrl.text);
+    arrears = double.parse(arrearsCtrl.text);
     previousReadingDate =
         DateFormats.dateToTimeStamp(previousReadingDateCtrl.text);
     meterInstallationDate = DateFormats.dateToTimeStamp(
