@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/repository/forgot_password_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 
@@ -14,16 +16,18 @@ class ForgotPasswordProvider with ChangeNotifier {
 
     try {
       var commonProvider = Provider.of<CommonProvider>(
-          navigatorKey.currentContext!,
+          context,
           listen: false);
       var body = {
         "otp": {
           "mobileNumber": mobileNumber,
-          "tenantId": commonProvider.userDetails!.userRequest!.tenantId,
+          "tenantId": commonProvider.userDetails?.userRequest?.tenantId,
           "type": "passwordreset",
-          "userType": commonProvider.userDetails!.userRequest!.type
+          "userType": commonProvider.userDetails?.userRequest?.type
         }
       };
+
+      Loaders.showLoadingDialog(context);
 
       var otpResponse = await ForgotPasswordRepository().forgotPassword(body);
       Navigator.pop(context);
@@ -31,12 +35,10 @@ class ForgotPasswordProvider with ChangeNotifier {
       if (otpResponse != null) {
         Navigator.of(context)
             .pushNamed(Routes.RESET_PASSWORD);
-      } else {
-        // Notifiers.getToastMessage('Error');
       }
-    } catch (e) {
+    } catch (e,s) {
       Navigator.pop(context);
-      // Notifiers.getToastMessage('Error');
+      ErrorHandler().allExceptionsHandler(context, e,s);
     }
   }
 
