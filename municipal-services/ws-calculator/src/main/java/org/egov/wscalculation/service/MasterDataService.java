@@ -227,9 +227,9 @@ public class MasterDataService {
 		
 			
 		} else {
-			if(!isconnectionCalculation) {
-				lastMeterReadingDate = null;
-			}
+//			if(!isconnectionCalculation) {
+//				lastMeterReadingDate = null;
+//			}
 			if (WSCalculationConstant.Monthly_Billing_Period
 					.equalsIgnoreCase(master.get(WSCalculationConstant.Billing_Cycle_String).toString())) {
 				estimationService.getMonthStartAndEndDate(billingPeriod,lastMeterReadingDate);
