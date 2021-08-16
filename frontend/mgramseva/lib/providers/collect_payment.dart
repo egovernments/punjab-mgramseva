@@ -34,10 +34,12 @@ class CollectPaymentProvider with ChangeNotifier {
       var demandDetails = await ConsumerRepository().getDemandDetails(query);
       if(demandDetails != null) paymentDetails.first.demand = demandDetails.first;
         paymentStreamController.add(paymentDetails.first);
+        notifyListeners();
       }
     }on CustomException catch (e,s){
       if(ErrorHandler.handleApiException(context, e,s)){
-        Notifiers.getToastMessage(context, e.message, 'ERROR');
+        paymentStreamController.add(e.code ?? e.message);
+        return;
       }
       paymentStreamController.addError('error');
     } catch (e, s) {

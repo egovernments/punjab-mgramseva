@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/constants/houseconnectiondetails.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
@@ -34,26 +35,27 @@ class HouseConnectionDetailCard extends StatelessWidget {
             padding: EdgeInsets.all(15),
             child: Column(
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        padding: EdgeInsets.only(top: 16, bottom: 16),
-                        width: MediaQuery.of(context).size.width / 3,
-                        child: Text(
-                          "Connection ID : ",
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.w700),
-                        )),
-                    Container(
-                        alignment: Alignment.topCenter,
-                        padding: EdgeInsets.only(top: 16, bottom: 16),
-                        child: Text(
-                          waterconnection!.connectionNo!,
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.w700),
-                        )),
-                  ],
+                Padding(
+                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  child: Wrap(
+                    alignment: WrapAlignment.start,
+                    children: [
+                      Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Text(
+                            "Connection ID : ",
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.w700),
+                          )),
+                      Container(
+                          alignment: Alignment.topCenter,
+                          child: Text(
+                            waterconnection!.connectionNo!,
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.w700),
+                          )),
+                    ],
+                  ),
                 ),
                 _getLabeltext(i18.searchWaterConnection.CONSUMER_NAME,
                     waterconnection!.connectionHolders!.first.name, context),

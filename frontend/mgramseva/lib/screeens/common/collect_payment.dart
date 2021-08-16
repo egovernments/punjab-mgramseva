@@ -5,6 +5,7 @@ import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/providers/collect_payment.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -40,13 +41,16 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   @override
   Widget build(BuildContext context) {
     var consumerPaymentProvider = Provider.of<CollectPaymentProvider>(context, listen: false);
-    late FetchBill fetchBill;
+    FetchBill? fetchBill;
     return Scaffold(
       appBar: CustomAppBar(),
       body: StreamBuilder(
           stream: consumerPaymentProvider.paymentStreamController.stream,
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
+              if(snapshot.data is String){
+                return CommonWidgets.buildEmptyMessage(snapshot.data, context);
+              }
               fetchBill = snapshot.data;
               return _buildView(snapshot.data);
             } else if (snapshot.hasError) {
@@ -63,7 +67,11 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               }
             }
           }),
-      bottomNavigationBar: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}', () => consumerPaymentProvider.updatePaymentInformation(fetchBill, context)),
+      bottomNavigationBar: Consumer<CollectPaymentProvider>(
+        builder: (_, consumerPaymentProvider, child) => Visibility(
+            visible: fetchBill != null,
+            child: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}', () => consumerPaymentProvider.updatePaymentInformation(fetchBill!, context))),
+      ),
     );
   }
 

@@ -11,9 +11,9 @@ class Constants {
   static const String STATES_KEY = 'states_key';
 
   static List<KeyValue> GENDER = [
-    KeyValue('Male', 'MALE'),
-    KeyValue('Female', 'FEMALE'),
-    KeyValue('Transgender', 'TRANSGENDER'),
+    KeyValue('CORE_COMMON_GENDER_MALE', 'MALE'),
+    KeyValue('CORE_COMMON_GENDER_FEMALE', 'FEMALE'),
+    KeyValue('CORE_COMMON_GENDER_TRANSGENDER', 'TRANSGENDER'),
   ];
 
   static List<KeyValue> EXPENSESTYPE = [
