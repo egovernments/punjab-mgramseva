@@ -73,7 +73,6 @@ public class PaymentService {
 
 			try {
 				response = mapper.convertValue(result, PaymentResponse.class);
-				challan.setApplicationStatus(StatusEnum.PAID);
 			} catch (IllegalArgumentException e) {
 				log.error("Error parsing payment response Challan id : " + challan.getId());
 				throw new CustomException("PARSING ERROR", "Unable to parse payment response");

@@ -94,10 +94,10 @@ public class ChallanValidator {
 
 		if (!currentTaxHeadCodes.isEmpty() && !requiredTaxHeadCodes.isEmpty()) {
 			if (!currentTaxHeadCodes.containsAll(requiredTaxHeadCodes))
-				errorMap.put("INAVLID_TAXHEAD_CODE_DETAILS",
+				errorMap.put("INVALID_TAXHEAD_CODE_DETAILS",
 						"Mandatory taxhead codes details are not present in request for provided business service");
 		} else
-			errorMap.put("INAVLID_TAXHEAD_CODE_DETAILS",
+			errorMap.put("INVALID_TAXHEAD_CODE_DETAILS",
 					"Taxhead codes details are not present in request or in mdms records for provided business service");
 
 		if (!errorMap.isEmpty())
