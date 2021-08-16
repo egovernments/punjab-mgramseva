@@ -130,7 +130,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     '',
                     expensesDetailsProvider.onChangeOfExpenses,
                     expensesDetailsProvider.getExpenseTypeList(),
-                    true, isEnabled : expenseDetails.allowEdit),
+                    true, isEnabled : expenseDetails.allowEdit,
+                  requiredMessage: i18.expense.SELECT_EXPENDITURE_CATEGORY,
+                ),
                 AutoCompleteView(
                     labelText: i18.expense.VENDOR_NAME,
                     controller: expenseDetails.vendorNameCtrl,
@@ -152,6 +154,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                       inputFormatter: [
                         FilteringTextInputFormatter.allow(RegExp("[0-9]"))
                       ],
+                      requiredMessage: i18.expense.MENTION_NAME_OF_VENDOR,
                     ),
                 BuildTextField(
                   '${i18.expense.AMOUNT}',
@@ -163,6 +166,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                   ],
                   labelSuffix: '(₹)',
                   isDisabled: (expenseDetails.allowEdit ?? true) ? false : true,
+                  requiredMessage: i18.expense.AMOUNT_MENTIONED_IN_THE_BILL,
                 ),
                 BasicDateField(
                     i18.expense.BILL_DATE, true, expenseDetails.billDateCtrl,
@@ -176,7 +180,10 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                       expenseDetails.billDateCtrl.text.trim(),
                     ),
                     lastDate: DateTime.now(),
-                    onChangeOfDate: expensesDetailsProvider.onChangeOfDate, isEnabled: expenseDetails.allowEdit),
+                    onChangeOfDate: expensesDetailsProvider.onChangeOfDate,
+                    isEnabled: expenseDetails.allowEdit,
+                  requiredMessage: i18.expense.DATE_BILL_ENTERED_IN_RECORDS,
+                ),
                 BasicDateField(i18.expense.PARTY_BILL_DATE, false,
                     expenseDetails.billIssuedDateCtrl,
                     initialDate: DateFormats.getFormattedDateToDateTime(
@@ -189,7 +196,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     onChangeOfDate: expensesDetailsProvider.onChangeOfDate, isEnabled: expenseDetails.allowEdit),
                 RadioButtonFieldBuilder(
                     context,
-                    i18.expense.BILL_PAID,
+                    i18.expense.HAS_THIS_BILL_PAID,
                     expenseDetails.isBillPaid,
                     '',
                     '',
@@ -213,7 +220,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     child: Wrap(
                       direction: Axis.vertical,
                       children: [
-                        Text('Attachments', style: TextStyle(fontSize: 19, fontWeight: FontWeight.normal)),
+                        Text(ApplicationLocalizations.of(context)
+                            .translate(i18.common.ATTACHMENTS), style: TextStyle(fontSize: 19, fontWeight: FontWeight.normal)),
                         Wrap( children : expenseDetails.fileStoreList!.map<Widget>((e) => InkWell(
                           onTap: ()=> expensesDetailsProvider.onTapOfAttachment(e),
                           child: Container(
@@ -238,7 +246,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                           value: expenseDetails.isBillCancelled,
                           onChanged: expensesDetailsProvider.onChangeOfCheckBox
                         ),
-                        Text(i18.expense.MARK_BILL_HAS_CANCELLED, style: TextStyle(fontSize: 19, fontWeight: FontWeight.normal))
+                        Text(ApplicationLocalizations.of(context)
+        .translate(i18.expense.MARK_BILL_HAS_CANCELLED), style: TextStyle(fontSize: 19, fontWeight: FontWeight.normal))
                       ],
                     ),
                   ),

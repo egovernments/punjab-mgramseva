@@ -13,8 +13,8 @@ class BasicDateField extends StatelessWidget {
   final Function(DateTime?)? onChangeOfDate;
   final TextEditingController controller;
   final bool? isEnabled;
-
-  BasicDateField(this.label,  this.isRequired, this.controller, {this.firstDate, this.lastDate, this.onChangeOfDate, this.initialDate, this.isEnabled});
+  final String? requiredMessage;
+  BasicDateField(this.label,  this.isRequired, this.controller, {this.firstDate, this.lastDate, this.onChangeOfDate, this.initialDate, this.isEnabled, this.requiredMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class BasicDateField extends StatelessWidget {
       validator: (val){
         if(isRequired != null && isRequired && controller.text.trim().isEmpty){
           return ApplicationLocalizations.of(context)
-              .translate(label + '_REQUIRED');
+              .translate(requiredMessage ?? '${label}_REQUIRED');
         }
         return null;
       },

@@ -17,8 +17,8 @@ class Constants {
   ];
 
   static List<KeyValue> EXPENSESTYPE = [
-    KeyValue('YES', true),
-    KeyValue('NO', false),
+    KeyValue(i18.common.YES, true),
+    KeyValue(i18.common.NO, false),
   ];
   static List<KeyValue> AMOUNTTYPE = [
     KeyValue('FULL', 'Full'),

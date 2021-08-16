@@ -11,6 +11,7 @@ class AutoCompleteView extends StatelessWidget {
   final Widget Function(BuildContext, dynamic) listTile;
   final SuggestionsBoxController? suggestionsBoxController;
   final bool? isEnabled;
+  final String? requiredMessage;
 
   const AutoCompleteView(
       {Key? key,
@@ -20,7 +21,7 @@ class AutoCompleteView extends StatelessWidget {
       required this.listTile,
       required this.controller,
       this.suggestionsBoxController,
-      this.isRequired, this.isEnabled})
+      this.isRequired, this.isEnabled, this.requiredMessage})
       : super(key: key);
 
   @override
@@ -98,7 +99,7 @@ class AutoCompleteView extends StatelessWidget {
           ? null
           : (val) {
               if (val == null || val.trim().isEmpty) {
-                return '${labelText}_REQUIRED';
+                return requiredMessage ?? '${labelText}_REQUIRED';
               }
               return null;
             },

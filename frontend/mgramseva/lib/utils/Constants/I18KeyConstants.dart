@@ -117,6 +117,8 @@ class Common {
   String get DOWNLOAD => 'DOWNLOAD'; /// Payment complete
   String get SHARE_BILL => 'SHARE_BILL'; /// Payment complete
   String get ATTACHMENTS => 'ATTACHMENTS';
+  String get YES => 'YES';
+  String get NO => 'NO';
 
 }
 
@@ -199,6 +201,16 @@ class Expense {
   String get EDIT_EXPENSE_BILL => 'EDIT_EXPENSE_BILL';
   String get UPDATE_SUBMIT_EXPENDITURE => 'UPDATE_SUBMIT_EXPENDITURE';
   String get MARK_BILL_HAS_CANCELLED => 'MARK_BILL_HAS_CANCELLED';
+
+  ///Required messages for expenses
+  String get SELECT_EXPENDITURE_CATEGORY => 'SELECT_EXPENDITURE_CATEGORY';
+  String get MENTION_NAME_OF_VENDOR => 'MENTION_NAME_OF_VENDOR';
+  String get AMOUNT_MENTIONED_IN_THE_BILL => 'AMOUNT_MENTIONED_IN_THE_BILL';
+  String get DATE_BILL_ENTERED_IN_RECORDS => 'DATE_BILL_ENTERED_IN_RECORDS';
+  String get DATE_ON_WHICH_BILL_RAISED => 'DATE_ON_WHICH_BILL_RAISED';
+  String get ATTACH_FORMATS => 'ATTACH_FORMATS';
+  String get CORE_EXPENSE_EXPENDITURE_SUCESS => 'CORE_EXPENSE_EXPENDITURE_SUCESS';
+  String get HAS_THIS_BILL_PAID => 'HAS_THIS_BILL_PAID';
 }
 
 class CreateConsumer {

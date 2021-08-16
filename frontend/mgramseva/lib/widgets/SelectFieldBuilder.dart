@@ -15,9 +15,10 @@ class SelectFieldBuilder extends StatelessWidget {
   final String? hint;
   final bool? readOnly;
   final bool? isEnabled;
+  final String? requiredMessage;
 
   SelectFieldBuilder(this.labelText, this.value, this.input, this.prefixText,
-      this.widget, this.options, this.isRequired, {this.hint, this.isEnabled, this.readOnly});
+      this.widget, this.options, this.isRequired, {this.hint, this.isEnabled, this.readOnly, this.requiredMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,7 @@ class SelectFieldBuilder extends StatelessWidget {
       validator: (val) {
         if (isRequired != null && isRequired && val == null) {
           return ApplicationLocalizations.of(context)
-              .translate(labelText + '_REQUIRED');
+              .translate(requiredMessage ?? '${labelText}_REQUIRED');
         }
         return null;
       },
