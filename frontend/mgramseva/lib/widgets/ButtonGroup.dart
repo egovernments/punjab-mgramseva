@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class ButtonGroup extends StatelessWidget {
   final String label;
@@ -17,6 +19,7 @@ class ButtonGroup extends StatelessWidget {
                 ? MediaQuery.of(context).size.width / 2
                 : MediaQuery.of(context).size.width,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Expanded(
                   child: Row(
@@ -33,14 +36,14 @@ class ButtonGroup extends StatelessWidget {
                         icon:  (Image.asset('assets/png/whats_app.png')),
                         label: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 15),
-                          child: const Text(
-                            "Share Bill",
+                          child:  Text(
+                            ApplicationLocalizations.of(context).translate(i18.common.SHARE_BILL),
                           ),
                         ),
                       )),
                       Expanded(
                           child: new ElevatedButton(
-                        child: new Text(label,
+                        child: new Text(ApplicationLocalizations.of(context).translate(label),
                         ),
                         onPressed: callBack,
                       ))

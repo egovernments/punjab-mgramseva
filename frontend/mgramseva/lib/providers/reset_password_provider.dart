@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/repository/reset_password_repo.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -31,7 +32,7 @@ class ResetPasswordProvider with ChangeNotifier {
       };
 
       var resetResponse = await ResetPasswordRepository().forgotPassword(body);
-      Navigator.pop(context);
+      Navigator.pushNamedAndRemoveUntil(context, Routes.LOGIN, (route) => false);
 
     } on CustomException catch (e,s) {
       Navigator.pop(context);

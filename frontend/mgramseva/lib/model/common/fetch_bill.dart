@@ -49,6 +49,9 @@ class FetchBill {
   String paymentMethod = Constants.PAYMENT_METHOD.last.key;
 
   @JsonKey(ignore: true)
+  var customAmountCtrl = new TextEditingController();
+
+  @JsonKey(ignore: true)
   Demand? demand;
 
   FetchBill();

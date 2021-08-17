@@ -35,4 +35,21 @@ class ErrorHandler  {
         return true;
     }
   }
+
+  bool allExceptionsHandler(BuildContext context, dynamic e, [StackTrace? stackTrace]){
+    var status = false;
+    if(e is CustomException) {
+      if (ErrorHandler.handleApiException(context, e, stackTrace)) {
+        Notifiers.getToastMessage(context, e.message, 'ERROR');
+      }
+      status = false;
+    }else{
+      ErrorHandler.logError(e.toString(),stackTrace);
+      Notifiers.getToastMessage(context, e.toString(), 'ERROR');
+      status = false;
+    }
+    return status;
+  }
 }
+}
+

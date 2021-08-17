@@ -34,22 +34,9 @@ class UserEditProfileProvider with ChangeNotifier {
             context, i18.profileEdit.PROFILE_EDIT_SUCCESS, 'SUCCESS');
         streamController.add(edituserResponse);
       }
-    } on CustomException catch (e,s) {
-      Navigator.pop(context);
-
-      if(ErrorHandler.handleApiException(context, e,s)) {
-        Notifiers.getToastMessage(
-            context,
-            e.message,
-            'ERROR');
-      }
     } catch (e, s) {
-      Notifiers.getToastMessage(
-          context,
-          e.toString(),
-          'ERROR');
-      ErrorHandler.logError(e.toString(),s);
       Navigator.pop(context);
+      ErrorHandler().allExceptionsHandler(context, e,s);
     }
   }
 

@@ -38,7 +38,7 @@ class _GenerateBillState extends State<GenerateBill> {
 
   afterViewBuild() {
     Provider.of<BillGenerationProvider>(context, listen: false)
-      ..setModel(widget.id, widget.waterconnection)
+      ..setModel(widget.id, widget.waterconnection, context)
       ..getServiceTypePropertyTypeandConnectionType()
       ..autoValidation = false
       ..formKey = GlobalKey<FormState>();

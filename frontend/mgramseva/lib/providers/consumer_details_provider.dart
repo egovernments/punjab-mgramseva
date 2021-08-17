@@ -12,6 +12,7 @@ import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -90,11 +91,11 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   void validateExpensesDetails(context) async {
-    waterconnection.setText();
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
     if (formKey.currentState!.validate()) {
+      waterconnection.setText();
       property.owners!.first.setText();
       property.address.setText();
       property.tenantId = commonProvider.userDetails!.selectedtenant!.code;
@@ -142,6 +143,7 @@ class ConsumerProvider with ChangeNotifier {
 
           var result2 = await ConsumerRepository()
               .addconnection(waterconnection.toJson());
+          Navigator.pop(context);
           if (result2 != null) {
             setModel();
             streamController.add(property);
@@ -157,12 +159,15 @@ class ConsumerProvider with ChangeNotifier {
           //  .updateconnection(waterconnection.toJson());
           var result1 =
               await ConsumerRepository().updateProperty(property.toJson());
+          Navigator.pop(context);
         }
-      } catch (e) {
+      } catch (e, s) {
         Navigator.pop(context);
+        ErrorHandler().allExceptionsHandler(context, e,s);
       }
     } else {
       autoValidation = true;
+      notifyListeners();
     }
   }
 

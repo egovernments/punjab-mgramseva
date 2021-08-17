@@ -74,7 +74,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                     if (snapshot.hasData) {
                       return buildDemandView(snapshot.data);
                     } else if (snapshot.hasError) {
-                      return Notifiers.networkErrorPage(context, () {});
+                      return Notifiers.networkErrorPage(context, ()=> houseHoldProvider.FetchBill(widget.waterconnection));
                     } else {
                       switch (snapshot.connectionState) {
                         case ConnectionState.waiting:

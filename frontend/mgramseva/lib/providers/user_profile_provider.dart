@@ -23,11 +23,8 @@ class UserProfileProvider with ChangeNotifier {
       if (userResponse != null) {
         streamController.add(userResponse.user?.first);
       }
-    }on CustomException catch (e,s) {
-      ErrorHandler.handleApiException(context, e,s);
-      streamController.addError('error');
     }catch (e,s) {
-      ErrorHandler.logError(e.toString(),s);
+      ErrorHandler().allExceptionsHandler(context, e, s);
       streamController.addError('error');
     }
   }
