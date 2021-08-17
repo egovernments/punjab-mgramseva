@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/model/common/demand.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/providers/collect_payment.dart';
@@ -15,6 +16,7 @@ import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
+import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +31,8 @@ class ConnectionPaymentView extends StatefulWidget {
 }
 
 class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
-
+  final formKey = GlobalKey<FormState>();
+  var autoValidation = false;
 
   @override
   void initState() {
@@ -70,27 +73,33 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
       bottomNavigationBar: Consumer<CollectPaymentProvider>(
         builder: (_, consumerPaymentProvider, child) => Visibility(
             visible: fetchBill != null,
-            child: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}', () => consumerPaymentProvider.updatePaymentInformation(fetchBill!, context))),
+            child: BottomButtonBar('${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}', () => paymentInfo(fetchBill!, context))),
       ),
     );
   }
 
   Widget _buildView(FetchBill fetchBill) {
     return SingleChildScrollView(
-      child: FormWrapper(Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            HomeBack(widget: Help()),
-            LayoutBuilder(
-              builder: (_, constraints) => Column(
-                children: [
-                  _buildCoonectionDetails(fetchBill, constraints),
-                  _buildPaymentDetails(fetchBill, constraints)
-                ],
-              ),
-            )
-          ])),
+      child: FormWrapper(Form(
+        key: formKey,
+        autovalidateMode: autoValidation
+            ? AutovalidateMode.always
+            : AutovalidateMode.disabled,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              HomeBack(widget: Help()),
+              LayoutBuilder(
+                builder: (_, constraints) => Column(
+                  children: [
+                    _buildCoonectionDetails(fetchBill, constraints),
+                    _buildPaymentDetails(fetchBill, constraints)
+                  ],
+                ),
+              )
+            ]),
+      )),
     );
   }
 
@@ -134,6 +143,17 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             children: [
               RadioButtonFieldBuilder(context, i18.common.PAYMENT_AMOUNT, fetchBill.paymentAmount, '', '', true,
                   Constants.PAYMENT_AMOUNT, (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(fetchBill, val, true)),
+              if(fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key)
+                BuildTextField(
+                  '${i18.common.CUSTOM_AMOUNT}',
+                  fetchBill.customAmountCtrl,
+                  isRequired: true,
+                  textInputType: TextInputType.number,
+                  inputFormatter: [
+                    FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                  ],
+                  labelSuffix: '(₹)',
+                ),
               RadioButtonFieldBuilder(context, i18.common.PAYMENT_METHOD, fetchBill.paymentMethod, '', '', true,
                   Constants.PAYMENT_METHOD, (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(fetchBill, val))
             ],
@@ -164,12 +184,12 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               children: [
                 subTitle(i18.payment.FREE_ESTIMATE, 18),
                 ...List.generate(fetchBill.billDetails?.first.billAccountDetails?.length ?? 0, (index)
-          {
-            var billAccountDetails = fetchBill.billDetails?.first.billAccountDetails?[index];
-           return  _buildLabelValue(billAccountDetails!.taxHeadCode,
-                '₹ ${billAccountDetails!.amount}');
-          }),
-               if(fetchBill.demand != null) _buildWaterCharges(fetchBill.demand!, constraints)
+                {
+                  var billAccountDetails = fetchBill.billDetails?.first.billAccountDetails?[index];
+                  return  _buildLabelValue(billAccountDetails!.taxHeadCode,
+                      '₹ ${billAccountDetails!.amount}');
+                }),
+                if(fetchBill.demand != null) _buildWaterCharges(fetchBill.demand!, constraints)
               ],
             ),
           )
@@ -209,13 +229,13 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             }
             ))
             : Table(
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children : List.generate(demand.demandDetails?.length ?? 0, (index) {
               var demandDetails = demand.demandDetails![index];
               return TableRow(
                   children: [
                     TableCell(
-                      child: _buildDemandDetails(demand, demandDetails)
+                        child: _buildDemandDetails(demand, demandDetails)
                     ),
                     TableCell(
                         child : Text('₹ ${demandDetails.taxAmount}')
@@ -275,6 +295,16 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                     )
                   ])]));
   }
-
+  paymentInfo(FetchBill fetchBill, BuildContext context){
+    var consumerPaymentProvider = Provider.of<CollectPaymentProvider>(context, listen: false);
+    if(formKey.currentState!.validate()){
+      autoValidation = false;
+      consumerPaymentProvider.updatePaymentInformation(fetchBill, context);
+    } else {
+      setState(() {
+        autoValidation = true;
+      });
+    }
+  }
   Text subTitle(String label, [double? size]) => Text('${ApplicationLocalizations.of(context).translate(label)}', style: TextStyle(fontSize: size ?? 24, fontWeight: FontWeight.w700));
 }

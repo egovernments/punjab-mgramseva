@@ -6,6 +6,7 @@ import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -51,18 +52,19 @@ class CollectPaymentProvider with ChangeNotifier {
   Future<void> updatePaymentInformation(FetchBill fetchBill, BuildContext context) async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
+    var amount = fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key ? fetchBill.customAmountCtrl.text : fetchBill.totalAmount;
     var payment = {
       "Payment": {
         "tenantId": commonProvider.userDetails?.selectedtenant?.code,
         "paymentMode": fetchBill.paymentMethod,
         "paidBy": fetchBill.payerName,
         "mobileNumber": fetchBill.mobileNumber,
-        "totalAmountPaid": fetchBill.totalAmount,
+        "totalAmountPaid": amount,
         "paymentDetails": [
           {
             "businessService": fetchBill.businessService,
             "billId": fetchBill.billDetails?.first.billId,
-            "totalAmountPaid": fetchBill.totalAmount
+            "totalAmountPaid": amount,
           }
         ]
       }

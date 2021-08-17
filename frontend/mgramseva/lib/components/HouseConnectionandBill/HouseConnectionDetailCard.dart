@@ -43,7 +43,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
                       Container(
                           width: MediaQuery.of(context).size.width / 3,
                           child: Text(
-                            "Connection ID : ",
+                              "${ApplicationLocalizations.of(context).translate(i18.common.CONNECTION_ID)}: ",
                             style: TextStyle(
                                 fontSize: 24, fontWeight: FontWeight.w700),
                           )),
@@ -60,7 +60,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
                 _getLabeltext(i18.searchWaterConnection.CONSUMER_NAME,
                     waterconnection!.connectionHolders!.first.name, context),
                 _getLabeltext(
-                    "Father's Name",
+                    i18.consumer.FATHER_SPOUSE_NAME,
                     waterconnection!
                         .connectionHolders!.first.fatherOrHusbandName,
                     context),
@@ -75,7 +75,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
                 // _getLabeltext("Property Type",
                 //   waterconnection!.additionalDetails!.propertyType, context),
                 _getLabeltext(
-                    "Service Type", waterconnection!.connectionType, context)
+                   i18.consumer.SERVICE_TYPE, waterconnection!.connectionType, context)
               ],
             )));
   }

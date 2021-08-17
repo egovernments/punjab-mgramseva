@@ -45,7 +45,7 @@ class router {
     String? path = uri.path;
     if (kIsWeb) {
       var userDetails = commonProvider.getWebLoginStatus();
-      if (userDetails == null && Routes.LOGIN != settings.name) {
+      if (userDetails == null && Routes.LOGIN != settings.name && Routes.FORGOT_PASSWORD != settings.name && Routes.RESET_PASSWORD != settings.name) {
         path = Routes.SELECT_LANGUAGE;
       } else if (Routes.LOGIN == settings.name || Routes.FORGOT_PASSWORD == settings.name || Routes.RESET_PASSWORD == settings.name) {
         path = settings.name;
