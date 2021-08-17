@@ -246,7 +246,7 @@ public class NotificationUtil {
 		return builder;
 	}
 	
-	public HashMap<String, String> getLocalizationMessage(RequestInfo requestInfo, String code) {
+	public HashMap<String, String> getLocalizationMessage(RequestInfo requestInfo, String code,String tenantId) {
 		HashMap<String, String> msgDetail = new HashMap<String, String>();
 		String locale = NOTIFICATION_LOCALE;
 		String templateId = null;
@@ -254,10 +254,8 @@ public class NotificationUtil {
 		StringBuilder uri = new StringBuilder();
 		uri.append(config.getLocalizationHost()).append(config.getLocalizationContextPath())
 				.append(config.getLocalizationSearchEndpoint()).append("?").append("locale=").append(locale)
-				.append("&tenantId=").append("pb").append("&module=").append("") // TODO
+				.append("&tenantId=").append("pb").append("&module=").append("mgramseva-common") // TODO
 																					// define
-																					// module
-																					// and
 																					// tenant
 				.append("&codes=").append(code);
 

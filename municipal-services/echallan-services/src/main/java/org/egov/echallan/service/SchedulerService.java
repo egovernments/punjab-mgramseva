@@ -14,18 +14,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
+import org.egov.echallan.model.UserInfo;
 import org.egov.echallan.repository.ChallanRepository;
 import org.egov.echallan.repository.ServiceRequestRepository;
 import org.egov.echallan.util.ChallanConstants;
 import org.egov.echallan.util.CommonUtils;
 import org.egov.echallan.util.NotificationUtil;
+import org.egov.echallan.web.models.user.UserDetailResponse;
 import org.egov.echallan.web.models.uservevents.Action;
 import org.egov.echallan.web.models.uservevents.ActionItem;
 import org.egov.echallan.web.models.uservevents.Event;
 import org.egov.echallan.web.models.uservevents.EventRequest;
+import org.egov.echallan.web.models.uservevents.Recepient;
 import org.egov.echallan.web.models.uservevents.Source;
 import org.egov.mdms.model.MasterDetail;
 import org.egov.mdms.model.MdmsCriteria;
@@ -38,31 +42,38 @@ import org.springframework.util.CollectionUtils;
 
 import com.jayway.jsonpath.JsonPath;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class SchedulerService {
 
 	private ChallanRepository repository;
 
 	private CommonUtils utils;
-
+	
 	private ServiceRequestRepository serviceRequestRepository;
 
+	@Autowired
 	private NotificationUtil util;
 
+	@Autowired
 	private ChallanConfiguration config;
 
 	@Autowired
 	private NotificationService notificationService;
+	@Autowired
+	private UserService userService;
 
 	public static final String USREVENTS_EVENT_TYPE = "SYSTEMGENERATED";
 	public static final String USREVENTS_EVENT_NAME = "Challan";
 	public static final String USREVENTS_EVENT_POSTEDBY = "SYSTEM-CHALLAN";
 
-	private static final String PENDING_COLLECTION_EVENT = "pending.collection.en.reminder";
-	private static final String MONTHLY_SUMMARY_EVENT = "monthly.summay.en.reminder";
-	private static final String NEW_EXPENDITURE_EVENT = "new.enpenditure.en.reminder";
-	private static final String MARK_PAID_BILL_EVENT = "mark.paid.bill.en.reminder";
-	private static final String GENERATE_DEMAND_EVENT = "generate.demand.en.reminder";
+	private static final String PENDING_COLLECTION_EVENT = "PENDING_COLLECTION_EN_REMINDER";
+	private static final String MONTHLY_SUMMARY_EVENT = "MONTHLY_SUMMARY_EN_REMINDER";
+	private static final String NEW_EXPENDITURE_EVENT = "NEW_ENPENDITURE_EN_REMINDER";
+	private static final String MARK_PAID_BILL_EVENT = "MARK_PAID_BILL_EN_REMINDER";
+	private static final String GENERATE_DEMAND_EVENT = "GENERATE_DEMAND_EN_REMINDER";
 
 	@Autowired
 	public SchedulerService(ChallanRepository repository, CommonUtils utils,
@@ -120,11 +131,11 @@ public class SchedulerService {
 	}
 
 	public EventRequest sendNewExpenditureNotification(RequestInfo requestInfo) {
-		HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, NEW_EXPENDITURE_EVENT);
+		
 		List<String> tenantIds = repository.getTenantId();
 		if (tenantIds.isEmpty())
 			return null;
-		
+
 		List<ActionItem> items = new ArrayList<>();
 		String actionLink = config.getExpenditureLink();
 		ActionItem item = ActionItem.builder().actionUrl(actionLink).build();
@@ -132,16 +143,21 @@ public class SchedulerService {
 		Action action = Action.builder().actionUrls(items).build();
 		List<Event> events = new ArrayList<>();
 		tenantIds.forEach(tenantId -> {
-			events.add(Event.builder().tenantId(tenantId).description(messageMap.get(NotificationUtil.MSG_KEY))
-					.eventType(USREVENTS_EVENT_TYPE).name(USREVENTS_EVENT_NAME).postedBy(USREVENTS_EVENT_POSTEDBY)
-					.source(Source.WEBAPP).eventDetails(null).actions(action).build());
+			HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, NEW_EXPENDITURE_EVENT,tenantId);
+							events.add(Event.builder().tenantId(tenantId).description(messageMap.get(NotificationUtil.MSG_KEY))
+						.eventType(USREVENTS_EVENT_TYPE).name(USREVENTS_EVENT_NAME).postedBy(USREVENTS_EVENT_POSTEDBY)
+						//.recepient(getRecepient(requestInfo, tenantId))
+						.source(Source.WEBAPP).eventDetails(null).actions(action).build());
 		});
 
-		if (!CollectionUtils.isEmpty(events)) {
-			return EventRequest.builder().requestInfo(requestInfo).events(events).build();
-		} else {
-			return null;
-		}
+	if(!CollectionUtils.isEmpty(events))
+
+	{
+		return EventRequest.builder().requestInfo(requestInfo).events(events).build();
+	}else
+	{
+		return null;
+	}
 
 	}
 
@@ -152,7 +168,7 @@ public class SchedulerService {
 	 */
 
 	public void sendNewExpenditureEvent(RequestInfo requestInfo) {
-		LocalDate dayofmonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+		/*LocalDate dayofmonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
 		LocalDateTime scheduleTimeFirst = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(),
 				dayofmonth.getDayOfMonth(), 10, 0, 0);
 		LocalDateTime scheduleTimeSecond = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(), 15, 10, 0, 0);
@@ -160,7 +176,7 @@ public class SchedulerService {
 		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
 				dateTimeFormatter);
 
-		if (currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
+		if (currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {*/
 			if (null != config.getIsUserEventEnabled()) {
 				if (config.getIsUserEventEnabled()) {
 					EventRequest eventRequest = sendNewExpenditureNotification(requestInfo);
@@ -168,11 +184,11 @@ public class SchedulerService {
 						notificationService.sendEventNotification(eventRequest);
 				}
 			}
-		}
+		//}
 	}
 
 	public EventRequest sendGenerateDemandNotification(RequestInfo requestInfo) {
-		HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, GENERATE_DEMAND_EVENT);
+		
 		List<String> tenantIds = repository.getTenantId();
 		if (tenantIds.isEmpty())
 			return null;
@@ -183,8 +199,10 @@ public class SchedulerService {
 		Action action = Action.builder().actionUrls(items).build();
 		List<Event> events = new ArrayList<>();
 		tenantIds.forEach(tenantId -> {
+			HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, GENERATE_DEMAND_EVENT,tenantId);
 			events.add(Event.builder().tenantId(tenantId).description(messageMap.get(NotificationUtil.MSG_KEY))
 					.eventType(USREVENTS_EVENT_TYPE).name(USREVENTS_EVENT_NAME).postedBy(USREVENTS_EVENT_POSTEDBY)
+					.recepient(getRecepient(requestInfo, tenantId))
 					.source(Source.WEBAPP).eventDetails(null).actions(action).build());
 		});
 
@@ -216,16 +234,17 @@ public class SchedulerService {
 	}
 
 	public EventRequest sendMarkExpensebillNotification(RequestInfo requestInfo) {
-		HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, MARK_PAID_BILL_EVENT);
+		
 		List<String> tenantIds = repository.getTenantId();
 		if (tenantIds.isEmpty())
 			return null;
 		List<Event> events = new ArrayList<>();
 		tenantIds.forEach(tenantId -> {
+			HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, MARK_PAID_BILL_EVENT,tenantId);
 			events.add(Event.builder().tenantId(tenantId)
 					.description(formatMarkExpenseMessage(tenantId, messageMap.get(NotificationUtil.MSG_KEY)))
 					.eventType(USREVENTS_EVENT_TYPE).name(USREVENTS_EVENT_NAME).postedBy(USREVENTS_EVENT_POSTEDBY)
-					.source(Source.WEBAPP).eventDetails(null).build());
+					.recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP).eventDetails(null).build());
 		});
 		if (!CollectionUtils.isEmpty(events)) {
 			return EventRequest.builder().requestInfo(requestInfo).events(events).build();
@@ -268,7 +287,7 @@ public class SchedulerService {
 	}
 
 	public EventRequest sendMonthSummaryNotification(RequestInfo requestInfo) {
-		HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, MONTHLY_SUMMARY_EVENT);
+		
 		List<String> tenantIds = repository.getTenantId();
 		if (tenantIds.isEmpty())
 			return null;
@@ -280,11 +299,12 @@ public class SchedulerService {
 		Action action = Action.builder().actionUrls(items).build();
 		List<Event> events = new ArrayList<>();
 		tenantIds.forEach(tenantId -> {
+			HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, MONTHLY_SUMMARY_EVENT,tenantId);
 			events.add(Event.builder().tenantId(tenantId)
 					.description(
 							formatMonthSummaryMessage(requestInfo, tenantId, messageMap.get(NotificationUtil.MSG_KEY)))
 					.eventType(USREVENTS_EVENT_TYPE).name(USREVENTS_EVENT_NAME).postedBy(USREVENTS_EVENT_POSTEDBY)
-					.source(Source.WEBAPP).eventDetails(null).actions(action).build());
+					.recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP).eventDetails(null).actions(action).build());
 		});
 		if (!CollectionUtils.isEmpty(events)) {
 			return EventRequest.builder().requestInfo(requestInfo).events(events).build();
@@ -347,11 +367,11 @@ public class SchedulerService {
 	}
 
 	public EventRequest sendPendingCollectionNotification(RequestInfo requestInfo) {
-		HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, PENDING_COLLECTION_EVENT);
+		
 		List<String> tenantIds = repository.getTenantId();
 		if (tenantIds.isEmpty())
 			return null;
-		
+
 		List<ActionItem> items = new ArrayList<>();
 		String actionLink = config.getMonthRevenueDashboardLink();
 		ActionItem item = ActionItem.builder().actionUrl(actionLink).build();
@@ -359,12 +379,12 @@ public class SchedulerService {
 		Action action = Action.builder().actionUrls(items).build();
 		List<Event> events = new ArrayList<>();
 		tenantIds.forEach(tenantId -> {
-			events.add(Event.builder().tenantId(tenantId)
-					.description(formatPendingCollectionMessage(requestInfo, tenantId,
-							messageMap.get(NotificationUtil.MSG_KEY)))
-					.eventType(USREVENTS_EVENT_TYPE).name(USREVENTS_EVENT_NAME).postedBy(USREVENTS_EVENT_POSTEDBY)
-					.source(Source.WEBAPP) // .recepient(recepient)
-					.eventDetails(null).actions(action).build());
+			HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, PENDING_COLLECTION_EVENT,tenantId);
+				events.add(Event.builder().tenantId(tenantId)
+						.description(formatPendingCollectionMessage(requestInfo, tenantId,
+								messageMap.get(NotificationUtil.MSG_KEY)))
+						.eventType(USREVENTS_EVENT_TYPE).name(USREVENTS_EVENT_NAME).postedBy(USREVENTS_EVENT_POSTEDBY)
+						.recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP).recepient(getRecepient(requestInfo, tenantId)).eventDetails(null).actions(action).build());
 		});
 		if (!CollectionUtils.isEmpty(events)) {
 			return EventRequest.builder().requestInfo(requestInfo).events(events).build();
@@ -409,6 +429,22 @@ public class SchedulerService {
 			message.replace(" {PENDING_COLLECTION} ", pendingCollection.get(0));
 		message.replace("{TODAY_DATE}", LocalDate.now().toString());
 		return message;
+	}
+
+	private Recepient getRecepient(RequestInfo requestInfo, String tenantId)
+	{
+		Recepient recepient=null;
+		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
+				Arrays.asList("GP_ADMIN"));
+		if (userDetailResponse.getUser().isEmpty())
+			log.error("Recepient is absent");
+		else {
+			List<String> toUsers = userDetailResponse.getUser().stream().map(UserInfo::getUuid)
+					.collect(Collectors.toList());
+
+			 recepient = Recepient.builder().toUsers(toUsers).toRoles(null).build();
+		}
+		return recepient;
 	}
 
 }
