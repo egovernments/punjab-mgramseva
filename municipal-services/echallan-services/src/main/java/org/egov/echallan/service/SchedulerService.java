@@ -16,9 +16,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
+import org.egov.echallan.model.SMSRequest;
 import org.egov.echallan.model.UserInfo;
+import org.egov.echallan.producer.Producer;
 import org.egov.echallan.repository.ChallanRepository;
 import org.egov.echallan.repository.ServiceRequestRepository;
 import org.egov.echallan.util.ChallanConstants;
@@ -64,6 +67,9 @@ public class SchedulerService {
 	private NotificationService notificationService;
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private Producer producer;
 
 	public static final String USREVENTS_EVENT_TYPE = "SYSTEMGENERATED";
 	public static final String USREVENTS_EVENT_NAME = "Challan";
@@ -146,7 +152,7 @@ public class SchedulerService {
 			HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, NEW_EXPENDITURE_EVENT,tenantId);
 							events.add(Event.builder().tenantId(tenantId).description(messageMap.get(NotificationUtil.MSG_KEY))
 						.eventType(USREVENTS_EVENT_TYPE).name(USREVENTS_EVENT_NAME).postedBy(USREVENTS_EVENT_POSTEDBY)
-						//.recepient(getRecepient(requestInfo, tenantId))
+						.recepient(getRecepient(requestInfo, tenantId))
 						.source(Source.WEBAPP).eventDetails(null).actions(action).build());
 		});
 
@@ -363,6 +369,24 @@ public class SchedulerService {
 						notificationService.sendEventNotification(eventRequest);
 				}
 			}
+
+			if(null != config.getIsSMSEnabled()) {
+				if(config.getIsSMSEnabled()) {
+					List<String> tenantIds = repository.getTenantId();
+					tenantIds.forEach(tenantId -> {
+						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, MONTHLY_SUMMARY_EVENT,tenantId);
+						Recepient recepient= getRecepient(requestInfo, tenantId);
+					if (messageMap!=null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
+						SMSRequest smsRequest = SMSRequest.builder().
+								//mobileNumber(mobilenumber).
+								message(messageMap.get(NotificationUtil.MSG_KEY)).
+								templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY)).
+								users(recepient.getToUsers().toArray(new String[0])).build();
+						producer.push(config.getSmsNotifTopic(), smsRequest);
+					}
+					});
+				}
+			}	
 		}
 	}
 
@@ -417,6 +441,7 @@ public class SchedulerService {
 						notificationService.sendEventNotification(eventRequest);
 				}
 			}
+		
 		}
 	}
 
