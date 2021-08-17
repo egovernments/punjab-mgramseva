@@ -20,7 +20,7 @@ class ExpenseResults extends StatelessWidget {
   Widget build(BuildContext context) {
   return  Scaffold(
       appBar: BaseAppBar(
-        Text('mGramSeva'),
+          Text(i18.common.MGRAM_SEVA),
         AppBar(),
         <Widget>[Icon(Icons.more_vert)],
       ),

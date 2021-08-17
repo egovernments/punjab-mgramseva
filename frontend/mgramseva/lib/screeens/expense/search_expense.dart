@@ -43,7 +43,7 @@ class _SearchExpenseState extends State<SearchExpense> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: BaseAppBar(
-          Text('mGramSeva'),
+          Text(i18.common.MGRAM_SEVA),
           AppBar(),
           <Widget>[Icon(Icons.more_vert)],
         ),
@@ -69,7 +69,7 @@ class _SearchExpenseState extends State<SearchExpense> {
                                 i18.expense.VENDOR_NAME,
                                 vendorNameCtrl,
                               ),
-                              Text('\n-(${ApplicationLocalizations.of(context).translate(i18.common.OR)})-', textAlign: TextAlign.center),
+                              Text('\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}', textAlign: TextAlign.center),
                               Consumer<ExpensesDetailsProvider>(
                                 builder : (_, expensesDetailsProvider, child) => SelectFieldBuilder(
                                     i18.expense.EXPENSE_TYPE,
@@ -85,7 +85,7 @@ class _SearchExpenseState extends State<SearchExpense> {
                                   child: Column(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Text('\n-(${ApplicationLocalizations.of(context).translate(i18.common.OR)})-', textAlign: TextAlign.center),
+                                        Text('\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}', textAlign: TextAlign.center),
                                         BuildTextField(
                                           i18.common.BILL_ID,
                                           billIdCtrl,
