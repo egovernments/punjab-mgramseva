@@ -25,7 +25,7 @@ Bill _$BillFromJson(Map<String, dynamic> json) {
     ..payerAddress = json['payerAddress'] as String?
     ..payerEmail = json['payerEmail'] as String?
     ..status = json['status'] as String?
-    ..totalAmount = json['totalAmount'] as int?
+    ..totalAmount = (json['totalAmount'] as num?)?.toDouble()
     ..businessService = json['businessService'] as String?
     ..billNumber = json['String billNumber'] as String?
     ..billDate = json['billDate'] as int?
@@ -74,7 +74,7 @@ BillDetails _$BillDetailsFromJson(Map<String, dynamic> json) {
     ..demandId = json['demandId'] as String?
     ..billId = json['billId'] as String?
     ..expiryDate = json['expiryDate'] as int?
-    ..amount = json['amount'] as int?
+    ..amount = (json['amount'] as num?)?.toDouble()
     ..fromPeriod = json['fromPeriod'] as int?
     ..toPeriod = json['toPeriod'] as int?
     ..billAccountDetails = (json['billAccountDetails'] as List<dynamic>?)
@@ -103,7 +103,7 @@ BillAccountDetails _$BillAccountDetailsFromJson(Map<String, dynamic> json) {
     ..demandDetailId = json['demandDetailId'] as String?
     ..order = json['order'] as int?
     ..amount = (json['amount'] as num?)?.toDouble()
-    ..adjustedAmount = json['adjustedAmount'] as int?
+    ..adjustedAmount = (json['adjustedAmount'] as num?)?.toDouble()
     ..taxHeadCode = json['taxHeadCode'] as String?;
 }
 

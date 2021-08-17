@@ -34,22 +34,18 @@ class AuthenticationProvider with ChangeNotifier {
         "authorization": "Basic ZWdvdi11c2VyLWNsaWVudDo=",
       };
 
-      Loaders.showLoadingDialog(context, label: 'Validating the Credentials');
+      Loaders.showLoadingDialog(context);
 
       var loginResponse =
           await AuthenticationRepository().validateLogin(body, headers);
 
       Navigator.pop(context);
-      if (loginResponse != null) {
         var commonProvider =
             Provider.of<CommonProvider>(context, listen: false);
         commonProvider.loginCredentails = loginResponse;
 
         Navigator.of(context)
             .pushNamedAndRemoveUntil(Routes.HOME, (route) => false);
-      } else {
-        Notifiers.getToastMessage(context, 'Unable to login', 'ERROR');
-      }
     } on CustomException catch (e,s) {
       Navigator.pop(context);
       if(ErrorHandler.handleApiException(context, e, s)) {

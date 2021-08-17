@@ -6,6 +6,8 @@ import 'package:mgramseva/model/bill/meter_demand_details.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/repository/bill_generation_details_repo.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
+import 'package:mgramseva/utils/error_logging.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 
 class HouseHoldProvider with ChangeNotifier {
@@ -15,20 +17,25 @@ class HouseHoldProvider with ChangeNotifier {
   Future<void> checkMeterDemand(
       BillList data, WaterConnection waterConnection) async {
     if (data.bill!.isNotEmpty) {
-      var res = await BillGenerateRepository().searchmetetedDemand({
-        "tenantId": data.bill!.first.tenantId,
-        "connectionNos": data.bill!.first.consumerCode
-      });
-      if (res.meterReadings!.isNotEmpty) {
-        data.bill!.first.meterReadings = res.meterReadings;
+      try {
+        var res = await BillGenerateRepository().searchmetetedDemand({
+          "tenantId": data.bill!.first.tenantId,
+          "connectionNos": data.bill!.first.consumerCode
+        });
+        if (res.meterReadings!.isNotEmpty) {
+          data.bill!.first.meterReadings = res.meterReadings;
+        }
+        if (data.bill!.first.billDetails != null) {
+          data.bill!.first.billDetails!
+              .sort((a, b) => b.toPeriod!.compareTo(a.toPeriod!));
+          print(data.bill!.first.billDetails!.first.amount.toString());
+        }
+        data.bill!.first.waterConnection = waterConnection;
+        streamController.add(data);
+      } catch(e,s){
+        streamController.addError('error');
+        ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e,s);
       }
-      if (data.bill!.first.billDetails != null) {
-        data.bill!.first.billDetails!
-            .sort((a, b) => b.toPeriod!.compareTo(a.toPeriod!));
-        print(data.bill!.first.billDetails!.first.amount.toString());
-      }
-      data.bill!.first.waterConnection = waterConnection;
-      streamController.add(data);
     }
   }
 

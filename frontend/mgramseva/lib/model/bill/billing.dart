@@ -30,7 +30,7 @@ class Bill {
   @JsonKey(name: "status")
   String? status;
   @JsonKey(name: "totalAmount")
-  int? totalAmount;
+  double? totalAmount;
   @JsonKey(name: "businessService")
   String? businessService;
   @JsonKey(name: "String billNumber")
@@ -73,7 +73,7 @@ class BillDetails {
   @JsonKey(name: "expiryDate")
   int? expiryDate;
   @JsonKey(name: "amount")
-  int? amount;
+  double? amount;
   @JsonKey(name: "fromPeriod")
   int? fromPeriod;
   @JsonKey(name: "toPeriod")
@@ -103,7 +103,7 @@ class BillAccountDetails {
   @JsonKey(name: "amount")
   double? amount;
   @JsonKey(name: "adjustedAmount")
-  int? adjustedAmount;
+  double? adjustedAmount;
   @JsonKey(name: "taxHeadCode")
   String? taxHeadCode;
   BillAccountDetails();

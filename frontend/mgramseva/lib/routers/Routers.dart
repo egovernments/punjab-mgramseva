@@ -12,7 +12,7 @@ class Routes {
 
   // static const String HOUSE_HOLD = 'household/search';
 
-  static const String HOUSEHOLD = 'household/search';
+  static const String HOUSEHOLD = '/home/householdSearch';
 
   static const String UPDATE_PASSWORD = 'updatepassword';
 

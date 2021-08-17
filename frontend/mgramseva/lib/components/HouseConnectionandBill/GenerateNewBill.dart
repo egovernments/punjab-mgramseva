@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
@@ -19,7 +20,7 @@ class GenerateNewBill extends StatelessWidget {
             padding: EdgeInsets.only(top: 16, bottom: 16),
             width: MediaQuery.of(context).size.width / 3,
             child: Text(
-              label,
+            ApplicationLocalizations.of(context).translate(label),
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             )),
         Container(

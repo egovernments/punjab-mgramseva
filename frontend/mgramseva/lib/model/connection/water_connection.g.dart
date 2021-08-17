@@ -19,7 +19,7 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) {
         ? null
         : Documents.fromJson(json['documents'] as Map<String, dynamic>)
     ..proposedTaps = json['proposedTaps'] as int?
-    ..arrears = json['arrears'] as int?
+    ..arrears = (json['arrears'] as num?)?.toDouble()
     ..connectionType = json['connectionType'] as String?
     ..oldConnectionNo = json['oldConnectionNo'] as String?
     ..meterId = json['meterId'] as String?

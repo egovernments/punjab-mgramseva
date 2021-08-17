@@ -7,6 +7,8 @@ import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/custom_exception.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -63,6 +65,9 @@ class SearchConnectionProvider with ChangeNotifier {
           "tenantId": commonProvider.userDetails!.selectedtenant!.code,
           ...inputJson
         });
+
+        Navigator.pop(context); /// popping the loader
+
         if (connectionresults != null) {
           connectionresults.then((value) => {
                 if (value.waterConnection!.length > 0)
@@ -76,15 +81,15 @@ class SearchConnectionProvider with ChangeNotifier {
                     Notifiers.getToastMessage(context,
                         i18.searchWaterConnection.NO_CONNECTION_FOUND, "ERROR")
                   }
-              });
-          Navigator.pop(context);
-
-          try {} catch (e) {
-            streamController.addError('error');
-          }
+              },
+          onError: (e,s){
+            Navigator.pop(context);
+            ErrorHandler().allExceptionsHandler(context, e,s);
+          });
         }
-      } catch (e) {
+      }  catch (e,s) {
         Navigator.pop(context);
+        ErrorHandler().allExceptionsHandler(context, e,s);
       }
     } else {
       autoValidation = true;

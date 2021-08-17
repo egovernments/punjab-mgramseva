@@ -75,7 +75,9 @@ class NewConsumerBill extends StatelessWidget {
                             i18.billDetails.TOTAL_AMOUNT,
                             billList!.bill!.first.totalAmount.toString(),
                             context),
-                        ButtonGroup(i18.billDetails.COLLECT_PAYMENT, ()=> onClickOfCollectPayment(billList!.bill!.first, context)),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                            child: ButtonGroup(i18.billDetails.COLLECT_PAYMENT, ()=> onClickOfCollectPayment(billList!.bill!.first, context))),
                       ])))
             ],
           );

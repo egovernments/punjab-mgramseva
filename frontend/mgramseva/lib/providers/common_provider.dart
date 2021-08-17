@@ -10,6 +10,7 @@ import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/LocalStorage.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -179,7 +180,15 @@ class CommonProvider with ChangeNotifier {
     if (stateResponse != null && stateResponse.trim().isNotEmpty) {
       languageProvider.stateInfo =
           StateInfo.fromJson(jsonDecode(stateResponse));
+
+      if (languageProvider.stateInfo != null) {
+        // languageProvider.stateInfo?.languages?.first.isSelected = true;
+        ApplicationLocalizations(
+            Locale(languageProvider.selectedLanguage?.label ?? '', languageProvider.selectedLanguage?.value))
+            .load();
+      }
     }
+
 
     if (loginResponse != null && loginResponse.trim().isNotEmpty) {
       var decodedResponse = UserDetails.fromJson(jsonDecode(loginResponse));

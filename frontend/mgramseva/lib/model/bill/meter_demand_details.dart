@@ -22,11 +22,11 @@ class MeterReadings {
   @JsonKey(name: "meterStatus")
   String? meterStatus;
   @JsonKey(name: "lastReading")
-  int? lastReading;
+  double? lastReading;
   @JsonKey(name: "lastReadingDate")
   int? lastReadingDate;
   @JsonKey(name: "currentReading")
-  int? currentReading;
+  double? currentReading;
   @JsonKey(name: "currentReadingDate")
   int? currentReadingDate;
   @JsonKey(name: "connectionNo")
