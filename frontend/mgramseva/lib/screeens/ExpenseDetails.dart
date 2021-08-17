@@ -142,7 +142,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                         expensesDetailsProvider.onSuggestionSelected,
                     callBack: expensesDetailsProvider.onSearchVendorList,
                     listTile: buildTile,
-                    isRequired: true, isEnabled : expenseDetails.allowEdit),
+                    isRequired: true, isEnabled : expenseDetails.allowEdit,
+                  requiredMessage: i18.expense.MENTION_NAME_OF_VENDOR,
+                ),
                     if(expensesDetailsProvider.isNewVendor()) BuildTextField(
                       '${i18.common.MOBILE_NUMBER}',
                       expenseDetails.mobileNumberController,
@@ -154,7 +156,6 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                       inputFormatter: [
                         FilteringTextInputFormatter.allow(RegExp("[0-9]"))
                       ],
-                      requiredMessage: i18.expense.MENTION_NAME_OF_VENDOR,
                     ),
                 BuildTextField(
                   '${i18.expense.AMOUNT}',
@@ -167,6 +168,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                   labelSuffix: '(₹)',
                   isDisabled: (expenseDetails.allowEdit ?? true) ? false : true,
                   requiredMessage: i18.expense.AMOUNT_MENTIONED_IN_THE_BILL,
+                  validator: Validators.amountValidator
                 ),
                 BasicDateField(
                     i18.expense.BILL_DATE, true, expenseDetails.billDateCtrl,

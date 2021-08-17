@@ -99,7 +99,7 @@ class AutoCompleteView extends StatelessWidget {
           ? null
           : (val) {
               if (val == null || val.trim().isEmpty) {
-                return requiredMessage ?? '${labelText}_REQUIRED';
+                return ApplicationLocalizations.of(context).translate(requiredMessage ?? '${labelText}_REQUIRED');
               }
               return null;
             },
