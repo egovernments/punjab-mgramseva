@@ -8,31 +8,30 @@ import 'global_variables.dart';
 import 'models.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
-class ErrorHandler {
-  static void logError(String error, [StackTrace? stackTrace]) {
+class ErrorHandler  {
+
+  static void logError(String error, [StackTrace? stackTrace]){
     print(error);
   }
 
-  static bool handleApiException(BuildContext context, CustomException e,
-      [StackTrace? stackTrace]) {
-    switch (e.exceptionType) {
+  static bool handleApiException(BuildContext context, CustomException e, [StackTrace? stackTrace]) {
+    switch(e.exceptionType){
       case ExceptionType.UNAUTHORIZED:
-        if (currentRoute == Routes.LOGIN) {
+        if(currentRoute == Routes.LOGIN){
           return true;
         }
-        navigatorKey.currentState
-            ?.pushNamedAndRemoveUntil(Routes.LOGIN, (route) => false);
+        navigatorKey.currentState?.pushNamedAndRemoveUntil(Routes.LOGIN, (route) => false);
         return false;
-      case ExceptionType.INVALIDINPUT:
-      case ExceptionType.OTHER:
-      case ExceptionType.FETCHDATA:
-      case ExceptionType.BADREQUEST:
-        logError(e.message, stackTrace);
-        return true;
+      case ExceptionType.INVALIDINPUT: case ExceptionType.OTHER:case ExceptionType.FETCHDATA :case ExceptionType.BADREQUEST :
+      logError(e.message, stackTrace);
+       return true;
       case ExceptionType.CONNECTIONISSUE:
-        Notifiers.getToastMessage(context, e.message, 'ERROR');
+        Notifiers.getToastMessage(
+            context,
+            e.message,
+            'ERROR');
         return false;
-      default:
+      default :
         return true;
     }
   }
@@ -52,3 +51,5 @@ class ErrorHandler {
     return status;
   }
 }
+
+

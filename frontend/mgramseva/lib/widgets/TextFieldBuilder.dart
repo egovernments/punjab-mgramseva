@@ -25,6 +25,7 @@ class BuildTextField extends StatefulWidget {
   final bool? readOnly;
   final String? labelSuffix;
   final String? hint;
+  final String? requiredMessage;
 
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
@@ -45,7 +46,8 @@ class BuildTextField extends StatefulWidget {
       this.readOnly,
       this.labelSuffix,
       this.hint,
-      this.focusNode});
+      this.focusNode,
+      this.requiredMessage});
   @override
   State<StatefulWidget> createState() => _BuildTextField();
 }
@@ -76,7 +78,7 @@ class _BuildTextField extends State<BuildTextField> {
             : (value) {
                 if (value!.trim().isEmpty && widget.isRequired) {
                   return ApplicationLocalizations.of(context)
-                      .translate(widget.labelText + '_REQUIRED');
+                      .translate(widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
                 } else if (widget.pattern != null && widget.pattern != '') {
                   return (new RegExp(widget.pattern!).hasMatch(value))
                       ? null

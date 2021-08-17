@@ -20,7 +20,7 @@ class ExpenseResults extends StatelessWidget {
   Widget build(BuildContext context) {
   return  Scaffold(
       appBar: BaseAppBar(
-        Text('mGramSeva'),
+          Text(i18.common.MGRAM_SEVA),
         AppBar(),
         <Widget>[Icon(Icons.more_vert)],
       ),
@@ -81,13 +81,19 @@ class ExpenseResults extends StatelessWidget {
                                  i18.common.STATUS,
                                  expense.applicationStatus,
                                  context),
-                             SizedBox(
-                               height: 20,
+                             Visibility(
+                               visible: expense.applicationStatus != 'CANCELLED',
+                               child: SizedBox(
+                                 height: 20,
+                               ),
                              ),
-                             ShortButton(
-                                 i18.expense.UPDATE_EXPENDITURE,
-                                     () => Navigator.pushNamed(
-                                     context, Routes.EXPENSE_UPDATE, arguments: expense)),
+                             Visibility(
+                               visible: expense.applicationStatus != 'CANCELLED',
+                               child: ShortButton(
+                                   i18.expense.UPDATE_EXPENDITURE,
+                                       () => Navigator.pushNamed(
+                                       context, Routes.EXPENSE_UPDATE, arguments: expense)),
+                             ),
                              SizedBox(
                                height: 20,
                              ),
