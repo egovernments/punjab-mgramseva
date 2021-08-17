@@ -34,7 +34,7 @@ class AuthenticationProvider with ChangeNotifier {
         "authorization": "Basic ZWdvdi11c2VyLWNsaWVudDo=",
       };
 
-      Loaders.showLoadingDialog(context, label: 'Validating the Credentials');
+      Loaders.showLoadingDialog(context);
 
       var loginResponse =
           await AuthenticationRepository().validateLogin(body, headers);
