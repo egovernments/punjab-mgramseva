@@ -106,6 +106,7 @@ class _EditProfileState extends State<EditProfile> {
                   BuildTextField(
                     i18.common.EMAIL,
                     profileDetails.emailIdCtrl,
+                    hint: '${ApplicationLocalizations.of(context).translate(i18.profileEdit.PROFILE_EDIT_EMAIL_HINT)}',
                     inputFormatter: [
                       FilteringTextInputFormatter.allow(
                           RegExp("[a-zA-Z0-9@. ]"))
