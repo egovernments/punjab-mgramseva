@@ -40,6 +40,9 @@ class Url {
 
   /// Connection bill payment
   static const String COLLECT_PAYMENT = 'collection-services/payments/_create';
+
+  static const String FETCH_BILL_PAYMENTS =
+      'collection-services/payments/_search';
 }
 
 class UserUrl {
