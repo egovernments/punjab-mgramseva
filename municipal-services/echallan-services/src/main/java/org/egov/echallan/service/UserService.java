@@ -242,5 +242,16 @@ public class UserService {
 		StringBuilder uri = new StringBuilder(userHost).append(userSearchEndpoint);
 		return userCall(userSearchRequest, uri);
 	}
+	
+	public UserDetailResponse getUserById(RequestInfo requestInfo, String tenantId, List<String> ids) {
+
+		UserSearchRequest userSearchRequest = new UserSearchRequest();
+		userSearchRequest.setTenantId(tenantId);
+		userSearchRequest.setRequestInfo(requestInfo);
+		userSearchRequest.setActive(true);
+		userSearchRequest.setId(ids);
+		StringBuilder uri = new StringBuilder(userHost).append(userSearchEndpoint);
+		return userCall(userSearchRequest, uri);
+	}
 	   
 }

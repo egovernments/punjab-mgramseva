@@ -223,4 +223,7 @@ public class ChallanConfiguration {
 	@Value("${egov.demand.generation.link}")
 	private String demanGenerationLink;
 	
+	@Value("${egov.expense.bill.markpaid.link}")
+	private String expenseBillMarkPaidLink;
+	
 }
