@@ -36,6 +36,7 @@ import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'providers/collect_payment.dart';
+import 'providers/dashboard_provider.dart';
 import 'screeens/common/collect_payment.dart';
 
 void main() {
@@ -99,6 +100,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => HouseHoldProvider()),
           ChangeNotifierProvider(create: (_) => SearchConnectionProvider()),
           ChangeNotifierProvider(create: (_) => CollectPaymentProvider()),
+          ChangeNotifierProvider(create: (_) => DashBoardProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(

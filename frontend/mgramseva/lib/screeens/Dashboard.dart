@@ -11,6 +11,8 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/constants/expenditurecarddetails.dart';
 import 'package:mgramseva/constants/collectioncarddetails.dart';
 
+import 'dashboard/search_expense.dart';
+
 class Dashboard extends StatefulWidget {
   static const String routeName = 'dashboard';
   // Dashboard(Key key) : super(key: key);
@@ -58,57 +60,54 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),
-        body: SingleChildScrollView(
-            child: Container(
-                padding: EdgeInsets.only(left: 18, right: 18),
-                child: Container(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      HomeBack(widget: _buildShare),
-                      DashboardCard(dashboardcarddetails),
-                      SizedBox(height: 15),
-                      DefaultTabController(
-                        length: 2,
-                        child: TabBar(
-                          labelColor: Theme.of(context).primaryColor,
-                          unselectedLabelColor: Colors.black,
-                          indicatorSize: TabBarIndicatorSize.tab,
-                          controller: _tabController,
-                          indicator: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey,
-                                offset: Offset(0.0, 1.0), //(x,y)
-                                blurRadius: 6.0,
-                              ),
-                            ],
+        body: Container(
+            padding: EdgeInsets.only(left: 18, right: 18),
+            child: CustomScrollView(
+                slivers: [
+                  SliverList(
+                      delegate: SliverChildListDelegate([
+                    HomeBack(widget: _buildShare),
+                    DashboardCard(dashboardcarddetails),
+                    SizedBox(height: 15),
+                    TabBar(
+                      labelColor: Theme.of(context).primaryColor,
+                      unselectedLabelColor: Colors.black,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      controller: _tabController,
+                      indicator: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            offset: Offset(0.0, 1.0), //(x,y)
+                            blurRadius: 6.0,
                           ),
-                          tabs: [
-                            Tab(
-                              text: "Collections",
-                            ),
-                            Tab(
-                              text: "Expenditure",
-                            ),
-                          ],
-                        ),
+                        ],
                       ),
-                      new Container(
-                        height: MediaQuery.of(context).size.height / 2.4,
-                        child: TabBarView(
-                          controller: _tabController,
-                          children: [
-                            GridCard(collectioncarddetails),
-                            GridCard(expenditurecarddetails),
-                          ],
+                      tabs: [
+                        Tab(
+                          text: "Collections",
                         ),
-                      ),
-                      ListLabelText("Search Expense Bills"),
-                      BillsTable()
-                    ])))));
+                        Tab(
+                          text: "Expenditure",
+                        ),
+                      ],
+                    ),
+                  ])),
+                      SliverFillRemaining(
+                        hasScrollBody: true,
+                          fillOverscroll: true,
+                          child :  TabBarView(
+                      controller: _tabController,
+                      children: [
+                        GridCard(collectioncarddetails),
+                        SearchExpenseDashboard()
+                      ],))
+                  // ListLabelText("Search Expense Bills"),
+                  // BillsTable()s
+                  // SearchExpenseDashboard()
+    ]
+                )));
   }
 
   Widget get _buildShare => TextButton.icon(
