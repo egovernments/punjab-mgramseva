@@ -42,7 +42,6 @@ import lombok.Setter;
 public class Challan {
 
   @JsonProperty("citizen")
-  @Valid
   private UserInfo citizen = null;
 
   @JsonProperty("id")

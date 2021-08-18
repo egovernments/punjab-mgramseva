@@ -184,7 +184,7 @@ public class EnrichmentService {
 	     if(fileStoreId!=null) {
 	    	 challanRepository.setInactiveFileStoreId(challan.getTenantId().split("\\.")[0], Collections.singletonList(fileStoreId));
 	     }
-	     challan.setFilestoreid(null);
+	    // challan.setFilestoreid(null);
 	}
 	
 	private void enrichBillAmount(List<Challan> challans, RequestInfo requestInfo) {

@@ -66,8 +66,6 @@ public class ChallanValidator {
 			errorMap.put("NULL_Fromdate", " From date cannot be null");
 		if (challan.getTaxPeriodTo() == null)
 			errorMap.put("NULL_Todate", " To date cannot be null");
-		if (!challan.getTenantId().equalsIgnoreCase(request.getRequestInfo().getUserInfo().getTenantId()))
-			errorMap.put("Invalid Tenant", "Invalid tenant id");
 
 		Boolean validFinancialYear = false;
 		if (challan.getTaxPeriodTo() != null && challan.getTaxPeriodFrom() != null) {
@@ -94,10 +92,10 @@ public class ChallanValidator {
 
 		if (!currentTaxHeadCodes.isEmpty() && !requiredTaxHeadCodes.isEmpty()) {
 			if (!currentTaxHeadCodes.containsAll(requiredTaxHeadCodes))
-				errorMap.put("INAVLID_TAXHEAD_CODE_DETAILS",
+				errorMap.put("INVALID_TAXHEAD_CODE_DETAILS",
 						"Mandatory taxhead codes details are not present in request for provided business service");
 		} else
-			errorMap.put("INAVLID_TAXHEAD_CODE_DETAILS",
+			errorMap.put("INVALID_TAXHEAD_CODE_DETAILS",
 					"Taxhead codes details are not present in request or in mdms records for provided business service");
 
 		if (!errorMap.isEmpty())
@@ -146,8 +144,8 @@ public class ChallanValidator {
 			errorMap.put("INVALID_UPDATE_REQ_CHALLAN_INACTIVE", "Challan cannot be updated/cancelled");*/
 		if (searchchallan.getApplicationStatus() == StatusEnum.CANCELLED)
 			errorMap.put("INVALID_UPDATE_REQ_CHALLAN_INACTIVE", "Challan cannot be updated/cancelled");
-		if (!challan.getTenantId().equalsIgnoreCase(request.getRequestInfo().getUserInfo().getTenantId()))
-			errorMap.put("INVALID_UPDATE_REQ_INVALID_TENANTID", "Invalid tenant id");
+		/*if (!challan.getTenantId().equalsIgnoreCase(request.getRequestInfo().getUserInfo().getTenantId()))
+			errorMap.put("INVALID_UPDATE_REQ_INVALID_TENANTID", "Invalid tenant id");*/
 		if (!errorMap.isEmpty())
 			throw new CustomException(errorMap);
 
