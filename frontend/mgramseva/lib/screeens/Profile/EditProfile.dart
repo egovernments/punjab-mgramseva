@@ -77,13 +77,11 @@ class _EditProfileState extends State<EditProfile> {
                     inputFormatter: [
                       FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]"))
                     ],
-                    isRequired: true,
                   ),
                   BuildTextField(
                     i18.common.PHONE_NUMBER,
                     profileDetails.phoneNumberCtrl,
-                    prefixText: '+91',
-                    isRequired: true,
+                    prefixText: '+91-',
                     isDisabled: true,
                     readOnly: true,
                     inputFormatter: [
