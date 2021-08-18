@@ -82,6 +82,9 @@ flutter:
     - family: HomeIcons
       fonts:
         - asset: assets/icons/fonts/HomeIcons.ttf
+    - family: HomeIconsModified
+      fonts:
+        - asset: assets/icons/fonts/HomeIconsModified.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
