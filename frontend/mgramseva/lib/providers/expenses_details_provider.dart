@@ -137,13 +137,15 @@ class ExpensesDetailsProvider with ChangeNotifier {
       ..tenantId = 'pb'
       ..setText()
       ..vendorId = expenditureDetails.selectedVendor?.id ??
+          expenditureDetails.vendorNameCtrl.text
+      ..vendorName = expenditureDetails.selectedVendor?.name ??
           expenditureDetails.vendorNameCtrl.text;
 
     if(isUpdate) {
       if (expenditureDetails.isBillPaid!) {
         expenditureDetails.applicationStatus = 'PAID';
       }
-
+      expenditureDetails.citizen?.mobileNumber = expenditureDetails.citizen?.userName;
       if (expenditureDetails.isBillCancelled!){
         expenditureDetails.applicationStatus = 'CANCELLED';
       }
@@ -270,9 +272,15 @@ class ExpensesDetailsProvider with ChangeNotifier {
     if (pattern.toString().trim().isEmpty) return <Vendor>[];
 
     return vendorList
-        .where((vendor) => vendor.name
-            .toLowerCase()
-            .contains(pattern.toString().toLowerCase()))
+        .where((vendor) {
+          if(vendor.name
+          .toLowerCase()
+          .contains(pattern.toString().toLowerCase())){
+            return true;
+          }else{
+            return false;
+          }
+    })
         .toList();
   }
 
