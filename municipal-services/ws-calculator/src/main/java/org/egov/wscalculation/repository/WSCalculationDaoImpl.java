@@ -146,4 +146,14 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 		log.info("Is BillingPeriod Exits Query: " + query);
 		return jdbcTemplate.queryForObject(query, preparedStatement.toArray(), Integer.class);
 	}
+	
+	public Boolean isDemandExists(String tenantId, Long bilingDate,Set<String> connectionNos) {
+		List<Object> preparedStmtList = new ArrayList<>();
+        String query = queryBuilder.previousBillingCycleDemandQuery(connectionNos,tenantId,bilingDate, preparedStmtList);
+        Integer count = jdbcTemplate.queryForObject(query, preparedStmtList.toArray(), Integer.class);
+        return count >0;
+	}
+	
 }
+
+

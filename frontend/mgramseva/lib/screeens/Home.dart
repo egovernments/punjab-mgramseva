@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/screeens/HomeCard.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
+import 'package:mgramseva/widgets/help.dart';
 
 import 'customAppbar.dart';
 
@@ -19,6 +20,12 @@ class _HomeState extends State<Home> {
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),
-        body: HomeCard());
+        body: Column(
+            children : [
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: Help()),
+              Expanded(child: HomeCard())
+            ]));
   }
 }

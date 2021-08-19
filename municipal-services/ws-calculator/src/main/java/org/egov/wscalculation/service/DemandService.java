@@ -1,6 +1,8 @@
 package org.egov.wscalculation.service;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -682,13 +684,38 @@ public class DemandService {
 	
 	public void generateBulkDemandForULB(Map<String, Object> master,BulkDemand bulkDemand) {
 		log.info("Billing master data values for non metered connection:: {}", master);
-		wsCalculationValidator.validateBillingPeriod(bulkDemand.getBillingPeriod());
-		List<String> connectionNos = waterCalculatorDao.getConnectionsNoList(bulkDemand.getTenantId(),
+		String billingPeriod = bulkDemand.getBillingPeriod();
+		if (StringUtils.isEmpty(billingPeriod))
+			 throw new CustomException("BILLING_PERIOD_PARSING_ISSUE", "Billing can not empty!!");
+		
+		
+		
+		List<String> connectionNos =  waterCalculatorDao.getConnectionsNoList(bulkDemand.getTenantId(),
 				WSCalculationConstant.nonMeterdConnection);
+		Set<String> connectionSet = connectionNos.stream().collect(Collectors.toSet());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Date billingStrartDate;
+		Calendar startCal = Calendar.getInstance();
+		Calendar endCal = Calendar.getInstance();
+		try {
+			billingStrartDate = sdf.parse(billingPeriod.split("-")[0].trim());
+			Date billingEndDate = sdf.parse(billingPeriod.split("-")[1].trim());
+			startCal.setTime(billingStrartDate);
+			endCal.setTime(billingEndDate);
+			
+		} catch (CustomException | ParseException ex) {
+			log.error("", ex);
+			
+			if (ex instanceof CustomException)
+				throw new CustomException("BILLING_PERIOD_ISSUE", "Billing period can not be in future!!");
+			
+			throw new CustomException("BILLING_PERIOD_PARSING_ISSUE", "Billing period can not parsed!!");
+		}
+		wsCalculationValidator.validateBulkDemandBillingPeriod(startCal.getTimeInMillis(),connectionSet,bulkDemand.getTenantId(),(String) master.get(WSCalculationConstant.Billing_Cycle_String));
 		String assessmentYear = estimationService.getAssessmentYear();
 		for (String connectionNo : connectionNos) {
 			CalculationCriteria calculationCriteria = CalculationCriteria.builder().tenantId(bulkDemand.getTenantId())
-					.assessmentYear(assessmentYear).connectionNo(connectionNo).build();
+					.assessmentYear(assessmentYear).connectionNo(connectionNo).from(startCal.getTimeInMillis()).to(endCal.getTimeInMillis()).build();
 			List<CalculationCriteria> calculationCriteriaList = new ArrayList<>();
 			calculationCriteriaList.add(calculationCriteria);
 			CalculationReq calculationReq = CalculationReq.builder().calculationCriteria(calculationCriteriaList)
@@ -697,6 +724,16 @@ public class DemandService {
 			// log.info("Prepared Statement" + calculationRes.toString());
 
 		}
+	}
+	
+	
+	private int getBillingCycleMiddleDay(String billingFrequency) {
+		if (billingFrequency.equalsIgnoreCase(WSCalculationConstant.Monthly_Billing_Period)) {
+			return 15;
+		} else if (billingFrequency.equalsIgnoreCase(WSCalculationConstant.Quaterly_Billing_Period)) {
+			return 80;
+		}
+		return 0;
 	}
 	
 	/**
