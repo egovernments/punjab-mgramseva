@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/components/Dashboard/BillsTable.dart';
 import 'package:mgramseva/components/Dashboard/DashboardCard.dart';
 import 'package:mgramseva/constants/dashboardcard.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/GridCard.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
@@ -10,7 +12,7 @@ import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/constants/expenditurecarddetails.dart';
 import 'package:mgramseva/constants/collectioncarddetails.dart';
-
+import 'customAppbar.dart';
 import 'dashboard/search_expense.dart';
 
 class Dashboard extends StatefulWidget {
@@ -52,11 +54,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: BaseAppBar(
-          Text('mGramSeva'),
-          AppBar(),
-          <Widget>[],
-        ),
+        appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),
@@ -68,28 +66,24 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                       delegate: SliverChildListDelegate([
                     HomeBack(widget: _buildShare),
                     DashboardCard(dashboardcarddetails),
-                    SizedBox(height: 15),
                     TabBar(
                       labelColor: Theme.of(context).primaryColor,
                       unselectedLabelColor: Colors.black,
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       indicatorSize: TabBarIndicatorSize.tab,
                       controller: _tabController,
                       indicator: BoxDecoration(
                         color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey,
-                            offset: Offset(0.0, 1.0), //(x,y)
-                            blurRadius: 6.0,
-                          ),
-                        ],
+                        border:  Border(
+                          bottom: BorderSide(width: 2, color: Theme.of(context).primaryColor),
+                        ),
                       ),
                       tabs: [
                         Tab(
-                          text: "Collections",
+                          text: i18.dashboard.COLLECTIONS,
                         ),
                         Tab(
-                          text: "Expenditure",
+                          text: i18.dashboard.EXPENDITURE,
                         ),
                       ],
                     ),
@@ -100,8 +94,8 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                           child :  TabBarView(
                       controller: _tabController,
                       children: [
-                        GridCard(collectioncarddetails),
-                        SearchExpenseDashboard()
+                        SearchExpenseDashboard(dashBoardType: DashBoardType.collections),
+                        SearchExpenseDashboard(dashBoardType: DashBoardType.Expenditure)
                       ],))
                   // ListLabelText("Search Expense Bills"),
                   // BillsTable()s

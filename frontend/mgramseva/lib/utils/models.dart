@@ -13,6 +13,8 @@ enum ExceptionType {
 
 enum MDMSType { BusinessService, ConsumerType, TaxHeadCode }
 
+enum DashBoardType {collections, Expenditure}
+
 class KeyValue {
   String label;
   dynamic key;

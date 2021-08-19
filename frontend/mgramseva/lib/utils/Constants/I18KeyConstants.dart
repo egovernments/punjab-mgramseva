@@ -14,6 +14,7 @@ class i18 {
   static DemandGenerate demandGenerate = const DemandGenerate();
   static _NetWorkException netWorkException = const _NetWorkException();
   static _Payment payment = const _Payment();
+  static _DashBoard dashboard = const _DashBoard();
 }
 
 class Login {
@@ -345,4 +346,21 @@ class _Payment {
   String get FREE_ESTIMATE => 'FREE_ESTIMATE'; //Fee Estimate
   String get RECEIPT_REFERENCE_WITH_MOBILE_NUMBER => 'RECEIPT_REFERENCE_WITH_MOBILE_NUMBER'; //Fee Estimate
 
+}
+
+
+class _DashBoard {
+  const _DashBoard();
+
+  String get SEARCH_EXPENSE_BILL => 'SEARCH_EXPENSE_BILL';
+  String get SEARCH_CONSUMER_RECORDS => 'SEARCH_CONSUMER_RECORDS';
+  String get COLLECTIONS => 'COLLECTIONS';
+  String get EXPENDITURE => 'EXPENDITURE';
+  String get ALL => 'ALL';
+  String get PENDING => 'PENDING';
+  String get PAID => 'PAID';
+  String get RESIDENTIAL => 'RESIDENTIAL';
+  String get COMMERCIAL => 'COMMERCIAL';
+  String get SEARCH_BY_BILL_OR_VENDOR => 'SEARCH_BY_BILL_OR_VENDOR';
+  String get DASHBOARD => 'DASHBOARD';
 }

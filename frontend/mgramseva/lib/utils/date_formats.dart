@@ -85,4 +85,12 @@ class DateFormats {
       return '';
     }
   }
+
+  static String getMonthAndYear(DateTime date){
+    try{
+      return '${DateFormat.MMMM().format(date)} ${date.year}';
+    }catch(e){
+      return '';
+    }
+  }
 }

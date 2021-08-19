@@ -1,14 +1,18 @@
 
 
+import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/components/Dashboard/BillsTable.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
 
 class SearchExpenseDashboard extends StatefulWidget {
-  const SearchExpenseDashboard({Key? key}) : super(key: key);
+  final DashBoardType dashBoardType;
+  const SearchExpenseDashboard({Key? key, required this.dashBoardType}) : super(key: key);
 
   @override
   _SearchExpenseDashboardState createState() => _SearchExpenseDashboardState();
@@ -21,7 +25,19 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
 
   @override
   void initState() {
-    _tabList = [Tab(text: 'All'), Tab(text: 'Paid'), Tab(text: 'Pending')];
+    if(widget.dashBoardType == DashBoardType.Expenditure) {
+      _tabList = [
+        Tab(text: '${i18.dashboard.ALL}'),
+        Tab(text: '${i18.dashboard.PAID}'),
+        Tab(text: '${i18.dashboard.PENDING}')
+      ];
+    }else{
+      _tabList = [
+        Tab(text: '${i18.dashboard.ALL}'),
+        Tab(text: '${i18.dashboard.RESIDENTIAL}'),
+        Tab(text: '${i18.dashboard.COMMERCIAL}')
+      ];
+    }
     _tabController = new TabController(vsync: this, length: _tabList.length);
     super.initState();
   }
@@ -37,30 +53,34 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     return  Column(
         children: [
-          ListLabelText("Search Expense Bills"),
+          ListLabelText(widget.dashBoardType == DashBoardType.collections ?  i18.dashboard.SEARCH_CONSUMER_RECORDS : i18.dashboard.SEARCH_EXPENSE_BILL),
           BuildTextField(
               '',
               dashBoardProvider.searchController,
+            inputBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25.0),
+            ),
+            prefixIcon: Icon(Icons.search_sharp),
+            placeHolder: i18.dashboard.SEARCH_BY_BILL_OR_VENDOR,
           ),
           Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TabBar(
-                  labelColor: Theme.of(context).primaryColor,
-                  unselectedLabelColor: Colors.black,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  controller: _tabController,
-                  // indicator: BoxDecoration(
-                  //   color: Colors.white,
-                  //   boxShadow: [
-                  //     BoxShadow(
-                  //       color: Colors.grey,
-                  //       offset: Offset(0.0, 1.0), //(x,y)
-                  //       blurRadius: 6.0,
-                  //     ),
-                  //   ],
-                  // ),
-                  tabs: _tabList.map((e) => e).toList(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: ButtonsTabBar(
+                    controller: _tabController,
+                    backgroundColor: Colors.white,
+                    unselectedBackgroundColor: Color.fromRGBO(244, 119, 56, 0.12),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    buttonMargin: EdgeInsets.symmetric(horizontal: 5),
+                    labelStyle: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                    unselectedLabelStyle: TextStyle(
+                        color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400),
+                    radius: 25,
+                    tabs: _tabList.map((e) => e).toList(),
+                  ),
                 ),
                 Expanded(
                   child: TabBarView(
