@@ -3,10 +3,11 @@
 import 'package:flutter/material.dart';
 
 class Help extends StatelessWidget {
-  const Help({Key? key}) : super(key: key);
+  final VoidCallback? callBack;
+  Help({this.callBack});
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(onPressed: (){}, icon: Icon(Icons.help_outline_outlined), iconSize: 30);
+    return IconButton(onPressed: callBack, icon: Icon(Icons.help_outline_outlined), iconSize: 30);
   }
 }

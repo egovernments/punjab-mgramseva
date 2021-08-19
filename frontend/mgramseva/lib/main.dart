@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-
+import 'package:mgramseva/providers/WalkThroughProviders/create_consumer_walkthrough_provider.dart';
 import 'package:mgramseva/providers/authentication.dart';
 import 'package:mgramseva/providers/bill_generation_details_provider.dart';
 import 'package:mgramseva/providers/bill_payments_provider.dart';
@@ -101,6 +101,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => SearchConnectionProvider()),
           ChangeNotifierProvider(create: (_) => CollectPaymentProvider()),
           ChangeNotifierProvider(create: (_) => BillPayemntsProvider()),
+          ChangeNotifierProvider(create: (_) => ConsumerWalkThroughProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(
