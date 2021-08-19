@@ -1,3 +1,4 @@
+import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -59,5 +60,24 @@ class BillingServiceRepository extends BaseService {
       print(billList.bill!.length);
     }
     return billList;
+  }
+
+  Future<BillPayments> fetchdBillPayments(
+      Map<String, dynamic> queryparams) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    late BillPayments billPaymentList;
+    var res = await makeRequest(
+        url: Url.FETCH_BILL_PAYMENTS,
+        body: {'userInfo': commonProvider.userDetails?.userRequest?.toJson()},
+        queryParameters: queryparams,
+        requestInfo: getRequestInfo('_search'),
+        method: RequestType.POST);
+    if (res != null) {
+      billPaymentList = BillPayments.fromJson(res);
+      print(billPaymentList.payments!.length);
+    }
+    return billPaymentList;
   }
 }

@@ -50,7 +50,7 @@ class NewConsumerBill extends StatelessWidget {
                       padding: EdgeInsets.all(15),
                       child: Column(children: [
                         _getLabeltext(
-                            i18.billDetails.LAST_BILL_GENERATED_DATE,
+                            i18.consumerReciepts.CONSUMER_RECIEPT_PAID_DATE,
                             DateFormats.timeStampToDate(
                                     billList!.bill!.first.billDate,
                                     format: "dd-MM-yyyy")
@@ -58,22 +58,26 @@ class NewConsumerBill extends StatelessWidget {
                             context),
                         _getLabeltext(
                             i18.billDetails.CURRENT_BILL,
-                            (billList!.bill!.first.billDetails!.first.amount)
-                                .toString(),
+                            ('₹' +
+                                (billList!
+                                        .bill!.first.billDetails!.first.amount)
+                                    .toString()),
                             context),
                         _getLabeltext(
                             i18.billDetails.ARRERS_DUES,
-                            (billList!.bill!.first.billDetails!
-                                        .map((ele) => ele.amount)
-                                        .reduce(((previousValue, element) {
-                                      return previousValue! + element!;
-                                    }))! -
-                                    r)
-                                .toString(),
+                            ('₹' +
+                                (billList!.bill!.first.billDetails!
+                                            .map((ele) => ele.amount)
+                                            .reduce(((previousValue, element) {
+                                          return previousValue! + element!;
+                                        }))! -
+                                        r)
+                                    .toString()),
                             context),
                         _getLabeltext(
                             i18.billDetails.TOTAL_AMOUNT,
-                            billList!.bill!.first.totalAmount.toString(),
+                            ('₹' +
+                                billList!.bill!.first.totalAmount.toString()),
                             context),
                         Align(
                           alignment: Alignment.centerLeft,
@@ -86,12 +90,12 @@ class NewConsumerBill extends StatelessWidget {
   void onClickOfCollectPayment(Bill bill, BuildContext context) {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
-
-    Map<String, dynamic> query ={
-      'consumerCode' : bill.consumerCode,
-      'businessService' : bill.businessService,
-      'tenantId' : commonProvider.userDetails?.selectedtenant?.code
+    Map<String, dynamic> query = {
+      'consumerCode': bill.consumerCode,
+      'businessService': bill.businessService,
+      'tenantId': commonProvider.userDetails?.selectedtenant?.code
     };
-    Navigator.pushNamed(context, Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT, arguments: query);
+    Navigator.pushNamed(context, Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT,
+        arguments: query);
   }
 }

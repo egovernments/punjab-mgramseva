@@ -86,6 +86,7 @@ public class ChallanRepository {
      */
     public void update(ChallanRequest challanRequest) {
     	
+    	log.info("CHALLAN ISBILLPAID:"+challanRequest.getChallan().getIsBillPaid()  +" | PAID DATE: "+challanRequest.getChallan().getPaidDate());
         producer.push(config.getUpdateChallanTopic(), challanRequest);
     }
     
@@ -141,6 +142,55 @@ public class ChallanRepository {
         	        );
 		}
 		jdbcTemplate.batchUpdate(CANCEL_RECEIPT_UPDATE_SQL,rows);
+		
+	}
+	
+	public List<String> getTenantId() {
+		String query = queryBuilder.getDistinctTenantIds();
+		log.info("Tenants List Query : " + query);
+		return jdbcTemplate.queryForList(query, String.class);
+	}
+	
+	public List<String> getActiveExpenses(String tenantId) {
+		StringBuilder query = new StringBuilder(queryBuilder.ACTIVEEXPENSECOUNTQUERY);
+		query.append(" and tenantid = "+tenantId);
+		log.info("Active expense query : " + query);
+		return jdbcTemplate.queryForList(query.toString(), String.class);
+	}
+
+
+
+	public List<String> getPreviousMonthCollection(String tenantId, String startDate, String endDate) {
+		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHCOLLECTION);
+		
+		//previous month start date startDate
+		// previous month end date endDate
+		
+		query.append( " and receiptdate  >= ").append( startDate)  
+		.append(" and  receiptdate <= " ).append(endDate); 
+		log.info("Previous month collection query : " + query);
+		return jdbcTemplate.queryForList(query.toString(), String.class);
+	}
+
+
+	public List<String> getPreviousMonthExpenseExpenses(String tenantId, String startDate, String endDate) {
+		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHEXPENSE);
+
+		query.append(" and challan.paiddate  >= ").append(startDate).append(" and  challan.paiddate <= ")
+				.append(endDate);
+		log.info("Previous month expense query : " + query);
+		return jdbcTemplate.queryForList(query.toString(), String.class);
+	}
+
+
+
+	public List<String> getPendingCollection(String tenantId, String startDate, String endDate) {
+		StringBuilder query = new StringBuilder(queryBuilder.PENDINGCOLLECTION);
+		query.append(" and demand.tenantid = ").append(tenantId)
+		.append( " and taxperiodfrom  >= ").append( startDate)  
+		.append(" and  taxperiodto <= " ).append(endDate); 
+		log.info("Active pending collection query : " + query);
+		return jdbcTemplate.queryForList(query.toString(), String.class);
 		
 	}
     

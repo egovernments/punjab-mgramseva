@@ -32,6 +32,8 @@ public class WSCalculatorQueryBuilder {
 	private static final String connectionNoListQuery = "SELECT distinct(conn.connectionno) FROM eg_ws_connection conn INNER JOIN eg_ws_service ws ON conn.id = ws.connection_id";
 
 	private static final String distinctTenantIdsCriteria = "SELECT distinct(tenantid) FROM eg_ws_connection ws";
+	
+	private static final String PREVIOUS_BILLING_CYCLE_DEMAND =" select count(*) from egbs_demand_v1 ";
 
 
 	public String getDistinctTenantIds() {
@@ -180,6 +182,30 @@ public class WSCalculatorQueryBuilder {
 		query.append(" billingPeriod = ? ");
 		preparedStatement.add(billingPeriod);
 		return query.toString();
+	}
+	
+	public String previousBillingCycleDemandQuery(Set<String> connectionNos, String tenantId, Long previousBillingCycleDate,List<Object> preparedStmtList) {
+		
+		  StringBuilder builder = new StringBuilder(PREVIOUS_BILLING_CYCLE_DEMAND);
+		 
+		  if (!CollectionUtils.isEmpty(connectionNos)) {
+			  addClauseIfRequired(preparedStmtList, builder);
+            builder.append(" consumercode IN (").append(createQuery(connectionNos)).append(")");
+            addToPreparedStatement(preparedStmtList, connectionNos);
+        }
+		  if(previousBillingCycleDate != null) {
+			  addClauseIfRequired(preparedStmtList, builder);
+			  builder.append(" ? between taxperiodfrom and taxperiodto ");
+			  preparedStmtList.add(previousBillingCycleDate);
+		  }
+		  
+		  if(!StringUtils.isEmpty(tenantId)) {
+			  addClauseIfRequired(preparedStmtList, builder);
+			  builder.append(" tenantId =?  ");
+			  preparedStmtList.add(tenantId);
+		  }
+		  
+		return builder.toString();
 	}
 
 }

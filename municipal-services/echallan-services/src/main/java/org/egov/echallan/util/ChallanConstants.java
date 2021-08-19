@@ -53,6 +53,10 @@ public class ChallanConstants {
     public static final String EXPENSE_MODULE_CODE = "Expense";
     
     public static final String EXPENSETYPE_MASTER = "ExpenseType";
+    
+    
+    public static final String MDMS_EGFFINACIALYEAR_PATH = "$.MdmsRes.egf-master.FinancialYear[?(@.code==\"{}\")]";
+
 
 
     public ChallanConstants() {}
