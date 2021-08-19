@@ -58,7 +58,7 @@ class SelectFieldBuilder extends StatelessWidget {
       items: options,
 
       onChanged:
-          readOnly == true ? null : (value) => widget(value)  ,
+      !(isEnabled ?? true) || readOnly == true ? null : (value) => widget(value)  ,
     );
 
     return LayoutBuilder(builder: (context, constraints) {

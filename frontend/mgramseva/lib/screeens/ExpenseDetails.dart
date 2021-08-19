@@ -227,14 +227,19 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                         Wrap( children : expenseDetails.fileStoreList!.map<Widget>((e) => InkWell(
                           onTap: ()=> expensesDetailsProvider.onTapOfAttachment(e),
                           child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Text('${e.tenantId}'),
+                            height: 45,
+                            width: 45,
+                            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey, width: 1.5)
+                            ),
+                            child: Text('${e.id}'),
                           ),
                         )).toList())
                       ],
                     ),
                   ),
-                FilePickerDemo(callBack: expensesDetailsProvider.fileStoreIdCallBack, extensions: ['jpg', 'pdf', 'png'],),
+               if(expenseDetails.allowEdit ?? true) FilePickerDemo(callBack: expensesDetailsProvider.fileStoreIdCallBack, extensions: ['jpg', 'pdf', 'png'],),
                 if(isUpdate)
                   Container(
                     alignment: Alignment.centerLeft,

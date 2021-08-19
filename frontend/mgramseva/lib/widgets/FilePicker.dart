@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/model/file/file_store.dart';
@@ -54,9 +57,14 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
           _selectedFiles = paths;
         }
 
-      var response = await CoreRepository().uploadFiles(paths, widget.moduleName ?? APIConstants.API_MODULE_NAME);
-        print(response.map((e) => e.toJson()));
+         List<dynamic> files = paths;
+        if(!kIsWeb){
+          files = paths.map((e) => File(e.path ?? '')).toList();
+        }
+
+      var response = await CoreRepository().uploadFiles(files, widget.moduleName ?? APIConstants.API_MODULE_NAME);
         _fileStoreList.addAll(response);
+        if(_selectedFiles.isNotEmpty)
       widget.callBack(_fileStoreList);
       }
     } on PlatformException catch (e) {
@@ -165,7 +173,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
   void onClickOfClear(int index){
     setState(() {
       _selectedFiles.removeAt(index);
-      _fileStoreList.removeAt(index);
+    if(index < _fileStoreList.length)  _fileStoreList.removeAt(index);
     });
     widget.callBack(_fileStoreList);
   }
