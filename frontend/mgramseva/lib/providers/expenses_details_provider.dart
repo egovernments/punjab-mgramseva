@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
@@ -23,6 +24,7 @@ import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'common_provider.dart';
 import 'package:universal_html/html.dart' as html;
@@ -70,7 +72,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   void getStoreFileDetails() async {
-    // if(expenditureDetails.fileStoreId == null) return;
+    if(expenditureDetails.fileStoreId == null) return;
     try{
       expenditureDetails.fileStoreList = await CoreRepository().fetchFiles([expenditureDetails.fileStoreId!]);
     }catch(e,s){
@@ -154,10 +156,13 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
   void fileStoreIdCallBack(List<FileStore>? fileStoreIds) {
     if(fileStoreIds != null && fileStoreIds.isNotEmpty){
-      expenditureDetails.fileStoreId = fileStoreIds.first.id;
+      expenditureDetails.fileStoreId = fileStoreIds.first.fileStoreId;
+
     }else{
       expenditureDetails.fileStoreId = null;
+      expenditureDetails.fileStoreList = null;
     }
+    notifyListeners();
   }
 
 
@@ -303,7 +308,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
       var res = await ExpensesRepository().getVendor(query);
       if (res != null) {
-        vendorList.addAll(res);
+        vendorList = res;
         notifyListeners();
       }
       return vendorList;
@@ -344,11 +349,17 @@ class ExpensesDetailsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void onTapOfAttachment(FileStore store) {
+  void onTapOfAttachment(FileStore store) async {
       if(store.url == null) return;
-      html.AnchorElement anchorElement = new html.AnchorElement(href: store.url);
-      anchorElement.download = store.url;
-      anchorElement.click();
+
+      if(kIsWeb) {
+        html.AnchorElement anchorElement = new html.AnchorElement(
+            href: store.url);
+        anchorElement.download = store.url;
+        anchorElement.click();
+      }else{
+        await canLaunch(store.url!) ?  launch(store.url!) : ErrorHandler.logError('failed to launch the url ${store.url}');
+      }
   }
 
   void onChangeOfCheckBox(bool? value) {
