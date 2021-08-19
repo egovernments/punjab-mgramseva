@@ -3,7 +3,7 @@ class i18 {
   static Common common = const Common();
   static Password password = const Password();
   static _Validators validators = const _Validators();
-
+  static ConsumerReciepts consumerReciepts = const ConsumerReciepts();
   static Expense expense = const Expense();
   static CreateConsumer consumer = const CreateConsumer();
   static SearchWaterConnection searchWaterConnection =
@@ -112,6 +112,7 @@ class Common {
   String get CASH => 'CASH';
   String get FULL_AMOUNT => 'FULL_AMOUNT';
   String get CUSTOM_AMOUNT => 'CUSTOM_AMOUNT';
+
   String get PAYMENT_COMPLETE => 'PAYMENT_COMPLETE'; /// Payment complete
   String get RECEIPT_NO => 'RECEIPT_NO'; /// Payment complete
   String get DOWNLOAD => 'DOWNLOAD'; /// Payment complete
@@ -119,6 +120,7 @@ class Common {
   String get ATTACHMENTS => 'ATTACHMENTS';
   String get YES => 'YES';
   String get NO => 'NO';
+
 
 }
 
@@ -133,10 +135,12 @@ class Password {
       'CHANGE_PASSWORD_SUCCESS_SUB_TEXT';
   String get PASSWORD_HINT => 'CORE_CHANGEPASSWORD_PASSWORD_HINT';
   String get PASS_HINT_MIN_SIX_DIGITS => 'CORE_PASS_HINT_MIN_SIX_DIGITS';
-  String get PASS_HINT_ATLEAST_ONE_LETTER => 'CORE_PASS_HINT_ATLEAST_ONE_LETTER';
-  String get PASS_HINT_ATLEAST_ONE_NUMBER => 'CORE_PASS_HINT_ATLEAST_ONE_NUMBER';
-  String get PASS_HINT_ATLEAST_ONE_SPECIAL_CHARACTER => 'CORE_PASS_HINT_ATLEAST_ONE_SPECIAL_CHARACTER';
-
+  String get PASS_HINT_ATLEAST_ONE_LETTER =>
+      'CORE_PASS_HINT_ATLEAST_ONE_LETTER';
+  String get PASS_HINT_ATLEAST_ONE_NUMBER =>
+      'CORE_PASS_HINT_ATLEAST_ONE_NUMBER';
+  String get PASS_HINT_ATLEAST_ONE_SPECIAL_CHARACTER =>
+      'CORE_PASS_HINT_ATLEAST_ONE_SPECIAL_CHARACTER';
 }
 
 class Expense {
@@ -304,7 +308,8 @@ class DemandGenerate {
       'NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING'; //New Meter Reading should be greater than Old meter Reading
   String get METER_READING_DATE => 'GENERATE_DEMAND_METER_READING_DATE';
   String get GENERATE_DEMAND_SUCCESS => 'DEMAND_GENERATED_SUCCESSFULLY_LABEL';
-  String get GENERATE_DEMAND_SUCCESS_SUBTEXT => 'DEMAND_GENERATED_SUCCESS_SUBTEXT';
+  String get GENERATE_DEMAND_SUCCESS_SUBTEXT =>
+      'DEMAND_GENERATED_SUCCESS_SUBTEXT';
 }
 
 class BillDetails {
@@ -328,11 +333,19 @@ class GenerateBillDetails {
   String get GENERATE_NEW_BTN_LABEL => 'GENERATE_NEW_BTN_LABEL';
 }
 
+class ConsumerReciepts {
+  const ConsumerReciepts();
+  String get CONSUMER_BILL_RECIEPTS_LABEL => 'CONSUMER_BILL_RECIEPTS_LABEL';
+  String get CONSUMER_BILL_RECIEPT_ID => 'CONSUMER_BILL_RECIEPT_ID';
+  String get CONSUMER_RECIEPT_PAID_AMOUNT => 'CONSUMER_RECIEPT_PAID_AMOUNT';
+  String get CONSUMER_RECIEPT_PAID_DATE => 'CONSUMER_RECIEPT_PAID_DATE';
+  String get CONSUMER_RECIEPT_SHARE_RECEIPT => 'CONSUMER_RECIEPT_SHARE_RECEIPT';
+}
+
 class _NetWorkException {
   const _NetWorkException();
 
   String get CHECK_CONNECTION => 'CHECK_CONNECTION';
-
 }
 
 class _Payment {
@@ -343,6 +356,7 @@ class _Payment {
   String get BILL_ID_NUMBER => 'BILL_ID_NUMBER'; //Bill ID No
   String get BILL_PERIOD => 'BILL_PERIOD'; //Bill Period
   String get FREE_ESTIMATE => 'FREE_ESTIMATE'; //Fee Estimate
-  String get RECEIPT_REFERENCE_WITH_MOBILE_NUMBER => 'RECEIPT_REFERENCE_WITH_MOBILE_NUMBER'; //Fee Estimate
+  String get RECEIPT_REFERENCE_WITH_MOBILE_NUMBER =>
+      'RECEIPT_REFERENCE_WITH_MOBILE_NUMBER'; //Fee Estimate
 
 }

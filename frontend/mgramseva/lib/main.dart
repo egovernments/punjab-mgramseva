@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:mgramseva/providers/authentication.dart';
 import 'package:mgramseva/providers/bill_generation_details_provider.dart';
+import 'package:mgramseva/providers/bill_payments_provider.dart';
 import 'package:mgramseva/providers/changePassword_details_provider.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
@@ -99,6 +100,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => HouseHoldProvider()),
           ChangeNotifierProvider(create: (_) => SearchConnectionProvider()),
           ChangeNotifierProvider(create: (_) => CollectPaymentProvider()),
+          ChangeNotifierProvider(create: (_) => BillPayemntsProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(
