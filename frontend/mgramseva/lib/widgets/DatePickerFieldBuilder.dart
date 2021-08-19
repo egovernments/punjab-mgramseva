@@ -12,42 +12,41 @@ class BasicDateField extends StatelessWidget {
   final DateTime? initialDate;
   final Function(DateTime?)? onChangeOfDate;
   final TextEditingController controller;
-
-  BasicDateField(this.label, this.isRequired, this.controller,
-      {this.firstDate, this.lastDate, this.onChangeOfDate, this.initialDate});
+  final bool? isEnabled;
+  final String? requiredMessage;
+  BasicDateField(this.label,  this.isRequired, this.controller, {this.firstDate, this.lastDate, this.onChangeOfDate, this.initialDate, this.isEnabled, this.requiredMessage});
 
   @override
   Widget build(BuildContext context) {
-    Widget datePicker = DateTimeField(
-        format: format,
-        decoration: InputDecoration(
-          prefixText: "",
-          suffixIcon: Icon(Icons.calendar_today),
-          prefixStyle: TextStyle(color: Colors.black),
-          contentPadding:
-              new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(1.0)),
-        ),
-        controller: controller,
-        validator: (val) {
-          if (isRequired != null &&
-              isRequired &&
-              controller.text.trim().isEmpty) {
-            return ApplicationLocalizations.of(context)
-                .translate(label + '_REQUIRED');
-          }
-          return null;
-        },
-        onShowPicker: (context, currentValue) {
-          return showDatePicker(
-            context: context,
-            firstDate: firstDate ?? DateTime(1900),
-            initialDate:
-                initialDate ?? lastDate ?? currentValue ?? DateTime.now(),
-            lastDate: lastDate ?? DateTime(2100),
-          );
-        },
-        onChanged: onChangeOfDate);
+    Widget datePicker = AbsorbPointer(
+      absorbing: !(isEnabled ?? true),
+        child : DateTimeField(
+      format: format,
+      decoration: InputDecoration(
+        prefixText: "",
+        suffixIcon: Icon(Icons.calendar_today),
+        prefixStyle: TextStyle(color: Colors.black),
+        contentPadding:
+            new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(1.0)),
+      ),
+      controller: controller,
+      validator: (val){
+        if(isRequired != null && isRequired && controller.text.trim().isEmpty){
+          return ApplicationLocalizations.of(context)
+              .translate(requiredMessage ?? '${label}_REQUIRED');
+        }
+        return null;
+      },
+      onShowPicker: (context, currentValue) {
+        return showDatePicker(
+          context: context,
+          firstDate: firstDate ?? DateTime(1900),
+          initialDate: initialDate ?? lastDate ?? currentValue ?? DateTime.now(),
+          lastDate: lastDate ?? DateTime(2100),
+        );
+      },onChanged: onChangeOfDate
+    ));
 
     Widget textLabelwidget = Row(children: <Widget>[
       Text(ApplicationLocalizations.of(context).translate(label),

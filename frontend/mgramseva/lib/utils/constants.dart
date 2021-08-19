@@ -1,4 +1,5 @@
 import 'package:mgramseva/icons/home_icons_icons.dart';
+import 'package:mgramseva/icons/home_icons_modified_icons.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -11,14 +12,14 @@ class Constants {
   static const String STATES_KEY = 'states_key';
 
   static List<KeyValue> GENDER = [
-    KeyValue('Male', 'MALE'),
-    KeyValue('Female', 'FEMALE'),
-    KeyValue('Transgender', 'TRANSGENDER'),
+    KeyValue('CORE_COMMON_GENDER_MALE', 'MALE'),
+    KeyValue('CORE_COMMON_GENDER_FEMALE', 'FEMALE'),
+    KeyValue('CORE_COMMON_GENDER_TRANSGENDER', 'TRANSGENDER'),
   ];
 
   static List<KeyValue> EXPENSESTYPE = [
-    KeyValue('YES', true),
-    KeyValue('NO', false),
+    KeyValue(i18.common.YES, true),
+    KeyValue(i18.common.NO, false),
   ];
   static List<KeyValue> AMOUNTTYPE = [
     KeyValue('FULL', 'Full'),
@@ -28,11 +29,11 @@ class Constants {
   static const List<HomeItem> HOME_ITEMS = [
     HomeItem("CORE_HOUSEHOLD_REGISTER", HomeIcons.hhregister, '', {}),
     HomeItem("CORE_COLLECT_PAYMENTS", HomeIcons.collectpayment,
-        'household/search', {'Mode': "collect"}),
+        Routes.HOUSEHOLD, {'Mode': "collect"}),
     HomeItem("DOWNLOAD_BILLS_AND_RECEIPTS", HomeIcons.printreciept, '', {}),
     HomeItem(
-        "ADD_EXPENSES_RECORD", HomeIcons.addexpenses, Routes.EXPENSES_ADD, {}),
-    HomeItem("CORE_UPDATE_EXPENSES", HomeIcons.updateexpenses,
+        "ADD_EXPENSES_RECORD", HomeIconsModified.vector_1, Routes.EXPENSES_ADD, {}),
+    HomeItem("CORE_UPDATE_EXPENSES", HomeIconsModified.vector,
         Routes.EXPENSE_SEARCH, {}),
     HomeItem(
         "CORE_GENERATE_DEMAND", HomeIcons.generaedemand, Routes.MANUAL_BILL_GENERATE, {}),

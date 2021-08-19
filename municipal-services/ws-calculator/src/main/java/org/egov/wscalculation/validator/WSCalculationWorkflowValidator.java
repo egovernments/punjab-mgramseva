@@ -45,7 +45,7 @@ public class WSCalculationWorkflowValidator {
 			 String propertyId = waterConnection.getPropertyId();
 			 Property property = util.getProperty(requestInfo,tenantId,propertyId);
 			 //String propertyApplicationNumber = property.getAcknowldgementNumber();
-			 propertyValidation(requestInfo,tenantId,property,errorMap);
+//			 propertyValidation(requestInfo,tenantId,property,errorMap);
 		 }
 		 else{
 			 errorMap.put("WATER_CONNECTION_ERROR",

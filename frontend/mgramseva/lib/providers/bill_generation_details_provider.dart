@@ -16,6 +16,7 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -51,7 +52,7 @@ class BillGenerationProvider with ChangeNotifier {
     'Nov',
     'Dec'
   ];
-  setModel(String? id, WaterConnection? waterConnection) async{
+  setModel(String? id, WaterConnection? waterConnection, BuildContext context) async{
     billGenerateDetails = BillGenerationDetails();
     billGenerateDetails.serviceCat = "WS_CHARGE";
     if(id == null)
@@ -65,11 +66,16 @@ class BillGenerationProvider with ChangeNotifier {
             listen: false);
         id!.split('_').join('/');
         try {
+          Loaders.showLoadingDialog(context);
+
           var res = await SearchConnectionRepository().getconnection({
             "tenantId": commonProvider.userDetails!.selectedtenant!.code,
             ...{'connectionNumber': id!.split('_').join('/')},
 
           });
+
+          Navigator.pop(context);
+
           waterconnection = res.waterConnection!.first;
           billGenerateDetails.propertyType =
               waterconnection!.additionalDetails!.propertyType;
@@ -88,11 +94,10 @@ class BillGenerationProvider with ChangeNotifier {
               prevReadingDate = waterConnection!.previousReadingDate;
             }
           }
-          else{}
-
           }
-        catch(e){
-
+        catch (e,s) {
+          Navigator.pop(context);
+          ErrorHandler().allExceptionsHandler(context, e, s);
         }
       }
     else {
@@ -250,6 +255,7 @@ class BillGenerationProvider with ChangeNotifier {
             }
           }
           catch (e) {
+            Navigator.pop(context);
             Navigator.of(context).pushReplacement(
                 new MaterialPageRoute(builder: (BuildContext context) {
                   return ErrorPage(e.toString());

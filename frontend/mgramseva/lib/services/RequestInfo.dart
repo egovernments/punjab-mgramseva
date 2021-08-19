@@ -7,8 +7,9 @@ class RequestInfo {
   final key;
   final msgId;
   final authToken;
+  Map? userInfo;
   RequestInfo(this.apiId, this.ver, this.ts, this.action, this.did, this.key,
-      this.msgId, this.authToken);
+      this.msgId, this.authToken, [this.userInfo]);
 
   Map<String, dynamic> toJson() => {
         "apiId": apiId == null ? null : apiId,
@@ -19,5 +20,6 @@ class RequestInfo {
         "key": key == null ? null : key,
         "msgId": msgId == null ? null : msgId,
         "authToken": authToken == null ? null : authToken,
+        "userInfo" : userInfo
       };
 }

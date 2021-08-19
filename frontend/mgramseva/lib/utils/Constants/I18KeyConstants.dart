@@ -112,18 +112,15 @@ class Common {
   String get CASH => 'CASH';
   String get FULL_AMOUNT => 'FULL_AMOUNT';
   String get CUSTOM_AMOUNT => 'CUSTOM_AMOUNT';
-  String get PAYMENT_COMPLETE => 'PAYMENT_COMPLETE';
 
-  /// Payment complete
-  String get RECEIPT_NO => 'RECEIPT_NO';
+  String get PAYMENT_COMPLETE => 'PAYMENT_COMPLETE'; /// Payment complete
+  String get RECEIPT_NO => 'RECEIPT_NO'; /// Payment complete
+  String get DOWNLOAD => 'DOWNLOAD'; /// Payment complete
+  String get SHARE_BILL => 'SHARE_BILL'; /// Payment complete
+  String get ATTACHMENTS => 'ATTACHMENTS';
+  String get YES => 'YES';
+  String get NO => 'NO';
 
-  /// Payment complete
-  String get DOWNLOAD => 'DOWNLOAD';
-
-  /// Payment complete
-  String get SHARE_BILL => 'SHARE_BILL';
-
-  /// Payment complete
 
 }
 
@@ -188,6 +185,36 @@ class Expense {
 
   /// Unable to Search the Expenses
   String get NO_FIELDS_FILLED => 'NO_FIELDS_FILLED';
+
+  ///Modified expenditure successfully
+  String get MODIFIED_EXPENDITURE_SUCCESSFULLY => 'MODIFIED_EXPENDITURE_SUCCESSFULLY';
+
+  ///Expenditure Bill with id
+  String get EXPENDITURE_BILL_ID => 'EXPENDITURE_BILL_ID';
+
+  ///Has been modified
+  String get HAS_BEEN_MODIFIED => 'HAS_BEEN_MODIFIED';
+  String get ENTER_VALID_AMOUNT => 'ENTER_VALID_AMOUNT';
+  String get BILL_DATE_CANNOT_BEFORE_PART_DATE => 'ENTER_VALID_AMOUNT';
+  String get BILL_DATE_CANNOT_GREATER_THAN_TODAY => 'ENTER_VALID_AMOUNT';
+  String get PARTY_BILL_DATE_CANNOT_GREATER_THAN_TODAY => 'ENTER_VALID_AMOUNT';
+  String get PAYMENT_DATE_CANNOT_GREATER_THAN_TODAY => 'ENTER_VALID_AMOUNT';
+  String get PAYMENT_DATE_CANNOT_BEFORE_PARTY_DATE => 'ENTER_VALID_AMOUNT';
+  String get UN_PAID => 'UN_PAID';
+  String get PAID => 'PAID';
+  String get EDIT_EXPENSE_BILL => 'EDIT_EXPENSE_BILL';
+  String get UPDATE_SUBMIT_EXPENDITURE => 'UPDATE_SUBMIT_EXPENDITURE';
+  String get MARK_BILL_HAS_CANCELLED => 'MARK_BILL_HAS_CANCELLED';
+
+  ///Required messages for expenses
+  String get SELECT_EXPENDITURE_CATEGORY => 'SELECT_EXPENDITURE_CATEGORY';
+  String get MENTION_NAME_OF_VENDOR => 'MENTION_NAME_OF_VENDOR';
+  String get AMOUNT_MENTIONED_IN_THE_BILL => 'AMOUNT_MENTIONED_IN_THE_BILL';
+  String get DATE_BILL_ENTERED_IN_RECORDS => 'DATE_BILL_ENTERED_IN_RECORDS';
+  String get DATE_ON_WHICH_BILL_RAISED => 'DATE_ON_WHICH_BILL_RAISED';
+  String get ATTACH_FORMATS => 'ATTACH_FORMATS';
+  String get CORE_EXPENSE_EXPENDITURE_SUCESS => 'CORE_EXPENSE_EXPENDITURE_SUCESS';
+  String get HAS_THIS_BILL_PAID => 'HAS_THIS_BILL_PAID';
 }
 
 class CreateConsumer {

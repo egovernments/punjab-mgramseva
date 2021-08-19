@@ -1,5 +1,6 @@
 
 
+import 'package:mgramseva/constants/expenditurecarddetails.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/model/expensesDetails/vendor.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -14,14 +15,14 @@ import 'package:provider/provider.dart';
 
 class ExpensesRepository extends BaseService {
 
-  Future<Map> addExpenses(Map body) async {
+  Future<Map> addExpenses(Map body, bool isUpdate) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
 
     var res = await makeRequest(
-        url: Url.ADD_EXPENSES, body: body, method: RequestType.POST, requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "create", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
-        commonProvider.userDetails!.accessToken));
+        url: isUpdate ? Url.UPDATE_EXPENSE : Url.ADD_EXPENSES, body: body, method: RequestType.POST, requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "create", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
+        commonProvider.userDetails!.accessToken, commonProvider.userDetails?.userRequest?.toJson()));
     return res;
   }
 
@@ -64,5 +65,20 @@ class ExpensesRepository extends BaseService {
       expenseResult = res['challans']?.map<ExpensesDetailsModel>((e) => ExpensesDetailsModel.fromJson(e)).toList();
     }
     return expenseResult;
+  }
+
+  Future<Map?> createVendor(Map body) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+
+    var res = await makeRequest(
+        url: Url.CREATE_VENDOR, body: body, method: RequestType.POST, requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "create", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
+      commonProvider.userDetails!.accessToken, commonProvider.userDetails?.userRequest?.toJson()));
+
+    if (res != null && res['vendor'] != null && res['vendor'].isNotEmpty) {
+      return res['vendor'][0];
+    }
+    return null;
   }
 }

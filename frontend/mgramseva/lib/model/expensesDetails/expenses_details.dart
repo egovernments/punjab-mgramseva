@@ -1,12 +1,22 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/expensesDetails/vendor.dart';
+import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 
 part 'expenses_details.g.dart';
 
 @JsonSerializable()
 class ExpensesDetailsModel {
+  @JsonKey(name: "citizen")
+  Citizen? citizen;
+
+  @JsonKey(name: "auditDetails")
+  AuditDetails? auditDetails;
+
+  @JsonKey(name: "id")
+  String? id;
+
   @JsonKey(name: "tenantId")
   String? tenantId;
 
@@ -40,6 +50,9 @@ class ExpensesDetailsModel {
   @JsonKey(name: "challanNo")
   String? challanNo;
 
+  @JsonKey(name: "accountId")
+  String? accountId;
+
   @JsonKey(name: "applicationStatus")
   String? applicationStatus;
 
@@ -52,8 +65,23 @@ class ExpensesDetailsModel {
   @JsonKey(name: "filestoreid")
   String? fileStoreId;
 
+  @JsonKey(name: "taxPeriodFrom")
+  int? taxPeriodFrom;
+
+  @JsonKey(name: "taxPeriodTo")
+  int? taxPeriodTo;
+
   @JsonKey(ignore: true)
   Vendor? selectedVendor;
+
+  @JsonKey(ignore: true)
+  bool? isBillCancelled = false;
+
+  @JsonKey(ignore: true)
+  bool? allowEdit = true;
+
+  @JsonKey(ignore: true)
+  List<FileStore>? fileStoreList;
 
   @JsonKey(ignore: true)
   var vendorNameCtrl = TextEditingController();
@@ -66,6 +94,12 @@ class ExpensesDetailsModel {
 
   @JsonKey(ignore: true)
   var billIssuedDateCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var challanNumberCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var mobileNumberController = TextEditingController();
 
   ExpensesDetailsModel();
 
@@ -88,9 +122,21 @@ class ExpensesDetailsModel {
     expensesAmount?.first.amountCtrl.text =
         expensesAmount?.first.amount ?? totalAmount?.toString() ?? '';
     billDateCtrl.text = DateFormats.timeStampToDate(billDate);
-    paidDateCtrl.text = DateFormats.timeStampToDate(paidDate);
-    billIssuedDateCtrl.text = DateFormats.timeStampToDate(billIssuedDate);
+    paidDateCtrl.text = paidDate == 0 ? '' : DateFormats.timeStampToDate(paidDate);
+    billIssuedDateCtrl.text = billIssuedDate == 0 ? '' : DateFormats.timeStampToDate(billIssuedDate);
     isBillPaid ??= false;
+    challanNumberCtrl.text = challanNo?.toString() ?? '';
+
+    if(selectedVendor == null && challanNo != null){
+      selectedVendor = Vendor(vendorName ?? '', vendorId ?? '');
+    }
+
+    if(isBillPaid!){
+      allowEdit = false;
+    }else{
+      paidDateCtrl.text = '';
+      allowEdit = true;
+    }
   }
 
   factory ExpensesDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -116,4 +162,52 @@ class ExpensesAmount {
       _$ExpensesAmountFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExpensesAmountToJson(this);
+}
+
+
+@JsonSerializable()
+class Citizen {
+  @JsonKey(name: "id")
+  int? id;
+
+  @JsonKey(name: "uuid")
+  String? uuid;
+
+  @JsonKey(name: "userName")
+  String? userName;
+
+  @JsonKey(name: "name")
+  String? name;
+
+  @JsonKey(name: "mobileNumber")
+  String? mobileNumber;
+
+  Citizen();
+
+  factory Citizen.fromJson(Map<String, dynamic> json) =>
+      _$CitizenFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CitizenToJson(this);
+}
+
+@JsonSerializable()
+class AuditDetails {
+  @JsonKey(name: "createdBy")
+  String? createdBy;
+
+  @JsonKey(name: "lastModifiedBy")
+  String? lastModifiedBy;
+
+  @JsonKey(name: "createdTime")
+  int? createdTime;
+
+  @JsonKey(name: "lastModifiedTime")
+  int? lastModifiedTime;
+
+  AuditDetails();
+
+  factory AuditDetails.fromJson(Map<String, dynamic> json) =>
+      _$AuditDetailsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AuditDetailsToJson(this);
 }
