@@ -19,7 +19,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.ZoneId;
+import java.time.format.TextStyle;
 import java.util.*;
 
 @Component
@@ -34,6 +36,8 @@ public class WSCalculationValidator {
 	
 	@Autowired
 	private MasterDataService masterDataService;
+	
+
 
 	/**
 	 * 
@@ -140,5 +144,32 @@ public class WSCalculationValidator {
 				throw new CustomException("BILLING_PERIOD_ISSUE", "Billing period can not be in future!!");
 			throw new CustomException("BILLING_PERIOD_PARSING_ISSUE", "Billing period can not parsed!!");
 		}
+	}
+	
+	public void validateBulkDemandBillingPeriod(Long startTime,  Set<String> connectionNos,String tenantId,String billingFrequency) {
+		
+		
+			Calendar startCal = Calendar.getInstance();
+			startCal.setTimeInMillis(startTime);
+			
+			if (billingFrequency.equalsIgnoreCase(WSCalculationConstant.Monthly_Billing_Period)) {
+				startCal.add(Calendar.MONTH, -1);
+				startCal.set(Calendar.DAY_OF_MONTH, 15);
+			} else if (billingFrequency.equalsIgnoreCase(WSCalculationConstant.Quaterly_Billing_Period)) {
+				startCal.add(Calendar.MONTH, -3);
+				startCal.set(Calendar.DAY_OF_MONTH, 15);
+			}
+			startTime = startCal.getTimeInMillis();
+			
+			
+			if(!wSCalculationDao.isDemandExists(tenantId, startTime, connectionNos)) {
+				
+				Month month = Month.of(startCal.get(Calendar.MONTH)+1);       
+			    Locale locale = Locale.getDefault();
+				throw new CustomException("NO_DEMAND_PREVIOUS_BILLING_CYCLE", "No Demand exists for previous billing cycle, please generated demand for previous billing cycle ("+month.getDisplayName(TextStyle.FULL, locale)+")!!");
+			}
+
+
+		
 	}
 }
