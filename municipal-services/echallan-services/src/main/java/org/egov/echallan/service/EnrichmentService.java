@@ -68,7 +68,7 @@ public class EnrichmentService {
         	challan.getAddress().setId(UUID.randomUUID().toString());
         	challan.getAddress().setTenantId(challan.getTenantId());
         }
-        challan.setFilestoreid(null);
+//        challan.setFilestoreid(null);
         setIdgenIds(challanRequest);
     }
 
