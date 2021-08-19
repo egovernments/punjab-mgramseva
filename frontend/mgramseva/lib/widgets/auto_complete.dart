@@ -10,6 +10,8 @@ class AutoCompleteView extends StatelessWidget {
   final Function(dynamic) onSuggestionSelected;
   final Widget Function(BuildContext, dynamic) listTile;
   final SuggestionsBoxController? suggestionsBoxController;
+  final bool? isEnabled;
+  final String? requiredMessage;
 
   const AutoCompleteView(
       {Key? key,
@@ -19,7 +21,7 @@ class AutoCompleteView extends StatelessWidget {
       required this.listTile,
       required this.controller,
       this.suggestionsBoxController,
-      this.isRequired})
+      this.isRequired, this.isEnabled, this.requiredMessage})
       : super(key: key);
 
   @override
@@ -81,6 +83,7 @@ class AutoCompleteView extends StatelessWidget {
   Widget _autoComplete(BuildContext context) {
     return TypeAheadFormField(
       textFieldConfiguration: TextFieldConfiguration(
+        enabled: (isEnabled ?? true),
           controller: controller,
           style: TextStyle(
               color: Colors.black, fontSize: 19, fontWeight: FontWeight.w500),
@@ -96,7 +99,7 @@ class AutoCompleteView extends StatelessWidget {
           ? null
           : (val) {
               if (val == null || val.trim().isEmpty) {
-                return '${labelText}_REQUIRED';
+                return ApplicationLocalizations.of(context).translate(requiredMessage ?? '${labelText}_REQUIRED');
               }
               return null;
             },

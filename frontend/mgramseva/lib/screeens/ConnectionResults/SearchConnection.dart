@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
@@ -26,9 +27,6 @@ class SearchConsumerConnection extends StatefulWidget {
 }
 
 class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
-  _onSubmit(context) {
-    Navigator.pushNamed(context, 'search/consumer');
-  }
 
   var isVisible = true;
 
@@ -150,7 +148,7 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                 child: new Row(
                                   children: [
                                     new Text(
-                                      isVisible ? "\nShow more" : "\nShow Less",
+                                    '\n${ApplicationLocalizations.of(context).translate( isVisible ? i18.common.SHOW_MORE : i18.common.SHOW_LESS)}',
                                       style: new TextStyle(
                                           color: Colors.deepOrangeAccent),
                                     )

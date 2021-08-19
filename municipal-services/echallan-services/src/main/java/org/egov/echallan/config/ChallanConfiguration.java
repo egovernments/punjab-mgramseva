@@ -80,6 +80,10 @@ public class ChallanConfiguration {
 
     @Value("${persister.update.challan.topic}")
     private String updateChallanTopic;
+    
+    @Value("${persister.update.status.challan.topic}")
+    private String updateStatusChallanTopic;
+
 
     //Location Config
     @Value("${egov.location.host}")
@@ -210,5 +214,20 @@ public class ChallanConfiguration {
 	
 	@Value("${egov.collection.service.update}")
 	private String paymentUpdateEndpoint;
+	
+	@Value("${egov.month.revenue.dashboard.link}")
+	private String monthRevenueDashboardLink;
+	
+	@Value("${egov.month.dashboard.link}")
+	private String monthDashboardLink;
+	
+	@Value("${egov.expenditure.link}")
+	private String expenditureLink;
+	
+	@Value("${egov.demand.generation.link}")
+	private String demanGenerationLink;
+	
+	@Value("${egov.expense.bill.markpaid.link}")
+	private String expenseBillMarkPaidLink;
 	
 }

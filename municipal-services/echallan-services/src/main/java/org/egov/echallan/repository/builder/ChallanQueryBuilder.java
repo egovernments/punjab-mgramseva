@@ -48,6 +48,18 @@ public class ChallanQueryBuilder {
       public static final String FILESTOREID_UPDATE_SQL = "UPDATE eg_echallan SET filestoreid=? WHERE id=?";
       
       public static final String CANCEL_RECEIPT_UPDATE_SQL = "UPDATE eg_echallan SET applicationStatus='ACTIVE' WHERE challanNo=? and businessService=?";
+      
+      private static final String TENANTIDS = "SELECT distinct(tenantid) FROM eg_echallan challan";
+      
+      public static final String ACTIVEEXPENSECOUNTQUERY =  "select count(*) from eg_echallan  where applicationstatus ='ACTIVE' ";
+      
+      public static final String PENDINGCOLLECTION = "select (sum(demanddtl.taxamount)-sum(demanddtl.collectionamount)) as pendingamount from egbs_demand_v1 demand, egbs_demanddetail_v1 demanddtl where  demand.id= demanddtl.demandid and demand.businessservice='WS' ";
+
+	  public static final String PREVIOUSMONTHEXPENSE = " select sum(billdtl.totalamount) from eg_echallan challan, egbs_billdetail_v1 billdtl, egbs_bill_v1 bill  where challan.challanno= billdtl.consumercode  and billdtl.billid = bill.id and challan.isbillpaid ='true'  ";
+	  
+	  public static final String PREVIOUSMONTHCOLLECTION = " select count(pd.amountpaid) from egcl_paymentdetail pd, egcl_payment p where p.id= pd.paymentid and businessservice='EXPENSE.ADVANCE'  ";
+
+
 
 
 
@@ -178,8 +190,9 @@ public class ChallanQueryBuilder {
         }
     }
 
-
-
+	public String getDistinctTenantIds() {
+		return TENANTIDS;
+	}
 
 
 }

@@ -6,7 +6,7 @@ import 'package:mgramseva/utils/common_styles.dart';
 
 class BottomButtonBar extends StatelessWidget {
   final String label;
-  final VoidCallback callBack;
+  final VoidCallback? callBack;
   BottomButtonBar(this.label, this.callBack);
   @override
   Widget build(BuildContext context) {
