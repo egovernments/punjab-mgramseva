@@ -1,5 +1,4 @@
 import 'package:mgramseva/icons/home_icons_icons.dart';
-import 'package:mgramseva/icons/home_icons_modified_icons.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -32,8 +31,8 @@ class Constants {
         Routes.HOUSEHOLD, {'Mode': "collect"}),
     HomeItem("DOWNLOAD_BILLS_AND_RECEIPTS", HomeIcons.printreciept, '', {}),
     HomeItem(
-        "ADD_EXPENSES_RECORD", HomeIconsModified.vector_1, Routes.EXPENSES_ADD, {}),
-    HomeItem("CORE_UPDATE_EXPENSES", HomeIconsModified.vector,
+        "ADD_EXPENSES_RECORD",  HomeIcons.addexpenses, Routes.EXPENSES_ADD, {}),
+    HomeItem("CORE_UPDATE_EXPENSES", HomeIcons.updateexpenses,
         Routes.EXPENSE_SEARCH, {}),
     HomeItem(
         "CORE_GENERATE_DEMAND", HomeIcons.generaedemand, Routes.MANUAL_BILL_GENERATE, {}),
