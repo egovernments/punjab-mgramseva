@@ -313,6 +313,8 @@ public class PaymentUpdateService {
 		String localizationMessage = notificationUtil.getLocalizationMessages(property.getTenantId(),
 				waterConnectionRequest.getRequestInfo());
 		String message = notificationUtil.getMessageTemplate(WCConstants.PAYMENT_NOTIFICATION_SMS, localizationMessage);
+		String feedbackMessage = notificationUtil.getMessageTemplate(WCConstants.FEEDBACK_NOTIFICATION_SMS, localizationMessage);
+
 		if (message == null) {
 			log.info("No message template found for, {} " + WCConstants.PAYMENT_NOTIFICATION_SMS);
 			return Collections.emptyList();
@@ -332,10 +334,19 @@ public class PaymentUpdateService {
 		}
 		Map<String, String> getReplacedMessage = workflowNotificationService.getMessageForMobileNumber(mobileNumbersAndNames,
 				waterConnectionRequest, message, property);
+		Map<String, String> getReplacedFeedbackMessage = workflowNotificationService.getMessageForMobileNumber(mobileNumbersAndNames,
+				waterConnectionRequest, feedbackMessage, property);
+		
 		Map<String, String> mobileNumberAndMessage = replacePaymentInfo(getReplacedMessage, paymentDetail);
 		List<SMSRequest> smsRequest = new ArrayList<>();
 		mobileNumberAndMessage.forEach((mobileNumber, msg) -> {
 			SMSRequest req = SMSRequest.builder().mobileNumber(mobileNumber).message(msg).category(Category.TRANSACTION).build();
+			smsRequest.add(req);
+		});
+		
+		getReplacedFeedbackMessage.forEach((mobileNumber, msg) -> {
+			SMSRequest req = SMSRequest.builder().mobileNumber(mobileNumber).message(msg).category(Category.TRANSACTION)
+					.build();
 			smsRequest.add(req);
 		});
 		return smsRequest;
@@ -369,6 +380,10 @@ public class PaymentUpdateService {
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 				String billingPeriod = builder.append(fromDate.format(formatter)).append(" - ").append(toDate.format(formatter)).toString();
 				message = message.replace("<Billing Period>", billingPeriod);
+			}
+			if (message.contains("<Pending Amount>")) {
+				
+				message = message.replace("<Pending Amount>", paymentDetail.getTotalDue().subtract(paymentDetail.getTotalAmountPaid()).toString());
 			}
 
 			if (message.contains("<receipt download link>")){

@@ -84,6 +84,7 @@ public class SchedulerService {
 	private static final String NEW_EXPENDITURE_SMS = "NEW_ENPENDITURE_SMS_EN_REMINDER";
 	private static final String MONTHLY_SUMMARY_SMS = "MONTHLY_SUMMARY_SMS_EN_REMINDER";
 	private static final String MARK_PAID_BILL_SMS = "MARK_PAID_BILL_SMS_EN_REMINDER";
+	private static final String PENDING_COLLECTION_SMS = "PENDING_COLLECTION_SMS_EN_REMINDER";
 
 	@Autowired
 	public SchedulerService(ChallanRepository repository, CommonUtils utils,
@@ -208,9 +209,7 @@ public class SchedulerService {
 							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
 								String message = messageMap.get(NotificationUtil.MSG_KEY);
 								message.replace("{link}", config.getExpenditureLink());
-								message.replace("{GPWSC}", ""); // TODO Replace
-																// <GPWSC> with
-																// value.
+								message.replace("{GPWSC}", tenantId); 
 								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
 										.message(messageMap.get(NotificationUtil.MSG_KEY))
 										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
@@ -335,9 +334,7 @@ public class SchedulerService {
 							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
 								String message = messageMap.get(NotificationUtil.MSG_KEY);
 								message.replace("{link}", config.getExpenseBillMarkPaidLink());
-								message.replace("{GPWSC}", ""); // TODO Replace
-																// <GPWSC> with
-																// value.
+								message.replace("{GPWSC}", tenantId); 
 								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
 										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
 										.users(new String[] { map.getValue() }).build();
@@ -436,11 +433,11 @@ public class SchedulerService {
 					tenantIds.forEach(tenantId -> {
 						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
 								MONTHLY_SUMMARY_SMS, tenantId);
-						Recepient recepient = getRecepient(requestInfo, tenantId);
-						UserDetailResponse response = userService.getUserById(requestInfo, tenantId,
-								recepient.getToUsers());
+						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, "pb",
+								Arrays.asList("GP_ADMIN"));
+						
 						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
-						for (UserInfo userInfo : response.getUser())
+						for (UserInfo userInfo : userDetailResponse.getUser())
 							mobileNumberIdMap.put(userInfo.getMobileNumber(),
 									userInfo.getUuid() + "|" + userInfo.getUserName());
 						mobileNumberIdMap.entrySet().stream().forEach(map -> {
@@ -449,9 +446,7 @@ public class SchedulerService {
 								String message = formatMonthSummaryMessage(requestInfo, tenantId,
 										messageMap.get(NotificationUtil.MSG_KEY));
 								message.replace("{link}", config.getMonthDashboardLink());
-								message.replace("{GPWSC}", ""); // TODO Replace
-																// <GPWSC> with
-																// value
+								message.replace("{GPWSC}", tenantId); 
 								message.replace("{user}", uuidUsername[1]);
 								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
 										.message(messageMap.get(NotificationUtil.MSG_KEY))
@@ -519,6 +514,38 @@ public class SchedulerService {
 						notificationService.sendEventNotification(eventRequest);
 				}
 			}
+			
+			if (null != config.getIsSMSEnabled()) {
+				if (config.getIsSMSEnabled()) {
+					List<String> tenantIds = repository.getTenantId();
+					tenantIds.forEach(tenantId -> {
+						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
+								PENDING_COLLECTION_SMS, tenantId);
+						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, "pb",
+								Arrays.asList("GP_ADMIN"));
+						
+						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+						for (UserInfo userInfo : userDetailResponse.getUser())
+							mobileNumberIdMap.put(userInfo.getMobileNumber(),
+									userInfo.getUuid() + "|" + userInfo.getUserName());
+						mobileNumberIdMap.entrySet().stream().forEach(map -> {
+							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
+								String uuidUsername[] = ((String) map.getValue()).split("|");
+								String message = formatPendingCollectionMessage(requestInfo, tenantId,
+										messageMap.get(NotificationUtil.MSG_KEY));
+								message.replace("{link}", config.getMonthRevenueDashboardLink());
+								message.replace("{GPWSC}", tenantId); 
+								message.replace("{user}", uuidUsername[1]);
+								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
+										.message(messageMap.get(NotificationUtil.MSG_KEY))
+										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
+										.users(new String[] { uuidUsername[0] }).build();
+								producer.push(config.getSmsNotifTopic(), smsRequest);
+							}
+						});
+					});
+				}
+			}
 
 		}
 	}
@@ -550,11 +577,15 @@ public class SchedulerService {
 	}
 
 	private Map<String, String> getMobilenumberUuidMap(RequestInfo requestInfo) {
-		Recepient recepient = getRecepient(requestInfo, "pb");
-		UserDetailResponse response = userService.getUserById(requestInfo, "pb", recepient.getToUsers());
-		Map<String, String> mobileNumberIdMap = response.getUser().stream()
-				.collect(Collectors.toMap(UserInfo::getMobileNumber, UserInfo::getUuid));
-
+		Map<String, String> mobileNumberIdMap = null;
+		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, "pb",
+				Arrays.asList("GP_ADMIN"));
+		if (userDetailResponse.getUser().isEmpty())
+			log.error("Recepient is absent");
+		else {
+			mobileNumberIdMap = userDetailResponse.getUser().stream()
+					.collect(Collectors.toMap(UserInfo::getMobileNumber, UserInfo::getUuid));
+		}
 		return mobileNumberIdMap;
 	}
 
