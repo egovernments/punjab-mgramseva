@@ -9,6 +9,7 @@ import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
+import 'package:mgramseva/screeens/ConsumerDetails/walkthrough.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
@@ -20,9 +21,11 @@ import 'package:provider/provider.dart';
 import 'package:mgramseva/model/connection/water_connection.dart' as addition;
 
 class ConsumerProvider with ChangeNotifier {
+  late List<ConsumerWalkWidgets> consmerWalkthrougList;
   var streamController = StreamController.broadcast();
   late GlobalKey<FormState> formKey;
   var autoValidation = false;
+  int activeindex = 0;
   late WaterConnection waterconnection;
   var boundaryList = <Boundary>[];
   var selectedcycle;
@@ -163,7 +166,7 @@ class ConsumerProvider with ChangeNotifier {
         }
       } catch (e, s) {
         Navigator.pop(context);
-        ErrorHandler().allExceptionsHandler(context, e,s);
+        ErrorHandler().allExceptionsHandler(context, e, s);
       }
     } else {
       autoValidation = true;
@@ -229,6 +232,10 @@ class ConsumerProvider with ChangeNotifier {
     } catch (e) {
       print(e);
     }
+  }
+
+  void setwallthrough(value) {
+    consmerWalkthrougList = value;
   }
 
   void onChangeOflocaity(val) {
@@ -338,5 +345,11 @@ class ConsumerProvider with ChangeNotifier {
       }).toList();
     }
     return <DropdownMenuItem<Object>>[];
+  }
+
+  incrementindex(index, consumerGenderKey) async {
+    activeindex = index + 1;
+    await Scrollable.ensureVisible(consumerGenderKey.currentContext!,
+        duration: new Duration(milliseconds: 100));
   }
 }

@@ -26,6 +26,7 @@ class BuildTextField extends StatefulWidget {
   final String? labelSuffix;
   final String? hint;
   final String? requiredMessage;
+  final GlobalKey? contextkey;
 
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
@@ -47,6 +48,7 @@ class BuildTextField extends StatefulWidget {
       this.labelSuffix,
       this.hint,
       this.focusNode,
+      this.contextkey,
       this.requiredMessage});
   @override
   State<StatefulWidget> createState() => _BuildTextField();
@@ -77,8 +79,8 @@ class _BuildTextField extends State<BuildTextField> {
             ? (val) => widget.validator!(val)
             : (value) {
                 if (value!.trim().isEmpty && widget.isRequired) {
-                  return ApplicationLocalizations.of(context)
-                      .translate(widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
+                  return ApplicationLocalizations.of(context).translate(
+                      widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
                 } else if (widget.pattern != null && widget.pattern != '') {
                   return (new RegExp(widget.pattern!).hasMatch(value))
                       ? null
@@ -112,6 +114,7 @@ class _BuildTextField extends State<BuildTextField> {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
         return Container(
+            key: widget.contextkey,
             margin:
                 const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
             child: Row(
@@ -135,6 +138,7 @@ class _BuildTextField extends State<BuildTextField> {
             ));
       } else {
         return Container(
+            key: widget.contextkey,
             margin:
                 const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
             child: Column(
