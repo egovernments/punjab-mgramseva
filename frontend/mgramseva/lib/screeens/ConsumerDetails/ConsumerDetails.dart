@@ -114,7 +114,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           widget: Help(
                         callBack: () => showGeneralDialog(
                           barrierLabel: "Label",
-                          barrierDismissible: true,
+                          barrierDismissible: false,
                           barrierColor: Colors.black.withOpacity(0.5),
                           transitionDuration: Duration(milliseconds: 700),
                           context: context,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
+import 'package:mgramseva/screeens/ConsumerDetails/Pointer.dart';
 import 'package:provider/provider.dart';
 
 class WalkThroughContainer extends StatefulWidget {
@@ -42,10 +43,24 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
               ],
             )))),
         Positioned(
-            right: position.dx,
+            right: box.size.width / 3,
             top: box.size.height + position.dy,
+            child: CustomPaint(
+              painter: TrianglePainter(
+                strokeColor: Colors.white,
+                strokeWidth: 10,
+                paintingStyle: PaintingStyle.fill,
+              ),
+              child: Container(
+                height: 30,
+                width: 50,
+              ),
+            )),
+        Positioned(
+            right: position.dx,
+            top: box.size.height + position.dy + 25,
             child: Container(
-                width: MediaQuery.of(context).size.width / 3,
+                width: MediaQuery.of(context).size.width / 2,
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.only(right: 8),
                 child: Card(
@@ -65,35 +80,40 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                           children: [
                             TextButton(
                                 onPressed: () async {
-                                  widget.onnext!(consumerProvider.activeindex);
-                                  await Scrollable.ensureVisible(
-                                    consumerProvider
-                                        .consmerWalkthrougList[
-                                            consumerProvider.activeindex]
-                                        .key!
-                                        .currentContext!,
-                                    duration: new Duration(milliseconds: 100),
-                                    alignment: 100.0,
-                                  );
+                                  consumerProvider.activeindex = 0;
+                                  Navigator.pop(context);
                                   setState(() {
-                                    active = active + 1;
+                                    active = 0;
                                   });
                                 },
                                 child: const Text('Skip')),
                             ElevatedButton(
                                 onPressed: () async {
-                                  widget.onnext!(consumerProvider.activeindex);
-                                  await Scrollable.ensureVisible(
-                                      consumerProvider
-                                          .consmerWalkthrougList[
-                                              consumerProvider.activeindex]
-                                          .key!
-                                          .currentContext!,
-                                      duration:
-                                          new Duration(milliseconds: 100));
-                                  setState(() {
-                                    active = active + 1;
-                                  });
+                                  if (consumerProvider
+                                              .consmerWalkthrougList.length -
+                                          1 <=
+                                      active) {
+                                    consumerProvider.activeindex = 0;
+                                    Navigator.pop(context);
+                                    setState(() {
+                                      active = 0;
+                                    });
+                                  } else {
+                                    widget
+                                        .onnext!(consumerProvider.activeindex);
+                                    await Scrollable.ensureVisible(
+                                        consumerProvider
+                                            .consmerWalkthrougList[
+                                                consumerProvider.activeindex]
+                                            .key!
+                                            .currentContext!,
+                                        duration:
+                                            new Duration(milliseconds: 100));
+
+                                    setState(() {
+                                      active = active + 1;
+                                    });
+                                  }
                                 },
                                 child: const Text('Next'))
                           ]))
