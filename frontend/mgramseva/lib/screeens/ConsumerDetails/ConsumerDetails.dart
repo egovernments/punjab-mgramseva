@@ -287,7 +287,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                   textInputType: TextInputType.number,
                                   inputFormatter: [
                                     FilteringTextInputFormatter.allow(
-                                        RegExp("[0-9.]"))
+                                        RegExp("[a-zA-Z0-9]"))
                                   ],
                                   isRequired: true,
                                 ),
