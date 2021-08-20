@@ -41,3 +41,9 @@ class SearchResult {
 
   SearchResult(this.label, this.result);
 }
+
+class PaginationResponse{
+  int offset = 0;
+  int limit;
+  PaginationResponse(this.limit, this.offset);
+}

@@ -6,7 +6,8 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class DashboardCard extends StatelessWidget {
   final List<Map<String, Object>> data;
-  DashboardCard(this.data);
+  final Function() onMonthSelection;
+  DashboardCard(this.data, this.onMonthSelection);
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -19,16 +20,19 @@ class DashboardCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
         LabelText(i18.dashboard.DASHBOARD),
-        Padding(
-          padding: const EdgeInsets.only(right: 5, bottom: 12),
-          child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children : [
-                Text(DateFormats.getMonthAndYear(DateTime.now()),
-                style: Theme.of(context).textTheme.subtitle1?.apply(color: Theme.of(context).primaryColor),
-                ),
-                Icon(Icons.arrow_drop_down)
-                ]),
+        InkWell(
+          onTap: onMonthSelection,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 5, bottom: 12),
+            child: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children : [
+                  Text(DateFormats.getMonthAndYear(DateTime.now()),
+                  style: Theme.of(context).textTheme.subtitle1?.apply(color: Theme.of(context).primaryColor),
+                  ),
+                  Icon(Icons.arrow_drop_down)
+                  ]),
+          ),
         )
       ]));
     });
