@@ -3,6 +3,7 @@ package org.egov.persistence.repository;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.domain.model.Category;
 import org.egov.domain.model.OtpRequest;
+import org.egov.domain.model.User;
 import org.egov.domain.service.LocalizationService;
 import org.egov.persistence.contract.SMSRequest;
 import org.egov.tracer.kafka.CustomKafkaTemplate;
@@ -23,6 +24,7 @@ public class OtpSMSRepository {
 
     private static final String LOCALIZATION_KEY_REGISTER_SMS = "sms.register.otp.msg";
     private static final String LOCALIZATION_KEY_LOGIN_SMS = "sms.login.otp.msg";
+    private static final String LOCALIZATION_KEY_FIRSTIME_LOGIN_SMS = "sms.firsttime.login.otp.msg";
     private static final String LOCALIZATION_KEY_PWD_RESET_SMS = "sms.pwd.reset.otp.msg";
 
     @Value("${expiry.time.for.otp: 4000}")
@@ -33,6 +35,8 @@ public class OtpSMSRepository {
 
     private CustomKafkaTemplate<String, SMSRequest> kafkaTemplate;
     private String smsTopic;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private LocalizationService localizationService;
@@ -69,13 +73,23 @@ public class OtpSMSRepository {
 
         if (otpRequest.isRegistrationRequestType())
             message = localisedMsgs.get(LOCALIZATION_KEY_REGISTER_SMS);
-        else if (otpRequest.isLoginRequestType())
-            message = localisedMsgs.get(LOCALIZATION_KEY_LOGIN_SMS);
+		else if (otpRequest.isLoginRequestType()) {
+			if (isDefaultPwd(otpRequest))
+				message = localisedMsgs.get(LOCALIZATION_KEY_FIRSTIME_LOGIN_SMS);
+			else
+				message = localisedMsgs.get(LOCALIZATION_KEY_LOGIN_SMS);
+		}
         else
             message = localisedMsgs.get(LOCALIZATION_KEY_PWD_RESET_SMS);
 
         return message;
     }
+    
+	private boolean isDefaultPwd(OtpRequest otpRequest) {
+		final User matchingUser = userRepository.fetchUser(otpRequest.getMobileNumber(), otpRequest.getTenantId(),
+				otpRequest.getUserType());
+		return (!matchingUser.isDefaultPwdChgd());
+	}
 
     /**
      *  getRequiredTenantId() method return tenatid for loclisation 
