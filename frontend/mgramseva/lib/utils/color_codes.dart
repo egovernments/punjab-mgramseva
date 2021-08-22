@@ -9,4 +9,7 @@ class ColorCodes {
 
   static const HOME_ICON = Color.fromRGBO(244, 119, 56, 1);
 
+  static const TEXT_HINT = Color.fromRGBO(177,180,182,1)
+
+
 }
