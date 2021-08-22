@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/Pointer.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:provider/provider.dart';
 
 class WalkThroughContainer extends StatefulWidget {
@@ -90,7 +91,8 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                                     active = 0;
                                   });
                                 },
-                                child: Text(i18.common.SKIP)),
+                                child: Text(ApplicationLocalizations.of(context)
+                                    .translate(i18.common.SKIP))),
                             ElevatedButton(
                                 onPressed: () async {
                                   if (consumerProvider
@@ -119,7 +121,8 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                                     });
                                   }
                                 },
-                                child: Text(i18.common.NEXT))
+                                child: Text(ApplicationLocalizations.of(context)
+          .translate(i18.common.NEXT)))
                           ]))
                 ]))))
       ]);

@@ -3,6 +3,7 @@ import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/Pointer.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:provider/provider.dart';
 
 class ExpenseWalkThroughContainer extends StatefulWidget {
@@ -88,7 +89,8 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                                         active = 0;
                                       });
                                     },
-                                    child: Text(i18.common.SKIP)),
+                                    child: Text(ApplicationLocalizations.of(context)
+                                        .translate(i18.common.SKIP))),
                                 ElevatedButton(
                                     onPressed: () async {
                                       if (expenseProvider
@@ -117,7 +119,8 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                                         });
                                       }
                                     },
-                                    child: Text(i18.common.NEXT))
+                                    child: Text(ApplicationLocalizations.of(context)
+                                        .translate(i18.common.NEXT)))
                               ]))
                     ]))))
       ]);
