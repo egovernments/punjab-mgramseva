@@ -14,8 +14,9 @@ class FilePickerDemo extends StatefulWidget {
   final Function(List<FileStore>?) callBack;
   final String? moduleName;
   final List<String>? extensions;
+  final GlobalKey? contextkey;
 
-  const FilePickerDemo({Key? key, required this.callBack, this.moduleName, this.extensions}) : super(key: key);
+  const FilePickerDemo({Key? key, required this.callBack, this.moduleName, this.extensions, this.contextkey}) : super(key: key);
   @override
   _FilePickerDemoState createState() => _FilePickerDemoState();
 }
@@ -186,6 +187,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
               padding: const EdgeInsets.only(left: 10.0, right: 10.0),
               child: SingleChildScrollView(
                 child: Container(
+                  key: widget.contextkey,
                   margin: const EdgeInsets.only(
                       top: 5.0, bottom: 5, right: 10, left: 10),
                   child: constraints.maxWidth > 760

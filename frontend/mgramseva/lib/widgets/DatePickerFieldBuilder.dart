@@ -14,7 +14,8 @@ class BasicDateField extends StatelessWidget {
   final TextEditingController controller;
   final bool? isEnabled;
   final String? requiredMessage;
-  BasicDateField(this.label,  this.isRequired, this.controller, {this.firstDate, this.lastDate, this.onChangeOfDate, this.initialDate, this.isEnabled, this.requiredMessage});
+  final GlobalKey? contextkey;
+  BasicDateField(this.label,  this.isRequired, this.controller, {this.firstDate, this.lastDate, this.onChangeOfDate, this.initialDate, this.isEnabled, this.requiredMessage, this.contextkey});
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +63,7 @@ class BasicDateField extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 760) {
         return Container(
+            key: contextkey,
             margin:
                 const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
             child: Column(children: [
@@ -73,6 +75,7 @@ class BasicDateField extends StatelessWidget {
             ]));
       } else {
         return Container(
+            key: contextkey,
             margin: const EdgeInsets.only(
                 top: 20.0, bottom: 5, right: 20, left: 20),
             child: Row(children: [

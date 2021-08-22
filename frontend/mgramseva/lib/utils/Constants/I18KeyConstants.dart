@@ -14,6 +14,9 @@ class i18 {
   static DemandGenerate demandGenerate = const DemandGenerate();
   static _NetWorkException netWorkException = const _NetWorkException();
   static _Payment payment = const _Payment();
+  static _HomeWalkThroughMsg homeWalkThroughMSg = const _HomeWalkThroughMsg();
+  static _ConsumerWalkThroughMsg consumerWalkThroughMsg = const _ConsumerWalkThroughMsg();
+  static _ExpenseWalkThroughMsg expenseWalkThroughMsg = const _ExpenseWalkThroughMsg();
 }
 
 class Login {
@@ -120,6 +123,9 @@ class Common {
   String get ATTACHMENTS => 'ATTACHMENTS';
   String get YES => 'YES';
   String get NO => 'NO';
+
+  String get SKIP => 'SKIP';
+  String get NEXT => 'NEXT';
 
 
 }
@@ -368,3 +374,41 @@ class _Payment {
       'RECEIPT_REFERENCE_WITH_MOBILE_NUMBER'; //Fee Estimate
 
 }
+
+class _HomeWalkThroughMsg{
+  const _HomeWalkThroughMsg();
+
+  String get HOUSEHOLD_REGISTER_MSG => 'HOUSEHOLD_REGISTER_MSG';
+  String get COLLECT_PAYMENTS_MSG => 'COLLECT_PAYMENTS_MSG';
+  String get DOWNLOAD_BILLS_AND_RECEIPTS_MSG => 'DOWNLOAD_BILLS_AND_RECEIPTS_MSG';
+  String get ADD_EXPENSE_RECORD_MSG => 'ADD_EXPENSE_RECORD_MSG';
+  String get CREATE_CONSUMER_MSG => 'CREATE_CONSUMER_MSG';
+  String get GPWSC_DASHBOARD_MSG => 'GPWSC_DASHBOARD_MSG';
+}
+
+class _ConsumerWalkThroughMsg{
+  const _ConsumerWalkThroughMsg();
+
+  String get CONSUMER_NAME_MSG => 'CONSUMER_NAME_MSG';
+  String get CONSUMER_GENDER_MSG => 'CONSUMER_GENDER_MSG';
+  String get CONSUMER_FATHER_MSG => 'CONSUMER_FATHER_MSG';
+  String get CONSUMER_MOBILE_MSG => 'CONSUMER_MOBILE_MSG';
+  String get CONSUMER_OLD_ID_MSG => 'CONSUMER_OLD_ID_MSG';
+  String get CONSUMER_WARD_MSG => 'CONSUMER_WARD_MSG';
+  String get CONSUMER_PROPERTY_TYPE_MSG => 'CONSUMER_PROPERTY_TYPE_MSG';
+  String get CONSUMER_SERVICE_TYPE_MSG => 'CONSUMER_SERVICE_TYPE_MSG';
+  String get CONSUMER_ARREARS_MSG => 'CONSUMER_ARREARS_MSG';
+}
+
+class _ExpenseWalkThroughMsg{
+  const _ExpenseWalkThroughMsg();
+
+  String get EXPENSE_TYPE_MSG => 'EXPENSE_TYPE_MSG';
+  String get EXPENSE_VENDOR_NAME_MSG => 'EXPENSE_VENDOR_NAME_MSG';
+  String get EXPENSE_AMOUNT_MSG => 'EXPENSE_AMOUNT_MSG';
+  String get EXPENSE_BILL_DATE_MSG => 'EXPENSE_BILL_DATE_MSG';
+  String get EXPENSE_PARTY_BILL_DATE_MSG => 'EXPENSE_PARTY_BILL_DATE_MSG';
+  String get EXPENSE_ATTACH_BILL_MSG => 'EXPENSE_ATTACH_BILL_MSG';
+}
+
+

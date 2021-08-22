@@ -12,6 +12,7 @@ class AutoCompleteView extends StatelessWidget {
   final SuggestionsBoxController? suggestionsBoxController;
   final bool? isEnabled;
   final String? requiredMessage;
+  final GlobalKey? contextkey;
 
   const AutoCompleteView(
       {Key? key,
@@ -21,7 +22,7 @@ class AutoCompleteView extends StatelessWidget {
       required this.listTile,
       required this.controller,
       this.suggestionsBoxController,
-      this.isRequired, this.isEnabled, this.requiredMessage})
+      this.isRequired, this.isEnabled, this.requiredMessage, this.contextkey})
       : super(key: key);
 
   @override
@@ -29,6 +30,7 @@ class AutoCompleteView extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
         return Container(
+            key: contextkey,
             margin:
                 const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
             child: Row(
@@ -46,6 +48,7 @@ class AutoCompleteView extends StatelessWidget {
             ));
       } else {
         return Container(
+            key: contextkey,
             margin:
                 const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
             child: Column(
