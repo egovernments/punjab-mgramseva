@@ -267,6 +267,7 @@ class ProfileEdit {
   const ProfileEdit();
   String get PROFILE_EDIT_SUCCESS => 'EDIT_PROFILE_SUCCESS_LABEL';
   String get PROFILE_EDITED_SUCCESS_SUBTEXT => 'EDIT_PROFILE_SUCCESS_SUB_TEXT';
+  String get PROFILE_EDIT_EMAIL_HINT => 'EMAIL_HINT';
 }
 
 class _Validators {
