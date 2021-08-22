@@ -38,7 +38,7 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
             left: position.dx,
             top: position.dy,
             child: Container(
-              width: MediaQuery.of(context).size.width,
+              width: MediaQuery.of(context).size.width / 1.1,
                 child: Card(
                     child: Column(
                       children: [
@@ -64,7 +64,7 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
             right: position.dx,
             top: expenseProvider.activeindex == (expenseProvider.expenseWalkthrougList.length - 1) ? position.dy - box.size.height - 75 : box.size.height + position.dy + 25,
             child: Container(
-                width: MediaQuery.of(context).size.width / 2,
+                width: MediaQuery.of(context).size.width > 720 ? MediaQuery.of(context).size.width/ 3 : MediaQuery.of(context).size.width /2,
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.only(right: 8),
                 child: Card(

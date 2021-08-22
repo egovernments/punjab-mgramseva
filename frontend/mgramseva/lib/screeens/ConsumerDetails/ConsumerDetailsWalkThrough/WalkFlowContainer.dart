@@ -37,7 +37,7 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
             left: position.dx,
             top: position.dy,
             child: Container(
-                width: MediaQuery.of(context).size.width ,
+                width: MediaQuery.of(context).size.width /1.1  ,
                 child: Card(
                     child: Column(
               children: [
@@ -65,7 +65,7 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
             top: consumerProvider.activeindex == (consumerProvider
                 .consmerWalkthrougList.length-1) ? position.dy - box.size.height - 75 : box.size.height + position.dy + 25,
             child: Container(
-                width: MediaQuery.of(context).size.width / 2,
+                width: MediaQuery.of(context).size.width > 720 ? MediaQuery.of(context).size.width/ 3 : MediaQuery.of(context).size.width /2,
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.only(right: 8),
                 child: Card(
