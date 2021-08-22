@@ -85,8 +85,8 @@ public class ExpenseValidator {
 		if (!errorMap.isEmpty())
 			throw new CustomException(errorMap);
 		else {
-			challan.setTaxPeriodTo(challan.getBillIssuedDate() + 1);
-			challan.setTaxPeriodFrom(challan.getBillIssuedDate());
+			challan.setTaxPeriodTo(challan.getBillDate() + 1);
+			challan.setTaxPeriodFrom(challan.getBillDate());
 		}
 
 	}

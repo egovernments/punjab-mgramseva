@@ -23,12 +23,14 @@ class KeyValue {
 
 class HomeItem {
   final String label;
+  final String walkThroughMsg;
   final IconData iconData;
   final String link;
   final Map<String, dynamic> arguments;
 
   const HomeItem(
     this.label,
+      this.walkThroughMsg,
     this.iconData,
     this.link,
     this.arguments,

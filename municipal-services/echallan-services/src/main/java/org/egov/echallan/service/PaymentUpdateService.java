@@ -68,7 +68,7 @@ public class PaymentUpdateService {
 					challans.forEach(challan -> challan.setApplicationStatus(StatusEnum.PAID));
 					challans.get(0).setAuditDetails(auditDetails);
 					ChallanRequest request = ChallanRequest.builder().requestInfo(requestInfo).challan(challans.get(0)).build();
-					producer.push(config.getUpdateChallanTopic(), request);
+					producer.push(config.getUpdateStatusChallanTopic(), request);
 				}
 			}
 		} catch (Exception e) {

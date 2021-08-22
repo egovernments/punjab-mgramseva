@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
@@ -11,6 +12,7 @@ import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/screeens/AddExpense/AddExpenseWalkThrough/expenseWalkThrough.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
@@ -23,15 +25,18 @@ import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'common_provider.dart';
 import 'package:universal_html/html.dart' as html;
 
 class ExpensesDetailsProvider with ChangeNotifier {
+  late List<ExpenseWalkWidgets> expenseWalkthrougList;
   var streamController = StreamController.broadcast();
   var expenditureDetails = ExpensesDetailsModel();
   late GlobalKey<FormState> formKey;
   var autoValidation = false;
+  int activeindex = 0;
   LanguageList? languageList;
   var vendorList = <Vendor>[];
   late SuggestionsBoxController suggestionsBoxController;
@@ -70,7 +75,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   void getStoreFileDetails() async {
-    // if(expenditureDetails.fileStoreId == null) return;
+    if(expenditureDetails.fileStoreId == null) return;
     try{
       expenditureDetails.fileStoreList = await CoreRepository().fetchFiles([expenditureDetails.fileStoreId!]);
     }catch(e,s){
@@ -137,13 +142,15 @@ class ExpensesDetailsProvider with ChangeNotifier {
       ..tenantId = 'pb'
       ..setText()
       ..vendorId = expenditureDetails.selectedVendor?.id ??
+          expenditureDetails.vendorNameCtrl.text
+      ..vendorName = expenditureDetails.selectedVendor?.name ??
           expenditureDetails.vendorNameCtrl.text;
 
     if(isUpdate) {
       if (expenditureDetails.isBillPaid!) {
         expenditureDetails.applicationStatus = 'PAID';
       }
-
+      expenditureDetails.citizen?.mobileNumber = expenditureDetails.citizen?.userName;
       if (expenditureDetails.isBillCancelled!){
         expenditureDetails.applicationStatus = 'CANCELLED';
       }
@@ -152,10 +159,13 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
   void fileStoreIdCallBack(List<FileStore>? fileStoreIds) {
     if(fileStoreIds != null && fileStoreIds.isNotEmpty){
-      expenditureDetails.fileStoreId = fileStoreIds.first.id;
+      expenditureDetails.fileStoreId = fileStoreIds.first.fileStoreId;
+
     }else{
       expenditureDetails.fileStoreId = null;
+      expenditureDetails.fileStoreList = null;
     }
+    notifyListeners();
   }
 
 
@@ -270,9 +280,15 @@ class ExpensesDetailsProvider with ChangeNotifier {
     if (pattern.toString().trim().isEmpty) return <Vendor>[];
 
     return vendorList
-        .where((vendor) => vendor.name
-            .toLowerCase()
-            .contains(pattern.toString().toLowerCase()))
+        .where((vendor) {
+          if(vendor.name
+          .toLowerCase()
+          .contains(pattern.toString().toLowerCase())){
+            return true;
+          }else{
+            return false;
+          }
+    })
         .toList();
   }
 
@@ -295,7 +311,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
       var res = await ExpensesRepository().getVendor(query);
       if (res != null) {
-        vendorList.addAll(res);
+        vendorList = res;
         notifyListeners();
       }
       return vendorList;
@@ -336,11 +352,20 @@ class ExpensesDetailsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void onTapOfAttachment(FileStore store) {
+  void onTapOfAttachment(FileStore store) async {
       if(store.url == null) return;
-      html.AnchorElement anchorElement = new html.AnchorElement(href: store.url);
-      anchorElement.download = store.url;
-      anchorElement.click();
+
+      if(kIsWeb) {
+        html.AnchorElement anchorElement = new html.AnchorElement(
+            href: store.url);
+        anchorElement.download = store.url;
+        anchorElement.click();
+      }else{
+        await canLaunch(store.url!) ?  launch(store.url!) : ErrorHandler.logError('failed to launch the url ${store.url}');
+      }
+  }
+  void setwalkthrough(value) {
+    expenseWalkthrougList = value;
   }
 
   void onChangeOfCheckBox(bool? value) {
@@ -374,5 +399,11 @@ class ExpensesDetailsProvider with ChangeNotifier {
       }).toList();
     }
     return <DropdownMenuItem<Object>>[];
+  }
+
+  incrementindex(index, expenseKey) async {
+    activeindex = index + 1;
+    await Scrollable.ensureVisible(expenseKey.currentContext!,
+        duration: new Duration(milliseconds: 100));
   }
 }

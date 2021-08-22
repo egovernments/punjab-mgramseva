@@ -12,6 +12,7 @@ import org.egov.echallan.model.ChallanResponse;
 import org.egov.echallan.model.RequestInfoWrapper;
 import org.egov.echallan.model.SearchCriteria;
 import org.egov.echallan.service.ChallanService;
+import org.egov.echallan.service.SchedulerService;
 import org.egov.echallan.util.ResponseInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,9 @@ public class ChallanController {
 
 	@Autowired
 	private ResponseInfoFactory responseInfoFactory;
+	
+	@Autowired
+	private SchedulerService schedulerService;
 
 	@PostMapping("/_create")
 	public ResponseEntity<ChallanResponse> create(@Valid @RequestBody ChallanRequest challanRequest) {
@@ -65,6 +69,32 @@ public class ChallanController {
 				.build();
 		return new ResponseEntity<>(response, HttpStatus.OK);
 		}
+
+	@PostMapping("/_schedulerpendingcollection")
+	public void schedulerpendingcollection(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
+		schedulerService.sendPendingCollectionEvent(requestInfoWrapper.getRequestInfo());
+	}
+
+	@PostMapping("/_schedulermonthsummary")
+	public void schedulermonthsummary(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
+		schedulerService.sendMonthSummaryEvent(requestInfoWrapper.getRequestInfo());
+	}
+
+	@PostMapping("/_schedulernewexpenditure")
+	public void schedulernewexpenditure(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
+		schedulerService.sendNewExpenditureEvent(requestInfoWrapper.getRequestInfo());
+	}
+
+	@PostMapping("/_schedulermarkexpensebill")
+	public void schedulermarkexpensebill(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
+		schedulerService.sendMarkExpensebillEvent(requestInfoWrapper.getRequestInfo());
+	}
+
+	@PostMapping("/_schedulergeneratedemand")
+	public void schedulergeneratedemand(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
+		schedulerService.sendGenerateDemandEvent(requestInfoWrapper.getRequestInfo());
+	}
+	 
 	
 
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
+import 'package:mgramseva/screeens/AddExpense/AddExpenseWalkThrough/expenseWalkThrough.dart';
 import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
@@ -29,6 +30,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
+import 'AddExpenseWalkThrough/WalkThroughContainer.dart';
+
 class ExpenseDetails extends StatefulWidget {
   final String? id;
   final ExpensesDetailsModel? expensesDetails;
@@ -55,7 +58,11 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
       ..autoValidation = false
       ..getExpensesDetails(context, widget.expensesDetails, widget.id)
       ..getExpenses()
-      ..fetchVendors();
+      ..fetchVendors()
+      ..setwalkthrough(ExpenseWalkThrough().expenseWalkThrough.map((e) {
+        e.key = GlobalKey();
+        return e;
+      }).toList());
   }
 
   @override
@@ -101,11 +108,35 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   }
 
   Widget _buildUserView(ExpensesDetailsModel expenseDetails) {
-    return FormWrapper(Column(
+    return FormWrapper(Consumer<ExpensesDetailsProvider>(
+        builder: (_, expenseProvider, child) =>Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          HomeBack(widget: Help()),
+          HomeBack(widget: Help(
+            callBack: () => showGeneralDialog(
+              barrierLabel: "Label",
+              barrierDismissible: false,
+              barrierColor: Colors.black.withOpacity(0.5),
+              transitionDuration: Duration(milliseconds: 700),
+              context: context,
+              pageBuilder: (context, anim1, anim2) {
+                return ExpenseWalkThroughContainer((index) =>
+                    expenseProvider.incrementindex(
+                        index,
+                        expenseProvider
+                            .expenseWalkthrougList[index + 1].key));
+              },
+              transitionBuilder: (context, anim1, anim2, child) {
+                return SlideTransition(
+                  position:
+                  Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                      .animate(anim1),
+                  child: child,
+                );
+              },
+            ),
+          )),
           Card(
               child: Consumer<ExpensesDetailsProvider>(
             builder: (_, expensesDetailsProvider, child) => Form(
@@ -132,6 +163,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     expensesDetailsProvider.getExpenseTypeList(),
                     true, isEnabled : expenseDetails.allowEdit,
                   requiredMessage: i18.expense.SELECT_EXPENDITURE_CATEGORY,
+                  contextkey:
+                  expenseProvider.expenseWalkthrougList[0].key,
                 ),
                 AutoCompleteView(
                     labelText: i18.expense.VENDOR_NAME,
@@ -144,6 +177,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     listTile: buildTile,
                     isRequired: true, isEnabled : expenseDetails.allowEdit,
                   requiredMessage: i18.expense.MENTION_NAME_OF_VENDOR,
+                  contextkey:
+                  expenseProvider.expenseWalkthrougList[1].key,
                 ),
                     if(expensesDetailsProvider.isNewVendor()) BuildTextField(
                       '${i18.common.MOBILE_NUMBER}',
@@ -168,7 +203,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                   labelSuffix: '(₹)',
                   isDisabled: (expenseDetails.allowEdit ?? true) ? false : true,
                   requiredMessage: i18.expense.AMOUNT_MENTIONED_IN_THE_BILL,
-                  validator: Validators.amountValidator
+                  validator: Validators.amountValidator,
+                  contextkey:
+                  expenseProvider.expenseWalkthrougList[2].key,
                 ),
                 BasicDateField(
                     i18.expense.BILL_DATE, true, expenseDetails.billDateCtrl,
@@ -185,6 +222,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     onChangeOfDate: expensesDetailsProvider.onChangeOfDate,
                     isEnabled: expenseDetails.allowEdit,
                   requiredMessage: i18.expense.DATE_BILL_ENTERED_IN_RECORDS,
+                  contextkey:
+                  expenseProvider.expenseWalkthrougList[3].key,
                 ),
                 BasicDateField(i18.expense.PARTY_BILL_DATE, false,
                     expenseDetails.billIssuedDateCtrl,
@@ -195,7 +234,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                         ? DateTime.now()
                         : DateFormats.getFormattedDateToDateTime(
                             expenseDetails.billDateCtrl.text.trim()),
-                    onChangeOfDate: expensesDetailsProvider.onChangeOfDate, isEnabled: expenseDetails.allowEdit),
+                    onChangeOfDate: expensesDetailsProvider.onChangeOfDate, isEnabled: expenseDetails.allowEdit,
+                  contextkey:
+                  expenseProvider.expenseWalkthrougList[4].key,),
                 RadioButtonFieldBuilder(
                     context,
                     i18.expense.HAS_THIS_BILL_PAID,
@@ -227,14 +268,19 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                         Wrap( children : expenseDetails.fileStoreList!.map<Widget>((e) => InkWell(
                           onTap: ()=> expensesDetailsProvider.onTapOfAttachment(e),
                           child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Text('${e.tenantId}'),
+                            height: 45,
+                            width: 45,
+                            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey, width: 1.5)
+                            ),
+                            child: Text('${e.id}'),
                           ),
                         )).toList())
                       ],
                     ),
                   ),
-                FilePickerDemo(callBack: expensesDetailsProvider.fileStoreIdCallBack, extensions: ['jpg', 'pdf', 'png'],),
+               if(expenseDetails.allowEdit ?? true) FilePickerDemo(callBack: expensesDetailsProvider.fileStoreIdCallBack, extensions: ['jpg', 'pdf', 'png'], contextkey: expenseProvider.expenseWalkthrougList[5].key,),
                 if(isUpdate)
                   Container(
                     alignment: Alignment.centerLeft,
@@ -262,7 +308,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
               ]),
             ),
           ))
-        ]));
+        ])));
   }
 
   Widget buildTile(context, vendor) => Container(

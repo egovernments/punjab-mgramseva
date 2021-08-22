@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/model/file/file_store.dart';
@@ -41,7 +42,7 @@ class CoreRepository extends BaseService {
     return languageList;
   }
 
-  Future<List<FileStore>> uploadFiles(List<PlatformFile>? _paths, String moduleName) async {
+  Future<List<FileStore>> uploadFiles(List<dynamic>? _paths, String moduleName) async {
     Map? respStr;
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
@@ -49,24 +50,33 @@ class CoreRepository extends BaseService {
 
     var postUri = Uri.parse("$apiBaseUrl${Url.FILE_UPLOAD}");
     var request = new http.MultipartRequest("POST", postUri);
-    if(_paths != null && _paths.isNotEmpty) {
-      for(var i = 0; i < _paths.length; i++) {
-        var path = _paths[i];
-        http.MultipartFile multipartFile = http.MultipartFile.fromBytes('file', path.bytes!, filename: '${path.name}.${path.extension}');
-        request.files.add(multipartFile);
+      if (_paths != null && _paths.isNotEmpty) {
+        if (_paths is List<PlatformFile>) {
+          for (var i = 0; i < _paths.length; i++) {
+          var path = _paths[i];
+          http.MultipartFile multipartFile = http.MultipartFile.fromBytes(
+              'file', path.bytes!, filename: '${path.name}.${path.extension}');
+          request.files.add(multipartFile);
+        }
+      } else if (_paths is List<File>) {
+        _paths.forEach((file) async {
+          request.files.add(await http.MultipartFile.fromPath(
+              'file', file.path ?? '', filename: '${file.path.split('/').last}'));
+        });
       }
-      request.fields['tenantId'] = commonProvider.userDetails!.selectedtenant!.code!;
+      request.fields['tenantId'] =
+      commonProvider.userDetails!.selectedtenant!.code!;
       request.fields['module'] = moduleName;
-    }
-    await request.send().then((response) async{
+    await request.send().then((response) async {
       if (response.statusCode == 201)
-      respStr = json.decode(await response.stream.bytesToString());
+        respStr = json.decode(await response.stream.bytesToString());
     });
-    if(respStr?['fileStoreIds'] != null) {
-      return respStr?['fileStoreIds']
+    if (respStr != null && respStr?['files'] != null) {
+      return respStr?['files']
           .map<FileStore>((e) => FileStore.fromJson(e))
           .toList();
     }
+  }
     return <FileStore>[];
   }
 

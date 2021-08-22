@@ -40,6 +40,7 @@ dependencies:
     sdk: flutter
   flutter_typeahead: ^3.2.0
   buttons_tabbar: ^1.3.1
+  url_launcher: ^6.0.9
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +84,9 @@ flutter:
     - family: HomeIcons
       fonts:
         - asset: assets/icons/fonts/HomeIcons.ttf
+    - family: HomeIconsModified
+      fonts:
+        - asset: assets/icons/fonts/HomeIconsModified.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

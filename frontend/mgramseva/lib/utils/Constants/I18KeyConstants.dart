@@ -3,7 +3,7 @@ class i18 {
   static Common common = const Common();
   static Password password = const Password();
   static _Validators validators = const _Validators();
-
+  static ConsumerReciepts consumerReciepts = const ConsumerReciepts();
   static Expense expense = const Expense();
   static CreateConsumer consumer = const CreateConsumer();
   static SearchWaterConnection searchWaterConnection =
@@ -15,6 +15,9 @@ class i18 {
   static _NetWorkException netWorkException = const _NetWorkException();
   static _Payment payment = const _Payment();
   static _DashBoard dashboard = const _DashBoard();
+  static _HomeWalkThroughMsg homeWalkThroughMSg = const _HomeWalkThroughMsg();
+  static _ConsumerWalkThroughMsg consumerWalkThroughMsg = const _ConsumerWalkThroughMsg();
+  static _ExpenseWalkThroughMsg expenseWalkThroughMsg = const _ExpenseWalkThroughMsg();
 }
 
 class Login {
@@ -113,6 +116,7 @@ class Common {
   String get CASH => 'CASH';
   String get FULL_AMOUNT => 'FULL_AMOUNT';
   String get CUSTOM_AMOUNT => 'CUSTOM_AMOUNT';
+
   String get PAYMENT_COMPLETE => 'PAYMENT_COMPLETE'; /// Payment complete
   String get RECEIPT_NO => 'RECEIPT_NO'; /// Payment complete
   String get DOWNLOAD => 'DOWNLOAD'; /// Payment complete
@@ -122,6 +126,8 @@ class Common {
   String get NO => 'NO';
   String get SHARE => 'SHARE';
   String get PAID_DATE => 'PAID_DATE';
+  String get SKIP => 'SKIP';
+  String get NEXT => 'NEXT';
 }
 
 class Password {
@@ -135,10 +141,12 @@ class Password {
       'CHANGE_PASSWORD_SUCCESS_SUB_TEXT';
   String get PASSWORD_HINT => 'CORE_CHANGEPASSWORD_PASSWORD_HINT';
   String get PASS_HINT_MIN_SIX_DIGITS => 'CORE_PASS_HINT_MIN_SIX_DIGITS';
-  String get PASS_HINT_ATLEAST_ONE_LETTER => 'CORE_PASS_HINT_ATLEAST_ONE_LETTER';
-  String get PASS_HINT_ATLEAST_ONE_NUMBER => 'CORE_PASS_HINT_ATLEAST_ONE_NUMBER';
-  String get PASS_HINT_ATLEAST_ONE_SPECIAL_CHARACTER => 'CORE_PASS_HINT_ATLEAST_ONE_SPECIAL_CHARACTER';
-
+  String get PASS_HINT_ATLEAST_ONE_LETTER =>
+      'CORE_PASS_HINT_ATLEAST_ONE_LETTER';
+  String get PASS_HINT_ATLEAST_ONE_NUMBER =>
+      'CORE_PASS_HINT_ATLEAST_ONE_NUMBER';
+  String get PASS_HINT_ATLEAST_ONE_SPECIAL_CHARACTER =>
+      'CORE_PASS_HINT_ATLEAST_ONE_SPECIAL_CHARACTER';
 }
 
 class Expense {
@@ -256,12 +264,20 @@ class SearchWaterConnection {
   String get CONNECTION_FOUND => 'CONNECTION_FOUND';
   String get CONNECTION_CRITERIA => 'CONNECTION_CRITERIA';
   String get NO_CONNECTION_FOUND => 'NO_CONNECTION_FOUND';
+  String get NAME_HINT => 'NAME_OF_CONSUMER_HINT';
+  String get OLD_CONNECTION_HINT => 'OLD_CONNECTION_HINT';
+  String get NEW_CONNECTION_HINT => 'NEW_CONNECTION_HINT';
+  String get RESULTS_CONSUMER_NAME => 'SEARCH_CONNECTION_CONSUMER_NAME';
+  String get RESULTS_PHONE_NUM => 'SEARCH_CONNECTION_PHONE_NUMBER';
+  String get RESULTS_ADDRESS => 'SEARCH_CONNECTION_ADDRESS';
+
 }
 
 class ProfileEdit {
   const ProfileEdit();
   String get PROFILE_EDIT_SUCCESS => 'EDIT_PROFILE_SUCCESS_LABEL';
   String get PROFILE_EDITED_SUCCESS_SUBTEXT => 'EDIT_PROFILE_SUCCESS_SUB_TEXT';
+  String get PROFILE_EDIT_EMAIL_HINT => 'EMAIL_HINT';
 }
 
 class _Validators {
@@ -306,7 +322,8 @@ class DemandGenerate {
       'NEW_METER_READING_SHOULD_GREATER_THAN_OLD_METER_READING'; //New Meter Reading should be greater than Old meter Reading
   String get METER_READING_DATE => 'GENERATE_DEMAND_METER_READING_DATE';
   String get GENERATE_DEMAND_SUCCESS => 'DEMAND_GENERATED_SUCCESSFULLY_LABEL';
-  String get GENERATE_DEMAND_SUCCESS_SUBTEXT => 'DEMAND_GENERATED_SUCCESS_SUBTEXT';
+  String get GENERATE_DEMAND_SUCCESS_SUBTEXT =>
+      'DEMAND_GENERATED_SUCCESS_SUBTEXT';
 }
 
 class BillDetails {
@@ -330,11 +347,19 @@ class GenerateBillDetails {
   String get GENERATE_NEW_BTN_LABEL => 'GENERATE_NEW_BTN_LABEL';
 }
 
+class ConsumerReciepts {
+  const ConsumerReciepts();
+  String get CONSUMER_BILL_RECIEPTS_LABEL => 'CONSUMER_BILL_RECIEPTS_LABEL';
+  String get CONSUMER_BILL_RECIEPT_ID => 'CONSUMER_BILL_RECIEPT_ID';
+  String get CONSUMER_RECIEPT_PAID_AMOUNT => 'CONSUMER_RECIEPT_PAID_AMOUNT';
+  String get CONSUMER_RECIEPT_PAID_DATE => 'CONSUMER_RECIEPT_PAID_DATE';
+  String get CONSUMER_RECIEPT_SHARE_RECEIPT => 'CONSUMER_RECIEPT_SHARE_RECEIPT';
+}
+
 class _NetWorkException {
   const _NetWorkException();
 
   String get CHECK_CONNECTION => 'CHECK_CONNECTION';
-
 }
 
 class _Payment {
@@ -345,8 +370,38 @@ class _Payment {
   String get BILL_ID_NUMBER => 'BILL_ID_NUMBER'; //Bill ID No
   String get BILL_PERIOD => 'BILL_PERIOD'; //Bill Period
   String get FREE_ESTIMATE => 'FREE_ESTIMATE'; //Fee Estimate
-  String get RECEIPT_REFERENCE_WITH_MOBILE_NUMBER => 'RECEIPT_REFERENCE_WITH_MOBILE_NUMBER'; //Fee Estimate
+  String get RECEIPT_REFERENCE_WITH_MOBILE_NUMBER =>
+      'RECEIPT_REFERENCE_WITH_MOBILE_NUMBER'; //Fee Estimate
 
+}
+
+class _HomeWalkThroughMsg{
+  const _HomeWalkThroughMsg();
+
+  String get HOUSEHOLD_REGISTER_MSG => 'HOUSEHOLD_REGISTER_MSG';
+  String get COLLECT_PAYMENTS_MSG => 'COLLECT_PAYMENTS_MSG';
+  String get DOWNLOAD_BILLS_AND_RECEIPTS_MSG => 'DOWNLOAD_BILLS_AND_RECEIPTS_MSG';
+  String get ADD_EXPENSE_RECORD_MSG => 'ADD_EXPENSE_RECORD_MSG';
+  String get CREATE_CONSUMER_MSG => 'CREATE_CONSUMER_MSG';
+  String get GPWSC_DASHBOARD_MSG => 'GPWSC_DASHBOARD_MSG';
+  String get UPDATE_EXPENSE_MSG => 'UPDATE_EXPENSE_MSG';
+  String get GENERATE_DEMAND_MSG => 'GENERATE_DEMAND_MSG';
+  String get UPDATE_CONSUMER_DETAILS_MSG => 'UPDATE_CONSUMER_DETAILS_MSG';
+
+}
+
+class _ConsumerWalkThroughMsg{
+  const _ConsumerWalkThroughMsg();
+
+  String get CONSUMER_NAME_MSG => 'CONSUMER_NAME_MSG';
+  String get CONSUMER_GENDER_MSG => 'CONSUMER_GENDER_MSG';
+  String get CONSUMER_FATHER_MSG => 'CONSUMER_FATHER_MSG';
+  String get CONSUMER_MOBILE_MSG => 'CONSUMER_MOBILE_MSG';
+  String get CONSUMER_OLD_ID_MSG => 'CONSUMER_OLD_ID_MSG';
+  String get CONSUMER_WARD_MSG => 'CONSUMER_WARD_MSG';
+  String get CONSUMER_PROPERTY_TYPE_MSG => 'CONSUMER_PROPERTY_TYPE_MSG';
+  String get CONSUMER_SERVICE_TYPE_MSG => 'CONSUMER_SERVICE_TYPE_MSG';
+  String get CONSUMER_ARREARS_MSG => 'CONSUMER_ARREARS_MSG';
 }
 
 
@@ -366,3 +421,16 @@ class _DashBoard {
   String get DASHBOARD => 'DASHBOARD';
   String get BILL_ID_VENDOR => 'BILL_ID_VENDOR';
 }
+
+class _ExpenseWalkThroughMsg{
+  const _ExpenseWalkThroughMsg();
+
+  String get EXPENSE_TYPE_MSG => 'EXPENSE_TYPE_MSG';
+  String get EXPENSE_VENDOR_NAME_MSG => 'EXPENSE_VENDOR_NAME_MSG';
+  String get EXPENSE_AMOUNT_MSG => 'EXPENSE_AMOUNT_MSG';
+  String get EXPENSE_BILL_DATE_MSG => 'EXPENSE_BILL_DATE_MSG';
+  String get EXPENSE_PARTY_BILL_DATE_MSG => 'EXPENSE_PARTY_BILL_DATE_MSG';
+  String get EXPENSE_ATTACH_BILL_MSG => 'EXPENSE_ATTACH_BILL_MSG';
+}
+
+

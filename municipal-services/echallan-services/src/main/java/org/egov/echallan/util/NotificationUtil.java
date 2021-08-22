@@ -246,4 +246,33 @@ public class NotificationUtil {
 		return builder;
 	}
 	
+	public HashMap<String, String> getLocalizationMessage(RequestInfo requestInfo, String code,String tenantId) {
+		HashMap<String, String> msgDetail = new HashMap<String, String>();
+		String locale = NOTIFICATION_LOCALE;
+		String templateId = null;
+		Object result = null;
+		StringBuilder uri = new StringBuilder();
+		uri.append(config.getLocalizationHost()).append(config.getLocalizationContextPath())
+				.append(config.getLocalizationSearchEndpoint()).append("?").append("locale=").append(locale)
+				.append("&tenantId=").append("pb").append("&module=").append("mgramseva-common") // TODO
+																					// define
+																					// tenant
+				.append("&codes=").append(code);
+
+		Map<String, Object> request = new HashMap<>();
+		request.put("RequestInfo", requestInfo);
+		try {
+			result = restTemplate.postForObject(uri.toString(), request, Map.class);
+			Configuration suppressExceptionConfiguration = Configuration.defaultConfiguration()
+					.addOptions(Option.SUPPRESS_EXCEPTIONS);
+			ReadContext jsonData = JsonPath.using(suppressExceptionConfiguration).parse(result);
+			String message = jsonData.read(LOCALIZATION_MSGS_JSONPATH);
+			msgDetail.put(MSG_KEY, message);
+			msgDetail.put(TEMPLATE_KEY, templateId);
+		} catch (Exception e) {
+			log.error("Exception while fetching from localization: " + e);
+		}
+		return msgDetail;
+	}
+
 }

@@ -16,9 +16,10 @@ class SelectFieldBuilder extends StatelessWidget {
   final bool? readOnly;
   final bool? isEnabled;
   final String? requiredMessage;
+  final GlobalKey? contextkey;
 
   SelectFieldBuilder(this.labelText, this.value, this.input, this.prefixText,
-      this.widget, this.options, this.isRequired, {this.hint, this.isEnabled, this.readOnly, this.requiredMessage});
+      this.widget, this.options, this.isRequired, {this.hint, this.isEnabled, this.readOnly, this.requiredMessage, this.contextkey});
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +59,13 @@ class SelectFieldBuilder extends StatelessWidget {
       items: options,
 
       onChanged:
-          readOnly == true ? null : (value) => widget(value)  ,
+      !(isEnabled ?? true) || readOnly == true ? null : (value) => widget(value)  ,
     );
 
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
         return Container(
+            key: contextkey,
           margin:
               const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
           child: Row(children: [
@@ -85,6 +87,7 @@ class SelectFieldBuilder extends StatelessWidget {
         );
       } else {
         return Container(
+            key: contextkey,
           margin:
               const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
           child: Column(children: [

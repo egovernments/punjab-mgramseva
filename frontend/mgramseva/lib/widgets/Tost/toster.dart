@@ -9,7 +9,7 @@ class ToastUtils {
   static OverlayEntry? _overlayEntry;
 
   static void showCustomToast(
-      BuildContext context, String message, String type) {
+      BuildContext context, String message, String type ) {
     if (toastTimer != null) {
       print(toastTimer!.isActive);
     }

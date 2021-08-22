@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/model/file/file_store.dart';
@@ -11,8 +14,9 @@ class FilePickerDemo extends StatefulWidget {
   final Function(List<FileStore>?) callBack;
   final String? moduleName;
   final List<String>? extensions;
+  final GlobalKey? contextkey;
 
-  const FilePickerDemo({Key? key, required this.callBack, this.moduleName, this.extensions}) : super(key: key);
+  const FilePickerDemo({Key? key, required this.callBack, this.moduleName, this.extensions, this.contextkey}) : super(key: key);
   @override
   _FilePickerDemoState createState() => _FilePickerDemoState();
 }
@@ -54,9 +58,14 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
           _selectedFiles = paths;
         }
 
-      var response = await CoreRepository().uploadFiles(paths, widget.moduleName ?? APIConstants.API_MODULE_NAME);
-        print(response.map((e) => e.toJson()));
+         List<dynamic> files = paths;
+        if(!kIsWeb){
+          files = paths.map((e) => File(e.path ?? '')).toList();
+        }
+
+      var response = await CoreRepository().uploadFiles(files, widget.moduleName ?? APIConstants.API_MODULE_NAME);
         _fileStoreList.addAll(response);
+        if(_selectedFiles.isNotEmpty)
       widget.callBack(_fileStoreList);
       }
     } on PlatformException catch (e) {
@@ -165,7 +174,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
   void onClickOfClear(int index){
     setState(() {
       _selectedFiles.removeAt(index);
-      _fileStoreList.removeAt(index);
+    if(index < _fileStoreList.length)  _fileStoreList.removeAt(index);
     });
     widget.callBack(_fileStoreList);
   }
@@ -178,6 +187,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
               padding: const EdgeInsets.only(left: 10.0, right: 10.0),
               child: SingleChildScrollView(
                 child: Container(
+                  key: widget.contextkey,
                   margin: const EdgeInsets.only(
                       top: 5.0, bottom: 5, right: 10, left: 10),
                   child: constraints.maxWidth > 760

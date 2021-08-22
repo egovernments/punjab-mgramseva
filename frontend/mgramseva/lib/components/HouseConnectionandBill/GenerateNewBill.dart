@@ -14,7 +14,6 @@ class GenerateNewBill extends StatelessWidget {
 
   _getLabeltext(label, value, context) {
     return (Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
             padding: EdgeInsets.only(top: 16, bottom: 16),
@@ -23,10 +22,8 @@ class GenerateNewBill extends StatelessWidget {
             ApplicationLocalizations.of(context).translate(label),
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             )),
-        Container(
-            padding: EdgeInsets.only(top: 16, bottom: 16),
-            child: Text(value,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)))
+        Text(ApplicationLocalizations.of(context).translate(value),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))
       ],
     ));
   }
@@ -57,15 +54,17 @@ class GenerateNewBill extends StatelessWidget {
                                 .bill!.first.meterReadings!.last.currentReading
                                 .toString(),
                         context),
-                    _getLabeltext(i18.generateBillDetails.PENDING_AMOUNT,
-                        billList!.bill!.first.totalAmount.toString(), context),
+                    _getLabeltext(
+                        i18.generateBillDetails.PENDING_AMOUNT,
+                        ('₹' + billList!.bill!.first.totalAmount.toString()),
+                        context),
                     ShortButton(
                         i18.generateBillDetails.GENERATE_NEW_BTN_LABEL,
-                            () => {
-                          Navigator.pushNamed(context, Routes.BILL_GENERATE,
-                              arguments:
-                              billList!.bill!.first.waterConnection)
-                        })
+                        () => {
+                              Navigator.pushNamed(context, Routes.BILL_GENERATE,
+                                  arguments:
+                                      billList!.bill!.first.waterConnection)
+                            })
                   ],
                 )))
       ],

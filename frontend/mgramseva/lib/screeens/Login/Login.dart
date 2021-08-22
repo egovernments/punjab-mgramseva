@@ -60,7 +60,7 @@ class _LoginState extends State<Login> {
                 BuildTextField(
                   i18.login.LOGIN_PHONE_NO,
                   userNamecontroller,
-                  prefixText: '+91',
+                  prefixText: '+91-',
                   isRequired: true,
                   inputFormatter: [
                     FilteringTextInputFormatter.allow(RegExp("[0-9]"))
