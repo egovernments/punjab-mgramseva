@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
-import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
-import 'package:mgramseva/widgets/SelectFieldBuilder.dart';
-import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 
 var json = Constants.HOME_ITEMS.map((e) => {
   "name": e.walkThroughMsg,
   "widget": Card(
+    elevation: 0,
       margin:
       EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Column(

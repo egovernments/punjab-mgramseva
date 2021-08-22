@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/providers/consumer_details_provider.dart';
-import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/Pointer.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -98,8 +96,8 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                     },
                                     child: Text(ApplicationLocalizations.of(context)
                                         .translate(i18.common.SKIP))),
-                                ElevatedButton(
-                                    onPressed: () async {
+                                GestureDetector(
+                                    onTap: () async {
                                       if (homeProvider
                                           .homeWalkthrougList.length -
                                           1 <=
@@ -126,8 +124,30 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                         });
                                       }
                                     },
-                                    child: Text(ApplicationLocalizations.of(context)
-                                        .translate(i18.common.NEXT)))
+                                    child:
+                                    Container(
+                                      margin: EdgeInsets.all(5.0),
+                                      height: 35,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        color: Theme.of(context).primaryColor,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey,
+                                            offset: Offset(0.0, 1.0), //(x,y)
+                                            blurRadius: 6.0,
+                                          ),
+                                        ],
+                                      ),
+                                      child:
+                                      Center(
+                                          child: Text(ApplicationLocalizations.of(context)
+                                              .translate(i18.common.NEXT),
+                                            style: TextStyle(
+                                                color: Colors.white
+                                            ),)),
+                                    ))
                               ]))
                     ]))))
       ]);
