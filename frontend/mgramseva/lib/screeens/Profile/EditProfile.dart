@@ -81,7 +81,7 @@ class _EditProfileState extends State<EditProfile> {
                   BuildTextField(
                     i18.common.PHONE_NUMBER,
                     profileDetails.phoneNumberCtrl,
-                    prefixText: '+91 - ',
+                    prefixText: '+91-',
                     isDisabled: true,
                     readOnly: true,
                     inputFormatter: [
