@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/widgets/Button.dart';
 
 class ButtonGroup extends StatelessWidget {
   final String label;
@@ -28,25 +29,22 @@ class ButtonGroup extends StatelessWidget {
                           child: OutlinedButton.icon(
                         onPressed: null,
                         style: ButtonStyle(
-                          padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 0)),
+                          padding: MaterialStateProperty.all(
+                              EdgeInsets.symmetric(vertical: 0)),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(0.0))),
                         ),
-                        icon:  (Image.asset('assets/png/whats_app.png')),
+                        icon: (Image.asset('assets/png/whats_app.png')),
                         label: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          child:  Text(
-                            ApplicationLocalizations.of(context).translate(i18.common.SHARE_BILL),
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: Text(
+                            ApplicationLocalizations.of(context)
+                                .translate(i18.common.SHARE_BILL),
                           ),
                         ),
                       )),
-                      Expanded(
-                          child: new ElevatedButton(
-                        child: new Text(ApplicationLocalizations.of(context).translate(label),
-                        ),
-                        onPressed: callBack,
-                      ))
+                      Expanded(child: Button(label, callBack))
                     ],
                   ),
                 )

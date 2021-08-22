@@ -37,22 +37,24 @@ class HouseConnectionDetailCard extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.only(top: 16, bottom: 16),
-                  child: Wrap(
-                    alignment: WrapAlignment.start,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
-                          width: MediaQuery.of(context).size.width / 3,
+                          width: MediaQuery.of(context).size.width / 3.3,
                           child: Text(
-                              "${ApplicationLocalizations.of(context).translate(i18.common.CONNECTION_ID)}: ",
+                            "${ApplicationLocalizations.of(context).translate(
+                              i18.consumer.CONSUMER_CONNECTION_ID,
+                            )} ",
                             style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.w700),
+                                fontSize: 17, fontWeight: FontWeight.w700),
                           )),
                       Container(
                           alignment: Alignment.topCenter,
                           child: Text(
                             waterconnection!.connectionNo!,
                             style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.w700),
+                                fontSize: 17, fontWeight: FontWeight.w700),
                           )),
                     ],
                   ),
@@ -74,8 +76,8 @@ class HouseConnectionDetailCard extends StatelessWidget {
                     waterconnection!.additionalDetails!.locality, context),
                 // _getLabeltext("Property Type",
                 //   waterconnection!.additionalDetails!.propertyType, context),
-                _getLabeltext(
-                   i18.consumer.SERVICE_TYPE, waterconnection!.connectionType, context)
+                _getLabeltext(i18.consumer.SERVICE_TYPE,
+                    waterconnection!.connectionType, context)
               ],
             )));
   }
