@@ -66,6 +66,8 @@ class _BuildTextField extends State<BuildTextField> {
   Widget build(BuildContext context) {
     // TextForm
     Widget textFormwidget = TextFormField(
+       style: TextStyle(color: widget.isDisabled != null && widget.isDisabled!
+              ? Colors.grey:null),
         enabled: widget.isDisabled != null
             ? (widget.isDisabled == true)
                 ? false
@@ -104,7 +106,6 @@ class _BuildTextField extends State<BuildTextField> {
           fillColor: widget.isDisabled != null && widget.isDisabled!
               ? Colors.grey
               : Colors.white,
-          prefixText: widget.prefixText,
             prefixIcon: widget.prefixText == '' ? null : Padding(padding: EdgeInsets.only(left: 15, top: 15, bottom:  15 ),
             child: Text(widget.prefixText,
             style: TextStyle(fontSize: 16),)) ,

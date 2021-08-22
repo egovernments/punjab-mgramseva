@@ -24,6 +24,7 @@ class ConsumerProvider with ChangeNotifier {
   late List<ConsumerWalkWidgets> consmerWalkthrougList;
   var streamController = StreamController.broadcast();
   late GlobalKey<FormState> formKey;
+  var isfirstdemand = false;
   var autoValidation = false;
   int activeindex = 0;
   late WaterConnection waterconnection;
@@ -49,12 +50,15 @@ class ConsumerProvider with ChangeNotifier {
   ];
   LanguageList? languageList;
   setModel() {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     isEdit = false;
     waterconnection = WaterConnection.fromJson({
       "action": "SUBMIT",
       "proposedTaps": 10,
       "proposedPipeSize": 10,
-      "additionalDetails": {"initialMeterReading": 1}
+      "additionalDetails": {"initialMeterReading": 0}
     });
 
     property = Property.fromJson({
@@ -70,6 +74,11 @@ class ConsumerProvider with ChangeNotifier {
       ],
       "address": Address().toJson()
     });
+
+    property.address.gpNameCtrl.text =
+        commonProvider.userDetails!.selectedtenant!.name! +
+            ' - ' +
+            commonProvider.userDetails!.selectedtenant!.city!.code!;
   }
 
   dispose() {
@@ -81,12 +90,15 @@ class ConsumerProvider with ChangeNotifier {
     isEdit = true;
     waterconnection = data;
     waterconnection.getText();
+    print(waterconnection.additionalDetails!.initialMeterReading!.toString());
+
     notifyListeners();
   }
 
   Future<void> getConsumerDetails() async {
     try {
       streamController.add(property);
+      
     } catch (e) {
       print(e);
       streamController.addError('error');
@@ -115,6 +127,12 @@ class ConsumerProvider with ChangeNotifier {
         if (waterconnection.connectionType == 'Metered') {
           waterconnection.meterInstallationDate =
               waterconnection.previousReadingDate;
+          waterconnection.previousReading = int.parse(
+              waterconnection.om_1Ctrl.text +
+                  waterconnection.om_2Ctrl.text +
+                  waterconnection.om_3Ctrl.text +
+                  waterconnection.om_4Ctrl.text +
+                  waterconnection.om_5Ctrl.text);
         } else {
           waterconnection.previousReadingDate =
               waterconnection.meterInstallationDate;
@@ -124,18 +142,24 @@ class ConsumerProvider with ChangeNotifier {
           waterconnection.additionalDetails =
               addition.AdditionalDetails.fromJson({
             "locality": property.address.locality!.code,
-            "initialMeterReading": 1,
-            "propertyType": property.propertyType
+            "initialMeterReading": waterconnection.previousReading,
+            "propertyType": property.propertyType,
+            "address": Address().toJson()
           });
         } else {
           waterconnection.additionalDetails!.locality =
               property.address.locality!.code;
+          waterconnection.additionalDetails!.initialMeterReading =
+              waterconnection.previousReading;
           waterconnection.additionalDetails!.propertyType =
               property.propertyType;
+              waterconnection.additionalDetails!.address=Address().toJson();
         }
       }
 
       try {
+        print(waterconnection.additionalDetails!.toJson());
+        print(waterconnection.toJson());
         Loaders.showLoadingDialog(context);
         //IF the Consumer Detaisl Screen is in Edit Mode
         if (!isEdit) {
@@ -156,7 +180,6 @@ class ConsumerProvider with ChangeNotifier {
             property.address.localityCtrl.text = "";
           }
         } else {
-          property.workflow = null;
           property.creationReason = 'UPDATE';
           //var result2 = await ConsumerRepository()
           //  .updateconnection(waterconnection.toJson());
@@ -199,6 +222,9 @@ class ConsumerProvider with ChangeNotifier {
 
   Future<Property?> getProperty(Map<String, dynamic> query) async {
     try {
+        var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
       var res = await ConsumerRepository().getProperty(query);
       if (res != null)
         property = new Property.fromJson(res['Properties'].first);
@@ -208,6 +234,11 @@ class ConsumerProvider with ChangeNotifier {
       property.address.localityCtrl = boundaryList.firstWhere(
           (element) => element.code == property.address.locality!.code);
       onChangeOflocaity(property.address.localityCtrl);
+
+    property.address.gpNameCtrl.text =
+        commonProvider.userDetails!.selectedtenant!.name! +
+            ' - ' +
+            commonProvider.userDetails!.selectedtenant!.city!.code!;
       streamController.add(property);
       notifyListeners();
     } catch (e) {
@@ -228,6 +259,11 @@ class ConsumerProvider with ChangeNotifier {
       });
       boundaryList.addAll(
           TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!);
+          print("fucntion for Index");
+          print(boundaryList);
+      if (boundaryList.length == 1) {
+        property.address.localityCtrl = boundaryList.first;
+      }
       notifyListeners();
     } catch (e) {
       print(e);

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/utils/global_variables.dart';
+import 'package:provider/provider.dart';
 
 part 'property.g.dart';
 
@@ -81,6 +84,9 @@ class Address {
   @JsonKey(ignore: true)
   var streetNameOrNumberCtrl = TextEditingController();
 
+    @JsonKey(ignore: true)
+  var gpNameCtrl = TextEditingController();
+
   @JsonKey(ignore: true)
   var localityCtrl;
 
@@ -94,6 +100,7 @@ class Address {
   getText() {
     doorNumberCtrl.text = doorNo ?? '';
     streetNameOrNumberCtrl.text = street ?? '';
+ 
   }
 
   factory Address.fromJson(Map<String, dynamic> json) =>

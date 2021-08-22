@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/components/HouseConnectionandBill/ConsumerBillPayments.dart';
 import 'package:mgramseva/components/HouseConnectionandBill/GenerateNewBill.dart';
 import 'package:mgramseva/components/HouseConnectionandBill/HouseConnectionDetailCard.dart';
 import 'package:mgramseva/components/HouseConnectionandBill/NewConsumerBill.dart';
@@ -46,7 +47,9 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
         data.bill!.first.waterConnection!.connectionType == 'Metered'
             ? GenerateNewBill(data)
             : Text(""),
-        NewConsumerBill(data)
+        NewConsumerBill(data),
+        ConsumerBillPayments(data.bill!.first.waterConnection)
+
       ],
     );
   }

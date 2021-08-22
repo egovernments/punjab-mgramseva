@@ -37,6 +37,8 @@ class WaterConnection {
   String? propertyType;
   @JsonKey(name: "previousReadingDate")
   int? previousReadingDate;
+  @JsonKey(name: "previousReading")
+  int? previousReading;
   @JsonKey(name: "proposedPipeSize")
   double? proposedPipeSize;
 
@@ -64,6 +66,17 @@ class WaterConnection {
   @JsonKey(ignore: true)
   var meterInstallationDateCtrl = TextEditingController();
 
+  @JsonKey(ignore: true)
+  var om_1Ctrl = new TextEditingController();
+  @JsonKey(ignore: true)
+  var om_2Ctrl = new TextEditingController();
+  @JsonKey(ignore: true)
+  var om_3Ctrl = new TextEditingController();
+  @JsonKey(ignore: true)
+  var om_4Ctrl = new TextEditingController();
+  @JsonKey(ignore: true)
+  var om_5Ctrl = new TextEditingController();
+
   setText() {
     print(previousReadingDateCtrl.text);
     oldConnectionNo = OldConnectionCtrl.text;
@@ -77,7 +90,6 @@ class WaterConnection {
   }
 
   getText() {
-    print(previousReadingDate);
     OldConnectionCtrl.text = oldConnectionNo ?? "";
     meterIdCtrl.text = meterId ?? "";
     arrearsCtrl.text = arrears.toString();
@@ -88,6 +100,17 @@ class WaterConnection {
 
     meterInstallationDateCtrl.text =
         DateFormats.timeStampToDate(meterInstallationDate).toString();
+    print("meter initial reading");
+    print(additionalDetails!.initialMeterReading);
+
+    if ((additionalDetails!.initialMeterReading != null) &&
+        additionalDetails!.initialMeterReading!.toString().length > 0) {
+      om_1Ctrl.text = additionalDetails!.initialMeterReading!.toString()[0];
+      om_2Ctrl.text = additionalDetails!.initialMeterReading!.toString()[1];
+      om_3Ctrl.text = additionalDetails!.initialMeterReading!.toString()[2];
+      om_4Ctrl.text = additionalDetails!.initialMeterReading!.toString()[3];
+      om_5Ctrl.text = additionalDetails!.initialMeterReading!.toString()[4];
+    }
   }
 
   WaterConnection();
@@ -118,6 +141,10 @@ class AdditionalDetails {
 
   @JsonKey(name: "propertyType")
   String? propertyType;
+
+  @JsonKey(name: "address")
+  Address address = Address();
+
   @JsonKey(ignore: true)
   var initialMeterReadingCtrl = TextEditingController();
   String? action;
