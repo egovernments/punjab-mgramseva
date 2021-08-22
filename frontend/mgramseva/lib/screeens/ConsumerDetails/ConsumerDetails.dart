@@ -343,6 +343,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               i18.consumer.ARREARS,
                               consumerProvider.waterconnection.arrearsCtrl,
                               textInputType: TextInputType.number,
+                              prefixText: '₹',
                               inputFormatter: [
                                 FilteringTextInputFormatter.allow(
                                     RegExp("[0-9.]"))

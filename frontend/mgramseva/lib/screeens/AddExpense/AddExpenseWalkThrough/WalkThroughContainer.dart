@@ -38,6 +38,7 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
             left: position.dx,
             top: position.dy,
             child: Container(
+              width: MediaQuery.of(context).size.width,
                 child: Card(
                     child: Column(
                       children: [
@@ -47,7 +48,7 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                     )))),
         Positioned(
             right: box.size.width / 3,
-            top: box.size.height + position.dy,
+            top: expenseProvider.activeindex == (expenseProvider.expenseWalkthrougList.length - 1) ? position.dy - 25 : box.size.height + position.dy,
             child: CustomPaint(
               painter: TrianglePainter(
                 strokeColor: Colors.white,
@@ -61,7 +62,7 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
             )),
         Positioned(
             right: position.dx,
-            top: box.size.height + position.dy + 25,
+            top: expenseProvider.activeindex == (expenseProvider.expenseWalkthrougList.length - 1) ? position.dy - box.size.height - 75 : box.size.height + position.dy + 25,
             child: Container(
                 width: MediaQuery.of(context).size.width / 2,
                 alignment: Alignment.centerRight,

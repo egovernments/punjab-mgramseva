@@ -280,7 +280,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                       ],
                     ),
                   ),
-               if(expenseDetails.allowEdit ?? true) FilePickerDemo(callBack: expensesDetailsProvider.fileStoreIdCallBack, extensions: ['jpg', 'pdf', 'png'],),
+               if(expenseDetails.allowEdit ?? true) FilePickerDemo(callBack: expensesDetailsProvider.fileStoreIdCallBack, extensions: ['jpg', 'pdf', 'png'], contextkey: expenseProvider.expenseWalkthrougList[5].key,),
                 if(isUpdate)
                   Container(
                     alignment: Alignment.centerLeft,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
@@ -9,7 +9,7 @@ import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 
 var json = [
   {
-    "name": "Start creating a consumer record by entering consumers name",
+    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.consumerWalkThroughMsg.CONSUMER_NAME_MSG),
     "widget": BuildTextField(
       i18.consumer.CONSUMER_NAME,
       TextEditingController(),
@@ -17,7 +17,7 @@ var json = [
     ),
   },
   {
-    "name": "Start creating a consumer record by entering consumers name",
+    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.consumerWalkThroughMsg.CONSUMER_GENDER_MSG),
     "widget": RadioButtonFieldBuilder(
       navigatorKey.currentContext!,
       i18.common.GENDER,
@@ -30,7 +30,7 @@ var json = [
     )
   },
   {
-    "name": "Add Father’s name of the consumer",
+    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.consumerWalkThroughMsg.CONSUMER_FATHER_MSG),
     "widget": BuildTextField(
       i18.consumer.FATHER_SPOUSE_NAME,
       TextEditingController(),
@@ -38,21 +38,21 @@ var json = [
     ),
   },
   {
-    "name": "Enter Mobile number of the consumer",
+    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.consumerWalkThroughMsg.CONSUMER_MOBILE_MSG),
     "widget": BuildTextField(
       i18.common.PHONE_NUMBER,
       TextEditingController(),
       isRequired: true,),
   },
   {
-    "name": "Enter OLD Connection ID Number. Eg.105",
+    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.consumerWalkThroughMsg.CONSUMER_OLD_ID_MSG),
     "widget": BuildTextField(
       i18.consumer.OLD_CONNECTION_ID,
       TextEditingController(),
       isRequired: true,),
   },
   {
-    "name": "Select Ward, where the consumer resides",
+    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.consumerWalkThroughMsg.CONSUMER_WARD_MSG),
     "widget": SelectFieldBuilder(
       i18.consumer.WARD,
       '',
@@ -64,7 +64,7 @@ var json = [
     )
   },
   {
-    "name": "Select one from residential / commercial type of property",
+    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.consumerWalkThroughMsg.CONSUMER_PROPERTY_TYPE_MSG),
     "widget": SelectFieldBuilder(
       i18.consumer.PROPERTY_TYPE,
       '',
@@ -75,7 +75,7 @@ var json = [
     )
   },
   {
-    "name": "Select if the connection is metered or non-metered.",
+    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.consumerWalkThroughMsg.CONSUMER_SERVICE_TYPE_MSG),
     "widget": SelectFieldBuilder(
       i18.consumer.SERVICE_TYPE,
       '',
@@ -86,7 +86,7 @@ var json = [
     )
   },
   {
-    "name": "Add amount the household has to pay until today.",
+    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.consumerWalkThroughMsg.CONSUMER_ARREARS_MSG),
     "widget": BuildTextField(
       i18.consumer.ARREARS,
       TextEditingController(),
