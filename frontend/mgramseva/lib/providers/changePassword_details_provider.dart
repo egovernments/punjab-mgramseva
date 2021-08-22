@@ -31,13 +31,12 @@ class ChangePasswordProvider with ChangeNotifier {
       var changePasswordResponse = await ChangePasswordRepository().updatePassword(body);
       Navigator.pop(context);
       if (changePasswordResponse != null) {
-        Navigator.pushNamedAndRemoveUntil(
-            context, Routes.SUCCESS_VIEW, (route) => false,
-            arguments: SuccessHandler(
-                i18.profileEdit.PROFILE_EDIT_SUCCESS,
-                i18.profileEdit.PROFILE_EDITED_SUCCESS_SUBTEXT,
-                i18.common.BACK_HOME,
-                Routes.CHANGE_PASSWORD));
+        Notifiers.getToastMessage(
+            context, i18.password.CHANGE_PASSWORD_SUCCESS, 'SUCCESS');
+        new Future.delayed(const Duration(seconds: 10),
+            () => Navigator.pop(context),
+        );
+
       }
     } catch (e, s) {
       Navigator.pop(context);

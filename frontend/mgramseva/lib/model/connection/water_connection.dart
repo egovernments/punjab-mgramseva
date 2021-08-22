@@ -141,6 +141,10 @@ class AdditionalDetails {
 
   @JsonKey(name: "propertyType")
   String? propertyType;
+
+  @JsonKey(name: "address")
+  Address address = Address();
+
   @JsonKey(ignore: true)
   var initialMeterReadingCtrl = TextEditingController();
   String? action;
