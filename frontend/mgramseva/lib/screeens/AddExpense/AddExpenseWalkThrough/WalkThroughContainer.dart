@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/Pointer.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -48,7 +47,7 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                     )))),
         Positioned(
             right: box.size.width / 3,
-            top: expenseProvider.activeindex == (expenseProvider.expenseWalkthrougList.length - 1) ? position.dy - 25 : box.size.height + position.dy,
+            top: expenseProvider.activeindex == (expenseProvider.expenseWalkthrougList.length - 1) ? position.dy - 25 : box.size.height + position.dy + 20,
             child: CustomPaint(
               painter: TrianglePainter(
                 strokeColor: Colors.white,
@@ -62,9 +61,11 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
             )),
         Positioned(
             right: position.dx,
-            top: expenseProvider.activeindex == (expenseProvider.expenseWalkthrougList.length - 1) ? position.dy - box.size.height - 75 : box.size.height + position.dy + 25,
+            top: expenseProvider.activeindex == (expenseProvider.expenseWalkthrougList.length - 1) ? position.dy - box.size.height - 75 : box.size.height + position.dy + 45,
             child: Container(
-                width: MediaQuery.of(context).size.width > 720 ? MediaQuery.of(context).size.width/ 3 : MediaQuery.of(context).size.width /2,
+                      decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),),
+                width: MediaQuery.of(context).size.width > 720 ? MediaQuery.of(context).size.width/ 3 : MediaQuery.of(context).size.width /1.5,
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.only(right: 8),
                 child: Card(
@@ -92,8 +93,8 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                                     },
                                     child: Text(ApplicationLocalizations.of(context)
                                         .translate(i18.common.SKIP))),
-                                ElevatedButton(
-                                    onPressed: () async {
+                                GestureDetector(
+                                    onTap: () async {
                                       if (expenseProvider
                                           .expenseWalkthrougList.length -
                                           1 <=
@@ -120,8 +121,30 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                                         });
                                       }
                                     },
-                                    child: Text(ApplicationLocalizations.of(context)
-                                        .translate(i18.common.NEXT)))
+                                    child:
+                                    Container(
+                                      margin: EdgeInsets.all(5.0),
+                                      height: 35,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        color: Theme.of(context).primaryColor,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey,
+                                            offset: Offset(0.0, 1.0), //(x,y)
+                                            blurRadius: 6.0,
+                                          ),
+                                        ],
+                                      ),
+                                      child:
+                                      Center(
+                                          child: Text(ApplicationLocalizations.of(context)
+                                              .translate(i18.common.NEXT),
+                                            style: TextStyle(
+                                                color: Colors.white
+                                            ),)),
+                                    ))
                               ]))
                     ]))))
       ]);

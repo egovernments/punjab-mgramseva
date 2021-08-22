@@ -40,14 +40,17 @@ class Constants {
     HomeItem(
         "ADD_EXPENSES_RECORD", ApplicationLocalizations.of(navigatorKey.currentContext!)
         .translate(i18.homeWalkThroughMSg.ADD_EXPENSE_RECORD_MSG), HomeIconsModified.vector_1, Routes.EXPENSES_ADD, {}),
-    HomeItem("CORE_UPDATE_EXPENSES",'', HomeIconsModified.vector,
+    HomeItem("CORE_UPDATE_EXPENSES", ApplicationLocalizations.of(navigatorKey.currentContext!)
+        .translate(i18.homeWalkThroughMSg.UPDATE_EXPENSE_MSG), HomeIconsModified.vector,
         Routes.EXPENSE_SEARCH, {}),
     HomeItem(
-        "CORE_GENERATE_DEMAND",'', HomeIcons.generaedemand, Routes.MANUAL_BILL_GENERATE, {}),
+        "CORE_GENERATE_DEMAND", ApplicationLocalizations.of(navigatorKey.currentContext!)
+        .translate(i18.homeWalkThroughMSg.GENERATE_DEMAND_MSG), HomeIcons.generaedemand, Routes.MANUAL_BILL_GENERATE, {}),
     HomeItem("CORE_CONSUMER_CREATE", ApplicationLocalizations.of(navigatorKey.currentContext!)
         .translate(i18.homeWalkThroughMSg.CREATE_CONSUMER_MSG), HomeIcons.createconsumer,
         Routes.CONSUMER_CREATE, {}),
-    HomeItem("CORE_UPDATE_CONSUMER_DETAILS",'', HomeIcons.updateconsumer,
+    HomeItem("CORE_UPDATE_CONSUMER_DETAILS", ApplicationLocalizations.of(navigatorKey.currentContext!)
+        .translate(i18.homeWalkThroughMSg.UPDATE_CONSUMER_DETAILS_MSG), HomeIcons.updateconsumer,
         'consumer/search', {'Mode': "update"}),
     HomeItem("CORE_GPWSC_DASHBOARD", ApplicationLocalizations.of(navigatorKey.currentContext!)
         .translate(i18.homeWalkThroughMSg.GPWSC_DASHBOARD_MSG), HomeIcons.dashboard, 'dashboard', {}),
