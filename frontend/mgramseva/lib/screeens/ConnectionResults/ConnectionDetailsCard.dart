@@ -89,19 +89,22 @@ class SearchConnectionDetailCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _getDetailtext(
-                                i18.searchWaterConnection.NEW_CONNECTION_ID,
+                                ApplicationLocalizations.of(context)
+                                    .translate(i18.searchWaterConnection.NEW_CONNECTION_ID),
                                 waterconnections
                                     .waterConnection![index].connectionNo,
                                 context,
                                 constraints),
                             _getDetailtext(
-                                i18.searchWaterConnection.OLD_CONNECTION_ID,
+                                ApplicationLocalizations.of(context)
+                                    .translate(i18.searchWaterConnection.OLD_CONNECTION_ID),
                                 waterconnections
                                     .waterConnection![index].oldConnectionNo,
                                 context,
                                 constraints),
                             _getDetailtext(
-                                i18.searchWaterConnection.CONSUMER_NAME,
+                                ApplicationLocalizations.of(context)
+                                    .translate(i18.searchWaterConnection.RESULTS_CONSUMER_NAME),
                                 waterconnections.waterConnection![index]
                                             .connectionHolders !=
                                         null
@@ -112,18 +115,20 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                 context,
                                 constraints),
                             _getDetailtext(
-                                i18.searchWaterConnection.OWNER_MOB_NUM,
+                                ApplicationLocalizations.of(context)
+                                    .translate(i18.searchWaterConnection.RESULTS_PHONE_NUM),
                                 waterconnections.waterConnection![index]
                                             .connectionHolders !=
                                         null
-                                    ? waterconnections.waterConnection![index]
-                                        .connectionHolders!.first.mobileNumber
+                                    ? '+91 - ' + '${waterconnections.waterConnection![index]
+                                        .connectionHolders!.first.mobileNumber}'
                                     : ApplicationLocalizations.of(context)
                                         .translate("NA"),
                                 context,
                                 constraints),
                             _getDetailtext(
-                                i18.searchWaterConnection.HOUSE_ADDRESS,
+                                ApplicationLocalizations.of(context)
+                                    .translate(i18.searchWaterConnection.RESULTS_ADDRESS),
                                 waterconnections.waterConnection![index]
                                     .additionalDetails!.locality,
                                 context,

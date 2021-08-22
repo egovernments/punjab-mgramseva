@@ -308,12 +308,10 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                         .waterconnection
                                                         .meterIdCtrl,
                                                     isRequired: true,
-                                                    textInputType:
-                                                        TextInputType.number,
                                                     inputFormatter: [
                                                       FilteringTextInputFormatter
                                                           .allow(
-                                                              RegExp("[0-9.]"))
+                                                              RegExp("[a-zA-Z0-9]"))
                                                     ],
                                                   ),
                                                 ],
