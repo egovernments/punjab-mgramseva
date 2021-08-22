@@ -48,41 +48,59 @@ class NewConsumerBill extends StatelessWidget {
               Card(
                   child: Padding(
                       padding: EdgeInsets.all(15),
-                      child: Column(children: [
-                        _getLabeltext(
-                            i18.consumerReciepts.CONSUMER_RECIEPT_PAID_DATE,
-                            DateFormats.timeStampToDate(
-                                    billList!.bill!.first.billDate,
-                                    format: "dd-MM-yyyy")
-                                .toString(),
-                            context),
-                        _getLabeltext(
-                            i18.billDetails.CURRENT_BILL,
-                            ('₹' +
-                                (billList!
-                                        .bill!.first.billDetails!.first.amount)
-                                    .toString()),
-                            context),
-                        _getLabeltext(
-                            i18.billDetails.ARRERS_DUES,
-                            ('₹' +
-                                (billList!.bill!.first.billDetails!
-                                            .map((ele) => ele.amount)
-                                            .reduce(((previousValue, element) {
-                                          return previousValue! + element!;
-                                        }))! -
-                                        r)
-                                    .toString()),
-                            context),
-                        _getLabeltext(
-                            i18.billDetails.TOTAL_AMOUNT,
-                            ('₹' +
-                                billList!.bill!.first.totalAmount.toString()),
-                            context),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                            child: ButtonGroup(i18.billDetails.COLLECT_PAYMENT, ()=> onClickOfCollectPayment(billList!.bill!.first, context))),
-                      ])))
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Visibility(
+                              visible: true,
+                              child: TextButton.icon(
+                                onPressed: () {},
+                                icon: Icon(Icons.download_sharp),
+                                label: Text(
+                                    ApplicationLocalizations.of(context)
+                                        .translate(i18.common.DOWNLOAD),
+                                    style: TextStyle(fontSize: 19)),
+                              ),
+                            ),
+                            _getLabeltext(
+                                i18.consumerReciepts.CONSUMER_RECIEPT_PAID_DATE,
+                                DateFormats.timeStampToDate(
+                                        billList!.bill!.first.billDate,
+                                        format: "dd-MM-yyyy")
+                                    .toString(),
+                                context),
+                            _getLabeltext(
+                                i18.billDetails.CURRENT_BILL,
+                                ('₹' +
+                                    (billList!.bill!.first.billDetails!.first
+                                            .amount)
+                                        .toString()),
+                                context),
+                            _getLabeltext(
+                                i18.billDetails.ARRERS_DUES,
+                                ('₹' +
+                                    (billList!.bill!.first.billDetails!
+                                                .map((ele) => ele.amount)
+                                                .reduce(
+                                                    ((previousValue, element) {
+                                              return previousValue! + element!;
+                                            }))! -
+                                            r)
+                                        .toString()),
+                                context),
+                            _getLabeltext(
+                                i18.billDetails.TOTAL_AMOUNT,
+                                ('₹' +
+                                    billList!.bill!.first.totalAmount
+                                        .toString()),
+                                context),
+                            Align(
+                                alignment: Alignment.centerLeft,
+                                child: ButtonGroup(
+                                    i18.billDetails.COLLECT_PAYMENT,
+                                    () => onClickOfCollectPayment(
+                                        billList!.bill!.first, context))),
+                          ])))
             ],
           );
   }

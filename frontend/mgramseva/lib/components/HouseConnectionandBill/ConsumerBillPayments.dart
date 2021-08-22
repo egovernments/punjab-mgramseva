@@ -58,7 +58,22 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
         ListLabelText(i18.consumerReciepts.CONSUMER_BILL_RECIEPTS_LABEL),
         for (var item in billpayments.payments!)
           Card(
-              child: Padding(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Visibility(
+                visible: true,
+                child: TextButton.icon(
+                  onPressed: () {},
+                  icon: Icon(Icons.download_sharp),
+                  label: Text(
+                      ApplicationLocalizations.of(context)
+                          .translate(i18.common.DOWNLOAD),
+                      style: TextStyle(fontSize: 19)),
+                ),
+              ),
+              Padding(
                   padding: EdgeInsets.all(15),
                   child: Column(children: [
                     _getLabeltext(
@@ -79,7 +94,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                       Container(
                         width: constraints.maxWidth > 760
                             ? MediaQuery.of(context).size.width / 3
-                            : MediaQuery.of(context).size.width / 1.2,
+                            : MediaQuery.of(context).size.width / 1.25,
                         child: OutlinedButton.icon(
                           onPressed: null,
                           style: ButtonStyle(
@@ -92,7 +107,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                           ),
                           icon: (Image.asset('assets/png/whats_app.png')),
                           label: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            padding: const EdgeInsets.symmetric(vertical: 5),
                             child: Text(
                               ApplicationLocalizations.of(context).translate(i18
                                   .consumerReciepts
@@ -102,7 +117,9 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                         ),
                       )
                     ])
-                  ])))
+                  ]))
+            ],
+          ))
       ]);
     });
   }
