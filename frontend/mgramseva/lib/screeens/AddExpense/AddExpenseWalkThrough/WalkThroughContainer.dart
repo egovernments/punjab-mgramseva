@@ -73,7 +73,7 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                       Padding(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.only(top: 20, left: 10, right: 10),
                           child: Text(
                             expenseProvider
                                 .expenseWalkthrougList[expenseProvider.activeindex]
@@ -81,7 +81,7 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                             style: TextStyle(fontSize: 16),
                           )),
                       Padding(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(0),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
