@@ -108,6 +108,8 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                               ],
                               onChange: (value) =>
                                   searchConnectionProvider.getdetails(value, 1),
+                              hint: ApplicationLocalizations.of(context)
+                                  .translate(i18.searchWaterConnection.NAME_HINT),
                             ),
                             Visibility(
                                 visible: !isVisible,
@@ -126,6 +128,8 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                         onChange: (value) =>
                                             searchConnectionProvider.getdetails(
                                                 value, 2),
+                                        hint: ApplicationLocalizations.of(context)
+                                            .translate(i18.searchWaterConnection.OLD_CONNECTION_HINT),
                                       ),
                                       Text('\n-(or)-',
                                           textAlign: TextAlign.center),
@@ -139,6 +143,8 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                         onChange: (value) =>
                                             searchConnectionProvider.getdetails(
                                                 value, 3),
+                                        hint: ApplicationLocalizations.of(context)
+                                            .translate(i18.searchWaterConnection.NEW_CONNECTION_HINT),
                                       ),
                                     ])),
                             new InkWell(
