@@ -122,8 +122,7 @@ class SideBar extends StatelessWidget {
           commonProvider.onLogout();
         },
       ),
-      Expanded(
-          child: Align(
+      Align(
         alignment: Alignment.bottomCenter,
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -132,7 +131,7 @@ class SideBar extends StatelessWidget {
             Footer()
           ],
         ),
-      ))
+      )
     ]);
   }
 }
