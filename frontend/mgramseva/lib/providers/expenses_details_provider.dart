@@ -12,6 +12,7 @@ import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/screeens/AddExpense/AddExpenseWalkThrough/expenseWalkThrough.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
@@ -30,10 +31,12 @@ import 'common_provider.dart';
 import 'package:universal_html/html.dart' as html;
 
 class ExpensesDetailsProvider with ChangeNotifier {
+  late List<ExpenseWalkWidgets> expenseWalkthrougList;
   var streamController = StreamController.broadcast();
   var expenditureDetails = ExpensesDetailsModel();
   late GlobalKey<FormState> formKey;
   var autoValidation = false;
+  int activeindex = 0;
   LanguageList? languageList;
   var vendorList = <Vendor>[];
   late SuggestionsBoxController suggestionsBoxController;
@@ -361,6 +364,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
         await canLaunch(store.url!) ?  launch(store.url!) : ErrorHandler.logError('failed to launch the url ${store.url}');
       }
   }
+  void setwalkthrough(value) {
+    expenseWalkthrougList = value;
+  }
 
   void onChangeOfCheckBox(bool? value) {
     expenditureDetails.isBillCancelled = value;
@@ -393,5 +399,11 @@ class ExpensesDetailsProvider with ChangeNotifier {
       }).toList();
     }
     return <DropdownMenuItem<Object>>[];
+  }
+
+  incrementindex(index, expenseKey) async {
+    activeindex = index + 1;
+    await Scrollable.ensureVisible(expenseKey.currentContext!,
+        duration: new Duration(milliseconds: 100));
   }
 }

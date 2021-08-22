@@ -9,7 +9,7 @@ import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
-import 'package:mgramseva/screeens/ConsumerDetails/walkthrough.dart';
+import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/walkthrough.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
@@ -348,7 +348,18 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   incrementindex(index, consumerGenderKey) async {
-    activeindex = index + 1;
+    if(boundaryList.length > 0)
+      {
+        activeindex = index + 1;
+      }
+    else {
+      if(activeindex == 4){
+      activeindex = index + 2;
+      }
+      else{
+        activeindex = index + 1;
+      }
+    }
     await Scrollable.ensureVisible(consumerGenderKey.currentContext!,
         duration: new Duration(milliseconds: 100));
   }

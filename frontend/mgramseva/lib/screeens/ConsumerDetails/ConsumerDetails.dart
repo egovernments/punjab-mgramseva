@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/model/connection/property.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
-import 'package:mgramseva/providers/WalkThroughProviders/create_consumer_walkthrough_provider.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
-import 'package:mgramseva/screeens/ConsumerDetails/WalkFlowContainer.dart';
-import 'package:mgramseva/screeens/ConsumerDetails/walkthrough.dart';
+import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/WalkFlowContainer.dart';
+import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/walkthrough.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -23,14 +22,11 @@ import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/SelectFieldBuilder.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
-import 'package:mgramseva/widgets/SkipAndNextButton.dart';
-import 'package:mgramseva/widgets/SkipButton.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TableText.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
-import 'package:showcaseview/showcaseview.dart';
 
 class ConsumerDetails extends StatefulWidget {
   final String? id;
@@ -207,6 +203,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                 FilteringTextInputFormatter.allow(
                                     RegExp("[0-9]"))
                               ],
+                              contextkey:
+                              consumerProvider.consmerWalkthrougList[3].key,
                             ),
 
                             //Consumer Old Connection Field
@@ -217,6 +215,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                 consumerProvider
                                     .waterconnection.OldConnectionCtrl,
                                 isRequired: true,
+                                    contextkey:
+                                    consumerProvider.consmerWalkthrougList[4].key,
                               ),
                             ),
                             //Consumer Door Number Field
@@ -247,7 +247,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                             '',
                                             consumerProvider.onChangeOflocaity,
                                             consumerProvider.getBoundaryList(),
-                                            true)
+                                            true,
+                                      contextkey:
+                                      consumerProvider.consmerWalkthrougList[5].key)
                                         : Text("")),
                             //Consumer Property Type Field
                             Consumer<ConsumerProvider>(
@@ -259,7 +261,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                       '',
                                       consumerProvider.onChangeOfPropertyType,
                                       consumerProvider.getPropertTypeList(),
-                                      true),
+                                      true,
+                                    contextkey:
+                                    consumerProvider.consmerWalkthrougList[6].key,),
                             ),
                             //Consumer Service Type Field
                             Consumer<ConsumerProvider>(
@@ -275,7 +279,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                 .onChangeOfConnectionType,
                                             consumerProvider
                                                 .getConnectionTypeList(),
-                                            true),
+                                            true,
+                                            contextkey:
+                                            consumerProvider.consmerWalkthrougList[7].key),
 
                                         //Consumer Service Type Field),
                                         consumerProvider.waterconnection
@@ -344,6 +350,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     RegExp("[0-9.]"))
                               ],
                               isRequired: true,
+                                contextkey:
+                                consumerProvider.consmerWalkthrougList[8].key,
                             ),
 
                             SizedBox(

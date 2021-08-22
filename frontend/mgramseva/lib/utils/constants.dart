@@ -4,6 +4,9 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/models.dart';
 
+import 'Locilization/application_localizations.dart';
+import 'global_variables.dart';
+
 class Constants {
   static const int PAGINATION_LIMIT = 75;
 
@@ -26,22 +29,23 @@ class Constants {
     KeyValue('PARTIAL', 'Partial'),
   ];
 
-  static const List<HomeItem> HOME_ITEMS = [
-    HomeItem("CORE_HOUSEHOLD_REGISTER", HomeIcons.hhregister, '', {}),
-    HomeItem("CORE_COLLECT_PAYMENTS", HomeIcons.collectpayment,
+  static List<HomeItem> HOME_ITEMS = [
+    HomeItem("CORE_HOUSEHOLD_REGISTER", ApplicationLocalizations.of(navigatorKey.currentContext!)
+        .translate(i18.homeWalkThroughMSg.HOUSEHOLD_REGISTER_MSG),HomeIcons.hhregister, '', {},),
+    HomeItem("CORE_COLLECT_PAYMENTS", i18.homeWalkThroughMSg.COLLECT_PAYMENTS_MSG, HomeIcons.collectpayment,
         Routes.HOUSEHOLD, {'Mode': "collect"}),
-    HomeItem("DOWNLOAD_BILLS_AND_RECEIPTS", HomeIcons.printreciept, '', {}),
+    HomeItem("DOWNLOAD_BILLS_AND_RECEIPTS", i18.homeWalkThroughMSg.DOWNLOAD_BILLS_AND_RECEIPTS_MSG, HomeIcons.printreciept, '', {}),
     HomeItem(
-        "ADD_EXPENSES_RECORD", HomeIconsModified.vector_1, Routes.EXPENSES_ADD, {}),
-    HomeItem("CORE_UPDATE_EXPENSES", HomeIconsModified.vector,
+        "ADD_EXPENSES_RECORD", i18.homeWalkThroughMSg.ADD_EXPENSE_RECORD_MSG, HomeIconsModified.vector_1, Routes.EXPENSES_ADD, {}),
+    HomeItem("CORE_UPDATE_EXPENSES",'', HomeIconsModified.vector,
         Routes.EXPENSE_SEARCH, {}),
     HomeItem(
-        "CORE_GENERATE_DEMAND", HomeIcons.generaedemand, Routes.MANUAL_BILL_GENERATE, {}),
-    HomeItem("CORE_CONSUMER_CREATE", HomeIcons.createconsumer,
+        "CORE_GENERATE_DEMAND",'', HomeIcons.generaedemand, Routes.MANUAL_BILL_GENERATE, {}),
+    HomeItem("CORE_CONSUMER_CREATE", i18.homeWalkThroughMSg.CREATE_CONSUMER_MSG, HomeIcons.createconsumer,
         Routes.CONSUMER_CREATE, {}),
-    HomeItem("CORE_UPDATE_CONSUMER_DETAILS", HomeIcons.updateconsumer,
+    HomeItem("CORE_UPDATE_CONSUMER_DETAILS",'', HomeIcons.updateconsumer,
         'consumer/search', {'Mode': "update"}),
-    HomeItem("CORE_GPWSC_DASHBOARD", HomeIcons.dashboard, 'dashboard', {}),
+    HomeItem("CORE_GPWSC_DASHBOARD", i18.homeWalkThroughMSg.GPWSC_DASHBOARD_MSG, HomeIcons.dashboard, 'dashboard', {}),
   ];
 
   static List<KeyValue> SERVICECATEGORY = [
