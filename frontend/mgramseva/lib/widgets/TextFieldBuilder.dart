@@ -51,7 +51,6 @@ class BuildTextField extends StatefulWidget {
       this.labelSuffix,
       this.hint,
       this.focusNode,
-      this.requiredMessage,
       this.inputBorder,
       this.prefixIcon,
       this.placeHolder,
