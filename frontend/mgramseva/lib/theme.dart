@@ -37,6 +37,7 @@ ThemeData get theme => ThemeData(
       contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.zero)),
       prefixStyle: TextStyle(color: Colors.black),
+      hintStyle: TextStyle(color: Color.fromRGBO(80, 90, 95, 1)),
       errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.zero),
           borderSide: BorderSide(color: Colors.red)),

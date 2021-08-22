@@ -14,7 +14,6 @@ import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
 import 'package:mgramseva/main.dart';
 import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
 import 'package:mgramseva/screeens/ConnectionResults.dart';
-import 'package:mgramseva/screeens/Dashboard.dart';
 import 'package:mgramseva/screeens/Profile/EditProfile.dart';
 import 'package:mgramseva/screeens/AddExpense/ExpenseDetails.dart';
 import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
@@ -30,6 +29,7 @@ import 'model/success_handler.dart';
 
 import 'screeens/ForgotPassword/ForgotPassword.dart';
 import 'screeens/common/collect_payment.dart';
+import 'screeens/dashboard/Dashboard.dart';
 import 'screeens/expense/expense_results.dart';
 import 'screeens/expense/search_expense.dart';
 import 'widgets/CommonSuccessPage.dart';
