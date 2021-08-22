@@ -90,7 +90,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                         return new PasswordSuccess(
                                             " Password Updated Successfully");
                                       })))),
-                          PasswordHint('')
+                          PasswordHint(''),
                         ],
                       ))))))
             ])));

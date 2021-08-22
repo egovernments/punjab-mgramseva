@@ -56,9 +56,8 @@ class ConsumerProvider with ChangeNotifier {
     isEdit = false;
     waterconnection = WaterConnection.fromJson({
       "action": "SUBMIT",
-      "proposedTaps": 10,
-      "proposedPipeSize": 10,
-      "additionalDetails": {"initialMeterReading": 0}
+      "proposedTaps": 1,
+      "proposedPipeSize": 1,
     });
 
     property = Property.fromJson({
@@ -90,7 +89,6 @@ class ConsumerProvider with ChangeNotifier {
     isEdit = true;
     waterconnection = data;
     waterconnection.getText();
-    print(waterconnection.additionalDetails!.initialMeterReading!.toString());
 
     notifyListeners();
   }
@@ -98,7 +96,6 @@ class ConsumerProvider with ChangeNotifier {
   Future<void> getConsumerDetails() async {
     try {
       streamController.add(property);
-      
     } catch (e) {
       print(e);
       streamController.addError('error');
@@ -144,7 +141,6 @@ class ConsumerProvider with ChangeNotifier {
             "locality": property.address.locality!.code,
             "initialMeterReading": waterconnection.previousReading,
             "propertyType": property.propertyType,
-            "address": Address().toJson()
           });
         } else {
           waterconnection.additionalDetails!.locality =
@@ -153,7 +149,7 @@ class ConsumerProvider with ChangeNotifier {
               waterconnection.previousReading;
           waterconnection.additionalDetails!.propertyType =
               property.propertyType;
-              waterconnection.additionalDetails!.address=Address().toJson();
+          // waterconnection.additionalDetails!.address = property.address;
         }
       }
 
@@ -222,9 +218,9 @@ class ConsumerProvider with ChangeNotifier {
 
   Future<Property?> getProperty(Map<String, dynamic> query) async {
     try {
-        var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
       var res = await ConsumerRepository().getProperty(query);
       if (res != null)
         property = new Property.fromJson(res['Properties'].first);
@@ -235,10 +231,10 @@ class ConsumerProvider with ChangeNotifier {
           (element) => element.code == property.address.locality!.code);
       onChangeOflocaity(property.address.localityCtrl);
 
-    property.address.gpNameCtrl.text =
-        commonProvider.userDetails!.selectedtenant!.name! +
-            ' - ' +
-            commonProvider.userDetails!.selectedtenant!.city!.code!;
+      property.address.gpNameCtrl.text =
+          commonProvider.userDetails!.selectedtenant!.name! +
+              ' - ' +
+              commonProvider.userDetails!.selectedtenant!.city!.code!;
       streamController.add(property);
       notifyListeners();
     } catch (e) {
@@ -259,8 +255,8 @@ class ConsumerProvider with ChangeNotifier {
       });
       boundaryList.addAll(
           TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!);
-          print("fucntion for Index");
-          print(boundaryList);
+      print("fucntion for Index");
+      print(boundaryList);
       if (boundaryList.length == 1) {
         property.address.localityCtrl = boundaryList.first;
       }
@@ -384,15 +380,12 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   incrementindex(index, consumerGenderKey) async {
-    if(boundaryList.length > 0)
-      {
-        activeindex = index + 1;
-      }
-    else {
-      if(activeindex == 4){
-      activeindex = index + 2;
-      }
-      else{
+    if (boundaryList.length > 0) {
+      activeindex = index + 1;
+    } else {
+      if (activeindex == 4) {
+        activeindex = index + 2;
+      } else {
         activeindex = index + 1;
       }
     }

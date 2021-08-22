@@ -12,6 +12,7 @@ import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
+import 'package:mgramseva/widgets/footer.dart';
 import 'package:provider/provider.dart';
 
 class ChangePassword extends StatefulWidget {
@@ -136,7 +137,12 @@ class _ChangePasswordState extends State<ChangePassword> {
           Drawer(child: SideBar()),
         ),
         body: SingleChildScrollView(
-            child: builduserView(changePasswordProvider.changePasswordDetails)),
+            child: Column(
+          children: [
+            builduserView(changePasswordProvider.changePasswordDetails),
+            Footer()
+          ],
+        )),
         bottomNavigationBar: BottomButtonBar(
             i18.password.CHANGE_PASSWORD,
             () => saveInputandchangepass(
