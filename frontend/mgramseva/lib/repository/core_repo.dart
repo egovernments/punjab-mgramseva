@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:ext_storage/ext_storage.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
@@ -10,9 +13,12 @@ import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class CoreRepository extends BaseService {
@@ -93,5 +99,41 @@ class CoreRepository extends BaseService {
           .toList();
     }
     return fileStoreIds;
+  }
+
+  Future<bool?> pdfDownload(BuildContext context, String url, [String? fileName]) async {
+    fileName = fileName ?? '${url.split('/').last}';
+    try {
+      // CommonMethods.setLoaderStatus(_keyLoader, context, true);
+      var downloadPath;
+      if(Platform.isIOS) {
+        downloadPath  = (await getApplicationDocumentsDirectory()).path;
+      }else {
+        downloadPath = await ExtStorage.getExternalStoragePublicDirectory(
+            ExtStorage.DIRECTORY_DOWNLOADS);
+      }
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        await Permission.storage.request();
+      }
+      final response = await FlutterDownloader.enqueue(
+        url:url,
+        savedDir: downloadPath,
+        fileName: '$fileName',
+        showNotification: true,
+        openFileFromNotification: true,
+      );
+      if (response != null) {
+        // CommonMethods.setLoaderStatus(_keyLoader, navigatorKey.currentState.context);
+        // Notifiers.getToastMessage("${Labels.DOWNLOAD_STARTED} $fileName");
+        return true;
+      } else{
+        // Notifiers.getToastMessage("${Labels.DOWNLOAD_FAIL} $fileName");
+      }
+      // CommonMethods.setLoaderStatus(_keyLoader, navigatorKey.currentState.context);
+      return false;
+    } catch(e,s){
+      ErrorHandler().allExceptionsHandler(context, e);
+    }
   }
 }

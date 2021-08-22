@@ -3,6 +3,8 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+
 import 'package:mgramseva/providers/authentication.dart';
 import 'package:mgramseva/providers/bill_generation_details_provider.dart';
 import 'package:mgramseva/providers/bill_payments_provider.dart';
@@ -50,6 +52,11 @@ void main() {
       ErrorHandler.logError(details.exception.toString(), details.stack);
       // exit(1); /// to close the app smoothly
     };
+
+    await FlutterDownloader.initialize(
+        debug: true // optional: set false to disable printing logs to console
+    );
+
     runApp(MyApp());
   }, (Object error, StackTrace stack) {
     ErrorHandler.logError(error.toString(), stack);
