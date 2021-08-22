@@ -69,7 +69,9 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.only(right: 8),
                 child: Card(
-                    child: Column(children: [
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
                       Padding(
                           padding: EdgeInsets.all(10),
                           child: Text(
