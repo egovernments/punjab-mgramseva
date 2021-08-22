@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
 import 'package:mgramseva/repository/dashboard.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -33,30 +34,34 @@ class DashBoardProvider with ChangeNotifier {
 
 
   List<TableHeader> get expenseHeaderList => [
-    TableHeader('Bill Id - Vendor'),
-    TableHeader('Expense Type'),
-    TableHeader('Amount'),
-    TableHeader('Bill Date'),
-    TableHeader('Paid Date'),
+    TableHeader(i18.dashboard.BILL_ID_VENDOR),
+    TableHeader(i18.expense.EXPENSE_TYPE),
+    TableHeader(i18.common.AMOUNT),
+    TableHeader(i18.expense.BILL_DATE),
+    TableHeader(i18.common.PAID_DATE),
   ];
 
 
   List<TableHeader> get collectionHeaderList => [
-    TableHeader('Connection-ID'),
-    TableHeader('Name'),
-    TableHeader('Collections'),
+    TableHeader(i18.common.CONNECTION_ID),
+    TableHeader(i18.common.NAME),
+    TableHeader(i18.dashboard.COLLECTIONS),
   ];
 
   List<TableDataRow> getExpenseData(int index) {
-
+    var searchFilterItems = expenseDashboardDetails.data;
+    
+    if(searchController.text.trim().isNotEmpty){
+      searchFilterItems = expenseDashboardDetails.data?.where((element) => element.headerName!.contains(searchController.text.trim())).toList();
+    }
     switch(index){
       case 0:
-        return expenseDashboardDetails.data!.map((e) => getExpenseRow(e)).toList();
+        return searchFilterItems!.map((e) => getExpenseRow(e)).toList();
       case 1:
-        var filteredList =  expenseDashboardDetails.data!.where((e) => e.plots?.last.label != null).toList();
+        var filteredList =  searchFilterItems!.where((e) => e.plots?.last.label != null).toList();
         return filteredList!.map((e) => getExpenseRow(e)).toList();
       case 2:
-        var filteredList =  expenseDashboardDetails.data!.where((e) => e.plots?.last.label == null).toList();
+        var filteredList =  searchFilterItems!.where((e) => e.plots?.last.label == null).toList();
         return filteredList!.map((e) => getExpenseRow(e)).toList();
       default :
         return <TableDataRow>[];
@@ -71,6 +76,10 @@ class DashBoardProvider with ChangeNotifier {
           return TableData(plot.label ?? '');
         })
     );
+  }
+
+  onExpenseSort(){
+
   }
 
   void onSearch(String val){

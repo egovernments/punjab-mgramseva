@@ -148,11 +148,11 @@ class _BillsTable extends State<BillsTable> {
               _generateColumnRow(context, index,
                   widget.tableData[index].tableRow[1].label, constraints),
               _generateColumnRow(context, index,
-                  widget.tableData[index].tableRow[1].label, constraints),
+                  widget.tableData[index].tableRow[2].label, constraints),
               _generateColumnRow(context, index,
-                  widget.tableData[index].tableRow[1].label, constraints),
+                  widget.tableData[index].tableRow[3].label, constraints),
               _generateColumnRow(context, index,
-                  widget.tableData[index].tableRow[1].label, constraints),
+                  widget.tableData[index].tableRow[4].label, constraints),
             ],
           ));
     });

@@ -120,7 +120,8 @@ class Common {
   String get ATTACHMENTS => 'ATTACHMENTS';
   String get YES => 'YES';
   String get NO => 'NO';
-
+  String get SHARE => 'SHARE';
+  String get PAID_DATE => 'PAID_DATE';
 }
 
 class Password {
@@ -363,4 +364,5 @@ class _DashBoard {
   String get COMMERCIAL => 'COMMERCIAL';
   String get SEARCH_BY_BILL_OR_VENDOR => 'SEARCH_BY_BILL_OR_VENDOR';
   String get DASHBOARD => 'DASHBOARD';
+  String get BILL_ID_VENDOR => 'BILL_ID_VENDOR';
 }
