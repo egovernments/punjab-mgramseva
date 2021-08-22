@@ -219,9 +219,10 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                 i18.consumer.OLD_CONNECTION_ID,
                                 consumerProvider
                                     .waterconnection.OldConnectionCtrl,
-                                isRequired: true,
-                                contextkey: consumerProvider
-                                    .consmerWalkthrougList[4].key,
+ 
+                                    contextkey:
+                                    consumerProvider.consmerWalkthrougList[4].key,
+
                               ),
                             ),
                             //Consumer Door Number Field
@@ -262,16 +263,15 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             Consumer<ConsumerProvider>(
                               builder: (_, consumerProvider, child) =>
                                   SelectFieldBuilder(
-                                i18.consumer.PROPERTY_TYPE,
-                                property.propertyType,
-                                '',
-                                '',
-                                consumerProvider.onChangeOfPropertyType,
-                                consumerProvider.getPropertTypeList(),
-                                true,
-                                contextkey: consumerProvider
-                                    .consmerWalkthrougList[6].key,
-                              ),
+                                      i18.consumer.PROPERTY_TYPE,
+                                      property.propertyType,
+                                      '',
+                                      '',
+                                      consumerProvider.onChangeOfPropertyType,
+                                      consumerProvider.getPropertTypeList(),
+                                      true,
+                                    contextkey:
+                                    consumerProvider.consmerWalkthrougList[6].key,),
                             ),
                             //Consumer Service Type Field
                             Consumer<ConsumerProvider>(
