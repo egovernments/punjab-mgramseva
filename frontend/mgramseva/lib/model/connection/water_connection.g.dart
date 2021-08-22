@@ -78,7 +78,6 @@ AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) {
     ..initialMeterReading = json['initialMeterReading'] as int?
     ..locality = json['locality'] as String?
     ..propertyType = json['propertyType'] as String?
-    ..address = Address.fromJson(json['address'] as Map<String, dynamic>)
     ..action = json['action'] as String?;
 }
 
@@ -87,6 +86,5 @@ Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
       'initialMeterReading': instance.initialMeterReading,
       'locality': instance.locality,
       'propertyType': instance.propertyType,
-      'address': instance.address,
       'action': instance.action,
     };

@@ -16,6 +16,7 @@ import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
+import 'package:mgramseva/widgets/footer.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -104,7 +105,8 @@ class _EditProfileState extends State<EditProfile> {
                   BuildTextField(
                     i18.common.EMAIL,
                     profileDetails.emailIdCtrl,
-                    hint: '${ApplicationLocalizations.of(context).translate(i18.profileEdit.PROFILE_EDIT_EMAIL_HINT)}',
+                    hint:
+                        '${ApplicationLocalizations.of(context).translate(i18.profileEdit.PROFILE_EDIT_EMAIL_HINT)}',
                     inputFormatter: [
                       FilteringTextInputFormatter.allow(
                           RegExp("[a-zA-Z0-9@. ]"))
@@ -161,27 +163,30 @@ class _EditProfileState extends State<EditProfile> {
       body: SingleChildScrollView(
         child: Container(
             alignment: Alignment.center,
-            child: StreamBuilder(
-                stream: userProvider.streamController.stream,
-                builder: (context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData) {
-                    return _builduserView(snapshot.data);
-                  } else if (snapshot.hasError) {
-                    return Notifiers.networkErrorPage(
-                        context,
-                        () =>
-                            userProvider.getUserProfileDetails(query, context));
-                  } else {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return Loaders.CircularLoader();
-                      case ConnectionState.active:
-                        return Loaders.CircularLoader();
-                      default:
-                        return Container();
+            child: Column(children: [
+              StreamBuilder(
+                  stream: userProvider.streamController.stream,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return _builduserView(snapshot.data);
+                    } else if (snapshot.hasError) {
+                      return Notifiers.networkErrorPage(
+                          context,
+                          () => userProvider.getUserProfileDetails(
+                              query, context));
+                    } else {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return Loaders.CircularLoader();
+                        case ConnectionState.active:
+                          return Loaders.CircularLoader();
+                        default:
+                          return Container();
+                      }
                     }
-                  }
-                })),
+                  }),
+              Footer()
+            ])),
       ),
     );
   }

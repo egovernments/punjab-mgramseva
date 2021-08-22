@@ -7,6 +7,7 @@ import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/WalkFlowContainer.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/walkthrough.dart';
 import 'package:mgramseva/screeens/GenerateBill/widgets/MeterReading.dart';
+import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -26,6 +27,7 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TableText.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
+import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
@@ -219,10 +221,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                 i18.consumer.OLD_CONNECTION_ID,
                                 consumerProvider
                                     .waterconnection.OldConnectionCtrl,
- 
-                                    contextkey:
-                                    consumerProvider.consmerWalkthrougList[4].key,
-
+                                contextkey: consumerProvider
+                                    .consmerWalkthrougList[4].key,
                               ),
                             ),
                             //Consumer Door Number Field
@@ -263,15 +263,16 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             Consumer<ConsumerProvider>(
                               builder: (_, consumerProvider, child) =>
                                   SelectFieldBuilder(
-                                      i18.consumer.PROPERTY_TYPE,
-                                      property.propertyType,
-                                      '',
-                                      '',
-                                      consumerProvider.onChangeOfPropertyType,
-                                      consumerProvider.getPropertTypeList(),
-                                      true,
-                                    contextkey:
-                                    consumerProvider.consmerWalkthrougList[6].key,),
+                                i18.consumer.PROPERTY_TYPE,
+                                property.propertyType,
+                                '',
+                                '',
+                                consumerProvider.onChangeOfPropertyType,
+                                consumerProvider.getPropertTypeList(),
+                                true,
+                                contextkey: consumerProvider
+                                    .consmerWalkthrougList[6].key,
+                              ),
                             ),
                             //Consumer Service Type Field
                             Consumer<ConsumerProvider>(
@@ -411,35 +412,35 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   Widget build(BuildContext context) {
     var userProvider = Provider.of<ConsumerProvider>(context, listen: false);
     return Scaffold(
-        appBar: BaseAppBar(
-          Text(i18.common.MGRAM_SEVA),
-          AppBar(),
-          <Widget>[Icon(Icons.more_vert)],
-        ),
-        drawer: DrawerWrapper(
-          Drawer(child: SideBar()),
-        ),
-        body: SingleChildScrollView(
-            child: Container(
-                child: StreamBuilder(
-                    stream: userProvider.streamController.stream,
-                    builder: (context, AsyncSnapshot snapshot) {
-                      if (snapshot.hasData) {
-                        return buildconsumerView(snapshot.data);
-                      } else if (snapshot.hasError) {
-                        return Notifiers.networkErrorPage(context, () {});
-                      } else {
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.waiting:
-                            return Loaders.CircularLoader();
-                          case ConnectionState.active:
-                            return Loaders.CircularLoader();
-                          default:
-                            return Container();
-                        }
-                      }
-                    }))),
-        bottomNavigationBar: BottomButtonBar(i18.common.SUBMIT,
-            () => {userProvider.validateExpensesDetails(context)}));
+      appBar: CustomAppBar(),
+      drawer: DrawerWrapper(
+        Drawer(child: SideBar()),
+      ),
+      body: SingleChildScrollView(
+          child: Container(
+              child: Column(children: [
+        StreamBuilder(
+            stream: userProvider.streamController.stream,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return buildconsumerView(snapshot.data);
+              } else if (snapshot.hasError) {
+                return Notifiers.networkErrorPage(context, () {});
+              } else {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return Loaders.CircularLoader();
+                  case ConnectionState.active:
+                    return Loaders.CircularLoader();
+                  default:
+                    return Container();
+                }
+              }
+            }),
+        Footer(),
+      ]))),
+      bottomNavigationBar: BottomButtonBar(i18.common.SUBMIT,
+          () => {userProvider.validateExpensesDetails(context)}),
+    );
   }
 }
