@@ -47,3 +47,21 @@ class PaginationResponse{
   int limit;
   PaginationResponse(this.limit, this.offset);
 }
+
+
+class TableHeader {
+  final String label;
+
+  TableHeader(this.label);
+}
+
+class TableDataRow {
+  final List<TableData> tableRow;
+  TableDataRow(this.tableRow);
+}
+
+class TableData {
+  final String label;
+  final TextStyle? style;
+  TableData(this.label, {this.style});
+}
