@@ -22,6 +22,7 @@ import 'package:mgramseva/model/connection/water_connection.dart' as addition;
 class ConsumerProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
   late GlobalKey<FormState> formKey;
+  var isfirstdemand = true;
   var autoValidation = false;
   late WaterConnection waterconnection;
   var boundaryList = <Boundary>[];
@@ -46,6 +47,9 @@ class ConsumerProvider with ChangeNotifier {
   ];
   LanguageList? languageList;
   setModel() {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     isEdit = false;
     waterconnection = WaterConnection.fromJson({
       "action": "SUBMIT",
@@ -67,6 +71,11 @@ class ConsumerProvider with ChangeNotifier {
       ],
       "address": Address().toJson()
     });
+
+    property.address.gpNameCtrl.text =
+        commonProvider.userDetails!.selectedtenant!.name! +
+            ' - ' +
+            commonProvider.userDetails!.selectedtenant!.city!.code!;
   }
 
   dispose() {
@@ -78,8 +87,8 @@ class ConsumerProvider with ChangeNotifier {
     isEdit = true;
     waterconnection = data;
     waterconnection.getText();
-  print(waterconnection.additionalDetails!.initialMeterReading!.toString());
- 
+    print(waterconnection.additionalDetails!.initialMeterReading!.toString());
+
     notifyListeners();
   }
 
@@ -143,7 +152,7 @@ class ConsumerProvider with ChangeNotifier {
       }
 
       try {
-               print(waterconnection.additionalDetails! .toJson());
+        print(waterconnection.additionalDetails!.toJson());
         print(waterconnection.toJson());
         Loaders.showLoadingDialog(context);
         //IF the Consumer Detaisl Screen is in Edit Mode
@@ -157,7 +166,7 @@ class ConsumerProvider with ChangeNotifier {
               .addconnection(waterconnection.toJson());
           Navigator.pop(context);
           if (result2 != null) {
-            setModel(); 
+            setModel();
             streamController.add(property);
             Notifiers.getToastMessage(
                 context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
@@ -165,7 +174,6 @@ class ConsumerProvider with ChangeNotifier {
             property.address.localityCtrl.text = "";
           }
         } else {
-          property.workflow = null;
           property.creationReason = 'UPDATE';
           //var result2 = await ConsumerRepository()
           //  .updateconnection(waterconnection.toJson());
@@ -237,6 +245,11 @@ class ConsumerProvider with ChangeNotifier {
       });
       boundaryList.addAll(
           TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!);
+          print("fucntion for Index");
+          print(boundaryList);
+      if (boundaryList.length == 1) {
+        property.address.localityCtrl = boundaryList.first;
+      }
       notifyListeners();
     } catch (e) {
       print(e);

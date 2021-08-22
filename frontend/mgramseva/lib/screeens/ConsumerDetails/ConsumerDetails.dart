@@ -181,16 +181,16 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               property.address.streetNameOrNumberCtrl,
                               isRequired: true,
                             ),
-                            // BuildTextField(
-                            //   'Gram Panchayat Name',
-                            //   name,
-                            //   isRequired: true,
-                            // ),
+                            BuildTextField(
+                              i18.consumer.GP_NAME,
+                              property.address.gpNameCtrl,
+                              isRequired: true,
+                            ),
 
                             //Consumer Ward Field
                             Consumer<ConsumerProvider>(
                                 builder: (_, consumerProvider, child) =>
-                                    consumerProvider.boundaryList.length > 0
+                                    consumerProvider.boundaryList.length > 1
                                         ? SelectFieldBuilder(
                                             i18.consumer.WARD,
                                             property.address.localityCtrl,
@@ -233,7 +233,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                             : Column(
                                                 children: [
                                                   //Consumer Previous MeterReading Date Picker Field
-                                                  BasicDateField(
+                                                consumerProvider.isEdit ==false || consumerProvider.isfirstdemand ==false? BasicDateField(
                                                       i18.consumer
                                                           .PREV_METER_READING_DATE,
                                                       true,
@@ -243,7 +243,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                       lastDate: DateTime.now(),
                                                       onChangeOfDate:
                                                           consumerProvider
-                                                              .onChangeOfDate),
+                                                              .onChangeOfDate):Text(""),
                                                   BuildTextField(
                                                     i18.consumer.METER_NUMBER,
                                                     consumerProvider
@@ -256,7 +256,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                               RegExp("[a-zA-Z0-9]"))
                                                     ],
                                                   ),
-                                                  MeterReading(
+                                                 consumerProvider.isEdit ==false || consumerProvider.isfirstdemand ==false?   MeterReading(
                                                       i18.demandGenerate
                                                           .PREV_METER_READING_LABEL,
                                                       consumerProvider
@@ -273,7 +273,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                           .om_4Ctrl,
                                                       consumerProvider
                                                           .waterconnection
-                                                          .om_5Ctrl),
+                                                          .om_5Ctrl,
+                                                          isRequired: true,
+                                                          ):Text(""),
                                                 ],
                                               ),
                                         consumerProvider.waterconnection
@@ -284,7 +286,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                     ConsumerProvider>(
                                                 builder: (_, consumerProvider,
                                                         child) =>
-                                                    SelectFieldBuilder(
+                                                       consumerProvider.isEdit ==false || consumerProvider.isfirstdemand ==false?  SelectFieldBuilder(
                                                         i18.consumer
                                                             .CONSUMER_BILLING_CYCLE,
                                                         consumerProvider
@@ -295,10 +297,10 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             .onChangeBillingcycle,
                                                         consumerProvider
                                                             .getBillingCycle(),
-                                                        true)),
+                                                        true):Text("")),
                                       ],
                                     )),
-                            BuildTextField(
+                           consumerProvider.isEdit ==false || consumerProvider.isfirstdemand ==false?    BuildTextField(
                               i18.consumer.ARREARS,
                               consumerProvider.waterconnection.arrearsCtrl,
                               textInputType: TextInputType.number,
@@ -306,8 +308,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                 FilteringTextInputFormatter.allow(
                                     RegExp("[0-9.]"))
                               ],
-                              isRequired: true,
-                            ),
+                            ):Text(""),
                             SizedBox(
                               height: 20,
                             ),
