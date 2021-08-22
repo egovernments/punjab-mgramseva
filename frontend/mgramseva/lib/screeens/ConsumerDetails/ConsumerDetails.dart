@@ -4,6 +4,7 @@ import 'package:mgramseva/model/connection/property.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
+import 'package:mgramseva/screeens/GenerateBill/widgets/MeterReading.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -228,7 +229,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                         consumerProvider.waterconnection
                                                     .connectionType !=
                                                 'Metered'
-                                            ? Container() : Column(
+                                            ? Container()
+                                            : Column(
                                                 children: [
                                                   //Consumer Previous MeterReading Date Picker Field
                                                   BasicDateField(
@@ -253,15 +255,33 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                     inputFormatter: [
                                                       FilteringTextInputFormatter
                                                           .allow(
-                                                              RegExp("[0-9.]"))
+                                                              RegExp("[0-9.]")),
                                                     ],
                                                   ),
+                                                  MeterReading(
+                                                      i18.demandGenerate
+                                                          .PREV_METER_READING_LABEL,
+                                                      consumerProvider
+                                                          .waterconnection
+                                                          .om_1Ctrl,
+                                                      consumerProvider
+                                                          .waterconnection
+                                                          .om_2Ctrl,
+                                                      consumerProvider
+                                                          .waterconnection
+                                                          .om_3Ctrl,
+                                                      consumerProvider
+                                                          .waterconnection
+                                                          .om_4Ctrl,
+                                                      consumerProvider
+                                                          .waterconnection
+                                                          .om_5Ctrl),
                                                 ],
                                               ),
                                         consumerProvider.waterconnection
-                                            .connectionType !=
-                                            'Non Metered'
-                                        ? Container()
+                                                    .connectionType !=
+                                                'Non Metered'
+                                            ? Container()
                                             : Consumer<
                                                     ConsumerProvider>(
                                                 builder: (_, consumerProvider,
@@ -280,17 +300,16 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                         true)),
                                       ],
                                     )),
-                                BuildTextField(
-                                  i18.consumer.ARREARS,
-                                  consumerProvider
-                                      .waterconnection.arrearsCtrl,
-                                  textInputType: TextInputType.number,
-                                  inputFormatter: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp("[0-9.]"))
-                                  ],
-                                  isRequired: true,
-                                ),
+                            BuildTextField(
+                              i18.consumer.ARREARS,
+                              consumerProvider.waterconnection.arrearsCtrl,
+                              textInputType: TextInputType.number,
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[0-9.]"))
+                              ],
+                              isRequired: true,
+                            ),
                             SizedBox(
                               height: 20,
                             ),

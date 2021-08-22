@@ -51,7 +51,7 @@ class ConsumerProvider with ChangeNotifier {
       "action": "SUBMIT",
       "proposedTaps": 10,
       "proposedPipeSize": 10,
-      "additionalDetails": {"initialMeterReading": 1}
+      "additionalDetails": {"initialMeterReading": 0}
     });
 
     property = Property.fromJson({
@@ -78,6 +78,8 @@ class ConsumerProvider with ChangeNotifier {
     isEdit = true;
     waterconnection = data;
     waterconnection.getText();
+  print(waterconnection.additionalDetails!.initialMeterReading!.toString());
+ 
     notifyListeners();
   }
 
@@ -112,6 +114,12 @@ class ConsumerProvider with ChangeNotifier {
         if (waterconnection.connectionType == 'Metered') {
           waterconnection.meterInstallationDate =
               waterconnection.previousReadingDate;
+          waterconnection.previousReading = int.parse(
+              waterconnection.om_1Ctrl.text +
+                  waterconnection.om_2Ctrl.text +
+                  waterconnection.om_3Ctrl.text +
+                  waterconnection.om_4Ctrl.text +
+                  waterconnection.om_5Ctrl.text);
         } else {
           waterconnection.previousReadingDate =
               waterconnection.meterInstallationDate;
@@ -121,18 +129,22 @@ class ConsumerProvider with ChangeNotifier {
           waterconnection.additionalDetails =
               addition.AdditionalDetails.fromJson({
             "locality": property.address.locality!.code,
-            "initialMeterReading": 1,
+            "initialMeterReading": waterconnection.previousReading,
             "propertyType": property.propertyType
           });
         } else {
           waterconnection.additionalDetails!.locality =
               property.address.locality!.code;
+          waterconnection.additionalDetails!.initialMeterReading =
+              waterconnection.previousReading;
           waterconnection.additionalDetails!.propertyType =
               property.propertyType;
         }
       }
 
       try {
+               print(waterconnection.additionalDetails! .toJson());
+        print(waterconnection.toJson());
         Loaders.showLoadingDialog(context);
         //IF the Consumer Detaisl Screen is in Edit Mode
         if (!isEdit) {
@@ -145,7 +157,7 @@ class ConsumerProvider with ChangeNotifier {
               .addconnection(waterconnection.toJson());
           Navigator.pop(context);
           if (result2 != null) {
-            setModel();
+            setModel(); 
             streamController.add(property);
             Notifiers.getToastMessage(
                 context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
@@ -163,7 +175,7 @@ class ConsumerProvider with ChangeNotifier {
         }
       } catch (e, s) {
         Navigator.pop(context);
-        ErrorHandler().allExceptionsHandler(context, e,s);
+        ErrorHandler().allExceptionsHandler(context, e, s);
       }
     } else {
       autoValidation = true;

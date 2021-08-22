@@ -25,6 +25,7 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) {
     ..meterId = json['meterId'] as String?
     ..propertyType = json['propertyType'] as String?
     ..previousReadingDate = json['previousReadingDate'] as int?
+    ..previousReading = json['previousReading'] as int?
     ..proposedPipeSize = (json['proposedPipeSize'] as num?)?.toDouble()
     ..connectionHolders = (json['connectionHolders'] as List<dynamic>?)
         ?.map((e) => Owners.fromJson(e as Map<String, dynamic>))
@@ -56,6 +57,7 @@ Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
       'meterId': instance.meterId,
       'propertyType': instance.propertyType,
       'previousReadingDate': instance.previousReadingDate,
+      'previousReading': instance.previousReading,
       'proposedPipeSize': instance.proposedPipeSize,
       'connectionHolders': instance.connectionHolders,
       'additionalDetails': instance.additionalDetails,

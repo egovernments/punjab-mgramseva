@@ -51,7 +51,8 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                   children: options.map(
                 (data) {
                   return new RadioListTile(
-                    title: new Text(data.label),
+                    title: new Text(ApplicationLocalizations.of(context)
+                            .translate(data.label)),
                     value: data.key,
                     groupValue: controller,
                     onChanged: (isEnabled ?? true) ? widget1 : null,
@@ -75,7 +76,8 @@ class RadioButtonFieldBuilder extends StatelessWidget {
               children: options.map(
             (data) {
               return new RadioListTile(
-                title: new Text(data.label),
+                title: new Text(ApplicationLocalizations.of(context)
+                            .translate(data.label)),
                 value: data.key,
                 groupValue: controller,
                 onChanged: (isEnabled ?? true) ? widget1 : null,
@@ -87,3 +89,5 @@ class RadioButtonFieldBuilder extends StatelessWidget {
     });
   }
 }
+
+
