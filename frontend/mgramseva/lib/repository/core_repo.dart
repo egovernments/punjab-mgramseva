@@ -22,7 +22,15 @@ class CoreRepository extends BaseService {
     var res = await makeRequest(
         url: Url.LOCALIZATION,
         queryParameters: query,
-        requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "_search", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID, ""),
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "_search",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
+            ""),
         method: RequestType.POST);
     if (res != null) {
       labelList = res['messages']
@@ -35,14 +43,26 @@ class CoreRepository extends BaseService {
   Future<LanguageList> getMdms(Map body) async {
     late LanguageList languageList;
     var res = await makeRequest(
-        url: Url.MDMS, body: body, method: RequestType.POST, requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "_search", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID, ""));
+        url: Url.MDMS,
+        body: body,
+        method: RequestType.POST,
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "_search",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
+            ""));
     if (res != null) {
       languageList = LanguageList.fromJson(res);
     }
     return languageList;
   }
 
-  Future<List<FileStore>> uploadFiles(List<dynamic>? _paths, String moduleName) async {
+  Future<List<FileStore>> uploadFiles(
+      List<dynamic>? _paths, String moduleName) async {
     Map? respStr;
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
@@ -50,42 +70,45 @@ class CoreRepository extends BaseService {
 
     var postUri = Uri.parse("$apiBaseUrl${Url.FILE_UPLOAD}");
     var request = new http.MultipartRequest("POST", postUri);
-      if (_paths != null && _paths.isNotEmpty) {
-        if (_paths is List<PlatformFile>) {
-          for (var i = 0; i < _paths.length; i++) {
+    if (_paths != null && _paths.isNotEmpty) {
+      if (_paths is List<PlatformFile>) {
+        for (var i = 0; i < _paths.length; i++) {
           var path = _paths[i];
           http.MultipartFile multipartFile = http.MultipartFile.fromBytes(
-              'file', path.bytes!, filename: '${path.name}.${path.extension}');
+              'file', path.bytes!,
+              filename: '${path.name}.${path.extension}');
           request.files.add(multipartFile);
         }
       } else if (_paths is List<File>) {
         _paths.forEach((file) async {
           request.files.add(await http.MultipartFile.fromPath(
-              'file', file.path ?? '', filename: '${file.path.split('/').last}'));
+              'file', file.path ?? '',
+              filename: '${file.path.split('/').last}'));
         });
       }
       request.fields['tenantId'] =
-      commonProvider.userDetails!.selectedtenant!.code!;
+          commonProvider.userDetails!.selectedtenant!.code!;
       request.fields['module'] = moduleName;
-    await request.send().then((response) async {
-      if (response.statusCode == 201)
-        respStr = json.decode(await response.stream.bytesToString());
-    });
-    if (respStr != null && respStr?['files'] != null) {
-      return respStr?['files']
-          .map<FileStore>((e) => FileStore.fromJson(e))
-          .toList();
+      await request.send().then((response) async {
+        if (response.statusCode == 201)
+          respStr = json.decode(await response.stream.bytesToString());
+      });
+      if (respStr != null && respStr?['files'] != null) {
+        return respStr?['files']
+            .map<FileStore>((e) => FileStore.fromJson(e))
+            .toList();
+      }
     }
-  }
     return <FileStore>[];
   }
 
-
   Future<List<FileStore>?> fetchFiles(List<String> storeId) async {
-     List<FileStore>? fileStoreIds;
+    List<FileStore>? fileStoreIds;
 
     var res = await makeRequest(
-        url: '${Url.FILE_FETCH}?tenantId=pb&fileStoreIds=${storeId.join(',')}', method: RequestType.GET);
+        url:
+            '${Url.FILE_FETCH}?createnosave&tenantId=pb&fileStoreIds=${storeId.join(',')}',
+        method: RequestType.GET);
 
     if (res != null) {
       fileStoreIds = res['fileStoreIds']

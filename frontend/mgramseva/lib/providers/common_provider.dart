@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/user/user_details.dart';
 import 'package:mgramseva/providers/language.dart';
@@ -12,13 +13,16 @@ import 'package:mgramseva/services/LocalStorage.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
+import 'package:universal_html/html.dart' as html;
 import 'package:universal_html/html.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:url_launcher/url_launcher.dart';
 
 class CommonProvider with ChangeNotifier {
   List<LocalizationLabel> localizedStrings = <LocalizationLabel>[];
@@ -69,6 +73,7 @@ class CommonProvider with ChangeNotifier {
     }
     return labels;
   }
+
   setSelectedTenant(UserDetails? loginDetails) {
     if (kIsWeb) {
       window.localStorage[Constants.LOGIN_KEY] =
@@ -114,8 +119,8 @@ class CommonProvider with ChangeNotifier {
             value: jsonEncode(labels.map((e) => e.toJson()).toList()));
       }
     } catch (e) {
-      Notifiers.getToastMessage(
-          navigatorKey.currentState!.context, 'Unable to store the details', 'ERROR');
+      Notifiers.getToastMessage(navigatorKey.currentState!.context,
+          'Unable to store the details', 'ERROR');
     }
   }
 
@@ -183,12 +188,12 @@ class CommonProvider with ChangeNotifier {
 
       if (languageProvider.stateInfo != null) {
         // languageProvider.stateInfo?.languages?.first.isSelected = true;
-        ApplicationLocalizations(
-            Locale(languageProvider.selectedLanguage?.label ?? '', languageProvider.selectedLanguage?.value))
+        ApplicationLocalizations(Locale(
+                languageProvider.selectedLanguage?.label ?? '',
+                languageProvider.selectedLanguage?.value))
             .load();
       }
     }
-
 
     if (loginResponse != null && loginResponse.trim().isNotEmpty) {
       var decodedResponse = UserDetails.fromJson(jsonDecode(loginResponse));
@@ -201,6 +206,52 @@ class CommonProvider with ChangeNotifier {
     loginCredentails = null;
     navigatorKey.currentState
         ?.pushNamedAndRemoveUntil(Routes.LOGIN, (route) => false);
+  }
+
+  void onTapOfAttachment(FileStore store) async {
+    if (store.url == null) return;
+
+    if (kIsWeb) {
+      html.AnchorElement anchorElement =
+          new html.AnchorElement(href: store.url);
+      anchorElement.href = store.url;
+      anchorElement.target = "_blank";
+      anchorElement.click();
+    } else {
+      await canLaunch(store.url!)
+          ? launch(store.url!)
+          : ErrorHandler.logError('failed to launch the url ${store.url}');
+    }
+  }
+
+  void shareonwatsapp(FileStore store) async {
+    if (store.url == null) return;
+
+    if (kIsWeb) {
+      html.AnchorElement anchorElement = new html.AnchorElement(
+          href: "https://api.whatsapp.com/send?text=" + store.url.toString());
+      anchorElement.target = "_blank";
+      anchorElement.click();
+    } else {
+      await canLaunch(store.url!)
+          ? launch(store.url!)
+          : ErrorHandler.logError('failed to launch the url ${store.url}');
+    }
+  }
+
+  void getStoreFileDetails(fileStoreId, mode) async {
+    if (fileStoreId == null) return;
+    try {
+      var res = await CoreRepository().fetchFiles([fileStoreId!]);
+      if (res != null) {
+        if (mode == 'Share')
+          shareonwatsapp(res.first);
+        else
+          onTapOfAttachment(res.first);
+      }
+    } catch (e, s) {
+      ErrorHandler.logError(e.toString(), s);
+    }
   }
 
   String? getMdmsId(LanguageList? mdms, String code, MDMSType mdmsType) {
