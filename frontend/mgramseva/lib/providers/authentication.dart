@@ -42,8 +42,12 @@ class AuthenticationProvider with ChangeNotifier {
       Navigator.pop(context);
         var commonProvider =
             Provider.of<CommonProvider>(context, listen: false);
-        commonProvider.loginCredentails = loginResponse;
 
+        if(loginResponse.isFirstTimeLogin ?? false){
+          Navigator.pushNamed(context, Routes.UPDATE_PASSWORD, arguments: loginResponse);
+          return;
+        }
+      commonProvider.loginCredentails = loginResponse;
         Navigator.of(context)
             .pushNamedAndRemoveUntil(Routes.HOME, (route) => false);
     } on CustomException catch (e,s) {
