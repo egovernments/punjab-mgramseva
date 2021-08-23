@@ -12,6 +12,7 @@ import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/error_logging.dart';
+import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/Back.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
@@ -290,9 +291,11 @@ class _UpdatePasswordState extends State<UpdatePassword> {
       };
 
       try {
+        Loaders.showLoadingDialog(context);
+
         var resetResponse = await ResetPasswordRepository().forgotPassword(
             body, widget.userDetails.accessToken);
-
+        Navigator.pop(context);
         commonProvider.loginCredentails = widget.userDetails;
         Navigator.pushReplacementNamed(
             context, Routes.SUCCESS_VIEW,
@@ -303,6 +306,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               Routes.SUCCESS_VIEW,
             ));
       }catch(e,s){
+        Navigator.pop(context);
         ErrorHandler().allExceptionsHandler(context, e, s);
       }
     }else{
