@@ -73,8 +73,8 @@ class _GenerateBillState extends State<GenerateBill> {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                LabelText(
-                                    i18.demandGenerate.GENERATE_BILL_HEADER),
+                                LabelText('${widget.id == null ? i18.demandGenerate.SERVICE_DETAILS_HEADER :
+                                    i18.demandGenerate.GENERATE_BILL_HEADER}'),
                                 Consumer<BillGenerationProvider>(
                                     builder:
                                         (_, billgenerationprovider, child) =>
@@ -282,7 +282,8 @@ class _GenerateBillState extends State<GenerateBill> {
           Footer()
         ]))),
         bottomNavigationBar: BottomButtonBar(
-            i18.demandGenerate.GENERATE_BILL_BUTTON,
+            '${widget.id == null ? i18.demandGenerate.GENERATE_DEMAND_BUTTON :
+            i18.demandGenerate.GENERATE_BILL_BUTTON}',
             () => {billgenerateProvider.onSubmit(context)}));
   }
 }
