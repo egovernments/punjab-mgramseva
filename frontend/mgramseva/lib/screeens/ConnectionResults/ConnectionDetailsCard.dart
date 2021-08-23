@@ -66,17 +66,21 @@ class SearchConnectionDetailCard extends StatelessWidget {
         LabelText(waterconnections.waterConnection!.length.toString() != null
             ? waterconnections.waterConnection!.length.toString() +
                 " " +
-                ApplicationLocalizations.of(context)
-                    .translate(i18.searchWaterConnection.CONNECTION_FOUND)
+                '${waterconnections.waterConnection!.length.toString() == '1' ? ApplicationLocalizations.of(context)
+                    .translate(i18.searchWaterConnection.CONNECTION_FOUND_ONE)
+                    : ApplicationLocalizations.of(context)
+                    .translate(i18.searchWaterConnection.CONNECTION_FOUND)}'
             : "0" +
                 ApplicationLocalizations.of(context)
                     .translate(i18.searchWaterConnection.CONNECTION_FOUND)),
         SubLabelText(ApplicationLocalizations.of(context)
                 .translate(i18.searchWaterConnection.CONNECTION_CRITERIA) +
             " " +
-            arguments.keys.first.toString() +
+            '${arguments.keys.first.toString() == 'mobileNumber' ? ApplicationLocalizations.of(context)
+                .translate(i18.searchWaterConnection.RESULTS_PHONE_NUM) : arguments.keys.first.toString()}' +
             " as " +
-            arguments.values.first.toString()),
+            '${arguments.keys.first.toString() == 'mobileNumber' ? '+91 - ' + '${arguments.values.first.toString()}'
+                : arguments.values.first.toString()}'),
         Expanded(
           child: ListView.builder(
               padding: const EdgeInsets.all(8),
