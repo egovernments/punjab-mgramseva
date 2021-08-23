@@ -93,4 +93,13 @@ class DateFormats {
       return '';
     }
   }
+
+  static String getMonthAndNextMonth(DateTime date){
+    try{
+      var nextMonthDate = new DateTime(date.year, date.month + 1, date.day);
+      return '${DateFormat.MMM().format(date)}' + '-' +'${DateFormat.MMM().format(nextMonthDate) }';
+    }catch(e){
+      return '';
+    }
+  }
 }
