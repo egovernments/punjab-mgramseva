@@ -63,7 +63,7 @@ class CommonSuccess extends StatelessWidget {
                           child: TextButton.icon(onPressed: (){},
                           icon: Icon(Icons.download_sharp),
                             label: Text( ApplicationLocalizations.of(context)
-                                .translate(i18.common.DOWNLOAD), style: TextStyle(fontSize: 19)),
+                                .translate(successHandler.downloadLinkLabel!), style: TextStyle(fontSize: 19)),
                           ),
                         ),
                         Visibility(

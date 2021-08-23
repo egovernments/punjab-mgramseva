@@ -15,6 +15,7 @@ import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -36,6 +37,7 @@ class BillGenerationProvider with ChangeNotifier {
   late List dates = [];
   var selectedBillYear;
   var selectedBillPeriod ;
+  var selectedBillCycle;
   var meterReadingDate;
   var prevReadingDate;
   List months = [
@@ -169,7 +171,7 @@ class BillGenerationProvider with ChangeNotifier {
     notifyListeners();
   }
   void onChangeOfBillCycle(val){
-    //var d = val as DateTime;
+    selectedBillCycle = (DateFormats.getMonthAndNextMonth(val));
     selectedBillPeriod = (DateFormats.getFilteredDate(
         val.toLocal().toString(),
         dateFormat: "dd/MM/yyyy")) + "-" + DateFormats.getFilteredDate((new DateTime(val.year, val.month + 1, val.day)).toLocal().toString(), dateFormat: "dd/MM/yyyy");
@@ -288,8 +290,14 @@ class BillGenerationProvider with ChangeNotifier {
               new MaterialPageRoute(builder: (BuildContext context) {
                 return CommonSuccess(SuccessHandler(
                     i18.demandGenerate.GENERATE_DEMAND_SUCCESS,
-                    i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT,
-                    i18.common.BACK_HOME, Routes.BILL_GENERATE));
+                    ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT) +
+                        ' $selectedBillCycle' + ' ${selectedBillYear.financialYear!.toString().substring(2)}. '
+                    + ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS_NEXT_SUBTEXT),
+                    i18.common.BACK_HOME, Routes.BILL_GENERATE,
+                subHeader: '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)} '
+                    '\n\n  $selectedBillCycle' + ' ${selectedBillYear.financialYear!.toString().substring(2)}',
+                downloadLink: '',
+                    downloadLinkLabel: ApplicationLocalizations.of(context).translate(i18.demandGenerate.DOWNLOAD_DEMAND_PDF)));
               }));
         }
       }

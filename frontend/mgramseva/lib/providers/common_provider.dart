@@ -54,7 +54,7 @@ class CommonProvider with ChangeNotifier {
     try {
       var query = {
         'module':
-            'mgramseva-common,mgramseva-consumer,mgramseva-expenses,mgramseva-water-connection,mgramseva-bill',
+            'mgramseva-common,mgramseva-consumer,mgramseva-expenses,mgramseva-water-connection,mgramseva-bill,mgramseva-payments',
         'locale': languageProvider.selectedLanguage?.value ?? '',
         'tenantId': 'pb'
       };
