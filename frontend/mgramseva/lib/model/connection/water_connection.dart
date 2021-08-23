@@ -78,15 +78,23 @@ class WaterConnection {
   var om_5Ctrl = new TextEditingController();
 
   setText() {
-    print(previousReadingDateCtrl.text);
     oldConnectionNo = OldConnectionCtrl.text;
     meterId = meterIdCtrl.text != "" ? meterIdCtrl.text : null;
-    arrears = double.parse(arrearsCtrl.text);
-    previousReadingDate =
-        DateFormats.dateToTimeStamp(previousReadingDateCtrl.text);
-    meterInstallationDate = DateFormats.dateToTimeStamp(
-        DateFormats.getFilteredDate(meterInstallationDateCtrl.text,
+    arrears = arrearsCtrl.text != "" ? double.parse(arrearsCtrl.text) : 0;
+    previousReadingDate = previousReadingDateCtrl.text != ""
+        ? DateFormats.dateToTimeStamp(
+            previousReadingDateCtrl.text,
+          )
+        : null;
+
+    meterInstallationDate = previousReadingDateCtrl.text != ""
+        ? DateFormats.dateToTimeStamp(
+            previousReadingDateCtrl.text,
+          )
+        : DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(
+            meterInstallationDateCtrl.text,
             dateFormat: "dd/MM/yyyy"));
+    print(meterInstallationDate);
   }
 
   getText() {
@@ -100,9 +108,6 @@ class WaterConnection {
 
     meterInstallationDateCtrl.text =
         DateFormats.timeStampToDate(meterInstallationDate).toString();
-    print("meter initial reading");
-    print(additionalDetails!.initialMeterReading);
-
     if ((additionalDetails!.initialMeterReading != null) &&
         additionalDetails!.initialMeterReading!.toString().length > 0) {
       om_1Ctrl.text = additionalDetails!.initialMeterReading!.toString()[0];

@@ -57,7 +57,7 @@ class ConsumerProvider with ChangeNotifier {
     waterconnection = WaterConnection.fromJson({
       "action": "SUBMIT",
       "proposedTaps": 1,
-      "proposedPipeSize": 1,
+      "proposedPipeSize": 10,
     });
 
     property = Property.fromJson({
@@ -117,45 +117,49 @@ class ConsumerProvider with ChangeNotifier {
         var processInstance = ProcessInstance();
         processInstance.action = 'SUBMIT';
         waterconnection.processInstance = processInstance;
-        waterconnection.tenantId =
-            commonProvider.userDetails!.selectedtenant!.code;
-        waterconnection.connectionHolders = property.owners;
-        waterconnection.propertyType = property.propertyType;
-        if (waterconnection.connectionType == 'Metered') {
-          waterconnection.meterInstallationDate =
-              waterconnection.previousReadingDate;
-          waterconnection.previousReading = int.parse(
-              waterconnection.om_1Ctrl.text +
-                  waterconnection.om_2Ctrl.text +
-                  waterconnection.om_3Ctrl.text +
-                  waterconnection.om_4Ctrl.text +
-                  waterconnection.om_5Ctrl.text);
-        } else {
-          waterconnection.previousReadingDate =
-              waterconnection.meterInstallationDate;
-        }
+      }
+      waterconnection.tenantId =
+          commonProvider.userDetails!.selectedtenant!.code;
+      waterconnection.connectionHolders = property.owners;
+      waterconnection.propertyType = property.propertyType;
+      if (waterconnection.connectionType == 'Metered') {
+        waterconnection.meterInstallationDate =
+            waterconnection.previousReadingDate;
 
-        if (waterconnection.additionalDetails == null) {
-          waterconnection.additionalDetails =
-              addition.AdditionalDetails.fromJson({
-            "locality": property.address.locality!.code,
-            "initialMeterReading": waterconnection.previousReading,
-            "propertyType": property.propertyType,
-          });
-        } else {
-          waterconnection.additionalDetails!.locality =
-              property.address.locality!.code;
-          waterconnection.additionalDetails!.initialMeterReading =
-              waterconnection.previousReading;
-          waterconnection.additionalDetails!.propertyType =
-              property.propertyType;
-          // waterconnection.additionalDetails!.address = property.address;
-        }
+        // ignore: unrelated_type_equality_checks
+        waterconnection.previousReading =
+            (waterconnection.om_1Ctrl.text != "" &&
+                    waterconnection.om_2Ctrl.text != "" &&
+                    waterconnection.om_3Ctrl.text != "" &&
+                    waterconnection.om_4Ctrl.text != "" &&
+                    waterconnection.om_5Ctrl.text != "")
+                ? int.parse(waterconnection.om_1Ctrl.text +
+                    waterconnection.om_2Ctrl.text +
+                    waterconnection.om_3Ctrl.text +
+                    waterconnection.om_4Ctrl.text +
+                    waterconnection.om_5Ctrl.text)
+                : 000000;
+      } else {
+        waterconnection.previousReadingDate =
+            waterconnection.meterInstallationDate;
+      }
+
+      if (waterconnection.additionalDetails == null) {
+        waterconnection.additionalDetails =
+            addition.AdditionalDetails.fromJson({
+          "locality": property.address.locality?.code,
+          "initialMeterReading": waterconnection.previousReading,
+          "propertyType": property.propertyType,
+        });
+      } else {
+        waterconnection.additionalDetails!.locality =
+            property.address.locality!.code;
+        waterconnection.additionalDetails!.initialMeterReading =
+            waterconnection.previousReading;
+        waterconnection.additionalDetails!.propertyType = property.propertyType;
       }
 
       try {
-        print(waterconnection.additionalDetails!.toJson());
-        print(waterconnection.toJson());
         Loaders.showLoadingDialog(context);
         //IF the Consumer Detaisl Screen is in Edit Mode
         if (!isEdit) {
@@ -166,7 +170,6 @@ class ConsumerProvider with ChangeNotifier {
 
           var result2 = await ConsumerRepository()
               .addconnection(waterconnection.toJson());
-          Navigator.pop(context);
           if (result2 != null) {
             setModel();
             streamController.add(property);
@@ -177,10 +180,11 @@ class ConsumerProvider with ChangeNotifier {
           }
         } else {
           property.creationReason = 'UPDATE';
-          //var result2 = await ConsumerRepository()
-          //  .updateconnection(waterconnection.toJson());
+
           var result1 =
               await ConsumerRepository().updateProperty(property.toJson());
+          var result2 = await ConsumerRepository()
+              .updateconnection(waterconnection.toJson());
           Navigator.pop(context);
         }
       } catch (e, s) {
@@ -255,10 +259,9 @@ class ConsumerProvider with ChangeNotifier {
       });
       boundaryList.addAll(
           TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!);
-      print("fucntion for Index");
-      print(boundaryList);
       if (boundaryList.length == 1) {
         property.address.localityCtrl = boundaryList.first;
+        onChangeOflocaity(property.address.localityCtrl);
       }
       notifyListeners();
     } catch (e) {
@@ -285,7 +288,6 @@ class ConsumerProvider with ChangeNotifier {
   List<DropdownMenuItem<Object>> getBoundaryList() {
     if (boundaryList.length > 0) {
       return (boundaryList).map((value) {
-        print(value);
         return DropdownMenuItem(
           value: value,
           child: new Text(value.name!),
@@ -318,16 +320,9 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   onChangeBillingcycle(val) {
-    print(val);
     selectedcycle = val;
     var date = val;
     waterconnection.meterInstallationDateCtrl.text = selectedcycle;
-    // waterconnection.meterInstallationDate = (DateFormats.dateToTimeStamp(
-    //   DateFormats.getFilteredDate(date.toLocal().toString(),
-    //     dateFormat: "dd/MM/yyyy")));
-    //waterconnection.previousReadingDate = (DateFormats.dateToTimeStamp(
-    //  DateFormats.getFilteredDate(date.toLocal().toString(),
-    //    dateFormat: "dd/MM/yyyy")));
   }
 
 //Displaying ConnectionType data Fetched From MDMD (Ex Metered, Non Metered..)
@@ -347,7 +342,6 @@ class ConsumerProvider with ChangeNotifier {
 
   //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
   List<DropdownMenuItem<Object>> getBillingCycle() {
-    print(languageList?.mdmsRes?.taxPeriodList!.TaxPeriodList!.first.toJson());
     if (languageList?.mdmsRes?.taxPeriodList!.TaxPeriodList! != null &&
         dates.length == 0) {
       var date2 = DateFormats.getFormattedDateToDateTime(
@@ -369,7 +363,6 @@ class ConsumerProvider with ChangeNotifier {
     if (dates.length > 0 && waterconnection.connectionType == 'Non Metered') {
       return (dates).map((value) {
         var d = value['name'];
-        print(d);
         return DropdownMenuItem(
           value: value['code'].toLocal().toString(),
           child: new Text(months[d.month - 1] + " - " + d.year.toString()),

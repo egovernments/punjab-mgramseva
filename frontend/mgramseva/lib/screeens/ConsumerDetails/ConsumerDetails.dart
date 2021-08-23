@@ -234,7 +234,6 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             BuildTextField(
                               i18.consumer.STREET_NUM_NAME,
                               property.address.streetNameOrNumberCtrl,
-                              isRequired: true,
                             ),
                             BuildTextField(
                               i18.consumer.GP_NAME,
@@ -352,7 +351,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                           consumerProvider
                                                               .waterconnection
                                                               .om_5Ctrl,
-                                                          isRequired: true,
+                                                          isRequired: false,
                                                         )
                                                       : Text(""),
                                                 ],
