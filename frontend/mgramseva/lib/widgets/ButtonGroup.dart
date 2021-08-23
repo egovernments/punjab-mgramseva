@@ -27,7 +27,7 @@ class ButtonGroup extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                           child: OutlinedButton.icon(
-                        onPressed: null,
+                        onPressed: () => {},
                         style: ButtonStyle(
                           padding: MaterialStateProperty.all(
                               EdgeInsets.symmetric(vertical: 0)),
