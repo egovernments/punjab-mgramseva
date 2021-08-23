@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:ext_storage/ext_storage.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -109,8 +108,7 @@ class CoreRepository extends BaseService {
       if(Platform.isIOS) {
         downloadPath  = (await getApplicationDocumentsDirectory()).path;
       }else {
-        downloadPath = await ExtStorage.getExternalStoragePublicDirectory(
-            ExtStorage.DIRECTORY_DOWNLOADS);
+        downloadPath = (await getExternalStorageDirectory())?.path;
       }
       var status = await Permission.storage.status;
       if (!status.isGranted) {

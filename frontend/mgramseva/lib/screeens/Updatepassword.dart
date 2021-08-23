@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mgramseva/model/mdms/tenants.dart';
+import 'package:mgramseva/model/success_handler.dart';
+import 'package:mgramseva/model/user/user_details.dart';
+import 'package:mgramseva/repository/tendants_repo.dart';
+import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/services/MDMS.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/widgets/Back.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
 import 'package:mgramseva/screeens/Passwordsuccess.dart';
+import 'package:pin_input_text_field/pin_input_text_field.dart';
 
 class UpdatePassword extends StatefulWidget {
+  final UserDetails userDetails;
+
+  const UpdatePassword({Key? key, required this.userDetails}) : super(key: key);
   State<StatefulWidget> createState() {
     return _UpdatePasswordState();
   }
@@ -13,15 +25,33 @@ class UpdatePassword extends StatefulWidget {
 class _UpdatePasswordState extends State<UpdatePassword> {
   var mobileNumber = new TextEditingController();
   final formKey = GlobalKey<FormState>();
+  Tenant? tenant;
+  TextEditingController _pinEditingController =
+  TextEditingController();
 
   saveInput(context) async {
     print(context);
   }
 
   @override
+  void initState() {
+    afterBuildContext();
+    super.initState();
+  }
+
+  afterBuildContext() async {
+    tenant = await TenantRepo().fetchTenants(
+        getTenantsMDMS('pb'), widget.userDetails.accessToken);
+    setState(() {
+      tenant;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             decoration: BoxDecoration(
               color: const Color(0xff0B4B66),
               image: DecorationImage(
@@ -32,67 +62,197 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                 fit: BoxFit.cover,
               ),
             ),
-            child: new Stack(children: <Widget>[
-              Back(),
-              (new Positioned(
-                  bottom: 20.0,
-                  child: new Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.all(8),
-                      child: Card(
-                          child: (Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text("mGramSeva",
-                                style: TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.w700)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text("update Password ? ",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w700)),
-                          ),
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Container(
-                                margin: const EdgeInsets.only(
-                                    left: 20, bottom: 20, top: 20),
-                                child: Text(
-                                    "Dear Harpreet, you have been invited to mGramSeva application of",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400)),
-                              )),
-                          BuildTextField('Enter New Password', mobileNumber),
-                          BuildTextField(
-                            'Confirm New  Password',
-                            mobileNumber,
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          FractionallySizedBox(
-                              widthFactor: 0.90,
-                              child: new ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.all(15),
-                                  ),
-                                  child: new Text('Continue',
+            child: SingleChildScrollView(
+              child: new Column(children: <Widget>[
+                Align(
+                    alignment : Alignment.centerLeft,
+                    child: Back()),
+                 Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    padding: EdgeInsets.all(8),
+                    child: Card(
+                        child: (Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("mGramSeva",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w700)),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("update Password ? ",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700)),
+                            ),
+                            Align(
+                                alignment: Alignment.centerLeft,
+                                child: Container(
+                                  margin: const EdgeInsets.only(
+                                      left: 20, bottom: 20, top: 20),
+                                  child: Text(
+                                      "Dear ${widget.userDetails.userRequest
+                                          ?.name}, you have been invited to mGramSeva application of the following Gram Panchayats.",
                                       style: TextStyle(
-                                          fontSize: 19,
-                                          fontWeight: FontWeight.w500)),
-                                  onPressed: () =>
-                                      Navigator.of(context).pushReplacement(
-                                          new MaterialPageRoute(
-                                              builder: (BuildContext context) {
-                                        return new PasswordSuccess(
-                                            " Password Updated Successfully");
-                                      })))),
-                          PasswordHint('')
-                        ],
-                      ))))))
-            ])));
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400)),
+                                )),
+                            _buildTenantDetails(),
+                            _buildOtpView(),
+                            BuildTextField(
+                                'Enter New Password', mobileNumber, isRequired: true,
+                            ),
+                            BuildTextField(
+                              'Confirm New  Password',
+                              mobileNumber,
+                              isRequired: true,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            FractionallySizedBox(
+                                widthFactor: 0.90,
+                                child: new ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      padding: EdgeInsets.all(15),
+                                    ),
+                                    child: new Text(i18.common.CONTINUE,
+                                        style: TextStyle(
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.w500)),
+                                    onPressed: () =>
+                                        Navigator.pushReplacementNamed(
+                                            context, Routes.SUCCESS_VIEW,
+                                            arguments: SuccessHandler(
+                                              "Password Updated Successfully",
+                                              "Your password has been updated successfully. Please continue and login with phone number and the new password.",
+                                              i18.common.BACK_HOME,
+                                              Routes.SUCCESS_VIEW,
+                                            )
+                                        ))),
+                            PasswordHint('')
+                          ],
+                        ))))
+              ]),
+            )));
+  }
+
+  Widget _buildTenantDetails() {
+    ;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+      child: Table(
+        border: TableBorder.all(color: Colors.grey, width: 0.3),
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          children: [
+            _buildHeader(),
+            ..._buildData()
+          ]
+      ),
+    );
+  }
+
+  TableRow _buildHeader() {
+    var list = ['GP Number', 'Name of Gram Panchayat'];
+    return
+      TableRow(
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(238, 238, 238, 1)
+        ),
+          children: list.map((e) =>
+              TableCell(child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                child: Text('$e',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+              ))
+          ).toList()
+      );
+  }
+
+  List<TableRow> _buildData() {
+    var style = TextStyle(fontSize: 16);
+    if (tenant == null) return <TableRow>[];
+    return List.generate(tenant!.tenantsList!.length, (index) {
+      var e = tenant!.tenantsList![index];
+      return TableRow(
+          decoration: BoxDecoration(
+              color: index%2 == 0 ? Colors.white : Color.fromRGBO(238, 238, 238, 1)
+          ),
+          children: [
+            TableCell(child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+              child: Text('${e?.city?.code}', style: style),
+            )),
+            TableCell(child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text('${e.code}', style: style),
+            ))
+          ]
+      );
+    });
+  }
+
+
+  Widget _buildOtpView(){
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Wrap(
+        direction: Axis.vertical,
+        spacing: 5,
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          RichText(text: TextSpan(
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Color.fromRGBO(80, 90, 95, 1)),
+            children: [
+              TextSpan(text: 'Enter the OTP sent to '),
+              TextSpan(text: '+ 91 -${widget.userDetails.userRequest?.mobileNumber}',
+              style: TextStyle(fontWeight: FontWeight.w400, color: Color.fromRGBO(11, 12, 12, 1))
+              )
+            ]
+          )),
+          Container(
+            width: 200,
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: PinInputTextField(
+              pinLength: 4,
+              decoration: BoxLooseDecoration(
+                strokeColorBuilder:
+                PinListenColorBuilder(Theme.of(context).primaryColor, Colors.grey),
+                radius: Radius.zero
+              ),
+              controller: _pinEditingController,
+              textInputAction: TextInputAction.go,
+              keyboardType: TextInputType.phone,
+              onChanged: (pin) {
+                debugPrint('onChanged execute. pin:$pin');
+              },
+              enableInteractiveSelection: false,
+              inputFormatters:  [FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+$'))],
+              cursor: Cursor(
+                width: 2,
+                color: Colors.lightBlue,
+                radius: Radius.circular(1),
+                // enabled: _cursorEnable,
+              ),
+            ),
+          ),
+          TextButton(onPressed: onClickOfResend, child: Text('Resend OTP'))
+        ],
+      ),
+    );
+  }
+
+  void onClickOfResend() {
+
   }
 }

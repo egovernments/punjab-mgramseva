@@ -41,9 +41,9 @@ dependencies:
   flutter_typeahead: ^3.2.0
   flutter_downloader: ^1.6.1
   path_provider: ^2.0.2
-  ext_storage: ^1.0.3
   permission_handler: ^8.1.4+2
   url_launcher: ^6.0.9
+  pin_input_text_field: ^4.1.0
 
 dev_dependencies:
   flutter_test:

@@ -24,6 +24,9 @@ class UserDetails {
   @JsonKey(name: "selectedTenant")
   Tenants? selectedtenant;
 
+  @JsonKey(name: 'isFirstTimeLogin')
+  bool? isFirstTimeLogin;
+
   UserDetails();
 
   factory UserDetails.fromJson(Map<String, dynamic> json) =>
