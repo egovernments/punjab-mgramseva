@@ -169,7 +169,8 @@ class _GenerateBillState extends State<GenerateBill> {
                                                   .billGenerateDetails.om_4Ctrl,
                                               billgenerationprovider
                                                   .billGenerateDetails
-                                                  .om_5Ctrl),
+                                                  .om_5Ctrl,
+                                            isRequired: true,),
                                           MeterReading(
                                               i18.demandGenerate
                                                   .NEW_METER_READING_LABEL,
@@ -183,7 +184,8 @@ class _GenerateBillState extends State<GenerateBill> {
                                                   .billGenerateDetails.nm_4Ctrl,
                                               billgenerationprovider
                                                   .billGenerateDetails
-                                                  .nm_5Ctrl),
+                                                  .nm_5Ctrl,
+                                            isRequired: true,),
                                           BasicDateField(
                                               i18.demandGenerate
                                                   .METER_READING_DATE,
