@@ -13,10 +13,12 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.mdms.model.MdmsCriteriaReq;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.constants.WCConstants;
+import org.egov.waterconnection.web.models.FeedbackRequest;
 import org.egov.waterconnection.web.models.RoadCuttingInfo;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
 import org.egov.waterconnection.repository.ServiceRequestRepository;
+import org.egov.waterconnection.service.MasterDataService;
 import org.egov.waterconnection.util.WaterServicesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +44,9 @@ public class MDMSValidator {
 
 	@Value("${egov.mdms.search.endpoint}")
 	private String mdmsEndpoint;
+	
+	@Autowired
+	private MasterDataService masterDataService;
     
 	/**
 	 * Validate Master data for given request
@@ -222,5 +227,47 @@ public class MDMSValidator {
 			validateMDMSData(finalmasterNames, finalcodes);
 			validateCodes(request.getWaterConnection(), finalcodes);
 		}
+	}
+	
+	public void validateQuestion( FeedbackRequest feedbackrequest) {
+		// TODO Auto-generated method stub
+	Object	masterData=masterDataService.getFeedbackQuestions(feedbackrequest.getRequestInfo(), feedbackrequest.getFeedback().getTenantId());
+	Map additonalDetails = (Map)feedbackrequest.getFeedback().getAdditionalDetails();
+	List<Map<String,String>> requestCheckList = (List<Map<String, String>>) additonalDetails.get(WCConstants.MDMS_CHECKLIST);
+	List<Map<String,Object>> mdmsCheckList = JsonPath.read(masterData, WCConstants.REQ_CHECKLIST_PATH);
+	if(mdmsCheckList.size() > 0 && (requestCheckList == null || requestCheckList.size() ==0)) {
+		throw new CustomException(WCConstants.INVALID_CHECKLIST, " Mandatory checlist is not provided!");
+	}
+	mdmsCheckList.forEach(mdmsClItem->{
+		Map<String,String> reqClItem = null;
+		for( int j=0;j<requestCheckList.size();j++) {
+			if(requestCheckList.get(j).get("code").equalsIgnoreCase((String) mdmsClItem.get("code") )) {
+				reqClItem = requestCheckList.get(j);
+			}
+		}
+		if(reqClItem != null) {
+			String[] reqOptions =reqClItem.get("value").split(",");
+			List<String> mdmsClOptions =(List<String>) mdmsClItem.get("options");
+			if(((String) mdmsClItem.get("type")).equalsIgnoreCase(WCConstants.CHECK_LIST_SINGLE_SELECT) ) {
+				if(reqOptions.length > 1) {
+					 throw new CustomException(WCConstants.INVALID_CHECKLIST, "Checklist "+ mdmsClItem.get("code")+" is SINGLE SELECT, cannot select multiple options.");
+				}else if(!mdmsClOptions.contains(reqOptions[0])){
+					 throw new CustomException(WCConstants.INVALID_CHECKLIST, " Value provided is not checklist options.");
+				}
+			}else if(((String) mdmsClItem.get("type")).equalsIgnoreCase(WCConstants.CHECK_LIST_MULTI_SELECT)) {
+				for( int h=0;h<reqOptions.length;h++) {
+					if(!mdmsClOptions.contains(reqOptions[h])) {
+						 throw new CustomException(WCConstants.INVALID_CHECKLIST, "Checklist "+mdmsClItem.get("code")+" does not allow option "+reqOptions[h]);
+					}
+				}
+				
+			}else {
+				throw new CustomException(WCConstants.INVALID_CHECKLIST, " Value provided is not checklist options.");
+			}
+		}else{
+			throw new CustomException(WCConstants.INVALID_CHECKLIST, " Required CheckList "+mdmsClItem.get("code")+ " is not answered ");
+		}
+	});
+	
 	}
 }

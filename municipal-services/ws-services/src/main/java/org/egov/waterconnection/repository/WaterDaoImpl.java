@@ -10,7 +10,12 @@ import org.egov.common.contract.request.Role;
 import org.egov.common.contract.request.User;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.constants.WCConstants;
+import org.egov.waterconnection.repository.rowmapper.BillingCycleRowMapper;
+import org.egov.waterconnection.repository.rowmapper.FeedbackRowMapper;
 import org.egov.waterconnection.repository.rowmapper.OpenWaterRowMapper;
+import org.egov.waterconnection.web.models.BillingCycle;
+import org.egov.waterconnection.web.models.Feedback;
+import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
@@ -53,6 +58,12 @@ public class WaterDaoImpl implements WaterDao {
 
 	@Value("${egov.waterservice.updatewaterconnection.topic}")
 	private String updateWaterConnection;
+	
+	@Autowired
+	private BillingCycleRowMapper billingCycleRowMapper;
+
+	@Autowired
+    private FeedbackRowMapper feedbackRowMapper;
 	
 	@Override
 	public void saveWaterConnection(WaterConnectionRequest waterConnectionRequest) {
@@ -135,6 +146,28 @@ public class WaterDaoImpl implements WaterDao {
 
 		return userInfo.getType().equalsIgnoreCase("SYSTEM")
 				&& userInfo.getRoles().stream().map(Role::getCode).collect(Collectors.toSet()).contains("ANONYMOUS");
+	}
+	
+	public BillingCycle getBillingCycle(String paymentId) {
+
+		String query = WsQueryBuilder.GET_BILLING_CYCLE;
+
+		List<Object> prepareStatementList = new ArrayList<Object>();
+
+		prepareStatementList.add(paymentId);
+
+		List<BillingCycle> billingCycleList = jdbcTemplate.query(query, prepareStatementList.toArray(),
+				billingCycleRowMapper);
+
+		return billingCycleList.get(0);
+	}
+
+	public List<Feedback> getFeebback(FeedbackSearchCriteria feedbackSearchCriteria) {
+
+		List<Object> preparedStamentValues = new ArrayList<Object>();
+		String query = wsQueryBuilder.getFeedback(feedbackSearchCriteria, preparedStamentValues);
+		List<Feedback> feedBackList = jdbcTemplate.query(query, preparedStamentValues.toArray(), feedbackRowMapper);
+		return feedBackList;
 	}
 
 }

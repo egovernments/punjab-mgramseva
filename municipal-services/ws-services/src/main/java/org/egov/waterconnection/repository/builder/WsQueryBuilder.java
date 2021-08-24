@@ -8,6 +8,7 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.service.UserService;
 import org.egov.waterconnection.util.WaterServicesUtil;
+import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.Property;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,11 @@ public class WsQueryBuilder {
             "WHERE offset_ > ? AND offset_ <= ?";
 	
 	private static final String ORDER_BY_CLAUSE= " ORDER BY wc.appCreatedDate DESC";
+	
+	public static final String GET_BILLING_CYCLE = "select fromperiod,toperiod from egcl_billdetial where billid=(select billid from egcl_paymentdetail where paymentid=?)";
+
+	public static final String FEEDBACK_BASE_QUERY = "select id,tenantid,connectionno,paymentid, billingcycle,additionaldetails,createdtime,lastmodifiedtime,createdby,lastmodifiedby from eg_ws_feedback where tenantid=?";
+	
 	/**
 	 * 
 	 * @param criteria
@@ -266,5 +272,59 @@ public class WsQueryBuilder {
 		else {
 			queryString.append(" OR");
 		}
+	}
+	
+	public String getFeedback(FeedbackSearchCriteria feedBackSearchCriteira,List<Object> preparedStatementValues) {
+
+		StringBuilder query = new StringBuilder(FEEDBACK_BASE_QUERY);
+		preparedStatementValues.add(feedBackSearchCriteira.getTenantId());
+
+		if (feedBackSearchCriteira.getId() != null) {
+			addClauseIfRequired(preparedStatementValues, query);
+			query.append(" id = ? ");
+			preparedStatementValues.add(feedBackSearchCriteira.getId());
+		}
+
+		if (feedBackSearchCriteira.getBillingCycle() != null) {
+
+			addClauseIfRequired(preparedStatementValues, query);
+			query.append(" billingcycle = ? ");
+			preparedStatementValues.add(feedBackSearchCriteira.getBillingCycle());
+		}
+
+		if (feedBackSearchCriteira.getPaymentId() != null) {
+
+			addClauseIfRequired(preparedStatementValues, query);
+			query.append(" paymentid = ? ");
+			preparedStatementValues.add(feedBackSearchCriteira.getPaymentId());
+		}
+		
+		if (feedBackSearchCriteira.getConnectionNo() != null) {
+
+			addClauseIfRequired(preparedStatementValues, query);
+			query.append(" connectionno = ? ");
+			preparedStatementValues.add(feedBackSearchCriteira.getConnectionNo());
+		}
+		
+		if(feedBackSearchCriteira.getOffset()!=null) {
+			
+			query.append(" offset ? ");
+			preparedStatementValues.add(feedBackSearchCriteira.getOffset());
+			
+		}
+		
+		
+		if(feedBackSearchCriteira.getLimit()!=null) {
+			
+			query.append(" limit ? ");
+			
+			preparedStatementValues.add(feedBackSearchCriteira.getLimit());
+			
+		}
+		
+		
+
+		return query.toString();
+
 	}
 }

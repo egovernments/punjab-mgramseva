@@ -3,11 +3,16 @@ package org.egov.waterconnection.web.controller;
 import java.util.List;
 import javax.validation.Valid;
 
+import org.egov.waterconnection.web.models.Feedback;
+import org.egov.waterconnection.web.models.FeedbackRequest;
+import org.egov.waterconnection.web.models.FeedbackResponse;
+import org.egov.waterconnection.web.models.FeedbackSearchRequest;
 import org.egov.waterconnection.web.models.RequestInfoWrapper;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
 import org.egov.waterconnection.web.models.WaterConnectionResponse;
+import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.service.WaterService;
 import org.egov.waterconnection.util.ResponseInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +74,29 @@ public class WaterController {
 				.build();
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
+	}
+	
+	@RequestMapping(value = "/_submitfeedback", method = RequestMethod.POST)
+	public ResponseEntity<String> submitFeedback(@Valid @RequestBody FeedbackRequest feedbackrequest) {
+
+		waterService.submitFeedback(feedbackrequest);
+
+		return new ResponseEntity<>(WCConstants.SUCCESSFUL_FEEDBACK_SUBMIT, HttpStatus.OK);
+
+	}
+
+	@RequestMapping(value = "/_getfeedback", method = RequestMethod.POST)
+	public ResponseEntity<FeedbackResponse> getFeedback(
+			@Valid @RequestBody FeedbackSearchRequest feedbackSearchRequest) {
+
+		List<Feedback> feedbackList = waterService.getFeedback(feedbackSearchRequest.getFeedbackSearchCriteria());
+
+		FeedbackResponse feedbackResponse = FeedbackResponse.builder()
+				.responseInfo(responseInfoFactory
+						.createResponseInfoFromRequestInfo(feedbackSearchRequest.getRequestInfo(), true))
+				.feedback(feedbackList).build();
+
+		return new ResponseEntity<>(feedbackResponse, HttpStatus.OK);
 	}
 
 
