@@ -119,9 +119,9 @@ public class WaterConnectionValidator {
 		Map<String, String> errorMap = new HashMap<>();
 		StringBuilder url = new StringBuilder();
 		url.append(config.getBillingHost()).append(config.getDemandSearchUri());
-		url.append("? consumerCode=").append(request.getWaterConnection().getConnectionNo());
-		url.append("& tenantId=").append(request.getWaterConnection().getTenantId());
-		url.append("& businessService=WS");
+		url.append("?consumerCode=").append(request.getWaterConnection().getConnectionNo());
+		url.append("&tenantId=").append(request.getWaterConnection().getTenantId());
+		url.append("&businessService=WS");
 		DemandResponse demandResponse = null;
 		try {
 			Object response = serviceRequestRepository.fetchResult(url, RequestInfoWrapper.builder().requestInfo(request.getRequestInfo()).build());
