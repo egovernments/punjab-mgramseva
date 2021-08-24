@@ -208,8 +208,8 @@ public class SchedulerService {
 						mobileNumberIdMap.entrySet().stream().forEach(map -> {
 							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
 								String message = messageMap.get(NotificationUtil.MSG_KEY);
-								message.replace("{link}", config.getExpenditureLink());
-								message.replace("{GPWSC}", tenantId); 
+								message = message.replace("{link}", config.getExpenditureLink());
+								message = message.replace("{GPWSC}", tenantId);
 								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
 										.message(messageMap.get(NotificationUtil.MSG_KEY))
 										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
@@ -295,7 +295,7 @@ public class SchedulerService {
 	public String formatMarkExpenseMessage(String tenantId, String message) {
 		List<String> activeExpenseCount = repository.getActiveExpenses(tenantId);
 		if (null != activeExpenseCount && activeExpenseCount.size() > 0)
-			message.replace("{BILL_COUNT_AWAIT}", activeExpenseCount.get(0));
+			message = message.replace("{BILL_COUNT_AWAIT}", activeExpenseCount.get(0));
 		return message;
 	}
 
@@ -333,8 +333,8 @@ public class SchedulerService {
 						mobileNumberIdMap.entrySet().stream().forEach(map -> {
 							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
 								String message = messageMap.get(NotificationUtil.MSG_KEY);
-								message.replace("{link}", config.getExpenseBillMarkPaidLink());
-								message.replace("{GPWSC}", tenantId); 
+								message = message.replace("{link}", config.getExpenseBillMarkPaidLink());
+								message = message.replace("{GPWSC}", tenantId); 
 								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
 										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
 										.users(new String[] { map.getValue() }).build();
@@ -391,15 +391,15 @@ public class SchedulerService {
 						.toString(),
 				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).toString());
 		if (null != previousMonthCollection && previousMonthCollection.size() > 0)
-			message.replace("{PREVIOUS_MONTH_COLLECTION}", previousMonthCollection.get(0));
+			message = message.replace("{PREVIOUS_MONTH_COLLECTION}", previousMonthCollection.get(0));
 
-		message.replace("{PREVIOUS_MONTH}", LocalDate.now().minusMonths(1).getMonth().toString());
+		message = message.replace("{PREVIOUS_MONTH}", LocalDate.now().minusMonths(1).getMonth().toString());
 		List<String> previousMonthExpense = repository.getPreviousMonthExpenseExpenses(tenantId,
 				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
 						.toString(),
 				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).toString());
 		if (null != previousMonthExpense && previousMonthExpense.size() > 0)
-			message.replace("{PREVIOUS_MONTH_EXPENSE}", previousMonthExpense.get(0));
+			message = message.replace("{PREVIOUS_MONTH_EXPENSE}", previousMonthExpense.get(0));
 		return message;
 	}
 
@@ -445,9 +445,9 @@ public class SchedulerService {
 								String uuidUsername[] = ((String) map.getValue()).split("|");
 								String message = formatMonthSummaryMessage(requestInfo, tenantId,
 										messageMap.get(NotificationUtil.MSG_KEY));
-								message.replace("{link}", config.getMonthDashboardLink());
-								message.replace("{GPWSC}", tenantId); 
-								message.replace("{user}", uuidUsername[1]);
+								message = message.replace("{link}", config.getMonthDashboardLink());
+								message = message.replace("{GPWSC}", tenantId); 
+								message = message.replace("{user}", uuidUsername[1]);
 								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
 										.message(messageMap.get(NotificationUtil.MSG_KEY))
 										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
@@ -533,9 +533,9 @@ public class SchedulerService {
 								String uuidUsername[] = ((String) map.getValue()).split("|");
 								String message = formatPendingCollectionMessage(requestInfo, tenantId,
 										messageMap.get(NotificationUtil.MSG_KEY));
-								message.replace("{link}", config.getMonthRevenueDashboardLink());
-								message.replace("{GPWSC}", tenantId); 
-								message.replace("{user}", uuidUsername[1]);
+								message = message.replace("{link}", config.getMonthRevenueDashboardLink());
+								message = message.replace("{GPWSC}", tenantId); 
+								message = message.replace("{user}", uuidUsername[1]);
 								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
 										.message(messageMap.get(NotificationUtil.MSG_KEY))
 										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
@@ -556,8 +556,8 @@ public class SchedulerService {
 		List<String> pendingCollection = repository.getPendingCollection(tenantId,
 				financialYear.get("startingDate").toString(), financialYear.get("endingDate").toString());
 		if (null != pendingCollection && pendingCollection.size() > 0)
-			message.replace(" {PENDING_COLLECTION} ", pendingCollection.get(0));
-		message.replace("{TODAY_DATE}", LocalDate.now().toString());
+			message=message.replace(" {PENDING_COLLECTION} ", pendingCollection.get(0));
+		message=message.replace("{TODAY_DATE}", LocalDate.now().toString());
 		return message;
 	}
 
