@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mgramseva/Env/app_config.dart';
@@ -11,6 +12,7 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -19,6 +21,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart' as html;
 
 class CoreRepository extends BaseService {
   Future<List<LocalizationLabel>> getLocilisation(
@@ -101,11 +104,16 @@ class CoreRepository extends BaseService {
   }
 
   Future<bool?> pdfDownload(BuildContext context, String url, [String? fileName]) async {
-    fileName = fileName ?? '${url.split('/').last}';
+    fileName = fileName ?? CommonMethods.getExtension(url);
     try {
-      // CommonMethods.setLoaderStatus(_keyLoader, context, true);
       var downloadPath;
-      if(Platform.isIOS) {
+      if(kIsWeb) {
+        html.AnchorElement anchorElement = new html.AnchorElement(
+            href: url);
+        anchorElement.download = url;
+        anchorElement.click();
+        return true;
+      }else if(Platform.isIOS) {
         downloadPath  = (await getApplicationDocumentsDirectory()).path;
       }else {
         downloadPath = (await getExternalStorageDirectory())?.path;

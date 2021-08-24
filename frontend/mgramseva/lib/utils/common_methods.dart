@@ -9,7 +9,8 @@ class CommonMethods {
     Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!, Routes.HOME, (route) => false, arguments: null);
   }
 
-  // static drawerNavigator(int index){
-  //   Navigator.pushNamed(navigatorKey.currentContext!,  Routes.HOME, arguments: index);
-  // }
+
+  static String getExtension(String url){
+    return url.substring(0, url.indexOf('?')).split('/').last;
+  }
 }
