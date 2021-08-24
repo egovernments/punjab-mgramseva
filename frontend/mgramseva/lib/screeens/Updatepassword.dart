@@ -81,8 +81,6 @@ class _UpdatePasswordState extends State<UpdatePassword> {
     return Scaffold(
         body: BackgroundContainer(new Container(
             padding: const EdgeInsets.all(8.0),
-
-            // height: MediaQuery.of(context).size.height,
             child: SingleChildScrollView(
               child: Form(
                 key: formKey,
@@ -90,7 +88,6 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                     ? AutovalidateMode.always
                     : AutovalidateMode.disabled,
                 child: new Column(children: <Widget>[
-                  Align(alignment: Alignment.centerLeft, child: Back()),
                   Container(
                       width: MediaQuery.of(context).size.width > 720
                           ? MediaQuery.of(context).size.width / 3
