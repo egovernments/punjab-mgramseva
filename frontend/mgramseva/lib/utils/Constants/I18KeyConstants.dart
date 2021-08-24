@@ -305,7 +305,8 @@ class _Validators {
   String get INVALID_FORMAT => 'INVALID_FORMAT'; // Invalid format
   String get CONFIRM_RECONFIRM_SHOULD_SAME =>
       'CONFIRM_RECONFIRM_SHOULD_SAME'; //New Password and Confirm password should be same
-
+  String get ENTER_METER_NUMBER => 'ENTER_METER_NUMBER';
+  String get ENTER_ALPHA_NUMERIC_ONLY => 'ENTER_ALPHA_NUMERIC_ONLY';
 }
 
 class DemandGenerate {
