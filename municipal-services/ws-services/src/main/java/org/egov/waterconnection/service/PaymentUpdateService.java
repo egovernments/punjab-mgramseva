@@ -36,6 +36,7 @@ import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.Source;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
+import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.egov.waterconnection.web.models.collection.PaymentDetail;
 import org.egov.waterconnection.web.models.collection.PaymentRequest;
 import org.egov.waterconnection.workflow.WorkflowIntegrator;
@@ -113,8 +114,10 @@ public class PaymentUpdateService {
 					SearchCriteria criteria = SearchCriteria.builder()
 							.tenantId(paymentRequest.getPayment().getTenantId())
 							.applicationNumber(paymentDetail.getBill().getConsumerCode()).build();
-					List<WaterConnection> waterConnections = waterService.search(criteria,
+					List<WaterConnection> waterConnections;
+					WaterConnectionResponse response = waterService.search(criteria,
 							paymentRequest.getRequestInfo());
+					waterConnections = response.getWaterConnection();
 					if (CollectionUtils.isEmpty(waterConnections)) {
 						throw new CustomException("INVALID_RECEIPT",
 								"No waterConnection found for the consumerCode " + criteria.getApplicationNumber());
@@ -206,8 +209,10 @@ public class PaymentUpdateService {
 								.tenantId(paymentRequest.getPayment().getTenantId())
 								.applicationNumber(paymentDetail.getBill().getConsumerCode()).build();
 					}
-					List<WaterConnection> waterConnections = waterService.search(criteria,
+					List<WaterConnection> waterConnections;
+					WaterConnectionResponse response = waterService.search(criteria,
 							paymentRequest.getRequestInfo());
+					waterConnections = response.getWaterConnection();
 					if (CollectionUtils.isEmpty(waterConnections)) {
 						throw new CustomException("INVALID_RECEIPT",
 								"No waterConnection found for the consumerCode " + paymentDetail.getBill().getConsumerCode());

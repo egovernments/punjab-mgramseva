@@ -31,6 +31,7 @@ import org.egov.waterconnection.web.models.Property;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
+import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.egov.waterconnection.web.models.workflow.BusinessService;
 import org.egov.waterconnection.workflow.WorkflowIntegrator;
 import org.egov.waterconnection.workflow.WorkflowService;
@@ -140,20 +141,19 @@ public class WaterServiceImpl implements WaterService {
 	 * @param requestInfo
 	 * @return List of matching water connection
 	 */
-	public List<WaterConnection> search(SearchCriteria criteria, RequestInfo requestInfo) {
-		List<WaterConnection> waterConnectionList;
-		waterConnectionList = getWaterConnectionsList(criteria, requestInfo);
+	public WaterConnectionResponse search(SearchCriteria criteria, RequestInfo requestInfo) {
+		WaterConnectionResponse waterConnection = getWaterConnectionsList(criteria, requestInfo);
 		if (!StringUtils.isEmpty(criteria.getSearchType()) &&
 				criteria.getSearchType().equals(WCConstants.SEARCH_TYPE_CONNECTION)) {
-			waterConnectionList = enrichmentService.filterConnections(waterConnectionList);
+			waterConnection.setWaterConnection(enrichmentService.filterConnections(waterConnection.getWaterConnection()));
 			if(criteria.getIsPropertyDetailsRequired()){
-				waterConnectionList = enrichmentService.enrichPropertyDetails(waterConnectionList, criteria, requestInfo);
+				waterConnection.setWaterConnection(enrichmentService.enrichPropertyDetails(waterConnection.getWaterConnection(), criteria, requestInfo));
 
 			}
 		}
-		waterConnectionValidator.validatePropertyForConnection(waterConnectionList);
-		enrichmentService.enrichConnectionHolderDeatils(waterConnectionList, criteria, requestInfo);
-		return waterConnectionList;
+		waterConnectionValidator.validatePropertyForConnection(waterConnection.getWaterConnection());
+		enrichmentService.enrichConnectionHolderDeatils(waterConnection.getWaterConnection(), criteria, requestInfo);
+		return waterConnection;
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class WaterServiceImpl implements WaterService {
 	 * @param requestInfo
 	 * @return List of matching water connection
 	 */
-	public List<WaterConnection> getWaterConnectionsList(SearchCriteria criteria, RequestInfo requestInfo) {
+	public WaterConnectionResponse getWaterConnectionsList(SearchCriteria criteria, RequestInfo requestInfo) {
 		return waterDao.getWaterConnectionList(criteria, requestInfo);
 	}
 
@@ -226,20 +226,22 @@ public class WaterServiceImpl implements WaterService {
 		Set<String> ids = new HashSet<>(Arrays.asList(id));
 		SearchCriteria criteria = new SearchCriteria();
 		criteria.setIds(ids);
-		List<WaterConnection> connections = getWaterConnectionsList(criteria, requestInfo);
-		if (CollectionUtils.isEmpty(connections)) {
+		WaterConnectionResponse waterConnection = getWaterConnectionsList(criteria, requestInfo);
+		
+		if (CollectionUtils.isEmpty(waterConnection.getWaterConnection())) {
 			StringBuilder builder = new StringBuilder();
 			builder.append("WATER CONNECTION NOT FOUND FOR: ").append(id).append(" :ID");
 			throw new CustomException("INVALID_WATERCONNECTION_SEARCH", builder.toString());
 		}
 
-		return connections.get(0);
+		return waterConnection.getWaterConnection().get(0);
 	}
 
 	private List<WaterConnection> getAllWaterApplications(WaterConnectionRequest waterConnectionRequest) {
 		SearchCriteria criteria = SearchCriteria.builder()
 				.connectionNumber(waterConnectionRequest.getWaterConnection().getConnectionNo()).build();
-		return search(criteria, waterConnectionRequest.getRequestInfo());
+		WaterConnectionResponse waterConnection = search(criteria, waterConnectionRequest.getRequestInfo());
+		return waterConnection.getWaterConnection();
 	}
 
 	private List<WaterConnection> updateWaterConnectionForModifyFlow(WaterConnectionRequest waterConnectionRequest) {

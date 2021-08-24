@@ -19,6 +19,7 @@ import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
+import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.egov.waterconnection.producer.WaterConnectionProducer;
 import org.egov.waterconnection.repository.builder.WsQueryBuilder;
 import org.egov.waterconnection.repository.rowmapper.WaterRowMapper;
@@ -71,26 +72,31 @@ public class WaterDaoImpl implements WaterDao {
 	}
 
 	@Override
-	public List<WaterConnection> getWaterConnectionList(SearchCriteria criteria,
+	public WaterConnectionResponse getWaterConnectionList(SearchCriteria criteria,
 			RequestInfo requestInfo) {
 		
 		List<WaterConnection> waterConnectionList = new ArrayList<>();
 		List<Object> preparedStatement = new ArrayList<>();
 		String query = wsQueryBuilder.getSearchQueryString(criteria, preparedStatement, requestInfo);
 		
-		if (query == null)
-			return Collections.emptyList();
+//		if (query == null)
+//			return null;
 		Boolean isOpenSearch = isSearchOpen(requestInfo.getUserInfo());
-		
-		if(isOpenSearch)
+		WaterConnectionResponse connectionResponse = new WaterConnectionResponse();
+		if(isOpenSearch) {
 			waterConnectionList = jdbcTemplate.query(query, preparedStatement.toArray(),
 					openWaterRowMapper);
-		else
+			connectionResponse = WaterConnectionResponse.builder().waterConnection(waterConnectionList).totalCount(openWaterRowMapper.getFull_count()).build();
+		}
+		else {
 			waterConnectionList = jdbcTemplate.query(query, preparedStatement.toArray(),
-				waterRowMapper);
-		if (waterConnectionList == null)
-			return Collections.emptyList();
-		return waterConnectionList;
+					waterRowMapper);
+			connectionResponse = WaterConnectionResponse.builder().waterConnection(waterConnectionList).totalCount(waterRowMapper.getFull_count()).build();
+		}
+		
+//		if (waterConnectionList == null)
+//			return Collections.emptyList();
+		return connectionResponse;
 	}
 
 	@Override
