@@ -7,6 +7,7 @@ class Url {
 
   static const String FILE_UPLOAD = 'filestore/v1/files';
   static const String FILE_FETCH = 'filestore/v1/files/url';
+  static const String URL_SHORTNER = 'egov-url-shortening/shortener';
 
   /// Expenses
   static const String ADD_EXPENSES = 'echallan-services/eChallan/v1/_create';

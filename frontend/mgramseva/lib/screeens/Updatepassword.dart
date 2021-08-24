@@ -18,9 +18,12 @@ import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/Back.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
+import 'package:mgramseva/widgets/DesktopView.dart';
+import 'package:mgramseva/widgets/MobileView.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
 import 'package:mgramseva/screeens/Passwordsuccess.dart';
+import 'package:mgramseva/widgets/footerBanner.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:provider/provider.dart';
 
@@ -80,6 +83,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: BackgroundContainer(new Container(
+            width: MediaQuery.of(context).size.width,
             padding: const EdgeInsets.all(8.0),
             child: SingleChildScrollView(
               child: Form(
@@ -88,86 +92,115 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                     ? AutovalidateMode.always
                     : AutovalidateMode.disabled,
                 child: new Column(children: <Widget>[
+                  Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width / 4),
+                          child: IconButton(
+                              icon: Icon(
+                                Icons.arrow_back,
+                              ),
+                              iconSize: 25,
+                              color: Colors.white,
+                              splashColor: Colors.purple,
+                              onPressed: () =>
+                                  Navigator.of(context, rootNavigator: true)
+                                      .maybePop()))),
                   Container(
-                      width: MediaQuery.of(context).size.width > 720
-                          ? MediaQuery.of(context).size.width / 3
-                          : MediaQuery.of(context).size.width,
                       padding: EdgeInsets.all(8),
                       child: Card(
-                          child: (Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                                '${ApplicationLocalizations.of(context).translate(i18.common.MGRAM_SEVA)}',
-                                style: TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.w700)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                                '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD)}',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w700)),
-                          ),
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Container(
-                                margin: const EdgeInsets.only(
-                                    left: 20, bottom: 20, top: 20),
-                                child: Text(
-                                    '${ApplicationLocalizations.of(context).translate(i18.password.INVITED_TO_GRAMA_SEVA)}',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400)),
-                              )),
-                          _buildTenantDetails(),
-                          _buildOtpView(),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                                '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD_TO_CONTINUE)}',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18)),
-                          ),
-                          BuildTextField(
-                            i18.password.CORE_COMMON_NEW_PASSWORD,
-                            newPassword,
-                            isRequired: true,
-                            validator: (val) => Validators.passwordComparision(
-                                val, i18.password.CORE_COMMON_NEW_PASSWORD),
-                            onChange: saveInput,
-                          ),
-                          BuildTextField(
-                            i18.password.CORE_COMMON_CONFIRM_NEW_PASSWORD,
-                            confirmPassword,
-                            isRequired: true,
-                            validator: (val) => Validators.passwordComparision(
-                                val,
-                                i18.password.CORE_COMMON_CONFIRM_NEW_PASSWORD,
-                                confirmPassword.text),
-                            onChange: saveInput,
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          FractionallySizedBox(
-                              widthFactor: 0.90,
-                              child: new ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.all(15),
+                          child: Container(
+                              width: MediaQuery.of(context).size.width > 720
+                                  ? MediaQuery.of(context).size.width / 3
+                                  : MediaQuery.of(context).size.width,
+                              child: (Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                        '${ApplicationLocalizations.of(context).translate(i18.common.MGRAM_SEVA)}',
+                                        style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w700)),
                                   ),
-                                  child: new Text(
-                                      ApplicationLocalizations.of(context)
-                                          .translate(i18.common.CONTINUE),
-                                      style: TextStyle(
-                                          fontSize: 19,
-                                          fontWeight: FontWeight.w500)),
-                                  onPressed: updatePassword)),
-                          PasswordHint(password)
-                        ],
-                      ))))
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                        '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD)}',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700)),
+                                  ),
+                                  Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Container(
+                                        margin: const EdgeInsets.only(
+                                            left: 20, bottom: 20, top: 20),
+                                        child: Text(
+                                            '${ApplicationLocalizations.of(context).translate(i18.password.INVITED_TO_GRAMA_SEVA)}',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400)),
+                                      )),
+                                  _buildTenantDetails(),
+                                  _buildOtpView(),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 20),
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                        '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD_TO_CONTINUE)}',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18)),
+                                  ),
+                                  BuildTextField(
+                                    i18.password.CORE_COMMON_NEW_PASSWORD,
+                                    newPassword,
+                                    isRequired: true,
+                                    validator: (val) =>
+                                        Validators.passwordComparision(
+                                            val,
+                                            i18.password
+                                                .CORE_COMMON_NEW_PASSWORD),
+                                    onChange: saveInput,
+                                  ),
+                                  BuildTextField(
+                                    i18.password
+                                        .CORE_COMMON_CONFIRM_NEW_PASSWORD,
+                                    confirmPassword,
+                                    isRequired: true,
+                                    validator: (val) =>
+                                        Validators.passwordComparision(
+                                            val,
+                                            i18.password
+                                                .CORE_COMMON_CONFIRM_NEW_PASSWORD,
+                                            confirmPassword.text),
+                                    onChange: saveInput,
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  FractionallySizedBox(
+                                      widthFactor: 0.90,
+                                      child: new ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.all(15),
+                                          ),
+                                          child: new Text(
+                                              ApplicationLocalizations.of(
+                                                      context)
+                                                  .translate(
+                                                      i18.common.CONTINUE),
+                                              style: TextStyle(
+                                                  fontSize: 19,
+                                                  fontWeight: FontWeight.w500)),
+                                          onPressed: updatePassword)),
+                                  PasswordHint(password)
+                                ],
+                              ))))),
+                  FooterBanner()
                 ]),
               ),
             ))));
