@@ -67,9 +67,9 @@ class Validators {
 
   static String? meterNumberValidator(String? v) {
     if (v!.trim().isEmpty) {
-      return 'Please enter Meter number';
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ENTER_METER_NUMBER)}';
     } else if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(v)) {
-      return 'Please enter alpha-numeric characters only';
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ENTER_ALPHA_NUMERIC_ONLY)}';
     }
     return null;
   }
