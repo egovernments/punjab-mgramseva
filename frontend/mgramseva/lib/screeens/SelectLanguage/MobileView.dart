@@ -7,6 +7,7 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
+import 'package:mgramseva/widgets/footerBanner.dart';
 import 'package:provider/provider.dart';
 
 class LanguageSelectMobileView extends StatelessWidget {
@@ -17,7 +18,7 @@ class LanguageSelectMobileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BackgroundContainer(new Stack(children: <Widget>[
       (new Positioned(
-          bottom: 20.0,
+          bottom: 35.0,
           child: new Container(
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(8),
@@ -60,7 +61,11 @@ class LanguageSelectMobileView extends StatelessWidget {
                           i18.common.CONTINUE,
                           () => Navigator.pushNamed(context, Routes.LOGIN)),
                     ))
-              ]))))))
+              ])))))),
+      (new Positioned(
+          bottom: 0.0,
+          left: MediaQuery.of(context).size.width / 4,
+          child: FooterBanner()))
     ]));
   }
 }

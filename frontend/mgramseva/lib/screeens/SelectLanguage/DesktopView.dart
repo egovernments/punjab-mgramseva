@@ -6,6 +6,7 @@ import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/widgets/footerBanner.dart';
 
 class LanguageSelectionDesktopView extends StatelessWidget {
   final StateInfo stateInfo;
@@ -14,56 +15,64 @@ class LanguageSelectionDesktopView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BackgroundContainer(Center(
-        child: new Container(
-            height: 300,
-            width: 500,
-            padding: EdgeInsets.all(15),
-            child: Card(
-                child: (Column(children: [
-              Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image(
-                          width: 150,
-                          image: NetworkImage(
-                            stateInfo.logoUrl!,
-                          )),
-                      // ListLabelText("|"),
-                      // ListLabelText("STATE_LABEL")
-                    ],
-                  )),
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        for (Languages language in stateInfo.languages ?? [])
-                          Row(
-                            children: [
-                              Text('${language.label}'),
-                              Text("  |  ")
-                            ],
-                          )
-                      ])),
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        for (var language in stateInfo.languages ?? [])
-                          LanguageCard(
-                              language, stateInfo.languages ?? [], 120, 10, 10)
-                      ])),
-              Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Button(i18.common.CONTINUE,
-                      () => Navigator.pushNamed(context, Routes.LOGIN))),
-              SizedBox(
-                height: 10,
-              )
-            ]))))));
+    return BackgroundContainer(Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Center(
+            child: new Container(
+                height: 300,
+                width: 500,
+                padding: EdgeInsets.all(15),
+                child: Card(
+                    child: (Column(children: [
+                  Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image(
+                              width: 150,
+                              image: NetworkImage(
+                                stateInfo.logoUrl!,
+                              )),
+                          // ListLabelText("|"),
+                          // ListLabelText("STATE_LABEL")
+                        ],
+                      )),
+                  Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            for (Languages language
+                                in stateInfo.languages ?? [])
+                              Row(
+                                children: [
+                                  Text('${language.label}'),
+                                  Text("  |  ")
+                                ],
+                              )
+                          ])),
+                  Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            for (var language in stateInfo.languages ?? [])
+                              LanguageCard(language, stateInfo.languages ?? [],
+                                  120, 10, 10)
+                          ])),
+                  Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Button(i18.common.CONTINUE,
+                          () => Navigator.pushNamed(context, Routes.LOGIN))),
+                  SizedBox(
+                    height: 10,
+                  )
+                ]))))),
+        FooterBanner()
+      ],
+    ));
   }
 }

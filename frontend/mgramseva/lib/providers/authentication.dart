@@ -52,7 +52,6 @@ class AuthenticationProvider with ChangeNotifier {
           "id": [loginResponse.userRequest!.id],
           "mobileNumber": loginResponse.userRequest!.mobileNumber
         }, loginResponse.accessToken!);
-        Navigator.pop(context);
         if (userInfo.user!.first.defaultPwdChgd == false) {
           var commonProvider =
               Provider.of<CommonProvider>(context, listen: false);
