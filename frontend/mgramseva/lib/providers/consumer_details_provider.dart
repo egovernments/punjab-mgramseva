@@ -150,11 +150,14 @@ class ConsumerProvider with ChangeNotifier {
           "locality": property.address.locality?.code,
           "initialMeterReading": waterconnection.previousReading,
           "propertyType": property.propertyType,
+          "meterReading": waterconnection.previousReading,
         });
       } else {
         waterconnection.additionalDetails!.locality =
             property.address.locality!.code;
         waterconnection.additionalDetails!.initialMeterReading =
+            waterconnection.previousReading;
+        waterconnection.additionalDetails!.meterReading =
             waterconnection.previousReading;
         waterconnection.additionalDetails!.propertyType = property.propertyType;
       }
