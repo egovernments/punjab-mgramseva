@@ -9,8 +9,24 @@ class CommonMethods {
     Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!, Routes.HOME, (route) => false, arguments: null);
   }
 
-
   static String getExtension(String url){
     return url.substring(0, url.indexOf('?')).split('/').last;
+  }
+
+ static List<DateTime> getPastMonthUntilFinancialYear(){
+     var monthList = <DateTime>[];
+    if(DateTime.now().month >= 3){
+      for(int i = 3; i <= DateTime.now().month; i++){
+        monthList.add(DateTime(DateTime.now().year, i));
+      }
+    }else {
+      for(int i = 3; i <= 12; i++){
+        monthList.add(DateTime(DateTime.now().year - 1, i));
+      }
+      for(int i = 1; i <= DateTime.now().month; i++){
+        monthList.add(DateTime(DateTime.now().year, i));
+      }
+    }
+    return monthList;
   }
 }

@@ -5,12 +5,15 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class MeterReading extends StatelessWidget {
   final label;
+  final bool? isRequired;
   final controller1;
   final controller2;
   final controller3;
   final controller4;
   final controller5;
-  MeterReading(this.label, this.controller1, this.controller2, this.controller3, this.controller4, this.controller5);
+  MeterReading(this.label, this.controller1, this.controller2, this.controller3,
+      this.controller4, this.controller5,
+      {this.isRequired});
 
   _getConatiner(constraints, context) {
     return [
@@ -21,12 +24,20 @@ class MeterReading extends StatelessWidget {
           padding: EdgeInsets.only(top: 18, bottom: 3),
           child: new Align(
               alignment: Alignment.centerLeft,
-              child: Text(ApplicationLocalizations.of(context).translate(label),
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 19,
-                      color: Colors.black)))),
+              child: Wrap(direction: Axis.horizontal, children: <Widget>[
+                Text('${ApplicationLocalizations.of(context).translate(label)}',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 19,
+                        color: Colors.black)),
+                Text(isRequired! ? '* ' : ' ',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 19,
+                        color: Colors.black)),
+              ]))),
       Container(
           width: constraints.maxWidth > 760
               ? MediaQuery.of(context).size.width / 2.5
@@ -64,7 +75,8 @@ class MeterReadingDigitTextFieldBox extends StatelessWidget {
   final bool first;
   final bool last;
   final controller;
-  const MeterReadingDigitTextFieldBox( this.controller, this.first, this.last) : super();
+  const MeterReadingDigitTextFieldBox(this.controller, this.first, this.last)
+      : super();
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +100,9 @@ class MeterReadingDigitTextFieldBox extends StatelessWidget {
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
           maxLength: 1,
-          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+$'))],
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+$'))
+          ],
           decoration: InputDecoration(
             // contentPadding: EdgeInsets.all(0),
             counter: Offstage(),

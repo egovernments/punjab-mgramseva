@@ -1,6 +1,6 @@
 import 'package:universal_html/html.dart';
-const _baseUrl = "baseUrl";
 
+const _baseUrl = "baseUrl";
 
 enum Environment { dev, stage, prod }
 

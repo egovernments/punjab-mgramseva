@@ -26,6 +26,9 @@ class BuildTextField extends StatefulWidget {
   final String? labelSuffix;
   final String? hint;
   final String? requiredMessage;
+  final InputBorder? inputBorder;
+  final Widget? prefixIcon;
+  final String? placeHolder;
   final GlobalKey? contextkey;
 
   BuildTextField(this.labelText, this.controller,
@@ -48,8 +51,12 @@ class BuildTextField extends StatefulWidget {
       this.labelSuffix,
       this.hint,
       this.focusNode,
+      this.inputBorder,
+      this.prefixIcon,
+      this.placeHolder,
       this.contextkey,
       this.requiredMessage});
+  
   @override
   State<StatefulWidget> createState() => _BuildTextField();
 }
@@ -59,6 +66,8 @@ class _BuildTextField extends State<BuildTextField> {
   Widget build(BuildContext context) {
     // TextForm
     Widget textFormwidget = TextFormField(
+       style: TextStyle(color: widget.isDisabled != null && widget.isDisabled!
+              ? Colors.grey:null),
         enabled: widget.isDisabled != null
             ? (widget.isDisabled == true)
                 ? false
@@ -90,6 +99,8 @@ class _BuildTextField extends State<BuildTextField> {
                 return null;
               },
         decoration: InputDecoration(
+          hintText: widget.placeHolder,
+          border: widget.inputBorder,
           errorMaxLines: 2,
           enabled: widget.isDisabled ?? true,
           fillColor: widget.isDisabled != null && widget.isDisabled!
@@ -121,12 +132,15 @@ class _BuildTextField extends State<BuildTextField> {
                 const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
             child: Row(
               children: [
-                Container(
-                    width: MediaQuery.of(context).size.width / 3,
-                    padding: EdgeInsets.only(top: 18, bottom: 3),
-                    child: new Align(
-                        alignment: Alignment.centerLeft,
-                        child: textLabelwidget)),
+                Visibility(
+                  visible: widget.labelText.isNotEmpty,
+                  child: Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      padding: EdgeInsets.only(top: 18, bottom: 3),
+                      child: new Align(
+                          alignment: Alignment.centerLeft,
+                          child: textLabelwidget)),
+                ),
                 Container(
                     width: MediaQuery.of(context).size.width / 2.5,
                     padding: EdgeInsets.only(top: 18, bottom: 3),
@@ -145,11 +159,14 @@ class _BuildTextField extends State<BuildTextField> {
                 const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
             child: Column(
               children: [
-                Container(
-                    padding: EdgeInsets.only(top: 18, bottom: 3),
-                    child: new Align(
-                        alignment: Alignment.centerLeft,
-                        child: textLabelwidget)),
+                Visibility(
+                  visible: widget.labelText.isNotEmpty,
+                  child: Container(
+                      padding: EdgeInsets.only(top: 18, bottom: 3),
+                      child: new Align(
+                          alignment: Alignment.centerLeft,
+                          child: textLabelwidget)),
+                ),
                 textFormwidget,
                 CommonWidgets().buildHint(widget.hint, context)
               ],

@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/ScrollParent.dart';
 
 class BillsTable extends StatefulWidget {
+  final List<TableHeader> headerList;
+  final List<TableDataRow> tableData;
+
+  BillsTable({Key? key, required this.headerList, required this.tableData}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _BillsTable();
@@ -18,7 +24,7 @@ class _BillsTable extends State<BillsTable> {
 
   @override
   void initState() {
-    bill.initData(100);
+    // bill.initData(100);
     super.initState();
   }
 
@@ -37,7 +43,7 @@ class _BillsTable extends State<BillsTable> {
             headerWidgets: _getTitleWidget(constraints),
             leftSideItemBuilder: _generateFirstColumnRow,
             rightSideItemBuilder: _generateRightHandSideColumnRow,
-            itemCount: bill.billinfo.length,
+            itemCount: widget.tableData.length,
             // rowSeparatorWidget: const Divider(
             //   color: Colors.black54,
             //   height: 1.0,
@@ -62,26 +68,29 @@ class _BillsTable extends State<BillsTable> {
   }
 
   List<Widget> _getTitleWidget(constraints) {
-    return [
-      TextButton(
-          style: TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-          ),
-          child: _getTitleItemWidget(
-              'Bill ID - Vendor' +
-                  (sortType == sortName ? (isAscending ? '↓' : '↑') : ''),
-              constraints),
-          onPressed: () {
-            sortType = sortName;
-            isAscending = !isAscending;
-            bill.sortName(isAscending);
-            setState(() {});
-          }),
-      _getTitleItemWidget('Expense Type', constraints),
-      _getTitleItemWidget('Amount', constraints),
-      _getTitleItemWidget('Bill Date', constraints),
-      _getTitleItemWidget('Paid Date', constraints),
-    ];
+
+    return widget.headerList.map((e) => _getTitleItemWidget(e.label, constraints)).toList();
+
+    // return [
+    //   TextButton(
+    //       style: TextButton.styleFrom(
+    //         padding: EdgeInsets.zero,
+    //       ),
+    //       child: _getTitleItemWidget(
+    //           'Bill ID - Vendor' +
+    //               (sortType == sortName ? (isAscending ? '↓' : '↑') : ''),
+    //           constraints),
+    //       onPressed: () {
+    //         sortType = sortName;
+    //         isAscending = !isAscending;
+    //         bill.sortName(isAscending);
+    //         setState(() {});
+    //       }),
+    //   _getTitleItemWidget('Expense Type', constraints),
+    //   _getTitleItemWidget('Amount', constraints),
+    //   _getTitleItemWidget('Bill Date', constraints),
+    //   _getTitleItemWidget('Paid Date', constraints),
+    // ];
   }
 
   Widget _getTitleItemWidget(String label, constraints) {
@@ -104,7 +113,7 @@ class _BillsTable extends State<BillsTable> {
           controller,
           Container(
             child: Text(
-              bill.billinfo[index].billID,
+              widget.tableData[index].tableRow.first.label,
               style: TextStyle(color: Theme.of(context).primaryColor),
             ),
             width: constraints.maxWidth < 760
@@ -118,7 +127,7 @@ class _BillsTable extends State<BillsTable> {
   }
 
   Widget _generateColumnRow(
-      BuildContext context, int index, input, constraints) {
+      BuildContext context, int index, String input, constraints) {
     return Container(
       child: Row(
         children: <Widget>[Text(input)],
@@ -137,51 +146,51 @@ class _BillsTable extends State<BillsTable> {
           child: Row(
             children: <Widget>[
               _generateColumnRow(context, index,
-                  bill.billinfo[index].expenseType, constraints),
+                  widget.tableData[index].tableRow[1].label, constraints),
               _generateColumnRow(context, index,
-                  "₹" + bill.billinfo[index].phone, constraints),
+                  widget.tableData[index].tableRow[2].label, constraints),
               _generateColumnRow(context, index,
-                  bill.billinfo[index].registerDate, constraints),
+                  widget.tableData[index].tableRow[3].label, constraints),
               _generateColumnRow(context, index,
-                  bill.billinfo[index].terminationDate, constraints),
+                  widget.tableData[index].tableRow[4].label, constraints),
             ],
           ));
     });
   }
 }
 
-Bill bill = Bill();
-
-class Bill {
-  List<BillInfo> billinfo = [];
-
-  void initData(int size) {
-    for (int i = 0; i < size; i++) {
-      billinfo.add(BillInfo(
-          "EB-2021-22/0_$i", 'Maintenance', '25000', '2019-01-01', 'N/A'));
-    }
-  }
-
-  ///
-  /// Single sort, sort Name's id
-  void sortName(bool isAscending) {
-    billinfo.sort((a, b) {
-      int aId = int.tryParse(a.billID.replaceFirst('User_', '')) ?? 0;
-      int bId = int.tryParse(b.billID.replaceFirst('User_', '')) ?? 0;
-      return (aId - bId) * (isAscending ? 1 : -1);
-    });
-  }
-
-  ///
-}
-
-class BillInfo {
-  String billID;
-  String expenseType;
-  String phone;
-  String registerDate;
-  String terminationDate;
-
-  BillInfo(this.billID, this.expenseType, this.phone, this.registerDate,
-      this.terminationDate);
-}
+// Bill bill = Bill();
+//
+// class Bill {
+//   List<BillInfo> billinfo = [];
+//
+//   void initData(int size) {
+//     for (int i = 0; i < size; i++) {
+//       billinfo.add(BillInfo(
+//           "EB-2021-22/0_$i", 'Maintenance', '25000', '2019-01-01', 'N/A'));
+//     }
+//   }
+//
+//   ///
+//   /// Single sort, sort Name's id
+//   void sortName(bool isAscending) {
+//     billinfo.sort((a, b) {
+//       int aId = int.tryParse(a.billID.replaceFirst('User_', '')) ?? 0;
+//       int bId = int.tryParse(b.billID.replaceFirst('User_', '')) ?? 0;
+//       return (aId - bId) * (isAscending ? 1 : -1);
+//     });
+//   }
+//
+//   ///
+// }
+//
+// class BillInfo {
+//   String billID;
+//   String expenseType;
+//   String phone;
+//   String registerDate;
+//   String terminationDate;
+//
+//   BillInfo(this.billID, this.expenseType, this.phone, this.registerDate,
+//       this.terminationDate);
+// }

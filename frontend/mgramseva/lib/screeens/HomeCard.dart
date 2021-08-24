@@ -25,7 +25,10 @@ class _HomeCard extends State<HomeCard> {
                   onTap: () => Navigator.pushNamed(context, item.link,
                       arguments: item.arguments),
                   child: new Card(
-                      key:  homeProvider.homeWalkthrougList[Constants.HOME_ITEMS.indexOf(item)].key,
+                      key: homeProvider
+                          .homeWalkthrougList[
+                              Constants.HOME_ITEMS.indexOf(item)]
+                          .key,
                       margin:
                           EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                       child: Column(
@@ -56,15 +59,14 @@ class _HomeCard extends State<HomeCard> {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 760) {
         return Container(
-            height: MediaQuery.of(context).size.height * .75,
             child: (new GridView.count(
-              crossAxisCount: 3,
-              childAspectRatio: .8,
-              children: getList(homeProvider),
-            )));
+          crossAxisCount: 3,
+          childAspectRatio: .8,
+          children: getList(homeProvider),
+        )));
       } else {
         return Container(
-            margin: EdgeInsets.all(75),
+            margin: EdgeInsets.only(left: 75, right: 75),
             child: (new GridView.count(
               crossAxisCount: 3,
               childAspectRatio: 3,

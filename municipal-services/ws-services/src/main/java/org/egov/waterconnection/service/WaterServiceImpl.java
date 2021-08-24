@@ -111,7 +111,10 @@ public class WaterServiceImpl implements WaterService {
 
 		enrichmentService.postStatusEnrichment(waterConnectionRequest);
 		waterDao.saveWaterConnection(waterConnectionRequest);
-		calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property);
+		if( waterConnectionRequest.getWaterConnection().getArrears() !=null && waterConnectionRequest.getWaterConnection().getArrears().intValue() >0) {
+			calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property);
+		}
+		
 		return Arrays.asList(waterConnectionRequest.getWaterConnection());
 	}
 
@@ -159,6 +162,8 @@ public class WaterServiceImpl implements WaterService {
 	 */
 	@Override
 	public List<WaterConnection> updateWaterConnection(WaterConnectionRequest waterConnectionRequest) {
+		
+		
 		if(wsUtil.isModifyConnectionRequest(waterConnectionRequest)) {
 			// Received request to update the connection for modifyConnection WF
 			return updateWaterConnectionForModifyFlow(waterConnectionRequest);
@@ -181,7 +186,9 @@ public class WaterServiceImpl implements WaterService {
 		//Call workflow
 		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
 		//call calculator service to generate the demand for one time fee
-		calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property);
+		if( waterConnectionRequest.getWaterConnection().getArrears() !=null && waterConnectionRequest.getWaterConnection().getArrears().intValue() >0) {
+			calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property);
+		}
 		//check for edit and send edit notification
 		waterDaoImpl.pushForEditNotification(waterConnectionRequest);
 		//Enrich file store Id After payment
@@ -238,6 +245,10 @@ public class WaterServiceImpl implements WaterService {
 		actionValidator.validateUpdateRequest(waterConnectionRequest, businessService, previousApplicationStatus);
 		userService.updateUser(waterConnectionRequest, searchResult);
 		waterConnectionValidator.validateUpdate(waterConnectionRequest, searchResult, WCConstants.MODIFY_CONNECTION);
+		//call calculator service to generate the demand for one time fee
+		if( waterConnectionRequest.getWaterConnection().getArrears() !=null && waterConnectionRequest.getWaterConnection().getArrears().intValue() >0) {
+			calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property);
+		}
 		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
 		boolean isStateUpdatable = waterServiceUtil.getStatusForUpdate(businessService, previousApplicationStatus);
 		waterDao.updateWaterConnection(waterConnectionRequest, isStateUpdatable);

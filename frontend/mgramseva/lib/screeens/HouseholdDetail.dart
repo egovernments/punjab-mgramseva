@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/components/HouseConnectionandBill/ConsumerBillPayments.dart';
 import 'package:mgramseva/components/HouseConnectionandBill/GenerateNewBill.dart';
 import 'package:mgramseva/components/HouseConnectionandBill/HouseConnectionDetailCard.dart';
 import 'package:mgramseva/components/HouseConnectionandBill/NewConsumerBill.dart';
@@ -15,6 +16,7 @@ import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
+import 'package:mgramseva/widgets/footer.dart';
 import 'package:provider/provider.dart';
 
 class HouseholdDetail extends StatefulWidget {
@@ -46,7 +48,8 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
         data.bill!.first.waterConnection!.connectionType == 'Metered'
             ? GenerateNewBill(data)
             : Text(""),
-        NewConsumerBill(data)
+        NewConsumerBill(data),
+        ConsumerBillPayments(data.bill!.first.waterConnection)
       ],
     );
   }
@@ -62,8 +65,8 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
         ),
         body: SingleChildScrollView(
             child: FormWrapper(Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
               HomeBack(),
               HouseConnectionDetailCard(
@@ -74,7 +77,10 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                     if (snapshot.hasData) {
                       return buildDemandView(snapshot.data);
                     } else if (snapshot.hasError) {
-                      return Notifiers.networkErrorPage(context, ()=> houseHoldProvider.FetchBill(widget.waterconnection));
+                      return Notifiers.networkErrorPage(
+                          context,
+                          () => houseHoldProvider.FetchBill(
+                              widget.waterconnection));
                     } else {
                       switch (snapshot.connectionState) {
                         case ConnectionState.waiting:
@@ -86,6 +92,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                       }
                     }
                   }),
+              Footer()
             ]))));
   }
 }

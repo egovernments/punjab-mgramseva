@@ -49,15 +49,19 @@ class _CustomAppBarState extends State<CustomAppBar> {
           .toList();
 
       if (r != null && tenantProvider.tenants != null) {
-        final resulst = tenantProvider.tenants!.tenantsList!
+        final result = tenantProvider.tenants!.tenantsList!
             .where((element) => r.contains(element.code))
             .toList();
-        showdialog(resulst);
+        if (result.length > 1) {
+          showdialog(result);
+        } else if (result.length == 1) {
+          commonProvider.setTenant(result.first);
+        }
       }
     }
   }
 
-  showdialog(resulst) {
+  showdialog(result) {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -79,10 +83,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 color: Colors.white,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: List.generate(resulst.length, (index) {
+                  children: List.generate(result.length, (index) {
                     return GestureDetector(
                         onTap: () {
-                          commonProvider.setTenant(resulst[index]);
+                          commonProvider.setTenant(result[index]);
                           Navigator.pop(context);
                           Navigator.pushReplacementNamed(context, Routes.HOME);
                         },
@@ -101,12 +105,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    resulst[index].city!.name!,
+                                    result[index].city!.name!,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400),
                                   ),
-                                  Text(resulst[index].city!.code!,
+                                  Text(result[index].city!.code!,
                                       style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w400))
@@ -127,19 +131,24 @@ class _CustomAppBarState extends State<CustomAppBar> {
         .map((e) => e.tenantId)
         .toSet()
         .toList();
-    final resulst = tenant.tenantsList!
+    final result = tenant.tenantsList!
         .where((element) => r.contains(element.code))
         .toList();
+    if (result.length == 1) {
+      commonProvider.setTenant(result.first);
+    }
+
     return GestureDetector(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Consumer<CommonProvider>(
                 builder: (_, commonProvider, child) =>
                     commonProvider.userDetails!.selectedtenant == null
                         ? Text("")
                         : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                                 Text(commonProvider
                                     .userDetails!.selectedtenant!.code!),
@@ -149,7 +158,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             Icon(Icons.arrow_drop_down)
           ],
         ),
-        onTap: () => showdialog(resulst));
+        onTap: () => showdialog(result));
   }
 
   @override
