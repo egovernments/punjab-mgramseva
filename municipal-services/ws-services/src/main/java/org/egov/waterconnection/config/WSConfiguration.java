@@ -199,4 +199,10 @@ public class WSConfiguration {
 
 	@Value("${state.level.tenant.id}")
 	private String stateLevelTenantId;
+	
+	@Value("${egov.billing.service.host}")
+	private String billingHost;
+	
+	@Value("${egov.demand.searchendpoint}")
+	private String demandSearchUri;
 }
