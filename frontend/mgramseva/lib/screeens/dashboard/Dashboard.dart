@@ -109,14 +109,11 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                               dashBoardType: DashBoardType.Expenditure)
                         ],
                       ))
-                  // ListLabelText("Search Expense Bills"),
-                  // BillsTable()s
-                  // SearchExpenseDashboard()
                 ])),
             Align(
                 alignment: Alignment.bottomRight,
                 child: Consumer<DashBoardProvider>(
-                    builder: (_, dashBoardProvider, child) => Pagination(limit: 10, offSet: 0, callBack: (val) {})))
+                    builder: (_, dashBoardProvider, child) => Pagination(limit: 10, offSet: dashBoardProvider.offset, callBack: dashBoardProvider.onChangeOfPagination, totalCount: 20,)))
           ]),
         ),
       ),

@@ -24,7 +24,6 @@ class _BillsTable extends State<BillsTable> {
 
   @override
   void initState() {
-    // bill.initData(100);
     super.initState();
   }
 

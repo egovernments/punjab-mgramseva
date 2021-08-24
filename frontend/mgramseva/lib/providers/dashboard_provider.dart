@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
+import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/repository/dashboard.dart';
+import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -11,8 +14,8 @@ import 'package:mgramseva/utils/models.dart';
 class DashBoardProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
   TextEditingController searchController = TextEditingController();
-  late ExpenseDashboard expenseDashboardDetails;
-
+  late List<ExpensesDetailsModel> expenseDashboardDetails;
+  int offset = 0;
   @override
   void dispose() {
     streamController.close();
@@ -20,8 +23,16 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   Future<void> fetchExpenseDashBoardDetails(BuildContext context)  async {
+
+    var query = {
+      'tenantId': 'pb',
+    };
+
+    streamController.add(null);
+
     try{
-      var response = await DashBoardRepository().loadExpenseDashboardDetails({});
+      var response = await ExpensesRepository()
+          .searchExpense(query);
       if(response != null){
         expenseDashboardDetails = response;
         streamController.add(response);
@@ -49,32 +60,31 @@ class DashBoardProvider with ChangeNotifier {
   ];
 
   List<TableDataRow> getExpenseData(int index) {
-    var searchFilterItems = expenseDashboardDetails.data;
-    
-    if(searchController.text.trim().isNotEmpty){
-      searchFilterItems = expenseDashboardDetails.data?.where((element) => element.headerName!.contains(searchController.text.trim())).toList();
-    }
+    List<ExpensesDetailsModel> list = expenseDashboardDetails;
+
     switch(index){
       case 0:
-        return searchFilterItems!.map((e) => getExpenseRow(e)).toList();
+        return list.map((e) => getExpenseRow(e)).toList();
       case 1:
-        var filteredList =  searchFilterItems!.where((e) => e.plots?.last.label != null).toList();
-        return filteredList!.map((e) => getExpenseRow(e)).toList();
+        var filteredList =  list.where((e) => e.applicationStatus == 'PAID').toList();
+        return filteredList.map((e) => getExpenseRow(e)).toList();
       case 2:
-        var filteredList =  searchFilterItems!.where((e) => e.plots?.last.label == null).toList();
-        return filteredList!.map((e) => getExpenseRow(e)).toList();
+        var filteredList =  list.where((e) => e.applicationStatus == 'ACTIVE').toList();
+        return filteredList.map((e) => getExpenseRow(e)).toList();
       default :
         return <TableDataRow>[];
     }
   }
 
-  TableDataRow getExpenseRow(ExpenseDashboardRow expenseDashboardRow){
-    expenseDashboardRow.plots?.removeAt(0);
+  TableDataRow getExpenseRow(ExpensesDetailsModel expense){
     return TableDataRow(
-        List.generate(expenseDashboardRow.plots?.length ?? 0, (index){
-          var plot = expenseDashboardRow.plots![index];
-          return TableData(plot.label ?? '');
-        })
+      [
+        TableData('${expense.challanNo}'),
+        TableData('${expense.expenseType}'),
+        TableData('${expense.totalAmount}'),
+        TableData('${expense.billDate}'),
+        TableData('${DateFormats.timeStampToDate(expense.paidDate)}'),
+      ]
     );
   }
 
@@ -82,7 +92,11 @@ class DashBoardProvider with ChangeNotifier {
 
   }
 
-  void onSearch(String val){
-    notifyListeners();
+  void onSearch(String val, BuildContext context){
+    fetchExpenseDashBoardDetails(context);
+  }
+
+  void onChangeOfPagination(PaginationResponse response){
+
   }
 }

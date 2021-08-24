@@ -6,8 +6,9 @@ import 'package:mgramseva/utils/models.dart';
 class Pagination extends StatefulWidget {
  final int limit;
  final int offSet;
+ final int totalCount;
  final Function(PaginationResponse) callBack;
-  const Pagination({Key? key, required this.limit, required this.offSet, required this.callBack}) : super(key: key);
+  const Pagination({Key? key, required this.limit, required this.offSet, required this.callBack, required this.totalCount}) : super(key: key);
 
   @override
   _PaginationState createState() => _PaginationState();
@@ -54,7 +55,9 @@ class _PaginationState extends State<Pagination> {
               visible: widget.offSet != 0,
               child: IconButton(onPressed: onChangeOfPage, icon: Icon(Icons.arrow_left))),
           Text('${widget.offSet} - ${widget.offSet + widget.limit}'),
-          IconButton(onPressed: ()=>onChangeOfPage(false), icon:Icon(Icons.arrow_right)),
+          Visibility(
+              visible: widget.offSet < widget.totalCount ,
+              child: IconButton(onPressed: ()=>onChangeOfPage(false), icon:Icon(Icons.arrow_right))),
         ],
       ),
     );
