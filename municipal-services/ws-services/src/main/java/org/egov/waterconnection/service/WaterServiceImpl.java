@@ -198,7 +198,7 @@ public class WaterServiceImpl implements WaterService {
 		waterConnectionValidator.validateUpdate(waterConnectionRequest, searchResult, WCConstants.UPDATE_APPLICATION);
 		userService.updateUser(waterConnectionRequest, searchResult);
 		//Call workflow
-		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
+//		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
 		//call calculator service to generate the demand for one time fee
 		if( waterConnectionRequest.getWaterConnection().getArrears() !=null && waterConnectionRequest.getWaterConnection().getArrears().intValue() >0) {
 			calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property);
@@ -265,7 +265,7 @@ public class WaterServiceImpl implements WaterService {
 		if( waterConnectionRequest.getWaterConnection().getArrears() !=null && waterConnectionRequest.getWaterConnection().getArrears().intValue() >0) {
 			calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property);
 		}
-		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
+//		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
 		boolean isStateUpdatable = waterServiceUtil.getStatusForUpdate(businessService, previousApplicationStatus);
 		waterDao.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
 		// setting oldApplication Flag
