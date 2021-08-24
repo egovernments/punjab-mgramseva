@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill/bill_generation_details/bill_generation_details.dart';
+import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/connection_type.dart';
@@ -10,6 +11,7 @@ import 'package:mgramseva/model/mdms/tax_head_master.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/bill_generation_details_repo.dart';
+import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
@@ -34,6 +36,7 @@ class BillGenerationProvider with ChangeNotifier {
   var autoValidation = false;
   late BillGenerationDetails billGenerateDetails;
   var waterconnection = WaterConnection();
+  late BillList billList;
   late List dates = [];
   var selectedBillYear;
   var selectedBillPeriod;
@@ -84,8 +87,9 @@ class BillGenerationProvider with ChangeNotifier {
           ...{'connectionNumber': id!.split('_').join('/')},
         });
 
-        Navigator.pop(context);
+        fetchBill(res.waterConnection!.first);
 
+        Navigator.pop(context);
         waterconnection = res.waterConnection!.first;
         billGenerateDetails.propertyType =
             waterconnection!.additionalDetails!.propertyType;
@@ -200,6 +204,18 @@ class BillGenerationProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void onClickOfCollectPayment(Bill bill, BuildContext context) {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+
+    Map<String, dynamic> query = {
+      'consumerCode': bill.consumerCode,
+      'businessService': bill.businessService,
+      'tenantId': commonProvider.userDetails?.selectedtenant?.code
+    };
+    Navigator.pushNamed(context, Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT,
+        arguments: query);
+  }
+
   Future<void> getServiceTypePropertyTypeandConnectionType() async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
@@ -213,6 +229,14 @@ class BillGenerationProvider with ChangeNotifier {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> fetchBill(data) async {
+    await BillingServiceRepository().fetchdBill({
+      "tenantId": data.tenantId,
+      "consumerCode": data.connectionNo.toString(),
+      "businessService": "WS"
+    }).then((value) => billList = value);
   }
 
   void onSubmit(context) async {
@@ -271,10 +295,18 @@ class BillGenerationProvider with ChangeNotifier {
               Navigator.of(context).pushReplacement(
                   new MaterialPageRoute(builder: (BuildContext context) {
                 return CommonSuccess(SuccessHandler(
-                    i18.demandGenerate.GENERATE_BILL_SUCCESS,
-                    i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT,
-                    i18.common.BACK_HOME,
-                    Routes.BILL_GENERATE));
+                  ApplicationLocalizations.of(context)
+                      .translate(i18.demandGenerate.GENERATE_BILL_SUCCESS),
+                  '${ApplicationLocalizations.of(context)
+                      .translate(i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT)}' ' (+91-${billList.bill!.first.mobileNumber})',
+                  ApplicationLocalizations.of(context)
+                      .translate(i18.common.COLLECT_PAYMENT),
+                    Routes.BILL_GENERATE,
+                downloadLink: '', downloadLinkLabel: ApplicationLocalizations.of(context)
+                    .translate(i18.common.DOWNLOAD), whatsAppShare: '',
+                subHeader: '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)} '
+                '\n\n ${billList.bill!.first.billNumber.toString()}'),
+                callBack: ()=> onClickOfCollectPayment(billList.bill!.first, context),);
               }));
             }
           } catch (e) {
@@ -306,7 +338,7 @@ class BillGenerationProvider with ChangeNotifier {
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
             return CommonSuccess(SuccessHandler(
-                i18.demandGenerate.GENERATE_DEMAND_SUCCESS,
+                ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS),
                 ApplicationLocalizations.of(context).translate(
                         i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT) +
                     ' $selectedBillCycle' +
