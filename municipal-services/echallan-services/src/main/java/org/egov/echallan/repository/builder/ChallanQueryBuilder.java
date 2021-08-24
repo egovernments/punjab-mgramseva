@@ -31,7 +31,7 @@ public class ChallanQueryBuilder {
             +" LEFT OUTER JOIN "
             +" eg_challan_address chaladdr ON chaladdr.echallanid = challan.id  ";*/
     
-	private static final String QUERY = "SELECT challan.*,chaladdr.*,challan.id as challan_id,challan.tenantid as challan_tenantId,challan.lastModifiedTime as "
+	private static final String QUERY = "SELECT count(*) OVER() AS full_count, challan.*,chaladdr.*,challan.id as challan_id,challan.tenantid as challan_tenantId,challan.lastModifiedTime as "
 			+ "challan_lastModifiedTime,challan.createdBy as challan_createdBy,challan.lastModifiedBy as challan_lastModifiedBy,challan.createdTime as "
 			+ "challan_createdTime,chaladdr.id as chaladdr_id,"
 			+ "challan.accountId as uuid,challan.description as description,challan.typeOfExpense as typeOfExpense, challan.billDate as billDate,  "
@@ -59,6 +59,7 @@ public class ChallanQueryBuilder {
 	  
 	  public static final String PREVIOUSMONTHCOLLECTION = " select count(pd.amountpaid) from egcl_paymentdetail pd, egcl_payment p where p.id= pd.paymentid and businessservice='EXPENSE.ADVANCE'  ";
 
+	  public static final String PREVIOUSDAYCASHCOLLECTION = " select sum(totalamountpaid) as total, mobilenumber from egcl_payment where paymentmode='CASH' ";
 
 
 

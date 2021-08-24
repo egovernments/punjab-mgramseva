@@ -13,6 +13,7 @@ import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
 import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.egov.waterconnection.constants.WCConstants;
+import org.egov.waterconnection.repository.WaterDaoImpl;
 import org.egov.waterconnection.service.WaterService;
 import org.egov.waterconnection.util.ResponseInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ public class WaterController {
 	@Autowired
 	private final ResponseInfoFactory responseInfoFactory;
 
+	@Autowired
+	private WaterDaoImpl waterDaoImpl;
+
 	@RequestMapping(value = "/_create", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<WaterConnectionResponse> createWaterConnection(
 			@Valid @RequestBody WaterConnectionRequest waterConnectionRequest) {
@@ -56,11 +60,9 @@ public class WaterController {
 	@RequestMapping(value = "/_search", method = RequestMethod.POST)
 	public ResponseEntity<WaterConnectionResponse> search(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
 			@Valid @ModelAttribute SearchCriteria criteria) {
-		List<WaterConnection> waterConnectionList = waterService.search(criteria, requestInfoWrapper.getRequestInfo());
-		WaterConnectionResponse response = WaterConnectionResponse.builder().waterConnection(waterConnectionList)
-				.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),
-						true))
-				.build();
+		WaterConnectionResponse response = waterService.search(criteria, requestInfoWrapper.getRequestInfo());
+		response.setResponseInfo(
+				responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true));
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 

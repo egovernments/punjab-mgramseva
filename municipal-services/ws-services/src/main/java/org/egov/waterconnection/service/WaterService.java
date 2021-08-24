@@ -9,12 +9,13 @@ import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
+import org.egov.waterconnection.web.models.WaterConnectionResponse;
 
 public interface WaterService {
 
 	List<WaterConnection> createWaterConnection(WaterConnectionRequest waterConnectionRequest);
 
-	List<WaterConnection> search(SearchCriteria criteria, RequestInfo requestInfo);
+	WaterConnectionResponse search(SearchCriteria criteria, RequestInfo requestInfo);
 	
 	List<WaterConnection> updateWaterConnection(WaterConnectionRequest waterConnectionRequest);
 	

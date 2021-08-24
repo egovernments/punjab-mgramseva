@@ -12,6 +12,7 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
 import org.egov.echallan.model.Challan;
 import org.egov.echallan.model.ChallanRequest;
+import org.egov.echallan.model.ChallanResponse;
 import org.egov.echallan.model.SearchCriteria;
 import org.egov.echallan.producer.Producer;
 import org.egov.echallan.repository.builder.ChallanQueryBuilder;
@@ -192,6 +193,22 @@ public class ChallanRepository {
 		log.info("Active pending collection query : " + query);
 		return jdbcTemplate.queryForList(query.toString(), String.class);
 		
+	}
+
+
+
+	public List<Map<String, Object>> getTodayCollection(String tenantId, String startDate, String endDate) {
+		// TODO Auto-generated method stub
+		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSDAYCASHCOLLECTION);
+		
+		//previous month start date startDate
+		// previous month end date endDate
+		
+		query.append( " and transactiondate  >= ").append( startDate)  
+		.append(" and  transactiondate <= " ).append(endDate).append(" GROUP BY mobilenumber"); 
+		log.info("Previous Day collection query : " + query);
+		List<Map<String, Object>> list =  jdbcTemplate.queryForList(query.toString());
+		return list;
 	}
     
 }

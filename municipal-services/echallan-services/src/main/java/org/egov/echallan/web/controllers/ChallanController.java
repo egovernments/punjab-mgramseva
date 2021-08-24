@@ -11,6 +11,7 @@ import org.egov.echallan.model.ChallanRequest;
 import org.egov.echallan.model.ChallanResponse;
 import org.egov.echallan.model.RequestInfoWrapper;
 import org.egov.echallan.model.SearchCriteria;
+import org.egov.echallan.repository.rowmapper.ChallanRowMapper;
 import org.egov.echallan.service.ChallanService;
 import org.egov.echallan.service.SchedulerService;
 import org.egov.echallan.util.ResponseInfoFactory;
@@ -37,6 +38,9 @@ public class ChallanController {
 	
 	@Autowired
 	private SchedulerService schedulerService;
+	
+	@Autowired
+	private ChallanRowMapper mapper;
 
 	@PostMapping("/_create")
 	public ResponseEntity<ChallanResponse> create(@Valid @RequestBody ChallanRequest challanRequest) {
@@ -54,7 +58,7 @@ public class ChallanController {
 	                                                       @Valid @ModelAttribute SearchCriteria criteria) {
 	     List<Challan> challans = challanService.search(criteria, requestInfoWrapper.getRequestInfo());
 
-	     ChallanResponse response = ChallanResponse.builder().challans(challans).responseInfo(
+	     ChallanResponse response = ChallanResponse.builder().challans(challans).totalCount(mapper.getFull_count()).responseInfo(
 	               responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true))
 	              .build();
 	     return new ResponseEntity<>(response, HttpStatus.OK);
@@ -93,6 +97,11 @@ public class ChallanController {
 	@PostMapping("/_schedulergeneratedemand")
 	public void schedulergeneratedemand(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
 		schedulerService.sendGenerateDemandEvent(requestInfoWrapper.getRequestInfo());
+	}
+	
+	@PostMapping("/_schedulerTodaysCollection")
+	public void schedulerTodaysCollection(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
+		schedulerService.sendTodaysCollection(requestInfoWrapper.getRequestInfo());
 	}
 	 
 	
