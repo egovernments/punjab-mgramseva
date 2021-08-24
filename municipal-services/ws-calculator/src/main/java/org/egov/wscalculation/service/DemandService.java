@@ -495,8 +495,8 @@ public class DemandService {
 	private List<Demand> updateDemandForCalculation(RequestInfo requestInfo, List<Calculation> calculations,
 			Long fromDate, Long toDate, boolean isForConnectionNo) {
 		List<Demand> demands = new LinkedList<>();
-		Long fromDateSearch = isForConnectionNo ? fromDate : null;
-		Long toDateSearch = isForConnectionNo ? toDate : null;
+		Long fromDateSearch = fromDate; //isForConnectionNo ? fromDate : null;
+		Long toDateSearch = toDate; //isForConnectionNo ? toDate : null;
 
 		for (Calculation calculation : calculations) {
 			Set<String> consumerCodes = Collections.singleton(calculation.getWaterConnection().getConnectionNo());
