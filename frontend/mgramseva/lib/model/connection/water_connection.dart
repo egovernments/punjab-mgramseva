@@ -141,6 +141,8 @@ class AdditionalDetails {
   @JsonKey(name: "initialMeterReading")
   int? initialMeterReading;
 
+  @JsonKey(name: "meterReading")
+  int? meterReading;
   @JsonKey(name: "locality")
   String? locality;
 
@@ -151,8 +153,7 @@ class AdditionalDetails {
   var initialMeterReadingCtrl = TextEditingController();
   String? action;
   setText() {
-    initialMeterReading =
-        DateFormats.dateToTimeStamp(initialMeterReadingCtrl.text);
+    initialMeterReading = int.parse((initialMeterReadingCtrl.text));
   }
 
   AdditionalDetails();

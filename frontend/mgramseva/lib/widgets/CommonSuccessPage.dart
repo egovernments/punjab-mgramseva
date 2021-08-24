@@ -11,8 +11,9 @@ import 'package:mgramseva/widgets/SuccessPage.dart';
 
 class CommonSuccess extends StatelessWidget {
   final SuccessHandler successHandler;
+  final VoidCallback? callBack;
 
-  CommonSuccess(this.successHandler);
+  CommonSuccess(this.successHandler, {this.callBack});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,7 @@ class CommonSuccess extends StatelessWidget {
                                   fontSize: 16, fontWeight: FontWeight.w400)),
                         )),
                     Visibility(
-                      visible: successHandler.downloadLink == null && successHandler.whatsAppShare == null,
+                      visible: successHandler.downloadLink == null && successHandler.whatsAppShare == null && successHandler.downloadLinkLabel == null,
                       child: SizedBox(
                         height: 20,
                       ),
@@ -63,7 +64,7 @@ class CommonSuccess extends StatelessWidget {
                           child: TextButton.icon(onPressed: (){},
                           icon: Icon(Icons.download_sharp),
                             label: Text( ApplicationLocalizations.of(context)
-                                .translate(successHandler.downloadLinkLabel!), style: TextStyle(fontSize: 19)),
+                                .translate(successHandler.downloadLinkLabel != null ? successHandler.downloadLinkLabel! : '' ), style: TextStyle(fontSize: 19)),
                           ),
                         ),
                         Visibility(
@@ -84,7 +85,7 @@ class CommonSuccess extends StatelessWidget {
                     ),
                     BottomButtonBar(
                       successHandler.backButtonText,
-                      CommonMethods.home,
+                      callBack != null ? callBack : CommonMethods.home,
                     ),
                     SizedBox(
                       height: 20,

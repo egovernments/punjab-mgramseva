@@ -67,7 +67,13 @@ class GenerateNewBill extends StatelessWidget {
                     _getLabeltext(
                         i18.generateBillDetails.PREVIOUS_METER_READING,
                         billList!.bill!.first.meterReadings == null
-                            ? "NA".toString()
+                            ? billList!.bill!.first.waterConnection!
+                                        .additionalDetails!.meterReading ==
+                                    null
+                                ? "NA".toString()
+                                : billList!.bill!.first.waterConnection!
+                                    .additionalDetails!.meterReading
+                                    .toString()
                             : billList!
                                 .bill!.first.meterReadings!.last.currentReading
                                 .toString(),

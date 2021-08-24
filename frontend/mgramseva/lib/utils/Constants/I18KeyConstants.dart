@@ -340,6 +340,7 @@ class DemandGenerate {
   String get GENERATE_DEMAND_SUCCESS_NEXT_SUBTEXT =>
       'DEMAND_GENERATED_SUCCESS_NEXT_SUBTEXT';
   String get DOWNLOAD_DEMAND_PDF => 'DOWNLOAD_DEMAND_PDF';
+  String get BILL_ID_NO => 'BILL_ID_NO';
 }
 
 class BillDetails {

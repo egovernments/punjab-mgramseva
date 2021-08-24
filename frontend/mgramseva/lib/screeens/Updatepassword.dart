@@ -7,6 +7,7 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/forgot_password_repo.dart';
 import 'package:mgramseva/repository/reset_password_repo.dart';
 import 'package:mgramseva/repository/tendants_repo.dart';
+import 'package:mgramseva/repository/user_edit_profile_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -160,7 +161,9 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                   style: ElevatedButton.styleFrom(
                                     padding: EdgeInsets.all(15),
                                   ),
-                                  child: new Text(i18.common.CONTINUE,
+                                  child: new Text(
+                                      ApplicationLocalizations.of(context)
+                                          .translate(i18.common.CONTINUE),
                                       style: TextStyle(
                                           fontSize: 19,
                                           fontWeight: FontWeight.w500)),
@@ -298,6 +301,12 @@ class _UpdatePasswordState extends State<UpdatePassword> {
             .forgotPassword(body, widget.userDetails.accessToken);
         Navigator.pop(context);
         commonProvider.loginCredentails = widget.userDetails;
+
+        // var userProfile = await commonProvider.getUserProfile();
+        // userProfile.user!.first.defaultPwdChgd = true;
+        // print(userProfile.toJson());
+        // var edituserResponse = await UserEditProfileRepository()
+        //     .editProfile({"user": userProfile.user!.first.toJson()});
         Navigator.pushReplacementNamed(context, Routes.SUCCESS_VIEW,
             arguments: SuccessHandler(
               i18.password.CHANGE_PASSWORD_SUCCESS,

@@ -125,9 +125,25 @@ public class ChallanQueryBuilder {
             if(criteria.getVendorName() != null)
             {
             	addClauseIfRequired(preparedStmtList, builder);
-            	builder.append( " vendor.name = ? ");
-            	preparedStmtList.add(criteria.getVendorName());
+				builder.append(" vendor.name like ?");
+				preparedStmtList.add('%' + criteria.getVendorName() + '%');
             }
+            
+            if (criteria.getFromDate() != null) {
+    			addClauseIfRequired(preparedStmtList, builder);
+    			builder.append("  challan.createdTime >= ? ");
+    			preparedStmtList.add(criteria.getFromDate());
+    		}
+    		if (criteria.getToDate() != null) {
+    			addClauseIfRequired(preparedStmtList, builder);
+    			builder.append("  challan.createdTime <= ? ");
+    			preparedStmtList.add(criteria.getToDate());
+    		}
+    		if (criteria.getIsBillPaid() != null) {
+    			addClauseIfRequired(preparedStmtList, builder);
+    			builder.append("  challan.isBillPaid = ? ");
+    			preparedStmtList.add(criteria.getIsBillPaid());
+    		}
 
 
         }
