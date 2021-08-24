@@ -36,7 +36,7 @@ class BillGenerationProvider with ChangeNotifier {
   var waterconnection = WaterConnection();
   late List dates = [];
   var selectedBillYear;
-  var selectedBillPeriod ;
+  var selectedBillPeriod;
   var selectedBillCycle;
   var meterReadingDate;
   var prevReadingDate;
@@ -54,55 +54,49 @@ class BillGenerationProvider with ChangeNotifier {
     'Nov',
     'Dec'
   ];
-  setModel(String? id, WaterConnection? waterConnection, BuildContext context) async{
+  setModel(String? id, WaterConnection? waterConnection,
+      BuildContext context) async {
     billGenerateDetails = BillGenerationDetails();
     billGenerateDetails.serviceCat = "WS_CHARGE";
-    if(id == null)
-      {
-        billGenerateDetails.serviceType = 'Non Metered';
-      }
-    if(waterConnection == null)
-      {
-        var commonProvider = Provider.of<CommonProvider>(
-            navigatorKey.currentContext!,
-            listen: false);
-        id!.split('_').join('/');
-        try {
-          Loaders.showLoadingDialog(context);
+    if (id == null) {
+      billGenerateDetails.serviceType = 'Non Metered';
+    }
+    if (waterConnection == null) {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+      id!.split('_').join('/');
+      try {
+        Loaders.showLoadingDialog(context);
 
-          var res = await SearchConnectionRepository().getconnection({
-            "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-            ...{'connectionNumber': id!.split('_').join('/')},
+        var res = await SearchConnectionRepository().getconnection({
+          "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+          ...{'connectionNumber': id!.split('_').join('/')},
+        });
 
-          });
+        Navigator.pop(context);
 
-          Navigator.pop(context);
-
+        waterconnection = res.waterConnection!.first;
+        billGenerateDetails.propertyType =
+            waterconnection!.additionalDetails!.propertyType;
+        billGenerateDetails.serviceType = waterconnection.connectionType;
+        if (waterconnection.connectionType == 'Metered') {
           waterconnection = res.waterConnection!.first;
-          billGenerateDetails.propertyType =
-              waterconnection!.additionalDetails!.propertyType;
-          billGenerateDetails.serviceType = waterconnection.connectionType;
-          if (waterconnection.connectionType == 'Metered') {
-            waterconnection = res.waterConnection!.first;
-            var meterRes = await BillGenerateRepository().searchmetetedDemand({
-              "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-              ...{'connectionNos': id!.split('_').join('/')},
-
-            });
-            if (meterRes.meterReadings!.length > 0) {
-              setMeterReading(meterRes);
-            }
-            else{
-              prevReadingDate = waterConnection!.previousReadingDate;
-            }
+          var meterRes = await BillGenerateRepository().searchmetetedDemand({
+            "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+            ...{'connectionNos': id!.split('_').join('/')},
+          });
+          if (meterRes.meterReadings!.length > 0) {
+            setMeterReading(meterRes);
+          } else {
+            prevReadingDate = waterConnection!.previousReadingDate;
           }
-          }
-        catch (e,s) {
-          Navigator.pop(context);
-          ErrorHandler().allExceptionsHandler(context, e, s);
         }
+      } catch (e, s) {
+        Navigator.pop(context);
+        ErrorHandler().allExceptionsHandler(context, e, s);
       }
-    else {
+    } else {
       billGenerateDetails.propertyType =
           waterConnection!.additionalDetails!.propertyType;
       billGenerateDetails.serviceType = waterConnection.connectionType;
@@ -115,34 +109,29 @@ class BillGenerationProvider with ChangeNotifier {
         var meterRes = await BillGenerateRepository().searchmetetedDemand({
           "tenantId": commonProvider.userDetails!.selectedtenant!.code,
           ...{'connectionNos': id!.split('_').join('/')},
-
         });
         if (meterRes.meterReadings!.length > 0) {
           setMeterReading(meterRes);
-        }
-        else{
+        } else {
           prevReadingDate = waterConnection!.previousReadingDate;
         }
-      }
-
-      else{}
+      } else {}
     }
   }
 
-  setMeterReading(meterRes)
-  {
+  setMeterReading(meterRes) {
     if (meterRes.meterReadings!.length > 0) {
       billGenerateDetails.meterNumberCtrl.text = waterconnection.meterId!;
       billGenerateDetails.om_1Ctrl.text =
-      meterRes.meterReadings!.first.currentReading.toString()[0];
+          meterRes.meterReadings!.first.currentReading.toString()[0];
       billGenerateDetails.om_2Ctrl.text =
-      meterRes.meterReadings!.first.currentReading.toString()[1];
+          meterRes.meterReadings!.first.currentReading.toString()[1];
       billGenerateDetails.om_3Ctrl.text =
-      meterRes.meterReadings!.first.currentReading.toString()[2];
+          meterRes.meterReadings!.first.currentReading.toString()[2];
       billGenerateDetails.om_4Ctrl.text =
-      meterRes.meterReadings!.first.currentReading.toString()[3];
+          meterRes.meterReadings!.first.currentReading.toString()[3];
       billGenerateDetails.om_5Ctrl.text =
-      meterRes.meterReadings!.first.currentReading.toString()[4];
+          meterRes.meterReadings!.first.currentReading.toString()[4];
       prevReadingDate = meterRes.meterReadings!.first.currentReadingDate;
     }
   }
@@ -152,42 +141,53 @@ class BillGenerationProvider with ChangeNotifier {
     super.dispose();
   }
 
-  onChangeOfServiceType (val){
+  onChangeOfServiceType(val) {
     billGenerateDetails.serviceType = val;
     notifyListeners();
   }
 
-  onChangeOfServiceCat(val){
+  onChangeOfServiceCat(val) {
     billGenerateDetails.serviceCat = val;
     notifyListeners();
   }
-  onChangeOfProperty(val){
+
+  onChangeOfProperty(val) {
     billGenerateDetails.propertyType = val;
     notifyListeners();
   }
-  void onChangeOfBillYear(val){
+
+  void onChangeOfBillYear(val) {
     selectedBillYear = val;
     billGenerateDetails.billYear = selectedBillYear;
     notifyListeners();
   }
-  void onChangeOfBillCycle(val){
+
+  void onChangeOfBillCycle(val) {
     selectedBillCycle = (DateFormats.getMonthAndNextMonth(val));
-    selectedBillPeriod = (DateFormats.getFilteredDate(
-        val.toLocal().toString(),
-        dateFormat: "dd/MM/yyyy")) + "-" + DateFormats.getFilteredDate((new DateTime(val.year, val.month + 1, val.day)).toLocal().toString(), dateFormat: "dd/MM/yyyy");
+    selectedBillPeriod = (DateFormats.getFilteredDate(val.toLocal().toString(),
+            dateFormat: "dd/MM/yyyy")) +
+        "-" +
+        DateFormats.getFilteredDate(
+            (new DateTime(val.year, val.month + 1, val.day))
+                .toLocal()
+                .toString(),
+            dateFormat: "dd/MM/yyyy");
     billGenerateDetails.billCycle = val;
     notifyListeners();
   }
+
   void onChangeOfDate(value) {
     notifyListeners();
   }
+
   Future<void> getServiceTypePropertyTypeandConnectionType() async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
-      var res = await CoreRepository()
-          .getMdms(getServiceTypeConnectionTypePropertyTypeMDMS(commonProvider.userDetails!.userRequest!.tenantId.toString()));
+      var res = await CoreRepository().getMdms(
+          getServiceTypeConnectionTypePropertyTypeMDMS(
+              commonProvider.userDetails!.userRequest!.tenantId.toString()));
       languageList = res;
       streamController.add(billGenerateDetails);
     } catch (e) {
@@ -195,7 +195,7 @@ class BillGenerationProvider with ChangeNotifier {
     }
   }
 
-  void onSubmit(context) async{
+  void onSubmit(context) async {
     if (formKey.currentState!.validate() &&
         billGenerateDetails.serviceType == "Metered") {
       if (billGenerateDetails.om_1Ctrl.text.isEmpty ||
@@ -205,16 +205,14 @@ class BillGenerationProvider with ChangeNotifier {
           billGenerateDetails.om_5Ctrl.text.isEmpty) {
         Notifiers.getToastMessage(
             context, i18.demandGenerate.OLD_METER_READING_INVALID, 'ERROR');
-      }
-      else if (billGenerateDetails.nm_1Ctrl.text.isEmpty ||
+      } else if (billGenerateDetails.nm_1Ctrl.text.isEmpty ||
           billGenerateDetails.nm_2Ctrl.text.isEmpty ||
           billGenerateDetails.nm_3Ctrl.text.isEmpty ||
           billGenerateDetails.nm_4Ctrl.text.isEmpty ||
           billGenerateDetails.nm_5Ctrl.text.isEmpty) {
         Notifiers.getToastMessage(
             context, i18.demandGenerate.NEW_METER_READING_INVALID, 'ERROR');
-      }
-      else {
+      } else {
         var oldMeter = billGenerateDetails.om_1Ctrl.text +
             billGenerateDetails.om_2Ctrl.text +
             billGenerateDetails.om_3Ctrl.text +
@@ -234,45 +232,44 @@ class BillGenerationProvider with ChangeNotifier {
             var res1 = {
               "meterReadings": {
                 "currentReading": int.parse(newMeter),
-                "currentReadingDate": DateFormats.dateToTimeStamp(billGenerateDetails.meterReadingDateCtrl.text),
-                "billingPeriod": "${DateFormats.timeStampToDate(prevReadingDate)} - ${DateFormats.timeStampToDate(DateFormats.dateToTimeStamp(billGenerateDetails.meterReadingDateCtrl.text))}",
+                "currentReadingDate": DateFormats.dateToTimeStamp(
+                    billGenerateDetails.meterReadingDateCtrl.text),
+                "billingPeriod":
+                    "${DateFormats.timeStampToDate(prevReadingDate)} - ${DateFormats.timeStampToDate(DateFormats.dateToTimeStamp(billGenerateDetails.meterReadingDateCtrl.text))}",
                 "meterStatus": "Working",
                 "connectionNo": waterconnection.connectionNo,
                 "lastReading": int.parse(oldMeter),
                 "lastReadingDate": waterconnection.previousReadingDate,
-                "generateDemand":true,
+                "generateDemand": true,
                 "tenantId": commonProvider.userDetails!.selectedtenant!.code
               }
             };
-            var billResponse1 = await BillGenerateRepository().calculateMeterConnection(res1);
+            var billResponse1 =
+                await BillGenerateRepository().calculateMeterConnection(res1);
             Navigator.pop(context);
-            if(billResponse1!=null) {
+            if (billResponse1 != null) {
               Navigator.of(context).pushReplacement(
                   new MaterialPageRoute(builder: (BuildContext context) {
-                    return CommonSuccess(SuccessHandler(
-                        i18.demandGenerate.GENERATE_BILL_SUCCESS,
-                        i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT,
-                        i18.common.BACK_HOME, Routes.BILL_GENERATE));
-                  }));
+                return CommonSuccess(SuccessHandler(
+                    i18.demandGenerate.GENERATE_BILL_SUCCESS,
+                    i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT,
+                    i18.common.BACK_HOME,
+                    Routes.BILL_GENERATE));
+              }));
             }
-          }
-          catch (e) {
+          } catch (e) {
             Navigator.pop(context);
             Navigator.of(context).pushReplacement(
                 new MaterialPageRoute(builder: (BuildContext context) {
-                  return ErrorPage(e.toString());
-                }));
+              return ErrorPage(e.toString());
+            }));
           }
-        }
-        else {
+        } else {
           Notifiers.getToastMessage(
-              context,
-              i18.demandGenerate.NEW_METER_READING_INVALID,
-              'ERROR');
+              context, i18.demandGenerate.NEW_METER_READING_INVALID, 'ERROR');
         }
       }
-    }
-    else if (formKey.currentState!.validate() &&
+    } else if (formKey.currentState!.validate() &&
         billGenerateDetails.serviceType == "Non Metered") {
       try {
         Loaders.showLoadingDialog(context);
@@ -285,30 +282,35 @@ class BillGenerationProvider with ChangeNotifier {
         };
         var billResponse2 = await BillGenerateRepository().bulkDemand(res2);
         Navigator.pop(context);
-        if(billResponse2!=null) {
+        if (billResponse2 != null) {
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
-                return CommonSuccess(SuccessHandler(
-                    i18.demandGenerate.GENERATE_DEMAND_SUCCESS,
-                    ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT) +
-                        ' $selectedBillCycle' + ' ${selectedBillYear.financialYear!.toString().substring(2)}. '
-                    + ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS_NEXT_SUBTEXT),
-                    i18.common.BACK_HOME, Routes.BILL_GENERATE,
-                subHeader: '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)} '
-                    '\n\n  $selectedBillCycle' + ' ${selectedBillYear.financialYear!.toString().substring(2)}',
+            return CommonSuccess(SuccessHandler(
+                i18.demandGenerate.GENERATE_DEMAND_SUCCESS,
+                ApplicationLocalizations.of(context).translate(
+                        i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT) +
+                    ' $selectedBillCycle' +
+                    ' ${selectedBillYear.financialYear!.toString().substring(2)}. ' +
+                    ApplicationLocalizations.of(context).translate(i18
+                        .demandGenerate.GENERATE_DEMAND_SUCCESS_NEXT_SUBTEXT),
+                i18.common.BACK_HOME,
+                Routes.BILL_GENERATE,
+                subHeader:
+                    '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)} '
+                            '\n\n  $selectedBillCycle' +
+                        ' ${selectedBillYear.financialYear!.toString().substring(2)}',
                 downloadLink: '',
-                    downloadLinkLabel: ApplicationLocalizations.of(context).translate(i18.demandGenerate.DOWNLOAD_DEMAND_PDF)));
-              }));
+                downloadLinkLabel: ApplicationLocalizations.of(context)
+                    .translate(i18.demandGenerate.DOWNLOAD_DEMAND_PDF)));
+          }));
         }
-      }
-      catch (e) {
+      } catch (e) {
         Navigator.of(context).pushReplacement(
             new MaterialPageRoute(builder: (BuildContext context) {
-              return ErrorPage(e.toString());
-            }));
+          return ErrorPage(e.toString());
+        }));
       }
-    }
-    else {
+    } else {
       autoValidation = true;
       notifyListeners();
     }
@@ -317,7 +319,7 @@ class BillGenerationProvider with ChangeNotifier {
   List<DropdownMenuItem<Object>> getPropertyTypeList() {
     if (languageList?.mdmsRes?.propertyTax?.PropertyTypeList != null) {
       return (languageList?.mdmsRes?.propertyTax?.PropertyTypeList ??
-          <PropertyType>[])
+              <PropertyType>[])
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
@@ -327,10 +329,11 @@ class BillGenerationProvider with ChangeNotifier {
     }
     return <DropdownMenuItem<Object>>[];
   }
+
   List<DropdownMenuItem<Object>> getConnectionTypeList() {
     if (languageList?.mdmsRes?.connection?.connectionTypeList != null) {
       return (languageList?.mdmsRes?.connection?.connectionTypeList ??
-          <ConnectionType>[])
+              <ConnectionType>[])
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
@@ -340,10 +343,11 @@ class BillGenerationProvider with ChangeNotifier {
     }
     return <DropdownMenuItem<Object>>[];
   }
+
   List<DropdownMenuItem<Object>> getFinancialYearList() {
     if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
       return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
-          <TaxPeriod>[])
+              <TaxPeriod>[])
           .map((value) {
         return DropdownMenuItem(
           value: value,
@@ -353,9 +357,11 @@ class BillGenerationProvider with ChangeNotifier {
     }
     return <DropdownMenuItem<Object>>[];
   }
+
   List<DropdownMenuItem<Object>> getServiceCategoryList() {
     if (languageList?.mdmsRes?.billingService?.taxHeadMasterList != null) {
-      return (languageList?.mdmsRes?.billingService?.taxHeadMasterList ?? <TaxHeadMaster>[])
+      return (languageList?.mdmsRes?.billingService?.taxHeadMasterList ??
+              <TaxHeadMaster>[])
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
@@ -368,7 +374,7 @@ class BillGenerationProvider with ChangeNotifier {
 
   List<DropdownMenuItem<Object>> getBillingCycle() {
     dates = [];
-    if (billGenerateDetails.billYear!=null && selectedBillYear!=null) {
+    if (billGenerateDetails.billYear != null && selectedBillYear != null) {
       var date2 = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch));
       var date1 = DateFormats.getFormattedDateToDateTime(
@@ -378,9 +384,9 @@ class BillGenerationProvider with ChangeNotifier {
       var days = d.day - now.day;
       var years = d.year - now.year;
       var months = d.month - now.month;
-      if(months < 0 || (months == 0 && days < 0)){
+      if (months < 0 || (months == 0 && days < 0)) {
         years--;
-        months += (days < 0 ? 11:12);
+        months += (days < 0 ? 11 : 12);
       }
       for (var i = 0; i < months; i++) {
         var prevMonth = new DateTime(now.year, date1.month + i, 1);
@@ -393,14 +399,14 @@ class BillGenerationProvider with ChangeNotifier {
         var d = value['name'] as DateTime;
         return DropdownMenuItem(
           value: value['code'],
-          child: new Text(months[d.month - 1] + " - " + months[d.month] + " " + d.year.toString()),
+          child: new Text(months[d.month - 1] +
+              " - " +
+              months[d.month] +
+              " " +
+              d.year.toString()),
         );
       }).toList();
     }
     return <DropdownMenuItem<Object>>[];
   }
-
-
-
-
 }

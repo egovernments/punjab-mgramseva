@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/authentication.dart';
+import 'package:mgramseva/repository/user_profile_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
@@ -39,30 +40,42 @@ class AuthenticationProvider with ChangeNotifier {
       var loginResponse =
           await AuthenticationRepository().validateLogin(body, headers);
 
-      Navigator.pop(context);
-        var commonProvider =
-            Provider.of<CommonProvider>(context, listen: false);
+      // Navigator.pop(context);
 
-        if(loginResponse.isFirstTimeLogin ?? false){
-          Navigator.pushNamed(context, Routes.UPDATE_PASSWORD, arguments: loginResponse);
+      if (loginResponse != null) {
+        print(loginResponse.toJson());
+        print(loginResponse.userRequest!.toJson());
+        var userInfo = await AuthenticationRepository().getProfile({
+          "tenantId": loginResponse.userRequest!.tenantId,
+          "id": [loginResponse.userRequest!.id],
+          "mobileNumber": loginResponse.userRequest!.mobileNumber
+        }, loginResponse.accessToken!);
+        print(userInfo);
+        if (userInfo.user!.first.defaultPwdChgd == false) {
+          var commonProvider =
+              Provider.of<CommonProvider>(context, listen: false);
+          commonProvider.loginCredentails = loginResponse;
+          Navigator.pushNamed(context, Routes.UPDATE_PASSWORD,
+              arguments: loginResponse);
           return;
         }
-      commonProvider.loginCredentails = loginResponse;
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(Routes.HOME, (route) => false);
-    } on CustomException catch (e,s) {
+      }
+
+      // Navigator.of(context)
+      //     .pushNamedAndRemoveUntil(Routes.HOME, (route) => false);
+    } on CustomException catch (e, s) {
       Navigator.pop(context);
-      if(ErrorHandler.handleApiException(context, e, s)) {
+      if (ErrorHandler.handleApiException(context, e, s)) {
         Notifiers.getToastMessage(context, e.message, 'ERROR');
       }
-    } catch (e,s) {
+    } catch (e, s) {
       Navigator.pop(context);
-      ErrorHandler.logError(e.toString(),s);
+      ErrorHandler.logError(e.toString(), s);
       Notifiers.getToastMessage(context, e.toString(), 'ERROR');
     }
   }
+
   void callNotifyer() {
     notifyListeners();
   }
-
 }
