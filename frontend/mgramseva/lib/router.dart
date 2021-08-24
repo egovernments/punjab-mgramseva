@@ -27,6 +27,7 @@ import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart';
 import 'model/success_handler.dart';
 
+import 'model/user/user_details.dart';
 import 'screeens/ForgotPassword/ForgotPassword.dart';
 import 'screeens/common/collect_payment.dart';
 import 'screeens/dashboard/Dashboard.dart';
@@ -86,7 +87,7 @@ class router {
             settings: RouteSettings(name: Routes.CHANGE_PASSWORD));
       case Routes.UPDATE_PASSWORD:
         return MaterialPageRoute(
-            builder: (_) => UpdatePassword(),
+            builder: (_) => UpdatePassword(userDetails: settings.arguments as UserDetails),
             settings: RouteSettings(name: Routes.UPDATE_PASSWORD));
       case Routes.CONSUMER_SEARCH:
         return MaterialPageRoute(
