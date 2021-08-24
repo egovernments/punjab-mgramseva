@@ -125,8 +125,8 @@ public class ChallanQueryBuilder {
             if(criteria.getVendorName() != null)
             {
             	addClauseIfRequired(preparedStmtList, builder);
-            	builder.append( " vendor.name = ? ");
-            	preparedStmtList.add(criteria.getVendorName());
+				builder.append(" vendor.name like ?");
+				preparedStmtList.add('%' + criteria.getVendorName() + '%');
             }
             
             if (criteria.getFromDate() != null) {
