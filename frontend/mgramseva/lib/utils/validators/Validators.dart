@@ -68,8 +68,8 @@ class Validators {
   static String? meterNumberValidator(String? v) {
     if (v!.trim().isEmpty) {
       return 'Please enter Meter number';
-    } else if (!RegExp(r'^[0-9]+$').hasMatch(v)) {
-      return 'Please enter Numbers only';
+    } else if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(v)) {
+      return 'Please enter alpha-numeric characters only';
     }
     return null;
   }
