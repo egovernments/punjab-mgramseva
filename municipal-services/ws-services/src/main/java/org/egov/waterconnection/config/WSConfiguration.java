@@ -205,4 +205,7 @@ public class WSConfiguration {
 	
 	@Value("${egov.demand.searchendpoint}")
 	private String demandSearchUri;
+	
+	@Value("${egov.ws.service.feedback}")
+	private String saveFeedback;
 }
