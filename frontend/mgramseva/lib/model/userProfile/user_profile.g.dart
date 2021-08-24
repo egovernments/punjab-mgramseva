@@ -39,6 +39,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
     ..active = json['active'] as bool?
     ..locale = json['locale'] as String?
     ..type = json['type'] as String?
+    ..defaultPwdChgd = json['defaultPwdChgd'] as bool?
     ..accountLocked = json['accountLocked'] as bool?
     ..accountLockedDate = json['accountLockedDate'] as int?
     ..fatherOrHusbandName = json['fatherOrHusbandName'] as String?
@@ -80,6 +81,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'active': instance.active,
       'locale': instance.locale,
       'type': instance.type,
+      'defaultPwdChgd': instance.defaultPwdChgd,
       'accountLocked': instance.accountLocked,
       'accountLockedDate': instance.accountLockedDate,
       'fatherOrHusbandName': instance.fatherOrHusbandName,

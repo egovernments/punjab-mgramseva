@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/user/user_details.dart';
+import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'dart:convert';
 import 'package:mgramseva/model/localization/localization_label.dart';
@@ -69,6 +70,7 @@ class CommonProvider with ChangeNotifier {
     }
     return labels;
   }
+
   setSelectedTenant(UserDetails? loginDetails) {
     if (kIsWeb) {
       window.localStorage[Constants.LOGIN_KEY] =
@@ -114,8 +116,8 @@ class CommonProvider with ChangeNotifier {
             value: jsonEncode(labels.map((e) => e.toJson()).toList()));
       }
     } catch (e) {
-      Notifiers.getToastMessage(
-          navigatorKey.currentState!.context, 'Unable to store the details', 'ERROR');
+      Notifiers.getToastMessage(navigatorKey.currentState!.context,
+          'Unable to store the details', 'ERROR');
     }
   }
 
@@ -131,6 +133,32 @@ class CommonProvider with ChangeNotifier {
               loginDetails == null ? null : jsonEncode(loginDetails.toJson()));
     }
     notifyListeners();
+  }
+
+  set userProfile(UserProfile? profile) {
+    if (kIsWeb) {
+      window.localStorage[Constants.USER_PROFILE_KEY] =
+          profile == null ? '' : jsonEncode(profile.toJson());
+    } else {
+      storage.write(
+          key: Constants.USER_PROFILE_KEY,
+          value: profile == null ? null : jsonEncode(profile.toJson()));
+    }
+    notifyListeners();
+  }
+
+  Future<UserProfile> getUserProfile() async {
+    var userReposne;
+    try {
+      if (kIsWeb) {
+        userReposne = window.localStorage[Constants.USER_PROFILE_KEY];
+      } else {
+        userReposne = await storage.read(key: Constants.USER_PROFILE_KEY);
+      }
+    } catch (e) {
+      userLoggedStreamCtrl.add(null);
+    }
+    return UserProfile.fromJson(jsonDecode(userReposne));
   }
 
   Future<void> getLoginCredentails() async {
@@ -183,12 +211,12 @@ class CommonProvider with ChangeNotifier {
 
       if (languageProvider.stateInfo != null) {
         // languageProvider.stateInfo?.languages?.first.isSelected = true;
-        ApplicationLocalizations(
-            Locale(languageProvider.selectedLanguage?.label ?? '', languageProvider.selectedLanguage?.value))
+        ApplicationLocalizations(Locale(
+                languageProvider.selectedLanguage?.label ?? '',
+                languageProvider.selectedLanguage?.value))
             .load();
       }
     }
-
 
     if (loginResponse != null && loginResponse.trim().isNotEmpty) {
       var decodedResponse = UserDetails.fromJson(jsonDecode(loginResponse));

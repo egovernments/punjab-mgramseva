@@ -54,7 +54,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
             .toList();
         if (result.length > 1) {
           showdialog(result);
-        } else if (result.length == 1) {
+        } else if (result.length == 1 &&
+            commonProvider.userDetails!.selectedtenant == null) {
           commonProvider.setTenant(result.first);
         }
       }

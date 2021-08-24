@@ -294,19 +294,25 @@ class BillGenerationProvider with ChangeNotifier {
             if (billResponse1 != null) {
               Navigator.of(context).pushReplacement(
                   new MaterialPageRoute(builder: (BuildContext context) {
-                return CommonSuccess(SuccessHandler(
-                  ApplicationLocalizations.of(context)
-                      .translate(i18.demandGenerate.GENERATE_BILL_SUCCESS),
-                  '${ApplicationLocalizations.of(context)
-                      .translate(i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT)}' ' (+91-${billList.bill!.first.mobileNumber})',
-                  ApplicationLocalizations.of(context)
-                      .translate(i18.common.COLLECT_PAYMENT),
-                    Routes.BILL_GENERATE,
-                downloadLink: '', downloadLinkLabel: ApplicationLocalizations.of(context)
-                    .translate(i18.common.DOWNLOAD), whatsAppShare: '',
-                subHeader: '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)} '
-                '\n\n ${billList.bill!.first.billNumber.toString()}'),
-                callBack: ()=> onClickOfCollectPayment(billList.bill!.first, context),);
+                return CommonSuccess(
+                  SuccessHandler(
+                      ApplicationLocalizations.of(context)
+                          .translate(i18.demandGenerate.GENERATE_BILL_SUCCESS),
+                      '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT)}'
+                      ' (+91-${billList.bill!.first.mobileNumber})',
+                      ApplicationLocalizations.of(context)
+                          .translate(i18.common.COLLECT_PAYMENT),
+                      Routes.BILL_GENERATE,
+                      downloadLink: '',
+                      downloadLinkLabel: ApplicationLocalizations.of(context)
+                          .translate(i18.common.DOWNLOAD),
+                      whatsAppShare: '',
+                      subHeader:
+                          '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)} '
+                          '\n\n ${billList.bill!.first.billNumber.toString()}'),
+                  callBack: () =>
+                      onClickOfCollectPayment(billList.bill!.first, context),
+                );
               }));
             }
           } catch (e) {
@@ -338,7 +344,8 @@ class BillGenerationProvider with ChangeNotifier {
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
             return CommonSuccess(SuccessHandler(
-                ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS),
+                ApplicationLocalizations.of(context)
+                    .translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS),
                 ApplicationLocalizations.of(context).translate(
                         i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT) +
                     ' $selectedBillCycle' +

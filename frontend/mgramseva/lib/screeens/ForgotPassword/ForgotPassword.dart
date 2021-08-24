@@ -24,11 +24,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   saveInputandcall(context) async {
     var otpProvider =
-    Provider.of<ForgotPasswordProvider>(context, listen: false);
-    if(formKey.currentState!.validate()) {
+        Provider.of<ForgotPasswordProvider>(context, listen: false);
+    if (formKey.currentState!.validate()) {
       otpProvider.otpforresetpassword(context, mobileNumber.text.trim());
       //Navigator.of(context).pushNamedAndRemoveUntil(Routes.RESET_PASSWORD, (route) => false);
-    }else{
+    } else {
       setState(() {
         autoValidation = true;
       });
@@ -36,50 +36,57 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   }
 
   getForgotPasswordCard() {
-    return new Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.all(8),
-        child: Card(
-            child: (Column(
-          children: [
-            Logo(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Forgot Password ? ",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-            ),
-            Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  margin: const EdgeInsets.only(left: 20, bottom: 20, top: 20),
-                  child: Text(
-                      "Please Enter your Phone Number to Reset password.",
+    return SingleChildScrollView(
+        child: new Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(8),
+            child: Card(
+                child: (Column(
+              children: [
+                Logo(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Forgot Password ? ",
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                )),
-            Form(
-              key: formKey,
-              autovalidateMode: autoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
-              child: BuildTextField(
-                'Phone Number',
-                mobileNumber,
-                prefixText: '+91',
-                isRequired: true,
-                inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
-                maxLength: 10,
-                validator: Validators.mobileNumberValidator,
-                textInputType: TextInputType.phone,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-                padding: EdgeInsets.all(15),
-                child: Button(
-                    i18.common.CONTINUE, () => saveInputandcall(context))),
-          ],
-        ))));
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                ),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      margin:
+                          const EdgeInsets.only(left: 20, bottom: 20, top: 20),
+                      child: Text(
+                          "Please Enter your Phone Number to Reset password.",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w400)),
+                    )),
+                Form(
+                  key: formKey,
+                  autovalidateMode: autoValidation
+                      ? AutovalidateMode.always
+                      : AutovalidateMode.disabled,
+                  child: BuildTextField(
+                    'Phone Number',
+                    mobileNumber,
+                    prefixText: '+91',
+                    isRequired: true,
+                    inputFormatter: [
+                      FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                    ],
+                    maxLength: 10,
+                    validator: Validators.mobileNumberValidator,
+                    textInputType: TextInputType.phone,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Button(
+                        i18.common.CONTINUE, () => saveInputandcall(context))),
+              ],
+            )))));
   }
 
   @override

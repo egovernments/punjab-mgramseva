@@ -3,15 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/authentication.dart';
+import 'package:mgramseva/repository/user_profile_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:universal_html/html.dart';
 
 class AuthenticationProvider with ChangeNotifier {
   validateLogin(BuildContext context, String userName, String password) async {
@@ -40,29 +43,43 @@ class AuthenticationProvider with ChangeNotifier {
           await AuthenticationRepository().validateLogin(body, headers);
 
       Navigator.pop(context);
-        var commonProvider =
-            Provider.of<CommonProvider>(context, listen: false);
 
-        if(loginResponse.isFirstTimeLogin ?? false){
-          Navigator.pushNamed(context, Routes.UPDATE_PASSWORD, arguments: loginResponse);
+      if (loginResponse != null) {
+        print(loginResponse.toJson());
+        print(loginResponse.userRequest!.toJson());
+        var userInfo = await AuthenticationRepository().getProfile({
+          "tenantId": loginResponse.userRequest!.tenantId,
+          "id": [loginResponse.userRequest!.id],
+          "mobileNumber": loginResponse.userRequest!.mobileNumber
+        }, loginResponse.accessToken!);
+        Navigator.pop(context);
+        if (userInfo.user!.first.defaultPwdChgd == false) {
+          var commonProvider =
+              Provider.of<CommonProvider>(context, listen: false);
+          commonProvider.loginCredentails = loginResponse;
+
+          commonProvider.userProfile = userInfo;
+          Navigator.pushNamed(context, Routes.UPDATE_PASSWORD,
+              arguments: loginResponse);
           return;
+        } else {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(Routes.HOME, (route) => false);
         }
-      commonProvider.loginCredentails = loginResponse;
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(Routes.HOME, (route) => false);
-    } on CustomException catch (e,s) {
+      }
+    } on CustomException catch (e, s) {
       Navigator.pop(context);
-      if(ErrorHandler.handleApiException(context, e, s)) {
+      if (ErrorHandler.handleApiException(context, e, s)) {
         Notifiers.getToastMessage(context, e.message, 'ERROR');
       }
-    } catch (e,s) {
+    } catch (e, s) {
       Navigator.pop(context);
-      ErrorHandler.logError(e.toString(),s);
+      ErrorHandler.logError(e.toString(), s);
       Notifiers.getToastMessage(context, e.toString(), 'ERROR');
     }
   }
+
   void callNotifyer() {
     notifyListeners();
   }
-
 }
