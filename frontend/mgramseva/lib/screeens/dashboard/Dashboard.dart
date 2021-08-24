@@ -113,7 +113,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
             Align(
                 alignment: Alignment.bottomRight,
                 child: Consumer<DashBoardProvider>(
-                    builder: (_, dashBoardProvider, child) => Pagination(limit: 10, offSet: dashBoardProvider.offset, callBack: dashBoardProvider.onChangeOfPagination, totalCount: 20,)))
+                    builder: (_, dashBoardProvider, child) => Pagination(limit: dashBoardProvider.limit, offSet: dashBoardProvider.offset, callBack: (pageResponse) => dashBoardProvider.onChangeOfPageLimit(pageResponse, context), totalCount: 30)))
           ]),
         ),
       ),

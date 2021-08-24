@@ -30,6 +30,11 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
 
   @override
   void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    super.initState();
+  }
+
+  afterViewBuild() {
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
 
     if(widget.dashBoardType == DashBoardType.Expenditure) {
@@ -39,7 +44,12 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
         Tab(text: '${i18.dashboard.PENDING}')
       ];
 
-      dashBoardProvider.fetchExpenseDashBoardDetails(context);
+
+      dashBoardProvider
+        ..limit = 10
+        ..offset = 1
+        ..expenseDashboardDetails = <ExpensesDetailsModel>[]
+        ..fetchExpenseDashBoardDetails(context, dashBoardProvider.limit, dashBoardProvider.offset);
     }else{
       _tabList = [
         Tab(text: '${i18.dashboard.ALL}'),
@@ -48,7 +58,6 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
       ];
     }
     _tabController = new TabController(vsync: this, length: _tabList.length);
-    super.initState();
   }
 
   @override
@@ -81,7 +90,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
                     if(snapshot.data is String){
                       return CommonWidgets.buildEmptyMessage(snapshot.data, context);
                     }
-                    return _buildTabView();
+                    return _buildTabView(snapshot.data);
                   } else if (snapshot.hasError) {
                     return Notifiers.networkErrorPage(context, () => {});
                   } else {
@@ -100,7 +109,9 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     );
   }
 
-  Widget _buildTabView() {
+  Widget _buildTabView(List<ExpensesDetailsModel> expenseList) {
+    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -116,7 +127,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
             unselectedLabelStyle: TextStyle(
                 color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400),
             radius: 25,
-            tabs: _tabList.map((e) => e).toList(),
+            tabs: widget.dashBoardType == DashBoardType.Expenditure ? dashBoardProvider.getExpenseTabList(context, expenseList) : _tabList
           ),
         ),
         Expanded(
@@ -124,7 +135,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
             builder : (_ , dashBoardProvider, child) => TabBarView(
                 controller: _tabController,
                 children: List.generate(_tabList.length, (index) => BillsTable(headerList: dashBoardProvider.expenseHeaderList,
-                  tableData: dashBoardProvider.getExpenseData(index),
+                  tableData: dashBoardProvider.getExpenseData(index, expenseList),
                 ))
             ),
           ),

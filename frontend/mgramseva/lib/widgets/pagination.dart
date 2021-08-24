@@ -52,12 +52,12 @@ class _PaginationState extends State<Pagination> {
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Visibility(
-              visible: widget.offSet != 0,
-              child: IconButton(onPressed: onChangeOfPage, icon: Icon(Icons.arrow_left))),
-          Text('${widget.offSet} - ${widget.offSet + widget.limit}'),
+              visible: widget.offSet != 1,
+              child: IconButton(onPressed: () => onChangeOfPage(false), icon: Icon(Icons.arrow_left))),
+          Text('${widget.offSet} - ${(widget.offSet + widget.limit - 1) <= widget.totalCount ? (widget.offSet + widget.limit -1) : widget.totalCount}'),
           Visibility(
               visible: widget.offSet < widget.totalCount ,
-              child: IconButton(onPressed: ()=>onChangeOfPage(false), icon:Icon(Icons.arrow_right))),
+              child: IconButton(onPressed: onChangeOfPage, icon:Icon(Icons.arrow_right))),
         ],
       ),
     );
@@ -65,13 +65,13 @@ class _PaginationState extends State<Pagination> {
 
   onChangeOfPage([bool isIncrement = true]) {
     if(isIncrement){
-      PaginationResponse(widget.limit, widget.offSet + widget.limit);
+     widget.callBack(PaginationResponse(widget.limit, widget.offSet + widget.limit));
       return;
     }
-    PaginationResponse(widget.limit, widget.offSet - widget.limit);
+    widget.callBack(PaginationResponse(widget.limit, widget.offSet - widget.limit));
   }
 
   onChangeOfPageCount(limit){
-    widget.callBack(PaginationResponse(limit, 0));
+    widget.callBack(PaginationResponse(limit, 1));
   }
 }
