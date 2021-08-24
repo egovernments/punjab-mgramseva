@@ -230,6 +230,7 @@ class Expense {
   String get ATTACH_FORMATS => 'ATTACH_FORMATS';
   String get CORE_EXPENSE_EXPENDITURE_SUCESS => 'CORE_EXPENSE_EXPENDITURE_SUCESS';
   String get HAS_THIS_BILL_PAID => 'HAS_THIS_BILL_PAID';
+  String get CANCELLED => 'CANCELLED';
 }
 
 class CreateConsumer {
