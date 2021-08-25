@@ -304,9 +304,11 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   Future<List<Vendor>> fetchVendors() async {
+    var commonProvider = Provider.of<CommonProvider>(navigatorKey.currentContext!, listen: false);
+
     try {
       var query = {
-        'tenantId': 'pb',
+        'tenantId': commonProvider.userDetails?.selectedtenant?.code,
       };
 
       var res = await ExpensesRepository().getVendor(query);

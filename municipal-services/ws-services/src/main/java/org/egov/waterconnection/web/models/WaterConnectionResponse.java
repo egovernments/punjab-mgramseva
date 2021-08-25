@@ -30,6 +30,10 @@ import javax.validation.Valid;
 @Setter
 @Builder
 public class WaterConnectionResponse {
+
+	@JsonProperty("totalCount")
+	private Integer totalCount =null;
+	
 	@JsonProperty("ResponseInfo")
 	private ResponseInfo responseInfo = null;
 
@@ -125,4 +129,12 @@ public class WaterConnectionResponse {
 		}
 		return o.toString().replace("\n", "\n    ");
 	}
+
+public Integer getTotalCount() {
+	return totalCount;
+}
+
+public void setTotalCount(Integer totalCount) {
+	this.totalCount = totalCount;
+} 
 }

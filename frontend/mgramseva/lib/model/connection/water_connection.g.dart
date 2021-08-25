@@ -76,6 +76,7 @@ Map<String, dynamic> _$ProcessInstanceToJson(ProcessInstance instance) =>
 AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) {
   return AdditionalDetails()
     ..initialMeterReading = json['initialMeterReading'] as int?
+    ..meterReading = json['meterReading'] as int?
     ..locality = json['locality'] as String?
     ..propertyType = json['propertyType'] as String?
     ..action = json['action'] as String?;
@@ -84,6 +85,7 @@ AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
     <String, dynamic>{
       'initialMeterReading': instance.initialMeterReading,
+      'meterReading': instance.meterReading,
       'locality': instance.locality,
       'propertyType': instance.propertyType,
       'action': instance.action,

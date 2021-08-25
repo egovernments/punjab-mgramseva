@@ -10,10 +10,16 @@ import org.egov.common.contract.request.Role;
 import org.egov.common.contract.request.User;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.constants.WCConstants;
+import org.egov.waterconnection.repository.rowmapper.BillingCycleRowMapper;
+import org.egov.waterconnection.repository.rowmapper.FeedbackRowMapper;
 import org.egov.waterconnection.repository.rowmapper.OpenWaterRowMapper;
+import org.egov.waterconnection.web.models.BillingCycle;
+import org.egov.waterconnection.web.models.Feedback;
+import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
+import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.egov.waterconnection.producer.WaterConnectionProducer;
 import org.egov.waterconnection.repository.builder.WsQueryBuilder;
 import org.egov.waterconnection.repository.rowmapper.WaterRowMapper;
@@ -54,32 +60,43 @@ public class WaterDaoImpl implements WaterDao {
 	@Value("${egov.waterservice.updatewaterconnection.topic}")
 	private String updateWaterConnection;
 	
+	@Autowired
+	private BillingCycleRowMapper billingCycleRowMapper;
+
+	@Autowired
+    private FeedbackRowMapper feedbackRowMapper;
+	
 	@Override
 	public void saveWaterConnection(WaterConnectionRequest waterConnectionRequest) {
 		waterConnectionProducer.push(createWaterConnection, waterConnectionRequest);
 	}
 
 	@Override
-	public List<WaterConnection> getWaterConnectionList(SearchCriteria criteria,
+	public WaterConnectionResponse getWaterConnectionList(SearchCriteria criteria,
 			RequestInfo requestInfo) {
 		
 		List<WaterConnection> waterConnectionList = new ArrayList<>();
 		List<Object> preparedStatement = new ArrayList<>();
 		String query = wsQueryBuilder.getSearchQueryString(criteria, preparedStatement, requestInfo);
 		
-		if (query == null)
-			return Collections.emptyList();
+//		if (query == null)
+//			return null;
 		Boolean isOpenSearch = isSearchOpen(requestInfo.getUserInfo());
-		
-		if(isOpenSearch)
+		WaterConnectionResponse connectionResponse = new WaterConnectionResponse();
+		if(isOpenSearch) {
 			waterConnectionList = jdbcTemplate.query(query, preparedStatement.toArray(),
 					openWaterRowMapper);
-		else
+			connectionResponse = WaterConnectionResponse.builder().waterConnection(waterConnectionList).totalCount(openWaterRowMapper.getFull_count()).build();
+		}
+		else {
 			waterConnectionList = jdbcTemplate.query(query, preparedStatement.toArray(),
-				waterRowMapper);
-		if (waterConnectionList == null)
-			return Collections.emptyList();
-		return waterConnectionList;
+					waterRowMapper);
+			connectionResponse = WaterConnectionResponse.builder().waterConnection(waterConnectionList).totalCount(waterRowMapper.getFull_count()).build();
+		}
+		
+//		if (waterConnectionList == null)
+//			return Collections.emptyList();
+		return connectionResponse;
 	}
 
 	@Override
@@ -135,6 +152,28 @@ public class WaterDaoImpl implements WaterDao {
 
 		return userInfo.getType().equalsIgnoreCase("SYSTEM")
 				&& userInfo.getRoles().stream().map(Role::getCode).collect(Collectors.toSet()).contains("ANONYMOUS");
+	}
+	
+	public BillingCycle getBillingCycle(String paymentId) {
+
+		String query = WsQueryBuilder.GET_BILLING_CYCLE;
+
+		List<Object> prepareStatementList = new ArrayList<Object>();
+
+		prepareStatementList.add(paymentId);
+
+		List<BillingCycle> billingCycleList = jdbcTemplate.query(query, prepareStatementList.toArray(),
+				billingCycleRowMapper);
+
+		return billingCycleList.get(0);
+	}
+
+	public List<Feedback> getFeebback(FeedbackSearchCriteria feedbackSearchCriteria) {
+
+		List<Object> preparedStamentValues = new ArrayList<Object>();
+		String query = wsQueryBuilder.getFeedback(feedbackSearchCriteria, preparedStamentValues);
+		List<Feedback> feedBackList = jdbcTemplate.query(query, preparedStamentValues.toArray(), feedbackRowMapper);
+		return feedBackList;
 	}
 
 }

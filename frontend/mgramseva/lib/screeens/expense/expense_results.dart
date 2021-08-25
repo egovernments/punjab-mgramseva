@@ -70,16 +70,16 @@ class ExpenseResults extends StatelessWidget {
                                  expense.expenseType,
                                  context),
                              _getDetailtext(
-                                 i18.common.AMOUNT,
-                                 expense.totalAmount,
+                                 i18.expense.AMOUNT,
+                                 '₹ ${expense.totalAmount}',
                                  context),
                              _getDetailtext(
                                  i18.expense.BILL_DATE,
-                                DateFormats.timeStampToDate(expense.billDate!.toInt()),
+                                DateFormats.timeStampToDate(expense.billDate!.toInt(), format: 'dd-MM-yyyy'),
                                  context),
                              _getDetailtext(
                                  i18.common.STATUS,
-                                 expense.applicationStatus,
+                               ApplicationLocalizations.of(context).translate(getApplicationStatus(expense.applicationStatus ?? '')),
                                  context),
                              Visibility(
                                visible: expense.applicationStatus != 'CANCELLED',
@@ -121,5 +121,18 @@ class ExpenseResults extends StatelessWidget {
         Text('$value', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))
       ],
     ));
+  }
+
+  String getApplicationStatus(String status){
+    switch(status){
+      case 'PAID' :
+        return i18.expense.PAID;
+      case 'ACTIVE' :
+        return i18.expense.UN_PAID;
+      case 'CANCELLED' :
+        return i18.expense.CANCELLED;
+      default :
+        return '';
+    }
   }
 }

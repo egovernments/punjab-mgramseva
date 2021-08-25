@@ -5,6 +5,7 @@ import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/AddExpense/AddExpenseWalkThrough/expenseWalkThrough.dart';
 import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
@@ -348,7 +349,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                                         border: Border.all(
                                                             color: Colors.grey,
                                                             width: 1.5)),
-                                                    child: Text('${e.id}'),
+                                                    child: Text('${CommonMethods.getExtension(e.url ?? '')}'),
                                                   ),
                                                 ))
                                             .toList())
@@ -366,16 +367,20 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                             if (isUpdate)
                               Container(
                                 alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.symmetric(vertical: 5),
+                                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
                                 child: Wrap(
                                   direction: Axis.horizontal,
                                   crossAxisAlignment: WrapCrossAlignment.center,
-                                  spacing: 4,
+                                  spacing: 8,
                                   children: [
-                                    Checkbox(
-                                        value: expenseDetails.isBillCancelled,
-                                        onChanged: expensesDetailsProvider
-                                            .onChangeOfCheckBox),
+                                    SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: Checkbox(
+                                          value: expenseDetails.isBillCancelled,
+                                          onChanged: expensesDetailsProvider
+                                              .onChangeOfCheckBox),
+                                    ),
                                     Text(
                                         ApplicationLocalizations.of(context)
                                             .translate(i18.expense

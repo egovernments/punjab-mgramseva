@@ -66,6 +66,15 @@ public class SearchCriteria {
 	@JsonProperty("vendorName")
 	private String vendorName;
 	
+	@JsonProperty("isBillPaid")
+	private Boolean isBillPaid;
+
+	@JsonProperty("fromDate")
+	private Long fromDate = null;
+
+	@JsonProperty("toDate")
+	private Long toDate = null;
+	
 	public boolean isEmpty() {
         return (this.tenantId == null && this.ids == null  && this.mobileNumber == null 
         );

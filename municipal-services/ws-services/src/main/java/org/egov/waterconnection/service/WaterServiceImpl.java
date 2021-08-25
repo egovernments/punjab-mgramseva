@@ -1,15 +1,20 @@
 package org.egov.waterconnection.service;
 
 
+
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.constants.WCConstants;
+import org.egov.waterconnection.producer.WaterConnectionProducer;
 import org.egov.waterconnection.repository.WaterDao;
 import org.egov.waterconnection.repository.WaterDaoImpl;
 import org.egov.waterconnection.util.WaterServicesUtil;
@@ -17,10 +22,16 @@ import org.egov.waterconnection.validator.ActionValidator;
 import org.egov.waterconnection.validator.MDMSValidator;
 import org.egov.waterconnection.validator.ValidateProperty;
 import org.egov.waterconnection.validator.WaterConnectionValidator;
+import org.egov.waterconnection.web.models.AuditDetails;
+import org.egov.waterconnection.web.models.BillingCycle;
+import org.egov.waterconnection.web.models.Feedback;
+import org.egov.waterconnection.web.models.FeedbackRequest;
+import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.Property;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
+import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.egov.waterconnection.web.models.workflow.BusinessService;
 import org.egov.waterconnection.workflow.WorkflowIntegrator;
 import org.egov.waterconnection.workflow.WorkflowService;
@@ -75,6 +86,10 @@ public class WaterServiceImpl implements WaterService {
 
 	@Autowired
 	private WaterServicesUtil wsUtil;
+	
+	@Autowired
+	
+	private WaterConnectionProducer waterConnectionProducer;
 
 	/**
 	 * 
@@ -126,20 +141,19 @@ public class WaterServiceImpl implements WaterService {
 	 * @param requestInfo
 	 * @return List of matching water connection
 	 */
-	public List<WaterConnection> search(SearchCriteria criteria, RequestInfo requestInfo) {
-		List<WaterConnection> waterConnectionList;
-		waterConnectionList = getWaterConnectionsList(criteria, requestInfo);
+	public WaterConnectionResponse search(SearchCriteria criteria, RequestInfo requestInfo) {
+		WaterConnectionResponse waterConnection = getWaterConnectionsList(criteria, requestInfo);
 		if (!StringUtils.isEmpty(criteria.getSearchType()) &&
 				criteria.getSearchType().equals(WCConstants.SEARCH_TYPE_CONNECTION)) {
-			waterConnectionList = enrichmentService.filterConnections(waterConnectionList);
+			waterConnection.setWaterConnection(enrichmentService.filterConnections(waterConnection.getWaterConnection()));
 			if(criteria.getIsPropertyDetailsRequired()){
-				waterConnectionList = enrichmentService.enrichPropertyDetails(waterConnectionList, criteria, requestInfo);
+				waterConnection.setWaterConnection(enrichmentService.enrichPropertyDetails(waterConnection.getWaterConnection(), criteria, requestInfo));
 
 			}
 		}
-		waterConnectionValidator.validatePropertyForConnection(waterConnectionList);
-		enrichmentService.enrichConnectionHolderDeatils(waterConnectionList, criteria, requestInfo);
-		return waterConnectionList;
+		waterConnectionValidator.validatePropertyForConnection(waterConnection.getWaterConnection());
+		enrichmentService.enrichConnectionHolderDeatils(waterConnection.getWaterConnection(), criteria, requestInfo);
+		return waterConnection;
 	}
 
 	/**
@@ -150,7 +164,7 @@ public class WaterServiceImpl implements WaterService {
 	 * @param requestInfo
 	 * @return List of matching water connection
 	 */
-	public List<WaterConnection> getWaterConnectionsList(SearchCriteria criteria, RequestInfo requestInfo) {
+	public WaterConnectionResponse getWaterConnectionsList(SearchCriteria criteria, RequestInfo requestInfo) {
 		return waterDao.getWaterConnectionList(criteria, requestInfo);
 	}
 
@@ -184,7 +198,7 @@ public class WaterServiceImpl implements WaterService {
 		waterConnectionValidator.validateUpdate(waterConnectionRequest, searchResult, WCConstants.UPDATE_APPLICATION);
 		userService.updateUser(waterConnectionRequest, searchResult);
 		//Call workflow
-		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
+//		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
 		//call calculator service to generate the demand for one time fee
 		if( waterConnectionRequest.getWaterConnection().getArrears() !=null && waterConnectionRequest.getWaterConnection().getArrears().intValue() >0) {
 			calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property);
@@ -212,20 +226,22 @@ public class WaterServiceImpl implements WaterService {
 		Set<String> ids = new HashSet<>(Arrays.asList(id));
 		SearchCriteria criteria = new SearchCriteria();
 		criteria.setIds(ids);
-		List<WaterConnection> connections = getWaterConnectionsList(criteria, requestInfo);
-		if (CollectionUtils.isEmpty(connections)) {
+		WaterConnectionResponse waterConnection = getWaterConnectionsList(criteria, requestInfo);
+		
+		if (CollectionUtils.isEmpty(waterConnection.getWaterConnection())) {
 			StringBuilder builder = new StringBuilder();
 			builder.append("WATER CONNECTION NOT FOUND FOR: ").append(id).append(" :ID");
 			throw new CustomException("INVALID_WATERCONNECTION_SEARCH", builder.toString());
 		}
 
-		return connections.get(0);
+		return waterConnection.getWaterConnection().get(0);
 	}
 
 	private List<WaterConnection> getAllWaterApplications(WaterConnectionRequest waterConnectionRequest) {
 		SearchCriteria criteria = SearchCriteria.builder()
 				.connectionNumber(waterConnectionRequest.getWaterConnection().getConnectionNo()).build();
-		return search(criteria, waterConnectionRequest.getRequestInfo());
+		WaterConnectionResponse waterConnection = search(criteria, waterConnectionRequest.getRequestInfo());
+		return waterConnection.getWaterConnection();
 	}
 
 	private List<WaterConnection> updateWaterConnectionForModifyFlow(WaterConnectionRequest waterConnectionRequest) {
@@ -249,7 +265,7 @@ public class WaterServiceImpl implements WaterService {
 		if( waterConnectionRequest.getWaterConnection().getArrears() !=null && waterConnectionRequest.getWaterConnection().getArrears().intValue() >0) {
 			calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property);
 		}
-		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
+//		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
 		boolean isStateUpdatable = waterServiceUtil.getStatusForUpdate(businessService, previousApplicationStatus);
 		waterDao.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
 		// setting oldApplication Flag
@@ -273,5 +289,37 @@ public class WaterServiceImpl implements WaterService {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void submitFeedback(FeedbackRequest feedbackrequest) {
+		// TODO Auto-generated method stub
+		mDMSValidator.validateQuestion(feedbackrequest);
+		BillingCycle billingCycle = waterDaoImpl.getBillingCycle(feedbackrequest.getFeedback().getPaymentId());
+		Date fromdate = new Date(billingCycle.getFromperiod());
+		Date toDate = new Date(billingCycle.getToperiod());
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		String formattedFromDate = formatter.format(fromdate);
+		String formattedToDate = formatter.format(toDate);
+		feedbackrequest.getFeedback().setId(UUID.randomUUID().toString());
+		feedbackrequest.getFeedback().setBillingCycle(formattedFromDate + "-" + formattedToDate);
+
+		if (feedbackrequest.getFeedback().getAuditDetails() == null) {
+			AuditDetails auditDetails = new AuditDetails();
+			auditDetails.setCreatedBy(feedbackrequest.getRequestInfo().getUserInfo().getId().toString());
+			auditDetails.setCreatedTime(new Date().getTime());
+			auditDetails.setLastModifiedTime(new Date().getTime());
+			feedbackrequest.getFeedback().setAuditDetails(auditDetails);
+		}
+
+		waterConnectionProducer.push(config.getSaveFeedback(), feedbackrequest);
+	}
+
+	@Override
+	public List<Feedback> getFeedback(FeedbackSearchCriteria feedbackSearchCriteria) {
+		// TODO Auto-generated method stub
+		List<Feedback> feedbackList = waterDaoImpl.getFeebback(feedbackSearchCriteria);
+		
+         return feedbackList;
 	}
 }

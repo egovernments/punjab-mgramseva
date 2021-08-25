@@ -27,10 +27,19 @@ import java.util.*;
 public class ChallanRowMapper  implements ResultSetExtractor<List<Challan>> {
 	@Autowired
     private ObjectMapper mapper;
+	
+	private int full_count=0;
 
+	public int getFull_count() {
+		return full_count;
+	}
+
+	public void setFull_count(int full_count) {
+		this.full_count = full_count;
+	}
     public List<Challan> extractData(ResultSet rs) throws SQLException, DataAccessException {
         Map<String, Challan> challanMap = new LinkedHashMap<>();
-       
+        this.setFull_count(0);
         while (rs.next()) {
             String id = rs.getString("challan_id");
             Challan currentChallan = challanMap.get(id);
@@ -69,6 +78,7 @@ public class ChallanRowMapper  implements ResultSetExtractor<List<Challan>> {
                 		.vendorName(rs.getString("vendorName"))
                         .id(id)
                         .build();
+                this.setFull_count(rs.getInt("full_count"));
                 if(pgObj!=null){
                     JsonNode additionalDetail = mapper.readTree(pgObj.getValue());
                     currentChallan.setAdditionalDetail(additionalDetail);

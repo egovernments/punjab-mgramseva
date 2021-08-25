@@ -230,6 +230,7 @@ class Expense {
   String get ATTACH_FORMATS => 'ATTACH_FORMATS';
   String get CORE_EXPENSE_EXPENDITURE_SUCESS => 'CORE_EXPENSE_EXPENDITURE_SUCESS';
   String get HAS_THIS_BILL_PAID => 'HAS_THIS_BILL_PAID';
+  String get CANCELLED => 'CANCELLED';
 }
 
 class CreateConsumer {
@@ -305,7 +306,8 @@ class _Validators {
   String get INVALID_FORMAT => 'INVALID_FORMAT'; // Invalid format
   String get CONFIRM_RECONFIRM_SHOULD_SAME =>
       'CONFIRM_RECONFIRM_SHOULD_SAME'; //New Password and Confirm password should be same
-
+  String get ENTER_METER_NUMBER => 'ENTER_METER_NUMBER';
+  String get ENTER_ALPHA_NUMERIC_ONLY => 'ENTER_ALPHA_NUMERIC_ONLY';
 }
 
 class DemandGenerate {
@@ -339,6 +341,7 @@ class DemandGenerate {
   String get GENERATE_DEMAND_SUCCESS_NEXT_SUBTEXT =>
       'DEMAND_GENERATED_SUCCESS_NEXT_SUBTEXT';
   String get DOWNLOAD_DEMAND_PDF => 'DOWNLOAD_DEMAND_PDF';
+  String get BILL_ID_NO => 'BILL_ID_NO';
 }
 
 class BillDetails {
