@@ -140,8 +140,8 @@ class CoreRepository extends BaseService {
     }
   }
 
-  Future<bool?> pdfDownload(BuildContext context, String url,
-      [String? fileName]) async {
+  Future<bool?> fileDownload(BuildContext context, String url, [String? fileName]) async {
+
     fileName = fileName ?? CommonMethods.getExtension(url);
     try {
       var downloadPath;
@@ -167,13 +167,8 @@ class CoreRepository extends BaseService {
         openFileFromNotification: true,
       );
       if (response != null) {
-        // CommonMethods.setLoaderStatus(_keyLoader, navigatorKey.currentState.context);
-        // Notifiers.getToastMessage("${Labels.DOWNLOAD_STARTED} $fileName");
         return true;
-      } else {
-        // Notifiers.getToastMessage("${Labels.DOWNLOAD_FAIL} $fileName");
       }
-      // CommonMethods.setLoaderStatus(_keyLoader, navigatorKey.currentState.context);
       return false;
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e);
