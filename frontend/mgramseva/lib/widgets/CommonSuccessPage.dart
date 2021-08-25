@@ -40,20 +40,22 @@ class CommonSuccess extends StatelessWidget {
                   children: [
                 backButton == true ? HomeBack(callback: CommonMethods.home) : Text(''),
                 Card(
+                  margin: const EdgeInsets.only(left: 10, right: 10),
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SuccessPage(successHandler.header, subText: successHandler.subHeader),
+                    SuccessPage(successHandler.header, subTextHeader: successHandler.subHeader, subText: successHandler.subHeaderText),
                     Align(
-                        alignment: Alignment.center,
+                        alignment: Alignment.centerLeft,
                         child: Container(
                           margin: const EdgeInsets.only(
-                              left: 20, bottom: 20, top: 20),
+                              left: 10, bottom: 20, top: 20, right: 10),
                           child: Text(
                               ApplicationLocalizations.of(context)
                                   .translate(successHandler.subtitle),
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w400)),
+                                  fontSize: 14, fontWeight: FontWeight.w400),
+                          textAlign: TextAlign.start,),
                         )),
                     Visibility(
                       visible: successHandler.downloadLink == null && successHandler.whatsAppShare == null && successHandler.downloadLinkLabel == null,

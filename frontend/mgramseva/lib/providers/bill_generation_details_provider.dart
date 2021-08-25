@@ -307,9 +307,8 @@ class BillGenerationProvider with ChangeNotifier {
                       downloadLinkLabel: ApplicationLocalizations.of(context)
                           .translate(i18.common.DOWNLOAD),
                       whatsAppShare: '',
-                      subHeader:
-                          '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)} '
-                          '\n\n ${billList.bill!.first.billNumber.toString()}'),
+                      subHeader: '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)}',
+                      subHeaderText: '${billList.bill!.first.billNumber.toString()}'),
                   callBack: () =>
                       onClickOfCollectPayment(billList.bill!.first, context),
                   backButton: true,
@@ -355,10 +354,8 @@ class BillGenerationProvider with ChangeNotifier {
                         .demandGenerate.GENERATE_DEMAND_SUCCESS_NEXT_SUBTEXT),
                 i18.common.BACK_HOME,
                 Routes.BILL_GENERATE,
-                subHeader:
-                    '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)} '
-                            '\n\n  $selectedBillCycle' +
-                        ' ${selectedBillYear.financialYear!.toString().substring(2)}',
+                subHeader: '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)}',
+                subHeaderText: '$selectedBillCycle' + ' ${selectedBillYear.financialYear!.toString().substring(2)}',
                 downloadLink: '',
                 downloadLinkLabel: ApplicationLocalizations.of(context)
                     .translate(i18.demandGenerate.DOWNLOAD_DEMAND_PDF)));

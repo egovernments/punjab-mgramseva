@@ -12,6 +12,9 @@ class SuccessHandler {
   @JsonKey(name: "subHeader")
   final String? subHeader;
 
+  @JsonKey(name: "subHeaderText")
+  final String? subHeaderText;
+
   @JsonKey(name: "subtitle")
   final String subtitle;
 
@@ -30,7 +33,7 @@ class SuccessHandler {
   @JsonKey(name: "downloadLinkLabel")
   String? downloadLinkLabel;
 
-  SuccessHandler(this.header, this.subtitle, this.backButtonText, this.routeParentPath, {this.subHeader, this.whatsAppShare, this.downloadLink, this.downloadLinkLabel});
+  SuccessHandler(this.header, this.subtitle, this.backButtonText, this.routeParentPath, {this.subHeader, this.whatsAppShare, this.downloadLink, this.downloadLinkLabel, this.subHeaderText});
 
   factory SuccessHandler.fromJson(Map<String, dynamic> json) =>
       _$SuccessHandlerFromJson(json);
