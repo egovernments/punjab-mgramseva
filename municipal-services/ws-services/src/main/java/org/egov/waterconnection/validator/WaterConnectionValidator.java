@@ -61,7 +61,7 @@ public class WaterConnectionValidator {
 		Map<String, String> errorMap = new HashMap<>();
 		if (StringUtils.isEmpty(waterConnectionRequest.getWaterConnection().getProcessInstance())
 				|| StringUtils.isEmpty(waterConnectionRequest.getWaterConnection().getProcessInstance().getAction())) {
-			errorMap.put("INVALID_ACTION", "Workflow obj can not be null or action can not be empty!!");
+			errorMap.put("INVALID_WF_ACTION", "Workflow obj can not be null or action can not be empty!!");
 			throw new CustomException(errorMap);
 		}
 		ValidatorResult isPropertyValidated = propertyValidator.validate(waterConnectionRequest, reqType);
@@ -157,7 +157,7 @@ public class WaterConnectionValidator {
 	private void validateAllIds(WaterConnection updateWaterConnection, WaterConnection searchResult) {
 		Map<String, String> errorMap = new HashMap<>();
 		if (!searchResult.getApplicationNo().equals(updateWaterConnection.getApplicationNo()))
-			errorMap.put("INVALID UPDATE", "The application number from search: " + searchResult.getApplicationNo()
+			errorMap.put("CONNECTION_NOT_FOUND", "The application number from search: " + searchResult.getApplicationNo()
 					+ " and from update: " + updateWaterConnection.getApplicationNo() + " does not match");
 		if (!CollectionUtils.isEmpty(errorMap))
 			throw new CustomException(errorMap);

@@ -81,7 +81,7 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 						additionalDetails = mapper.readValue(pgObj.getValue(), ObjectNode.class);
 					} catch (IOException ex) {
 						// TODO Auto-generated catch block
-						throw new CustomException("PARSING ERROR", "The additionalDetail json cannot be parsed");
+						throw new CustomException("CONNECTION_DETAILS_PARSE_ERROR", "The additionalDetail json cannot be parsed of Connection :"+rs.getString("connectionNo"));
 					}
 				} else {
 					additionalDetails = mapper.createObjectNode();

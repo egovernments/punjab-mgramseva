@@ -184,7 +184,7 @@ public class WaterServicesUtil {
 			PropertyResponse propertyResponse = objectMapper.convertValue(result, PropertyResponse.class);
 			return propertyResponse.getProperties();
 		} catch (Exception ex) {
-			throw new CustomException("PARSING_ERROR", "The property json cannot be parsed");
+			throw new CustomException("PROPERTY_PARSING_ERROR", "The property json cannot be parsed");
 		}
 	}
 

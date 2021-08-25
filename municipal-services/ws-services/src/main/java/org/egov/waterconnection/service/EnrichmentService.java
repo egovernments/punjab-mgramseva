@@ -258,7 +258,7 @@ public class EnrichmentService {
 		List<String> connectionNumbers = getIdList(request.getRequestInfo(), request.getWaterConnection().getTenantId(),
 				config.getWaterConnectionIdGenName(), config.getWaterConnectionIdGenFormat());
 		if (connectionNumbers.size() != 1) {
-			throw new CustomException("IDGEN_ERROR",
+			throw new CustomException("ID_MISMATCH_ERROR_CONNECTION",
 					"The Id of WaterConnection returned by IdGen is not equal to number of WaterConnection");
 		}
 		request.getWaterConnection().setConnectionNo(connectionNumbers.get(0));
@@ -335,7 +335,7 @@ public class EnrichmentService {
 			if(!CollectionUtils.isEmpty(waterConnection.getConnectionHolders())){
 				waterConnection.getConnectionHolders().forEach(holderInfo -> {
 					if (userIdToConnectionHolderMap.get(holderInfo.getUuid()) == null)
-						throw new CustomException("OWNER SEARCH ERROR", "The owner of the water application"
+						throw new CustomException("OWNER_SEARCH_ERROR", "The owner of the water application"
 								+ waterConnection.getApplicationNo() + " is not coming in user search");
 					else{
 						Boolean isOpenSearch = isSearchOpen(requestInfo.getUserInfo());

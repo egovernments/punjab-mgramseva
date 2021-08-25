@@ -34,7 +34,7 @@ public class WCConstants {
 
 	public static final String INVALID_CONNECTION_CATEGORY = "Invalid Connection Category";
 
-	public static final String INVALID_CONNECTION_TYPE = "Invalid Connection Type";
+	public static final String INVALID_CONNECTION_TYPE = "INVALID_CONNECTION_TYPE";
 
 	public static final String METERED_CONNECTION = "Metered";
 
@@ -154,7 +154,7 @@ public class WCConstants {
 
 	public static final String WS_MODIFY_IN_APP = "WS_MODIFY_IN_APP_MESSAGE";
 
-	public static final String IDGEN_ERROR_CONST = "IDGEN ERROR";
+	public static final String IDGEN_ERROR_CONST = "IDGEN_NOTFOUND_ERROR";
 
 	public static final String ADHOC_PENALTY = "adhocPenalty";
 
@@ -257,6 +257,9 @@ public class WCConstants {
 	public static final String MDMS_CHECKLIST = "CheckList";
 	public static final String REQ_CHECKLIST_PATH = "$.MdmsRes.ws-services-masters.CheckList[?(@.required==true)]";
 	public static final String INVALID_CHECKLIST = "INVALID_CHECKLIST";
+	public static final String MISSING_CHECKLIST = "MISSING_CHECKLIST";
+	public static final String INVALID_CHECKLIST_TYPE = "INVALID_CHECKLIST_TYPE";
+	public static final String INVALID_CHECKLIST_ANS = "INVALID_CHECKLIST_ANS";	
 	public static final String SUCCESSFUL_FEEDBACK_SUBMIT = "Successfully submitted feedback";
 
 }

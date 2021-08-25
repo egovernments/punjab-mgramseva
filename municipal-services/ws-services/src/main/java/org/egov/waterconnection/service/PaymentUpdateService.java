@@ -125,7 +125,7 @@ public class PaymentUpdateService {
 					Optional<WaterConnection> connections = waterConnections.stream().findFirst();
 					WaterConnection connection = connections.get();
 					if (waterConnections.size() > 1) {
-						throw new CustomException("INVALID_RECEIPT",
+						throw new CustomException("MULTI_RECEIPT_ERROR",
 								"More than one application found on consumerCode " + criteria.getApplicationNumber());
 					}
 					waterConnections.forEach(waterConnection -> waterConnection.getProcessInstance().setAction((WCConstants.ACTION_PAY)));

@@ -108,7 +108,7 @@ public class SchedulerService {
 			financialYearProperties = jsonOutput.get(0);
 
 		} catch (IndexOutOfBoundsException e) {
-			throw new CustomException("Financial year not found: ", "Financial year not found: " + financeYears);
+			throw new CustomException("EXP_FIN_NOT_FOUND", "Financial year not found: " + financeYears);
 		}
 
 		return financialYearProperties;

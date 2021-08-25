@@ -111,7 +111,7 @@ public class MDMSValidator {
 		Map<String, String> errorMap = new HashMap<>();
 		for (String masterName : masterNames) {
 			if (CollectionUtils.isEmpty(codes.get(masterName))) {
-				errorMap.put("MDMS DATA ERROR ", "Unable to fetch " + masterName + " codes from MDMS");
+				errorMap.put("MDMS_DATA_ERROR ", "Unable to fetch " + masterName + " codes from MDMS");
 			}
 		}
 		if (!errorMap.isEmpty())
@@ -236,7 +236,7 @@ public class MDMSValidator {
 	List<Map<String,String>> requestCheckList = (List<Map<String, String>>) additonalDetails.get(WCConstants.MDMS_CHECKLIST);
 	List<Map<String,Object>> mdmsCheckList = JsonPath.read(masterData, WCConstants.REQ_CHECKLIST_PATH);
 	if(mdmsCheckList.size() > 0 && (requestCheckList == null || requestCheckList.size() ==0)) {
-		throw new CustomException(WCConstants.INVALID_CHECKLIST, " Mandatory checlist is not provided!");
+		throw new CustomException(WCConstants.INVALID_CHECKLIST, " Mandatory feedback is not provided!");
 	}
 	mdmsCheckList.forEach(mdmsClItem->{
 		Map<String,String> reqClItem = null;
@@ -250,9 +250,9 @@ public class MDMSValidator {
 			List<String> mdmsClOptions =(List<String>) mdmsClItem.get("options");
 			if(((String) mdmsClItem.get("type")).equalsIgnoreCase(WCConstants.CHECK_LIST_SINGLE_SELECT) ) {
 				if(reqOptions.length > 1) {
-					 throw new CustomException(WCConstants.INVALID_CHECKLIST, "Checklist "+ mdmsClItem.get("code")+" is SINGLE SELECT, cannot select multiple options.");
+					 throw new CustomException(WCConstants.INVALID_CHECKLIST_TYPE, "Feedback "+ mdmsClItem.get("code")+" is SINGLE SELECT, cannot select multiple options.");
 				}else if(!mdmsClOptions.contains(reqOptions[0])){
-					 throw new CustomException(WCConstants.INVALID_CHECKLIST, " Value provided is not checklist options.");
+					 throw new CustomException(WCConstants.INVALID_CHECKLIST_ANS, " Value provided is not feedback options.");
 				}
 			}else if(((String) mdmsClItem.get("type")).equalsIgnoreCase(WCConstants.CHECK_LIST_MULTI_SELECT)) {
 				for( int h=0;h<reqOptions.length;h++) {
@@ -262,10 +262,10 @@ public class MDMSValidator {
 				}
 				
 			}else {
-				throw new CustomException(WCConstants.INVALID_CHECKLIST, " Value provided is not checklist options.");
+				throw new CustomException(WCConstants.INVALID_CHECKLIST_ANS, "  Value provided is not feedback options.");
 			}
 		}else{
-			throw new CustomException(WCConstants.INVALID_CHECKLIST, " Required CheckList "+mdmsClItem.get("code")+ " is not answered ");
+			throw new CustomException(WCConstants.MISSING_CHECKLIST, " Required Feedback "+mdmsClItem.get("code")+ " is not answered ");
 		}
 	});
 	

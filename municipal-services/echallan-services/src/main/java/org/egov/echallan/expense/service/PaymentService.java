@@ -75,7 +75,7 @@ public class PaymentService {
 				response = mapper.convertValue(result, PaymentResponse.class);
 			} catch (IllegalArgumentException e) {
 				log.error("Error parsing payment response Challan id : " + challan.getId());
-				throw new CustomException("PARSING ERROR", "Unable to parse payment response");
+				throw new CustomException("EXP_PAYMENT_PARSING_ERROR", "Unable to parse payment response");
 			}
 
 		}
@@ -125,7 +125,7 @@ public class PaymentService {
 				response = mapper.convertValue(result, PaymentResponse.class);
 			} catch (IllegalArgumentException e) {
 				log.error("Error parsing update payment response Challan id : " + challan.getId());
-				throw new CustomException("PARSING ERROR", "Unable to parse payment response");
+				throw new CustomException("EXP_PAYMENT_PARSING_ERROR", "Unable to parse payment response");
 			}
 		}
 
