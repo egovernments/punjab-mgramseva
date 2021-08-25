@@ -235,7 +235,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         Loaders.showLoadingDialog(context);
 
         var resetResponse =
-            await ResetPasswordRepository().forgotPassword(body);
+            await ResetPasswordRepository().forgotPassword(body, context);
         Navigator.pop(context);
         if (resetResponse != null) {
           Navigator.pushReplacementNamed(context, Routes.SUCCESS_VIEW,

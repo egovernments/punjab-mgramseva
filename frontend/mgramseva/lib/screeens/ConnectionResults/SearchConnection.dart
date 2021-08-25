@@ -6,7 +6,6 @@ import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
@@ -31,7 +30,6 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
 
   @override
   void initState() {
-    print(widget.arguments);
     super.initState();
   }
 

@@ -323,8 +323,8 @@ class _UpdatePasswordState extends State<UpdatePassword> {
       try {
         Loaders.showLoadingDialog(context);
 
-        var resetResponse = await ResetPasswordRepository()
-            .forgotPassword(body, widget.userDetails.accessToken);
+        var resetResponse =
+            await ResetPasswordRepository().forgotPassword(body, context);
         Navigator.pop(context);
         commonProvider.loginCredentails = widget.userDetails;
 

@@ -54,8 +54,8 @@ class Constants {
         ApplicationLocalizations.of(navigatorKey.currentContext!)
             .translate(i18.homeWalkThroughMSg.DOWNLOAD_BILLS_AND_RECEIPTS_MSG),
         HomeIcons.printreciept,
-        '',
-        {}),
+        Routes.HOUSEHOLD,
+        {'Mode': "receipts"}),
     HomeItem(
         "ADD_EXPENSES_RECORD",
         ApplicationLocalizations.of(navigatorKey.currentContext!)
