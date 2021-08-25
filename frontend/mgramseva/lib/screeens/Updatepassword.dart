@@ -5,6 +5,7 @@ import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/model/user/user_details.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/forgot_password_repo.dart';
+import 'package:mgramseva/repository/reset_password_repo.dart';
 import 'package:mgramseva/repository/tendants_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
@@ -322,8 +323,8 @@ class _UpdatePasswordState extends State<UpdatePassword> {
       try {
         Loaders.showLoadingDialog(context);
 
-        /*var resetResponse = await ResetPasswordRepository()
-            .forgotPassword(body, widget.userDetails.accessToken);*/
+        var resetResponse = await ResetPasswordRepository()
+            .forgotPassword(body, widget.userDetails.accessToken);
         Navigator.pop(context);
         commonProvider.loginCredentails = widget.userDetails;
 
