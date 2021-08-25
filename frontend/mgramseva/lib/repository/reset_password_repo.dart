@@ -9,11 +9,17 @@ import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 
 class ResetPasswordRepository extends BaseService {
-  Future<ResetPasswordDetails> forgotPassword(Map body, [String? token]) async {
-    var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
-    final requestInfo = RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "create", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
+  Future<ResetPasswordDetails> forgotPassword(Map body, context,
+      [String? token]) async {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+    final requestInfo = RequestInfo(
+        APIConstants.API_MODULE_NAME,
+        APIConstants.API_VERSION,
+        APIConstants.API_TS,
+        "create",
+        APIConstants.API_DID,
+        APIConstants.API_KEY,
+        APIConstants.API_MESSAGE_ID,
         token ?? commonProvider.userDetails!.accessToken);
     late ResetPasswordDetails resetPasswordDetails;
     var res = await makeRequest(

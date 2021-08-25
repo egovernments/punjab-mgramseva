@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/common/demand.dart';
 import 'package:mgramseva/model/connection/property.dart';
 import 'package:mgramseva/model/connection/tenant_boundary.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
@@ -49,7 +50,7 @@ class ConsumerProvider with ChangeNotifier {
     'Dec'
   ];
   LanguageList? languageList;
-  setModel() {
+  setModel() async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -89,6 +90,21 @@ class ConsumerProvider with ChangeNotifier {
     isEdit = true;
     waterconnection = data;
     waterconnection.getText();
+
+    List<Demand>? demand = await ConsumerRepository().getDemandDetails({
+      "consumerCode": waterconnection.connectionNo,
+      "businessService": "WS",
+      "tenantId": waterconnection.tenantId
+    });
+    if (demand!
+            .indexWhere(((element) =>
+                element.consumerType == 'waterConnection-arrears'))
+            .isNegative ==
+        false) {
+      isfirstdemand = false;
+    } else {
+      isfirstdemand = true;
+    }
 
     notifyListeners();
   }
@@ -188,6 +204,10 @@ class ConsumerProvider with ChangeNotifier {
               await ConsumerRepository().updateProperty(property.toJson());
           var result2 = await ConsumerRepository()
               .updateconnection(waterconnection.toJson());
+
+          if (result2 != null && result1 != null)
+            Notifiers.getToastMessage(
+                context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
           Navigator.pop(context);
         }
       } catch (e, s) {

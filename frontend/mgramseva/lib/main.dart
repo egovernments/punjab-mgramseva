@@ -59,7 +59,7 @@ void main() {
     WidgetsFlutterBinding.ensureInitialized();
     await FlutterDownloader.initialize(
         debug: true // optional: set false to disable printing logs to console
-    );
+        );
 
     runApp(MyApp());
   }, (Object error, StackTrace stack) {
@@ -158,7 +158,6 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-
   ReceivePort _port = ReceivePort();
 
   @override
@@ -173,8 +172,10 @@ class _LandingPageState extends State<LandingPage> {
     super.dispose();
   }
 
-  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
-    final SendPort send = IsolateNameServer.lookupPortByName('downloader_send_port')!;
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
+    final SendPort send =
+        IsolateNameServer.lookupPortByName('downloader_send_port')!;
     print(progress);
     send.send([id, status, progress]);
   }
@@ -184,12 +185,13 @@ class _LandingPageState extends State<LandingPage> {
     commonProvider.getLoginCredentails();
 
     await Future.delayed(Duration(seconds: 2));
-    IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
+    IsolateNameServer.registerPortWithName(
+        _port.sendPort, 'downloader_send_port');
     _port.listen((dynamic data) {
       String id = data[0];
       DownloadTaskStatus status = data[1];
       int progress = data[2];
-      setState((){ });
+      setState(() {});
     });
     FlutterDownloader.registerCallback(downloadCallback);
   }

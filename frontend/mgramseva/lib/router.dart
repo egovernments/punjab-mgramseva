@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -149,11 +150,17 @@ class router {
       ///View HosueHold Details
       case Routes.HOUSEHOLD_DETAILS:
         String? id;
+        String? mode;
         if (settings.arguments != null) {
-          id = (settings.arguments as WaterConnection).connectionNo;
+          print(settings.arguments);
+          id = ((settings.arguments as Map)['waterconnections']
+                  as WaterConnection)
+              .connectionNo;
+          mode = (settings.arguments as Map)['mode'];
         } else {
           if (queryValidator(Routes.HOUSEHOLD_DETAILS, query)) {
             id = query['applicationNo'];
+            mode = query['mode'];
           } else {
             return pageNotAvailable;
           }
@@ -161,11 +168,14 @@ class router {
         return MaterialPageRoute(
             builder: (_) => HouseholdDetail(
                 id: id,
+                mode: mode,
                 waterconnection: settings.arguments != null
-                    ? settings.arguments as WaterConnection
+                    ? (settings.arguments as Map)['waterconnections']
+                        as WaterConnection
                     : null),
             settings: RouteSettings(
-                name: '${Routes.HOUSEHOLD_DETAILS}?applicationNo=$id'));
+                name:
+                    '${Routes.HOUSEHOLD_DETAILS}?applicationNo=$id& mode=$mode'));
 
       case Routes.DASHBOARD:
         return MaterialPageRoute(
@@ -295,7 +305,8 @@ class router {
         if (query.keys.contains('challanNo')) return true;
         return false;
       case Routes.HOUSEHOLD_DETAILS:
-        if (query.keys.contains('applicationNo')) return true;
+        if (query.keys.contains('applicationNo') && query.keys.contains('mode'))
+          return true;
         return false;
       case Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT:
         if (query.keys.contains('consumerCode') &&

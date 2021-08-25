@@ -21,9 +21,10 @@ import 'package:provider/provider.dart';
 
 class HouseholdDetail extends StatefulWidget {
   final String? id;
+  final String? mode;
   final WaterConnection? waterconnection;
 
-  HouseholdDetail({Key? key, this.id, this.waterconnection});
+  HouseholdDetail({Key? key, this.id, this.mode, this.waterconnection});
   @override
   State<StatefulWidget> createState() {
     return _HouseholdDetailState();
@@ -32,6 +33,7 @@ class HouseholdDetail extends StatefulWidget {
 
 class _HouseholdDetailState extends State<HouseholdDetail> {
   void initState() {
+    print(widget.mode);
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
@@ -42,13 +44,13 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   }
 
   buildDemandView(BillList data) {
-    print(data.bill);
     return Column(
       children: [
-        data.bill!.first.waterConnection!.connectionType == 'Metered'
+        data.bill!.first.waterConnection!.connectionType == 'Metered' &&
+                widget.mode == 'collect'
             ? GenerateNewBill(data)
             : Text(""),
-        NewConsumerBill(data),
+        NewConsumerBill(data, widget.mode),
         ConsumerBillPayments(data.bill!.first.waterConnection)
       ],
     );
