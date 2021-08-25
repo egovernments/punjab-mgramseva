@@ -13,8 +13,6 @@ import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:universal_html/html.dart';
 
 class AuthenticationProvider with ChangeNotifier {
   validateLogin(BuildContext context, String userName, String password) async {
@@ -52,11 +50,10 @@ class AuthenticationProvider with ChangeNotifier {
           "id": [loginResponse.userRequest!.id],
           "mobileNumber": loginResponse.userRequest!.mobileNumber
         }, loginResponse.accessToken!);
+        var commonProvider =
+            Provider.of<CommonProvider>(context, listen: false);
+        commonProvider.loginCredentails = loginResponse;
         if (userInfo.user!.first.defaultPwdChgd == false) {
-          var commonProvider =
-              Provider.of<CommonProvider>(context, listen: false);
-          commonProvider.loginCredentails = loginResponse;
-
           commonProvider.userProfile = userInfo;
           Navigator.pushNamed(context, Routes.UPDATE_PASSWORD,
               arguments: loginResponse);
