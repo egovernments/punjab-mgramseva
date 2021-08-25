@@ -108,7 +108,9 @@ class _BuildTextField extends State<BuildTextField> {
               : Colors.white,
             prefixIcon: widget.prefixText == '' ? null : Padding(padding: EdgeInsets.only(left: 15, top: 15, bottom:  15 ),
             child: Text(widget.prefixText,
-            style: TextStyle(fontSize: 16),)) ,
+            style: TextStyle(fontSize: 16,
+                color: widget.isDisabled != null && widget.isDisabled!
+                    ? Colors.grey: Colors.black),)) ,
         ),
         onChanged: widget.onChange);
 // Label Text
@@ -118,11 +120,13 @@ class _BuildTextField extends State<BuildTextField> {
           '${ApplicationLocalizations.of(context).translate(widget.labelText)} ${widget.labelSuffix ?? ''}',
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),
+              fontWeight: FontWeight.w400, fontSize: 19, color: widget.isDisabled != null && widget.isDisabled!
+              ? Colors.grey: Colors.black)),
       Text(widget.isRequired ? '* ' : ' ',
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),
+              fontWeight: FontWeight.w400, fontSize: 19, color: widget.isDisabled != null && widget.isDisabled!
+              ? Colors.grey: Colors.black)),
     ]);
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
