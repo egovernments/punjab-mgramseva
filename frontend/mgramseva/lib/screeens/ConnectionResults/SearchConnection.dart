@@ -16,7 +16,6 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/footer.dart';
-import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
 class SearchConsumerConnection extends StatefulWidget {
@@ -52,7 +51,7 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                HomeBack(widget: Help()),
+                HomeBack(),
                 Card(
                     child: Form(
                         key: searchConnectionProvider.formKey,
