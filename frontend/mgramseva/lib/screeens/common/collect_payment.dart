@@ -155,7 +155,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                   labelSuffix: '(₹)',
                 ),
               RadioButtonFieldBuilder(context, i18.common.PAYMENT_METHOD, fetchBill.paymentMethod, '', '', true,
-                  Constants.PAYMENT_METHOD, (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(fetchBill, val))
+                  consumerPaymentProvider.paymentModeList, (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(fetchBill, val))
             ],
           )
       ),

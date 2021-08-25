@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
@@ -341,18 +342,21 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                                       expensesDetailsProvider
                                                           .onTapOfAttachment(e, context),
                                                   child: Container(
-                                                    height: 45,
-                                                    width: 45,
+                                                    width: 50,
                                                     margin:
                                                         EdgeInsets.symmetric(
                                                             vertical: 10,
                                                             horizontal: 5),
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.grey,
-                                                            width: 1.5)),
-                                                    child: Text('${CommonMethods.getExtension(e.url ?? '')}'),
-                                                  ),
+                                                    child: Wrap(
+                                                      runSpacing: 5,
+                                                   spacing: 8,
+                                                   children : [
+                                                     Image.asset('assets/png/attachment.png'),
+                                                     Text('${CommonMethods.getExtension(e.url ?? '')}',
+                                                     overflow: TextOverflow.ellipsis,
+                                                     )
+                                                    ]
+                                                  )),
                                                 ))
                                             .toList())
                                   ],
