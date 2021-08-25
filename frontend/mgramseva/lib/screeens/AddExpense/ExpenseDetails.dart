@@ -211,6 +211,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               isEnabled: expenseDetails.allowEdit,
                               requiredMessage:
                                   i18.expense.MENTION_NAME_OF_VENDOR,
+                              inputFormatter: [FilteringTextInputFormatter.allow(
+                                  RegExp("[a-zA-Z]"))],
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[1].key,
                             ),
