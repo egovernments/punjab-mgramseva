@@ -336,7 +336,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                             .map<Widget>((e) => InkWell(
                                                   onTap: () =>
                                                       expensesDetailsProvider
-                                                          .onTapOfAttachment(e),
+                                                          .onTapOfAttachment(e, context),
                                                   child: Container(
                                                     height: 45,
                                                     width: 45,

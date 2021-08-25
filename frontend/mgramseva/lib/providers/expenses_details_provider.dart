@@ -352,18 +352,11 @@ class ExpensesDetailsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void onTapOfAttachment(FileStore store) async {
+  void onTapOfAttachment(FileStore store, BuildContext context) async {
       if(store.url == null) return;
-
-      if(kIsWeb) {
-        html.AnchorElement anchorElement = new html.AnchorElement(
-            href: store.url);
-        anchorElement.download = store.url;
-        anchorElement.click();
-      }else{
-        await canLaunch(store.url!) ?  launch(store.url!) : ErrorHandler.logError('failed to launch the url ${store.url}');
-      }
+      CoreRepository().fileDownload(context, store.url!);
   }
+
   void setwalkthrough(value) {
     expenseWalkthrougList = value;
   }
