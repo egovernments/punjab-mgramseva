@@ -14,7 +14,6 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/footer.dart';
-import 'package:mgramseva/widgets/help.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:provider/provider.dart';
 
@@ -55,7 +54,7 @@ class _SearchExpenseState extends State<SearchExpense> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                HomeBack(widget: Help()),
+                HomeBack(),
                 Card(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,

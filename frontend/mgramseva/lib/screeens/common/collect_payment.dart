@@ -17,7 +17,6 @@ import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
 import '../customAppbar.dart';
@@ -89,7 +88,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HomeBack(widget: Help()),
+              HomeBack(),
               LayoutBuilder(
                 builder: (_, constraints) => Column(
                   children: [
