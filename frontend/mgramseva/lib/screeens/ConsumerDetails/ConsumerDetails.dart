@@ -43,7 +43,6 @@ class ConsumerDetails extends StatefulWidget {
 }
 
 class _ConsumerDetailsState extends State<ConsumerDetails> {
-  int count = 0;
   saveInput(context) async {
     print(context);
   }
