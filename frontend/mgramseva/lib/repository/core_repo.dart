@@ -112,9 +112,12 @@ class CoreRepository extends BaseService {
 
   Future<List<FileStore>?> fetchFiles(List<String> storeId) async {
     List<FileStore>? fileStoreIds;
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
 
     var res = await makeRequest(
-        url: '${Url.FILE_FETCH}?tenantId=pb&fileStoreIds=${storeId.join(',')}',
+        url: '${Url.FILE_FETCH}?tenantId=${commonProvider.userDetails!.selectedtenant!.code!}&fileStoreIds=${storeId.join(',')}',
         method: RequestType.GET);
 
     if (res != null) {

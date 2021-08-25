@@ -320,7 +320,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                       expensesDetailsProvider.onChangeOfDate,
                                   isEnabled: expenseDetails.allowEdit),
                             if (isUpdate &&
-                                expenseDetails.fileStoreList != null)
+                                expenseDetails.fileStoreList != null && expenseDetails.fileStoreList!.isNotEmpty)
                               Container(
                                 margin: const EdgeInsets.only(
                                     top: 20.0, bottom: 5, right: 20, left: 20),
