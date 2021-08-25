@@ -14,6 +14,9 @@ class Constants {
   static const String LANGUAGE_KEY = 'language_key';
   static const String STATES_KEY = 'states_key';
   static const String USER_PROFILE_KEY = 'user_profile_key';
+  static const String CREATE_CONSUMER_KEY = 'create_consumer_key';
+  static const String ADD_EXPENSE_KEY = 'add_expense_key';
+  static const String HOME_KEY = 'home_key';
 
   static List<KeyValue> GENDER = [
     KeyValue('CORE_COMMON_GENDER_MALE', 'MALE'),

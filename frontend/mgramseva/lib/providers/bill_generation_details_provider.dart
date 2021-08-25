@@ -62,9 +62,6 @@ class BillGenerationProvider with ChangeNotifier {
     billGenerateDetails = BillGenerationDetails();
     billGenerateDetails.serviceCat = "WS_CHARGE";
 
-    print(DateFormats.getFilteredDate(
-      DateTime.now().toLocal().toString(),
-    ));
     billGenerateDetails.meterReadingDateCtrl.text =
         DateFormats.timeStampToDate(DateFormats.dateToTimeStamp(
       DateFormats.getFilteredDate(
@@ -132,7 +129,6 @@ class BillGenerationProvider with ChangeNotifier {
   }
 
   setMeterReading(meterRes) {
-    print(waterconnection.additionalDetails!.meterReading);
     if (meterRes.meterReadings!.length > 0) {
       billGenerateDetails.meterNumberCtrl.text = waterconnection.meterId!;
       billGenerateDetails.om_1Ctrl.text =

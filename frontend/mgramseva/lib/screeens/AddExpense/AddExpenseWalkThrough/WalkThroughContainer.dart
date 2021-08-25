@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/Pointer.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class ExpenseWalkThroughContainer extends StatefulWidget {
@@ -92,6 +94,8 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                                     onPressed: () async {
                                       expenseProvider.activeindex = 0;
                                       Navigator.pop(context);
+                                      Provider.of<CommonProvider>(context, listen: false)
+                                        ..walkThroughCondition(false, Constants.ADD_EXPENSE_KEY);
                                       setState(() {
                                         active = 0;
                                       });

@@ -12,7 +12,6 @@ import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
-import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/DatePickerFieldBuilder.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
@@ -66,6 +65,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
         return e;
       }).toList());
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +159,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                           child: child,
                         );
                       },
-                    ),
+                    ),walkThroughKey: Constants.ADD_EXPENSE_KEY,
                   )),
                   Card(
                       child: Consumer<ExpensesDetailsProvider>(

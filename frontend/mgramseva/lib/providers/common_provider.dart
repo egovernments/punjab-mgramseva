@@ -10,7 +10,6 @@ import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/LocalStorage.dart';
-import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -145,6 +144,30 @@ class CommonProvider with ChangeNotifier {
           value: profile == null ? null : jsonEncode(profile.toJson()));
     }
     notifyListeners();
+  }
+
+  walkThroughCondition(bool? firstTime, String key){
+    if (kIsWeb) {
+      window.localStorage[key] = firstTime.toString();
+    } else {
+      storage.write(
+          key: key,
+          value: firstTime.toString() );
+    }
+    notifyListeners();
+  }
+  Future<String> getWalkThroughCheck(String key) async {
+    var userReposne ;
+    try {
+      if (kIsWeb) {
+        userReposne = window.localStorage[key];
+      } else {
+        userReposne = (await storage.read(key: key));
+      }
+    } catch (e) {
+      userLoggedStreamCtrl.add(null);
+    }
+    return userReposne;
   }
 
   Future<UserProfile> getUserProfile() async {
