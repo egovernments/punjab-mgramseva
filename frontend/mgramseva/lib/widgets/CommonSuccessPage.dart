@@ -8,6 +8,9 @@ import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/SuccessPage.dart';
 
+import 'DrawerWrapper.dart';
+import 'SideBar.dart';
+
 class CommonSuccess extends StatelessWidget {
   final SuccessHandler successHandler;
   final VoidCallback? callBack;
@@ -28,6 +31,8 @@ class CommonSuccess extends StatelessWidget {
             AppBar(),
             <Widget>[Icon(Icons.more_vert)],
           ),
+          drawer: DrawerWrapper(
+            Drawer(child: SideBar())),
           body: SingleChildScrollView(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
