@@ -286,10 +286,10 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                         color: Color.fromRGBO(11, 12, 12, 1)))
               ])),
           Container(
-            width: 200,
+            width: 300,
             padding: EdgeInsets.symmetric(vertical: 5),
             child: PinInputTextField(
-              pinLength: 4,
+              pinLength: 6,
               decoration: BoxLooseDecoration(
                   strokeColorBuilder: PinListenColorBuilder(
                       Theme.of(context).primaryColor, Colors.grey),
