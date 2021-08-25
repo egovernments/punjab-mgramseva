@@ -3,7 +3,6 @@ import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
-import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
@@ -12,8 +11,9 @@ import 'package:mgramseva/widgets/SuccessPage.dart';
 class CommonSuccess extends StatelessWidget {
   final SuccessHandler successHandler;
   final VoidCallback? callBack;
+  final bool? backButton;
 
-  CommonSuccess(this.successHandler, {this.callBack});
+  CommonSuccess(this.successHandler, {this.callBack, this.backButton});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class CommonSuccess extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                HomeBack(callback: CommonMethods.home),
+                backButton == true ? HomeBack(callback: CommonMethods.home) : Text(''),
                 Card(
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
