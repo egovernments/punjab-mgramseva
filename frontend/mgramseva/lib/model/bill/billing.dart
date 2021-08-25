@@ -33,7 +33,7 @@ class Bill {
   double? totalAmount;
   @JsonKey(name: "businessService")
   String? businessService;
-  @JsonKey(name: "String billNumber")
+  @JsonKey(name: "billNumber")
   String? billNumber;
   @JsonKey(name: "billDate")
   int? billDate;

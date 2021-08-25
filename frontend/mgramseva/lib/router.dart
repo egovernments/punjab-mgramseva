@@ -46,9 +46,14 @@ class router {
     String? path = uri.path;
     if (kIsWeb) {
       var userDetails = commonProvider.getWebLoginStatus();
-      if (userDetails == null && Routes.LOGIN != settings.name && Routes.FORGOT_PASSWORD != settings.name && Routes.RESET_PASSWORD != settings.name) {
+      if (userDetails == null &&
+          Routes.LOGIN != settings.name &&
+          Routes.FORGOT_PASSWORD != settings.name &&
+          Routes.RESET_PASSWORD != settings.name) {
         path = Routes.SELECT_LANGUAGE;
-      } else if (Routes.LOGIN == settings.name || Routes.FORGOT_PASSWORD == settings.name || Routes.RESET_PASSWORD == settings.name) {
+      } else if (Routes.LOGIN == settings.name ||
+          Routes.FORGOT_PASSWORD == settings.name ||
+          Routes.RESET_PASSWORD == settings.name) {
         path = settings.name;
       }
     }
@@ -87,7 +92,8 @@ class router {
             settings: RouteSettings(name: Routes.CHANGE_PASSWORD));
       case Routes.UPDATE_PASSWORD:
         return MaterialPageRoute(
-            builder: (_) => UpdatePassword(userDetails: settings.arguments as UserDetails),
+            builder: (_) =>
+                UpdatePassword(userDetails: settings.arguments as UserDetails),
             settings: RouteSettings(name: Routes.UPDATE_PASSWORD));
       case Routes.CONSUMER_SEARCH:
         return MaterialPageRoute(
@@ -180,7 +186,10 @@ class router {
       case Routes.BILL_GENERATE:
         String? id;
         if (settings.arguments != null) {
-          id = (settings.arguments as WaterConnection).connectionNo!.split('/').join("_");
+          id = (settings.arguments as WaterConnection)
+              .connectionNo!
+              .split('/')
+              .join("_");
         } else {
           if (queryValidator(Routes.BILL_GENERATE, query)) {
             id = query['applicationNo'];
@@ -241,23 +250,32 @@ class router {
           } else {
             return pageNotAvailable;
           }
-        }else{
+        } else {
           localQuery = settings.arguments as Map<String, dynamic>;
         }
         return MaterialPageRoute(
             builder: (_) => ConnectionPaymentView(query: localQuery),
-            settings: RouteSettings(name: '${Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT}?${Uri(queryParameters: localQuery).query}'));
+            settings: RouteSettings(
+                name:
+                    '${Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT}?${Uri(queryParameters: localQuery).query}'));
 
-
-      /// Redirecting routes
       case Routes.RESET_PASSWORD:
+        String? id;
+        if (settings.arguments != null) {
+          id = (settings.arguments as Map)['id'];
+        } else {
+          return pageNotAvailable;
+        }
         if (settings.arguments == null)
           return MaterialPageRoute(
               builder: (_) => ForgotPassword(),
               settings: RouteSettings(name: Routes.FORGOT_PASSWORD));
         return MaterialPageRoute(
-            builder: (_) => ResetPassword(),
-            settings: RouteSettings(name: Routes.RESET_PASSWORD));
+            builder: (_) => ResetPassword(
+                  id: id,
+                ),
+            settings:
+                RouteSettings(name: '${Routes.RESET_PASSWORD}?mobileNo=$id'));
       case Routes.MANUAL_BILL_GENERATE:
         return MaterialPageRoute(
             builder: (_) => GenerateBill(),
@@ -280,7 +298,9 @@ class router {
         if (query.keys.contains('applicationNo')) return true;
         return false;
       case Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT:
-        if (query.keys.contains('consumerCode') && query.keys.contains('businessService') && query.keys.contains('tenantId')) return true;
+        if (query.keys.contains('consumerCode') &&
+            query.keys.contains('businessService') &&
+            query.keys.contains('tenantId')) return true;
         return false;
 
       case Routes.BILL_GENERATE:

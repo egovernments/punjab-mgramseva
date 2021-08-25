@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mgramseva/providers/forgot_password_provider.dart';
 
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
@@ -23,6 +24,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   var autoValidation = false;
 
   saveInputandcall(context) async {
+    print(context);
     var otpProvider =
         Provider.of<ForgotPasswordProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
@@ -46,7 +48,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 Logo(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Forgot Password ? ",
+                  child: Text(
+                      ApplicationLocalizations.of(context)
+                          .translate(i18.login.FORGOT_PASSWORD),
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
                 ),
@@ -56,7 +60,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       margin:
                           const EdgeInsets.only(left: 20, bottom: 20, top: 20),
                       child: Text(
-                          "Please Enter your Phone Number to Reset password.",
+                          ApplicationLocalizations.of(context)
+                              .translate(i18.common.RESET_PASSWORD_LABEL),
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w400)),
                     )),
@@ -66,9 +71,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       ? AutovalidateMode.always
                       : AutovalidateMode.disabled,
                   child: BuildTextField(
-                    'Phone Number',
+                    i18.common.PHONE_NUMBER,
                     mobileNumber,
-                    prefixText: '+91',
+                    prefixText: '+91-',
                     isRequired: true,
                     inputFormatter: [
                       FilteringTextInputFormatter.allow(RegExp("[0-9]"))

@@ -100,23 +100,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                        '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD)}',
+                                        '${ApplicationLocalizations.of(context).translate(i18.password.CORE_COMMON_RESET_PASSWORD)}',
                                         style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w700)),
                                   ),
-                                  Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Container(
-                                        margin: const EdgeInsets.only(
-                                            left: 20, bottom: 20, top: 20),
-                                        child: Text(
-                                            '${ApplicationLocalizations.of(context).translate(i18.password.INVITED_TO_GRAMA_SEVA)}',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400)),
-                                      )),
-                                  _buildTenantDetails(),
                                   _buildOtpView(),
                                   Container(
                                     padding:
@@ -179,34 +167,6 @@ class _ResetPasswordState extends State<ResetPassword> {
             ))));
   }
 
-  Widget _buildTenantDetails() {
-    ;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
-      child: Table(
-          border: TableBorder.all(color: Colors.grey, width: 0.3),
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          children: [_buildHeader()]),
-    );
-  }
-
-  TableRow _buildHeader() {
-    var list = [i18.password.GP_NUMBER, i18.password.NAME_GRAM_PANCHAYAT];
-    return TableRow(
-        decoration: BoxDecoration(color: Color.fromRGBO(238, 238, 238, 1)),
-        children: list
-            .map((e) => TableCell(
-                    child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                  child: Text(
-                    '${ApplicationLocalizations.of(context).translate(e)}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                )))
-            .toList());
-  }
-
   Widget _buildOtpView() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -233,7 +193,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         color: Color.fromRGBO(11, 12, 12, 1)))
               ])),
           Container(
-            width: 200,
+            width: 300,
             padding: EdgeInsets.symmetric(vertical: 5),
             child: PinInputTextField(
               pinLength: 6,

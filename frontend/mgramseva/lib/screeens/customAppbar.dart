@@ -52,7 +52,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
         final result = tenantProvider.tenants!.tenantsList!
             .where((element) => r.contains(element.code))
             .toList();
-        if (result.length > 1) {
+        if (result.length > 1 &&
+            commonProvider.userDetails!.selectedtenant == null) {
           showdialog(result);
         } else if (result.length == 1 &&
             commonProvider.userDetails!.selectedtenant == null) {
@@ -135,7 +136,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
     final result = tenant.tenantsList!
         .where((element) => r.contains(element.code))
         .toList();
-    if (result.length == 1) {
+    if (result.length == 1 &&
+        commonProvider.userDetails!.selectedtenant == null) {
       commonProvider.setTenant(result.first);
     }
 
