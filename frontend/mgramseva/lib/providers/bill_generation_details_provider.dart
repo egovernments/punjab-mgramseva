@@ -312,6 +312,7 @@ class BillGenerationProvider with ChangeNotifier {
                           '\n\n ${billList.bill!.first.billNumber.toString()}'),
                   callBack: () =>
                       onClickOfCollectPayment(billList.bill!.first, context),
+                  backButton: true,
                 );
               }));
             }
