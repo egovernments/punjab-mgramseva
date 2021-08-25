@@ -348,16 +348,20 @@ class ConsumerProvider with ChangeNotifier {
     if (languageList?.mdmsRes?.taxPeriodList!.TaxPeriodList! != null &&
         dates.length == 0) {
       var date2 = DateFormats.getFormattedDateToDateTime(
-          DateFormats.timeStampToDate(languageList!
-              .mdmsRes?.taxPeriodList!.TaxPeriodList!.first.toDate));
+          DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch));
       var date1 = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(languageList!
               .mdmsRes?.taxPeriodList!.TaxPeriodList!.first.fromDate));
       var d = date2 as DateTime;
       var now = date1 as DateTime;
+      var days = d.day - now.day;
       var years = d.year - now.year;
-      var months = now.month - d.month;
-      for (var i = 0; i < years * 12; i++) {
+      var months = d.month - now.month;
+      if (months < 0 || (months == 0 && days < 0)) {
+        years--;
+        months += (days < 0 ? 11 : 12);
+      }
+      for (var i = 0; i < months; i++) {
         var prevMonth = new DateTime(now.year, date1.month + i, 1);
         var r = {"code": prevMonth, "name": prevMonth};
         dates.add(r);
@@ -376,7 +380,7 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   incrementindex(index, consumerGenderKey) async {
-    if (boundaryList.length > 0) {
+    if (boundaryList.length > 1) {
       activeindex = index + 1;
     } else {
       if (activeindex == 4) {

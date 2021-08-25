@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/Pointer.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class HomeWalkThroughContainer extends StatefulWidget {
@@ -65,24 +67,29 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
               ),
             )),
         Positioned(
-            left: (homeProvider.activeindex+1) % 3 == 0? position.dx - 50 : position.dx,
-            top: (homeProvider.activeindex == 6 || homeProvider.activeindex == 7 || homeProvider.activeindex == 8) ?  position.dy - box.size.height - 25 : box.size.height + position.dy + 25,
+            left: ((homeProvider.activeindex+1) % 3 == 0) ? position.dx - 140 : position.dx,
+            top: (homeProvider.activeindex == 6 || homeProvider.activeindex == 7 || homeProvider.activeindex == 8) ?  position.dy - box.size.height - (MediaQuery.of(context).size.width > 720 ? 55 : 25 ) : box.size.height + position.dy + 25,
             child: Container(
-                width: MediaQuery.of(context).size.width > 720 ? MediaQuery.of(context).size.width/ 3 : MediaQuery.of(context).size.width / 2,
+                width: MediaQuery.of(context).size.width > 720 ? MediaQuery.of(context).size.width/ 3 : MediaQuery.of(context).size.width / 1.4,
+                height: 160,
                 alignment: Alignment.centerRight,
-                padding: EdgeInsets.only(right: 8),
+                padding: EdgeInsets.only(right: 15),
                 child: Card(
-                    child: Column(children: [
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
                       Padding(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.only(top: 20, left: 10, right: 10,),
                           child: Text(
                             homeProvider
                                 .homeWalkthrougList[homeProvider.activeindex]
                                 .name,
                             style: TextStyle(fontSize: 16),
+                            textAlign: TextAlign.start,
                           )),
                       Padding(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(0),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -90,6 +97,8 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                     onPressed: () async {
                                       homeProvider.activeindex = 0;
                                       Navigator.pop(context);
+                                      Provider.of<CommonProvider>(context, listen: false)
+                                        ..walkThroughCondition(false, Constants.HOME_KEY);
                                       setState(() {
                                         active = 0;
                                       });

@@ -1,9 +1,11 @@
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/Pointer.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class WalkThroughContainer extends StatefulWidget {
@@ -96,6 +98,8 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                                 onPressed: () async {
                                   consumerProvider.activeindex = 0;
                                   Navigator.pop(context);
+                                  Provider.of<CommonProvider>(context, listen: false)
+                                    ..walkThroughCondition(false, Constants.CREATE_CONSUMER_KEY);
                                   setState(() {
                                     active = 0;
                                   });

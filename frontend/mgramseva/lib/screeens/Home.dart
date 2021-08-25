@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/screeens/HomeCard.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/footer.dart';
@@ -61,7 +62,7 @@ class _HomeState extends State<Home> {
                       child: child,
                     );
                   },
-                ),
+                ),walkThroughKey: Constants.HOME_KEY,
               )),
           Expanded(child: HomeCard()),
           Footer()

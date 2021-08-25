@@ -7,22 +7,18 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/forgot_password_repo.dart';
 import 'package:mgramseva/repository/reset_password_repo.dart';
 import 'package:mgramseva/repository/tendants_repo.dart';
-import 'package:mgramseva/repository/user_edit_profile_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
-import 'package:mgramseva/widgets/Back.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
-import 'package:mgramseva/widgets/DesktopView.dart';
-import 'package:mgramseva/widgets/MobileView.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
-import 'package:mgramseva/screeens/Passwordsuccess.dart';
 import 'package:mgramseva/widgets/footerBanner.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:provider/provider.dart';
@@ -332,11 +328,11 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         Navigator.pop(context);
         commonProvider.loginCredentails = widget.userDetails;
 
-        // var userProfile = await commonProvider.getUserProfile();
-        // userProfile.user!.first.defaultPwdChgd = true;
-        // print(userProfile.toJson());
-        // var edituserResponse = await UserEditProfileRepository()
-        //     .editProfile({"user": userProfile.user!.first.toJson()});
+          Provider.of<CommonProvider>(context, listen: false)
+          ..walkThroughCondition(true, Constants.HOME_KEY)
+          ..walkThroughCondition(true, Constants.CREATE_CONSUMER_KEY)
+          ..walkThroughCondition(true, Constants.ADD_EXPENSE_KEY);
+
         Navigator.pushReplacementNamed(context, Routes.SUCCESS_VIEW,
             arguments: SuccessHandler(
               i18.password.CHANGE_PASSWORD_SUCCESS,
