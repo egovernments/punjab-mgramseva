@@ -16,7 +16,9 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
+import 'package:mgramseva/widgets/Back.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
+import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
 import 'package:mgramseva/widgets/footerBanner.dart';
@@ -90,7 +92,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                 child: new Column(children: <Widget>[
                   Align(
                       alignment: Alignment.topLeft,
-                      child: Padding(
+                      child: MediaQuery.of(context).size.width > 720 ? Padding(
                           padding: EdgeInsets.only(
                               left: MediaQuery.of(context).size.width / 4),
                           child: IconButton(
@@ -102,7 +104,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                               splashColor: Colors.purple,
                               onPressed: () =>
                                   Navigator.of(context, rootNavigator: true)
-                                      .maybePop()))),
+                                      .maybePop())) : Back()),
                   Container(
                       padding: EdgeInsets.all(8),
                       child: Card(
@@ -114,11 +116,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                        '${ApplicationLocalizations.of(context).translate(i18.common.MGRAM_SEVA)}',
-                                        style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.w700)),
+                                    child: Logo(),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
@@ -188,7 +186,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                               ApplicationLocalizations.of(
                                                       context)
                                                   .translate(
-                                                      i18.common.CONTINUE),
+                                                      i18.password.CHANGE_PASSWORD),
                                               style: TextStyle(
                                                   fontSize: 19,
                                                   fontWeight: FontWeight.w500)),
