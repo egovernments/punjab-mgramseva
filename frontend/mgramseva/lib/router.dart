@@ -105,7 +105,9 @@ class router {
       case Routes.CONSUMER_UPDATE:
         String? id;
         if (settings.arguments != null) {
-          id = (settings.arguments as WaterConnection).applicationNo;
+          id = ((settings.arguments as Map)['waterconnections']
+                  as WaterConnection)
+              .connectionNo;
         } else {
           if (queryValidator(Routes.CONSUMER_UPDATE, query)) {
             id = query['applicationNo'];
@@ -117,7 +119,8 @@ class router {
             builder: (_) => ConsumerDetails(
                 id: id,
                 waterconnection: settings.arguments != null
-                    ? settings.arguments as WaterConnection
+                    ? (settings.arguments as Map)['waterconnections']
+                        as WaterConnection
                     : null),
             settings: RouteSettings(
                 name: '${Routes.CONSUMER_UPDATE}?applicationNo=$id'));
