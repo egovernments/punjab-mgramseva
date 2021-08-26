@@ -40,18 +40,24 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
 
   afterViewBuild() {
     Provider.of<HouseHoldProvider>(context, listen: false)
-      ..FetchBill(widget.waterconnection);
+      ..fetchDemand(widget.waterconnection);
   }
 
   buildDemandView(BillList data) {
+    print("printing data");
+    print(data.bill);
     return Column(
       children: [
-        data.bill!.first.waterConnection!.connectionType == 'Metered' &&
-                widget.mode == 'collect'
-            ? GenerateNewBill(data)
-            : Text(""),
-        NewConsumerBill(data, widget.mode),
-        ConsumerBillPayments(data.bill!.first.waterConnection)
+        data.bill == null
+            ? Text("")
+            : data.bill!.first.waterConnection!.connectionType == 'Metered' &&
+                    widget.mode == 'collect'
+                ? GenerateNewBill(data)
+                : Text(""),
+        data.bill == null ? Text("") : NewConsumerBill(data, widget.mode),
+        data.bill == null
+            ? Text("")
+            : ConsumerBillPayments(data.bill!.first.waterConnection)
       ],
     );
   }
@@ -81,8 +87,8 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                     } else if (snapshot.hasError) {
                       return Notifiers.networkErrorPage(
                           context,
-                          () => houseHoldProvider.FetchBill(
-                              widget.waterconnection));
+                          () => houseHoldProvider
+                              .fetchDemand(widget.waterconnection));
                     } else {
                       switch (snapshot.connectionState) {
                         case ConnectionState.waiting:
