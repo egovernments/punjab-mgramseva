@@ -22,8 +22,10 @@ class BasicDateField extends StatelessWidget {
     Widget datePicker = AbsorbPointer(
       absorbing: !(isEnabled ?? true),
         child : DateTimeField(
+          style: TextStyle(color: (isEnabled ?? true) ? null : Colors.grey),
       format: format,
       decoration: InputDecoration(
+        fillColor: (isEnabled ?? true) ? Colors.white : Colors.grey,
         prefixText: "",
         suffixIcon: Icon(Icons.calendar_today),
         prefixStyle: TextStyle(color: Colors.black),
@@ -53,11 +55,11 @@ class BasicDateField extends StatelessWidget {
       Text(ApplicationLocalizations.of(context).translate(label),
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),
+              fontWeight: FontWeight.w400, fontSize: 19, color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
       Text(isRequired ? '* ' : ' ',
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),
+              fontWeight: FontWeight.w400, fontSize: 19, color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
     ]);
 
     return LayoutBuilder(builder: (context, constraints) {

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
@@ -212,7 +213,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               requiredMessage:
                                   i18.expense.MENTION_NAME_OF_VENDOR,
                               inputFormatter: [FilteringTextInputFormatter.allow(
-                                  RegExp("[a-zA-Z]"))],
+                                  RegExp("[a-zA-Z ]"))],
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[1].key,
                             ),
@@ -320,7 +321,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                       expensesDetailsProvider.onChangeOfDate,
                                   isEnabled: expenseDetails.allowEdit),
                             if (isUpdate &&
-                                expenseDetails.fileStoreList != null)
+                                expenseDetails.fileStoreList != null && expenseDetails.fileStoreList!.isNotEmpty)
                               Container(
                                 margin: const EdgeInsets.only(
                                     top: 20.0, bottom: 5, right: 20, left: 20),
@@ -341,18 +342,22 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                                       expensesDetailsProvider
                                                           .onTapOfAttachment(e, context),
                                                   child: Container(
-                                                    height: 45,
-                                                    width: 45,
+                                                    width: 50,
                                                     margin:
                                                         EdgeInsets.symmetric(
                                                             vertical: 10,
                                                             horizontal: 5),
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.grey,
-                                                            width: 1.5)),
-                                                    child: Text('${CommonMethods.getExtension(e.url ?? '')}'),
-                                                  ),
+                                                    child: Wrap(
+                                                      runSpacing: 5,
+                                                   spacing: 8,
+                                                   children : [
+                                                     Image.asset('assets/png/attachment.png'),
+                                                     Text('${CommonMethods.getExtension(e.url ?? '')}',
+                                                     maxLines: 2,
+                                                     overflow: TextOverflow.ellipsis,
+                                                     )
+                                                    ]
+                                                  )),
                                                 ))
                                             .toList())
                                   ],

@@ -4,13 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
+import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +23,7 @@ import 'common_provider.dart';
 class CollectPaymentProvider with ChangeNotifier {
 
   var paymentStreamController = StreamController.broadcast();
+  var paymentModeList = <KeyValue>[];
 
   @override
   void dispose() {
@@ -34,7 +39,8 @@ class CollectPaymentProvider with ChangeNotifier {
       if(paymentDetails != null) {
       var demandDetails = await ConsumerRepository().getDemandDetails(query);
       if(demandDetails != null) paymentDetails.first.demand = demandDetails.first;
-        paymentStreamController.add(paymentDetails.first);
+      getPaymentModes(paymentDetails.first);
+      paymentStreamController.add(paymentDetails.first);
         notifyListeners();
       }
     }on CustomException catch (e,s){
@@ -47,6 +53,19 @@ class CollectPaymentProvider with ChangeNotifier {
       ErrorHandler.logError(e.toString(),s);
       paymentStreamController.addError('error');
     }
+  }
+
+  Future<void> getPaymentModes(FetchBill fetchBill) async {
+    paymentModeList = <KeyValue>[];
+    var commonProvider = Provider.of<CommonProvider>(navigatorKey.currentContext!, listen: false);
+      var res =  await CoreRepository().getMdms(
+          getMdmsPaymentModes(
+              commonProvider.userDetails!.userRequest!.tenantId.toString()));
+      if(res.mdmsRes?.billingService != null && res.mdmsRes?.billingService?.businessServiceList != null){
+        res.mdmsRes?.billingService?.businessServiceList?.first.collectionModesNotAllowed?.forEach((e) => paymentModeList.add(KeyValue(e, e)) );
+        fetchBill.paymentMethod = paymentModeList.first.key;
+        notifyListeners();
+      }
   }
 
   Future<void> updatePaymentInformation(FetchBill fetchBill, BuildContext context) async {

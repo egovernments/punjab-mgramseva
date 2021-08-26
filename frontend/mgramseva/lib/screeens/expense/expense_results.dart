@@ -79,7 +79,7 @@ class ExpenseResults extends StatelessWidget {
                                  context),
                              _getDetailtext(
                                  i18.common.STATUS,
-                               ApplicationLocalizations.of(context).translate(getApplicationStatus(expense.applicationStatus ?? '')),
+                               ApplicationLocalizations.of(context).translate(getApplicationStatus(expense.applicationStatus ?? '', expense)),
                                  context),
                              Visibility(
                                visible: expense.applicationStatus != 'CANCELLED',
@@ -123,11 +123,14 @@ class ExpenseResults extends StatelessWidget {
     ));
   }
 
-  String getApplicationStatus(String status){
+  String getApplicationStatus(String status, ExpensesDetailsModel expensesDetailsModel){
     switch(status){
       case 'PAID' :
         return i18.expense.PAID;
       case 'ACTIVE' :
+        if(expensesDetailsModel.isBillPaid ?? false){
+          return i18.expense.PAID;
+        }
         return i18.expense.UN_PAID;
       case 'CANCELLED' :
         return i18.expense.CANCELLED;

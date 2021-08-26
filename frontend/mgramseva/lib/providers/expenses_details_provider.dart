@@ -139,7 +139,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
           'EXPENSE.${expenditureDetails.expenseType}',
           MDMSType.TaxHeadCode)
       ..consumerType = 'EXPENSE'
-      ..tenantId = 'pb'
+      ..tenantId = commonProvider.userDetails?.selectedtenant?.code
       ..setText()
       ..vendorId = expenditureDetails.selectedVendor?.id ??
           expenditureDetails.vendorNameCtrl.text
@@ -209,7 +209,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
          }
        },
        "owner": {
-         "tenantId": "pb.lodhipur",
+         "tenantId": commonProvider.userDetails?.selectedtenant?.code,
          "name": expenditureDetails.vendorNameCtrl.text,
          "fatherOrHusbandName": "defaultName",
          "relationship": "FATHER",

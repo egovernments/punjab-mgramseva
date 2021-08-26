@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -143,12 +144,13 @@ class _SearchExpenseState extends State<SearchExpense> {
 
   void onSubmit() {
     FocusScope.of(context).nextFocus();
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
     if (vendorNameCtrl.text.trim().isNotEmpty ||
         expenseType != null ||
         billIdCtrl.text.trim().isNotEmpty) {
       var query = {
-        'tenantId': 'pb',
+        'tenantId': commonProvider.userDetails?.selectedtenant?.code,
         'vendorName': vendorNameCtrl.text.trim(),
         'expenseType': expenseType,
         'challanNo': billIdCtrl.text.trim()
