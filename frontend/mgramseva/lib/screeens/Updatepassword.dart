@@ -92,10 +92,21 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                 child: new Column(children: <Widget>[
                   Align(
                       alignment: Alignment.topLeft,
-                      child: MediaQuery.of(context).size.width > 720 ? Padding(
-                          padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width / 4),
-                          child: IconButton(
+                      child: MediaQuery.of(context).size.width > 720
+                          ? Padding(
+                              padding: EdgeInsets.only(
+                                  left: MediaQuery.of(context).size.width / 4),
+                              child: IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_back,
+                                  ),
+                                  iconSize: 25,
+                                  color: Colors.white,
+                                  splashColor: Colors.purple,
+                                  onPressed: () =>
+                                      Navigator.of(context, rootNavigator: true)
+                                          .maybePop()))
+                          : IconButton(
                               icon: Icon(
                                 Icons.arrow_back,
                               ),
@@ -104,7 +115,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                               splashColor: Colors.purple,
                               onPressed: () =>
                                   Navigator.of(context, rootNavigator: true)
-                                      .maybePop())) : Back()),
+                                      .maybePop())),
                   Container(
                       padding: EdgeInsets.all(8),
                       child: Card(
@@ -185,8 +196,8 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                           child: new Text(
                                               ApplicationLocalizations.of(
                                                       context)
-                                                  .translate(
-                                                      i18.password.CHANGE_PASSWORD),
+                                                  .translate(i18.password
+                                                      .CHANGE_PASSWORD),
                                               style: TextStyle(
                                                   fontSize: 19,
                                                   fontWeight: FontWeight.w500)),
@@ -326,7 +337,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         Navigator.pop(context);
         commonProvider.loginCredentails = widget.userDetails;
 
-          Provider.of<CommonProvider>(context, listen: false)
+        Provider.of<CommonProvider>(context, listen: false)
           ..walkThroughCondition(true, Constants.HOME_KEY)
           ..walkThroughCondition(true, Constants.CREATE_CONSUMER_KEY)
           ..walkThroughCondition(true, Constants.ADD_EXPENSE_KEY);
