@@ -118,7 +118,7 @@ class ConsumerProvider with ChangeNotifier {
     }
   }
 
-  void validateExpensesDetails(context) async {
+  void validateConsumerDetails(context) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -207,7 +207,7 @@ class ConsumerProvider with ChangeNotifier {
 
           if (result2 != null && result1 != null)
             Notifiers.getToastMessage(
-                context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
+                context, i18.consumer.UPDATED_SUCCESS, 'SUCCESS');
           Navigator.pop(context);
         }
       } catch (e, s) {

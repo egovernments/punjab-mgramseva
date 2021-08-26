@@ -56,7 +56,7 @@ class BuildTextField extends StatefulWidget {
       this.placeHolder,
       this.contextkey,
       this.requiredMessage});
-  
+
   @override
   State<StatefulWidget> createState() => _BuildTextField();
 }
@@ -66,8 +66,10 @@ class _BuildTextField extends State<BuildTextField> {
   Widget build(BuildContext context) {
     // TextForm
     Widget textFormwidget = TextFormField(
-       style: TextStyle(color: widget.isDisabled != null && widget.isDisabled!
-              ? Colors.grey:null),
+        style: TextStyle(
+            color: widget.isDisabled != null && widget.isDisabled!
+                ? Colors.grey
+                : null),
         enabled: widget.isDisabled != null
             ? (widget.isDisabled == true)
                 ? false
@@ -106,11 +108,18 @@ class _BuildTextField extends State<BuildTextField> {
           fillColor: widget.isDisabled != null && widget.isDisabled!
               ? Colors.grey
               : Colors.white,
-            prefixIcon: widget.prefixText == '' ? null : Padding(padding: EdgeInsets.only(left: 15, top: 15, bottom:  15 ),
-            child: Text(widget.prefixText,
-            style: TextStyle(fontSize: 16,
-                color: widget.isDisabled != null && widget.isDisabled!
-                    ? Colors.grey: Colors.black),)) ,
+          prefixIcon: widget.prefixText == ''
+              ? null
+              : Padding(
+                  padding: EdgeInsets.only(left: 15, top: 15, bottom: 15),
+                  child: Text(
+                    widget.prefixText,
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: widget.isDisabled != null && widget.isDisabled!
+                            ? Colors.grey
+                            : Colors.black),
+                  )),
         ),
         onChanged: widget.onChange);
 // Label Text
@@ -120,13 +129,19 @@ class _BuildTextField extends State<BuildTextField> {
           '${ApplicationLocalizations.of(context).translate(widget.labelText)} ${widget.labelSuffix ?? ''}',
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 19, color: widget.isDisabled != null && widget.isDisabled!
-              ? Colors.grey: Colors.black)),
-      Text(widget.isRequired ? '* ' : ' ',
+              fontWeight: FontWeight.w400,
+              fontSize: 19,
+              color: widget.isDisabled != null && widget.isDisabled!
+                  ? Colors.grey
+                  : Colors.black)),
+      Text(widget.isRequired ? '*' : ' ',
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 19, color: widget.isDisabled != null && widget.isDisabled!
-              ? Colors.grey: Colors.black)),
+              fontWeight: FontWeight.w400,
+              fontSize: 19,
+              color: widget.isDisabled != null && widget.isDisabled!
+                  ? Colors.grey
+                  : Colors.black)),
     ]);
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {

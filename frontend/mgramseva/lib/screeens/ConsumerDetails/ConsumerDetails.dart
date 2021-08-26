@@ -94,10 +94,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
         e.key = GlobalKey();
         return e;
       }).toList());
-
   }
-
-
 
   Widget buildconsumerView(Property property) {
     return Column(
@@ -136,7 +133,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             );
                           },
                         ),
-                            walkThroughKey: Constants.CREATE_CONSUMER_KEY,
+                        walkThroughKey: Constants.CREATE_CONSUMER_KEY,
                       )),
                       Card(
                           child: Column(
@@ -439,7 +436,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
         Footer(),
       ]))),
       bottomNavigationBar: BottomButtonBar(i18.common.SUBMIT,
-          () => {userProvider.validateExpensesDetails(context)}),
+          () => {userProvider.validateConsumerDetails(context)}),
     );
   }
 }
