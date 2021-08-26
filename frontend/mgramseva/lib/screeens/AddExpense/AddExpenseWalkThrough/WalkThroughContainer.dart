@@ -65,7 +65,7 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
             )),
         Positioned(
             right: position.dx,
-            top: expenseProvider.activeindex == (expenseProvider.expenseWalkthrougList.length - 1) ? position.dy - box.size.height - 75 : box.size.height + position.dy + 45,
+            top: expenseProvider.activeindex == (expenseProvider.expenseWalkthrougList.length - 1) ? position.dy - box.size.height - (MediaQuery.of(context).size.width > 720 ? 55 : 30) : box.size.height + position.dy + 45,
             child: Container(
                       decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),),
