@@ -55,7 +55,9 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
     print(billpayments.payments!.length);
     return LayoutBuilder(builder: (context, constraints) {
       return Column(children: [
-        ListLabelText(i18.consumerReciepts.CONSUMER_BILL_RECIEPTS_LABEL),
+        billpayments.payments!.length > 0
+            ? ListLabelText(i18.consumerReciepts.CONSUMER_BILL_RECIEPTS_LABEL)
+            : Text(""),
         for (var item in billpayments.payments!)
           Card(
               child: Column(
