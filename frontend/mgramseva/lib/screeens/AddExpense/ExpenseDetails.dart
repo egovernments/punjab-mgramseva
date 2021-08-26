@@ -353,6 +353,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                                    children : [
                                                      Image.asset('assets/png/attachment.png'),
                                                      Text('${CommonMethods.getExtension(e.url ?? '')}',
+                                                     maxLines: 2,
                                                      overflow: TextOverflow.ellipsis,
                                                      )
                                                     ]

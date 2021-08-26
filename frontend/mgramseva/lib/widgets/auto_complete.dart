@@ -75,13 +75,13 @@ class AutoCompleteView extends StatelessWidget {
             style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 19,
-                color: Colors.black)),
+                color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
         Text((isRequired ?? false) ? '* ' : ' ',
             textAlign: TextAlign.left,
             style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 19,
-                color: Colors.black)),
+                color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
       ]),
     );
   }
@@ -94,7 +94,8 @@ class AutoCompleteView extends StatelessWidget {
           enabled: (isEnabled ?? true),
           controller: controller,
           style: TextStyle(
-              color: Colors.black, fontSize: 19, fontWeight: FontWeight.w500),
+              color: (isEnabled ?? true)
+                  ? Colors.black : Colors.grey, fontSize: 16),
           decoration: InputDecoration(border: OutlineInputBorder())),
       hideOnEmpty: true,
       suggestionsBoxController: suggestionsBoxController,
