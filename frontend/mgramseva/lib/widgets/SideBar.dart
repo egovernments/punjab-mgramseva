@@ -90,7 +90,7 @@ class SideBar extends StatelessWidget {
                             ?.languages ??
                         [],
                     70,
-                    4,
+                    3,
                     4,
                   )
               ])

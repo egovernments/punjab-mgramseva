@@ -68,7 +68,7 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
         Positioned(
             right: position.dx,
             top: consumerProvider.activeindex == (consumerProvider
-                .consmerWalkthrougList.length-1) ? position.dy - box.size.height - 75 : box.size.height + position.dy + 45,
+                .consmerWalkthrougList.length-1) ? position.dy - box.size.height - (MediaQuery.of(context).size.width > 720 ? 40 : 32) : box.size.height + position.dy + 45,
             child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),

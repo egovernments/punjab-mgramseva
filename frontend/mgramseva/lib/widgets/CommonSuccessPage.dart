@@ -10,6 +10,7 @@ import 'package:mgramseva/widgets/SuccessPage.dart';
 
 import 'DrawerWrapper.dart';
 import 'SideBar.dart';
+import 'footer.dart';
 
 class CommonSuccess extends StatelessWidget {
   final SuccessHandler successHandler;
@@ -97,6 +98,7 @@ class CommonSuccess extends StatelessWidget {
                     SizedBox(
                       height: 20,
                     ),
+                    Footer(),
                   ],
                 ))
               ]))),
