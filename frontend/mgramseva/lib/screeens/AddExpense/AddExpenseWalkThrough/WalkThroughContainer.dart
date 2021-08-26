@@ -17,7 +17,8 @@ class ExpenseWalkThroughContainer extends StatefulWidget {
   }
 }
 
-class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContainer> {
+class _ExpenseWalkThroughContainerState
+    extends State<ExpenseWalkThroughContainer> {
   int active = 0;
   @override
   void initState() {
@@ -26,7 +27,8 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ExpensesDetailsProvider>(builder: (_, expenseProvider, child) {
+    return Consumer<ExpensesDetailsProvider>(
+        builder: (_, expenseProvider, child) {
       RenderBox? box = expenseProvider
           .expenseWalkthrougList[expenseProvider.activeindex]
           .key!
@@ -39,19 +41,24 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
             left: position.dx,
             top: position.dy,
             child: Container(
-              width: MediaQuery.of(context).size.width / 1.1,
+                width: MediaQuery.of(context).size.width / 1.1,
                 child: Card(
                     child: Padding(
                         padding: EdgeInsets.only(bottom: 20),
-                    child: Column(
-                      children: [
-                        expenseProvider
-                            .expenseWalkthrougList[expenseProvider.activeindex].widget,
-                      ],
-                    ))))),
+                        child: Column(
+                          children: [
+                            expenseProvider
+                                .expenseWalkthrougList[
+                                    expenseProvider.activeindex]
+                                .widget,
+                          ],
+                        ))))),
         Positioned(
             right: box.size.width / 3,
-            top: expenseProvider.activeindex == (expenseProvider.expenseWalkthrougList.length - 1) ? position.dy - 25 : box.size.height + position.dy + 20,
+            top: expenseProvider.activeindex ==
+                    (expenseProvider.expenseWalkthrougList.length - 1)
+                ? position.dy - 25
+                : box.size.height + position.dy + 20,
             child: CustomPaint(
               painter: TrianglePainter(
                 strokeColor: Colors.white,
@@ -65,11 +72,19 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
             )),
         Positioned(
             right: position.dx,
-            top: expenseProvider.activeindex == (expenseProvider.expenseWalkthrougList.length - 1) ? position.dy - box.size.height - (MediaQuery.of(context).size.width > 720 ? 55 : 30) : box.size.height + position.dy + 45,
+            top: expenseProvider.activeindex ==
+                    (expenseProvider.expenseWalkthrougList.length - 1)
+                ? position.dy -
+                    box.size.height -
+                    (MediaQuery.of(context).size.width > 720 ? 55 : 30)
+                : box.size.height + position.dy + 45,
             child: Container(
-                      decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),),
-                width: MediaQuery.of(context).size.width > 720 ? MediaQuery.of(context).size.width/ 3 : MediaQuery.of(context).size.width /1.5,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                width: MediaQuery.of(context).size.width > 720
+                    ? MediaQuery.of(context).size.width / 3
+                    : MediaQuery.of(context).size.width / 1.5,
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.only(right: 8),
                 child: Card(
@@ -77,11 +92,14 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                       Padding(
-                          padding: EdgeInsets.only(top: 20, left: 10, right: 10),
+                          padding:
+                              EdgeInsets.only(top: 20, left: 10, right: 10),
                           child: Text(
-                            expenseProvider
-                                .expenseWalkthrougList[expenseProvider.activeindex]
-                                .name,
+                            ApplicationLocalizations.of(context).translate(
+                                expenseProvider
+                                    .expenseWalkthrougList[
+                                        expenseProvider.activeindex]
+                                    .name),
                             style: TextStyle(fontSize: 16),
                             textAlign: TextAlign.start,
                           )),
@@ -94,19 +112,22 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                                     onPressed: () async {
                                       expenseProvider.activeindex = 0;
                                       Navigator.pop(context);
-                                      Provider.of<CommonProvider>(context, listen: false)
-                                        ..walkThroughCondition(false, Constants.ADD_EXPENSE_KEY);
+                                      Provider.of<CommonProvider>(context,
+                                          listen: false)
+                                        ..walkThroughCondition(
+                                            false, Constants.ADD_EXPENSE_KEY);
                                       setState(() {
                                         active = 0;
                                       });
                                     },
-                                    child: Text(ApplicationLocalizations.of(context)
-                                        .translate(i18.common.SKIP))),
+                                    child: Text(
+                                        ApplicationLocalizations.of(context)
+                                            .translate(i18.common.SKIP))),
                                 GestureDetector(
                                     onTap: () async {
-                                      if (expenseProvider
-                                          .expenseWalkthrougList.length -
-                                          1 <=
+                                      if (expenseProvider.expenseWalkthrougList
+                                                  .length -
+                                              1 <=
                                           active) {
                                         expenseProvider.activeindex = 0;
                                         Navigator.pop(context);
@@ -114,29 +135,29 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                                           active = 0;
                                         });
                                       } else {
-                                        widget
-                                            .onnext!(expenseProvider.activeindex);
+                                        widget.onnext!(
+                                            expenseProvider.activeindex);
                                         await Scrollable.ensureVisible(
                                             expenseProvider
                                                 .expenseWalkthrougList[
-                                            expenseProvider.activeindex]
+                                                    expenseProvider.activeindex]
                                                 .key!
                                                 .currentContext!,
-                                            duration:
-                                            new Duration(milliseconds: 100));
+                                            duration: new Duration(
+                                                milliseconds: 100));
 
                                         setState(() {
                                           active = active + 1;
                                         });
                                       }
                                     },
-                                    child:
-                                    Container(
+                                    child: Container(
                                       margin: EdgeInsets.all(5.0),
                                       height: 35,
                                       width: 80,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                         color: Theme.of(context).primaryColor,
                                         boxShadow: [
                                           BoxShadow(
@@ -146,13 +167,12 @@ class _ExpenseWalkThroughContainerState extends State<ExpenseWalkThroughContaine
                                           ),
                                         ],
                                       ),
-                                      child:
-                                      Center(
-                                          child: Text(ApplicationLocalizations.of(context)
-                                              .translate(i18.common.NEXT),
-                                            style: TextStyle(
-                                                color: Colors.white
-                                            ),)),
+                                      child: Center(
+                                          child: Text(
+                                        ApplicationLocalizations.of(context)
+                                            .translate(i18.common.NEXT),
+                                        style: TextStyle(color: Colors.white),
+                                      )),
                                     ))
                               ]))
                     ]))))

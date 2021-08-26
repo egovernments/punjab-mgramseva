@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/constants.dart';
-import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/widgets/DatePickerFieldBuilder.dart';
 import 'package:mgramseva/widgets/FilePicker.dart';
-import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/SelectFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/auto_complete.dart';
-import 'package:provider/provider.dart';
+
 var expensesDetailsProvider = ExpensesDetailsProvider();
 
 var json = [
   {
-    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expenseWalkThroughMsg.EXPENSE_TYPE_MSG),
+    "name": (i18.expenseWalkThroughMsg.EXPENSE_TYPE_MSG),
     "widget": SelectFieldBuilder(
       i18.expense.EXPENSE_TYPE,
       '',
       '',
       '',
-          (val) => {},
+      (val) => {},
       [],
       true,
     ),
   },
   {
-    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expenseWalkThroughMsg.EXPENSE_VENDOR_NAME_MSG),
+    "name": (i18.expenseWalkThroughMsg.EXPENSE_VENDOR_NAME_MSG),
     "widget": AutoCompleteView(
       labelText: i18.expense.VENDOR_NAME,
       controller: TextEditingController(),
@@ -38,7 +34,7 @@ var json = [
     ),
   },
   {
-    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expenseWalkThroughMsg.EXPENSE_AMOUNT_MSG),
+    "name": (i18.expenseWalkThroughMsg.EXPENSE_AMOUNT_MSG),
     "widget": BuildTextField(
       i18.expense.AMOUNT,
       TextEditingController(),
@@ -46,30 +42,33 @@ var json = [
     ),
   },
   {
-    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expenseWalkThroughMsg.EXPENSE_BILL_DATE_MSG),
+    "name": (i18.expenseWalkThroughMsg.EXPENSE_BILL_DATE_MSG),
     "widget": BasicDateField(
-              i18.expense.BILL_DATE,
-                true,
-              TextEditingController(),),
+      i18.expense.BILL_DATE,
+      true,
+      TextEditingController(),
+    ),
   },
   {
-    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expenseWalkThroughMsg.EXPENSE_PARTY_BILL_DATE_MSG),
+    "name": (i18.expenseWalkThroughMsg.EXPENSE_PARTY_BILL_DATE_MSG),
     "widget": BasicDateField(
       i18.expense.PAYMENT_DATE,
       true,
-      TextEditingController(),),
+      TextEditingController(),
+    ),
   },
   {
-    "name": ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expenseWalkThroughMsg.EXPENSE_ATTACH_BILL_MSG),
+    "name": (i18.expenseWalkThroughMsg.EXPENSE_ATTACH_BILL_MSG),
     "widget": FilePickerDemo(
-      callBack: expensesDetailsProvider.fileStoreIdCallBack ,
+      callBack: expensesDetailsProvider.fileStoreIdCallBack,
     )
   },
 ];
 
 class ExpenseWalkThrough {
-  final List<ExpenseWalkWidgets> expenseWalkThrough = json.map((e) => ExpenseWalkWidgets(
-      name: e['name'] as String, widget: e['widget'] as Widget))
+  final List<ExpenseWalkWidgets> expenseWalkThrough = json
+      .map((e) => ExpenseWalkWidgets(
+          name: e['name'] as String, widget: e['widget'] as Widget))
       .toList();
 }
 

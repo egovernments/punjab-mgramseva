@@ -146,18 +146,17 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  walkThroughCondition(bool? firstTime, String key){
+  walkThroughCondition(bool? firstTime, String key) {
     if (kIsWeb) {
       window.localStorage[key] = firstTime.toString();
     } else {
-      storage.write(
-          key: key,
-          value: firstTime.toString() );
+      storage.write(key: key, value: firstTime.toString());
     }
     notifyListeners();
   }
+
   Future<String> getWalkThroughCheck(String key) async {
-    var userReposne ;
+    var userReposne;
     try {
       if (kIsWeb) {
         userReposne = window.localStorage[key];
@@ -166,6 +165,9 @@ class CommonProvider with ChangeNotifier {
       }
     } catch (e) {
       userLoggedStreamCtrl.add(null);
+    }
+    if (userReposne == null) {
+      userReposne = 'false';
     }
     return userReposne;
   }
