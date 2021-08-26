@@ -98,7 +98,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               ? Colors.white
                               : Color.fromRGBO(238, 238, 238, 1),
                           width: MediaQuery.of(context).size.width,
-                          height: 45,
+                          height: 50,
                           padding: EdgeInsets.all(5),
                           child: Padding(
                             padding: const EdgeInsets.all(10),

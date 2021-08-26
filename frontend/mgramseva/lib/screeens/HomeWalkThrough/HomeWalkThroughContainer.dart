@@ -28,9 +28,7 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
   Widget build(BuildContext context) {
     return Consumer<HomeProvider>(builder: (_, homeProvider, child) {
       RenderBox? box = homeProvider
-          .homeWalkthrougList[homeProvider.activeindex]
-          .key!
-          .currentContext!
+          .homeWalkthrougList[homeProvider.activeindex].key!.currentContext!
           .findRenderObject() as RenderBox?;
       Offset position = box!.localToGlobal(Offset.zero);
       print(homeProvider.activeindex);
@@ -39,22 +37,55 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
             left: position.dx,
             top: position.dy,
             child: Container(
-              width: box.size.width,
+                width: box.size.width,
                 height: box.size.height,
                 child: Card(
                     child: Container(
                         width: box.size.width,
                         height: box.size.height,
                         child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        homeProvider
-                            .homeWalkthrougList[homeProvider.activeindex].widget,
-                      ],
-                    ))))),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Card(
+                                elevation: 0,
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                        homeProvider
+                                            .homeWalkthrougList[
+                                                homeProvider.activeindex]
+                                            .icon,
+                                        size: 35),
+                                    Container(
+                                      margin: EdgeInsets.all(10),
+                                      child: Center(
+                                          child: new Text(
+                                        ApplicationLocalizations.of(context)
+                                            .translate(homeProvider
+                                                .homeWalkthrougList[
+                                                    homeProvider.activeindex]
+                                                .label),
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400),
+                                        textAlign: TextAlign.center,
+                                      )),
+                                    )
+                                  ],
+                                ))
+                          ],
+                        ))))),
         Positioned(
             left: position.dx + 5,
-            top: (homeProvider.activeindex == 6 || homeProvider.activeindex == 7 || homeProvider.activeindex == 8) ? position.dy - 25 : box.size.height + position.dy,
+            top: (homeProvider.activeindex == 6 ||
+                    homeProvider.activeindex == 7 ||
+                    homeProvider.activeindex == 8)
+                ? position.dy - 25
+                : box.size.height + position.dy,
             child: CustomPaint(
               painter: TrianglePainter(
                 strokeColor: Colors.white,
@@ -67,24 +98,40 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
               ),
             )),
         Positioned(
-            left: ((homeProvider.activeindex+1) % 3 == 0) ? position.dx - 140 : position.dx,
-            top: (homeProvider.activeindex == 6 || homeProvider.activeindex == 7 || homeProvider.activeindex == 8) ?  position.dy - box.size.height - (MediaQuery.of(context).size.width > 720 ? 55 : 25 ) : box.size.height + position.dy + 25,
+            left: ((homeProvider.activeindex + 1) % 3 == 0)
+                ? position.dx - 140
+                : position.dx,
+            top: (homeProvider.activeindex == 6 ||
+                    homeProvider.activeindex == 7 ||
+                    homeProvider.activeindex == 8)
+                ? position.dy -
+                    box.size.height -
+                    (MediaQuery.of(context).size.width > 720 ? 55 : 25)
+                : box.size.height + position.dy + 25,
             child: Container(
-                width: MediaQuery.of(context).size.width > 720 ? MediaQuery.of(context).size.width/ 3 : MediaQuery.of(context).size.width / 1.4,
+                width: MediaQuery.of(context).size.width > 720
+                    ? MediaQuery.of(context).size.width / 3
+                    : MediaQuery.of(context).size.width / 1.4,
                 height: 160,
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.only(right: 15),
                 child: Card(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                       Padding(
-                          padding: EdgeInsets.only(top: 20, left: 10, right: 10,),
+                          padding: EdgeInsets.only(
+                            top: 20,
+                            left: 10,
+                            right: 10,
+                          ),
                           child: Text(
-                            homeProvider
-                                .homeWalkthrougList[homeProvider.activeindex]
-                                .name,
+                            ApplicationLocalizations.of(context).translate(
+                                homeProvider
+                                    .homeWalkthrougList[
+                                        homeProvider.activeindex]
+                                    .name),
                             style: TextStyle(fontSize: 16),
                             textAlign: TextAlign.start,
                           )),
@@ -97,19 +144,22 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                     onPressed: () async {
                                       homeProvider.activeindex = 0;
                                       Navigator.pop(context);
-                                      Provider.of<CommonProvider>(context, listen: false)
-                                        ..walkThroughCondition(false, Constants.HOME_KEY);
+                                      Provider.of<CommonProvider>(context,
+                                          listen: false)
+                                        ..walkThroughCondition(
+                                            false, Constants.HOME_KEY);
                                       setState(() {
                                         active = 0;
                                       });
                                     },
-                                    child: Text(ApplicationLocalizations.of(context)
-                                        .translate(i18.common.SKIP))),
+                                    child: Text(
+                                        ApplicationLocalizations.of(context)
+                                            .translate(i18.common.SKIP))),
                                 GestureDetector(
                                     onTap: () async {
                                       if (homeProvider
-                                          .homeWalkthrougList.length -
-                                          1 <=
+                                                  .homeWalkthrougList.length -
+                                              1 <=
                                           active) {
                                         homeProvider.activeindex = 0;
                                         Navigator.pop(context);
@@ -122,24 +172,24 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                         await Scrollable.ensureVisible(
                                             homeProvider
                                                 .homeWalkthrougList[
-                                            homeProvider.activeindex]
+                                                    homeProvider.activeindex]
                                                 .key!
                                                 .currentContext!,
-                                            duration:
-                                            new Duration(milliseconds: 100));
+                                            duration: new Duration(
+                                                milliseconds: 100));
 
                                         setState(() {
                                           active = active + 1;
                                         });
                                       }
                                     },
-                                    child:
-                                    Container(
+                                    child: Container(
                                       margin: EdgeInsets.all(5.0),
                                       height: 35,
                                       width: 80,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                         color: Theme.of(context).primaryColor,
                                         boxShadow: [
                                           BoxShadow(
@@ -149,13 +199,12 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                           ),
                                         ],
                                       ),
-                                      child:
-                                      Center(
-                                          child: Text(ApplicationLocalizations.of(context)
-                                              .translate(i18.common.NEXT),
-                                            style: TextStyle(
-                                                color: Colors.white
-                                            ),)),
+                                      child: Center(
+                                          child: Text(
+                                        ApplicationLocalizations.of(context)
+                                            .translate(i18.common.NEXT),
+                                        style: TextStyle(color: Colors.white),
+                                      )),
                                     ))
                               ]))
                     ]))))
