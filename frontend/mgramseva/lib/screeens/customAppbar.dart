@@ -110,12 +110,34 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                     result[index].city!.name!,
                                     style: TextStyle(
                                         fontSize: 16,
-                                        fontWeight: FontWeight.w400),
+                                        fontWeight: FontWeight.w400,
+                                        color: commonProvider.userDetails!
+                                                        .selectedtenant !=
+                                                    null &&
+                                                commonProvider
+                                                        .userDetails!
+                                                        .selectedtenant!
+                                                        .city!
+                                                        .code ==
+                                                    result[index].city!.code!
+                                            ? Theme.of(context).primaryColor
+                                            : Colors.black),
                                   ),
                                   Text(result[index].city!.code!,
                                       style: TextStyle(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w400))
+                                          fontWeight: FontWeight.w400,
+                                          color: commonProvider.userDetails!
+                                                          .selectedtenant !=
+                                                      null &&
+                                                  commonProvider
+                                                          .userDetails!
+                                                          .selectedtenant!
+                                                          .city!
+                                                          .code ==
+                                                      result[index].city!.code!
+                                              ? Theme.of(context).primaryColor
+                                              : Colors.black))
                                 ]),
                           ),
                         )));
