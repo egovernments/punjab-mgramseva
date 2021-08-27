@@ -103,7 +103,28 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                             ),
                             textAlign: TextAlign.start,
                           )),
-                      Padding(
+                          consumerProvider.activeindex == consumerProvider.consmerWalkthrougList.length - 1
+                          ? Padding(
+                              padding: EdgeInsets.only(top: 10, right: 20, bottom: 10),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () async {
+                                          consumerProvider.activeindex = 0;
+                                          Navigator.pop(context);
+                                          Provider.of<CommonProvider>(context,
+                                              listen: false)
+                                            ..walkThroughCondition(false,
+                                                Constants.CREATE_CONSUMER_KEY);
+                                          setState(() {
+                                            active = 0;
+                                          });
+                                        },
+                                        child: Text(
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18.common.END)))]))
+                      : Padding(
                           padding: EdgeInsets.all(0),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,

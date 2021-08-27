@@ -139,6 +139,7 @@ class Common {
   String get PAID_DATE => 'PAID_DATE';
   String get SKIP => 'SKIP';
   String get NEXT => 'NEXT';
+  String get END => 'END';
 }
 
 class Password {

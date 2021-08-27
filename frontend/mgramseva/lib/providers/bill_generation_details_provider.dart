@@ -454,8 +454,6 @@ class BillGenerationProvider with ChangeNotifier {
           value: value['code'],
           child: new Text(months[d.month - 1] +
               " - " +
-              months[d.month] +
-              " " +
               d.year.toString()),
         );
       }).toList();
