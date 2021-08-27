@@ -15,9 +15,15 @@ import 'footer.dart';
 class CommonSuccess extends StatelessWidget {
   final SuccessHandler successHandler;
   final VoidCallback? callBack;
+  final VoidCallback? callBackwatsapp;
+  final VoidCallback? callBackdownload;
   final bool? backButton;
 
-  CommonSuccess(this.successHandler, {this.callBack, this.backButton});
+  CommonSuccess(this.successHandler,
+      {this.callBack,
+      this.callBackwatsapp,
+      this.callBackdownload,
+      this.backButton});
 
   @override
   Widget build(BuildContext context) {
@@ -32,75 +38,88 @@ class CommonSuccess extends StatelessWidget {
             AppBar(),
             <Widget>[Icon(Icons.more_vert)],
           ),
-          drawer: DrawerWrapper(
-            Drawer(child: SideBar())),
+          drawer: DrawerWrapper(Drawer(child: SideBar())),
           body: SingleChildScrollView(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                backButton == true ? HomeBack(callback: CommonMethods.home) : Text(''),
+                backButton == true
+                    ? HomeBack(callback: CommonMethods.home)
+                    : Text(''),
                 Card(
-                  margin: const EdgeInsets.only(left: 10, right: 10),
+                    margin: const EdgeInsets.only(left: 10, right: 10),
                     child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SuccessPage(successHandler.header, subTextHeader: successHandler.subHeader, subText: successHandler.subHeaderText),
-                    Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          margin: const EdgeInsets.only(
-                              left: 10, bottom: 20, top: 20, right: 10),
-                          child: Text(
-                              ApplicationLocalizations.of(context)
-                                  .translate(successHandler.subtitle),
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w400),
-                          textAlign: TextAlign.start,),
-                        )),
-                    Visibility(
-                      visible: successHandler.downloadLink == null && successHandler.whatsAppShare == null && successHandler.downloadLinkLabel == null,
-                      child: SizedBox(
-                        height: 20,
-                      ),
-                    ),
-                    Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        SuccessPage(successHandler.header,
+                            subTextHeader: successHandler.subHeader,
+                            subText: successHandler.subHeaderText),
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                  left: 10, bottom: 20, top: 20, right: 10),
+                              child: Text(
+                                ApplicationLocalizations.of(context)
+                                    .translate(successHandler.subtitle),
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w400),
+                                textAlign: TextAlign.start,
+                              ),
+                            )),
                         Visibility(
-                          visible: successHandler.downloadLink != null,
-                          child: TextButton.icon(onPressed: (){},
-                          icon: Icon(Icons.download_sharp),
-                            label: Text( ApplicationLocalizations.of(context)
-                                .translate(successHandler.downloadLinkLabel != null ? successHandler.downloadLinkLabel! : '' ), style: TextStyle(fontSize: 19)),
+                          visible: successHandler.downloadLink == null &&
+                              successHandler.whatsAppShare == null &&
+                              successHandler.downloadLinkLabel == null,
+                          child: SizedBox(
+                            height: 20,
                           ),
                         ),
-                        Visibility(
-                          visible: successHandler.whatsAppShare != null,
-                          child: TextButton.icon(
-                            onPressed: (){},
-                            icon:  (Image.asset('assets/png/whats_app.png')),
-                            label: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                              child: Text(
-                                  ApplicationLocalizations.of(context)
-                                      .translate(i18.common.SHARE_BILL)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Visibility(
+                              visible: successHandler.downloadLink != null,
+                              child: TextButton.icon(
+                                onPressed: callBackdownload,
+                                icon: Icon(Icons.download_sharp),
+                                label: Text(
+                                    ApplicationLocalizations.of(context)
+                                        .translate(successHandler
+                                                    .downloadLinkLabel !=
+                                                null
+                                            ? successHandler.downloadLinkLabel!
+                                            : ''),
+                                    style: TextStyle(fontSize: 19)),
                               ),
                             ),
-                          ),
-                        )
+                            Visibility(
+                              visible: successHandler.whatsAppShare != null,
+                              child: TextButton.icon(
+                                onPressed: callBackwatsapp,
+                                icon: (Image.asset('assets/png/whats_app.png')),
+                                label: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 10),
+                                  child: Text(
+                                      ApplicationLocalizations.of(context)
+                                          .translate(i18.common.SHARE_BILL)),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        BottomButtonBar(
+                          successHandler.backButtonText,
+                          callBack != null ? callBack : CommonMethods.home,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Footer(),
                       ],
-                    ),
-                    BottomButtonBar(
-                      successHandler.backButtonText,
-                      callBack != null ? callBack : CommonMethods.home,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Footer(),
-                  ],
-                ))
+                    ))
               ]))),
     );
   }

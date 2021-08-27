@@ -57,7 +57,15 @@ class NewConsumerBill extends StatelessWidget {
                               Visibility(
                                 visible: true,
                                 child: TextButton.icon(
-                                  onPressed: () {},
+                                  onPressed: () => commonProvider
+                                      .getFileFromPDFService({
+                                    "Bill": [billList!.bill!.first]
+                                  }, {
+                                    "key": "consolidatedbill",
+                                    "tenantId": commonProvider
+                                        .userDetails!.selectedtenant!.code,
+                                  }, billList!.bill!.first.mobileNumber,
+                                          "Download"),
                                   icon: Icon(Icons.download_sharp),
                                   label: Text(
                                       ApplicationLocalizations.of(context)
