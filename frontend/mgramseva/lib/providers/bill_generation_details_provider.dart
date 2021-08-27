@@ -352,9 +352,7 @@ class BillGenerationProvider with ChangeNotifier {
                 Routes.BILL_GENERATE,
                 subHeader: '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)}',
                 subHeaderText: '$selectedBillCycle' + ' ${selectedBillYear.financialYear!.toString().substring(2)}',
-                downloadLink: '',
-                downloadLinkLabel: ApplicationLocalizations.of(context)
-                    .translate(i18.demandGenerate.DOWNLOAD_DEMAND_PDF)));
+            ));
           }));
         }
       } catch (e) {
