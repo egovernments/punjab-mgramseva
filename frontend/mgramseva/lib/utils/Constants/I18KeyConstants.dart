@@ -138,6 +138,8 @@ class Common {
   /// Payment complete
   String get SHARE_BILL => 'SHARE_BILL';
 
+  String get SHARE_RECEIPTS => 'SHARE_RECEIPTS';
+
   /// Payment complete
   String get ATTACHMENTS => 'ATTACHMENTS';
   String get YES => 'YES';

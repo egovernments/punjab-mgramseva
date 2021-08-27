@@ -16,6 +16,7 @@ import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:provider/provider.dart';
 
 import 'common_provider.dart';
@@ -105,19 +106,38 @@ class CollectPaymentProvider with ChangeNotifier {
       Loaders.showLoadingDialog(context);
 
       var paymentDetails = await ConsumerRepository().collectPayment(payment);
-      if (paymentDetails != null && paymentDetails.isNotEmpty) {
+      if (paymentDetails != null && paymentDetails.payments!.length > 0) {
         Navigator.pop(context);
-
-        Navigator.pushNamed(context, Routes.SUCCESS_VIEW,
-            arguments: SuccessHandler(
-                i18.common.PAYMENT_COMPLETE,
-                '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${fetchBill.mobileNumber})',
-                i18.common.BACK_HOME,
-                Routes.HOUSEHOLD_DETAILS_SUCCESS,
-                subHeader:
-                    '${ApplicationLocalizations.of(context).translate(i18.common.RECEIPT_NO)} \n ${paymentDetails.first['paymentDetails'][0]['receiptNumber']}',
-                downloadLink: '',
-                whatsAppShare: ''));
+        print(paymentDetails);
+        Navigator.of(context).pushReplacement(
+            new MaterialPageRoute(builder: (BuildContext context) {
+          return CommonSuccess(
+            SuccessHandler(
+              i18.common.PAYMENT_COMPLETE,
+              '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${fetchBill.mobileNumber})',
+              i18.common.BACK_HOME,
+              Routes.HOUSEHOLD_DETAILS_SUCCESS,
+              subHeader:
+                  '${ApplicationLocalizations.of(context).translate(i18.common.RECEIPT_NO)} \n ${paymentDetails.payments!.first.paymentDetails!.first.receiptNumber}',
+              downloadLink: i18.common.RECEIPT_DOWNLOAD,
+              whatsAppShare: i18.common.SHARE_RECEIPTS,
+              downloadLinkLabel: i18.common.RECEIPT_DOWNLOAD,
+            ),
+            callBackdownload: () => commonProvider.getFileFromPDFService({
+              "Payments": [paymentDetails.payments!.first]
+            }, {
+              "key": "consolidatedreceipt",
+              "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+            }, paymentDetails.payments!.first.mobileNumber, "Download"),
+            callBackwatsapp: () => commonProvider.getFileFromPDFService({
+              "Payments": [paymentDetails..payments!]
+            }, {
+              "key": "consolidatedreceipt",
+              "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+            }, paymentDetails.payments!.first.mobileNumber, "Share"),
+            backButton: true,
+          );
+        }));
       }
     } on CustomException catch (e, s) {
       Navigator.pop(context);
