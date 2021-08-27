@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
@@ -13,6 +14,8 @@ class AutoCompleteView extends StatelessWidget {
   final bool? isEnabled;
   final String? requiredMessage;
   final GlobalKey? contextkey;
+  final List<FilteringTextInputFormatter>? inputFormatter;
+  final TextInputType? textInputType;
 
   const AutoCompleteView(
       {Key? key,
@@ -22,7 +25,7 @@ class AutoCompleteView extends StatelessWidget {
       required this.listTile,
       required this.controller,
       this.suggestionsBoxController,
-      this.isRequired, this.isEnabled, this.requiredMessage, this.contextkey})
+      this.isRequired, this.isEnabled, this.requiredMessage, this.contextkey, this.inputFormatter, this.textInputType})
       : super(key: key);
 
   @override
@@ -72,13 +75,13 @@ class AutoCompleteView extends StatelessWidget {
             style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 19,
-                color: Colors.black)),
+                color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
         Text((isRequired ?? false) ? '* ' : ' ',
             textAlign: TextAlign.left,
             style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 19,
-                color: Colors.black)),
+                color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
       ]),
     );
   }
@@ -86,10 +89,13 @@ class AutoCompleteView extends StatelessWidget {
   Widget _autoComplete(BuildContext context) {
     return TypeAheadFormField(
       textFieldConfiguration: TextFieldConfiguration(
-        enabled: (isEnabled ?? true),
+          inputFormatters: inputFormatter,
+          keyboardType: textInputType ?? TextInputType.text,
+          enabled: (isEnabled ?? true),
           controller: controller,
           style: TextStyle(
-              color: Colors.black, fontSize: 19, fontWeight: FontWeight.w500),
+              color: (isEnabled ?? true)
+                  ? Colors.black : Colors.grey, fontSize: 16),
           decoration: InputDecoration(border: OutlineInputBorder())),
       hideOnEmpty: true,
       suggestionsBoxController: suggestionsBoxController,

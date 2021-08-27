@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/common/demand.dart';
 import 'package:mgramseva/model/connection/property.dart';
 import 'package:mgramseva/model/connection/tenant_boundary.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
@@ -49,7 +50,7 @@ class ConsumerProvider with ChangeNotifier {
     'Dec'
   ];
   LanguageList? languageList;
-  setModel() {
+  setModel() async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -90,6 +91,21 @@ class ConsumerProvider with ChangeNotifier {
     waterconnection = data;
     waterconnection.getText();
 
+    List<Demand>? demand = await ConsumerRepository().getDemandDetails({
+      "consumerCode": waterconnection.connectionNo,
+      "businessService": "WS",
+      "tenantId": waterconnection.tenantId
+    });
+    if (demand!
+            .indexWhere(((element) =>
+                element.consumerType == 'waterConnection-arrears'))
+            .isNegative ==
+        false) {
+      isfirstdemand = false;
+    } else {
+      isfirstdemand = true;
+    }
+
     notifyListeners();
   }
 
@@ -102,7 +118,7 @@ class ConsumerProvider with ChangeNotifier {
     }
   }
 
-  void validateExpensesDetails(context) async {
+  void validateConsumerDetails(context) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -150,11 +166,14 @@ class ConsumerProvider with ChangeNotifier {
           "locality": property.address.locality?.code,
           "initialMeterReading": waterconnection.previousReading,
           "propertyType": property.propertyType,
+          "meterReading": waterconnection.previousReading,
         });
       } else {
         waterconnection.additionalDetails!.locality =
             property.address.locality!.code;
         waterconnection.additionalDetails!.initialMeterReading =
+            waterconnection.previousReading;
+        waterconnection.additionalDetails!.meterReading =
             waterconnection.previousReading;
         waterconnection.additionalDetails!.propertyType = property.propertyType;
       }
@@ -185,6 +204,10 @@ class ConsumerProvider with ChangeNotifier {
               await ConsumerRepository().updateProperty(property.toJson());
           var result2 = await ConsumerRepository()
               .updateconnection(waterconnection.toJson());
+
+          if (result2 != null && result1 != null)
+            Notifiers.getToastMessage(
+                context, i18.consumer.UPDATED_SUCCESS, 'SUCCESS');
           Navigator.pop(context);
         }
       } catch (e, s) {
@@ -345,16 +368,20 @@ class ConsumerProvider with ChangeNotifier {
     if (languageList?.mdmsRes?.taxPeriodList!.TaxPeriodList! != null &&
         dates.length == 0) {
       var date2 = DateFormats.getFormattedDateToDateTime(
-          DateFormats.timeStampToDate(languageList!
-              .mdmsRes?.taxPeriodList!.TaxPeriodList!.first.toDate));
+          DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch));
       var date1 = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(languageList!
               .mdmsRes?.taxPeriodList!.TaxPeriodList!.first.fromDate));
       var d = date2 as DateTime;
       var now = date1 as DateTime;
+      var days = d.day - now.day;
       var years = d.year - now.year;
-      var months = now.month - d.month;
-      for (var i = 0; i < years * 12; i++) {
+      var months = d.month - now.month;
+      if (months < 0 || (months == 0 && days < 0)) {
+        years--;
+        months += (days < 0 ? 11 : 12);
+      }
+      for (var i = 0; i < months; i++) {
         var prevMonth = new DateTime(now.year, date1.month + i, 1);
         var r = {"code": prevMonth, "name": prevMonth};
         dates.add(r);
@@ -373,7 +400,7 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   incrementindex(index, consumerGenderKey) async {
-    if (boundaryList.length > 0) {
+    if (boundaryList.length > 1) {
       activeindex = index + 1;
     } else {
       if (activeindex == 4) {

@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/user/user_details.dart';
+import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'dart:convert';
 import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/LocalStorage.dart';
-import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -58,7 +58,7 @@ class CommonProvider with ChangeNotifier {
     try {
       var query = {
         'module':
-            'mgramseva-common,mgramseva-consumer,mgramseva-expenses,mgramseva-water-connection,mgramseva-bill',
+            'mgramseva-common,mgramseva-consumer,mgramseva-expenses,mgramseva-water-connection,mgramseva-bill,mgramseva-payments',
         'locale': languageProvider.selectedLanguage?.value ?? '',
         'tenantId': 'pb'
       };
@@ -136,6 +136,58 @@ class CommonProvider with ChangeNotifier {
               loginDetails == null ? null : jsonEncode(loginDetails.toJson()));
     }
     notifyListeners();
+  }
+
+  set userProfile(UserProfile? profile) {
+    if (kIsWeb) {
+      window.localStorage[Constants.USER_PROFILE_KEY] =
+          profile == null ? '' : jsonEncode(profile.toJson());
+    } else {
+      storage.write(
+          key: Constants.USER_PROFILE_KEY,
+          value: profile == null ? null : jsonEncode(profile.toJson()));
+    }
+    notifyListeners();
+  }
+
+  walkThroughCondition(bool? firstTime, String key) {
+    if (kIsWeb) {
+      window.localStorage[key] = firstTime.toString();
+    } else {
+      storage.write(key: key, value: firstTime.toString());
+    }
+    notifyListeners();
+  }
+
+  Future<String> getWalkThroughCheck(String key) async {
+    var userReposne;
+    try {
+      if (kIsWeb) {
+        userReposne = window.localStorage[key];
+      } else {
+        userReposne = (await storage.read(key: key));
+      }
+    } catch (e) {
+      userLoggedStreamCtrl.add(null);
+    }
+    if (userReposne == null) {
+      userReposne = 'false';
+    }
+    return userReposne;
+  }
+
+  Future<UserProfile> getUserProfile() async {
+    var userReposne;
+    try {
+      if (kIsWeb) {
+        userReposne = window.localStorage[Constants.USER_PROFILE_KEY];
+      } else {
+        userReposne = await storage.read(key: Constants.USER_PROFILE_KEY);
+      }
+    } catch (e) {
+      userLoggedStreamCtrl.add(null);
+    }
+    return UserProfile.fromJson(jsonDecode(userReposne));
   }
 
   Future<void> getLoginCredentails() async {

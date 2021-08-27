@@ -52,9 +52,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
         final result = tenantProvider.tenants!.tenantsList!
             .where((element) => r.contains(element.code))
             .toList();
-        if (result.length > 1) {
+        if (result.length > 1 &&
+            commonProvider.userDetails!.selectedtenant == null) {
           showdialog(result);
-        } else if (result.length == 1) {
+        } else if (result.length == 1 &&
+            commonProvider.userDetails!.selectedtenant == null) {
           commonProvider.setTenant(result.first);
         }
       }
@@ -96,7 +98,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               ? Colors.white
                               : Color.fromRGBO(238, 238, 238, 1),
                           width: MediaQuery.of(context).size.width,
-                          height: 45,
+                          height: 50,
                           padding: EdgeInsets.all(5),
                           child: Padding(
                             padding: const EdgeInsets.all(10),
@@ -134,7 +136,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
     final result = tenant.tenantsList!
         .where((element) => r.contains(element.code))
         .toList();
-    if (result.length == 1) {
+    if (result.length == 1 &&
+        commonProvider.userDetails!.selectedtenant == null) {
       commonProvider.setTenant(result.first);
     }
 

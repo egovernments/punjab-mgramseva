@@ -55,24 +55,28 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
     print(billpayments.payments!.length);
     return LayoutBuilder(builder: (context, constraints) {
       return Column(children: [
-        ListLabelText(i18.consumerReciepts.CONSUMER_BILL_RECIEPTS_LABEL),
+        billpayments.payments!.length > 0
+            ? ListLabelText(i18.consumerReciepts.CONSUMER_BILL_RECIEPTS_LABEL)
+            : Text(""),
         for (var item in billpayments.payments!)
           Card(
               child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Visibility(
-                visible: true,
-                child: TextButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.download_sharp),
-                  label: Text(
-                      ApplicationLocalizations.of(context)
-                          .translate(i18.common.DOWNLOAD),
-                      style: TextStyle(fontSize: 19)),
-                ),
-              ),
+              Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Visibility(
+                    visible: true,
+                    child: TextButton.icon(
+                      onPressed: () {},
+                      icon: Icon(Icons.download_sharp),
+                      label: Text(
+                          ApplicationLocalizations.of(context)
+                              .translate(i18.common.DOWNLOAD),
+                          style: TextStyle(fontSize: 19)),
+                    ),
+                  )),
               Padding(
                   padding: EdgeInsets.all(15),
                   child: Column(children: [
@@ -96,14 +100,18 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                             ? MediaQuery.of(context).size.width / 3
                             : MediaQuery.of(context).size.width / 1.25,
                         child: OutlinedButton.icon(
-                          onPressed: null,
+                          onPressed: () => {},
                           style: ButtonStyle(
                             alignment: Alignment.center,
                             padding: MaterialStateProperty.all(
                                 EdgeInsets.symmetric(vertical: 0)),
                             shape: MaterialStateProperty.all(
                                 RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(0.0))),
+                              side: BorderSide(
+                                  width: 2,
+                                  color: Theme.of(context).primaryColor),
+                              borderRadius: BorderRadius.circular(0.0),
+                            )),
                           ),
                           icon: (Image.asset('assets/png/whats_app.png')),
                           label: Padding(

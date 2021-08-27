@@ -73,6 +73,9 @@ class User {
   @JsonKey(name: "type")
   String? type;
 
+  @JsonKey(name: "defaultPwdChgd")
+  bool? defaultPwdChgd;
+
   @JsonKey(name: "accountLocked")
   bool? accountLocked;
 

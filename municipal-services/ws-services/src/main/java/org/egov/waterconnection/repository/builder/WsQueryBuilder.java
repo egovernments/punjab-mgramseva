@@ -8,6 +8,7 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.service.UserService;
 import org.egov.waterconnection.util.WaterServicesUtil;
+import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.Property;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class WsQueryBuilder {
     private static String holderSelectValues = "connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime";
 
     
-	private static final String WATER_SEARCH_QUERY = "SELECT conn.*, wc.*, document.*, plumber.*, wc.connectionCategory, wc.connectionType, wc.waterSource,"
+	private static final String WATER_SEARCH_QUERY = "SELECT count(*) OVER() AS full_count, conn.*, wc.*, document.*, plumber.*, wc.connectionCategory, wc.connectionType, wc.waterSource,"
 			+ " wc.meterId, wc.meterInstallationDate, wc.pipeSize, wc.noOfTaps, wc.proposedPipeSize, wc.proposedTaps, wc.connection_id as connection_Id, wc.connectionExecutionDate, wc.initialmeterreading, wc.appCreatedDate,"
 			+ " wc.detailsprovidedby, wc.estimationfileStoreId , wc.sanctionfileStoreId , wc.estimationLetterDate,"
 			+ " conn.id as conn_id, conn.tenantid, conn.applicationNo, conn.applicationStatus, conn.status, conn.connectionNo, conn.oldConnectionNo, conn.property_id, conn.roadcuttingarea,"
@@ -66,6 +67,11 @@ public class WsQueryBuilder {
             "WHERE offset_ > ? AND offset_ <= ?";
 	
 	private static final String ORDER_BY_CLAUSE= " ORDER BY wc.appCreatedDate DESC";
+	
+	public static final String GET_BILLING_CYCLE = "select fromperiod,toperiod from egcl_billdetial where billid=(select billid from egcl_paymentdetail where paymentid=?)";
+
+	public static final String FEEDBACK_BASE_QUERY = "select id,tenantid,connectionno,paymentid, billingcycle,additionaldetails,createdtime,lastmodifiedtime,createdby,lastmodifiedby from eg_ws_feedback where tenantid=?";
+	
 	/**
 	 * 
 	 * @param criteria
@@ -266,5 +272,59 @@ public class WsQueryBuilder {
 		else {
 			queryString.append(" OR");
 		}
+	}
+	
+	public String getFeedback(FeedbackSearchCriteria feedBackSearchCriteira,List<Object> preparedStatementValues) {
+
+		StringBuilder query = new StringBuilder(FEEDBACK_BASE_QUERY);
+		preparedStatementValues.add(feedBackSearchCriteira.getTenantId());
+
+		if (feedBackSearchCriteira.getId() != null) {
+			addClauseIfRequired(preparedStatementValues, query);
+			query.append(" id = ? ");
+			preparedStatementValues.add(feedBackSearchCriteira.getId());
+		}
+
+		if (feedBackSearchCriteira.getBillingCycle() != null) {
+
+			addClauseIfRequired(preparedStatementValues, query);
+			query.append(" billingcycle = ? ");
+			preparedStatementValues.add(feedBackSearchCriteira.getBillingCycle());
+		}
+
+		if (feedBackSearchCriteira.getPaymentId() != null) {
+
+			addClauseIfRequired(preparedStatementValues, query);
+			query.append(" paymentid = ? ");
+			preparedStatementValues.add(feedBackSearchCriteira.getPaymentId());
+		}
+		
+		if (feedBackSearchCriteira.getConnectionNo() != null) {
+
+			addClauseIfRequired(preparedStatementValues, query);
+			query.append(" connectionno = ? ");
+			preparedStatementValues.add(feedBackSearchCriteira.getConnectionNo());
+		}
+		
+		if(feedBackSearchCriteira.getOffset()!=null) {
+			
+			query.append(" offset ? ");
+			preparedStatementValues.add(feedBackSearchCriteira.getOffset());
+			
+		}
+		
+		
+		if(feedBackSearchCriteira.getLimit()!=null) {
+			
+			query.append(" limit ? ");
+			
+			preparedStatementValues.add(feedBackSearchCriteira.getLimit());
+			
+		}
+		
+		
+
+		return query.toString();
+
 	}
 }

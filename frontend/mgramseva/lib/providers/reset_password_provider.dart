@@ -31,24 +31,19 @@ class ResetPasswordProvider with ChangeNotifier {
         "type": commonProvider.userDetails!.userRequest!.type
       };
 
-      var resetResponse = await ResetPasswordRepository().forgotPassword(body);
-      Navigator.pushNamedAndRemoveUntil(context, Routes.LOGIN, (route) => false);
-
-    } on CustomException catch (e,s) {
+      var resetResponse =
+          await ResetPasswordRepository().forgotPassword(body, context);
+      Navigator.pushNamedAndRemoveUntil(
+          context, Routes.LOGIN, (route) => false);
+    } on CustomException catch (e, s) {
       Navigator.pop(context);
 
-      if(ErrorHandler.handleApiException(context, e,s)) {
-        Notifiers.getToastMessage(
-            context,
-            e.message,
-            'ERROR');
+      if (ErrorHandler.handleApiException(context, e, s)) {
+        Notifiers.getToastMessage(context, e.message, 'ERROR');
       }
     } catch (e, s) {
-      Notifiers.getToastMessage(
-          context,
-          e.toString(),
-          'ERROR');
-      ErrorHandler.logError(e.toString(),s);
+      Notifiers.getToastMessage(context, e.toString(), 'ERROR');
+      ErrorHandler.logError(e.toString(), s);
       Navigator.pop(context);
     }
   }

@@ -3,16 +3,21 @@ import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
-import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/SuccessPage.dart';
 
+import 'DrawerWrapper.dart';
+import 'SideBar.dart';
+import 'footer.dart';
+
 class CommonSuccess extends StatelessWidget {
   final SuccessHandler successHandler;
+  final VoidCallback? callBack;
+  final bool? backButton;
 
-  CommonSuccess(this.successHandler);
+  CommonSuccess(this.successHandler, {this.callBack, this.backButton});
 
   @override
   Widget build(BuildContext context) {
@@ -27,30 +32,34 @@ class CommonSuccess extends StatelessWidget {
             AppBar(),
             <Widget>[Icon(Icons.more_vert)],
           ),
+          drawer: DrawerWrapper(
+            Drawer(child: SideBar())),
           body: SingleChildScrollView(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                HomeBack(callback: CommonMethods.home),
+                backButton == true ? HomeBack(callback: CommonMethods.home) : Text(''),
                 Card(
+                  margin: const EdgeInsets.only(left: 10, right: 10),
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SuccessPage(successHandler.header, subText: successHandler.subHeader),
+                    SuccessPage(successHandler.header, subTextHeader: successHandler.subHeader, subText: successHandler.subHeaderText),
                     Align(
-                        alignment: Alignment.center,
+                        alignment: Alignment.centerLeft,
                         child: Container(
                           margin: const EdgeInsets.only(
-                              left: 20, bottom: 20, top: 20),
+                              left: 10, bottom: 20, top: 20, right: 10),
                           child: Text(
                               ApplicationLocalizations.of(context)
                                   .translate(successHandler.subtitle),
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w400)),
+                                  fontSize: 14, fontWeight: FontWeight.w400),
+                          textAlign: TextAlign.start,),
                         )),
                     Visibility(
-                      visible: successHandler.downloadLink == null && successHandler.whatsAppShare == null,
+                      visible: successHandler.downloadLink == null && successHandler.whatsAppShare == null && successHandler.downloadLinkLabel == null,
                       child: SizedBox(
                         height: 20,
                       ),
@@ -63,7 +72,7 @@ class CommonSuccess extends StatelessWidget {
                           child: TextButton.icon(onPressed: (){},
                           icon: Icon(Icons.download_sharp),
                             label: Text( ApplicationLocalizations.of(context)
-                                .translate(i18.common.DOWNLOAD), style: TextStyle(fontSize: 19)),
+                                .translate(successHandler.downloadLinkLabel != null ? successHandler.downloadLinkLabel! : '' ), style: TextStyle(fontSize: 19)),
                           ),
                         ),
                         Visibility(
@@ -84,11 +93,12 @@ class CommonSuccess extends StatelessWidget {
                     ),
                     BottomButtonBar(
                       successHandler.backButtonText,
-                      CommonMethods.home,
+                      callBack != null ? callBack : CommonMethods.home,
                     ),
                     SizedBox(
                       height: 20,
                     ),
+                    Footer(),
                   ],
                 ))
               ]))),

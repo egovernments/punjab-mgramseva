@@ -10,6 +10,7 @@ import org.egov.echallan.expense.validator.ExpenseValidator;
 import org.egov.echallan.model.Challan;
 import org.egov.echallan.model.Challan.StatusEnum;
 import org.egov.echallan.model.ChallanRequest;
+import org.egov.echallan.model.ChallanResponse;
 import org.egov.echallan.model.SearchCriteria;
 import org.egov.echallan.repository.ChallanRepository;
 import org.egov.echallan.util.CommonUtils;
@@ -94,7 +95,6 @@ public class ChallanService {
 	        }
 	        enrichmentService.enrichSearchCriteriaWithOwnerids(criteria,userDetailResponse);
 	        challans = repository.getChallans(criteria);
-
 	        if(CollectionUtils.isEmpty(challans)){
 	            return Collections.emptyList();
 	        }
@@ -105,7 +105,7 @@ public class ChallanService {
 	    }
 	 
 	 public List<Challan> getChallansWithOwnerInfo(SearchCriteria criteria,RequestInfo requestInfo){
-	        List<Challan> challans = repository.getChallans(criteria);
+		 List<Challan> challans = repository.getChallans(criteria);
 	        if(challans.isEmpty())
 	            return Collections.emptyList();
 	        challans = enrichmentService.enrichChallanSearch(challans,criteria,requestInfo);
@@ -122,7 +122,6 @@ public class ChallanService {
 	        criteria.setBusinessService(request.getChallan().getBusinessService());
 
 	        List<Challan> challans = repository.getChallans(criteria);
-
 	        if(challans.isEmpty())
 	            return Collections.emptyList();
 	        challans = enrichmentService.enrichChallanSearch(challans,criteria,request.getRequestInfo());

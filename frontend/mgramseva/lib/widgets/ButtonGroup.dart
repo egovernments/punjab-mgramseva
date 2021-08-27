@@ -33,6 +33,7 @@ class ButtonGroup extends StatelessWidget {
                       Expanded(
                           child: OutlinedButton.icon(
                         onPressed: callBackIcon,
+
                         style: ButtonStyle(
                           padding: MaterialStateProperty.all(
                               EdgeInsets.symmetric(vertical: 0)),

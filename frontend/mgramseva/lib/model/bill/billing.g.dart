@@ -27,7 +27,7 @@ Bill _$BillFromJson(Map<String, dynamic> json) {
     ..status = json['status'] as String?
     ..totalAmount = (json['totalAmount'] as num?)?.toDouble()
     ..businessService = json['businessService'] as String?
-    ..billNumber = json['String billNumber'] as String?
+    ..billNumber = json['billNumber'] as String?
     ..billDate = json['billDate'] as int?
     ..consumerCode = json['consumerCode'] as String?
     ..billDetails = (json['billDetails'] as List<dynamic>?)
@@ -56,7 +56,7 @@ Map<String, dynamic> _$BillToJson(Bill instance) => <String, dynamic>{
       'status': instance.status,
       'totalAmount': instance.totalAmount,
       'businessService': instance.businessService,
-      'String billNumber': instance.billNumber,
+      'billNumber': instance.billNumber,
       'billDate': instance.billDate,
       'consumerCode': instance.consumerCode,
       'billDetails': instance.billDetails,

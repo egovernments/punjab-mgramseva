@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
@@ -9,11 +12,16 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart' as html;
 
 class CoreRepository extends BaseService {
   Future<List<LocalizationLabel>> getLocilisation(
@@ -104,10 +112,12 @@ class CoreRepository extends BaseService {
 
   Future<List<FileStore>?> fetchFiles(List<String> storeId) async {
     List<FileStore>? fileStoreIds;
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
 
     var res = await makeRequest(
-        url:
-            '${Url.FILE_FETCH}?createnosave&tenantId=pb&fileStoreIds=${storeId.join(',')}',
+        url: '${Url.FILE_FETCH}?tenantId=${commonProvider.userDetails!.selectedtenant!.code!}&fileStoreIds=${storeId.join(',')}',
         method: RequestType.GET);
 
     if (res != null) {
@@ -116,5 +126,55 @@ class CoreRepository extends BaseService {
           .toList();
     }
     return fileStoreIds;
+  }
+
+  Future<String?> urlShotner(String inputUrl) async {
+    try {
+      var res = await makeRequest(
+          url: '${Url.URL_SHORTNER}',
+          body: {"url": inputUrl},
+          method: RequestType.POST);
+
+      if (res != null) {
+        return res;
+      }
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+    }
+  }
+
+  Future<bool?> fileDownload(BuildContext context, String url, [String? fileName]) async {
+
+    fileName = fileName ?? CommonMethods.getExtension(url);
+    try {
+      var downloadPath;
+      if (kIsWeb) {
+        html.AnchorElement anchorElement = new html.AnchorElement(href: url);
+        anchorElement.download = url;
+        anchorElement.click();
+        return true;
+      } else if (Platform.isIOS) {
+        downloadPath = (await getApplicationDocumentsDirectory()).path;
+      } else {
+        downloadPath = (await getExternalStorageDirectory())?.path;
+      }
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        await Permission.storage.request();
+      }
+      final response = await FlutterDownloader.enqueue(
+        url: url,
+        savedDir: downloadPath,
+        fileName: '$fileName',
+        showNotification: true,
+        openFileFromNotification: true,
+      );
+      if (response != null) {
+        return true;
+      }
+      return false;
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(context, e);
+    }
   }
 }

@@ -203,12 +203,16 @@ public class UserService {
      * @return
      */
     public User createUser(User user, RequestInfo requestInfo) {
-        // copy mobie number to username, so that login with mobile number will work.
-        user.setUsername(user.getMobileNumber());
+        
         user.setUuid(UUID.randomUUID().toString());
         user.validateNewUser(createUserValidateName);
         conditionallyValidateOtp(user);
-
+        if(!userRepository.isUserPresent(user.getMobileNumber(), getStateLevelTenantForCitizen(user.getTenantId(), user
+                .getType()), user.getType())) {
+        	
+        	// copy mobie number to username, so that login with mobile number will work.
+            user.setUsername(user.getMobileNumber());
+        }
         /* encrypt here */
         user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
         validateUserUniqueness(user);

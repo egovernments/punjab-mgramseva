@@ -230,4 +230,7 @@ public class ChallanConfiguration {
 	@Value("${egov.expense.bill.markpaid.link}")
 	private String expenseBillMarkPaidLink;
 	
+	@Value("${egov.day.collection.link}")
+	private String dayCollectionLink;
+	
 }

@@ -19,7 +19,7 @@ class GenerateNewBill extends StatelessWidget {
             padding: EdgeInsets.only(top: 16, bottom: 16),
             width: MediaQuery.of(context).size.width / 3,
             child: Text(
-            ApplicationLocalizations.of(context).translate(label),
+              ApplicationLocalizations.of(context).translate(label),
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             )),
         Text(ApplicationLocalizations.of(context).translate(value),
@@ -30,6 +30,7 @@ class GenerateNewBill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int? num = billList!.bill!.first.billDate;
     return Column(
       children: [
         ListLabelText(i18.generateBillDetails.GENERATE_BILL_LABEL),
@@ -39,17 +40,40 @@ class GenerateNewBill extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _getLabeltext(
-                        i18.generateBillDetails.LAST_BILL_GENERATION_DATE,
-                        DateFormats.timeStampToDate(
-                                billList!.bill!.first.billDate,
-                                format: "dd-MM-yyyy")
-                            .toString(),
-                        context),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _getLabeltext(
+                            i18.generateBillDetails.LAST_BILL_GENERATION_DATE,
+                            DateFormats.timeStampToDate(
+                                    billList!.bill!.first.billDate,
+                                    format: "dd-MM-yyyy")
+                                .toString(),
+                            context),
+                        Text(
+                          DateTime.now()
+                                  .difference(
+                                      DateTime.fromMillisecondsSinceEpoch(num!))
+                                  .inDays
+                                  .toString() +
+                              " " +
+                              ApplicationLocalizations.of(context)
+                                  .translate(i18.generateBillDetails.DAYS_AGO),
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
+                        )
+                      ],
+                    ),
                     _getLabeltext(
                         i18.generateBillDetails.PREVIOUS_METER_READING,
                         billList!.bill!.first.meterReadings == null
-                            ? "NA".toString()
+                            ? billList!.bill!.first.waterConnection!
+                                        .additionalDetails!.meterReading ==
+                                    null
+                                ? "NA".toString()
+                                : billList!.bill!.first.waterConnection!
+                                    .additionalDetails!.meterReading
+                                    .toString()
                             : billList!
                                 .bill!.first.meterReadings!.last.currentReading
                                 .toString(),
