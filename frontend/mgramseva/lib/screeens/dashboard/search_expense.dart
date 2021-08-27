@@ -35,7 +35,8 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
   }
 
   afterViewBuild() {
-    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false)
+    ..selectedMonth = DateTime.now();
 
     if(widget.dashBoardType == DashBoardType.Expenditure) {
       _tabList = [
@@ -48,7 +49,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
       dashBoardProvider
         ..limit = 10
         ..offset = 1
-        ..expenseDashboardDetails = <ExpensesDetailsModel>[]
+        ..expenseDashboardDetails?.expenseDetailList = <ExpensesDetailsModel>[]
         ..fetchExpenseDashBoardDetails(context, dashBoardProvider.limit, dashBoardProvider.offset);
     }else{
       _tabList = [

@@ -33,7 +33,6 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
   OverlayState? overlayState;
   OverlayEntry? _overlayEntry;
   GlobalKey key = GlobalKey();
-  DateTime? selectedMonth;
   late List<DateTime> dateList;
   @override
   void dispose() {
@@ -44,20 +43,23 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-     dateList = CommonMethods.getPastMonthUntilFinancialYear().reversed.toList();
-     selectedMonth = dateList.first;
+    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    dateList = CommonMethods.getPastMonthUntilFinancialYear().reversed.toList();
+    dashBoardProvider.selectedMonth = dateList.first;
     _tabController = new TabController(vsync: this, length: 2);
   }
 
   @override
   Widget build(BuildContext context) {
+    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+
     return WillPopScope(
       onWillPop: () async {
-        if(removeOverLay()) return false;
+        if(dashBoardProvider.removeOverLay(_overlayEntry)) return false;
        return true;
       },
       child: GestureDetector(
-        onTap: removeOverLay,
+        onTap: ()=> dashBoardProvider.removeOverLay(_overlayEntry),
         child: Scaffold(
           appBar: CustomAppBar(),
           drawer: DrawerWrapper(
@@ -113,7 +115,9 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
             Align(
                 alignment: Alignment.bottomRight,
                 child: Consumer<DashBoardProvider>(
-                    builder: (_, dashBoardProvider, child) => Pagination(limit: dashBoardProvider.limit, offSet: dashBoardProvider.offset, callBack: (pageResponse) => dashBoardProvider.onChangeOfPageLimit(pageResponse, context), totalCount: 30)))
+                    builder: (_, dashBoardProvider, child) => Row(children: [
+                        Text('${dashBoardProvider.expenseDashboardDetails?.totalCount}'),
+                      Pagination(limit: dashBoardProvider.limit, offSet: dashBoardProvider.offset, callBack: (pageResponse) => dashBoardProvider.onChangeOfPageLimit(pageResponse, context), totalCount: (dashBoardProvider?.expenseDashboardDetails?.totalCount ?? 0))])))
           ]),
         ),
       ),
@@ -127,7 +131,9 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
 
 
   void onTapOfMonthPicker(){
-    removeOverLay();
+    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+
+    dashBoardProvider.removeOverLay(_overlayEntry);
     overlayState = Overlay.of(context);
 
     RenderBox? box = key.currentContext!
@@ -149,22 +155,22 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                   children: List.generate(dateList.length, (index) {
                     var date = dateList[index];
                    return Container(
-                     padding: EdgeInsets.symmetric(vertical: 8),
+                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                       color: index/2 == 0 ? Color.fromRGBO(238, 238, 238, 1) : Color.fromRGBO(255, 255, 255, 1),
                       child: Wrap(
                         spacing: 5,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Text('${DateFormats.getMonthAndYear(selectedMonth ?? DateTime.now())}',
+                          Text('${DateFormats.getMonthAndYear(dateList[index])}',
                           style: TextStyle(
                             fontSize: 18,
-                            fontWeight: selectedMonth?.year == date?.year && selectedMonth?.month == date?.month ?
+                            fontWeight: dashBoardProvider.selectedMonth?.year == date?.year && dashBoardProvider.selectedMonth?.month == date?.month ?
                                 FontWeight.bold : FontWeight.normal
                           ),
                           ),
                           Radio(value: date,
-                              groupValue: selectedMonth,
-                              onChanged: onChangeOfMonth)
+                              groupValue: dashBoardProvider.selectedMonth,
+                              onChanged: (date) => dashBoardProvider.onChangeOfDate(date as DateTime, context, _overlayEntry))
                         ],
                       ),
                     );
@@ -173,21 +179,5 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
             )));
     if(_overlayEntry != null)
       overlayState?.insert(_overlayEntry!);
-  }
-
-  bool removeOverLay(){
-    try{
-      _overlayEntry?.remove();
-      return true;
-    }catch(e){
-      return false;
-    }
-  }
-
-  void onChangeOfMonth(DateTime? date){
-    removeOverLay();
-   setState(() {
-     selectedMonth = date;
-   });
   }
 }

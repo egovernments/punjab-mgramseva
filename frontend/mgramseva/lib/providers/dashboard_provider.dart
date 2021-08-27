@@ -15,9 +15,11 @@ import 'package:mgramseva/utils/models.dart';
 class DashBoardProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
   TextEditingController searchController = TextEditingController();
-  List<ExpensesDetailsModel> expenseDashboardDetails = <ExpensesDetailsModel>[];
+  ExpensesDetailsWithPagination? expenseDashboardDetails;
   int offset = 1;
   int limit = 10;
+  late DateTime selectedMonth;
+
   @override
   void dispose() {
     streamController.close();
@@ -28,23 +30,39 @@ class DashBoardProvider with ChangeNotifier {
     this.limit = limit;
     this.offset = offSet;
     notifyListeners();
-    if(!isSearch && offSet <= expenseDashboardDetails.length){
-      streamController.add(expenseDashboardDetails.sublist(offset, limit));
+    if(!isSearch && (offSet + limit) <= (expenseDashboardDetails?.expenseDetailList?.length ?? 0)){
+      streamController.add(expenseDashboardDetails?.expenseDetailList?.sublist(offset -1, (offset + limit) -1));
       return;
     }
 
+    if(isSearch) expenseDashboardDetails = null;
+
     var query = {
       'tenantId': 'pb',
+      'offset' : '${offset - 1}',
+      'limit' : '$limit',
+      'fromDate' : '${DateTime(selectedMonth.year, selectedMonth.month, 1).millisecondsSinceEpoch}',
+      'toDate' :  '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0).millisecondsSinceEpoch}',
+      'vendorName' : searchController.text.trim(),
+      // 'challanNo' : searchController.text.trim()
     };
 
+    query.removeWhere((key, value) => value is String && value.trim().isEmpty);
     streamController.add(null);
 
     try{
       var response = await ExpensesRepository()
-          .searchExpense(query);
+          .expenseDashboard(query);
       if(response != null){
-        expenseDashboardDetails.addAll(response);
-        streamController.add(response);
+          if(expenseDashboardDetails == null) {
+            expenseDashboardDetails = response;
+            notifyListeners();
+          }else {
+            expenseDashboardDetails?.expenseDetailList?.addAll(
+                response.expenseDetailList ?? <ExpensesDetailsModel>[]);
+          }
+        streamController.add(expenseDashboardDetails!.expenseDetailList!.isEmpty! ? <ExpensesDetailsModel>[] :
+        expenseDashboardDetails?.expenseDetailList?.sublist(offSet -1, ((offset + limit - 1) > (expenseDashboardDetails?.totalCount ?? 0)) ? (expenseDashboardDetails!.totalCount! -1) : (offset + limit) -1));
       }
     }catch(e,s){
       streamController.addError('error');
@@ -106,11 +124,26 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   void onSearch(String val, BuildContext context){
-    fetchExpenseDashBoardDetails(context, limit, 0, true);
+    fetchExpenseDashBoardDetails(context, limit, 1, true);
+  }
+
+  void onChangeOfDate(DateTime? date, BuildContext context, _overlayEntry){
+    selectedMonth = date ?? DateTime.now();
+    notifyListeners();
+    removeOverLay(_overlayEntry);
+    fetchExpenseDashBoardDetails(context, limit, 1, true);
   }
 
   void onChangeOfPageLimit(PaginationResponse response, BuildContext context){
     fetchExpenseDashBoardDetails(context, response.limit, response.offset);
   }
 
+  bool removeOverLay(_overlayEntry){
+    try{
+      _overlayEntry?.remove();
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
 }

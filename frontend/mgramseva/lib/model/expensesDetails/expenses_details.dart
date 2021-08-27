@@ -7,6 +7,23 @@ import 'package:mgramseva/utils/date_formats.dart';
 part 'expenses_details.g.dart';
 
 @JsonSerializable()
+class ExpensesDetailsWithPagination {
+  @JsonKey(name: "totalCount")
+  int? totalCount;
+
+  @JsonKey(name: "challans")
+  List<ExpensesDetailsModel>? expenseDetailList = <ExpensesDetailsModel>[];
+
+  ExpensesDetailsWithPagination();
+
+  factory ExpensesDetailsWithPagination.fromJson(Map<String, dynamic> json) =>
+      _$ExpensesDetailsWithPaginationFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExpensesDetailsWithPaginationToJson(this);
+}
+
+
+@JsonSerializable()
 class ExpensesDetailsModel {
   @JsonKey(name: "citizen")
   Citizen? citizen;

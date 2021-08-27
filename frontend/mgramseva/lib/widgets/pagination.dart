@@ -52,11 +52,11 @@ class _PaginationState extends State<Pagination> {
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Visibility(
-              visible: widget.offSet != 1,
+              visible:  widget.offSet > widget.limit,
               child: IconButton(onPressed: () => onChangeOfPage(false), icon: Icon(Icons.arrow_left))),
           Text('${widget.offSet} - ${(widget.offSet + widget.limit - 1) <= widget.totalCount ? (widget.offSet + widget.limit -1) : widget.totalCount}'),
           Visibility(
-              visible: widget.offSet < widget.totalCount ,
+              visible: (widget.offSet + widget.limit - 1) < widget.totalCount ,
               child: IconButton(onPressed: onChangeOfPage, icon:Icon(Icons.arrow_right))),
         ],
       ),
