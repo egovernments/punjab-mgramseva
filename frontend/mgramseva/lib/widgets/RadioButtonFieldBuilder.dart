@@ -40,7 +40,7 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                                 fontWeight: FontWeight.w400,
                                 fontSize: 19,
                                 color: Colors.black)),
-                        Text(isRequired ? '* ' : ' ',
+                        Text(isRequired ? '*' : '',
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
@@ -71,13 +71,20 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                   padding: EdgeInsets.only(left: 24, top: 10),
                   child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
+                      child: Row(children: <Widget>[
+                        Text(
                         ApplicationLocalizations.of(context)
                             .translate(labelText),
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                            fontWeight: FontWeight.w400, fontSize: 16),
-                      ))),
+                            fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black),
+                      ),
+                        Text(isRequired ? '*' : '',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 19,
+                                color: Colors.black)),]))),
               Column(
                   children: options.map(
                 (data) {
