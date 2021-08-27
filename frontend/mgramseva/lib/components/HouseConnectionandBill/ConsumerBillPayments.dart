@@ -81,7 +81,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                       icon: Icon(Icons.download_sharp),
                       label: Text(
                           ApplicationLocalizations.of(context)
-                              .translate(i18.common.DOWNLOAD),
+                              .translate(i18.common.RECEIPT_DOWNLOAD),
                           style: TextStyle(fontSize: 19)),
                     ),
                   )),
