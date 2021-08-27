@@ -135,7 +135,28 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                             style: TextStyle(fontSize: 16),
                             textAlign: TextAlign.start,
                           )),
-                      Padding(
+                          homeProvider.activeindex == homeProvider.homeWalkthrougList.length - 1
+                              ? Padding(
+                              padding: EdgeInsets.only(top: 10, right: 20, bottom: 10),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () async {
+                                          homeProvider.activeindex = 0;
+                                          Navigator.pop(context);
+                                          Provider.of<CommonProvider>(context,
+                                              listen: false)
+                                            ..walkThroughCondition(false,
+                                                Constants.HOME_KEY);
+                                          setState(() {
+                                            active = 0;
+                                          });
+                                        },
+                                        child: Text(
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18.common.END)))]))
+                              : Padding(
                           padding: EdgeInsets.all(0),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
