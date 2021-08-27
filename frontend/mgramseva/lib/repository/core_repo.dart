@@ -131,14 +131,17 @@ class CoreRepository extends BaseService {
   }
 
   Future<String?> urlShotner(String inputUrl) async {
+    Map<String, String> header = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+    };
     try {
-      var res = await makeRequest(
-          url: '${Url.URL_SHORTNER}',
-          body: {"url": inputUrl},
-          method: RequestType.POST);
+      var response = await http.post(
+          Uri.parse(apiBaseUrl + '${Url.URL_SHORTNER}'),
+          headers: header,
+          body: jsonEncode({"url": inputUrl}));
 
-      if (res != null) {
-        return res;
+      if (response.body != null) {
+        return response.body;
       }
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
@@ -148,11 +151,24 @@ class CoreRepository extends BaseService {
   Future<PDFServiceResponse?> getFileStorefromPdfService(body, params) async {
     PDFServiceResponse? pdfServiceResponse;
     try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
       var res = await makeRequest(
-          url: '${Url.FETCH_FILESTORE_ID_PDF_SERVICE}',
-          body: body,
-          queryParameters: params,
-          method: RequestType.POST);
+        url: '${Url.FETCH_FILESTORE_ID_PDF_SERVICE}',
+        body: body,
+        queryParameters: params,
+        method: RequestType.POST,
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "_create",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
+            commonProvider.userDetails!.accessToken),
+      );
 
       if (res != null) {
         pdfServiceResponse = PDFServiceResponse.fromJson(res);

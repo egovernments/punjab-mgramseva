@@ -31,6 +31,7 @@ class NewConsumerBill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     var r = billList!.bill!.first.billDetails!.first.amount as num;
     print(billList!.bill!.first.billDetails!
             .map((ele) => ele.amount)
@@ -103,7 +104,23 @@ class NewConsumerBill extends StatelessWidget {
                                       alignment: Alignment.centerLeft,
                                       child: ButtonGroup(
                                           i18.billDetails.COLLECT_PAYMENT,
-                                          () => {},
+                                          () => commonProvider
+                                                  .getFileFromPDFService(
+                                                      {
+                                                    "Bill": [
+                                                      billList!.bill!.first
+                                                    ]
+                                                  },
+                                                      {
+                                                    "key": "consolidatedbill",
+                                                    "tenantId": commonProvider
+                                                        .userDetails!
+                                                        .selectedtenant!
+                                                        .code,
+                                                  },
+                                                      billList!.bill!.first
+                                                          .mobileNumber,
+                                                      "Share"),
                                           () => onClickOfCollectPayment(
                                               billList!.bill!.first, context)))
                                   : Container(
@@ -113,7 +130,17 @@ class NewConsumerBill extends StatelessWidget {
                                           : MediaQuery.of(context).size.width /
                                               1.25,
                                       child: OutlinedButton.icon(
-                                        onPressed: () => {},
+                                        onPressed: () => commonProvider
+                                            .getFileFromPDFService({
+                                          "Bill": [billList!.bill!.first]
+                                        }, {
+                                          "key": "consolidatedbill",
+                                          "tenantId": commonProvider
+                                              .userDetails!
+                                              .selectedtenant!
+                                              .code,
+                                        }, billList!.bill!.first.mobileNumber,
+                                                "Share"),
                                         style: ButtonStyle(
                                           alignment: Alignment.center,
                                           padding: MaterialStateProperty.all(

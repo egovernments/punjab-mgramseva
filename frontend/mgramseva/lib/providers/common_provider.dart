@@ -261,6 +261,7 @@ class CommonProvider with ChangeNotifier {
   }
 
   void onTapOfAttachment(FileStore store) async {
+    print(store);
     if (store.url == null) return;
 
     if (kIsWeb) {
@@ -276,31 +277,47 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
-  void shareonwatsapp(FileStore store) async {
+  void shareonwatsapp(FileStore store, mobileNumber) async {
     if (store.url == null) return;
-
-    if (kIsWeb) {
-      html.AnchorElement anchorElement = new html.AnchorElement(
-          href: "https://api.whatsapp.com/send?text=" + store.url.toString());
-      anchorElement.target = "_blank";
-      anchorElement.click();
-    } else {
-      await canLaunch(store.url!)
-          ? launch(store.url!)
-          : ErrorHandler.logError('failed to launch the url ${store.url}');
+    try {
+      var res = await CoreRepository().urlShotner(store.url as String);
+      print(res);
+      if (kIsWeb) {
+        html.AnchorElement anchorElement = new html.AnchorElement(
+            href: "https://web.whatsapp.com/send?phone=+91$mobileNumber&text=" +
+                res!);
+        anchorElement.target = "_blank";
+        anchorElement.click();
+      } else {
+        await canLaunch(res!)
+            ? launch(res)
+            : ErrorHandler.logError('failed to launch the url ${store.url}');
+      }
+    } catch (e, s) {
+      ErrorHandler.logError(e.toString(), s);
     }
   }
 
-  void getStoreFileDetails(fileStoreId, mode) async {
+  void getStoreFileDetails(fileStoreId, mode, mobileNumber) async {
     if (fileStoreId == null) return;
     try {
       var res = await CoreRepository().fetchFiles([fileStoreId!]);
       if (res != null) {
         if (mode == 'Share')
-          shareonwatsapp(res.first);
+          shareonwatsapp(res.first, mobileNumber);
         else
           onTapOfAttachment(res.first);
       }
+    } catch (e, s) {
+      ErrorHandler.logError(e.toString(), s);
+    }
+  }
+
+  void getFileFromPDFService(body, params, mobileNumber, mode) async {
+    try {
+      var res = await CoreRepository().getFileStorefromPdfService(body, params);
+      print(res);
+      getStoreFileDetails(res!.filestoreIds!.first, mode, mobileNumber);
     } catch (e, s) {
       ErrorHandler.logError(e.toString(), s);
     }
