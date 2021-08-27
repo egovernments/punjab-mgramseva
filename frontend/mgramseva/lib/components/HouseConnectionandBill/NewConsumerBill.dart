@@ -103,6 +103,7 @@ class NewConsumerBill extends StatelessWidget {
                                       alignment: Alignment.centerLeft,
                                       child: ButtonGroup(
                                           i18.billDetails.COLLECT_PAYMENT,
+                                          () => {},
                                           () => onClickOfCollectPayment(
                                               billList!.bill!.first, context)))
                                   : Container(

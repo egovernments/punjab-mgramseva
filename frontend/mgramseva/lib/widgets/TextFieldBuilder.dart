@@ -126,7 +126,7 @@ class _BuildTextField extends State<BuildTextField> {
     Widget textLabelwidget =
         Wrap(direction: Axis.horizontal, children: <Widget>[
       Text(
-          '${ApplicationLocalizations.of(context).translate(widget.labelText)} ${widget.labelSuffix ?? ''}',
+          '${ApplicationLocalizations.of(context).translate(widget.labelText)}' '${widget.labelSuffix != null ? ' ${widget.labelSuffix}' : ''}',
           textAlign: TextAlign.left,
           style: TextStyle(
               fontWeight: FontWeight.w400,
