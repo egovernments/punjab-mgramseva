@@ -117,6 +117,11 @@ class Common {
   String get ONLINE => 'ONLINE';
   String get CHEQUE => 'CHEQUE';
   String get CASH => 'CASH';
+  String get DD => 'DD';
+  String get OFFLINE_NEFT => 'OFFLINE_NEFT';
+  String get OFFLINE_RTGS => 'OFFLINE_RTGS';
+  String get POSTAL_ORDER => 'OFFLINE_RTGS';
+
   String get FULL_AMOUNT => 'FULL_AMOUNT';
   String get CUSTOM_AMOUNT => 'CUSTOM_AMOUNT';
 

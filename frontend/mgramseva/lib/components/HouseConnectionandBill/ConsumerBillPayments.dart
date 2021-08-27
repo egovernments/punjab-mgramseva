@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/bill_payments_provider.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
@@ -52,6 +53,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
   }
 
   buildBillPaymentsView(BillPayments billpayments) {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     print(billpayments.payments!.length);
     return LayoutBuilder(builder: (context, constraints) {
       return Column(children: [
@@ -69,7 +71,13 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                   child: Visibility(
                     visible: true,
                     child: TextButton.icon(
-                      onPressed: () {},
+                      onPressed: () => commonProvider.getFileFromPDFService({
+                        "Payments": [item]
+                      }, {
+                        "key": "consolidatedreceipt",
+                        "tenantId":
+                            commonProvider.userDetails!.selectedtenant!.code,
+                      }, item.mobileNumber, "Download"),
                       icon: Icon(Icons.download_sharp),
                       label: Text(
                           ApplicationLocalizations.of(context)
@@ -100,7 +108,14 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                             ? MediaQuery.of(context).size.width / 3
                             : MediaQuery.of(context).size.width / 1.25,
                         child: OutlinedButton.icon(
-                          onPressed: () => {},
+                          onPressed: () =>
+                              commonProvider.getFileFromPDFService({
+                            "Payments": [item]
+                          }, {
+                            "key": "consolidatedreceipt",
+                            "tenantId": commonProvider
+                                .userDetails!.selectedtenant!.code,
+                          }, item.mobileNumber, "Share"),
                           style: ButtonStyle(
                             alignment: Alignment.center,
                             padding: MaterialStateProperty.all(

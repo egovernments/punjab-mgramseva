@@ -38,7 +38,7 @@ class Demands {
   @JsonKey(name: "billExpiryTime")
   int? billExpiryTime;
   @JsonKey(name: "minimumAmountPayable")
-  int? minimumAmountPayable;
+  double? minimumAmountPayable;
   @JsonKey(name: "status")
   String? status;
   Demands();
@@ -106,9 +106,9 @@ class DemandDetails {
   @JsonKey(name: "taxHeadMasterCode")
   String? taxHeadMasterCode;
   @JsonKey(name: "taxAmount")
-  int? taxAmount;
+  double? taxAmount;
   @JsonKey(name: "collectionAmount")
-  int? collectionAmount;
+  double? collectionAmount;
   @JsonKey(name: "auditDetails")
   AuditDetails? auditDetails;
   @JsonKey(name: "tenantId")

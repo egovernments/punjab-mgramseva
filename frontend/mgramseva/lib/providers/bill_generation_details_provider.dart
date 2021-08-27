@@ -303,10 +303,26 @@ class BillGenerationProvider with ChangeNotifier {
                       downloadLinkLabel: ApplicationLocalizations.of(context)
                           .translate(i18.common.DOWNLOAD),
                       whatsAppShare: '',
-                      subHeader: '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)}',
-                      subHeaderText: '${billList.bill!.first.billNumber.toString()}'),
+                      subHeader:
+                          '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)}',
+                      subHeaderText:
+                          '${billList.bill!.first.billNumber.toString()}'),
                   callBack: () =>
                       onClickOfCollectPayment(billList.bill!.first, context),
+                  callBackdownload: () => commonProvider.getFileFromPDFService({
+                    "Bill": [billList!.bill!.first]
+                  }, {
+                    "key": "consolidatedbill",
+                    "tenantId":
+                        commonProvider.userDetails!.selectedtenant!.code,
+                  }, billList!.bill!.first.mobileNumber, "Download"),
+                  callBackwatsapp: () => commonProvider.getFileFromPDFService({
+                    "Bill": [billList!.bill!.first]
+                  }, {
+                    "key": "consolidatedbill",
+                    "tenantId":
+                        commonProvider.userDetails!.selectedtenant!.code,
+                  }, billList!.bill!.first.mobileNumber, "Share"),
                   backButton: true,
                 );
               }));
@@ -340,18 +356,20 @@ class BillGenerationProvider with ChangeNotifier {
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
             return CommonSuccess(SuccessHandler(
-                ApplicationLocalizations.of(context)
-                    .translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS),
-                ApplicationLocalizations.of(context).translate(
-                        i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT) +
-                    ' $selectedBillCycle' +
-                    ' ${selectedBillYear.financialYear!.toString().substring(2)}. ' +
-                    ApplicationLocalizations.of(context).translate(i18
-                        .demandGenerate.GENERATE_DEMAND_SUCCESS_NEXT_SUBTEXT),
-                i18.common.BACK_HOME,
-                Routes.BILL_GENERATE,
-                subHeader: '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)}',
-                subHeaderText: '$selectedBillCycle' + ' ${selectedBillYear.financialYear!.toString().substring(2)}',
+              ApplicationLocalizations.of(context)
+                  .translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS),
+              ApplicationLocalizations.of(context).translate(
+                      i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT) +
+                  ' $selectedBillCycle' +
+                  ' ${selectedBillYear.financialYear!.toString().substring(2)}. ' +
+                  ApplicationLocalizations.of(context).translate(
+                      i18.demandGenerate.GENERATE_DEMAND_SUCCESS_NEXT_SUBTEXT),
+              i18.common.BACK_HOME,
+              Routes.BILL_GENERATE,
+              subHeader:
+                  '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)}',
+              subHeaderText: '$selectedBillCycle' +
+                  ' ${selectedBillYear.financialYear!.toString().substring(2)}',
             ));
           }));
         }
@@ -450,9 +468,7 @@ class BillGenerationProvider with ChangeNotifier {
         var d = value['name'] as DateTime;
         return DropdownMenuItem(
           value: value['code'],
-          child: new Text(months[d.month - 1] +
-              " - " +
-              d.year.toString()),
+          child: new Text(months[d.month - 1] + " - " + d.year.toString()),
         );
       }).toList();
     }
