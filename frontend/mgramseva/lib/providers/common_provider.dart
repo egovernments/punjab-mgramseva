@@ -289,8 +289,10 @@ class CommonProvider with ChangeNotifier {
         anchorElement.target = "_blank";
         anchorElement.click();
       } else {
-        await canLaunch(res!)
-            ? launch(res)
+        var link =
+            "https://api.whatsapp.com/send?phone=+91$mobileNumber&text=" + res!;
+        await canLaunch(link!)
+            ? launch(link)
             : ErrorHandler.logError('failed to launch the url ${store.url}');
       }
     } catch (e, s) {

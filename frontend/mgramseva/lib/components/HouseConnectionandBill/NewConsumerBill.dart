@@ -69,13 +69,12 @@ class NewConsumerBill extends StatelessWidget {
                                   icon: Icon(Icons.download_sharp),
                                   label: Text(
                                       ApplicationLocalizations.of(context)
-                                          .translate(i18.common.DOWNLOAD),
+                                          .translate(i18.common.BILL_DOWNLOAD),
                                       style: TextStyle(fontSize: 19)),
                                 ),
                               ),
                               _getLabeltext(
-                                  i18.consumerReciepts
-                                      .CONSUMER_RECIEPT_PAID_DATE,
+                                  i18.generateBillDetails.LAST_BILL_GENERATION_DATE,
                                   DateFormats.timeStampToDate(
                                           billList!.bill!.first.billDate,
                                           format: "dd-MM-yyyy")

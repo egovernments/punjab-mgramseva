@@ -58,7 +58,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                _getLabeltext(i18.searchWaterConnection.CONSUMER_NAME,
+                _getLabeltext(i18.searchWaterConnection.RESULTS_CONSUMER_NAME,
                     waterconnection!.connectionHolders!.first.name, context),
                 _getLabeltext(
                     i18.consumer.FATHER_SPOUSE_NAME,
@@ -66,12 +66,12 @@ class HouseConnectionDetailCard extends StatelessWidget {
                         .connectionHolders!.first.fatherOrHusbandName,
                     context),
                 _getLabeltext(
-                    i18.searchWaterConnection.OWNER_MOB_NUM,
+                    i18.searchWaterConnection.RESULTS_PHONE_NUM,
                     waterconnection!.connectionHolders!.first.mobileNumber,
                     context),
                 _getLabeltext(i18.searchWaterConnection.OLD_CONNECTION_ID,
                     waterconnection!.oldConnectionNo, context),
-                _getLabeltext(i18.searchWaterConnection.HOUSE_ADDRESS,
+                _getLabeltext(i18.searchWaterConnection.RESULTS_ADDRESS,
                     waterconnection!.additionalDetails!.locality, context),
                 // _getLabeltext("Property Type",
                 //   waterconnection!.additionalDetails!.propertyType, context),
