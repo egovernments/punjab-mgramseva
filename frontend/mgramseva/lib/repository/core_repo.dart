@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mgramseva/Env/app_config.dart';
+import 'package:mgramseva/model/common/pdfservice.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/localization/localization_label.dart';
@@ -117,7 +118,8 @@ class CoreRepository extends BaseService {
         listen: false);
 
     var res = await makeRequest(
-        url: '${Url.FILE_FETCH}?tenantId=${commonProvider.userDetails!.selectedtenant!.code!}&fileStoreIds=${storeId.join(',')}',
+        url:
+            '${Url.FILE_FETCH}?tenantId=${commonProvider.userDetails!.selectedtenant!.code!}&fileStoreIds=${storeId.join(',')}',
         method: RequestType.GET);
 
     if (res != null) {
@@ -143,8 +145,26 @@ class CoreRepository extends BaseService {
     }
   }
 
-  Future<bool?> fileDownload(BuildContext context, String url, [String? fileName]) async {
+  Future<PDFServiceResponse?> getFileStorefromPdfService(body, params) async {
+    PDFServiceResponse? pdfServiceResponse;
+    try {
+      var res = await makeRequest(
+          url: '${Url.FETCH_FILESTORE_ID_PDF_SERVICE}',
+          body: body,
+          queryParameters: params,
+          method: RequestType.POST);
 
+      if (res != null) {
+        pdfServiceResponse = PDFServiceResponse.fromJson(res);
+        return pdfServiceResponse;
+      }
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+    }
+  }
+
+  Future<bool?> fileDownload(BuildContext context, String url,
+      [String? fileName]) async {
     fileName = fileName ?? CommonMethods.getExtension(url);
     try {
       var downloadPath;

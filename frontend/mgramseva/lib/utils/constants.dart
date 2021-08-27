@@ -103,5 +103,9 @@ class Constants {
     KeyValue(i18.common.ONLINE, 'ONLINE'),
     KeyValue(i18.common.CHEQUE, 'CHEQUE'),
     KeyValue(i18.common.CASH, 'CASH'),
+    KeyValue(i18.common.DD, 'DD'),
+    KeyValue(i18.common.OFFLINE_NEFT, 'OFFLINE_NEFT'),
+    KeyValue(i18.common.OFFLINE_RTGS, 'OFFLINE_RTGS'),
+    KeyValue(i18.common.POSTAL_ORDER, 'POSTAL_ORDER'),
   ];
 }
