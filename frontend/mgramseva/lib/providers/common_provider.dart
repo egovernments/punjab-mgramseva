@@ -284,7 +284,7 @@ class CommonProvider with ChangeNotifier {
       print(res);
       if (kIsWeb) {
         html.AnchorElement anchorElement = new html.AnchorElement(
-            href: "https://web.whatsapp.com/send?phone=+91$mobileNumber&text=" +
+            href: "https://api.whatsapp.com/send?phone=+91$mobileNumber&text=" +
                 res!);
         anchorElement.target = "_blank";
         anchorElement.click();
