@@ -37,7 +37,7 @@ Demands _$DemandsFromJson(Map<String, dynamic> json) {
         ? null
         : AuditDetails.fromJson(json['auditDetails'] as Map<String, dynamic>)
     ..billExpiryTime = json['billExpiryTime'] as int?
-    ..minimumAmountPayable = json['minimumAmountPayable'] as int?
+    ..minimumAmountPayable = json['minimumAmountPayable'] as double?
     ..status = json['status'] as String?;
 }
 
@@ -109,8 +109,8 @@ DemandDetails _$DemandDetailsFromJson(Map<String, dynamic> json) {
     ..id = json['id'] as String?
     ..demandId = json['demandId'] as String?
     ..taxHeadMasterCode = json['taxHeadMasterCode'] as String?
-    ..taxAmount = json['taxAmount'] as int?
-    ..collectionAmount = json['collectionAmount'] as int?
+    ..taxAmount = json['taxAmount'] as double?
+    ..collectionAmount = json['collectionAmount'] as double?
     ..auditDetails = json['auditDetails'] == null
         ? null
         : AuditDetails.fromJson(json['auditDetails'] as Map<String, dynamic>)
