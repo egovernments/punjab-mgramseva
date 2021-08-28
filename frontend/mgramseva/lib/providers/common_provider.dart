@@ -22,6 +22,7 @@ import 'package:flutter/foundation.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:universal_html/html.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:universal_html/js.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CommonProvider with ChangeNotifier {
@@ -260,21 +261,10 @@ class CommonProvider with ChangeNotifier {
         ?.pushNamedAndRemoveUntil(Routes.LOGIN, (route) => false);
   }
 
-  void onTapOfAttachment(FileStore store) async {
+  void onTapOfAttachment(FileStore store, context) async {
     print(store);
     if (store.url == null) return;
-
-    if (kIsWeb) {
-      html.AnchorElement anchorElement =
-          new html.AnchorElement(href: store.url);
-      anchorElement.href = store.url;
-      anchorElement.target = "_blank";
-      anchorElement.click();
-    } else {
-      await canLaunch(store.url!)
-          ? launch(store.url!)
-          : ErrorHandler.logError('failed to launch the url ${store.url}');
-    }
+    CoreRepository().fileDownload(context, store.url!);
   }
 
   void shareonwatsapp(FileStore store, mobileNumber) async {
@@ -289,18 +279,17 @@ class CommonProvider with ChangeNotifier {
         anchorElement.target = "_blank";
         anchorElement.click();
       } else {
-        var link =
-            "https://api.whatsapp.com/send?phone=+91$mobileNumber&text=" + res!;
-        await canLaunch(link!)
+        var link = "https://wa.me/+91$mobileNumber?text=" + res!;
+        await canLaunch(link)
             ? launch(link)
-            : ErrorHandler.logError('failed to launch the url ${store.url}');
+            : ErrorHandler.logError('failed to launch the url ${link}');
       }
     } catch (e, s) {
       ErrorHandler.logError(e.toString(), s);
     }
   }
 
-  void getStoreFileDetails(fileStoreId, mode, mobileNumber) async {
+  void getStoreFileDetails(fileStoreId, mode, mobileNumber, context) async {
     if (fileStoreId == null) return;
     try {
       var res = await CoreRepository().fetchFiles([fileStoreId!]);
@@ -308,7 +297,7 @@ class CommonProvider with ChangeNotifier {
         if (mode == 'Share')
           shareonwatsapp(res.first, mobileNumber);
         else
-          onTapOfAttachment(res.first);
+          onTapOfAttachment(res.first, context);
       }
     } catch (e, s) {
       ErrorHandler.logError(e.toString(), s);
@@ -319,7 +308,8 @@ class CommonProvider with ChangeNotifier {
     try {
       var res = await CoreRepository().getFileStorefromPdfService(body, params);
       print(res);
-      getStoreFileDetails(res!.filestoreIds!.first, mode, mobileNumber);
+      getStoreFileDetails(res!.filestoreIds!.first, mode, mobileNumber,
+          navigatorKey.currentContext);
     } catch (e, s) {
       ErrorHandler.logError(e.toString(), s);
     }

@@ -3,6 +3,7 @@ import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/screeens/HomeCard.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
+import 'package:mgramseva/widgets/Notifications.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/widgets/help.dart';
@@ -40,7 +41,8 @@ class _HomeState extends State<Home> {
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),
-        body: Column(children: [
+        body: SingleChildScrollView(
+            child: Column(children: [
           Align(
               alignment: Alignment.centerRight,
               child: Help(
@@ -62,10 +64,15 @@ class _HomeState extends State<Home> {
                       child: child,
                     );
                   },
-                ),walkThroughKey: Constants.HOME_KEY,
+                ),
+                walkThroughKey: Constants.HOME_KEY,
               )),
-          Expanded(child: HomeCard()),
+          SizedBox(
+            child: HomeCard(),
+            height: MediaQuery.of(context).size.height / 1.4,
+          ),
+          Notifications(),
           Footer()
-        ]));
+        ])));
   }
 }

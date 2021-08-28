@@ -119,7 +119,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                           style: ButtonStyle(
                             alignment: Alignment.center,
                             padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(vertical: 0)),
+                                EdgeInsets.symmetric(vertical: 8)),
                             shape: MaterialStateProperty.all(
                                 RoundedRectangleBorder(
                               side: BorderSide(
