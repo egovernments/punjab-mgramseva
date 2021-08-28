@@ -69,12 +69,29 @@ class SearchConnectionDetailCard extends StatelessWidget {
             : "0" +
                 ApplicationLocalizations.of(context)
                     .translate(i18.searchWaterConnection.CONNECTION_FOUND)),
-        SubLabelText(ApplicationLocalizations.of(context)
-                .translate(i18.searchWaterConnection.CONNECTION_CRITERIA) +
-            " " +
-            '${arguments.keys.first.toString() == 'mobileNumber' ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.RESULTS_PHONE_NUM) : arguments.keys.first.toString()}' +
-            " as " +
-            '${arguments.keys.first.toString() == 'mobileNumber' ? '+91 - ' + '${arguments.values.first.toString()}' : arguments.values.first.toString()}'),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: RichText(
+              textAlign: TextAlign.left,
+              text: TextSpan(
+                  style: TextStyle(
+                      fontSize: 14, color: Color.fromRGBO(80, 90, 95, 1)),
+                  children: [
+                    TextSpan(
+                      text:
+                          '${ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_CRITERIA)}',
+                    ),
+                    TextSpan(
+                        text: " " +
+                            '${arguments.keys.first.toString() == 'mobileNumber' ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.RESULTS_PHONE_NUM) : arguments.keys.first.toString()}' +
+                            " as " +
+                            '${arguments.keys.first.toString() == 'mobileNumber' ? '+91 - ' + '${arguments.values.first.toString()}' : arguments.values.first.toString()}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                            height: 1.5))
+                  ])),
+        ),
         Expanded(
           child: ListView.builder(
               padding: const EdgeInsets.all(8),

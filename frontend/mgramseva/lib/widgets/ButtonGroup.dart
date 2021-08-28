@@ -36,7 +36,7 @@ class ButtonGroup extends StatelessWidget {
 
                         style: ButtonStyle(
                           padding: MaterialStateProperty.all(
-                              EdgeInsets.symmetric(vertical: 0)),
+                              EdgeInsets.symmetric(vertical: 8)),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(0.0))),
