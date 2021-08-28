@@ -71,12 +71,27 @@ class HouseConnectionDetailCard extends StatelessWidget {
                     context),
                 _getLabeltext(i18.searchWaterConnection.OLD_CONNECTION_ID,
                     waterconnection!.oldConnectionNo, context),
-                _getLabeltext(i18.searchWaterConnection.RESULTS_ADDRESS,
-                    waterconnection!.additionalDetails!.locality, context),
-                // _getLabeltext("Property Type",
-                //   waterconnection!.additionalDetails!.propertyType, context),
+                _getLabeltext(
+                    i18.searchWaterConnection.RESULTS_ADDRESS,
+                    waterconnection!.additionalDetails!.doorNo != null
+                        ? waterconnection!.additionalDetails!.doorNo!
+                        : "" +
+                            (waterconnection!.additionalDetails!.street != null
+                                ? waterconnection!.additionalDetails!.street!
+                                : "") +
+                            waterconnection!.additionalDetails!.locality!,
+                    context),
+                _getLabeltext(i18.searchWaterConnection.PROPERTY_TYPE,
+                    waterconnection!.additionalDetails!.propertyType, context),
                 _getLabeltext(i18.consumer.SERVICE_TYPE,
-                    waterconnection!.connectionType, context)
+                    waterconnection!.connectionType, context),
+                waterconnection!.meterId == null
+                    ? Text("")
+                    : _getLabeltext(
+                        i18.searchWaterConnection.METER_NUMBER,
+                        waterconnection!.meterId,
+                        context,
+                      ),
               ],
             )));
   }

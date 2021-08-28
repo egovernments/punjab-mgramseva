@@ -40,6 +40,7 @@ class _SearchExpenseState extends State<SearchExpense> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: BaseAppBar(
         Text(i18.common.MGRAM_SEVA),
         AppBar(),

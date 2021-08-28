@@ -79,6 +79,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
     return Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),

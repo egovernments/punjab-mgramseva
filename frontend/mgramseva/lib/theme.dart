@@ -4,6 +4,7 @@ import 'package:mgramseva/utils/color_codes.dart';
 ThemeData get theme => ThemeData(
     primarySwatch: createMaterialColor(Color(0XFFf47738)),
     highlightColor: createMaterialColor(Color(0XFFC7E0F1)),
+    backgroundColor: createMaterialColor(Color.fromRGBO(238, 238, 238, 1)),
     hintColor: createMaterialColor(Color(0XFF3498DB)),
     // accentColor:  Color(0xff0B4B66),
 

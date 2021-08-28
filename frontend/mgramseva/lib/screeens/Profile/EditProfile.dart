@@ -155,6 +155,7 @@ class _EditProfileState extends State<EditProfile> {
     var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
 
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: BaseAppBar(
         Text(i18.common.MGRAM_SEVA),
         AppBar(),

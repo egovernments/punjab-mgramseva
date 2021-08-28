@@ -74,8 +74,8 @@ class _GenerateBillState extends State<GenerateBill> {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                LabelText('${widget.id == null ? i18.demandGenerate.SERVICE_DETAILS_HEADER :
-                                    i18.demandGenerate.GENERATE_BILL_HEADER}'),
+                                LabelText(
+                                    '${widget.id == null ? i18.demandGenerate.SERVICE_DETAILS_HEADER : i18.demandGenerate.GENERATE_BILL_HEADER}'),
                                 Consumer<BillGenerationProvider>(
                                     builder:
                                         (_, billgenerationprovider, child) =>
@@ -158,35 +158,35 @@ class _GenerateBillState extends State<GenerateBill> {
                                                               ? false
                                                               : true)),
                                           MeterReading(
-                                              i18.demandGenerate
-                                                  .PREV_METER_READING_LABEL,
-                                              billgenerationprovider
-                                                  .billGenerateDetails.om_1Ctrl,
-                                              billgenerationprovider
-                                                  .billGenerateDetails.om_2Ctrl,
-                                              billgenerationprovider
-                                                  .billGenerateDetails.om_3Ctrl,
-                                              billgenerationprovider
-                                                  .billGenerateDetails.om_4Ctrl,
-                                              billgenerationprovider
-                                                  .billGenerateDetails
-                                                  .om_5Ctrl,
-                                            isRequired: true,),
+                                            i18.demandGenerate
+                                                .PREV_METER_READING_LABEL,
+                                            billgenerationprovider
+                                                .billGenerateDetails.om_1Ctrl,
+                                            billgenerationprovider
+                                                .billGenerateDetails.om_2Ctrl,
+                                            billgenerationprovider
+                                                .billGenerateDetails.om_3Ctrl,
+                                            billgenerationprovider
+                                                .billGenerateDetails.om_4Ctrl,
+                                            billgenerationprovider
+                                                .billGenerateDetails.om_5Ctrl,
+                                            isRequired: true,
+                                          ),
                                           MeterReading(
-                                              i18.demandGenerate
-                                                  .NEW_METER_READING_LABEL,
-                                              billgenerationprovider
-                                                  .billGenerateDetails.nm_1Ctrl,
-                                              billgenerationprovider
-                                                  .billGenerateDetails.nm_2Ctrl,
-                                              billgenerationprovider
-                                                  .billGenerateDetails.nm_3Ctrl,
-                                              billgenerationprovider
-                                                  .billGenerateDetails.nm_4Ctrl,
-                                              billgenerationprovider
-                                                  .billGenerateDetails
-                                                  .nm_5Ctrl,
-                                            isRequired: true,),
+                                            i18.demandGenerate
+                                                .NEW_METER_READING_LABEL,
+                                            billgenerationprovider
+                                                .billGenerateDetails.nm_1Ctrl,
+                                            billgenerationprovider
+                                                .billGenerateDetails.nm_2Ctrl,
+                                            billgenerationprovider
+                                                .billGenerateDetails.nm_3Ctrl,
+                                            billgenerationprovider
+                                                .billGenerateDetails.nm_4Ctrl,
+                                            billgenerationprovider
+                                                .billGenerateDetails.nm_5Ctrl,
+                                            isRequired: true,
+                                          ),
                                           BasicDateField(
                                               i18.demandGenerate
                                                   .METER_READING_DATE,
@@ -253,6 +253,7 @@ class _GenerateBillState extends State<GenerateBill> {
     var billgenerateProvider =
         Provider.of<BillGenerationProvider>(context, listen: false);
     return Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: BaseAppBar(
           Text(i18.common.MGRAM_SEVA),
           AppBar(),
@@ -285,8 +286,7 @@ class _GenerateBillState extends State<GenerateBill> {
           Footer()
         ]))),
         bottomNavigationBar: BottomButtonBar(
-            '${widget.id == null ? i18.demandGenerate.GENERATE_DEMAND_BUTTON :
-            i18.demandGenerate.GENERATE_BILL_BUTTON}',
+            '${widget.id == null ? i18.demandGenerate.GENERATE_DEMAND_BUTTON : i18.demandGenerate.GENERATE_BILL_BUTTON}',
             () => {billgenerateProvider.onSubmit(context)}));
   }
 }

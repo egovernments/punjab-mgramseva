@@ -38,6 +38,7 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
     var searchConnectionProvider =
         Provider.of<SearchConnectionProvider>(context, listen: false);
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),
