@@ -408,6 +408,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   Widget build(BuildContext context) {
     var userProvider = Provider.of<ConsumerProvider>(context, listen: false);
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),

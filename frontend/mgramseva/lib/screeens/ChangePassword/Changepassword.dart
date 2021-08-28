@@ -128,6 +128,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     var changePasswordProvider =
         Provider.of<ChangePasswordProvider>(context, listen: false);
     return Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: BaseAppBar(
           Text(i18.common.MGRAM_SEVA),
           AppBar(),

@@ -61,7 +61,7 @@ class SearchConnectionDetailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      return Column(children: [
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         LabelText(waterconnections.waterConnection!.length.toString() != null
             ? waterconnections.waterConnection!.length.toString() +
                 " " +
@@ -75,7 +75,9 @@ class SearchConnectionDetailCard extends StatelessWidget {
               textAlign: TextAlign.left,
               text: TextSpan(
                   style: TextStyle(
-                      fontSize: 14, color: Color.fromRGBO(80, 90, 95, 1)),
+                    fontSize: 14,
+                    color: Color.fromRGBO(80, 90, 95, 1),
+                  ),
                   children: [
                     TextSpan(
                       text:
@@ -149,7 +151,23 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                 ApplicationLocalizations.of(context).translate(
                                     i18.searchWaterConnection.RESULTS_ADDRESS),
                                 waterconnections.waterConnection![index]
-                                    .additionalDetails!.locality,
+                                            .additionalDetails!.doorNo !=
+                                        null
+                                    ? waterconnections.waterConnection![index]
+                                        .additionalDetails!.doorNo!
+                                    : "" +
+                                        (waterconnections
+                                                    .waterConnection![index]
+                                                    .additionalDetails!
+                                                    .street !=
+                                                null
+                                            ? waterconnections
+                                                .waterConnection![index]
+                                                .additionalDetails!
+                                                .street!
+                                            : "") +
+                                        waterconnections.waterConnection![index]
+                                            .additionalDetails!.locality!,
                                 context,
                                 constraints),
                             SizedBox(

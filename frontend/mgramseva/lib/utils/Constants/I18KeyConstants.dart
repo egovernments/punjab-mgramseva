@@ -307,6 +307,7 @@ class SearchWaterConnection {
   String get RESULTS_PHONE_NUM => 'SEARCH_CONNECTION_PHONE_NUMBER';
   String get RESULTS_ADDRESS => 'SEARCH_CONNECTION_ADDRESS';
   String get CONNECTION_FOUND_ONE => 'CONNECTION_FOUND_ONE';
+  String get METER_NUMBER => 'CONSUMER_METER_NUMBER';
 }
 
 class ProfileEdit {

@@ -164,6 +164,8 @@ class ConsumerProvider with ChangeNotifier {
         waterconnection.additionalDetails =
             addition.AdditionalDetails.fromJson({
           "locality": property.address.locality?.code,
+          "street": property.address.street,
+          "doorNo": property.address.doorNo,
           "initialMeterReading": waterconnection.previousReading,
           "propertyType": property.propertyType,
           "meterReading": waterconnection.previousReading,
@@ -173,6 +175,8 @@ class ConsumerProvider with ChangeNotifier {
             property.address.locality!.code;
         waterconnection.additionalDetails!.initialMeterReading =
             waterconnection.previousReading;
+        waterconnection.additionalDetails!.street = property.address.street;
+        waterconnection.additionalDetails!.doorNo = property.address.doorNo;
         waterconnection.additionalDetails!.meterReading =
             waterconnection.previousReading;
         waterconnection.additionalDetails!.propertyType = property.propertyType;

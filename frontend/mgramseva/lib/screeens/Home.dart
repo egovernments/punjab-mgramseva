@@ -37,6 +37,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     var homeProvider = Provider.of<HomeProvider>(context, listen: false);
     return Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
@@ -71,7 +72,7 @@ class _HomeState extends State<Home> {
             child: HomeCard(),
             height: MediaQuery.of(context).size.height / 1.4,
           ),
-          Notifications(),
+          // Notifications(),
           Footer()
         ])));
   }

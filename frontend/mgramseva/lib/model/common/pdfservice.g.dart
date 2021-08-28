@@ -8,17 +8,18 @@ part of 'pdfservice.dart';
 
 PDFServiceResponse _$PDFServiceResponseFromJson(Map<String, dynamic> json) {
   return PDFServiceResponse()
-    ..message = json['message'] as String
-    ..filestoreIds =
-        (json['filestoreIds'] as List<dynamic>).map((e) => e as String).toList()
-    ..jobid = json['jobid'] as String
-    ..createdtime = json['createdtime'] as int
-    ..endtime = json['endtime'] as int
-    ..tenantid = json['tenantid'] as String
-    ..totalcount = json['totalcount'] as int
-    ..key = json['key'] as String
-    ..documentType = json['documentType'] as String
-    ..moduleName = json['moduleName'] as String;
+    ..message = json['message'] as String?
+    ..filestoreIds = (json['filestoreIds'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList()
+    ..jobid = json['jobid'] as String?
+    ..createdtime = json['createdtime'] as int?
+    ..endtime = json['endtime'] as int?
+    ..tenantid = json['tenantid'] as String?
+    ..totalcount = json['totalcount'] as int?
+    ..key = json['key'] as String?
+    ..documentType = json['documentType'] as String?
+    ..moduleName = json['moduleName'] as String?;
 }
 
 Map<String, dynamic> _$PDFServiceResponseToJson(PDFServiceResponse instance) =>

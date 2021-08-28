@@ -50,6 +50,7 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
         Provider.of<SearchConnectionProvider>(context, listen: false);
 
     return Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
