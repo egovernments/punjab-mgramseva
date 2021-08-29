@@ -6,6 +6,22 @@ part of 'expenses_details.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+ExpensesDetailsWithPagination _$ExpensesDetailsWithPaginationFromJson(
+    Map<String, dynamic> json) {
+  return ExpensesDetailsWithPagination()
+    ..totalCount = json['totalCount'] as int?
+    ..expenseDetailList = (json['challans'] as List<dynamic>?)
+        ?.map((e) => ExpensesDetailsModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$ExpensesDetailsWithPaginationToJson(
+        ExpensesDetailsWithPagination instance) =>
+    <String, dynamic>{
+      'totalCount': instance.totalCount,
+      'challans': instance.expenseDetailList,
+    };
+
 ExpensesDetailsModel _$ExpensesDetailsModelFromJson(Map<String, dynamic> json) {
   return ExpensesDetailsModel()
     ..citizen = json['citizen'] == null

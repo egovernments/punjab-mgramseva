@@ -18,13 +18,9 @@ class BillsTable extends StatefulWidget {
 
 class _BillsTable extends State<BillsTable> {
   final ScrollController controller = ScrollController();
-  static const int sortName = 0;
-  bool isAscending = true;
-  int sortType = sortName;
 
   @override
   void initState() {
-    // bill.initData(100);
     super.initState();
   }
 
@@ -69,35 +65,40 @@ class _BillsTable extends State<BillsTable> {
 
   List<Widget> _getTitleWidget(constraints) {
 
-    return widget.headerList.map((e) => _getTitleItemWidget(e.label, constraints)).toList();
-
-    // return [
-    //   TextButton(
-    //       style: TextButton.styleFrom(
-    //         padding: EdgeInsets.zero,
-    //       ),
-    //       child: _getTitleItemWidget(
-    //           'Bill ID - Vendor' +
-    //               (sortType == sortName ? (isAscending ? '↓' : '↑') : ''),
-    //           constraints),
-    //       onPressed: () {
-    //         sortType = sortName;
-    //         isAscending = !isAscending;
-    //         bill.sortName(isAscending);
-    //         setState(() {});
-    //       }),
-    //   _getTitleItemWidget('Expense Type', constraints),
-    //   _getTitleItemWidget('Amount', constraints),
-    //   _getTitleItemWidget('Bill Date', constraints),
-    //   _getTitleItemWidget('Paid Date', constraints),
-    // ];
+    return widget.headerList.map((e) {
+      if(e.isSortingRequired ?? false) {
+        return  TextButton(
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+              ),
+              child: _getTitleItemWidget(
+                  (e.label),
+                  constraints, e.isAscendingOrder),
+              onPressed: e.callBack == null ? null : ()=> e.callBack!(e));
+      }else{
+        return _getTitleItemWidget(e.label, constraints!);
+    }
+    }).toList();
   }
 
-  Widget _getTitleItemWidget(String label, constraints) {
+  Widget _getTitleItemWidget(String label, constraints, [bool? isAscending]) {
+    var textWidget = Text(label,
+        style: TextStyle(
+            fontWeight: FontWeight.w700, color: Colors.black, fontSize: 12));
+
     return Container(
-      child: Text(label,
-          style: TextStyle(
-              fontWeight: FontWeight.w700, color: Colors.black, fontSize: 12)),
+      child: isAscending != null ?
+      Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 5,
+        children: [
+          textWidget,
+          Icon(
+              isAscending! ? Icons.arrow_upward : Icons.arrow_downward_sharp
+          )
+        ],
+      ) :
+       textWidget,
       width: constraints.maxWidth < 760
           ? 187
           : (MediaQuery.of(context).size.width / 4 - 100),
@@ -109,28 +110,36 @@ class _BillsTable extends State<BillsTable> {
 
   Widget _generateFirstColumnRow(BuildContext context, int index) {
     return LayoutBuilder(builder: (context, constraints) {
+      var data = widget.tableData[index].tableRow.first;
       return ScrollParent(
           controller,
-          Container(
-            child: Text(
-              widget.tableData[index].tableRow.first.label,
-              style: TextStyle(color: Theme.of(context).primaryColor),
+          InkWell(
+            onTap: (){
+              if(data.callBack != null){
+                data.callBack!(data);
+              }
+            },
+            child: Container(
+              child: Text(
+                widget.tableData[index].tableRow.first.label,
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
+              width: constraints.maxWidth < 760
+                  ? 187
+                  : MediaQuery.of(context).size.width / 5,
+              height: 52,
+              padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+              alignment: Alignment.centerLeft,
             ),
-            width: constraints.maxWidth < 760
-                ? 187
-                : MediaQuery.of(context).size.width / 5,
-            height: 52,
-            padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-            alignment: Alignment.centerLeft,
           ));
     });
   }
 
   Widget _generateColumnRow(
-      BuildContext context, int index, String input, constraints) {
+      BuildContext context, int index, String input, constraints, {TextStyle? style}) {
     return Container(
       child: Row(
-        children: <Widget>[Text(input)],
+        children: <Widget>[Text(input, style: style)],
       ),
        width:  constraints.maxWidth < 760 ? 187 : MediaQuery.of(context).size.width/4-100,
       height: 52,
@@ -140,57 +149,27 @@ class _BillsTable extends State<BillsTable> {
   }
 
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
+    var data = widget.tableData[index];
     return LayoutBuilder(builder: (context, constraints) {
+      var list = <Widget>[];
+      for(int i =1; i <  data.tableRow.length ; i++){
+        list.add(_generateColumnRow(context, index,
+            data.tableRow[i].label, constraints, style: data.tableRow[i].style));
+      }
       return Container(
           color: index % 2 == 0 ? const Color(0xffEEEEEE) : Colors.white,
           child: Row(
-            children: <Widget>[
+            children: list ?? <Widget>[
               _generateColumnRow(context, index,
-                  widget.tableData[index].tableRow[1].label, constraints),
+                  data.tableRow[1].label, constraints, style: data.tableRow[1].style),
               _generateColumnRow(context, index,
-                  widget.tableData[index].tableRow[2].label, constraints),
+                  data.tableRow[2].label, constraints, style: data.tableRow[1].style),
               _generateColumnRow(context, index,
-                  widget.tableData[index].tableRow[3].label, constraints),
+                  data.tableRow[3].label, constraints, style: data.tableRow[1].style),
               _generateColumnRow(context, index,
-                  widget.tableData[index].tableRow[4].label, constraints),
+                  data.tableRow[4].label, constraints, style: data.tableRow[1].style),
             ],
           ));
     });
   }
 }
-
-// Bill bill = Bill();
-//
-// class Bill {
-//   List<BillInfo> billinfo = [];
-//
-//   void initData(int size) {
-//     for (int i = 0; i < size; i++) {
-//       billinfo.add(BillInfo(
-//           "EB-2021-22/0_$i", 'Maintenance', '25000', '2019-01-01', 'N/A'));
-//     }
-//   }
-//
-//   ///
-//   /// Single sort, sort Name's id
-//   void sortName(bool isAscending) {
-//     billinfo.sort((a, b) {
-//       int aId = int.tryParse(a.billID.replaceFirst('User_', '')) ?? 0;
-//       int bId = int.tryParse(b.billID.replaceFirst('User_', '')) ?? 0;
-//       return (aId - bId) * (isAscending ? 1 : -1);
-//     });
-//   }
-//
-//   ///
-// }
-//
-// class BillInfo {
-//   String billID;
-//   String expenseType;
-//   String phone;
-//   String registerDate;
-//   String terminationDate;
-//
-//   BillInfo(this.billID, this.expenseType, this.phone, this.registerDate,
-//       this.terminationDate);
-// }

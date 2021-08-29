@@ -53,8 +53,11 @@ class PaginationResponse{
 
 class TableHeader {
   final String label;
-
-  TableHeader(this.label);
+  final ValueChanged<TableHeader>? callBack;
+  bool? isSortingRequired = false;
+  bool? isAscendingOrder;
+  String? apiKey;
+  TableHeader(this.label, {this.callBack, this.isSortingRequired, this.isAscendingOrder, this.apiKey});
 }
 
 class TableDataRow {
@@ -65,5 +68,12 @@ class TableDataRow {
 class TableData {
   final String label;
   final TextStyle? style;
-  TableData(this.label, {this.style});
+  ValueChanged<TableData>? callBack;
+  TableData(this.label, {this.style, this.callBack});
+}
+
+class SortBy {
+  final String key;
+  final bool isAscending;
+  SortBy(this.key, this.isAscending);
 }
