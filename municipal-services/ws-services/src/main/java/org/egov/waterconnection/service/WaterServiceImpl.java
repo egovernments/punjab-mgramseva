@@ -153,6 +153,9 @@ public class WaterServiceImpl implements WaterService {
 		}
 		waterConnectionValidator.validatePropertyForConnection(waterConnection.getWaterConnection());
 		enrichmentService.enrichConnectionHolderDeatils(waterConnection.getWaterConnection(), criteria, requestInfo);
+		if(criteria.getIscollectionAmount()) {
+			enrichmentService.setTotalAmount(waterConnection.getWaterConnection(), criteria, requestInfo);
+		}
 		return waterConnection;
 	}
 

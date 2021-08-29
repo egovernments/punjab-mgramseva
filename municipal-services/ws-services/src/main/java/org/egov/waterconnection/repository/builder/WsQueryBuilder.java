@@ -60,17 +60,17 @@ public class WsQueryBuilder {
 			+  LEFT_OUTER_JOIN_STRING
 			+ "eg_ws_roadcuttinginfo roadcuttingInfo ON roadcuttingInfo.wsid = conn.id" ;
 
-	private static final String PAGINATION_WRAPPER = "SELECT * FROM " +
-            "(SELECT *, DENSE_RANK() OVER (ORDER BY conn_id) offset_ FROM " +
-            "({})" +
-            " result) result_offset " +
-            "WHERE offset_ > ? AND offset_ <= ?";
+	private static final String PAGINATION_WRAPPER = "{} {orderby} {pagination}";
 	
 	private static final String ORDER_BY_CLAUSE= " ORDER BY wc.appCreatedDate DESC";
 	
 	public static final String GET_BILLING_CYCLE = "select fromperiod,toperiod from egcl_billdetial where billid=(select billid from egcl_paymentdetail where paymentid=?)";
 
 	public static final String FEEDBACK_BASE_QUERY = "select id,tenantid,connectionno,paymentid, billingcycle,additionaldetails,createdtime,lastmodifiedtime,createdby,lastmodifiedby from eg_ws_feedback where tenantid=?";
+	
+	public static final String TotalCollectionAmount = " select sum(payd.amountpaid)  from egcl_paymentdetail payd join egcl_bill payspay ON ( payd.billid = payspay.id) where payd.businessservice='WS' ";
+
+	
 	
 	/**
 	 * 
@@ -175,8 +175,8 @@ public class WsQueryBuilder {
 		}
 		if (!StringUtils.isEmpty(criteria.getApplicationNumber())) {
 			addClauseIfRequired(preparedStatement, query);
-			query.append(" conn.applicationno = ? ");
-			preparedStatement.add(criteria.getApplicationNumber());
+			query.append(" conn.applicationno like ? ");
+			preparedStatement.add('%' + criteria.getApplicationNumber() + '%');
 		}
 		if (!StringUtils.isEmpty(criteria.getApplicationStatus())) {
 			addClauseIfRequired(preparedStatement, query);
@@ -198,6 +198,11 @@ public class WsQueryBuilder {
 			query.append(" conn.applicationType = ? ");
 			preparedStatement.add(criteria.getApplicationType());
 		}
+		if(!StringUtils.isEmpty(criteria.getPropertyType())) {
+			addClauseIfRequired(preparedStatement, query);
+			query.append(" conn.additionaldetails.propertyType = ? ");
+			preparedStatement.add(criteria.getPropertyType());
+		}
 		if(!StringUtils.isEmpty(criteria.getSearchType())
 				&& criteria.getSearchType().equalsIgnoreCase(SEARCH_TYPE_CONNECTION)){
 			addClauseIfRequired(preparedStatement, query);
@@ -209,7 +214,7 @@ public class WsQueryBuilder {
 			query.append(" conn.locality = ? ");
 			preparedStatement.add(criteria.getLocality());
 		}
-		query.append(ORDER_BY_CLAUSE);
+//		query.append(ORDER_BY_CLAUSE);
 		return addPaginationWrapper(query.toString(), preparedStatement, criteria);
 	}
 	
@@ -247,8 +252,12 @@ public class WsQueryBuilder {
 	 * @return It's returns query
 	 */
 	private String addPaginationWrapper(String query, List<Object> preparedStmtList, SearchCriteria criteria) {
+		String string = addOrderByClause(criteria);
 		Integer limit = config.getDefaultLimit();
 		Integer offset = config.getDefaultOffset();
+		 String finalQuery = PAGINATION_WRAPPER.replace("{}",query);
+		finalQuery = finalQuery.replace("{orderby}", string);
+		
 		if (criteria.getLimit() == null && criteria.getOffset() == null)
 			limit = config.getMaxLimit();
 
@@ -261,11 +270,36 @@ public class WsQueryBuilder {
 		if (criteria.getOffset() != null)
 			offset = criteria.getOffset();
 
+		finalQuery = finalQuery.replace("{pagination}", " offset ?  limit ?  ");
 		preparedStmtList.add(offset);
 		preparedStmtList.add(limit + offset);
-		return PAGINATION_WRAPPER.replace("{}",query);
+		return finalQuery;
 	}
 	
+	private String addOrderByClause(SearchCriteria criteria) {
+		StringBuilder builder = new StringBuilder();
+        
+		if (StringUtils.isEmpty(criteria.getSortBy()))
+			builder.append(" ORDER BY wc.appCreatedDate ");
+
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.applicationNumber)
+			builder.append(" ORDER BY applicationno ");
+
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.name)
+			builder.append(" ORDER BY name ");
+
+//		else if (criteria.getSortBy() == SearchCriteria.SortBy.collection)
+//			builder.append(" ORDER BY collection ");
+		
+
+		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
+			builder.append(" ASC ");
+		else
+			builder.append(" DESC ");
+
+		return builder.toString();
+	}
+
 	private void addORClauseIfRequired(List<Object> values, StringBuilder queryString){
 		if (values.isEmpty())
 			queryString.append(" WHERE ");

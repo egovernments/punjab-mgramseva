@@ -1,8 +1,18 @@
 package org.egov.waterconnection.service;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.Role;
@@ -12,21 +22,33 @@ import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.repository.IdGenRepository;
 import org.egov.waterconnection.repository.ServiceRequestRepository;
 import org.egov.waterconnection.repository.WaterDaoImpl;
+import org.egov.waterconnection.repository.builder.WsQueryBuilder;
 import org.egov.waterconnection.util.WaterServicesUtil;
-import org.egov.waterconnection.web.models.*;
+import org.egov.waterconnection.web.models.AuditDetails;
+import org.egov.waterconnection.web.models.Connection;
 import org.egov.waterconnection.web.models.Connection.StatusEnum;
+import org.egov.waterconnection.web.models.OwnerInfo;
+import org.egov.waterconnection.web.models.Property;
+import org.egov.waterconnection.web.models.PropertyCriteria;
+import org.egov.waterconnection.web.models.RequestInfoWrapper;
+import org.egov.waterconnection.web.models.SearchCriteria;
+import org.egov.waterconnection.web.models.Status;
+import org.egov.waterconnection.web.models.WaterConnection;
+import org.egov.waterconnection.web.models.WaterConnectionRequest;
+import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.egov.waterconnection.web.models.Idgen.IdResponse;
 import org.egov.waterconnection.web.models.users.User;
 import org.egov.waterconnection.web.models.users.UserDetailResponse;
 import org.egov.waterconnection.web.models.users.UserSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.extern.slf4j.Slf4j;
 
 
 @Service
@@ -57,7 +79,12 @@ public class EnrichmentService {
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
 
+	@Autowired
+    private WsQueryBuilder queryBuilder;
 
+	@Autowired
+    private JdbcTemplate jdbcTemplate;
+	
 	/**
 	 * Enrich water connection
 	 * 
@@ -456,6 +483,23 @@ public class EnrichmentService {
 
 		}
 		return finalConnectionList;
+	}
+
+	public void setTotalAmount(@Valid List<WaterConnection> waterConnection, SearchCriteria criteria,
+			RequestInfo requestInfo) {
+		waterConnection.forEach(connection -> {
+			StringBuilder query = new StringBuilder(queryBuilder.TotalCollectionAmount);
+			query.append("AND payd.tenantid like '%" + criteria.getTenantId() + "%' AND payspay.consumercode = "
+					+ connection.getConnectionNo());
+			query.append("  AND payd.createdtime >= " + criteria.getFromDate());
+			List<String> amount = jdbcTemplate.queryForList(query.toString(), String.class);
+			
+			Map<String, String> additionalDetails = connection.getAdditionalDetails() != null ? (Map)connection.getAdditionalDetails()
+					: new HashMap<String, String>();
+			
+			additionalDetails.put("collectionAmount", amount.get(0));
+			connection.setAdditionalDetails(additionalDetails);
+		});
 	}
 
 }

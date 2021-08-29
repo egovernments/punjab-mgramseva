@@ -194,6 +194,9 @@ public class EnrichmentService {
 			List<Bill> billList = paymentService.fetchBill(request);
 			if (!billList.isEmpty()) {
 				challan.setTotalAmount(billList.get(0).getTotalAmount());
+				HashMap<String, Object> additionalDetail = new HashMap<>();
+				additionalDetail.put("TotalAmount", billList.get(0).getTotalAmount());
+				challan.setAdditionalDetail(additionalDetail);
 			}
 		}
 
