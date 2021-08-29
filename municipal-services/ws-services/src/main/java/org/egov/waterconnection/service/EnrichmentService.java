@@ -489,8 +489,8 @@ public class EnrichmentService {
 			RequestInfo requestInfo) {
 		waterConnection.forEach(connection -> {
 			StringBuilder query = new StringBuilder(queryBuilder.TotalCollectionAmount);
-			query.append("AND payd.tenantid like '%" + criteria.getTenantId() + "%' AND payspay.consumercode = "
-					+ connection.getConnectionNo());
+			query.append("AND payd.tenantid like '%" + criteria.getTenantId() + "%' AND payspay.consumercode = '"
+					+ connection.getConnectionNo() +"'");
 			query.append("  AND payd.createdtime >= " + criteria.getFromDate());
 			List<String> amount = jdbcTemplate.queryForList(query.toString(), String.class);
 			
