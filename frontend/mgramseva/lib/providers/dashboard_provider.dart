@@ -5,6 +5,7 @@ import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/repository/dashboard.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
@@ -21,6 +22,7 @@ class DashBoardProvider with ChangeNotifier {
   int limit = 10;
   late DateTime selectedMonth;
   SortBy? sortBy;
+  late List<DateTime> dateList;
 
   @override
   void dispose() {
@@ -123,13 +125,19 @@ class DashBoardProvider with ChangeNotifier {
   TableDataRow getExpenseRow(ExpensesDetailsModel expense){
     return TableDataRow(
       [
-        TableData('${expense.challanNo}'),
+        TableData('${expense.challanNo}', callBack: onClickOfChallanNo),
         TableData('${expense.expenseType}'),
         TableData('${expense.totalAmount}'),
-        TableData('${expense.billDate}'),
-        TableData('${DateFormats.timeStampToDate(expense.paidDate)}'),
+        TableData('${DateFormats.timeStampToDate(expense.billDate)}'),
+        TableData('${expense.paidDate != null && expense.paidDate != 0 ? DateFormats.timeStampToDate(expense.paidDate) : '-'}'),
       ]
     );
+  }
+
+  onClickOfChallanNo(TableData tableData){
+    var expense = expenseDashboardDetails?.expenseDetailList?.firstWhere((element) => element.challanNo == tableData.label);
+    Navigator.pushNamed(
+        navigatorKey.currentContext!, Routes.EXPENSE_UPDATE, arguments: expense);
   }
 
   onExpenseSort(TableHeader header){

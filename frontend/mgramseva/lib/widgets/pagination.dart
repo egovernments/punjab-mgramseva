@@ -1,6 +1,8 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/models.dart';
 
 class Pagination extends StatefulWidget {
@@ -23,7 +25,8 @@ class _PaginationState extends State<Pagination> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text('Rows per page'),
+              Text(ApplicationLocalizations.of(context)
+              .translate(i18.common.ROWS_PER_PAGE)),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: DropdownButton(

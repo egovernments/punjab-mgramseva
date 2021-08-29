@@ -110,19 +110,27 @@ class _BillsTable extends State<BillsTable> {
 
   Widget _generateFirstColumnRow(BuildContext context, int index) {
     return LayoutBuilder(builder: (context, constraints) {
+      var data = widget.tableData[index].tableRow.first;
       return ScrollParent(
           controller,
-          Container(
-            child: Text(
-              widget.tableData[index].tableRow.first.label,
-              style: TextStyle(color: Theme.of(context).primaryColor),
+          InkWell(
+            onTap: (){
+              if(data.callBack != null){
+                data.callBack!(data);
+              }
+            },
+            child: Container(
+              child: Text(
+                widget.tableData[index].tableRow.first.label,
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
+              width: constraints.maxWidth < 760
+                  ? 187
+                  : MediaQuery.of(context).size.width / 5,
+              height: 52,
+              padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+              alignment: Alignment.centerLeft,
             ),
-            width: constraints.maxWidth < 760
-                ? 187
-                : MediaQuery.of(context).size.width / 5,
-            height: 52,
-            padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-            alignment: Alignment.centerLeft,
           ));
     });
   }
@@ -143,10 +151,15 @@ class _BillsTable extends State<BillsTable> {
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
     var data = widget.tableData[index];
     return LayoutBuilder(builder: (context, constraints) {
+      var list = <Widget>[];
+      for(int i =1; i <  data.tableRow.length ; i++){
+        list.add(_generateColumnRow(context, index,
+            data.tableRow[i].label, constraints, style: data.tableRow[i].style));
+      }
       return Container(
           color: index % 2 == 0 ? const Color(0xffEEEEEE) : Colors.white,
           child: Row(
-            children: <Widget>[
+            children: list ?? <Widget>[
               _generateColumnRow(context, index,
                   data.tableRow[1].label, constraints, style: data.tableRow[1].style),
               _generateColumnRow(context, index,

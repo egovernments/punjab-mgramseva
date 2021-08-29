@@ -68,7 +68,8 @@ class TableDataRow {
 class TableData {
   final String label;
   final TextStyle? style;
-  TableData(this.label, {this.style});
+  ValueChanged<TableData>? callBack;
+  TableData(this.label, {this.style, this.callBack});
 }
 
 class SortBy {

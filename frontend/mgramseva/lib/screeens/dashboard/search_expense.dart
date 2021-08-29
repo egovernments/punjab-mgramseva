@@ -31,10 +31,10 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
   @override
   void initState() {
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false)
-    ..selectedMonth = DateTime.now()
     ..limit = 10
     ..offset = 1
     ..sortBy = null;
+    dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
 
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();

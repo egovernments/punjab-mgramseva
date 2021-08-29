@@ -33,7 +33,6 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
   OverlayState? overlayState;
   OverlayEntry? _overlayEntry;
   GlobalKey key = GlobalKey();
-  late List<DateTime> dateList;
   @override
   void dispose() {
     _tabController.dispose();
@@ -43,9 +42,9 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
-    dateList = CommonMethods.getPastMonthUntilFinancialYear().reversed.toList();
-    dashBoardProvider.selectedMonth = dateList.first;
+    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false)
+    ..dateList = CommonMethods.getPastMonthUntilFinancialYear().reversed.toList();
+    dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
     _tabController = new TabController(vsync: this, length: 2);
   }
 
@@ -151,16 +150,16 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                 width: 200,
                 child:  Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: List.generate(dateList.length, (index) {
-                    var date = dateList[index];
+                  children: List.generate(dashBoardProvider.dateList.length, (index) {
+                    var date = dashBoardProvider.dateList[index];
                    return Container(
-                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+                     padding: EdgeInsets.symmetric(vertical: 8),
                       color: index%2 == 0 ? Color.fromRGBO(238, 238, 238, 1) : Color.fromRGBO(255, 255, 255, 1),
                       child: Wrap(
                         spacing: 5,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Text('${DateFormats.getMonthAndYear(dateList[index])}',
+                          Text('${DateFormats.getMonthAndYear(dashBoardProvider.dateList[index])}',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: dashBoardProvider.selectedMonth?.year == date?.year && dashBoardProvider.selectedMonth?.month == date?.month ?

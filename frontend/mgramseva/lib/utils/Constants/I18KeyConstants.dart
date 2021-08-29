@@ -128,6 +128,7 @@ class Common {
   String get PAID_DATE => 'PAID_DATE';
   String get SKIP => 'SKIP';
   String get NEXT => 'NEXT';
+  String get ROWS_PER_PAGE => 'ROWS_PER_PAGE';
 }
 
 class Password {
