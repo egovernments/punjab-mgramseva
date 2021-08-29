@@ -3,6 +3,7 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/components/Dashboard/BillsTable.dart';
+import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
@@ -33,7 +34,8 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false)
     ..limit = 10
     ..offset = 1
-    ..sortBy = null;
+    ..sortBy = null
+    ..selectedDashboardType = widget.dashBoardType;
     dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
 
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
@@ -60,6 +62,10 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
         Tab(text: '${i18.dashboard.RESIDENTIAL}'),
         Tab(text: '${i18.dashboard.COMMERCIAL}')
       ];
+      dashBoardProvider
+        ..waterConnectionsDetails?.waterConnection = <WaterConnection>[]
+        ..fetchCollectionsDashBoardDetails(context, dashBoardProvider.limit, dashBoardProvider.offset);
+
     }
     _tabController = new TabController(vsync: this, length: _tabList.length);
   }
@@ -113,7 +119,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     );
   }
 
-  Widget _buildTabView(List<ExpensesDetailsModel> expenseList) {
+  Widget _buildTabView(List<dynamic> expenseList) {
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
 
     return Column(
@@ -131,15 +137,15 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
             unselectedLabelStyle: TextStyle(
                 color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400),
             radius: 25,
-            tabs: widget.dashBoardType == DashBoardType.Expenditure ? dashBoardProvider.getExpenseTabList(context, expenseList) : _tabList
+            tabs: widget.dashBoardType == DashBoardType.Expenditure ? dashBoardProvider.getExpenseTabList(context, expenseList as List<ExpensesDetailsModel>) : dashBoardProvider.getCollectionsTabList(context, expenseList as List<WaterConnection>)
           ),
         ),
         Expanded(
           child: Consumer<DashBoardProvider>(
             builder : (_ , dashBoardProvider, child) => TabBarView(
                 controller: _tabController,
-                children: List.generate(_tabList.length, (index) => BillsTable(headerList: dashBoardProvider.expenseHeaderList,
-                  tableData: dashBoardProvider.getExpenseData(index, expenseList),
+                children: List.generate(_tabList.length, (index) => BillsTable(headerList: widget.dashBoardType == DashBoardType.Expenditure ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
+                  tableData:  widget.dashBoardType == DashBoardType.Expenditure ? dashBoardProvider.getExpenseData(index, expenseList as List<ExpensesDetailsModel>) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>),
                 ))
             ),
           ),
