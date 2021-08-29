@@ -35,7 +35,7 @@ class Constants {
       "CORE_HOUSEHOLD_REGISTER",
       (i18.homeWalkThroughMSg.HOUSEHOLD_REGISTER_MSG),
       HomeIcons.hhregister,
-      '',
+      Routes.HOUSEHOLD_REGISTER,
       {},
     ),
     HomeItem(
@@ -48,7 +48,7 @@ class Constants {
         "DOWNLOAD_BILLS_AND_RECEIPTS",
         (i18.homeWalkThroughMSg.DOWNLOAD_BILLS_AND_RECEIPTS_MSG),
         HomeIcons.printreciept,
-        Routes.HOUSEHOLD,
+        Routes.HOUSEHOLDRECEIPTS,
         {'Mode': "receipts"}),
     HomeItem(
         "ADD_EXPENSES_RECORD",

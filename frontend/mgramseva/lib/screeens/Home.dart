@@ -28,6 +28,7 @@ class _HomeState extends State<Home> {
   afterViewBuild() {
     Provider.of<HomeProvider>(context, listen: false)
       ..setwalkthrough(HomeWalkThrough().homeWalkThrough.map((e) {
+        print(e.label);
         e.key = GlobalKey();
         return e;
       }).toList());

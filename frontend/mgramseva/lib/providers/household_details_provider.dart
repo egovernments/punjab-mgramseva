@@ -28,7 +28,6 @@ class HouseHoldProvider with ChangeNotifier {
         if (data.bill!.first.billDetails != null) {
           data.bill!.first.billDetails!
               .sort((a, b) => b.toPeriod!.compareTo(a.toPeriod!));
-          print(data.bill!.first.billDetails!.first.amount.toString());
         }
         data.bill!.first.waterConnection = waterConnection;
         streamController.add(data);
@@ -48,7 +47,6 @@ class HouseHoldProvider with ChangeNotifier {
   }
 
   Future<void> fetchDemand(data) async {
-    print("demand api called");
     await BillingServiceRepository().fetchdDemand({
       "tenantId": data.tenantId,
       "consumerCode": data.connectionNo.toString(),

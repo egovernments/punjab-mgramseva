@@ -5,6 +5,7 @@ import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:provider/provider.dart';
+import 'package:mgramseva/utils/role_actions.dart';
 
 import 'HomeWalkThrough/HomeWalkThroughList.dart';
 
@@ -19,15 +20,17 @@ class HomeCard extends StatefulWidget {
 
 class _HomeCard extends State<HomeCard> {
   List<Widget> getList(HomeProvider homeProvider) {
-    return Constants.HOME_ITEMS
+    return RoleActionsFiltering()
+        .getFilteredModules()
         .map((item) => GridTile(
               child: new GestureDetector(
                   onTap: () => Navigator.pushNamed(context, item.link,
                       arguments: item.arguments),
                   child: new Card(
                       key: homeProvider
-                          .homeWalkthrougList[
-                              Constants.HOME_ITEMS.indexOf(item)]
+                          .homeWalkthrougList[RoleActionsFiltering()
+                              .getFilteredModules()
+                              .indexOf(item)]
                           .key,
                       margin:
                           EdgeInsets.symmetric(vertical: 10, horizontal: 10),

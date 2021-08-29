@@ -83,6 +83,11 @@ class router {
         return MaterialPageRoute(
             builder: (_) => SearchConsumerConnection(settings.arguments as Map),
             settings: RouteSettings(name: Routes.HOUSEHOLD));
+
+      case Routes.HOUSEHOLDRECEIPTS:
+        return MaterialPageRoute(
+            builder: (_) => SearchConsumerConnection(settings.arguments as Map),
+            settings: RouteSettings(name: Routes.HOUSEHOLDRECEIPTS));
       case Routes.EDIT_PROFILE:
         return MaterialPageRoute(
             builder: (_) => EditProfile(),

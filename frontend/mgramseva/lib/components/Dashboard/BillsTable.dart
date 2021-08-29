@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/ScrollParent.dart';
 
@@ -8,7 +9,8 @@ class BillsTable extends StatefulWidget {
   final List<TableHeader> headerList;
   final List<TableDataRow> tableData;
 
-  BillsTable({Key? key, required this.headerList, required this.tableData}) : super(key: key);
+  BillsTable({Key? key, required this.headerList, required this.tableData})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -64,41 +66,39 @@ class _BillsTable extends State<BillsTable> {
   }
 
   List<Widget> _getTitleWidget(constraints) {
-
     return widget.headerList.map((e) {
-      if(e.isSortingRequired ?? false) {
-        return  TextButton(
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-              ),
-              child: _getTitleItemWidget(
-                  (e.label),
-                  constraints, e.isAscendingOrder),
-              onPressed: e.callBack == null ? null : ()=> e.callBack!(e));
-      }else{
+      if (e.isSortingRequired ?? false) {
+        return TextButton(
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+            ),
+            child:
+                _getTitleItemWidget((e.label), constraints, e.isAscendingOrder),
+            onPressed: e.callBack == null ? null : () => e.callBack!(e));
+      } else {
         return _getTitleItemWidget(e.label, constraints!);
-    }
+      }
     }).toList();
   }
 
   Widget _getTitleItemWidget(String label, constraints, [bool? isAscending]) {
-    var textWidget = Text(label,
+    var textWidget = Text(ApplicationLocalizations.of(context).translate(label),
         style: TextStyle(
             fontWeight: FontWeight.w700, color: Colors.black, fontSize: 12));
 
     return Container(
-      child: isAscending != null ?
-      Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 5,
-        children: [
-          textWidget,
-          Icon(
-              isAscending! ? Icons.arrow_upward : Icons.arrow_downward_sharp
-          )
-        ],
-      ) :
-       textWidget,
+      child: isAscending != null
+          ? Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 5,
+              children: [
+                textWidget,
+                Icon(isAscending!
+                    ? Icons.arrow_upward
+                    : Icons.arrow_downward_sharp)
+              ],
+            )
+          : textWidget,
       width: constraints.maxWidth < 760
           ? 187
           : (MediaQuery.of(context).size.width / 4 - 100),
@@ -114,14 +114,15 @@ class _BillsTable extends State<BillsTable> {
       return ScrollParent(
           controller,
           InkWell(
-            onTap: (){
-              if(data.callBack != null){
+            onTap: () {
+              if (data.callBack != null) {
                 data.callBack!(data);
               }
             },
             child: Container(
               child: Text(
-                widget.tableData[index].tableRow.first.label,
+                ApplicationLocalizations.of(context)
+                    .translate(widget.tableData[index].tableRow.first.label),
                 style: TextStyle(color: Theme.of(context).primaryColor),
               ),
               width: constraints.maxWidth < 760
@@ -136,12 +137,18 @@ class _BillsTable extends State<BillsTable> {
   }
 
   Widget _generateColumnRow(
-      BuildContext context, int index, String input, constraints, {TextStyle? style}) {
+      BuildContext context, int index, String input, constraints,
+      {TextStyle? style}) {
     return Container(
       child: Row(
-        children: <Widget>[Text(input, style: style)],
+        children: <Widget>[
+          Text(ApplicationLocalizations.of(context).translate(input),
+              style: style)
+        ],
       ),
-       width:  constraints.maxWidth < 760 ? 187 : MediaQuery.of(context).size.width/4-100,
+      width: constraints.maxWidth < 760
+          ? 187
+          : MediaQuery.of(context).size.width / 4 - 100,
       height: 52,
       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.centerLeft,
@@ -152,23 +159,29 @@ class _BillsTable extends State<BillsTable> {
     var data = widget.tableData[index];
     return LayoutBuilder(builder: (context, constraints) {
       var list = <Widget>[];
-      for(int i =1; i <  data.tableRow.length ; i++){
-        list.add(_generateColumnRow(context, index,
-            data.tableRow[i].label, constraints, style: data.tableRow[i].style));
+      for (int i = 1; i < data.tableRow.length; i++) {
+        list.add(_generateColumnRow(
+            context, index, data.tableRow[i].label, constraints,
+            style: data.tableRow[i].style));
       }
       return Container(
           color: index % 2 == 0 ? const Color(0xffEEEEEE) : Colors.white,
           child: Row(
-            children: list ?? <Widget>[
-              _generateColumnRow(context, index,
-                  data.tableRow[1].label, constraints, style: data.tableRow[1].style),
-              _generateColumnRow(context, index,
-                  data.tableRow[2].label, constraints, style: data.tableRow[1].style),
-              _generateColumnRow(context, index,
-                  data.tableRow[3].label, constraints, style: data.tableRow[1].style),
-              _generateColumnRow(context, index,
-                  data.tableRow[4].label, constraints, style: data.tableRow[1].style),
-            ],
+            children: list ??
+                <Widget>[
+                  _generateColumnRow(
+                      context, index, data.tableRow[1].label, constraints,
+                      style: data.tableRow[1].style),
+                  _generateColumnRow(
+                      context, index, data.tableRow[2].label, constraints,
+                      style: data.tableRow[1].style),
+                  _generateColumnRow(
+                      context, index, data.tableRow[3].label, constraints,
+                      style: data.tableRow[1].style),
+                  _generateColumnRow(
+                      context, index, data.tableRow[4].label, constraints,
+                      style: data.tableRow[1].style),
+                ],
           ));
     });
   }

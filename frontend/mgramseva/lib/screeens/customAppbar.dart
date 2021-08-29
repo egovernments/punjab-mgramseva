@@ -57,7 +57,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
           showdialog(result);
         } else if (result.length == 1 &&
             commonProvider.userDetails!.selectedtenant == null) {
+          showdialog(result);
           commonProvider.setTenant(result.first);
+          Navigator.pop(context);
+          Navigator.pushReplacementNamed(context, Routes.HOME);
         }
       }
     }
@@ -160,7 +163,15 @@ class _CustomAppBarState extends State<CustomAppBar> {
         .toList();
     if (result.length == 1 &&
         commonProvider.userDetails!.selectedtenant == null) {
-      commonProvider.setTenant(result.first);
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        showdialog(result);
+        commonProvider.setTenant(result.first);
+        Navigator.pop(context);
+        Navigator.pushReplacementNamed(context, Routes.HOME);
+      });
+    } else if (result.length > 1 &&
+        commonProvider.userDetails!.selectedtenant == null) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) => showdialog(result));
     }
 
     return GestureDetector(
