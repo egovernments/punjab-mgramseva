@@ -8,12 +8,14 @@ part of 'water_connections.dart';
 
 WaterConnections _$WaterConnectionsFromJson(Map<String, dynamic> json) {
   return WaterConnections()
-    ..waterConnection = (json['waterConnection'] as List<dynamic>?)
+    ..waterConnection = (json['WaterConnection'] as List<dynamic>?)
         ?.map((e) => WaterConnection.fromJson(e as Map<String, dynamic>))
-        .toList();
+        .toList()
+    ..totalCount = json['totalCount'] as int? ?? 0;
 }
 
 Map<String, dynamic> _$WaterConnectionsToJson(WaterConnections instance) =>
     <String, dynamic>{
-      'waterConnection': instance.waterConnection,
+      'WaterConnection': instance.waterConnection,
+      'totalCount': instance.totalCount,
     };

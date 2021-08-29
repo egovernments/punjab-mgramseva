@@ -33,8 +33,7 @@ class SearchConnectionRepository extends BaseService {
         ));
 
     if (res != null) {
-      waterConnections = WaterConnections.fromJson(
-          {"waterConnection": res['WaterConnection']});
+      waterConnections = WaterConnections.fromJson(res);
     }
     return waterConnections;
   }
