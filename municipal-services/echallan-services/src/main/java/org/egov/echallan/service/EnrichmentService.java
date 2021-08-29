@@ -127,12 +127,12 @@ public class EnrichmentService {
         users.forEach(user -> userIdToOwnerMap.put(user.getUuid(),user));
         challans.forEach(challan -> {
         	if(challan.getAccountId()==null)
-                        throw new CustomException("OWNER SEARCH ERROR","The owner of the challan "+challan.getId()+" is not coming in user search");
+                        throw new CustomException("EXP_OWNER_SEARCH_ERROR","The owner of the challan "+challan.getId()+" is not coming in user search");
             else {
                    User user = userIdToOwnerMap.get(challan.getAccountId());
-                   UserInfo userinfo = getUserInfo(user);
+//                   UserInfo userinfo = getUserInfo(user);
                     	
-                   challan.setCitizen(userinfo);
+//                   challan.setCitizen(userinfo);
                  }
        });
 

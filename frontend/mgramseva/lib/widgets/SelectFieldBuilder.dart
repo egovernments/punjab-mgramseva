@@ -30,13 +30,13 @@ class SelectFieldBuilder extends StatelessWidget {
       Text(ApplicationLocalizations.of(context).translate(labelText),
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),
+              fontWeight: FontWeight.w400, fontSize: 19, color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
       Visibility(
         visible: isRequired,
         child: Text('* ',
             textAlign: TextAlign.left,
             style: TextStyle(
-                fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),
+                fontWeight: FontWeight.w400, fontSize: 19, color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
       ),
     ]);
     //DropDown

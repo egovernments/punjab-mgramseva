@@ -142,6 +142,26 @@ Map getServiceTypeConnectionTypePropertyTypeMDMS(String tenantId) {
   };
 }
 
+
+Map getMdmsPaymentModes(String tenantId){
+  return {
+    "MdmsCriteria": {
+      "tenantId": tenantId,
+      "moduleDetails": [
+        {
+          "moduleName": "BillingService",
+          "masterDetails": [
+            {
+              "name": "BusinessService",
+              "filter": "[?(@.code=='WS')]"
+            }
+          ]
+        }
+      ]
+    }
+  };
+}
+
 Future getMDMD() async {
   final requestInfo = RequestInfo(
       APIConstants.API_MODULE_NAME,

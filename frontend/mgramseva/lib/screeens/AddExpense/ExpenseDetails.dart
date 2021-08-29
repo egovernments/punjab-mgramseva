@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
@@ -5,13 +6,13 @@ import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/AddExpense/AddExpenseWalkThrough/expenseWalkThrough.dart';
 import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
-import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/DatePickerFieldBuilder.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
@@ -65,6 +66,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
         return e;
       }).toList());
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +160,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                           child: child,
                         );
                       },
-                    ),
+                    ),walkThroughKey: Constants.ADD_EXPENSE_KEY,
                   )),
                   Card(
                       child: Consumer<ExpensesDetailsProvider>(
@@ -210,6 +212,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               isEnabled: expenseDetails.allowEdit,
                               requiredMessage:
                                   i18.expense.MENTION_NAME_OF_VENDOR,
+                              inputFormatter: [FilteringTextInputFormatter.allow(
+                                  RegExp("[a-zA-Z ]"))],
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[1].key,
                             ),
@@ -317,7 +321,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                       expensesDetailsProvider.onChangeOfDate,
                                   isEnabled: expenseDetails.allowEdit),
                             if (isUpdate &&
-                                expenseDetails.fileStoreList != null)
+                                expenseDetails.fileStoreList != null && expenseDetails.fileStoreList!.isNotEmpty)
                               Container(
                                 margin: const EdgeInsets.only(
                                     top: 20.0, bottom: 5, right: 20, left: 20),
@@ -336,20 +340,24 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                             .map<Widget>((e) => InkWell(
                                                   onTap: () =>
                                                       expensesDetailsProvider
-                                                          .onTapOfAttachment(e),
+                                                          .onTapOfAttachment(e, context),
                                                   child: Container(
-                                                    height: 45,
-                                                    width: 45,
+                                                    width: 50,
                                                     margin:
                                                         EdgeInsets.symmetric(
                                                             vertical: 10,
                                                             horizontal: 5),
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.grey,
-                                                            width: 1.5)),
-                                                    child: Text('${e.id}'),
-                                                  ),
+                                                    child: Wrap(
+                                                      runSpacing: 5,
+                                                   spacing: 8,
+                                                   children : [
+                                                     Image.asset('assets/png/attachment.png'),
+                                                     Text('${CommonMethods.getExtension(e.url ?? '')}',
+                                                     maxLines: 2,
+                                                     overflow: TextOverflow.ellipsis,
+                                                     )
+                                                    ]
+                                                  )),
                                                 ))
                                             .toList())
                                   ],
@@ -366,16 +374,20 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                             if (isUpdate)
                               Container(
                                 alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.symmetric(vertical: 5),
+                                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
                                 child: Wrap(
                                   direction: Axis.horizontal,
                                   crossAxisAlignment: WrapCrossAlignment.center,
-                                  spacing: 4,
+                                  spacing: 8,
                                   children: [
-                                    Checkbox(
-                                        value: expenseDetails.isBillCancelled,
-                                        onChanged: expensesDetailsProvider
-                                            .onChangeOfCheckBox),
+                                    SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: Checkbox(
+                                          value: expenseDetails.isBillCancelled,
+                                          onChanged: expensesDetailsProvider
+                                              .onChangeOfCheckBox),
+                                    ),
                                     Text(
                                         ApplicationLocalizations.of(context)
                                             .translate(i18.expense

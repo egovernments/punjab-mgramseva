@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -14,7 +15,6 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/footer.dart';
-import 'package:mgramseva/widgets/help.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +40,7 @@ class _SearchExpenseState extends State<SearchExpense> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: BaseAppBar(
         Text(i18.common.MGRAM_SEVA),
         AppBar(),
@@ -55,7 +56,7 @@ class _SearchExpenseState extends State<SearchExpense> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                HomeBack(widget: Help()),
+                HomeBack(),
                 Card(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -144,12 +145,13 @@ class _SearchExpenseState extends State<SearchExpense> {
 
   void onSubmit() {
     FocusScope.of(context).nextFocus();
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
     if (vendorNameCtrl.text.trim().isNotEmpty ||
         expenseType != null ||
         billIdCtrl.text.trim().isNotEmpty) {
       var query = {
-        'tenantId': 'pb',
+        'tenantId': commonProvider.userDetails?.selectedtenant?.code,
         'vendorName': vendorNameCtrl.text.trim(),
         'expenseType': expenseType,
         'challanNo': billIdCtrl.text.trim()

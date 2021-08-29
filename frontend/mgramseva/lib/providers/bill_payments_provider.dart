@@ -11,7 +11,7 @@ class BillPayemntsProvider with ChangeNotifier {
   Future<void> FetchBillPayments(data) async {
     var res = await BillingServiceRepository().fetchdBillPayments({
       "tenantId": data.tenantId,
-      "consumerCode": data.connectionNo.toString(),
+      "consumerCodes": data.connectionNo.toString(),
       "businessService": "WS"
     });
     print(res);

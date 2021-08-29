@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mgramseva/providers/forgot_password_provider.dart';
 
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
@@ -23,12 +24,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   var autoValidation = false;
 
   saveInputandcall(context) async {
+    print(context);
     var otpProvider =
-    Provider.of<ForgotPasswordProvider>(context, listen: false);
-    if(formKey.currentState!.validate()) {
+        Provider.of<ForgotPasswordProvider>(context, listen: false);
+    if (formKey.currentState!.validate()) {
       otpProvider.otpforresetpassword(context, mobileNumber.text.trim());
       //Navigator.of(context).pushNamedAndRemoveUntil(Routes.RESET_PASSWORD, (route) => false);
-    }else{
+    } else {
       setState(() {
         autoValidation = true;
       });
@@ -36,50 +38,60 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   }
 
   getForgotPasswordCard() {
-    return new Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.all(8),
-        child: Card(
-            child: (Column(
-          children: [
-            Logo(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Forgot Password ? ",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-            ),
-            Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  margin: const EdgeInsets.only(left: 20, bottom: 20, top: 20),
+    return SingleChildScrollView(
+        child: new Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(8),
+            child: Card(
+                child: (Column(
+              children: [
+                Logo(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
-                      "Please Enter your Phone Number to Reset password.",
+                      ApplicationLocalizations.of(context)
+                          .translate(i18.login.FORGOT_PASSWORD),
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                )),
-            Form(
-              key: formKey,
-              autovalidateMode: autoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
-              child: BuildTextField(
-                'Phone Number',
-                mobileNumber,
-                prefixText: '+91',
-                isRequired: true,
-                inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
-                maxLength: 10,
-                validator: Validators.mobileNumberValidator,
-                textInputType: TextInputType.phone,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-                padding: EdgeInsets.all(15),
-                child: Button(
-                    i18.common.CONTINUE, () => saveInputandcall(context))),
-          ],
-        ))));
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                ),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      margin:
+                          const EdgeInsets.only(left: 20, bottom: 20, top: 20),
+                      child: Text(
+                          ApplicationLocalizations.of(context)
+                              .translate(i18.common.RESET_PASSWORD_LABEL),
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w400)),
+                    )),
+                Form(
+                  key: formKey,
+                  autovalidateMode: autoValidation
+                      ? AutovalidateMode.always
+                      : AutovalidateMode.disabled,
+                  child: BuildTextField(
+                    i18.common.PHONE_NUMBER,
+                    mobileNumber,
+                    prefixText: '+91-',
+                    isRequired: true,
+                    inputFormatter: [
+                      FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                    ],
+                    maxLength: 10,
+                    validator: Validators.mobileNumberValidator,
+                    textInputType: TextInputType.phone,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Button(
+                        i18.common.CONTINUE, () => saveInputandcall(context))),
+              ],
+            )))));
   }
 
   @override

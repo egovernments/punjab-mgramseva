@@ -1,24 +1,29 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/user/user_details.dart';
+import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'dart:convert';
 import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/LocalStorage.dart';
-import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
+import 'package:universal_html/html.dart' as html;
 import 'package:universal_html/html.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:universal_html/js.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CommonProvider with ChangeNotifier {
   List<LocalizationLabel> localizedStrings = <LocalizationLabel>[];
@@ -69,6 +74,7 @@ class CommonProvider with ChangeNotifier {
     }
     return labels;
   }
+
   setSelectedTenant(UserDetails? loginDetails) {
     if (kIsWeb) {
       window.localStorage[Constants.LOGIN_KEY] =
@@ -114,8 +120,8 @@ class CommonProvider with ChangeNotifier {
             value: jsonEncode(labels.map((e) => e.toJson()).toList()));
       }
     } catch (e) {
-      Notifiers.getToastMessage(
-          navigatorKey.currentState!.context, 'Unable to store the details', 'ERROR');
+      Notifiers.getToastMessage(navigatorKey.currentState!.context,
+          'Unable to store the details', 'ERROR');
     }
   }
 
@@ -131,6 +137,58 @@ class CommonProvider with ChangeNotifier {
               loginDetails == null ? null : jsonEncode(loginDetails.toJson()));
     }
     notifyListeners();
+  }
+
+  set userProfile(UserProfile? profile) {
+    if (kIsWeb) {
+      window.localStorage[Constants.USER_PROFILE_KEY] =
+          profile == null ? '' : jsonEncode(profile.toJson());
+    } else {
+      storage.write(
+          key: Constants.USER_PROFILE_KEY,
+          value: profile == null ? null : jsonEncode(profile.toJson()));
+    }
+    notifyListeners();
+  }
+
+  walkThroughCondition(bool? firstTime, String key) {
+    if (kIsWeb) {
+      window.localStorage[key] = firstTime.toString();
+    } else {
+      storage.write(key: key, value: firstTime.toString());
+    }
+    notifyListeners();
+  }
+
+  Future<String> getWalkThroughCheck(String key) async {
+    var userReposne;
+    try {
+      if (kIsWeb) {
+        userReposne = window.localStorage[key];
+      } else {
+        userReposne = (await storage.read(key: key));
+      }
+    } catch (e) {
+      userLoggedStreamCtrl.add(null);
+    }
+    if (userReposne == null) {
+      userReposne = 'false';
+    }
+    return userReposne;
+  }
+
+  Future<UserProfile> getUserProfile() async {
+    var userReposne;
+    try {
+      if (kIsWeb) {
+        userReposne = window.localStorage[Constants.USER_PROFILE_KEY];
+      } else {
+        userReposne = await storage.read(key: Constants.USER_PROFILE_KEY);
+      }
+    } catch (e) {
+      userLoggedStreamCtrl.add(null);
+    }
+    return UserProfile.fromJson(jsonDecode(userReposne));
   }
 
   Future<void> getLoginCredentails() async {
@@ -183,12 +241,12 @@ class CommonProvider with ChangeNotifier {
 
       if (languageProvider.stateInfo != null) {
         // languageProvider.stateInfo?.languages?.first.isSelected = true;
-        ApplicationLocalizations(
-            Locale(languageProvider.selectedLanguage?.label ?? '', languageProvider.selectedLanguage?.value))
+        ApplicationLocalizations(Locale(
+                languageProvider.selectedLanguage?.label ?? '',
+                languageProvider.selectedLanguage?.value))
             .load();
       }
     }
-
 
     if (loginResponse != null && loginResponse.trim().isNotEmpty) {
       var decodedResponse = UserDetails.fromJson(jsonDecode(loginResponse));
@@ -201,6 +259,60 @@ class CommonProvider with ChangeNotifier {
     loginCredentails = null;
     navigatorKey.currentState
         ?.pushNamedAndRemoveUntil(Routes.LOGIN, (route) => false);
+  }
+
+  void onTapOfAttachment(FileStore store, context) async {
+    print(store);
+    if (store.url == null) return;
+    CoreRepository().fileDownload(context, store.url!);
+  }
+
+  void shareonwatsapp(FileStore store, mobileNumber) async {
+    if (store.url == null) return;
+    try {
+      var res = await CoreRepository().urlShotner(store.url as String);
+      print(res);
+      if (kIsWeb) {
+        html.AnchorElement anchorElement = new html.AnchorElement(
+            href: "https://api.whatsapp.com/send?phone=+91$mobileNumber&text=" +
+                res!);
+        anchorElement.target = "_blank";
+        anchorElement.click();
+      } else {
+        var link = "https://wa.me/+91$mobileNumber?text=" + res!;
+        await canLaunch(link)
+            ? launch(link)
+            : ErrorHandler.logError('failed to launch the url ${link}');
+      }
+    } catch (e, s) {
+      ErrorHandler.logError(e.toString(), s);
+    }
+  }
+
+  void getStoreFileDetails(fileStoreId, mode, mobileNumber, context) async {
+    if (fileStoreId == null) return;
+    try {
+      var res = await CoreRepository().fetchFiles([fileStoreId!]);
+      if (res != null) {
+        if (mode == 'Share')
+          shareonwatsapp(res.first, mobileNumber);
+        else
+          onTapOfAttachment(res.first, context);
+      }
+    } catch (e, s) {
+      ErrorHandler.logError(e.toString(), s);
+    }
+  }
+
+  void getFileFromPDFService(body, params, mobileNumber, mode) async {
+    try {
+      var res = await CoreRepository().getFileStorefromPdfService(body, params);
+      print(res);
+      getStoreFileDetails(res!.filestoreIds!.first, mode, mobileNumber,
+          navigatorKey.currentContext);
+    } catch (e, s) {
+      ErrorHandler.logError(e.toString(), s);
+    }
   }
 
   String? getMdmsId(LanguageList? mdms, String code, MDMSType mdmsType) {

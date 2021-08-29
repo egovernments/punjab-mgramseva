@@ -43,9 +43,11 @@ class Routes {
 
   static const String HOUSEHOLD_DETAILS = '/household/details';
 
-  static const String HOUSEHOLD_DETAILS_COLLECT_PAYMENT = '/household/details/collectPayment';
+  static const String HOUSEHOLD_DETAILS_COLLECT_PAYMENT =
+      '/household/details/collectPayment';
 
-  static const String HOUSEHOLD_DETAILS_SUCCESS = '$HOUSEHOLD_DETAILS_COLLECT_PAYMENT/success';
+  static const String HOUSEHOLD_DETAILS_SUCCESS =
+      '$HOUSEHOLD_DETAILS_COLLECT_PAYMENT/success';
 
   static const String DASHBOARD = 'dashboard';
 

@@ -16,8 +16,10 @@ class i18 {
   static _Payment payment = const _Payment();
   static _DashBoard dashboard = const _DashBoard();
   static _HomeWalkThroughMsg homeWalkThroughMSg = const _HomeWalkThroughMsg();
-  static _ConsumerWalkThroughMsg consumerWalkThroughMsg = const _ConsumerWalkThroughMsg();
-  static _ExpenseWalkThroughMsg expenseWalkThroughMsg = const _ExpenseWalkThroughMsg();
+  static _ConsumerWalkThroughMsg consumerWalkThroughMsg =
+      const _ConsumerWalkThroughMsg();
+  static _ExpenseWalkThroughMsg expenseWalkThroughMsg =
+      const _ExpenseWalkThroughMsg();
 }
 
 class Login {
@@ -53,6 +55,9 @@ class Common {
   String get RESET_PASSWORD => 'CORE_COMMON_RESET_PASSWORD';
   String get ENTER_OTP_SENT => 'CORE_COMMON_ENTER_OTP_SENT';
   String get RESEND_OTP => 'CORE_COMMON_RESEND_OTP';
+  String get RESET_PASSWORD_LABEL => 'RESET_PASSWORD_LABEL';
+  String get BILL_DOWNLOAD => 'BILL_DOWNLOAD';
+  String get RECEIPT_DOWNLOAD => 'RECEIPT_DOWNLOAD';
 
   /// File Picker
   String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED';
@@ -114,13 +119,28 @@ class Common {
   String get ONLINE => 'ONLINE';
   String get CHEQUE => 'CHEQUE';
   String get CASH => 'CASH';
+  String get DD => 'DD';
+  String get OFFLINE_NEFT => 'OFFLINE_NEFT';
+  String get OFFLINE_RTGS => 'OFFLINE_RTGS';
+  String get POSTAL_ORDER => 'OFFLINE_RTGS';
+
   String get FULL_AMOUNT => 'FULL_AMOUNT';
   String get CUSTOM_AMOUNT => 'CUSTOM_AMOUNT';
 
-  String get PAYMENT_COMPLETE => 'PAYMENT_COMPLETE'; /// Payment complete
-  String get RECEIPT_NO => 'RECEIPT_NO'; /// Payment complete
-  String get DOWNLOAD => 'DOWNLOAD'; /// Payment complete
-  String get SHARE_BILL => 'SHARE_BILL'; /// Payment complete
+  String get PAYMENT_COMPLETE => 'PAYMENT_COMPLETE';
+
+  /// Payment complete
+  String get RECEIPT_NO => 'RECEIPT_NO';
+
+  /// Payment complete
+  String get DOWNLOAD => 'DOWNLOAD';
+
+  /// Payment complete
+  String get SHARE_BILL => 'SHARE_BILL';
+
+  String get SHARE_RECEIPTS => 'SHARE_RECEIPTS';
+
+  /// Payment complete
   String get ATTACHMENTS => 'ATTACHMENTS';
   String get YES => 'YES';
   String get NO => 'NO';
@@ -128,6 +148,7 @@ class Common {
   String get PAID_DATE => 'PAID_DATE';
   String get SKIP => 'SKIP';
   String get NEXT => 'NEXT';
+  String get END => 'END';
   String get ROWS_PER_PAGE => 'ROWS_PER_PAGE';
 }
 
@@ -148,6 +169,17 @@ class Password {
       'CORE_PASS_HINT_ATLEAST_ONE_NUMBER';
   String get PASS_HINT_ATLEAST_ONE_SPECIAL_CHARACTER =>
       'CORE_PASS_HINT_ATLEAST_ONE_SPECIAL_CHARACTER';
+  String get ENTER_OTP_SENT_TO => 'ENTER_OTP_SENT_TO';
+  String get RESENT_OTP => 'RESENT_OTP';
+  String get GP_NUMBER => 'GP_NUMBER';
+  String get NAME_GRAM_PANCHAYAT => 'NAME_GRAM_PANCHAYAT';
+  String get UPDATE_PASSWORD_TO_CONTINUE => 'UPDATE_PASSWORD_TO_CONTINUE';
+  String get CORE_COMMON_NEW_PASSWORD => 'CORE_COMMON_NEW_PASSWORD';
+  String get CORE_COMMON_RESET_PASSWORD => 'CORE_COMMON_RESET_PASSWORD';
+  String get INVITED_TO_GRAMA_SEVA => 'INVITED_TO_GRAMA_SEVA';
+  String get UPDATE_PASSWORD => 'UPDATE_PASSWORD';
+  String get CORE_COMMON_CONFIRM_NEW_PASSWORD =>
+      'CORE_COMMON_CONFIRM_NEW_PASSWORD';
 }
 
 class Expense {
@@ -194,7 +226,8 @@ class Expense {
   String get NO_FIELDS_FILLED => 'NO_FIELDS_FILLED';
 
   ///Modified expenditure successfully
-  String get MODIFIED_EXPENDITURE_SUCCESSFULLY => 'MODIFIED_EXPENDITURE_SUCCESSFULLY';
+  String get MODIFIED_EXPENDITURE_SUCCESSFULLY =>
+      'MODIFIED_EXPENDITURE_SUCCESSFULLY';
 
   ///Expenditure Bill with id
   String get EXPENDITURE_BILL_ID => 'EXPENDITURE_BILL_ID';
@@ -220,8 +253,10 @@ class Expense {
   String get DATE_BILL_ENTERED_IN_RECORDS => 'DATE_BILL_ENTERED_IN_RECORDS';
   String get DATE_ON_WHICH_BILL_RAISED => 'DATE_ON_WHICH_BILL_RAISED';
   String get ATTACH_FORMATS => 'ATTACH_FORMATS';
-  String get CORE_EXPENSE_EXPENDITURE_SUCESS => 'CORE_EXPENSE_EXPENDITURE_SUCESS';
+  String get CORE_EXPENSE_EXPENDITURE_SUCESS =>
+      'CORE_EXPENSE_EXPENDITURE_SUCESS';
   String get HAS_THIS_BILL_PAID => 'HAS_THIS_BILL_PAID';
+  String get CANCELLED => 'CANCELLED';
 }
 
 class CreateConsumer {
@@ -245,6 +280,7 @@ class CreateConsumer {
   String get PREV_METER_READING_DATE => 'CONSUMER_PREV_METER_READING_DATE';
   String get METER_NUMBER => 'CONSUMER_METER_NUMBER';
   String get REGISTER_SUCCESS => 'CONSUMER_REGISTER_SUCCESS_LABEL';
+  String get UPDATED_SUCCESS => 'CONSUMER_UPDATED_SUCCESS_LABEL';
   String get CONSUMER_BILLING_CYCLE => 'CONSUMER_BILLING_CYCLE';
 }
 
@@ -272,7 +308,7 @@ class SearchWaterConnection {
   String get RESULTS_PHONE_NUM => 'SEARCH_CONNECTION_PHONE_NUMBER';
   String get RESULTS_ADDRESS => 'SEARCH_CONNECTION_ADDRESS';
   String get CONNECTION_FOUND_ONE => 'CONNECTION_FOUND_ONE';
-
+  String get METER_NUMBER => 'CONSUMER_METER_NUMBER';
 }
 
 class ProfileEdit {
@@ -297,7 +333,8 @@ class _Validators {
   String get INVALID_FORMAT => 'INVALID_FORMAT'; // Invalid format
   String get CONFIRM_RECONFIRM_SHOULD_SAME =>
       'CONFIRM_RECONFIRM_SHOULD_SAME'; //New Password and Confirm password should be same
-
+  String get ENTER_METER_NUMBER => 'ENTER_METER_NUMBER';
+  String get ENTER_ALPHA_NUMERIC_ONLY => 'ENTER_ALPHA_NUMERIC_ONLY';
 }
 
 class DemandGenerate {
@@ -331,6 +368,7 @@ class DemandGenerate {
   String get GENERATE_DEMAND_SUCCESS_NEXT_SUBTEXT =>
       'DEMAND_GENERATED_SUCCESS_NEXT_SUBTEXT';
   String get DOWNLOAD_DEMAND_PDF => 'DOWNLOAD_DEMAND_PDF';
+  String get BILL_ID_NO => 'BILL_ID_NO';
 }
 
 class BillDetails {
@@ -382,22 +420,22 @@ class _Payment {
 
 }
 
-class _HomeWalkThroughMsg{
+class _HomeWalkThroughMsg {
   const _HomeWalkThroughMsg();
 
   String get HOUSEHOLD_REGISTER_MSG => 'HOUSEHOLD_REGISTER_MSG';
   String get COLLECT_PAYMENTS_MSG => 'COLLECT_PAYMENTS_MSG';
-  String get DOWNLOAD_BILLS_AND_RECEIPTS_MSG => 'DOWNLOAD_BILLS_AND_RECEIPTS_MSG';
+  String get DOWNLOAD_BILLS_AND_RECEIPTS_MSG =>
+      'DOWNLOAD_BILLS_AND_RECEIPTS_MSG';
   String get ADD_EXPENSE_RECORD_MSG => 'ADD_EXPENSE_RECORD_MSG';
   String get CREATE_CONSUMER_MSG => 'CREATE_CONSUMER_MSG';
   String get GPWSC_DASHBOARD_MSG => 'GPWSC_DASHBOARD_MSG';
   String get UPDATE_EXPENSE_MSG => 'UPDATE_EXPENSE_MSG';
   String get GENERATE_DEMAND_MSG => 'GENERATE_DEMAND_MSG';
   String get UPDATE_CONSUMER_DETAILS_MSG => 'UPDATE_CONSUMER_DETAILS_MSG';
-
 }
 
-class _ConsumerWalkThroughMsg{
+class _ConsumerWalkThroughMsg {
   const _ConsumerWalkThroughMsg();
 
   String get CONSUMER_NAME_MSG => 'CONSUMER_NAME_MSG';
@@ -410,7 +448,6 @@ class _ConsumerWalkThroughMsg{
   String get CONSUMER_SERVICE_TYPE_MSG => 'CONSUMER_SERVICE_TYPE_MSG';
   String get CONSUMER_ARREARS_MSG => 'CONSUMER_ARREARS_MSG';
 }
-
 
 class _DashBoard {
   const _DashBoard();
@@ -439,5 +476,3 @@ class _ExpenseWalkThroughMsg{
   String get EXPENSE_PARTY_BILL_DATE_MSG => 'EXPENSE_PARTY_BILL_DATE_MSG';
   String get EXPENSE_ATTACH_BILL_MSG => 'EXPENSE_ATTACH_BILL_MSG';
 }
-
-

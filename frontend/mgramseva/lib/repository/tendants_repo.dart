@@ -8,13 +8,13 @@ import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 
 class TenantRepo extends BaseService {
-  Future<Tenant> fetchTenants(Map body) async {
+  Future<Tenant> fetchTenants(Map body, [String? token]) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
     late Tenant tenant;
     final requestInfo = RequestInfo('mGramSeva', .01, "", "search", "", "", "",
-        commonProvider.userDetails!.accessToken);
+       token ?? commonProvider.userDetails!.accessToken);
     var res = await makeRequest(
         url: Url.MDMS,
         body: body,

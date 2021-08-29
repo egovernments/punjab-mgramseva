@@ -60,27 +60,40 @@ class SearchConnectionDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(arguments['Mode']);
     return LayoutBuilder(builder: (context, constraints) {
-      return Column(children: [
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         LabelText(waterconnections.waterConnection!.length.toString() != null
             ? waterconnections.waterConnection!.length.toString() +
                 " " +
-                '${waterconnections.waterConnection!.length.toString() == '1' ? ApplicationLocalizations.of(context)
-                    .translate(i18.searchWaterConnection.CONNECTION_FOUND_ONE)
-                    : ApplicationLocalizations.of(context)
-                    .translate(i18.searchWaterConnection.CONNECTION_FOUND)}'
+                '${waterconnections.waterConnection!.length.toString() == '1' ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND_ONE) : ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND)}'
             : "0" +
                 ApplicationLocalizations.of(context)
                     .translate(i18.searchWaterConnection.CONNECTION_FOUND)),
-        SubLabelText(ApplicationLocalizations.of(context)
-                .translate(i18.searchWaterConnection.CONNECTION_CRITERIA) +
-            " " +
-            '${arguments.keys.first.toString() == 'mobileNumber' ? ApplicationLocalizations.of(context)
-                .translate(i18.searchWaterConnection.RESULTS_PHONE_NUM) : arguments.keys.first.toString()}' +
-            " as " +
-            '${arguments.keys.first.toString() == 'mobileNumber' ? '+91 - ' + '${arguments.values.first.toString()}'
-                : arguments.values.first.toString()}'),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: RichText(
+              textAlign: TextAlign.left,
+              text: TextSpan(
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color.fromRGBO(80, 90, 95, 1),
+                  ),
+                  children: [
+                    TextSpan(
+                      text:
+                          '${ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_CRITERIA)}',
+                    ),
+                    TextSpan(
+                        text: " " +
+                            '${arguments.keys.first.toString() == 'mobileNumber' ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.RESULTS_PHONE_NUM) : arguments.keys.first.toString()}' +
+                            " as " +
+                            '${arguments.keys.first.toString() == 'mobileNumber' ? '+91 - ' + '${arguments.values.first.toString()}' : arguments.values.first.toString()}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                            height: 1.5))
+                  ])),
+        ),
         Expanded(
           child: ListView.builder(
               padding: const EdgeInsets.all(8),
@@ -93,22 +106,25 @@ class SearchConnectionDetailCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _getDetailtext(
-                                ApplicationLocalizations.of(context)
-                                    .translate(i18.searchWaterConnection.NEW_CONNECTION_ID),
+                                ApplicationLocalizations.of(context).translate(
+                                    i18.searchWaterConnection
+                                        .NEW_CONNECTION_ID),
                                 waterconnections
                                     .waterConnection![index].connectionNo,
                                 context,
                                 constraints),
                             _getDetailtext(
-                                ApplicationLocalizations.of(context)
-                                    .translate(i18.searchWaterConnection.OLD_CONNECTION_ID),
+                                ApplicationLocalizations.of(context).translate(
+                                    i18.searchWaterConnection
+                                        .OLD_CONNECTION_ID),
                                 waterconnections
                                     .waterConnection![index].oldConnectionNo,
                                 context,
                                 constraints),
                             _getDetailtext(
-                                ApplicationLocalizations.of(context)
-                                    .translate(i18.searchWaterConnection.RESULTS_CONSUMER_NAME),
+                                ApplicationLocalizations.of(context).translate(
+                                    i18.searchWaterConnection
+                                        .RESULTS_CONSUMER_NAME),
                                 waterconnections.waterConnection![index]
                                             .connectionHolders !=
                                         null
@@ -119,22 +135,39 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                 context,
                                 constraints),
                             _getDetailtext(
-                                ApplicationLocalizations.of(context)
-                                    .translate(i18.searchWaterConnection.RESULTS_PHONE_NUM),
+                                ApplicationLocalizations.of(context).translate(
+                                    i18.searchWaterConnection
+                                        .RESULTS_PHONE_NUM),
                                 waterconnections.waterConnection![index]
                                             .connectionHolders !=
                                         null
-                                    ? '+91 - ' + '${waterconnections.waterConnection![index]
-                                        .connectionHolders!.first.mobileNumber}'
+                                    ? '+91 - ' +
+                                        '${waterconnections.waterConnection![index].connectionHolders!.first.mobileNumber}'
                                     : ApplicationLocalizations.of(context)
                                         .translate("NA"),
                                 context,
                                 constraints),
                             _getDetailtext(
-                                ApplicationLocalizations.of(context)
-                                    .translate(i18.searchWaterConnection.RESULTS_ADDRESS),
+                                ApplicationLocalizations.of(context).translate(
+                                    i18.searchWaterConnection.RESULTS_ADDRESS),
                                 waterconnections.waterConnection![index]
-                                    .additionalDetails!.locality,
+                                            .additionalDetails!.doorNo !=
+                                        null
+                                    ? waterconnections.waterConnection![index]
+                                        .additionalDetails!.doorNo!
+                                    : "" +
+                                        (waterconnections
+                                                    .waterConnection![index]
+                                                    .additionalDetails!
+                                                    .street !=
+                                                null
+                                            ? waterconnections
+                                                .waterConnection![index]
+                                                .additionalDetails!
+                                                .street!
+                                            : "") +
+                                        waterconnections.waterConnection![index]
+                                            .additionalDetails!.locality!,
                                 context,
                                 constraints),
                             SizedBox(
@@ -144,15 +177,23 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                 arguments['Mode'] == 'collect'
                                     ? i18.searchWaterConnection
                                         .HOUSE_DETAILS_VIEW
-                                    : i18.searchWaterConnection
-                                        .HOUSE_DETAILS_EDIT,
+                                    : arguments['Mode'] == 'receipts'
+                                        ? i18.searchWaterConnection
+                                            .HOUSE_DETAILS_VIEW
+                                        : i18.searchWaterConnection
+                                            .HOUSE_DETAILS_EDIT,
                                 () => Navigator.pushNamed(
-                                    context,
-                                    (arguments['Mode'] == 'collect'
-                                        ? Routes.HOUSEHOLD_DETAILS
-                                        : Routes.CONSUMER_UPDATE),
-                                    arguments: waterconnections
-                                        .waterConnection![index])),
+                                        context,
+                                        (arguments['Mode'] == 'collect'
+                                            ? Routes.HOUSEHOLD_DETAILS
+                                            : arguments['Mode'] == 'receipts'
+                                                ? Routes.HOUSEHOLD_DETAILS
+                                                : Routes.CONSUMER_UPDATE),
+                                        arguments: {
+                                          "waterconnections": waterconnections
+                                              .waterConnection![index],
+                                          "mode": arguments['Mode']
+                                        })),
                             SizedBox(
                               height: 20,
                             ),

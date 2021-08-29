@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/model/connection/property.dart';
@@ -13,7 +14,6 @@ import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 
 import 'package:mgramseva/widgets/DatePickerFieldBuilder.dart';
@@ -94,10 +94,6 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
         e.key = GlobalKey();
         return e;
       }).toList());
-
-    /*WidgetsBinding.instance!.addPostFrameCallback((_) => ShowCaseWidget.of(consumerWalkThrough.consumerContext!)!.startShowCase([
-      consumerWalkThrough.consumerNameKey
-    ]));*/
   }
 
   Widget buildconsumerView(Property property) {
@@ -137,6 +133,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             );
                           },
                         ),
+                        walkThroughKey: Constants.CREATE_CONSUMER_KEY,
                       )),
                       Card(
                           child: Column(
@@ -411,6 +408,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   Widget build(BuildContext context) {
     var userProvider = Provider.of<ConsumerProvider>(context, listen: false);
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),
@@ -439,7 +437,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
         Footer(),
       ]))),
       bottomNavigationBar: BottomButtonBar(i18.common.SUBMIT,
-          () => {userProvider.validateExpensesDetails(context)}),
+          () => {userProvider.validateConsumerDetails(context)}),
     );
   }
 }

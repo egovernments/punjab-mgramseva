@@ -22,9 +22,9 @@ class Payments {
   @JsonKey(name: "tenantId")
   String? tenantId;
   @JsonKey(name: "totalDue")
-  int? totalDue;
+  double? totalDue;
   @JsonKey(name: "totalAmountPaid")
-  int? totalAmountPaid;
+  double? totalAmountPaid;
   @JsonKey(name: "transactionNumber")
   String? transactionNumber;
   @JsonKey(name: "transactionDate")
@@ -93,9 +93,9 @@ class PaymentDetails {
   @JsonKey(name: "tenantId")
   String? tenantId;
   @JsonKey(name: "totalDue")
-  int? totalDue;
+  double? totalDue;
   @JsonKey(name: "totalAmountPaid")
-  int? totalAmountPaid;
+  double? totalAmountPaid;
   @JsonKey(name: "receiptNumber")
   String? receiptNumber;
   @JsonKey(name: "manualReceiptNumber")

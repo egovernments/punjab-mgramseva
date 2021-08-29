@@ -9,6 +9,10 @@ class CommonMethods {
     Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!, Routes.HOME, (route) => false, arguments: null);
   }
 
+  static String getExtension(String url){
+    return url.substring(0, url.indexOf('?')).split('/').last;
+  }
+
  static List<DateTime> getPastMonthUntilFinancialYear(){
      var monthList = <DateTime>[];
     if(DateTime.now().month >= 3){

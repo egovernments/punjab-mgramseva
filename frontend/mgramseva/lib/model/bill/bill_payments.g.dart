@@ -22,8 +22,8 @@ Payments _$PaymentsFromJson(Map<String, dynamic> json) {
   return Payments()
     ..id = json['id'] as String?
     ..tenantId = json['tenantId'] as String?
-    ..totalDue = json['totalDue'] as int?
-    ..totalAmountPaid = json['totalAmountPaid'] as int?
+    ..totalDue = (json['totalDue'] as num?)?.toDouble()
+    ..totalAmountPaid = (json['totalAmountPaid'] as num?)?.toDouble()
     ..transactionNumber = json['transactionNumber'] as String?
     ..transactionDate = json['transactionDate'] as int?
     ..paymentMode = json['paymentMode'] as String?
@@ -92,8 +92,8 @@ PaymentDetails _$PaymentDetailsFromJson(Map<String, dynamic> json) {
     ..paymentId = json['paymentId'] as String?
     ..id = json['id'] as String?
     ..tenantId = json['tenantId'] as String?
-    ..totalDue = json['totalDue'] as int?
-    ..totalAmountPaid = json['totalAmountPaid'] as int?
+    ..totalDue = (json['totalDue'] as num?)?.toDouble()
+    ..totalAmountPaid = (json['totalAmountPaid'] as num?)?.toDouble()
     ..receiptNumber = json['receiptNumber'] as String?
     ..manualReceiptNumber = json['manualReceiptNumber'] as String?
     ..manualReceiptDate = json['manualReceiptDate'] as int?

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/components/Dashboard/BillsTable.dart';
 import 'package:mgramseva/components/Dashboard/DashboardCard.dart';
-import 'package:mgramseva/constants/dashboardcard.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/common_methods.dart';
@@ -14,8 +13,6 @@ import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
-import 'package:mgramseva/constants/expenditurecarddetails.dart';
-import 'package:mgramseva/constants/collectioncarddetails.dart';
 import 'package:provider/provider.dart';
 import '../customAppbar.dart';
 import 'search_expense.dart';
@@ -73,7 +70,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                     HomeBack(widget: _buildShare),
                     Container(
                         key: key,
-                        child: DashboardCard(dashboardcarddetails, onTapOfMonthPicker)),
+                        child: DashboardCard(onTapOfMonthPicker)),
                     TabBar(
                       labelColor: Theme.of(context).primaryColor,
                       unselectedLabelColor: Colors.black,

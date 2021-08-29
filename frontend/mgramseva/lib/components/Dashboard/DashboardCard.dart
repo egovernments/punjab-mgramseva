@@ -5,9 +5,8 @@ import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class DashboardCard extends StatelessWidget {
-  final List<Map<String, Object>> data;
   final Function() onMonthSelection;
-  DashboardCard(this.data, this.onMonthSelection);
+  DashboardCard(this.onMonthSelection);
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {

@@ -4,12 +4,19 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.egov.tracer.model.CustomException;
+import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.constants.WCConstants;
+import org.egov.waterconnection.repository.ServiceRequestRepository;
 import org.egov.waterconnection.service.MeterInfoValidator;
 import org.egov.waterconnection.service.PropertyValidator;
 import org.egov.waterconnection.service.WaterFieldValidator;
+import org.egov.waterconnection.web.models.CalculationRes;
+import org.egov.waterconnection.web.models.Demand;
+import org.egov.waterconnection.web.models.DemandResponse;
+import org.egov.waterconnection.web.models.RequestInfoWrapper;
 import org.egov.waterconnection.web.models.ValidatorResult;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
@@ -17,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +43,14 @@ public class WaterConnectionValidator {
 	@Autowired
 	private MeterInfoValidator meterInfoValidator;
 
+	@Autowired
+	private ServiceRequestRepository serviceRequestRepository;
+	
+	@Autowired
+	private WSConfiguration config;
+
+	@Autowired
+	private ObjectMapper mapper;
 
 	/**Used strategy pattern for avoiding multiple if else condition
 	 * 
@@ -44,7 +61,7 @@ public class WaterConnectionValidator {
 		Map<String, String> errorMap = new HashMap<>();
 		if (StringUtils.isEmpty(waterConnectionRequest.getWaterConnection().getProcessInstance())
 				|| StringUtils.isEmpty(waterConnectionRequest.getWaterConnection().getProcessInstance().getAction())) {
-			errorMap.put("INVALID_ACTION", "Workflow obj can not be null or action can not be empty!!");
+			errorMap.put("INVALID_WF_ACTION", "Workflow obj can not be null or action can not be empty!!");
 			throw new CustomException(errorMap);
 		}
 		ValidatorResult isPropertyValidated = propertyValidator.validate(waterConnectionRequest, reqType);
@@ -90,7 +107,45 @@ public class WaterConnectionValidator {
 		validateAllIds(request.getWaterConnection(), searchResult);
 		validateDuplicateDocuments(request);
 		setFieldsFromSearch(request, searchResult, reqType);
+		validateUpdateForDemand(request,searchResult);
 		
+	}
+/**
+ * GPWSC specific validation
+ * @param request
+ * @param searchResult
+ */
+	private void validateUpdateForDemand(WaterConnectionRequest request, WaterConnection searchResult) {
+		Map<String, String> errorMap = new HashMap<>();
+		StringBuilder url = new StringBuilder();
+		url.append(config.getBillingHost()).append(config.getDemandSearchUri());
+		url.append("?consumerCode=").append(request.getWaterConnection().getConnectionNo());
+		url.append("&tenantId=").append(request.getWaterConnection().getTenantId());
+		url.append("&businessService=WS");
+		DemandResponse demandResponse = null;
+		try {
+			Object response = serviceRequestRepository.fetchResult(url, RequestInfoWrapper.builder().requestInfo(request.getRequestInfo()).build());
+			 demandResponse = mapper.convertValue(response, DemandResponse.class);
+			
+		} catch (Exception ex) {
+			log.error("Calculation response error!!", ex);
+			throw new CustomException("WATER_CALCULATION_EXCEPTION", "Calculation response can not parsed!!!");
+		}
+		
+		if( demandResponse!= null && demandResponse.getDemands().size() >0 ) {
+			List<Demand> demands = demandResponse.getDemands().stream().filter( d-> !d.getConsumerType().equalsIgnoreCase("waterConnection-arrears")).collect(Collectors.toList());
+			if(demands.size() > 0 ) {
+				if(!searchResult.getOldConnectionNo().equalsIgnoreCase(request.getWaterConnection().getOldConnectionNo())) {
+					errorMap.put("INVALID_UPDATE_OLD_CONNO", "Old ConnectionNo cannot be modified!!");
+				}
+				if(searchResult.getPreviousReadingDate() != request.getWaterConnection().getPreviousReadingDate()) {
+					errorMap.put("INVALID_UPDATE_PRVMETERREADING", "Previous Meter Reading Date cannot be modified cannot be modified!!");
+				}
+				if(searchResult.getArrears() != request.getWaterConnection().getArrears()) {
+					errorMap.put("INVALID_UPDATE_ARREARS", "Arrears cannot be modified cannot be modified!!");
+				}
+			}
+		}
 	}
    
 	/**
@@ -102,7 +157,7 @@ public class WaterConnectionValidator {
 	private void validateAllIds(WaterConnection updateWaterConnection, WaterConnection searchResult) {
 		Map<String, String> errorMap = new HashMap<>();
 		if (!searchResult.getApplicationNo().equals(updateWaterConnection.getApplicationNo()))
-			errorMap.put("INVALID UPDATE", "The application number from search: " + searchResult.getApplicationNo()
+			errorMap.put("CONNECTION_NOT_FOUND", "The application number from search: " + searchResult.getApplicationNo()
 					+ " and from update: " + updateWaterConnection.getApplicationNo() + " does not match");
 		if (!CollectionUtils.isEmpty(errorMap))
 			throw new CustomException(errorMap);

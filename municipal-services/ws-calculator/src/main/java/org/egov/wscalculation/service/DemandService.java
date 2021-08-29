@@ -204,7 +204,7 @@ public class DemandService {
 
 			demands.add(Demand.builder().consumerCode(consumerCode).demandDetails(demandDetails).payer(owner)
 					.minimumAmountPayable(minimumPayableAmount).tenantId(tenantId).taxPeriodFrom(fromDate)
-					.taxPeriodTo(toDate).consumerType("waterConnection").businessService(businessService)
+					.taxPeriodTo(toDate).consumerType( isForConnectionNO ? "waterConnection" : "waterConnection-arrears").businessService(businessService)
 					.status(StatusEnum.valueOf("ACTIVE")).billExpiryTime(expiryDate).build());
 		}
 		log.info("Demand Object" + demands.toString());
@@ -495,8 +495,8 @@ public class DemandService {
 	private List<Demand> updateDemandForCalculation(RequestInfo requestInfo, List<Calculation> calculations,
 			Long fromDate, Long toDate, boolean isForConnectionNo) {
 		List<Demand> demands = new LinkedList<>();
-		Long fromDateSearch = isForConnectionNo ? fromDate : null;
-		Long toDateSearch = isForConnectionNo ? toDate : null;
+		Long fromDateSearch = fromDate; //isForConnectionNo ? fromDate : null;
+		Long toDateSearch = toDate; //isForConnectionNo ? toDate : null;
 
 		for (Calculation calculation : calculations) {
 			Set<String> consumerCodes = Collections.singleton(calculation.getWaterConnection().getConnectionNo());

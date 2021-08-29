@@ -4,21 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
+import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:provider/provider.dart';
 
 import 'common_provider.dart';
 
 class CollectPaymentProvider with ChangeNotifier {
-
   var paymentStreamController = StreamController.broadcast();
+  var paymentModeList = <KeyValue>[];
 
   @override
   void dispose() {
@@ -26,33 +31,60 @@ class CollectPaymentProvider with ChangeNotifier {
     super.dispose();
   }
 
-
-  Future<void> getBillDetails(BuildContext context, Map<String, dynamic> query) async {
-
-    try{
+  Future<void> getBillDetails(
+      BuildContext context, Map<String, dynamic> query) async {
+    try {
       var paymentDetails = await ConsumerRepository().getBillDetails(query);
-      if(paymentDetails != null) {
-      var demandDetails = await ConsumerRepository().getDemandDetails(query);
-      if(demandDetails != null) paymentDetails.first.demand = demandDetails.first;
+      if (paymentDetails != null) {
+        var demandDetails = await ConsumerRepository().getDemandDetails(query);
+        if (demandDetails != null)
+          paymentDetails.first.demand = demandDetails.first;
+        getPaymentModes(paymentDetails.first);
         paymentStreamController.add(paymentDetails.first);
         notifyListeners();
       }
-    }on CustomException catch (e,s){
-      if(ErrorHandler.handleApiException(context, e,s)){
+    } on CustomException catch (e, s) {
+      if (ErrorHandler.handleApiException(context, e, s)) {
         paymentStreamController.add(e.code ?? e.message);
         return;
       }
       paymentStreamController.addError('error');
     } catch (e, s) {
-      ErrorHandler.logError(e.toString(),s);
+      ErrorHandler.logError(e.toString(), s);
       paymentStreamController.addError('error');
     }
   }
 
-  Future<void> updatePaymentInformation(FetchBill fetchBill, BuildContext context) async {
+  Future<void> getPaymentModes(FetchBill fetchBill) async {
+    paymentModeList = <KeyValue>[];
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    var res = await CoreRepository().getMdms(getMdmsPaymentModes(
+        commonProvider.userDetails!.userRequest!.tenantId.toString()));
+    if (res.mdmsRes?.billingService != null &&
+        res.mdmsRes?.billingService?.businessServiceList != null) {
+      print(i18.common.PAYMENT_METHOD);
+      Constants.PAYMENT_METHOD.forEach((e) {
+        var index = res.mdmsRes?.billingService?.businessServiceList?.first
+            .collectionModesNotAllowed!
+            .indexOf(e.key);
+        if (index == -1) {
+          paymentModeList.add(KeyValue(e.key, e.label));
+        }
+      });
+      fetchBill.paymentMethod = paymentModeList.first.key;
+      notifyListeners();
+    }
+  }
+
+  Future<void> updatePaymentInformation(
+      FetchBill fetchBill, BuildContext context) async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
-    var amount = fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key ? fetchBill.customAmountCtrl.text : fetchBill.totalAmount;
+    var amount = fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key
+        ? fetchBill.customAmountCtrl.text
+        : fetchBill.totalAmount;
     var payment = {
       "Payment": {
         "tenantId": commonProvider.userDetails?.selectedtenant?.code,
@@ -70,37 +102,52 @@ class CollectPaymentProvider with ChangeNotifier {
       }
     };
 
-    try{
+    try {
       Loaders.showLoadingDialog(context);
 
       var paymentDetails = await ConsumerRepository().collectPayment(payment);
-      if(paymentDetails != null && paymentDetails.isNotEmpty){
-
+      if (paymentDetails != null && paymentDetails.payments!.length > 0) {
         Navigator.pop(context);
-
-       Navigator.pushNamed(context, Routes.SUCCESS_VIEW,
-            arguments: SuccessHandler(
-                i18.common.PAYMENT_COMPLETE,
-                '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${fetchBill.mobileNumber})',
-                i18.common.BACK_HOME, Routes.HOUSEHOLD_DETAILS_SUCCESS, subHeader: '${ApplicationLocalizations.of(context).translate(i18.common.RECEIPT_NO)} \n ${paymentDetails.first['paymentDetails'][0]['receiptNumber']}',
-              downloadLink: '', whatsAppShare: ''
-            ));
+        print(paymentDetails);
+        Navigator.of(context).pushReplacement(
+            new MaterialPageRoute(builder: (BuildContext context) {
+          return CommonSuccess(
+            SuccessHandler(
+              i18.common.PAYMENT_COMPLETE,
+              '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${fetchBill.mobileNumber})',
+              i18.common.BACK_HOME,
+              Routes.HOUSEHOLD_DETAILS_SUCCESS,
+              subHeader:
+                  '${ApplicationLocalizations.of(context).translate(i18.common.RECEIPT_NO)} \n ${paymentDetails.payments!.first.paymentDetails!.first.receiptNumber}',
+              downloadLink: i18.common.RECEIPT_DOWNLOAD,
+              whatsAppShare: i18.common.SHARE_RECEIPTS,
+              downloadLinkLabel: i18.common.RECEIPT_DOWNLOAD,
+            ),
+            callBackdownload: () => commonProvider.getFileFromPDFService({
+              "Payments": [paymentDetails.payments!.first]
+            }, {
+              "key": "consolidatedreceipt",
+              "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+            }, paymentDetails.payments!.first.mobileNumber, "Download"),
+            callBackwatsapp: () => commonProvider.getFileFromPDFService({
+              "Payments": [paymentDetails..payments!]
+            }, {
+              "key": "consolidatedreceipt",
+              "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+            }, paymentDetails.payments!.first.mobileNumber, "Share"),
+            backButton: true,
+          );
+        }));
       }
-    }on CustomException catch (e,s) {
+    } on CustomException catch (e, s) {
       Navigator.pop(context);
-      if(ErrorHandler.handleApiException(context, e,s)) {
-        Notifiers.getToastMessage(
-            context,
-            e.message,
-            'ERROR');
+      if (ErrorHandler.handleApiException(context, e, s)) {
+        Notifiers.getToastMessage(context, e.message, 'ERROR');
       }
     } catch (e, s) {
       Navigator.pop(context);
-      Notifiers.getToastMessage(
-          context,
-          e.toString(),
-          'ERROR');
-      ErrorHandler.logError(e.toString(),s);
+      Notifiers.getToastMessage(context, e.toString(), 'ERROR');
+      ErrorHandler.logError(e.toString(), s);
     }
   }
 
@@ -109,10 +156,11 @@ class CollectPaymentProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  onChangeOfPaymentAmountOrMethod(FetchBill fetchBill, String val, [isPaymentAmount = false]) {
-    if(isPaymentAmount){
+  onChangeOfPaymentAmountOrMethod(FetchBill fetchBill, String val,
+      [isPaymentAmount = false]) {
+    if (isPaymentAmount) {
       fetchBill.paymentAmount = val;
-    }else{
+    } else {
       fetchBill.paymentMethod = val;
     }
     notifyListeners();

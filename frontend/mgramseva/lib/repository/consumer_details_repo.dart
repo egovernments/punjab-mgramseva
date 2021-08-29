@@ -1,3 +1,4 @@
+import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/common/demand.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -97,20 +98,26 @@ class ConsumerRepository extends BaseService {
         navigatorKey.currentContext!,
         listen: false);
 
-    var body = {
-      'userInfo' : commonProvider.userDetails?.userRequest?.toJson()
-    };
+    var body = {'userInfo': commonProvider.userDetails?.userRequest?.toJson()};
 
     var res = await makeRequest(
         url: Url.FETCH_BILL,
         method: RequestType.POST,
         queryParameters: query,
         body: body,
-        requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
             commonProvider.userDetails!.accessToken));
 
-    if(res != null){
-      fetchBill = res['Bill']?.map<FetchBill>((e) => FetchBill.fromJson(e)).toList();
+    if (res != null) {
+      fetchBill =
+          res['Bill']?.map<FetchBill>((e) => FetchBill.fromJson(e)).toList();
     }
     return fetchBill;
   }
@@ -121,26 +128,31 @@ class ConsumerRepository extends BaseService {
         navigatorKey.currentContext!,
         listen: false);
 
-    var body = {
-      'userInfo' : commonProvider.userDetails?.userRequest?.toJson()
-    };
+    var body = {'userInfo': commonProvider.userDetails?.userRequest?.toJson()};
 
     var res = await makeRequest(
         url: Url.FETCH_DEMAND,
         method: RequestType.POST,
         body: body,
         queryParameters: query,
-        requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
             commonProvider.userDetails!.accessToken));
 
-    if(res != null){
+    if (res != null) {
       demand = res['Demands']?.map<Demand>((e) => Demand.fromJson(e)).toList();
     }
     return demand;
   }
 
-  Future<List<dynamic>?> collectPayment(Map body) async {
-    List<dynamic>? response;
+  Future<BillPayments?> collectPayment(Map body) async {
+    BillPayments? response;
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -149,11 +161,18 @@ class ConsumerRepository extends BaseService {
         url: Url.COLLECT_PAYMENT,
         method: RequestType.POST,
         body: body,
-        requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
             commonProvider.userDetails!.accessToken));
 
-    if(res != null){
-      response = res['Payments'];
+    if (res != null) {
+      response = BillPayments.fromJson(res);
     }
     return response;
   }

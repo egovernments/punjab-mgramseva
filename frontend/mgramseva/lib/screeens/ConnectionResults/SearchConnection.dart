@@ -6,7 +6,6 @@ import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
@@ -16,7 +15,6 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/footer.dart';
-import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
 class SearchConsumerConnection extends StatefulWidget {
@@ -32,7 +30,6 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
 
   @override
   void initState() {
-    print(widget.arguments);
     super.initState();
   }
 
@@ -41,6 +38,7 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
     var searchConnectionProvider =
         Provider.of<SearchConnectionProvider>(context, listen: false);
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),
@@ -52,7 +50,7 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                HomeBack(widget: Help()),
+                HomeBack(),
                 Card(
                     child: Form(
                         key: searchConnectionProvider.formKey,

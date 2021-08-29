@@ -1,12 +1,9 @@
 package org.egov.echallan.model;
 
 import java.util.List;
-import java.util.Set;
 
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
+import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -15,8 +12,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.validation.constraints.NotNull;
 
 @Data
 @Getter
@@ -65,6 +60,33 @@ public class SearchCriteria {
 	
 	@JsonProperty("vendorName")
 	private String vendorName;
+	
+	@JsonProperty("isBillPaid")
+	private Boolean isBillPaid;
+
+	@JsonProperty("fromDate")
+	private Long fromDate = null;
+
+	@JsonProperty("toDate")
+	private Long toDate = null;
+	
+	@JsonProperty("sortBy")
+    private SortBy sortBy;
+	
+	@JsonProperty("sortOrder")
+	private SortOrder sortOrder;
+	    
+	public enum SortOrder {
+	    ASC,
+	    DESC
+	}
+	public enum SortBy {
+		totalAmount,
+		billDate,
+		paidDate,
+		typeOfExpense,
+		challanno
+	}
 	
 	public boolean isEmpty() {
         return (this.tenantId == null && this.ids == null  && this.mobileNumber == null 

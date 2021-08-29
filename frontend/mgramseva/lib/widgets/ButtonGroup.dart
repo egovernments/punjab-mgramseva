@@ -6,7 +6,12 @@ import 'package:mgramseva/widgets/Button.dart';
 class ButtonGroup extends StatelessWidget {
   final String label;
   final VoidCallback callBack;
-  ButtonGroup(this.label, this.callBack);
+  final VoidCallback callBackIcon;
+  ButtonGroup(
+    this.label,
+    this.callBackIcon,
+    this.callBack,
+  );
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -27,10 +32,11 @@ class ButtonGroup extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                           child: OutlinedButton.icon(
-                        onPressed: () => {},
+                        onPressed: callBackIcon,
+
                         style: ButtonStyle(
                           padding: MaterialStateProperty.all(
-                              EdgeInsets.symmetric(vertical: 0)),
+                              EdgeInsets.symmetric(vertical: 8)),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(0.0))),
