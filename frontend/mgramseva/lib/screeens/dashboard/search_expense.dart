@@ -137,7 +137,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
             unselectedLabelStyle: TextStyle(
                 color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400),
             radius: 25,
-            tabs: widget.dashBoardType == DashBoardType.Expenditure ? dashBoardProvider.getExpenseTabList(context, expenseList as List<ExpensesDetailsModel>) : dashBoardProvider.getCollectionsTabList(context, expenseList as List<WaterConnection>)
+            tabs: expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseTabList(context, expenseList) : dashBoardProvider.getCollectionsTabList(context, expenseList as List<WaterConnection>)
           ),
         ),
         Expanded(
@@ -145,7 +145,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
             builder : (_ , dashBoardProvider, child) => TabBarView(
                 controller: _tabController,
                 children: List.generate(_tabList.length, (index) => BillsTable(headerList: widget.dashBoardType == DashBoardType.Expenditure ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
-                  tableData:  widget.dashBoardType == DashBoardType.Expenditure ? dashBoardProvider.getExpenseData(index, expenseList as List<ExpensesDetailsModel>) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>),
+                  tableData:  expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseData(index, expenseList) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>),
                 ))
             ),
           ),
