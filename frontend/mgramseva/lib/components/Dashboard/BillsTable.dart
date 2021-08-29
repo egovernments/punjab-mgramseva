@@ -72,20 +72,33 @@ class _BillsTable extends State<BillsTable> {
                 padding: EdgeInsets.zero,
               ),
               child: _getTitleItemWidget(
-                  (e.label + (e.isAscendingOrder ? '↓' : '↑')),
-                  constraints),
-              onPressed: e.callBack);
+                  (e.label),
+                  constraints, e.isAscendingOrder),
+              onPressed: e.callBack == null ? null : ()=> e.callBack!(e));
       }else{
-        return _getTitleItemWidget(e.label, constraints);
+        return _getTitleItemWidget(e.label, constraints!);
     }
     }).toList();
   }
 
-  Widget _getTitleItemWidget(String label, constraints) {
+  Widget _getTitleItemWidget(String label, constraints, [bool? isAscending]) {
+    var textWidget = Text(label,
+        style: TextStyle(
+            fontWeight: FontWeight.w700, color: Colors.black, fontSize: 12));
+
     return Container(
-      child: Text(label,
-          style: TextStyle(
-              fontWeight: FontWeight.w700, color: Colors.black, fontSize: 12)),
+      child: isAscending != null ?
+      Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 5,
+        children: [
+          textWidget,
+          Icon(
+              isAscending! ? Icons.arrow_upward : Icons.arrow_downward_sharp
+          )
+        ],
+      ) :
+       textWidget,
       width: constraints.maxWidth < 760
           ? 187
           : (MediaQuery.of(context).size.width / 4 - 100),

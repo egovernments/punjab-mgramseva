@@ -9,6 +9,7 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/models.dart';
 
@@ -19,6 +20,7 @@ class DashBoardProvider with ChangeNotifier {
   int offset = 1;
   int limit = 10;
   late DateTime selectedMonth;
+  SortBy? sortBy;
 
   @override
   void dispose() {
@@ -44,10 +46,17 @@ class DashBoardProvider with ChangeNotifier {
       'fromDate' : '${DateTime(selectedMonth.year, selectedMonth.month, 1).millisecondsSinceEpoch}',
       'toDate' :  '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0).millisecondsSinceEpoch}',
       'vendorName' : searchController.text.trim(),
-      // 'challanNo' : searchController.text.trim()
+      'challanNo' : searchController.text.trim(),
     };
 
-    query.removeWhere((key, value) => value is String && value.trim().isEmpty);
+    if(sortBy != null){
+      query.addAll({
+      'sortOrder' : sortBy!.isAscending ? 'ASC' : 'DSC',
+      'sortBy' : sortBy!.key
+    });
+    }
+
+    query.removeWhere((key, value) => (value is String && value.trim().isEmpty));
     streamController.add(null);
 
     try{
@@ -77,11 +86,15 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   List<TableHeader> get expenseHeaderList => [
-    TableHeader(i18.dashboard.BILL_ID_VENDOR),
-    TableHeader(i18.expense.EXPENSE_TYPE),
-    TableHeader(i18.common.AMOUNT),
-    TableHeader(i18.expense.BILL_DATE),
-    TableHeader(i18.common.PAID_DATE),
+    TableHeader(i18.dashboard.BILL_ID_VENDOR, isSortingRequired: true, isAscendingOrder: sortBy != null && sortBy!.key == 'challanno' ? sortBy!.isAscending : null, callBack: onExpenseSort, apiKey: 'challanno'),
+    TableHeader(i18.expense.EXPENSE_TYPE, isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'expenseType' ? sortBy!.isAscending : null, apiKey: 'expenseType', callBack: onExpenseSort),
+    TableHeader(i18.common.AMOUNT, isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'amount' ? sortBy!.isAscending : null, apiKey: 'amount', callBack: onExpenseSort),
+    TableHeader(i18.expense.BILL_DATE, isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'billDate' ? sortBy!.isAscending : null, apiKey: 'billDate', callBack: onExpenseSort),
+    TableHeader(i18.common.PAID_DATE, isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'paidDate' ? sortBy!.isAscending : null, apiKey: 'paidDate', callBack: onExpenseSort),
   ];
 
 
@@ -119,8 +132,17 @@ class DashBoardProvider with ChangeNotifier {
     );
   }
 
-  onExpenseSort(){
-
+  onExpenseSort(TableHeader header){
+    if(sortBy != null && sortBy!.key == header.apiKey){
+      header.isAscendingOrder = !sortBy!.isAscending;
+    } else if(header.isAscendingOrder == null){
+      header.isAscendingOrder = true;
+    }else{
+      header.isAscendingOrder = !(header.isAscendingOrder ?? false);
+    }
+    sortBy = SortBy(header.apiKey ?? '', header.isAscendingOrder!);
+    notifyListeners();
+    fetchExpenseDashBoardDetails(navigatorKey.currentContext!, limit, 1, true);
   }
 
   void onSearch(String val, BuildContext context){

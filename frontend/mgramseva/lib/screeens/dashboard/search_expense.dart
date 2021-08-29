@@ -30,13 +30,18 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
 
   @override
   void initState() {
+    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false)
+    ..selectedMonth = DateTime.now()
+    ..limit = 10
+    ..offset = 1
+    ..sortBy = null;
+
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
   afterViewBuild() {
-    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false)
-    ..selectedMonth = DateTime.now();
+    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
 
     if(widget.dashBoardType == DashBoardType.Expenditure) {
       _tabList = [
@@ -47,8 +52,6 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
 
 
       dashBoardProvider
-        ..limit = 10
-        ..offset = 1
         ..expenseDashboardDetails?.expenseDetailList = <ExpensesDetailsModel>[]
         ..fetchExpenseDashBoardDetails(context, dashBoardProvider.limit, dashBoardProvider.offset);
     }else{

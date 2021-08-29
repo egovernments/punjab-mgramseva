@@ -115,9 +115,8 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
             Align(
                 alignment: Alignment.bottomRight,
                 child: Consumer<DashBoardProvider>(
-                    builder: (_, dashBoardProvider, child) => Row(children: [
-                        Text('${dashBoardProvider.expenseDashboardDetails?.totalCount}'),
-                      Pagination(limit: dashBoardProvider.limit, offSet: dashBoardProvider.offset, callBack: (pageResponse) => dashBoardProvider.onChangeOfPageLimit(pageResponse, context), totalCount: (dashBoardProvider?.expenseDashboardDetails?.totalCount ?? 0))])))
+                    builder: (_, dashBoardProvider, child) =>
+                      Pagination(limit: dashBoardProvider.limit, offSet: dashBoardProvider.offset, callBack: (pageResponse) => dashBoardProvider.onChangeOfPageLimit(pageResponse, context), totalCount: (dashBoardProvider?.expenseDashboardDetails?.totalCount ?? 0))))
           ]),
         ),
       ),
@@ -156,7 +155,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                     var date = dateList[index];
                    return Container(
                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
-                      color: index/2 == 0 ? Color.fromRGBO(238, 238, 238, 1) : Color.fromRGBO(255, 255, 255, 1),
+                      color: index%2 == 0 ? Color.fromRGBO(238, 238, 238, 1) : Color.fromRGBO(255, 255, 255, 1),
                       child: Wrap(
                         spacing: 5,
                         crossAxisAlignment: WrapCrossAlignment.center,

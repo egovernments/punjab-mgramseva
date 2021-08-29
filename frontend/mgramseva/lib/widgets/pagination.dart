@@ -21,11 +21,16 @@ class _PaginationState extends State<Pagination> {
           padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
           color: Colors.white,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text('Rows per page'),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: DropdownButton(
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black
+                  ),
                     items: dropDownItems,
                 value: widget.limit,
                   onChanged: onChangeOfPageCount,
