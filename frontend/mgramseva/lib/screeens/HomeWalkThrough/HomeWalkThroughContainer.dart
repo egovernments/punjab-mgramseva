@@ -135,9 +135,11 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                             style: TextStyle(fontSize: 16),
                             textAlign: TextAlign.start,
                           )),
-                          homeProvider.activeindex == homeProvider.homeWalkthrougList.length - 1
-                              ? Padding(
-                              padding: EdgeInsets.only(top: 10, right: 20, bottom: 10),
+                      homeProvider.activeindex ==
+                              homeProvider.homeWalkthrougList.length - 1
+                          ? Padding(
+                              padding: EdgeInsets.only(
+                                  top: 10, right: 20, bottom: 10),
                               child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -147,87 +149,92 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                           Navigator.pop(context);
                                           Provider.of<CommonProvider>(context,
                                               listen: false)
-                                            ..walkThroughCondition(false,
-                                                Constants.HOME_KEY);
+                                            ..walkThroughCondition(
+                                                false, Constants.HOME_KEY);
                                           setState(() {
                                             active = 0;
                                           });
                                         },
                                         child: Text(
                                             ApplicationLocalizations.of(context)
-                                                .translate(i18.common.END)))]))
-                              : Padding(
-                          padding: EdgeInsets.all(0),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                TextButton(
-                                    onPressed: () async {
-                                      homeProvider.activeindex = 0;
-                                      Navigator.pop(context);
-                                      Provider.of<CommonProvider>(context,
-                                          listen: false)
-                                        ..walkThroughCondition(
-                                            false, Constants.HOME_KEY);
-                                      setState(() {
-                                        active = 0;
-                                      });
-                                    },
-                                    child: Text(
-                                        ApplicationLocalizations.of(context)
-                                            .translate(i18.common.SKIP))),
-                                GestureDetector(
-                                    onTap: () async {
-                                      if (homeProvider
-                                                  .homeWalkthrougList.length -
-                                              1 <=
-                                          active) {
-                                        homeProvider.activeindex = 0;
-                                        Navigator.pop(context);
-                                        setState(() {
-                                          active = 0;
-                                        });
-                                      } else {
-                                        widget
-                                            .onnext!(homeProvider.activeindex);
-                                        await Scrollable.ensureVisible(
-                                            homeProvider
-                                                .homeWalkthrougList[
-                                                    homeProvider.activeindex]
-                                                .key!
-                                                .currentContext!,
-                                            duration: new Duration(
-                                                milliseconds: 100));
+                                                .translate(i18.common.END)))
+                                  ]))
+                          : Padding(
+                              padding: EdgeInsets.all(0),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () async {
+                                          homeProvider.activeindex = 0;
+                                          Navigator.pop(context);
+                                          Provider.of<CommonProvider>(context,
+                                              listen: false)
+                                            ..walkThroughCondition(
+                                                false, Constants.HOME_KEY);
+                                          setState(() {
+                                            active = 0;
+                                          });
+                                        },
+                                        child: Text(
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18.common.SKIP))),
+                                    GestureDetector(
+                                        onTap: () async {
+                                          if (homeProvider.homeWalkthrougList
+                                                      .length -
+                                                  1 <=
+                                              active) {
+                                            homeProvider.activeindex = 0;
+                                            Navigator.pop(context);
+                                            setState(() {
+                                              active = 0;
+                                            });
+                                          } else {
+                                            widget.onnext!(
+                                                homeProvider.activeindex);
+                                            await Scrollable.ensureVisible(
+                                                homeProvider
+                                                    .homeWalkthrougList[
+                                                        homeProvider
+                                                            .activeindex]
+                                                    .key!
+                                                    .currentContext!,
+                                                duration: new Duration(
+                                                    milliseconds: 100));
 
-                                        setState(() {
-                                          active = active + 1;
-                                        });
-                                      }
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.all(5.0),
-                                      height: 35,
-                                      width: 80,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        color: Theme.of(context).primaryColor,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey,
-                                            offset: Offset(0.0, 1.0), //(x,y)
-                                            blurRadius: 6.0,
+                                            setState(() {
+                                              active = active + 1;
+                                            });
+                                          }
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.all(5.0),
+                                          height: 35,
+                                          width: 80,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey,
+                                                offset:
+                                                    Offset(0.0, 1.0), //(x,y)
+                                                blurRadius: 6.0,
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                      child: Center(
-                                          child: Text(
-                                        ApplicationLocalizations.of(context)
-                                            .translate(i18.common.NEXT),
-                                        style: TextStyle(color: Colors.white),
-                                      )),
-                                    ))
-                              ]))
+                                          child: Center(
+                                              child: Text(
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18.common.NEXT),
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )),
+                                        ))
+                                  ]))
                     ]))))
       ]);
     });

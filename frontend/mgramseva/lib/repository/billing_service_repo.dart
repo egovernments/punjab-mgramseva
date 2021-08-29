@@ -57,7 +57,6 @@ class BillingServiceRepository extends BaseService {
         method: RequestType.POST);
     if (res != null) {
       billList = BillList.fromJson(res);
-      print(billList.bill!.length);
     }
     return billList;
   }

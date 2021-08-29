@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/role_actions.dart';
 
-var json = Constants.HOME_ITEMS
+var json = RoleActionsFiltering()
+    .getFilteredModules()
     .map(
       (e) => {"name": e.walkThroughMsg, "label": e.label, "icon": e.iconData},
     )
