@@ -494,8 +494,8 @@ public class EnrichmentService {
 			query.append("  AND payd.createdtime >= " + criteria.getFromDate());
 			List<String> amount = jdbcTemplate.queryForList(query.toString(), String.class);
 			
-			Map<String, String> additionalDetails = connection.getAdditionalDetails() != null ? (Map)connection.getAdditionalDetails()
-					: new HashMap<String, String>();
+			HashMap<String, Object> additionalDetails = connection.getAdditionalDetails() != null ? (HashMap<String, Object>)connection.getAdditionalDetails()
+					: new HashMap<String, Object>();
 			
 			additionalDetails.put("collectionAmount", amount.get(0));
 			connection.setAdditionalDetails(additionalDetails);
