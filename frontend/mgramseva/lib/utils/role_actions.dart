@@ -120,9 +120,7 @@ class RoleActionsFiltering {
         return ['COLLECTION_OPERATOR'];
 
       case 'dashboard':
-        return [
-          'SUPERUSER',
-        ];
+        return ['SUPERUSER', 'DASHBOARD_VIEWER'];
       default:
         return [];
     }
