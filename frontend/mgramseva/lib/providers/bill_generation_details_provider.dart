@@ -70,61 +70,61 @@ class BillGenerationProvider with ChangeNotifier {
     ));
     if (id == null) {
       billGenerateDetails.serviceType = 'Non Metered';
-    }
-    if (waterConnection == null) {
-      var commonProvider = Provider.of<CommonProvider>(
-          navigatorKey.currentContext!,
-          listen: false);
-      id!.split('_').join('/');
-      try {
-        Loaders.showLoadingDialog(context);
+    }else {
+      if (waterConnection == null) {
+        var commonProvider = Provider.of<CommonProvider>(
+            navigatorKey.currentContext!,
+            listen: false);
+        id!.split('_').join('/');
+        try {
+          Loaders.showLoadingDialog(context);
 
-        var res = await SearchConnectionRepository().getconnection({
-          "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-          ...{'connectionNumber': id!.split('_').join('/')},
-        });
+          var res = await SearchConnectionRepository().getconnection({
+            "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+            ...{'connectionNumber': id!.split('_').join('/')},
+          });
 
-        fetchBill(res.waterConnection!.first);
+          fetchBill(res.waterConnection!.first);
 
-        Navigator.pop(context);
-        waterconnection = res.waterConnection!.first;
-        billGenerateDetails.propertyType =
-            waterconnection!.additionalDetails!.propertyType;
-        billGenerateDetails.serviceType = waterconnection.connectionType;
-        if (waterconnection.connectionType == 'Metered') {
+          Navigator.pop(context);
           waterconnection = res.waterConnection!.first;
+          billGenerateDetails.propertyType =
+              waterconnection!.additionalDetails!.propertyType;
+          billGenerateDetails.serviceType = waterconnection.connectionType;
+          billGenerateDetails.meterNumberCtrl.text = waterconnection.meterId!;
+          if (waterconnection.connectionType == 'Metered') {
+            waterconnection = res.waterConnection!.first;
+            var meterRes = await BillGenerateRepository().searchmetetedDemand({
+              "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+              ...{'connectionNos': id!.split('_').join('/')},
+            });
+            setMeterReading(meterRes);
+          }
+        } catch (e, s) {
+          Navigator.pop(context);
+          ErrorHandler().allExceptionsHandler(context, e, s);
+        }
+      } else {
+        billGenerateDetails.propertyType =
+            waterConnection!.additionalDetails!.propertyType;
+        billGenerateDetails.serviceType = waterConnection.connectionType;
+        billGenerateDetails.meterNumberCtrl.text = waterConnection.meterId!;
+        waterconnection = waterConnection;
+        if (waterconnection.connectionType == 'Metered') {
+          var commonProvider = Provider.of<CommonProvider>(
+              navigatorKey.currentContext!,
+              listen: false);
           var meterRes = await BillGenerateRepository().searchmetetedDemand({
             "tenantId": commonProvider.userDetails!.selectedtenant!.code,
             ...{'connectionNos': id!.split('_').join('/')},
           });
+          fetchBill(waterConnection);
           setMeterReading(meterRes);
           if (meterRes.meterReadings!.length == 0) {
             prevReadingDate = waterConnection!.previousReadingDate;
           }
-        }
-      } catch (e, s) {
-        Navigator.pop(context);
-        ErrorHandler().allExceptionsHandler(context, e, s);
+        } else {}
       }
-    } else {
-      billGenerateDetails.propertyType =
-          waterConnection!.additionalDetails!.propertyType;
-      billGenerateDetails.serviceType = waterConnection.connectionType;
-      billGenerateDetails.meterNumberCtrl.text = waterConnection.meterId!;
-      waterconnection = waterConnection;
-      if (waterconnection.connectionType == 'Metered') {
-        var commonProvider = Provider.of<CommonProvider>(
-            navigatorKey.currentContext!,
-            listen: false);
-        var meterRes = await BillGenerateRepository().searchmetetedDemand({
-          "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-          ...{'connectionNos': id!.split('_').join('/')},
-        });
-        setMeterReading(meterRes);
-        if (meterRes.meterReadings!.length == 0) {
-          prevReadingDate = waterConnection!.previousReadingDate;
-        }
-      } else {}
     }
   }
 
@@ -153,6 +153,7 @@ class BillGenerationProvider with ChangeNotifier {
           waterconnection.additionalDetails!.meterReading.toString()[3];
       billGenerateDetails.om_5Ctrl.text =
           waterconnection.additionalDetails!.meterReading.toString()[4];
+      prevReadingDate = waterconnection.previousReadingDate;
     }
   }
 
