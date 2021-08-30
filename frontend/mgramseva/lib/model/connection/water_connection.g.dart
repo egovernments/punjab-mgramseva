@@ -81,6 +81,7 @@ AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) {
     ..propertyType = json['propertyType'] as String?
     ..street = json['street'] as String?
     ..doorNo = json['doorNo'] as String?
+    ..collectionAmount = json['collectionAmount'] as String?
     ..action = json['action'] as String?;
 }
 
@@ -92,5 +93,6 @@ Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
       'propertyType': instance.propertyType,
       'street': instance.street,
       'doorNo': instance.doorNo,
+      'collectionAmount': instance.collectionAmount,
       'action': instance.action,
     };

@@ -108,7 +108,7 @@ class _BuildTextField extends State<BuildTextField> {
           fillColor: widget.isDisabled != null && widget.isDisabled!
               ? Colors.grey
               : Colors.white,
-          prefixIcon: widget.prefixText == ''
+          prefixIcon: widget.prefixIcon ?? (widget.prefixText == ''
               ? null
               : Padding(
                   padding: EdgeInsets.only(left: 15, top: 15, bottom: 15),
@@ -119,7 +119,7 @@ class _BuildTextField extends State<BuildTextField> {
                         color: widget.isDisabled != null && widget.isDisabled!
                             ? Colors.grey
                             : Colors.black),
-                  )),
+                  ))),
         ),
         onChanged: widget.onChange);
 // Label Text

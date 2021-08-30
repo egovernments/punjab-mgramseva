@@ -155,6 +155,9 @@ class AdditionalDetails {
   @JsonKey(name: "doorNo")
   String? doorNo;
 
+  @JsonKey(name: "collectionAmount")
+  String? collectionAmount;
+
   @JsonKey(ignore: true)
   var initialMeterReadingCtrl = TextEditingController();
   String? action;
