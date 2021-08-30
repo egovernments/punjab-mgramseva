@@ -39,23 +39,26 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false)
-    ..dateList = CommonMethods.getPastMonthUntilFinancialYear().reversed.toList();
+    var dashBoardProvider =
+        Provider.of<DashBoardProvider>(context, listen: false)
+          ..dateList =
+              CommonMethods.getPastMonthUntilFinancialYear().reversed.toList();
     dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
     _tabController = new TabController(vsync: this, length: 2);
   }
 
   @override
   Widget build(BuildContext context) {
-    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    var dashBoardProvider =
+        Provider.of<DashBoardProvider>(context, listen: false);
 
     return WillPopScope(
       onWillPop: () async {
-        if(dashBoardProvider.removeOverLay(_overlayEntry)) return false;
-       return true;
+        if (dashBoardProvider.removeOverLay(_overlayEntry)) return false;
+        return true;
       },
       child: GestureDetector(
-        onTap: ()=> dashBoardProvider.removeOverLay(_overlayEntry),
+        onTap: () => dashBoardProvider.removeOverLay(_overlayEntry),
         child: Scaffold(
           appBar: CustomAppBar(),
           drawer: DrawerWrapper(
@@ -64,14 +67,16 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
           body: Stack(children: [
             Container(
                 padding: EdgeInsets.only(left: 18, right: 18),
-                height: MediaQuery.of(context).size.height - 56 - 50 - MediaQuery.of(context).padding.top,
+                height: MediaQuery.of(context).size.height -
+                    56 -
+                    50 -
+                    MediaQuery.of(context).padding.top,
                 child: CustomScrollView(slivers: [
                   SliverList(
                       delegate: SliverChildListDelegate([
                     HomeBack(widget: _buildShare),
                     Container(
-                        key: key,
-                        child: DashboardCard(onTapOfMonthPicker)),
+                        key: key, child: DashboardCard(onTapOfMonthPicker)),
                     TabBar(
                       labelColor: Theme.of(context).primaryColor,
                       unselectedLabelColor: Colors.black,
@@ -113,19 +118,22 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                 alignment: Alignment.bottomRight,
                 child: Consumer<DashBoardProvider>(
                     builder: (_, dashBoardProvider, child) {
-                     var totalCount =  (dashBoardProvider.selectedDashboardType == DashBoardType.Expenditure
-                          ? dashBoardProvider?.expenseDashboardDetails?.totalCount : dashBoardProvider.waterConnectionsDetails
-                          ?.totalCount) ?? 0;
-                     return Visibility(
-                           visible: totalCount > 0,
-                          child: Pagination(limit: dashBoardProvider.limit,
-                              offSet: dashBoardProvider.offset,
-                              callBack: (pageResponse) =>
-                                  dashBoardProvider.onChangeOfPageLimit(
-                                      pageResponse, context),
-                              totalCount: totalCount));
-                    }
-    ))
+                  var totalCount = (dashBoardProvider.selectedDashboardType ==
+                              DashBoardType.Expenditure
+                          ? dashBoardProvider
+                              ?.expenseDashboardDetails?.totalCount
+                          : dashBoardProvider
+                              .waterConnectionsDetails?.totalCount) ??
+                      0;
+                  return Visibility(
+                      visible: totalCount > 0,
+                      child: Pagination(
+                          limit: dashBoardProvider.limit,
+                          offSet: dashBoardProvider.offset,
+                          callBack: (pageResponse) => dashBoardProvider
+                              .onChangeOfPageLimit(pageResponse, context),
+                          totalCount: totalCount));
+                }))
           ]),
         ),
       ),
@@ -137,83 +145,100 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
       icon: Image.asset('assets/png/whats_app.png'),
       label: Text(i18.common.SHARE));
 
-
-  void onTapOfMonthPicker(){
-    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+  void onTapOfMonthPicker() {
+    var dashBoardProvider =
+        Provider.of<DashBoardProvider>(context, listen: false);
 
     dashBoardProvider.removeOverLay(_overlayEntry);
     overlayState = Overlay.of(context);
 
-    RenderBox? box = key.currentContext!
-        .findRenderObject() as RenderBox?;
-    Offset position =
-    box!.localToGlobal(Offset.zero);
+    RenderBox? box = key.currentContext!.findRenderObject() as RenderBox?;
+    Offset position = box!.localToGlobal(Offset.zero);
 
     _overlayEntry = new OverlayEntry(
         builder: (BuildContext context) => Positioned(
             left: position.dx + box.size.width - 185,
             top: position.dy + box.size.height - 10,
             child: Material(
-              color: Colors.transparent,
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(5.0),
-                    bottomLeft: Radius.circular(5.0),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(.5),
-                      blurRadius: 20.0, // soften the shadow
-                      spreadRadius: 0.0, //extend the shadow
-                      offset: Offset(
-                        5.0, // Move to right 10  horizontally
-                        5.0, // Move to bottom 10 Vertically
+                color: Colors.transparent,
+                child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(5.0),
+                        bottomLeft: Radius.circular(5.0),
                       ),
-                    )
-                  ],
-                ),
-                child:  Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: List.generate(dashBoardProvider.dateList.length, (index) {
-                    var date = dashBoardProvider.dateList[index];
-                   return InkWell(
-                     onTap: () => dashBoardProvider.onChangeOfDate(date, context, _overlayEntry),
-                     child: Container(
-                       width: 180,
-                     decoration: index == dashBoardProvider.dateList.length - 1 ? BoxDecoration(
-                         color: index % 2 == 0 ? Color.fromRGBO(238, 238, 238, 1) : Color.fromRGBO(255, 255, 255, 1),
-                         borderRadius: BorderRadius.only(
-                     bottomRight: Radius.circular(5.0),
-                     bottomLeft: Radius.circular(5.0),
-                      )) : BoxDecoration(
-                       color: index % 2 == 0 ? Color.fromRGBO(238, 238, 238, 1) : Color.fromRGBO(255, 255, 255, 1),
-                     ),
-                       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                        child: Wrap(
-                          spacing: 5,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          alignment: WrapAlignment.spaceBetween,
-                          children: [
-                            Text('${DateFormats.getMonthAndYear(dashBoardProvider.dateList[index])}',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: dashBoardProvider.selectedMonth?.year == date?.year && dashBoardProvider.selectedMonth?.month == date?.month ?
-                                  FontWeight.bold : FontWeight.normal
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(.5),
+                          blurRadius: 20.0, // soften the shadow
+                          spreadRadius: 0.0, //extend the shadow
+                          offset: Offset(
+                            5.0, // Move to right 10  horizontally
+                            5.0, // Move to bottom 10 Vertically
+                          ),
+                        )
+                      ],
+                    ),
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(
+                            dashBoardProvider.dateList.length, (index) {
+                          var date = dashBoardProvider.dateList[index];
+                          return InkWell(
+                            onTap: () => dashBoardProvider.onChangeOfDate(
+                                date, context, _overlayEntry),
+                            child: Container(
+                              width: 180,
+                              decoration: index ==
+                                      dashBoardProvider.dateList.length - 1
+                                  ? BoxDecoration(
+                                      color: index % 2 == 0
+                                          ? Color.fromRGBO(238, 238, 238, 1)
+                                          : Color.fromRGBO(255, 255, 255, 1),
+                                      borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(5.0),
+                                        bottomLeft: Radius.circular(5.0),
+                                      ))
+                                  : BoxDecoration(
+                                      color: index % 2 == 0
+                                          ? Color.fromRGBO(238, 238, 238, 1)
+                                          : Color.fromRGBO(255, 255, 255, 1),
+                                    ),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 8),
+                              child: Wrap(
+                                spacing: 5,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                alignment: WrapAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${DateFormats.getMonthAndYear(dashBoardProvider.dateList[index])}',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: dashBoardProvider
+                                                        .selectedMonth?.year ==
+                                                    date?.year &&
+                                                dashBoardProvider
+                                                        .selectedMonth?.month ==
+                                                    date?.month
+                                            ? FontWeight.bold
+                                            : FontWeight.normal),
+                                  ),
+                                  Radio(
+                                      value: date,
+                                      groupValue:
+                                          dashBoardProvider.selectedMonth,
+                                      onChanged: (date) =>
+                                          dashBoardProvider.onChangeOfDate(
+                                              date as DateTime,
+                                              context,
+                                              _overlayEntry))
+                                ],
+                              ),
                             ),
-                            ),
-                            Radio(value: date,
-                                groupValue: dashBoardProvider.selectedMonth,
-                                onChanged: (date) => dashBoardProvider.onChangeOfDate(date as DateTime, context, _overlayEntry))
-                          ],
-                        ),
-                      ),
-                   );
-                  })
-              ))
-            )));
-    if(_overlayEntry != null)
-      overlayState?.insert(_overlayEntry!);
+                          );
+                        }))))));
+    if (_overlayEntry != null) overlayState?.insert(_overlayEntry!);
   }
 }

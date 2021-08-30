@@ -169,7 +169,6 @@ class router {
         String? id;
         String? mode;
         if (settings.arguments != null) {
-          print(settings.arguments);
           id = ((settings.arguments as Map)['waterconnections']
                   as WaterConnection)
               .connectionNo;
