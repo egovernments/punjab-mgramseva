@@ -104,5 +104,14 @@ public class SearchCriteria {
 				&& this.fromDate == null && this.toDate == null && this.ownerIds == null && this.propertyId == null
 				&& this.applicationType == null);
 	}
+	
+	public boolean mobileNumberOny() {
+		return (!StringUtils.isEmpty(this.tenantId) 
+				&& StringUtils.isEmpty(this.propertyId) && CollectionUtils.isEmpty(this.ids)
+				&& StringUtils.isEmpty(this.oldConnectionNumber) && StringUtils.isEmpty(this.connectionNumber)
+				&& StringUtils.isEmpty(this.status) && StringUtils.isEmpty(this.applicationNumber)
+				&& StringUtils.isEmpty(this.applicationStatus) && StringUtils.isEmpty(this.fromDate)
+				&& StringUtils.isEmpty(this.toDate) && StringUtils.isEmpty(this.applicationType));
+	}
 
 }
