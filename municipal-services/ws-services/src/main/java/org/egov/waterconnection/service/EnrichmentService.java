@@ -485,6 +485,7 @@ public class EnrichmentService {
 		return finalConnectionList;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void setTotalAmount(@Valid List<WaterConnection> waterConnection, SearchCriteria criteria,
 			RequestInfo requestInfo) {
 		waterConnection.forEach(connection -> {
@@ -494,9 +495,15 @@ public class EnrichmentService {
 			query.append("  AND payd.createdtime >= " + criteria.getFromDate());
 			List<String> amount = jdbcTemplate.queryForList(query.toString(), String.class);
 			
-			HashMap<String, Object> additionalDetails = connection.getAdditionalDetails() != null ? (HashMap<String, Object>)connection.getAdditionalDetails()
-					: new HashMap<String, Object>();
-			
+			HashMap<String, Object> additionalDetails = new HashMap<>();
+			HashMap<String, Object> addDetail = mapper
+					.convertValue(connection.getAdditionalDetails(), HashMap.class);
+
+			for (Map.Entry<String, Object> entry: addDetail.entrySet()) {
+				if (additionalDetails.getOrDefault(entry.getKey(), null) == null) {
+					additionalDetails.put(entry.getKey(), addDetail.get(entry.getKey()));
+				}
+			}
 			additionalDetails.put("collectionAmount", amount.get(0));
 			connection.setAdditionalDetails(additionalDetails);
 		});

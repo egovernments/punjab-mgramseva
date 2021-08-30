@@ -50,7 +50,7 @@ public class SearchCriteria {
 	private Integer limit;
 	
 	@JsonProperty("status")
-    private String status;
+    private List<String> status;
 	
 	@JsonProperty("vendorIds")
 	private List<String> vendorIds;

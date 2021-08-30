@@ -108,12 +108,13 @@ public class ChallanQueryBuilder {
                 builder.append("  challan.challanno like ?");
                 preparedStmtList.add('%' + criteria.getChallanNo() + '%');
             }
+            
             if (criteria.getStatus() != null) {
                 addClauseIfRequired(preparedStmtList, builder);
-                builder.append("  challan.applicationstatus = ? ");
-                preparedStmtList.add(criteria.getStatus());
+                builder.append(" challan.applicationstatus IN (").append(createQuery(criteria.getStatus())).append(")");
+                addToPreparedStatement(preparedStmtList, criteria.getStatus());
             }
-            
+
             if(criteria.getExpenseType() != null){
             	addClauseIfRequired(preparedStmtList, builder);
             	builder.append( " challan.typeOfExpense = ? ");
@@ -142,8 +143,6 @@ public class ChallanQueryBuilder {
     			builder.append("  challan.isBillPaid = ? ");
     			preparedStmtList.add(criteria.getIsBillPaid());
     		}
-
-
         }
 
         return addPaginationWrapper(builder.toString(),preparedStmtList,criteria);
