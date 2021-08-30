@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/language.dart';
 
 import 'package:mgramseva/providers/tenants_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
@@ -186,10 +187,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                                Text(commonProvider
-                                    .userDetails!.selectedtenant!.code!),
-                                Text(commonProvider
-                                    .userDetails!.selectedtenant!.city!.code!)
+                                Text(ApplicationLocalizations.of(context)
+                                    .translate(commonProvider
+                                        .userDetails!.selectedtenant!.code!)),
+                                Text(ApplicationLocalizations.of(context)
+                                    .translate(commonProvider.userDetails!
+                                        .selectedtenant!.city!.code!))
                               ])),
             Icon(Icons.arrow_drop_down)
           ],
@@ -200,9 +203,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     var tenantProvider = Provider.of<TenantsProvider>(context, listen: false);
+    var languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
     return AppBar(
-      title: Text(ApplicationLocalizations.of(context)
-          .translate(i18.common.MGRAM_SEVA)),
+      title: Image(
+          width: 150,
+          image: NetworkImage(
+            languageProvider.stateInfo!.logoUrlWhite!,
+          )),
       actions: [
         Container(
             height: MediaQuery.of(context).size.height,
