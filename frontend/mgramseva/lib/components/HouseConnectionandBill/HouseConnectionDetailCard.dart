@@ -10,6 +10,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
   _getLabeltext(label, value, context) {
     return (Row(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
             padding: EdgeInsets.only(top: 16, bottom: 16),
@@ -21,7 +22,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
         Container(
             alignment: Alignment.topCenter,
             padding: EdgeInsets.only(top: 16, bottom: 16),
-            child: Text(value,
+            child: Text(ApplicationLocalizations.of(context).translate(value),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)))
       ],
     ));
@@ -38,6 +39,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
                   padding: EdgeInsets.only(top: 16, bottom: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
                           width: MediaQuery.of(context).size.width / 3.3,
@@ -73,13 +75,13 @@ class HouseConnectionDetailCard extends StatelessWidget {
                     waterconnection!.oldConnectionNo, context),
                 _getLabeltext(
                     i18.searchWaterConnection.RESULTS_ADDRESS,
-                    waterconnection!.additionalDetails!.doorNo != null
-                        ? waterconnection!.additionalDetails!.doorNo!
-                        : "" +
-                            (waterconnection!.additionalDetails!.street != null
-                                ? waterconnection!.additionalDetails!.street!
-                                : "") +
-                            waterconnection!.additionalDetails!.locality!,
+                    (waterconnection!.additionalDetails!.doorNo != null
+                            ? waterconnection!.additionalDetails!.doorNo!
+                            : "") +
+                        (waterconnection!.additionalDetails!.street != null
+                            ? waterconnection!.additionalDetails!.street!
+                            : "") +
+                        waterconnection!.additionalDetails!.locality!,
                     context),
                 _getLabeltext(i18.searchWaterConnection.PROPERTY_TYPE,
                     waterconnection!.additionalDetails!.propertyType, context),

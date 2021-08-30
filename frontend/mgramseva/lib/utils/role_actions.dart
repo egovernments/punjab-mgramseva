@@ -50,7 +50,6 @@ class RoleActionsFiltering {
   }
 
   bool isEligibleRoletoRoute(String routerLink) {
-    print(routerLink);
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -71,10 +70,8 @@ class RoleActionsFiltering {
       return isEligible;
     } else if (getRolesBasedOnModule(routerLink).length > 1) {
       var roles = commonProvider.userDetails?.userRequest?.roles?.where((e) {
-        print(getRolesBasedOnModule(routerLink));
         if (getRolesBasedOnModule(routerLink).contains(e.code) &&
             commonProvider.userDetails?.selectedtenant?.code == e.tenantId) {
-          print(routerLink);
           return true;
         } else
           return false;
