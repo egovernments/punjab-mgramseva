@@ -21,7 +21,7 @@ class RoleActionsFiltering {
         var roles = commonProvider.userDetails?.userRequest?.roles
             ?.where((e) =>
                 e.code == element &&
-                commonProvider.userDetails?.selectedtenant!.code == e.tenantId)
+                commonProvider.userDetails?.selectedtenant?.code == e.tenantId)
             .toList();
         if (roles?.isEmpty ?? true) {
           isEligible = false;
