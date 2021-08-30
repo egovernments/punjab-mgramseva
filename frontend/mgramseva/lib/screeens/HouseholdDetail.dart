@@ -66,7 +66,9 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                     widget.mode == 'collect'
                 ? GenerateNewBill(data)
                 : Text(""),
-        data.bill == null ? Text("") : NewConsumerBill(data, widget.mode),
+        data.bill!.first == null
+            ? Text("")
+            : NewConsumerBill(data, widget.mode),
         data.bill == null
             ? Text("")
             : ConsumerBillPayments(data.bill!.first.waterConnection)

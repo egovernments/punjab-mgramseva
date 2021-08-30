@@ -23,12 +23,12 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     afterViewBuild();
+    super.initState();
   }
 
   afterViewBuild() {
     Provider.of<HomeProvider>(context, listen: false)
       ..setwalkthrough(HomeWalkThrough().homeWalkThrough.map((e) {
-        print(e.label);
         e.key = GlobalKey();
         return e;
       }).toList());
