@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/constants.dart';
@@ -23,19 +25,21 @@ class RoleActionsFiltering {
                 e.code == element &&
                 commonProvider.userDetails?.selectedtenant?.code == e.tenantId)
             .toList();
-        print(roles);
+
         if (roles?.isEmpty ?? true) {
           isEligible = false;
         }
       });
       return isEligible;
     } else if (getRolesBasedOnModule(item.link).length > 1) {
-      print(commonProvider.userDetails?.selectedtenant?.code);
-      var roles = commonProvider.userDetails?.userRequest?.roles
-          ?.where((e) =>
-              getRolesBasedOnModule(item.link).contains(e.code) &&
-              commonProvider.userDetails?.selectedtenant?.code == e.tenantId)
-          .toList();
+      var roles = commonProvider.userDetails?.userRequest?.roles?.where((e) {
+        if (getRolesBasedOnModule(item.link).contains(e.code) &&
+            commonProvider.userDetails?.selectedtenant?.code == e.tenantId) {
+          return true;
+        } else
+          return false;
+      }).toList();
+
       if (roles?.isEmpty ?? true) {
         isEligible = false;
       }
@@ -46,6 +50,7 @@ class RoleActionsFiltering {
   }
 
   bool isEligibleRoletoRoute(String routerLink) {
+    print(routerLink);
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -65,11 +70,15 @@ class RoleActionsFiltering {
 
       return isEligible;
     } else if (getRolesBasedOnModule(routerLink).length > 1) {
-      var roles = commonProvider.userDetails?.userRequest?.roles
-          ?.where((e) =>
-              getRolesBasedOnModule(routerLink).contains(e.code) &&
-              commonProvider.userDetails?.selectedtenant?.code == e.tenantId)
-          .toList();
+      var roles = commonProvider.userDetails?.userRequest?.roles?.where((e) {
+        print(getRolesBasedOnModule(routerLink));
+        if (getRolesBasedOnModule(routerLink).contains(e.code) &&
+            commonProvider.userDetails?.selectedtenant?.code == e.tenantId) {
+          print(routerLink);
+          return true;
+        } else
+          return false;
+      }).toList();
       if (roles?.isEmpty ?? true) {
         isEligible = false;
       }
@@ -84,46 +93,50 @@ class RoleActionsFiltering {
 
       // GP Admin
       case Routes.HOUSEHOLD:
-        return ['GP_ADMIN', 'COLLECTION_OPERATOR'];
+        return ['COLLECTION_OPERATOR', 'SUPERUSER'];
+
+      case Routes.CONSUMER_UPDATE:
+        return ['GP_ADMIN', 'SUPERUSER'];
 
       case Routes.CONSUMER_CREATE:
-        return ['GP_ADMIN', 'COLLECTION_OPERATOR'];
-      case Routes.CONSUMER_UPDATE:
-        return ['GP_ADMIN', 'COLLECTION_OPERATOR'];
+        return ['GP_ADMIN', 'COLLECTION_OPERATOR', 'SUPERUSER'];
 
       case Routes.HOUSEHOLD_DETAILS:
-        return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR'];
+        return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR', 'SUPERUSER'];
 
       case Routes.SEARCH_CONSUMER_RESULT:
-        return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR'];
+        return [
+          'GP_ADMIN',
+          'BULK_DEMAND_PROCESSING',
+          'COLLECTION_OPERATOR',
+          'SUPERUSER'
+        ];
 
       case Routes.HOUSEHOLD_REGISTER:
-        return ['COLLECTION_OPERATOR'];
+        return ['COLLECTION_OPERATOR', 'SUPERUSER'];
 
       // Expense Processing
       case Routes.EXPENSE_SEARCH:
-        return ['EXPENSE_PROCESSING'];
+        return ['EXPENSE_PROCESSING', 'SUPERUSER'];
       case Routes.EXPENSES_ADD:
-        return ['EXPENSE_PROCESSING'];
+        return ['EXPENSE_PROCESSING', 'SUPERUSER'];
       case Routes.EXPENSE_UPDATE:
-        return ['EXPENSE_PROCESSING'];
+        return ['EXPENSE_PROCESSING', 'SUPERUSER'];
 
       case Routes.HOUSEHOLD_DETAILS:
-        return ['BULK_DEMAND_PROCESSING'];
+        return ['BULK_DEMAND_PROCESSING', 'SUPERUSER'];
 
       case Routes.HOUSEHOLDRECEIPTS:
-        return [
-          'BULK_DEMAND_PROCESSING',
-        ];
+        return ['BULK_DEMAND_PROCESSING', 'SUPERUSER'];
 
       case Routes.MANUAL_BILL_GENERATE:
-        return ['BULK_DEMAND_PROCESSING'];
+        return ['BULK_DEMAND_PROCESSING', 'SUPERUSER'];
 
       // Collection Operator
       case Routes.CONSUMER_SEARCH:
-        return ['COLLECTION_OPERATOR'];
+        return ['COLLECTION_OPERATOR', 'SUPERUSER'];
       case Routes.BILL_GENERATE:
-        return ['COLLECTION_OPERATOR'];
+        return ['COLLECTION_OPERATOR', 'SUPERUSER'];
 
       case 'dashboard':
         return ['SUPERUSER', 'DASHBOARD_VIEWER'];
