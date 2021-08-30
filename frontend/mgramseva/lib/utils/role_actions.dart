@@ -31,6 +31,23 @@ class RoleActionsFiltering {
     return isEligible;
   }
 
+  bool isEligibleRoletoRoute(String routerLink) {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    var isEligible = true;
+
+    getRolesBasedOnModule(routerLink).forEach((element) {
+      var roles = commonProvider.userDetails?.userRequest?.roles
+          ?.where((e) => e.code == element)
+          .toList();
+      if (roles?.isEmpty ?? true) {
+        isEligible = false;
+      }
+    });
+    return isEligible;
+  }
+
   List<String> getRolesBasedOnModule(String route) {
     switch (route) {
 
