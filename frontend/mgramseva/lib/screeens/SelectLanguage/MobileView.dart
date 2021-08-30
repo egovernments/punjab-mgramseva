@@ -4,9 +4,11 @@ import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
+import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/footerBanner.dart';
 import 'package:provider/provider.dart';
 
@@ -24,14 +26,32 @@ class LanguageSelectMobileView extends StatelessWidget {
               padding: EdgeInsets.all(8),
               child: Card(
                   child: (Column(children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image(
-                      width: 200,
-                      image: NetworkImage(
-                        stateInfo.logoUrl ?? '',
-                      )),
-                ),
+                Container(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image(
+                            width: 200,
+                            image: NetworkImage(
+                              stateInfo.logoUrl ?? '',
+                            )),
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Text(
+                            " | ",
+                            style: TextStyle(fontSize: 19, color: Colors.black),
+                          )),
+                      Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Text(
+                            ApplicationLocalizations.of(context)
+                                .translate(stateInfo!.code!),
+                            style: TextStyle(fontSize: 19, color: Colors.black),
+                          )),
+                    ])),
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(

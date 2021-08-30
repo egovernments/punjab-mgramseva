@@ -6,6 +6,7 @@ import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/footerBanner.dart';
 
 class LanguageSelectionDesktopView extends StatelessWidget {
@@ -27,7 +28,8 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                 child: Card(
                     child: (Column(children: [
                   Padding(
-                      padding: const EdgeInsets.all(15.0),
+                      padding:
+                          const EdgeInsets.only(left: 15.0, right: 15, top: 15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -36,8 +38,8 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                               image: NetworkImage(
                                 stateInfo.logoUrl!,
                               )),
-                          // ListLabelText("|"),
-                          // ListLabelText("STATE_LABEL")
+                          SubLabelText(" | "),
+                          SubLabelText(stateInfo.code)
                         ],
                       )),
                   Padding(
@@ -57,7 +59,7 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                   Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             for (var language in stateInfo.languages ?? [])
                               LanguageCard(language, stateInfo.languages ?? [],
