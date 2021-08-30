@@ -21,16 +21,20 @@ class RoleActionsFiltering {
         var roles = commonProvider.userDetails?.userRequest?.roles
             ?.where((e) =>
                 e.code == element &&
-                commonProvider.userDetails?.selectedtenant!.code == e.tenantId)
+                commonProvider.userDetails?.selectedtenant?.code == e.tenantId)
             .toList();
+        print(roles);
         if (roles?.isEmpty ?? true) {
           isEligible = false;
         }
       });
       return isEligible;
-    } else if (getRolesBasedOnModule(item.link).length > 0) {
+    } else if (getRolesBasedOnModule(item.link).length > 1) {
+      print(commonProvider.userDetails?.selectedtenant?.code);
       var roles = commonProvider.userDetails?.userRequest?.roles
-          ?.where((e) => getRolesBasedOnModule(item.link).contains(e.code))
+          ?.where((e) =>
+              getRolesBasedOnModule(item.link).contains(e.code) &&
+              commonProvider.userDetails?.selectedtenant?.code == e.tenantId)
           .toList();
       if (roles?.isEmpty ?? true) {
         isEligible = false;
@@ -52,7 +56,7 @@ class RoleActionsFiltering {
         var roles = commonProvider.userDetails?.userRequest?.roles
             ?.where((e) =>
                 e.code == element &&
-                commonProvider.userDetails?.selectedtenant!.code == e.tenantId)
+                commonProvider.userDetails?.selectedtenant?.code == e.tenantId)
             .toList();
         if (roles?.isEmpty ?? true) {
           isEligible = false;
@@ -60,9 +64,11 @@ class RoleActionsFiltering {
       });
 
       return isEligible;
-    } else if (getRolesBasedOnModule(routerLink).length > 0) {
+    } else if (getRolesBasedOnModule(routerLink).length > 1) {
       var roles = commonProvider.userDetails?.userRequest?.roles
-          ?.where((e) => getRolesBasedOnModule(routerLink).contains(e.code))
+          ?.where((e) =>
+              getRolesBasedOnModule(routerLink).contains(e.code) &&
+              commonProvider.userDetails?.selectedtenant?.code == e.tenantId)
           .toList();
       if (roles?.isEmpty ?? true) {
         isEligible = false;
