@@ -82,7 +82,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 //					request.getCalculationCriteria().get(0).getTenantId());
 //			calculations = getCalculations(request, masterMap);
 //		}
-		demandService.generateDemand(request.getRequestInfo(), calculations, masterMap,false);
+		demandService.generateDemand(request.getRequestInfo(), calculations, masterMap,request.getIsconnectionCalculation());
 		unsetWaterConnection(calculations);
 		return calculations;
 	}
