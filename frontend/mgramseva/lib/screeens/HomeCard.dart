@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mgramseva/icons/home_icons_icons.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
+import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:provider/provider.dart';
@@ -27,11 +29,13 @@ class _HomeCard extends State<HomeCard> {
                   onTap: () => Navigator.pushNamed(context, item.link,
                       arguments: item.arguments),
                   child: new Card(
-                      key: homeProvider
-                          .homeWalkthrougList[RoleActionsFiltering()
-                              .getFilteredModules()
-                              .indexOf(item)]
-                          .key,
+                      key: homeProvider.homeWalkthrougList.length > 0
+                          ? homeProvider
+                              .homeWalkthrougList[RoleActionsFiltering()
+                                  .getFilteredModules()
+                                  .indexOf(item)]
+                              .key
+                          : null,
                       margin:
                           EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                       child: Column(
@@ -59,22 +63,29 @@ class _HomeCard extends State<HomeCard> {
   @override
   Widget build(BuildContext context) {
     var homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 760) {
         return Container(
-            child: (new GridView.count(
-          crossAxisCount: 3,
-          childAspectRatio: .8,
-          children: getList(homeProvider),
-        )));
+            child: commonProvider.userDetails!.selectedtenant != null &&
+                    commonProvider.userDetails!.userRequest != null
+                ? (new GridView.count(
+                    crossAxisCount: 3,
+                    childAspectRatio: .8,
+                    children: getList(homeProvider),
+                  ))
+                : Text(""));
       } else {
         return Container(
             margin: EdgeInsets.only(left: 75, right: 75),
-            child: (new GridView.count(
-              crossAxisCount: 3,
-              childAspectRatio: 3,
-              children: getList(homeProvider),
-            )));
+            child: commonProvider.userDetails!.selectedtenant != null &&
+                    commonProvider.userDetails!.userRequest != null
+                ? (new GridView.count(
+                    crossAxisCount: 3,
+                    childAspectRatio: 3,
+                    children: getList(homeProvider),
+                  ))
+                : Text(""));
       }
     });
   }
