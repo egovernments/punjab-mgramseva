@@ -60,6 +60,7 @@ class Routes {
   ///  Consumer
   static const String CONSUMER_CREATE = '/home/consumer/create';
 
+  static const String CONSUMER_SEARCH_UPDATE = '/home/consumer/searchupdate';
   static const String CONSUMER_UPDATE = '/home/consumer/update';
 
   static const String SEARCH_CONSUMER_RESULT = '/home/consumer/search';

@@ -74,7 +74,7 @@ class Constants {
         "CORE_UPDATE_CONSUMER_DETAILS",
         (i18.homeWalkThroughMSg.UPDATE_CONSUMER_DETAILS_MSG),
         HomeIcons.updateconsumer,
-        'consumer/search',
+        Routes.CONSUMER_SEARCH_UPDATE,
         {'Mode': "update"}),
     HomeItem(
         "CORE_GPWSC_DASHBOARD",
