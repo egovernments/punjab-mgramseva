@@ -21,43 +21,43 @@ class HomeCard extends StatefulWidget {
 }
 
 class _HomeCard extends State<HomeCard> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   List<Widget> getList(HomeProvider homeProvider) {
-    return RoleActionsFiltering()
-        .getFilteredModules()
-        .map((item) => GridTile(
-              child: new GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, item.link,
-                      arguments: item.arguments),
-                  child: new Card(
-                      key: homeProvider.homeWalkthrougList.length > 0
-                          ? homeProvider
-                              .homeWalkthrougList[RoleActionsFiltering()
-                                  .getFilteredModules()
-                                  .indexOf(item)]
-                              .key
-                          : null,
-                      margin:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(item.iconData, size: 35),
-                          Container(
-                            margin: EdgeInsets.all(10),
-                            child: Center(
-                                child: new Text(
-                              ApplicationLocalizations.of(context)
-                                  .translate(item.label),
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w400),
-                              textAlign: TextAlign.center,
-                            )),
-                          )
-                        ],
-                      ))),
-            ))
-        .toList();
+    return RoleActionsFiltering().getFilteredModules().map((item) {
+      return GridTile(
+        child: new GestureDetector(
+            onTap: () => Navigator.pushNamed(context, item.link,
+                arguments: item.arguments),
+            child: new Card(
+                key: homeProvider.homeWalkthrougList
+                    .where((element) => element.label == item.label)
+                    .first
+                    .key,
+                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(item.iconData, size: 35),
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      child: Center(
+                          child: new Text(
+                        ApplicationLocalizations.of(context)
+                            .translate(item.label),
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w400),
+                        textAlign: TextAlign.center,
+                      )),
+                    )
+                  ],
+                ))),
+      );
+    }).toList();
   }
 
   @override
