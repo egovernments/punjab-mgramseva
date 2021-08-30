@@ -92,8 +92,9 @@ public class SearchCriteria {
 	@JsonIgnore
 	private List<String> ownerIds;
 	
+	@JsonIgnore
 	@JsonProperty("iscollectionAmount")
-	private Boolean iscollectionAmount;
+	private Boolean iscollectionAmount = false;
 	
 	@JsonProperty("sortBy")
     private SortBy sortBy;

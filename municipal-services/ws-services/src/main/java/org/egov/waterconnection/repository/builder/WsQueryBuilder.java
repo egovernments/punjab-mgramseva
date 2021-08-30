@@ -11,6 +11,7 @@ import org.egov.waterconnection.util.WaterServicesUtil;
 import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.Property;
 import org.egov.waterconnection.web.models.SearchCriteria;
+import org.egov.waterconnection.web.models.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -105,8 +106,8 @@ public class WsQueryBuilder {
 		}
 		
 		Set<String> uuids = null;
-		if(!StringUtils.isEmpty(criteria.getMobileNumber())) {
-			uuids = userService.getUUIDForUsers(criteria.getMobileNumber(), criteria.getTenantId(), requestInfo);
+		if(!StringUtils.isEmpty(criteria.getMobileNumber()) || !StringUtils.isEmpty(criteria.getName())) {
+			uuids = userService.getUUIDForUsers(criteria.getMobileNumber(), criteria.getName(), criteria.getTenantId(), requestInfo);
 			boolean userIdsPresent = false;
 			criteria.setUserIds(uuids);
 			if (!CollectionUtils.isEmpty(uuids)) {
@@ -185,12 +186,12 @@ public class WsQueryBuilder {
 		}
 		if (criteria.getFromDate() != null) {
 			addClauseIfRequired(preparedStatement, query);
-			query.append("  wc.appCreatedDate >= ? ");
+			query.append("  conn.createdTime >= ? ");
 			preparedStatement.add(criteria.getFromDate());
 		}
 		if (criteria.getToDate() != null) {
 			addClauseIfRequired(preparedStatement, query);
-			query.append("  wc.appCreatedDate <= ? ");
+			query.append("  conn.createdTime <= ? ");
 			preparedStatement.add(criteria.getToDate());
 		}
 		if(!StringUtils.isEmpty(criteria.getApplicationType())) {
