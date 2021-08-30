@@ -344,7 +344,7 @@ public class Connection {
 	 **/
 	@ApiModelProperty(readOnly = true, value = "Mandatory if source is \"DATA_ENTRY\".")
 
-	@Size(min = 1, max = 64)
+	@Size(min = 0, max = 64)
 	public String getOldConnectionNo() {
 		return oldConnectionNo;
 	}
