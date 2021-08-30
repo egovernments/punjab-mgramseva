@@ -46,8 +46,8 @@ public class UserSearchCriteria {
                 at least one is compulsory --> 'userName' or 'name' or 'mobileNumber' or 'emailId' or 'uuid'
          */
         if (isInterServiceCall)
-            return !isEmpty(userName) || !isEmpty(name) || !isEmpty(mobileNumber) || !isEmpty(emailId) ||
-                    !CollectionUtils.isEmpty(uuid) || !CollectionUtils.isEmpty(id) || !CollectionUtils.isEmpty(roleCodes);
+            return isEmpty(userName) && isEmpty(name) && isEmpty(mobileNumber) && isEmpty(emailId) &&
+                    CollectionUtils.isEmpty(uuid) && CollectionUtils.isEmpty(id) && CollectionUtils.isEmpty(roleCodes);
         else
             return isEmpty(userName) && isEmpty(name) && isEmpty(mobileNumber) && isEmpty(emailId) &&
                     CollectionUtils.isEmpty(uuid);
