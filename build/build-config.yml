@@ -48,6 +48,11 @@ config:
       - work-dir: "echallan-calculator"
         image-name: "echallan-calculator"
         dockerfile: "build/maven/Dockerfile"
+  - name: "builds/mGramSeva/municipal-services/mgramseva-ifix-adapter"
+    build:
+      - work-dir: "mgramseva-ifix-adapter"
+        image-name: "mgramseva-ifix-adapter"
+        dockerfile: "build/maven/Dockerfile"      
   - name: "builds/mGramSeva/frontend/frontend-mgramseva"
     build:
       - work-dir: "frontend/mgramseva"
