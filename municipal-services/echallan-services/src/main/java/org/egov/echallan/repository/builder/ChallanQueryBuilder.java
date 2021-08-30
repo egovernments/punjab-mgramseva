@@ -103,12 +103,27 @@ public class ChallanQueryBuilder {
                 //addClauseIfRequired(preparedStmtList, builder);
             }
 
-            if (criteria.getChallanNo() != null) {
-                addClauseIfRequired(preparedStmtList, builder);
-                builder.append("  challan.challanno like ?");
-                preparedStmtList.add('%' + criteria.getChallanNo() + '%');
-            }
-            
+			if (criteria.getFreeSearch()) {
+				if (criteria.getChallanNo() != null || criteria.getVendorName() != null) {
+					addClauseIfRequired(preparedStmtList, builder);
+					builder.append("  challan.challanno like ?");
+					preparedStmtList.add('%' + criteria.getChallanNo() + '%');
+
+					builder.append(" OR vendor.name like ?");
+					preparedStmtList.add('%' + criteria.getVendorName() + '%');
+				}
+			} else {
+				if (criteria.getChallanNo() != null) {
+					addClauseIfRequired(preparedStmtList, builder);
+					builder.append("  challan.challanno like ?");
+					preparedStmtList.add('%' + criteria.getChallanNo() + '%');
+				}
+				if (criteria.getVendorName() != null) {
+					addClauseIfRequired(preparedStmtList, builder);
+					builder.append(" vendor.name like ?");
+					preparedStmtList.add('%' + criteria.getVendorName() + '%');
+				}
+			}
             if (criteria.getStatus() != null) {
                 addClauseIfRequired(preparedStmtList, builder);
                 builder.append(" challan.applicationstatus IN (").append(createQuery(criteria.getStatus())).append(")");
@@ -119,13 +134,6 @@ public class ChallanQueryBuilder {
             	addClauseIfRequired(preparedStmtList, builder);
             	builder.append( " challan.typeOfExpense = ? ");
             	preparedStmtList.add(criteria.getExpenseType());
-            }
-            
-            if(criteria.getVendorName() != null)
-            {
-            	addClauseIfRequired(preparedStmtList, builder);
-				builder.append(" vendor.name like ?");
-				preparedStmtList.add('%' + criteria.getVendorName() + '%');
             }
             
             if (criteria.getFromDate() != null) {
