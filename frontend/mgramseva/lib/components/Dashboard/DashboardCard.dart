@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:provider/provider.dart';
 
 class DashboardCard extends StatelessWidget {
   final Function() onMonthSelection;
@@ -26,8 +28,10 @@ class DashboardCard extends StatelessWidget {
             child: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children : [
-                  Text(DateFormats.getMonthAndYear(DateTime.now()),
-                  style: Theme.of(context).textTheme.subtitle1?.apply(color: Theme.of(context).primaryColor),
+                  Consumer<DashBoardProvider>(
+                    builder: (_,dashBoardProvider, child) => Text(DateFormats.getMonthAndYear(dashBoardProvider.selectedMonth),
+                    style: Theme.of(context).textTheme.subtitle1?.apply(color: Theme.of(context).primaryColor),
+                    ),
                   ),
                   Icon(Icons.arrow_drop_down)
                   ]),

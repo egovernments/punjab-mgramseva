@@ -20,7 +20,9 @@ class _PaginationState extends State<Pagination> {
   @override
   Widget build(BuildContext context) {
     return  Container(
-          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+          height: 50,
+         alignment: Alignment.centerRight,
+          padding: EdgeInsets.only(right: 18),
           color: Colors.white,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,

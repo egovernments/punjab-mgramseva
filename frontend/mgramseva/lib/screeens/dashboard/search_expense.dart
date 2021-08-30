@@ -144,7 +144,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
           child: Consumer<DashBoardProvider>(
             builder : (_ , dashBoardProvider, child) => TabBarView(
                 controller: _tabController,
-                children: List.generate(_tabList.length, (index) => BillsTable(headerList: widget.dashBoardType == DashBoardType.Expenditure ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
+                children: List.generate(_tabList.length, (index) => BillsTable(headerList: expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
                   tableData:  expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseData(index, expenseList) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>),
                 ))
             ),

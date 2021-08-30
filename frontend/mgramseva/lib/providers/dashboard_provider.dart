@@ -5,6 +5,7 @@ import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/dashboard.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
@@ -16,6 +17,7 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/models.dart';
+import 'package:provider/provider.dart';
 
 class DashBoardProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -23,7 +25,7 @@ class DashBoardProvider with ChangeNotifier {
   ExpensesDetailsWithPagination? expenseDashboardDetails;
   int offset = 1;
   int limit = 10;
-  late DateTime selectedMonth;
+  late DateTime  selectedMonth;
   SortBy? sortBy;
   late List<DateTime> dateList;
   WaterConnections? waterConnectionsDetails;
@@ -36,29 +38,32 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   Future<void> fetchExpenseDashBoardDetails(BuildContext context, int limit, int offSet, [bool isSearch = false])  async {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+
     this.limit = limit;
     this.offset = offSet;
     notifyListeners();
-    if(!isSearch && (offSet + limit) <= (expenseDashboardDetails?.expenseDetailList?.length ?? 0)){
-      streamController.add(expenseDashboardDetails?.expenseDetailList?.sublist(offset -1, (offset + limit) -1));
+    if(!isSearch && (offSet + limit) <= (expenseDashboardDetails?.totalCount ?? 0)){
+      streamController.add(expenseDashboardDetails?.expenseDetailList?.sublist(offset -1, ((offset + limit) -1) > (expenseDashboardDetails?.totalCount ?? 0) ? (expenseDashboardDetails?.totalCount ?? 0) : (offset + limit) -1));
       return;
     }
 
     if(isSearch) expenseDashboardDetails = null;
 
     var query = {
-      'tenantId': 'pb',
+      'tenantId': commonProvider.userDetails?.selectedtenant?.code,
       'offset' : '${offset - 1}',
       'limit' : '$limit',
       'fromDate' : '${DateTime(selectedMonth.year, selectedMonth.month, 1).millisecondsSinceEpoch}',
       'toDate' :  '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0).millisecondsSinceEpoch}',
       'vendorName' : searchController.text.trim(),
       'challanNo' : searchController.text.trim(),
+      'status' : ["ACTIVE", "PAID"]
     };
 
     if(sortBy != null){
       query.addAll({
-      'sortOrder' : sortBy!.isAscending ? 'ASC' : 'DSC',
+      'sortOrder' : sortBy!.isAscending ? 'ASC' : 'DESC',
       'sortBy' : sortBy!.key
     });
     }
@@ -77,6 +82,7 @@ class DashBoardProvider with ChangeNotifier {
             expenseDashboardDetails = response;
             notifyListeners();
           }else {
+            expenseDashboardDetails?.totalCount = response.totalCount;
             expenseDashboardDetails?.expenseDetailList?.addAll(
                 response.expenseDetailList ?? <ExpensesDetailsModel>[]);
           }
@@ -91,6 +97,7 @@ class DashBoardProvider with ChangeNotifier {
 
 
   Future<void> fetchCollectionsDashBoardDetails(BuildContext context, int limit, int offSet, [bool isSearch = false])  async {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     this.limit = limit;
     this.offset = offSet;
     notifyListeners();
@@ -102,18 +109,19 @@ class DashBoardProvider with ChangeNotifier {
     if(isSearch) waterConnectionsDetails = null;
 
     var query = {
-      'tenantId': 'pb',
+      'tenantId': commonProvider.userDetails?.selectedtenant?.code,
       'offset' : '${offset - 1}',
       'limit' : '$limit',
       'fromDate' : '${DateTime(selectedMonth.year, selectedMonth.month, 1).millisecondsSinceEpoch}',
       'toDate' :  '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0).millisecondsSinceEpoch}',
       'applicationNumber' : searchController.text.trim(),
       'name' : searchController.text.trim(),
+      'iscollectionAmount' : 'true'
     };
 
     if(sortBy != null){
       query.addAll({
-        'sortOrder' : sortBy!.isAscending ? 'ASC' : 'DSC',
+        'sortOrder' : sortBy!.isAscending ? 'ASC' : 'DESC',
         'sortBy' : sortBy!.key
       });
     }
@@ -131,6 +139,7 @@ class DashBoardProvider with ChangeNotifier {
           waterConnectionsDetails = response;
           notifyListeners();
         }else {
+          waterConnectionsDetails?.totalCount = response.totalCount;
           waterConnectionsDetails?.waterConnection?.addAll(
               response.waterConnection ?? <WaterConnection>[]);
         }
@@ -150,7 +159,7 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   List<Tab> getCollectionsTabList(BuildContext context, List<WaterConnection> waterConnectionList) {
-    var list = [i18.dashboard.ALL, i18.dashboard.PAID, i18.dashboard.PENDING];
+    var list = [i18.dashboard.ALL, i18.dashboard.RESIDENTIAL, i18.dashboard.COMMERCIAL];
     return List.generate(list.length, (index) => Tab(text: '${ApplicationLocalizations.of(context)
         .translate(list[index])} (${getCollectionsData(index, waterConnectionList).length})'));
   }
@@ -225,9 +234,9 @@ class DashBoardProvider with ChangeNotifier {
   TableDataRow getCollectionRow(WaterConnection connection){
     return TableDataRow(
         [
-          TableData('${connection.applicationNo}', callBack: onClickOfApplicationNo),
+          TableData('${connection.connectionNo}', callBack: onClickOfCollectionNo),
           TableData('${connection.connectionHolders?.first?.name}'),
-          TableData('₹ ${connection.connectionHolders}'),
+          TableData('${connection.additionalDetails?.collectionAmount != null ? '₹ ${connection.additionalDetails?.collectionAmount}' : '-'}'),
         ]
     );
   }
@@ -238,10 +247,13 @@ class DashBoardProvider with ChangeNotifier {
         navigatorKey.currentContext!, Routes.EXPENSE_UPDATE, arguments: expense);
   }
 
-  onClickOfApplicationNo(TableData tableData){
-    var expense = waterConnectionsDetails?.waterConnection?.firstWhere((element) => element.applicationNo == tableData.label);
+  onClickOfCollectionNo(TableData tableData){
+    var waterConnection = waterConnectionsDetails?.waterConnection?.firstWhere((element) => element.connectionNo == tableData.label);
     Navigator.pushNamed(
-        navigatorKey.currentContext!, Routes.EXPENSE_UPDATE, arguments: expense);
+        navigatorKey.currentContext!, Routes.HOUSEHOLD_DETAILS, arguments: {
+          'waterconnections' : waterConnection,
+          'mode' : 'collect'
+    });
   }
 
   onExpenseSort(TableHeader header){
@@ -264,7 +276,7 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   void onSearch(String val, BuildContext context){
-    fetchDetails(context);
+    fetchDetails(context, limit, 1, true);
   }
 
   void onChangeOfDate(DateTime? date, BuildContext context, _overlayEntry){
@@ -278,13 +290,13 @@ class DashBoardProvider with ChangeNotifier {
     fetchDetails(context, response.limit, response.offset);
   }
 
-  fetchDetails(BuildContext context, [int? localLimit, int? localOffSet]) {
+  fetchDetails(BuildContext context, [int? localLimit, int? localOffSet, bool isSearch = false]) {
     if(selectedDashboardType == DashBoardType.Expenditure) {
       fetchExpenseDashBoardDetails(
-          context, localLimit ?? limit, localOffSet ?? 1, true);
+          context, localLimit ?? limit, localOffSet ?? 1, isSearch);
     }else{
       fetchCollectionsDashBoardDetails(
-          context, localLimit ?? limit, localOffSet ?? 1, true);
+          context, localLimit ?? limit, localOffSet ?? 1, isSearch);
     }
   }
 
