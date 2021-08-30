@@ -23,7 +23,7 @@ class DashBoardProvider with ChangeNotifier {
   ExpensesDetailsWithPagination? expenseDashboardDetails;
   int offset = 1;
   int limit = 10;
-  late DateTime selectedMonth;
+  late DateTime  selectedMonth;
   SortBy? sortBy;
   late List<DateTime> dateList;
   WaterConnections? waterConnectionsDetails;
@@ -58,7 +58,7 @@ class DashBoardProvider with ChangeNotifier {
 
     if(sortBy != null){
       query.addAll({
-      'sortOrder' : sortBy!.isAscending ? 'ASC' : 'DSC',
+      'sortOrder' : sortBy!.isAscending ? 'ASC' : 'DESC',
       'sortBy' : sortBy!.key
     });
     }
@@ -113,7 +113,7 @@ class DashBoardProvider with ChangeNotifier {
 
     if(sortBy != null){
       query.addAll({
-        'sortOrder' : sortBy!.isAscending ? 'ASC' : 'DSC',
+        'sortOrder' : sortBy!.isAscending ? 'ASC' : 'DESC',
         'sortBy' : sortBy!.key
       });
     }
@@ -225,9 +225,9 @@ class DashBoardProvider with ChangeNotifier {
   TableDataRow getCollectionRow(WaterConnection connection){
     return TableDataRow(
         [
-          TableData('${connection.applicationNo}', callBack: onClickOfApplicationNo),
+          TableData('${connection.connectionNo}', callBack: onClickOfApplicationNo),
           TableData('${connection.connectionHolders?.first?.name}'),
-          TableData('₹ ${connection.connectionHolders}'),
+          TableData('₹ ${connection.propertyType}'),
         ]
     );
   }

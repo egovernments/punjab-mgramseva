@@ -64,6 +64,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
           body: Stack(children: [
             Container(
                 padding: EdgeInsets.only(left: 18, right: 18),
+                height: MediaQuery.of(context).size.height - 56 - 50 - MediaQuery.of(context).padding.top,
                 child: CustomScrollView(slivers: [
                   SliverList(
                       delegate: SliverChildListDelegate([
@@ -111,8 +112,20 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
             Align(
                 alignment: Alignment.bottomRight,
                 child: Consumer<DashBoardProvider>(
-                    builder: (_, dashBoardProvider, child) =>
-                      Pagination(limit: dashBoardProvider.limit, offSet: dashBoardProvider.offset, callBack: (pageResponse) => dashBoardProvider.onChangeOfPageLimit(pageResponse, context), totalCount: (dashBoardProvider?.expenseDashboardDetails?.totalCount ?? 0))))
+                    builder: (_, dashBoardProvider, child) {
+                     var totalCount =  (dashBoardProvider.selectedDashboardType == DashBoardType.Expenditure
+                          ? dashBoardProvider?.expenseDashboardDetails?.totalCount : dashBoardProvider.waterConnectionsDetails
+                          ?.totalCount) ?? 0;
+                     return Visibility(
+                           visible: totalCount > 0,
+                          child: Pagination(limit: dashBoardProvider.limit,
+                              offSet: dashBoardProvider.offset,
+                              callBack: (pageResponse) =>
+                                  dashBoardProvider.onChangeOfPageLimit(
+                                      pageResponse, context),
+                              totalCount: totalCount));
+                    }
+    ))
           ]),
         ),
       ),
@@ -138,37 +151,65 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
 
     _overlayEntry = new OverlayEntry(
         builder: (BuildContext context) => Positioned(
-            left: position.dx + box.size.width - 200,
+            left: position.dx + box.size.width - 185,
             top: position.dy + box.size.height - 10,
             child: Material(
               color: Colors.transparent,
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                width: 200,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(5.0),
+                    bottomLeft: Radius.circular(5.0),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(.5),
+                      blurRadius: 20.0, // soften the shadow
+                      spreadRadius: 0.0, //extend the shadow
+                      offset: Offset(
+                        5.0, // Move to right 10  horizontally
+                        5.0, // Move to bottom 10 Vertically
+                      ),
+                    )
+                  ],
+                ),
                 child:  Column(
                   mainAxisSize: MainAxisSize.min,
                   children: List.generate(dashBoardProvider.dateList.length, (index) {
                     var date = dashBoardProvider.dateList[index];
-                   return Container(
-                     padding: EdgeInsets.symmetric(vertical: 8),
-                      color: index%2 == 0 ? Color.fromRGBO(238, 238, 238, 1) : Color.fromRGBO(255, 255, 255, 1),
-                      child: Wrap(
-                        spacing: 5,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Text('${DateFormats.getMonthAndYear(dashBoardProvider.dateList[index])}',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: dashBoardProvider.selectedMonth?.year == date?.year && dashBoardProvider.selectedMonth?.month == date?.month ?
-                                FontWeight.bold : FontWeight.normal
-                          ),
-                          ),
-                          Radio(value: date,
-                              groupValue: dashBoardProvider.selectedMonth,
-                              onChanged: (date) => dashBoardProvider.onChangeOfDate(date as DateTime, context, _overlayEntry))
-                        ],
+                   return InkWell(
+                     onTap: () => dashBoardProvider.onChangeOfDate(date, context, _overlayEntry),
+                     child: Container(
+                       width: 180,
+                     decoration: index == dashBoardProvider.dateList.length - 1 ? BoxDecoration(
+                         color: index % 2 == 0 ? Color.fromRGBO(238, 238, 238, 1) : Color.fromRGBO(255, 255, 255, 1),
+                         borderRadius: BorderRadius.only(
+                     bottomRight: Radius.circular(5.0),
+                     bottomLeft: Radius.circular(5.0),
+                      )) : BoxDecoration(
+                       color: index % 2 == 0 ? Color.fromRGBO(238, 238, 238, 1) : Color.fromRGBO(255, 255, 255, 1),
+                     ),
+                       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        child: Wrap(
+                          spacing: 5,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            Text('${DateFormats.getMonthAndYear(dashBoardProvider.dateList[index])}',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: dashBoardProvider.selectedMonth?.year == date?.year && dashBoardProvider.selectedMonth?.month == date?.month ?
+                                  FontWeight.bold : FontWeight.normal
+                            ),
+                            ),
+                            Radio(value: date,
+                                groupValue: dashBoardProvider.selectedMonth,
+                                onChanged: (date) => dashBoardProvider.onChangeOfDate(date as DateTime, context, _overlayEntry))
+                          ],
+                        ),
                       ),
-                    );
+                   );
                   })
               ))
             )));
