@@ -59,8 +59,8 @@ class router {
         path = settings.name;
       }
     }
-    // if (!(path != null && RoleActionsFiltering().isEligibleRoletoRoute(path)))
-    //   return pageNotAvailable;
+    if (!(path != null && RoleActionsFiltering().isEligibleRoletoRoute(path)))
+      return pageNotAvailable;
 
     /// Here we'll handle all the routing
     currentRoute = settings.name;
