@@ -48,7 +48,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
 
   buildDemandView(BillList data) {
     print("printing data");
-    print(data.bill);
+    print(data.bill!.first.toJson());
     return Column(
       children: [
         data.bill == null

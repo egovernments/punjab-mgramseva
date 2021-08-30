@@ -16,19 +16,29 @@ class RoleActionsFiltering {
         listen: false);
     var isEligible = true;
 
-    getRolesBasedOnModule(item.link).forEach((element) {
-      if (commonProvider.userDetails!.selectedtenant != null) {
+    if (getRolesBasedOnModule(item.link).length == 1) {
+      getRolesBasedOnModule(item.link).forEach((element) {
         var roles = commonProvider.userDetails?.userRequest?.roles
             ?.where((e) =>
                 e.code == element &&
-                e.tenantId == commonProvider.userDetails!.selectedtenant!.code)
+                commonProvider.userDetails?.selectedtenant!.code == e.tenantId)
             .toList();
         if (roles?.isEmpty ?? true) {
           isEligible = false;
         }
+      });
+      return isEligible;
+    } else if (getRolesBasedOnModule(item.link).length > 0) {
+      var roles = commonProvider.userDetails?.userRequest?.roles
+          ?.where((e) => getRolesBasedOnModule(item.link).contains(e.code))
+          .toList();
+      if (roles?.isEmpty ?? true) {
+        isEligible = false;
       }
-    });
-    return isEligible;
+      return isEligible;
+    } else {
+      return isEligible;
+    }
   }
 
   bool isEligibleRoletoRoute(String routerLink) {
@@ -37,15 +47,30 @@ class RoleActionsFiltering {
         listen: false);
     var isEligible = true;
 
-    getRolesBasedOnModule(routerLink).forEach((element) {
+    if (getRolesBasedOnModule(routerLink).length == 1) {
+      getRolesBasedOnModule(routerLink).forEach((element) {
+        var roles = commonProvider.userDetails?.userRequest?.roles
+            ?.where((e) =>
+                e.code == element &&
+                commonProvider.userDetails?.selectedtenant!.code == e.tenantId)
+            .toList();
+        if (roles?.isEmpty ?? true) {
+          isEligible = false;
+        }
+      });
+
+      return isEligible;
+    } else if (getRolesBasedOnModule(routerLink).length > 0) {
       var roles = commonProvider.userDetails?.userRequest?.roles
-          ?.where((e) => e.code == element)
+          ?.where((e) => getRolesBasedOnModule(routerLink).contains(e.code))
           .toList();
       if (roles?.isEmpty ?? true) {
         isEligible = false;
       }
-    });
-    return isEligible;
+      return isEligible;
+    } else {
+      return isEligible;
+    }
   }
 
   List<String> getRolesBasedOnModule(String route) {
@@ -53,11 +78,21 @@ class RoleActionsFiltering {
 
       // GP Admin
       case Routes.HOUSEHOLD:
-        return ['GP_ADMIN'];
+        return ['GP_ADMIN', 'COLLECTION_OPERATOR'];
+
       case Routes.CONSUMER_CREATE:
-        return ['GP_ADMIN'];
+        return ['GP_ADMIN', 'COLLECTION_OPERATOR'];
       case Routes.CONSUMER_UPDATE:
-        return ['GP_ADMIN'];
+        return ['GP_ADMIN', 'COLLECTION_OPERATOR'];
+
+      case Routes.HOUSEHOLD_DETAILS:
+        return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR'];
+
+      case Routes.SEARCH_CONSUMER_RESULT:
+        return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR'];
+
+      case Routes.HOUSEHOLD_REGISTER:
+        return ['COLLECTION_OPERATOR'];
 
       // Expense Processing
       case Routes.EXPENSE_SEARCH:
@@ -67,8 +102,13 @@ class RoleActionsFiltering {
       case Routes.EXPENSE_UPDATE:
         return ['EXPENSE_PROCESSING'];
 
-      case Routes.HOUSEHOLDRECEIPTS:
+      case Routes.HOUSEHOLD_DETAILS:
         return ['BULK_DEMAND_PROCESSING'];
+
+      case Routes.HOUSEHOLDRECEIPTS:
+        return [
+          'BULK_DEMAND_PROCESSING',
+        ];
 
       case Routes.MANUAL_BILL_GENERATE:
         return ['BULK_DEMAND_PROCESSING'];
@@ -76,24 +116,11 @@ class RoleActionsFiltering {
       // Collection Operator
       case Routes.CONSUMER_SEARCH:
         return ['COLLECTION_OPERATOR'];
-      case Routes.SEARCH_CONSUMER_RESULT:
-        return ['COLLECTION_OPERATOR'];
       case Routes.BILL_GENERATE:
         return ['COLLECTION_OPERATOR'];
 
       case 'dashboard':
-        return [
-          'EXPENSE_PROCESSING',
-          'SUPERUSER',
-          'CITIZEN',
-          'WS_DOC_VERIFIER',
-          'WS_APPROVER',
-          'WS_CLERK',
-          'EMPLOYEE',
-          'WS_CEMP',
-          'WS_FIELD_INSPECTOR',
-          'WS_JUNIOR_ENGINEER'
-        ];
+        return ['SUPERUSER', 'DASHBOARD_VIEWER'];
       default:
         return [];
     }
