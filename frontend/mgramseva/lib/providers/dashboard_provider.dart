@@ -43,8 +43,8 @@ class DashBoardProvider with ChangeNotifier {
     this.limit = limit;
     this.offset = offSet;
     notifyListeners();
-    if(!isSearch && (offSet + limit) <= (expenseDashboardDetails?.expenseDetailList?.length ?? 0)){
-      streamController.add(expenseDashboardDetails?.expenseDetailList?.sublist(offset -1, (offset + limit) -1));
+    if(!isSearch && (offSet + limit) <= (expenseDashboardDetails?.totalCount ?? 0)){
+      streamController.add(expenseDashboardDetails?.expenseDetailList?.sublist(offset -1, ((offset + limit) -1) > (expenseDashboardDetails?.totalCount ?? 0) ? (expenseDashboardDetails?.totalCount ?? 0) : (offset + limit) -1));
       return;
     }
 
@@ -58,7 +58,7 @@ class DashBoardProvider with ChangeNotifier {
       'toDate' :  '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0).millisecondsSinceEpoch}',
       'vendorName' : searchController.text.trim(),
       'challanNo' : searchController.text.trim(),
-      // 'status' : "ACTIVE%2CPAID"
+      'status' : ["ACTIVE", "PAID"]
     };
 
     if(sortBy != null){
@@ -82,6 +82,7 @@ class DashBoardProvider with ChangeNotifier {
             expenseDashboardDetails = response;
             notifyListeners();
           }else {
+            expenseDashboardDetails?.totalCount = response.totalCount;
             expenseDashboardDetails?.expenseDetailList?.addAll(
                 response.expenseDetailList ?? <ExpensesDetailsModel>[]);
           }
@@ -138,6 +139,7 @@ class DashBoardProvider with ChangeNotifier {
           waterConnectionsDetails = response;
           notifyListeners();
         }else {
+          waterConnectionsDetails?.totalCount = response.totalCount;
           waterConnectionsDetails?.waterConnection?.addAll(
               response.waterConnection ?? <WaterConnection>[]);
         }
@@ -274,7 +276,7 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   void onSearch(String val, BuildContext context){
-    fetchDetails(context);
+    fetchDetails(context, limit, 1, true);
   }
 
   void onChangeOfDate(DateTime? date, BuildContext context, _overlayEntry){
@@ -288,13 +290,13 @@ class DashBoardProvider with ChangeNotifier {
     fetchDetails(context, response.limit, response.offset);
   }
 
-  fetchDetails(BuildContext context, [int? localLimit, int? localOffSet]) {
+  fetchDetails(BuildContext context, [int? localLimit, int? localOffSet, bool isSearch = false]) {
     if(selectedDashboardType == DashBoardType.Expenditure) {
       fetchExpenseDashBoardDetails(
-          context, localLimit ?? limit, localOffSet ?? 1, true);
+          context, localLimit ?? limit, localOffSet ?? 1, isSearch);
     }else{
       fetchCollectionsDashBoardDetails(
-          context, localLimit ?? limit, localOffSet ?? 1, true);
+          context, localLimit ?? limit, localOffSet ?? 1, isSearch);
     }
   }
 

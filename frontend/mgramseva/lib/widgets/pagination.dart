@@ -22,6 +22,7 @@ class _PaginationState extends State<Pagination> {
     return  Container(
           height: 50,
          alignment: Alignment.centerRight,
+          padding: EdgeInsets.only(right: 18),
           color: Colors.white,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
