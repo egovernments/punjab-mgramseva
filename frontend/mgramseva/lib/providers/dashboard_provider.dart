@@ -39,12 +39,12 @@ class DashBoardProvider with ChangeNotifier {
 
   Future<void> fetchExpenseDashBoardDetails(BuildContext context, int limit, int offSet, [bool isSearch = false])  async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-
+    var totalCount = expenseDashboardDetails?.totalCount ?? 0;
     this.limit = limit;
     this.offset = offSet;
     notifyListeners();
-    if(!isSearch && (offSet + limit) <= (expenseDashboardDetails?.totalCount ?? 0)){
-      streamController.add(expenseDashboardDetails?.expenseDetailList?.sublist(offset -1, ((offset + limit) -1) > (expenseDashboardDetails?.totalCount ?? 0) ? (expenseDashboardDetails?.totalCount ?? 0) : (offset + limit) -1));
+    if(!isSearch && expenseDashboardDetails?.totalCount != null && ((offSet + limit) > totalCount ? totalCount :  (offSet + limit)) <= (expenseDashboardDetails?.expenseDetailList?.length ?? 0)){
+      streamController.add(expenseDashboardDetails?.expenseDetailList?.sublist(offset -1, ((offset + limit) -1) > totalCount ? totalCount : (offset + limit) -1));
       return;
     }
 
@@ -87,7 +87,7 @@ class DashBoardProvider with ChangeNotifier {
                 response.expenseDetailList ?? <ExpensesDetailsModel>[]);
           }
         streamController.add(expenseDashboardDetails!.expenseDetailList!.isEmpty! ? <ExpensesDetailsModel>[] :
-        expenseDashboardDetails?.expenseDetailList?.sublist(offSet -1, ((offset + limit - 1) > (expenseDashboardDetails?.totalCount ?? 0)) ? (expenseDashboardDetails!.totalCount! -1) : (offset + limit) -1));
+        expenseDashboardDetails?.expenseDetailList?.sublist(offSet -1, ((offset + limit - 1) > (expenseDashboardDetails?.totalCount ?? 0)) ? (expenseDashboardDetails!.totalCount!) : (offset + limit - 1)));
       }
     }catch(e,s){
       streamController.addError('error');
@@ -98,11 +98,13 @@ class DashBoardProvider with ChangeNotifier {
 
   Future<void> fetchCollectionsDashBoardDetails(BuildContext context, int limit, int offSet, [bool isSearch = false])  async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+    var totalCount = waterConnectionsDetails?.totalCount ?? 0;
+
     this.limit = limit;
     this.offset = offSet;
     notifyListeners();
-    if(!isSearch && (offSet + limit) <= (waterConnectionsDetails?.waterConnection?.length ?? 0)){
-      streamController.add(waterConnectionsDetails?.waterConnection?.sublist(offset -1, (offset + limit) -1));
+    if(!isSearch && waterConnectionsDetails?.totalCount != null && ((offSet + limit) > totalCount ? totalCount :  (offSet + limit)) <= (waterConnectionsDetails?.waterConnection?.length ?? 0)){
+      streamController.add(waterConnectionsDetails?.waterConnection?.sublist(offset -1, ((offset + limit) -1) > totalCount ? totalCount : (offset + limit) -1));
       return;
     }
 
@@ -144,7 +146,7 @@ class DashBoardProvider with ChangeNotifier {
               response.waterConnection ?? <WaterConnection>[]);
         }
         streamController.add(waterConnectionsDetails!.waterConnection!.isEmpty! ? <ExpensesDetailsModel>[] :
-        waterConnectionsDetails?.waterConnection?.sublist(offSet -1, ((offset + limit - 1) > (waterConnectionsDetails?.totalCount ?? 0)) ? (waterConnectionsDetails!.totalCount! -1) : (offset + limit) -1));
+        waterConnectionsDetails?.waterConnection?.sublist(offSet -1, ((offset + limit - 1) > (waterConnectionsDetails?.totalCount ?? 0)) ? (waterConnectionsDetails!.totalCount!) : (offset + limit) -1));
       }
     }catch(e,s){
       streamController.addError('error');
