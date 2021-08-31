@@ -33,7 +33,7 @@ class LanguageSelectMobileView extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Image(
-                            width: 200,
+                            width: 150,
                             image: NetworkImage(
                               stateInfo.logoUrl ?? '',
                             )),

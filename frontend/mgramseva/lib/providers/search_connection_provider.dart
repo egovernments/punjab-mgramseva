@@ -54,6 +54,7 @@ class SearchConnectionProvider with ChangeNotifier {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+
     if (formKey.currentState!.validate()) {
       searchconnection.setValues();
       try {
@@ -65,13 +66,12 @@ class SearchConnectionProvider with ChangeNotifier {
           ...inputJson
         });
 
-        Navigator.pop(context);
-
         /// popping the loader
 
         if (connectionresults != null) {
           connectionresults.then(
               (value) => {
+                    Navigator.pop(context),
                     if (value.waterConnection!.length > 0)
                       {
                         waterConnections = value,
