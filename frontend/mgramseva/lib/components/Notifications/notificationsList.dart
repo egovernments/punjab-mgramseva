@@ -30,7 +30,7 @@ class NotificationsListState extends State<NotificationsList> {
       ..getNotiications({
         "tenantId": commonProvider.userDetails!.selectedtenant!.code,
         "eventType": "SYSTEMGENERATED",
-        // "recepients": commonProvider.userDetails!.userRequest!.uuid
+        "recepients": commonProvider.userDetails!.userRequest!.uuid
       });
   }
 
