@@ -99,7 +99,7 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                                         consumerProvider.activeindex]
                                     .name),
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,color: Theme.of(context).primaryColorLight
                             ),
                             textAlign: TextAlign.start,
                           )),

@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/Login/Login.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
-import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/footerBanner.dart';
 import 'package:provider/provider.dart';
 
@@ -49,7 +47,7 @@ class LanguageSelectMobileView extends StatelessWidget {
                           child: Text(
                             ApplicationLocalizations.of(context)
                                 .translate(stateInfo!.code!),
-                            style: TextStyle(fontSize: 19, color: Colors.black),
+                            style: TextStyle(fontSize: 19, color: Colors.black, fontWeight: FontWeight.w400),
                           )),
                     ])),
                 Padding(

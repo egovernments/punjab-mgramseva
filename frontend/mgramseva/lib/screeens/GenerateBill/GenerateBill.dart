@@ -63,6 +63,8 @@ class _GenerateBillState extends State<GenerateBill> {
           Container(
               width: MediaQuery.of(context).size.width,
               child: Card(
+                child: Padding(
+                padding: EdgeInsets.only(bottom: 20),
                   child: Consumer<BillGenerationProvider>(
                       builder: (_, billgenerationprovider, child) => Form(
                           key: billgenerationprovider.formKey,
@@ -244,7 +246,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                           true)),
                                             ])),
                               ])))))
-        ])));
+          )])));
   }
 
   @override

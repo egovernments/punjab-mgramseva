@@ -16,8 +16,8 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
-import 'package:mgramseva/widgets/Back.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
+import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
@@ -117,7 +117,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                   Navigator.of(context, rootNavigator: true)
                                       .maybePop())),
                   Container(
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(0),
                       child: Card(
                           child: Container(
                               width: MediaQuery.of(context).size.width > 720
@@ -135,7 +135,8 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                         '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD)}',
                                         style: TextStyle(
                                             fontSize: 18,
-                                            fontWeight: FontWeight.w700)),
+                                            fontWeight: FontWeight.w700),
+                                    textAlign: TextAlign.start,),
                                   ),
                                   Align(
                                       alignment: Alignment.centerLeft,
@@ -157,8 +158,8 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                     child: Text(
                                         '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD_TO_CONTINUE)}',
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18)),
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 16)),
                                   ),
                                   BuildTextField(
                                     i18.password.CORE_COMMON_NEW_PASSWORD,
@@ -187,7 +188,8 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  FractionallySizedBox(
+                                  BottomButtonBar(ApplicationLocalizations.of(context).translate(i18.password.CHANGE_PASSWORD), updatePassword),
+                                  /*FractionallySizedBox(
                                       widthFactor: 0.90,
                                       child: new ElevatedButton(
                                           style: ElevatedButton.styleFrom(
@@ -201,7 +203,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                               style: TextStyle(
                                                   fontSize: 19,
                                                   fontWeight: FontWeight.w500)),
-                                          onPressed: updatePassword)),
+                                          onPressed: updatePassword)),*/
                                   PasswordHint(password)
                                 ],
                               ))))),
@@ -233,7 +235,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                   child: Text(
                     '${ApplicationLocalizations.of(context).translate(e)}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                   ),
                 )))
             .toList());

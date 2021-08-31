@@ -10,10 +10,10 @@ class LabelText extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Container(
             child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(8.0),
           child: Text(
             ApplicationLocalizations.of(context).translate(input),
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700, fontFamily: 'Roboto Condensed', fontStyle: FontStyle.normal),
             textAlign: TextAlign.left,
           ),
         )));

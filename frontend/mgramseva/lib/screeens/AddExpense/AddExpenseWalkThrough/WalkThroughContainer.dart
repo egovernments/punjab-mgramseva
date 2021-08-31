@@ -100,7 +100,7 @@ class _ExpenseWalkThroughContainerState
                                     .expenseWalkthrougList[
                                         expenseProvider.activeindex]
                                     .name),
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: 14, color: Theme.of(context).primaryColorLight),
                             textAlign: TextAlign.start,
                           )),
                           expenseProvider.activeindex == expenseProvider.expenseWalkthrougList.length - 1
