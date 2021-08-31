@@ -420,7 +420,7 @@ class _Payment {
   String get VIEW_DETAILS => 'VIEW_DETAILS'; //View Details
   String get BILL_ID_NUMBER => 'BILL_ID_NUMBER'; //Bill ID No
   String get BILL_PERIOD => 'BILL_PERIOD'; //Bill Period
-  String get FEE_ESTIMATE => 'FREE_ESTIMATE'; //Fee Estimate
+  String get FEE_ESTIMATE => 'FEE_ESTIMATE'; //Fee Estimate
   String get RECEIPT_REFERENCE_WITH_MOBILE_NUMBER =>
       'RECEIPT_REFERENCE_WITH_MOBILE_NUMBER'; //Fee Estimate
   String get BILL_DETAILS => 'BILL_DETAILS';
