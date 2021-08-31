@@ -3,6 +3,7 @@ import 'package:mgramseva/model/changePasswordDetails/changePassword_details.dar
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/changePassword_details_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
@@ -92,7 +93,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     isRequired: true,
                     maxLines: 1,
                     validator: (val) => Validators.passwordComparision(
-                        val, 'Please enter New password'),
+                        val, ApplicationLocalizations.of(context).translate(i18.password.NEW_PASSWORD_ENTER)),
                     onChange: (value) => saveInput(value),
                   ),
                   BuildTextField(
@@ -103,7 +104,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     maxLines: 1,
                     validator: (val) => Validators.passwordComparision(
                         val,
-                        'Please enter Confirm password',
+                        ApplicationLocalizations.of(context).translate(i18.password.CONFIRM_PASSWORD_ENTER),
                         passwordDetails.newpasswordCtrl.text),
                     onChange: (value) => saveInput(value),
                   ),
