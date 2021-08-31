@@ -231,7 +231,8 @@ class DashBoardProvider with ChangeNotifier {
         TableData('${expense.expenseType}'),
         TableData('₹ ${expense.totalAmount}'),
         TableData('${DateFormats.timeStampToDate(expense.billDate)}'),
-        TableData('${expense.paidDate != null && expense.paidDate != 0 ? DateFormats.timeStampToDate(expense.paidDate) : '-'}'),
+        TableData('${expense.paidDate != null && expense.paidDate != 0 ? DateFormats.timeStampToDate(expense.paidDate) : (ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.dashboard.PENDING))}',
+            style: expense.paidDate != null && expense.paidDate != 0 ? null : TextStyle(color: Colors.red)),
       ]
     );
   }
@@ -239,7 +240,7 @@ class DashBoardProvider with ChangeNotifier {
   TableDataRow getCollectionRow(WaterConnection connection){
     return TableDataRow(
         [
-          TableData('${connection.connectionNo}', callBack: onClickOfCollectionNo),
+          TableData('${connection.connectionNo} ${connection.connectionType == 'Metered' ? '- M' : ''}', callBack: onClickOfCollectionNo),
           TableData('${CommonMethods().truncateWithEllipsis(20,  connection.connectionHolders?.first?.name ?? '')}'),
           TableData('${connection.additionalDetails?.collectionAmount != null ? '₹ ${connection.additionalDetails?.collectionAmount}' : '-'}'),
         ]

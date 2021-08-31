@@ -82,7 +82,9 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     return  Column(
         children: [
-          ListLabelText(widget.dashBoardType == DashBoardType.collections ?  i18.dashboard.SEARCH_CONSUMER_RECORDS : i18.dashboard.SEARCH_EXPENSE_BILL),
+          ListLabelText(widget.dashBoardType == DashBoardType.collections ?  i18.dashboard.SEARCH_CONSUMER_RECORDS : i18.dashboard.SEARCH_EXPENSE_BILL,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           BuildTextField(
             '',
             dashBoardProvider.searchController,
