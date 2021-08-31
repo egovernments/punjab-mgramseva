@@ -50,7 +50,7 @@ config:
         dockerfile: "build/maven/Dockerfile"
   - name: "builds/mGramSeva/municipal-services/mgramseva-ifix-adapter"
     build:
-      - work-dir: "mgramseva-ifix-adapter"
+      - work-dir: "municipal-services/mgramseva-ifix-adapter"
         image-name: "mgramseva-ifix-adapter"
         dockerfile: "build/maven/Dockerfile"      
   - name: "builds/mGramSeva/frontend/frontend-mgramseva"
