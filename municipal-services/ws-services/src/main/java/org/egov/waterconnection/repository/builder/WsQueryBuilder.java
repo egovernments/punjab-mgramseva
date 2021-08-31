@@ -169,8 +169,11 @@ public class WsQueryBuilder {
 
 		if (criteria.getFreeSearch()) {
 			if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
-				addClauseIfRequired(preparedStatement, query);
-				query.append(" OR conn.connectionno like ? ");
+				if (!criteria.getUserIds().isEmpty()) {
+					query.append(" OR conn.connectionno like ? ");
+				} else {
+					query.append(" AND conn.connectionno like ? ");
+				}
 				preparedStatement.add('%' + criteria.getConnectionNumber() + '%');
 			}
 		} else {
