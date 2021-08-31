@@ -89,18 +89,9 @@ class _BillsTable extends State<BillsTable> {
     return Container(
       decoration: isBorderRequired ? BoxDecoration(
           border: Border(
-              left: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-              ),
-              bottom: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-              ),
-              right: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-              )
+              left: tableCellBorder,
+              bottom: tableCellBorder,
+              right: tableCellBorder
           )
       ) : null,
       child: isAscending != null
@@ -136,18 +127,9 @@ class _BillsTable extends State<BillsTable> {
             child: Container(
               decoration: BoxDecoration(
                   border: Border(
-                      left: BorderSide(
-                          color: Colors.grey,
-                          width: 0.5
-                      ),
-                      bottom: BorderSide(
-                          color: Colors.grey,
-                          width: 0.5
-                      ),
-                    right: BorderSide(
-                        color: Colors.grey,
-                        width: 0.5
-                    ),
+                      left: tableCellBorder,
+                      bottom: tableCellBorder,
+                    right: tableCellBorder,
                   )
               ),
               child: Text(
@@ -193,22 +175,13 @@ class _BillsTable extends State<BillsTable> {
       return Container(
           color: index % 2 == 0 ? const Color(0xffEEEEEE) : Colors.white,
           child: Row(
-            children: list ??
-                <Widget>[
-                  _generateColumnRow(
-                      context, index, data.tableRow[1].label, constraints,
-                      style: data.tableRow[1].style),
-                  _generateColumnRow(
-                      context, index, data.tableRow[2].label, constraints,
-                      style: data.tableRow[1].style),
-                  _generateColumnRow(
-                      context, index, data.tableRow[3].label, constraints,
-                      style: data.tableRow[1].style),
-                  _generateColumnRow(
-                      context, index, data.tableRow[4].label, constraints,
-                      style: data.tableRow[1].style),
-                ],
+            children: list
           ));
     });
   }
+
+  BorderSide get tableCellBorder => BorderSide(
+      color: Color.fromRGBO(238, 238, 238, 1),
+      width: 0.5
+  );
 }
