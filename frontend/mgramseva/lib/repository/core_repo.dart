@@ -5,11 +5,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mgramseva/Env/app_config.dart';
+import 'package:mgramseva/model/Events/events_List.dart';
 import 'package:mgramseva/model/common/pdfservice.dart';
+
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/notifications_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
@@ -173,6 +176,38 @@ class CoreRepository extends BaseService {
       if (res != null) {
         pdfServiceResponse = PDFServiceResponse.fromJson(res);
         return pdfServiceResponse;
+      }
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+    }
+  }
+
+  Future<EventsList?> fetchNotifications(params) async {
+    print("funcation for Notification");
+    EventsList? eventsResponse;
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+
+      var res = await makeRequest(
+          url: Url.FETCH_EVENTS,
+          method: RequestType.POST,
+          body: {},
+          queryParameters: params,
+          requestInfo: RequestInfo(
+              APIConstants.API_MODULE_NAME,
+              APIConstants.API_VERSION,
+              APIConstants.API_TS,
+              "_search",
+              APIConstants.API_DID,
+              APIConstants.API_KEY,
+              APIConstants.API_MESSAGE_ID,
+              commonProvider.userDetails!.accessToken));
+
+      if (res != null) {
+        eventsResponse = EventsList.fromJson(res);
+        return eventsResponse;
       }
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);

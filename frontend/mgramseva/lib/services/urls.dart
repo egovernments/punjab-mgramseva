@@ -4,7 +4,6 @@ class Url {
   static const String LOCALIZATION = 'localization/messages/v1/_search';
 
   static const String MDMS = 'egov-mdms-service/v1/_search';
-
   static const String FILE_UPLOAD = 'filestore/v1/files';
   static const String FILE_FETCH = 'filestore/v1/files/url';
   static const String URL_SHORTNER = 'egov-url-shortening/shortener';
@@ -19,7 +18,7 @@ class Url {
   static const String ADD_PROPERTY = 'property-services/property/_create';
   //Property Fetch
   static const String GET_PROPERTY = 'property-services/property/_search';
-//Property  Update
+  //Property  Update
   static const String UPDATE_PROPERTY = 'property-services/property/_update';
   // Connection Create
   static const String ADD_WC_CONNECTION = 'ws-services/wc/_create';
@@ -33,6 +32,9 @@ class Url {
   static const String BULK_DEMAND = 'ws-calculator/waterCalculator/_bulkDemand';
   static const String SEARCH_METER_CONNECTION_DEMAND =
       'ws-calculator/meterConnection/_search';
+
+  //Fetch Events
+  static const String FETCH_EVENTS = 'egov-user-event/v1/events/_search';
 
   ///Fetch Demands
   static const String FETCH_DEMAND = 'billing-service/demand/_search';

@@ -58,6 +58,7 @@ class Common {
   String get RESET_PASSWORD_LABEL => 'RESET_PASSWORD_LABEL';
   String get BILL_DOWNLOAD => 'BILL_DOWNLOAD';
   String get RECEIPT_DOWNLOAD => 'RECEIPT_DOWNLOAD';
+  String get NOTIFICATIONS => 'NOTIFICATIONS';
 
   /// File Picker
   String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED';
@@ -471,7 +472,7 @@ class _DashBoard {
   String get BILL_ID_VENDOR => 'BILL_ID_VENDOR';
 }
 
-class _ExpenseWalkThroughMsg{
+class _ExpenseWalkThroughMsg {
   const _ExpenseWalkThroughMsg();
 
   String get EXPENSE_TYPE_MSG => 'EXPENSE_TYPE_MSG';
