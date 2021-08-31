@@ -189,21 +189,6 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                     height: 10,
                                   ),
                                   BottomButtonBar(ApplicationLocalizations.of(context).translate(i18.password.CHANGE_PASSWORD), updatePassword),
-                                  /*FractionallySizedBox(
-                                      widthFactor: 0.90,
-                                      child: new ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            padding: EdgeInsets.all(15),
-                                          ),
-                                          child: new Text(
-                                              ApplicationLocalizations.of(
-                                                      context)
-                                                  .translate(i18.password
-                                                      .CHANGE_PASSWORD),
-                                              style: TextStyle(
-                                                  fontSize: 19,
-                                                  fontWeight: FontWeight.w500)),
-                                          onPressed: updatePassword)),*/
                                   PasswordHint(password)
                                 ],
                               ))))),

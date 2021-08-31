@@ -111,7 +111,8 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       fontWeight: FontWeight.w400,
-                      fontSize: 16)))),
+                      fontSize: 16,
+                  color: Theme.of(context).primaryColorDark)))),
       Container(
           width: constraints.maxWidth > 760
               ? MediaQuery.of(context).size.width / 2.5
@@ -139,7 +140,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                     onPressed: () => _openFileExplorer(),
                     child: Text(
                       "${ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_FILE)}",
-                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      style: TextStyle(color: Theme.of(context).primaryColorDark, fontSize: 16),
                     ),
                   )),
             _selectedFiles.isNotEmpty ?

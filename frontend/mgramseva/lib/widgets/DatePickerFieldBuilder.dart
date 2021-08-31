@@ -28,7 +28,7 @@ class BasicDateField extends StatelessWidget {
         fillColor: (isEnabled ?? true) ? Colors.white : Colors.grey,
         prefixText: "",
         suffixIcon: Icon(Icons.calendar_today),
-        prefixStyle: TextStyle(color: Colors.black),
+        prefixStyle: TextStyle(color: Theme.of(context).primaryColorDark),
         contentPadding:
             new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(1.0)),
@@ -55,11 +55,11 @@ class BasicDateField extends StatelessWidget {
       Text(ApplicationLocalizations.of(context).translate(label),
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
+              fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
       Text(isRequired ? '* ' : ' ',
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
+              fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
     ]);
 
     return LayoutBuilder(builder: (context, constraints) {

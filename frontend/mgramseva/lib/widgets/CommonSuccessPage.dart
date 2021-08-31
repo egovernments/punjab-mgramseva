@@ -91,7 +91,7 @@ class CommonSuccess extends StatelessWidget {
                                                 null
                                             ? successHandler.downloadLinkLabel!
                                             : ''),
-                                    style: TextStyle(fontSize: 19)),
+                                    style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor)),
                               ),
                             ),
                             Visibility(
@@ -99,13 +99,11 @@ class CommonSuccess extends StatelessWidget {
                               child: TextButton.icon(
                                 onPressed: callBackwatsapp,
                                 icon: (Image.asset('assets/png/whats_app.png')),
-                                label: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 15, horizontal: 10),
-                                  child: Text(
+                                label: Text(
                                       ApplicationLocalizations.of(context)
-                                          .translate(i18.common.SHARE_BILL)),
-                                ),
+                                          .translate(i18.common.SHARE_BILL),
+                                  style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor),),
+
                               ),
                             )
                           ],

@@ -22,14 +22,14 @@ class SearchConnectionDetailCard extends StatelessWidget {
             children: [
               Container(
                   width: MediaQuery.of(context).size.width / 2.5,
-                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  padding: EdgeInsets.only(top: 16, bottom: 4),
                   child: Text(
                     ApplicationLocalizations.of(context).translate(label),
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                   )),
               Container(
                   width: MediaQuery.of(context).size.width / 3,
-                  padding: EdgeInsets.only(top: 18, bottom: 3),
+                  padding: EdgeInsets.only(top: 8, bottom: 3),
                   child: Text(
                       value == null
                           ? ApplicationLocalizations.of(context).translate("NA")
@@ -44,7 +44,7 @@ class SearchConnectionDetailCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  padding: EdgeInsets.only(top: 16, bottom: 4),
                   child: Text(
                     ApplicationLocalizations.of(context).translate(label),
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
@@ -102,12 +102,12 @@ class SearchConnectionDetailCard extends StatelessWidget {
         ),
         Expanded(
           child: ListView.builder(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(0),
               itemCount: waterconnections.waterConnection!.length,
               itemBuilder: (BuildContext context, int index) {
                 return Card(
                     child: Padding(
-                        padding: EdgeInsets.all(15),
+                        padding: EdgeInsets.all(8),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -201,7 +201,7 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                           "mode": arguments['Mode']
                                         })),
                             SizedBox(
-                              height: 20,
+                              height: 8,
                             ),
                           ],
                         )));

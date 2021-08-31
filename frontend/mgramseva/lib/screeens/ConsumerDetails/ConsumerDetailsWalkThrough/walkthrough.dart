@@ -42,6 +42,7 @@ var json = [
       i18.common.PHONE_NUMBER,
       TextEditingController(),
       isRequired: true,
+      maxLength: 10,
     ),
   },
   {

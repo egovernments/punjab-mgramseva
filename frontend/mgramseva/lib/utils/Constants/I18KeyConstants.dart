@@ -58,6 +58,7 @@ class Common {
   String get RESET_PASSWORD_LABEL => 'RESET_PASSWORD_LABEL';
   String get BILL_DOWNLOAD => 'BILL_DOWNLOAD';
   String get RECEIPT_DOWNLOAD => 'RECEIPT_DOWNLOAD';
+  String get NOTIFICATIONS => 'NOTIFICATIONS';
 
   /// File Picker
   String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED';
@@ -419,9 +420,10 @@ class _Payment {
   String get VIEW_DETAILS => 'VIEW_DETAILS'; //View Details
   String get BILL_ID_NUMBER => 'BILL_ID_NUMBER'; //Bill ID No
   String get BILL_PERIOD => 'BILL_PERIOD'; //Bill Period
-  String get FREE_ESTIMATE => 'FREE_ESTIMATE'; //Fee Estimate
+  String get FEE_ESTIMATE => 'FEE_ESTIMATE'; //Fee Estimate
   String get RECEIPT_REFERENCE_WITH_MOBILE_NUMBER =>
       'RECEIPT_REFERENCE_WITH_MOBILE_NUMBER'; //Fee Estimate
+  String get BILL_DETAILS => 'BILL_DETAILS';
 
 }
 

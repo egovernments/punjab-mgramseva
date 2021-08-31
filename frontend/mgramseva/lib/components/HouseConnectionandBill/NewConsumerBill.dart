@@ -15,18 +15,21 @@ class NewConsumerBill extends StatelessWidget {
 
   const NewConsumerBill(this.billList, this.mode);
   _getLabeltext(label, value, context) {
-    return (Row(
+    return Container(
+        padding: EdgeInsets.only(top: 16, bottom: 16),
+    child:(Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-            padding: EdgeInsets.only(top: 16, bottom: 16),
-            width: MediaQuery.of(context).size.width / 3,
-            child: Text(
+    Container(
+      padding: EdgeInsets.only(right: 16),
+        width: MediaQuery.of(context).size.width / 3,
+      child:Text(
               ApplicationLocalizations.of(context).translate(label),
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             )),
         Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))
       ],
-    ));
+    )));
   }
 
   @override
@@ -44,10 +47,13 @@ class NewConsumerBill extends StatelessWidget {
       return billList!.bill!.first.totalAmount! > 0
           ? Column(
               children: [
-                ListLabelText(i18.billDetails.NEW_CONSUMERGENERATE_BILL_LABEL),
+                Container(
+                  padding: EdgeInsets.only(top: 24, bottom: 8),
+              child:
+                ListLabelText(i18.billDetails.NEW_CONSUMERGENERATE_BILL_LABEL)),
                 Card(
                     child: Padding(
-                        padding: EdgeInsets.all(15),
+                        padding: EdgeInsets.all(8.0),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -67,7 +73,8 @@ class NewConsumerBill extends StatelessWidget {
                                   label: Text(
                                       ApplicationLocalizations.of(context)
                                           .translate(i18.common.BILL_DOWNLOAD),
-                                      style: TextStyle(fontSize: 19)),
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,),
+                                  textAlign: TextAlign.left,),
                                 ),
                               ),
                               _getLabeltext(

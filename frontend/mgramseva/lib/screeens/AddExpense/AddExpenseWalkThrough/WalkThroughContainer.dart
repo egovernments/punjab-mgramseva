@@ -109,21 +109,45 @@ class _ExpenseWalkThroughContainerState
                               child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    TextButton(
-                                        onPressed: () async {
+                                    GestureDetector(
+                                        onTap: () async {
                                           expenseProvider.activeindex = 0;
                                           Navigator.pop(context);
                                           Provider.of<CommonProvider>(context,
                                               listen: false)
-                                            ..walkThroughCondition(false,
-                                                Constants.ADD_EXPENSE_KEY);
+                                            ..walkThroughCondition(
+                                                false, Constants.ADD_EXPENSE_KEY);
                                           setState(() {
                                             active = 0;
                                           });
                                         },
-                                        child: Text(
-                                            ApplicationLocalizations.of(context)
-                                                .translate(i18.common.END)))]))
+                                        child: Container(
+                                          margin: EdgeInsets.all(5.0),
+                                          height: 35,
+                                          width: 80,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(10.0),
+                                            color:
+                                            Theme.of(context).primaryColor,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey,
+                                                offset:
+                                                Offset(0.0, 1.0), //(x,y)
+                                                blurRadius: 6.0,
+                                              ),
+                                            ],
+                                          ),
+                                          child: Center(
+                                              child: Text(
+                                                ApplicationLocalizations.of(context)
+                                                    .translate(i18.common.END),
+                                                style:
+                                                TextStyle(color: Colors.white,
+                                                fontSize: 12),
+                                              )),
+                                        ))]))
                               : Padding(
                           padding: EdgeInsets.all(0),
                           child: Row(
@@ -143,7 +167,8 @@ class _ExpenseWalkThroughContainerState
                                     },
                                     child: Text(
                                         ApplicationLocalizations.of(context)
-                                            .translate(i18.common.SKIP))),
+                                            .translate(i18.common.SKIP),
+                                    style: TextStyle(fontSize: 12, color: Theme.of(context).primaryColorLight),)),
                                 GestureDetector(
                                     onTap: () async {
                                       if (expenseProvider.expenseWalkthrougList
@@ -192,7 +217,8 @@ class _ExpenseWalkThroughContainerState
                                           child: Text(
                                         ApplicationLocalizations.of(context)
                                             .translate(i18.common.NEXT),
-                                        style: TextStyle(color: Colors.white),
+                                        style: TextStyle(color: Colors.white,
+                                        fontSize: 12),
                                       )),
                                     ))
                               ]))

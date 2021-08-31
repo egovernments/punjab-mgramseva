@@ -11,7 +11,7 @@ class ListLabelText extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Container(
             child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(8.0),
           child: Text(
             ApplicationLocalizations.of(context).translate(input),
             style: style ?? TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
