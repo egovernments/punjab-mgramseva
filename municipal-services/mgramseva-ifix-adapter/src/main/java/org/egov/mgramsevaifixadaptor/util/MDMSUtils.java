@@ -71,7 +71,7 @@ public class MDMSUtils {
         List<MasterDetail> pgrMasterDetails = new ArrayList<>();
 
         // filter to only get code field from master data
-        final String filterCode = "$..circle..division..subdivision..section..project..[?(@.village[*].code contains"+ tenantId+")]";
+        final String filterCode = "$..circle..division..subdivision..section..project..[?(@.village[*].code contains '"+ tenantId+"')]";
 
         pgrMasterDetails.add(MasterDetail.builder().name(Constants.PROJECTMODULE).filter(filterCode).build());
 
