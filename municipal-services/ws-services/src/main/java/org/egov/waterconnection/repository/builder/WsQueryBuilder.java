@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.egov.common.contract.request.RequestInfo;
+import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.service.UserService;
 import org.egov.waterconnection.util.WaterServicesUtil;
@@ -116,6 +117,8 @@ public class WsQueryBuilder {
 				query.append(" connectionholder.userid in (").append(createQuery(uuids)).append(" ))");
 				addToPreparedStatement(preparedStatement, uuids);
 				userIdsPresent = true;
+			}else if(criteria.mobileNumberOny()){
+				throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND", "Could not find user or property details !");
 			}
 			if(propertyIdsPresent && !userIdsPresent){
 				query.append(")");
@@ -129,7 +132,7 @@ public class WsQueryBuilder {
 				&& CollectionUtils.isEmpty(criteria.getPropertyIds()) && CollectionUtils.isEmpty(criteria.getUserIds())
 				&& StringUtils.isEmpty(criteria.getApplicationNumber()) && StringUtils.isEmpty(criteria.getPropertyId())
 				&& StringUtils.isEmpty(criteria.getConnectionNumber()) && CollectionUtils.isEmpty(criteria.getIds())) {
-			return null;
+			throw new CustomException("INVALID_SEARCH_CRITERIA", "Invalid serach criteria!");
 		}
 
 		if (!StringUtils.isEmpty(criteria.getTenantId())) {

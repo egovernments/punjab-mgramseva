@@ -62,13 +62,19 @@ class SearchConnectionDetailCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        LabelText(waterconnections.waterConnection!.length.toString() != null
-            ? waterconnections.waterConnection!.length.toString() +
-                " " +
-                '${waterconnections.waterConnection!.length.toString() == '1' ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND_ONE) : ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND)}'
-            : "0" +
-                ApplicationLocalizations.of(context)
-                    .translate(i18.searchWaterConnection.CONNECTION_FOUND)),
+        Padding(
+            padding: EdgeInsets.only(left: 15),
+            child: Text(
+              waterconnections.waterConnection!.length.toString() != null
+                  ? waterconnections.waterConnection!.length.toString() +
+                      " " +
+                      '${waterconnections.waterConnection!.length.toString() == '1' ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND_ONE) : ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND)}'
+                  : "0" +
+                      ApplicationLocalizations.of(context).translate(
+                          i18.searchWaterConnection.CONNECTION_FOUND),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+              textAlign: TextAlign.left,
+            )),
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: RichText(
@@ -150,24 +156,24 @@ class SearchConnectionDetailCard extends StatelessWidget {
                             _getDetailtext(
                                 ApplicationLocalizations.of(context).translate(
                                     i18.searchWaterConnection.RESULTS_ADDRESS),
-                                waterconnections.waterConnection![index]
-                                            .additionalDetails!.doorNo !=
-                                        null
-                                    ? waterconnections.waterConnection![index]
-                                        .additionalDetails!.doorNo!
-                                    : "" +
-                                        (waterconnections
-                                                    .waterConnection![index]
-                                                    .additionalDetails!
-                                                    .street !=
-                                                null
-                                            ? waterconnections
-                                                .waterConnection![index]
-                                                .additionalDetails!
-                                                .street!
-                                            : "") +
-                                        waterconnections.waterConnection![index]
-                                            .additionalDetails!.locality!,
+                                (waterconnections.waterConnection![index]
+                                                .additionalDetails!.doorNo !=
+                                            null
+                                        ? waterconnections
+                                            .waterConnection![index]
+                                            .additionalDetails!
+                                            .doorNo!
+                                        : "") +
+                                    (waterconnections.waterConnection![index]
+                                                .additionalDetails!.street !=
+                                            null
+                                        ? waterconnections
+                                            .waterConnection![index]
+                                            .additionalDetails!
+                                            .street!
+                                        : "") +
+                                    waterconnections.waterConnection![index]
+                                        .additionalDetails!.locality!,
                                 context,
                                 constraints),
                             SizedBox(

@@ -91,6 +91,12 @@ class router {
         return MaterialPageRoute(
             builder: (_) => SearchConsumerConnection(settings.arguments as Map),
             settings: RouteSettings(name: Routes.HOUSEHOLDRECEIPTS));
+
+      case Routes.CONSUMER_SEARCH_UPDATE:
+        return MaterialPageRoute(
+            builder: (_) => SearchConsumerConnection(settings.arguments as Map),
+            settings: RouteSettings(name: Routes.CONSUMER_SEARCH_UPDATE));
+
       case Routes.EDIT_PROFILE:
         return MaterialPageRoute(
             builder: (_) => EditProfile(),
@@ -163,7 +169,6 @@ class router {
         String? id;
         String? mode;
         if (settings.arguments != null) {
-          print(settings.arguments);
           id = ((settings.arguments as Map)['waterconnections']
                   as WaterConnection)
               .connectionNo;

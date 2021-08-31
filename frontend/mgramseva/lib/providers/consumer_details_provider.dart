@@ -96,6 +96,34 @@ class ConsumerProvider with ChangeNotifier {
       "businessService": "WS",
       "tenantId": waterconnection.tenantId
     });
+    if (waterconnection.connectionType == 'Metered' &&
+        waterconnection.additionalDetails!.meterReading != null) {
+      waterconnection.om_1Ctrl.text = waterconnection
+          .additionalDetails!.meterReading
+          .toString()
+          .characters
+          .elementAt(0);
+      waterconnection.om_2Ctrl.text = waterconnection
+          .additionalDetails!.meterReading
+          .toString()
+          .characters
+          .elementAt(1);
+      waterconnection.om_3Ctrl.text = waterconnection
+          .additionalDetails!.meterReading
+          .toString()
+          .characters
+          .elementAt(2);
+      waterconnection.om_4Ctrl.text = waterconnection
+          .additionalDetails!.meterReading
+          .toString()
+          .characters
+          .elementAt(3);
+      waterconnection.om_5Ctrl.text = waterconnection
+          .additionalDetails!.meterReading
+          .toString()
+          .characters
+          .elementAt(4);
+    }
     if (demand!
             .indexWhere(((element) =>
                 element.consumerType == 'waterConnection-arrears'))

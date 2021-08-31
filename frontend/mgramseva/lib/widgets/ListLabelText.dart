@@ -3,7 +3,8 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class ListLabelText extends StatelessWidget {
   final input;
-  ListLabelText(this.input);
+  final TextStyle? style;
+  ListLabelText(this.input, {this.style});
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -13,7 +14,7 @@ class ListLabelText extends StatelessWidget {
           padding: const EdgeInsets.all(15.0),
           child: Text(
             ApplicationLocalizations.of(context).translate(input),
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+            style: style ?? TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
             textAlign: TextAlign.left,
           ),
         )));
