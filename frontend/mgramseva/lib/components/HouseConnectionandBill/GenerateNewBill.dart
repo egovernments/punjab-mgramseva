@@ -4,6 +4,7 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
+import 'package:mgramseva/widgets/Info.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
 
@@ -88,7 +89,12 @@ class GenerateNewBill extends StatelessWidget {
                               Navigator.pushNamed(context, Routes.BILL_GENERATE,
                                   arguments:
                                       billList!.bill!.first.waterConnection)
-                            })
+                            }),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    billList!.bill!.length == 1 ? Info(ApplicationLocalizations.of(context).translate(i18.generateBillDetails.INFO_TEXT))
+                        : Text("")
                   ],
                 )))
       ],
