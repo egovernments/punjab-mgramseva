@@ -59,6 +59,14 @@ public class ChallanQueryBuilder {
 
 	  public static final String PREVIOUSDAYCASHCOLLECTION = " select sum(totalamountpaid) as total, mobilenumber from egcl_payment where paymentmode='CASH' ";
 
+	  public static final String PREVIOUSMONTHNEWEXPENSE = "  select sum(demanddtl.taxamount) from eg_echallan challan, egbs_billdetail_v1 billdtl,egbs_demanddetail_v1 demanddtl  where challan.challanno= billdtl.consumercode   and billdtl.demandid= billdtl.demandid";
+	  
+	  public static final String CUMULATIVEPENDINGEXPENSE = " select sum(demanddtl.taxamount-demanddtl.collectionamount) from eg_echallan challan, egbs_billdetail_v1 billdtl,egbs_demanddetail_v1 demanddtl  where challan.challanno= billdtl.consumercode  and billdtl.demandid= billdtl.demandid ";
+
+	  public static final String NEWDEMAND ="select sum(dmdl.taxamount) FROM egbs_demand_v1 dmd INNER JOIN egbs_demanddetail_v1 dmdl ON dmd.id=dmdl.demandid AND dmd.tenantid=dmdl.tenantid WHERE dmd.businessservice='WS' ";
+	  
+	  public static final String ACTUALCOLLECTION =" select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id where pyd.businessservice='WS' ";
+
 
 
 
