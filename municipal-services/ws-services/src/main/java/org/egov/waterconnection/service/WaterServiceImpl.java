@@ -5,6 +5,7 @@ package org.egov.waterconnection.service;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -153,7 +154,7 @@ public class WaterServiceImpl implements WaterService {
 		}
 		waterConnectionValidator.validatePropertyForConnection(waterConnection.getWaterConnection());
 		enrichmentService.enrichConnectionHolderDeatils(waterConnection.getWaterConnection(), criteria, requestInfo);
-		if(criteria.getIscollectionAmount()) {
+		if(criteria.getIscollectionAmount() && criteria.getSortBy()!=null && !criteria.getSortBy().toString().equalsIgnoreCase("collectionAmount")) {
 			enrichmentService.setTotalAmount(waterConnection.getWaterConnection(), criteria, requestInfo);
 		}
 		return waterConnection;

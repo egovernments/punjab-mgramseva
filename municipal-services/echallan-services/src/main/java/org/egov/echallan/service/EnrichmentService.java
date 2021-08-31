@@ -2,6 +2,7 @@ package org.egov.echallan.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -33,6 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Service
 public class EnrichmentService {
 
@@ -43,6 +46,11 @@ public class EnrichmentService {
     private ChallanRepository challanRepository;
     private ServiceRequestRepository serviceRequestRepository;
     private PaymentService paymentService;
+    
+
+
+	@Autowired
+	private ObjectMapper mapper;
     
     @Autowired
     public EnrichmentService(IdGenRepository idGenRepository, ChallanConfiguration config, CommonUtils commonUtils, UserService userService, 
@@ -158,7 +166,7 @@ public class EnrichmentService {
         SearchCriteria searchCriteria = enrichChallanSearchCriteriaWithOwnerids(criteria,challans);
         UserDetailResponse userDetailResponse = userService.getUser(searchCriteria,requestInfo);
         enrichOwner(userDetailResponse,challans);
-        enrichBillAmount(challans,requestInfo);
+        enrichBillAmount(challans,criteria, requestInfo);
         return challans;
     }
     
@@ -187,19 +195,18 @@ public class EnrichmentService {
 	    // challan.setFilestoreid(null);
 	}
 	
-	private void enrichBillAmount(List<Challan> challans, RequestInfo requestInfo) {
+	private void enrichBillAmount(List<Challan> challans, SearchCriteria criteria, RequestInfo requestInfo) {
 		for(Challan challan:challans)
 		{
 			ChallanRequest request = ChallanRequest.builder().requestInfo(requestInfo).challan(challan).build();
 			List<Bill> billList = paymentService.fetchBill(request);
 			if (!billList.isEmpty()) {
 				challan.setTotalAmount(billList.get(0).getTotalAmount());
-				HashMap<String, Object> additionalDetail = new HashMap<>();
-				additionalDetail.put("TotalAmount", billList.get(0).getTotalAmount());
-				challan.setAdditionalDetail(additionalDetail);
 			}
 		}
-
+		if(criteria.getSortBy()!=null && criteria.getSortBy().toString().equalsIgnoreCase("totalAmount")) {
+			Collections.sort(challans, Comparator.comparing(challan ->  challan.getTotalAmount()));
+		}
 	}
 
 }

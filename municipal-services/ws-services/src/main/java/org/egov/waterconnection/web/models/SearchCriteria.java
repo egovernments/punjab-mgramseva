@@ -101,6 +101,9 @@ public class SearchCriteria {
 	
 	@JsonProperty("sortOrder")
 	private SortOrder sortOrder;
+
+	@JsonProperty("freeSearch")
+	private Boolean freeSearch = false;
 	    
 	public enum SortOrder {
 	    ASC,
@@ -108,7 +111,8 @@ public class SearchCriteria {
 	}
 	public enum SortBy {
 		applicationNumber,
-		name
+		name,
+		collectionAmount
 	}
 
 	public boolean isEmpty() {

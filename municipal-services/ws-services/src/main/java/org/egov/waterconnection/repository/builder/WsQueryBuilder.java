@@ -35,8 +35,8 @@ public class WsQueryBuilder {
     private static final String LEFT_OUTER_JOIN_STRING = " LEFT OUTER JOIN ";
 //	private static final String Offset_Limit_String = "OFFSET ? LIMIT ?";
     
-    private static String holderSelectValues = "connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime";
-
+    private static String holderSelectValues = "{HOLDERSELECTVALUES}";
+   
     
 	private static final String WATER_SEARCH_QUERY = "SELECT count(*) OVER() AS full_count, conn.*, wc.*, document.*, plumber.*, wc.connectionCategory, wc.connectionType, wc.waterSource,"
 			+ " wc.meterId, wc.meterInstallationDate, wc.pipeSize, wc.noOfTaps, wc.proposedPipeSize, wc.proposedTaps, wc.connection_id as connection_Id, wc.connectionExecutionDate, wc.initialmeterreading, wc.appCreatedDate,"
@@ -71,6 +71,8 @@ public class WsQueryBuilder {
 	
 	public static final String TotalCollectionAmount = " select sum(payd.amountpaid)  from egcl_paymentdetail payd join egcl_bill payspay ON ( payd.billid = payspay.id) where payd.businessservice='WS' ";
 
+	public static final String CollectionAmountList = " select sum(payd.amountpaid) from egcl_paymentdetail payd join egcl_bill payspay ON ( payd.billid = payspay.id) where payd.businessservice='WS' ";
+
 	
 	
 	/**
@@ -88,6 +90,13 @@ public class WsQueryBuilder {
 		if (criteria.isEmpty())
 				return null;
 		StringBuilder query = new StringBuilder(WATER_SEARCH_QUERY);
+		
+		if (criteria.getSortBy() != SearchCriteria.SortBy.collectionAmount) {
+			query.toString().replace("{HOLDERSELECTVALUES}", "connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
+		}else {
+			query.toString().replace("{HOLDERSELECTVALUES}", "(SELECT NULLIF(SUM(PAYD.AMOUNTPAID),0) FROM EGCL_PAYMENTDETAIL PAYD JOIN EGCL_BILL PAYSPAY ON (PAYD.BILLID = PAYSPAY.ID) WHERE PAYD.BUSINESSSERVICE = 'WS' AND PAYSPAY.CONSUMERCODE = CONN.CONNECTIONNO GROUP BY PAYSPAY.CONSUMERCODE) AS COLLECTIONAMOUNT, connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
+		}
+		
 		boolean propertyIdsPresent = false;
 
 		Set<String> propertyIds = new HashSet<>();
@@ -164,11 +173,20 @@ public class WsQueryBuilder {
 			preparedStatement.add(criteria.getOldConnectionNumber());
 		}
 
-		if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
-			addClauseIfRequired(preparedStatement, query);
-			query.append(" conn.connectionno = ? ");
-			preparedStatement.add(criteria.getConnectionNumber());
+		if (criteria.getFreeSearch()) {
+			if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
+				addClauseIfRequired(preparedStatement, query);
+				query.append(" OR conn.connectionno like ? ");
+				preparedStatement.add('%' + criteria.getConnectionNumber() + '%');
+			}
+		} else {
+			if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
+				addClauseIfRequired(preparedStatement, query);
+				query.append(" conn.connectionno like ? ");
+				preparedStatement.add('%' + criteria.getConnectionNumber() + '%');
+			}
 		}
+	
 		if (!StringUtils.isEmpty(criteria.getStatus())) {
 			addClauseIfRequired(preparedStatement, query);
 			query.append(" conn.status = ? ");
@@ -274,6 +292,7 @@ public class WsQueryBuilder {
 		finalQuery = finalQuery.replace("{pagination}", " offset ?  limit ?  ");
 		preparedStmtList.add(offset);
 		preparedStmtList.add(limit + offset);
+		System.out.println("FINAL QUERY TO CHECK ::: " + finalQuery);
 		return finalQuery;
 	}
 	
@@ -289,8 +308,8 @@ public class WsQueryBuilder {
 		else if (criteria.getSortBy() == SearchCriteria.SortBy.name)
 			builder.append(" ORDER BY name ");
 
-//		else if (criteria.getSortBy() == SearchCriteria.SortBy.collection)
-//			builder.append(" ORDER BY collection ");
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.collectionAmount)
+			builder.append(" ORDER BY COLLECTIONAMOUNT ");
 		
 
 		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
@@ -298,6 +317,9 @@ public class WsQueryBuilder {
 		else
 			builder.append(" DESC ");
 
+		if (criteria.getSortBy() == SearchCriteria.SortBy.collectionAmount)
+			builder.append(" NULLS LAST ");
+		
 		return builder.toString();
 	}
 
@@ -356,8 +378,6 @@ public class WsQueryBuilder {
 			preparedStatementValues.add(feedBackSearchCriteira.getLimit());
 			
 		}
-		
-		
 
 		return query.toString();
 

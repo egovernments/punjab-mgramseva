@@ -4,6 +4,8 @@ package org.egov.waterconnection.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -479,8 +481,6 @@ public class EnrichmentService {
 				waterConnection.setAdditionalDetails(additionalDetail);
 				finalConnectionList.add(waterConnection);
 			}
-
-
 		}
 		return finalConnectionList;
 	}
@@ -506,7 +506,9 @@ public class EnrichmentService {
 			}
 			additionalDetails.put("collectionAmount", amount.get(0));
 			connection.setAdditionalDetails(additionalDetails);
+			
 		});
 	}
+
 
 }
