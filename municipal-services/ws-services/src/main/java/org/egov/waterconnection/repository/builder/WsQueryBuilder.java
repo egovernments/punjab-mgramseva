@@ -273,10 +273,10 @@ public class WsQueryBuilder {
 		Integer offset = config.getDefaultOffset();
 		 String finalQuery = PAGINATION_WRAPPER.replace("{}",query);
 		finalQuery = finalQuery.replace("{orderby}", string);
-		if (criteria.getSortBy() != SearchCriteria.SortBy.collectionAmount) {
+		if (criteria.getSortBy() != SearchCriteria.SortBy.collectionAmount && !criteria.getIscollectionAmount()) {
 			finalQuery = finalQuery.replace("{holderSelectValues}", "connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
 		}else {
-			finalQuery = finalQuery.replace("{holderSelectValues}", "(SELECT NULLIF(SUM(PAYD.AMOUNTPAID),0) FROM EGCL_PAYMENTDETAIL PAYD JOIN EGCL_BILL PAYSPAY ON (PAYD.BILLID = PAYSPAY.ID) WHERE PAYD.BUSINESSSERVICE = 'WS' AND PAYSPAY.CONSUMERCODE = CONN.CONNECTIONNO GROUP BY PAYSPAY.CONSUMERCODE) AS COLLECTIONAMOUNT, connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
+			finalQuery = finalQuery.replace("{holderSelectValues}", "(select nullif(sum(payd.amountpaid),0) from egcl_paymentdetail payd join egcl_bill payspay on (payd.billid = payspay.id) where payd.businessservice = 'ws' and payspay.consumercode = conn.connectionno group by payspay.consumercode) as collectionamount, connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
 		}
 		if (criteria.getLimit() == null && criteria.getOffset() == null)
 			limit = config.getMaxLimit();
@@ -310,7 +310,7 @@ public class WsQueryBuilder {
 			builder.append(" ORDER BY name ");
 
 		else if (criteria.getSortBy() == SearchCriteria.SortBy.collectionAmount)
-			builder.append(" ORDER BY COLLECTIONAMOUNT ");
+			builder.append(" ORDER BY collectionamount ");
 		
 
 		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)

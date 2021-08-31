@@ -56,7 +56,7 @@ public class OpenWaterRowMapper implements ResultSetExtractor<List<WaterConnecti
                 additionalDetails.put(WCConstants.INITIAL_METER_READING_CONST, rs.getBigDecimal("initialmeterreading"));
                 additionalDetails.put(WCConstants.APP_CREATED_DATE, rs.getBigDecimal("appCreatedDate"));
                 additionalDetails.put(WCConstants.LOCALITY, rs.getString("locality"));
-                additionalDetails.put("collectionAmount", rs.getString("COLLECTIONAMOUNT"));
+                additionalDetails.put("collectionAmount", rs.getString("collectionamount"));
                 currentWaterConnection.setAdditionalDetails(additionalDetails);
                 currentWaterConnection
                         .processInstance(ProcessInstance.builder().action((rs.getString("action"))).build());
