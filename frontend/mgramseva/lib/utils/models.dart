@@ -71,8 +71,9 @@ class TableDataRow {
 class TableData {
   final String label;
   final TextStyle? style;
+  final String? apiKey;
   ValueChanged<TableData>? callBack;
-  TableData(this.label, {this.style, this.callBack});
+  TableData(this.label, {this.style, this.callBack, this.apiKey});
 }
 
 class SortBy {

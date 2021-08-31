@@ -43,23 +43,27 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
 
   afterViewBuild() {
     Provider.of<HouseHoldProvider>(context, listen: false)
-      ..fetchDemand(widget.waterconnection);
+      ..fetchDemand(widget.waterconnection, widget.id);
   }
 
   buildDemandView(BillList data) {
+    var houseHoldProvider = Provider.of<HouseHoldProvider>(
+        context,
+        listen: false);
+
     print("printing data");
     print(data.bill!.first.toJson());
     return Column(
       children: [
         data.bill == null
-            ? widget.waterconnection!.connectionType == 'Metered'
+            ? houseHoldProvider.waterConnection!.connectionType == 'Metered'
                 ? Align(
                     alignment: Alignment.centerRight,
                     child: ShortButton(
                         i18.generateBillDetails.GENERATE_NEW_BTN_LABEL,
                         () => {
                               Navigator.pushNamed(context, Routes.BILL_GENERATE,
-                                  arguments: widget.waterconnection)
+                                  arguments: houseHoldProvider.waterConnection)
                             }))
                 : Text("")
             : data.bill!.first.waterConnection!.connectionType == 'Metered' &&
@@ -92,13 +96,17 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
               HomeBack(),
-              HouseConnectionDetailCard(
-                  waterconnection: widget.waterconnection),
               StreamBuilder(
                   stream: houseHoldProvider.streamController.stream,
                   builder: (context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
-                      return buildDemandView(snapshot.data);
+                      return Column(
+                        children: [
+                          HouseConnectionDetailCard(
+                              waterconnection: houseHoldProvider.waterConnection),
+                              buildDemandView(snapshot.data)
+                        ],
+                      );
                     } else if (snapshot.hasError) {
                       return Notifiers.networkErrorPage(
                           context,

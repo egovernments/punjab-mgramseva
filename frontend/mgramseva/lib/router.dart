@@ -191,7 +191,7 @@ class router {
                     : null),
             settings: RouteSettings(
                 name:
-                    '${Routes.HOUSEHOLD_DETAILS}?applicationNo=$id& mode=$mode'));
+                    '${Routes.HOUSEHOLD_DETAILS}?applicationNo=$id&mode=$mode'));
 
       case Routes.DASHBOARD:
         return MaterialPageRoute(

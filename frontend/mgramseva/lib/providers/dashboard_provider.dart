@@ -59,6 +59,7 @@ class DashBoardProvider with ChangeNotifier {
       'toDate' :  '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0).millisecondsSinceEpoch}',
       'vendorName' : searchController.text.trim(),
       'challanNo' : searchController.text.trim(),
+      'freeSearch' : 'true',
       'status' : ["ACTIVE", "PAID"]
     };
 
@@ -227,7 +228,7 @@ class DashBoardProvider with ChangeNotifier {
   TableDataRow getExpenseRow(ExpensesDetailsModel expense){
     return TableDataRow(
       [
-        TableData('${expense.challanNo} \n ${expense.vendorName}', callBack: onClickOfChallanNo),
+        TableData('${expense.challanNo} \n ${expense.vendorName}', callBack: onClickOfChallanNo, apiKey: expense.challanNo),
         TableData('${expense.expenseType}'),
         TableData('₹ ${expense.totalAmount}'),
         TableData('${DateFormats.timeStampToDate(expense.billDate)}'),
@@ -240,7 +241,7 @@ class DashBoardProvider with ChangeNotifier {
   TableDataRow getCollectionRow(WaterConnection connection){
     return TableDataRow(
         [
-          TableData('${connection.connectionNo} ${connection.connectionType == 'Metered' ? '- M' : ''}', callBack: onClickOfCollectionNo),
+          TableData('${connection.connectionNo} ${connection.connectionType == 'Metered' ? '- M' : ''}', callBack: onClickOfCollectionNo, apiKey: connection.connectionNo),
           TableData('${CommonMethods().truncateWithEllipsis(20,  connection.connectionHolders?.first?.name ?? '')}'),
           TableData('${connection.additionalDetails?.collectionAmount != null ? '₹ ${connection.additionalDetails?.collectionAmount}' : '-'}'),
         ]
@@ -248,13 +249,13 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   onClickOfChallanNo(TableData tableData){
-    var expense = expenseDashboardDetails?.expenseDetailList?.firstWhere((element) => element.challanNo == tableData.label);
+    var expense = expenseDashboardDetails?.expenseDetailList?.firstWhere((element) => element.challanNo == tableData.apiKey);
     Navigator.pushNamed(
         navigatorKey.currentContext!, Routes.EXPENSE_UPDATE, arguments: expense);
   }
 
   onClickOfCollectionNo(TableData tableData){
-    var waterConnection = waterConnectionsDetails?.waterConnection?.firstWhere((element) => element.connectionNo == tableData.label);
+    var waterConnection = waterConnectionsDetails?.waterConnection?.firstWhere((element) => element.connectionNo == tableData.apiKey);
     Navigator.pushNamed(
         navigatorKey.currentContext!, Routes.HOUSEHOLD_DETAILS, arguments: {
           'waterconnections' : waterConnection,

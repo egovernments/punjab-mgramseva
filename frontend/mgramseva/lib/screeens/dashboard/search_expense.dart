@@ -134,7 +134,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
             controller: _tabController,
             backgroundColor: Colors.white,
             unselectedBackgroundColor: Color.fromRGBO(244, 119, 56, 0.12),
-            contentPadding: EdgeInsets.symmetric(horizontal: 10),
+            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
             buttonMargin: EdgeInsets.symmetric(horizontal: 5),
             labelStyle: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
             unselectedLabelStyle: TextStyle(
@@ -149,6 +149,8 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
                 controller: _tabController,
                 children: List.generate(_tabList.length, (index) => BillsTable(headerList: expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
                   tableData:  expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseData(index, expenseList) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>),
+                leftColumnWidth: 200,
+                rightColumnWidth: expenseList is List<ExpensesDetailsModel> ? 800 : 400,
                 ))
             ),
           ),
