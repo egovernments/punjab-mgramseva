@@ -8,8 +8,9 @@ import 'package:mgramseva/widgets/ScrollParent.dart';
 class BillsTable extends StatefulWidget {
   final List<TableHeader> headerList;
   final List<TableDataRow> tableData;
-
-  BillsTable({Key? key, required this.headerList, required this.tableData})
+  final double leftColumnWidth;
+  final double rightColumnWidth;
+  BillsTable({Key? key, required this.headerList, required this.tableData, required this.leftColumnWidth, required this.rightColumnWidth})
       : super(key: key);
 
   @override
@@ -31,17 +32,14 @@ class _BillsTable extends State<BillsTable> {
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
         child: HorizontalDataTable(
-            leftHandSideColumnWidth: constraints.maxWidth < 760
-                ? 150
-                : MediaQuery.of(context).size.width / 5,
-            rightHandSideColumnWidth: constraints.maxWidth < 760
-                ? 750
-                : MediaQuery.of(context).size.width - 300,
+            leftHandSideColumnWidth: widget.leftColumnWidth,
+            rightHandSideColumnWidth: widget.rightColumnWidth,
             isFixedHeader: true,
             headerWidgets: _getTitleWidget(constraints),
             leftSideItemBuilder: _generateFirstColumnRow,
             rightSideItemBuilder: _generateRightHandSideColumnRow,
             itemCount: widget.tableData.length,
+            elevation: 0,
             // rowSeparatorWidget: const Divider(
             //   color: Colors.black54,
             //   height: 1.0,
@@ -66,14 +64,16 @@ class _BillsTable extends State<BillsTable> {
   }
 
   List<Widget> _getTitleWidget(constraints) {
+    var index = 0;
     return widget.headerList.map((e) {
+      index++;;
       if (e.isSortingRequired ?? false) {
         return TextButton(
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
             ),
             child:
-                _getTitleItemWidget((e.label), constraints, e.isAscendingOrder),
+                _getTitleItemWidget((e.label), constraints, isAscending : e.isAscendingOrder, isBorderRequired: (index- 1) == 0),
             onPressed: e.callBack == null ? null : () => e.callBack!(e));
       } else {
         return _getTitleItemWidget(e.label, constraints!);
@@ -81,12 +81,19 @@ class _BillsTable extends State<BillsTable> {
     }).toList();
   }
 
-  Widget _getTitleItemWidget(String label, constraints, [bool? isAscending]) {
+  Widget _getTitleItemWidget(String label, constraints, {bool? isAscending, bool isBorderRequired = false}) {
     var textWidget = Text(ApplicationLocalizations.of(context).translate(label),
         style: TextStyle(
             fontWeight: FontWeight.w700, color: Colors.black, fontSize: 12));
 
     return Container(
+      decoration: isBorderRequired ? BoxDecoration(
+          border: Border(
+              left: tableCellBorder,
+              bottom: tableCellBorder,
+              right: tableCellBorder
+          )
+      ) : null,
       child: isAscending != null
           ? Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
@@ -99,12 +106,10 @@ class _BillsTable extends State<BillsTable> {
               ],
             )
           : textWidget,
-      width: constraints.maxWidth < 760
-          ? 187
-          : (MediaQuery.of(context).size.width / 4 - 100),
+      width: constraints.maxWidth < 760 ? 200 : 200,
       height: 56,
-      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
+    alignment: Alignment.centerLeft,
     );
   }
 
@@ -120,16 +125,21 @@ class _BillsTable extends State<BillsTable> {
               }
             },
             child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      left: tableCellBorder,
+                      bottom: tableCellBorder,
+                    right: tableCellBorder,
+                  )
+              ),
               child: Text(
                 ApplicationLocalizations.of(context)
                     .translate(widget.tableData[index].tableRow.first.label),
                 style: TextStyle(color: Theme.of(context).primaryColor),
               ),
-              width: constraints.maxWidth < 760
-                  ? 187
-                  : MediaQuery.of(context).size.width / 5,
+              width: constraints.maxWidth < 760 ? 200 : 200,
               height: 52,
-              padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+              padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
               alignment: Alignment.centerLeft,
             ),
           ));
@@ -146,11 +156,9 @@ class _BillsTable extends State<BillsTable> {
               style: style)
         ],
       ),
-      width: constraints.maxWidth < 760
-          ? 187
-          : MediaQuery.of(context).size.width / 4 - 100,
+      width: constraints.maxWidth < 760 ? 200 : 200,
       height: 52,
-      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+      padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
       alignment: Alignment.centerLeft,
     );
   }
@@ -167,22 +175,13 @@ class _BillsTable extends State<BillsTable> {
       return Container(
           color: index % 2 == 0 ? const Color(0xffEEEEEE) : Colors.white,
           child: Row(
-            children: list ??
-                <Widget>[
-                  _generateColumnRow(
-                      context, index, data.tableRow[1].label, constraints,
-                      style: data.tableRow[1].style),
-                  _generateColumnRow(
-                      context, index, data.tableRow[2].label, constraints,
-                      style: data.tableRow[1].style),
-                  _generateColumnRow(
-                      context, index, data.tableRow[3].label, constraints,
-                      style: data.tableRow[1].style),
-                  _generateColumnRow(
-                      context, index, data.tableRow[4].label, constraints,
-                      style: data.tableRow[1].style),
-                ],
+            children: list
           ));
     });
   }
+
+  BorderSide get tableCellBorder => BorderSide(
+      color: Color.fromRGBO(238, 238, 238, 1),
+      width: 0.5
+  );
 }
