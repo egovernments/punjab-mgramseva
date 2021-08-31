@@ -111,7 +111,7 @@ class _EditProfileState extends State<EditProfile> {
                       FilteringTextInputFormatter.allow(
                           RegExp("[a-zA-Z0-9@. ]"))
                     ],
-                    message: 'Invalid email format, example@mail.com',
+                    message: ApplicationLocalizations.of(context).translate(i18.profileEdit.INVALID_EMAIL_FORMAT),
                     pattern:
                         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
                   ),
