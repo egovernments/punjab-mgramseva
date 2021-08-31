@@ -35,7 +35,7 @@ public class WsQueryBuilder {
     private static final String LEFT_OUTER_JOIN_STRING = " LEFT OUTER JOIN ";
 //	private static final String Offset_Limit_String = "OFFSET ? LIMIT ?";
     
-    private static String holderSelectValues = "{HOLDERSELECTVALUES}";
+//    private static String holderSelectValues = "{HOLDERSELECTVALUES}";
    
     
 	private static final String WATER_SEARCH_QUERY = "SELECT count(*) OVER() AS full_count, conn.*, wc.*, document.*, plumber.*, wc.connectionCategory, wc.connectionType, wc.waterSource,"
@@ -48,7 +48,7 @@ public class WsQueryBuilder {
 			+ " conn.locality, conn.isoldapplication, conn.roadtype, document.id as doc_Id, document.documenttype, document.filestoreid, document.active as doc_active, plumber.id as plumber_id,"
 			+ " plumber.name as plumber_name, plumber.licenseno, roadcuttingInfo.id as roadcutting_id, roadcuttingInfo.roadtype as roadcutting_roadtype, roadcuttingInfo.roadcuttingarea as roadcutting_roadcuttingarea, roadcuttingInfo.roadcuttingarea as roadcutting_roadcuttingarea,"
 			+ " roadcuttingInfo.active as roadcutting_active, plumber.mobilenumber as plumber_mobileNumber, plumber.gender as plumber_gender, plumber.fatherorhusbandname, plumber.correspondenceaddress,"
-			+ " plumber.relationship, " + holderSelectValues
+			+ " plumber.relationship, " + "{holderSelectValues}"
 			+ " FROM eg_ws_connection conn "
 			+  INNER_JOIN_STRING 
 			+" eg_ws_service wc ON wc.connection_id = conn.id"
@@ -90,12 +90,6 @@ public class WsQueryBuilder {
 		if (criteria.isEmpty())
 				return null;
 		StringBuilder query = new StringBuilder(WATER_SEARCH_QUERY);
-		
-		if (criteria.getSortBy() != SearchCriteria.SortBy.collectionAmount) {
-			query.toString().replace("{HOLDERSELECTVALUES}", "connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
-		}else {
-			query.toString().replace("{HOLDERSELECTVALUES}", "(SELECT NULLIF(SUM(PAYD.AMOUNTPAID),0) FROM EGCL_PAYMENTDETAIL PAYD JOIN EGCL_BILL PAYSPAY ON (PAYD.BILLID = PAYSPAY.ID) WHERE PAYD.BUSINESSSERVICE = 'WS' AND PAYSPAY.CONSUMERCODE = CONN.CONNECTIONNO GROUP BY PAYSPAY.CONSUMERCODE) AS COLLECTIONAMOUNT, connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
-		}
 		
 		boolean propertyIdsPresent = false;
 
@@ -276,7 +270,11 @@ public class WsQueryBuilder {
 		Integer offset = config.getDefaultOffset();
 		 String finalQuery = PAGINATION_WRAPPER.replace("{}",query);
 		finalQuery = finalQuery.replace("{orderby}", string);
-		
+		if (criteria.getSortBy() != SearchCriteria.SortBy.collectionAmount) {
+			finalQuery = finalQuery.replace("{holderSelectValues}", "connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
+		}else {
+			finalQuery = finalQuery.replace("{holderSelectValues}", "(SELECT NULLIF(SUM(PAYD.AMOUNTPAID),0) FROM EGCL_PAYMENTDETAIL PAYD JOIN EGCL_BILL PAYSPAY ON (PAYD.BILLID = PAYSPAY.ID) WHERE PAYD.BUSINESSSERVICE = 'WS' AND PAYSPAY.CONSUMERCODE = CONN.CONNECTIONNO GROUP BY PAYSPAY.CONSUMERCODE) AS COLLECTIONAMOUNT, connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
+		}
 		if (criteria.getLimit() == null && criteria.getOffset() == null)
 			limit = config.getMaxLimit();
 
