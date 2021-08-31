@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/screeens/HomeCard.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/role_actions.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/Notifications.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
@@ -23,6 +24,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     afterViewBuild();
+    super.initState();
   }
 
   afterViewBuild() {

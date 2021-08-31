@@ -101,7 +101,10 @@ class _BuildTextField extends State<BuildTextField> {
                 return null;
               },
         decoration: InputDecoration(
-          hintText: widget.placeHolder,
+          hintText: widget.placeHolder != null
+              ? ApplicationLocalizations.of(context)
+                  .translate((widget.placeHolder!))
+              : "",
           border: widget.inputBorder,
           errorMaxLines: 2,
           enabled: widget.isDisabled ?? true,
@@ -126,7 +129,8 @@ class _BuildTextField extends State<BuildTextField> {
     Widget textLabelwidget =
         Wrap(direction: Axis.horizontal, children: <Widget>[
       Text(
-          '${ApplicationLocalizations.of(context).translate(widget.labelText)}' '${widget.labelSuffix != null ? ' ${widget.labelSuffix}' : ''}',
+          '${ApplicationLocalizations.of(context).translate(widget.labelText)}'
+          '${widget.labelSuffix != null ? ' ${widget.labelSuffix}' : ''}',
           textAlign: TextAlign.left,
           style: TextStyle(
               fontWeight: FontWeight.w400,

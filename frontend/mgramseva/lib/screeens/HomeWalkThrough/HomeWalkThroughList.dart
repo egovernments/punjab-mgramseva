@@ -3,7 +3,11 @@ import 'package:mgramseva/utils/constants.dart';
 
 var json = Constants.HOME_ITEMS
     .map(
-      (e) => {"name": e.walkThroughMsg, "label": e.label, "icon": e.iconData},
+      (e) => {
+        "name": e.walkThroughMsg,
+        "label": e.label,
+        "icon": e.iconData,
+      },
     )
     .toList();
 

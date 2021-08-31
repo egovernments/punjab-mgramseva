@@ -23,6 +23,7 @@ import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/Updatepassword.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
+import 'package:mgramseva/utils/role_actions.dart';
 import 'package:mgramseva/widgets/not_available.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart';
@@ -58,6 +59,8 @@ class router {
         path = settings.name;
       }
     }
+    if (!(path != null && RoleActionsFiltering().isEligibleRoletoRoute(path)))
+      return pageNotAvailable;
 
     /// Here we'll handle all the routing
     currentRoute = settings.name;
@@ -83,6 +86,17 @@ class router {
         return MaterialPageRoute(
             builder: (_) => SearchConsumerConnection(settings.arguments as Map),
             settings: RouteSettings(name: Routes.HOUSEHOLD));
+
+      case Routes.HOUSEHOLDRECEIPTS:
+        return MaterialPageRoute(
+            builder: (_) => SearchConsumerConnection(settings.arguments as Map),
+            settings: RouteSettings(name: Routes.HOUSEHOLDRECEIPTS));
+
+      case Routes.CONSUMER_SEARCH_UPDATE:
+        return MaterialPageRoute(
+            builder: (_) => SearchConsumerConnection(settings.arguments as Map),
+            settings: RouteSettings(name: Routes.CONSUMER_SEARCH_UPDATE));
+
       case Routes.EDIT_PROFILE:
         return MaterialPageRoute(
             builder: (_) => EditProfile(),
@@ -155,7 +169,6 @@ class router {
         String? id;
         String? mode;
         if (settings.arguments != null) {
-          print(settings.arguments);
           id = ((settings.arguments as Map)['waterconnections']
                   as WaterConnection)
               .connectionNo;

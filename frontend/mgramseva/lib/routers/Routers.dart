@@ -13,6 +13,8 @@ class Routes {
   // static const String HOUSE_HOLD = 'household/search';
 
   static const String HOUSEHOLD = '/home/householdSearch';
+  static const String HOUSEHOLDRECEIPTS = '/home/householdReceiptsSearch';
+  static const String HOUSEHOLD_REGISTER = '/home/householdRegister';
 
   static const String UPDATE_PASSWORD = 'updatepassword';
 
@@ -58,6 +60,7 @@ class Routes {
   ///  Consumer
   static const String CONSUMER_CREATE = '/home/consumer/create';
 
+  static const String CONSUMER_SEARCH_UPDATE = '/home/consumer/searchupdate';
   static const String CONSUMER_UPDATE = '/home/consumer/update';
 
   static const String SEARCH_CONSUMER_RESULT = '/home/consumer/search';

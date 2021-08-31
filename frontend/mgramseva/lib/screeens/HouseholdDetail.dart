@@ -48,7 +48,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
 
   buildDemandView(BillList data) {
     print("printing data");
-    print(data.bill);
+    print(data.bill!.first.toJson());
     return Column(
       children: [
         data.bill == null
@@ -66,7 +66,9 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                     widget.mode == 'collect'
                 ? GenerateNewBill(data)
                 : Text(""),
-        data.bill == null ? Text("") : NewConsumerBill(data, widget.mode),
+        data.bill!.first == null
+            ? Text("")
+            : NewConsumerBill(data, widget.mode),
         data.bill == null
             ? Text("")
             : ConsumerBillPayments(data.bill!.first.waterConnection)

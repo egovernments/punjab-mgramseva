@@ -40,12 +40,9 @@ class NewConsumerBill extends StatelessWidget {
         }))! -
         r);
 
-    return billList!.bill!.first.meterReadings == null
-        ? Container(
-            child: Text(""),
-          )
-        : LayoutBuilder(builder: (context, constraints) {
-            return Column(
+    return LayoutBuilder(builder: (context, constraints) {
+      return billList!.bill!.first.totalAmount! > 0
+          ? Column(
               children: [
                 ListLabelText(i18.billDetails.NEW_CONSUMERGENERATE_BILL_LABEL),
                 Card(
@@ -74,7 +71,8 @@ class NewConsumerBill extends StatelessWidget {
                                 ),
                               ),
                               _getLabeltext(
-                                  i18.generateBillDetails.LAST_BILL_GENERATION_DATE,
+                                  i18.generateBillDetails
+                                      .LAST_BILL_GENERATION_DATE,
                                   DateFormats.timeStampToDate(
                                           billList!.bill!.first.billDate,
                                           format: "dd-MM-yyyy")
@@ -178,8 +176,9 @@ class NewConsumerBill extends StatelessWidget {
                                     ),
                             ])))
               ],
-            );
-          });
+            )
+          : Text("");
+    });
   }
 
   void onClickOfCollectPayment(Bill bill, BuildContext context) {
