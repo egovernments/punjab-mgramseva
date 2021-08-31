@@ -28,7 +28,7 @@ class RadioButtonFieldBuilder extends StatelessWidget {
             child: Row(children: [
               new Container(
                   width: MediaQuery.of(context).size.width / 3,
-                  padding: EdgeInsets.only(left: 24, top: 10),
+                  padding: EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
                   child: Align(
                       alignment: Alignment.centerLeft,
                       child: Row(children: <Widget>[
@@ -38,18 +38,16 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
-                                fontSize: 19,
-                                color: Colors.black)),
+                                fontSize: 16)),
                         Text(isRequired ? '*' : '',
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
-                                fontSize: 19,
-                                color: Colors.black)),
+                                fontSize: 16)),
                       ]))),
               Container(
                   width: MediaQuery.of(context).size.width / 2.5,
-                  padding: EdgeInsets.only(left: 24, top: 10),
+                  padding: EdgeInsets.only(left: 24, top: 18),
                   child: Column(
                       children: options.map(
                     (data) {
@@ -65,10 +63,12 @@ class RadioButtonFieldBuilder extends StatelessWidget {
             ]));
       } else {
         return Container(
+            margin:
+            const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
             key: contextkey,
             child: Column(children: [
               new Container(
-                  padding: EdgeInsets.only(left: 24, top: 10),
+                  padding: EdgeInsets.only(top: 18, bottom: 3),
                   child: Align(
                       alignment: Alignment.centerLeft,
                       child: Row(children: <Widget>[
@@ -77,14 +77,13 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                             .translate(labelText),
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                            fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black),
+                            fontWeight: FontWeight.w400, fontSize: 16),
                       ),
                         Text(isRequired ? '*' : '',
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
-                                fontSize: 19,
-                                color: Colors.black)),]))),
+                                fontSize: 16)),]))),
               Column(
                   children: options.map(
                 (data) {

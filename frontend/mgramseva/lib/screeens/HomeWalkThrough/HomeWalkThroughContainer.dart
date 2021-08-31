@@ -132,7 +132,7 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                     .homeWalkthrougList[
                                         homeProvider.activeindex]
                                     .name),
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: 14, color: Theme.of(context).primaryColorLight),
                             textAlign: TextAlign.start,
                           )),
                       homeProvider.activeindex ==

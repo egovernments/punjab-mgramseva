@@ -84,7 +84,7 @@ flutter:
   fonts:
     - family: Roboto
       fonts:
-        - asset: assets/fonts/Roboto/Roboto-Medium.ttf
+        - asset: assets/fonts/Roboto/Roboto-Regular.ttf
     - family: HomeIcons
       fonts:
         - asset: assets/icons/fonts/HomeIcons.ttf

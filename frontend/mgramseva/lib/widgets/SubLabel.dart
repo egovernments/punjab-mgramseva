@@ -10,10 +10,10 @@ class SubLabelText extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Container(
             child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(8.0),
           child: Text(
             ApplicationLocalizations.of(context).translate(input),
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Theme.of(context).primaryColorLight),
             textAlign: TextAlign.left,
           ),
         )));

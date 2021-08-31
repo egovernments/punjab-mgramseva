@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/common_styles.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
-import 'package:mgramseva/utils/models.dart';
 
 class SelectFieldBuilder extends StatelessWidget {
   final String labelText;
@@ -30,13 +28,13 @@ class SelectFieldBuilder extends StatelessWidget {
       Text(ApplicationLocalizations.of(context).translate(labelText),
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 19, color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
+              fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
       Visibility(
         visible: isRequired,
         child: Text('* ',
             textAlign: TextAlign.left,
             style: TextStyle(
-                fontWeight: FontWeight.w400, fontSize: 19, color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
+                fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
       ),
     ]);
     //DropDown
@@ -89,7 +87,7 @@ class SelectFieldBuilder extends StatelessWidget {
         return Container(
             key: contextkey,
           margin:
-              const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
+              const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
           child: Column(children: [
             Container(
                 alignment: Alignment.centerLeft,
