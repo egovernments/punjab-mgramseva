@@ -74,12 +74,20 @@ class _HomeState extends State<Home> {
                 )),
             SizedBox(
               child: HomeCard(),
-              height: 170 *
-                  ((homeProvider.homeWalkthrougList.length / 3).round())
-                      .toDouble(),
+              height: constraint.maxWidth < 720
+                  ? 160 *
+                      ((homeProvider.homeWalkthrougList.length / 3).round())
+                          .toDouble()
+                  : 142 *
+                      ((homeProvider.homeWalkthrougList.length / 3).round())
+                          .toDouble(),
             ),
 
-            NotificationsList(),
+            Container(
+                margin: constraint.maxWidth < 720
+                    ? EdgeInsets.all(0)
+                    : EdgeInsets.only(left: 75, right: 75),
+                child: NotificationsList()),
             // Notifications(),
             Footer()
           ]);

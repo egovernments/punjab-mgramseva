@@ -26,11 +26,10 @@ class _NotificationsState extends State<Notifications> {
             //BorderRadius.all
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                  width: MediaQuery.of(context).size.width - 55,
                   child: Padding(
                       padding: EdgeInsets.all(8),
                       child: Column(
