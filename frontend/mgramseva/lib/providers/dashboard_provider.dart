@@ -227,7 +227,7 @@ class DashBoardProvider with ChangeNotifier {
   TableDataRow getExpenseRow(ExpensesDetailsModel expense){
     return TableDataRow(
       [
-        TableData('${expense.challanNo}', callBack: onClickOfChallanNo),
+        TableData('${expense.challanNo} \n ${expense.vendorName}', callBack: onClickOfChallanNo),
         TableData('${expense.expenseType}'),
         TableData('₹ ${expense.totalAmount}'),
         TableData('${DateFormats.timeStampToDate(expense.billDate)}'),

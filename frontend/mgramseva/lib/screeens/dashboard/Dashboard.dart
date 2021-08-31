@@ -4,6 +4,7 @@ import 'package:mgramseva/components/Dashboard/BillsTable.dart';
 import 'package:mgramseva/components/Dashboard/DashboardCard.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -95,10 +96,10 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                         ),
                         tabs: [
                           Tab(
-                            text: i18.dashboard.COLLECTIONS,
+                            text: ApplicationLocalizations.of(context).translate(i18.dashboard.COLLECTIONS),
                           ),
                           Tab(
-                            text: i18.dashboard.EXPENDITURE,
+                            text: ApplicationLocalizations.of(context).translate(i18.dashboard.EXPENDITURE),
                           ),
                         ],
                       ),
