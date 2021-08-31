@@ -49,7 +49,7 @@ public class MgramasevaAdapterWrapperUtil {
 		}
 
 		case "RECEIPT": {
-			eventObj.setEventType(EventTypeEnum.BILL);
+			eventObj.setEventType(EventTypeEnum.RECEIPT);
 			break;
 
 		}
@@ -70,6 +70,7 @@ public class MgramasevaAdapterWrapperUtil {
 		requestHeader.setMsgId(Constants.MSG_ID);
 		requestHeader.setSignature(Constants.SIGNATURE);
 		eventRequest.setRequestHeader(requestHeader);
+		eventRequest.setEvent(eventObj);
 		try {
 			Object response = serviceRequestRepository.fetchResult(
 					propertyConfiguration.getAdapterHost() + propertyConfiguration.getAdapterCreateEndpoint(),
