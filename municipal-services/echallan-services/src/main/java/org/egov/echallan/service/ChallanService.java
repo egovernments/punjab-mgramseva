@@ -210,16 +210,20 @@ public class ChallanService {
 	public String getMonthYear() {
 		LocalDateTime localDateTime = LocalDateTime.now();
 		int currentMonth = localDateTime.getMonthValue();
-		StringBuilder monthYear = new StringBuilder(localDateTime.getMonth().toString()).append(" ");
+		String monthYear ;
 		if (currentMonth >= Month.APRIL.getValue()) {
-			monthYear.append(YearMonth.now().getYear() + "-");
-			monthYear.append((Integer.toString(YearMonth.now().getYear() + 1).substring(2, monthYear.length() - 1)));
+			monthYear = YearMonth.now().getYear() + "-";
+			monthYear = monthYear
+					+ (Integer.toString(YearMonth.now().getYear() + 1).substring(2, monthYear.length() - 1));
 		} else {
-			monthYear.append(YearMonth.now().getYear() - 1 + "-");
-			monthYear.append((Integer.toString(YearMonth.now().getYear()).substring(2, monthYear.length() - 1)));
+			monthYear = YearMonth.now().getYear() - 1 + "-";
+			monthYear = monthYear
+					+ (Integer.toString(YearMonth.now().getYear()).substring(2, monthYear.length() - 1));
 
 		}
-		return monthYear.toString() ;
+		StringBuilder monthYearBuilder = new StringBuilder(localDateTime.getMonth().toString()).append(" ").append(monthYear);
+
+		return monthYearBuilder.toString() ;
 	}
 	
 }
