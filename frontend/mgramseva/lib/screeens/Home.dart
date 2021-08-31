@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/components/Notifications/notificationsList.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/screeens/HomeCard.dart';
 import 'package:mgramseva/utils/constants.dart';
@@ -45,37 +46,51 @@ class _HomeState extends State<Home> {
           Drawer(child: SideBar()),
         ),
         body: SingleChildScrollView(
-            child: Column(children: [
-          Align(
-              alignment: Alignment.centerRight,
-              child: Help(
-                callBack: () => showGeneralDialog(
-                  barrierLabel: "Label",
-                  barrierDismissible: false,
-                  barrierColor: Colors.black.withOpacity(0.5),
-                  transitionDuration: Duration(milliseconds: 700),
-                  context: context,
-                  pageBuilder: (context, anim1, anim2) {
-                    return HomeWalkThroughContainer((index) =>
-                        homeProvider.incrementindex(index,
-                            homeProvider.homeWalkthrougList[index + 1].key));
-                  },
-                  transitionBuilder: (context, anim1, anim2, child) {
-                    return SlideTransition(
-                      position: Tween(begin: Offset(0, 1), end: Offset(0, 0))
-                          .animate(anim1),
-                      child: child,
-                    );
-                  },
-                ),
-                walkThroughKey: Constants.HOME_KEY,
-              )),
-          SizedBox(
-            child: HomeCard(),
-            height: MediaQuery.of(context).size.height / 1.4,
-          ),
-          // Notifications(),
-          Footer()
-        ])));
+            child: LayoutBuilder(builder: (context, constraint) {
+          return Column(children: [
+            Align(
+                alignment: Alignment.centerRight,
+                child: Help(
+                  callBack: () => showGeneralDialog(
+                    barrierLabel: "Label",
+                    barrierDismissible: false,
+                    barrierColor: Colors.black.withOpacity(0.5),
+                    transitionDuration: Duration(milliseconds: 700),
+                    context: context,
+                    pageBuilder: (context, anim1, anim2) {
+                      return HomeWalkThroughContainer((index) =>
+                          homeProvider.incrementindex(index,
+                              homeProvider.homeWalkthrougList[index + 1].key));
+                    },
+                    transitionBuilder: (context, anim1, anim2, child) {
+                      return SlideTransition(
+                        position: Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                            .animate(anim1),
+                        child: child,
+                      );
+                    },
+                  ),
+                  walkThroughKey: Constants.HOME_KEY,
+                )),
+            SizedBox(
+              child: HomeCard(),
+              height: constraint.maxWidth < 720
+                  ? 160 *
+                      ((homeProvider.homeWalkthrougList.length / 3).round())
+                          .toDouble()
+                  : 142 *
+                      ((homeProvider.homeWalkthrougList.length / 3).round())
+                          .toDouble(),
+            ),
+
+            Container(
+                margin: constraint.maxWidth < 720
+                    ? EdgeInsets.all(0)
+                    : EdgeInsets.only(left: 75, right: 75),
+                child: NotificationsList()),
+            // Notifications(),
+            Footer()
+          ]);
+        })));
   }
 }

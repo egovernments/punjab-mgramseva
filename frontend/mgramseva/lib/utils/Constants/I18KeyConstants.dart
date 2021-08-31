@@ -474,7 +474,7 @@ class _DashBoard {
   String get BILL_ID_VENDOR => 'BILL_ID_VENDOR';
 }
 
-class _ExpenseWalkThroughMsg{
+class _ExpenseWalkThroughMsg {
   const _ExpenseWalkThroughMsg();
 
   String get EXPENSE_TYPE_MSG => 'EXPENSE_TYPE_MSG';
