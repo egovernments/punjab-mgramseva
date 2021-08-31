@@ -28,20 +28,20 @@ class SelectFieldBuilder extends StatelessWidget {
       Text(ApplicationLocalizations.of(context).translate(labelText),
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
+              fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
       Visibility(
         visible: isRequired,
         child: Text('* ',
             textAlign: TextAlign.left,
             style: TextStyle(
-                fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
+                fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
       ),
     ]);
     //DropDown
     Widget dropDown = DropdownButtonFormField(
       decoration: InputDecoration(
         prefixText: prefixText,
-        prefixStyle: TextStyle(color: Colors.black),
+        prefixStyle: TextStyle(color: Theme.of(context).primaryColorDark),
         contentPadding:
             new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(1.0)),
@@ -90,9 +90,10 @@ class SelectFieldBuilder extends StatelessWidget {
               const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
           child: Column(children: [
             Container(
-                alignment: Alignment.centerLeft,
                 padding: EdgeInsets.only(top: 18, bottom: 3),
-                child: textLabelwidget),
+              child: new Align(
+                  alignment: Alignment.centerLeft,
+                child: textLabelwidget)),
             dropDown,
             CommonWidgets().buildHint(hint, context)
           ]),

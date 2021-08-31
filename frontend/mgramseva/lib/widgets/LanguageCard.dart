@@ -45,8 +45,8 @@ class LanguageCard extends StatelessWidget {
                 child: Text(
               '${language.label}',
               style: new TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: language.isSelected ? Colors.white : Colors.black),
+                  fontWeight: FontWeight.w400,
+                  color: language.isSelected ? Colors.white : Theme.of(context).primaryColorDark),
             ))),
       ),
     );

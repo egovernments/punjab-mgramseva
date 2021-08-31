@@ -154,7 +154,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     consumerProvider
                                         .waterconnection.connectionNo
                                         .toString())
-                                : Container(child: Text("")),
+                                : Container(),
                             //Consumer Name Field
                             BuildTextField(
                               i18.consumer.CONSUMER_NAME,
@@ -254,7 +254,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                             true,
                                             contextkey: consumerProvider
                                                 .consmerWalkthrougList[5].key)
-                                        : Text("")),
+                                        : Container()),
                             //Consumer Property Type Field
                             Consumer<ConsumerProvider>(
                               builder: (_, consumerProvider, child) =>

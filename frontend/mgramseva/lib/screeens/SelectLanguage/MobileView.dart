@@ -37,17 +37,17 @@ class LanguageSelectMobileView extends StatelessWidget {
                             )),
                       ),
                       Padding(
-                          padding: const EdgeInsets.only(left: 15),
+                          padding: const EdgeInsets.only(left: 8.0,right: 8.0),
                           child: Text(
                             " | ",
-                            style: TextStyle(fontSize: 19, color: Colors.black),
+                            style: TextStyle(fontSize: 19, color: Color.fromRGBO(0, 0, 0, 1)),
                           )),
                       Padding(
-                          padding: const EdgeInsets.only(left: 15),
+                          padding: const EdgeInsets.only(left: 8.0),
                           child: Text(
                             ApplicationLocalizations.of(context)
                                 .translate(stateInfo!.code!),
-                            style: TextStyle(fontSize: 19, color: Colors.black, fontWeight: FontWeight.w400),
+                            style: TextStyle(fontSize: 19, color: Color.fromRGBO(0, 0, 0, 1), fontWeight: FontWeight.w400),
                           )),
                     ])),
                 Padding(
