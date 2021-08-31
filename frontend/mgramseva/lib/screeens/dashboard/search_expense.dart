@@ -36,8 +36,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     ..offset = 1
     ..sortBy = null
     ..selectedDashboardType = widget.dashBoardType;
-    dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
-
+    // dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
@@ -55,6 +54,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
 
       dashBoardProvider
         ..expenseDashboardDetails?.expenseDetailList = <ExpensesDetailsModel>[]
+        ..expenseDashboardDetails?.totalCount = null
         ..fetchExpenseDashBoardDetails(context, dashBoardProvider.limit, dashBoardProvider.offset);
     }else{
       _tabList = [
@@ -64,6 +64,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
       ];
       dashBoardProvider
         ..waterConnectionsDetails?.waterConnection = <WaterConnection>[]
+        ..waterConnectionsDetails?.totalCount = null
         ..fetchCollectionsDashBoardDetails(context, dashBoardProvider.limit, dashBoardProvider.offset);
 
     }
@@ -81,7 +82,9 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     return  Column(
         children: [
-          ListLabelText(widget.dashBoardType == DashBoardType.collections ?  i18.dashboard.SEARCH_CONSUMER_RECORDS : i18.dashboard.SEARCH_EXPENSE_BILL),
+          ListLabelText(widget.dashBoardType == DashBoardType.collections ?  i18.dashboard.SEARCH_CONSUMER_RECORDS : i18.dashboard.SEARCH_EXPENSE_BILL,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           BuildTextField(
             '',
             dashBoardProvider.searchController,
@@ -89,7 +92,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
               borderRadius: BorderRadius.circular(25.0),
             ),
             prefixIcon: Icon(Icons.search_sharp),
-            placeHolder: i18.dashboard.SEARCH_BY_BILL_OR_VENDOR,
+            placeHolder: widget.dashBoardType == DashBoardType.collections ? i18.dashboard.SEARCH_NAME_CONNECTION : i18.dashboard.SEARCH_BY_BILL_OR_VENDOR,
             onChange: (val) => dashBoardProvider.onSearch(val, context),
           ),
           Expanded(

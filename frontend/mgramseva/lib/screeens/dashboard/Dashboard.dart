@@ -45,6 +45,9 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
               CommonMethods.getPastMonthUntilFinancialYear().reversed.toList();
     dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
     _tabController = new TabController(vsync: this, length: 2);
+    _tabController.addListener(() {
+      FocusScope.of(context).unfocus();
+    });
   }
 
   @override
@@ -65,55 +68,55 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
             Drawer(child: SideBar()),
           ),
           body: Stack(children: [
-            Container(
-                padding: EdgeInsets.only(left: 18, right: 18),
-                height: MediaQuery.of(context).size.height -
-                    56 -
-                    50 -
-                    MediaQuery.of(context).padding.top,
-                child: CustomScrollView(slivers: [
-                  SliverList(
-                      delegate: SliverChildListDelegate([
-                    HomeBack(widget: _buildShare),
-                    Container(
-                        key: key, child: DashboardCard(onTapOfMonthPicker)),
-                    TabBar(
-                      labelColor: Theme.of(context).primaryColor,
-                      unselectedLabelColor: Colors.black,
-                      labelStyle:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      controller: _tabController,
-                      indicator: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          bottom: BorderSide(
-                              width: 2, color: Theme.of(context).primaryColor),
-                        ),
-                      ),
-                      tabs: [
-                        Tab(
-                          text: i18.dashboard.COLLECTIONS,
-                        ),
-                        Tab(
-                          text: i18.dashboard.EXPENDITURE,
-                        ),
-                      ],
-                    ),
-                  ])),
-                  SliverFillRemaining(
-                      hasScrollBody: true,
-                      fillOverscroll: true,
-                      child: TabBarView(
+            SingleChildScrollView(
+              child: Container(
+                  padding: EdgeInsets.only(left: 18, right: 18),
+                  height: MediaQuery.of(context).size.height - 56 - 50 - MediaQuery.of(context).padding.top,
+                  child: CustomScrollView(slivers: [
+                    SliverList(
+                        delegate: SliverChildListDelegate([
+                      HomeBack(widget: _buildShare),
+                      Container(
+                          key: key,
+                          child: DashboardCard(onTapOfMonthPicker)),
+                      TabBar(
+                        labelColor: Theme.of(context).primaryColor,
+                        unselectedLabelColor: Colors.black,
+                        labelStyle:
+                            TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        indicatorSize: TabBarIndicatorSize.tab,
                         controller: _tabController,
-                        children: [
-                          SearchExpenseDashboard(
-                              dashBoardType: DashBoardType.collections),
-                          SearchExpenseDashboard(
-                              dashBoardType: DashBoardType.Expenditure)
+                        indicator: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                            bottom: BorderSide(
+                                width: 2, color: Theme.of(context).primaryColor),
+                          ),
+                        ),
+                        tabs: [
+                          Tab(
+                            text: i18.dashboard.COLLECTIONS,
+                          ),
+                          Tab(
+                            text: i18.dashboard.EXPENDITURE,
+                          ),
                         ],
-                      ))
-                ])),
+                      ),
+                    ])),
+                    SliverFillRemaining(
+                        hasScrollBody: true,
+                        fillOverscroll: true,
+                        child: TabBarView(
+                          controller: _tabController,
+                          children: [
+                            SearchExpenseDashboard(
+                                dashBoardType: DashBoardType.collections),
+                            SearchExpenseDashboard(
+                                dashBoardType: DashBoardType.Expenditure)
+                          ],
+                        ))
+                  ])),
+            ),
             Align(
                 alignment: Alignment.bottomRight,
                 child: Consumer<DashBoardProvider>(

@@ -12,6 +12,7 @@ import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -86,6 +87,7 @@ class DashBoardProvider with ChangeNotifier {
             expenseDashboardDetails?.expenseDetailList?.addAll(
                 response.expenseDetailList ?? <ExpensesDetailsModel>[]);
           }
+          notifyListeners();
         streamController.add(expenseDashboardDetails!.expenseDetailList!.isEmpty! ? <ExpensesDetailsModel>[] :
         expenseDashboardDetails?.expenseDetailList?.sublist(offSet -1, ((offset + limit - 1) > (expenseDashboardDetails?.totalCount ?? 0)) ? (expenseDashboardDetails!.totalCount!) : (offset + limit - 1)));
       }
@@ -145,6 +147,7 @@ class DashBoardProvider with ChangeNotifier {
           waterConnectionsDetails?.waterConnection?.addAll(
               response.waterConnection ?? <WaterConnection>[]);
         }
+        notifyListeners();
         streamController.add(waterConnectionsDetails!.waterConnection!.isEmpty! ? <ExpensesDetailsModel>[] :
         waterConnectionsDetails?.waterConnection?.sublist(offSet -1, ((offset + limit - 1) > (waterConnectionsDetails?.totalCount ?? 0)) ? (waterConnectionsDetails!.totalCount!) : (offset + limit) -1));
       }
@@ -228,7 +231,8 @@ class DashBoardProvider with ChangeNotifier {
         TableData('${expense.expenseType}'),
         TableData('₹ ${expense.totalAmount}'),
         TableData('${DateFormats.timeStampToDate(expense.billDate)}'),
-        TableData('${expense.paidDate != null && expense.paidDate != 0 ? DateFormats.timeStampToDate(expense.paidDate) : '-'}'),
+        TableData('${expense.paidDate != null && expense.paidDate != 0 ? DateFormats.timeStampToDate(expense.paidDate) : (ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.dashboard.PENDING))}',
+            style: expense.paidDate != null && expense.paidDate != 0 ? null : TextStyle(color: Colors.red)),
       ]
     );
   }
@@ -236,8 +240,8 @@ class DashBoardProvider with ChangeNotifier {
   TableDataRow getCollectionRow(WaterConnection connection){
     return TableDataRow(
         [
-          TableData('${connection.connectionNo}', callBack: onClickOfCollectionNo),
-          TableData('${connection.connectionHolders?.first?.name}'),
+          TableData('${connection.connectionNo} ${connection.connectionType == 'Metered' ? '- M' : ''}', callBack: onClickOfCollectionNo),
+          TableData('${CommonMethods().truncateWithEllipsis(20,  connection.connectionHolders?.first?.name ?? '')}'),
           TableData('${connection.additionalDetails?.collectionAmount != null ? '₹ ${connection.additionalDetails?.collectionAmount}' : '-'}'),
         ]
     );
@@ -285,7 +289,7 @@ class DashBoardProvider with ChangeNotifier {
     selectedMonth = date ?? DateTime.now();
     notifyListeners();
     removeOverLay(_overlayEntry);
-    fetchDetails(context);
+    fetchDetails(context, limit, 1, true);
   }
 
   void onChangeOfPageLimit(PaginationResponse response, BuildContext context){
