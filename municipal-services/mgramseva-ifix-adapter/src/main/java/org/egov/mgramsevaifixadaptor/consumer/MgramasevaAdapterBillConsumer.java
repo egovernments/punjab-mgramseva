@@ -30,7 +30,7 @@ public class MgramasevaAdapterBillConsumer {
 		try {
 			log.debug("Consuming record: " + record);
 			billRequest = mapper.convertValue(record, BillRequestV2.class);
-			util.callIFIXAdapter(billRequest, Constants.BILL, billRequest.getBills().get(0).getTenantId(),billRequest.getRequestInfo());
+			util.callIFIXAdapter(billRequest.getBills(), Constants.BILL, billRequest.getBills().get(0).getTenantId(),billRequest.getRequestInfo());
 		} catch (final Exception e) {
 			log.error("Error while listening to value: " + record + " on topic: " + topic + ": " + e);
 		}

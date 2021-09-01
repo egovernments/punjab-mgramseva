@@ -67,19 +67,19 @@ public class MDMSUtils {
      */
     private List<ModuleDetail> getAdapterModuleRequest(String tenantId) {
 
-        // master details for TL module
-        List<MasterDetail> pgrMasterDetails = new ArrayList<>();
+        // master details for adaptor module
+        List<MasterDetail> adapterMasterDetails = new ArrayList<>();
 
         // filter to only get code field from master data
         final String filterCode = "$..circle..division..subdivision..section..project..[?(@.village[*].code contains '"+ tenantId+"')]";
 
-        pgrMasterDetails.add(MasterDetail.builder().name(Constants.PROJECTMODULE).filter(filterCode).build());
+        adapterMasterDetails.add(MasterDetail.builder().name(Constants.PROJECTMODULE).filter(filterCode).build());
 
-        ModuleDetail pgrModuleDtls = ModuleDetail.builder().masterDetails(pgrMasterDetails)
+        ModuleDetail adaptorModuleDtls = ModuleDetail.builder().masterDetails(adapterMasterDetails)
                 .moduleName(Constants.TENANT).build();
 
 
-        return Collections.singletonList(pgrModuleDtls);
+        return Collections.singletonList(adaptorModuleDtls);
 
     }
 
