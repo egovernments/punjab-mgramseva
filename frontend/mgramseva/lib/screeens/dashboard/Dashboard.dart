@@ -168,7 +168,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
 
     _overlayEntry = new OverlayEntry(
         builder: (BuildContext context) => Positioned(
-            left: position.dx + box.size.width - 185,
+            left: position.dx + box.size.width - 195,
             top: position.dy + box.size.height - 10,
             child: Material(
                 color: Colors.transparent,
@@ -200,7 +200,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                             onTap: () => dashBoardProvider.onChangeOfDate(
                                 date, context, _overlayEntry),
                             child: Container(
-                              width: 180,
+                              width: 190,
                               decoration: index ==
                                       dashBoardProvider.dateList.length - 1
                                   ? BoxDecoration(

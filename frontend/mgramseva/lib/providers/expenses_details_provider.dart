@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:mgramseva/model/connection/tenant_boundary.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/model/expensesDetails/vendor.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/expense_type.dart';
 import 'package:mgramseva/model/success_handler.dart';
+import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
@@ -100,16 +102,28 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var res = await ExpensesRepository().addExpenses(body, isUpdate);
       Navigator.pop(context);
       var challanDetails = res['challans']?[0];
+
+      late String localizationText;
+      if(isUpdate){
+        localizationText = '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_BILL_ID)}';
+        localizationText = localizationText.replaceFirst('< Bill ID>', expenditureDetails.vendorNameCtrl.text.trim());
+      }else{
+         localizationText = '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}';
+        localizationText = localizationText.replaceFirst('<Vendor>', expenditureDetails.vendorNameCtrl.text.trim());
+        localizationText = localizationText.replaceFirst('<Amount>', expenditureDetails?.expensesAmount?.first?.amount ?? '');
+        localizationText = localizationText.replaceFirst('<type of expense>', expenditureDetails.expenseType ?? '');
+      }
+
       navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW,
           arguments: isUpdate
               ? SuccessHandler(
                   i18.expense.MODIFIED_EXPENDITURE_SUCCESSFULLY,
-                  '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_BILL_ID)} ${challanDetails['challanNo']} ${ApplicationLocalizations.of(context).translate(i18.expense.HAS_BEEN_MODIFIED)} ',
+                  localizationText,
                   i18.common.BACK_HOME,
                   isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD)
               : SuccessHandler(
-                  i18.expense.EXPENDITURE_SUCESS,
-                  '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_AGAINST)} ${challanDetails['challanNo']} ${ApplicationLocalizations.of(context).translate(i18.expense.UNDER_MAINTAINANCE)} Rs. ${challanDetails['amount'][0]['amount']} ',
+                  i18.expense.CORE_EXPENSE_EXPENDITURE_SUCESS,
+                  localizationText,
                   i18.common.BACK_HOME,
                   isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD));
     } on CustomException catch (e, s) {
@@ -168,6 +182,22 @@ class ExpensesDetailsProvider with ChangeNotifier {
     bool status = false;
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
+    try {
+
+      Loaders.showLoadingDialog(context);
+      var  boundaryList = [];
+      String? code;
+      var result = await ConsumerRepository().getLocations({
+        "hierarchyTypeCode": "REVENUE",
+        "boundaryType": "Locality",
+        "tenantId": commonProvider.userDetails!.selectedtenant!.code
+      });
+      boundaryList.addAll(
+          TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!);
+      if (boundaryList.length > 0) {
+        code = boundaryList.first.code;
+      }
+
     var body = {
       "vendor": {
         "tenantId": commonProvider.userDetails?.selectedtenant?.code,
@@ -187,7 +217,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
           "buildingName": null,
           "street": null,
           "locality": {
-            "code": commonProvider.userDetails?.selectedtenant?.code,
+            "code": code,
             "name": null,
             "label": null,
             "latitude": null,
@@ -218,9 +248,6 @@ class ExpensesDetailsProvider with ChangeNotifier {
         "source": "WhatsApp"
       }
     };
-
-    try {
-      Loaders.showLoadingDialog(context);
 
       var res = await ExpensesRepository().createVendor(body);
       if (res != null) {
