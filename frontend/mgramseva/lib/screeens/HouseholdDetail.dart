@@ -47,16 +47,15 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   }
 
   buildDemandView(BillList data) {
-    var houseHoldProvider = Provider.of<HouseHoldProvider>(
-        context,
-        listen: false);
+    var houseHoldProvider =
+        Provider.of<HouseHoldProvider>(context, listen: false);
 
     print("printing data");
-    print(data.bill!.first.toJson());
+    print(data.bill);
     return Column(
       children: [
-        data.bill == null
-            ? houseHoldProvider.waterConnection!.connectionType == 'Metered'
+        data.bill!.isEmpty
+            ? (houseHoldProvider.waterConnection!.connectionType == 'Metered'
                 ? Align(
                     alignment: Alignment.centerRight,
                     child: ShortButton(
@@ -65,15 +64,13 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                               Navigator.pushNamed(context, Routes.BILL_GENERATE,
                                   arguments: houseHoldProvider.waterConnection)
                             }))
-                : Text("")
+                : Text(""))
             : data.bill!.first.waterConnection!.connectionType == 'Metered' &&
                     widget.mode == 'collect'
                 ? GenerateNewBill(data)
                 : Text(""),
-        data.bill!.first == null
-            ? Text("")
-            : NewConsumerBill(data, widget.mode),
-        data.bill == null
+        data.bill!.isEmpty ? Text("") : NewConsumerBill(data, widget.mode),
+        data.bill!.isEmpty
             ? Text("")
             : ConsumerBillPayments(data.bill!.first.waterConnection)
       ],
@@ -100,11 +97,13 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                   stream: houseHoldProvider.streamController.stream,
                   builder: (context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
+                      print(snapshot.hasData);
                       return Column(
                         children: [
                           HouseConnectionDetailCard(
-                              waterconnection: houseHoldProvider.waterConnection),
-                              buildDemandView(snapshot.data)
+                              waterconnection:
+                                  houseHoldProvider.waterConnection),
+                          buildDemandView(snapshot.data)
                         ],
                       );
                     } else if (snapshot.hasError) {

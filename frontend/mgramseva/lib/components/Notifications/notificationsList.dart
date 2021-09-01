@@ -3,6 +3,7 @@ import 'package:mgramseva/model/Events/events_List.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/notifications_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
@@ -37,7 +38,8 @@ class NotificationsListState extends State<NotificationsList> {
   buildNotificationsView(EventsList events) {
     return LayoutBuilder(builder: (context, constraints) {
       return Column(children: [
-        ListLabelText(i18.common.NOTIFICATIONS +
+        ListLabelText(ApplicationLocalizations.of(context)
+                .translate(i18.common.NOTIFICATIONS) +
             " (" +
             events.events!.length.toString() +
             ")"),

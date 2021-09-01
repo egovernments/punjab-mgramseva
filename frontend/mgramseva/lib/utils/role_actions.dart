@@ -76,6 +76,7 @@ class RoleActionsFiltering {
         } else
           return false;
       }).toList();
+
       if (roles?.isEmpty ?? true) {
         isEligible = false;
       }
@@ -93,6 +94,9 @@ class RoleActionsFiltering {
         return ['COLLECTION_OPERATOR', 'SUPERUSER'];
 
       case Routes.CONSUMER_UPDATE:
+        return ['GP_ADMIN', 'SUPERUSER'];
+
+      case Routes.CONSUMER_SEARCH_UPDATE:
         return ['GP_ADMIN', 'SUPERUSER'];
 
       case Routes.CONSUMER_CREATE:
