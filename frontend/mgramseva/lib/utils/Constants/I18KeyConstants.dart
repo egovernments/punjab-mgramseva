@@ -59,6 +59,7 @@ class Common {
   String get BILL_DOWNLOAD => 'BILL_DOWNLOAD';
   String get RECEIPT_DOWNLOAD => 'RECEIPT_DOWNLOAD';
   String get NOTIFICATIONS => 'NOTIFICATIONS';
+  String get BACK => 'BACK';
 
   /// File Picker
   String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED';
@@ -114,7 +115,7 @@ class Common {
   String get PAYMENT_AMOUNT => 'PAYMENT_AMOUNT'; //Payment Amount
   String get PAYMENT_METHOD => 'PAYMENT_METHOD'; //Payment Method
   String get PAYMENT_INFORMATION => 'PAYMENT_INFORMATION'; //Payment Information
-  String get WATER_CHARGES => 'WATER_CHARGES'; //Please enter Mobile number
+  String get WATER_CHARGES => 'WS_CHARGES'; //Please enter Mobile number
   String get ARREARS => 'ARREARS'; //Please enter Mobile number
   String get COLLECT_PAYMENT => 'COLLECT_PAYMENT';
   String get ONLINE => 'ONLINE';
