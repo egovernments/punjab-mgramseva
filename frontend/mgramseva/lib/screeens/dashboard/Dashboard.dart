@@ -113,6 +113,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                               hasScrollBody: true,
                               fillOverscroll: true,
                               child: TabBarView(
+                                physics: NeverScrollableScrollPhysics(),
                                 controller: _tabController,
                                 children: [
                                   SearchExpenseDashboard(

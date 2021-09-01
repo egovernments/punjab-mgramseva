@@ -181,7 +181,7 @@ class DashBoardProvider with ChangeNotifier {
     TableHeader(i18.expense.EXPENSE_TYPE, isSortingRequired: true,
         isAscendingOrder: sortBy != null && sortBy!.key == 'typeOfExpense' ? sortBy!.isAscending : null, apiKey: 'typeOfExpense', callBack: onExpenseSort),
     TableHeader(i18.common.AMOUNT, isSortingRequired: true,
-        isAscendingOrder: sortBy != null && sortBy!.key == 'amount' ? sortBy!.isAscending : null, apiKey: 'amount', callBack: onExpenseSort),
+        isAscendingOrder: sortBy != null && sortBy!.key == 'totalAmount' ? sortBy!.isAscending : null, apiKey: 'totalAmount', callBack: onExpenseSort),
     TableHeader(i18.expense.BILL_DATE, isSortingRequired: true,
         isAscendingOrder: sortBy != null && sortBy!.key == 'billDate' ? sortBy!.isAscending : null, apiKey: 'billDate', callBack: onExpenseSort),
     TableHeader(i18.common.PAID_DATE, isSortingRequired: true,
