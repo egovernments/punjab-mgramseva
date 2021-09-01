@@ -31,7 +31,7 @@ public class MgramasevaAdapterPaymentConsumer {
 		try {
 			log.debug("Consuming record: " + record);
 			paymentRequest = mapper.convertValue(record, PaymentRequest.class);
-			util.callIFIXAdapter(paymentRequest, Constants.RECEIPT, paymentRequest.getPayment().getTenantId(),paymentRequest.getRequestInfo());
+			util.callIFIXAdapter(paymentRequest.getPayment(), Constants.RECEIPT, paymentRequest.getPayment().getTenantId(),paymentRequest.getRequestInfo());
 		} catch (final Exception e) {
 			log.error("Error while listening to value: " + record + " on topic: " + topic + ": " + e);
 		}
