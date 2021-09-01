@@ -38,11 +38,13 @@ class NotificationsListState extends State<NotificationsList> {
   buildNotificationsView(EventsList events) {
     return LayoutBuilder(builder: (context, constraints) {
       return Column(children: [
-        ListLabelText(ApplicationLocalizations.of(context)
-                .translate(i18.common.NOTIFICATIONS) +
-            " (" +
-            events.events!.length.toString() +
-            ")"),
+        events.events!.length > 0
+            ? ListLabelText(ApplicationLocalizations.of(context)
+                    .translate(i18.common.NOTIFICATIONS) +
+                " (" +
+                events.events!.length.toString() +
+                ")")
+            : Text(""),
         for (var item in events.events!) Notifications(item)
       ]);
     });

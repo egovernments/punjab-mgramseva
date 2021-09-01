@@ -407,7 +407,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
-          child: new Text(value.name!),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                  .translate(value.code!)),
         );
       }).toList();
     }

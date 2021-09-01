@@ -17,24 +17,36 @@ class SelectFieldBuilder extends StatelessWidget {
   final GlobalKey? contextkey;
 
   SelectFieldBuilder(this.labelText, this.value, this.input, this.prefixText,
-      this.widget, this.options, this.isRequired, {this.hint, this.isEnabled, this.readOnly, this.requiredMessage, this.contextkey});
+      this.widget, this.options, this.isRequired,
+      {this.hint,
+      this.isEnabled,
+      this.readOnly,
+      this.requiredMessage,
+      this.contextkey});
 
   @override
   Widget build(BuildContext context) {
 // Label Text
-    Widget textLabelwidget = Wrap(
-        direction: Axis.horizontal,
-        children: <Widget>[
+    Widget textLabelwidget =
+        Wrap(direction: Axis.horizontal, children: <Widget>[
       Text(ApplicationLocalizations.of(context).translate(labelText),
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: (isEnabled ?? true)
+                  ? Theme.of(context).primaryColorDark
+                  : Colors.grey)),
       Visibility(
         visible: isRequired,
         child: Text('* ',
             textAlign: TextAlign.left,
             style: TextStyle(
-                fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
+                fontWeight: FontWeight.w400,
+                fontSize: 16,
+                color: (isEnabled ?? true)
+                    ? Theme.of(context).primaryColorDark
+                    : Colors.grey)),
       ),
     ]);
     //DropDown
@@ -55,15 +67,15 @@ class SelectFieldBuilder extends StatelessWidget {
         return null;
       },
       items: options,
-
-      onChanged:
-      !(isEnabled ?? true) || readOnly == true ? null : (value) => widget(value)  ,
+      onChanged: !(isEnabled ?? true) || readOnly == true
+          ? null
+          : (value) => widget(value),
     );
 
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
         return Container(
-            key: contextkey,
+          key: contextkey,
           margin:
               const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
           child: Row(children: [
@@ -85,15 +97,13 @@ class SelectFieldBuilder extends StatelessWidget {
         );
       } else {
         return Container(
-            key: contextkey,
-          margin:
-              const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
+          key: contextkey,
+          margin: const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
           child: Column(children: [
             Container(
                 padding: EdgeInsets.only(top: 18, bottom: 3),
-              child: new Align(
-                  alignment: Alignment.centerLeft,
-                child: textLabelwidget)),
+                child: new Align(
+                    alignment: Alignment.centerLeft, child: textLabelwidget)),
             dropDown,
             CommonWidgets().buildHint(hint, context)
           ]),

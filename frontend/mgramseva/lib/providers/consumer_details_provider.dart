@@ -13,6 +13,7 @@ import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/walkthrough.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -359,7 +360,9 @@ class ConsumerProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
-          child: new Text(value.name!),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                  .translate(value.code!)),
         );
       }).toList();
     }
@@ -388,7 +391,9 @@ class ConsumerProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
-          child: new Text(value.name!),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                  .translate(value.name!)),
         );
       }).toList();
     }
@@ -424,7 +429,11 @@ class ConsumerProvider with ChangeNotifier {
         var d = value['name'];
         return DropdownMenuItem(
           value: value['code'].toLocal().toString(),
-          child: new Text(months[d.month - 1] + " - " + d.year.toString()),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                      .translate(months[d.month - 1]) +
+                  " - " +
+                  d.year.toString()),
         );
       }).toList();
     }
