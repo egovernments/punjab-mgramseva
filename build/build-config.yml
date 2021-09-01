@@ -52,9 +52,15 @@ config:
     build:
       - work-dir: "municipal-services/mgramseva-ifix-adapter"
         image-name: "mgramseva-ifix-adapter"
-        dockerfile: "build/maven/Dockerfile"      
+        dockerfile: "build/maven/Dockerfile" 
+  - name: "builds/mGramSeva/business-services/billing-service"
+    build:
+      - work-dir: "business-services/billing-service"
+        image-name: "billing-service"
+        dockerfile: "build/maven/Dockerfile"         
   - name: "builds/mGramSeva/frontend/frontend-mgramseva"
     build:
       - work-dir: "frontend/mgramseva"
         image-name: "frontend-mgramseva"
         dockerfile: "frontend/mgramseva/docker/Dockerfile"
+    
