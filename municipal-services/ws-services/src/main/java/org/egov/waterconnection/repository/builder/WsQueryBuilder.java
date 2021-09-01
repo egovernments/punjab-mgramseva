@@ -140,7 +140,7 @@ public class WsQueryBuilder {
 			addClauseIfRequired(preparedStatement, query);
 			if(criteria.getTenantId().equalsIgnoreCase(config.getStateLevelTenantId())){
 				query.append(" conn.tenantid LIKE ? ");
-				preparedStatement.add(criteria.getTenantId() + '%');
+				preparedStatement.add('%' + criteria.getTenantId() + '%');
 			}
 			else{
 				query.append(" conn.tenantid = ? ");
@@ -290,6 +290,7 @@ public class WsQueryBuilder {
 		preparedStmtList.add(offset);
 		preparedStmtList.add(limit + offset);
 		System.out.println("FINAL QUERY TO CHECK ::: " + finalQuery);
+		System.out.println("PREPARED STATEMENTS LIST ::: " + preparedStmtList.toString());
 		return finalQuery;
 	}
 	
