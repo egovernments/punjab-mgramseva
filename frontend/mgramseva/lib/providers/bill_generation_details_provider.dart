@@ -70,7 +70,7 @@ class BillGenerationProvider with ChangeNotifier {
     ));
     if (id == null) {
       billGenerateDetails.serviceType = 'Non Metered';
-    }else {
+    } else {
       if (waterConnection == null) {
         var commonProvider = Provider.of<CommonProvider>(
             navigatorKey.currentContext!,
@@ -407,7 +407,9 @@ class BillGenerationProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
-          child: new Text(value.name!),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                  .translate(value.code!)),
         );
       }).toList();
     }
@@ -421,7 +423,9 @@ class BillGenerationProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value,
-          child: new Text(value.financialYear!),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                  .translate(value.financialYear!)),
         );
       }).toList();
     }
@@ -435,7 +439,9 @@ class BillGenerationProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
-          child: new Text(value.name!),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                  .translate(value.code!)),
         );
       }).toList();
     }
@@ -469,7 +475,11 @@ class BillGenerationProvider with ChangeNotifier {
         var d = value['name'] as DateTime;
         return DropdownMenuItem(
           value: value['code'],
-          child: new Text(months[d.month - 1] + " - " + d.year.toString()),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                      .translate(months[d.month - 1]) +
+                  " - " +
+                  d.year.toString()),
         );
       }).toList();
     }

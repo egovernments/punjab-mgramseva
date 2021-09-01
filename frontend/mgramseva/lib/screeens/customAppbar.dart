@@ -60,8 +60,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             commonProvider.userDetails!.selectedtenant == null) {
           showdialog(result);
           commonProvider.setTenant(result.first);
-          Navigator.pop(context);
-          Navigator.pushReplacementNamed(context, Routes.HOME);
+          Navigator.popAndPushNamed(context, Routes.HOME);
         }
       }
     }
@@ -167,8 +166,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         showdialog(result);
         commonProvider.setTenant(result.first);
-        Navigator.pop(context);
-        Navigator.pushReplacementNamed(context, Routes.HOME);
+
+        //and
+        Navigator.popAndPushNamed(context, Routes.HOME);
       });
     } else if (result.length > 1 &&
         commonProvider.userDetails!.selectedtenant == null) {

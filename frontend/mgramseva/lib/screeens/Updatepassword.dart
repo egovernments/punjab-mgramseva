@@ -132,11 +132,12 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                        '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD)}',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w700),
-                                    textAlign: TextAlign.start,),
+                                      '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD)}',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700),
+                                      textAlign: TextAlign.start,
+                                    ),
                                   ),
                                   Align(
                                       alignment: Alignment.centerLeft,
@@ -188,7 +189,11 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  BottomButtonBar(ApplicationLocalizations.of(context).translate(i18.password.CHANGE_PASSWORD), updatePassword),
+                                  BottomButtonBar(
+                                      ApplicationLocalizations.of(context)
+                                          .translate(
+                                              i18.password.CHANGE_PASSWORD),
+                                      updatePassword),
                                   PasswordHint(password)
                                 ],
                               ))))),
@@ -240,7 +245,10 @@ class _UpdatePasswordState extends State<UpdatePassword> {
             TableCell(
                 child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-              child: Text('${e?.city?.code}', style: style),
+              child: Text(
+                  ApplicationLocalizations.of(context)
+                      .translate('${e?.city?.code}'),
+                  style: style),
             )),
             TableCell(
                 child: Padding(
