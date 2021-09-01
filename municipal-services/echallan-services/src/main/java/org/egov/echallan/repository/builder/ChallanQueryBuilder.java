@@ -249,7 +249,7 @@ public class ChallanQueryBuilder {
 			builder.append(" ORDER BY challanno ");
 
 		else if (criteria.getSortBy() == SearchCriteria.SortBy.totalAmount)
-			builder.append(" ORDER BY challan.totalamount ");
+			builder.append(" ORDER BY totalamount ");
 
 		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
 			builder.append(" ASC ");
