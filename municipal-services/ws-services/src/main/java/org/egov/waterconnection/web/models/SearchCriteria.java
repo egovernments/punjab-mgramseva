@@ -110,7 +110,7 @@ public class SearchCriteria {
 	    DESC
 	}
 	public enum SortBy {
-		applicationNumber,
+		connectionNumber,
 		name,
 		collectionAmount
 	}

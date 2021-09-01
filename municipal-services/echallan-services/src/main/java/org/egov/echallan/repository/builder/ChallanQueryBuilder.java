@@ -36,6 +36,7 @@ public class ChallanQueryBuilder {
 	private static final String QUERY = "SELECT count(*) OVER() AS full_count, challan.*,chaladdr.*,challan.id as challan_id,challan.tenantid as challan_tenantId,challan.lastModifiedTime as "
 			+ "challan_lastModifiedTime,challan.createdBy as challan_createdBy,challan.lastModifiedBy as challan_lastModifiedBy,challan.createdTime as "
 			+ "challan_createdTime,chaladdr.id as chaladdr_id,"
+			+ "{amount}"
 			+ "challan.accountId as uuid,challan.description as description,challan.typeOfExpense as typeOfExpense, challan.billDate as billDate,  "
 			+ " challan.billIssuedDate as billIssuedDate, challan.paidDate as paidDate, challan.isBillPaid as isBillPaid , challan.vendor as vendor, vendor.name as vendorName "
 			+ " FROM eg_echallan challan" + " LEFT OUTER JOIN "
@@ -192,6 +193,8 @@ public class ChallanQueryBuilder {
 
 		finalQuery = finalQuery.replace("{orderby}", string);
 
+		finalQuery = finalQuery.replace("{amount}", "(select nullif(sum(payd.amountpaid),0) from egcl_paymentdetail payd join egcl_bill payspay on (payd.billid = payspay.id) where payd.businessservice = 'expense.advance' and payspay.consumercode = challan.challanno group by payspay.consumercode) as totalamount,");
+		
         if(criteria.getLimit()!=null && criteria.getLimit()<=config.getMaxSearchLimit())
             limit = criteria.getLimit();
 
@@ -245,14 +248,17 @@ public class ChallanQueryBuilder {
 		else if (criteria.getSortBy() == SearchCriteria.SortBy.challanno)
 			builder.append(" ORDER BY challanno ");
 
-//		else if (criteria.getSortBy() == SearchCriteria.SortBy.totalAmount)
-//			builder.append(" ORDER BY challan.totalAmount ");
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.totalAmount)
+			builder.append(" ORDER BY challan.totalamount ");
 
 		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
 			builder.append(" ASC ");
 		else
 			builder.append(" DESC ");
 
+		if (criteria.getSortBy() == SearchCriteria.SortBy.totalAmount)
+			builder.append(" NULLS LAST ");
+		
 		return builder.toString();
 	}
 

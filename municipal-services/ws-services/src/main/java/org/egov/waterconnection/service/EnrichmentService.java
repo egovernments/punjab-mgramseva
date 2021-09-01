@@ -485,30 +485,4 @@ public class EnrichmentService {
 		return finalConnectionList;
 	}
 
-	@SuppressWarnings("unchecked")
-	public void setTotalAmount(@Valid List<WaterConnection> waterConnection, SearchCriteria criteria,
-			RequestInfo requestInfo) {
-		waterConnection.forEach(connection -> {
-			StringBuilder query = new StringBuilder(queryBuilder.TotalCollectionAmount);
-			query.append("AND payd.tenantid like '%" + criteria.getTenantId() + "%' AND payspay.consumercode = '"
-					+ connection.getConnectionNo() +"'");
-			query.append("  AND payd.createdtime >= " + criteria.getFromDate());
-			List<String> amount = jdbcTemplate.queryForList(query.toString(), String.class);
-			
-			HashMap<String, Object> additionalDetails = new HashMap<>();
-			HashMap<String, Object> addDetail = mapper
-					.convertValue(connection.getAdditionalDetails(), HashMap.class);
-
-			for (Map.Entry<String, Object> entry: addDetail.entrySet()) {
-				if (additionalDetails.getOrDefault(entry.getKey(), null) == null) {
-					additionalDetails.put(entry.getKey(), addDetail.get(entry.getKey()));
-				}
-			}
-			additionalDetails.put("collectionAmount", amount.get(0));
-			connection.setAdditionalDetails(additionalDetails);
-			
-		});
-	}
-
-
 }

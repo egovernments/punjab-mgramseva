@@ -191,8 +191,8 @@ public class WsQueryBuilder {
 		}
 		if (!StringUtils.isEmpty(criteria.getApplicationNumber())) {
 			addClauseIfRequired(preparedStatement, query);
-			query.append(" conn.applicationno like ? ");
-			preparedStatement.add('%' + criteria.getApplicationNumber() + '%');
+			query.append(" conn.applicationno = ? ");
+			preparedStatement.add(criteria.getApplicationNumber());
 		}
 		if (!StringUtils.isEmpty(criteria.getApplicationStatus())) {
 			addClauseIfRequired(preparedStatement, query);
@@ -274,7 +274,7 @@ public class WsQueryBuilder {
 		 String finalQuery = PAGINATION_WRAPPER.replace("{}",query);
 		finalQuery = finalQuery.replace("{orderby}", string);
 		if (criteria.getSortBy() != SearchCriteria.SortBy.collectionAmount && !criteria.getIscollectionAmount()) {
-			finalQuery = finalQuery.replace("{holderSelectValues}", "connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
+			finalQuery = finalQuery.replace("{holderSelectValues}", "null as collectionamount, connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
 		}else {
 			finalQuery = finalQuery.replace("{holderSelectValues}", "(select nullif(sum(payd.amountpaid),0) from egcl_paymentdetail payd join egcl_bill payspay on (payd.billid = payspay.id) where payd.businessservice = 'ws' and payspay.consumercode = conn.connectionno group by payspay.consumercode) as collectionamount, connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
 		}
@@ -303,8 +303,8 @@ public class WsQueryBuilder {
 		if (StringUtils.isEmpty(criteria.getSortBy()))
 			builder.append(" ORDER BY wc.appCreatedDate ");
 
-		else if (criteria.getSortBy() == SearchCriteria.SortBy.applicationNumber)
-			builder.append(" ORDER BY applicationno ");
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.connectionNumber)
+			builder.append(" ORDER BY connectionno ");
 
 		else if (criteria.getSortBy() == SearchCriteria.SortBy.name)
 			builder.append(" ORDER BY name ");

@@ -166,7 +166,6 @@ public class EnrichmentService {
         SearchCriteria searchCriteria = enrichChallanSearchCriteriaWithOwnerids(criteria,challans);
         UserDetailResponse userDetailResponse = userService.getUser(searchCriteria,requestInfo);
         enrichOwner(userDetailResponse,challans);
-        enrichBillAmount(challans,criteria, requestInfo);
         return challans;
     }
     
@@ -193,20 +192,6 @@ public class EnrichmentService {
 	    	 challanRepository.setInactiveFileStoreId(challan.getTenantId().split("\\.")[0], Collections.singletonList(fileStoreId));
 	     }
 	    // challan.setFilestoreid(null);
-	}
-	
-	private void enrichBillAmount(List<Challan> challans, SearchCriteria criteria, RequestInfo requestInfo) {
-		for(Challan challan:challans)
-		{
-			ChallanRequest request = ChallanRequest.builder().requestInfo(requestInfo).challan(challan).build();
-			List<Bill> billList = paymentService.fetchBill(request);
-			if (!billList.isEmpty()) {
-				challan.setTotalAmount(billList.get(0).getTotalAmount());
-			}
-		}
-		if(criteria.getSortBy()!=null && criteria.getSortBy().toString().equalsIgnoreCase("totalAmount")) {
-			Collections.sort(challans, Comparator.comparing(challan ->  challan.getTotalAmount()));
-		}
 	}
 
 }
