@@ -144,10 +144,12 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                         margin: const EdgeInsets.only(
                                             left: 20, bottom: 20, top: 20),
                                         child: Text(
-                                            '${ApplicationLocalizations.of(context).translate(i18.password.INVITED_TO_GRAMA_SEVA)}',
+                                            '${ApplicationLocalizations.of(context).translate(i18.common.DEAR)} ${widget.userDetails.userRequest?.name}, '
+                                                '${ApplicationLocalizations.of(context).translate(i18.password.INVITED_TO_GRAMA_SEVA)}',
                                             style: TextStyle(
                                                 fontSize: 16,
-                                                fontWeight: FontWeight.w400)),
+                                                fontWeight: FontWeight.w400,
+                                            color: Theme.of(context).primaryColorLight)),
                                       )),
                                   _buildTenantDetails(),
                                   _buildOtpView(),
