@@ -12,14 +12,16 @@ public class Constants {
 
 	public static final String TENANT = "tenant";
 
-	public static final String PROJECTMODULE = "projectmodule";
+	public static final String TENANTS = "tenants";
 
-	public static final String PROJECT_JSON_PATH = "$.MdmsRes.tenant.projectmodule[0].code";
+	public static final String PROJECT_JSON_PATH = "$.MdmsRes.tenant.tenants[0].city.projectId";
 
 	public static final String VERSION = "v1";
 	
 	public static final String MSG_ID="msg-id-001";
 	
 	public static final String SIGNATURE="sig-001";
+
+	public static final String EXPENSE = "EXPENSE";
 	
 }

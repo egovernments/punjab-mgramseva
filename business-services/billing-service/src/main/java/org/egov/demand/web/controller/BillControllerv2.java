@@ -73,12 +73,6 @@ public class BillControllerv2 {
 		
 		BillResponseV2 billResponse = billService.fetchBill(generateBillCriteria, requestInfoWrapper);
 		
-		BillRequestV2 billRequestV2=new BillRequestV2();
-		billRequestV2.setBills(billResponse.getBill());
-		billRequestV2.setRequestInfo(requestInfoWrapper.getRequestInfo());
-		
-		producer.push(properties.getCreateBill(), billRequestV2);
-		
 		return new ResponseEntity<>(billResponse, HttpStatus.CREATED);
 	}
 	
@@ -97,8 +91,6 @@ public class BillControllerv2 {
 
 		BillResponseV2 billResponse = billService.sendBillToKafka(billRequest);
 		billHelper.getBillRequestWithIds(billRequest);
-		billRequest.setBills(billResponse.getBill());
-		producer.push(properties.getCreateBill(), billRequest);
 		return new ResponseEntity<>(billResponse,HttpStatus.CREATED);
 	}
 	

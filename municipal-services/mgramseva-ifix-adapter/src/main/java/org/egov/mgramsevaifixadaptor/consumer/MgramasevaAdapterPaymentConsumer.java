@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.egov.mgramsevaifixadaptor.config.PropertyConfiguration;
 import org.egov.mgramsevaifixadaptor.contract.PaymentRequest;
+import org.egov.mgramsevaifixadaptor.models.EventTypeEnum;
 import org.egov.mgramsevaifixadaptor.util.Constants;
 import org.egov.mgramsevaifixadaptor.util.MgramasevaAdapterWrapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,14 @@ public class MgramasevaAdapterPaymentConsumer {
 		try {
 			log.debug("Consuming record: " + record);
 			paymentRequest = mapper.convertValue(record, PaymentRequest.class);
-			util.callIFIXAdapter(paymentRequest.getPayment(), Constants.RECEIPT, paymentRequest.getPayment().getTenantId(),paymentRequest.getRequestInfo());
+			String eventType=null;
+			if(paymentRequest.getPayment().getPaymentDetails().get(0).getBill().getBusinessService().contains(Constants.EXPENSE))
+			{
+				eventType=EventTypeEnum.PAYMENT.toString();
+			}else {
+				eventType=EventTypeEnum.RECEIPT.toString();
+			}
+			util.callIFIXAdapter(paymentRequest.getPayment(), eventType, paymentRequest.getPayment().getTenantId(),paymentRequest.getRequestInfo());
 		} catch (final Exception e) {
 			log.error("Error while listening to value: " + record + " on topic: " + topic + ": " + e);
 		}

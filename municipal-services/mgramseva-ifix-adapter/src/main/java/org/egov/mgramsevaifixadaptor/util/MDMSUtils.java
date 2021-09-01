@@ -71,9 +71,9 @@ public class MDMSUtils {
         List<MasterDetail> adapterMasterDetails = new ArrayList<>();
 
         // filter to only get code field from master data
-        final String filterCode = "$..circle..division..subdivision..section..project..[?(@.village[*].code contains '"+ tenantId+"')]";
+        final String filterCode = "$.[?(@.code=='"+tenantId+"')]";
 
-        adapterMasterDetails.add(MasterDetail.builder().name(Constants.PROJECTMODULE).filter(filterCode).build());
+        adapterMasterDetails.add(MasterDetail.builder().name(Constants.TENANTS).filter(filterCode).build());
 
         ModuleDetail adaptorModuleDtls = ModuleDetail.builder().masterDetails(adapterMasterDetails)
                 .moduleName(Constants.TENANT).build();
