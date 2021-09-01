@@ -11,7 +11,7 @@ class BuildTableText extends StatelessWidget {
         '${ApplicationLocalizations.of(context).translate(labelText)}',
         textAlign: TextAlign.left,
         style: TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black));
+            fontWeight: FontWeight.bold, fontSize: 16, color: Theme.of(context).primaryColorDark));
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
           margin:
@@ -34,7 +34,7 @@ class BuildTableText extends StatelessWidget {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
-                                  color: Colors.black))),
+                                  color: Theme.of(context).primaryColorDark))),
                     ],
                   )),
             ],
