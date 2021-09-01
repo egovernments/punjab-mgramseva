@@ -20,6 +20,8 @@ class i18 {
       const _ConsumerWalkThroughMsg();
   static _ExpenseWalkThroughMsg expenseWalkThroughMsg =
       const _ExpenseWalkThroughMsg();
+  static _POSTPAYMENTFEEDBACK postPaymentFeedback =
+      const _POSTPAYMENTFEEDBACK();
 }
 
 class Login {
@@ -483,4 +485,17 @@ class _ExpenseWalkThroughMsg {
   String get EXPENSE_BILL_DATE_MSG => 'EXPENSE_BILL_DATE_MSG';
   String get EXPENSE_PARTY_BILL_DATE_MSG => 'EXPENSE_PARTY_BILL_DATE_MSG';
   String get EXPENSE_ATTACH_BILL_MSG => 'EXPENSE_ATTACH_BILL_MSG';
+}
+
+
+class _POSTPAYMENTFEEDBACK {
+  const _POSTPAYMENTFEEDBACK();
+
+  String get HELP_US_HELP_YOU => 'HELP_US_HELP_YOU';
+  String get HAPPY_WITH_WATER_SUPPLY => 'HAPPY_WITH_WATER_SUPPLY';
+  String get IS_WATER_SUPPLY_REGULAR => 'IS_WATER_SUPPLY_REGULAR';
+  String get IS_WATER_QUALITY_GOOD => 'IS_WATER_QUALITY_GOOD';
+  String get SURVEY_REQUEST => 'SURVEY_REQUEST';
+  String get FEED_BACK_SUBMITTED_SUCCESSFULLY => 'FEED_BACK_SUBMITTED_SUCCESSFULLY';
+  String get FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY => 'FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY';
 }
