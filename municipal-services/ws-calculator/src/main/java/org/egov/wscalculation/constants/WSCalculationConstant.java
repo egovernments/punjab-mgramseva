@@ -164,7 +164,7 @@ public class WSCalculationConstant {
 
 	public static final String NOTIFICATION_LOCALE = "en_IN";
 
-	public static final String MODULE = "rainmaker-ws";
+	public static final String MODULE = "mgramseva-ws";
 
 	public static final String SMS_RECIEVER_MASTER = "SMSReceiver";
 

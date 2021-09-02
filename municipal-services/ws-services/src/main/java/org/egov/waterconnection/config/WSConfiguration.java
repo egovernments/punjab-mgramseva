@@ -208,4 +208,7 @@ public class WSConfiguration {
 	
 	@Value("${egov.ws.service.feedback}")
 	private String saveFeedback;
+	
+	@Value("${ws.feedback.survey.link}")
+	private String feedbackLink;
 }
