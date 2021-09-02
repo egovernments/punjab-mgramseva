@@ -133,7 +133,7 @@ class DashBoardProvider with ChangeNotifier {
     if(searchController.text.trim().isNotEmpty){
       query.addAll({
         'connectionNumber' : searchController.text.trim(),
-        'name' : searchController.text.trim(),
+        // 'name' : searchController.text.trim(),
         'freeSearch' : 'true',
       });
     }
@@ -290,7 +290,12 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   void onSearch(String val, BuildContext context){
-    fetchDetails(context, limit, 1, true);
+    if (debounce?.isActive ?? false) debounce?.cancel();
+    debounce = Timer(const Duration(seconds: 1), () {
+      print('search');
+      fetchDetails(context, limit, 1, true);
+    });
+
   }
 
   void onChangeOfDate(DateTime? date, BuildContext context, _overlayEntry){

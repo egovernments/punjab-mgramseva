@@ -45,9 +45,11 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
           ..dateList =
               CommonMethods.getPastMonthUntilFinancialYear().reversed.toList();
     dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
+    dashBoardProvider.debounce = null;
     _tabController = new TabController(vsync: this, length: 2);
     _tabController.addListener(() {
       FocusScope.of(context).unfocus();
+      dashBoardProvider.debounce = null;
     });
   }
 

@@ -100,13 +100,13 @@ class _BillsTable extends State<BillsTable> {
               spacing: 5,
               children: [
                 textWidget,
-                Icon(isAscending!
+                Icon(isAscending
                     ? Icons.arrow_upward
                     : Icons.arrow_downward_sharp)
               ],
             )
           : textWidget,
-      width: constraints.maxWidth < 760 ? 200 : 200,
+      width: widget.leftColumnWidth,
       height: 56,
       padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
     alignment: Alignment.centerLeft,
@@ -137,7 +137,7 @@ class _BillsTable extends State<BillsTable> {
                     .translate(widget.tableData[index].tableRow.first.label),
                 style: TextStyle(color: Theme.of(context).primaryColor),
               ),
-              width: constraints.maxWidth < 760 ? 200 : 200,
+              width: widget.leftColumnWidth,
               height: 52,
               padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
               alignment: Alignment.centerLeft,
@@ -156,7 +156,7 @@ class _BillsTable extends State<BillsTable> {
               style: style)
         ],
       ),
-      width: constraints.maxWidth < 760 ? 200 : 200,
+      width: widget.leftColumnWidth,
       height: 52,
       padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
       alignment: Alignment.centerLeft,
