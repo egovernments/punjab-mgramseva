@@ -14,6 +14,7 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) {
     ..applicationNo = json['applicationNo'] as String?
     ..tenantId = json['tenantId'] as String?
     ..action = json['action'] as String?
+    ..status = json['status'] as String?
     ..meterInstallationDate = json['meterInstallationDate'] as int?
     ..documents = json['documents'] == null
         ? null
@@ -49,6 +50,7 @@ Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
       'applicationNo': instance.applicationNo,
       'tenantId': instance.tenantId,
       'action': instance.action,
+      'status': instance.status,
       'meterInstallationDate': instance.meterInstallationDate,
       'documents': instance.documents,
       'proposedTaps': instance.proposedTaps,
