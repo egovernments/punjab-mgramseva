@@ -81,7 +81,7 @@ class BillGenerationProvider with ChangeNotifier {
 
           var res = await SearchConnectionRepository().getconnection({
             "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-            ...{'connectionNumber': id!.split('_').join('/')},
+            ...{'connectionNumber': id.split('_').join('/')},
           });
 
           fetchBill(res.waterConnection!.first);
@@ -89,14 +89,14 @@ class BillGenerationProvider with ChangeNotifier {
           Navigator.pop(context);
           waterconnection = res.waterConnection!.first;
           billGenerateDetails.propertyType =
-              waterconnection!.additionalDetails!.propertyType;
+              waterconnection.additionalDetails!.propertyType;
           billGenerateDetails.serviceType = waterconnection.connectionType;
           billGenerateDetails.meterNumberCtrl.text = waterconnection.meterId!;
           if (waterconnection.connectionType == 'Metered') {
             waterconnection = res.waterConnection!.first;
             var meterRes = await BillGenerateRepository().searchmetetedDemand({
               "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-              ...{'connectionNos': id!.split('_').join('/')},
+              ...{'connectionNos': id.split('_').join('/')},
             });
             setMeterReading(meterRes);
           }
@@ -106,7 +106,7 @@ class BillGenerationProvider with ChangeNotifier {
         }
       } else {
         billGenerateDetails.propertyType =
-            waterConnection!.additionalDetails!.propertyType;
+            waterConnection.additionalDetails!.propertyType;
         billGenerateDetails.serviceType = waterConnection.connectionType;
         billGenerateDetails.meterNumberCtrl.text = waterConnection.meterId!;
         waterconnection = waterConnection;
@@ -116,12 +116,12 @@ class BillGenerationProvider with ChangeNotifier {
               listen: false);
           var meterRes = await BillGenerateRepository().searchmetetedDemand({
             "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-            ...{'connectionNos': id!.split('_').join('/')},
+            ...{'connectionNos': id.split('_').join('/')},
           });
           fetchBill(waterConnection);
           setMeterReading(meterRes);
           if (meterRes.meterReadings!.length == 0) {
-            prevReadingDate = waterConnection!.previousReadingDate;
+            prevReadingDate = waterConnection.previousReadingDate;
           }
         } else {}
       }
@@ -311,14 +311,14 @@ class BillGenerationProvider with ChangeNotifier {
                   callBack: () =>
                       onClickOfCollectPayment(billList.bill!.first, context),
                   callBackdownload: () => commonProvider.getFileFromPDFService({
-                    "Bill": [billList!.bill!.first]
+                    "Bill": [billList.bill!.first]
                   }, {
                     "key": "consolidatedbill",
                     "tenantId":
                         commonProvider.userDetails!.selectedtenant!.code,
-                  }, billList!.bill!.first.mobileNumber, "Download"),
+                  }, billList.bill!.first.mobileNumber, "Download"),
                   callBackwatsapp: () => commonProvider.getFileFromPDFService({
-                    "Bill": [billList!.bill!.first]
+                    "Bill": [billList.bill!.first]
                   }, {
                     "key": "consolidatedbill",
                     "tenantId":

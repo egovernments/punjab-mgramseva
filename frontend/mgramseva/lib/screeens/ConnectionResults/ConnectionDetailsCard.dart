@@ -1,14 +1,11 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
-import 'package:mgramseva/widgets/SubLabel.dart';
 
 class SearchConnectionDetailCard extends StatelessWidget {
   final WaterConnections waterconnections;

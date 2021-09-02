@@ -1,16 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
-
 import 'package:mgramseva/providers/tenants_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
-
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -60,7 +55,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         } else if (result.length == 1 &&
             commonProvider.userDetails!.selectedtenant == null) {
           if (kIsWeb) {
-            commonProvider.setTenant(result.first);
+            if (result.isNotEmpty) commonProvider.setTenant(result.first);
             Navigator.popAndPushNamed(context, Routes.HOME);
           } else {
             commonProvider.setTenant(result.first);
@@ -170,7 +165,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         commonProvider.userDetails!.selectedtenant == null) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         if (kIsWeb) {
-          commonProvider.setTenant(result.first);
+          if (result.isNotEmpty) commonProvider.setTenant(result.first);
           Navigator.pushReplacementNamed(context, Routes.HOME);
         } else {
           commonProvider.setTenant(result.first);

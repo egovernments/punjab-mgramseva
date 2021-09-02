@@ -100,7 +100,7 @@ class RoleActionsFiltering {
         return ['GP_ADMIN', 'SUPERUSER'];
 
       case Routes.CONSUMER_CREATE:
-        return ['GP_ADMIN', 'COLLECTION_OPERATOR', 'SUPERUSER'];
+        return ['GP_ADMIN', 'SUPERUSER'];
 
       case Routes.HOUSEHOLD_DETAILS:
         return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR', 'SUPERUSER'];

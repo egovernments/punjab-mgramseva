@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mgramseva/icons/home_icons_icons.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/role_actions.dart';
-
-import 'HomeWalkThrough/HomeWalkThroughList.dart';
 
 final String assetName = 'assets/svg/HHRegister.svg';
 

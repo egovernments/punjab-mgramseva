@@ -1,11 +1,9 @@
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/model/expensesDetails/vendor.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
-import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
@@ -123,20 +121,30 @@ class ExpensesRepository extends BaseService {
     return null;
   }
 
-
-  Future<ExpensesDetailsWithPagination?> expenseDashboard(Map<String, dynamic> query) async {
+  Future<ExpensesDetailsWithPagination?> expenseDashboard(
+      Map<String, dynamic> query) async {
     ExpensesDetailsWithPagination? expenseResult;
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
 
-    var body = {
-      'userInfo' : commonProvider.userDetails?.userRequest?.toJson()
-    };
+    var body = {'userInfo': commonProvider.userDetails?.userRequest?.toJson()};
 
     var res = await makeRequest(
-        url: Url.EXPENSE_SEARCH, queryParameters: query, body: body, method: RequestType.POST, requestInfo: RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "create",APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
-      commonProvider.userDetails!.accessToken, ));
+        url: Url.EXPENSE_SEARCH,
+        queryParameters: query,
+        body: body,
+        method: RequestType.POST,
+        requestInfo: RequestInfo(
+          APIConstants.API_MODULE_NAME,
+          APIConstants.API_VERSION,
+          APIConstants.API_TS,
+          "create",
+          APIConstants.API_DID,
+          APIConstants.API_KEY,
+          APIConstants.API_MESSAGE_ID,
+          commonProvider.userDetails!.accessToken,
+        ));
 
     if (res != null) {
       expenseResult = ExpensesDetailsWithPagination.fromJson(res);

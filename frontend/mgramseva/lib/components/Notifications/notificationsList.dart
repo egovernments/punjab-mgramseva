@@ -50,7 +50,7 @@ class NotificationsListState extends State<NotificationsList> {
             ? ListLabelText(ApplicationLocalizations.of(context)
                     .translate(i18.common.NOTIFICATIONS) +
                 " (" +
-                events!.length.toString() +
+                events.length.toString() +
                 ")")
             : Text(""),
         for (var item in events) Notifications(item)
