@@ -40,15 +40,24 @@ class HouseHoldProvider with ChangeNotifier {
         streamController.addError('error');
         ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       }
+    } else {
+      streamController.add(data);
     }
   }
 
   Future<void> fetchBill(data) async {
-    await BillingServiceRepository().fetchdBill({
-      "tenantId": data.tenantId,
-      "consumerCode": data.connectionNo.toString(),
-      "businessService": "WS"
-    }).then((value) => checkMeterDemand(value, data));
+    try {
+      await BillingServiceRepository().fetchdBill({
+        "tenantId": data.tenantId,
+        "consumerCode": data.connectionNo.toString(),
+        "businessService": "WS"
+      }).then((value) {
+        checkMeterDemand(value, data);
+      });
+    } catch (e, s) {
+      streamController.addError('error');
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+    }
   }
 
   Future<void> fetchDemand(data, [String? id]) async {
@@ -68,21 +77,24 @@ class HouseHoldProvider with ChangeNotifier {
       }
     }
     waterConnection = data;
-
-    await BillingServiceRepository().fetchdDemand({
-      "tenantId": data.tenantId,
-      "consumerCode": data.connectionNo.toString(),
-      "businessService": "WS"
-    }).then((value) {
-      if (value.demands!.length > 0) {
-        fetchBill(data);
-      } else {
-        BillList bill = new BillList();
-        bill.bill = [];
-        // bill.bill!.first.waterConnection = waterConnection;
-        streamController.add(bill);
-      }
-    });
+    try {
+      await BillingServiceRepository().fetchdDemand({
+        "tenantId": data.tenantId,
+        "consumerCode": data.connectionNo.toString(),
+        "businessService": "WS"
+      }).then((value) {
+        if (value.demands!.length > 0) {
+          fetchBill(data);
+        } else {
+          BillList bill = new BillList();
+          bill.bill = [];
+          streamController.add(bill);
+        }
+      });
+    } catch (e, s) {
+      streamController.addError('error');
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+    }
   }
 
   dispose() {

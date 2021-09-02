@@ -33,7 +33,9 @@ Events _$EventsFromJson(Map<String, dynamic> json) {
     ..recepient = json['recepient'] == null
         ? null
         : Recepient.fromJson(json['recepient'] as Map<String, dynamic>)
-    ..actions = json['actions'] as String?
+    ..actions = json['actions'] == null
+        ? null
+        : Actions.fromJson(json['actions'] as Map<String, dynamic>)
     ..eventDetails = json['eventDetails'] as String?
     ..auditDetails = json['auditDetails'] == null
         ? null
@@ -79,9 +81,39 @@ Map<String, dynamic> _$AuditDetailsToJson(AuditDetails instance) =>
       'lastModifiedTime': instance.lastModifiedTime,
     };
 
+Actions _$ActionsFromJson(Map<String, dynamic> json) {
+  return Actions()
+    ..tenantId = json['tenantId'] as String?
+    ..id = json['id'] as String?
+    ..eventId = json['eventId'] as String?
+    ..actionUrls = (json['actionUrls'] as List<dynamic>?)
+        ?.map((e) => ActionUrls.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$ActionsToJson(Actions instance) => <String, dynamic>{
+      'tenantId': instance.tenantId,
+      'id': instance.id,
+      'eventId': instance.eventId,
+      'actionUrls': instance.actionUrls,
+    };
+
+ActionUrls _$ActionUrlsFromJson(Map<String, dynamic> json) {
+  return ActionUrls()
+    ..actionUrl = json['actionUrl'] as String?
+    ..code = json['code'] as String?;
+}
+
+Map<String, dynamic> _$ActionUrlsToJson(ActionUrls instance) =>
+    <String, dynamic>{
+      'actionUrl': instance.actionUrl,
+      'code': instance.code,
+    };
+
 Recepient _$RecepientFromJson(Map<String, dynamic> json) {
   return Recepient(
-    toRoles: json['toRoles'] as String?,
+    toRoles:
+        (json['toRoles'] as List<dynamic>?)?.map((e) => e as String).toList(),
     toUsers:
         (json['toUsers'] as List<dynamic>?)?.map((e) => e as String).toList(),
   );
