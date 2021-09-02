@@ -43,6 +43,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
 
   afterViewBuild() {
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    dashBoardProvider.searchController.clear();
 
     if(widget.dashBoardType == DashBoardType.Expenditure) {
       _tabList = [
@@ -147,10 +148,16 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
           child: Consumer<DashBoardProvider>(
             builder : (_ , dashBoardProvider, child) => TabBarView(
                 controller: _tabController,
-                children: List.generate(_tabList.length, (index) => BillsTable(headerList: expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
-                  tableData:  expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseData(index, expenseList) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>),
-                leftColumnWidth: 200,
-                rightColumnWidth: expenseList is List<ExpensesDetailsModel> ? 800 : 400,
+                children: List.generate(_tabList.length, (index) => LayoutBuilder(
+                  builder : (context, constraints) {
+                    var width = constraints.maxWidth < 760 ? 200.0 : (constraints.maxWidth / (expenseList is List<ExpensesDetailsModel> ? 5 : 3));
+                  return  BillsTable
+                  (headerList: expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
+                    tableData:  expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseData(index, expenseList) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>),
+                  leftColumnWidth: width,
+                  rightColumnWidth: expenseList is List<ExpensesDetailsModel> ? width * 5 : width * 3,
+                  );
+                   }
                 ))
             ),
           ),

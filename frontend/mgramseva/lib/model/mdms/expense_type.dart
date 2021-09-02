@@ -25,6 +25,9 @@ class ExpenseType {
   @JsonKey(name: "code")
   String? code;
 
+  @JsonKey(name: "taxHeadCode")
+  String? taxHeadCode;
+
   @JsonKey(name: "isActive")
   bool? isActive;
 
