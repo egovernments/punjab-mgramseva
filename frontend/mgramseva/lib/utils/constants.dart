@@ -4,6 +4,7 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/models.dart';
 
+// ignore: non_constant_identifier_names
 class Constants {
   static const int PAGINATION_LIMIT = 75;
 

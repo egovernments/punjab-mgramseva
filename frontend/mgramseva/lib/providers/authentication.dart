@@ -59,8 +59,7 @@ class AuthenticationProvider with ChangeNotifier {
               arguments: loginResponse);
           return;
         } else {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(Routes.HOME, (route) => false);
+          Navigator.popAndPushNamed(context, Routes.HOME);
         }
       }
     } on CustomException catch (e, s) {

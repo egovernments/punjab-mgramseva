@@ -56,7 +56,7 @@ class _NotificationsState extends State<Notifications> {
                                   )),
                               new Container(
                                   width:
-                                      MediaQuery.of(context).size.width / 1.5,
+                                      MediaQuery.of(context).size.width / 1.2,
                                   child: Text(
                                     ApplicationLocalizations.of(context)
                                         .translate(widget.event!.description!),
@@ -70,17 +70,25 @@ class _NotificationsState extends State<Notifications> {
                                   padding: EdgeInsets.only(
                                       top: 24, bottom: 4, left: 4, right: 4),
                                   child: Text(
-                                    DateTime.now()
-                                            .difference(DateTime
-                                                .fromMillisecondsSinceEpoch(
-                                                    widget.event!.auditDetails!
-                                                        .createdTime!))
-                                            .inDays
-                                            .toString() +
-                                        " " +
-                                        ApplicationLocalizations.of(context)
-                                            .translate(i18
-                                                .generateBillDetails.DAYS_AGO),
+                                    DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(widget.event!.auditDetails!.createdTime!)).inDays >
+                                            0
+                                        ? (DateTime.now()
+                                                .difference(DateTime
+                                                    .fromMillisecondsSinceEpoch(
+                                                        widget
+                                                            .event!
+                                                            .auditDetails!
+                                                            .createdTime!))
+                                                .inDays
+                                                .toString() +
+                                            " " +
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18
+                                                    .generateBillDetails
+                                                    .DAYS_AGO))
+                                        : ApplicationLocalizations.of(context)
+                                            .translate(
+                                                i18.generateBillDetails.TODAY),
                                     style: TextStyle(
                                         color: Theme.of(context).primaryColor),
                                   ))

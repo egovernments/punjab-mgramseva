@@ -397,6 +397,7 @@ class GenerateBillDetails {
   String get PREVIOUS_METER_READING => 'PREVIOUS_METER_READING';
   String get PENDING_AMOUNT => 'PENDING_AMOUNT';
   String get DAYS_AGO => 'DAYS_AGO';
+  String get TODAY => 'TODAY';
   String get GENERATE_NEW_BTN_LABEL => 'GENERATE_NEW_BTN_LABEL';
   String get INFO => 'INFO';
   String get INFO_TEXT => 'INFO_TEXT';
@@ -428,7 +429,6 @@ class _Payment {
   String get RECEIPT_REFERENCE_WITH_MOBILE_NUMBER =>
       'RECEIPT_REFERENCE_WITH_MOBILE_NUMBER'; //Fee Estimate
   String get BILL_DETAILS => 'BILL_DETAILS';
-
 }
 
 class _HomeWalkThroughMsg {

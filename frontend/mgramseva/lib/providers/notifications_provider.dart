@@ -20,7 +20,10 @@ class NotificationProvider with ChangeNotifier {
       print(res.length);
       if (res.length > 0) {
         streamController.add(res);
+      } else {
+        streamController.add(res);
         enableNotification = true;
+
       }
     } catch (e) {
       print(e);
