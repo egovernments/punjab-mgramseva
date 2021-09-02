@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -22,7 +23,8 @@ import 'package:provider/provider.dart';
 import 'customAppbar.dart';
 
 class PaymentFeedBack extends StatefulWidget {
-  const PaymentFeedBack({Key? key}) : super(key: key);
+  final Map query;
+  const PaymentFeedBack({Key? key, required this.query}) : super(key: key);
 
   @override
   _PaymentFeedBackState createState() => _PaymentFeedBackState();
@@ -131,31 +133,38 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
     Loaders.showLoadingDialog(context);
 
     try{
-      var query = {
-        "tenantId": commonProvider.userDetails?.selectedtenant?.code,
-        "paymentId":"b2027123-477d-41e0-9ff9-c41c9e1ad201",
-        "connectionno":"WS/400/2021-22/0162",
-        "paymentid":"c92fe569-8f0f-43c4-80fb-1f09d914c58a",
-        "additionaldetails":{
-          "CheckList":  [ {
-            "code":"HAPPY_WATER_SUPPLY",
-            "type":"SINGLE_SELECT",
-            "value": waterSupply.toInt().toString()
-          },
-            {
-              "code":"WATER_QUALITY_GOOD",
+      var body = {
+        "RequestInfo" : {
+        "authToken" : commonProvider.userDetails?.accessToken,
+          "userInfo" : commonProvider.userDetails?.userRequest?.toJson()
+        },
+        'feedback' : {
+          "tenantId": commonProvider.userDetails?.selectedtenant?.code,
+          "paymentId": widget.query['paymentId'],
+          "connectionno":widget.query['connectionno'],
+          "paymentid": widget.query['paymentid'],
+          "additionaldetails":{
+            "CheckList":  [ {
+              "code":"HAPPY_WATER_SUPPLY",
               "type":"SINGLE_SELECT",
-              "value": supplyRegular.toInt().toString()
+              "value": waterSupply.toInt().toString()
             },
-            {
-              "code":"WATER_SUPPLY_REGULAR",
-              "type":"SINGLE_SELECT",
-              "value": qualityGood.toInt().toString()
-            }
-          ]
+              {
+                "code":"WATER_QUALITY_GOOD",
+                "type":"SINGLE_SELECT",
+                "value": supplyRegular.toInt().toString()
+              },
+              {
+                "code":"WATER_SUPPLY_REGULAR",
+                "type":"SINGLE_SELECT",
+                "value": qualityGood.toInt().toString()
+              }
+            ]
+          }
         }
       };
 
+      var res = await CoreRepository().submitFeedBack(body);
 
       Navigator.pop(context);
 

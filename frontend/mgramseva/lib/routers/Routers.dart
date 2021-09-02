@@ -68,4 +68,6 @@ class Routes {
   static const String PAYMENT_SUCCESS = 'paymentSuccess';
 
   static const String SUCCESS_VIEW = '/success';
+
+  static const String POST_PAYMENT_FEED_BACK = '/feedBack';
 }
