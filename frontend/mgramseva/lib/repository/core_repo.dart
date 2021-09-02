@@ -206,7 +206,8 @@ class CoreRepository extends BaseService {
               commonProvider.userDetails!.accessToken));
 
       if (res != null) {
-        eventsResponse = EventsList.fromJson(res);
+        eventsResponse = EventsList.fromJson((res));
+
         return eventsResponse;
       }
     } catch (e, s) {

@@ -60,6 +60,7 @@ class ConsumerProvider with ChangeNotifier {
       "action": "SUBMIT",
       "proposedTaps": 1,
       "proposedPipeSize": 10,
+      "noOfTaps": 1
     });
 
     property = Property.fromJson({
@@ -166,6 +167,7 @@ class ConsumerProvider with ChangeNotifier {
       waterconnection.tenantId =
           commonProvider.userDetails!.selectedtenant!.code;
       waterconnection.connectionHolders = property.owners;
+      waterconnection.noOfTaps = 1;
       waterconnection.propertyType = property.propertyType;
       if (waterconnection.connectionType == 'Metered') {
         waterconnection.meterInstallationDate =

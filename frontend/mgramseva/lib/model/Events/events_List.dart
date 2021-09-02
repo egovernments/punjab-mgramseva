@@ -6,6 +6,7 @@ part 'events_List.g.dart';
 class EventsList {
   @JsonKey(name: "events")
   List<Events>? events;
+
   EventsList();
   factory EventsList.fromJson(Map<String, dynamic> json) =>
       _$EventsListFromJson(json);
@@ -38,7 +39,7 @@ class Events {
   @JsonKey(name: "recepient")
   Recepient? recepient;
   @JsonKey(name: "actions")
-  String? actions;
+  Actions? actions;
   @JsonKey(name: "eventDetails")
   String? eventDetails;
   @JsonKey(name: "auditDetails")
@@ -73,9 +74,34 @@ class AuditDetails {
 }
 
 @JsonSerializable()
+class Actions {
+  String? tenantId;
+  String? id;
+  String? eventId;
+  List<ActionUrls>? actionUrls;
+  Actions();
+  factory Actions.fromJson(Map<String, dynamic> json) =>
+      _$ActionsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ActionsToJson(this);
+}
+
+@JsonSerializable()
+class ActionUrls {
+  String? actionUrl;
+  String? code;
+
+  ActionUrls();
+  factory ActionUrls.fromJson(Map<String, dynamic> json) =>
+      _$ActionUrlsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ActionUrlsToJson(this);
+}
+
+@JsonSerializable()
 class Recepient {
   @JsonKey(name: "toRoles")
-  String? toRoles;
+  List<String>? toRoles;
   @JsonKey(name: "toUsers")
   List<String>? toUsers;
 
