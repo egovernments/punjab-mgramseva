@@ -128,7 +128,7 @@ class RoleActionsFiltering {
         return ['BULK_DEMAND_PROCESSING', 'SUPERUSER'];
 
       case Routes.HOUSEHOLDRECEIPTS:
-        return ['BULK_DEMAND_PROCESSING', 'SUPERUSER'];
+        return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR', 'SUPERUSER'];
 
       case Routes.MANUAL_BILL_GENERATE:
         return ['BULK_DEMAND_PROCESSING', 'SUPERUSER'];
@@ -139,7 +139,7 @@ class RoleActionsFiltering {
       case Routes.BILL_GENERATE:
         return ['COLLECTION_OPERATOR', 'SUPERUSER'];
 
-      case 'dashboard':
+      case Routes.DASHBOARD:
         return ['SUPERUSER', 'DASHBOARD_VIEWER'];
       default:
         return [];

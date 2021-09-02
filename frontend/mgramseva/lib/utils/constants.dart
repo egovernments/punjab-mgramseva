@@ -81,7 +81,7 @@ class Constants {
         "CORE_GPWSC_DASHBOARD",
         (i18.homeWalkThroughMSg.GPWSC_DASHBOARD_MSG),
         HomeIcons.dashboard,
-        'dashboard', {}),
+        Routes.DASHBOARD, {}),
   ];
 
   static List<KeyValue> SERVICECATEGORY = [
