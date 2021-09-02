@@ -316,7 +316,7 @@ public class EnrichmentService {
 		}
 		if (CollectionUtils.isEmpty(connectionHolderIds))
 			return;
-		UserSearchRequest userSearchRequest = userService.getBaseUserSearchRequest(criteria.getTenantId(), requestInfo);
+		UserSearchRequest userSearchRequest = userService.getBaseUserSearchRequest(criteria.getTenantId(), requestInfo,"CITIZEN");
 		userSearchRequest.setUuid(connectionHolderIds);
 		UserDetailResponse userDetailResponse = userService.getUser(userSearchRequest);
 		enrichConnectionHolderInfo(userDetailResponse, waterConnectionList,requestInfo);

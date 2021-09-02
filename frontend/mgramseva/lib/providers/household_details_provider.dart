@@ -56,16 +56,18 @@ class HouseHoldProvider with ChangeNotifier {
         navigatorKey.currentContext!,
         listen: false);
 
-    if(data == null) {
+    if (data == null) {
       var res = await SearchConnectionRepository().getconnection({
         "tenantId": commonProvider.userDetails!.selectedtenant!.code,
         ...{'connectionNumber': id},
       });
-      if(res != null && res.waterConnection != null && res.waterConnection!.isNotEmpty){
+      if (res != null &&
+          res.waterConnection != null &&
+          res.waterConnection!.isNotEmpty) {
         data = res.waterConnection!.first;
       }
     }
-      waterConnection = data;
+    waterConnection = data;
 
     await BillingServiceRepository().fetchdDemand({
       "tenantId": data.tenantId,
@@ -75,8 +77,10 @@ class HouseHoldProvider with ChangeNotifier {
       if (value.demands!.length > 0) {
         fetchBill(data);
       } else {
-        BillList data = new BillList();
-        streamController.add(data);
+        BillList bill = new BillList();
+        bill.bill = [];
+        // bill.bill!.first.waterConnection = waterConnection;
+        streamController.add(bill);
       }
     });
   }

@@ -58,6 +58,8 @@ class router {
           Routes.FORGOT_PASSWORD == settings.name ||
           Routes.RESET_PASSWORD == settings.name) {
         path = settings.name;
+      } else if (path == '/') {
+        path = Routes.HOME;
       }
     }
     if (!(path != null && RoleActionsFiltering().isEligibleRoletoRoute(path)))

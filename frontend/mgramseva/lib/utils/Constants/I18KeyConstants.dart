@@ -61,6 +61,8 @@ class Common {
   String get BILL_DOWNLOAD => 'BILL_DOWNLOAD';
   String get RECEIPT_DOWNLOAD => 'RECEIPT_DOWNLOAD';
   String get NOTIFICATIONS => 'NOTIFICATIONS';
+  String get BACK => 'BACK';
+  String get DEAR => 'DEAR';
 
   /// File Picker
   String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED';
@@ -116,7 +118,7 @@ class Common {
   String get PAYMENT_AMOUNT => 'PAYMENT_AMOUNT'; //Payment Amount
   String get PAYMENT_METHOD => 'PAYMENT_METHOD'; //Payment Method
   String get PAYMENT_INFORMATION => 'PAYMENT_INFORMATION'; //Payment Information
-  String get WATER_CHARGES => 'WATER_CHARGES'; //Please enter Mobile number
+  String get WATER_CHARGES => 'WS_CHARGES'; //Please enter Mobile number
   String get ARREARS => 'ARREARS'; //Please enter Mobile number
   String get COLLECT_PAYMENT => 'COLLECT_PAYMENT';
   String get ONLINE => 'ONLINE';
@@ -198,7 +200,7 @@ class Expense {
   String get BILL_PAID => 'CORE_EXPENSE_BILL_PAID';
   String get AMOUNT_PAID => 'CORE_EXPENSE_AMOUNT_PAID';
   String get ATTACH_BILL => 'CORE_EXPENSE_ATTACH_BILL';
-  String get EXPENDITURE_SUCESS => 'CORE_EXPENSE_EXPENDITURE_SUCESS';
+  String get EXPENDITURE_SUCESS => 'EXPENDITURE_SUCESS';
   String get EXPENDITURE_AGAINST => 'CORE_EXPENSE_EXPENDITURE_AGAINST';
   String get UNDER_MAINTAINANCE => 'CORE_EXPENSE_UNDER_MAINTAINANCE';
   String get PAYMENT_DATE => 'CORE_EXPENSE_PAYMENT_DATE';

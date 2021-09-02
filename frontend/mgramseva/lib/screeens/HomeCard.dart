@@ -24,6 +24,9 @@ class _HomeCard extends State<HomeCard> {
   @override
   void initState() {
     super.initState();
+    var languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
+    languageProvider.getLocalizationData(context);
   }
 
   List<Widget> getList(HomeProvider homeProvider) {

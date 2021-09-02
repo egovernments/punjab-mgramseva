@@ -132,11 +132,12 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                        '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD)}',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w700),
-                                    textAlign: TextAlign.start,),
+                                      '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD)}',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700),
+                                      textAlign: TextAlign.start,
+                                    ),
                                   ),
                                   Align(
                                       alignment: Alignment.centerLeft,
@@ -144,10 +145,13 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                         margin: const EdgeInsets.only(
                                             left: 20, bottom: 20, top: 20),
                                         child: Text(
+                                            '${ApplicationLocalizations.of(context).translate(i18.common.DEAR)} ${widget.userDetails.userRequest?.name}, '
                                             '${ApplicationLocalizations.of(context).translate(i18.password.INVITED_TO_GRAMA_SEVA)}',
                                             style: TextStyle(
                                                 fontSize: 16,
-                                                fontWeight: FontWeight.w400)),
+                                                fontWeight: FontWeight.w400,
+                                                color: Theme.of(context)
+                                                    .primaryColorLight)),
                                       )),
                                   _buildTenantDetails(),
                                   _buildOtpView(),
@@ -188,7 +192,11 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  BottomButtonBar(ApplicationLocalizations.of(context).translate(i18.password.CHANGE_PASSWORD), updatePassword),
+                                  BottomButtonBar(
+                                      ApplicationLocalizations.of(context)
+                                          .translate(
+                                              i18.password.CHANGE_PASSWORD),
+                                      updatePassword),
                                   PasswordHint(password)
                                 ],
                               ))))),
@@ -240,12 +248,17 @@ class _UpdatePasswordState extends State<UpdatePassword> {
             TableCell(
                 child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-              child: Text('${e?.city?.code}', style: style),
+              child: Text(
+                  ApplicationLocalizations.of(context)
+                      .translate('${e?.city?.code}'),
+                  style: style),
             )),
             TableCell(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text('${e.code}', style: style),
+              child: Text(
+                  ApplicationLocalizations.of(context).translate('${e.code}'),
+                  style: style),
             ))
           ]);
     });

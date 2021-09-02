@@ -9,23 +9,26 @@ class HouseConnectionDetailCard extends StatelessWidget {
   HouseConnectionDetailCard({this.waterconnection});
   _getLabeltext(label, value, context) {
     return (Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
-            padding: EdgeInsets.only(top: 16, bottom: 16),
-            width: MediaQuery.of(context).size.width / 3,
-            child: Text(
-              ApplicationLocalizations.of(context).translate(label),
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-            )),
-        Container(
-            alignment: Alignment.topCenter,
-            padding: EdgeInsets.only(top: 16, bottom: 16),
-            child: Text(ApplicationLocalizations.of(context).translate(value),
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)))
-      ],
-    ));
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+              padding: EdgeInsets.only(top: 16, bottom: 16),
+              width: MediaQuery.of(context).size.width / 3,
+              child: Text(
+                ApplicationLocalizations.of(context).translate(label),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+              )),
+          new Flexible(
+              child: Container(
+                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  child: Text(
+                      ApplicationLocalizations.of(context).translate(value),
+                      maxLines: 3,
+                      softWrap: true,
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w400))))
+        ]));
   }
 
   @override
