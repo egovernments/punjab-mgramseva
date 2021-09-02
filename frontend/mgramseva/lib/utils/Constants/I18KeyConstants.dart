@@ -118,7 +118,7 @@ class Common {
   String get PAYMENT_AMOUNT => 'PAYMENT_AMOUNT'; //Payment Amount
   String get PAYMENT_METHOD => 'PAYMENT_METHOD'; //Payment Method
   String get PAYMENT_INFORMATION => 'PAYMENT_INFORMATION'; //Payment Information
-  String get WATER_CHARGES => 'WS_CHARGES'; //Please enter Mobile number
+  String get WATER_CHARGES => 'WS_CHARGE'; //Please enter Mobile number
   String get ARREARS => 'ARREARS'; //Please enter Mobile number
   String get COLLECT_PAYMENT => 'COLLECT_PAYMENT';
   String get ONLINE => 'ONLINE';
