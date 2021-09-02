@@ -70,4 +70,6 @@ class Routes {
   static const String SUCCESS_VIEW = '/success';
 
   static const String POST_PAYMENT_FEED_BACK = '/feedBack';
+
+  static const String FEED_BACK_SUBMITTED_SUCCESSFULLY = '/feedBack/submittedSuccessfully';
 }

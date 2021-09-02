@@ -48,6 +48,24 @@ class router {
     Map<String, dynamic>? query = uri.queryParameters;
     String? path = uri.path;
     if (kIsWeb) {
+      if(Routes.POST_PAYMENT_FEED_BACK == path && settings.arguments == null){
+        Map localQuery;
+        String routePath;
+        if(settings.arguments != null){
+          localQuery = settings.arguments as Map;
+        }else{
+          if (queryValidator(Routes.POST_PAYMENT_FEED_BACK, query)) {
+            localQuery = query;
+          } else {
+            return pageNotAvailable;
+          }
+        }
+        routePath = '${Routes.POST_PAYMENT_FEED_BACK}?paymentId=${localQuery['paymentId']}&connectionno=${localQuery['connectionno']}&tenantId=${localQuery['tenantId']}';
+        return MaterialPageRoute(
+            builder: (_) => PaymentFeedBack(query: localQuery),
+            settings: RouteSettings(name: routePath));
+      }
+
       var userDetails = commonProvider.getWebLoginStatus();
       if (userDetails == null &&
           Routes.LOGIN != settings.name &&
@@ -309,22 +327,6 @@ class router {
         return MaterialPageRoute(
             builder: (_) => GenerateBill(),
             settings: RouteSettings(name: Routes.MANUAL_BILL_GENERATE));
-      case Routes.POST_PAYMENT_FEED_BACK:
-        Map localQuery;
-        String routePath;
-        if(settings.arguments == null){
-          localQuery = settings.arguments as Map;
-        }else{
-          if (queryValidator(Routes.POST_PAYMENT_FEED_BACK, query)) {
-            localQuery = query;
-          } else {
-            return pageNotAvailable;
-          }
-        }
-        routePath = '${Routes.POST_PAYMENT_FEED_BACK}?paymentId=${localQuery['paymentId']}&connectionno=${localQuery['connectionno']}&paymentid=${localQuery['paymentid']}';
-        return MaterialPageRoute(
-            builder: (_) => PaymentFeedBack(query: localQuery),
-            settings: RouteSettings(name: routePath));
       default:
         return MaterialPageRoute(
           builder: (_) => SelectLanguage(),
@@ -353,7 +355,7 @@ class router {
         if (query.keys.contains('applicationNo')) return true;
         return false;
       case Routes.POST_PAYMENT_FEED_BACK:
-        if (query.keys.contains('paymentId') && query.keys.contains('connectionno') && query.keys.contains('paymentid')) return true;
+        if (query.keys.contains('paymentId') && query.keys.contains('connectionno') && query.keys.contains('tenantId')) return true;
         return false;
       default:
         return false;
