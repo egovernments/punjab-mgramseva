@@ -59,12 +59,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
           showdialog(result);
         } else if (result.length == 1 &&
             commonProvider.userDetails!.selectedtenant == null) {
-          print(kIsWeb);
           if (kIsWeb) {
-            showdialog(result);
             commonProvider.setTenant(result.first);
-            Navigator.pop(context);
-            Navigator.pushReplacementNamed(context, Routes.HOME);
+            Navigator.popAndPushNamed(context, Routes.HOME);
           } else {
             commonProvider.setTenant(result.first);
             Navigator.popAndPushNamed(context, Routes.HOME);
@@ -172,12 +169,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
     if (result.length == 1 &&
         commonProvider.userDetails!.selectedtenant == null) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
-        print(kIsWeb);
         if (kIsWeb) {
-          showdialog(result);
           commonProvider.setTenant(result.first);
-
-          Navigator.pop(context);
           Navigator.pushReplacementNamed(context, Routes.HOME);
         } else {
           commonProvider.setTenant(result.first);
