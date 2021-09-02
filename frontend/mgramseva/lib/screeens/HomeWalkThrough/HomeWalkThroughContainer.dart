@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
+import 'package:mgramseva/providers/notifications_provider.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/Pointer.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -79,9 +80,10 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                 ))
                           ],
                         ))))),
-        Positioned(
+      Consumer<NotificationProvider>(builder: (_, notificationProvider, child) =>
+      Positioned(
             left: position.dx + 5,
-            top: (homeProvider.activeindex == 6 ||
+            top: notificationProvider.enableNotification == true ? box.size.height + position.dy : (homeProvider.activeindex == 6 ||
                     homeProvider.activeindex == 7 ||
                     homeProvider.activeindex == 8)
                 ? position.dy - 25
@@ -96,12 +98,13 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                 height: 30,
                 width: 50,
               ),
-            )),
-        Positioned(
+            ))),
+      Consumer<NotificationProvider>(builder: (_, notificationProvider, child) =>
+      Positioned(
             left: ((homeProvider.activeindex + 1) % 3 == 0)
                 ? position.dx - 140
                 : position.dx,
-            top: (homeProvider.activeindex == 6 ||
+            top: notificationProvider.enableNotification == true ? box.size.height + position.dy + 25 : (homeProvider.activeindex == 6 ||
                     homeProvider.activeindex == 7 ||
                     homeProvider.activeindex == 8)
                 ? position.dy -
@@ -261,7 +264,7 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                           )),
                                         ))
                                   ]))
-                    ]))))
+                    ])))))
       ]);
     });
   }
