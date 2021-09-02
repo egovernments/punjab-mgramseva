@@ -60,7 +60,7 @@ class BillGenerationProvider with ChangeNotifier {
   setModel(String? id, WaterConnection? waterConnection,
       BuildContext context) async {
     billGenerateDetails = BillGenerationDetails();
-    billGenerateDetails.serviceCat = "WS_CHARGE";
+    billGenerateDetails.serviceCat = 'Water Charges';
 
     billGenerateDetails.meterReadingDateCtrl.text =
         DateFormats.timeStampToDate(DateFormats.dateToTimeStamp(
@@ -438,10 +438,10 @@ class BillGenerationProvider with ChangeNotifier {
               <TaxHeadMaster>[])
           .map((value) {
         return DropdownMenuItem(
-          value: value.code,
+          value: value.name,
           child: new Text(
               ApplicationLocalizations.of(navigatorKey.currentContext!)
-                  .translate(value.code!)),
+                  .translate(value.name!)),
         );
       }).toList();
     }
