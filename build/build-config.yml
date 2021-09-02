@@ -57,7 +57,9 @@ config:
     build:
       - work-dir: "business-services/billing-service"
         image-name: "billing-service"
-        dockerfile: "build/maven/Dockerfile"         
+        dockerfile: "build/maven/Dockerfile"  
+      - work-dir: "business-services/billing-service/src/main/resources/db"
+        image-name: "billing-service-db"        
   - name: "builds/mGramSeva/frontend/frontend-mgramseva"
     build:
       - work-dir: "frontend/mgramseva"
