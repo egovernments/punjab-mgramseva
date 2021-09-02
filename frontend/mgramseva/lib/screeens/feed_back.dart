@@ -24,7 +24,8 @@ import 'customAppbar.dart';
 
 class PaymentFeedBack extends StatefulWidget {
   final Map query;
-  const PaymentFeedBack({Key? key, required this.query}) : super(key: key);
+  final bool isFromTakeSurveyBtn;
+  const PaymentFeedBack({Key? key, required this.query, this.isFromTakeSurveyBtn = false}) : super(key: key);
 
   @override
   _PaymentFeedBackState createState() => _PaymentFeedBackState();
@@ -39,40 +40,40 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
-        appBar: CustomAppBar(),
-        drawer: DrawerWrapper(
-          Drawer(child: SideBar()),
-        ),
         body: SingleChildScrollView(
           child: FormWrapper(Column(
             children: [
-              HomeBack(),
+              Visibility(
+                  visible: widget.isFromTakeSurveyBtn,
+                  child: HomeBack()),
               Card(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  LabelText(i18.postPaymentFeedback.HELP_US_HELP_YOU),
+                  LabelText('Help us Help you'),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-                    child: Text(ApplicationLocalizations.of(context).translate(i18.postPaymentFeedback.SURVEY_REQUEST)),
+                    child: Text('Thank you for making payment towards your water bill.'
+                        ' Please take this short survey to help us improve water supply facilities at mgramseva'),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Wrap(
-                        runSpacing: 8,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                      _buildRating(i18.postPaymentFeedback.HAPPY_WITH_WATER_SUPPLY,
+                      _buildRating('Are you happy with water supply?',
                           (rating) => onChangeOfRating(0, rating)),
-                      _buildRating(i18.postPaymentFeedback.IS_WATER_SUPPLY_REGULAR,
+                      _buildRating('Is the water supply regular?',
                           (rating) => onChangeOfRating(1, rating)),
-                      _buildRating(i18.postPaymentFeedback.IS_WATER_QUALITY_GOOD,
+                      _buildRating('Is the water quality good?',
                           (rating) => onChangeOfRating(2, rating)),
                     ]),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     child: ShortButton(
-                        i18.common.SUBMIT, onSubmit),
+                        'Submit', onSubmit),
                   )
                 ],
               )),
@@ -83,29 +84,35 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
   }
 
   Widget _buildRating(String label, ValueChanged<double> callBack) {
-    return Wrap(children: [
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
       Text(ApplicationLocalizations.of(context).translate(label),
       style: TextStyle(
         fontSize: 16,
         color: Color.fromRGBO(11, 12, 12, 1)
       ),
       ),
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: RatingBar.builder(
-            initialRating: 0,
-            minRating: 1,
-            direction: Axis.horizontal,
-            allowHalfRating: false,
-            itemCount: 5,
-            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-            // unratedColor: Colors.transparent,
-            glowColor: Colors.red,
-            itemBuilder: (context, _) => Icon(
-                  Icons.star,
-                  color: Theme.of(context).primaryColor,
-                ),
-            onRatingUpdate: callBack),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: RatingBar.builder(
+              initialRating: 0,
+              minRating: 1,
+              direction: Axis.horizontal,
+              allowHalfRating: false,
+              itemCount: 5,
+              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              // unratedColor: Colors.transparent,
+              glowColor: Colors.red,
+              itemBuilder: (context, _) => Icon(
+                    Icons.star,
+                    color: Theme.of(context).primaryColor,
+                  ),
+              onRatingUpdate: callBack),
+        ),
       )
     ]);
   }
@@ -135,10 +142,9 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
     try{
       var body = {
         'feedback' : {
-          "tenantId": commonProvider.userDetails?.selectedtenant?.code,
+          "tenantId": widget.query['tenantId'],
           "paymentId": widget.query['paymentId'],
           "connectionno":widget.query['connectionno'],
-          "paymentid": widget.query['paymentid'],
           "additionaldetails":{
             "CheckList":  [ {
               "code":"HAPPY_WATER_SUPPLY",
@@ -166,9 +172,9 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
 
       navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW,
           arguments: SuccessHandler(
-              i18.postPaymentFeedback.FEED_BACK_SUBMITTED_SUCCESSFULLY,
-              i18.postPaymentFeedback.FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY,
-              i18.common.BACK_HOME, Routes.EXPENSES_ADD));
+              'Feedback Submitted Successfully',
+              'Thank you for providing feedback. Your response has been submitted successfully.',
+              '', Routes.FEED_BACK_SUBMITTED_SUCCESSFULLY));
     }catch(e,s){
       Navigator.pop(context);
       ErrorHandler().allExceptionsHandler(context, e,s);
