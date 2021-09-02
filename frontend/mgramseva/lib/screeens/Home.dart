@@ -30,15 +30,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   void initState() {
-    afterViewBuild();
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
+  }
+
+  afterViewBuild() {
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
 
     languageProvider.getLocalizationData(context);
-  }
-
-  afterViewBuild() {
     Provider.of<HomeProvider>(context, listen: false)
       ..setwalkthrough(HomeWalkThrough().homeWalkThrough.map((e) {
         e.key = GlobalKey();
@@ -83,6 +83,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     var homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    var commomProvider = Provider.of<CommonProvider>(context, listen: false);
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     return Scaffold(
@@ -93,41 +94,42 @@ class _HomeState extends State<Home> {
         ),
         body: SingleChildScrollView(
             child: LayoutBuilder(builder: (context, constraint) {
-          return StreamBuilder(
-              stream: languageProvider.streamController.stream,
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  return _buildView(
-                    homeProvider,
-                    constraint.maxWidth < 720
-                        ? 160 *
-                            ((homeProvider.homeWalkthrougList.length / 3)
-                                    .round())
-                                .toDouble()
-                        : 142 *
-                            ((homeProvider.homeWalkthrougList.length / 3)
-                                    .round())
-                                .toDouble(),
-                    Container(
-                        margin: constraint.maxWidth < 720
-                            ? EdgeInsets.all(0)
-                            : EdgeInsets.only(left: 75, right: 75),
-                        child: NotificationsList()),
-                  );
-                } else if (snapshot.hasError) {
-                  return Notifiers.networkErrorPage(context,
-                      () => languageProvider.getLocalizationData(context));
-                } else {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return Loaders.CircularLoader();
-                    case ConnectionState.active:
-                      return Loaders.CircularLoader();
-                    default:
-                      return Container();
-                  }
-                }
-              });
+          return Consumer<CommonProvider>(
+              builder: (_, commonProvider, child) => StreamBuilder(
+                  stream: languageProvider.streamController.stream,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return _buildView(
+                        homeProvider,
+                        constraint.maxWidth < 720
+                            ? 160 *
+                                ((homeProvider.homeWalkthrougList.length / 3)
+                                        .round())
+                                    .toDouble()
+                            : 142 *
+                                ((homeProvider.homeWalkthrougList.length / 3)
+                                        .round())
+                                    .toDouble(),
+                        Container(
+                            margin: constraint.maxWidth < 720
+                                ? EdgeInsets.all(0)
+                                : EdgeInsets.only(left: 75, right: 75),
+                            child: NotificationsList()),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Notifiers.networkErrorPage(context,
+                          () => languageProvider.getLocalizationData(context));
+                    } else {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return Loaders.CircularLoader();
+                        case ConnectionState.active:
+                          return Loaders.CircularLoader();
+                        default:
+                          return Container();
+                      }
+                    }
+                  }));
         })));
   }
 }

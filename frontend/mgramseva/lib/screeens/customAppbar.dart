@@ -60,12 +60,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
         } else if (result.length == 1 &&
             commonProvider.userDetails!.selectedtenant == null) {
           if (kIsWeb) {
-            showdialog(result);
             commonProvider.setTenant(result.first);
-            Future.delayed(const Duration(milliseconds: 100), () {
-              Navigator.pop(context);
-              Navigator.popAndPushNamed(context, Routes.HOME);
-            });
+            Navigator.popAndPushNamed(context, Routes.HOME);
           } else {
             commonProvider.setTenant(result.first);
             Navigator.popAndPushNamed(context, Routes.HOME);
@@ -174,12 +170,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
         commonProvider.userDetails!.selectedtenant == null) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         if (kIsWeb) {
-          showdialog(result);
           commonProvider.setTenant(result.first);
-          Future.delayed(const Duration(milliseconds: 100), () {
-            Navigator.pop(context);
-            Navigator.popAndPushNamed(context, Routes.HOME);
-          });
+          Navigator.pushReplacementNamed(context, Routes.HOME);
         } else {
           commonProvider.setTenant(result.first);
           Navigator.popAndPushNamed(context, Routes.HOME);
