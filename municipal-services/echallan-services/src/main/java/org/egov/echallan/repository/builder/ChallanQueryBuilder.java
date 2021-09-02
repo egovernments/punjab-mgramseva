@@ -58,7 +58,8 @@ public class ChallanQueryBuilder {
 	  
 	  public static final String PREVIOUSMONTHCOLLECTION = " select count(pd.amountpaid) from egcl_paymentdetail pd, egcl_payment p where p.id= pd.paymentid and businessservice='EXPENSE.ADVANCE'  ";
 
-	  public static final String PREVIOUSDAYCASHCOLLECTION = " select sum(totalamountpaid) as total, mobilenumber from egcl_payment where paymentmode='CASH' ";
+	  public static final String PREVIOUSDAYCASHCOLLECTION = "select  count(*), sum(totalamountpaid) from egcl_payment where paymentmode='CASH' ";
+	  public static final String PREVIOUSDAYONLINECOLLECTION = "select  count(*), sum(totalamountpaid) from egcl_payment where paymentmode='ONLINE' ";
 
 	  public static final String PREVIOUSMONTHNEWEXPENSE = "  select sum(demanddtl.taxamount) from eg_echallan challan, egbs_billdetail_v1 billdtl,egbs_demanddetail_v1 demanddtl  where challan.challanno= billdtl.consumercode   and billdtl.demandid= billdtl.demandid";
 	  

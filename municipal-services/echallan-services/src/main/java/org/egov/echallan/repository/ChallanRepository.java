@@ -197,15 +197,15 @@ public class ChallanRepository {
 
 
 
-	public List<Map<String, Object>> getTodayCollection(String tenantId, String startDate, String endDate) {
-		// TODO Auto-generated method stub
-		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSDAYCASHCOLLECTION);
-		
-		//previous month start date startDate
-		// previous month end date endDate
-		
+	public List<Map<String, Object>> getTodayCollection(String tenantId, String startDate, String endDate, String mode) {
+		StringBuilder query = new StringBuilder();
+		if(mode.equalsIgnoreCase("CASH")) {
+		 query = new StringBuilder(queryBuilder.PREVIOUSDAYCASHCOLLECTION);
+		}else {
+			query = new StringBuilder(queryBuilder.PREVIOUSDAYONLINECOLLECTION);
+		}
 		query.append( " and transactiondate  >= ").append( startDate)  
-		.append(" and  transactiondate <= " ).append(endDate).append(" GROUP BY mobilenumber"); 
+		.append(" and  transactiondate <= " ).append(endDate); 
 		log.info("Previous Day collection query : " + query);
 		List<Map<String, Object>> list =  jdbcTemplate.queryForList(query.toString());
 		return list;
