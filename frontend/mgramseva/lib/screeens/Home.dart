@@ -99,7 +99,11 @@ class _HomeState extends State<Home> {
                         homeProvider,
                         constraint.maxWidth < 720
                             ? 160 *
-                                ((homeProvider.homeWalkthrougList.length / 3)
+                                ((homeProvider.homeWalkthrougList.length == 1
+                                            ? 3
+                                            : homeProvider
+                                                    .homeWalkthrougList.length /
+                                                3)
                                         .round())
                                     .toDouble()
                             : 142 *
