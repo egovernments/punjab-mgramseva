@@ -291,7 +291,7 @@ class DashBoardProvider with ChangeNotifier {
 
   void onSearch(String val, BuildContext context){
     if (debounce?.isActive ?? false) debounce?.cancel();
-    debounce = Timer(const Duration(seconds: 1), () {
+    debounce = Timer(const Duration(milliseconds: 500), () {
       print('search');
       fetchDetails(context, limit, 1, true);
     });
