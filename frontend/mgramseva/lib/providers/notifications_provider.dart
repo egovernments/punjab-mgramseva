@@ -6,6 +6,7 @@ import 'package:mgramseva/model/Events/events_List.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 
 class NotificationProvider with ChangeNotifier {
+  var enableNotification = false;
   var streamController = StreamController.broadcast();
   void getNotiications(query1, query2) async {
     try {
@@ -21,6 +22,8 @@ class NotificationProvider with ChangeNotifier {
         streamController.add(res);
       } else {
         streamController.add(res);
+        enableNotification = true;
+
       }
     } catch (e) {
       print(e);

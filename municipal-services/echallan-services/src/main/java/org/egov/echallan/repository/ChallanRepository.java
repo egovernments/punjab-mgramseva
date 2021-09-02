@@ -187,9 +187,9 @@ public class ChallanRepository {
 
 	public List<String> getPendingCollection(String tenantId, String startDate, String endDate) {
 		StringBuilder query = new StringBuilder(queryBuilder.PENDINGCOLLECTION);
-		query.append(" and demand.tenantid = ").append(tenantId)
+		query.append(" and demand.tenantid = '").append(tenantId).append("'")
 		.append( " and taxperiodfrom  >= ").append( startDate)  
-		.append(" and  taxperiodto <= " ).append(endDate); 
+		.append(" and  taxperiodto <= " ).append(endDate);
 		log.info("Active pending collection query : " + query);
 		return jdbcTemplate.queryForList(query.toString(), String.class);
 		
@@ -210,5 +210,42 @@ public class ChallanRepository {
 		List<Map<String, Object>> list =  jdbcTemplate.queryForList(query.toString());
 		return list;
 	}
+	
+	public List<String> getPreviousMonthNewExpense(String tenantId, String startDate, String endDate) {
+		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHNEWEXPENSE);
+		query.append(" and challan.createdtime  >= ").append(startDate).append(" and  challan.createdtime <= ")
+				.append(endDate).append(" and challan.tenantId = '").append(tenantId).append("'");
+		return jdbcTemplate.queryForList(query.toString(), String.class);
+	}
+
+	public List<String> getCumulativePendingExpense(String tenantId) {
+		StringBuilder query = new StringBuilder(queryBuilder.CUMULATIVEPENDINGEXPENSE);
+		query.append(" and challan.tenantId = '").append(tenantId).append("'");
+		return jdbcTemplate.queryForList(query.toString(), String.class);
+	}
+
+	public List<String> getTotalPendingCollection(String tenantId) {
+		StringBuilder query = new StringBuilder(queryBuilder.PENDINGCOLLECTION);
+		query.append(" and demand.tenantid = '").append(tenantId).append("'");
+		return jdbcTemplate.queryForList(query.toString(), String.class);
+
+	}
+
+	public List<String> getNewDemand(String tenantId, String startDate, String endDate) {
+		StringBuilder query = new StringBuilder(queryBuilder.NEWDEMAND);
+		query.append(" and dmd.taxPeriodFrom  >= ").append(startDate).append(" and dmd.taxPeriodTo <= ").append(endDate)
+				.append(" and dmd.tenantId = '").append(tenantId).append("'");
+		return jdbcTemplate.queryForList(query.toString(), String.class);
+
+	}
+
+	public List<String> getActualCollection(String tenantId, String startDate, String endDate) {
+		StringBuilder query = new StringBuilder(queryBuilder.ACTUALCOLLECTION);
+		query.append(" and py.transactionDate  >= ").append(startDate).append(" and py.transactionDate <= ")
+				.append(endDate).append(" and py.tenantId = '").append(tenantId).append("'");
+		return jdbcTemplate.queryForList(query.toString(), String.class);
+
+	}
+	
     
 }

@@ -60,7 +60,7 @@ class BillGenerationProvider with ChangeNotifier {
   setModel(String? id, WaterConnection? waterConnection,
       BuildContext context) async {
     billGenerateDetails = BillGenerationDetails();
-    billGenerateDetails.serviceCat = "WS_CHARGE";
+    billGenerateDetails.serviceCat = '10101';
 
     billGenerateDetails.meterReadingDateCtrl.text =
         DateFormats.timeStampToDate(DateFormats.dateToTimeStamp(

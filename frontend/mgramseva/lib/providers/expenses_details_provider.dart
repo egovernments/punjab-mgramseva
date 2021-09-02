@@ -144,10 +144,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     expenditureDetails
       ..businessService = commonProvider.getMdmsId(languageList,
           'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
-      ..expensesAmount?.first.taxHeadCode = commonProvider.getMdmsId(
-          languageList,
-          'EXPENSE.${expenditureDetails.expenseType}',
-          MDMSType.TaxHeadCode)
+      ..expensesAmount?.first.taxHeadCode = languageList?.mdmsRes?.expense?.expenseList?.firstWhere((e) => e.code == expenditureDetails.expenseType).taxHeadCode
       ..consumerType = 'EXPENSE'
       ..tenantId = commonProvider.userDetails?.selectedtenant?.code
       ..setText()
