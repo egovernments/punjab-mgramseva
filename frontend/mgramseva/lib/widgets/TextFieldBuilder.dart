@@ -166,7 +166,6 @@ class _BuildTextField extends State<BuildTextField> {
                           child: textLabelwidget)),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
                     width: MediaQuery.of(context).size.width / 2.5,
                     padding: EdgeInsets.only(top: 18, bottom: 3),
                     child: Column(
