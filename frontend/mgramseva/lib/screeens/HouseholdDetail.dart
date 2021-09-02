@@ -70,9 +70,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                 ? GenerateNewBill(data)
                 : Text(""),
         data.bill!.isEmpty ? Text("") : NewConsumerBill(data, widget.mode),
-        data.bill!.isEmpty
-            ? Text("")
-            : ConsumerBillPayments(data.bill!.first.waterConnection)
+        ConsumerBillPayments(houseHoldProvider.waterConnection)
       ],
     );
   }

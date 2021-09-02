@@ -244,7 +244,8 @@ public class PaymentUpdateService {
 			}
 		}
 		if (config.getIsSMSEnabled() != null && config.getIsSMSEnabled()) {
-			List<SMSRequest> smsRequests = getSmsRequest(waterConnectionRequest, property, paymentDetail);
+			List<SMSRequest> smsRequests = getSmsRequest(waterConnectionRequest, property, paymentDetail,WCConstants.PAYMENT_NOTIFICATION_SMS);
+			smsRequests.addAll( getSmsRequest(waterConnectionRequest, property, paymentDetail,WCConstants.FEEDBACK_NOTIFICATION_SMS));
 			if (!CollectionUtils.isEmpty(smsRequests)) {
 				notificationUtil.sendSMS(smsRequests);
 			}
@@ -314,12 +315,12 @@ public class PaymentUpdateService {
 	 * @return
 	 */
 	private List<SMSRequest> getSmsRequest(WaterConnectionRequest waterConnectionRequest,
-										   Property property, PaymentDetail paymentDetail) {
+										   Property property, PaymentDetail paymentDetail, String smsCode) {
 		String localizationMessage = notificationUtil.getLocalizationMessages(property.getTenantId(),
 				waterConnectionRequest.getRequestInfo());
-		String message = notificationUtil.getMessageTemplate(WCConstants.PAYMENT_NOTIFICATION_SMS, localizationMessage);
+		String message = notificationUtil.getMessageTemplate((smsCode ==null ? WCConstants.PAYMENT_NOTIFICATION_SMS: smsCode), localizationMessage);
 		if (message == null) {
-			log.info("No message template found for, {} " + WCConstants.PAYMENT_NOTIFICATION_SMS);
+			log.info("No message template found for, {} " + (smsCode ==null ? WCConstants.PAYMENT_NOTIFICATION_SMS: smsCode));
 			return Collections.emptyList();
 		}
 		Map<String, String> mobileNumbersAndNames = new HashMap<>();
@@ -356,8 +357,12 @@ public class PaymentUpdateService {
 		Map<String, String> messageToReturn = new HashMap<>();
 		for (Map.Entry<String, String> mobAndMesg : mobileAndMessage.entrySet()) {
 			String message = mobAndMesg.getValue();
-			if (message.contains("<Amount paid>")) {
-				message = message.replace("<Amount paid>", paymentDetail.getTotalAmountPaid().toString());
+			if (message.contains("{amountpaid}")) {
+				message = message.replace("{amountpaid}", paymentDetail.getTotalAmountPaid().toString());
+			}
+			
+			if (message.contains("{pendingamount}")) {
+				message = message.replace("{pendingamount}", paymentDetail.getTotalDue().subtract(paymentDetail.getTotalAmountPaid()).toString());
 			}
 			if (message.contains("<Billing Period>")) {
 				int fromDateLength = (int) (Math.log10(paymentDetail.getBill().getBillDetails().get(0).getFromPeriod()) + 1);
@@ -376,7 +381,7 @@ public class PaymentUpdateService {
 				message = message.replace("<Billing Period>", billingPeriod);
 			}
 
-			if (message.contains("<receipt download link>")){
+			if (message.contains("{RECEIPT_LINK}")){
 				String link = config.getNotificationUrl() + config.getReceiptDownloadLink();
 				link = link.replace("$consumerCode", paymentDetail.getBill().getConsumerCode());
 				link = link.replace("$tenantId", paymentDetail.getTenantId());
@@ -384,7 +389,20 @@ public class PaymentUpdateService {
 				link = link.replace("$receiptNumber",paymentDetail.getReceiptNumber());
 				link = link.replace("$mobile", mobAndMesg.getKey());
 				link = waterServiceUtil.getShortnerURL(link);
-				message = message.replace("<receipt download link>",link);
+				message = message.replace("{RECEIPT_LINK}",link);
+			}
+			
+			if (message.contains("{GPWSC}")){
+				
+				message = message.replace("{GPWSC}","GPWSC");
+			}
+			
+			if (message.contains("{SURVEY_LINK}")){
+				String link = config.getNotificationUrl() + config.getFeedbackLink();
+				link = link.replace("$connectionNo", paymentDetail.getBill().getConsumerCode());
+				link = link.replace("$tenantId", paymentDetail.getTenantId());
+				link = waterServiceUtil.getShortnerURL(link);
+				message = message.replace("{SURVEY_LINK}",link);
 			}
 
 			messageToReturn.put(mobAndMesg.getKey(), message);

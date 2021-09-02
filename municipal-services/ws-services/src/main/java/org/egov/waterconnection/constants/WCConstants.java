@@ -68,7 +68,9 @@ public class WCConstants {
 
 	public static final String NOTIFICATION_LOCALE = "en_IN";
 
+
 	public static final String MODULE = "mgramseva-ws,mgramseva-common";
+
 
 	public static final String SMS_RECIEVER_MASTER = "SMSReceiver";
 
@@ -240,6 +242,8 @@ public class WCConstants {
 
 	public static final String PAYMENT_NOTIFICATION_SMS = "WS_PAYMENT_NOTIFICATION_SMS";
 
+
+	public static final String FEEDBACK_NOTIFICATION_SMS = "WS_FEEDBACK_NOTIFICATION_SMS";
 	public static final String MODIFIED_FINAL_STATE = "APPROVED";
 
 	public static final List<String> FINAL_CONNECTION_STATES = Collections

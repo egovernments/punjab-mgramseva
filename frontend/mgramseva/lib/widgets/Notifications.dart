@@ -33,7 +33,8 @@ class _NotificationsState extends State<Notifications> {
               GestureDetector(
                   onTap: () {
                     widget.event!.actions != null
-                        ? Navigator.pushNamed(context, widget.event!.actions!)
+                        ? Navigator.pushNamed(context,
+                            widget.event!.actions!.actionUrls!.first.actionUrl!)
                         : null;
                   },
                   child: Container(
@@ -53,11 +54,13 @@ class _NotificationsState extends State<Notifications> {
                                         fontSize: 16,
                                         fontWeight: FontWeight.w700),
                                   )),
-                              Padding(
-                                  padding: EdgeInsets.all(4),
+                              new Container(
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.5,
                                   child: Text(
                                     ApplicationLocalizations.of(context)
                                         .translate(widget.event!.description!),
+                                    maxLines: 4,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400),
