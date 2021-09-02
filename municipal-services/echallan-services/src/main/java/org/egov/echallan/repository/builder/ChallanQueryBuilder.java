@@ -193,7 +193,7 @@ public class ChallanQueryBuilder {
 
 		finalQuery = finalQuery.replace("{orderby}", string);
 
-		finalQuery = finalQuery.replace("{amount}", "(select nullif(sum(payd.amountpaid),0) from egcl_paymentdetail payd join egcl_bill payspay on (payd.billid = payspay.id) where payd.businessservice = 'EXPENSE.ADVANCE' and payspay.consumercode = challan.challanno group by payspay.consumercode) as totalamount,");
+		finalQuery = finalQuery.replace("{amount}", "(select nullif(sum(bi.totalamount),0) from egcl_bill bi where bi.businessservice = 'EXPENSE.ADVANCE' and bi.consumercode = challan.challanno group by bi.consumercode) as totalamount,");
 		
         if(criteria.getLimit()!=null && criteria.getLimit()<=config.getMaxSearchLimit())
             limit = criteria.getLimit();
