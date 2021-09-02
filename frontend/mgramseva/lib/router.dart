@@ -21,6 +21,7 @@ import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
 import 'package:mgramseva/screeens/HouseholdDetail.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/Updatepassword.dart';
+import 'package:mgramseva/screeens/feed_back.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/role_actions.dart';
@@ -308,6 +309,22 @@ class router {
         return MaterialPageRoute(
             builder: (_) => GenerateBill(),
             settings: RouteSettings(name: Routes.MANUAL_BILL_GENERATE));
+      case Routes.POST_PAYMENT_FEED_BACK:
+        Map localQuery;
+        String routePath;
+        if(settings.arguments == null){
+          localQuery = settings.arguments as Map;
+        }else{
+          if (queryValidator(Routes.POST_PAYMENT_FEED_BACK, query)) {
+            localQuery = query;
+          } else {
+            return pageNotAvailable;
+          }
+        }
+        routePath = '${Routes.POST_PAYMENT_FEED_BACK}?paymentId=${localQuery['paymentId']}&connectionno=${localQuery['connectionno']}&paymentid=${localQuery['paymentid']}';
+        return MaterialPageRoute(
+            builder: (_) => PaymentFeedBack(query: localQuery),
+            settings: RouteSettings(name: routePath));
       default:
         return MaterialPageRoute(
           builder: (_) => SelectLanguage(),
@@ -335,7 +352,9 @@ class router {
       case Routes.BILL_GENERATE:
         if (query.keys.contains('applicationNo')) return true;
         return false;
-
+      case Routes.POST_PAYMENT_FEED_BACK:
+        if (query.keys.contains('paymentId') && query.keys.contains('connectionno') && query.keys.contains('paymentid')) return true;
+        return false;
       default:
         return false;
     }

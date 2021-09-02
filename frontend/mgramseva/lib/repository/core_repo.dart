@@ -248,4 +248,14 @@ class CoreRepository extends BaseService {
       ErrorHandler().allExceptionsHandler(context, e);
     }
   }
+
+
+  Future<String?> submitFeedBack(Map body) async {
+
+      var response = await makeRequest(
+          url: Url.POST_PAYMENT_FEEDBACK,
+          body: body,
+          method: RequestType.POST);
+      return response;
+  }
 }
