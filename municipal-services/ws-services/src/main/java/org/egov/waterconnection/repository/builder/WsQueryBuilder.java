@@ -102,6 +102,8 @@ public class WsQueryBuilder {
 				query.append(propertyIdQuery).append(createQuery(propertyIds)).append(" )");
 				addToPreparedStatement(preparedStatement, propertyIds);
 				propertyIdsPresent = true;
+			}else {
+				throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND", "Could not find user or property details !");
 			}
 		}
 		

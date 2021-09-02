@@ -68,7 +68,7 @@ public class WCConstants {
 
 	public static final String NOTIFICATION_LOCALE = "en_IN";
 
-	public static final String MODULE = "rainmaker-ws";
+	public static final String MODULE = "mgramseva-ws,mgramseva-common";
 
 	public static final String SMS_RECIEVER_MASTER = "SMSReceiver";
 
@@ -235,6 +235,8 @@ public class WCConstants {
 	public static final String NEW_WATER_APP_STATUS = "NEW_WATER_APPLICATION";
 
 	public static final String PAYMENT_NOTIFICATION_APP = "WS_PAYMENT_NOTIFICATION_APP";
+	
+	public static final String ON_BOARD_EMPLOYEE="SMS_ON_BOARD_EMPLOYEE";
 
 	public static final String PAYMENT_NOTIFICATION_SMS = "WS_PAYMENT_NOTIFICATION_SMS";
 
