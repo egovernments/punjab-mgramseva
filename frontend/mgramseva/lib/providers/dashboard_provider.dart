@@ -31,6 +31,7 @@ class DashBoardProvider with ChangeNotifier {
   late List<DateTime> dateList;
   WaterConnections? waterConnectionsDetails;
   var selectedDashboardType = DashBoardType.collections;
+  Timer? debounce;
 
   @override
   void dispose() {
@@ -315,6 +316,7 @@ class DashBoardProvider with ChangeNotifier {
 
   bool removeOverLay(_overlayEntry){
     try{
+      if(_overlayEntry == null) return false;
       _overlayEntry?.remove();
       return true;
     }catch(e){
