@@ -584,6 +584,11 @@ public class SchedulerService {
 				if (config.getIsSMSEnabled()) {
 					List<String> tenantIds = repository.getTenantId();
 					tenantIds.forEach(tenantId -> {
+						String localizationMessages = util.getLocalizationMessages(tenantId, requestInfo);
+
+						String cashMessage = util.getEventsCustomizedMsg(requestInfo, TODAY_CASH_COLLECTION_SMS, localizationMessages);
+						String onlineMessage = util.getEventsCustomizedMsg(requestInfo, TODAY_ONLINE_COLLECTION_SMS, localizationMessages);
+
 						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
 								TODAY_CASH_COLLECTION_SMS, tenantId);
 						Recepient recepient = getRecepient(requestInfo, tenantId);

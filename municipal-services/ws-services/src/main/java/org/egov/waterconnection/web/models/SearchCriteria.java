@@ -76,6 +76,9 @@ public class SearchCriteria {
 	
 	@JsonProperty("applicationType")
 	private String applicationType;
+	
+	@JsonProperty("propertyType")
+	private String propertyType;
 
 	@JsonProperty("locality")
 	private String locality;
@@ -88,6 +91,29 @@ public class SearchCriteria {
 
 	@JsonIgnore
 	private List<String> ownerIds;
+	
+	@JsonIgnore
+	@JsonProperty("iscollectionAmount")
+	private Boolean iscollectionAmount = false;
+	
+	@JsonProperty("sortBy")
+    private SortBy sortBy;
+	
+	@JsonProperty("sortOrder")
+	private SortOrder sortOrder;
+
+	@JsonProperty("freeSearch")
+	private Boolean freeSearch = false;
+	    
+	public enum SortOrder {
+	    ASC,
+	    DESC
+	}
+	public enum SortBy {
+		connectionNumber,
+		name,
+		collectionAmount
+	}
 
 	public boolean isEmpty() {
 		return (StringUtils.isEmpty(this.tenantId) && StringUtils.isEmpty(this.mobileNumber)
