@@ -134,10 +134,6 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
 
     try{
       var body = {
-        "RequestInfo" : {
-        "authToken" : commonProvider.userDetails?.accessToken,
-          "userInfo" : commonProvider.userDetails?.userRequest?.toJson()
-        },
         'feedback' : {
           "tenantId": commonProvider.userDetails?.selectedtenant?.code,
           "paymentId": widget.query['paymentId'],
