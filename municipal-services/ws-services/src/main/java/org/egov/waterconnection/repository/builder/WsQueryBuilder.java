@@ -276,12 +276,13 @@ public class WsQueryBuilder {
 		finalQuery = finalQuery.replace("{holderSelectValues}", "(select nullif(sum(payd.amountpaid),0) from egcl_paymentdetail payd join egcl_bill payspay on (payd.billid = payspay.id) where payd.businessservice = 'WS' and payspay.consumercode = conn.connectionno group by payspay.consumercode) as collectionamount, connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
 		if (criteria.getLimit() == null && criteria.getOffset() == null)
 			limit = config.getMaxLimit();
-
-		if (criteria.getLimit() != null && criteria.getLimit() <= config.getDefaultLimit())
+		
+		if (criteria.getLimit() != null && criteria.getLimit() <= config.getMaxLimit())
 			limit = criteria.getLimit();
 
-		if (criteria.getLimit() != null && criteria.getLimit() > config.getDefaultOffset())
-			limit = config.getDefaultLimit();
+		if (criteria.getLimit() != null && criteria.getLimit() > config.getMaxLimit()) {
+			limit = config.getMaxLimit();
+		}
 
 		if (criteria.getOffset() != null)
 			offset = criteria.getOffset();
@@ -289,8 +290,6 @@ public class WsQueryBuilder {
 		finalQuery = finalQuery.replace("{pagination}", " offset ?  limit ?  ");
 		preparedStmtList.add(offset);
 		preparedStmtList.add(limit + offset);
-		System.out.println("FINAL QUERY TO CHECK ::: " + finalQuery);
-		System.out.println("PREPARED STATEMENTS LIST ::: " + preparedStmtList.toString());
 		return finalQuery;
 	}
 	
