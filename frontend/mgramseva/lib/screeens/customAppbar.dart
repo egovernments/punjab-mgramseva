@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mgramseva/model/mdms/tenants.dart';
@@ -58,9 +59,17 @@ class _CustomAppBarState extends State<CustomAppBar> {
           showdialog(result);
         } else if (result.length == 1 &&
             commonProvider.userDetails!.selectedtenant == null) {
-          showdialog(result);
-          commonProvider.setTenant(result.first);
-          Navigator.popAndPushNamed(context, Routes.HOME);
+          if (kIsWeb) {
+            showdialog(result);
+            commonProvider.setTenant(result.first);
+            Future.delayed(const Duration(milliseconds: 100), () {
+              Navigator.pop(context);
+              Navigator.popAndPushNamed(context, Routes.HOME);
+            });
+          } else {
+            commonProvider.setTenant(result.first);
+            Navigator.popAndPushNamed(context, Routes.HOME);
+          }
         }
       }
     }
@@ -164,11 +173,17 @@ class _CustomAppBarState extends State<CustomAppBar> {
     if (result.length == 1 &&
         commonProvider.userDetails!.selectedtenant == null) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
-        showdialog(result);
-        commonProvider.setTenant(result.first);
-
-        //and
-        Navigator.popAndPushNamed(context, Routes.HOME);
+        if (kIsWeb) {
+          showdialog(result);
+          commonProvider.setTenant(result.first);
+          Future.delayed(const Duration(milliseconds: 100), () {
+            Navigator.pop(context);
+            Navigator.popAndPushNamed(context, Routes.HOME);
+          });
+        } else {
+          commonProvider.setTenant(result.first);
+          Navigator.popAndPushNamed(context, Routes.HOME);
+        }
       });
     } else if (result.length > 1 &&
         commonProvider.userDetails!.selectedtenant == null) {
