@@ -51,8 +51,20 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                                 in stateInfo.languages ?? [])
                               Row(
                                 children: [
-                                  Text('${language.label}'),
-                                  Text("  |  ")
+                                  stateInfo.languages!.first == language
+                                      ? Container(
+                                          padding: EdgeInsets.only(
+                                              left: 15, right: 15),
+                                          margin: EdgeInsets.all(5),
+                                          child: Text('${language.label}'))
+                                      : Container(
+                                          padding: EdgeInsets.only(
+                                              left: 15, right: 15),
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                                  left:
+                                                      BorderSide(width: 1.0))),
+                                          child: Text('${language.label}')),
                                 ],
                               )
                           ])),

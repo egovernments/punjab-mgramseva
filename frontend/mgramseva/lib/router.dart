@@ -21,6 +21,7 @@ import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
 import 'package:mgramseva/screeens/HouseholdDetail.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/Updatepassword.dart';
+import 'package:mgramseva/screeens/feed_back.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/role_actions.dart';
@@ -47,6 +48,24 @@ class router {
     Map<String, dynamic>? query = uri.queryParameters;
     String? path = uri.path;
     if (kIsWeb) {
+      if(Routes.POST_PAYMENT_FEED_BACK == path && settings.arguments == null){
+        Map localQuery;
+        String routePath;
+        if(settings.arguments != null){
+          localQuery = settings.arguments as Map;
+        }else{
+          if (queryValidator(Routes.POST_PAYMENT_FEED_BACK, query)) {
+            localQuery = query;
+          } else {
+            return pageNotAvailable;
+          }
+        }
+        routePath = '${Routes.POST_PAYMENT_FEED_BACK}?paymentId=${localQuery['paymentId']}&connectionno=${localQuery['connectionno']}&tenantId=${localQuery['tenantId']}';
+        return MaterialPageRoute(
+            builder: (_) => PaymentFeedBack(query: localQuery),
+            settings: RouteSettings(name: routePath));
+      }
+
       var userDetails = commonProvider.getWebLoginStatus();
       if (userDetails == null &&
           Routes.LOGIN != settings.name &&
@@ -57,6 +76,8 @@ class router {
           Routes.FORGOT_PASSWORD == settings.name ||
           Routes.RESET_PASSWORD == settings.name) {
         path = settings.name;
+      } else if (path == '/') {
+        path = Routes.HOME;
       }
     }
     if (!(path != null && RoleActionsFiltering().isEligibleRoletoRoute(path)))
@@ -91,6 +112,12 @@ class router {
         return MaterialPageRoute(
             builder: (_) => SearchConsumerConnection(settings.arguments as Map),
             settings: RouteSettings(name: Routes.HOUSEHOLDRECEIPTS));
+
+      case Routes.CONSUMER_SEARCH_UPDATE:
+        return MaterialPageRoute(
+            builder: (_) => SearchConsumerConnection(settings.arguments as Map),
+            settings: RouteSettings(name: Routes.CONSUMER_SEARCH_UPDATE));
+
       case Routes.EDIT_PROFILE:
         return MaterialPageRoute(
             builder: (_) => EditProfile(),
@@ -163,7 +190,6 @@ class router {
         String? id;
         String? mode;
         if (settings.arguments != null) {
-          print(settings.arguments);
           id = ((settings.arguments as Map)['waterconnections']
                   as WaterConnection)
               .connectionNo;
@@ -186,7 +212,7 @@ class router {
                     : null),
             settings: RouteSettings(
                 name:
-                    '${Routes.HOUSEHOLD_DETAILS}?applicationNo=$id& mode=$mode'));
+                    '${Routes.HOUSEHOLD_DETAILS}?applicationNo=$id&mode=$mode'));
 
       case Routes.DASHBOARD:
         return MaterialPageRoute(
@@ -328,7 +354,9 @@ class router {
       case Routes.BILL_GENERATE:
         if (query.keys.contains('applicationNo')) return true;
         return false;
-
+      case Routes.POST_PAYMENT_FEED_BACK:
+        if (query.keys.contains('paymentId') && query.keys.contains('connectionno') && query.keys.contains('tenantId')) return true;
+        return false;
       default:
         return false;
     }

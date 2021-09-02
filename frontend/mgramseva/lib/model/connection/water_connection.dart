@@ -25,6 +25,9 @@ class WaterConnection {
   Documents? documents;
   @JsonKey(name: "proposedTaps")
   int? proposedTaps;
+
+  @JsonKey(name: "noOfTaps")
+  int? noOfTaps;
   @JsonKey(name: "arrears")
   double? arrears;
   @JsonKey(name: "connectionType")
@@ -154,6 +157,9 @@ class AdditionalDetails {
 
   @JsonKey(name: "doorNo")
   String? doorNo;
+
+  @JsonKey(name: "collectionAmount")
+  String? collectionAmount;
 
   @JsonKey(ignore: true)
   var initialMeterReadingCtrl = TextEditingController();

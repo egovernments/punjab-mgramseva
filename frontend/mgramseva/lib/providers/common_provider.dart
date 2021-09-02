@@ -22,7 +22,6 @@ import 'package:flutter/foundation.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:universal_html/html.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:universal_html/js.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CommonProvider with ChangeNotifier {
@@ -49,7 +48,6 @@ class CommonProvider with ChangeNotifier {
       localLabelResponse = await storage.read(
           key: languageProvider.selectedLanguage?.value ?? '');
     }
-
     if (localLabelResponse != null && localLabelResponse.trim().isNotEmpty) {
       return localizedStrings = jsonDecode(localLabelResponse)
           .map<LocalizationLabel>((e) => LocalizationLabel.fromJson(e))
@@ -61,7 +59,7 @@ class CommonProvider with ChangeNotifier {
         'module':
             'mgramseva-common,mgramseva-consumer,mgramseva-expenses,mgramseva-water-connection,mgramseva-bill,mgramseva-payments,mgramseva-dashboard',
         'locale': languageProvider.selectedLanguage?.value ?? '',
-        'tenantId': 'pb'
+        'tenantId': languageProvider.stateInfo!.code
       };
 
       var response = await CoreRepository().getLocilisation(query);
@@ -262,7 +260,6 @@ class CommonProvider with ChangeNotifier {
   }
 
   void onTapOfAttachment(FileStore store, context) async {
-    print(store);
     if (store.url == null) return;
     CoreRepository().fileDownload(context, store.url!);
   }
@@ -271,7 +268,6 @@ class CommonProvider with ChangeNotifier {
     if (store.url == null) return;
     try {
       var res = await CoreRepository().urlShotner(store.url as String);
-      print(res);
       if (kIsWeb) {
         html.AnchorElement anchorElement = new html.AnchorElement(
             href: "https://api.whatsapp.com/send?phone=+91$mobileNumber&text=" +
@@ -307,7 +303,6 @@ class CommonProvider with ChangeNotifier {
   void getFileFromPDFService(body, params, mobileNumber, mode) async {
     try {
       var res = await CoreRepository().getFileStorefromPdfService(body, params);
-      print(res);
       getStoreFileDetails(res!.filestoreIds!.first, mode, mobileNumber,
           navigatorKey.currentContext);
     } catch (e, s) {

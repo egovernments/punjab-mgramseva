@@ -211,4 +211,11 @@ public class WSConfiguration {
 	
 	@Value("${ws.feedback.survey.link}")
 	private String feedbackLink;
+  
+	@Value("${egov.mgramseva.appl.domain}")
+	private String webAppLink;
+	
+	@Value("${egov.mgramseva.ui.path}")
+	private String webUiPath;
+
 }

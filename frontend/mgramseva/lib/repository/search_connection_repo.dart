@@ -14,23 +14,24 @@ class SearchConnectionRepository extends BaseService {
         navigatorKey.currentContext!,
         listen: false);
 
-    var body = {'userInfo': commonProvider.userDetails?.userRequest?.toJson()};
-
+    var body = {commonProvider.userDetails?.userRequest?.toJson()};
+    final requestInfo = RequestInfo(
+      APIConstants.API_MODULE_NAME,
+      APIConstants.API_VERSION,
+      APIConstants.API_TS,
+      "_search",
+      APIConstants.API_DID,
+      APIConstants.API_KEY,
+      APIConstants.API_MESSAGE_ID,
+      commonProvider.userDetails!.accessToken,
+      commonProvider.userDetails?.userRequest?.toJson(),
+    );
     var res = await makeRequest(
         url: Url.FETCH_WC_CONNECTION,
-        body: body,
         queryParameters: query,
         method: RequestType.POST,
-        requestInfo: RequestInfo(
-          'Rainmaker',
-          1,
-          "",
-          "search",
-          "",
-          "",
-          "",
-          commonProvider.userDetails!.accessToken,
-        ));
+        body: {},
+        requestInfo: requestInfo);
 
     if (res != null) {
       waterConnections = WaterConnections.fromJson(res);

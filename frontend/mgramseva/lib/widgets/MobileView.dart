@@ -10,9 +10,6 @@ class MobileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BackgroundContainer(new Container(
-        padding: const EdgeInsets.all(8.0),
-        width: MediaQuery.of(context).size.width,
-        // height: MediaQuery.of(context).size.height,
         child: new Stack(
             // // fit: StackFit.expand,
             // clipBehavior: Clip.antiAlias,

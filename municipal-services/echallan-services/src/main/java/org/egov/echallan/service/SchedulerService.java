@@ -1,5 +1,6 @@
 package org.egov.echallan.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -44,6 +45,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 
 import lombok.extern.slf4j.Slf4j;
@@ -71,6 +74,9 @@ public class SchedulerService {
 
 	@Autowired
 	private Producer producer;
+	
+	@Autowired
+    private ObjectMapper mapper;
 
 	public static final String USREVENTS_EVENT_TYPE = "SYSTEMGENERATED";
 	public static final String USREVENTS_EVENT_NAME = "Challan";
@@ -571,7 +577,7 @@ public class SchedulerService {
 		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
 				dateTimeFormatter);
 
-		if (currentTime.isEqual(scheduleTime)) {
+		if (!currentTime.isEqual(scheduleTime)) {
 			if (null != config.getIsUserEventEnabled()) {
 				if (config.getIsUserEventEnabled()) {
 					EventRequest eventRequest = sendDayCollectionNotification(requestInfo);
@@ -584,6 +590,11 @@ public class SchedulerService {
 				if (config.getIsSMSEnabled()) {
 					List<String> tenantIds = repository.getTenantId();
 					tenantIds.forEach(tenantId -> {
+						String localizationMessages = util.getLocalizationMessages(tenantId, requestInfo);
+
+						String cashMessage = util.getEventsCustomizedMsg(requestInfo, TODAY_CASH_COLLECTION_SMS, localizationMessages);
+						String onlineMessage = util.getEventsCustomizedMsg(requestInfo, TODAY_ONLINE_COLLECTION_SMS, localizationMessages);
+
 						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
 								TODAY_CASH_COLLECTION_SMS, tenantId);
 						Recepient recepient = getRecepient(requestInfo, tenantId);
@@ -620,7 +631,7 @@ public class SchedulerService {
 		// TODO Auto-generated method stub
 
 
-		List<String> tenantIds = new ArrayList<String>();
+		List<String> tenantIds = repository.getTenantId();
 		if (tenantIds.isEmpty())
 			return null;
 
@@ -661,17 +672,24 @@ public class SchedulerService {
 				((Long) todayStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
 						.toString(),
 				((Long) todayEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).toString());
+		
+		
 		if (null != todayCollection && todayCollection.size() > 0) {
 			for (Map<String, Object> map : todayCollection) {
+				
+				StringBuilder msg = new StringBuilder(message);
 	            for (Map.Entry<String, Object> entry : map.entrySet()) {
 	                String key = entry.getKey();
-	                Object value = entry.getValue();
+	                String value = (String) entry.getValue();
+	                
 	                if(key.equalsIgnoreCase("total"))
-	                message.replace(" <amount>", value.toString());
+	                message = message.replace("<amount>", value.toString());
 	                if(key.equalsIgnoreCase("mobilenumber"))
-	    			message.replace("<number>", value.toString());
+	    			message = message.replace("<number>", value.toString());
+	              
 	            }
-	            System.out.println("Final message is :" +message);
+	            messages.add(message);
+	            System.out.println("Final message is :" +messages);
 	        }
 			
 		}

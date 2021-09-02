@@ -124,21 +124,19 @@ public class DemandService {
 			Long fromDateSearch = null;
 			Long toDateSearch = null;
 			Set<String> consumerCodes;
-//			if (isForConnectionNo) {
 				fromDateSearch = fromDate;
 				toDateSearch = toDate;
 				consumerCodes = calculations.stream().map(calculation -> calculation.getConnectionNo())
 						.collect(Collectors.toSet());
-//			} else {
-//				consumerCodes = calculations.stream().map(calculation -> calculation.getApplicationNO())
-//						.collect(Collectors.toSet());
-//			}
+
 			
 			List<Demand> demands = searchDemand(tenantId, consumerCodes, fromDateSearch, toDateSearch, requestInfo);
 			Set<String> connectionNumbersFromDemands = new HashSet<>();
-			if (!CollectionUtils.isEmpty(demands))
-				connectionNumbersFromDemands = demands.stream().map(Demand::getConsumerCode)
+			if (!CollectionUtils.isEmpty(demands)) {
+				connectionNumbersFromDemands = demands.stream().filter(demand ->demand.getConsumerType().equalsIgnoreCase(isForConnectionNo ? "waterConnection" : "waterConnection-arrears")).map(Demand::getConsumerCode)
 						.collect(Collectors.toSet());
+			}
+				
 
 			// If demand already exists add it updateCalculations else
 			// createCalculations

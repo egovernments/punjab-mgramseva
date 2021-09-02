@@ -94,7 +94,7 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                     .getdetails(value, 0),
                               ),
                               Text(
-                                '\n-(or)-',
+                                '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
                                 textAlign: TextAlign.center,
                               ),
                               BuildTextField(
@@ -119,7 +119,7 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        Text('\n-(or)-',
+                                        Text('\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
                                             textAlign: TextAlign.center),
                                         BuildTextField(
                                           i18.searchWaterConnection
@@ -138,7 +138,7 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                                   .searchWaterConnection
                                                   .OLD_CONNECTION_HINT),
                                         ),
-                                        Text('\n-(or)-',
+                                        Text('\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
                                             textAlign: TextAlign.center),
                                         BuildTextField(
                                           i18.searchWaterConnection

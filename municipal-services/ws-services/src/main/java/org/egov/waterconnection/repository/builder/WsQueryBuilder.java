@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.egov.common.contract.request.RequestInfo;
+import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.service.UserService;
 import org.egov.waterconnection.util.WaterServicesUtil;
 import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.Property;
 import org.egov.waterconnection.web.models.SearchCriteria;
+import org.egov.waterconnection.web.models.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -34,8 +36,8 @@ public class WsQueryBuilder {
     private static final String LEFT_OUTER_JOIN_STRING = " LEFT OUTER JOIN ";
 //	private static final String Offset_Limit_String = "OFFSET ? LIMIT ?";
     
-    private static String holderSelectValues = "connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime";
-
+//    private static String holderSelectValues = "{HOLDERSELECTVALUES}";
+   
     
 	private static final String WATER_SEARCH_QUERY = "SELECT count(*) OVER() AS full_count, conn.*, wc.*, document.*, plumber.*, wc.connectionCategory, wc.connectionType, wc.waterSource,"
 			+ " wc.meterId, wc.meterInstallationDate, wc.pipeSize, wc.noOfTaps, wc.proposedPipeSize, wc.proposedTaps, wc.connection_id as connection_Id, wc.connectionExecutionDate, wc.initialmeterreading, wc.appCreatedDate,"
@@ -47,7 +49,7 @@ public class WsQueryBuilder {
 			+ " conn.locality, conn.isoldapplication, conn.roadtype, document.id as doc_Id, document.documenttype, document.filestoreid, document.active as doc_active, plumber.id as plumber_id,"
 			+ " plumber.name as plumber_name, plumber.licenseno, roadcuttingInfo.id as roadcutting_id, roadcuttingInfo.roadtype as roadcutting_roadtype, roadcuttingInfo.roadcuttingarea as roadcutting_roadcuttingarea, roadcuttingInfo.roadcuttingarea as roadcutting_roadcuttingarea,"
 			+ " roadcuttingInfo.active as roadcutting_active, plumber.mobilenumber as plumber_mobileNumber, plumber.gender as plumber_gender, plumber.fatherorhusbandname, plumber.correspondenceaddress,"
-			+ " plumber.relationship, " + holderSelectValues
+			+ " plumber.relationship, " + "{holderSelectValues}"
 			+ " FROM eg_ws_connection conn "
 			+  INNER_JOIN_STRING 
 			+" eg_ws_service wc ON wc.connection_id = conn.id"
@@ -60,17 +62,19 @@ public class WsQueryBuilder {
 			+  LEFT_OUTER_JOIN_STRING
 			+ "eg_ws_roadcuttinginfo roadcuttingInfo ON roadcuttingInfo.wsid = conn.id" ;
 
-	private static final String PAGINATION_WRAPPER = "SELECT * FROM " +
-            "(SELECT *, DENSE_RANK() OVER (ORDER BY conn_id) offset_ FROM " +
-            "({})" +
-            " result) result_offset " +
-            "WHERE offset_ > ? AND offset_ <= ?";
+	private static final String PAGINATION_WRAPPER = "{} {orderby} {pagination}";
 	
 	private static final String ORDER_BY_CLAUSE= " ORDER BY wc.appCreatedDate DESC";
 	
 	public static final String GET_BILLING_CYCLE = "select fromperiod,toperiod from egcl_billdetial where billid=(select billid from egcl_paymentdetail where paymentid=?)";
 
 	public static final String FEEDBACK_BASE_QUERY = "select id,tenantid,connectionno,paymentid, billingcycle,additionaldetails,createdtime,lastmodifiedtime,createdby,lastmodifiedby from eg_ws_feedback where tenantid=?";
+	
+	public static final String TotalCollectionAmount = " select sum(payd.amountpaid)  from egcl_paymentdetail payd join egcl_bill payspay ON ( payd.billid = payspay.id) where payd.businessservice='WS' ";
+
+	public static final String CollectionAmountList = " select sum(payd.amountpaid) from egcl_paymentdetail payd join egcl_bill payspay ON ( payd.billid = payspay.id) where payd.businessservice='WS' ";
+
+	
 	
 	/**
 	 * 
@@ -87,12 +91,13 @@ public class WsQueryBuilder {
 		if (criteria.isEmpty())
 				return null;
 		StringBuilder query = new StringBuilder(WATER_SEARCH_QUERY);
+		
 		boolean propertyIdsPresent = false;
 
 		Set<String> propertyIds = new HashSet<>();
 		String propertyIdQuery = " (conn.property_id in (";
 
-		if (!StringUtils.isEmpty(criteria.getMobileNumber()) || !StringUtils.isEmpty(criteria.getPropertyId()) || !StringUtils.isEmpty(criteria.getName())) {
+		if (!StringUtils.isEmpty(criteria.getMobileNumber()) || !StringUtils.isEmpty(criteria.getPropertyId())) {
 			List<Property> propertyList = waterServicesUtil.propertySearchOnCriteria(criteria, requestInfo);
 			propertyList.forEach(property -> propertyIds.add(property.getPropertyId()));
 			criteria.setPropertyIds(propertyIds);
@@ -101,12 +106,14 @@ public class WsQueryBuilder {
 				query.append(propertyIdQuery).append(createQuery(propertyIds)).append(" )");
 				addToPreparedStatement(preparedStatement, propertyIds);
 				propertyIdsPresent = true;
+			}else {
+				throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND", "Could not find user or property details !");
 			}
 		}
 		
 		Set<String> uuids = null;
-		if(!StringUtils.isEmpty(criteria.getMobileNumber())) {
-			uuids = userService.getUUIDForUsers(criteria.getMobileNumber(), criteria.getTenantId(), requestInfo);
+		if(!StringUtils.isEmpty(criteria.getMobileNumber()) || !StringUtils.isEmpty(criteria.getName())) {
+			uuids = userService.getUUIDForUsers(criteria.getMobileNumber(), criteria.getName(), criteria.getTenantId(), requestInfo);
 			boolean userIdsPresent = false;
 			criteria.setUserIds(uuids);
 			if (!CollectionUtils.isEmpty(uuids)) {
@@ -116,6 +123,8 @@ public class WsQueryBuilder {
 				query.append(" connectionholder.userid in (").append(createQuery(uuids)).append(" ))");
 				addToPreparedStatement(preparedStatement, uuids);
 				userIdsPresent = true;
+			}else if(criteria.mobileNumberOny()){
+				throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND", "Could not find user or property details !");
 			}
 			if(propertyIdsPresent && !userIdsPresent){
 				query.append(")");
@@ -129,14 +138,14 @@ public class WsQueryBuilder {
 				&& CollectionUtils.isEmpty(criteria.getPropertyIds()) && CollectionUtils.isEmpty(criteria.getUserIds())
 				&& StringUtils.isEmpty(criteria.getApplicationNumber()) && StringUtils.isEmpty(criteria.getPropertyId())
 				&& StringUtils.isEmpty(criteria.getConnectionNumber()) && CollectionUtils.isEmpty(criteria.getIds())) {
-			return null;
+			throw new CustomException("INVALID_SEARCH_CRITERIA", "Invalid serach criteria!");
 		}
 
 		if (!StringUtils.isEmpty(criteria.getTenantId())) {
 			addClauseIfRequired(preparedStatement, query);
 			if(criteria.getTenantId().equalsIgnoreCase(config.getStateLevelTenantId())){
 				query.append(" conn.tenantid LIKE ? ");
-				preparedStatement.add(criteria.getTenantId() + '%');
+				preparedStatement.add('%' + criteria.getTenantId() + '%');
 			}
 			else{
 				query.append(" conn.tenantid = ? ");
@@ -163,11 +172,12 @@ public class WsQueryBuilder {
 			preparedStatement.add(criteria.getOldConnectionNumber());
 		}
 
-		if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
-			addClauseIfRequired(preparedStatement, query);
-			query.append(" conn.connectionno = ? ");
-			preparedStatement.add(criteria.getConnectionNumber());
-		}
+			if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
+				addClauseIfRequired(preparedStatement, query);
+				query.append(" conn.connectionno like ? ");
+				preparedStatement.add('%' + criteria.getConnectionNumber() + '%');
+			}
+	
 		if (!StringUtils.isEmpty(criteria.getStatus())) {
 			addClauseIfRequired(preparedStatement, query);
 			query.append(" conn.status = ? ");
@@ -185,18 +195,23 @@ public class WsQueryBuilder {
 		}
 		if (criteria.getFromDate() != null) {
 			addClauseIfRequired(preparedStatement, query);
-			query.append("  wc.appCreatedDate >= ? ");
+			query.append("  conn.createdTime >= ? ");
 			preparedStatement.add(criteria.getFromDate());
 		}
 		if (criteria.getToDate() != null) {
 			addClauseIfRequired(preparedStatement, query);
-			query.append("  wc.appCreatedDate <= ? ");
+			query.append("  conn.createdTime <= ? ");
 			preparedStatement.add(criteria.getToDate());
 		}
 		if(!StringUtils.isEmpty(criteria.getApplicationType())) {
 			addClauseIfRequired(preparedStatement, query);
 			query.append(" conn.applicationType = ? ");
 			preparedStatement.add(criteria.getApplicationType());
+		}
+		if(!StringUtils.isEmpty(criteria.getPropertyType())) {
+			addClauseIfRequired(preparedStatement, query);
+			query.append(" conn.additionaldetails.propertyType = ? ");
+			preparedStatement.add(criteria.getPropertyType());
 		}
 		if(!StringUtils.isEmpty(criteria.getSearchType())
 				&& criteria.getSearchType().equalsIgnoreCase(SEARCH_TYPE_CONNECTION)){
@@ -209,7 +224,7 @@ public class WsQueryBuilder {
 			query.append(" conn.locality = ? ");
 			preparedStatement.add(criteria.getLocality());
 		}
-		query.append(ORDER_BY_CLAUSE);
+//		query.append(ORDER_BY_CLAUSE);
 		return addPaginationWrapper(query.toString(), preparedStatement, criteria);
 	}
 	
@@ -247,25 +262,58 @@ public class WsQueryBuilder {
 	 * @return It's returns query
 	 */
 	private String addPaginationWrapper(String query, List<Object> preparedStmtList, SearchCriteria criteria) {
+		String string = addOrderByClause(criteria);
 		Integer limit = config.getDefaultLimit();
 		Integer offset = config.getDefaultOffset();
+		 String finalQuery = PAGINATION_WRAPPER.replace("{}",query);
+		finalQuery = finalQuery.replace("{orderby}", string);
+		finalQuery = finalQuery.replace("{holderSelectValues}", "(select nullif(sum(payd.amountpaid),0) from egcl_paymentdetail payd join egcl_bill payspay on (payd.billid = payspay.id) where payd.businessservice = 'WS' and payspay.consumercode = conn.connectionno group by payspay.consumercode) as collectionamount, connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
 		if (criteria.getLimit() == null && criteria.getOffset() == null)
 			limit = config.getMaxLimit();
-
-		if (criteria.getLimit() != null && criteria.getLimit() <= config.getDefaultLimit())
+		
+		if (criteria.getLimit() != null && criteria.getLimit() <= config.getMaxLimit())
 			limit = criteria.getLimit();
 
-		if (criteria.getLimit() != null && criteria.getLimit() > config.getDefaultOffset())
-			limit = config.getDefaultLimit();
+		if (criteria.getLimit() != null && criteria.getLimit() > config.getMaxLimit()) {
+			limit = config.getMaxLimit();
+		}
 
 		if (criteria.getOffset() != null)
 			offset = criteria.getOffset();
 
+		finalQuery = finalQuery.replace("{pagination}", " offset ?  limit ?  ");
 		preparedStmtList.add(offset);
 		preparedStmtList.add(limit + offset);
-		return PAGINATION_WRAPPER.replace("{}",query);
+		return finalQuery;
 	}
 	
+	private String addOrderByClause(SearchCriteria criteria) {
+		StringBuilder builder = new StringBuilder();
+        
+		if (StringUtils.isEmpty(criteria.getSortBy()))
+			builder.append(" ORDER BY wc.appCreatedDate ");
+
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.connectionNumber)
+			builder.append(" ORDER BY connectionno ");
+
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.name)
+			builder.append(" ORDER BY name ");
+
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.collectionAmount)
+			builder.append(" ORDER BY collectionamount ");
+		
+
+		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
+			builder.append(" ASC ");
+		else
+			builder.append(" DESC ");
+
+		if (criteria.getSortBy() == SearchCriteria.SortBy.collectionAmount)
+			builder.append(" NULLS LAST ");
+		
+		return builder.toString();
+	}
+
 	private void addORClauseIfRequired(List<Object> values, StringBuilder queryString){
 		if (values.isEmpty())
 			queryString.append(" WHERE ");
@@ -321,8 +369,6 @@ public class WsQueryBuilder {
 			preparedStatementValues.add(feedBackSearchCriteira.getLimit());
 			
 		}
-		
-		
 
 		return query.toString();
 

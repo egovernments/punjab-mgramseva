@@ -69,7 +69,7 @@ class _BuildTextField extends State<BuildTextField> {
         style: TextStyle(
             color: widget.isDisabled != null && widget.isDisabled!
                 ? Colors.grey
-                : null),
+                : Theme.of(context).primaryColorDark),
         enabled: widget.isDisabled != null
             ? (widget.isDisabled == true)
                 ? false
@@ -111,7 +111,7 @@ class _BuildTextField extends State<BuildTextField> {
           fillColor: widget.isDisabled != null && widget.isDisabled!
               ? Colors.grey
               : Colors.white,
-          prefixIcon: widget.prefixText == ''
+          prefixIcon: widget.prefixIcon ?? (widget.prefixText == ''
               ? null
               : Padding(
                   padding: EdgeInsets.only(left: 15, top: 15, bottom: 15),
@@ -119,10 +119,11 @@ class _BuildTextField extends State<BuildTextField> {
                     widget.prefixText,
                     style: TextStyle(
                         fontSize: 16,
+                        fontWeight: FontWeight.w400,
                         color: widget.isDisabled != null && widget.isDisabled!
                             ? Colors.grey
-                            : Colors.black),
-                  )),
+                            : Theme.of(context).primaryColorDark),
+                  ))),
         ),
         onChanged: widget.onChange);
 // Label Text
@@ -134,18 +135,18 @@ class _BuildTextField extends State<BuildTextField> {
           textAlign: TextAlign.left,
           style: TextStyle(
               fontWeight: FontWeight.w400,
-              fontSize: 19,
+              fontSize: 16,
               color: widget.isDisabled != null && widget.isDisabled!
                   ? Colors.grey
-                  : Colors.black)),
+                  : Theme.of(context).primaryColorDark)),
       Text(widget.isRequired ? '*' : ' ',
           textAlign: TextAlign.left,
           style: TextStyle(
               fontWeight: FontWeight.w400,
-              fontSize: 19,
+              fontSize: 16,
               color: widget.isDisabled != null && widget.isDisabled!
                   ? Colors.grey
-                  : Colors.black)),
+                  : Theme.of(context).primaryColorDark)),
     ]);
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
@@ -165,6 +166,7 @@ class _BuildTextField extends State<BuildTextField> {
                           child: textLabelwidget)),
                 ),
                 Container(
+                  margin: const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
                     width: MediaQuery.of(context).size.width / 2.5,
                     padding: EdgeInsets.only(top: 18, bottom: 3),
                     child: Column(
@@ -179,7 +181,7 @@ class _BuildTextField extends State<BuildTextField> {
         return Container(
             key: widget.contextkey,
             margin:
-                const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
+                const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
             child: Column(
               children: [
                 Visibility(

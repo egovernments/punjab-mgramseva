@@ -53,7 +53,7 @@ class AutoCompleteView extends StatelessWidget {
         return Container(
             key: contextkey,
             margin:
-                const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
+                const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
             child: Column(
               children: [
                 Container(
@@ -74,14 +74,14 @@ class AutoCompleteView extends StatelessWidget {
             textAlign: TextAlign.left,
             style: TextStyle(
                 fontWeight: FontWeight.w400,
-                fontSize: 19,
-                color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
+                fontSize: 16,
+                color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
         Text((isRequired ?? false) ? '* ' : ' ',
             textAlign: TextAlign.left,
             style: TextStyle(
                 fontWeight: FontWeight.w400,
-                fontSize: 19,
-                color: (isEnabled ?? true) ? Colors.black : Colors.grey)),
+                fontSize: 16,
+                color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
       ]),
     );
   }
@@ -95,7 +95,7 @@ class AutoCompleteView extends StatelessWidget {
           controller: controller,
           style: TextStyle(
               color: (isEnabled ?? true)
-                  ? Colors.black : Colors.grey, fontSize: 16),
+                  ? Theme.of(context).primaryColorDark : Colors.grey, fontSize: 16),
           decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.zero))),
       hideOnEmpty: true,
       suggestionsBoxController: suggestionsBoxController,

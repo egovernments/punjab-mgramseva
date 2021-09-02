@@ -36,6 +36,7 @@ public class ChallanQueryBuilder {
 	private static final String QUERY = "SELECT count(*) OVER() AS full_count, challan.*,chaladdr.*,challan.id as challan_id,challan.tenantid as challan_tenantId,challan.lastModifiedTime as "
 			+ "challan_lastModifiedTime,challan.createdBy as challan_createdBy,challan.lastModifiedBy as challan_lastModifiedBy,challan.createdTime as "
 			+ "challan_createdTime,chaladdr.id as chaladdr_id,"
+			+ "{amount}"
 			+ "challan.accountId as uuid,challan.description as description,challan.typeOfExpense as typeOfExpense, challan.billDate as billDate,  "
 			+ " challan.billIssuedDate as billIssuedDate, challan.paidDate as paidDate, challan.isBillPaid as isBillPaid , challan.vendor as vendor, vendor.name as vendorName "
 			+ " FROM eg_echallan challan" + " LEFT OUTER JOIN "
@@ -111,28 +112,37 @@ public class ChallanQueryBuilder {
                 //addClauseIfRequired(preparedStmtList, builder);
             }
 
-            if (criteria.getChallanNo() != null) {
-                addClauseIfRequired(preparedStmtList, builder);
-                builder.append("  challan.challanno like ?");
-                preparedStmtList.add('%' + criteria.getChallanNo() + '%');
-            }
+			if (criteria.getFreeSearch()) {
+				if (criteria.getChallanNo() != null || criteria.getVendorName() != null) {
+					addClauseIfRequired(preparedStmtList, builder);
+					builder.append("  challan.challanno like ?");
+					preparedStmtList.add('%' + criteria.getChallanNo() + '%');
+
+					builder.append(" OR vendor.name like ?");
+					preparedStmtList.add('%' + criteria.getVendorName() + '%');
+				}
+			} else {
+				if (criteria.getChallanNo() != null) {
+					addClauseIfRequired(preparedStmtList, builder);
+					builder.append("  challan.challanno like ?");
+					preparedStmtList.add('%' + criteria.getChallanNo() + '%');
+				}
+				if (criteria.getVendorName() != null) {
+					addClauseIfRequired(preparedStmtList, builder);
+					builder.append(" vendor.name like ?");
+					preparedStmtList.add('%' + criteria.getVendorName() + '%');
+				}
+			}
             if (criteria.getStatus() != null) {
                 addClauseIfRequired(preparedStmtList, builder);
-                builder.append("  challan.applicationstatus = ? ");
-                preparedStmtList.add(criteria.getStatus());
+                builder.append(" challan.applicationstatus IN (").append(createQuery(criteria.getStatus())).append(")");
+                addToPreparedStatement(preparedStmtList, criteria.getStatus());
             }
-            
+
             if(criteria.getExpenseType() != null){
             	addClauseIfRequired(preparedStmtList, builder);
             	builder.append( " challan.typeOfExpense = ? ");
             	preparedStmtList.add(criteria.getExpenseType());
-            }
-            
-            if(criteria.getVendorName() != null)
-            {
-            	addClauseIfRequired(preparedStmtList, builder);
-				builder.append(" vendor.name like ?");
-				preparedStmtList.add('%' + criteria.getVendorName() + '%');
             }
             
             if (criteria.getFromDate() != null) {
@@ -150,8 +160,6 @@ public class ChallanQueryBuilder {
     			builder.append("  challan.isBillPaid = ? ");
     			preparedStmtList.add(criteria.getIsBillPaid());
     		}
-
-
         }
 
         return addPaginationWrapper(builder.toString(),preparedStmtList,criteria);
@@ -193,6 +201,8 @@ public class ChallanQueryBuilder {
 
 		finalQuery = finalQuery.replace("{orderby}", string);
 
+		finalQuery = finalQuery.replace("{amount}", "(select nullif(sum(bi.totalamount),0) from egbs_billdetail_v1 bi where bi.businessservice = challan.businessservice and bi.consumercode = challan.challanno group by bi.consumercode) as totalamount,");
+		
         if(criteria.getLimit()!=null && criteria.getLimit()<=config.getMaxSearchLimit())
             limit = criteria.getLimit();
 
@@ -246,14 +256,17 @@ public class ChallanQueryBuilder {
 		else if (criteria.getSortBy() == SearchCriteria.SortBy.challanno)
 			builder.append(" ORDER BY challanno ");
 
-//		else if (criteria.getSortBy() == SearchCriteria.SortBy.totalAmount)
-//			builder.append(" ORDER BY challan.totalAmount ");
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.totalAmount)
+			builder.append(" ORDER BY totalamount ");
 
 		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
 			builder.append(" ASC ");
 		else
 			builder.append(" DESC ");
 
+		if (criteria.getSortBy() == SearchCriteria.SortBy.totalAmount)
+			builder.append(" NULLS LAST ");
+		
 		return builder.toString();
 	}
 

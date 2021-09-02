@@ -36,14 +36,14 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     ..offset = 1
     ..sortBy = null
     ..selectedDashboardType = widget.dashBoardType;
-    dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
-
+    // dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
   afterViewBuild() {
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    dashBoardProvider.searchController.clear();
 
     if(widget.dashBoardType == DashBoardType.Expenditure) {
       _tabList = [
@@ -55,6 +55,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
 
       dashBoardProvider
         ..expenseDashboardDetails?.expenseDetailList = <ExpensesDetailsModel>[]
+        ..expenseDashboardDetails?.totalCount = null
         ..fetchExpenseDashBoardDetails(context, dashBoardProvider.limit, dashBoardProvider.offset);
     }else{
       _tabList = [
@@ -64,6 +65,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
       ];
       dashBoardProvider
         ..waterConnectionsDetails?.waterConnection = <WaterConnection>[]
+        ..waterConnectionsDetails?.totalCount = null
         ..fetchCollectionsDashBoardDetails(context, dashBoardProvider.limit, dashBoardProvider.offset);
 
     }
@@ -81,7 +83,9 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     return  Column(
         children: [
-          ListLabelText(widget.dashBoardType == DashBoardType.collections ?  i18.dashboard.SEARCH_CONSUMER_RECORDS : i18.dashboard.SEARCH_EXPENSE_BILL),
+          ListLabelText(widget.dashBoardType == DashBoardType.collections ?  i18.dashboard.SEARCH_CONSUMER_RECORDS : i18.dashboard.SEARCH_EXPENSE_BILL,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           BuildTextField(
             '',
             dashBoardProvider.searchController,
@@ -89,7 +93,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
               borderRadius: BorderRadius.circular(25.0),
             ),
             prefixIcon: Icon(Icons.search_sharp),
-            placeHolder: i18.dashboard.SEARCH_BY_BILL_OR_VENDOR,
+            placeHolder: widget.dashBoardType == DashBoardType.collections ? i18.dashboard.SEARCH_NAME_CONNECTION : i18.dashboard.SEARCH_BY_BILL_OR_VENDOR,
             onChange: (val) => dashBoardProvider.onSearch(val, context),
           ),
           Expanded(
@@ -131,7 +135,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
             controller: _tabController,
             backgroundColor: Colors.white,
             unselectedBackgroundColor: Color.fromRGBO(244, 119, 56, 0.12),
-            contentPadding: EdgeInsets.symmetric(horizontal: 10),
+            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
             buttonMargin: EdgeInsets.symmetric(horizontal: 5),
             labelStyle: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
             unselectedLabelStyle: TextStyle(
@@ -144,8 +148,16 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
           child: Consumer<DashBoardProvider>(
             builder : (_ , dashBoardProvider, child) => TabBarView(
                 controller: _tabController,
-                children: List.generate(_tabList.length, (index) => BillsTable(headerList: widget.dashBoardType == DashBoardType.Expenditure ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
-                  tableData:  expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseData(index, expenseList) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>),
+                children: List.generate(_tabList.length, (index) => LayoutBuilder(
+                  builder : (context, constraints) {
+                    var width = constraints.maxWidth < 760 ? 200.0 : (constraints.maxWidth / (expenseList is List<ExpensesDetailsModel> ? 5 : 3));
+                  return  BillsTable
+                  (headerList: expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
+                    tableData:  expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseData(index, expenseList) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>),
+                  leftColumnWidth: width,
+                  rightColumnWidth: expenseList is List<ExpensesDetailsModel> ? width * 5 : width * 3,
+                  );
+                   }
                 ))
             ),
           ),

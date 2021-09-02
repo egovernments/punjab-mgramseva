@@ -74,7 +74,7 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                     (consumerProvider.consmerWalkthrougList.length - 1)
                 ? position.dy -
                     box.size.height -
-                    (MediaQuery.of(context).size.width > 720 ? 40 : 32)
+                    (MediaQuery.of(context).size.width > 720 ? 40 : 55)
                 : box.size.height + position.dy + 45,
             child: Container(
                 decoration: BoxDecoration(
@@ -99,7 +99,7 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                                         consumerProvider.activeindex]
                                     .name),
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,color: Theme.of(context).primaryColorLight
                             ),
                             textAlign: TextAlign.start,
                           )),
@@ -109,21 +109,45 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                               child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    TextButton(
-                                        onPressed: () async {
+                                    GestureDetector(
+                                        onTap: () async {
                                           consumerProvider.activeindex = 0;
                                           Navigator.pop(context);
                                           Provider.of<CommonProvider>(context,
                                               listen: false)
-                                            ..walkThroughCondition(false,
-                                                Constants.CREATE_CONSUMER_KEY);
+                                            ..walkThroughCondition(
+                                                false, Constants.CREATE_CONSUMER_KEY);
                                           setState(() {
                                             active = 0;
                                           });
                                         },
-                                        child: Text(
-                                            ApplicationLocalizations.of(context)
-                                                .translate(i18.common.END)))]))
+                                        child: Container(
+                                          margin: EdgeInsets.all(5.0),
+                                          height: 35,
+                                          width: 80,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(10.0),
+                                            color:
+                                            Theme.of(context).primaryColor,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey,
+                                                offset:
+                                                Offset(0.0, 1.0), //(x,y)
+                                                blurRadius: 6.0,
+                                              ),
+                                            ],
+                                          ),
+                                          child: Center(
+                                              child: Text(
+                                                ApplicationLocalizations.of(context)
+                                                    .translate(i18.common.END),
+                                                style:
+                                                TextStyle(color: Colors.white,
+                                                fontSize: 12),
+                                              )),
+                                        ))]))
                       : Padding(
                           padding: EdgeInsets.all(0),
                           child: Row(
@@ -143,7 +167,8 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                                     },
                                     child: Text(
                                         ApplicationLocalizations.of(context)
-                                            .translate(i18.common.SKIP))),
+                                            .translate(i18.common.SKIP),
+                                        style: TextStyle(fontSize: 12, color: Theme.of(context).primaryColorLight))),
                                 GestureDetector(
                                     onTap: () async {
                                       if (consumerProvider.consmerWalkthrougList
@@ -193,7 +218,8 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                                           child: Text(
                                         ApplicationLocalizations.of(context)
                                             .translate(i18.common.NEXT),
-                                        style: TextStyle(color: Colors.white),
+                                        style: TextStyle(color: Colors.white,
+                                        fontSize: 12),
                                       )),
                                     ))
                               ]))

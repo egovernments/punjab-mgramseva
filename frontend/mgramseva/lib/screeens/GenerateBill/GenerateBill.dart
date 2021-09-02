@@ -39,7 +39,6 @@ class _GenerateBillState extends State<GenerateBill> {
 
   afterViewBuild() {
     Provider.of<BillGenerationProvider>(context, listen: false)
-      ..fetchBill(widget.waterconnection)
       ..setModel(widget.id, widget.waterconnection, context)
       ..getServiceTypePropertyTypeandConnectionType()
       ..autoValidation = false
@@ -64,6 +63,8 @@ class _GenerateBillState extends State<GenerateBill> {
           Container(
               width: MediaQuery.of(context).size.width,
               child: Card(
+                child: Padding(
+                padding: EdgeInsets.only(bottom: 20),
                   child: Consumer<BillGenerationProvider>(
                       builder: (_, billgenerationprovider, child) => Form(
                           key: billgenerationprovider.formKey,
@@ -245,7 +246,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                           true)),
                                             ])),
                               ])))))
-        ])));
+          )])));
   }
 
   @override

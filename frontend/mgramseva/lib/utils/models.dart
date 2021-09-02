@@ -13,7 +13,7 @@ enum ExceptionType {
 
 enum MDMSType { BusinessService, ConsumerType, TaxHeadCode }
 
-enum DashBoardType {collections, Expenditure}
+enum DashBoardType { collections, Expenditure }
 
 class KeyValue {
   String label;
@@ -30,7 +30,7 @@ class HomeItem {
 
   const HomeItem(
     this.label,
-      this.walkThroughMsg,
+    this.walkThroughMsg,
     this.iconData,
     this.link,
     this.arguments,
@@ -44,12 +44,11 @@ class SearchResult {
   SearchResult(this.label, this.result);
 }
 
-class PaginationResponse{
+class PaginationResponse {
   int offset = 0;
   int limit;
   PaginationResponse(this.limit, this.offset);
 }
-
 
 class TableHeader {
   final String label;
@@ -57,7 +56,11 @@ class TableHeader {
   bool? isSortingRequired = false;
   bool? isAscendingOrder;
   String? apiKey;
-  TableHeader(this.label, {this.callBack, this.isSortingRequired, this.isAscendingOrder, this.apiKey});
+  TableHeader(this.label,
+      {this.callBack,
+      this.isSortingRequired,
+      this.isAscendingOrder,
+      this.apiKey});
 }
 
 class TableDataRow {
@@ -68,8 +71,9 @@ class TableDataRow {
 class TableData {
   final String label;
   final TextStyle? style;
+  final String? apiKey;
   ValueChanged<TableData>? callBack;
-  TableData(this.label, {this.style, this.callBack});
+  TableData(this.label, {this.style, this.callBack, this.apiKey});
 }
 
 class SortBy {

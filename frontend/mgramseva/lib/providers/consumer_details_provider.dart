@@ -13,6 +13,7 @@ import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/walkthrough.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -59,6 +60,7 @@ class ConsumerProvider with ChangeNotifier {
       "action": "SUBMIT",
       "proposedTaps": 1,
       "proposedPipeSize": 10,
+      "noOfTaps": 1
     });
 
     property = Property.fromJson({
@@ -96,6 +98,34 @@ class ConsumerProvider with ChangeNotifier {
       "businessService": "WS",
       "tenantId": waterconnection.tenantId
     });
+    if (waterconnection.connectionType == 'Metered' &&
+        waterconnection.additionalDetails!.meterReading != null) {
+      waterconnection.om_1Ctrl.text = waterconnection
+          .additionalDetails!.meterReading
+          .toString()
+          .characters
+          .elementAt(0);
+      waterconnection.om_2Ctrl.text = waterconnection
+          .additionalDetails!.meterReading
+          .toString()
+          .characters
+          .elementAt(1);
+      waterconnection.om_3Ctrl.text = waterconnection
+          .additionalDetails!.meterReading
+          .toString()
+          .characters
+          .elementAt(2);
+      waterconnection.om_4Ctrl.text = waterconnection
+          .additionalDetails!.meterReading
+          .toString()
+          .characters
+          .elementAt(3);
+      waterconnection.om_5Ctrl.text = waterconnection
+          .additionalDetails!.meterReading
+          .toString()
+          .characters
+          .elementAt(4);
+    }
     if (demand!
             .indexWhere(((element) =>
                 element.consumerType == 'waterConnection-arrears'))
@@ -137,6 +167,7 @@ class ConsumerProvider with ChangeNotifier {
       waterconnection.tenantId =
           commonProvider.userDetails!.selectedtenant!.code;
       waterconnection.connectionHolders = property.owners;
+      waterconnection.noOfTaps = 1;
       waterconnection.propertyType = property.propertyType;
       if (waterconnection.connectionType == 'Metered') {
         waterconnection.meterInstallationDate =
@@ -331,7 +362,9 @@ class ConsumerProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
-          child: new Text(value.name!),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                  .translate(value.code!)),
         );
       }).toList();
     }
@@ -360,7 +393,9 @@ class ConsumerProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
-          child: new Text(value.name!),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                  .translate(value.name!)),
         );
       }).toList();
     }
@@ -396,7 +431,11 @@ class ConsumerProvider with ChangeNotifier {
         var d = value['name'];
         return DropdownMenuItem(
           value: value['code'].toLocal().toString(),
-          child: new Text(months[d.month - 1] + " - " + d.year.toString()),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                      .translate(months[d.month - 1]) +
+                  " - " +
+                  d.year.toString()),
         );
       }).toList();
     }

@@ -19,6 +19,7 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) {
         ? null
         : Documents.fromJson(json['documents'] as Map<String, dynamic>)
     ..proposedTaps = json['proposedTaps'] as int?
+    ..noOfTaps = json['noOfTaps'] as int?
     ..arrears = (json['arrears'] as num?)?.toDouble()
     ..connectionType = json['connectionType'] as String?
     ..oldConnectionNo = json['oldConnectionNo'] as String?
@@ -51,6 +52,7 @@ Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
       'meterInstallationDate': instance.meterInstallationDate,
       'documents': instance.documents,
       'proposedTaps': instance.proposedTaps,
+      'noOfTaps': instance.noOfTaps,
       'arrears': instance.arrears,
       'connectionType': instance.connectionType,
       'oldConnectionNo': instance.oldConnectionNo,
@@ -81,6 +83,7 @@ AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) {
     ..propertyType = json['propertyType'] as String?
     ..street = json['street'] as String?
     ..doorNo = json['doorNo'] as String?
+    ..collectionAmount = json['collectionAmount'] as String?
     ..action = json['action'] as String?;
 }
 
@@ -92,5 +95,6 @@ Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
       'propertyType': instance.propertyType,
       'street': instance.street,
       'doorNo': instance.doorNo,
+      'collectionAmount': instance.collectionAmount,
       'action': instance.action,
     };

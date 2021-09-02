@@ -67,80 +67,84 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Visibility(
-                    visible: true,
-                    child: TextButton.icon(
-                      onPressed: () => commonProvider.getFileFromPDFService({
-                        "Payments": [item]
-                      }, {
-                        "key": "consolidatedreceipt",
-                        "tenantId":
-                            commonProvider.userDetails!.selectedtenant!.code,
-                      }, item.mobileNumber, "Download"),
-                      icon: Icon(Icons.download_sharp),
-                      label: Text(
-                          ApplicationLocalizations.of(context)
-                              .translate(i18.common.RECEIPT_DOWNLOAD),
-                          style: TextStyle(fontSize: 19)),
-                    ),
-                  )),
-              Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Column(children: [
-                    _getLabeltext(
-                        i18.consumerReciepts.CONSUMER_BILL_RECIEPT_ID,
-                        (item.paymentDetails!.first.receiptNumber).toString(),
-                        context),
-                    _getLabeltext(
-                        i18.consumerReciepts.CONSUMER_RECIEPT_PAID_AMOUNT,
-                        ('₹' + (item.totalAmountPaid).toString()),
-                        context),
-                    _getLabeltext(
-                        i18.consumerReciepts.CONSUMER_RECIEPT_PAID_DATE,
-                        DateFormats.timeStampToDate(item.transactionDate,
-                                format: "dd-MM-yyyy")
-                            .toString(),
-                        context),
-                    Row(children: [
-                      Container(
-                        width: constraints.maxWidth > 760
-                            ? MediaQuery.of(context).size.width / 3
-                            : MediaQuery.of(context).size.width / 1.25,
-                        child: OutlinedButton.icon(
-                          onPressed: () =>
-                              commonProvider.getFileFromPDFService({
-                            "Payments": [item]
-                          }, {
-                            "key": "consolidatedreceipt",
-                            "tenantId": commonProvider
-                                .userDetails!.selectedtenant!.code,
-                          }, item.mobileNumber, "Share"),
-                          style: ButtonStyle(
-                            alignment: Alignment.center,
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(vertical: 8)),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                              side: BorderSide(
-                                  width: 2,
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius: BorderRadius.circular(0.0),
-                            )),
-                          ),
-                          icon: (Image.asset('assets/png/whats_app.png')),
-                          label: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5),
-                            child: Text(
-                              ApplicationLocalizations.of(context).translate(i18
-                                  .consumerReciepts
-                                  .CONSUMER_RECIEPT_SHARE_RECEIPT),
-                            ),
+                  padding: EdgeInsets.all(8),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Visibility(
+                          visible: true,
+                          child: TextButton.icon(
+                            onPressed: () =>
+                                commonProvider.getFileFromPDFService({
+                              "Payments": [item]
+                            }, {
+                              "key": "consolidatedreceipt",
+                              "tenantId": commonProvider
+                                  .userDetails!.selectedtenant!.code,
+                            }, item.mobileNumber, "Download"),
+                            icon: Icon(Icons.download_sharp),
+                            label: Text(
+                                ApplicationLocalizations.of(context)
+                                    .translate(i18.common.RECEIPT_DOWNLOAD),
+                                style: TextStyle(fontSize: 19)),
                           ),
                         ),
-                      )
-                    ])
-                  ]))
+                        _getLabeltext(
+                            i18.consumerReciepts.CONSUMER_BILL_RECIEPT_ID,
+                            (item.paymentDetails!.first.receiptNumber)
+                                .toString(),
+                            context),
+                        _getLabeltext(
+                            i18.consumerReciepts.CONSUMER_RECIEPT_PAID_AMOUNT,
+                            ('₹' + (item.totalAmountPaid).toString()),
+                            context),
+                        _getLabeltext(
+                            i18.consumerReciepts.CONSUMER_RECIEPT_PAID_DATE,
+                            DateFormats.timeStampToDate(item.transactionDate,
+                                    format: "dd-MM-yyyy")
+                                .toString(),
+                            context),
+                        Row(children: [
+                          Container(
+                            width: constraints.maxWidth > 760
+                                ? MediaQuery.of(context).size.width / 3
+                                : MediaQuery.of(context).size.width / 1.17,
+                            child: OutlinedButton.icon(
+                              onPressed: () =>
+                                  commonProvider.getFileFromPDFService({
+                                "Payments": [item]
+                              }, {
+                                "key": "consolidatedreceipt",
+                                "tenantId": commonProvider
+                                    .userDetails!.selectedtenant!.code,
+                              }, item.mobileNumber, "Share"),
+                              style: ButtonStyle(
+                                alignment: Alignment.center,
+                                padding: MaterialStateProperty.all(
+                                    EdgeInsets.symmetric(vertical: 8)),
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      width: 2,
+                                      color: Theme.of(context).primaryColor),
+                                  borderRadius: BorderRadius.circular(0.0),
+                                )),
+                              ),
+                              icon: (Image.asset('assets/png/whats_app.png')),
+                              label: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5),
+                                child: Text(
+                                  ApplicationLocalizations.of(context)
+                                      .translate(i18.consumerReciepts
+                                          .CONSUMER_RECIEPT_SHARE_RECEIPT),
+                                ),
+                              ),
+                            ),
+                          )
+                        ])
+                      ]))
             ],
           ))
       ]);
