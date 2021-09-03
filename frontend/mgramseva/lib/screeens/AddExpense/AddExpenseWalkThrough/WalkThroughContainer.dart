@@ -76,7 +76,7 @@ class _ExpenseWalkThroughContainerState
                     (expenseProvider.expenseWalkthrougList.length - 1)
                 ? position.dy -
                     box.size.height -
-                    (MediaQuery.of(context).size.width > 720 ? 55 : 30)
+                    (MediaQuery.of(context).size.width > 720 ? 65 : 40)
                 : box.size.height + position.dy + 45,
             child: Container(
                 decoration: BoxDecoration(
