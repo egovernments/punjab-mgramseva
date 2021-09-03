@@ -223,6 +223,7 @@ class CoreRepository extends BaseService {
       if (kIsWeb) {
         html.AnchorElement anchorElement = new html.AnchorElement(href: url);
         anchorElement.download = url;
+        anchorElement.target = '_blank';
         anchorElement.click();
         return true;
       } else if (Platform.isIOS) {

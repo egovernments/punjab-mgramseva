@@ -81,7 +81,7 @@ class Constants {
         "CORE_GPWSC_DASHBOARD",
         (i18.homeWalkThroughMSg.GPWSC_DASHBOARD_MSG),
         HomeIcons.dashboard,
-        'dashboard', {}),
+        Routes.DASHBOARD, {}),
   ];
 
   static List<KeyValue> SERVICECATEGORY = [
@@ -97,7 +97,7 @@ class Constants {
 
   static List<KeyValue> PAYMENT_AMOUNT = [
     KeyValue(i18.common.FULL_AMOUNT, 'fullAmount'),
-    KeyValue(i18.common.CUSTOM_AMOUNT, 'customAmount'),
+    // KeyValue(i18.common.CUSTOM_AMOUNT, 'customAmount'),
   ];
 
   static List<KeyValue> PAYMENT_METHOD = [

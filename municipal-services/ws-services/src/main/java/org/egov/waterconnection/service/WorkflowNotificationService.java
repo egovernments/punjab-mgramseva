@@ -311,6 +311,11 @@ public class WorkflowNotificationService {
 			String messageToReplace = message;
 			if (messageToReplace.contains("{ownername}"))
 				messageToReplace = messageToReplace.replace("{ownername}", mobileAndName.getValue());
+			
+
+			if (messageToReplace.contains("{consumercode}"))
+				messageToReplace = messageToReplace.replace("{consumercode}",waterConnectionRequest.getWaterConnection().getConnectionNo());
+			
 			if (messageToReplace.contains("<Service>"))
 				messageToReplace = messageToReplace.replace("<Service>", WCConstants.SERVICE_FIELD_VALUE_NOTIFICATION);
 
