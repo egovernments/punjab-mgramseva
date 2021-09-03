@@ -65,4 +65,10 @@ config:
       - work-dir: "frontend/mgramseva"
         image-name: "frontend-mgramseva"
         dockerfile: "frontend/mgramseva/docker/Dockerfile"
+
+  - name: "builds/mGramSeva/core-services/user-otp"
+    build:
+      - work-dir: "core-services/user-otp"
+        image-name: "user-otp"
+        dockerfile: "build/maven/Dockerfile"        
     
