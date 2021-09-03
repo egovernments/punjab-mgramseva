@@ -241,6 +241,8 @@ public class WCConstants {
 	public static final String ON_BOARD_EMPLOYEE="SMS_ON_BOARD_EMPLOYEE";
 
 	public static final String PAYMENT_NOTIFICATION_SMS = "WS_PAYMENT_NOTIFICATION_SMS";
+	
+	public static final String FEEDBACK_NOTIFICATION_SMS = "WS_FEEDBACK_NOTIFICATION_SMS";
 
 
 	public static final String FEEDBACK_NOTIFICATION_SMS = "WS_FEEDBACK_NOTIFICATION_SMS";

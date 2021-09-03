@@ -318,7 +318,9 @@ public class PaymentUpdateService {
 										   Property property, PaymentDetail paymentDetail, String smsCode,String paymentId) {
 		String localizationMessage = notificationUtil.getLocalizationMessages(property.getTenantId(),
 				waterConnectionRequest.getRequestInfo());
+
 		String message = notificationUtil.getMessageTemplate((smsCode ==null ? WCConstants.PAYMENT_NOTIFICATION_SMS: smsCode), localizationMessage);
+
 		if (message == null) {
 			log.info("No message template found for, {} " + (smsCode ==null ? WCConstants.PAYMENT_NOTIFICATION_SMS: smsCode));
 			return Collections.emptyList();
@@ -339,9 +341,16 @@ public class PaymentUpdateService {
 		Map<String, String> getReplacedMessage = workflowNotificationService.getMessageForMobileNumber(mobileNumbersAndNames,
 				waterConnectionRequest, message, property);
 		Map<String, String> mobileNumberAndMessage = replacePaymentInfo(getReplacedMessage, paymentDetail,paymentId);
+
 		List<SMSRequest> smsRequest = new ArrayList<>();
 		mobileNumberAndMessage.forEach((mobileNumber, msg) -> {
 			SMSRequest req = SMSRequest.builder().mobileNumber(mobileNumber).message(msg).category(Category.TRANSACTION).build();
+			smsRequest.add(req);
+		});
+		
+		getReplacedFeedbackMessage.forEach((mobileNumber, msg) -> {
+			SMSRequest req = SMSRequest.builder().mobileNumber(mobileNumber).message(msg).category(Category.TRANSACTION)
+					.build();
 			smsRequest.add(req);
 		});
 		return smsRequest;
@@ -379,6 +388,10 @@ public class PaymentUpdateService {
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 				String billingPeriod = builder.append(fromDate.format(formatter)).append(" - ").append(toDate.format(formatter)).toString();
 				message = message.replace("<Billing Period>", billingPeriod);
+			}
+			if (message.contains("<Pending Amount>")) {
+				
+				message = message.replace("<Pending Amount>", paymentDetail.getTotalDue().subtract(paymentDetail.getTotalAmountPaid()).toString());
 			}
 
 			if (message.contains("{RECEIPT_LINK}")){

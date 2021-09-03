@@ -90,6 +90,7 @@ public class SchedulerService {
 	private static final String NEW_EXPENDITURE_SMS = "NEW_ENPENDITURE_SMS_EN_REMINDER";
 	private static final String MONTHLY_SUMMARY_SMS = "MONTHLY_SUMMARY_SMS_EN_REMINDER";
 	private static final String MARK_PAID_BILL_SMS = "MARK_PAID_BILL_SMS_EN_REMINDER";
+	private static final String PENDING_COLLECTION_SMS = "PENDING_COLLECTION_SMS_EN_REMINDER";
 
 	private static final String TODAY_CASH_COLLECTION_SMS = "TODAY_COLLECTION_AS_CASH_SMS";
 	private static final String TODAY_ONLINE_COLLECTION_SMS = "TODAY_COLLECTION_FROM_ONLINE_SMS";
@@ -216,11 +217,13 @@ public class SchedulerService {
 						mobileNumberIdMap.entrySet().stream().forEach(map -> {
 							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
 								String message = messageMap.get(NotificationUtil.MSG_KEY);
+
 								message = message.replace("{NEW_EXP_LINK}", config.getExpenditureLink());
 								message = message.replace("{GPWSC}", ""); // TODO Replace
 																// <GPWSC> with
 																// value.
 								System.out.println("New Expenditure SMS :: " + message);
+
 								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
 										.message(message)
 										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
@@ -347,7 +350,6 @@ public class SchedulerService {
 						mobileNumberIdMap.entrySet().stream().forEach(map -> {
 							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
 								String message = messageMap.get(NotificationUtil.MSG_KEY);
-
 								message = message.replace("{EXP_MRK_LINK}", config.getExpenseBillMarkPaidLink());
 
 								message = message.replace("{GPWSC}", ""); // TODO Replace
@@ -453,9 +455,9 @@ public class SchedulerService {
 					tenantIds.forEach(tenantId -> {
 						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
 								MONTHLY_SUMMARY_SMS, tenantId);
-						Recepient recepient = getRecepient(requestInfo, tenantId);
-						UserDetailResponse response = userService.getUserById(requestInfo, tenantId,
-								recepient.getToUsers());
+						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, "pb",
+								Arrays.asList("GP_ADMIN"));
+						
 						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 						for (UserInfo userInfo : response.getUser())
 							if(userInfo.getName() != null) {
@@ -540,6 +542,38 @@ public class SchedulerService {
 						notificationService.sendEventNotification(eventRequest);
 				}
 			}
+			
+			if (null != config.getIsSMSEnabled()) {
+				if (config.getIsSMSEnabled()) {
+					List<String> tenantIds = repository.getTenantId();
+					tenantIds.forEach(tenantId -> {
+						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
+								PENDING_COLLECTION_SMS, tenantId);
+						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, "pb",
+								Arrays.asList("GP_ADMIN"));
+						
+						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+						for (UserInfo userInfo : userDetailResponse.getUser())
+							mobileNumberIdMap.put(userInfo.getMobileNumber(),
+									userInfo.getUuid() + "|" + userInfo.getUserName());
+						mobileNumberIdMap.entrySet().stream().forEach(map -> {
+							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
+								String uuidUsername[] = ((String) map.getValue()).split("|");
+								String message = formatPendingCollectionMessage(requestInfo, tenantId,
+										messageMap.get(NotificationUtil.MSG_KEY));
+								message = message.replace("{link}", config.getMonthRevenueDashboardLink());
+								message = message.replace("{GPWSC}", tenantId); 
+								message = message.replace("{user}", uuidUsername[1]);
+								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
+										.message(messageMap.get(NotificationUtil.MSG_KEY))
+										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
+										.users(new String[] { uuidUsername[0] }).build();
+								producer.push(config.getSmsNotifTopic(), smsRequest);
+							}
+						});
+					});
+				}
+			}
 
 		}
 	}
@@ -580,7 +614,6 @@ public class SchedulerService {
 
 		Map<String, String> mobileNumberIdMap = response.getUser().stream()
 				.collect(Collectors.toMap(UserInfo::getMobileNumber, UserInfo::getName));
-
 		return mobileNumberIdMap;
 	}
 

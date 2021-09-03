@@ -325,6 +325,9 @@ public class WorkflowNotificationService {
 			if (messageToReplace.contains("<SLA>"))
 				messageToReplace = messageToReplace.replace("<SLA>", getSLAForState(waterConnectionRequest, property, config.getBusinessServiceValue()));
 
+			if (messageToReplace.contains("<GPWSC>"))
+				messageToReplace = messageToReplace.replace("<GPWSC>",property.getTenantId()); 
+			
 			if (messageToReplace.contains("<Application number>"))
 				messageToReplace = messageToReplace.replace("<Application number>", waterConnectionRequest.getWaterConnection().getApplicationNo());
 
@@ -340,6 +343,10 @@ public class WorkflowNotificationService {
 				messageToReplace = messageToReplace.replace("<mseva app link>",
 						waterServiceUtil.getShortnerURL(config.getMSevaAppLink()));
 
+			if (messageToReplace.contains("<Consumer Id>"))
+				messageToReplace = messageToReplace.replace("<Consumer Id>",
+						waterConnectionRequest.getWaterConnection().getApplicationNo()  );
+			
 			if (messageToReplace.contains("<View History Link>")) {
 				String historyLink = config.getNotificationUrl() + config.getViewHistoryLink();
 				historyLink = historyLink.replace(mobileNoReplacer, mobileAndName.getKey());
