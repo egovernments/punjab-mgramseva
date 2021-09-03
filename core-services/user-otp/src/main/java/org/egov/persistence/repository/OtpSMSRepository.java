@@ -59,7 +59,9 @@ public class OtpSMSRepository {
 
     private String getMessage(String otpNumber, OtpRequest otpRequest) {
         final String messageFormat = getMessageFormat(otpRequest);
-        return format(messageFormat, otpNumber);
+        String message = messageFormat.replace("{otp}", otpNumber);
+        System.out.println("OTP MSG::" + message);
+        return message;
     }
 
     private String getMessageFormat(OtpRequest otpRequest) {
@@ -69,7 +71,6 @@ public class OtpSMSRepository {
             log.info("Localization Service didn't return any msgs so using default...");
             localisedMsgs.put(LOCALIZATION_KEY_REGISTER_SMS, "Dear Citizen, Your OTP to complete your mSeva Registration is %s.");
             localisedMsgs.put(LOCALIZATION_KEY_LOGIN_SMS, "Dear Citizen, Your Login OTP is %s.");
-            localisedMsgs.put(LOCALIZATION_KEY_PWD_RESET_SMS, "Dear Citizen, Your OTP for recovering password is %s.");
         }
         String message = null;
 
@@ -84,7 +85,6 @@ public class OtpSMSRepository {
         else
             message = localisedMsgs.get(LOCALIZATION_KEY_PWD_RESET_SMS);
 
-        System.out.println("OTP SMS ::" + message);
         return message;
     }
     
