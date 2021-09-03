@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
-import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
+import 'package:mgramseva/widgets/footer.dart';
 import 'package:provider/provider.dart';
 
 class SideBar extends StatelessWidget {
@@ -88,7 +88,7 @@ class SideBar extends StatelessWidget {
                             .stateInfo
                             ?.languages ??
                         [],
-                    70,
+                    75,
                     4,
                     4,
                   )
@@ -121,6 +121,16 @@ class SideBar extends StatelessWidget {
           commonProvider.onLogout();
         },
       ),
+      Align(
+        alignment: Alignment.bottomCenter,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // your footer widgets here
+            Footer()
+          ],
+        ),
+      )
     ]);
   }
 }

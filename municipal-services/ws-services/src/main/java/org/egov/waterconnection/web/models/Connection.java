@@ -88,7 +88,7 @@ public class Connection {
 	@JsonProperty("connectionNo")
 	private String connectionNo = null;
 
-	@NotNull
+	
 	@SafeHtml
 	@JsonProperty("oldConnectionNo")
 	private String oldConnectionNo = null;
@@ -152,7 +152,6 @@ public class Connection {
 	private Long previousReadingDate = null;
 	
 	@JsonProperty("arrears")
-	@NotNull
 	private BigDecimal arrears = null;
 	
 
@@ -345,7 +344,7 @@ public class Connection {
 	 **/
 	@ApiModelProperty(readOnly = true, value = "Mandatory if source is \"DATA_ENTRY\".")
 
-	@Size(min = 1, max = 64)
+	@Size(min = 0, max = 64)
 	public String getOldConnectionNo() {
 		return oldConnectionNo;
 	}

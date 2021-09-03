@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
+import 'package:mgramseva/widgets/footer.dart';
 
 class LoggedInDesktopView extends StatelessWidget {
   final Widget widget;
@@ -17,7 +18,8 @@ class LoggedInDesktopView extends StatelessWidget {
                   width: 500,
                   padding: EdgeInsets.all(15),
                   child: new Container(
-                      padding: EdgeInsets.all(8), child: widget))))
+                      padding: EdgeInsets.all(8), child: widget)))),
+          Footer()
         ])));
   }
 }

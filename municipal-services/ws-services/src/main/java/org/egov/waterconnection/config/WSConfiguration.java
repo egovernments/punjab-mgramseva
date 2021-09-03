@@ -199,4 +199,21 @@ public class WSConfiguration {
 
 	@Value("${state.level.tenant.id}")
 	private String stateLevelTenantId;
+	
+	@Value("${egov.billing.service.host}")
+	private String billingHost;
+	
+	@Value("${egov.demand.searchendpoint}")
+	private String demandSearchUri;
+	
+	@Value("${egov.ws.service.feedback}")
+	private String saveFeedback;
+	
+	@Value("${ws.feedback.survey.link}")
+	private String feedbackLink;
+
+	
+	@Value("${egov.mgramseva.ui.path}")
+	private String webUiPath;
+
 }

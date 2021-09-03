@@ -4,7 +4,8 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 class SuccessPage extends StatelessWidget {
   final label;
   final String? subText;
-  SuccessPage(this.label, {this.subText});
+  final String? subTextHeader;
+  SuccessPage(this.label, {this.subText, this.subTextHeader});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,8 @@ class SuccessPage extends StatelessWidget {
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 32,
+                    fontFamily: 'Roboto Condensed',
+                    fontWeight: FontWeight.w700
                   )),
             ),
             SizedBox(
@@ -33,6 +36,20 @@ class SuccessPage extends StatelessWidget {
               color: Colors.white,
               size: 32,
             ),
+            SizedBox(
+              height: 20,
+            ),
+            if(subTextHeader != null) Container(
+              padding: EdgeInsets.only(top: 8),
+              alignment: Alignment.center,
+              child: Text(ApplicationLocalizations.of(context).translate(subTextHeader ?? ''),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700
+                  )),
+            ),
             if(subText != null) Container(
               padding: EdgeInsets.only(top: 8),
               alignment: Alignment.center,
@@ -41,6 +58,7 @@ class SuccessPage extends StatelessWidget {
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
+                    fontWeight: FontWeight.w700
                   )),
             ),
           ],

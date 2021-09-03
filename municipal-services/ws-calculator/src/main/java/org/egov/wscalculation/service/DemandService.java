@@ -139,21 +139,19 @@ public class DemandService {
 			Long fromDateSearch = null;
 			Long toDateSearch = null;
 			Set<String> consumerCodes;
-//			if (isForConnectionNo) {
 				fromDateSearch = fromDate;
 				toDateSearch = toDate;
 				consumerCodes = calculations.stream().map(calculation -> calculation.getConnectionNo())
 						.collect(Collectors.toSet());
-//			} else {
-//				consumerCodes = calculations.stream().map(calculation -> calculation.getApplicationNO())
-//						.collect(Collectors.toSet());
-//			}
+
 			
 			List<Demand> demands = searchDemand(tenantId, consumerCodes, fromDateSearch, toDateSearch, requestInfo);
 			Set<String> connectionNumbersFromDemands = new HashSet<>();
-			if (!CollectionUtils.isEmpty(demands))
-				connectionNumbersFromDemands = demands.stream().map(Demand::getConsumerCode)
+			if (!CollectionUtils.isEmpty(demands)) {
+				connectionNumbersFromDemands = demands.stream().filter(demand ->demand.getConsumerType().equalsIgnoreCase(isForConnectionNo ? "waterConnection" : "waterConnection-arrears")).map(Demand::getConsumerCode)
 						.collect(Collectors.toSet());
+			}
+				
 
 			// If demand already exists add it updateCalculations else
 			// createCalculations
@@ -222,7 +220,7 @@ public class DemandService {
 
 			demands.add(Demand.builder().consumerCode(consumerCode).demandDetails(demandDetails).payer(owner)
 					.minimumAmountPayable(minimumPayableAmount).tenantId(tenantId).taxPeriodFrom(fromDate)
-					.taxPeriodTo(toDate).consumerType("waterConnection").businessService(businessService)
+					.taxPeriodTo(toDate).consumerType( isForConnectionNO ? "waterConnection" : "waterConnection-arrears").businessService(businessService)
 					.status(StatusEnum.valueOf("ACTIVE")).billExpiryTime(expiryDate).build());
 
 			String localizationMessage = util.getLocalizationMessages(tenantId, requestInfo);
@@ -553,8 +551,8 @@ public class DemandService {
 	private List<Demand> updateDemandForCalculation(RequestInfo requestInfo, List<Calculation> calculations,
 			Long fromDate, Long toDate, boolean isForConnectionNo) {
 		List<Demand> demands = new LinkedList<>();
-		Long fromDateSearch = isForConnectionNo ? fromDate : null;
-		Long toDateSearch = isForConnectionNo ? toDate : null;
+		Long fromDateSearch = fromDate; //isForConnectionNo ? fromDate : null;
+		Long toDateSearch = toDate; //isForConnectionNo ? toDate : null;
 
 		for (Calculation calculation : calculations) {
 			Set<String> consumerCodes = Collections.singleton(calculation.getWaterConnection().getConnectionNo());

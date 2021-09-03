@@ -14,18 +14,21 @@ class BasicDateField extends StatelessWidget {
   final TextEditingController controller;
   final bool? isEnabled;
   final String? requiredMessage;
-  BasicDateField(this.label,  this.isRequired, this.controller, {this.firstDate, this.lastDate, this.onChangeOfDate, this.initialDate, this.isEnabled, this.requiredMessage});
+  final GlobalKey? contextkey;
+  BasicDateField(this.label,  this.isRequired, this.controller, {this.firstDate, this.lastDate, this.onChangeOfDate, this.initialDate, this.isEnabled, this.requiredMessage, this.contextkey});
 
   @override
   Widget build(BuildContext context) {
     Widget datePicker = AbsorbPointer(
       absorbing: !(isEnabled ?? true),
         child : DateTimeField(
+          style: TextStyle(color: (isEnabled ?? true) ? null : Colors.grey),
       format: format,
       decoration: InputDecoration(
+        fillColor: (isEnabled ?? true) ? Colors.white : Colors.grey,
         prefixText: "",
         suffixIcon: Icon(Icons.calendar_today),
-        prefixStyle: TextStyle(color: Colors.black),
+        prefixStyle: TextStyle(color: Theme.of(context).primaryColorDark),
         contentPadding:
             new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(1.0)),
@@ -52,18 +55,19 @@ class BasicDateField extends StatelessWidget {
       Text(ApplicationLocalizations.of(context).translate(label),
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),
+              fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
       Text(isRequired ? '* ' : ' ',
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 19, color: Colors.black)),
+              fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
     ]);
 
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 760) {
         return Container(
+            key: contextkey,
             margin:
-                const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
+                const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
             child: Column(children: [
               Container(
                   padding: EdgeInsets.only(top: 18, bottom: 3),
@@ -73,6 +77,7 @@ class BasicDateField extends StatelessWidget {
             ]));
       } else {
         return Container(
+            key: contextkey,
             margin: const EdgeInsets.only(
                 top: 20.0, bottom: 5, right: 20, left: 20),
             child: Row(children: [

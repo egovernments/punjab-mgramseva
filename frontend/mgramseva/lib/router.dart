@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
@@ -14,22 +12,24 @@ import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
 import 'package:mgramseva/main.dart';
 import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
 import 'package:mgramseva/screeens/ConnectionResults.dart';
-import 'package:mgramseva/screeens/Dashboard.dart';
 import 'package:mgramseva/screeens/Profile/EditProfile.dart';
-import 'package:mgramseva/screeens/ExpenseDetails.dart';
+import 'package:mgramseva/screeens/AddExpense/ExpenseDetails.dart';
 import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
 import 'package:mgramseva/screeens/HouseholdDetail.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/Updatepassword.dart';
+import 'package:mgramseva/screeens/feed_back.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
+import 'package:mgramseva/utils/role_actions.dart';
 import 'package:mgramseva/widgets/not_available.dart';
 import 'package:provider/provider.dart';
-import 'package:universal_html/html.dart';
 import 'model/success_handler.dart';
 
+import 'model/user/user_details.dart';
 import 'screeens/ForgotPassword/ForgotPassword.dart';
 import 'screeens/common/collect_payment.dart';
+import 'screeens/dashboard/Dashboard.dart';
 import 'screeens/expense/expense_results.dart';
 import 'screeens/expense/search_expense.dart';
 import 'widgets/CommonSuccessPage.dart';
@@ -44,13 +44,40 @@ class router {
     Map<String, dynamic>? query = uri.queryParameters;
     String? path = uri.path;
     if (kIsWeb) {
+      if(Routes.POST_PAYMENT_FEED_BACK == path && settings.arguments == null){
+        Map localQuery;
+        String routePath;
+        if(settings.arguments != null){
+          localQuery = settings.arguments as Map;
+        }else{
+          if (queryValidator(Routes.POST_PAYMENT_FEED_BACK, query)) {
+            localQuery = query;
+          } else {
+            return pageNotAvailable;
+          }
+        }
+        routePath = '${Routes.POST_PAYMENT_FEED_BACK}?paymentId=${localQuery['paymentId']}&connectionno=${localQuery['connectionno']}&tenantId=${localQuery['tenantId']}';
+        return MaterialPageRoute(
+            builder: (_) => PaymentFeedBack(query: localQuery),
+            settings: RouteSettings(name: routePath));
+      }
+
       var userDetails = commonProvider.getWebLoginStatus();
-      if (userDetails == null && Routes.LOGIN != settings.name && Routes.FORGOT_PASSWORD != settings.name && Routes.RESET_PASSWORD != settings.name) {
+      if (userDetails == null &&
+          Routes.LOGIN != settings.name &&
+          Routes.FORGOT_PASSWORD != settings.name &&
+          Routes.RESET_PASSWORD != settings.name) {
         path = Routes.SELECT_LANGUAGE;
-      } else if (Routes.LOGIN == settings.name || Routes.FORGOT_PASSWORD == settings.name || Routes.RESET_PASSWORD == settings.name) {
+      } else if (Routes.LOGIN == settings.name ||
+          Routes.FORGOT_PASSWORD == settings.name ||
+          Routes.RESET_PASSWORD == settings.name) {
         path = settings.name;
+      } else if (path == '/') {
+        path = Routes.HOME;
       }
     }
+    if (!(path != null && RoleActionsFiltering().isEligibleRoletoRoute(path)))
+      return pageNotAvailable;
 
     /// Here we'll handle all the routing
     currentRoute = settings.name;
@@ -76,6 +103,17 @@ class router {
         return MaterialPageRoute(
             builder: (_) => SearchConsumerConnection(settings.arguments as Map),
             settings: RouteSettings(name: Routes.HOUSEHOLD));
+
+      case Routes.HOUSEHOLDRECEIPTS:
+        return MaterialPageRoute(
+            builder: (_) => SearchConsumerConnection(settings.arguments as Map),
+            settings: RouteSettings(name: Routes.HOUSEHOLDRECEIPTS));
+
+      case Routes.CONSUMER_SEARCH_UPDATE:
+        return MaterialPageRoute(
+            builder: (_) => SearchConsumerConnection(settings.arguments as Map),
+            settings: RouteSettings(name: Routes.CONSUMER_SEARCH_UPDATE));
+
       case Routes.EDIT_PROFILE:
         return MaterialPageRoute(
             builder: (_) => EditProfile(),
@@ -86,7 +124,8 @@ class router {
             settings: RouteSettings(name: Routes.CHANGE_PASSWORD));
       case Routes.UPDATE_PASSWORD:
         return MaterialPageRoute(
-            builder: (_) => UpdatePassword(),
+            builder: (_) =>
+                UpdatePassword(userDetails: settings.arguments as UserDetails),
             settings: RouteSettings(name: Routes.UPDATE_PASSWORD));
       case Routes.CONSUMER_SEARCH:
         return MaterialPageRoute(
@@ -97,7 +136,9 @@ class router {
       case Routes.CONSUMER_UPDATE:
         String? id;
         if (settings.arguments != null) {
-          id = (settings.arguments as WaterConnection).applicationNo;
+          id = ((settings.arguments as Map)['waterconnections']
+                  as WaterConnection)
+              .connectionNo;
         } else {
           if (queryValidator(Routes.CONSUMER_UPDATE, query)) {
             id = query['applicationNo'];
@@ -109,7 +150,8 @@ class router {
             builder: (_) => ConsumerDetails(
                 id: id,
                 waterconnection: settings.arguments != null
-                    ? settings.arguments as WaterConnection
+                    ? (settings.arguments as Map)['waterconnections']
+                        as WaterConnection
                     : null),
             settings: RouteSettings(
                 name: '${Routes.CONSUMER_UPDATE}?applicationNo=$id'));
@@ -142,11 +184,16 @@ class router {
       ///View HosueHold Details
       case Routes.HOUSEHOLD_DETAILS:
         String? id;
+        String? mode;
         if (settings.arguments != null) {
-          id = (settings.arguments as WaterConnection).connectionNo;
+          id = ((settings.arguments as Map)['waterconnections']
+                  as WaterConnection)
+              .connectionNo;
+          mode = (settings.arguments as Map)['mode'];
         } else {
           if (queryValidator(Routes.HOUSEHOLD_DETAILS, query)) {
             id = query['applicationNo'];
+            mode = query['mode'];
           } else {
             return pageNotAvailable;
           }
@@ -154,11 +201,14 @@ class router {
         return MaterialPageRoute(
             builder: (_) => HouseholdDetail(
                 id: id,
+                mode: mode,
                 waterconnection: settings.arguments != null
-                    ? settings.arguments as WaterConnection
+                    ? (settings.arguments as Map)['waterconnections']
+                        as WaterConnection
                     : null),
             settings: RouteSettings(
-                name: '${Routes.HOUSEHOLD_DETAILS}?applicationNo=$id'));
+                name:
+                    '${Routes.HOUSEHOLD_DETAILS}?applicationNo=$id&mode=$mode'));
 
       case Routes.DASHBOARD:
         return MaterialPageRoute(
@@ -179,7 +229,10 @@ class router {
       case Routes.BILL_GENERATE:
         String? id;
         if (settings.arguments != null) {
-          id = (settings.arguments as WaterConnection).connectionNo!.split('/').join("_");
+          id = (settings.arguments as WaterConnection)
+              .connectionNo!
+              .split('/')
+              .join("_");
         } else {
           if (queryValidator(Routes.BILL_GENERATE, query)) {
             id = query['applicationNo'];
@@ -240,23 +293,32 @@ class router {
           } else {
             return pageNotAvailable;
           }
-        }else{
+        } else {
           localQuery = settings.arguments as Map<String, dynamic>;
         }
         return MaterialPageRoute(
             builder: (_) => ConnectionPaymentView(query: localQuery),
-            settings: RouteSettings(name: '${Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT}?${Uri(queryParameters: localQuery).query}'));
+            settings: RouteSettings(
+                name:
+                    '${Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT}?${Uri(queryParameters: localQuery).query}'));
 
-
-      /// Redirecting routes
       case Routes.RESET_PASSWORD:
+        String? id;
+        if (settings.arguments != null) {
+          id = (settings.arguments as Map)['id'];
+        } else {
+          return pageNotAvailable;
+        }
         if (settings.arguments == null)
           return MaterialPageRoute(
               builder: (_) => ForgotPassword(),
               settings: RouteSettings(name: Routes.FORGOT_PASSWORD));
         return MaterialPageRoute(
-            builder: (_) => ResetPassword(),
-            settings: RouteSettings(name: Routes.RESET_PASSWORD));
+            builder: (_) => ResetPassword(
+                  id: id,
+                ),
+            settings:
+                RouteSettings(name: '${Routes.RESET_PASSWORD}?mobileNo=$id'));
       case Routes.MANUAL_BILL_GENERATE:
         return MaterialPageRoute(
             builder: (_) => GenerateBill(),
@@ -276,16 +338,21 @@ class router {
         if (query.keys.contains('challanNo')) return true;
         return false;
       case Routes.HOUSEHOLD_DETAILS:
-        if (query.keys.contains('applicationNo')) return true;
+        if (query.keys.contains('applicationNo') && query.keys.contains('mode'))
+          return true;
         return false;
       case Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT:
-        if (query.keys.contains('consumerCode') && query.keys.contains('businessService') && query.keys.contains('tenantId')) return true;
+        if (query.keys.contains('consumerCode') &&
+            query.keys.contains('businessService') &&
+            query.keys.contains('tenantId')) return true;
         return false;
 
       case Routes.BILL_GENERATE:
         if (query.keys.contains('applicationNo')) return true;
         return false;
-
+      case Routes.POST_PAYMENT_FEED_BACK:
+        if (query.keys.contains('paymentId') && query.keys.contains('connectionno') && query.keys.contains('tenantId')) return true;
+        return false;
       default:
         return false;
     }

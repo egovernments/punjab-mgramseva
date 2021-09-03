@@ -13,77 +13,97 @@ class RadioButtonFieldBuilder extends StatelessWidget {
   final List<KeyValue> options;
   final ValueChanged widget1;
   final bool? isEnabled;
+  final GlobalKey? contextkey;
 
   RadioButtonFieldBuilder(this.context, this.labelText, this.controller,
-      this.input, this.prefixText, this.isRequired, this.options, this.widget1, {this.isEnabled});
+      this.input, this.prefixText, this.isRequired, this.options, this.widget1,
+      {this.isEnabled, this.contextkey});
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
         return Container(
+            key: contextkey,
             child: Row(children: [
-          new Container(
-              width: MediaQuery.of(context).size.width / 3,
-              padding: EdgeInsets.only(left: 24, top: 10),
-              child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(children: <Widget>[
-                    Text(
+              new Container(
+                  width: MediaQuery.of(context).size.width / 3,
+                  padding: EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(children: <Widget>[
+                        Text(
+                            ApplicationLocalizations.of(context)
+                                .translate(labelText),
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                            color: Theme.of(context).primaryColorDark)),
+                        Text(isRequired ? '*' : '',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                            color: Theme.of(context).primaryColorDark)),
+                      ]))),
+              Container(
+                  width: MediaQuery.of(context).size.width / 2.5,
+                  padding: EdgeInsets.only(left: 24, top: 18),
+                  child: Column(
+                      children: options.map(
+                    (data) {
+                      return new RadioListTile(
+                        title: new Text(ApplicationLocalizations.of(context)
+                            .translate(data.label)),
+                        value: data.key,
+                        groupValue: controller,
+                        onChanged: (isEnabled ?? true) ? widget1 : null,
+                      );
+                    },
+                  ).toList())),
+            ]));
+      } else {
+        return Container(
+            margin:
+            const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
+            key: contextkey,
+            child: Column(children: [
+              new Container(
+                  padding: EdgeInsets.only(top: 18, bottom: 3),
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(children: <Widget>[
+                        Text(
                         ApplicationLocalizations.of(context)
                             .translate(labelText),
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 19,
-                            color: Colors.black)),
-                    Text(isRequired ? '* ' : ' ',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 19,
-                            color: Colors.black)),
-                  ]))),
-          Container(
-              width: MediaQuery.of(context).size.width / 2.5,
-              padding: EdgeInsets.only(left: 24, top: 10),
-              child: Column(
+                            fontWeight: FontWeight.w400, fontSize: 16,
+                            color: Theme.of(context).primaryColorDark),
+                      ),
+                        Text(isRequired ? '*' : '',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                            color: Theme.of(context).primaryColorDark)),]))),
+              Column(
                   children: options.map(
                 (data) {
                   return new RadioListTile(
-                    title: new Text(data.label),
+                    title: new Text(ApplicationLocalizations.of(context)
+                        .translate(data.label)),
                     value: data.key,
                     groupValue: controller,
                     onChanged: (isEnabled ?? true) ? widget1 : null,
                   );
                 },
-              ).toList())),
-        ]));
-      } else {
-        return Container(
-            child: Column(children: [
-          new Container(
-              padding: EdgeInsets.only(left: 24, top: 10),
-              child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    ApplicationLocalizations.of(context).translate(labelText),
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
-                  ))),
-          Column(
-              children: options.map(
-            (data) {
-              return new RadioListTile(
-                title: new Text(data.label),
-                value: data.key,
-                groupValue: controller,
-                onChanged: (isEnabled ?? true) ? widget1 : null,
-              );
-            },
-          ).toList()),
-        ]));
+              ).toList()),
+            ]));
       }
     });
   }
 }
+
+

@@ -80,7 +80,9 @@ public class WSCalculationConstant {
 
 	public static final String WS_WATER_CESS = "WS_WATER_CESS";
 
-	public static final String WS_CHARGE = "WS_CHARGE";
+	public static final String WS_CHARGE = "10101";
+
+	public static final String WS_CHARGE_ARREAR = "10102";
 
 	/**
 	 * data fields
@@ -164,7 +166,7 @@ public class WSCalculationConstant {
 
 	public static final String NOTIFICATION_LOCALE = "en_IN";
 
-	public static final String MODULE = "rainmaker-ws";
+	public static final String MODULE = "mgramseva-ws";
 
 	public static final String SMS_RECIEVER_MASTER = "SMSReceiver";
 

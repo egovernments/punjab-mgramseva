@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/urls.dart';
-import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:universal_html/html.dart';
 // import 'package:mgramseva/services/LocalStorage.dart';
@@ -17,8 +16,15 @@ import 'package:universal_html/html.dart';
 Future getLocilisation(String locale) async {
   var res = window.localStorage['localisation_' + locale.toString()];
   if (res == null) {
-    final requestInfo =
-        RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "_search",APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID, "");
+    final requestInfo = RequestInfo(
+        APIConstants.API_MODULE_NAME,
+        APIConstants.API_VERSION,
+        APIConstants.API_TS,
+        "_search",
+        APIConstants.API_DID,
+        APIConstants.API_KEY,
+        APIConstants.API_MESSAGE_ID,
+        "");
 
     // print(requestInfo.toJson());
     var response = await http.post(

@@ -40,7 +40,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ChallanResponse {
-
+	
+  @JsonProperty("totalCount")
+  private Integer totalCount =null;
+  
   @JsonProperty("responseInfo")
 
   private ResponseInfo responseInfo = null;
@@ -66,6 +69,13 @@ public class ChallanResponse {
 	    return this;
 	  }
 
-  
+
+public Integer getTotalCount() {
+	return totalCount;
+}
+
+public void setTotalCount(Integer totalCount) {
+	this.totalCount = totalCount;
+} 
 
 }

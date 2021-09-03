@@ -1,14 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-
+import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/tenants_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
-
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -49,15 +46,27 @@ class _CustomAppBarState extends State<CustomAppBar> {
           .toList();
 
       if (r != null && tenantProvider.tenants != null) {
-        final resulst = tenantProvider.tenants!.tenantsList!
+        final result = tenantProvider.tenants!.tenantsList!
             .where((element) => r.contains(element.code))
             .toList();
-        showdialog(resulst);
+        if (result.length > 1 &&
+            commonProvider.userDetails!.selectedtenant == null) {
+          showdialog(result);
+        } else if (result.length == 1 &&
+            commonProvider.userDetails!.selectedtenant == null) {
+          if (kIsWeb) {
+            if (result.isNotEmpty) commonProvider.setTenant(result.first);
+            Navigator.popAndPushNamed(context, Routes.HOME);
+          } else {
+            commonProvider.setTenant(result.first);
+            Navigator.popAndPushNamed(context, Routes.HOME);
+          }
+        }
       }
     }
   }
 
-  showdialog(resulst) {
+  showdialog(result) {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -79,10 +88,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 color: Colors.white,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: List.generate(resulst.length, (index) {
+                  children: List.generate(result.length, (index) {
                     return GestureDetector(
                         onTap: () {
-                          commonProvider.setTenant(resulst[index]);
+                          commonProvider.setTenant(result[index]);
                           Navigator.pop(context);
                           Navigator.pushReplacementNamed(context, Routes.HOME);
                         },
@@ -92,7 +101,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               ? Colors.white
                               : Color.fromRGBO(238, 238, 238, 1),
                           width: MediaQuery.of(context).size.width,
-                          height: 45,
+                          height: 50,
                           padding: EdgeInsets.all(5),
                           child: Padding(
                             padding: const EdgeInsets.all(10),
@@ -101,15 +110,37 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    resulst[index].city!.name!,
+                                ApplicationLocalizations.of(context).translate(result[index].code!),
                                     style: TextStyle(
                                         fontSize: 16,
-                                        fontWeight: FontWeight.w400),
+                                        fontWeight: FontWeight.w400,
+                                        color: commonProvider.userDetails!
+                                                        .selectedtenant !=
+                                                    null &&
+                                                commonProvider
+                                                        .userDetails!
+                                                        .selectedtenant!
+                                                        .city!
+                                                        .code ==
+                                                    result[index].city!.code!
+                                            ? Theme.of(context).primaryColor
+                                            : Colors.black),
                                   ),
-                                  Text(resulst[index].city!.code!,
+                                  Text(result[index].city!.code!,
                                       style: TextStyle(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w400))
+                                          fontWeight: FontWeight.w400,
+                                          color: commonProvider.userDetails!
+                                                          .selectedtenant !=
+                                                      null &&
+                                                  commonProvider
+                                                          .userDetails!
+                                                          .selectedtenant!
+                                                          .city!
+                                                          .code ==
+                                                      result[index].city!.code!
+                                              ? Theme.of(context).primaryColor
+                                              : Colors.black))
                                 ]),
                           ),
                         )));
@@ -127,37 +158,61 @@ class _CustomAppBarState extends State<CustomAppBar> {
         .map((e) => e.tenantId)
         .toSet()
         .toList();
-    final resulst = tenant.tenantsList!
+    final result = tenant.tenantsList!
         .where((element) => r.contains(element.code))
         .toList();
+    if (result.length == 1 &&
+        commonProvider.userDetails!.selectedtenant == null) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        if (kIsWeb) {
+          if (result.isNotEmpty) commonProvider.setTenant(result.first);
+          Navigator.pushReplacementNamed(context, Routes.HOME);
+        } else {
+          commonProvider.setTenant(result.first);
+          Navigator.popAndPushNamed(context, Routes.HOME);
+        }
+      });
+    } else if (result.length > 1 &&
+        commonProvider.userDetails!.selectedtenant == null) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) => showdialog(result));
+    }
+
     return GestureDetector(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Consumer<CommonProvider>(
                 builder: (_, commonProvider, child) =>
                     commonProvider.userDetails!.selectedtenant == null
                         ? Text("")
                         : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                                Text(commonProvider
-                                    .userDetails!.selectedtenant!.code!),
-                                Text(commonProvider
-                                    .userDetails!.selectedtenant!.city!.code!)
+                                Text(ApplicationLocalizations.of(context)
+                                    .translate(commonProvider
+                                        .userDetails!.selectedtenant!.code!)),
+                                Text(ApplicationLocalizations.of(context)
+                                    .translate(commonProvider.userDetails!
+                                        .selectedtenant!.city!.code!))
                               ])),
             Icon(Icons.arrow_drop_down)
           ],
         ),
-        onTap: () => showdialog(resulst));
+        onTap: () => showdialog(result));
   }
 
   @override
   Widget build(BuildContext context) {
     var tenantProvider = Provider.of<TenantsProvider>(context, listen: false);
+    var languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
     return AppBar(
-      title: Text(ApplicationLocalizations.of(context)
-          .translate(i18.common.MGRAM_SEVA)),
+      title: Image(
+          width: 150,
+          image: NetworkImage(
+            languageProvider.stateInfo!.logoUrlWhite!,
+          )),
       actions: [
         Container(
             height: MediaQuery.of(context).size.height,

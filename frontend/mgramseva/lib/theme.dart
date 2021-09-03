@@ -4,7 +4,10 @@ import 'package:mgramseva/utils/color_codes.dart';
 ThemeData get theme => ThemeData(
     primarySwatch: createMaterialColor(Color(0XFFf47738)),
     highlightColor: createMaterialColor(Color(0XFFC7E0F1)),
+    backgroundColor: createMaterialColor(Color.fromRGBO(238, 238, 238, 1)),
     hintColor: createMaterialColor(Color(0XFF3498DB)),
+    primaryColorDark: Color.fromRGBO(11, 12, 12, 1),
+    primaryColorLight: Color.fromRGBO(80, 90, 95, 1),
     // accentColor:  Color(0xff0B4B66),
 
     appBarTheme: AppBarTheme(
@@ -37,6 +40,7 @@ ThemeData get theme => ThemeData(
       contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.zero)),
       prefixStyle: TextStyle(color: Colors.black),
+      hintStyle: TextStyle(color: Color.fromRGBO(80, 90, 95, 1)),
       errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.zero),
           borderSide: BorderSide(color: Colors.red)),

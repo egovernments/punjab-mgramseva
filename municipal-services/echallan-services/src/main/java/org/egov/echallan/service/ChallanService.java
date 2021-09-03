@@ -1,6 +1,13 @@
 package org.egov.echallan.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,6 +17,8 @@ import org.egov.echallan.expense.validator.ExpenseValidator;
 import org.egov.echallan.model.Challan;
 import org.egov.echallan.model.Challan.StatusEnum;
 import org.egov.echallan.model.ChallanRequest;
+import org.egov.echallan.model.LastMonthSummary;
+import org.egov.echallan.model.LastMonthSummaryResponse;
 import org.egov.echallan.model.SearchCriteria;
 import org.egov.echallan.repository.ChallanRepository;
 import org.egov.echallan.util.CommonUtils;
@@ -94,7 +103,6 @@ public class ChallanService {
 	        }
 	        enrichmentService.enrichSearchCriteriaWithOwnerids(criteria,userDetailResponse);
 	        challans = repository.getChallans(criteria);
-
 	        if(CollectionUtils.isEmpty(challans)){
 	            return Collections.emptyList();
 	        }
@@ -105,7 +113,7 @@ public class ChallanService {
 	    }
 	 
 	 public List<Challan> getChallansWithOwnerInfo(SearchCriteria criteria,RequestInfo requestInfo){
-	        List<Challan> challans = repository.getChallans(criteria);
+		 List<Challan> challans = repository.getChallans(criteria);
 	        if(challans.isEmpty())
 	            return Collections.emptyList();
 	        challans = enrichmentService.enrichChallanSearch(challans,criteria,requestInfo);
@@ -122,7 +130,6 @@ public class ChallanService {
 	        criteria.setBusinessService(request.getChallan().getBusinessService());
 
 	        List<Challan> challans = repository.getChallans(criteria);
-
 	        if(challans.isEmpty())
 	            return Collections.emptyList();
 	        challans = enrichmentService.enrichChallanSearch(challans,criteria,request.getRequestInfo());
@@ -147,5 +154,76 @@ public class ChallanService {
 			return request.getChallan();
 		}
 
+	public LastMonthSummary getLastMonthSummary(SearchCriteria criteria, RequestInfo requestInfo) {
+
+		LastMonthSummary lastMonthSummary = new LastMonthSummary();
+		String tenantId = criteria.getTenantId();
+		LocalDate prviousMonthStart = LocalDate.now().minusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+		LocalDate prviousMonthEnd = LocalDate.now().minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
+
+		LocalDateTime previousMonthStartDateTime = LocalDateTime.of(prviousMonthStart.getYear(),
+				prviousMonthStart.getMonth(), prviousMonthStart.getDayOfMonth(), 0, 0, 0);
+		LocalDateTime previousMonthEndDateTime = LocalDateTime.of(prviousMonthEnd.getYear(), prviousMonthEnd.getMonth(),
+				prviousMonthEnd.getDayOfMonth(), 23, 59, 59);
+
+		List<String> previousMonthCollection = repository.getPreviousMonthCollection(tenantId,
+				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+						.toString(),
+				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).toString());
+		if (null != previousMonthCollection && previousMonthCollection.size() > 0)
+			lastMonthSummary.setPreviousMonthCollection(previousMonthCollection.get(0));
+
+		List<String> previousMonthNewExpense = repository.getPreviousMonthNewExpense(tenantId,
+				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+						.toString(),
+				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).toString());
+		if (null != previousMonthNewExpense && previousMonthNewExpense.size() > 0)
+			lastMonthSummary.setPreviousMonthNewExpense(previousMonthNewExpense.get(0));
+
+		List<String> cumulativePendingExpense = repository.getCumulativePendingExpense(tenantId);
+		if (null != cumulativePendingExpense && cumulativePendingExpense.size() > 0)
+			lastMonthSummary.setCumulativePendingExpense(cumulativePendingExpense.get(0));
+
+		List<String> cumulativePendingCollection = repository.getTotalPendingCollection(tenantId);
+		if (null != cumulativePendingExpense && cumulativePendingExpense.size() > 0)
+			lastMonthSummary.setCumulativePendingCollection(cumulativePendingCollection.get(0));
+
+		List<String> newDemand = repository.getNewDemand(tenantId,
+				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+						.toString(),
+				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).toString());
+		if (null != newDemand && newDemand.size() > 0)
+			lastMonthSummary.setNewDemand(newDemand.get(0));
+
+		List<String> actualCollection = repository.getActualCollection(tenantId,
+				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+						.toString(),
+				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).toString());
+		if (null != actualCollection && actualCollection.size() > 0)
+			lastMonthSummary.setActualCollection(actualCollection.get(0));
+
+		lastMonthSummary.setPreviousMonthYear(getMonthYear());
+		
+		return lastMonthSummary;
+
+	}
+	public String getMonthYear() {
+		LocalDateTime localDateTime = LocalDateTime.now();
+		int currentMonth = localDateTime.getMonthValue();
+		String monthYear ;
+		if (currentMonth >= Month.APRIL.getValue()) {
+			monthYear = YearMonth.now().getYear() + "-";
+			monthYear = monthYear
+					+ (Integer.toString(YearMonth.now().getYear() + 1).substring(2, monthYear.length() - 1));
+		} else {
+			monthYear = YearMonth.now().getYear() - 1 + "-";
+			monthYear = monthYear
+					+ (Integer.toString(YearMonth.now().getYear()).substring(2, monthYear.length() - 1));
+
+		}
+		StringBuilder monthYearBuilder = new StringBuilder(localDateTime.getMonth().toString()).append(" ").append(monthYear);
+
+		return monthYearBuilder.toString() ;
+	}
 	
 }

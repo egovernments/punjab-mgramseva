@@ -1,8 +1,20 @@
 package org.egov.waterconnection.service;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.Role;
@@ -12,21 +24,33 @@ import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.repository.IdGenRepository;
 import org.egov.waterconnection.repository.ServiceRequestRepository;
 import org.egov.waterconnection.repository.WaterDaoImpl;
+import org.egov.waterconnection.repository.builder.WsQueryBuilder;
 import org.egov.waterconnection.util.WaterServicesUtil;
-import org.egov.waterconnection.web.models.*;
+import org.egov.waterconnection.web.models.AuditDetails;
+import org.egov.waterconnection.web.models.Connection;
 import org.egov.waterconnection.web.models.Connection.StatusEnum;
+import org.egov.waterconnection.web.models.OwnerInfo;
+import org.egov.waterconnection.web.models.Property;
+import org.egov.waterconnection.web.models.PropertyCriteria;
+import org.egov.waterconnection.web.models.RequestInfoWrapper;
+import org.egov.waterconnection.web.models.SearchCriteria;
+import org.egov.waterconnection.web.models.Status;
+import org.egov.waterconnection.web.models.WaterConnection;
+import org.egov.waterconnection.web.models.WaterConnectionRequest;
+import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.egov.waterconnection.web.models.Idgen.IdResponse;
 import org.egov.waterconnection.web.models.users.User;
 import org.egov.waterconnection.web.models.users.UserDetailResponse;
 import org.egov.waterconnection.web.models.users.UserSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.extern.slf4j.Slf4j;
 
 
 @Service
@@ -57,7 +81,12 @@ public class EnrichmentService {
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
 
+	@Autowired
+    private WsQueryBuilder queryBuilder;
 
+	@Autowired
+    private JdbcTemplate jdbcTemplate;
+	
 	/**
 	 * Enrich water connection
 	 * 
@@ -236,7 +265,9 @@ public class EnrichmentService {
 				SearchCriteria criteria = SearchCriteria.builder()
 						.tenantId(waterConnectionrequest.getWaterConnection().getTenantId())
 						.connectionNumber(waterConnectionrequest.getWaterConnection().getConnectionNo()).build();
-				List<WaterConnection> connections = waterService.search(criteria, waterConnectionrequest.getRequestInfo());
+				List<WaterConnection> connections;
+				WaterConnectionResponse waterConnection = waterService.search(criteria, waterConnectionrequest.getRequestInfo());
+				connections = waterConnection.getWaterConnection();
 				if (!CollectionUtils.isEmpty(connections)) {
 					WaterConnection connection = connections.get(connections.size() - 1);
 					if (!connection.getConnectionType().equals(WCConstants.METERED_CONNECTION)) {
@@ -256,7 +287,7 @@ public class EnrichmentService {
 		List<String> connectionNumbers = getIdList(request.getRequestInfo(), request.getWaterConnection().getTenantId(),
 				config.getWaterConnectionIdGenName(), config.getWaterConnectionIdGenFormat());
 		if (connectionNumbers.size() != 1) {
-			throw new CustomException("IDGEN_ERROR",
+			throw new CustomException("ID_MISMATCH_ERROR_CONNECTION",
 					"The Id of WaterConnection returned by IdGen is not equal to number of WaterConnection");
 		}
 		request.getWaterConnection().setConnectionNo(connectionNumbers.get(0));
@@ -314,7 +345,7 @@ public class EnrichmentService {
 		}
 		if (CollectionUtils.isEmpty(connectionHolderIds))
 			return;
-		UserSearchRequest userSearchRequest = userService.getBaseUserSearchRequest(criteria.getTenantId(), requestInfo);
+		UserSearchRequest userSearchRequest = userService.getBaseUserSearchRequest(criteria.getTenantId(), requestInfo,"CITIZEN");
 		userSearchRequest.setUuid(connectionHolderIds);
 		UserDetailResponse userDetailResponse = userService.getUser(userSearchRequest);
 		enrichConnectionHolderInfo(userDetailResponse, waterConnectionList,requestInfo);
@@ -333,7 +364,7 @@ public class EnrichmentService {
 			if(!CollectionUtils.isEmpty(waterConnection.getConnectionHolders())){
 				waterConnection.getConnectionHolders().forEach(holderInfo -> {
 					if (userIdToConnectionHolderMap.get(holderInfo.getUuid()) == null)
-						throw new CustomException("OWNER SEARCH ERROR", "The owner of the water application"
+						throw new CustomException("OWNER_SEARCH_ERROR", "The owner of the water application"
 								+ waterConnection.getApplicationNo() + " is not coming in user search");
 					else{
 						Boolean isOpenSearch = isSearchOpen(requestInfo.getUserInfo());
@@ -450,8 +481,6 @@ public class EnrichmentService {
 				waterConnection.setAdditionalDetails(additionalDetail);
 				finalConnectionList.add(waterConnection);
 			}
-
-
 		}
 		return finalConnectionList;
 	}

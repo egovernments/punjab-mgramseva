@@ -4,12 +4,17 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/models.dart';
 
+// ignore: non_constant_identifier_names
 class Constants {
   static const int PAGINATION_LIMIT = 75;
 
   static const String LOGIN_KEY = 'login_key';
   static const String LANGUAGE_KEY = 'language_key';
   static const String STATES_KEY = 'states_key';
+  static const String USER_PROFILE_KEY = 'user_profile_key';
+  static const String CREATE_CONSUMER_KEY = 'create_consumer_key';
+  static const String ADD_EXPENSE_KEY = 'add_expense_key';
+  static const String HOME_KEY = 'home_key';
 
   static List<KeyValue> GENDER = [
     KeyValue('CORE_COMMON_GENDER_MALE', 'MALE'),
@@ -26,22 +31,57 @@ class Constants {
     KeyValue('PARTIAL', 'Partial'),
   ];
 
-  static const List<HomeItem> HOME_ITEMS = [
-    HomeItem("CORE_HOUSEHOLD_REGISTER", HomeIcons.hhregister, '', {}),
-    HomeItem("CORE_COLLECT_PAYMENTS", HomeIcons.collectpayment,
-        Routes.HOUSEHOLD, {'Mode': "collect"}),
-    HomeItem("DOWNLOAD_BILLS_AND_RECEIPTS", HomeIcons.printreciept, '', {}),
+  static List<HomeItem> HOME_ITEMS = [
     HomeItem(
-        "ADD_EXPENSES_RECORD", HomeIconsModified.vector_1, Routes.EXPENSES_ADD, {}),
-    HomeItem("CORE_UPDATE_EXPENSES", HomeIconsModified.vector,
+      "CORE_HOUSEHOLD_REGISTER",
+      (i18.homeWalkThroughMSg.HOUSEHOLD_REGISTER_MSG),
+      HomeIcons.hhregister,
+      Routes.HOUSEHOLD_REGISTER,
+      {},
+    ),
+    HomeItem(
+        "CORE_COLLECT_PAYMENTS",
+        (i18.homeWalkThroughMSg.COLLECT_PAYMENTS_MSG),
+        HomeIcons.collectpayment,
+        Routes.HOUSEHOLD,
+        {'Mode': "collect"}),
+    HomeItem(
+        "DOWNLOAD_BILLS_AND_RECEIPTS",
+        (i18.homeWalkThroughMSg.DOWNLOAD_BILLS_AND_RECEIPTS_MSG),
+        HomeIcons.printreciept,
+        Routes.HOUSEHOLDRECEIPTS,
+        {'Mode': "receipts"}),
+    HomeItem(
+        "ADD_EXPENSES_RECORD",
+        (i18.homeWalkThroughMSg.ADD_EXPENSE_RECORD_MSG),
+        HomeIconsModified.vector_1,
+        Routes.EXPENSES_ADD, {}),
+    HomeItem(
+        "CORE_UPDATE_EXPENSES",
+        (i18.homeWalkThroughMSg.UPDATE_EXPENSE_MSG),
+        HomeIconsModified.vector,
         Routes.EXPENSE_SEARCH, {}),
     HomeItem(
-        "CORE_GENERATE_DEMAND", HomeIcons.generaedemand, Routes.MANUAL_BILL_GENERATE, {}),
-    HomeItem("CORE_CONSUMER_CREATE", HomeIcons.createconsumer,
+        "CORE_GENERATE_DEMAND",
+        (i18.homeWalkThroughMSg.GENERATE_DEMAND_MSG),
+        HomeIcons.generaedemand,
+        Routes.MANUAL_BILL_GENERATE, {}),
+    HomeItem(
+        "CORE_CONSUMER_CREATE",
+        (i18.homeWalkThroughMSg.CREATE_CONSUMER_MSG),
+        HomeIcons.createconsumer,
         Routes.CONSUMER_CREATE, {}),
-    HomeItem("CORE_UPDATE_CONSUMER_DETAILS", HomeIcons.updateconsumer,
-        'consumer/search', {'Mode': "update"}),
-    HomeItem("CORE_GPWSC_DASHBOARD", HomeIcons.dashboard, 'dashboard', {}),
+    HomeItem(
+        "CORE_UPDATE_CONSUMER_DETAILS",
+        (i18.homeWalkThroughMSg.UPDATE_CONSUMER_DETAILS_MSG),
+        HomeIcons.updateconsumer,
+        Routes.CONSUMER_SEARCH_UPDATE,
+        {'Mode': "update"}),
+    HomeItem(
+        "CORE_GPWSC_DASHBOARD",
+        (i18.homeWalkThroughMSg.GPWSC_DASHBOARD_MSG),
+        HomeIcons.dashboard,
+        Routes.DASHBOARD, {}),
   ];
 
   static List<KeyValue> SERVICECATEGORY = [
@@ -57,12 +97,16 @@ class Constants {
 
   static List<KeyValue> PAYMENT_AMOUNT = [
     KeyValue(i18.common.FULL_AMOUNT, 'fullAmount'),
-    KeyValue(i18.common.CUSTOM_AMOUNT, 'customAmount'),
+    // KeyValue(i18.common.CUSTOM_AMOUNT, 'customAmount'),
   ];
 
   static List<KeyValue> PAYMENT_METHOD = [
     KeyValue(i18.common.ONLINE, 'ONLINE'),
     KeyValue(i18.common.CHEQUE, 'CHEQUE'),
     KeyValue(i18.common.CASH, 'CASH'),
+    KeyValue(i18.common.DD, 'DD'),
+    KeyValue(i18.common.OFFLINE_NEFT, 'OFFLINE_NEFT'),
+    KeyValue(i18.common.OFFLINE_RTGS, 'OFFLINE_RTGS'),
+    KeyValue(i18.common.POSTAL_ORDER, 'POSTAL_ORDER'),
   ];
 }

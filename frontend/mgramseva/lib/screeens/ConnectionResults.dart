@@ -2,20 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
-import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/ConnectionResults/ConnectionDetailsCard.dart';
 import 'package:mgramseva/screeens/customAppbar.dart';
-import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:provider/provider.dart';
-
-import 'Home.dart';
 
 class SearchConsumerResult extends StatefulWidget {
   static const String routeName = 'search/consumer';
@@ -50,6 +45,7 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
         Provider.of<SearchConnectionProvider>(context, listen: false);
 
     return Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),

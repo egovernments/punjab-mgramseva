@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class HomeBack extends StatelessWidget {
 
@@ -21,11 +23,11 @@ class HomeBack extends StatelessWidget {
               children: [
                 Icon(
                   Icons.arrow_left,
-                  color: Colors.black,
+                  color: Theme.of(context).primaryColorDark,
                 ),
                 Text(
-                  "Back",
-                  style: TextStyle(color: Colors.black),
+                  ApplicationLocalizations.of(context).translate(i18.common.BACK),
+                  style: TextStyle(color: Theme.of(context).primaryColorDark),
                 )
               ],
             ),

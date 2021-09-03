@@ -54,42 +54,46 @@ class SearchConnectionProvider with ChangeNotifier {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+
     if (formKey.currentState!.validate()) {
       searchconnection.setValues();
       try {
         Loaders.showLoadingDialog(context);
         var inputJson = searchconnection.toJson();
         inputJson.removeWhere((key, value) => key == null || value == "");
-        print(inputJson);
         var connectionresults = SearchConnectionRepository().getconnection({
           "tenantId": commonProvider.userDetails!.selectedtenant!.code,
           ...inputJson
         });
 
-        Navigator.pop(context); /// popping the loader
+        /// popping the loader
 
         if (connectionresults != null) {
-          connectionresults.then((value) => {
-                if (value.waterConnection!.length > 0)
-                  {
-                    waterConnections = value,
-                    Navigator.pushNamed(context, Routes.SEARCH_CONSUMER_RESULT,
-                        arguments: {...inputJson, ...arguments})
-                  }
-                else
-                  {
-                    Notifiers.getToastMessage(context,
-                        i18.searchWaterConnection.NO_CONNECTION_FOUND, "ERROR")
-                  }
-              },
-          onError: (e,s){
+          connectionresults.then(
+              (value) => {
+                    Navigator.pop(context),
+                    if (value.waterConnection!.length > 0)
+                      {
+                        waterConnections = value,
+                        Navigator.pushNamed(
+                            context, Routes.SEARCH_CONSUMER_RESULT,
+                            arguments: {...inputJson, ...arguments})
+                      }
+                    else
+                      {
+                        Notifiers.getToastMessage(
+                            context,
+                            i18.searchWaterConnection.NO_CONNECTION_FOUND,
+                            "ERROR")
+                      }
+                  }, onError: (e, s) {
             Navigator.pop(context);
-            ErrorHandler().allExceptionsHandler(context, e,s);
+            ErrorHandler().allExceptionsHandler(context, e, s);
           });
         }
-      }  catch (e,s) {
+      } catch (e, s) {
         Navigator.pop(context);
-        ErrorHandler().allExceptionsHandler(context, e,s);
+        ErrorHandler().allExceptionsHandler(context, e, s);
       }
     } else {
       autoValidation = true;

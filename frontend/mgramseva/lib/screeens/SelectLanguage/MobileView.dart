@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/Login/Login.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
+import 'package:mgramseva/widgets/footerBanner.dart';
 import 'package:provider/provider.dart';
 
 class LanguageSelectMobileView extends StatelessWidget {
@@ -17,20 +18,43 @@ class LanguageSelectMobileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BackgroundContainer(new Stack(children: <Widget>[
       (new Positioned(
-          bottom: 20.0,
+          bottom: 35.0,
           child: new Container(
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(8),
               child: Card(
                   child: (Column(children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image(
-                      width: 200,
-                      image: NetworkImage(
-                        stateInfo.logoUrl ?? '',
-                      )),
-                ),
+                Container(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image(
+                            width: 150,
+                            image: NetworkImage(
+                              stateInfo.logoUrl ?? '',
+                            )),
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                          child: Text(
+                            " | ",
+                            style: TextStyle(
+                                fontSize: 19,
+                                color: Color.fromRGBO(0, 0, 0, 1)),
+                          )),
+                      Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            ApplicationLocalizations.of(context)
+                                .translate(stateInfo!.code!),
+                            style: TextStyle(
+                                fontSize: 19,
+                                color: Color.fromRGBO(0, 0, 0, 1),
+                                fontWeight: FontWeight.w400),
+                          )),
+                    ])),
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -39,8 +63,19 @@ class LanguageSelectMobileView extends StatelessWidget {
                           for (Languages language in stateInfo.languages ?? [])
                             Row(
                               children: [
-                                Text('${language.label}'),
-                                Text("  |  ")
+                                stateInfo.languages!.first == language
+                                    ? Container(
+                                        padding: EdgeInsets.only(
+                                            left: 15, right: 15),
+                                        margin: EdgeInsets.all(5),
+                                        child: Text('${language.label}'))
+                                    : Container(
+                                        padding: EdgeInsets.only(
+                                            left: 15, right: 15),
+                                        decoration: BoxDecoration(
+                                            border: Border(
+                                                left: BorderSide(width: 1.0))),
+                                        child: Text('${language.label}')),
                               ],
                             )
                         ])),
@@ -60,7 +95,11 @@ class LanguageSelectMobileView extends StatelessWidget {
                           i18.common.CONTINUE,
                           () => Navigator.pushNamed(context, Routes.LOGIN)),
                     ))
-              ]))))))
+              ])))))),
+      (new Positioned(
+          bottom: 0.0,
+          left: MediaQuery.of(context).size.width / 4,
+          child: FooterBanner()))
     ]));
   }
 }

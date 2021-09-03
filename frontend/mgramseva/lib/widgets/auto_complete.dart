@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
@@ -12,6 +13,9 @@ class AutoCompleteView extends StatelessWidget {
   final SuggestionsBoxController? suggestionsBoxController;
   final bool? isEnabled;
   final String? requiredMessage;
+  final GlobalKey? contextkey;
+  final List<FilteringTextInputFormatter>? inputFormatter;
+  final TextInputType? textInputType;
 
   const AutoCompleteView(
       {Key? key,
@@ -21,7 +25,7 @@ class AutoCompleteView extends StatelessWidget {
       required this.listTile,
       required this.controller,
       this.suggestionsBoxController,
-      this.isRequired, this.isEnabled, this.requiredMessage})
+      this.isRequired, this.isEnabled, this.requiredMessage, this.contextkey, this.inputFormatter, this.textInputType})
       : super(key: key);
 
   @override
@@ -29,6 +33,7 @@ class AutoCompleteView extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
         return Container(
+            key: contextkey,
             margin:
                 const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
             child: Row(
@@ -46,8 +51,9 @@ class AutoCompleteView extends StatelessWidget {
             ));
       } else {
         return Container(
+            key: contextkey,
             margin:
-                const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
+                const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
             child: Column(
               children: [
                 Container(
@@ -68,14 +74,14 @@ class AutoCompleteView extends StatelessWidget {
             textAlign: TextAlign.left,
             style: TextStyle(
                 fontWeight: FontWeight.w400,
-                fontSize: 19,
-                color: Colors.black)),
+                fontSize: 16,
+                color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
         Text((isRequired ?? false) ? '* ' : ' ',
             textAlign: TextAlign.left,
             style: TextStyle(
                 fontWeight: FontWeight.w400,
-                fontSize: 19,
-                color: Colors.black)),
+                fontSize: 16,
+                color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
       ]),
     );
   }
@@ -83,11 +89,14 @@ class AutoCompleteView extends StatelessWidget {
   Widget _autoComplete(BuildContext context) {
     return TypeAheadFormField(
       textFieldConfiguration: TextFieldConfiguration(
-        enabled: (isEnabled ?? true),
+          inputFormatters: inputFormatter,
+          keyboardType: textInputType ?? TextInputType.text,
+          enabled: (isEnabled ?? true),
           controller: controller,
           style: TextStyle(
-              color: Colors.black, fontSize: 19, fontWeight: FontWeight.w500),
-          decoration: InputDecoration(border: OutlineInputBorder())),
+              color: (isEnabled ?? true)
+                  ? Theme.of(context).primaryColorDark : Colors.grey, fontSize: 16),
+          decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.zero))),
       hideOnEmpty: true,
       suggestionsBoxController: suggestionsBoxController,
       suggestionsCallback: (pattern) async {

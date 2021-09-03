@@ -14,17 +14,20 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) {
     ..applicationNo = json['applicationNo'] as String?
     ..tenantId = json['tenantId'] as String?
     ..action = json['action'] as String?
+    ..status = json['status'] as String?
     ..meterInstallationDate = json['meterInstallationDate'] as int?
     ..documents = json['documents'] == null
         ? null
         : Documents.fromJson(json['documents'] as Map<String, dynamic>)
     ..proposedTaps = json['proposedTaps'] as int?
+    ..noOfTaps = json['noOfTaps'] as int?
     ..arrears = (json['arrears'] as num?)?.toDouble()
     ..connectionType = json['connectionType'] as String?
     ..oldConnectionNo = json['oldConnectionNo'] as String?
     ..meterId = json['meterId'] as String?
     ..propertyType = json['propertyType'] as String?
     ..previousReadingDate = json['previousReadingDate'] as int?
+    ..previousReading = json['previousReading'] as int?
     ..proposedPipeSize = (json['proposedPipeSize'] as num?)?.toDouble()
     ..connectionHolders = (json['connectionHolders'] as List<dynamic>?)
         ?.map((e) => Owners.fromJson(e as Map<String, dynamic>))
@@ -47,15 +50,18 @@ Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
       'applicationNo': instance.applicationNo,
       'tenantId': instance.tenantId,
       'action': instance.action,
+      'status': instance.status,
       'meterInstallationDate': instance.meterInstallationDate,
       'documents': instance.documents,
       'proposedTaps': instance.proposedTaps,
+      'noOfTaps': instance.noOfTaps,
       'arrears': instance.arrears,
       'connectionType': instance.connectionType,
       'oldConnectionNo': instance.oldConnectionNo,
       'meterId': instance.meterId,
       'propertyType': instance.propertyType,
       'previousReadingDate': instance.previousReadingDate,
+      'previousReading': instance.previousReading,
       'proposedPipeSize': instance.proposedPipeSize,
       'connectionHolders': instance.connectionHolders,
       'additionalDetails': instance.additionalDetails,
@@ -74,15 +80,23 @@ Map<String, dynamic> _$ProcessInstanceToJson(ProcessInstance instance) =>
 AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) {
   return AdditionalDetails()
     ..initialMeterReading = json['initialMeterReading'] as int?
+    ..meterReading = json['meterReading'] as int?
     ..locality = json['locality'] as String?
     ..propertyType = json['propertyType'] as String?
+    ..street = json['street'] as String?
+    ..doorNo = json['doorNo'] as String?
+    ..collectionAmount = json['collectionAmount'] as String?
     ..action = json['action'] as String?;
 }
 
 Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
     <String, dynamic>{
       'initialMeterReading': instance.initialMeterReading,
+      'meterReading': instance.meterReading,
       'locality': instance.locality,
       'propertyType': instance.propertyType,
+      'street': instance.street,
+      'doorNo': instance.doorNo,
+      'collectionAmount': instance.collectionAmount,
       'action': instance.action,
     };

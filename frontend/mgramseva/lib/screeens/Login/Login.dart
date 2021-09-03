@@ -60,7 +60,7 @@ class _LoginState extends State<Login> {
                 BuildTextField(
                   i18.login.LOGIN_PHONE_NO,
                   userNamecontroller,
-                  prefixText: '+91',
+                  prefixText: '+91-',
                   isRequired: true,
                   inputFormatter: [
                     FilteringTextInputFormatter.allow(RegExp("[0-9]"))
@@ -77,7 +77,8 @@ class _LoginState extends State<Login> {
                   maxLines: 1,
                 ),
                 GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, Routes.FORGOT_PASSWORD),
+                  onTap: () =>
+                      Navigator.pushNamed(context, Routes.FORGOT_PASSWORD),
                   child: Padding(
                       padding: const EdgeInsets.only(
                           left: 25, top: 10, bottom: 10, right: 25),

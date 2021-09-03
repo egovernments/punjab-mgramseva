@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/ScrollParent.dart';
 
 class BillsTable extends StatefulWidget {
+  final List<TableHeader> headerList;
+  final List<TableDataRow> tableData;
+  final double leftColumnWidth;
+  final double rightColumnWidth;
+  BillsTable(
+      {Key? key,
+      required this.headerList,
+      required this.tableData,
+      required this.leftColumnWidth,
+      required this.rightColumnWidth})
+      : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _BillsTable();
@@ -12,13 +26,9 @@ class BillsTable extends StatefulWidget {
 
 class _BillsTable extends State<BillsTable> {
   final ScrollController controller = ScrollController();
-  static const int sortName = 0;
-  bool isAscending = true;
-  int sortType = sortName;
 
   @override
   void initState() {
-    bill.initData(100);
     super.initState();
   }
 
@@ -27,17 +37,14 @@ class _BillsTable extends State<BillsTable> {
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
         child: HorizontalDataTable(
-            leftHandSideColumnWidth: constraints.maxWidth < 760
-                ? 150
-                : MediaQuery.of(context).size.width / 5,
-            rightHandSideColumnWidth: constraints.maxWidth < 760
-                ? 750
-                : MediaQuery.of(context).size.width - 300,
+            leftHandSideColumnWidth: widget.leftColumnWidth,
+            rightHandSideColumnWidth: widget.rightColumnWidth,
             isFixedHeader: true,
             headerWidgets: _getTitleWidget(constraints),
             leftSideItemBuilder: _generateFirstColumnRow,
             rightSideItemBuilder: _generateRightHandSideColumnRow,
-            itemCount: bill.billinfo.length,
+            itemCount: widget.tableData.length,
+            elevation: 0,
             // rowSeparatorWidget: const Divider(
             //   color: Colors.black54,
             //   height: 1.0,
@@ -62,126 +69,122 @@ class _BillsTable extends State<BillsTable> {
   }
 
   List<Widget> _getTitleWidget(constraints) {
-    return [
-      TextButton(
-          style: TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-          ),
-          child: _getTitleItemWidget(
-              'Bill ID - Vendor' +
-                  (sortType == sortName ? (isAscending ? '↓' : '↑') : ''),
-              constraints),
-          onPressed: () {
-            sortType = sortName;
-            isAscending = !isAscending;
-            bill.sortName(isAscending);
-            setState(() {});
-          }),
-      _getTitleItemWidget('Expense Type', constraints),
-      _getTitleItemWidget('Amount', constraints),
-      _getTitleItemWidget('Bill Date', constraints),
-      _getTitleItemWidget('Paid Date', constraints),
-    ];
+    var index = 0;
+    return widget.headerList.map((e) {
+      index++;
+      ;
+      if (e.isSortingRequired ?? false) {
+        return TextButton(
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+            ),
+            child: _getTitleItemWidget((e.label), constraints,
+                isAscending: e.isAscendingOrder,
+                isBorderRequired: (index - 1) == 0),
+            onPressed: e.callBack == null ? null : () => e.callBack!(e));
+      } else {
+        return _getTitleItemWidget(e.label, constraints!);
+      }
+    }).toList();
   }
 
-  Widget _getTitleItemWidget(String label, constraints) {
+  Widget _getTitleItemWidget(String label, constraints,
+      {bool? isAscending, bool isBorderRequired = false}) {
+    var textWidget = Text(ApplicationLocalizations.of(context).translate(label),
+        style: TextStyle(
+            fontWeight: FontWeight.w700, color: Colors.black, fontSize: 12));
+
     return Container(
-      child: Text(label,
-          style: TextStyle(
-              fontWeight: FontWeight.w700, color: Colors.black, fontSize: 12)),
-      width: constraints.maxWidth < 760
-          ? 187
-          : (MediaQuery.of(context).size.width / 4 - 100),
+      decoration: isBorderRequired
+          ? BoxDecoration(
+              border: Border(
+                  left: tableCellBorder,
+                  bottom: tableCellBorder,
+                  right: tableCellBorder))
+          : null,
+      child: isAscending != null
+          ? Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 5,
+              children: [
+                textWidget,
+                Icon(isAscending
+                    ? Icons.arrow_upward
+                    : Icons.arrow_downward_sharp)
+              ],
+            )
+          : textWidget,
+      width: widget.leftColumnWidth,
       height: 56,
-      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+      padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
       alignment: Alignment.centerLeft,
     );
   }
 
   Widget _generateFirstColumnRow(BuildContext context, int index) {
     return LayoutBuilder(builder: (context, constraints) {
+      var data = widget.tableData[index].tableRow.first;
       return ScrollParent(
           controller,
-          Container(
-            child: Text(
-              bill.billinfo[index].billID,
-              style: TextStyle(color: Theme.of(context).primaryColor),
+          InkWell(
+            onTap: () {
+              if (data.callBack != null) {
+                data.callBack!(data);
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                left: tableCellBorder,
+                bottom: tableCellBorder,
+                right: tableCellBorder,
+              )),
+              child: Text(
+                ApplicationLocalizations.of(context)
+                    .translate(widget.tableData[index].tableRow.first.label),
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
+              width: widget.leftColumnWidth,
+              height: 52,
+              padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
+              alignment: Alignment.centerLeft,
             ),
-            width: constraints.maxWidth < 760
-                ? 187
-                : MediaQuery.of(context).size.width / 5,
-            height: 52,
-            padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-            alignment: Alignment.centerLeft,
           ));
     });
   }
 
   Widget _generateColumnRow(
-      BuildContext context, int index, input, constraints) {
+      BuildContext context, int index, String input, constraints,
+      {TextStyle? style}) {
     return Container(
       child: Row(
-        children: <Widget>[Text(input)],
+        children: <Widget>[
+          Text(ApplicationLocalizations.of(context).translate(input),
+              style: style)
+        ],
       ),
-       width:  constraints.maxWidth < 760 ? 187 : MediaQuery.of(context).size.width/4-100,
+      width: widget.leftColumnWidth,
       height: 52,
-      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+      padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
       alignment: Alignment.centerLeft,
     );
   }
 
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
+    var data = widget.tableData[index];
     return LayoutBuilder(builder: (context, constraints) {
+      var list = <Widget>[];
+      for (int i = 1; i < data.tableRow.length; i++) {
+        list.add(_generateColumnRow(
+            context, index, data.tableRow[i].label, constraints,
+            style: data.tableRow[i].style));
+      }
       return Container(
           color: index % 2 == 0 ? const Color(0xffEEEEEE) : Colors.white,
-          child: Row(
-            children: <Widget>[
-              _generateColumnRow(context, index,
-                  bill.billinfo[index].expenseType, constraints),
-              _generateColumnRow(context, index,
-                  "₹" + bill.billinfo[index].phone, constraints),
-              _generateColumnRow(context, index,
-                  bill.billinfo[index].registerDate, constraints),
-              _generateColumnRow(context, index,
-                  bill.billinfo[index].terminationDate, constraints),
-            ],
-          ));
-    });
-  }
-}
-
-Bill bill = Bill();
-
-class Bill {
-  List<BillInfo> billinfo = [];
-
-  void initData(int size) {
-    for (int i = 0; i < size; i++) {
-      billinfo.add(BillInfo(
-          "EB-2021-22/0_$i", 'Maintenance', '25000', '2019-01-01', 'N/A'));
-    }
-  }
-
-  ///
-  /// Single sort, sort Name's id
-  void sortName(bool isAscending) {
-    billinfo.sort((a, b) {
-      int aId = int.tryParse(a.billID.replaceFirst('User_', '')) ?? 0;
-      int bId = int.tryParse(b.billID.replaceFirst('User_', '')) ?? 0;
-      return (aId - bId) * (isAscending ? 1 : -1);
+          child: Row(children: list));
     });
   }
 
-  ///
-}
-
-class BillInfo {
-  String billID;
-  String expenseType;
-  String phone;
-  String registerDate;
-  String terminationDate;
-
-  BillInfo(this.billID, this.expenseType, this.phone, this.registerDate,
-      this.terminationDate);
+  BorderSide get tableCellBorder =>
+      BorderSide(color: Color.fromRGBO(238, 238, 238, 1), width: 0.5);
 }

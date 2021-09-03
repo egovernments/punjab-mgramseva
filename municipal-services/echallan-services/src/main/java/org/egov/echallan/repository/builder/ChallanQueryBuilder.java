@@ -1,14 +1,16 @@
 package org.egov.echallan.repository.builder;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
+import java.util.List;
 
 import org.egov.echallan.config.ChallanConfiguration;
 import org.egov.echallan.model.SearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
-import java.util.*;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -31,19 +33,16 @@ public class ChallanQueryBuilder {
             +" LEFT OUTER JOIN "
             +" eg_challan_address chaladdr ON chaladdr.echallanid = challan.id  ";*/
     
-	private static final String QUERY = "SELECT challan.*,chaladdr.*,challan.id as challan_id,challan.tenantid as challan_tenantId,challan.lastModifiedTime as "
+	private static final String QUERY = "SELECT count(*) OVER() AS full_count, challan.*,chaladdr.*,challan.id as challan_id,challan.tenantid as challan_tenantId,challan.lastModifiedTime as "
 			+ "challan_lastModifiedTime,challan.createdBy as challan_createdBy,challan.lastModifiedBy as challan_lastModifiedBy,challan.createdTime as "
 			+ "challan_createdTime,chaladdr.id as chaladdr_id,"
+			+ "{amount}"
 			+ "challan.accountId as uuid,challan.description as description,challan.typeOfExpense as typeOfExpense, challan.billDate as billDate,  "
 			+ " challan.billIssuedDate as billIssuedDate, challan.paidDate as paidDate, challan.isBillPaid as isBillPaid , challan.vendor as vendor, vendor.name as vendorName "
 			+ " FROM eg_echallan challan" + " LEFT OUTER JOIN "
 			+ " eg_challan_address chaladdr ON chaladdr.echallanid = challan.id   INNER JOIN eg_vendor vendor on vendor.id = challan.vendor ";
 
-      private final String paginationWrapper = "SELECT * FROM " +
-              "(SELECT *, DENSE_RANK() OVER (ORDER BY challan_lastModifiedTime DESC , challan_id) offset_ FROM " +
-              "({})" +
-              " result) result_offset " +
-              "WHERE offset_ > ? AND offset_ <= ?";
+      private final String paginationWrapper = "{} {orderby} {pagination}";
 
       public static final String FILESTOREID_UPDATE_SQL = "UPDATE eg_echallan SET filestoreid=? WHERE id=?";
       
@@ -59,6 +58,16 @@ public class ChallanQueryBuilder {
 	  
 	  public static final String PREVIOUSMONTHCOLLECTION = " select count(pd.amountpaid) from egcl_paymentdetail pd, egcl_payment p where p.id= pd.paymentid and businessservice='EXPENSE.ADVANCE'  ";
 
+	  public static final String PREVIOUSDAYCASHCOLLECTION = "select  count(*), sum(totalamountpaid) from egcl_payment where paymentmode='CASH' ";
+	  public static final String PREVIOUSDAYONLINECOLLECTION = "select  count(*), sum(totalamountpaid) from egcl_payment where paymentmode='ONLINE' ";
+
+	  public static final String PREVIOUSMONTHNEWEXPENSE = "  select sum(demanddtl.taxamount) from eg_echallan challan, egbs_billdetail_v1 billdtl,egbs_demanddetail_v1 demanddtl  where challan.challanno= billdtl.consumercode   and billdtl.demandid= billdtl.demandid";
+	  
+	  public static final String CUMULATIVEPENDINGEXPENSE = " select sum(demanddtl.taxamount-demanddtl.collectionamount) from eg_echallan challan, egbs_billdetail_v1 billdtl,egbs_demanddetail_v1 demanddtl  where challan.challanno= billdtl.consumercode  and billdtl.demandid= billdtl.demandid ";
+
+	  public static final String NEWDEMAND ="select sum(dmdl.taxamount) FROM egbs_demand_v1 dmd INNER JOIN egbs_demanddetail_v1 dmdl ON dmd.id=dmdl.demandid AND dmd.tenantid=dmdl.tenantid WHERE dmd.businessservice='WS' ";
+	  
+	  public static final String ACTUALCOLLECTION =" select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id where pyd.businessservice='WS' ";
 
 
 
@@ -104,31 +113,54 @@ public class ChallanQueryBuilder {
                 //addClauseIfRequired(preparedStmtList, builder);
             }
 
-            if (criteria.getChallanNo() != null) {
-                addClauseIfRequired(preparedStmtList, builder);
-                builder.append("  challan.challanno = ? ");
-                preparedStmtList.add(criteria.getChallanNo());
-            }
+			if (criteria.getFreeSearch()) {
+				if (criteria.getChallanNo() != null || criteria.getVendorName() != null) {
+					addClauseIfRequired(preparedStmtList, builder);
+					builder.append("  challan.challanno like ?");
+					preparedStmtList.add('%' + criteria.getChallanNo() + '%');
+
+					builder.append(" OR vendor.name like ?");
+					preparedStmtList.add('%' + criteria.getVendorName() + '%');
+				}
+			} else {
+				if (criteria.getChallanNo() != null) {
+					addClauseIfRequired(preparedStmtList, builder);
+					builder.append("  challan.challanno like ?");
+					preparedStmtList.add('%' + criteria.getChallanNo() + '%');
+				}
+				if (criteria.getVendorName() != null) {
+					addClauseIfRequired(preparedStmtList, builder);
+					builder.append(" vendor.name like ?");
+					preparedStmtList.add('%' + criteria.getVendorName() + '%');
+				}
+			}
             if (criteria.getStatus() != null) {
                 addClauseIfRequired(preparedStmtList, builder);
-                builder.append("  challan.applicationstatus = ? ");
-                preparedStmtList.add(criteria.getStatus());
+                builder.append(" challan.applicationstatus IN (").append(createQuery(criteria.getStatus())).append(")");
+                addToPreparedStatement(preparedStmtList, criteria.getStatus());
             }
-            
+
             if(criteria.getExpenseType() != null){
             	addClauseIfRequired(preparedStmtList, builder);
             	builder.append( " challan.typeOfExpense = ? ");
             	preparedStmtList.add(criteria.getExpenseType());
             }
             
-            if(criteria.getVendorName() != null)
-            {
-            	addClauseIfRequired(preparedStmtList, builder);
-            	builder.append( " vendor.name = ? ");
-            	preparedStmtList.add(criteria.getVendorName());
-            }
-
-
+            if (criteria.getFromDate() != null) {
+    			addClauseIfRequired(preparedStmtList, builder);
+    			builder.append("  challan.createdTime >= ? ");
+    			preparedStmtList.add(criteria.getFromDate());
+    		}
+    		if (criteria.getToDate() != null) {
+    			addClauseIfRequired(preparedStmtList, builder);
+    			builder.append("  challan.createdTime <= ? ");
+    			preparedStmtList.add(criteria.getToDate());
+    		}
+    		if (criteria.getIsBillPaid() != null) {
+    			addClauseIfRequired(preparedStmtList, builder);
+    			builder.append("  challan.isBillPaid = ? ");
+    			preparedStmtList.add(criteria.getIsBillPaid());
+    		}
         }
 
         return addPaginationWrapper(builder.toString(),preparedStmtList,criteria);
@@ -162,10 +194,16 @@ public class ChallanQueryBuilder {
 
     private String addPaginationWrapper(String query,List<Object> preparedStmtList,
                                       SearchCriteria criteria){
+       String string = addOrderByClause(criteria);
+
         int limit = config.getDefaultLimit();
         int offset = config.getDefaultOffset();
         String finalQuery = paginationWrapper.replace("{}",query);
 
+		finalQuery = finalQuery.replace("{orderby}", string);
+
+		finalQuery = finalQuery.replace("{amount}", "(select nullif(sum(bi.totalamount),0) from egbs_billdetail_v1 bi where bi.businessservice = challan.businessservice and bi.consumercode = challan.challanno group by bi.consumercode) as totalamount,");
+		
         if(criteria.getLimit()!=null && criteria.getLimit()<=config.getMaxSearchLimit())
             limit = criteria.getLimit();
 
@@ -174,8 +212,9 @@ public class ChallanQueryBuilder {
 
         if(criteria.getOffset()!=null)
             offset = criteria.getOffset();
-
-        preparedStmtList.add(offset);
+        
+        finalQuery = finalQuery.replace("{pagination}", " offset ?  limit ?  ");
+	    preparedStmtList.add(offset);
         preparedStmtList.add(limit+offset);
 
        return finalQuery;
@@ -194,5 +233,42 @@ public class ChallanQueryBuilder {
 		return TENANTIDS;
 	}
 
+	/**
+	 * 
+	 * @param builder
+	 * @param criteria
+	 */
+	private String addOrderByClause(SearchCriteria criteria) {
+
+        StringBuilder builder = new StringBuilder();
+        
+		if (StringUtils.isEmpty(criteria.getSortBy()))
+			builder.append(" ORDER BY challan_lastModifiedTime ");
+
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.billDate)
+			builder.append(" ORDER BY billDate ");
+
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.typeOfExpense)
+			builder.append(" ORDER BY typeOfExpense ");
+
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.paidDate)
+			builder.append(" ORDER BY paidDate ");
+		
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.challanno)
+			builder.append(" ORDER BY challanno ");
+
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.totalAmount)
+			builder.append(" ORDER BY totalamount ");
+
+		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
+			builder.append(" ASC ");
+		else
+			builder.append(" DESC ");
+
+		if (criteria.getSortBy() == SearchCriteria.SortBy.totalAmount)
+			builder.append(" NULLS LAST ");
+		
+		return builder.toString();
+	}
 
 }

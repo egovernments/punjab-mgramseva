@@ -12,7 +12,7 @@ class BillList {
   factory BillList.fromJson(Map<String, dynamic> json) =>
       _$BillListFromJson(json);
 
-  Map<String, dynamic> toJson() => _$BillListToJson(this);
+  Map<String, dynamic> toJson(List list) => _$BillListToJson(this);
 }
 
 @JsonSerializable()
@@ -33,7 +33,7 @@ class Bill {
   double? totalAmount;
   @JsonKey(name: "businessService")
   String? businessService;
-  @JsonKey(name: "String billNumber")
+  @JsonKey(name: "billNumber")
   String? billNumber;
   @JsonKey(name: "billDate")
   int? billDate;

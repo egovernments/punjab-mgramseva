@@ -9,7 +9,7 @@ class ToastUtils {
   static OverlayEntry? _overlayEntry;
 
   static void showCustomToast(
-      BuildContext context, String message, String type) {
+      BuildContext context, String message, String type ) {
     if (toastTimer != null) {
       print(toastTimer!.isActive);
     }
@@ -60,14 +60,18 @@ class ToastUtils {
                               : Icons.check_circle_outline_rounded,
                           color: Colors.white,
                         ),
-                        Text(
-                          ApplicationLocalizations.of(context)
-                              .translate(message),
-                          textAlign: TextAlign.center,
-                          softWrap: true,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Color(0xFFFFFFFF),
+                        Expanded(
+                          child: Text(
+                            ApplicationLocalizations.of(context)
+                                .translate(message),
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFFFFFFFF),
+                            ),
                           ),
                         ),
                         GestureDetector(

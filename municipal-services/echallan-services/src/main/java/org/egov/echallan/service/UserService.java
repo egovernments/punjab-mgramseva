@@ -216,7 +216,7 @@ public class UserService {
 			if (challan.getAccountId() != null) {
 				UserDetailResponse userDetailResponse = userExists(challan, requestInfo);
 				if (userDetailResponse.getUser().isEmpty())
-					throw new CustomException("INVALID Vendor", "The uuid " + challan.getAccountId() + " does not exists");
+					throw new CustomException("EXP_INVALID_VENDOR", "The uuid " + challan.getAccountId() + " does not exists");
 				setOwnerFields(userInfo, userDetailResponse, requestInfo);
 			}
 

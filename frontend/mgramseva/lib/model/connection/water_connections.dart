@@ -4,8 +4,11 @@ part 'water_connections.g.dart';
 
 @JsonSerializable()
 class WaterConnections {
-  @JsonKey(name: "waterConnection")
+  @JsonKey(name: "WaterConnection")
   List<WaterConnection>? waterConnection;
+
+  @JsonKey(name: "totalCount", defaultValue: 0)
+  int? totalCount;
 
   WaterConnections();
 

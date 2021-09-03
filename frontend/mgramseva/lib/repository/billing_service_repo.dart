@@ -32,13 +32,13 @@ class BillingServiceRepository extends BaseService {
         listen: false);
     late DemandList demandList;
     var res = await makeRequest(
-        url: Url.FETCH_BILL,
+        url: Url.FETCH_DEMAND,
         body: {'userInfo': commonProvider.userDetails?.userRequest?.toJson()},
         queryParameters: queryparams,
         requestInfo: getRequestInfo('_search'),
         method: RequestType.POST);
     if (res != null) {
-      demandList = DemandList.fromJson({"Demands": res['']});
+      demandList = DemandList.fromJson({"Demands": res['Demands']});
       (res);
     }
     return demandList;
@@ -57,7 +57,6 @@ class BillingServiceRepository extends BaseService {
         method: RequestType.POST);
     if (res != null) {
       billList = BillList.fromJson(res);
-      print(billList.bill!.length);
     }
     return billList;
   }

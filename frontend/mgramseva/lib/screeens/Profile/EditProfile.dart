@@ -16,6 +16,7 @@ import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
+import 'package:mgramseva/widgets/footer.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -77,13 +78,11 @@ class _EditProfileState extends State<EditProfile> {
                     inputFormatter: [
                       FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]"))
                     ],
-                    isRequired: true,
                   ),
                   BuildTextField(
                     i18.common.PHONE_NUMBER,
                     profileDetails.phoneNumberCtrl,
-                    prefixText: '+91',
-                    isRequired: true,
+                    prefixText: '+91-',
                     isDisabled: true,
                     readOnly: true,
                     inputFormatter: [
@@ -106,13 +105,15 @@ class _EditProfileState extends State<EditProfile> {
                   BuildTextField(
                     i18.common.EMAIL,
                     profileDetails.emailIdCtrl,
+                    hint:
+                        '${ApplicationLocalizations.of(context).translate(i18.profileEdit.PROFILE_EDIT_EMAIL_HINT)}',
                     inputFormatter: [
                       FilteringTextInputFormatter.allow(
                           RegExp("[a-zA-Z0-9@. ]"))
                     ],
-                    message: 'Invalid email format, example@mail.com',
+                    message: ApplicationLocalizations.of(context).translate(i18.profileEdit.INVALID_EMAIL_FORMAT),
                     pattern:
-                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
+                        r'^$|^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
                   ),
                   GestureDetector(
                     onTap: () => Navigator.push<bool>(
@@ -154,6 +155,7 @@ class _EditProfileState extends State<EditProfile> {
     var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
 
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: BaseAppBar(
         Text(i18.common.MGRAM_SEVA),
         AppBar(),
@@ -162,27 +164,30 @@ class _EditProfileState extends State<EditProfile> {
       body: SingleChildScrollView(
         child: Container(
             alignment: Alignment.center,
-            child: StreamBuilder(
-                stream: userProvider.streamController.stream,
-                builder: (context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData) {
-                    return _builduserView(snapshot.data);
-                  } else if (snapshot.hasError) {
-                    return Notifiers.networkErrorPage(
-                        context,
-                        () =>
-                            userProvider.getUserProfileDetails(query, context));
-                  } else {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return Loaders.CircularLoader();
-                      case ConnectionState.active:
-                        return Loaders.CircularLoader();
-                      default:
-                        return Container();
+            child: Column(children: [
+              StreamBuilder(
+                  stream: userProvider.streamController.stream,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return _builduserView(snapshot.data);
+                    } else if (snapshot.hasError) {
+                      return Notifiers.networkErrorPage(
+                          context,
+                          () => userProvider.getUserProfileDetails(
+                              query, context));
+                    } else {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return Loaders.CircularLoader();
+                        case ConnectionState.active:
+                          return Loaders.CircularLoader();
+                        default:
+                          return Container();
+                      }
                     }
-                  }
-                })),
+                  }),
+              Footer()
+            ])),
       ),
     );
   }

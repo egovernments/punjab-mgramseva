@@ -3,6 +3,7 @@ import 'package:mgramseva/model/changePasswordDetails/changePassword_details.dar
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/changePassword_details_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
@@ -12,6 +13,7 @@ import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
+import 'package:mgramseva/widgets/footer.dart';
 import 'package:provider/provider.dart';
 
 class ChangePassword extends StatefulWidget {
@@ -91,7 +93,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     isRequired: true,
                     maxLines: 1,
                     validator: (val) => Validators.passwordComparision(
-                        val, 'Please enter New password'),
+                        val, ApplicationLocalizations.of(context).translate(i18.password.NEW_PASSWORD_ENTER)),
                     onChange: (value) => saveInput(value),
                   ),
                   BuildTextField(
@@ -102,7 +104,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     maxLines: 1,
                     validator: (val) => Validators.passwordComparision(
                         val,
-                        'Please enter Confirm password',
+                        ApplicationLocalizations.of(context).translate(i18.password.CONFIRM_PASSWORD_ENTER),
                         passwordDetails.newpasswordCtrl.text),
                     onChange: (value) => saveInput(value),
                   ),
@@ -127,6 +129,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     var changePasswordProvider =
         Provider.of<ChangePasswordProvider>(context, listen: false);
     return Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: BaseAppBar(
           Text(i18.common.MGRAM_SEVA),
           AppBar(),
@@ -136,7 +139,12 @@ class _ChangePasswordState extends State<ChangePassword> {
           Drawer(child: SideBar()),
         ),
         body: SingleChildScrollView(
-            child: builduserView(changePasswordProvider.changePasswordDetails)),
+            child: Column(
+          children: [
+            builduserView(changePasswordProvider.changePasswordDetails),
+            Footer()
+          ],
+        )),
         bottomNavigationBar: BottomButtonBar(
             i18.password.CHANGE_PASSWORD,
             () => saveInputandchangepass(

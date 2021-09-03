@@ -17,7 +17,6 @@ import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
 import '../customAppbar.dart';
@@ -89,7 +88,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HomeBack(widget: Help()),
+              HomeBack(),
               LayoutBuilder(
                 builder: (_, constraints) => Column(
                   children: [
@@ -143,19 +142,19 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             children: [
               RadioButtonFieldBuilder(context, i18.common.PAYMENT_AMOUNT, fetchBill.paymentAmount, '', '', true,
                   Constants.PAYMENT_AMOUNT, (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(fetchBill, val, true)),
-              if(fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key)
-                BuildTextField(
-                  '${i18.common.CUSTOM_AMOUNT}',
-                  fetchBill.customAmountCtrl,
-                  isRequired: true,
-                  textInputType: TextInputType.number,
-                  inputFormatter: [
-                    FilteringTextInputFormatter.allow(RegExp("[0-9]"))
-                  ],
-                  labelSuffix: '(₹)',
-                ),
+              // if(fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key)
+              //   BuildTextField(
+              //     '${i18.common.CUSTOM_AMOUNT}',
+              //     fetchBill.customAmountCtrl,
+              //     isRequired: true,
+              //     textInputType: TextInputType.number,
+              //     inputFormatter: [
+              //       FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+              //     ],
+              //     labelSuffix: '(₹)',
+              //   ),
               RadioButtonFieldBuilder(context, i18.common.PAYMENT_METHOD, fetchBill.paymentMethod, '', '', true,
-                  Constants.PAYMENT_METHOD, (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(fetchBill, val))
+                  consumerPaymentProvider.paymentModeList, (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(fetchBill, val))
             ],
           )
       ),
@@ -172,8 +171,8 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             child: Column(
                 crossAxisAlignment : CrossAxisAlignment.start,
                 children : [
-                  subTitle(i18.common.PAYMENT_INFORMATION),
-                  _buildLabelValue(i18.payment.BILL_ID_NUMBER, '${fetchBill.billNumber}'),
+                  subTitle(i18.payment.BILL_DETAILS),
+                  _buildLabelValue(i18.common.BILL_ID, '${fetchBill.billNumber}'),
                   _buildLabelValue(i18.payment.BILL_PERIOD, '${DateFormats.getMonthWithDay(fetchBill.billDetails?.first?.fromPeriod)} - ${DateFormats.getMonthWithDay(fetchBill.billDetails?.first?.toPeriod)}'),
                 ]),
           ),
@@ -182,7 +181,6 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             child: Column(
               crossAxisAlignment : CrossAxisAlignment.start,
               children: [
-                subTitle(i18.payment.FREE_ESTIMATE, 18),
                 ...List.generate(fetchBill.billDetails?.first.billAccountDetails?.length ?? 0, (index)
                 {
                   var billAccountDetails = fetchBill.billDetails?.first.billAccountDetails?[index];
@@ -199,13 +197,12 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   }
 
   Widget _buildWaterCharges(Demand demand, BoxConstraints constraints) {
-    var style = TextStyle(fontSize: 14, color: Color.fromRGBO(80, 90, 95, 1));
+    var style = TextStyle(fontSize: 14, color: Color.fromRGBO(80, 90, 95, 1), fontWeight: FontWeight.w400);
 
     return Container(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
         margin: EdgeInsets.symmetric(vertical: 5),
         decoration: BoxDecoration(
-            color: Color.fromRGBO(238, 238, 238, 1),
             borderRadius: BorderRadius.circular(4)
         ),
         child: constraints.maxWidth > 760 ?
@@ -277,7 +274,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             Container(
                 width: MediaQuery.of(context).size.width / 2.5,
                 padding: EdgeInsets.only(top: 18, bottom: 3, left: 24),
-                child: Text('$value',  style: TextStyle(fontSize: 16, fontWeight: fontWeight))),
+                child: Text('$value',  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))),
           ],
         ) : Table(
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
@@ -291,7 +288,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                             child: subTitle('$label', 16))
                     ),
                     TableCell(
-                        child: Text('$value',  style: TextStyle(fontSize: 16, fontWeight: fontWeight))
+                        child: Text('$value',  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))
                     )
                   ])]));
   }
