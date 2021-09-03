@@ -57,4 +57,4 @@
       build:
         - work-dir: "core-services/user-otp"
           image-name: "user-otp"
-          dockerfile: "build/maven/Dockerfile"       
+          dockerfile: "build/maven/Dockerfile" 
