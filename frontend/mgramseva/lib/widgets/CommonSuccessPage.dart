@@ -18,12 +18,13 @@ class CommonSuccess extends StatelessWidget {
   final VoidCallback? callBackwatsapp;
   final VoidCallback? callBackdownload;
   final bool? backButton;
+  final bool isWithoutLogin;
 
   CommonSuccess(this.successHandler,
       {this.callBack,
       this.callBackwatsapp,
       this.callBackdownload,
-      this.backButton});
+      this.backButton, this.isWithoutLogin = false});
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +34,12 @@ class CommonSuccess extends StatelessWidget {
         return false;
       },
       child: Scaffold(
-          appBar: BaseAppBar(
+          appBar: isWithoutLogin ? null : BaseAppBar(
             Text(i18.common.MGRAM_SEVA),
             AppBar(),
             <Widget>[Icon(Icons.more_vert)],
           ),
-          drawer: DrawerWrapper(Drawer(child: SideBar())),
+          drawer:  isWithoutLogin ? null : DrawerWrapper(Drawer(child: SideBar())),
           body: SingleChildScrollView(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -108,9 +109,12 @@ class CommonSuccess extends StatelessWidget {
                             )
                           ],
                         ),
-                        BottomButtonBar(
+                        Visibility(
+                          visible: !isWithoutLogin,
+                          child: BottomButtonBar(
                           successHandler.backButtonText,
-                          callBack != null ? callBack : CommonMethods.home,
+                            callBack != null ? callBack : CommonMethods.home,
+                          ),
                         ),
                         SizedBox(
                           height: 20,
