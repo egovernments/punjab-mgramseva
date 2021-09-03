@@ -36,6 +36,7 @@ public class ChallanQueryBuilder {
 	private static final String QUERY = "SELECT count(*) OVER() AS full_count, challan.*,chaladdr.*,challan.id as challan_id,challan.tenantid as challan_tenantId,challan.lastModifiedTime as "
 			+ "challan_lastModifiedTime,challan.createdBy as challan_createdBy,challan.lastModifiedBy as challan_lastModifiedBy,challan.createdTime as "
 			+ "challan_createdTime,chaladdr.id as chaladdr_id,"
+			+ "{amount}"
 			+ "challan.accountId as uuid,challan.description as description,challan.typeOfExpense as typeOfExpense, challan.billDate as billDate,  "
 			+ " challan.billIssuedDate as billIssuedDate, challan.paidDate as paidDate, challan.isBillPaid as isBillPaid , challan.vendor as vendor, vendor.name as vendorName "
 			+ " FROM eg_echallan challan" + " LEFT OUTER JOIN "
@@ -57,7 +58,16 @@ public class ChallanQueryBuilder {
 	  
 	  public static final String PREVIOUSMONTHCOLLECTION = " select count(pd.amountpaid) from egcl_paymentdetail pd, egcl_payment p where p.id= pd.paymentid and businessservice='EXPENSE.ADVANCE'  ";
 
-	  public static final String PREVIOUSDAYCASHCOLLECTION = " select sum(totalamountpaid) as total, mobilenumber from egcl_payment where paymentmode='CASH' ";
+	  public static final String PREVIOUSDAYCASHCOLLECTION = "select  count(*), sum(totalamountpaid) from egcl_payment where paymentmode='CASH' ";
+	  public static final String PREVIOUSDAYONLINECOLLECTION = "select  count(*), sum(totalamountpaid) from egcl_payment where paymentmode='ONLINE' ";
+
+	  public static final String PREVIOUSMONTHNEWEXPENSE = "  select sum(demanddtl.taxamount) from eg_echallan challan, egbs_billdetail_v1 billdtl,egbs_demanddetail_v1 demanddtl  where challan.challanno= billdtl.consumercode   and billdtl.demandid= billdtl.demandid";
+	  
+	  public static final String CUMULATIVEPENDINGEXPENSE = " select sum(demanddtl.taxamount-demanddtl.collectionamount) from eg_echallan challan, egbs_billdetail_v1 billdtl,egbs_demanddetail_v1 demanddtl  where challan.challanno= billdtl.consumercode  and billdtl.demandid= billdtl.demandid ";
+
+	  public static final String NEWDEMAND ="select sum(dmdl.taxamount) FROM egbs_demand_v1 dmd INNER JOIN egbs_demanddetail_v1 dmdl ON dmd.id=dmdl.demandid AND dmd.tenantid=dmdl.tenantid WHERE dmd.businessservice='WS' ";
+	  
+	  public static final String ACTUALCOLLECTION =" select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id where pyd.businessservice='WS' ";
 
 
 
@@ -103,28 +113,37 @@ public class ChallanQueryBuilder {
                 //addClauseIfRequired(preparedStmtList, builder);
             }
 
-            if (criteria.getChallanNo() != null) {
-                addClauseIfRequired(preparedStmtList, builder);
-                builder.append("  challan.challanno like ?");
-                preparedStmtList.add('%' + criteria.getChallanNo() + '%');
-            }
+			if (criteria.getFreeSearch()) {
+				if (criteria.getChallanNo() != null || criteria.getVendorName() != null) {
+					addClauseIfRequired(preparedStmtList, builder);
+					builder.append("  challan.challanno like ?");
+					preparedStmtList.add('%' + criteria.getChallanNo() + '%');
+
+					builder.append(" OR vendor.name like ?");
+					preparedStmtList.add('%' + criteria.getVendorName() + '%');
+				}
+			} else {
+				if (criteria.getChallanNo() != null) {
+					addClauseIfRequired(preparedStmtList, builder);
+					builder.append("  challan.challanno like ?");
+					preparedStmtList.add('%' + criteria.getChallanNo() + '%');
+				}
+				if (criteria.getVendorName() != null) {
+					addClauseIfRequired(preparedStmtList, builder);
+					builder.append(" vendor.name like ?");
+					preparedStmtList.add('%' + criteria.getVendorName() + '%');
+				}
+			}
             if (criteria.getStatus() != null) {
                 addClauseIfRequired(preparedStmtList, builder);
-                builder.append("  challan.applicationstatus = ? ");
-                preparedStmtList.add(criteria.getStatus());
+                builder.append(" challan.applicationstatus IN (").append(createQuery(criteria.getStatus())).append(")");
+                addToPreparedStatement(preparedStmtList, criteria.getStatus());
             }
-            
+
             if(criteria.getExpenseType() != null){
             	addClauseIfRequired(preparedStmtList, builder);
             	builder.append( " challan.typeOfExpense = ? ");
             	preparedStmtList.add(criteria.getExpenseType());
-            }
-            
-            if(criteria.getVendorName() != null)
-            {
-            	addClauseIfRequired(preparedStmtList, builder);
-				builder.append(" vendor.name like ?");
-				preparedStmtList.add('%' + criteria.getVendorName() + '%');
             }
             
             if (criteria.getFromDate() != null) {
@@ -142,8 +161,6 @@ public class ChallanQueryBuilder {
     			builder.append("  challan.isBillPaid = ? ");
     			preparedStmtList.add(criteria.getIsBillPaid());
     		}
-
-
         }
 
         return addPaginationWrapper(builder.toString(),preparedStmtList,criteria);
@@ -185,6 +202,8 @@ public class ChallanQueryBuilder {
 
 		finalQuery = finalQuery.replace("{orderby}", string);
 
+		finalQuery = finalQuery.replace("{amount}", "(select nullif(sum(bi.totalamount),0) from egbs_billdetail_v1 bi where bi.businessservice = challan.businessservice and bi.consumercode = challan.challanno group by bi.consumercode) as totalamount,");
+		
         if(criteria.getLimit()!=null && criteria.getLimit()<=config.getMaxSearchLimit())
             limit = criteria.getLimit();
 
@@ -238,14 +257,17 @@ public class ChallanQueryBuilder {
 		else if (criteria.getSortBy() == SearchCriteria.SortBy.challanno)
 			builder.append(" ORDER BY challanno ");
 
-//		else if (criteria.getSortBy() == SearchCriteria.SortBy.totalAmount)
-//			builder.append(" ORDER BY challan.totalAmount ");
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.totalAmount)
+			builder.append(" ORDER BY totalamount ");
 
 		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
 			builder.append(" ASC ");
 		else
 			builder.append(" DESC ");
 
+		if (criteria.getSortBy() == SearchCriteria.SortBy.totalAmount)
+			builder.append(" NULLS LAST ");
+		
 		return builder.toString();
 	}
 

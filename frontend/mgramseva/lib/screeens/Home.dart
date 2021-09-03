@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mgramseva/components/Notifications/notificationsList.dart';
-import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/language.dart';
@@ -9,9 +8,7 @@ import 'package:mgramseva/screeens/HomeCard.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/utils/role_actions.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
-import 'package:mgramseva/widgets/Notifications.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/widgets/help.dart';
@@ -83,7 +80,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     var homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    var commomProvider = Provider.of<CommonProvider>(context, listen: false);
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     return Scaffold(
@@ -103,7 +99,11 @@ class _HomeState extends State<Home> {
                         homeProvider,
                         constraint.maxWidth < 720
                             ? 160 *
-                                ((homeProvider.homeWalkthrougList.length / 3)
+                                ((homeProvider.homeWalkthrougList.length == 1
+                                            ? 3
+                                            : homeProvider
+                                                    .homeWalkthrougList.length /
+                                                3)
                                         .round())
                                     .toDouble()
                             : 142 *

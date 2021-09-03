@@ -9,6 +9,8 @@ import org.egov.common.contract.response.ResponseInfo;
 import org.egov.echallan.model.Challan;
 import org.egov.echallan.model.ChallanRequest;
 import org.egov.echallan.model.ChallanResponse;
+import org.egov.echallan.model.LastMonthSummary;
+import org.egov.echallan.model.LastMonthSummaryResponse;
 import org.egov.echallan.model.RequestInfoWrapper;
 import org.egov.echallan.model.SearchCriteria;
 import org.egov.echallan.repository.rowmapper.ChallanRowMapper;
@@ -104,6 +106,19 @@ public class ChallanController {
 		schedulerService.sendTodaysCollection(requestInfoWrapper.getRequestInfo());
 	}
 	 
+	@PostMapping("/_lastMonthSummary")
+	public ResponseEntity<LastMonthSummaryResponse> lastMonthSummary(
+			@RequestBody @Valid final RequestInfoWrapper requestInfoWrapper,
+			@Valid @ModelAttribute SearchCriteria criteria) {
+		LastMonthSummary lastMonthSummary = challanService.getLastMonthSummary(criteria,
+				requestInfoWrapper.getRequestInfo());
+
+		LastMonthSummaryResponse response = LastMonthSummaryResponse.builder().LastMonthSummary(lastMonthSummary)
+				.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),
+						true))
+				.build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
 	
 
 }

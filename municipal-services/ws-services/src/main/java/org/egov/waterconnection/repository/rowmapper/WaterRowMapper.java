@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 	
 	@Override
 	public List<WaterConnection> extractData(ResultSet rs) throws SQLException, DataAccessException {
-		Map<String, WaterConnection> connectionListMap = new HashMap<>();
+		Map<String, WaterConnection> connectionListMap = new LinkedHashMap<String, WaterConnection>();
 		this.setFull_count(0);
 		WaterConnection currentWaterConnection = new WaterConnection();
 		while (rs.next()) {
@@ -100,6 +101,7 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 				additionalDetails.put(WCConstants.SANCTION_LETTER_FILESTORE_ID, rs.getString("sanctionfileStoreId"));
 				additionalDetails.put(WCConstants.ESTIMATION_DATE_CONST, rs.getBigDecimal("estimationLetterDate"));
 				additionalDetails.put(WCConstants.LOCALITY, rs.getString("locality"));
+				additionalDetails.put("collectionAmount", rs.getString("collectionamount"));
 
 				currentWaterConnection.setAdditionalDetails(additionalDetails);
 				currentWaterConnection

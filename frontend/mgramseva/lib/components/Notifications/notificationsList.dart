@@ -31,21 +31,29 @@ class NotificationsListState extends State<NotificationsList> {
       ..getNotiications({
         "tenantId": commonProvider.userDetails!.selectedtenant!.code,
         "eventType": "SYSTEMGENERATED",
-        "recepients": commonProvider.userDetails!.userRequest!.uuid
+        "recepients": commonProvider.userDetails!.userRequest!.uuid,
+      }, {
+        "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+        "eventType": "SYSTEMGENERATED",
+        "roles": commonProvider.userDetails!.userRequest!.roles!
+            .map((e) => e.code.toString())
+            .join(',')
+            .toString(),
       });
   }
 
-  buildNotificationsView(EventsList events) {
+  buildNotificationsView(List<Events>? events) {
+    print(events);
     return LayoutBuilder(builder: (context, constraints) {
       return Column(children: [
-        events.events!.length > 0
+        events!.length > 0
             ? ListLabelText(ApplicationLocalizations.of(context)
                     .translate(i18.common.NOTIFICATIONS) +
                 " (" +
-                events.events!.length.toString() +
+                events.length.toString() +
                 ")")
             : Text(""),
-        for (var item in events.events!) Notifications(item)
+        for (var item in events) Notifications(item)
       ]);
     });
   }

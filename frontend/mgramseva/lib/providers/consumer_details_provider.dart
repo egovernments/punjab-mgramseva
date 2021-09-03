@@ -60,6 +60,7 @@ class ConsumerProvider with ChangeNotifier {
       "action": "SUBMIT",
       "proposedTaps": 1,
       "proposedPipeSize": 10,
+      "noOfTaps": 1
     });
 
     property = Property.fromJson({
@@ -87,9 +88,19 @@ class ConsumerProvider with ChangeNotifier {
     super.dispose();
   }
 
+  void onChangeOfCheckBox(bool? value) {
+    print(waterconnection.status);
+    if (value == true)
+      waterconnection.status = 'Inactive';
+    else
+      waterconnection.status = 'Active';
+    notifyListeners();
+  }
+
   Future<void> setWaterConnection(data) async {
     isEdit = true;
     waterconnection = data;
+    print(waterconnection.status);
     waterconnection.getText();
 
     List<Demand>? demand = await ConsumerRepository().getDemandDetails({
@@ -166,6 +177,7 @@ class ConsumerProvider with ChangeNotifier {
       waterconnection.tenantId =
           commonProvider.userDetails!.selectedtenant!.code;
       waterconnection.connectionHolders = property.owners;
+      waterconnection.noOfTaps = 1;
       waterconnection.propertyType = property.propertyType;
       if (waterconnection.connectionType == 'Metered') {
         waterconnection.meterInstallationDate =
@@ -227,8 +239,6 @@ class ConsumerProvider with ChangeNotifier {
             streamController.add(property);
             Notifiers.getToastMessage(
                 context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
-            property.address.city = "";
-            property.address.localityCtrl.text = "";
           }
         } else {
           property.creationReason = 'UPDATE';

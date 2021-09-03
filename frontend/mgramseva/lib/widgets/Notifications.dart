@@ -33,7 +33,8 @@ class _NotificationsState extends State<Notifications> {
               GestureDetector(
                   onTap: () {
                     widget.event!.actions != null
-                        ? Navigator.pushNamed(context, widget.event!.actions!)
+                        ? Navigator.pushNamed(context,
+                            widget.event!.actions!.actionUrls!.first.actionUrl!)
                         : null;
                   },
                   child: Container(
@@ -53,11 +54,13 @@ class _NotificationsState extends State<Notifications> {
                                         fontSize: 16,
                                         fontWeight: FontWeight.w700),
                                   )),
-                              Padding(
-                                  padding: EdgeInsets.all(4),
+                              new Container(
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.2,
                                   child: Text(
                                     ApplicationLocalizations.of(context)
                                         .translate(widget.event!.description!),
+                                    maxLines: 4,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400),
@@ -67,17 +70,25 @@ class _NotificationsState extends State<Notifications> {
                                   padding: EdgeInsets.only(
                                       top: 24, bottom: 4, left: 4, right: 4),
                                   child: Text(
-                                    DateTime.now()
-                                            .difference(DateTime
-                                                .fromMillisecondsSinceEpoch(
-                                                    widget.event!.auditDetails!
-                                                        .createdTime!))
-                                            .inDays
-                                            .toString() +
-                                        " " +
-                                        ApplicationLocalizations.of(context)
-                                            .translate(i18
-                                                .generateBillDetails.DAYS_AGO),
+                                    DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(widget.event!.auditDetails!.createdTime!)).inDays >
+                                            0
+                                        ? (DateTime.now()
+                                                .difference(DateTime
+                                                    .fromMillisecondsSinceEpoch(
+                                                        widget
+                                                            .event!
+                                                            .auditDetails!
+                                                            .createdTime!))
+                                                .inDays
+                                                .toString() +
+                                            " " +
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18
+                                                    .generateBillDetails
+                                                    .DAYS_AGO))
+                                        : ApplicationLocalizations.of(context)
+                                            .translate(
+                                                i18.generateBillDetails.TODAY),
                                     style: TextStyle(
                                         color: Theme.of(context).primaryColor),
                                   ))

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
+import 'package:mgramseva/providers/notifications_provider.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/Pointer.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -31,7 +32,6 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
           .homeWalkthrougList[homeProvider.activeindex].key!.currentContext!
           .findRenderObject() as RenderBox?;
       Offset position = box!.localToGlobal(Offset.zero);
-      print(homeProvider.activeindex);
       return Stack(children: [
         Positioned(
             left: position.dx,
@@ -79,9 +79,10 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                 ))
                           ],
                         ))))),
-        Positioned(
+      Consumer<NotificationProvider>(builder: (_, notificationProvider, child) =>
+      Positioned(
             left: position.dx + 5,
-            top: (homeProvider.activeindex == 6 ||
+            top: notificationProvider.enableNotification == true ? box.size.height + position.dy : (homeProvider.activeindex == 6 ||
                     homeProvider.activeindex == 7 ||
                     homeProvider.activeindex == 8)
                 ? position.dy - 25
@@ -96,12 +97,13 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                 height: 30,
                 width: 50,
               ),
-            )),
-        Positioned(
+            ))),
+      Consumer<NotificationProvider>(builder: (_, notificationProvider, child) =>
+      Positioned(
             left: ((homeProvider.activeindex + 1) % 3 == 0)
                 ? position.dx - 140
                 : position.dx,
-            top: (homeProvider.activeindex == 6 ||
+            top: notificationProvider.enableNotification == true ? box.size.height + position.dy + 25 : (homeProvider.activeindex == 6 ||
                     homeProvider.activeindex == 7 ||
                     homeProvider.activeindex == 8)
                 ? position.dy -
@@ -132,7 +134,9 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                     .homeWalkthrougList[
                                         homeProvider.activeindex]
                                     .name),
-                            style: TextStyle(fontSize: 14, color: Theme.of(context).primaryColorLight),
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).primaryColorLight),
                             textAlign: TextAlign.start,
                           )),
                       homeProvider.activeindex ==
@@ -161,26 +165,26 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                           width: 80,
                                           decoration: BoxDecoration(
                                             borderRadius:
-                                            BorderRadius.circular(10.0),
+                                                BorderRadius.circular(10.0),
                                             color:
-                                            Theme.of(context).primaryColor,
+                                                Theme.of(context).primaryColor,
                                             boxShadow: [
                                               BoxShadow(
                                                 color: Colors.grey,
                                                 offset:
-                                                Offset(0.0, 1.0), //(x,y)
+                                                    Offset(0.0, 1.0), //(x,y)
                                                 blurRadius: 6.0,
                                               ),
                                             ],
                                           ),
                                           child: Center(
                                               child: Text(
-                                                ApplicationLocalizations.of(context)
-                                                    .translate(i18.common.END),
-                                                style:
-                                                TextStyle(color: Colors.white,
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18.common.END),
+                                            style: TextStyle(
+                                                color: Colors.white,
                                                 fontSize: 12),
-                                              )),
+                                          )),
                                         ))
                                   ]))
                           : Padding(
@@ -203,7 +207,10 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                         child: Text(
                                             ApplicationLocalizations.of(context)
                                                 .translate(i18.common.SKIP),
-                                            style: TextStyle(fontSize: 12, color: Theme.of(context).primaryColorLight))),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Theme.of(context)
+                                                    .primaryColorLight))),
                                     GestureDetector(
                                         onTap: () async {
                                           if (homeProvider.homeWalkthrougList
@@ -255,13 +262,13 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                               child: Text(
                                             ApplicationLocalizations.of(context)
                                                 .translate(i18.common.NEXT),
-                                            style:
-                                                TextStyle(color: Colors.white,
+                                            style: TextStyle(
+                                                color: Colors.white,
                                                 fontSize: 12),
                                           )),
                                         ))
                                   ]))
-                    ]))))
+                    ])))))
       ]);
     });
   }

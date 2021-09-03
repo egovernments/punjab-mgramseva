@@ -51,7 +51,7 @@ class Routes {
   static const String HOUSEHOLD_DETAILS_SUCCESS =
       '$HOUSEHOLD_DETAILS_COLLECT_PAYMENT/success';
 
-  static const String DASHBOARD = 'dashboard';
+  static const String DASHBOARD = '/home/dashboard';
 
   static const String BILL_GENERATE = '/bill/generate';
 
@@ -71,5 +71,6 @@ class Routes {
 
   static const String POST_PAYMENT_FEED_BACK = '/feedBack';
 
-  static const String FEED_BACK_SUBMITTED_SUCCESSFULLY = '/feedBack/submittedSuccessfully';
+  static const String FEED_BACK_SUBMITTED_SUCCESSFULLY =
+      '/feedBack/submittedSuccessfully';
 }

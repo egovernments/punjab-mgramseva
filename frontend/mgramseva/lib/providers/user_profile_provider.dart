@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/repository/user_profile_repo.dart';
-import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
-import 'package:mgramseva/utils/global_variables.dart';
 
 class UserProfileProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -23,7 +21,7 @@ class UserProfileProvider with ChangeNotifier {
       if (userResponse != null) {
         streamController.add(userResponse.user?.first);
       }
-    }catch (e,s) {
+    } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
       streamController.addError('error');
     }
@@ -33,6 +31,7 @@ class UserProfileProvider with ChangeNotifier {
     user.gender = gender;
     notifyListeners();
   }
+
   void callNotfyer() {
     notifyListeners();
   }

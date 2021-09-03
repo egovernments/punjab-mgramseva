@@ -19,12 +19,17 @@ class WaterConnection {
   String? tenantId;
   @JsonKey(name: "action")
   String? action;
+  @JsonKey(name: "status")
+  String? status;
   @JsonKey(name: "meterInstallationDate")
   int? meterInstallationDate;
   @JsonKey(name: "documents")
   Documents? documents;
   @JsonKey(name: "proposedTaps")
   int? proposedTaps;
+
+  @JsonKey(name: "noOfTaps")
+  int? noOfTaps;
   @JsonKey(name: "arrears")
   double? arrears;
   @JsonKey(name: "connectionType")

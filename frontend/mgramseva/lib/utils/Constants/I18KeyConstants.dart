@@ -118,7 +118,7 @@ class Common {
   String get PAYMENT_AMOUNT => 'PAYMENT_AMOUNT'; //Payment Amount
   String get PAYMENT_METHOD => 'PAYMENT_METHOD'; //Payment Method
   String get PAYMENT_INFORMATION => 'PAYMENT_INFORMATION'; //Payment Information
-  String get WATER_CHARGES => 'WS_CHARGES'; //Please enter Mobile number
+  String get WATER_CHARGES => 'WS_CHARGE'; //Please enter Mobile number
   String get ARREARS => 'ARREARS'; //Please enter Mobile number
   String get COLLECT_PAYMENT => 'COLLECT_PAYMENT';
   String get ONLINE => 'ONLINE';
@@ -269,6 +269,7 @@ class Expense {
 class CreateConsumer {
   const CreateConsumer();
   String get CONSUMER_NAME => 'CREATE_CONSUMER_NAME';
+  String get MARK_AS_INACTIVE => 'MARK_AS_INACTIVE';
   String get FATHER_SPOUSE_NAME => 'CONSUMER_FATHER_SPOUSE_NAME';
   String get OLD_CONNECTION_ID => 'CONSUMER_OLD_CONNECTION_ID';
   String get DOOR_NO => 'CONSUMER_DOOR_NO';
@@ -397,6 +398,7 @@ class GenerateBillDetails {
   String get PREVIOUS_METER_READING => 'PREVIOUS_METER_READING';
   String get PENDING_AMOUNT => 'PENDING_AMOUNT';
   String get DAYS_AGO => 'DAYS_AGO';
+  String get TODAY => 'TODAY';
   String get GENERATE_NEW_BTN_LABEL => 'GENERATE_NEW_BTN_LABEL';
   String get INFO => 'INFO';
   String get INFO_TEXT => 'INFO_TEXT';
@@ -428,7 +430,6 @@ class _Payment {
   String get RECEIPT_REFERENCE_WITH_MOBILE_NUMBER =>
       'RECEIPT_REFERENCE_WITH_MOBILE_NUMBER'; //Fee Estimate
   String get BILL_DETAILS => 'BILL_DETAILS';
-
 }
 
 class _HomeWalkThroughMsg {
@@ -489,7 +490,6 @@ class _ExpenseWalkThroughMsg {
   String get EXPENSE_ATTACH_BILL_MSG => 'EXPENSE_ATTACH_BILL_MSG';
 }
 
-
 class _POSTPAYMENTFEEDBACK {
   const _POSTPAYMENTFEEDBACK();
 
@@ -498,6 +498,8 @@ class _POSTPAYMENTFEEDBACK {
   String get IS_WATER_SUPPLY_REGULAR => 'IS_WATER_SUPPLY_REGULAR';
   String get IS_WATER_QUALITY_GOOD => 'IS_WATER_QUALITY_GOOD';
   String get SURVEY_REQUEST => 'SURVEY_REQUEST';
-  String get FEED_BACK_SUBMITTED_SUCCESSFULLY => 'FEED_BACK_SUBMITTED_SUCCESSFULLY';
-  String get FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY => 'FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY';
+  String get FEED_BACK_SUBMITTED_SUCCESSFULLY =>
+      'FEED_BACK_SUBMITTED_SUCCESSFULLY';
+  String get FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY =>
+      'FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY';
 }

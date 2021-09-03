@@ -31,6 +31,7 @@ class DashBoardProvider with ChangeNotifier {
   late List<DateTime> dateList;
   WaterConnections? waterConnectionsDetails;
   var selectedDashboardType = DashBoardType.collections;
+  Timer? debounce;
 
   @override
   void dispose() {
@@ -132,7 +133,7 @@ class DashBoardProvider with ChangeNotifier {
     if(searchController.text.trim().isNotEmpty){
       query.addAll({
         'connectionNumber' : searchController.text.trim(),
-        'name' : searchController.text.trim(),
+        // 'name' : searchController.text.trim(),
         'freeSearch' : 'true',
       });
     }
@@ -289,7 +290,12 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   void onSearch(String val, BuildContext context){
-    fetchDetails(context, limit, 1, true);
+    if (debounce?.isActive ?? false) debounce?.cancel();
+    debounce = Timer(const Duration(milliseconds: 500), () {
+      print('search');
+      fetchDetails(context, limit, 1, true);
+    });
+
   }
 
   void onChangeOfDate(DateTime? date, BuildContext context, _overlayEntry){
@@ -315,6 +321,7 @@ class DashBoardProvider with ChangeNotifier {
 
   bool removeOverLay(_overlayEntry){
     try{
+      if(_overlayEntry == null) return false;
       _overlayEntry?.remove();
       return true;
     }catch(e){

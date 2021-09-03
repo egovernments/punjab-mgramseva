@@ -86,12 +86,12 @@ class CommonProvider with ChangeNotifier {
   }
 
   setTenant(tenant) {
-    userDetails!.selectedtenant = tenant;
+    userDetails?.selectedtenant = tenant;
     setSelectedState(userDetails!);
-    notifyListeners();
   }
 
-  void setSelectedState(UserDetails? loginDetails) {
+  void setSelectedState(UserDetails? loginDetails) async {
+    print("state");
     if (kIsWeb) {
       window.localStorage[Constants.LOGIN_KEY] =
           loginDetails == null ? '' : jsonEncode(loginDetails.toJson());

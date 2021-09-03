@@ -5,6 +5,7 @@ package org.egov.waterconnection.service;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -306,7 +307,7 @@ public class WaterServiceImpl implements WaterService {
 
 		if (feedbackrequest.getFeedback().getAuditDetails() == null) {
 			AuditDetails auditDetails = new AuditDetails();
-			auditDetails.setCreatedBy(feedbackrequest.getRequestInfo().getUserInfo().getId().toString());
+//			auditDetails.setCreatedBy(feedbackrequest.getRequestInfo().getUserInfo().getId().toString());
 			auditDetails.setCreatedTime(new Date().getTime());
 			auditDetails.setLastModifiedTime(new Date().getTime());
 			feedbackrequest.getFeedback().setAuditDetails(auditDetails);

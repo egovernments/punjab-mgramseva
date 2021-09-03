@@ -309,8 +309,13 @@ public class WorkflowNotificationService {
 		Map<String, String> messageToReturn = new HashMap<>();
 		for (Entry<String, String> mobileAndName : mobileNumbersAndNames.entrySet()) {
 			String messageToReplace = message;
-			if (messageToReplace.contains("<Owner Name>"))
-				messageToReplace = messageToReplace.replace("<Owner Name>", mobileAndName.getValue());
+			if (messageToReplace.contains("{ownername}"))
+				messageToReplace = messageToReplace.replace("{ownername}", mobileAndName.getValue());
+			
+
+			if (messageToReplace.contains("{consumercode}"))
+				messageToReplace = messageToReplace.replace("{consumercode}",waterConnectionRequest.getWaterConnection().getConnectionNo());
+			
 			if (messageToReplace.contains("<Service>"))
 				messageToReplace = messageToReplace.replace("<Service>", WCConstants.SERVICE_FIELD_VALUE_NOTIFICATION);
 
@@ -351,10 +356,7 @@ public class WorkflowNotificationService {
 				messageToReplace = messageToReplace.replace("<payment link>",
 						waterServiceUtil.getShortnerURL(paymentLink));
 			}
-			/*if (messageToReplace.contains("<receipt download link>")){
-				messageToReplace = messageToReplace.replace("<receipt download link>",
-						waterServiceUtil.getShortnerURL(config.getNotificationUrl()));
-			}*/
+			
 			if (messageToReplace.contains("<connection details page>")) {
 				String connectionDetaislLink = config.getNotificationUrl() + config.getConnectionDetailsLink();
 				connectionDetaislLink = connectionDetaislLink.replace(connectionNoReplacer,

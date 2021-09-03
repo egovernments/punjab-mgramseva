@@ -413,12 +413,12 @@ public class UserService {
 	 * @param requestInfo
 	 * @return
 	 */
-	public Set<String> getUUIDForUsers(String mobileNumber, String tenantId, RequestInfo requestInfo) {
+	public Set<String> getUUIDForUsers(String mobileNumber, String name, String tenantId, RequestInfo requestInfo) {
 		//TenantId is not mandatory when Citizen searches. So it can be empty. Refer the value from UserInfo
 		tenantId = StringUtils.isEmpty(tenantId) ? requestInfo.getUserInfo().getTenantId() : tenantId;
 		UserSearchRequest userSearchRequest = UserSearchRequest.builder()
 				.requestInfo(requestInfo).userType("CITIZEN")
-				.tenantId(tenantId).mobileNumber(mobileNumber).build();
+				.tenantId(tenantId).mobileNumber(mobileNumber).name(name).build();
 		return getUsersUUID(userSearchRequest);
 	}
 
@@ -450,7 +450,7 @@ public class UserService {
 		String message = notificationUtil.getMessageTemplate(WCConstants.ON_BOARD_EMPLOYEE, localizationMessage);
 		
 		message = message.replace("{USER}", user.getName());
-		message = message.replace("{LINK}", waterServiceUtil.getShortnerURL(configuration.getWebAppLink()+configuration.getWebUiPath()));
+		message = message.replace("{LINK}", waterServiceUtil.getShortnerURL(configuration.getNotificationUrl()+configuration.getWebUiPath()));
 		message = message.replace(" {PHNO}", user.getMobileNumber());
 		message = message.replace("{PASSWORD}", user.getPassword());
 		

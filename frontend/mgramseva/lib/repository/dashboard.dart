@@ -1,16 +1,12 @@
-
 import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
-import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/global_variables.dart';
-import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 
 class DashBoardRepository extends BaseService {
-
-  Future<ExpenseDashboard?> loadExpenseDashboardDetails(Map<String, dynamic> query) async {
+  Future<ExpenseDashboard?> loadExpenseDashboardDetails(
+      Map<String, dynamic> query) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -44,8 +40,6 @@ class DashBoardRepository extends BaseService {
   }
 }
 
-
-
 var a = {
   "statusInfo": {
     "statusCode": 200,
@@ -60,10 +54,7 @@ var a = {
     "customData": null,
     "dates": null,
     "filter": [
-      {
-        "key": "vendor",
-        "column": "Vendor"
-      }
+      {"key": "vendor", "column": "Vendor"}
     ],
     "data": [
       {
