@@ -131,8 +131,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     validator: (val) =>
                                         Validators.passwordComparision(
                                             val,
-                                            i18.password
-                                                .CORE_COMMON_NEW_PASSWORD),
+                                          ApplicationLocalizations.of(context).translate(i18.password
+                                                .CORE_COMMON_NEW_PASSWORD)),
                                     onChange: saveInput,
                                   ),
                                   BuildTextField(
@@ -143,8 +143,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     validator: (val) =>
                                         Validators.passwordComparision(
                                             val,
-                                            i18.password
-                                                .CORE_COMMON_CONFIRM_NEW_PASSWORD,
+                                          ApplicationLocalizations.of(context).translate(i18.password
+                                                .CORE_COMMON_CONFIRM_NEW_PASSWORD),
                                             confirmPassword.text),
                                     onChange: saveInput,
                                   ),
