@@ -223,7 +223,7 @@ public class PaymentUpdateService {
 					WaterConnectionRequest waterConnectionRequest = WaterConnectionRequest.builder()
 							.waterConnection(connections.get()).requestInfo(paymentRequest.getRequestInfo())
 							.build();
-					sendPaymentNotification(waterConnectionRequest, paymentDetail);
+					sendPaymentNotification(waterConnectionRequest, paymentDetail,paymentRequest.getPayment().getId());
 				}
 			}
 		} catch (Exception ex) {
@@ -235,7 +235,7 @@ public class PaymentUpdateService {
 	 *
 	 * @param waterConnectionRequest
 	 */
-	public void sendPaymentNotification(WaterConnectionRequest waterConnectionRequest, PaymentDetail paymentDetail) {
+	public void sendPaymentNotification(WaterConnectionRequest waterConnectionRequest, PaymentDetail paymentDetail,String paymentId) {
 		Property property = validateProperty.getOrValidateProperty(waterConnectionRequest);
 		if (config.getIsUserEventsNotificationEnabled() != null && config.getIsUserEventsNotificationEnabled()) {
 			EventRequest eventRequest = getEventRequest(waterConnectionRequest, property, paymentDetail);
@@ -244,8 +244,8 @@ public class PaymentUpdateService {
 			}
 		}
 		if (config.getIsSMSEnabled() != null && config.getIsSMSEnabled()) {
-			List<SMSRequest> smsRequests = getSmsRequest(waterConnectionRequest, property, paymentDetail,WCConstants.PAYMENT_NOTIFICATION_SMS);
-			smsRequests.addAll( getSmsRequest(waterConnectionRequest, property, paymentDetail,WCConstants.FEEDBACK_NOTIFICATION_SMS));
+			List<SMSRequest> smsRequests = getSmsRequest(waterConnectionRequest, property, paymentDetail,WCConstants.PAYMENT_NOTIFICATION_SMS,paymentId);
+			smsRequests.addAll( getSmsRequest(waterConnectionRequest, property, paymentDetail,WCConstants.FEEDBACK_NOTIFICATION_SMS,paymentId));
 			if (!CollectionUtils.isEmpty(smsRequests)) {
 				notificationUtil.sendSMS(smsRequests);
 			}
@@ -280,7 +280,7 @@ public class PaymentUpdateService {
 		}
 		Map<String, String> getReplacedMessage = workflowNotificationService.getMessageForMobileNumber(mobileNumbersAndNames, request,
 				message, property);
-		Map<String, String> mobileNumberAndMesssage = replacePaymentInfo(getReplacedMessage, paymentDetail);
+		Map<String, String> mobileNumberAndMesssage = replacePaymentInfo(getReplacedMessage, paymentDetail,null);
 		Set<String> mobileNumbers = mobileNumberAndMesssage.keySet().stream().collect(Collectors.toSet());
 		Map<String, String> mapOfPhnoAndUUIDs = workflowNotificationService.fetchUserUUIDs(mobileNumbers, request.getRequestInfo(), property.getTenantId());
 		if (CollectionUtils.isEmpty(mapOfPhnoAndUUIDs.keySet())) {
@@ -315,7 +315,7 @@ public class PaymentUpdateService {
 	 * @return
 	 */
 	private List<SMSRequest> getSmsRequest(WaterConnectionRequest waterConnectionRequest,
-										   Property property, PaymentDetail paymentDetail, String smsCode) {
+										   Property property, PaymentDetail paymentDetail, String smsCode,String paymentId) {
 		String localizationMessage = notificationUtil.getLocalizationMessages(property.getTenantId(),
 				waterConnectionRequest.getRequestInfo());
 		String message = notificationUtil.getMessageTemplate((smsCode ==null ? WCConstants.PAYMENT_NOTIFICATION_SMS: smsCode), localizationMessage);
@@ -338,7 +338,7 @@ public class PaymentUpdateService {
 		}
 		Map<String, String> getReplacedMessage = workflowNotificationService.getMessageForMobileNumber(mobileNumbersAndNames,
 				waterConnectionRequest, message, property);
-		Map<String, String> mobileNumberAndMessage = replacePaymentInfo(getReplacedMessage, paymentDetail);
+		Map<String, String> mobileNumberAndMessage = replacePaymentInfo(getReplacedMessage, paymentDetail,paymentId);
 		List<SMSRequest> smsRequest = new ArrayList<>();
 		mobileNumberAndMessage.forEach((mobileNumber, msg) -> {
 			SMSRequest req = SMSRequest.builder().mobileNumber(mobileNumber).message(msg).category(Category.TRANSACTION).build();
@@ -353,7 +353,7 @@ public class PaymentUpdateService {
 	 * @param paymentDetail
 	 * @return replaced message
 	 */
-	private Map<String, String> replacePaymentInfo(Map<String, String> mobileAndMessage, PaymentDetail paymentDetail) {
+	private Map<String, String> replacePaymentInfo(Map<String, String> mobileAndMessage, PaymentDetail paymentDetail,String paymentId) {
 		Map<String, String> messageToReturn = new HashMap<>();
 		for (Map.Entry<String, String> mobAndMesg : mobileAndMessage.entrySet()) {
 			String message = mobAndMesg.getValue();
@@ -399,6 +399,7 @@ public class PaymentUpdateService {
 			
 			if (message.contains("{SURVEY_LINK}")){
 				String link = config.getNotificationUrl() + config.getFeedbackLink();
+				link = link.replace("$paymentId",paymentId);
 				link = link.replace("$connectionNo", paymentDetail.getBill().getConsumerCode());
 				link = link.replace("$tenantId", paymentDetail.getTenantId());
 				link = waterServiceUtil.getShortnerURL(link);
