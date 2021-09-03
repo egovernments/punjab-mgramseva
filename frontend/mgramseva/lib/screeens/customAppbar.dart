@@ -110,7 +110,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    result[index].city!.name!,
+                                ApplicationLocalizations.of(context).translate(result[index].code!),
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
