@@ -40,89 +40,92 @@ class CommonSuccess extends StatelessWidget {
             <Widget>[Icon(Icons.more_vert)],
           ),
           drawer:  isWithoutLogin ? null : DrawerWrapper(Drawer(child: SideBar())),
-          body: SingleChildScrollView(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                backButton == true
-                    ? HomeBack(callback: CommonMethods.home)
-                    : Text(''),
-                Card(
-                    margin: const EdgeInsets.only(left: 10, right: 10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SuccessPage(successHandler.header,
-                            subTextHeader: successHandler.subHeader,
-                            subText: successHandler.subHeaderText),
-                        Align(
-                            alignment: Alignment.centerLeft,
-                            child: Container(
-                              margin: const EdgeInsets.only(
-                                  left: 10, bottom: 20, top: 20, right: 10),
-                              child: Text(
-                                ApplicationLocalizations.of(context)
-                                    .translate(successHandler.subtitle),
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w400),
-                                textAlign: TextAlign.start,
+          body: Container(
+            padding: isWithoutLogin ? EdgeInsets.only(top : MediaQuery.of(context).padding.top) : null,
+            child: SingleChildScrollView(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  backButton == true
+                      ? HomeBack(callback: CommonMethods.home)
+                      : Text(''),
+                  Card(
+                      margin: const EdgeInsets.only(left: 10, right: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SuccessPage(successHandler.header,
+                              subTextHeader: successHandler.subHeader,
+                              subText: successHandler.subHeaderText),
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                margin: const EdgeInsets.only(
+                                    left: 10, bottom: 20, top: 20, right: 10),
+                                child: Text(
+                                  ApplicationLocalizations.of(context)
+                                      .translate(successHandler.subtitle),
+                                  style: TextStyle(
+                                      fontSize: 14, fontWeight: FontWeight.w400),
+                                  textAlign: TextAlign.start,
+                                ),
+                              )),
+                          Visibility(
+                            visible: successHandler.downloadLink == null &&
+                                successHandler.whatsAppShare == null &&
+                                successHandler.downloadLinkLabel == null,
+                            child: SizedBox(
+                              height: 20,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Visibility(
+                                visible: successHandler.downloadLink != null,
+                                child: TextButton.icon(
+                                  onPressed: callBackdownload,
+                                  icon: Icon(Icons.download_sharp),
+                                  label: Text(
+                                      ApplicationLocalizations.of(context)
+                                          .translate(successHandler
+                                                      .downloadLinkLabel !=
+                                                  null
+                                              ? successHandler.downloadLinkLabel!
+                                              : ''),
+                                      style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor)),
+                                ),
                               ),
-                            )),
-                        Visibility(
-                          visible: successHandler.downloadLink == null &&
-                              successHandler.whatsAppShare == null &&
-                              successHandler.downloadLinkLabel == null,
-                          child: SizedBox(
+                              Visibility(
+                                visible: successHandler.whatsAppShare != null,
+                                child: TextButton.icon(
+                                  onPressed: callBackwatsapp,
+                                  icon: (Image.asset('assets/png/whats_app.png')),
+                                  label: Text(
+                                        ApplicationLocalizations.of(context)
+                                            .translate(i18.common.SHARE_BILL),
+                                    style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor),),
+
+                                ),
+                              )
+                            ],
+                          ),
+                          Visibility(
+                            visible: !isWithoutLogin,
+                            child: BottomButtonBar(
+                            successHandler.backButtonText,
+                              callBack != null ? callBack : CommonMethods.home,
+                            ),
+                          ),
+                          SizedBox(
                             height: 20,
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Visibility(
-                              visible: successHandler.downloadLink != null,
-                              child: TextButton.icon(
-                                onPressed: callBackdownload,
-                                icon: Icon(Icons.download_sharp),
-                                label: Text(
-                                    ApplicationLocalizations.of(context)
-                                        .translate(successHandler
-                                                    .downloadLinkLabel !=
-                                                null
-                                            ? successHandler.downloadLinkLabel!
-                                            : ''),
-                                    style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor)),
-                              ),
-                            ),
-                            Visibility(
-                              visible: successHandler.whatsAppShare != null,
-                              child: TextButton.icon(
-                                onPressed: callBackwatsapp,
-                                icon: (Image.asset('assets/png/whats_app.png')),
-                                label: Text(
-                                      ApplicationLocalizations.of(context)
-                                          .translate(i18.common.SHARE_BILL),
-                                  style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor),),
-
-                              ),
-                            )
-                          ],
-                        ),
-                        Visibility(
-                          visible: !isWithoutLogin,
-                          child: BottomButtonBar(
-                          successHandler.backButtonText,
-                            callBack != null ? callBack : CommonMethods.home,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Footer(),
-                      ],
-                    ))
-              ]))),
+                          Footer(),
+                        ],
+                      ))
+                ])),
+          )),
     );
   }
 }
