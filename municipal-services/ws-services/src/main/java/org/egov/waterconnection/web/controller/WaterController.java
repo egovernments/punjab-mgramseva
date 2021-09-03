@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import org.egov.waterconnection.web.models.Feedback;
 import org.egov.waterconnection.web.models.FeedbackRequest;
 import org.egov.waterconnection.web.models.FeedbackResponse;
+import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.FeedbackSearchRequest;
 import org.egov.waterconnection.web.models.RequestInfoWrapper;
 import org.egov.waterconnection.web.models.SearchCriteria;
@@ -92,13 +93,13 @@ public class WaterController {
 
 	@RequestMapping(value = "/_getfeedback", method = RequestMethod.POST)
 	public ResponseEntity<FeedbackResponse> getFeedback(
-			@Valid @ModelAttribute FeedbackSearchRequest feedbackSearchRequest) throws JsonMappingException, JsonProcessingException {
+			@Valid @ModelAttribute FeedbackSearchCriteria feedbackSearchCriteria, @RequestBody RequestInfoWrapper requestInfoWrapper) throws JsonMappingException, JsonProcessingException {
 
-		Object feedbackList = waterService.getFeedback(feedbackSearchRequest.getFeedbackSearchCriteria());
+		Object feedbackList = waterService.getFeedback(feedbackSearchCriteria);
 
 		FeedbackResponse feedbackResponse = FeedbackResponse.builder()
 				.responseInfo(responseInfoFactory
-						.createResponseInfoFromRequestInfo(feedbackSearchRequest.getRequestInfo(), true))
+						.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true))
 				.feedback(feedbackList).build();
 
 		return new ResponseEntity<>(feedbackResponse, HttpStatus.OK);
