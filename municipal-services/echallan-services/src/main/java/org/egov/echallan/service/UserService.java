@@ -249,7 +249,7 @@ public class UserService {
 		userSearchRequest.setTenantId(tenantId);
 		userSearchRequest.setRequestInfo(requestInfo);
 		userSearchRequest.setActive(true);
-		userSearchRequest.setId(ids);
+		userSearchRequest.setUuid(ids);
 		StringBuilder uri = new StringBuilder(userHost).append(userSearchEndpoint);
 		return userCall(userSearchRequest, uri);
 	}
