@@ -239,6 +239,7 @@ class ConsumerProvider with ChangeNotifier {
             streamController.add(property);
             Notifiers.getToastMessage(
                 context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
+            Navigator.pop(context);
           }
         } else {
           property.creationReason = 'UPDATE';

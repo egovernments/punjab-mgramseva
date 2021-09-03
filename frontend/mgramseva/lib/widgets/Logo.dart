@@ -26,11 +26,18 @@ class Logo extends StatelessWidget {
                       )),
                 )),
             Padding(
-                padding: const EdgeInsets.only(left: 15), child: Text(" | ")),
-            SubLabelText(
-              ApplicationLocalizations.of(context)
-                  .translate(languageProvider.stateInfo!.code!),
-            )
+                padding: const EdgeInsets.only(left: 15), child: Text(" | ", style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400, color: Color.fromRGBO(0,0,0,1)),)),
+            Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        ApplicationLocalizations.of(context).translate(languageProvider.stateInfo!.code!),
+                        style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400, color: Color.fromRGBO(0,0,0,1)),
+                        textAlign: TextAlign.left,
+                      ),
+                    )))
           ],
         )));
   }
