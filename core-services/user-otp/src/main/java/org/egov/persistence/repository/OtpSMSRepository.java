@@ -24,8 +24,10 @@ public class OtpSMSRepository {
 
     private static final String LOCALIZATION_KEY_REGISTER_SMS = "sms.register.otp.msg";
     private static final String LOCALIZATION_KEY_LOGIN_SMS = "sms.login.otp.msg";
-    private static final String LOCALIZATION_KEY_FIRSTIME_LOGIN_SMS = "sms.firsttime.login.otp.msg";
-    private static final String LOCALIZATION_KEY_PWD_RESET_SMS = "sms.pwd.reset.otp.msg";
+    private static final String LOCALIZATION_KEY_FIRSTIME_LOGIN_SMS = "RESET_PASSWORD_FIRST_TIME_OTP";
+    private static final String LOCALIZATION_KEY_PWD_RESET_SMS = "RESET_PASSWORD_OTP";
+    private static final String locale = "en_IN";
+    private static final String module = "mgramseva-common";
 
     @Value("${expiry.time.for.otp: 4000}")
     private long maxExecutionTime=2000L;
@@ -62,7 +64,7 @@ public class OtpSMSRepository {
 
     private String getMessageFormat(OtpRequest otpRequest) {
         String tenantId = getRequiredTenantId(otpRequest.getTenantId());
-        Map<String, String> localisedMsgs = localizationService.getLocalisedMessages(tenantId, "en_IN", "egov-user");
+        Map<String, String> localisedMsgs = localizationService.getLocalisedMessages(tenantId, locale, module);
         if (localisedMsgs.isEmpty()) {
             log.info("Localization Service didn't return any msgs so using default...");
             localisedMsgs.put(LOCALIZATION_KEY_REGISTER_SMS, "Dear Citizen, Your OTP to complete your mSeva Registration is %s.");
@@ -82,6 +84,7 @@ public class OtpSMSRepository {
         else
             message = localisedMsgs.get(LOCALIZATION_KEY_PWD_RESET_SMS);
 
+        System.out.println("OTP SMS ::" + message);
         return message;
     }
     
