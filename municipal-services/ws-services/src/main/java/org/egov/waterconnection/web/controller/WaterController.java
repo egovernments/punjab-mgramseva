@@ -89,7 +89,7 @@ public class WaterController {
 
 	@RequestMapping(value = "/_getfeedback", method = RequestMethod.POST)
 	public ResponseEntity<FeedbackResponse> getFeedback(
-			@Valid @RequestBody FeedbackSearchRequest feedbackSearchRequest) {
+			@Valid @ModelAttribute FeedbackSearchRequest feedbackSearchRequest) {
 
 		List<Feedback> feedbackList = waterService.getFeedback(feedbackSearchRequest.getFeedbackSearchCriteria());
 
