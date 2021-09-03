@@ -41,6 +41,10 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
+        appBar: AppBar(
+          title: Text('mGramSeva'),
+          automaticallyImplyLeading: false,
+        ),
         body: Padding(
           padding:EdgeInsets.only(top : MediaQuery.of(context).padding.top + 5),
           child: SingleChildScrollView(

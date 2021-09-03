@@ -21,7 +21,7 @@ import 'package:provider/provider.dart';
 class ResetPassword extends StatefulWidget {
   String? id;
 
-  ResetPassword({String? id});
+  ResetPassword({String? this.id});
 
   State<StatefulWidget> createState() {
     return _ResetPasswordState();
@@ -195,7 +195,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     text:
                         '${ApplicationLocalizations.of(context).translate(i18.password.ENTER_OTP_SENT_TO)} '),
                 TextSpan(
-                    text: '+ 91 -${widget.id}',
+                    text: '+ 91 - ${widget.id}',
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
                         color: Color.fromRGBO(11, 12, 12, 1)))

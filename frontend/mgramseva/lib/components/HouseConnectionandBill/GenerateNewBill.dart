@@ -60,17 +60,25 @@ class GenerateNewBill extends StatelessWidget {
                             context),
                         Padding(padding: EdgeInsets.all(16),
                           child: Text(
-                          DateTime.now()
-                                  .difference(
-                                      DateTime.fromMillisecondsSinceEpoch(num!))
-                                  .inDays
-                                  .toString() +
-                              " " +
-                              ApplicationLocalizations.of(context)
-                                  .translate(i18.generateBillDetails.DAYS_AGO),
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor),
-                        ))
+                            DateTime.now()
+                                .difference(DateTime
+                                .fromMillisecondsSinceEpoch(num!))
+                                .inDays ==
+                                0
+                                ? ApplicationLocalizations.of(context)
+                                .translate(i18.generateBillDetails.TODAY)
+                                : DateTime.now()
+                                .difference(DateTime
+                                .fromMillisecondsSinceEpoch(num!))
+                                .inDays
+                                .toString() +
+                                " " +
+                                ApplicationLocalizations.of(context)
+                                    .translate(
+                                    i18.generateBillDetails.DAYS_AGO),
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor),
+                          ))
                       ],
                     ),
                     _getLabeltext(
