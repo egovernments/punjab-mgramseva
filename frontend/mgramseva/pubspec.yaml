@@ -46,6 +46,7 @@ dependencies:
   url_launcher: ^6.0.9
   pin_input_text_field: ^4.1.0
   flutter_rating_bar: ^4.0.0
+  image_picker: ^0.8.4
 
 dev_dependencies:
   flutter_test:

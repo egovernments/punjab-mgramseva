@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -31,6 +32,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
   bool _multiPick = false;
   FileType _pickingType = FileType.custom;
   TextEditingController _controller = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -137,7 +139,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                           ),
                         )
                         ),
-                    onPressed: () => _openFileExplorer(),
+                    onPressed: () => selectDocumentOrImage(),
                     child: Text(
                       "${ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_FILE)}",
                       style: TextStyle(color: Theme.of(context).primaryColorDark, fontSize: 16),
@@ -198,5 +200,98 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                 ),
               )));
     });
+  }
+
+
+  Future<void> selectDocumentOrImage() async {
+    FocusScope.of(context).unfocus();
+
+    if(kIsWeb){
+      _openFileExplorer();
+      return ;
+    }
+    var selectionMode;
+      await showDialog(
+          barrierDismissible: true,
+          context: context,
+          builder: (context)  {
+            return AlertDialog(
+                contentPadding: EdgeInsets.all(30.0),
+                content: Container(
+                  height: 130,
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(bottom : 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            GestureDetector(
+                                child: Icon(Icons.close),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                }),
+                          ],
+                        ),
+                      ),
+                      MaterialButton(
+                        minWidth: 200,
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        color: Colors.white,
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          selectionMode = 'camera';
+                        },
+                        child: Text(
+                          "camera",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                      MaterialButton(
+                        minWidth: 200,
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        color: Colors.white,
+                        onPressed: () async {
+                          selectionMode = 'filePicker';
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          'File manger',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      )
+                    ],
+                  ),
+                ));
+          });
+
+    if(selectionMode == null) return null;
+   imagePath(context, selectionMode: selectionMode);
+  }
+
+
+  Future<void> imagePath(BuildContext context, { required String selectionMode}) async {
+    FocusScope.of(context).unfocus();
+    try{
+      if (selectionMode == 'camera') {
+        final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+        if(pickedFile != null) {
+          final File file = File(pickedFile.path);
+          if(file != null) {
+            // if (!(await CommonMethods.isValidFileSize(file))) return null;
+            // if (isAzureRequired) {
+            //   return await getCloudLink(file);
+            // } else {
+            //   return file.path;
+            }
+          } else {
+            return null;
+          }
+        } else {
+    _openFileExplorer();
+    }
+    } catch(e){
+
+    }
   }
 }
