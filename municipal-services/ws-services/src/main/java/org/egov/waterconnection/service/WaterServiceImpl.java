@@ -335,9 +335,9 @@ public class WaterServiceImpl implements WaterService {
 		// TODO Auto-generated method stub
 		List<Feedback> feedbackList = waterDaoImpl.getFeebback(feedbackSearchCriteria);
 
-		getFeedBackRatingsAvarage(feedbackList);
+	Object data=	getFeedBackRatingsAvarage(feedbackList);
 
-		return feedbackList;
+		return data;
 	}
 
 	private Object  getFeedBackRatingsAvarage(List<Feedback> feedbackList)
@@ -352,8 +352,8 @@ public class WaterServiceImpl implements WaterService {
 			if (feedback.getAdditionalDetails() != null) {
 
 				ObjectNode additionalDetails = (ObjectNode) feedback.getAdditionalDetails();
-				if (additionalDetails.get("checkList") != null) {
-					List<CheckList> data = mapper.readValue(additionalDetails.get("checkList").toString(),
+				if (additionalDetails.get("CheckList") != null) {
+					List<CheckList> data = mapper.readValue(additionalDetails.get("CheckList").toString(),
 							new TypeReference<List<CheckList>>() {
 							});
 					checkList.addAll(data);
@@ -364,11 +364,9 @@ public class WaterServiceImpl implements WaterService {
 		}
 		
 		if(checkList.size()>0) {
-	 feedbackGroupByCode=	checkList.stream()
-            .collect(Collectors.collectingAndThen(
-                Collectors.groupingBy(CheckList::getCode, 
-                   Collectors.averagingDouble(CheckList::getValue)), 
-                       v -> v.values().stream().mapToDouble(Double::doubleValue)));
+
+	feedbackGroupByCode=  checkList.stream().collect(Collectors.groupingBy(e -> e.getCode(),
+                                    Collectors.averagingInt(CheckList::getValue)));
 		}
 		
 		return feedbackGroupByCode;
