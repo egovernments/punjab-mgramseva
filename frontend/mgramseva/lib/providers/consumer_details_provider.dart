@@ -239,8 +239,6 @@ class ConsumerProvider with ChangeNotifier {
             streamController.add(property);
             Notifiers.getToastMessage(
                 context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
-            property.address.city = "";
-            property.address.localityCtrl.text = "";
           }
         } else {
           property.creationReason = 'UPDATE';
