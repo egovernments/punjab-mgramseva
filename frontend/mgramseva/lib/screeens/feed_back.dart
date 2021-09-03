@@ -9,6 +9,7 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
+import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
@@ -73,7 +74,7 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     child: ShortButton(
-                        'Submit', onSubmit),
+                        'Submit', (waterSupply > 0.0 && supplyRegular > 0.0 && qualityGood > 0.0) ? onSubmit : null),
                   )
                 ],
               )),
@@ -169,12 +170,13 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
       var res = await CoreRepository().submitFeedBack(body);
 
       Navigator.pop(context);
-
-      navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW,
-          arguments: SuccessHandler(
+      
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (_) => CommonSuccess(SuccessHandler(
               'Feedback Submitted Successfully',
               'Thank you for providing feedback. Your response has been submitted successfully.',
-              '', Routes.FEED_BACK_SUBMITTED_SUCCESSFULLY));
+              '', Routes.FEED_BACK_SUBMITTED_SUCCESSFULLY), backButton: false, isWithoutLogin: true),
+          settings: RouteSettings(name: '/feedBack/success')));
     }catch(e,s){
       Navigator.pop(context);
       ErrorHandler().allExceptionsHandler(context, e,s);
