@@ -41,7 +41,7 @@ class CommonSuccess extends StatelessWidget {
           ),
           drawer:  isWithoutLogin ? null : DrawerWrapper(Drawer(child: SideBar())),
           body: Container(
-            padding: isWithoutLogin ? null : EdgeInsets.only(top : MediaQuery.of(context).padding.top),
+            padding: isWithoutLogin ? EdgeInsets.only(top : MediaQuery.of(context).padding.top) : null,
             child: SingleChildScrollView(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
