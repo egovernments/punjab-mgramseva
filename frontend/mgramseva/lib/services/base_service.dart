@@ -83,7 +83,14 @@ class BaseService {
 }
 
 dynamic _response(http.Response response) {
-  var data = json.decode(utf8.decode(response.bodyBytes));
+  var data;
+  try{
+   data = json.decode(utf8.decode(response.bodyBytes));
+  }catch(e){
+    /// if response was string then it will come to this exception block
+    data = utf8.decode(response.bodyBytes);
+    return data;
+  }
 
   var errorMessage =
       data?['Errors']?[0]?['message'] ?? data?['Errors']?[0]?['description'] ?? data?['error_description'];

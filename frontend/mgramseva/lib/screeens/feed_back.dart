@@ -41,46 +41,49 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
-        body: SingleChildScrollView(
-          child: FormWrapper(Column(
-            children: [
-              Visibility(
-                  visible: widget.isFromTakeSurveyBtn,
-                  child: HomeBack()),
-              Card(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  LabelText('Help us Help you'),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-                    child: Text('Thank you for making payment towards your water bill.'
-                        ' Please take this short survey to help us improve water supply facilities at mgramseva'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
+        body: Padding(
+          padding:EdgeInsets.only(top : MediaQuery.of(context).padding.top + 5),
+          child: SingleChildScrollView(
+            child: FormWrapper(Column(
+              children: [
+                Visibility(
+                    visible: widget.isFromTakeSurveyBtn,
+                    child: HomeBack()),
+                Card(
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      _buildRating('Are you happy with water supply?',
-                          (rating) => onChangeOfRating(0, rating)),
-                      _buildRating('Is the water supply regular?',
-                          (rating) => onChangeOfRating(1, rating)),
-                      _buildRating('Is the water quality good?',
-                          (rating) => onChangeOfRating(2, rating)),
-                    ]),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: ShortButton(
-                        'Submit', (waterSupply > 0.0 && supplyRegular > 0.0 && qualityGood > 0.0) ? onSubmit : null),
-                  )
-                ],
-              )),
-              Footer()
-            ],
-          )),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    LabelText('Help us Help you'),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                      child: Text('Thank you for making payment towards your water bill.'
+                          ' Please take this short survey to help us improve water supply facilities at mgramseva'),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                        _buildRating('Are you happy with water supply?',
+                            (rating) => onChangeOfRating(0, rating)),
+                        _buildRating('Is the water supply regular?',
+                            (rating) => onChangeOfRating(1, rating)),
+                        _buildRating('Is the water quality good?',
+                            (rating) => onChangeOfRating(2, rating)),
+                      ]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      child: ShortButton(
+                          'Submit', (waterSupply > 0.0 && supplyRegular > 0.0 && qualityGood > 0.0) ? onSubmit : null),
+                    )
+                  ],
+                )),
+                Footer()
+              ],
+            )),
+          ),
         ));
   }
 
