@@ -21,5 +21,5 @@ public class FeedbackResponse {
 	
 	private ResponseInfo responseInfo;
 	
-	private List<Feedback> feedback;
+	private Object feedback;
 }

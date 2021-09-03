@@ -26,6 +26,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -89,9 +92,9 @@ public class WaterController {
 
 	@RequestMapping(value = "/_getfeedback", method = RequestMethod.POST)
 	public ResponseEntity<FeedbackResponse> getFeedback(
-			@Valid @ModelAttribute FeedbackSearchRequest feedbackSearchRequest) {
+			@Valid @ModelAttribute FeedbackSearchRequest feedbackSearchRequest) throws JsonMappingException, JsonProcessingException {
 
-		List<Feedback> feedbackList = waterService.getFeedback(feedbackSearchRequest.getFeedbackSearchCriteria());
+		Object feedbackList = waterService.getFeedback(feedbackSearchRequest.getFeedbackSearchCriteria());
 
 		FeedbackResponse feedbackResponse = FeedbackResponse.builder()
 				.responseInfo(responseInfoFactory
