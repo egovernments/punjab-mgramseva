@@ -106,7 +106,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       late String localizationText;
       if(isUpdate){
         localizationText = '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_BILL_ID)}';
-        localizationText = localizationText.replaceFirst('< Bill ID>', expenditureDetails.vendorNameCtrl.text.trim());
+        localizationText = localizationText.replaceFirst('< Bill ID>', '${challanDetails['challanNo'] ?? ''}');
       }else{
          localizationText = '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}';
         localizationText = localizationText.replaceFirst('<Vendor>', expenditureDetails.vendorNameCtrl.text.trim());
