@@ -96,7 +96,7 @@ class Constants {
 
   static List<KeyValue> PAYMENT_AMOUNT = [
     KeyValue(i18.common.FULL_AMOUNT, 'fullAmount'),
-    KeyValue(i18.common.CUSTOM_AMOUNT, 'customAmount'),
+    // KeyValue(i18.common.CUSTOM_AMOUNT, 'customAmount'),
   ];
 
   static List<KeyValue> PAYMENT_METHOD = [
