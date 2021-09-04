@@ -296,7 +296,7 @@ class BillGenerationProvider with ChangeNotifier {
                       ApplicationLocalizations.of(context)
                           .translate(i18.demandGenerate.GENERATE_BILL_SUCCESS),
                       '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT)}'
-                      ' (+91-${billList.bill!.first.mobileNumber})',
+                      ' (+91-${billList.bill?.first.mobileNumber})',
                       ApplicationLocalizations.of(context)
                           .translate(i18.common.COLLECT_PAYMENT),
                       Routes.BILL_GENERATE,
