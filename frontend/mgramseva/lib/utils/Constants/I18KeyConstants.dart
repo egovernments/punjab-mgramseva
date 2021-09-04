@@ -265,6 +265,7 @@ class Expense {
       'CORE_EXPENSE_EXPENDITURE_SUCESS';
   String get HAS_THIS_BILL_PAID => 'HAS_THIS_BILL_PAID';
   String get CANCELLED => 'CANCELLED';
+  String get ADD_NEW_EXPENSE => 'ADD_NEW_EXPENSE';
 }
 
 class CreateConsumer {

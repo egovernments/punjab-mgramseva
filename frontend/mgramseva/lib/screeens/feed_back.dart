@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
@@ -36,6 +39,16 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
   double waterSupply = 0.0;
   double supplyRegular = 0.0;
   double qualityGood = 0.0;
+  List<StateInfo>? stateList;
+  Languages? selectedLanguage;
+
+  @override
+  void initState() {
+    var languageProvider =
+    Provider.of<LanguageProvider>(context, listen: false);
+    languageProvider.getLocalizationData(context).then((value) => callNotifyer());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,24 +57,34 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
         appBar: AppBar(
           title: Text('mGramSeva'),
           automaticallyImplyLeading: false,
+          actions: [
+            _buildDropDown()
+          ],
         ),
-        body: Padding(
-          padding:EdgeInsets.only(top : MediaQuery.of(context).padding.top + 5),
-          child: SingleChildScrollView(
-            child: FormWrapper(Column(
-              children: [
-                Visibility(
-                    visible: widget.isFromTakeSurveyBtn,
-                    child: HomeBack()),
-                Card(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+        body: _buildLocalizationData());
+  }
+
+
+  Widget _buildView() {
+    String requestText = ApplicationLocalizations.of(context).translate(i18.postPaymentFeedback.SURVEY_REQUEST);
+    requestText = requestText.replaceAll('{connectionNo}', widget.query['connectionno']);
+    requestText = requestText.replaceAll('{GPWSC}', 'GPWSC');
+   return Padding(
+      padding:EdgeInsets.only(top : MediaQuery.of(context).padding.top + 5),
+      child: SingleChildScrollView(
+        child: FormWrapper(Column(
+          children: [
+            Visibility(
+                visible: widget.isFromTakeSurveyBtn,
+                child: HomeBack()),
+            Card(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    LabelText('Help us Help you'),
+                    LabelText(i18.postPaymentFeedback.HELP_US_HELP_YOU),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-                      child: Text('Thank you for making payment towards your water bill.'
-                          ' Please take this short survey to help us improve water supply facilities at mgramseva'),
+                      child: Text(requestText),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -69,26 +92,26 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                        _buildRating('Are you happy with water supply?',
-                            (rating) => onChangeOfRating(0, rating)),
-                        _buildRating('Is the water supply regular?',
-                            (rating) => onChangeOfRating(1, rating)),
-                        _buildRating('Is the water quality good?',
-                            (rating) => onChangeOfRating(2, rating)),
-                      ]),
+                            _buildRating(i18.postPaymentFeedback.HAPPY_WITH_WATER_SUPPLY,
+                                    (rating) => onChangeOfRating(0, rating)),
+                            _buildRating(i18.postPaymentFeedback.IS_WATER_SUPPLY_REGULAR,
+                                    (rating) => onChangeOfRating(1, rating)),
+                            _buildRating(i18.postPaymentFeedback.IS_WATER_QUALITY_GOOD,
+                                    (rating) => onChangeOfRating(2, rating)),
+                          ]),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                       child: ShortButton(
-                          'Submit', (waterSupply > 0.0 && supplyRegular > 0.0 && qualityGood > 0.0) ? onSubmit : null),
+                          i18.common.SUBMIT, (waterSupply > 0.0 && supplyRegular > 0.0 && qualityGood > 0.0) ? onSubmit : null),
                     )
                   ],
                 )),
-                Footer()
-              ],
-            )),
-          ),
-        ));
+            Footer()
+          ],
+        )),
+      ),
+    );
   }
 
   Widget _buildRating(String label, ValueChanged<double> callBack) {
@@ -182,13 +205,81 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
       
       Navigator.pushReplacement(context, MaterialPageRoute(
           builder: (_) => CommonSuccess(SuccessHandler(
-              'Feedback Submitted Successfully',
-              'Thank you for providing feedback. Your response has been submitted successfully.',
+              i18.postPaymentFeedback.FEED_BACK_SUBMITTED_SUCCESSFULLY,
+              i18.postPaymentFeedback.FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY,
               '', Routes.FEED_BACK_SUBMITTED_SUCCESSFULLY), backButton: false, isWithoutLogin: true),
           settings: RouteSettings(name: '/feedBack/success')));
     }catch(e,s){
       Navigator.pop(context);
       ErrorHandler().allExceptionsHandler(context, e,s);
     }
+  }
+
+
+  Widget _buildLocalizationData() {
+    var languageProvider =
+    Provider.of<LanguageProvider>(context, listen: false);
+
+    return StreamBuilder(
+        stream: languageProvider.streamController.stream,
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            var stateData = snapshot.data as List<StateInfo>;
+            stateList = stateData;
+            var index = stateData.first.languages?.indexWhere((element) => element.isSelected);
+            if(index != null && index != -1){
+              selectedLanguage = stateData.first.languages?[index];
+            }else{
+              selectedLanguage = stateData.first.languages?.first;
+            }
+            return _buildView();
+          } else if (snapshot.hasError) {
+            return Notifiers.networkErrorPage(context,
+                    () => languageProvider.getLocalizationData(context));
+          } else {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return Loaders.CircularLoader();
+              case ConnectionState.active:
+                return Loaders.CircularLoader();
+              default:
+                return Container();
+            }
+          }
+        });
+  }
+
+  Widget _buildDropDown() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: DropdownButton(
+          value: selectedLanguage,
+          style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 16),
+          items: dropDownItems,
+        onChanged: onChangeOfLanguage
+      ),
+    );
+  }
+
+  void onChangeOfLanguage(value) {
+    selectedLanguage = value;
+    var languageProvider =
+    Provider.of<LanguageProvider>(context, listen: false);
+    languageProvider.onSelectionOfLanguage(value!, stateList?.first?.languages  ?? []);
+  }
+
+  callNotifyer() async {
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+    });
+  }
+
+  get dropDownItems {
+    return stateList?.first.languages?.map((value) {
+      return DropdownMenuItem(
+        value: value,
+        child: Text('${value.label}'),
+      );
+    }).toList();
   }
 }

@@ -78,12 +78,13 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                 SingleChildScrollView(
                   child:
                    Container(
-                        padding: EdgeInsets.only(left: 18, right: 18),
+                        color: Color.fromRGBO(238, 238, 238, 1),
+                        padding: EdgeInsets.only(left: 8, right: 8),
                         height: MediaQuery.of(context).size.height - 56 - 50 - MediaQuery.of(context).padding.top,
                         child: CustomScrollView(slivers: [
                           SliverList(
                               delegate: SliverChildListDelegate([
-                            HomeBack(widget: _buildShare),
+                            HomeBack(),
                               Container(
                                 key: key,
                                 child: DashboardCard(onTapOfMonthPicker)),
