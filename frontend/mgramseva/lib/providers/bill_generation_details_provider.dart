@@ -184,7 +184,7 @@ class BillGenerationProvider with ChangeNotifier {
   }
 
   void onChangeOfBillCycle(val) {
-    selectedBillCycle = (DateFormats.getMonthAndNextMonth(val));
+    selectedBillCycle = (DateFormats.getMonth(val));
     selectedBillPeriod = (DateFormats.getFilteredDate(val.toLocal().toString(),
             dateFormat: "dd/MM/yyyy")) +
         "-" +
