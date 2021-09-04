@@ -216,9 +216,6 @@ public class UserService {
         	
         	// copy mobie number to username, so that login with mobile number will work.
             user.setUsername(user.getMobileNumber());
-        }else if(user.getMobileNumber().equalsIgnoreCase(user.getUsername())){
-        	Random rand = new Random();
-        	 user.setUsername(user.getMobileNumber()+String.valueOf(rand.nextInt(100)));
         }
         
         validateUserUniqueness(user);
