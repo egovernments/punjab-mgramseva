@@ -6,11 +6,7 @@ import 'package:mgramseva/utils/role_actions.dart';
 
 class HomeProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
-  List<HomeWalkWidgets> homeWalkthrougList =
-      HomeWalkThrough().homeWalkThrough.map((e) {
-    e.key = GlobalKey();
-    return e;
-  }).toList();
+  late List<HomeWalkWidgets> homeWalkthrougList;
   int activeindex = 0;
 
   void setwalkthrough(value) {

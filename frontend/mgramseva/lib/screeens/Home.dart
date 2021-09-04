@@ -27,6 +27,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   void initState() {
+    var homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    homeProvider.homeWalkthrougList =
+        HomeWalkThrough().homeWalkThrough.map((e) {
+      e.key = GlobalKey();
+      return e;
+    }).toList();
+
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
@@ -36,11 +43,6 @@ class _HomeState extends State<Home> {
         Provider.of<LanguageProvider>(context, listen: false);
 
     languageProvider.getLocalizationData(context);
-    Provider.of<HomeProvider>(context, listen: false)
-      ..setwalkthrough(HomeWalkThrough().homeWalkThrough.map((e) {
-        e.key = GlobalKey();
-        return e;
-      }).toList());
   }
 
   _buildView(homeProvider, constraint, Widget Notid) {

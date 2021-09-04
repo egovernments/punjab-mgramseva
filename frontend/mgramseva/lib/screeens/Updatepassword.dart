@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_countdown_timer/index.dart';
 import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/model/user/user_details.dart';
@@ -35,9 +37,13 @@ class UpdatePassword extends StatefulWidget {
 }
 
 class _UpdatePasswordState extends State<UpdatePassword> {
+  late CountdownTimerController timerController;
+  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 30;
+
   var newPassword = new TextEditingController();
   var confirmPassword = new TextEditingController();
   final formKey = GlobalKey<FormState>();
+  bool isdisabled = true;
   List<Tenants>? tenantsList;
   TextEditingController _pinEditingController = TextEditingController();
   var autoValidate = false;
@@ -47,11 +53,18 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   void initState() {
     afterBuildContext();
     super.initState();
+    timerController = CountdownTimerController(endTime: endTime, onEnd: onEnd);
   }
 
   saveInput(context) async {
     setState(() {
       password = context;
+    });
+  }
+
+  void onEnd() {
+    setState(() {
+      isdisabled = false;
     });
   }
 
@@ -285,15 +298,22 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                         '${ApplicationLocalizations.of(context).translate(i18.password.ENTER_OTP_SENT_TO)} '),
                 TextSpan(
                     text:
-                        '+ 91 -${widget.userDetails.userRequest?.mobileNumber}',
+                        '+ 91 - ${widget.userDetails.userRequest?.mobileNumber}',
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
                         color: Color.fromRGBO(11, 12, 12, 1)))
               ])),
           Container(
-            width: 300,
+            width: 350,
             padding: EdgeInsets.symmetric(vertical: 5),
             child: PinInputTextField(
+              cursor: Cursor(
+                width: 2,
+                height: 25,
+                color: Colors.black,
+                radius: Radius.circular(1),
+                enabled: true,
+              ),
               pinLength: 6,
               decoration: BoxLooseDecoration(
                   strokeColorBuilder: PinListenColorBuilder(
@@ -308,10 +328,33 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               ],
             ),
           ),
-          TextButton(
-              onPressed: sendOtp,
-              child: Text(ApplicationLocalizations.of(context)
-                  .translate(i18.password.RESENT_OTP)))
+          Visibility(
+            child: CountdownTimer(
+                controller: timerController, onEnd: onEnd, endTime: endTime),
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            visible: isdisabled,
+          ),
+          Visibility(
+            child: TextButton(
+                onPressed: () => {
+                      sendOtp(),
+                      endTime =
+                          DateTime.now().millisecondsSinceEpoch + 1000 * 30,
+                      timerController = CountdownTimerController(
+                          endTime: endTime, onEnd: onEnd),
+                      setState(() {
+                        isdisabled = true;
+                      }),
+                    },
+                child: Text(ApplicationLocalizations.of(context)
+                    .translate(i18.password.RESENT_OTP))),
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            visible: !isdisabled,
+          ),
         ],
       ),
     );
@@ -325,8 +368,11 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         "otpReference": _pinEditingController.text.trim(),
         "userName": widget.userDetails.userRequest?.userName,
         "newPassword": newPassword.text.trim(),
-        "tenantId": widget.userDetails.userRequest?.tenantId,
-        "type": widget.userDetails?.userRequest?.type
+        "tenantId": widget.userDetails.userRequest!.roles!
+            .where((element) => element.code == 'PROFILE_UPDATE')
+            .first
+            .tenantId,
+        "type": widget.userDetails.userRequest?.type
       };
 
       try {
@@ -342,13 +388,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
           ..walkThroughCondition(true, Constants.CREATE_CONSUMER_KEY)
           ..walkThroughCondition(true, Constants.ADD_EXPENSE_KEY);
 
-        Navigator.pushReplacementNamed(context, Routes.SUCCESS_VIEW,
-            arguments: SuccessHandler(
-              i18.password.CHANGE_PASSWORD_SUCCESS,
-              i18.password.CHANGE_PASSWORD_SUCCESS_SUBTEXT,
-              i18.common.BACK_HOME,
-              Routes.SUCCESS_VIEW,
-            ));
+        Navigator.pushNamed(context, Routes.DEFAULT_PASSWORD_UPDATE);
       } catch (e, s) {
         Navigator.pop(context);
         ErrorHandler().allExceptionsHandler(context, e, s);
@@ -364,9 +404,9 @@ class _UpdatePasswordState extends State<UpdatePassword> {
     var body = {
       "otp": {
         "mobileNumber": widget.userDetails.userRequest?.userName,
-        "tenantId": widget.userDetails?.userRequest?.tenantId,
+        "tenantId": widget.userDetails.userRequest?.tenantId,
         "type": "passwordreset",
-        "userType": widget.userDetails?.userRequest?.type
+        "userType": widget.userDetails.userRequest?.type
       }
     };
 

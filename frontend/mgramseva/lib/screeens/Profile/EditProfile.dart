@@ -82,7 +82,7 @@ class _EditProfileState extends State<EditProfile> {
                   BuildTextField(
                     i18.common.PHONE_NUMBER,
                     profileDetails.phoneNumberCtrl,
-                    prefixText: '+91-',
+                    prefixText: '+91 - ',
                     isDisabled: true,
                     readOnly: true,
                     inputFormatter: [
@@ -111,7 +111,8 @@ class _EditProfileState extends State<EditProfile> {
                       FilteringTextInputFormatter.allow(
                           RegExp("[a-zA-Z0-9@. ]"))
                     ],
-                    message: ApplicationLocalizations.of(context).translate(i18.profileEdit.INVALID_EMAIL_FORMAT),
+                    message: ApplicationLocalizations.of(context)
+                        .translate(i18.profileEdit.INVALID_EMAIL_FORMAT),
                     pattern:
                         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
                   ),
