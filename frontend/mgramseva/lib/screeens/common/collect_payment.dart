@@ -184,7 +184,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                 ...List.generate(fetchBill.billDetails?.first.billAccountDetails?.length ?? 0, (index)
                 {
                   var billAccountDetails = fetchBill.billDetails?.first.billAccountDetails?[index];
-                  return  _buildLabelValue(billAccountDetails!.taxHeadCode,
+                  return  _buildLabelValue('WS_${billAccountDetails!.taxHeadCode}',
                       '₹ ${billAccountDetails!.amount}');
                 }),
                 if(fetchBill.demand != null) _buildWaterCharges(fetchBill.demand!, constraints)
