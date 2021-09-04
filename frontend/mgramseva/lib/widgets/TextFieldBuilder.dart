@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -115,7 +116,7 @@ class _BuildTextField extends State<BuildTextField> {
               (widget.prefixText == ''
                   ? null
                   : Padding(
-                      padding: EdgeInsets.only(left: 15, top: 14),
+                      padding: EdgeInsets.only(left: 15, top: kIsWeb ? 11 : 14),
                       child: Text(
                         widget.prefixText,
                         style: TextStyle(

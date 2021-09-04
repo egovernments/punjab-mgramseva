@@ -17,19 +17,20 @@ class NewConsumerBill extends StatelessWidget {
   _getLabeltext(label, value, context) {
     return Container(
         padding: EdgeInsets.only(top: 16, bottom: 16),
-    child:(Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-    Container(
-      padding: EdgeInsets.only(right: 16),
-        width: MediaQuery.of(context).size.width / 3,
-      child:Text(
-              ApplicationLocalizations.of(context).translate(label),
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-            )),
-        Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))
-      ],
-    )));
+        child: (Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+                padding: EdgeInsets.only(right: 16),
+                width: MediaQuery.of(context).size.width / 3,
+                child: Text(
+                  ApplicationLocalizations.of(context).translate(label),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                )),
+            Text(value,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))
+          ],
+        )));
   }
 
   @override
@@ -48,9 +49,9 @@ class NewConsumerBill extends StatelessWidget {
           ? Column(
               children: [
                 Container(
-                  padding: EdgeInsets.only(top: 24, bottom: 8),
-              child:
-                ListLabelText(i18.billDetails.NEW_CONSUMERGENERATE_BILL_LABEL)),
+                    padding: EdgeInsets.only(top: 24, bottom: 8),
+                    child: ListLabelText(
+                        i18.billDetails.NEW_CONSUMERGENERATE_BILL_LABEL)),
                 Card(
                     child: Padding(
                         padding: EdgeInsets.all(8.0),
@@ -71,10 +72,14 @@ class NewConsumerBill extends StatelessWidget {
                                           "Download"),
                                   icon: Icon(Icons.download_sharp),
                                   label: Text(
-                                      ApplicationLocalizations.of(context)
-                                          .translate(i18.common.BILL_DOWNLOAD),
-                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,),
-                                  textAlign: TextAlign.left,),
+                                    ApplicationLocalizations.of(context)
+                                        .translate(i18.common.BILL_DOWNLOAD),
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    textAlign: TextAlign.left,
+                                  ),
                                 ),
                               ),
                               _getLabeltext(
