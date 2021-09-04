@@ -142,17 +142,17 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             children: [
               RadioButtonFieldBuilder(context, i18.common.PAYMENT_AMOUNT, fetchBill.paymentAmount, '', '', true,
                   Constants.PAYMENT_AMOUNT, (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(fetchBill, val, true)),
-              // if(fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key)
-              //   BuildTextField(
-              //     '${i18.common.CUSTOM_AMOUNT}',
-              //     fetchBill.customAmountCtrl,
-              //     isRequired: true,
-              //     textInputType: TextInputType.number,
-              //     inputFormatter: [
-              //       FilteringTextInputFormatter.allow(RegExp("[0-9]"))
-              //     ],
-              //     labelSuffix: '(₹)',
-              //   ),
+              if(fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key)
+                BuildTextField(
+                  '${i18.common.CUSTOM_AMOUNT}',
+                  fetchBill.customAmountCtrl,
+                  isRequired: true,
+                  textInputType: TextInputType.number,
+                  inputFormatter: [
+                    FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                  ],
+                  labelSuffix: '(₹)',
+                ),
               RadioButtonFieldBuilder(context, i18.common.PAYMENT_METHOD, fetchBill.paymentMethod, '', '', true,
                   consumerPaymentProvider.paymentModeList, (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(fetchBill, val))
             ],
@@ -184,7 +184,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                 ...List.generate(fetchBill.billDetails?.first.billAccountDetails?.length ?? 0, (index)
                 {
                   var billAccountDetails = fetchBill.billDetails?.first.billAccountDetails?[index];
-                  return  _buildLabelValue(billAccountDetails!.taxHeadCode,
+                  return  _buildLabelValue('WS_${billAccountDetails!.taxHeadCode}',
                       '₹ ${billAccountDetails!.amount}');
                 }),
                 if(fetchBill.demand != null) _buildWaterCharges(fetchBill.demand!, constraints)

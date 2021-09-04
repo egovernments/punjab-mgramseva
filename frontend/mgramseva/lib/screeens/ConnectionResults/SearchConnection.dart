@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mgramseva/model/connection/search_connection.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -30,6 +31,9 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
 
   @override
   void initState() {
+    var searchConnectionProvider =
+    Provider.of<SearchConnectionProvider>(context, listen: false)
+    ..searchconnection = SearchConnection();
     super.initState();
   }
 

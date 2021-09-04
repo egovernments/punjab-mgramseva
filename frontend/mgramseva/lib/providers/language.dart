@@ -26,6 +26,7 @@ class LanguageProvider with ChangeNotifier {
     try {
       var res = await getLanguages();
       if (res != null) {
+        stateInfo ??= res;
         setSelectedState(res);
         await ApplicationLocalizations(
                 Locale(selectedLanguage?.label ?? '', selectedLanguage?.value))
