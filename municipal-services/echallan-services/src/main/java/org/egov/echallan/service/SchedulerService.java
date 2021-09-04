@@ -658,11 +658,11 @@ public class SchedulerService {
 										messageMap.get(NotificationUtil.MSG_KEY), mode);
 								HashMap<String, String> onlineMessageMap = util.getLocalizationMessage(requestInfo,
 										TODAY_ONLINE_COLLECTION_SMS, tenantId);
-								mode = "online";
-								String onlineMessage = formatTodayCollectionMessage(requestInfo, tenantId,
-										onlineMessageMap.get(NotificationUtil.MSG_KEY), mode);
 								messages.add(message);
-								messages.add(onlineMessage);
+								mode = "online";
+//								String onlineMessage = formatTodayCollectionMessage(requestInfo, tenantId,
+//										onlineMessageMap.get(NotificationUtil.MSG_KEY), mode);
+//								messages.add(onlineMessage);
 								UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
 										tenantId, Arrays.asList("COLLECTION_OPERATOR"));
 								Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
@@ -716,11 +716,11 @@ public class SchedulerService {
 				cashMessageMap.get(NotificationUtil.MSG_KEY), mode);
 		HashMap<String, String> onlineMessageMap = util.getLocalizationMessage(requestInfo, TODAY_ONLINE_COLLECTION,
 				tenantId);
-		mode = "online";
-		String onlineMessage = formatTodayCollectionMessage(requestInfo, tenantId,
-				onlineMessageMap.get(NotificationUtil.MSG_KEY), mode);
 		messages.add(message);
-		messages.add(onlineMessage);
+//		mode = "online";
+//		String onlineMessage = formatTodayCollectionMessage(requestInfo, tenantId,
+//				onlineMessageMap.get(NotificationUtil.MSG_KEY), mode);
+//		messages.add(onlineMessage);
 		for (String msg : messages) {
 			events.add(Event.builder().tenantId(tenantId).description(msg).eventType(USREVENTS_EVENT_TYPE)
 					.name(USREVENTS_EVENT_NAME).postedBy(USREVENTS_EVENT_POSTEDBY)
