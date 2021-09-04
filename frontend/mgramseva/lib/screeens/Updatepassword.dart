@@ -139,20 +139,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                       textAlign: TextAlign.start,
                                     ),
                                   ),
-                                  Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Container(
-                                        margin: const EdgeInsets.only(
-                                            left: 20, bottom: 20, top: 20),
-                                        child: Text(
-                                            '${ApplicationLocalizations.of(context).translate(i18.common.DEAR)} ${widget.userDetails.userRequest?.name}, '
-                                            '${ApplicationLocalizations.of(context).translate(i18.password.INVITED_TO_GRAMA_SEVA)}',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
-                                                color: Theme.of(context)
-                                                    .primaryColorLight)),
-                                      )),
+                                  _buildWelcomeMsg(),
                                   _buildTenantDetails(),
                                   _buildOtpView(),
                                   Container(
@@ -215,6 +202,24 @@ class _UpdatePasswordState extends State<UpdatePassword> {
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [_buildHeader(), ..._buildData()]),
     );
+  }
+  Widget _buildWelcomeMsg(){
+    if (tenantsList == null) return Container();
+    return Align(
+        alignment: Alignment.centerLeft,
+        child: Container(
+          margin: const EdgeInsets.only(
+              left: 20, bottom: 20, top: 20),
+          child: Text(
+              '${ApplicationLocalizations.of(context).translate(i18.common.DEAR)} ${widget.userDetails.userRequest?.name}, ' +
+                  (tenantsList!.length == 1 ? '${ApplicationLocalizations.of(context).translate(i18.password.INVITED_TO_SINGLE_GP)}':
+                  '${ApplicationLocalizations.of(context).translate(i18.password.INVITED_TO_GRAMA_SEVA)}'),
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Theme.of(context)
+                      .primaryColorLight)),
+        ));
   }
 
   TableRow _buildHeader() {

@@ -50,7 +50,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         "userName": commonProvider.userDetails!.userRequest!.userName,
         "existingPassword": password.existingPassword,
         "newPassword": password.newPassword,
-        "tenantId": commonProvider.userDetails!.userRequest!.tenantId,
+        "tenantId": commonProvider.userDetails!.selectedtenant!.code,
         "type": commonProvider.userDetails!.userRequest!.type
       };
 
