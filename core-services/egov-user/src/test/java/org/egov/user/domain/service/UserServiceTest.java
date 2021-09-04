@@ -212,7 +212,7 @@ public class UserServiceTest {
     public void test_should_raise_exception_when_duplicate_user_name_exists() throws Exception {
         org.egov.user.domain.model.User domainUser = validDomainUser(false);
         when(otpRepository.isOtpValidationComplete(getExpectedRequest())).thenReturn(true);
-        when(userRepository.isUserPresent("supandi_rocks", "tenantId", UserType.CITIZEN)).thenReturn(true);
+        when(userRepository.isUserPresent("9988776655", "tenantId", UserType.CITIZEN)).thenReturn(true);
         when(encryptionDecryptionUtil.encryptObject(domainUser, "User", User.class)).thenReturn(domainUser);
         userService.createUser(domainUser, getValidRequestInfo());
     }
