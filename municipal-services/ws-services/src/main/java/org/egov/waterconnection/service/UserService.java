@@ -450,7 +450,7 @@ public class UserService {
 		String message = notificationUtil.getMessageTemplate(WCConstants.ON_BOARD_EMPLOYEE, localizationMessage);
 		
 		message = message.replace("{USER}", user.getName());
-		message = message.replace("{LINK}", waterServiceUtil.getShortnerURL(configuration.getWebAppLink()+configuration.getWebUiPath()));
+		message = message.replace("{LINK}", waterServiceUtil.getShortnerURL(configuration.getNotificationUrl()+configuration.getWebUiPath()));
 		message = message.replace(" {PHNO}", user.getMobileNumber());
 		message = message.replace("{PASSWORD}", user.getPassword());
 		

@@ -193,7 +193,7 @@ class DashBoardProvider with ChangeNotifier {
   List<TableHeader> get collectionHeaderList => [
     TableHeader(i18.common.CONNECTION_ID,  isSortingRequired: true,
         isAscendingOrder : sortBy != null && sortBy!.key == 'connectionNumber' ? sortBy!.isAscending : null, apiKey: 'connectionNumber ', callBack: onExpenseSort),
-    TableHeader(i18.common.NAME,  isSortingRequired: true,
+    TableHeader(i18.common.NAME,  isSortingRequired: false,
         isAscendingOrder : sortBy != null && sortBy!.key == 'name' ? sortBy!.isAscending : null, apiKey: 'name', callBack: onExpenseSort),
     TableHeader(i18.dashboard.COLLECTIONS,  isSortingRequired: true,
         isAscendingOrder : sortBy != null && sortBy!.key == 'collectionAmount' ? sortBy!.isAscending : null, apiKey: 'collectionAmount', callBack: onExpenseSort),

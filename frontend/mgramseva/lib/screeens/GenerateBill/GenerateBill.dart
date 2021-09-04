@@ -94,6 +94,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                   .getServiceCategoryList(),
                                               true,
                                               readOnly: true,
+                                              isEnabled: false,
                                             )),
                                 Consumer<BillGenerationProvider>(
                                     builder: (_, billgenerationprovider,
@@ -110,6 +111,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                               .getConnectionTypeList(),
                                           true,
                                           readOnly: true,
+                                          isEnabled: false,
                                         )),
                                 billgenerationprovider
                                             .billGenerateDetails.serviceType !=
@@ -137,6 +139,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                         .getPropertyTypeList(),
                                                     true,
                                                     readOnly: true,
+                                                    isEnabled: false,
                                                   )),
                                           Consumer<BillGenerationProvider>(
                                               builder: (_, billgenerationprovider,
@@ -154,6 +157,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                           TextInputType.number,
                                                       onChange: (value) =>
                                                           saveInput(value),
+                                                      isDisabled: true,
                                                       readOnly:
                                                           widget.id == null
                                                               ? false

@@ -4,7 +4,7 @@ import 'package:mgramseva/utils/common_styles.dart';
 
 class ShortButton extends StatelessWidget {
   final String label;
-  final VoidCallback callBack;
+  final VoidCallback? callBack;
   ShortButton(this.label, this.callBack);
 
   @override

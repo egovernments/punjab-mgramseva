@@ -207,14 +207,17 @@ public class UserService {
         user.setUuid(UUID.randomUUID().toString());
         user.validateNewUser(createUserValidateName);
         conditionallyValidateOtp(user);
+        
+        /* encrypt here */
+        user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
+        
         if(!userRepository.isUserPresent(user.getMobileNumber(), getStateLevelTenantForCitizen(user.getTenantId(), user
                 .getType()), user.getType())) {
         	
         	// copy mobie number to username, so that login with mobile number will work.
             user.setUsername(user.getMobileNumber());
         }
-        /* encrypt here */
-        user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
+        
         validateUserUniqueness(user);
         if (isEmpty(user.getPassword())) {
             user.setPassword(UUID.randomUUID().toString());

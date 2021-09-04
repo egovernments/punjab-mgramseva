@@ -9,6 +9,7 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
+import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
@@ -40,46 +41,53 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
-        body: SingleChildScrollView(
-          child: FormWrapper(Column(
-            children: [
-              Visibility(
-                  visible: widget.isFromTakeSurveyBtn,
-                  child: HomeBack()),
-              Card(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  LabelText('Help us Help you'),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-                    child: Text('Thank you for making payment towards your water bill.'
-                        ' Please take this short survey to help us improve water supply facilities at mgramseva'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
+        appBar: AppBar(
+          title: Text('mGramSeva'),
+          automaticallyImplyLeading: false,
+        ),
+        body: Padding(
+          padding:EdgeInsets.only(top : MediaQuery.of(context).padding.top + 5),
+          child: SingleChildScrollView(
+            child: FormWrapper(Column(
+              children: [
+                Visibility(
+                    visible: widget.isFromTakeSurveyBtn,
+                    child: HomeBack()),
+                Card(
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      _buildRating('Are you happy with water supply?',
-                          (rating) => onChangeOfRating(0, rating)),
-                      _buildRating('Is the water supply regular?',
-                          (rating) => onChangeOfRating(1, rating)),
-                      _buildRating('Is the water quality good?',
-                          (rating) => onChangeOfRating(2, rating)),
-                    ]),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: ShortButton(
-                        'Submit', onSubmit),
-                  )
-                ],
-              )),
-              Footer()
-            ],
-          )),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    LabelText('Help us Help you'),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                      child: Text('Thank you for making payment towards your water bill.'
+                          ' Please take this short survey to help us improve water supply facilities at mgramseva'),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                        _buildRating('Are you happy with water supply?',
+                            (rating) => onChangeOfRating(0, rating)),
+                        _buildRating('Is the water supply regular?',
+                            (rating) => onChangeOfRating(1, rating)),
+                        _buildRating('Is the water quality good?',
+                            (rating) => onChangeOfRating(2, rating)),
+                      ]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      child: ShortButton(
+                          'Submit', (waterSupply > 0.0 && supplyRegular > 0.0 && qualityGood > 0.0) ? onSubmit : null),
+                    )
+                  ],
+                )),
+                Footer()
+              ],
+            )),
+          ),
         ));
   }
 
@@ -141,6 +149,8 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
 
     try{
       var body = {
+        "RequestInfo": {
+        },
         'feedback' : {
           "tenantId": widget.query['tenantId'],
           "paymentId": widget.query['paymentId'],
@@ -169,12 +179,13 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
       var res = await CoreRepository().submitFeedBack(body);
 
       Navigator.pop(context);
-
-      navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW,
-          arguments: SuccessHandler(
+      
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (_) => CommonSuccess(SuccessHandler(
               'Feedback Submitted Successfully',
               'Thank you for providing feedback. Your response has been submitted successfully.',
-              '', Routes.FEED_BACK_SUBMITTED_SUCCESSFULLY));
+              '', Routes.FEED_BACK_SUBMITTED_SUCCESSFULLY), backButton: false, isWithoutLogin: true),
+          settings: RouteSettings(name: '/feedBack/success')));
     }catch(e,s){
       Navigator.pop(context);
       ErrorHandler().allExceptionsHandler(context, e,s);

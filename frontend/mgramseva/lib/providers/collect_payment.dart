@@ -82,9 +82,10 @@ class CollectPaymentProvider with ChangeNotifier {
       FetchBill fetchBill, BuildContext context) async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
-    var amount = fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key
-        ? fetchBill.customAmountCtrl.text
-        : fetchBill.totalAmount;
+    // var amount = fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key
+    //     ? fetchBill.customAmountCtrl.text
+    //     : fetchBill.totalAmount;
+    var amount = fetchBill.totalAmount;
     var payment = {
       "Payment": {
         "tenantId": commonProvider.userDetails?.selectedtenant?.code,

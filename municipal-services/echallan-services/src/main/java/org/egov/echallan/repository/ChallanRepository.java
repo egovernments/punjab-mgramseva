@@ -154,7 +154,7 @@ public class ChallanRepository {
 	
 	public List<String> getActiveExpenses(String tenantId) {
 		StringBuilder query = new StringBuilder(queryBuilder.ACTIVEEXPENSECOUNTQUERY);
-		query.append(" and tenantid = "+tenantId);
+		query.append(" and tenantid = '").append(tenantId).append("'");
 		log.info("Active expense query : " + query);
 		return jdbcTemplate.queryForList(query.toString(), String.class);
 	}

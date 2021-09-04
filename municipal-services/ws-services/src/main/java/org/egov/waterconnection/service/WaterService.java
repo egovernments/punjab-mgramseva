@@ -11,6 +11,9 @@ import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
 import org.egov.waterconnection.web.models.WaterConnectionResponse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 public interface WaterService {
 
 	List<WaterConnection> createWaterConnection(WaterConnectionRequest waterConnectionRequest);
@@ -21,6 +24,6 @@ public interface WaterService {
 	
 	void submitFeedback( FeedbackRequest feedbackrequest);
 
-	List<Feedback> getFeedback( FeedbackSearchCriteria feedBackSearchCriteria);
+	Object getFeedback( FeedbackSearchCriteria feedBackSearchCriteria) throws JsonMappingException, JsonProcessingException;
 
 }
