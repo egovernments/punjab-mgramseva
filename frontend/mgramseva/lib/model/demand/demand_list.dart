@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mgramseva/model/bill/meter_demand_details.dart';
 part 'demand_list.g.dart';
 
 @JsonSerializable()
@@ -41,6 +42,8 @@ class Demands {
   double? minimumAmountPayable;
   @JsonKey(name: "status")
   String? status;
+  @JsonKey(name: "meterReadings")
+  List<MeterReadings>? meterReadings;
   Demands();
   factory Demands.fromJson(Map<String, dynamic> json) =>
       _$DemandsFromJson(json);

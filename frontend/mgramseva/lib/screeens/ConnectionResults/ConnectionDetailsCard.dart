@@ -160,7 +160,7 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                                 .waterConnection![index]
                                                 .additionalDetails!
                                                 .doorNo! +
-                                            ','
+                                            ', '
                                         : "") +
                                     (waterconnections.waterConnection![index]
                                                 .additionalDetails!.street !=
@@ -169,7 +169,7 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                                 .waterConnection![index]
                                                 .additionalDetails!
                                                 .street! +
-                                            ','
+                                            ', '
                                         : "") +
                                     waterconnections.waterConnection![index]
                                         .additionalDetails!.locality!,
