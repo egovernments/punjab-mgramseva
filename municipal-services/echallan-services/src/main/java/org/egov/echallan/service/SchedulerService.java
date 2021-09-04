@@ -564,7 +564,7 @@ public class SchedulerService {
 									message = message.replace("{Date}", LocalDate.now().toString());
 									System.out.println("PENDING Coll SMS::" + message);
 									SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
-											.message(messageMap.get(NotificationUtil.MSG_KEY))
+											.message(message)
 											.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
 											.users(new String[] { uuidUsername }).build();
 									producer.push(config.getSmsNotifTopic(), smsRequest);
