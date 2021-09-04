@@ -157,17 +157,19 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                                 .additionalDetails!.doorNo !=
                                             null
                                         ? waterconnections
-                                            .waterConnection![index]
-                                            .additionalDetails!
-                                            .doorNo!
+                                                .waterConnection![index]
+                                                .additionalDetails!
+                                                .doorNo! +
+                                            ','
                                         : "") +
                                     (waterconnections.waterConnection![index]
                                                 .additionalDetails!.street !=
                                             null
                                         ? waterconnections
-                                            .waterConnection![index]
-                                            .additionalDetails!
-                                            .street!
+                                                .waterConnection![index]
+                                                .additionalDetails!
+                                                .street! +
+                                            ','
                                         : "") +
                                     waterconnections.waterConnection![index]
                                         .additionalDetails!.locality!,

@@ -115,7 +115,7 @@ class _BuildTextField extends State<BuildTextField> {
               (widget.prefixText == ''
                   ? null
                   : Padding(
-                      padding: EdgeInsets.only(left: 15, top: 10, bottom: 10),
+                      padding: EdgeInsets.only(left: 15, top: 14),
                       child: Text(
                         widget.prefixText,
                         style: TextStyle(

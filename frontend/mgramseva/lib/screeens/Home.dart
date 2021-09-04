@@ -116,7 +116,10 @@ class _HomeState extends State<Home> {
                             margin: constraint.maxWidth < 720
                                 ? EdgeInsets.all(0)
                                 : EdgeInsets.only(left: 75, right: 75),
-                            child: NotificationsList()),
+                            child: commonProvider.userDetails?.selectedtenant !=
+                                    null
+                                ? NotificationsList()
+                                : Text("")),
                       );
                     } else if (snapshot.hasError) {
                       return Notifiers.networkErrorPage(context,
