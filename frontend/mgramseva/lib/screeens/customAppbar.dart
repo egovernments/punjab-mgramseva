@@ -15,10 +15,8 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   CustomAppBar()
       : preferredSize = Size.fromHeight(kToolbarHeight),
         super();
-
   @override
   final Size preferredSize; // default is 56.0
-
   @override
   _CustomAppBarState createState() => _CustomAppBarState();
 }
@@ -33,36 +31,53 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   afterViewBuild() {
     var tenantProvider = Provider.of<TenantsProvider>(context, listen: false);
+
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    if (tenantProvider.tenants == null) {
-      tenantProvider.getTenants();
-    }
-    if (commonProvider.userDetails!.selectedtenant == null) {
+
+    if (tenantProvider.tenants != null) {
       final r = commonProvider.userDetails!.userRequest!.roles!
           .map((e) => e.tenantId)
           .toSet()
           .toList();
+      final result = tenantProvider.tenants!.tenantsList
+          ?.where((element) => r.contains(element.code) ?? false)
+          .toList();
+      if (result?.length == 1 &&
+          commonProvider.userDetails!.selectedtenant == null) {
+        if (result?.isNotEmpty ?? false)
+          commonProvider.setTenant(result?.first);
 
-      if (r != null && tenantProvider.tenants != null) {
-        final result = tenantProvider.tenants!.tenantsList!
-            .where((element) => r.contains(element.code))
-            .toList();
-        if (result.length > 1 &&
-            commonProvider.userDetails!.selectedtenant == null) {
-          showdialog(result);
-        } else if (result.length == 1 &&
-            commonProvider.userDetails!.selectedtenant == null) {
-          if (kIsWeb) {
-            if (result.isNotEmpty) commonProvider.setTenant(result.first);
-            Navigator.popAndPushNamed(context, Routes.HOME);
-          } else {
-            commonProvider.setTenant(result.first);
-            Navigator.popAndPushNamed(context, Routes.HOME);
-          }
-        }
+        // });
+      } else if (result != null &&
+          result.length > 1 &&
+          commonProvider.userDetails!.selectedtenant == null) {
+        WidgetsBinding.instance
+            ?.addPostFrameCallback((_) => showdialog(result));
       }
+    } else {
+      tenantProvider.getTenants().then((value) {
+        final r = commonProvider.userDetails!.userRequest!.roles!
+            .map((e) => e.tenantId)
+            .toSet()
+            .toList();
+        final result = tenantProvider.tenants!.tenantsList
+            ?.where((element) => r.contains(element.code) ?? false)
+            .toList();
+        if (result?.length == 1 &&
+            commonProvider.userDetails!.selectedtenant == null) {
+          if (result?.isNotEmpty ?? false)
+            commonProvider.setTenant(result?.first);
+
+          // });
+        } else if (result != null &&
+            result.length > 1 &&
+            commonProvider.userDetails!.selectedtenant == null) {
+          WidgetsBinding.instance
+              ?.addPostFrameCallback((_) => showdialog(result));
+        }
+      });
     }
   }
 
@@ -93,7 +108,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         onTap: () {
                           commonProvider.setTenant(result[index]);
                           Navigator.pop(context);
-                          Navigator.pushReplacementNamed(context, Routes.HOME);
                         },
                         child: Material(
                             child: Container(
@@ -161,22 +175,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     final result = tenant.tenantsList!
         .where((element) => r.contains(element.code))
         .toList();
-    if (result.length == 1 &&
-        commonProvider.userDetails!.selectedtenant == null) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
-        if (kIsWeb) {
-          if (result.isNotEmpty) commonProvider.setTenant(result.first);
-          Navigator.pushReplacementNamed(context, Routes.HOME);
-        } else {
-          commonProvider.setTenant(result.first);
-          Navigator.popAndPushNamed(context, Routes.HOME);
-        }
-      });
-    } else if (result.length > 1 &&
-        commonProvider.userDetails!.selectedtenant == null) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) => showdialog(result));
-    }
-
     return GestureDetector(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,

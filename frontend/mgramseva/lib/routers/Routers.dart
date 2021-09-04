@@ -2,6 +2,7 @@ class Routes {
   ///Authentication
   static const String LANDING_PAGE = '/';
 
+  static const String DEFAULT_PASSWORD_UPDATE = '/passwordupdated';
   static const String LOGIN = '/login';
 
   static const String SELECT_LANGUAGE = '/selectLanguage';

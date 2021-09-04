@@ -347,12 +347,6 @@ public class PaymentUpdateService {
 			SMSRequest req = SMSRequest.builder().mobileNumber(mobileNumber).message(msg).category(Category.TRANSACTION).build();
 			smsRequest.add(req);
 		});
-		
-		getReplacedFeedbackMessage.forEach((mobileNumber, msg) -> {
-			SMSRequest req = SMSRequest.builder().mobileNumber(mobileNumber).message(msg).category(Category.TRANSACTION)
-					.build();
-			smsRequest.add(req);
-		});
 		return smsRequest;
 	}
 

@@ -126,7 +126,7 @@ public class UserRepository {
 
         final Map<String, Object> parametersMap = new HashMap<String, Object>();
         parametersMap.put("userName", userName);
-        parametersMap.put("tenantId", "'%"+tenantId+"%'");
+        parametersMap.put("tenantId", "%"+tenantId+"%");
         parametersMap.put("userType", userType.toString());
 
         int count = namedParameterJdbcTemplate.queryForObject(query, parametersMap, Integer.class);
@@ -526,7 +526,7 @@ public class UserRepository {
         userInputs.put("lastmodifieddate", entityUser.getLastModifiedDate());
         userInputs.put("createdby", entityUser.getLoggedInUserId());
         userInputs.put("lastmodifiedby", entityUser.getLoggedInUserId());
-
+        log.info("sql query to execute for creating user"+userInputs.toString());
         namedParameterJdbcTemplate.update(userTypeQueryBuilder.getInsertUserQuery(), userInputs);
         return entityUser;
     }

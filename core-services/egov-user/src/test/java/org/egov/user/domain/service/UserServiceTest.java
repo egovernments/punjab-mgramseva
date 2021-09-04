@@ -274,13 +274,13 @@ public class UserServiceTest {
     }
 
 //	@Ignore
-////	@Test(expected = DuplicateUserNameException.class)
-////	public void test_should_throw_error_when_username_exists_while_updating() throws Exception {
-////		User domainUser = validDomainUser(false);
-////		when(userRepository.isUserPresent(any(String.class), any(String.class))).thenReturn(true);
-////
-////		userService.updateWithoutOtpValidation(1L, domainUser);
-////	}
+//	@Test(expected = DuplicateUserNameException.class)
+//	public void test_should_throw_error_when_username_exists_while_updating() throws Exception {
+//		User domainUser = validDomainUser(false);
+//		when(userRepository.isUserPresent(any(String.class), any(String.class), null)).thenReturn(true);
+//
+//		userService.updateWithoutOtpValidation(domainUser, domainUser);
+//	}
 
     @Test(expected = UserNotFoundException.class)
     public void test_should_throw_error_when_user_not_exists_while_updating() throws Exception {
