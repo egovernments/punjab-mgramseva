@@ -8,6 +8,7 @@ import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetails.dart';
 import 'package:mgramseva/screeens/Home.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
 import 'package:mgramseva/screeens/ConnectionResults/SearchConnection.dart';
+import 'package:mgramseva/screeens/Passwordsuccess.dart';
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
 import 'package:mgramseva/main.dart';
 import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
@@ -44,19 +45,20 @@ class router {
     Map<String, dynamic>? query = uri.queryParameters;
     String? path = uri.path;
     if (kIsWeb) {
-      if(Routes.POST_PAYMENT_FEED_BACK == path && settings.arguments == null){
+      if (Routes.POST_PAYMENT_FEED_BACK == path && settings.arguments == null) {
         Map localQuery;
         String routePath;
-        if(settings.arguments != null){
+        if (settings.arguments != null) {
           localQuery = settings.arguments as Map;
-        }else{
+        } else {
           if (queryValidator(Routes.POST_PAYMENT_FEED_BACK, query)) {
             localQuery = query;
           } else {
             return pageNotAvailable;
           }
         }
-        routePath = '${Routes.POST_PAYMENT_FEED_BACK}?paymentId=${localQuery['paymentId']}&connectionno=${localQuery['connectionno']}&tenantId=${localQuery['tenantId']}';
+        routePath =
+            '${Routes.POST_PAYMENT_FEED_BACK}?paymentId=${localQuery['paymentId']}&connectionno=${localQuery['connectionno']}&tenantId=${localQuery['tenantId']}';
         return MaterialPageRoute(
             builder: (_) => PaymentFeedBack(query: localQuery),
             settings: RouteSettings(name: routePath));
@@ -66,10 +68,12 @@ class router {
       if (userDetails == null &&
           Routes.LOGIN != settings.name &&
           Routes.FORGOT_PASSWORD != settings.name &&
+          Routes.DEFAULT_PASSWORD_UPDATE != settings.name &&
           Routes.RESET_PASSWORD != settings.name) {
         path = Routes.SELECT_LANGUAGE;
       } else if (Routes.LOGIN == settings.name ||
           Routes.FORGOT_PASSWORD == settings.name ||
+          Routes.DEFAULT_PASSWORD_UPDATE == settings.name ||
           Routes.RESET_PASSWORD == settings.name) {
         path = settings.name;
       } else if (path == '/') {
@@ -103,6 +107,10 @@ class router {
         return MaterialPageRoute(
             builder: (_) => SearchConsumerConnection(settings.arguments as Map),
             settings: RouteSettings(name: Routes.HOUSEHOLD));
+      case Routes.DEFAULT_PASSWORD_UPDATE:
+        return MaterialPageRoute(
+            builder: (_) => PasswordSuccess(),
+            settings: RouteSettings(name: Routes.DEFAULT_PASSWORD_UPDATE));
 
       case Routes.HOUSEHOLDRECEIPTS:
         return MaterialPageRoute(
@@ -351,7 +359,9 @@ class router {
         if (query.keys.contains('applicationNo')) return true;
         return false;
       case Routes.POST_PAYMENT_FEED_BACK:
-        if (query.keys.contains('paymentId') && query.keys.contains('connectionno') && query.keys.contains('tenantId')) return true;
+        if (query.keys.contains('paymentId') &&
+            query.keys.contains('connectionno') &&
+            query.keys.contains('tenantId')) return true;
         return false;
       default:
         return false;

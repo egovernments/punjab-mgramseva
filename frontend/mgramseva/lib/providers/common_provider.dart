@@ -12,6 +12,7 @@ import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/LocalStorage.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -88,11 +89,12 @@ class CommonProvider with ChangeNotifier {
   setTenant(tenant) {
     userDetails?.selectedtenant = tenant;
     setSelectedState(userDetails!);
+    notifyListeners();
   }
 
   void setSelectedState(UserDetails? loginDetails) async {
-    print("state");
     if (kIsWeb) {
+      print(window.localStorage[Constants.LOGIN_KEY]);
       window.localStorage[Constants.LOGIN_KEY] =
           loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
     } else {
@@ -238,7 +240,6 @@ class CommonProvider with ChangeNotifier {
           StateInfo.fromJson(jsonDecode(stateResponse));
 
       if (languageProvider.stateInfo != null) {
-        // languageProvider.stateInfo?.languages?.first.isSelected = true;
         ApplicationLocalizations(Locale(
                 languageProvider.selectedLanguage?.label ?? '',
                 languageProvider.selectedLanguage?.value))
@@ -254,9 +255,9 @@ class CommonProvider with ChangeNotifier {
   }
 
   void onLogout() {
-    loginCredentails = null;
     navigatorKey.currentState
         ?.pushNamedAndRemoveUntil(Routes.LOGIN, (route) => false);
+    loginCredentails = null;
   }
 
   void onTapOfAttachment(FileStore store, context) async {

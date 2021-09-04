@@ -59,7 +59,8 @@ class AuthenticationProvider with ChangeNotifier {
               arguments: loginResponse);
           return;
         } else {
-          Navigator.popAndPushNamed(context, Routes.HOME);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              Routes.HOME, (Route<dynamic> route) => false);
         }
       }
     } on CustomException catch (e, s) {

@@ -69,7 +69,7 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                 i18.searchWaterConnection.OWNER_MOB_NUM,
                                 searchConnectionProvider
                                     .searchconnection.mobileCtrl,
-                                prefixText: '+91-',
+                                prefixText: '+91 - ',
                                 textInputType: TextInputType.number,
                                 maxLength: 10,
                                 pattern: (searchConnectionProvider
@@ -119,7 +119,8 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        Text('\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
+                                        Text(
+                                            '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
                                             textAlign: TextAlign.center),
                                         BuildTextField(
                                           i18.searchWaterConnection
@@ -138,7 +139,8 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                                   .searchWaterConnection
                                                   .OLD_CONNECTION_HINT),
                                         ),
-                                        Text('\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
+                                        Text(
+                                            '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
                                             textAlign: TextAlign.center),
                                         BuildTextField(
                                           i18.searchWaterConnection

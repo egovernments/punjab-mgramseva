@@ -38,6 +38,7 @@ class Common {
   const Common();
   String get CONTINUE => 'CORE_COMMON_CONTINUE';
   String get NAME => 'CORE_COMMON_NAME';
+  String get CONTINUE_TO_LOGIN => 'CONTINUE_TO_LOGIN';
   String get PHONE_NUMBER => 'CORE_COMMON_PHONE_NUMBER';
   String get MOBILE_NUMBER => 'CORE_COMMON_MOBILE_NUMBER';
   String get LOGOUT => 'CORE_COMMON_LOGOUT';
