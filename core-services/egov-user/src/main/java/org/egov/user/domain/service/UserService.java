@@ -212,6 +212,9 @@ public class UserService {
         	
         	// copy mobie number to username, so that login with mobile number will work.
             user.setUsername(user.getMobileNumber());
+        }else {
+        	Random rand = new Random();
+        	 user.setUsername(user.getMobileNumber()+String.valueOf(rand.nextInt(100)));
         }
         /* encrypt here */
         user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
