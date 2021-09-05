@@ -168,13 +168,13 @@ class DashBoardProvider with ChangeNotifier {
   List<Tab> getExpenseTabList(BuildContext context, List<ExpensesDetailsModel> expenseList) {
     var list = [i18.dashboard.ALL, i18.dashboard.PAID, i18.dashboard.PENDING];
     return List.generate(list.length, (index) => Tab(text: '${ApplicationLocalizations.of(context)
-        .translate(list[index])} (${getExpenseData(index, expenseList).length})'));
+        .translate(list[index])} (${index == 0 ? getExpenseCount(index) : getExpenseData(index, expenseList).length})'));
   }
 
   List<Tab> getCollectionsTabList(BuildContext context, List<WaterConnection> waterConnectionList) {
     var list = [i18.dashboard.ALL, i18.dashboard.RESIDENTIAL, i18.dashboard.COMMERCIAL];
     return List.generate(list.length, (index) => Tab(text: '${ApplicationLocalizations.of(context)
-        .translate(list[index])} (${getCollectionsData(index, waterConnectionList).length})'));
+        .translate(list[index])} (${index == 0 ? getCollectionsCount(index) : getCollectionsData(index, waterConnectionList).length})'));
   }
 
   List<TableHeader> get expenseHeaderList => [
@@ -215,6 +215,19 @@ class DashBoardProvider with ChangeNotifier {
     }
   }
 
+  int getExpenseCount(int index){
+    switch(index){
+      case 0:
+        return expenseDashboardDetails?.totalCount ?? 0;
+      case 1:
+        return expenseDashboardDetails?.expenseDetailList?.where((e) => e.applicationStatus == 'PAID').toList().length ?? 0;
+      case 2:
+        return expenseDashboardDetails?.expenseDetailList?.where((e) => e.applicationStatus == 'ACTIVE').toList().length ?? 0;
+      default :
+        return 0;
+    }
+  }
+
 
   List<TableDataRow> getCollectionsData(int index, List<WaterConnection> list) {
 
@@ -229,6 +242,21 @@ class DashBoardProvider with ChangeNotifier {
         return filteredList.map((e) => getCollectionRow(e)).toList();
       default :
         return <TableDataRow>[];
+    }
+  }
+
+
+  int getCollectionsCount(int index) {
+
+    switch(index){
+      case 0:
+        return waterConnectionsDetails?.totalCount ?? 0;
+      case 1:
+        return waterConnectionsDetails?.waterConnection?.where((e) => e.additionalDetails?.propertyType == 'BUILTUP.INDEPENDENTPROPERTY').toList().length ?? 0;
+      case 2:
+        return  waterConnectionsDetails?.waterConnection?.where((e) => e.additionalDetails?.propertyType != 'BUILTUP.INDEPENDENTPROPERTY').toList().length ?? 0;
+      default :
+        return 0;
     }
   }
 
@@ -248,7 +276,7 @@ class DashBoardProvider with ChangeNotifier {
   TableDataRow getCollectionRow(WaterConnection connection){
     return TableDataRow(
         [
-          TableData('${connection.connectionNo} ${connection.connectionType == 'Metered' ? '- M' : ''}', callBack: onClickOfCollectionNo, apiKey: connection.connectionNo),
+          TableData('...${connection.connectionNo?.split('/').last ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}', callBack: onClickOfCollectionNo, apiKey: connection.connectionNo),
           TableData('${CommonMethods().truncateWithEllipsis(20,  connection.connectionHolders?.first?.name ?? '')}'),
           TableData('${connection.additionalDetails?.collectionAmount != null ? '₹ ${connection.additionalDetails?.collectionAmount}' : '-'}'),
         ]

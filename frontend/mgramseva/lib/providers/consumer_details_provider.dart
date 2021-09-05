@@ -136,11 +136,10 @@ class ConsumerProvider with ChangeNotifier {
           .characters
           .elementAt(4);
     }
-    if (demand!
-            .indexWhere(((element) =>
-                element.consumerType == 'waterConnection-arrears'))
-            .isNegative ==
-        false) {
+    if (demand?.isEmpty == true) {
+      isfirstdemand = false;
+    } else if (demand?.length == 1 &&
+        demand?.first.consumerType == 'waterConnection-arrears') {
       isfirstdemand = false;
     } else {
       isfirstdemand = true;

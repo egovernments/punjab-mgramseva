@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mgramseva/model/connection/search_connection.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -30,6 +31,9 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
 
   @override
   void initState() {
+    var searchConnectionProvider =
+    Provider.of<SearchConnectionProvider>(context, listen: false)
+    ..searchconnection = SearchConnection();
     super.initState();
   }
 
@@ -69,7 +73,7 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                 i18.searchWaterConnection.OWNER_MOB_NUM,
                                 searchConnectionProvider
                                     .searchconnection.mobileCtrl,
-                                prefixText: '+91-',
+                                prefixText: '+91 - ',
                                 textInputType: TextInputType.number,
                                 maxLength: 10,
                                 pattern: (searchConnectionProvider
@@ -119,7 +123,8 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        Text('\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
+                                        Text(
+                                            '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
                                             textAlign: TextAlign.center),
                                         BuildTextField(
                                           i18.searchWaterConnection
@@ -138,7 +143,8 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                                   .searchWaterConnection
                                                   .OLD_CONNECTION_HINT),
                                         ),
-                                        Text('\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
+                                        Text(
+                                            '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
                                             textAlign: TextAlign.center),
                                         BuildTextField(
                                           i18.searchWaterConnection

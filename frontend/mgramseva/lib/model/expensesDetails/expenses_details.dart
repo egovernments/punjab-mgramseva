@@ -1,8 +1,9 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:mgramseva/model/expensesDetails/vendor.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/utils/date_formats.dart';
+
 
 part 'expenses_details.g.dart';
 

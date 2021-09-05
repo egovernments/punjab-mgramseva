@@ -65,8 +65,8 @@ class _HomeCard extends State<HomeCard> {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 760) {
         return Container(
-            child: commonProvider.userDetails!.selectedtenant != null &&
-                    commonProvider.userDetails!.userRequest != null
+            child: commonProvider.userDetails?.selectedtenant != null &&
+                    commonProvider.userDetails?.userRequest != null
                 ? (new GridView.count(
                     crossAxisCount: 3,
                     childAspectRatio: .8,
@@ -76,8 +76,8 @@ class _HomeCard extends State<HomeCard> {
       } else {
         return Container(
             margin: EdgeInsets.only(left: 75, right: 75),
-            child: commonProvider.userDetails!.selectedtenant != null &&
-                    commonProvider.userDetails!.userRequest != null
+            child: commonProvider.userDetails?.selectedtenant != null &&
+                    commonProvider.userDetails?.userRequest != null
                 ? (new GridView.count(
                     crossAxisCount: 3,
                     childAspectRatio: 3,

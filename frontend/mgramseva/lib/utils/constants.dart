@@ -32,13 +32,13 @@ class Constants {
   ];
 
   static List<HomeItem> HOME_ITEMS = [
-    HomeItem(
-      "CORE_HOUSEHOLD_REGISTER",
-      (i18.homeWalkThroughMSg.HOUSEHOLD_REGISTER_MSG),
-      HomeIcons.hhregister,
-      Routes.HOUSEHOLD_REGISTER,
-      {},
-    ),
+    // HomeItem(
+    //   "CORE_HOUSEHOLD_REGISTER",
+    //   (i18.homeWalkThroughMSg.HOUSEHOLD_REGISTER_MSG),
+    //   HomeIcons.hhregister,
+    //   Routes.HOUSEHOLD_REGISTER,
+    //   {},
+    // ),
     HomeItem(
         "CORE_COLLECT_PAYMENTS",
         (i18.homeWalkThroughMSg.COLLECT_PAYMENTS_MSG),
@@ -97,7 +97,7 @@ class Constants {
 
   static List<KeyValue> PAYMENT_AMOUNT = [
     KeyValue(i18.common.FULL_AMOUNT, 'fullAmount'),
-    // KeyValue(i18.common.CUSTOM_AMOUNT, 'customAmount'),
+    KeyValue(i18.common.CUSTOM_AMOUNT, 'customAmount'),
   ];
 
   static List<KeyValue> PAYMENT_METHOD = [

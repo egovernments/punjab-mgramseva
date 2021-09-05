@@ -30,7 +30,7 @@ class ExpenseResults extends StatelessWidget {
               children: [
                 // ignore: unnecessary_null_comparison
                 LabelText(
-                    "${searchResult.result.length} ${i18.common.EXPENSES_FOUND}"),
+                    "${searchResult.result.length} ${ApplicationLocalizations.of(context).translate(i18.common.EXPENSES_FOUND)}"),
                 Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: RichText(
@@ -124,7 +124,7 @@ class ExpenseResults extends StatelessWidget {
               '${ApplicationLocalizations.of(context).translate(label)}',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             )),
-        Text('$value',
+        Text('${ApplicationLocalizations.of(context).translate(value)}',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))
       ],
     ));

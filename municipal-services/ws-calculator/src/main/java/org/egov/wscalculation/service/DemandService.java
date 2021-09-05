@@ -236,7 +236,9 @@ public class DemandService {
 			String localizationMessage = util.getLocalizationMessages(tenantId, requestInfo);
 			String messageString = util.getMessageTemplate(
 					WSCalculationConstant.WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE, localizationMessage);
-			billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
+
+			if( !StringUtils.isEmpty(messageString)) {
+					billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
 					+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
 			messageString = messageString.replace("{ownername}", owner.getUserName());
 			messageString = messageString.replace("{billingcycle}", billCycle);
@@ -248,6 +250,7 @@ public class DemandService {
 					.category(Category.TRANSACTION).build();
 			producer.push(config.getSmsNotifTopic(), sms);
 			System.out.println("Demand genaratio Message::" + messageString);
+			}
 		}
 		log.info("Demand Object" + demands.toString());
 		List<Demand> demandRes = demandRepository.saveDemand(requestInfo, demands);

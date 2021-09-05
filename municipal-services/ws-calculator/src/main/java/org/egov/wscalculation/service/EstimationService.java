@@ -164,8 +164,8 @@ public class EstimationService {
 
 		// WaterCharge Calculation
 		Double totalUOM = getUnitOfMeasurement(waterConnection, calculationAttribute, criteria);
-		if (totalUOM == 0.0)
-			return waterCharge;
+//		if (totalUOM == 0.0)
+//			return waterCharge;
 		BillingSlab billSlab = billingSlabs.get(0);
 		// IF calculation type is flat then take flat rate else take slab and calculate the charge
 		//For metered connection calculation on graded fee slab
@@ -280,13 +280,11 @@ public class EstimationService {
 		return 0.0;
 	}
 	
-	public Map<String, Object> getQuarterStartAndEndDate(Map<String, Object> billingPeriod,Long lastMeterReadingDate){
+	public Map<String, Object> getQuarterStartAndEndDate(Map<String, Object> billingPeriod){
 		Date date = new Date();
 		Calendar fromDateCalendar = Calendar.getInstance();
 		fromDateCalendar.setTime(date);
-		if(lastMeterReadingDate != null || lastMeterReadingDate >00 ) {
-			fromDateCalendar.setTimeInMillis(lastMeterReadingDate);
-		}
+		
 		fromDateCalendar.set(Calendar.MONTH, fromDateCalendar.get(Calendar.MONTH)/3 * 3);
 		fromDateCalendar.set(Calendar.DAY_OF_MONTH, 1);
 		setTimeToBeginningOfDay(fromDateCalendar);
@@ -300,18 +298,26 @@ public class EstimationService {
 		return billingPeriod;
 	}
 	
-	public Map<String, Object> getMonthStartAndEndDate(Map<String, Object> billingPeriod,Long lastMeterReadingDate){
+	public Map<String, Object> getMonthStartAndEndDate(Map<String, Object> billingPeriod,CalculationCriteria criteria){
 		Date date = new Date();
 		Calendar monthStartDate = Calendar.getInstance();
-		monthStartDate.setTime(date);
-		if(lastMeterReadingDate != null || lastMeterReadingDate >0 ) {
-			monthStartDate.setTimeInMillis(lastMeterReadingDate);
+		if(criteria.getFrom() ==null || criteria.getFrom() <=0) {
+			monthStartDate.setTime(date);
+		}else {
+			monthStartDate.setTimeInMillis(criteria.getFrom());
 		}
+		
+		
 		monthStartDate.set(Calendar.DAY_OF_MONTH, monthStartDate.getActualMinimum(Calendar.DAY_OF_MONTH));
 		setTimeToBeginningOfDay(monthStartDate);
 	    
 		Calendar monthEndDate = Calendar.getInstance();
-		monthEndDate.setTime(date);
+		if(criteria.getTo() ==null || criteria.getTo() <=0) {
+			monthEndDate.setTime(date);
+		}else {
+			monthEndDate.setTimeInMillis(criteria.getTo());
+		}
+		
 		monthEndDate.set(Calendar.DAY_OF_MONTH, monthEndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
 		setTimeToEndofDay(monthEndDate);
 		billingPeriod.put(WSCalculationConstant.STARTING_DATE_APPLICABLES, monthStartDate.getTimeInMillis());

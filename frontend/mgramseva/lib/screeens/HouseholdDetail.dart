@@ -62,11 +62,13 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                                   arguments: houseHoldProvider.waterConnection)
                             }))
                 : Text(""))
-            : data.bill!.first.waterConnection!.connectionType == 'Metered' &&
+            : houseHoldProvider.waterConnection!.connectionType == 'Metered' &&
                     widget.mode == 'collect'
-                ? GenerateNewBill(data)
+                ? GenerateNewBill(houseHoldProvider.waterConnection)
                 : Text(""),
-        data.bill!.isEmpty ? Text("") : NewConsumerBill(data, widget.mode),
+        data.bill!.isEmpty || houseHoldProvider.isfirstdemand == false
+            ? Text("")
+            : NewConsumerBill(data, widget.mode),
         ConsumerBillPayments(houseHoldProvider.waterConnection)
       ],
     );
