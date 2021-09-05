@@ -166,6 +166,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                     newPassword,
                                     isRequired: true,
                                     obscureText: true,
+                                    maxLines: 1,
                                     validator: (val) =>
                                         Validators.passwordComparision(
                                             val,
@@ -180,6 +181,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                     confirmPassword,
                                     isRequired: true,
                                     obscureText: true,
+                                    maxLines: 1,
                                     validator: (val) =>
                                         Validators.passwordComparision(
                                             val,
@@ -309,7 +311,9 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                         color: Color.fromRGBO(11, 12, 12, 1)))
               ])),
           Container(
-            width: 350,
+            width: MediaQuery.of(context).size.width < 720
+                ? MediaQuery.of(context).size.width
+                : 350,
             padding: EdgeInsets.symmetric(vertical: 5),
             child: PinInputTextField(
               cursor: Cursor(

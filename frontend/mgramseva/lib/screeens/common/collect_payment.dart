@@ -127,19 +127,13 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         child: Padding(
           padding:
               const EdgeInsets.only(left: 24, top: 8, bottom: 8, right: 10),
-          child: Consumer<CollectPaymentProvider>(
-            builder: (_, consumerPaymentProvider, child) => Visibility(
-                visible: fetchBill.viewDetails,
-                child: _buildViewDetails(fetchBill)),
-          ),
-        ),
-      ),
-      Card(
-        child: Padding(
-          padding:
-              const EdgeInsets.only(left: 24, top: 8, bottom: 8, right: 10),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Consumer<CollectPaymentProvider>(
+              builder: (_, consumerPaymentProvider, child) => Visibility(
+                  visible: fetchBill.viewDetails,
+                  child: _buildViewDetails(fetchBill)),
+            ),
             _buildLabelValue(i18.common.TOTAL_DUE_AMOUNT,
                 '₹ ${fetchBill.totalAmount}', FontWeight.w700),
             Consumer<CollectPaymentProvider>(
