@@ -69,7 +69,7 @@ class _HomeCard extends State<HomeCard> {
                     commonProvider.userDetails?.userRequest != null
                 ? (new GridView.count(
                     crossAxisCount: 3,
-                    childAspectRatio: .8,
+                    childAspectRatio: .85,
                     children: getList(homeProvider),
                   ))
                 : Text(""));

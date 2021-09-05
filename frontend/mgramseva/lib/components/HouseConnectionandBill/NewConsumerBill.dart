@@ -128,10 +128,10 @@ class NewConsumerBill extends StatelessWidget {
                                   ? Align(
                                       alignment: Alignment.centerLeft,
                                       child: houseHoldProvider.isfirstdemand ==
-                                                  true &&
-                                              houseHoldProvider.waterConnection!
+                                                  true /*&&
+                                             houseHoldProvider.waterConnection!
                                                       .connectionType !=
-                                                  'Metered'
+                                                  'Metered'*/
                                           ? ButtonGroup(
                                               i18.billDetails.COLLECT_PAYMENT,
                                               () => commonProvider
@@ -161,7 +161,7 @@ class NewConsumerBill extends StatelessWidget {
                                               () => onClickOfCollectPayment(
                                                   billList!.bill!.first,
                                                   context)))
-                                  : Container(
+                                  : houseHoldProvider.isfirstdemand == true ? Container(
                                       width: constraints.maxWidth > 760
                                           ? MediaQuery.of(context).size.width /
                                               3
@@ -206,7 +206,7 @@ class NewConsumerBill extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                    ),
+                                    ) : Text(""),
                             ])))
               ],
             )

@@ -21,7 +21,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
               )),
           new Flexible(
               child: Container(
-                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  padding: EdgeInsets.only(top: 16, bottom: 16, left: 8),
                   child: Text(
                       ApplicationLocalizations.of(context).translate(value),
                       maxLines: 3,
@@ -83,11 +83,13 @@ class HouseConnectionDetailCard extends StatelessWidget {
                 _getLabeltext(
                     i18.searchWaterConnection.RESULTS_ADDRESS,
                     (waterconnection!.additionalDetails!.doorNo != null
-                            ? waterconnection!.additionalDetails!.doorNo!
-                            : "") +
+                            ? waterconnection!.additionalDetails!.doorNo! != ""
+                        ? waterconnection!.additionalDetails!.doorNo!
+                            : "" : "") +
                         (waterconnection!.additionalDetails!.street != null
+                            ? waterconnection!.additionalDetails!.street! != ""
                             ? waterconnection!.additionalDetails!.street!
-                            : "") +
+                            : "" : "") +
                         waterconnection!.additionalDetails!.locality!,
                     context),
                 _getLabeltext(i18.searchWaterConnection.PROPERTY_TYPE,
