@@ -226,17 +226,19 @@ public class DemandService {
 			String localizationMessage = util.getLocalizationMessages(tenantId, requestInfo);
 			String messageString = util.getMessageTemplate(
 					WSCalculationConstant.WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE, localizationMessage);
-			billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
-					+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
-			messageString = messageString.replace("<First Name>", owner.getUserName());
-			messageString = messageString.replace("<Consumer Id>", consumerCode);
-			messageString = messageString.replace("<billing cycle>", billCycle);
-			messageString = messageString.replace("<Amount>", demandDetails.stream().map(DemandDetail::getTaxAmount)
-					.reduce(BigDecimal.ZERO, BigDecimal::add).toString());
-			messageString = messageString.replace("<Bill Link>", configs.getDownLoadBillLink());
-			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
-					.category(Category.TRANSACTION).build();
-			smsRequests.add(sms);
+			if( !StringUtils.isEmpty(messageString)) {
+				billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
+						+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
+				messageString = messageString.replace("<First Name>", owner.getUserName());
+				messageString = messageString.replace("<Consumer Id>", consumerCode);
+				messageString = messageString.replace("<billing cycle>", billCycle);
+				messageString = messageString.replace("<Amount>", demandDetails.stream().map(DemandDetail::getTaxAmount)
+						.reduce(BigDecimal.ZERO, BigDecimal::add).toString());
+				messageString = messageString.replace("<Bill Link>", configs.getDownLoadBillLink());
+				SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
+						.category(Category.TRANSACTION).build();
+				smsRequests.add(sms);
+			}
 		}
 		log.info("Demand Object" + demands.toString());
 		List<Demand> demandRes = demandRepository.saveDemand(requestInfo, demands);
