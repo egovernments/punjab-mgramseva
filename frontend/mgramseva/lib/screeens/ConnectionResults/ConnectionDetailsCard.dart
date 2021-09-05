@@ -120,8 +120,13 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                 ApplicationLocalizations.of(context).translate(
                                     i18.searchWaterConnection
                                         .OLD_CONNECTION_ID),
-                                waterconnections
-                                    .waterConnection![index].oldConnectionNo,
+                                waterconnections.waterConnection![index]
+                                            .oldConnectionNo !=
+                                        ""
+                                    ? waterconnections
+                                        .waterConnection![index].oldConnectionNo
+                                    : ApplicationLocalizations.of(context)
+                                        .translate("NA"),
                                 context,
                                 constraints),
                             _getDetailtext(
@@ -157,17 +162,31 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                                 .additionalDetails!.doorNo !=
                                             null
                                         ? waterconnections
-                                            .waterConnection![index]
-                                            .additionalDetails!
-                                            .doorNo!
+                                                    .waterConnection![index]
+                                                    .additionalDetails!
+                                                    .doorNo! !=
+                                                ""
+                                            ? waterconnections
+                                                    .waterConnection![index]
+                                                    .additionalDetails!
+                                                    .doorNo! +
+                                                ', '
+                                            : " "
                                         : "") +
                                     (waterconnections.waterConnection![index]
                                                 .additionalDetails!.street !=
                                             null
                                         ? waterconnections
-                                            .waterConnection![index]
-                                            .additionalDetails!
-                                            .street!
+                                                    .waterConnection![index]
+                                                    .additionalDetails!
+                                                    .street! !=
+                                                ""
+                                            ? waterconnections
+                                                    .waterConnection![index]
+                                                    .additionalDetails!
+                                                    .street! +
+                                                ', '
+                                            : " "
                                         : "") +
                                     waterconnections.waterConnection![index]
                                         .additionalDetails!.locality!,

@@ -17,7 +17,7 @@ import 'common_provider.dart';
 class HouseHoldProvider with ChangeNotifier {
   late GlobalKey<FormState> formKey;
   WaterConnection? waterConnection;
-
+  bool isfirstdemand = false;
   var streamController = StreamController.broadcast();
   Future<void> checkMeterDemand(
       BillList data, WaterConnection waterConnection) async {
@@ -52,7 +52,7 @@ class HouseHoldProvider with ChangeNotifier {
         "consumerCode": data.connectionNo.toString(),
         "businessService": "WS"
       }).then((value) {
-        checkMeterDemand(value, data);
+        streamController.add(value);
       });
     } catch (e, s) {
       streamController.addError('error');
@@ -84,6 +84,17 @@ class HouseHoldProvider with ChangeNotifier {
         "businessService": "WS"
       }).then((value) {
         if (value.demands!.length > 0) {
+          value.demands!.sort((a, b) => b
+              .demandDetails!.first.auditDetails!.createdTime!
+              .compareTo(a.demandDetails!.first.auditDetails!.createdTime!));
+          if (value.demands?.isEmpty == true) {
+            isfirstdemand = false;
+          } else if (value.demands?.length == 1 &&
+              value.demands?.first.consumerType == 'waterConnection-arrears') {
+            isfirstdemand = false;
+          } else {
+            isfirstdemand = true;
+          }
           fetchBill(data);
         } else {
           BillList bill = new BillList();

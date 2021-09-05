@@ -26,7 +26,57 @@
   <title>mgramseva</title>
   <link rel="manifest" href="manifest.json">
 </head>
-<body>
+<style>
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+  
+  .loader {
+    border: 10px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 10px solid rgba(244, 119, 56, 1);
+;
+    border-right: 10px solid white;
+    border-bottom: 10px solid rgba(244, 119, 56, 1);
+    border-left: 10px solid rgba(244, 119, 56, 1);
+    width: 60px;
+    height: 60px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+  }
+  
+  @-webkit-keyframes spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+</head>
+
+<body style="background: rgba(214, 213, 212, 1);
+">
+
+
   <script type="text/javascript">
     let useHtml = true;
     if(useHtml) {
@@ -102,5 +152,8 @@
       loadMainDartJs();
     }
   </script>
+  <div class="loading">
+    <div class="loader"></div>
+  </div>
 </body>
 </html>

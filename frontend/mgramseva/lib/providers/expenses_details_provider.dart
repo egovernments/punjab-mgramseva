@@ -59,7 +59,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
         var expenditure =
             await ExpensesRepository().searchExpense({'challanNo': id});
         if (expenditure != null && expenditure.isNotEmpty) {
-          expenditureDetails = expenditure!.first;
+          expenditureDetails = expenditure.first;
           getStoreFileDetails();
         } else {
           streamController.add(i18.expense.NO_EXPENSE_RECORD_FOUND);

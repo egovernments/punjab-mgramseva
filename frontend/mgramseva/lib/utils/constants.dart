@@ -32,13 +32,13 @@ class Constants {
   ];
 
   static List<HomeItem> HOME_ITEMS = [
-    HomeItem(
-      "CORE_HOUSEHOLD_REGISTER",
-      (i18.homeWalkThroughMSg.HOUSEHOLD_REGISTER_MSG),
-      HomeIcons.hhregister,
-      Routes.HOUSEHOLD_REGISTER,
-      {},
-    ),
+    // HomeItem(
+    //   "CORE_HOUSEHOLD_REGISTER",
+    //   (i18.homeWalkThroughMSg.HOUSEHOLD_REGISTER_MSG),
+    //   HomeIcons.hhregister,
+    //   Routes.HOUSEHOLD_REGISTER,
+    //   {},
+    // ),
     HomeItem(
         "CORE_COLLECT_PAYMENTS",
         (i18.homeWalkThroughMSg.COLLECT_PAYMENTS_MSG),
