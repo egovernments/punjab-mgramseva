@@ -33,7 +33,7 @@ class ChangePasswordProvider with ChangeNotifier {
       if (changePasswordResponse != null) {
         Notifiers.getToastMessage(
             context, i18.password.CHANGE_PASSWORD_SUCCESS, 'SUCCESS');
-        new Future.delayed(const Duration(seconds: 10),
+        new Future.delayed(const Duration(seconds: 5),
             () => Navigator.pop(context),
         );
 

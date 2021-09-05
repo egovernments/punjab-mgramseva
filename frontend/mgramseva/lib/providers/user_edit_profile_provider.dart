@@ -26,7 +26,9 @@ class UserEditProfileProvider with ChangeNotifier {
         Notifiers.getToastMessage(
             context, i18.profileEdit.PROFILE_EDIT_SUCCESS, 'SUCCESS');
         streamController.add(edituserResponse);
-        Navigator.pop(context);
+        new Future.delayed(const Duration(seconds: 5),
+              () => Navigator.pop(context),
+        );
       }
     } catch (e, s) {
       Navigator.pop(context);
