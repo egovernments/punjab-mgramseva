@@ -83,11 +83,13 @@ class HouseConnectionDetailCard extends StatelessWidget {
                 _getLabeltext(
                     i18.searchWaterConnection.RESULTS_ADDRESS,
                     (waterconnection!.additionalDetails!.doorNo != null
-                            ? waterconnection!.additionalDetails!.doorNo!
-                            : "") +
+                            ? waterconnection!.additionalDetails!.doorNo! != ""
+                        ? waterconnection!.additionalDetails!.doorNo!
+                            : "" : "") +
                         (waterconnection!.additionalDetails!.street != null
+                            ? waterconnection!.additionalDetails!.street! != ""
                             ? waterconnection!.additionalDetails!.street!
-                            : "") +
+                            : "" : "") +
                         waterconnection!.additionalDetails!.locality!,
                     context),
                 _getLabeltext(i18.searchWaterConnection.PROPERTY_TYPE,
