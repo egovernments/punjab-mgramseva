@@ -50,12 +50,16 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
 
   @override
   void initState() {
+    var consumerProvider = Provider.of<ConsumerProvider>(context, listen: false)
+      ..waterconnection = WaterConnection()
+      ..property = Property();
+
     if (widget.waterconnection != null) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         var commonProvider = Provider.of<CommonProvider>(
             navigatorKey.currentContext!,
             listen: false);
-        Provider.of<ConsumerProvider>(context, listen: false)
+        consumerProvider
           ..setModel()
           ..setWaterConnection(widget.waterconnection)
           ..getConnectionTypePropertyTypeTaxPeriod()

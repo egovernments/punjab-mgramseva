@@ -18,13 +18,7 @@ class PasswordSuccess extends StatefulWidget {
 class _PasswordSuccessState extends State<PasswordSuccess> {
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
-  }
-
-  afterViewBuild() {
-    Provider.of<CommonProvider>(context, listen: false)
-      ..loginCredentails = null;
   }
 
   @override

@@ -69,15 +69,11 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   }
 
   afterBuildContext() async {
-    var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
     sendOtp();
     var tenants = await TenantRepo().fetchTenants(
-        getTenantsMDMS(
-            commonProvider.userDetails!.userRequest!.tenantId.toString()),
+        getTenantsMDMS(widget.userDetails.userRequest!.tenantId.toString()),
         widget.userDetails.accessToken);
-    final r = commonProvider.userDetails!.userRequest!.roles!
+    final r = widget.userDetails!.userRequest!.roles!
         .map((e) => e.tenantId)
         .toSet()
         .toList();
@@ -169,11 +165,13 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                     i18.password.CORE_COMMON_NEW_PASSWORD,
                                     newPassword,
                                     isRequired: true,
+                                    obscureText: true,
                                     validator: (val) =>
                                         Validators.passwordComparision(
                                             val,
-                                          ApplicationLocalizations.of(context).translate(i18.password
-                                                .CORE_COMMON_NEW_PASSWORD)),
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18.password
+                                                    .CORE_COMMON_NEW_PASSWORD)),
                                     onChange: saveInput,
                                   ),
                                   BuildTextField(
@@ -181,11 +179,13 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                         .CORE_COMMON_CONFIRM_NEW_PASSWORD,
                                     confirmPassword,
                                     isRequired: true,
+                                    obscureText: true,
                                     validator: (val) =>
                                         Validators.passwordComparision(
                                             val,
-                                          ApplicationLocalizations.of(context).translate(i18.password
-                                                .CORE_COMMON_CONFIRM_NEW_PASSWORD),
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18.password
+                                                    .CORE_COMMON_CONFIRM_NEW_PASSWORD),
                                             confirmPassword.text),
                                     onChange: saveInput,
                                   ),
@@ -216,22 +216,22 @@ class _UpdatePasswordState extends State<UpdatePassword> {
           children: [_buildHeader(), ..._buildData()]),
     );
   }
-  Widget _buildWelcomeMsg(){
+
+  Widget _buildWelcomeMsg() {
     if (tenantsList == null) return Container();
     return Align(
         alignment: Alignment.centerLeft,
         child: Container(
-          margin: const EdgeInsets.only(
-              left: 20, bottom: 20, top: 20),
+          margin: const EdgeInsets.only(left: 20, bottom: 20, top: 20),
           child: Text(
               '${ApplicationLocalizations.of(context).translate(i18.common.DEAR)} ${widget.userDetails.userRequest?.name}, ' +
-                  (tenantsList!.length == 1 ? '${ApplicationLocalizations.of(context).translate(i18.password.INVITED_TO_SINGLE_GP)}':
-                  '${ApplicationLocalizations.of(context).translate(i18.password.INVITED_TO_GRAMA_SEVA)}'),
+                  (tenantsList!.length == 1
+                      ? '${ApplicationLocalizations.of(context).translate(i18.password.INVITED_TO_SINGLE_GP)}'
+                      : '${ApplicationLocalizations.of(context).translate(i18.password.INVITED_TO_GRAMA_SEVA)}'),
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
-                  color: Theme.of(context)
-                      .primaryColorLight)),
+                  color: Theme.of(context).primaryColorLight)),
         ));
   }
 
@@ -386,7 +386,6 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         var resetResponse =
             await ResetPasswordRepository().forgotPassword(body, context);
         Navigator.pop(context);
-        commonProvider.loginCredentails = widget.userDetails;
 
         Provider.of<CommonProvider>(context, listen: false)
           ..walkThroughCondition(true, Constants.HOME_KEY)

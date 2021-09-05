@@ -222,7 +222,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 '${i18.common.MOBILE_NUMBER}',
                                 expenseDetails.mobileNumberController,
                                 isRequired: true,
-                                prefixText: '+91',
+                                prefixText: '+91 - ',
                                 textInputType: TextInputType.number,
                                 validator: Validators.mobileNumberValidator,
                                 maxLength: 10,

@@ -58,7 +58,7 @@ class CommonProvider with ChangeNotifier {
     try {
       var query = {
         'module':
-            'mgramseva-common,mgramseva-consumer,mgramseva-expenses,mgramseva-water-connection,mgramseva-bill,mgramseva-payments,mgramseva-dashboard',
+            'mgramseva-common,mgramseva-consumer,mgramseva-expenses,mgramseva-water-connection,mgramseva-bill,mgramseva-payments,mgramseva-dashboard,mgramseva-feedback',
         'locale': languageProvider.selectedLanguage?.value ?? '',
         'tenantId': languageProvider.stateInfo!.code
       };
