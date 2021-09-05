@@ -807,6 +807,11 @@ public class DemandService {
 				.recepient(getRecepient(bulkDemand.getRequestInfo(), bulkDemand.getTenantId())).source(Source.WEBAPP).eventDetails(null).actions(action)
 				.build());
 		
+		if (!CollectionUtils.isEmpty(events)) {
+			EventRequest eventReq =  EventRequest.builder().requestInfo(bulkDemand.getRequestInfo()).events(events).build();
+			util.sendEventNotification(eventReq);
+		} 
+		
 		Set<String> connectionSet = connectionNos.stream().collect(Collectors.toSet());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		Date billingStrartDate;
