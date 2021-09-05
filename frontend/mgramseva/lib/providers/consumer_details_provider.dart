@@ -14,6 +14,7 @@ import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/wa
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -252,6 +253,7 @@ class ConsumerProvider with ChangeNotifier {
             Notifiers.getToastMessage(
                 context, i18.consumer.UPDATED_SUCCESS, 'SUCCESS');
           Navigator.pop(context);
+          CommonMethods.home();
         }
       } catch (e, s) {
         Navigator.pop(context);

@@ -55,6 +55,22 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
   }
 
   buidDemandview(DemandList demandList) {
+    var amount = demandList.demands!
+        .map((element) {
+      var toalamount = element.demandDetails!
+          .map((e) => e.taxAmount)
+          .toList()
+          .reduce((a, b) => a! + b!);
+      var collectedAmount = element.demandDetails!
+          .map((e) => e.collectionAmount)
+          .toList()
+          .reduce((a, b) => a! + b!);
+      var amount =
+      (toalamount! - collectedAmount!);
+      return amount;
+    })
+        .toList()
+        .reduce((a, b) => a + b);
     int? num = demandList.demands?.first.auditDetails?.createdTime;
     var billpaymentsProvider =
         Provider.of<DemadDetailProvider>(context, listen: false);
@@ -127,25 +143,9 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                       _getLabeltext(
                           i18.generateBillDetails.PENDING_AMOUNT,
                           ('₹' +
-                              demandList.demands!
-                                  .map((element) {
-                                    var toalamount = element.demandDetails!
-                                        .map((e) => e.taxAmount)
-                                        .toList()
-                                        .reduce((a, b) => a! + b!);
-                                    var collectedAmount = element.demandDetails!
-                                        .map((e) => e.collectionAmount)
-                                        .toList()
-                                        .reduce((a, b) => a! + b!);
-                                    var amount =
-                                        (toalamount! - collectedAmount!);
-                                    return amount;
-                                  })
-                                  .toList()
-                                  .reduce((a, b) => a + b)
-                                  .toString()),
+                                  amount.toString()),
                           context),
-                      billpaymentsProvider.isfirstdemand == false
+                      billpaymentsProvider.isfirstdemand == false && amount > 0
                           ? new Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,

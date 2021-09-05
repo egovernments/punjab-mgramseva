@@ -131,7 +131,7 @@ class _HomeState extends State<Home> {
               3)
               .round())
               .toDouble()
-          : 142 *
+          : 200 *
           ((homeProvider.homeWalkthrougList.length / 3)
               .round())
               .toDouble(),

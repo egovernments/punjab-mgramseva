@@ -21,7 +21,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
               )),
           new Flexible(
               child: Container(
-                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  padding: EdgeInsets.only(top: 16, bottom: 16, left: 8),
                   child: Text(
                       ApplicationLocalizations.of(context).translate(value),
                       maxLines: 3,
