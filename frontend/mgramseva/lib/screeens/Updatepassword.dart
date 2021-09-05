@@ -312,7 +312,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               ])),
           Container(
             width: MediaQuery.of(context).size.width < 720
-                ? MediaQuery.of(context).size.width
+                ? MediaQuery.of(context).size.width - 50
                 : 350,
             padding: EdgeInsets.symmetric(vertical: 5),
             child: PinInputTextField(
