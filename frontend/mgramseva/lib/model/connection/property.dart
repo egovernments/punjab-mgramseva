@@ -37,7 +37,7 @@ class Property {
   @JsonKey(name: "units")
   List<Units>? units;
   @JsonKey(name: "landArea")
-  int? landArea;
+  double? landArea;
   @JsonKey(name: "propertyType")
   String? propertyType;
   @JsonKey(name: "noOfFloors")
