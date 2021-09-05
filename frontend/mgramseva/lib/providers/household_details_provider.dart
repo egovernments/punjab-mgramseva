@@ -83,24 +83,19 @@ class HouseHoldProvider with ChangeNotifier {
         "consumerCode": data.connectionNo.toString(),
         "businessService": "WS"
       }).then((value) {
-        if (value.demands?.isEmpty == true) {
-          isfirstdemand = false;
-        } else if (value.demands?.length == 1 &&
-            value.demands?.first.consumerType == 'waterConnection-arrears') {
-          isfirstdemand = false;
-        } else {
-          isfirstdemand = true;
-        }
         if (value.demands!.length > 0) {
-          if (value.demands
-                  ?.where((element) =>
-                      element.demandDetails?.first.taxHeadMasterCode != '10101')
-                  .isNotEmpty ==
-              true) {
-            fetchBill(data);
+          value.demands!.sort((a, b) => b
+              .demandDetails!.first.auditDetails!.createdTime!
+              .compareTo(a.demandDetails!.first.auditDetails!.createdTime!));
+          if (value.demands?.isEmpty == true) {
+            isfirstdemand = false;
+          } else if (value.demands?.length == 1 &&
+              value.demands?.first.consumerType == 'waterConnection-arrears') {
+            isfirstdemand = false;
           } else {
-            // streamController.add(bill);
+            isfirstdemand = true;
           }
+          fetchBill(data);
         } else {
           BillList bill = new BillList();
           bill.bill = [];

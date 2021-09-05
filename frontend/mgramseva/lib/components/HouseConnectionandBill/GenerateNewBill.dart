@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/demand_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -55,94 +56,197 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
 
   buidDemandview(DemandList demandList) {
     int? num = demandList.demands?.first.auditDetails?.createdTime;
-    return Column(
-      children: [
-        Container(
-            padding: EdgeInsets.only(top: 24, bottom: 8.0),
-            child: ListLabelText(i18.generateBillDetails.GENERATE_BILL_LABEL)),
-        Card(
-            child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _getLabeltext(
-                            i18.generateBillDetails.LAST_BILL_GENERATION_DATE,
-                            DateFormats.timeStampToDate(
-                                    demandList.demands?.first.auditDetails
-                                        ?.createdTime,
-                                    format: "dd-MM-yyyy")
-                                .toString(),
-                            context),
-                        Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Text(
-                              DateTime.now()
-                                          .difference(DateTime
-                                              .fromMillisecondsSinceEpoch(num!))
-                                          .inDays ==
-                                      0
-                                  ? ApplicationLocalizations.of(context)
-                                      .translate(i18.generateBillDetails.TODAY)
-                                  : DateTime.now()
-                                          .difference(DateTime
-                                              .fromMillisecondsSinceEpoch(num))
-                                          .inDays
-                                          .toString() +
-                                      " " +
-                                      ApplicationLocalizations.of(context)
-                                          .translate(
-                                              i18.generateBillDetails.DAYS_AGO),
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor),
-                            ))
-                      ],
-                    ),
-                    _getLabeltext(
-                        i18.generateBillDetails.PREVIOUS_METER_READING,
-                        demandList.demands?.first.meterReadings == null
-                            ? widget.waterconnection!.additionalDetails!
-                                        .meterReading ==
-                                    null
-                                ? "NA".toString()
-                                : widget.waterconnection?.additionalDetails!
-                                    .meterReading
-                                    .toString()
-                            : demandList.demands?.first.meterReadings!.first
-                                .currentReading
-                                .toString(),
-                        context),
-                    _getLabeltext(
-                        i18.generateBillDetails.PENDING_AMOUNT,
-                        ('₹' +
-                            demandList.demands!
-                                .map((element) =>
-                                    element.demandDetails!.first.taxAmount)
-                                .toList()
-                                .reduce((a, b) => a! + b!)
-                                .toString()),
-                        context),
-                    ShortButton(
-                        i18.generateBillDetails.GENERATE_NEW_BTN_LABEL,
-                        () => {
-                              Navigator.pushNamed(context, Routes.BILL_GENERATE,
-                                  arguments: widget.waterconnection)
-                            }),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    demandList.demands?.length == 1
-                        ? Info(ApplicationLocalizations.of(context)
-                            .translate(i18.generateBillDetails.INFO_TEXT))
-                        : Text("")
-                  ],
-                )))
-      ],
-    );
+    var billpaymentsProvider =
+        Provider.of<DemadDetailProvider>(context, listen: false);
+    return LayoutBuilder(builder: (context, constraints) {
+      return Column(
+        children: [
+          Container(
+              padding: EdgeInsets.only(top: 24, bottom: 8.0),
+              child:
+                  ListLabelText(i18.generateBillDetails.GENERATE_BILL_LABEL)),
+          Card(
+              child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _getLabeltext(
+                              i18.generateBillDetails.LAST_BILL_GENERATION_DATE,
+                              DateFormats.timeStampToDate(
+                                      demandList.demands?.first.auditDetails
+                                          ?.createdTime,
+                                      format: "dd-MM-yyyy")
+                                  .toString(),
+                              context),
+                          Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Text(
+                                DateTime.now()
+                                            .difference(DateTime
+                                                .fromMillisecondsSinceEpoch(
+                                                    num!))
+                                            .inDays ==
+                                        0
+                                    ? ApplicationLocalizations.of(context)
+                                        .translate(
+                                            i18.generateBillDetails.TODAY)
+                                    : DateTime.now()
+                                            .difference(DateTime
+                                                .fromMillisecondsSinceEpoch(
+                                                    num))
+                                            .inDays
+                                            .toString() +
+                                        " " +
+                                        ApplicationLocalizations.of(context)
+                                            .translate(i18
+                                                .generateBillDetails.DAYS_AGO),
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor),
+                              ))
+                        ],
+                      ),
+                      _getLabeltext(
+                          i18.generateBillDetails.PREVIOUS_METER_READING,
+                          demandList.demands?.first.meterReadings == null
+                              ? widget.waterconnection!.additionalDetails!
+                                          .meterReading ==
+                                      null
+                                  ? "NA".toString()
+                                  : widget.waterconnection?.additionalDetails!
+                                      .meterReading
+                                      .toString()
+                              : demandList.demands?.first.meterReadings!.first
+                                  .currentReading
+                                  .toString(),
+                          context),
+                      _getLabeltext(
+                          i18.generateBillDetails.PENDING_AMOUNT,
+                          ('₹' +
+                              demandList.demands!
+                                  .map((element) {
+                                    var toalamount = element.demandDetails!
+                                        .map((e) => e.taxAmount)
+                                        .toList()
+                                        .reduce((a, b) => a! + b!);
+                                    var collectedAmount = element.demandDetails!
+                                        .map((e) => e.collectionAmount)
+                                        .toList()
+                                        .reduce((a, b) => a! + b!);
+                                    var amount =
+                                        (toalamount! - collectedAmount!);
+                                    return amount;
+                                  })
+                                  .toList()
+                                  .reduce((a, b) => a + b)
+                                  .toString()),
+                          context),
+                      billpaymentsProvider.isfirstdemand == false
+                          ? new Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: constraints.maxWidth > 760
+                                      ? MediaQuery.of(context).size.width / 2
+                                      : MediaQuery.of(context).size.width,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Row(
+                                          children: <Widget>[
+                                            Expanded(
+                                                child: OutlinedButton.icon(
+                                              onPressed: () =>
+                                                  Navigator.pushNamed(context,
+                                                      Routes.BILL_GENERATE,
+                                                      arguments: widget
+                                                          .waterconnection),
+                                              style: ButtonStyle(
+                                                alignment: Alignment.center,
+                                                padding:
+                                                    MaterialStateProperty.all(
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 0)),
+                                                shape:
+                                                    MaterialStateProperty.all(
+                                                        RoundedRectangleBorder(
+                                                  side: BorderSide(
+                                                      width: 2,
+                                                      color: Theme.of(context)
+                                                          .primaryColor),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          0.0),
+                                                )),
+                                              ),
+                                              icon: Text(""),
+                                              label: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8),
+                                                child: Text(
+                                                  ApplicationLocalizations.of(
+                                                          context)
+                                                      .translate(i18
+                                                          .generateBillDetails
+                                                          .GENERATE_BILL_LABEL),
+                                                ),
+                                              ),
+                                            )),
+                                            Expanded(
+                                                child: ShortButton(
+                                                    i18.billDetails
+                                                        .COLLECT_PAYMENT,
+                                                    () =>
+                                                        onClickOfCollectPayment(
+                                                            demandList,
+                                                            context)))
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
+                          : ShortButton(
+                              i18.generateBillDetails.GENERATE_NEW_BTN_LABEL,
+                              () => {
+                                    Navigator.pushNamed(
+                                        context, Routes.BILL_GENERATE,
+                                        arguments: widget.waterconnection)
+                                  }),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      billpaymentsProvider.isfirstdemand == false
+                          ? Info(ApplicationLocalizations.of(context)
+                              .translate(i18.generateBillDetails.INFO_TEXT))
+                          : Text("")
+                    ],
+                  )))
+        ],
+      );
+    });
+  }
+
+  void onClickOfCollectPayment(DemandList demandList, BuildContext context) {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+
+    Map<String, dynamic> query = {
+      'consumerCode': demandList.demands?.first.consumerCode,
+      'businessService': demandList.demands?.first.businessService,
+      'tenantId': commonProvider.userDetails?.selectedtenant?.code
+    };
+    Navigator.pushNamed(context, Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT,
+        arguments: query);
   }
 
   @override

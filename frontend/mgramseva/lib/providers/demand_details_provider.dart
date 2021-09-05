@@ -31,6 +31,7 @@ class DemadDetailProvider with ChangeNotifier {
               value.demands?.first.consumerType == 'waterConnection-arrears') {
             isfirstdemand = false;
           } else {
+            checkMeterDemand(value, data);
             isfirstdemand = true;
           }
           streamController.add(value);

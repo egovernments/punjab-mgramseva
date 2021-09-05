@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/widgets/ButtonGroup.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
+import 'package:mgramseva/widgets/ShortButton.dart';
 import 'package:provider/provider.dart';
 
 class NewConsumerBill extends StatelessWidget {
@@ -45,6 +47,8 @@ class NewConsumerBill extends StatelessWidget {
         r);
 
     return LayoutBuilder(builder: (context, constraints) {
+      var houseHoldProvider =
+          Provider.of<HouseHoldProvider>(context, listen: false);
       return billList!.bill!.first.totalAmount! > 0
           ? Column(
               children: [
@@ -59,7 +63,9 @@ class NewConsumerBill extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Visibility(
-                                visible: true,
+                                visible: houseHoldProvider.isfirstdemand == true
+                                    ? true
+                                    : false,
                                 child: TextButton.icon(
                                   onPressed: () => commonProvider
                                       .getFileFromPDFService({
@@ -97,19 +103,21 @@ class NewConsumerBill extends StatelessWidget {
                                               .amount)
                                           .toString()),
                                   context),
-                              _getLabeltext(
-                                  i18.billDetails.ARRERS_DUES,
-                                  ('₹' +
-                                      (billList!.bill!.first.billDetails!
-                                                  .map((ele) => ele.amount)
-                                                  .reduce(((previousValue,
-                                                      element) {
-                                                return previousValue! +
-                                                    element!;
-                                              }))! -
-                                              r)
-                                          .toString()),
-                                  context),
+                              houseHoldProvider.isfirstdemand == true
+                                  ? _getLabeltext(
+                                      i18.billDetails.ARRERS_DUES,
+                                      ('₹' +
+                                          (billList!.bill!.first.billDetails!
+                                                      .map((ele) => ele.amount)
+                                                      .reduce(((previousValue,
+                                                          element) {
+                                                    return previousValue! +
+                                                        element!;
+                                                  }))! -
+                                                  r)
+                                              .toString()),
+                                      context)
+                                  : Text(""),
                               _getLabeltext(
                                   i18.billDetails.TOTAL_AMOUNT,
                                   ('₹' +
@@ -119,27 +127,40 @@ class NewConsumerBill extends StatelessWidget {
                               this.mode == 'collect'
                                   ? Align(
                                       alignment: Alignment.centerLeft,
-                                      child: ButtonGroup(
-                                          i18.billDetails.COLLECT_PAYMENT,
-                                          () => commonProvider
-                                                  .getFileFromPDFService(
-                                                      {
-                                                    "Bill": [
-                                                      billList!.bill!.first
-                                                    ]
-                                                  },
-                                                      {
-                                                    "key": "consolidatedbill",
-                                                    "tenantId": commonProvider
-                                                        .userDetails!
-                                                        .selectedtenant!
-                                                        .code,
-                                                  },
-                                                      billList!.bill!.first
-                                                          .mobileNumber,
-                                                      "Share"),
-                                          () => onClickOfCollectPayment(
-                                              billList!.bill!.first, context)))
+                                      child: houseHoldProvider.isfirstdemand ==
+                                                  true &&
+                                              houseHoldProvider.waterConnection!
+                                                      .connectionType !=
+                                                  'Metered'
+                                          ? ButtonGroup(
+                                              i18.billDetails.COLLECT_PAYMENT,
+                                              () => commonProvider
+                                                      .getFileFromPDFService(
+                                                          {
+                                                        "Bill": [
+                                                          billList!.bill!.first
+                                                        ]
+                                                      },
+                                                          {
+                                                        "key":
+                                                            "consolidatedbill",
+                                                        "tenantId":
+                                                            commonProvider
+                                                                .userDetails!
+                                                                .selectedtenant!
+                                                                .code,
+                                                      },
+                                                          billList!.bill!.first
+                                                              .mobileNumber,
+                                                          "Share"),
+                                              () => onClickOfCollectPayment(
+                                                  billList!.bill!.first,
+                                                  context))
+                                          : ShortButton(
+                                              i18.billDetails.COLLECT_PAYMENT,
+                                              () => onClickOfCollectPayment(
+                                                  billList!.bill!.first,
+                                                  context)))
                                   : Container(
                                       width: constraints.maxWidth > 760
                                           ? MediaQuery.of(context).size.width /
