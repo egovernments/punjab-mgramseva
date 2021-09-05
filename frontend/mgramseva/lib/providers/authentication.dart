@@ -43,8 +43,6 @@ class AuthenticationProvider with ChangeNotifier {
       Navigator.pop(context);
 
       if (loginResponse != null) {
-        print(loginResponse.toJson());
-        print(loginResponse.userRequest!.toJson());
         var userInfo = await AuthenticationRepository().getProfile({
           "tenantId": loginResponse.userRequest!.tenantId,
           "id": [loginResponse.userRequest!.id],
@@ -52,6 +50,7 @@ class AuthenticationProvider with ChangeNotifier {
         }, loginResponse.accessToken!);
         var commonProvider =
             Provider.of<CommonProvider>(context, listen: false);
+        loginResponse.isFirstTimeLogin = userInfo.user!.first.defaultPwdChgd;
         commonProvider.loginCredentails = loginResponse;
         if (userInfo.user!.first.defaultPwdChgd == false) {
           commonProvider.userProfile = userInfo;

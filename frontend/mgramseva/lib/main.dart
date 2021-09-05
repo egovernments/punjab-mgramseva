@@ -216,7 +216,8 @@ class _LandingPageState extends State<LandingPage> {
               if (snapshot.hasError) {
                 return Notifiers.networkErrorPage(context, () {});
               } else {
-                if (snapshot.data != null) {
+                if (snapshot.data != null &&
+                    commonProvider.userDetails!.isFirstTimeLogin == true) {
                   return Home();
                 }
                 return SelectLanguage();
