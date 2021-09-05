@@ -6,7 +6,7 @@ import 'package:mgramseva/utils/global_variables.dart';
 class CommonMethods {
 
   static home(){
-    Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!, Routes.HOME, (route) => false, arguments: null);
+    navigatorKey.currentState?.popUntil((route) => route.isFirst);
   }
 
   static String getExtension(String url){

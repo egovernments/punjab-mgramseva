@@ -69,15 +69,12 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   }
 
   afterBuildContext() async {
-    var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
     sendOtp();
     var tenants = await TenantRepo().fetchTenants(
         getTenantsMDMS(
-            commonProvider.userDetails!.userRequest!.tenantId.toString()),
+            widget.userDetails.userRequest!.tenantId.toString()),
         widget.userDetails.accessToken);
-    final r = commonProvider.userDetails!.userRequest!.roles!
+    final r = widget.userDetails!.userRequest!.roles!
         .map((e) => e.tenantId)
         .toSet()
         .toList();
@@ -386,7 +383,6 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         var resetResponse =
             await ResetPasswordRepository().forgotPassword(body, context);
         Navigator.pop(context);
-        commonProvider.loginCredentails = widget.userDetails;
 
         Provider.of<CommonProvider>(context, listen: false)
           ..walkThroughCondition(true, Constants.HOME_KEY)
