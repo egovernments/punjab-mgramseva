@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.egov.wscalculation.web.models.DemandStatus;
 
+import com.jayway.jsonpath.JsonPath;
+
 public class WSCalculationConstant {
 
 	public static final String TAXPERIOD_MASTER_KEY = "TAXPERIOD";
@@ -255,6 +257,20 @@ public class WSCalculationConstant {
 	public static final String WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE = "WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE";
 
 	public static final String mGram_Consumer_NewBill = "mGram.Consumer.NewBill";
+
+	public static final String NEW_BULK_DEMAND_EVENT = "NEW_BULK_DEMAND_EVENT";
+
+	public static final String NEW_BULK_DEMAND_EVENT_NM = "NEW_BULK_DEMAND_EVENT_NM";
+
+	public static final String NEW_BULK_DEMAND_EVENT_M = "NEW_BULK_DEMAND_EVENT_M";
+
+	public static final String MSG_KEY = "message";
+
+	public static final String LOCALIZATION_CODES_JSONPATH = "$.messages[0].code";
+	public static final String LOCALIZATION_MSGS_JSONPATH = "$.messages[0].message";
+
+	public static final String TEMPLATE_KEY = "templateId";
+	
 
 
 

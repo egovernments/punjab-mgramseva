@@ -200,4 +200,7 @@ public class WSCalculationConfiguration {
 	
 	@Value("${download.bill.link.path}")
 	private String downLoadBillLink;
+
+	@Value("${bulk.demand.link}")
+	private String bulkDemandLink;
 }
