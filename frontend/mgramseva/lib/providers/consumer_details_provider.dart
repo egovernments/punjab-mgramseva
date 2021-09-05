@@ -356,7 +356,8 @@ class ConsumerProvider with ChangeNotifier {
       return (boundaryList).map((value) {
         return DropdownMenuItem(
           value: value,
-          child: new Text(value.name!),
+          child: new Text(ApplicationLocalizations.of(navigatorKey.currentContext!)
+              .translate(value.code!)),
         );
       }).toList();
     }
