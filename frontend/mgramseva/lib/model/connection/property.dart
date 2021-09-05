@@ -37,7 +37,7 @@ class Property {
   @JsonKey(name: "units")
   List<Units>? units;
   @JsonKey(name: "landArea")
-  int? landArea;
+  double? landArea;
   @JsonKey(name: "propertyType")
   String? propertyType;
   @JsonKey(name: "noOfFloors")
@@ -84,7 +84,7 @@ class Address {
   @JsonKey(ignore: true)
   var streetNameOrNumberCtrl = TextEditingController();
 
-    @JsonKey(ignore: true)
+  @JsonKey(ignore: true)
   var gpNameCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
@@ -100,7 +100,6 @@ class Address {
   getText() {
     doorNumberCtrl.text = doorNo ?? '';
     streetNameOrNumberCtrl.text = street ?? '';
- 
   }
 
   factory Address.fromJson(Map<String, dynamic> json) =>

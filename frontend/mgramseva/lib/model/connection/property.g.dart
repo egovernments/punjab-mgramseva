@@ -29,7 +29,7 @@ Property _$PropertyFromJson(Map<String, dynamic> json) {
     ..units = (json['units'] as List<dynamic>?)
         ?.map((e) => Units.fromJson(e as Map<String, dynamic>))
         .toList()
-    ..landArea = json['landArea'] as int?
+    ..landArea = json['landArea'] as double?
     ..propertyType = json['propertyType'] as String?
     ..noOfFloors = json['noOfFloors'] as int?
     ..superBuiltUpArea = json['superBuiltUpArea'] as String?
