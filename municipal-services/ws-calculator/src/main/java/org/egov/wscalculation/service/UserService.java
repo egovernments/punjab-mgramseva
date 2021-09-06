@@ -99,10 +99,10 @@ public class UserService {
 	 
 
 		
-	public UserDetailResponse getUserByRoleCodes(RequestInfo requestInfo, List<String> roleCodes) {
+	public UserDetailResponse getUserByRoleCodes(RequestInfo requestInfo, List<String> roleCodes, String tenantId) {
 
 		UserSearchRequest userSearchRequest = new UserSearchRequest();
-		userSearchRequest.setTenantId("pb");
+		userSearchRequest.setTenantId(tenantId);
 		userSearchRequest.setRequestInfo(requestInfo);
 		userSearchRequest.setActive(true);
 		userSearchRequest.setRoleCodes(roleCodes);
