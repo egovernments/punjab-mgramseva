@@ -278,10 +278,8 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                  padding: const EdgeInsets.only(bottom: 16, top: 5),
                  child: Text(ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_AN_ACTION), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                ),
-               Wrap(
-               direction:  Axis.horizontal,
-               spacing: 30,
-               runSpacing: 30,
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                children: list.map((e) => _buildIcon(e['label'] as String,e['icon'] as IconData, callBack)).toList()
              ),
            ]
