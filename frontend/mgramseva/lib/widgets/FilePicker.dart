@@ -9,7 +9,9 @@ import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 
 class FilePickerDemo extends StatefulWidget {
   final Function(List<FileStore>?) callBack;
@@ -54,21 +56,27 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
           ?.files;
 
       if(paths != null){
+        var isNotValidSize = false;
+        for(var path in paths){
+          if (!(await CommonMethods.isValidFileSize(path.size))) isNotValidSize = true;;
+        }
+
+        if(isNotValidSize){
+          Notifiers.getToastMessage(context, i18.common.FILE_SIZE, 'ERROR');
+          return;
+        }
         if(_multiPick){
           _selectedFiles.addAll(paths);
         }else{
           _selectedFiles = paths;
         }
 
-         List<dynamic> files = paths;
+        List<dynamic> files = paths;
         if(!kIsWeb){
           files = paths.map((e) => File(e.path ?? '')).toList();
         }
 
-      var response = await CoreRepository().uploadFiles(files, widget.moduleName ?? APIConstants.API_MODULE_NAME);
-        _fileStoreList.addAll(response);
-        if(_selectedFiles.isNotEmpty)
-      widget.callBack(_fileStoreList);
+        uploadFiles(files);
       }
     } on PlatformException catch (e) {
       print("Unsupported operation" + e.toString());
@@ -79,6 +87,17 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
     setState(() {
       _loadingPath = false;
     });
+  }
+
+  uploadFiles(List<dynamic> files) async {
+    try{
+      var response = await CoreRepository().uploadFiles(files, widget.moduleName ?? APIConstants.API_MODULE_NAME);
+      _fileStoreList.addAll(response);
+      if(_selectedFiles.isNotEmpty)
+        widget.callBack(_fileStoreList);
+    }catch(e){
+      Notifiers.getToastMessage(context, e.toString(), 'ERROR');
+    }
   }
 
   void _clearCachedFiles() {
@@ -205,12 +224,13 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
 
   Future<void> selectDocumentOrImage() async {
     FocusScope.of(context).unfocus();
+    var selectionMode;
 
     if(kIsWeb){
       _openFileExplorer();
       return ;
     }
-    var selectionMode;
+
       await showDialog(
           barrierDismissible: true,
           context: context,
@@ -239,11 +259,11 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                         padding: EdgeInsets.only(top: 10, bottom: 10),
                         color: Colors.white,
                         onPressed: () async {
-                          Navigator.pop(context);
                           selectionMode = 'camera';
+                          Navigator.pop(context);
                         },
                         child: Text(
-                          "camera",
+                          ApplicationLocalizations.of(context).translate(i18.common.CAMERA),
                           style: TextStyle(color: Colors.black),
                         ),
                       ),
@@ -256,7 +276,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          'File manger',
+                            ApplicationLocalizations.of(context).translate(i18.common.FILE_MANAGER),
                           style: TextStyle(color: Colors.black),
                         ),
                       )
@@ -272,26 +292,29 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
 
   Future<void> imagePath(BuildContext context, { required String selectionMode}) async {
     FocusScope.of(context).unfocus();
-    try{
+    try {
       if (selectionMode == 'camera') {
         final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-        if(pickedFile != null) {
-          final File file = File(pickedFile.path);
-          if(file != null) {
-            // if (!(await CommonMethods.isValidFileSize(file))) return null;
-            // if (isAzureRequired) {
-            //   return await getCloudLink(file);
-            // } else {
-            //   return file.path;
-            }
+        if (pickedFile != null) {
+          final File? file = File(pickedFile.path);
+          if (file != null) {
+            if (!(await CommonMethods.isValidFileSize(await file.length()))){
+              Notifiers.getToastMessage(context, i18.common.FILE_SIZE, 'ERROR');
+              return;
+            };
+            uploadFiles(<File>[file]);
+            return;
           } else {
             return null;
           }
         } else {
-    _openFileExplorer();
-    }
-    } catch(e){
-
+          _openFileExplorer();
+        }
+      } else {
+        _openFileExplorer();
+      }
+    } on Exception catch (e) {
+      Notifiers.getToastMessage(context, e.toString(), 'ERROR');
     }
   }
 }
