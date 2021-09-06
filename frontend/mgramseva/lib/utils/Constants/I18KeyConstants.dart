@@ -156,6 +156,10 @@ class Common {
   String get NEXT => 'NEXT';
   String get END => 'END';
   String get ROWS_PER_PAGE => 'ROWS_PER_PAGE';
+  String get CAMERA => 'CAMERA';
+  String get FILE_MANAGER => 'FILE_MANAGER';
+  String get FILE_SIZE => 'FILE_SIZE';
+  String get CHOOSE_AN_ACTION => 'CHOOSE_AN_ACTION';
 }
 
 class Password {
