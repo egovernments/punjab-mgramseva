@@ -159,6 +159,7 @@ class Common {
   String get CAMERA => 'CAMERA';
   String get FILE_MANAGER => 'FILE_MANAGER';
   String get FILE_SIZE => 'FILE_SIZE';
+  String get CHOOSE_AN_ACTION => 'CHOOSE_AN_ACTION';
 }
 
 class Password {

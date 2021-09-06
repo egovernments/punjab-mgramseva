@@ -12,6 +12,7 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:path/path.dart' as path;
 
 class FilePickerDemo extends StatefulWidget {
   final Function(List<FileStore>?) callBack;
@@ -26,7 +27,7 @@ class FilePickerDemo extends StatefulWidget {
 
 class _FilePickerDemoState extends State<FilePickerDemo> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<PlatformFile> _selectedFiles = <PlatformFile>[];
+  List<dynamic> _selectedFiles = <dynamic>[];
   List<FileStore> _fileStoreList = <FileStore>[];
   String? _directoryPath;
   String? _extension;
@@ -175,7 +176,10 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       spacing: 2,
                       children: [
-                        Text(_selectedFiles[index].name),
+                        Text(_selectedFiles[index] is File ? (path.basename(_selectedFiles[index].path)) : _selectedFiles[index].name,
+                        maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         IconButton(
                             padding: EdgeInsets.all(5),
                             onPressed: ()=> onClickOfClear(index), icon: Icon(Icons.cancel))
@@ -224,69 +228,66 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
 
   Future<void> selectDocumentOrImage() async {
     FocusScope.of(context).unfocus();
-    var selectionMode;
+    var list = [
+      {
+        "label" :  i18.common.CAMERA,
+        'icon' : Icons.camera_alt
+      },
+      {
+        "label" :  i18.common.FILE_MANAGER,
+        'icon' : Icons.drive_folder_upload
+      },
+    ];
 
     if(kIsWeb){
       _openFileExplorer();
       return ;
     }
 
-      await showDialog(
-          barrierDismissible: true,
-          context: context,
-          builder: (context)  {
-            return AlertDialog(
-                contentPadding: EdgeInsets.all(30.0),
-                content: Container(
-                  height: 130,
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(bottom : 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            GestureDetector(
-                                child: Icon(Icons.close),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                }),
-                          ],
-                        ),
-                      ),
-                      MaterialButton(
-                        minWidth: 200,
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
-                        color: Colors.white,
-                        onPressed: () async {
-                          selectionMode = 'camera';
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          ApplicationLocalizations.of(context).translate(i18.common.CAMERA),
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                      MaterialButton(
-                        minWidth: 200,
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
-                        color: Colors.white,
-                        onPressed: () async {
-                          selectionMode = 'filePicker';
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                            ApplicationLocalizations.of(context).translate(i18.common.FILE_MANAGER),
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      )
-                    ],
-                  ),
-                ));
-          });
+    callBack(String value){
+      Navigator.pop(context);
+      if(list.first['label'] == value){
+        imagePath(context, selectionMode: 'camera');
+      }else{
+        imagePath(context, selectionMode: 'filePicker');
+      }
+    }
 
-    if(selectionMode == null) return null;
-   imagePath(context, selectionMode: selectionMode);
+    await showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+        ),
+        builder: (BuildContext context) {
+         return Padding(
+           padding: const EdgeInsets.only(bottom: 25, left: 25, right: 25, top: 10),
+           child: Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             mainAxisSize: MainAxisSize.min,
+             children : [
+               Container(
+                 padding: EdgeInsets.symmetric(vertical: 8),
+                 alignment: Alignment.center,
+                 child: Container(
+                   height: 2,
+                   width: 30,
+                   color: Colors.grey,
+                 ),
+               ),
+               Padding(
+                 padding: const EdgeInsets.only(bottom: 16, top: 5),
+                 child: Text(ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_AN_ACTION), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+               ),
+               Wrap(
+               direction:  Axis.horizontal,
+               spacing: 30,
+               runSpacing: 30,
+               children: list.map((e) => _buildIcon(e['label'] as String,e['icon'] as IconData, callBack)).toList()
+             ),
+           ]
+           ),
+         );
+        });
   }
 
 
@@ -302,6 +303,11 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
               Notifiers.getToastMessage(context, i18.common.FILE_SIZE, 'ERROR');
               return;
             };
+            if(_multiPick){
+              _selectedFiles.addAll([file]);
+            }else{
+              _selectedFiles = [file];
+            }
             uploadFiles(<File>[file]);
             return;
           } else {
@@ -316,5 +322,26 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
     } on Exception catch (e) {
       Notifiers.getToastMessage(context, e.toString(), 'ERROR');
     }
+  }
+
+
+  Widget _buildIcon(String label, IconData icon, Function(String) callBack){
+    return Wrap(
+      direction: Axis.vertical,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      alignment: WrapAlignment.center,
+      spacing: 8,
+      children: [
+       IconButton(onPressed: ()=> callBack(label), iconSize: 45, icon: Icon(icon)),
+        Text( ApplicationLocalizations.of(
+            context)
+            .translate(label),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 15
+        ),
+        )
+      ],
+    );
   }
 }

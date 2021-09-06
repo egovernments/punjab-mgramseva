@@ -48,6 +48,7 @@ dependencies:
   flutter_countdown_timer: ^4.1.0
   flutter_rating_bar: ^4.0.0
   image_picker: ^0.8.4
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_launcher_icons: "^0.9.2"
