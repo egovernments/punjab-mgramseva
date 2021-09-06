@@ -60,7 +60,7 @@ class _LoginState extends State<Login> {
                 BuildTextField(
                   i18.login.LOGIN_PHONE_NO,
                   userNamecontroller,
-                  prefixText: '+91-',
+                  prefixText: '+91 - ',
                   isRequired: true,
                   inputFormatter: [
                     FilteringTextInputFormatter.allow(RegExp("[0-9]"))
@@ -81,7 +81,7 @@ class _LoginState extends State<Login> {
                       Navigator.pushNamed(context, Routes.FORGOT_PASSWORD),
                   child: Padding(
                       padding: const EdgeInsets.only(
-                          left: 25, top: 10, bottom: 10, right: 25),
+                          left: 8, top: 10, bottom: 10, right: 25),
                       child: new Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
@@ -92,7 +92,7 @@ class _LoginState extends State<Login> {
                           ))),
                 ),
                 Padding(
-                    padding: EdgeInsets.all(15),
+                    padding: EdgeInsets.only(top: 15, bottom: 15, left: 8, right: 8),
                     child: Button(
                         i18.common.CONTINUE, () => saveandLogin(context))),
                 SizedBox(

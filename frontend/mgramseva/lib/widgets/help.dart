@@ -17,10 +17,12 @@ class _Help extends State<Help> {
   void initState() {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     (commonProvider.getWalkThroughCheck(widget.walkThroughKey!)).then((value) {
-      if (value == 'true') {
+      if (value == 'true' &&
+          commonProvider.userDetails!.selectedtenant != null) {
         widget.callBack!();
       }
     });
+    super.initState();
   }
 
   @override

@@ -5,15 +5,12 @@ import 'package:mgramseva/components/HouseConnectionandBill/HouseConnectionDetai
 import 'package:mgramseva/components/HouseConnectionandBill/NewConsumerBill.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
-import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
 import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
@@ -65,14 +62,17 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                                   arguments: houseHoldProvider.waterConnection)
                             }))
                 : Text(""))
-            : data.bill!.first.waterConnection!.connectionType == 'Metered' &&
+            : houseHoldProvider.waterConnection!.connectionType == 'Metered' &&
                     widget.mode == 'collect'
-                ? GenerateNewBill(data)
+                ? GenerateNewBill(houseHoldProvider.waterConnection)
                 : Text(""),
-        data.bill!.isEmpty ? Text("") : NewConsumerBill(data, widget.mode),
-        data.bill!.isEmpty
+        data.bill!.isEmpty ||
+                (houseHoldProvider.waterConnection?.connectionType ==
+                        'Metered' &&
+                    houseHoldProvider.isfirstdemand == false)
             ? Text("")
-            : ConsumerBillPayments(data.bill!.first.waterConnection)
+            : NewConsumerBill(data, widget.mode),
+        ConsumerBillPayments(houseHoldProvider.waterConnection)
       ],
     );
   }

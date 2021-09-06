@@ -43,8 +43,6 @@ class AuthenticationProvider with ChangeNotifier {
       Navigator.pop(context);
 
       if (loginResponse != null) {
-        print(loginResponse.toJson());
-        print(loginResponse.userRequest!.toJson());
         var userInfo = await AuthenticationRepository().getProfile({
           "tenantId": loginResponse.userRequest!.tenantId,
           "id": [loginResponse.userRequest!.id],
@@ -52,15 +50,17 @@ class AuthenticationProvider with ChangeNotifier {
         }, loginResponse.accessToken!);
         var commonProvider =
             Provider.of<CommonProvider>(context, listen: false);
-        commonProvider.loginCredentails = loginResponse;
+        loginResponse.isFirstTimeLogin = userInfo.user!.first.defaultPwdChgd;
+
         if (userInfo.user!.first.defaultPwdChgd == false) {
           commonProvider.userProfile = userInfo;
           Navigator.pushNamed(context, Routes.UPDATE_PASSWORD,
               arguments: loginResponse);
           return;
         } else {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(Routes.HOME, (route) => false);
+          commonProvider.loginCredentails = loginResponse;
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              Routes.HOME, (Route<dynamic> route) => false);
         }
       }
     } on CustomException catch (e, s) {

@@ -17,7 +17,7 @@ import 'common_provider.dart';
 class HouseHoldProvider with ChangeNotifier {
   late GlobalKey<FormState> formKey;
   WaterConnection? waterConnection;
-
+  bool isfirstdemand = false;
   var streamController = StreamController.broadcast();
   Future<void> checkMeterDemand(
       BillList data, WaterConnection waterConnection) async {
@@ -40,15 +40,24 @@ class HouseHoldProvider with ChangeNotifier {
         streamController.addError('error');
         ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       }
+    } else {
+      streamController.add(data);
     }
   }
 
   Future<void> fetchBill(data) async {
-    await BillingServiceRepository().fetchdBill({
-      "tenantId": data.tenantId,
-      "consumerCode": data.connectionNo.toString(),
-      "businessService": "WS"
-    }).then((value) => checkMeterDemand(value, data));
+    try {
+      await BillingServiceRepository().fetchdBill({
+        "tenantId": data.tenantId,
+        "consumerCode": data.connectionNo.toString(),
+        "businessService": "WS"
+      }).then((value) {
+        streamController.add(value);
+      });
+    } catch (e, s) {
+      streamController.addError('error');
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+    }
   }
 
   Future<void> fetchDemand(data, [String? id]) async {
@@ -68,21 +77,35 @@ class HouseHoldProvider with ChangeNotifier {
       }
     }
     waterConnection = data;
-
-    await BillingServiceRepository().fetchdDemand({
-      "tenantId": data.tenantId,
-      "consumerCode": data.connectionNo.toString(),
-      "businessService": "WS"
-    }).then((value) {
-      if (value.demands!.length > 0) {
-        fetchBill(data);
-      } else {
-        BillList bill = new BillList();
-        bill.bill = [];
-        // bill.bill!.first.waterConnection = waterConnection;
-        streamController.add(bill);
-      }
-    });
+    try {
+      await BillingServiceRepository().fetchdDemand({
+        "tenantId": data.tenantId,
+        "consumerCode": data.connectionNo.toString(),
+        "businessService": "WS"
+      }).then((value) {
+        if (value.demands!.length > 0) {
+          value.demands!.sort((a, b) => b
+              .demandDetails!.first.auditDetails!.createdTime!
+              .compareTo(a.demandDetails!.first.auditDetails!.createdTime!));
+          if (value.demands?.isEmpty == true) {
+            isfirstdemand = false;
+          } else if (value.demands?.length == 1 &&
+              value.demands?.first.consumerType == 'waterConnection-arrears') {
+            isfirstdemand = false;
+          } else {
+            isfirstdemand = true;
+          }
+          fetchBill(data);
+        } else {
+          BillList bill = new BillList();
+          bill.bill = [];
+          streamController.add(bill);
+        }
+      });
+    } catch (e, s) {
+      streamController.addError('error');
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+    }
   }
 
   dispose() {

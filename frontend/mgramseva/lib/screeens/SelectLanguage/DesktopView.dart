@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
-import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/footerBanner.dart';
@@ -38,8 +38,26 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                               image: NetworkImage(
                                 stateInfo.logoUrl!,
                               )),
-                          SubLabelText(" | "),
-                          SubLabelText(stateInfo.code)
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(" | ",
+                                      style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400, color: Color.fromRGBO(0,0,0,1)),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ))),
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(ApplicationLocalizations.of(context).translate(stateInfo.code!),
+                                      style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400, color: Color.fromRGBO(0,0,0,1)),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  )))
                         ],
                       )),
                   Padding(

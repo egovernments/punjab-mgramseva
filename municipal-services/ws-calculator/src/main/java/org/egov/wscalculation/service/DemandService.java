@@ -3,7 +3,10 @@ package org.egov.wscalculation.service;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -11,6 +14,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
+import org.egov.wscalculation.service.UserService;
+import org.egov.wscalculation.web.models.users.UserDetailResponse;
 import org.egov.tracer.model.CustomException;
 import org.egov.wscalculation.config.WSCalculationConfiguration;
 import org.egov.wscalculation.constants.WSCalculationConstant;
@@ -19,6 +24,7 @@ import org.egov.wscalculation.repository.DemandRepository;
 import org.egov.wscalculation.repository.ServiceRequestRepository;
 import org.egov.wscalculation.repository.WSCalculationDao;
 import org.egov.wscalculation.util.CalculatorUtil;
+import org.egov.wscalculation.util.NotificationUtil;
 import org.egov.wscalculation.util.WSCalculationUtil;
 import org.egov.wscalculation.validator.WSCalculationValidator;
 import org.egov.wscalculation.validator.WSCalculationWorkflowValidator;
@@ -26,6 +32,7 @@ import org.egov.wscalculation.web.models.BulkDemand;
 import org.egov.wscalculation.web.models.Calculation;
 import org.egov.wscalculation.web.models.CalculationCriteria;
 import org.egov.wscalculation.web.models.CalculationReq;
+import org.egov.wscalculation.web.models.Category;
 import org.egov.wscalculation.web.models.Demand;
 import org.egov.wscalculation.web.models.Demand.StatusEnum;
 import org.egov.wscalculation.web.models.DemandDetail;
@@ -33,8 +40,10 @@ import org.egov.wscalculation.web.models.DemandDetailAndCollection;
 import org.egov.wscalculation.web.models.DemandRequest;
 import org.egov.wscalculation.web.models.DemandResponse;
 import org.egov.wscalculation.web.models.GetBillCriteria;
+import org.egov.wscalculation.web.models.OwnerInfo;
 import org.egov.wscalculation.web.models.Property;
 import org.egov.wscalculation.web.models.RequestInfoWrapper;
+import org.egov.wscalculation.web.models.SMSRequest;
 import org.egov.wscalculation.web.models.TaxHeadEstimate;
 import org.egov.wscalculation.web.models.TaxPeriod;
 import org.egov.wscalculation.web.models.WaterConnection;
@@ -96,6 +105,21 @@ public class DemandService {
 
 	@Autowired
 	private WSCalculationValidator wsCalculationValidator;
+	
+	@Autowired
+	private NotificationUtil util;
+	
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private WSCalculationProducer producer;
+	
+
+	@Autowired
+	private WSCalculationConfiguration config;
+	
+	
 
 	/**
 	 * Creates or updates Demand
@@ -166,6 +190,10 @@ public class DemandService {
 	private List<Demand> createDemand(RequestInfo requestInfo, List<Calculation> calculations,
 			Map<String, Object> masterMap, boolean isForConnectionNO) {
 		List<Demand> demands = new LinkedList<>();
+		List<SMSRequest> smsRequests = new LinkedList<>();
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		String billCycle="";
+		String consumerCode = null;
 		for (Calculation calculation : calculations) {
 			WaterConnection connection = calculation.getWaterConnection();
 			if (connection == null) {
@@ -177,7 +205,7 @@ public class DemandService {
 					.requestInfo(requestInfo).build();
 			Property property = wsCalculationUtil.getProperty(waterConnectionRequest);
 			String tenantId = calculation.getTenantId();
-			String consumerCode = calculation.getConnectionNo();
+			consumerCode = calculation.getConnectionNo();
 			User owner = property.getOwners().get(0).toCommonUser();
 			if (!CollectionUtils.isEmpty(waterConnectionRequest.getWaterConnection().getConnectionHolders())) {
 				owner = waterConnectionRequest.getWaterConnection().getConnectionHolders().get(0).toCommonUser();
@@ -204,12 +232,51 @@ public class DemandService {
 					.minimumAmountPayable(minimumPayableAmount).tenantId(tenantId).taxPeriodFrom(fromDate)
 					.taxPeriodTo(toDate).consumerType( isForConnectionNO ? "waterConnection" : "waterConnection-arrears").businessService(businessService)
 					.status(StatusEnum.valueOf("ACTIVE")).billExpiryTime(expiryDate).build());
+
+			String localizationMessage = util.getLocalizationMessages(tenantId, requestInfo);
+			String messageString = util.getMessageTemplate(
+					WSCalculationConstant.WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE, localizationMessage);
+
+			if( !StringUtils.isEmpty(messageString)) {
+					billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
+					+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
+			messageString = messageString.replace("{ownername}", owner.getUserName());
+			messageString = messageString.replace("{billingcycle}", billCycle);
+			messageString = messageString.replace("{consumerno}", consumerCode);
+			messageString = messageString.replace("{billmaount}", demandDetails.stream().map(DemandDetail::getTaxAmount)
+					.reduce(BigDecimal.ZERO, BigDecimal::add).toString());
+			messageString = messageString.replace("{BILL_LINK}", configs.getDownLoadBillLink());
+			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
+					.category(Category.TRANSACTION).build();
+			producer.push(config.getSmsNotifTopic(), sms);
+			System.out.println("Demand genaratio Message::" + messageString);
+			}
 		}
 		log.info("Demand Object" + demands.toString());
 		List<Demand> demandRes = demandRepository.saveDemand(requestInfo, demands);
+				
 		if(isForConnectionNO)
 		fetchBill(demandRes, requestInfo);
 		return demandRes;
+	}
+
+	private void sendSMSNotification(RequestInfo requestInfo, List<SMSRequest> smsRequests, String billCycle, String consumerCode, List<DemandDetail> demandDetails) {
+		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN"));
+		for (OwnerInfo ownerInfo : userDetailResponse.getUser()) {
+			String localizationMessage = util.getLocalizationMessages(ownerInfo.getTenantId(), requestInfo);
+			String messageString = util.getMessageTemplate(
+					WSCalculationConstant.mGram_Consumer_NewBill, localizationMessage);
+			if (messageString != null && !StringUtils.isEmpty(messageString)) {
+				messageString = messageString.replace("{BILL_LINK}", configs.getDownLoadBillLink());
+				messageString = messageString.replace("{ULB_Name}", ownerInfo.getTenantId());
+				messageString = messageString.replace("{ownername}", ownerInfo.getUserName());
+				messageString = messageString.replace("{billingcycle}", billCycle);
+				messageString = messageString.replace("{consumerno}", consumerCode);
+				SMSRequest sms = SMSRequest.builder().mobileNumber(ownerInfo.getMobileNumber()).message(messageString)
+						.category(Category.TRANSACTION).build();
+				producer.push(config.getSmsNotifTopic(), sms);
+			}
+		}
 	}
 
 	/**

@@ -21,7 +21,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
               )),
           new Flexible(
               child: Container(
-                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  padding: EdgeInsets.only(top: 16, bottom: 16, left: 8),
                   child: Text(
                       ApplicationLocalizations.of(context).translate(value),
                       maxLines: 3,
@@ -74,18 +74,30 @@ class HouseConnectionDetailCard extends StatelessWidget {
                     i18.searchWaterConnection.RESULTS_PHONE_NUM,
                     waterconnection!.connectionHolders!.first.mobileNumber,
                     context),
-                _getLabeltext(i18.searchWaterConnection.OLD_CONNECTION_ID,
-                    waterconnection!.oldConnectionNo, context),
                 _getLabeltext(
-                    i18.searchWaterConnection.RESULTS_ADDRESS,
-                    (waterconnection!.additionalDetails!.doorNo != null
-                            ? waterconnection!.additionalDetails!.doorNo!
-                            : "") +
-                        (waterconnection!.additionalDetails!.street != null
-                            ? waterconnection!.additionalDetails!.street!
-                            : "") +
-                        waterconnection!.additionalDetails!.locality!,
+                    i18.searchWaterConnection.OLD_CONNECTION_ID,
+                    waterconnection!.oldConnectionNo != ""
+                        ? waterconnection!.oldConnectionNo
+                        : "NA",
                     context),
+                _getLabeltext(
+                  ApplicationLocalizations.of(context)
+                      .translate(i18.searchWaterConnection.RESULTS_ADDRESS),
+                  (waterconnection!.additionalDetails!.doorNo != null
+                          ? waterconnection!.additionalDetails!.doorNo! != ""
+                              ? waterconnection!.additionalDetails!.doorNo! +
+                                  ', '
+                              : " "
+                          : "") +
+                      (waterconnection!.additionalDetails!.street != null
+                          ? waterconnection!.additionalDetails!.street! != ""
+                              ? waterconnection!.additionalDetails!.street! +
+                                  ', '
+                              : " "
+                          : "") +
+                      waterconnection!.additionalDetails!.locality!,
+                  context,
+                ),
                 _getLabeltext(i18.searchWaterConnection.PROPERTY_TYPE,
                     waterconnection!.additionalDetails!.propertyType, context),
                 _getLabeltext(i18.consumer.SERVICE_TYPE,

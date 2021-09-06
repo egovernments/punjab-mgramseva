@@ -12,6 +12,7 @@ import 'package:mgramseva/providers/bill_payments_provider.dart';
 import 'package:mgramseva/providers/changePassword_details_provider.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
+import 'package:mgramseva/providers/demand_details_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/providers/forgot_password_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
@@ -115,6 +116,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => DashBoardProvider()),
           ChangeNotifierProvider(create: (_) => BillPayemntsProvider()),
           ChangeNotifierProvider(create: (_) => HomeProvider()),
+          ChangeNotifierProvider(create: (_) => DemadDetailProvider()),
           ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ],
         child: Consumer<LanguageProvider>(
@@ -214,7 +216,8 @@ class _LandingPageState extends State<LandingPage> {
               if (snapshot.hasError) {
                 return Notifiers.networkErrorPage(context, () {});
               } else {
-                if (snapshot.data != null) {
+                if (snapshot.data != null &&
+                    commonProvider.userDetails!.isFirstTimeLogin == true) {
                   return Home();
                 }
                 return SelectLanguage();

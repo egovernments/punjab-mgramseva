@@ -10,7 +10,6 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
-import 'package:mgramseva/widgets/Back.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
@@ -22,7 +21,7 @@ import 'package:provider/provider.dart';
 class ResetPassword extends StatefulWidget {
   String? id;
 
-  ResetPassword({String? id});
+  ResetPassword({String? this.id});
 
   State<StatefulWidget> createState() {
     return _ResetPasswordState();
@@ -132,8 +131,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     validator: (val) =>
                                         Validators.passwordComparision(
                                             val,
-                                            i18.password
-                                                .CORE_COMMON_NEW_PASSWORD),
+                                          ApplicationLocalizations.of(context).translate(i18.password
+                                                .CORE_COMMON_NEW_PASSWORD)),
                                     onChange: saveInput,
                                   ),
                                   BuildTextField(
@@ -144,8 +143,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     validator: (val) =>
                                         Validators.passwordComparision(
                                             val,
-                                            i18.password
-                                                .CORE_COMMON_CONFIRM_NEW_PASSWORD,
+                                          ApplicationLocalizations.of(context).translate(i18.password
+                                                .CORE_COMMON_CONFIRM_NEW_PASSWORD),
                                             confirmPassword.text),
                                     onChange: saveInput,
                                   ),
@@ -196,7 +195,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     text:
                         '${ApplicationLocalizations.of(context).translate(i18.password.ENTER_OTP_SENT_TO)} '),
                 TextSpan(
-                    text: '+ 91 -${widget.id}',
+                    text: '+ 91 - ${widget.id}',
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
                         color: Color.fromRGBO(11, 12, 12, 1)))

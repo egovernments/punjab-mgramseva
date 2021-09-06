@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
-import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -109,6 +108,14 @@ class SideBar extends StatelessWidget {
             color: iconColor,
           ),
           onTap: () => Navigator.pushNamed(context, Routes.EDIT_PROFILE)),
+      ListTile(
+          title: Text(ApplicationLocalizations.of(context)
+              .translate(i18.password.CHANGE_PASSWORD)),
+          leading: Icon(
+            Icons.sync_alt,
+            color: iconColor,
+          ),
+          onTap: () => Navigator.pushNamed(context, Routes.CHANGE_PASSWORD)),
       ListTile(
         title: Text(
             ApplicationLocalizations.of(context).translate(i18.common.LOGOUT)),

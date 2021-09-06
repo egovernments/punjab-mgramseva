@@ -237,8 +237,8 @@ public class UserTypeQueryBuilder {
 
         if (userSearchCriteria.getTenantId() != null) {
             isAppendAndClause = addAndClauseIfRequired(false, selectQuery);
-            selectQuery.append(" ur.role_tenantid like '%?%'");
-            preparedStatementValues.add(userSearchCriteria.getTenantId().trim());
+            selectQuery.append(" ur.role_tenantid like ? ");
+            preparedStatementValues.add( '%' +  userSearchCriteria.getTenantId().trim() + '%');
         }
 
 
@@ -295,7 +295,7 @@ public class UserTypeQueryBuilder {
 
 
     public String getUserPresentByUserNameAndTenant() {
-        return "select count(*) from eg_user where username =:userName and tenantId =:tenantId and type = :userType ";
+        return "select count(*) from eg_user where username =:userName and tenantId like :tenantId and type = :userType ";
     }
 
 }

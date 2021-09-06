@@ -4,6 +4,7 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/models.dart';
 
+// ignore: non_constant_identifier_names
 class Constants {
   static const int PAGINATION_LIMIT = 75;
 
@@ -31,13 +32,13 @@ class Constants {
   ];
 
   static List<HomeItem> HOME_ITEMS = [
-    HomeItem(
-      "CORE_HOUSEHOLD_REGISTER",
-      (i18.homeWalkThroughMSg.HOUSEHOLD_REGISTER_MSG),
-      HomeIcons.hhregister,
-      Routes.HOUSEHOLD_REGISTER,
-      {},
-    ),
+    // HomeItem(
+    //   "CORE_HOUSEHOLD_REGISTER",
+    //   (i18.homeWalkThroughMSg.HOUSEHOLD_REGISTER_MSG),
+    //   HomeIcons.hhregister,
+    //   Routes.HOUSEHOLD_REGISTER,
+    //   {},
+    // ),
     HomeItem(
         "CORE_COLLECT_PAYMENTS",
         (i18.homeWalkThroughMSg.COLLECT_PAYMENTS_MSG),
@@ -80,7 +81,7 @@ class Constants {
         "CORE_GPWSC_DASHBOARD",
         (i18.homeWalkThroughMSg.GPWSC_DASHBOARD_MSG),
         HomeIcons.dashboard,
-        'dashboard', {}),
+        Routes.DASHBOARD, {}),
   ];
 
   static List<KeyValue> SERVICECATEGORY = [

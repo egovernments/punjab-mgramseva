@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mgramseva/icons/home_icons_icons.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/role_actions.dart';
-
-import 'HomeWalkThrough/HomeWalkThroughList.dart';
 
 final String assetName = 'assets/svg/HHRegister.svg';
 
@@ -70,19 +65,19 @@ class _HomeCard extends State<HomeCard> {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 760) {
         return Container(
-            child: commonProvider.userDetails!.selectedtenant != null &&
-                    commonProvider.userDetails!.userRequest != null
+            child: commonProvider.userDetails?.selectedtenant != null &&
+                    commonProvider.userDetails?.userRequest != null
                 ? (new GridView.count(
                     crossAxisCount: 3,
-                    childAspectRatio: .8,
+                    childAspectRatio: .85,
                     children: getList(homeProvider),
                   ))
                 : Text(""));
       } else {
         return Container(
             margin: EdgeInsets.only(left: 75, right: 75),
-            child: commonProvider.userDetails!.selectedtenant != null &&
-                    commonProvider.userDetails!.userRequest != null
+            child: commonProvider.userDetails?.selectedtenant != null &&
+                    commonProvider.userDetails?.userRequest != null
                 ? (new GridView.count(
                     crossAxisCount: 3,
                     childAspectRatio: 3,

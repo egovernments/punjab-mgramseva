@@ -38,6 +38,7 @@ class Common {
   const Common();
   String get CONTINUE => 'CORE_COMMON_CONTINUE';
   String get NAME => 'CORE_COMMON_NAME';
+  String get CONTINUE_TO_LOGIN => 'CONTINUE_TO_LOGIN';
   String get PHONE_NUMBER => 'CORE_COMMON_PHONE_NUMBER';
   String get MOBILE_NUMBER => 'CORE_COMMON_MOBILE_NUMBER';
   String get LOGOUT => 'CORE_COMMON_LOGOUT';
@@ -118,7 +119,7 @@ class Common {
   String get PAYMENT_AMOUNT => 'PAYMENT_AMOUNT'; //Payment Amount
   String get PAYMENT_METHOD => 'PAYMENT_METHOD'; //Payment Method
   String get PAYMENT_INFORMATION => 'PAYMENT_INFORMATION'; //Payment Information
-  String get WATER_CHARGES => 'WS_CHARGES'; //Please enter Mobile number
+  String get WATER_CHARGES => 'WS_CHARGE'; //Please enter Mobile number
   String get ARREARS => 'ARREARS'; //Please enter Mobile number
   String get COLLECT_PAYMENT => 'COLLECT_PAYMENT';
   String get ONLINE => 'ONLINE';
@@ -187,6 +188,7 @@ class Password {
       'CORE_COMMON_CONFIRM_NEW_PASSWORD';
   String get NEW_PASSWORD_ENTER => 'NEW_PASSWORD_ENTER';
   String get CONFIRM_PASSWORD_ENTER => 'CONFIRM_PASSWORD_ENTER';
+  String get INVITED_TO_SINGLE_GP => 'INVITED_TO_SINGLE_GP';
 }
 
 class Expense {
@@ -264,11 +266,13 @@ class Expense {
       'CORE_EXPENSE_EXPENDITURE_SUCESS';
   String get HAS_THIS_BILL_PAID => 'HAS_THIS_BILL_PAID';
   String get CANCELLED => 'CANCELLED';
+  String get ADD_NEW_EXPENSE => 'ADD_NEW_EXPENSE';
 }
 
 class CreateConsumer {
   const CreateConsumer();
   String get CONSUMER_NAME => 'CREATE_CONSUMER_NAME';
+  String get MARK_AS_INACTIVE => 'MARK_AS_INACTIVE';
   String get FATHER_SPOUSE_NAME => 'CONSUMER_FATHER_SPOUSE_NAME';
   String get OLD_CONNECTION_ID => 'CONSUMER_OLD_CONNECTION_ID';
   String get DOOR_NO => 'CONSUMER_DOOR_NO';
@@ -397,6 +401,7 @@ class GenerateBillDetails {
   String get PREVIOUS_METER_READING => 'PREVIOUS_METER_READING';
   String get PENDING_AMOUNT => 'PENDING_AMOUNT';
   String get DAYS_AGO => 'DAYS_AGO';
+  String get TODAY => 'TODAY';
   String get GENERATE_NEW_BTN_LABEL => 'GENERATE_NEW_BTN_LABEL';
   String get INFO => 'INFO';
   String get INFO_TEXT => 'INFO_TEXT';
@@ -428,7 +433,6 @@ class _Payment {
   String get RECEIPT_REFERENCE_WITH_MOBILE_NUMBER =>
       'RECEIPT_REFERENCE_WITH_MOBILE_NUMBER'; //Fee Estimate
   String get BILL_DETAILS => 'BILL_DETAILS';
-
 }
 
 class _HomeWalkThroughMsg {
@@ -489,7 +493,6 @@ class _ExpenseWalkThroughMsg {
   String get EXPENSE_ATTACH_BILL_MSG => 'EXPENSE_ATTACH_BILL_MSG';
 }
 
-
 class _POSTPAYMENTFEEDBACK {
   const _POSTPAYMENTFEEDBACK();
 
@@ -498,6 +501,8 @@ class _POSTPAYMENTFEEDBACK {
   String get IS_WATER_SUPPLY_REGULAR => 'IS_WATER_SUPPLY_REGULAR';
   String get IS_WATER_QUALITY_GOOD => 'IS_WATER_QUALITY_GOOD';
   String get SURVEY_REQUEST => 'SURVEY_REQUEST';
-  String get FEED_BACK_SUBMITTED_SUCCESSFULLY => 'FEED_BACK_SUBMITTED_SUCCESSFULLY';
-  String get FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY => 'FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY';
+  String get FEED_BACK_SUBMITTED_SUCCESSFULLY =>
+      'FEED_BACK_SUBMITTED_SUCCESSFULLY';
+  String get FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY =>
+      'FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY';
 }

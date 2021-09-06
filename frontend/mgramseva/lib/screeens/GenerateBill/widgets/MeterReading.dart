@@ -29,14 +29,14 @@ class MeterReading extends StatelessWidget {
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
-                        fontSize: 19,
-                        color: Colors.black)),
+                        fontSize: 16,
+                        color: Theme.of(context).primaryColorDark)),
                 Text(isRequired! ? '* ' : ' ',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
-                        fontSize: 19,
-                        color: Colors.black)),
+                        fontSize: 16,
+                        color: Theme.of(context).primaryColorDark)),
               ]))),
       Container(
           width: constraints.maxWidth > 760
@@ -63,7 +63,7 @@ class MeterReading extends StatelessWidget {
         child: LayoutBuilder(builder: (context, constraints) {
           return Container(
               margin: const EdgeInsets.only(
-                  top: 5.0, bottom: 5, right: 20, left: 20),
+                  top: 5.0, bottom: 5, right: 8, left: 8),
               child: constraints.maxWidth > 760
                   ? Row(children: _getConatiner(constraints, context))
                   : Column(children: _getConatiner(constraints, context)));

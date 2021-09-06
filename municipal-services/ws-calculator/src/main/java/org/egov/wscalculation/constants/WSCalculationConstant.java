@@ -166,7 +166,7 @@ public class WSCalculationConstant {
 
 	public static final String NOTIFICATION_LOCALE = "en_IN";
 
-	public static final String MODULE = "rainmaker-ws";
+	public static final String MODULE = "mgramseva-ws";
 
 	public static final String SMS_RECIEVER_MASTER = "SMSReceiver";
 
@@ -179,6 +179,7 @@ public class WSCalculationConstant {
 	public static final String DEMAND_FAILURE_MESSAGE_EMAIL = "WATER_CONNECTION_DEMAND_FAILURE_EMAIL_MESSAGE";
 
 	public static final String WATER_CONNECTION_BILL_GENERATION_SMS_MESSAGE = "WATER_CONNECTION_BILL_GENERATION_SMS_MESSAGE";
+	
 	
 	public static final String WATER_CONNECTION_BILL_GENERATION_APP_MESSAGE = "WATER_CONNECTION_BILL_GENERATION_APP_MESSAGE";
 	
@@ -250,6 +251,11 @@ public class WSCalculationConstant {
 	public static final String WS_TIME_ADHOC_PENALTY = "WS_TIME_ADHOC_PENALTY";
 	
 	public static final String WS_TIME_ADHOC_REBATE = "WS_TIME_ADHOC_REBATE";
+	
+	public static final String WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE = "WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE";
+
+	public static final String mGram_Consumer_NewBill = "mGram.Consumer.NewBill";
+
 
 
 	

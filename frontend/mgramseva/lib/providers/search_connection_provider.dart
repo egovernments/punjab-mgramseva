@@ -51,6 +51,7 @@ class SearchConnectionProvider with ChangeNotifier {
   }
 
   void validatesearchConnectionDetails(context, arguments) async {
+    FocusScope.of(context).unfocus();
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);

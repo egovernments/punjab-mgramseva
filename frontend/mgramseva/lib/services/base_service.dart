@@ -4,10 +4,8 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:mgramseva/Env/app_config.dart';
-import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
-import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 
 class BaseService {
@@ -73,20 +71,27 @@ class BaseService {
           response = await http.delete(uri, body: json.encode(body));
       }
       return _response(response);
-    } on CustomException catch (e){
-        throw e;
-    }catch(e){
-      throw CustomException(
-          '', 502, ExceptionType.CONNECTIONISSUE);
+    } on CustomException catch (e) {
+      throw e;
+    } catch (e) {
+      throw CustomException('', 502, ExceptionType.CONNECTIONISSUE);
     }
   }
 }
 
 dynamic _response(http.Response response) {
-  var data = json.decode(utf8.decode(response.bodyBytes));
+  var data;
+  try{
+   data = json.decode(utf8.decode(response.bodyBytes));
+  }catch(e){
+    /// if response was string then it will come to this exception block
+    data = utf8.decode(response.bodyBytes);
+    return data;
+  }
 
-  var errorMessage =
+  var errorMessage = data?['Errors']?[0]?['code'] ??
       data?['Errors']?[0]?['message'] ?? data?['Errors']?[0]?['description'] ?? data?['error_description'];
+
   switch (response.statusCode) {
     case 200:
       return data;
@@ -108,7 +113,7 @@ dynamic _response(http.Response response) {
     case 500:
       throw CustomException(
           errorMessage, response.statusCode, ExceptionType.INVALIDINPUT);
-    default :
+    default:
       throw CustomException(
           errorMessage, response.statusCode, ExceptionType.OTHER);
   }

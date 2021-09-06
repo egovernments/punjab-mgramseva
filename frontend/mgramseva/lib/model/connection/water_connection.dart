@@ -19,12 +19,17 @@ class WaterConnection {
   String? tenantId;
   @JsonKey(name: "action")
   String? action;
+  @JsonKey(name: "status")
+  String? status;
   @JsonKey(name: "meterInstallationDate")
   int? meterInstallationDate;
   @JsonKey(name: "documents")
   Documents? documents;
   @JsonKey(name: "proposedTaps")
   int? proposedTaps;
+
+  @JsonKey(name: "noOfTaps")
+  int? noOfTaps;
   @JsonKey(name: "arrears")
   double? arrears;
   @JsonKey(name: "connectionType")
@@ -80,7 +85,9 @@ class WaterConnection {
   setText() {
     oldConnectionNo = OldConnectionCtrl.text;
     meterId = meterIdCtrl.text != "" ? meterIdCtrl.text : null;
-    arrears = arrearsCtrl.text != "" ? double.parse(arrearsCtrl.text) : 0;
+    arrears = arrearsCtrl.text != ""
+        ? double.parse(arrearsCtrl.text).toDouble()
+        : 0.0;
     previousReadingDate = previousReadingDateCtrl.text != ""
         ? DateFormats.dateToTimeStamp(
             previousReadingDateCtrl.text,

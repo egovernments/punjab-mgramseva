@@ -258,9 +258,7 @@ public class NotificationUtil {
 		StringBuilder uri = new StringBuilder();
 		uri.append(config.getLocalizationHost()).append(config.getLocalizationContextPath())
 				.append(config.getLocalizationSearchEndpoint()).append("?").append("locale=").append(locale)
-				.append("&tenantId=").append("pb").append("&module=").append("mgramseva-common") // TODO
-																					// define
-																					// tenant
+				.append("&tenantId=").append("pb").append("&module=").append("mgramseva-common")
 				.append("&codes=").append(code);
 
 		Map<String, Object> request = new HashMap<>();
@@ -277,53 +275,6 @@ public class NotificationUtil {
 			log.error("Exception while fetching from localization: " + e);
 		}
 		return msgDetail;
-	}
-
-
-	public String getEventsCustomizedMsg(RequestInfo requestInfo, String messageCode, String localizationMessage) {
-		String message = null, messageTemplate;
-//		
-			messageTemplate = getMessageTemplate(messageCode, localizationMessage);
-			if (!StringUtils.isEmpty(messageTemplate)) {
-				message = getInitiatedMsg(messageTemplate);
-				if (message.contains("<amount>")) {
-					BigDecimal amount = getAmountToBePaid(requestInfo);
-					message = message.replace("<amount>", amount.toString());
-				}
-			}
-		
-		return message;
-	}
-
-
-	private BigDecimal getAmountToBePaid(RequestInfo requestInfo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	private String getInitiatedMsg(String messageTemplate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	/**
-	 * Fetches messages from localization service
-	 * 
-	 * @param tenantId
-	 *            tenantId of the BPA
-	 * @param requestInfo
-	 *            The requestInfo of the request
-	 * @return Localization messages for the module
-	 */
-	@SuppressWarnings("rawtypes")
-	public String getLocalizationMessages(String tenantId, RequestInfo requestInfo) {
-
-		LinkedHashMap responseMap = (LinkedHashMap) serviceRequestRepository.fetchResult(getUri(tenantId, requestInfo),
-				requestInfo);
-		String jsonString = new JSONObject(responseMap).toString();
-		return jsonString;
 	}
 
 }

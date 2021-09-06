@@ -1,14 +1,11 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
-import 'package:mgramseva/widgets/SubLabel.dart';
 
 class SearchConnectionDetailCard extends StatelessWidget {
   final WaterConnections waterconnections;
@@ -123,8 +120,13 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                 ApplicationLocalizations.of(context).translate(
                                     i18.searchWaterConnection
                                         .OLD_CONNECTION_ID),
-                                waterconnections
-                                    .waterConnection![index].oldConnectionNo,
+                                waterconnections.waterConnection![index]
+                                            .oldConnectionNo !=
+                                        ""
+                                    ? waterconnections
+                                        .waterConnection![index].oldConnectionNo
+                                    : ApplicationLocalizations.of(context)
+                                        .translate("NA"),
                                 context,
                                 constraints),
                             _getDetailtext(
@@ -160,17 +162,31 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                                 .additionalDetails!.doorNo !=
                                             null
                                         ? waterconnections
-                                            .waterConnection![index]
-                                            .additionalDetails!
-                                            .doorNo!
+                                                    .waterConnection![index]
+                                                    .additionalDetails!
+                                                    .doorNo! !=
+                                                ""
+                                            ? waterconnections
+                                                    .waterConnection![index]
+                                                    .additionalDetails!
+                                                    .doorNo! +
+                                                ', '
+                                            : " "
                                         : "") +
                                     (waterconnections.waterConnection![index]
                                                 .additionalDetails!.street !=
                                             null
                                         ? waterconnections
-                                            .waterConnection![index]
-                                            .additionalDetails!
-                                            .street!
+                                                    .waterConnection![index]
+                                                    .additionalDetails!
+                                                    .street! !=
+                                                ""
+                                            ? waterconnections
+                                                    .waterConnection![index]
+                                                    .additionalDetails!
+                                                    .street! +
+                                                ', '
+                                            : " "
                                         : "") +
                                     waterconnections.waterConnection![index]
                                         .additionalDetails!.locality!,

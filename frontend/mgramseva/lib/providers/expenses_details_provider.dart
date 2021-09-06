@@ -25,6 +25,7 @@ import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -58,7 +59,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
         var expenditure =
             await ExpensesRepository().searchExpense({'challanNo': id});
         if (expenditure != null && expenditure.isNotEmpty) {
-          expenditureDetails = expenditure!.first;
+          expenditureDetails = expenditure.first;
           getStoreFileDetails();
         } else {
           streamController.add(i18.expense.NO_EXPENSE_RECORD_FOUND);
@@ -106,7 +107,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       late String localizationText;
       if(isUpdate){
         localizationText = '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_BILL_ID)}';
-        localizationText = localizationText.replaceFirst('< Bill ID>', expenditureDetails.vendorNameCtrl.text.trim());
+        localizationText = localizationText.replaceFirst('< Bill ID>', '${challanDetails['challanNo'] ?? ''}');
       }else{
          localizationText = '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}';
         localizationText = localizationText.replaceFirst('<Vendor>', expenditureDetails.vendorNameCtrl.text.trim());
@@ -114,18 +115,28 @@ class ExpensesDetailsProvider with ChangeNotifier {
         localizationText = localizationText.replaceFirst('<type of expense>', expenditureDetails.expenseType ?? '');
       }
 
-      navigatorKey.currentState?.pushNamed(Routes.SUCCESS_VIEW,
-          arguments: isUpdate
-              ? SuccessHandler(
-                  i18.expense.MODIFIED_EXPENDITURE_SUCCESSFULLY,
-                  localizationText,
-                  i18.common.BACK_HOME,
-                  isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD)
-              : SuccessHandler(
-                  i18.expense.CORE_EXPENSE_EXPENDITURE_SUCESS,
-                  localizationText,
-                  i18.common.BACK_HOME,
-                  isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD));
+      navigatorKey.currentState?.push(
+          MaterialPageRoute(builder: (BuildContext context)
+      {
+        return isUpdate
+            ? CommonSuccess(SuccessHandler(
+            i18.expense.MODIFIED_EXPENDITURE_SUCCESSFULLY,
+            localizationText,
+            i18.common.BACK_HOME,
+            isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD))
+            : CommonSuccess(SuccessHandler(
+          i18.expense.CORE_EXPENSE_EXPENDITURE_SUCESS,
+          localizationText,
+          i18.expense.ADD_NEW_EXPENSE,
+          isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD,
+          subHeader:
+          '${ApplicationLocalizations.of(context).translate(
+              i18.demandGenerate.BILL_ID_NO)}',
+          subHeaderText:
+          '${challanDetails['challanNo'] ?? ''}',
+        ), callBack : onClickOfBackButton);
+
+          }));
     } on CustomException catch (e, s) {
       Navigator.pop(context);
 
@@ -137,6 +148,15 @@ class ExpensesDetailsProvider with ChangeNotifier {
       ErrorHandler.logError(e.toString(), s);
       Navigator.pop(context);
     }
+  }
+
+  void onClickOfBackButton(){
+    suggestionsBoxController = SuggestionsBoxController();
+      expenditureDetails = ExpensesDetailsModel();
+    getExpensesDetails(navigatorKey.currentContext!, null, null);
+      autoValidation = false;
+    notifyListeners();
+    Navigator.pop(navigatorKey.currentContext!);
   }
 
   void setEnteredDetails(BuildContext context, bool isUpdate) {

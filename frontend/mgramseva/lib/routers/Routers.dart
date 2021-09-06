@@ -2,6 +2,7 @@ class Routes {
   ///Authentication
   static const String LANDING_PAGE = '/';
 
+  static const String DEFAULT_PASSWORD_UPDATE = '/passwordupdated';
   static const String LOGIN = '/login';
 
   static const String SELECT_LANGUAGE = '/selectLanguage';
@@ -51,7 +52,7 @@ class Routes {
   static const String HOUSEHOLD_DETAILS_SUCCESS =
       '$HOUSEHOLD_DETAILS_COLLECT_PAYMENT/success';
 
-  static const String DASHBOARD = 'dashboard';
+  static const String DASHBOARD = '/home/dashboard';
 
   static const String BILL_GENERATE = '/bill/generate';
 
@@ -70,4 +71,7 @@ class Routes {
   static const String SUCCESS_VIEW = '/success';
 
   static const String POST_PAYMENT_FEED_BACK = '/feedBack';
+
+  static const String FEED_BACK_SUBMITTED_SUCCESSFULLY =
+      '/feedBack/submittedSuccessfully';
 }

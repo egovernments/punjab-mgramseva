@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
-import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
@@ -82,7 +81,7 @@ class _EditProfileState extends State<EditProfile> {
                   BuildTextField(
                     i18.common.PHONE_NUMBER,
                     profileDetails.phoneNumberCtrl,
-                    prefixText: '+91-',
+                    prefixText: '+91 - ',
                     isDisabled: true,
                     readOnly: true,
                     inputFormatter: [
@@ -111,27 +110,10 @@ class _EditProfileState extends State<EditProfile> {
                       FilteringTextInputFormatter.allow(
                           RegExp("[a-zA-Z0-9@. ]"))
                     ],
-                    message: ApplicationLocalizations.of(context).translate(i18.profileEdit.INVALID_EMAIL_FORMAT),
+                    message: ApplicationLocalizations.of(context)
+                        .translate(i18.profileEdit.INVALID_EMAIL_FORMAT),
                     pattern:
-                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.push<bool>(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                ChangePassword())),
-                    child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 25, top: 10, bottom: 10, right: 25),
-                        child: new Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              ApplicationLocalizations.of(context)
-                                  .translate(i18.password.CHANGE_PASSWORD),
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor),
-                            ))),
+                        r'^$|^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
                   ),
                   BottomButtonBar(
                     i18.common.SAVE,

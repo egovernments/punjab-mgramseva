@@ -97,7 +97,7 @@ public class WsQueryBuilder {
 		Set<String> propertyIds = new HashSet<>();
 		String propertyIdQuery = " (conn.property_id in (";
 
-		if (!StringUtils.isEmpty(criteria.getMobileNumber()) || !StringUtils.isEmpty(criteria.getPropertyId()) || !StringUtils.isEmpty(criteria.getName())) {
+		if (!StringUtils.isEmpty(criteria.getMobileNumber()) || !StringUtils.isEmpty(criteria.getPropertyId())) {
 			List<Property> propertyList = waterServicesUtil.propertySearchOnCriteria(criteria, requestInfo);
 			propertyList.forEach(property -> propertyIds.add(property.getPropertyId()));
 			criteria.setPropertyIds(propertyIds);
@@ -172,22 +172,11 @@ public class WsQueryBuilder {
 			preparedStatement.add(criteria.getOldConnectionNumber());
 		}
 
-		if (criteria.getFreeSearch()) {
-			if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
-				if (!criteria.getUserIds().isEmpty()) {
-					query.append(" OR conn.connectionno like ? ");
-				} else {
-					query.append(" AND conn.connectionno like ? ");
-				}
-				preparedStatement.add('%' + criteria.getConnectionNumber() + '%');
-			}
-		} else {
 			if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
 				addClauseIfRequired(preparedStatement, query);
 				query.append(" conn.connectionno like ? ");
 				preparedStatement.add('%' + criteria.getConnectionNumber() + '%');
 			}
-		}
 	
 		if (!StringUtils.isEmpty(criteria.getStatus())) {
 			addClauseIfRequired(preparedStatement, query);

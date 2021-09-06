@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mgramseva/components/Notifications/notificationsList.dart';
-import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/providers/tenants_provider.dart';
 import 'package:mgramseva/screeens/HomeCard.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/utils/role_actions.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
-import 'package:mgramseva/widgets/Notifications.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/widgets/help.dart';
@@ -30,6 +28,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   void initState() {
+    var homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    homeProvider.homeWalkthrougList =
+        HomeWalkThrough().homeWalkThrough.map((e) {
+      e.key = GlobalKey();
+      return e;
+    }).toList();
+
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
@@ -39,11 +44,6 @@ class _HomeState extends State<Home> {
         Provider.of<LanguageProvider>(context, listen: false);
 
     languageProvider.getLocalizationData(context);
-    Provider.of<HomeProvider>(context, listen: false)
-      ..setwalkthrough(HomeWalkThrough().homeWalkThrough.map((e) {
-        e.key = GlobalKey();
-        return e;
-      }).toList());
   }
 
   _buildView(homeProvider, constraint, Widget Notid) {
@@ -82,8 +82,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    var homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    var commomProvider = Provider.of<CommonProvider>(context, listen: false);
+    var tenantProvider = Provider.of<TenantsProvider>(context, listen: false);
+
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     return Scaffold(
@@ -95,27 +95,11 @@ class _HomeState extends State<Home> {
         body: SingleChildScrollView(
             child: LayoutBuilder(builder: (context, constraint) {
           return Consumer<CommonProvider>(
-              builder: (_, commonProvider, child) => StreamBuilder(
-                  stream: languageProvider.streamController.stream,
+              builder: (_, commonProvider, child) => tenantProvider.tenants != null ?  _buildHome(constraint) : StreamBuilder(
+                  stream: tenantProvider.streamController.stream,
                   builder: (context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
-                      return _buildView(
-                        homeProvider,
-                        constraint.maxWidth < 720
-                            ? 160 *
-                                ((homeProvider.homeWalkthrougList.length / 3)
-                                        .round())
-                                    .toDouble()
-                            : 142 *
-                                ((homeProvider.homeWalkthrougList.length / 3)
-                                        .round())
-                                    .toDouble(),
-                        Container(
-                            margin: constraint.maxWidth < 720
-                                ? EdgeInsets.all(0)
-                                : EdgeInsets.only(left: 75, right: 75),
-                            child: NotificationsList()),
-                      );
+                      return _buildHome(constraint);
                     } else if (snapshot.hasError) {
                       return Notifiers.networkErrorPage(context,
                           () => languageProvider.getLocalizationData(context));
@@ -131,5 +115,31 @@ class _HomeState extends State<Home> {
                     }
                   }));
         })));
+  }
+
+  Widget _buildHome(BoxConstraints constraint){
+    var homeProvider = Provider.of<HomeProvider>(context, listen: false);
+
+    return _buildView(
+      homeProvider,
+      constraint.maxWidth < 720
+          ? 160 *
+          ((homeProvider.homeWalkthrougList.length == 1
+              ? 3
+              : homeProvider
+              .homeWalkthrougList.length /
+              3)
+              .round())
+              .toDouble()
+          : 200 *
+          ((homeProvider.homeWalkthrougList.length / 3)
+              .round())
+              .toDouble(),
+      Container(
+          margin: constraint.maxWidth < 720
+              ? EdgeInsets.all(0)
+              : EdgeInsets.only(left: 75, right: 75),
+          child: NotificationsList()),
+    );
   }
 }

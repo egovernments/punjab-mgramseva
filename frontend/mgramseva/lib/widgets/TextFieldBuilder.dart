@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -111,19 +112,24 @@ class _BuildTextField extends State<BuildTextField> {
           fillColor: widget.isDisabled != null && widget.isDisabled!
               ? Colors.grey
               : Colors.white,
-          prefixIcon: widget.prefixIcon ?? (widget.prefixText == ''
-              ? null
-              : Padding(
-                  padding: EdgeInsets.only(left: 15, top: 15, bottom: 15),
-                  child: Text(
-                    widget.prefixText,
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: widget.isDisabled != null && widget.isDisabled!
-                            ? Colors.grey
-                            : Theme.of(context).primaryColorDark),
-                  ))),
+          prefixIcon: widget.prefixIcon ??
+              (widget.prefixText == ''
+                  ? null
+                  : Padding(
+                      padding: EdgeInsets.only(
+                          left: 15,
+                          top: kIsWeb ? 12 : 14,
+                          bottom: kIsWeb ? 12 : 14),
+                      child: Text(
+                        widget.prefixText,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            color:
+                                widget.isDisabled != null && widget.isDisabled!
+                                    ? Colors.grey
+                                    : Theme.of(context).primaryColorDark),
+                      ))),
         ),
         onChanged: widget.onChange);
 // Label Text
@@ -166,7 +172,6 @@ class _BuildTextField extends State<BuildTextField> {
                           child: textLabelwidget)),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
                     width: MediaQuery.of(context).size.width / 2.5,
                     padding: EdgeInsets.only(top: 18, bottom: 3),
                     child: Column(

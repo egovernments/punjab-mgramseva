@@ -10,6 +10,7 @@ import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/wa
 import 'package:mgramseva/screeens/GenerateBill/widgets/MeterReading.dart';
 import 'package:mgramseva/screeens/customAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -49,12 +50,16 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
 
   @override
   void initState() {
+    var consumerProvider = Provider.of<ConsumerProvider>(context, listen: false)
+      ..waterconnection = WaterConnection()
+      ..property = Property();
+
     if (widget.waterconnection != null) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         var commonProvider = Provider.of<CommonProvider>(
             navigatorKey.currentContext!,
             listen: false);
-        Provider.of<ConsumerProvider>(context, listen: false)
+        consumerProvider
           ..setModel()
           ..setWaterConnection(widget.waterconnection)
           ..getConnectionTypePropertyTypeTaxPeriod()
@@ -395,6 +400,38 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     contextkey: consumerProvider
                                         .consmerWalkthrougList[8].key)
                                 : Text(""),
+                            if (consumerProvider.isEdit)
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 18),
+                                child: Wrap(
+                                  direction: Axis.horizontal,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  spacing: 8,
+                                  children: [
+                                    SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: Checkbox(
+                                          value: consumerProvider
+                                                      .waterconnection.status ==
+                                                  'Active'
+                                              ? false
+                                              : true,
+                                          onChanged: (_) => consumerProvider
+                                              .onChangeOfCheckBox(_)),
+                                    ),
+                                    Text(
+                                        ApplicationLocalizations.of(context)
+                                            .translate(
+                                                i18.consumer.MARK_AS_INACTIVE),
+                                        style: TextStyle(
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.normal))
+                                  ],
+                                ),
+                              ),
                             SizedBox(
                               height: 20,
                             ),
