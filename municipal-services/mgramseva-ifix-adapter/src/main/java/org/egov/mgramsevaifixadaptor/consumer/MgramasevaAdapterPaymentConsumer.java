@@ -39,7 +39,7 @@ public class MgramasevaAdapterPaymentConsumer {
 			}else {
 				eventType=EventTypeEnum.RECEIPT.toString();
 			}
-			util.callIFIXAdapter(paymentRequest.getPayment(), eventType, paymentRequest.getPayment().getTenantId(),paymentRequest.getRequestInfo());
+			util.callIFIXAdapter(paymentRequest, eventType, paymentRequest.getPayment().getTenantId(),paymentRequest.getRequestInfo());
 		} catch (final Exception e) {
 			log.error("Error while listening to value: " + record + " on topic: " + topic + ": " + e);
 		}

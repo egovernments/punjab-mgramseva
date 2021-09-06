@@ -39,7 +39,7 @@ public class MgramsevaAdapterDemandConsumer {
 				eventType=EventTypeEnum.DEMAND.toString();
 			}
 				
-			util.callIFIXAdapter(demandRequest.getDemands(), eventType, demandRequest.getDemands().get(0).getTenantId(),demandRequest.getRequestInfo());
+			util.callIFIXAdapter(demandRequest, eventType, demandRequest.getDemands().get(0).getTenantId(),demandRequest.getRequestInfo());
 		} catch (final Exception e) {
 			log.error("Error while listening to value: " + record + " on topic: " + topic + ": " + e);
 		}
