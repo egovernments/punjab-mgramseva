@@ -1,6 +1,6 @@
 package org.egov.persistence.repository;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.egov.domain.model.Category;
@@ -11,13 +11,9 @@ import org.egov.persistence.contract.SMSRequest;
 import org.egov.tracer.kafka.CustomKafkaTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
-import java.util.Map;
-
-import static java.lang.String.format;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Service
@@ -69,8 +65,8 @@ public class OtpSMSRepository {
     private String getMessageFormat(OtpRequest otpRequest) {
         String tenantId = getRequiredTenantId(otpRequest.getTenantId());
         
-        if(StringUtils.isNotBlank(otpRequest.getLocale()) && StringUtils.contains(otpRequest.getLocale(), "|")) {
-        	locale = otpRequest.getLocale().substring(otpRequest.getLocale().lastIndexOf("|")+1);
+        if(StringUtils.isNotBlank(otpRequest.getLocale())) {
+        	locale = otpRequest.getLocale();
         }
         
         Map<String, String> localisedMsgs = localizationService.getLocalisedMessages(tenantId, locale, module);
