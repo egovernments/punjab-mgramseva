@@ -116,22 +116,22 @@ public class ChallanQueryBuilder {
 			if (criteria.getFreeSearch()) {
 				if (criteria.getChallanNo() != null || criteria.getVendorName() != null) {
 					addClauseIfRequired(preparedStmtList, builder);
-					builder.append("  challan.challanno like ?");
-					preparedStmtList.add('%' + criteria.getChallanNo() + '%');
+					builder.append("  challan.challanno ~*  ?");
+					preparedStmtList.add(criteria.getChallanNo());
 
-					builder.append(" OR vendor.name like ?");
-					preparedStmtList.add('%' + criteria.getVendorName() + '%');
+					builder.append(" OR vendor.name ~*  ?");
+					preparedStmtList.add( criteria.getVendorName());
 				}
 			} else {
 				if (criteria.getChallanNo() != null) {
 					addClauseIfRequired(preparedStmtList, builder);
-					builder.append("  challan.challanno like ?");
-					preparedStmtList.add('%' + criteria.getChallanNo() + '%');
+					builder.append("  challan.challanno ~*  ?");
+					preparedStmtList.add(criteria.getChallanNo());
 				}
 				if (criteria.getVendorName() != null) {
 					addClauseIfRequired(preparedStmtList, builder);
-					builder.append(" vendor.name like ?");
-					preparedStmtList.add('%' + criteria.getVendorName() + '%');
+					builder.append(" vendor.name ~* ?");
+					preparedStmtList.add(criteria.getVendorName());
 				}
 			}
             if (criteria.getStatus() != null) {

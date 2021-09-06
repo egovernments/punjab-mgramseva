@@ -174,8 +174,8 @@ public class WsQueryBuilder {
 
 			if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
 				addClauseIfRequired(preparedStatement, query);
-				query.append(" conn.connectionno like ? ");
-				preparedStatement.add('%' + criteria.getConnectionNumber() + '%');
+				query.append(" conn.connectionno ~*  ? ");
+				preparedStatement.add(criteria.getConnectionNumber());
 			}
 	
 		if (!StringUtils.isEmpty(criteria.getStatus())) {
