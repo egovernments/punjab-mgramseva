@@ -241,7 +241,7 @@ public class DemandService {
 
 			String localizationMessage = util.getLocalizationMessages(tenantId, requestInfo);
 			String messageString = util.getMessageTemplate(
-					WSCalculationConstant.WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE, localizationMessage);
+					WSCalculationConstant.mGram_Consumer_NewBill, localizationMessage);
 
 			if( !StringUtils.isEmpty(messageString)) {
 					billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
