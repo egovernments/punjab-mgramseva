@@ -51,13 +51,14 @@ class AuthenticationProvider with ChangeNotifier {
         var commonProvider =
             Provider.of<CommonProvider>(context, listen: false);
         loginResponse.isFirstTimeLogin = userInfo.user!.first.defaultPwdChgd;
-        commonProvider.loginCredentails = loginResponse;
+
         if (userInfo.user!.first.defaultPwdChgd == false) {
           commonProvider.userProfile = userInfo;
           Navigator.pushNamed(context, Routes.UPDATE_PASSWORD,
               arguments: loginResponse);
           return;
         } else {
+          commonProvider.loginCredentails = loginResponse;
           Navigator.of(context).pushNamedAndRemoveUntil(
               Routes.HOME, (Route<dynamic> route) => false);
         }

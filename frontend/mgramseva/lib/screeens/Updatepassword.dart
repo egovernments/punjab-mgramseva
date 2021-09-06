@@ -56,6 +56,12 @@ class _UpdatePasswordState extends State<UpdatePassword> {
     timerController = CountdownTimerController(endTime: endTime, onEnd: onEnd);
   }
 
+  @override
+  void dispose() {
+    timerController.dispose();
+    super.dispose();
+  }
+
   saveInput(context) async {
     setState(() {
       password = context;
