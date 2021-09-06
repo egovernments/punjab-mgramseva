@@ -1,6 +1,8 @@
 package org.egov.persistence.repository;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang3.StringUtils;
 import org.egov.domain.model.Category;
 import org.egov.domain.model.OtpRequest;
 import org.egov.domain.model.User;
@@ -26,7 +28,7 @@ public class OtpSMSRepository {
     private static final String LOCALIZATION_KEY_LOGIN_SMS = "sms.login.otp.msg";
     private static final String LOCALIZATION_KEY_FIRSTIME_LOGIN_SMS = "RESET_PASSWORD_FIRST_TIME_OTP";
     private static final String LOCALIZATION_KEY_PWD_RESET_SMS = "RESET_PASSWORD_OTP";
-    private static final String locale = "en_IN";
+    private static String locale = "en_IN";
     private static final String module = "mgramseva-common";
 
     @Value("${expiry.time.for.otp: 4000}")
@@ -66,6 +68,11 @@ public class OtpSMSRepository {
 
     private String getMessageFormat(OtpRequest otpRequest) {
         String tenantId = getRequiredTenantId(otpRequest.getTenantId());
+        
+        if(StringUtils.isNotBlank(otpRequest.getLocale()) && StringUtils.contains(otpRequest.getLocale(), "|")) {
+        	locale = otpRequest.getLocale().substring(otpRequest.getLocale().lastIndexOf("|")+1);
+        }
+        
         Map<String, String> localisedMsgs = localizationService.getLocalisedMessages(tenantId, locale, module);
         if (localisedMsgs.isEmpty()) {
             log.info("Localization Service didn't return any msgs so using default...");
