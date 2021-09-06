@@ -50,7 +50,8 @@ class SelectFieldBuilder extends StatelessWidget {
       ),
     ]);
     //DropDown
-    Widget dropDown = DropdownButtonFormField(
+    Widget dropDown = Padding(padding: EdgeInsets.only(top: 10),
+        child: DropdownButtonFormField(
       decoration: InputDecoration(
         prefixText: prefixText,
         prefixStyle: TextStyle(color: Theme.of(context).primaryColorDark),
@@ -70,7 +71,7 @@ class SelectFieldBuilder extends StatelessWidget {
       onChanged: !(isEnabled ?? true) || readOnly == true
           ? null
           : (value) => widget(value),
-    );
+    ));
 
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
