@@ -239,9 +239,9 @@ public class DemandService {
 					.taxPeriodTo(toDate).consumerType( isForConnectionNO ? "waterConnection" : "waterConnection-arrears").businessService(businessService)
 					.status(StatusEnum.valueOf("ACTIVE")).billExpiryTime(expiryDate).build());
 
-			String localizationMessage = util.getLocalizationMessages(tenantId, requestInfo);
-			String messageString = util.getMessageTemplate(
-					WSCalculationConstant.mGram_Consumer_NewBill, localizationMessage);
+			HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo, WSCalculationConstant.mGram_Consumer_NewBill, tenantId);
+			
+			String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 
 			System.out.println("Localization message::" + messageString);
 			if( !StringUtils.isEmpty(messageString)) {
