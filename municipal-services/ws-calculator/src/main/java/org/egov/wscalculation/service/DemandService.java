@@ -243,6 +243,7 @@ public class DemandService {
 			String messageString = util.getMessageTemplate(
 					WSCalculationConstant.mGram_Consumer_NewBill, localizationMessage);
 
+			System.out.println("Localization message::" + messageString);
 			if( !StringUtils.isEmpty(messageString)) {
 					billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
 					+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
@@ -252,10 +253,13 @@ public class DemandService {
 			messageString = messageString.replace("{billmaount}", demandDetails.stream().map(DemandDetail::getTaxAmount)
 					.reduce(BigDecimal.ZERO, BigDecimal::add).toString());
 			messageString = messageString.replace("{BILL_LINK}", configs.getDownLoadBillLink());
+			
+			System.out.println("Demand genaratio Message::" + messageString);
+			
 			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
 					.category(Category.TRANSACTION).build();
 			producer.push(config.getSmsNotifTopic(), sms);
-			System.out.println("Demand genaratio Message::" + messageString);
+			
 			}
 		}
 		log.info("Demand Object" + demands.toString());
