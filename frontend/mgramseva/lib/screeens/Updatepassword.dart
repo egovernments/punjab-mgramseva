@@ -6,6 +6,7 @@ import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/model/user/user_details.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/forgot_password_repo.dart';
 import 'package:mgramseva/repository/reset_password_repo.dart';
 import 'package:mgramseva/repository/tendants_repo.dart';
@@ -376,8 +377,6 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   }
 
   void updatePassword() async {
-    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-
     if (formKey.currentState!.validate()) {
       var body = {
         "otpReference": _pinEditingController.text.trim(),
@@ -415,11 +414,14 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   }
 
   sendOtp() async {
+    var languagteProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
     var body = {
       "otp": {
         "mobileNumber": widget.userDetails.userRequest?.userName,
         "tenantId": widget.userDetails.userRequest?.tenantId,
         "type": "passwordreset",
+        "locale": languagteProvider.selectedLanguage?.value,
         "userType": widget.userDetails.userRequest?.type
       }
     };
