@@ -783,7 +783,7 @@ public class DemandService {
 			message = message.replace("{billing cycle}", billingPeriod);
 			message = message.replace("{X}", String.valueOf(connectionNos.size()));
 			message = message.replace("{X/X+Y}", String.valueOf(connectionNos.size())+"/"+String.valueOf(size));
-			
+			message = message.replace("{Y}", String.valueOf(meteredConnectionNos.size()));
 		}else if(connectionNos.size() > 0 && meteredConnectionNos.isEmpty()) {
 			messageMap = util.getLocalizationMessage(bulkDemand.getRequestInfo(),
 					WSCalculationConstant.NEW_BULK_DEMAND_EVENT_NM, bulkDemand.getTenantId());
