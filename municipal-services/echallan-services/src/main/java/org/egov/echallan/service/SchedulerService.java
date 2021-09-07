@@ -257,8 +257,10 @@ public class SchedulerService {
 		Action action = Action.builder().actionUrls(items).build();
 		List<Event> events = new ArrayList<>();
 		HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, GENERATE_DEMAND_EVENT, tenantId);
+		String message = messageMap.get(NotificationUtil.MSG_KEY);
+		message = message.replace("{BILLING_CYCLE}", LocalDate.now().getMonth().toString());
 		System.out.println("Demand Genaration Failed::" + messageMap);
-		events.add(Event.builder().tenantId(tenantId).description(messageMap.get(NotificationUtil.MSG_KEY))
+		events.add(Event.builder().tenantId(tenantId).description(message)
 				.eventType(USREVENTS_EVENT_TYPE).name(USREVENTS_EVENT_NAME).postedBy(USREVENTS_EVENT_POSTEDBY)
 				.recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP).eventDetails(null).actions(action)
 				.build());
