@@ -80,7 +80,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                    Container(
                         color: Color.fromRGBO(238, 238, 238, 1),
                         padding: EdgeInsets.only(left: 8, right: 8),
-                        height: MediaQuery.of(context).size.height - 56 - 50 - MediaQuery.of(context).padding.top,
+                        height: constraints.maxHeight - 50,
                         child: CustomScrollView(slivers: [
                           SliverList(
                               delegate: SliverChildListDelegate([

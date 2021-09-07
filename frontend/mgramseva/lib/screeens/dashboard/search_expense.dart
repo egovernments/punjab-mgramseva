@@ -52,8 +52,8 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
         Tab(text: '${i18.dashboard.PENDING}')
       ];
 
-
       dashBoardProvider
+        ..sortBy = SortBy('challanno', false)
         ..expenseDashboardDetails?.expenseDetailList = <ExpensesDetailsModel>[]
         ..expenseDashboardDetails?.totalCount = null
         ..fetchExpenseDashBoardDetails(context, dashBoardProvider.limit, dashBoardProvider.offset);
