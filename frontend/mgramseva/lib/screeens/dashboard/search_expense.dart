@@ -8,6 +8,7 @@ import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -149,15 +150,18 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
             builder : (_ , dashBoardProvider, child) => TabBarView(
                 controller: _tabController,
                 children: List.generate(_tabList.length, (index) => LayoutBuilder(
-                  builder : (context, constraints) {
-                    var width = constraints.maxWidth < 760 ?  (expenseList is List<ExpensesDetailsModel> ? 180.0 : 140.0)  : (constraints.maxWidth / (expenseList is List<ExpensesDetailsModel> ? 5 : 3));
-                  return  BillsTable
-                  (headerList: expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
-                    tableData:  expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseData(index, expenseList) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>),
-                  leftColumnWidth: width,
-                  rightColumnWidth: expenseList is List<ExpensesDetailsModel> ? width * 5 : width * 3,
-                  );
-                   }
+                    builder : (context, constraints) {
+                      var width = constraints.maxWidth < 760 ?  (expenseList is List<ExpensesDetailsModel> ? 180.0 : 140.0)  : (constraints.maxWidth / (expenseList is List<ExpensesDetailsModel> ? 5 : 3));
+                      var tableData = expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseData(index, expenseList) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>);
+                      return tableData == null || tableData.isEmpty ?
+                      CommonWidgets.buildEmptyMessage(ApplicationLocalizations.of(context).translate(i18.dashboard.NO_RECORDS_MSG), context)
+                          : BillsTable
+                        (headerList: expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
+                        tableData:  tableData,
+                        leftColumnWidth: width,
+                        rightColumnWidth: expenseList is List<ExpensesDetailsModel> ? width * 5 : width * 3,
+                      );
+                    }
                 ))
             ),
           ),

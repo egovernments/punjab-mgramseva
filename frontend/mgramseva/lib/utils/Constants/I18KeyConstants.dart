@@ -484,6 +484,7 @@ class _DashBoard {
   String get SEARCH_NAME_CONNECTION => 'SEARCH_NAME_CONNECTION';
   String get DASHBOARD => 'DASHBOARD';
   String get BILL_ID_VENDOR => 'BILL_ID_VENDOR';
+  String get NO_RECORDS_MSG => 'NO_RECORDS_MSG';
 }
 
 class _ExpenseWalkThroughMsg {
