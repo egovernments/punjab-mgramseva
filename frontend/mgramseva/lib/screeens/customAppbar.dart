@@ -63,7 +63,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             .toSet()
             .toList();
         final result = tenantProvider.tenants!.tenantsList
-            ?.where((element) => r.contains(element.code) ?? false)
+            ?.where((element) => r.contains(element.code?.trim()) ?? false)
             .toList();
         if (result?.length == 1 &&
             commonProvider.userDetails!.selectedtenant == null) {
@@ -173,7 +173,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         .toSet()
         .toList();
     final result = tenant.tenantsList!
-        .where((element) => r.contains(element.code))
+        .where((element) => r.contains(element.code?.trim()))
         .toList();
     return GestureDetector(
         child: Row(
@@ -207,7 +207,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         Provider.of<LanguageProvider>(context, listen: false);
     return AppBar(
       title: Image(
-          width: 150,
+          width: 130,
           image: NetworkImage(
             languageProvider.stateInfo!.logoUrlWhite!,
           )),

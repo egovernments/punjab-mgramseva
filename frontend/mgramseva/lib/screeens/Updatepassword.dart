@@ -87,7 +87,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         .toSet()
         .toList();
     var result = tenants.tenantsList!
-        .where((element) => r.contains(element.code))
+        .where((element) => r.contains(element.code?.trim()))
         .toList();
 
     setState(() {
