@@ -161,16 +161,16 @@ public class ChallanRepository {
 
 
 
-	public List<String> getPreviousMonthCollection(String tenantId, String startDate, String endDate) {
-		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHCOLLECTION);
+	public Integer getPreviousMonthExpensePayments(String tenantId, Long startDate, Long endDate) {
+		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHEXPPAYMENT);
 		
 		//previous month start date startDate
 		// previous month end date endDate
 		
-		query.append( " and receiptdate  >= ").append( startDate)  
-		.append(" and  receiptdate <= " ).append(endDate); 
-		log.info("Previous month collection query : " + query);
-		return jdbcTemplate.queryForList(query.toString(), String.class);
+		query.append( " and PAYMTDTL.receiptdate  >= ").append( startDate)  
+		.append(" and  PAYMTDTL.receiptdate <= " ).append(endDate); 
+		log.info("Previous month expense paid query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 	}
 
 
@@ -211,39 +211,39 @@ public class ChallanRepository {
 		return list;
 	}
 	
-	public List<String> getPreviousMonthNewExpense(String tenantId, String startDate, String endDate) {
+	public Integer getPreviousMonthNewExpense(String tenantId, Long startDate, Long endDate) {
 		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHNEWEXPENSE);
-		query.append(" and challan.createdtime  >= ").append(startDate).append(" and  challan.createdtime <= ")
-				.append(endDate).append(" and challan.tenantId = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForList(query.toString(), String.class);
+		query.append("  WHERE  CHALLAN.BILLISSUEDDATE BETWEEN ").append(startDate).append(" and  ")
+				.append(endDate).append(" and CHALLAN.TENANTID = '").append(tenantId).append("'");
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 	}
 
-	public List<String> getCumulativePendingExpense(String tenantId) {
+	public Integer getCumulativePendingExpense(String tenantId) {
 		StringBuilder query = new StringBuilder(queryBuilder.CUMULATIVEPENDINGEXPENSE);
 		query.append(" and challan.tenantId = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForList(query.toString(), String.class);
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 	}
 
-	public List<String> getTotalPendingCollection(String tenantId) {
+	public Integer getTotalPendingCollection(String tenantId) {
 		StringBuilder query = new StringBuilder(queryBuilder.PENDINGCOLLECTION);
-		query.append(" and demand.tenantid = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForList(query.toString(), String.class);
+		query.append(" and CONN.tenantid = '").append(tenantId).append("'");
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
 	}
 
-	public List<String> getNewDemand(String tenantId, String startDate, String endDate) {
+	public Integer getNewDemand(String tenantId, Long startDate, Long endDate) {
 		StringBuilder query = new StringBuilder(queryBuilder.NEWDEMAND);
 		query.append(" and dmd.taxPeriodFrom  >= ").append(startDate).append(" and dmd.taxPeriodTo <= ").append(endDate)
 				.append(" and dmd.tenantId = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForList(query.toString(), String.class);
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
 	}
 
-	public List<String> getActualCollection(String tenantId, String startDate, String endDate) {
+	public Integer getActualCollection(String tenantId, Long startDate, Long endDate) {
 		StringBuilder query = new StringBuilder(queryBuilder.ACTUALCOLLECTION);
 		query.append(" and py.transactionDate  >= ").append(startDate).append(" and py.transactionDate <= ")
 				.append(endDate).append(" and py.tenantId = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForList(query.toString(), String.class);
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
 	}
 	
