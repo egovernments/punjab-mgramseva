@@ -52,7 +52,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
     return Column(
       children: [
         data.bill!.isEmpty
-            ? (houseHoldProvider.waterConnection!.connectionType == 'Metered'
+            ? (houseHoldProvider.waterConnection!.connectionType == 'Metered' &&  widget.mode == 'collect'
                 ? Align(
                     alignment: Alignment.centerRight,
                     child: ShortButton(
