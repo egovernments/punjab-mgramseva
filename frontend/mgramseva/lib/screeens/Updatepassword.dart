@@ -18,6 +18,7 @@ import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
@@ -49,6 +50,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   TextEditingController _pinEditingController = TextEditingController();
   var autoValidate = false;
   var password = "";
+  var pinLength = 6;
 
   @override
   void initState() {
@@ -195,7 +197,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                             ApplicationLocalizations.of(context)
                                                 .translate(i18.password
                                                     .CORE_COMMON_CONFIRM_NEW_PASSWORD),
-                                            confirmPassword.text),
+                                            newPassword.text),
                                     onChange: saveInput,
                                   ),
                                   SizedBox(
@@ -205,7 +207,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                       ApplicationLocalizations.of(context)
                                           .translate(
                                               i18.password.CHANGE_PASSWORD),
-                                      updatePassword),
+                                     _pinEditingController.text.trim().length != pinLength ? null : updatePassword),
                                   PasswordHint(password)
                                 ],
                               ))))),
@@ -330,7 +332,11 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                 radius: Radius.circular(1),
                 enabled: true,
               ),
-              pinLength: 6,
+              onChanged: (String value){
+                  setState(() {
+                  });
+              },
+              pinLength: pinLength,
               decoration: BoxLooseDecoration(
                   strokeColorBuilder: PinListenColorBuilder(
                       Theme.of(context).primaryColor, Colors.grey),
@@ -377,6 +383,8 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   }
 
   void updatePassword() async {
+    FocusScope.of(context).unfocus();
+
     if (formKey.currentState!.validate()) {
       var body = {
         "otpReference": _pinEditingController.text.trim(),
