@@ -487,7 +487,7 @@ public class SchedulerService {
 									String uuidUsername = (String) map.getValue();
 									String message = formatMonthSummaryMessage(requestInfo, tenantId,
 											messageMap.get(NotificationUtil.MSG_KEY));
-									message = message.replace("{link}", config.getMonthDashboardLink());
+									message = message.replace("{LINK}", config.getMonthDashboardLink());
 									message = message.replace("{GPWSC}", tenantId); // TODO Replace
 									// <GPWSC> with
 									// value
@@ -618,8 +618,9 @@ public class SchedulerService {
 				else
 					message = message.replace("{amount}", "0");
 				System.out.println("Final SMS MEssage is :" + message);
+			}if(message.contains("{TODAY_DATE}")) {
+				message = message.replace("{TODAY_DATE}", LocalDate.now().toString());
 			}
-		message = message.replace("{TODAY_DATE}", LocalDate.now().toString());
 		System.out.println("Final message is :" + message);
 		return message;
 	}
