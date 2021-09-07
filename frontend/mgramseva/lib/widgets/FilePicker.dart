@@ -295,7 +295,8 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
       if (selectionMode == 'camera') {
         final pickedFile = await _picker.pickImage(source: ImageSource.camera);
         if (pickedFile != null) {
-          final File? file = File(pickedFile.path);
+          String newPath = path.join(path.dirname(pickedFile.path), '${CommonMethods.getRandomName()}${path.extension(pickedFile.path)}');
+          final File? file = await File(pickedFile.path).copy(newPath);
           if (file != null) {
             if (!(await CommonMethods.isValidFileSize(await file.length()))){
               Notifiers.getToastMessage(context, i18.common.FILE_SIZE, 'ERROR');

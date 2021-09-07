@@ -29,7 +29,7 @@ class DashboardCard extends StatelessWidget {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children : [
                   Consumer<DashBoardProvider>(
-                    builder: (_,dashBoardProvider, child) => Text(DateFormats.getMonthAndYear(dashBoardProvider.selectedMonth),
+                    builder: (_,dashBoardProvider, child) => Text(DateFormats.getMonthAndYear(dashBoardProvider.selectedMonth, context),
                     style: Theme.of(context).textTheme.subtitle1?.apply(color: Theme.of(context).primaryColor),
                     ),
                   ),

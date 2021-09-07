@@ -228,7 +228,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                                 alignment: WrapAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    '${DateFormats.getMonthAndYear(dashBoardProvider.dateList[index])}',
+                                    '${DateFormats.getMonthAndYear(dashBoardProvider.dateList[index], context)}',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: dashBoardProvider

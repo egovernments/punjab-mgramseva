@@ -217,6 +217,10 @@ class CoreRepository extends BaseService {
 
   Future<bool?> fileDownload(BuildContext context, String url,
       [String? fileName]) async {
+    if(url.contains(',')){
+      url = url.split(',').first;
+    }
+
     fileName = fileName ?? CommonMethods.getExtension(url);
     try {
       var downloadPath;
