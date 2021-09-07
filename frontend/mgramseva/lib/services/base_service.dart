@@ -90,7 +90,7 @@ dynamic _response(http.Response response) {
   }
 
   var errorMessage = data?['Errors']?[0]?['code'] ??
-      data?['Errors']?[0]?['message'] ?? data?['Errors']?[0]?['description'] ?? data?['error_description'];
+      data?['Errors']?[0]?['message'] ?? data?['Errors']?[0]?['description'] ?? data?['error_description'] ?? data?['error']?['fields']?[0]?['code'] ?? data?['error']?['fields']?[0]?['message'];
 
   switch (response.statusCode) {
     case 200:
