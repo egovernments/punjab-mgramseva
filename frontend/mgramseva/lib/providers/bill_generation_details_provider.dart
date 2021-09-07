@@ -310,20 +310,24 @@ class BillGenerationProvider with ChangeNotifier {
                           '${billList.bill!.first.billNumber.toString()}'),
                   callBack: () =>
                       onClickOfCollectPayment(billList.bill!.first, context),
-                  callBackdownload: () => commonProvider.getFileFromPDFService({
+                  callBackdownload: () => commonProvider
+                      .getFileFromPDFBillService({
                     "Bill": [billList.bill!.first]
                   }, {
                     "key": "consolidatedbill",
                     "tenantId":
                         commonProvider.userDetails!.selectedtenant!.code,
-                  }, billList.bill!.first.mobileNumber, "Download"),
-                  callBackwatsapp: () => commonProvider.getFileFromPDFService({
-                    "Bill": [billList.bill!.first]
+                  }, billList.bill!.first.mobileNumber, billList.bill!.first,
+                          "Download"),
+                  callBackwatsapp: () => commonProvider
+                      .getFileFromPDFBillService({
+                    "Bill": [billList.bill!.first],
                   }, {
                     "key": "consolidatedbill",
                     "tenantId":
                         commonProvider.userDetails!.selectedtenant!.code,
-                  }, billList!.bill!.first.mobileNumber, "Share"),
+                  }, billList!.bill!.first.mobileNumber, billList.bill!.first,
+                          "Share"),
                   backButton: true,
                 );
               }));

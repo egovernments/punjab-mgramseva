@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/bill/bill_payments.dart';
+import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/user/user_details.dart';
@@ -11,9 +13,11 @@ import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/LocalStorage.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -94,7 +98,6 @@ class CommonProvider with ChangeNotifier {
 
   void setSelectedState(UserDetails? loginDetails) async {
     if (kIsWeb) {
-      print(window.localStorage[Constants.LOGIN_KEY]);
       window.localStorage[Constants.LOGIN_KEY] =
           loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
     } else {
@@ -109,7 +112,6 @@ class CommonProvider with ChangeNotifier {
     var languageProvider = Provider.of<LanguageProvider>(
         navigatorKey.currentContext!,
         listen: false);
-
     try {
       if (kIsWeb) {
         window.localStorage[languageProvider.selectedLanguage?.value ?? ''] =
@@ -265,18 +267,18 @@ class CommonProvider with ChangeNotifier {
     CoreRepository().fileDownload(context, store.url!);
   }
 
-  void shareonwatsapp(FileStore store, mobileNumber) async {
+  void shareonwatsapp(FileStore store, mobileNumber, input) async {
     if (store.url == null) return;
     try {
       var res = await CoreRepository().urlShotner(store.url as String);
       if (kIsWeb) {
         html.AnchorElement anchorElement = new html.AnchorElement(
-            href: "https://api.whatsapp.com/send?phone=+91$mobileNumber&text=" +
-                res!);
+            href: "https://wa.me/+91$mobileNumber?text=" +
+                input.toString().replaceFirst('<link>', res!));
         anchorElement.target = "_blank";
         anchorElement.click();
       } else {
-        var link = "https://wa.me/+91$mobileNumber?text=" + res!;
+        var link = "https://wa.me/+91$mobileNumber?text=" + input;
         await canLaunch(link)
             ? launch(link)
             : ErrorHandler.logError('failed to launch the url ${link}');
@@ -286,14 +288,15 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
-  void getStoreFileDetails(fileStoreId, mode, mobileNumber, context) async {
+  void getStoreFileDetails(
+      fileStoreId, mode, mobileNumber, context, link) async {
     if (fileStoreId == null) return;
     try {
       var res = await CoreRepository().fetchFiles([fileStoreId!]);
       if (res != null) {
-        if (mode == 'Share')
-          shareonwatsapp(res.first, mobileNumber);
-        else
+        if (mode == 'Share') {
+          shareonwatsapp(res.first, mobileNumber, link);
+        } else
           onTapOfAttachment(res.first, context);
       }
     } catch (e, s) {
@@ -301,11 +304,51 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
-  void getFileFromPDFService(body, params, mobileNumber, mode) async {
+  void getFileFromPDFPaymentService(
+      body, params, mobileNumber, Payments payments, mode) async {
     try {
       var res = await CoreRepository().getFileStorefromPdfService(body, params);
+      String link = (ApplicationLocalizations.of(navigatorKey.currentContext!)
+          .translate(i18.common.SHARE_RECEIPT_LINK)
+          .toString()
+          .replaceFirst('<user>', payments.paidBy!)
+          .replaceFirst('<Amount>', payments.totalAmountPaid.toString())
+          .replaceFirst('<new consumer id>',
+              payments.paymentDetails!.first.bill!.consumerCode.toString())
+          .replaceFirst('<Amount>',
+              (payments.totalDue! - payments.totalAmountPaid!).toString()));
       getStoreFileDetails(res!.filestoreIds!.first, mode, mobileNumber,
-          navigatorKey.currentContext);
+          navigatorKey.currentContext, link);
+    } catch (e, s) {
+      ErrorHandler.logError(e.toString(), s);
+    }
+  }
+
+  void getFileFromPDFBillService(
+    body,
+    params,
+    mobileNumber,
+    bill,
+    mode,
+  ) async {
+    try {
+      var res = await CoreRepository().getFileStorefromPdfService(body, params);
+
+      String link = (ApplicationLocalizations.of(navigatorKey.currentContext!)
+          .translate(i18.common.SHARE_BILL_LINK)
+          .toString()
+          .replaceFirst('<user>', bill.payerName!.toString())
+          .replaceFirst('<cycle>',
+              '${DateFormats.getMonthWithDay(bill.billDetails?.first?.fromPeriod)} - ${DateFormats.getMonthWithDay(bill.billDetails?.first?.toPeriod)}')
+          .replaceFirst('<new consumer id>', bill.consumerCode!.toString())
+          .replaceFirst('<Amount>', bill.totalAmount.toString()));
+      getStoreFileDetails(
+        res!.filestoreIds!.first,
+        mode,
+        mobileNumber,
+        navigatorKey.currentContext,
+        link,
+      );
     } catch (e, s) {
       ErrorHandler.logError(e.toString(), s);
     }

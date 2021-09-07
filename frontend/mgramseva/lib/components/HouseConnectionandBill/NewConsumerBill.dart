@@ -68,14 +68,14 @@ class NewConsumerBill extends StatelessWidget {
                                     : false,
                                 child: TextButton.icon(
                                   onPressed: () => commonProvider
-                                      .getFileFromPDFService({
+                                      .getFileFromPDFBillService({
                                     "Bill": [billList!.bill!.first]
                                   }, {
                                     "key": "consolidatedbill",
                                     "tenantId": commonProvider
                                         .userDetails!.selectedtenant!.code,
                                   }, billList!.bill!.first.mobileNumber,
-                                          "Download"),
+                                          billList?.bill!.first, "Download"),
                                   icon: Icon(Icons.download_sharp),
                                   label: Text(
                                     ApplicationLocalizations.of(context)
@@ -128,14 +128,15 @@ class NewConsumerBill extends StatelessWidget {
                                   ? Align(
                                       alignment: Alignment.centerLeft,
                                       child: houseHoldProvider.isfirstdemand ==
-                                                  true /*&&
+                                              true
+                                          /*&&
                                              houseHoldProvider.waterConnection!
                                                       .connectionType !=
                                                   'Metered'*/
                                           ? ButtonGroup(
                                               i18.billDetails.COLLECT_PAYMENT,
                                               () => commonProvider
-                                                      .getFileFromPDFService(
+                                                      .getFileFromPDFBillService(
                                                           {
                                                         "Bill": [
                                                           billList!.bill!.first
@@ -152,6 +153,7 @@ class NewConsumerBill extends StatelessWidget {
                                                       },
                                                           billList!.bill!.first
                                                               .mobileNumber,
+                                                          billList?.bill!.first,
                                                           "Share"),
                                               () => onClickOfCollectPayment(
                                                   billList!.bill!.first,
@@ -161,52 +163,67 @@ class NewConsumerBill extends StatelessWidget {
                                               () => onClickOfCollectPayment(
                                                   billList!.bill!.first,
                                                   context)))
-                                  : houseHoldProvider.isfirstdemand == true ? Container(
-                                      width: constraints.maxWidth > 760
-                                          ? MediaQuery.of(context).size.width /
-                                              3
-                                          : MediaQuery.of(context).size.width /
-                                              1.25,
-                                      child: OutlinedButton.icon(
-                                        onPressed: () => commonProvider
-                                            .getFileFromPDFService({
-                                          "Bill": [billList!.bill!.first]
-                                        }, {
-                                          "key": "consolidatedbill",
-                                          "tenantId": commonProvider
-                                              .userDetails!
-                                              .selectedtenant!
-                                              .code,
-                                        }, billList!.bill!.first.mobileNumber,
-                                                "Share"),
-                                        style: ButtonStyle(
-                                          alignment: Alignment.center,
-                                          padding: MaterialStateProperty.all(
-                                              EdgeInsets.symmetric(
-                                                  vertical: 0)),
-                                          shape: MaterialStateProperty.all(
-                                              RoundedRectangleBorder(
-                                            side: BorderSide(
-                                                width: 2,
-                                                color: Theme.of(context)
-                                                    .primaryColor),
-                                            borderRadius:
-                                                BorderRadius.circular(0.0),
-                                          )),
-                                        ),
-                                        icon: (Image.asset(
-                                            'assets/png/whats_app.png')),
-                                        label: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 5),
-                                          child: Text(
-                                            ApplicationLocalizations.of(context)
-                                                .translate(i18.consumerReciepts
-                                                    .CONSUMER_RECIEPT_SHARE_RECEIPT),
+                                  : houseHoldProvider.isfirstdemand == true
+                                      ? Container(
+                                          width: constraints.maxWidth > 760
+                                              ? MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  3
+                                              : MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  1.25,
+                                          child: OutlinedButton.icon(
+                                            onPressed: () => commonProvider
+                                                .getFileFromPDFBillService(
+                                              {
+                                                "Bill": [billList!.bill!.first]
+                                              },
+                                              {
+                                                "key": "consolidatedbill",
+                                                "tenantId": commonProvider
+                                                    .userDetails!
+                                                    .selectedtenant!
+                                                    .code,
+                                              },
+                                              billList!
+                                                  .bill!.first.mobileNumber,
+                                              billList!.bill!.first,
+                                              "Share",
+                                            ),
+                                            style: ButtonStyle(
+                                              alignment: Alignment.center,
+                                              padding:
+                                                  MaterialStateProperty.all(
+                                                      EdgeInsets.symmetric(
+                                                          vertical: 0)),
+                                              shape: MaterialStateProperty.all(
+                                                  RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                    width: 2,
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                                borderRadius:
+                                                    BorderRadius.circular(0.0),
+                                              )),
+                                            ),
+                                            icon: (Image.asset(
+                                                'assets/png/whats_app.png')),
+                                            label: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 5),
+                                              child: Text(
+                                                ApplicationLocalizations.of(
+                                                        context)
+                                                    .translate(
+                                                        i18.common.SHARE_BILL),
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                    ) : Text(""),
+                                        )
+                                      : Text(""),
                             ])))
               ],
             )

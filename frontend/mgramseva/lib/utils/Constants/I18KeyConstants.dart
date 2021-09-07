@@ -61,6 +61,8 @@ class Common {
   String get RESET_PASSWORD_LABEL => 'RESET_PASSWORD_LABEL';
   String get BILL_DOWNLOAD => 'BILL_DOWNLOAD';
   String get RECEIPT_DOWNLOAD => 'RECEIPT_DOWNLOAD';
+  String get SHARE_BILL_LINK => 'SHARE_BILL_LINK';
+  String get SHARE_RECEIPT_LINK => 'SHARE_RECEIPT_LINK';
   String get NOTIFICATIONS => 'NOTIFICATIONS';
   String get BACK => 'BACK';
   String get DEAR => 'DEAR';
