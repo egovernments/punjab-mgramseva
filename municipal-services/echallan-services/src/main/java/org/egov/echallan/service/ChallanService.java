@@ -5,11 +5,9 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.ZoneId;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,7 +18,6 @@ import org.egov.echallan.model.Challan;
 import org.egov.echallan.model.Challan.StatusEnum;
 import org.egov.echallan.model.ChallanRequest;
 import org.egov.echallan.model.LastMonthSummary;
-import org.egov.echallan.model.LastMonthSummaryResponse;
 import org.egov.echallan.model.SearchCriteria;
 import org.egov.echallan.repository.ChallanRepository;
 import org.egov.echallan.util.CommonUtils;
@@ -164,7 +161,7 @@ public class ChallanService {
 		if(criteria.getCurrentDate() !=null) {
 			Calendar currentDate =Calendar.getInstance();
 			currentDate.setTimeInMillis(criteria.getCurrentDate());
-			currentMonthDate = LocalDate.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
+			currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR),currentDate.get(Calendar.MONTH)+1, currentDate.get(Calendar.DAY_OF_MONTH));
 		}
 		LocalDate prviousMonthStart = currentMonthDate.minusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
 		LocalDate prviousMonthEnd = currentMonthDate.minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
