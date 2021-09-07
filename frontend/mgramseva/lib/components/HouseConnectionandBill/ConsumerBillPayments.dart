@@ -76,13 +76,13 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                           visible: true,
                           child: TextButton.icon(
                             onPressed: () =>
-                                commonProvider.getFileFromPDFService({
+                                commonProvider.getFileFromPDFPaymentService({
                               "Payments": [item]
                             }, {
                               "key": "consolidatedreceipt",
                               "tenantId": commonProvider
                                   .userDetails!.selectedtenant!.code,
-                            }, item.mobileNumber, "Download"),
+                            }, item.mobileNumber, item, "Download"),
                             icon: Icon(Icons.download_sharp),
                             label: Text(
                                 ApplicationLocalizations.of(context)
@@ -112,13 +112,13 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                 : MediaQuery.of(context).size.width / 1.17,
                             child: OutlinedButton.icon(
                               onPressed: () =>
-                                  commonProvider.getFileFromPDFService({
+                                  commonProvider.getFileFromPDFPaymentService({
                                 "Payments": [item]
                               }, {
                                 "key": "consolidatedreceipt",
                                 "tenantId": commonProvider
                                     .userDetails!.selectedtenant!.code,
-                              }, item.mobileNumber, "Share"),
+                              }, item.mobileNumber, item, "Share"),
                               style: ButtonStyle(
                                 alignment: Alignment.center,
                                 padding: MaterialStateProperty.all(
