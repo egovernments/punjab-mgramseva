@@ -778,9 +778,9 @@ public class SchedulerService {
 					Object value = entry.getValue();
 					if (key.equalsIgnoreCase("sum")) {
 						if (value != null)
-							message = message.replace(" {amount}", value.toString());
+							message = message.replace("{amount}", value.toString());
 						else
-							message = message.replace(" {amount}", "0");
+							message = message.replace("{amount}", "0");
 					}
 					if (key.equalsIgnoreCase("count")) {
 						if (message.contains("{no}")) {
