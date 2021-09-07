@@ -85,10 +85,10 @@ public class SchedulerService {
 	private static final String NEW_EXPENDITURE_EVENT = "NEW_ENPENDITURE_EN_REMINDER";
 	private static final String MARK_PAID_BILL_EVENT = "MARK_PAID_BILL_EN_REMINDER";
 	private static final String GENERATE_DEMAND_EVENT = "GENERATE_DEMAND_EN_REMINDER";
-	private static final String NEW_EXPENDITURE_SMS = "NEW_ENPENDITURE_SMS_EN_REMINDER";
-	private static final String MONTHLY_SUMMARY_SMS = "MONTHLY_SUMMARY_SMS_EN_REMINDER";
-	private static final String MARK_PAID_BILL_SMS = "MARK_PAID_BILL_SMS_EN_REMINDER";
-	private static final String PENDING_COLLECTION_SMS = "PENDING_COLLECTION_SMS_EN_REMINDER";
+	private static final String NEW_EXPENDITURE_SMS = "mGram.GPUser.EnterExpense";
+	private static final String MONTHLY_SUMMARY_SMS = "mGram.GPUser.PreviousMonthSummary";
+	private static final String MARK_PAID_BILL_SMS = "mGram.GPUser.MarkExpense";
+	private static final String PENDING_COLLECTION_SMS = "mGram.GPUser.CollectionReminder";
 
 	private static final String TODAY_CASH_COLLECTION = "TODAY_COLLECTION_AS_CASH_SMS";
 	private static final String TODAY_ONLINE_COLLECTION = "TODAY_COLLECTION_FROM_ONLINE_SMS";
