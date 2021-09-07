@@ -211,10 +211,19 @@ public class SchedulerService {
 
 					if (null != config.getIsSMSEnabled()) {
 						if (config.getIsSMSEnabled()) {
-							Map<String, String> mobileNumberIdMap = getMobilenumberUuidMap(requestInfo);
+							
+							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
+									tenantId, Arrays.asList("EXPENSE_PROCESSING"));
+							Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+
 							HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
 									NEW_EXPENDITURE_SMS, tenantId);
-
+							for (UserInfo userInfo : userDetailResponse.getUser())
+								if (userInfo.getName() != null) {
+									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
+								} else {
+									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
+								}
 							mobileNumberIdMap.entrySet().stream().forEach(map -> {
 								if (messageMap != null
 										&& !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
@@ -340,7 +349,18 @@ public class SchedulerService {
 
 					if (null != config.getIsSMSEnabled()) {
 						if (config.getIsSMSEnabled()) {
-							Map<String, String> mobileNumberIdMap = getMobilenumberUuidMap(requestInfo);
+							
+							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
+									tenantId, Arrays.asList("EXPENSE_PROCESSING"));
+							Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+
+							for (UserInfo userInfo : userDetailResponse.getUser())
+								if (userInfo.getName() != null) {
+									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
+								} else {
+									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
+								}
+							
 							HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
 									MARK_PAID_BILL_SMS, tenantId);
 
@@ -404,7 +424,7 @@ public class SchedulerService {
 						.toString(),
 				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).toString());
 		if (null != previousMonthCollection && previousMonthCollection.size() > 0)
-			message = message.replace("{PREVIOUS_MONTH_COLLECTION}", previousMonthCollection.get(0));
+			message = message.replace(" {PREVIOUS_MONTH_COLLECTION}", previousMonthCollection.get(0));
 
 		message = message.replace("{PREVIOUS_MONTH}", LocalDate.now().minusMonths(1).getMonth().toString());
 		List<String> previousMonthExpense = repository.getPreviousMonthExpenseExpenses(tenantId,
@@ -448,8 +468,8 @@ public class SchedulerService {
 						if (config.getIsSMSEnabled()) {
 							HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
 									MONTHLY_SUMMARY_SMS, tenantId);
-							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, "pb",
-									Arrays.asList("GP_ADMIN"));
+							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
+									Arrays.asList("EXPENSE_PROCESSING"));
 
 							Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 							for (UserInfo userInfo : userDetailResponse.getUser())
