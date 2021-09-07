@@ -233,7 +233,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
     return Align(
         alignment: Alignment.centerLeft,
         child: Container(
-          margin: const EdgeInsets.only(left: 20, bottom: 20, top: 20),
+          margin: const EdgeInsets.only(left: 8, bottom: 20, top: 20, right: 8),
           child: Text(
               '${ApplicationLocalizations.of(context).translate(i18.common.DEAR)} ${widget.userDetails.userRequest?.name}, ' +
                   (tenantsList!.length == 1
