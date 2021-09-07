@@ -248,9 +248,9 @@ public class DemandService {
 					billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
 					+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
 			messageString = messageString.replace("{ownername}", owner.getUserName());
-			messageString = messageString.replace("{billingcycle}", billCycle);
+			messageString = messageString.replace("{Period}", billCycle);
 			messageString = messageString.replace("{consumerno}", consumerCode);
-			messageString = messageString.replace("{billmaount}", demandDetails.stream().map(DemandDetail::getTaxAmount)
+			messageString = messageString.replace("{billamount}", demandDetails.stream().map(DemandDetail::getTaxAmount)
 					.reduce(BigDecimal.ZERO, BigDecimal::add).toString());
 			messageString = messageString.replace("{BILL_LINK}", configs.getDownLoadBillLink());
 			
