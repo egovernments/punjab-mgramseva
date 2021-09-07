@@ -160,6 +160,21 @@ class Common {
   String get FILE_MANAGER => 'FILE_MANAGER';
   String get FILE_SIZE => 'FILE_SIZE';
   String get CHOOSE_AN_ACTION => 'CHOOSE_AN_ACTION';
+
+  ///Months
+  String get JAN => 'JAN';
+  String get FEB  => 'FEB ';
+  String get MAR => 'MAR';
+  String get APR => 'APR';
+  String get MAY => 'MAY';
+  String get JUN => 'JUN';
+  String get JULY => 'JULY';
+  String get AUG => 'AUG';
+  String get SEP => 'SEP';
+  String get OCT => 'OCT';
+  String get NOV => 'NOV';
+  String get DEC => 'DEC';
+
 }
 
 class Password {

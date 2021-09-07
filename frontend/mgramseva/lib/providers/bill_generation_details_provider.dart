@@ -18,6 +18,7 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -43,20 +44,7 @@ class BillGenerationProvider with ChangeNotifier {
   var selectedBillCycle;
   var meterReadingDate;
   var prevReadingDate;
-  List months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-  ];
+ 
   setModel(String? id, WaterConnection? waterConnection,
       BuildContext context) async {
     billGenerateDetails = BillGenerationDetails();
@@ -477,7 +465,7 @@ class BillGenerationProvider with ChangeNotifier {
           value: value['code'],
           child: new Text(
               ApplicationLocalizations.of(navigatorKey.currentContext!)
-                      .translate(months[d.month - 1]) +
+                      .translate(Constants.MONTHS[d.month - 1]) +
                   " - " +
                   d.year.toString()),
         );
