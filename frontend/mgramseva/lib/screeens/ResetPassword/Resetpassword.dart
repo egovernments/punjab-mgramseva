@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/forgot_password_repo.dart';
 import 'package:mgramseva/repository/reset_password_repo.dart';
-import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/PasswordSuccess/Passwordsuccess.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -12,6 +10,7 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
+import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
@@ -37,6 +36,7 @@ class _ResetPasswordState extends State<ResetPassword> {
   TextEditingController _pinEditingController = TextEditingController();
   var autoValidate = false;
   var password = "";
+  var pinLength = 6;
 
   @override
   void initState() {
@@ -128,6 +128,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   BuildTextField(
                                     i18.password.CORE_COMMON_NEW_PASSWORD,
                                     newPassword,
+                                    obscureText: true,
+                                    maxLines: 1,
                                     isRequired: true,
                                     validator: (val) =>
                                         Validators.passwordComparision(
@@ -140,6 +142,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     i18.password
                                         .CORE_COMMON_CONFIRM_NEW_PASSWORD,
                                     confirmPassword,
+                                    obscureText: true,
+                                    maxLines: 1,
                                     isRequired: true,
                                     validator: (val) =>
                                         Validators.passwordComparision(
@@ -152,21 +156,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  FractionallySizedBox(
-                                      widthFactor: 0.90,
-                                      child: new ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            padding: EdgeInsets.all(15),
-                                          ),
-                                          child: new Text(
-                                              ApplicationLocalizations.of(
-                                                      context)
-                                                  .translate(i18.password
-                                                      .CHANGE_PASSWORD),
-                                              style: TextStyle(
-                                                  fontSize: 19,
-                                                  fontWeight: FontWeight.w500)),
-                                          onPressed: updatePassword)),
+                                  BottomButtonBar(
+                                      ApplicationLocalizations.of(context)
+                                          .translate(
+                                          i18.password.CHANGE_PASSWORD),
+                                      _pinEditingController.text.trim().length != pinLength ? null : updatePassword),
                                   PasswordHint(password)
                                 ],
                               ))))),
@@ -202,10 +196,19 @@ class _ResetPasswordState extends State<ResetPassword> {
                         color: Color.fromRGBO(11, 12, 12, 1)))
               ])),
           Container(
-            width: 300,
+            width: MediaQuery.of(context).size.width < 720
+                ? MediaQuery.of(context).size.width - 50
+                : 350,
             padding: EdgeInsets.symmetric(vertical: 5),
             child: PinInputTextField(
               pinLength: 6,
+              cursor: Cursor(
+                width: 2,
+                height: 25,
+                color: Colors.black,
+                radius: Radius.circular(1),
+                enabled: true,
+              ),
               decoration: BoxLooseDecoration(
                   strokeColorBuilder: PinListenColorBuilder(
                       Theme.of(context).primaryColor, Colors.grey),
