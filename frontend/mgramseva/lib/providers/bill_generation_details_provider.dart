@@ -57,7 +57,7 @@ class BillGenerationProvider with ChangeNotifier {
       ),
     ));
     if (id == null) {
-      billGenerateDetails.serviceType = 'Non Metered';
+      billGenerateDetails.serviceType = 'Non_Metered';
     } else {
       if (waterConnection == null) {
         var commonProvider = Provider.of<CommonProvider>(
@@ -337,7 +337,7 @@ class BillGenerationProvider with ChangeNotifier {
         }
       }
     } else if (formKey.currentState!.validate() &&
-        billGenerateDetails.serviceType == "Non Metered") {
+        billGenerateDetails.serviceType == "Non_Metered") {
       try {
         Loaders.showLoadingDialog(context);
         var commonProvider = Provider.of<CommonProvider>(

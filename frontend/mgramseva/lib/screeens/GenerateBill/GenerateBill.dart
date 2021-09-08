@@ -205,7 +205,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                         ])),
                                 billgenerationprovider
                                             .billGenerateDetails.serviceType !=
-                                        "Non Metered"
+                                        "Non_Metered"
                                     ? Container()
                                     : Container(
                                         width:

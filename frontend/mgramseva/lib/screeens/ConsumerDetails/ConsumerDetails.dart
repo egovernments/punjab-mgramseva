@@ -45,7 +45,6 @@ class ConsumerDetails extends StatefulWidget {
 }
 
 class _ConsumerDetailsState extends State<ConsumerDetails> {
-
   var phoneNumberAutoValidation = false;
   FocusNode _numberFocus = new FocusNode();
 
@@ -94,8 +93,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
     super.dispose();
   }
 
-  void _onFocusChange(){
-    if(!_numberFocus.hasFocus){
+  void _onFocusChange() {
+    if (!_numberFocus.hasFocus) {
       setState(() {
         phoneNumberAutoValidation = true;
       });
@@ -225,7 +224,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               maxLength: 10,
                               focusNode: _numberFocus,
                               validator: Validators.mobileNumberValidator,
-                              autoValidation: phoneNumberAutoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
+                              autoValidation: phoneNumberAutoValidation
+                                  ? AutovalidateMode.always
+                                  : AutovalidateMode.disabled,
                               inputFormatter: [
                                 FilteringTextInputFormatter.allow(
                                     RegExp("[0-9]"))
@@ -378,7 +379,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                               ),
                                         consumerProvider.waterconnection
                                                     .connectionType !=
-                                                'Non Metered'
+                                                'Non_Metered'
                                             ? Container()
                                             : Consumer<
                                                     ConsumerProvider>(
