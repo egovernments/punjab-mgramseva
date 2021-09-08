@@ -57,6 +57,7 @@ import org.egov.wscalculation.web.models.WaterConnectionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -125,7 +126,9 @@ public class DemandService {
 	@Autowired
 	private WSCalculationConfiguration config;
 	
-	
+
+	@Autowired
+	private RestTemplate restTemplate;
 
 	/**
 	 * Creates or updates Demand
@@ -247,12 +250,12 @@ public class DemandService {
 			if( !StringUtils.isEmpty(messageString)) {
 					billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
 					+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
-			messageString = messageString.replace("{ownername}", owner.getUserName());
+			messageString = messageString.replace("{ownername}", owner.getName());
 			messageString = messageString.replace("{Period}", billCycle);
 			messageString = messageString.replace("{consumerno}", consumerCode);
 			messageString = messageString.replace("{billamount}", demandDetails.stream().map(DemandDetail::getTaxAmount)
 					.reduce(BigDecimal.ZERO, BigDecimal::add).toString());
-			messageString = messageString.replace("{BILL_LINK}", configs.getDownLoadBillLink());
+			messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(configs.getDownLoadBillLink()));
 			
 			System.out.println("Demand genaratio Message::" + messageString);
 			
@@ -268,6 +271,26 @@ public class DemandService {
 		if(isForConnectionNO)
 		fetchBill(demandRes, requestInfo);
 		return demandRes;
+	}
+
+	private String getShortenedUrl(String url) {
+		String res = null;
+		HashMap<String,String> body = new HashMap<>();
+		body.put("url",url);
+		StringBuilder builder = new StringBuilder(config.getUrlShortnerHost());
+		builder.append(config.getUrlShortnerEndpoint());
+		try {
+			res = restTemplate.postForObject(builder.toString(), body, String.class);
+
+		}catch(Exception e) {
+			 log.error("Error while shortening the url: " + url,e);
+			
+		}
+		if(StringUtils.isEmpty(res)){
+			log.error("URL_SHORTENING_ERROR","Unable to shorten url: "+url); ;
+			return url;
+		}
+		else return res;
 	}
 
 	private void sendSMSNotification(RequestInfo requestInfo, List<SMSRequest> smsRequests, String billCycle, String consumerCode, List<DemandDetail> demandDetails) {
