@@ -131,16 +131,45 @@ class BillGenerationProvider with ChangeNotifier {
           meterRes.meterReadings!.first.currentReading.toString()[4];
       prevReadingDate = meterRes.meterReadings!.first.currentReadingDate;
     } else if (waterconnection.additionalDetails!.meterReading != null) {
-      billGenerateDetails.om_1Ctrl.text =
-          waterconnection.additionalDetails!.meterReading.toString()[0];
-      billGenerateDetails.om_2Ctrl.text =
-          waterconnection.additionalDetails!.meterReading.toString()[1];
-      billGenerateDetails.om_3Ctrl.text =
-          waterconnection.additionalDetails!.meterReading.toString()[2];
-      billGenerateDetails.om_4Ctrl.text =
-          waterconnection.additionalDetails!.meterReading.toString()[3];
-      billGenerateDetails.om_5Ctrl.text =
-          waterconnection.additionalDetails!.meterReading.toString()[4];
+      if(waterconnection.additionalDetails!.meterReading.toString().length == 1 && waterconnection.additionalDetails!.meterReading.toString() != '0'){
+        billGenerateDetails.om_1Ctrl.text = '0';
+        billGenerateDetails.om_2Ctrl.text = '0';
+        billGenerateDetails.om_3Ctrl.text = '0';
+        billGenerateDetails.om_4Ctrl.text = '0';
+        billGenerateDetails.om_5Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[0];
+      }
+      else if(waterconnection.additionalDetails!.meterReading.toString().length == 2){
+        billGenerateDetails.om_1Ctrl.text = '0';
+        billGenerateDetails.om_2Ctrl.text = '0';
+        billGenerateDetails.om_3Ctrl.text = '0';
+        billGenerateDetails.om_4Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[0];
+        billGenerateDetails.om_5Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[1];
+      }
+      else if(waterconnection.additionalDetails!.meterReading.toString().length == 3){
+        billGenerateDetails.om_1Ctrl.text = '0';
+        billGenerateDetails.om_2Ctrl.text = '0';
+        billGenerateDetails.om_3Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[0];
+        billGenerateDetails.om_4Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[1];
+        billGenerateDetails.om_5Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[2];
+      }
+      else if(waterconnection.additionalDetails!.meterReading.toString().length == 4){
+        billGenerateDetails.om_1Ctrl.text = '0';
+        billGenerateDetails.om_2Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[0];
+        billGenerateDetails.om_3Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[1];
+        billGenerateDetails.om_4Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[2];
+        billGenerateDetails.om_5Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[3];
+      }else {
+        billGenerateDetails.om_1Ctrl.text =
+        waterconnection.additionalDetails!.meterReading.toString()[0];
+        billGenerateDetails.om_2Ctrl.text =
+        waterconnection.additionalDetails!.meterReading.toString()[1];
+        billGenerateDetails.om_3Ctrl.text =
+        waterconnection.additionalDetails!.meterReading.toString()[2];
+        billGenerateDetails.om_4Ctrl.text =
+        waterconnection.additionalDetails!.meterReading.toString()[3];
+        billGenerateDetails.om_5Ctrl.text =
+        waterconnection.additionalDetails!.meterReading.toString()[4];
+      }
       prevReadingDate = waterconnection.previousReadingDate;
     }
   }
