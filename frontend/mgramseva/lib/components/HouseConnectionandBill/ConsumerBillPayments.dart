@@ -87,7 +87,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                             label: Text(
                                 ApplicationLocalizations.of(context)
                                     .translate(i18.common.RECEIPT_DOWNLOAD),
-                                style: TextStyle(fontSize: 19)),
+                                style: TextStyle(fontSize: 16)),
                           ),
                         ),
                         _getLabeltext(
