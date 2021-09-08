@@ -27,7 +27,6 @@ import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/widgets/ErrorMessagePAge.dart';
 import 'package:provider/provider.dart';
-import 'package:universal_html/html.dart';
 
 import 'common_provider.dart';
 
