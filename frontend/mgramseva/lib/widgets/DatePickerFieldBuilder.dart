@@ -1,7 +1,9 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:provider/provider.dart';
 
 class BasicDateField extends StatelessWidget {
   final format = DateFormat("dd/MM/yyyy");
@@ -15,51 +17,79 @@ class BasicDateField extends StatelessWidget {
   final bool? isEnabled;
   final String? requiredMessage;
   final GlobalKey? contextkey;
-  BasicDateField(this.label,  this.isRequired, this.controller, {this.firstDate, this.lastDate, this.onChangeOfDate, this.initialDate, this.isEnabled, this.requiredMessage, this.contextkey});
+  BasicDateField(this.label, this.isRequired, this.controller,
+      {this.firstDate,
+      this.lastDate,
+      this.onChangeOfDate,
+      this.initialDate,
+      this.isEnabled,
+      this.requiredMessage,
+      this.contextkey});
 
   @override
   Widget build(BuildContext context) {
     Widget datePicker = AbsorbPointer(
-      absorbing: !(isEnabled ?? true),
-        child : DateTimeField(
-          style: TextStyle(color: (isEnabled ?? true) ? null : Colors.grey),
-      format: format,
-      decoration: InputDecoration(
-        fillColor: (isEnabled ?? true) ? Colors.white : Colors.grey,
-        prefixText: "",
-        suffixIcon: Icon(Icons.calendar_today),
-        prefixStyle: TextStyle(color: Theme.of(context).primaryColorDark),
-        contentPadding:
-            new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(1.0)),
-      ),
-      controller: controller,
-      validator: (val){
-        if(isRequired != null && isRequired && controller.text.trim().isEmpty){
-          return ApplicationLocalizations.of(context)
-              .translate(requiredMessage ?? '${label}_REQUIRED');
-        }
-        return null;
-      },
-      onShowPicker: (context, currentValue) {
-        return showDatePicker(
-          context: context,
-          firstDate: firstDate ?? DateTime(1900),
-          initialDate: initialDate ?? lastDate ?? currentValue ?? DateTime.now(),
-          lastDate: lastDate ?? DateTime(2100),
-        );
-      },onChanged: onChangeOfDate
-    ));
+        absorbing: !(isEnabled ?? true),
+        child: DateTimeField(
+            style: TextStyle(color: (isEnabled ?? true) ? null : Colors.grey),
+            format: format,
+            decoration: InputDecoration(
+              fillColor: (isEnabled ?? true) ? Colors.white : Colors.grey,
+              prefixText: "",
+              suffixIcon: Icon(Icons.calendar_today),
+              prefixStyle: TextStyle(color: Theme.of(context).primaryColorDark),
+              contentPadding:
+                  new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(1.0)),
+            ),
+            controller: controller,
+            validator: (val) {
+              if (isRequired != null &&
+                  isRequired &&
+                  controller.text.trim().isEmpty) {
+                return ApplicationLocalizations.of(context)
+                    .translate(requiredMessage ?? '${label}_REQUIRED');
+              }
+              return null;
+            },
+            onShowPicker: (context, currentValue) {
+              var languageProvider =
+                  Provider.of<LanguageProvider>(context, listen: false);
+              return showDatePicker(
+                context: context,
+                locale: Locale(
+                    languageProvider.selectedLanguage!.value
+                        .toString()
+                        .split('_')[0],
+                    languageProvider.selectedLanguage!.value
+                        .toString()
+                        .split('_')[1]),
+                firstDate: firstDate ?? DateTime(1900),
+                initialDate:
+                    initialDate ?? lastDate ?? currentValue ?? DateTime.now(),
+                lastDate: lastDate ?? DateTime(2100),
+              );
+            },
+            onChanged: onChangeOfDate));
 
     Widget textLabelwidget = Row(children: <Widget>[
       Text(ApplicationLocalizations.of(context).translate(label),
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: (isEnabled ?? true)
+                  ? Theme.of(context).primaryColorDark
+                  : Colors.grey)),
       Text(isRequired ? '* ' : ' ',
           textAlign: TextAlign.left,
           style: TextStyle(
-              fontWeight: FontWeight.w400, fontSize: 16, color: (isEnabled ?? true) ? Theme.of(context).primaryColorDark : Colors.grey)),
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: (isEnabled ?? true)
+                  ? Theme.of(context).primaryColorDark
+                  : Colors.grey)),
     ]);
 
     return LayoutBuilder(builder: (context, constraints) {
