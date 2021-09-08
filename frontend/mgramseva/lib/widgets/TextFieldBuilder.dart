@@ -68,6 +68,8 @@ class _BuildTextField extends State<BuildTextField> {
     // TextForm
     Widget textFormwidget = TextFormField(
         style: TextStyle(
+            fontWeight: FontWeight.w400,
+            fontSize: 16,
             color: widget.isDisabled != null && widget.isDisabled!
                 ? Colors.grey
                 : Theme.of(context).primaryColorDark),
