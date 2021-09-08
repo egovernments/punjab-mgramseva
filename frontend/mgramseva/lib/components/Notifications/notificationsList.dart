@@ -43,7 +43,6 @@ class NotificationsListState extends State<NotificationsList> {
   }
 
   buildNotificationsView(List<Events>? events) {
-    print(events);
     return LayoutBuilder(builder: (context, constraints) {
       return Column(children: [
         events!.length > 0

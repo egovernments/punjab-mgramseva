@@ -407,7 +407,7 @@ class ConsumerProvider with ChangeNotifier {
           value: value.code,
           child: new Text(
               ApplicationLocalizations.of(navigatorKey.currentContext!)
-                  .translate(value.name!)),
+                  .translate(value.code!)),
         );
       }).toList();
     }
@@ -438,7 +438,7 @@ class ConsumerProvider with ChangeNotifier {
         dates.add(r);
       }
     }
-    if (dates.length > 0 && waterconnection.connectionType == 'Non Metered') {
+    if (dates.length > 0 && waterconnection.connectionType == 'Non_Metered') {
       return (dates).map((value) {
         var d = value['name'];
         return DropdownMenuItem(
