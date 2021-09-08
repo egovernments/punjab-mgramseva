@@ -148,6 +148,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
         Expanded(
           child: Consumer<DashBoardProvider>(
             builder : (_ , dashBoardProvider, child) => TabBarView(
+                physics: NeverScrollableScrollPhysics(),
                 controller: _tabController,
                 children: List.generate(_tabList.length, (index) => LayoutBuilder(
                     builder : (context, constraints) {

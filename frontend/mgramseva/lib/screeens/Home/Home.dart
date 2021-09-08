@@ -5,7 +5,7 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/tenants_provider.dart';
-import 'package:mgramseva/screeens/HomeCard.dart';
+import 'package:mgramseva/screeens/Home/HomeCard.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -14,10 +14,9 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
-
+import '../../widgets/customAppbar.dart';
 import 'HomeWalkThrough/HomeWalkThroughContainer.dart';
 import 'HomeWalkThrough/HomeWalkThroughList.dart';
-import 'customAppbar.dart';
 
 class Home extends StatefulWidget {
   State<StatefulWidget> createState() {

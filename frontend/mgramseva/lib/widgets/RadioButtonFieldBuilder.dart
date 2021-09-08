@@ -49,7 +49,7 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                       ]))),
               Container(
                   width: MediaQuery.of(context).size.width / 2.5,
-                  padding: EdgeInsets.only(left: 24, top: 18),
+                  padding: EdgeInsets.only(bottom: 3, top: 18),
                   child: Column(
                       children: options.map(
                     (data) {

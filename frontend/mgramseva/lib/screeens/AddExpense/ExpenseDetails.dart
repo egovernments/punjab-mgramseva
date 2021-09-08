@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/AddExpense/AddExpenseWalkThrough/expenseWalkThrough.dart';
-import 'package:mgramseva/screeens/customAppbar.dart';
+import 'package:mgramseva/widgets/customAppbar.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
