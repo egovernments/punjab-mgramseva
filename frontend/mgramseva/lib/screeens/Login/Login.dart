@@ -49,7 +49,7 @@ class _LoginState extends State<Login> {
     }
   }
 
-  void onChangeOfInput(value){
+  void onChangeOfInput(){
     setState(() {
     });
   }
@@ -71,6 +71,7 @@ class _LoginState extends State<Login> {
     return Card(
         child: Form(
             key: formKey,
+            onChanged: onChangeOfInput,
             autovalidateMode: autoValidation
                 ? AutovalidateMode.always
                 : AutovalidateMode.disabled,
@@ -92,7 +93,6 @@ class _LoginState extends State<Login> {
                   maxLength: 10,
                   validator: Validators.mobileNumberValidator,
                   textInputType: TextInputType.phone,
-                  onChange: onChangeOfInput,
                 ),
                 BuildTextField(
                   i18.login.LOGIN_PASSWORD,
@@ -100,7 +100,6 @@ class _LoginState extends State<Login> {
                   isRequired: true,
                   obscureText: true,
                   maxLines: 1,
-                  onChange: onChangeOfInput,
                 ),
                 GestureDetector(
                   onTap: () =>
@@ -139,5 +138,5 @@ class _LoginState extends State<Login> {
     }));
   }
 
-  bool get buttonStatus => userNamecontroller.text.trim().length == 10 && userNamecontroller.text.trim().length > 1;
+  bool get buttonStatus => userNamecontroller.text.trim().length == 10 && passwordcontroller.text.trim().length > 1;
 }

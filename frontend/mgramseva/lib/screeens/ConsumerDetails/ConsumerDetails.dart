@@ -44,6 +44,10 @@ class ConsumerDetails extends StatefulWidget {
 }
 
 class _ConsumerDetailsState extends State<ConsumerDetails> {
+
+  var phoneNumberAutoValidation = false;
+  FocusNode _numberFocus = new FocusNode();
+
   saveInput(context) async {
     print(context);
   }
@@ -80,11 +84,21 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
       WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     }
 
+    _numberFocus.addListener(_onFocusChange);
     super.initState();
   }
 
   dispose() {
+    _numberFocus.addListener(_onFocusChange);
     super.dispose();
+  }
+
+  void _onFocusChange(){
+    if(!_numberFocus.hasFocus){
+      setState(() {
+        phoneNumberAutoValidation = true;
+      });
+    }
   }
 
   afterViewBuild() {
@@ -208,6 +222,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               isRequired: true,
                               textInputType: TextInputType.number,
                               maxLength: 10,
+                              focusNode: _numberFocus,
+                              autoValidation: phoneNumberAutoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
                               inputFormatter: [
                                 FilteringTextInputFormatter.allow(
                                     RegExp("[0-9]"))

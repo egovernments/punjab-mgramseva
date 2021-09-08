@@ -15,11 +15,12 @@ class Button extends StatelessWidget {
           child: new ElevatedButton(
       style: ElevatedButton.styleFrom(
           minimumSize: Size(double.infinity, 30),
+          primary: widgetfunction == null ? Color.fromRGBO(244, 119, 56, 0.7) : null
           // padding: EdgeInsets.all(15),
       ),
       child: new Text(ApplicationLocalizations.of(context).translate(label),
           style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500)),
-      onPressed: widgetfunction
+      onPressed: () => widgetfunction != null ? widgetfunction!() : null
     ),
         ));
   }
