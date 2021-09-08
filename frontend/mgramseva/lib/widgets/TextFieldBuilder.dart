@@ -32,6 +32,7 @@ class BuildTextField extends StatefulWidget {
   final String? placeHolder;
   final GlobalKey? contextkey;
   final AutovalidateMode? autoValidation;
+  final bool? isFilled;
 
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
@@ -57,6 +58,7 @@ class BuildTextField extends StatefulWidget {
       this.prefixIcon,
       this.placeHolder,
       this.contextkey,
+      this.isFilled,
       this.requiredMessage, this.autoValidation});
 
   @override
@@ -111,8 +113,10 @@ class _BuildTextField extends State<BuildTextField> {
                   .translate((widget.placeHolder!))
               : "",
           border: widget.inputBorder,
+          enabledBorder : widget.inputBorder,
           errorMaxLines: 2,
           enabled: widget.isDisabled ?? true,
+          filled: widget.isFilled,
           fillColor: widget.isDisabled != null && widget.isDisabled!
               ? Colors.grey
               : Colors.white,

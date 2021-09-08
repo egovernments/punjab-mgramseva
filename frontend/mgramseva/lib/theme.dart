@@ -41,6 +41,10 @@ ThemeData get theme => ThemeData(
       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.zero)),
       prefixStyle: TextStyle(color: Colors.black),
       hintStyle: TextStyle(color: Color.fromRGBO(80, 90, 95, 1)),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.zero),
+        borderSide: BorderSide(color: Color.fromRGBO(80, 90, 95, 1)),
+      ),
       errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.zero),
           borderSide: BorderSide(color: Colors.red)),
