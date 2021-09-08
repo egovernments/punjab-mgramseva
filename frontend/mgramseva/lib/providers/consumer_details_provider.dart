@@ -109,32 +109,13 @@ class ConsumerProvider with ChangeNotifier {
       "tenantId": waterconnection.tenantId
     });
     if (waterconnection.connectionType == 'Metered' &&
-        waterconnection.additionalDetails!.meterReading != null) {
-      waterconnection.om_1Ctrl.text = waterconnection
-          .additionalDetails!.meterReading
-          .toString()
-          .characters
-          .elementAt(0);
-      waterconnection.om_2Ctrl.text = waterconnection
-          .additionalDetails!.meterReading
-          .toString()
-          .characters
-          .elementAt(1);
-      waterconnection.om_3Ctrl.text = waterconnection
-          .additionalDetails!.meterReading
-          .toString()
-          .characters
-          .elementAt(2);
-      waterconnection.om_4Ctrl.text = waterconnection
-          .additionalDetails!.meterReading
-          .toString()
-          .characters
-          .elementAt(3);
-      waterconnection.om_5Ctrl.text = waterconnection
-          .additionalDetails!.meterReading
-          .toString()
-          .characters
-          .elementAt(4);
+        waterconnection.additionalDetails!.meterReading.toString() != '0') {
+      var meterReading = waterconnection.additionalDetails!.meterReading.toString().padLeft(5 , '0' );
+      waterconnection.om_1Ctrl.text = meterReading.toString().characters.elementAt(0);
+      waterconnection.om_2Ctrl.text =meterReading.toString().characters.elementAt(1);
+      waterconnection.om_3Ctrl.text = meterReading.toString().characters.elementAt(2);
+      waterconnection.om_4Ctrl.text = meterReading.toString().characters.elementAt(3);
+      waterconnection.om_5Ctrl.text = meterReading.toString().characters.elementAt(4);
     }
     if (demand?.isEmpty == true) {
       isfirstdemand = false;
@@ -184,17 +165,16 @@ class ConsumerProvider with ChangeNotifier {
 
         // ignore: unrelated_type_equality_checks
         waterconnection.previousReading =
-            (waterconnection.om_1Ctrl.text != "" &&
-                    waterconnection.om_2Ctrl.text != "" &&
-                    waterconnection.om_3Ctrl.text != "" &&
-                    waterconnection.om_4Ctrl.text != "" &&
-                    waterconnection.om_5Ctrl.text != "")
-                ? int.parse(waterconnection.om_1Ctrl.text +
+            (waterconnection.om_1Ctrl.text == "" &&
+                    waterconnection.om_2Ctrl.text == "" &&
+                    waterconnection.om_3Ctrl.text == "" &&
+                    waterconnection.om_4Ctrl.text == "" &&
+                    waterconnection.om_5Ctrl.text == "")
+                ? 0 : int.parse(waterconnection.om_1Ctrl.text +
                     waterconnection.om_2Ctrl.text +
                     waterconnection.om_3Ctrl.text +
                     waterconnection.om_4Ctrl.text +
-                    waterconnection.om_5Ctrl.text)
-                : 000000;
+                    waterconnection.om_5Ctrl.text);
       } else {
         waterconnection.previousReadingDate =
             waterconnection.meterInstallationDate;

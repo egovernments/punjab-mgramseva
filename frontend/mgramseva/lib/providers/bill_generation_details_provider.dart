@@ -27,6 +27,7 @@ import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/widgets/ErrorMessagePAge.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart';
 
 import 'common_provider.dart';
 
@@ -130,46 +131,15 @@ class BillGenerationProvider with ChangeNotifier {
       billGenerateDetails.om_5Ctrl.text =
           meterRes.meterReadings!.first.currentReading.toString()[4];
       prevReadingDate = meterRes.meterReadings!.first.currentReadingDate;
-    } else if (waterconnection.additionalDetails!.meterReading != null) {
-      if(waterconnection.additionalDetails!.meterReading.toString().length == 1 && waterconnection.additionalDetails!.meterReading.toString() != '0'){
-        billGenerateDetails.om_1Ctrl.text = '0';
-        billGenerateDetails.om_2Ctrl.text = '0';
-        billGenerateDetails.om_3Ctrl.text = '0';
-        billGenerateDetails.om_4Ctrl.text = '0';
-        billGenerateDetails.om_5Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[0];
-      }
-      else if(waterconnection.additionalDetails!.meterReading.toString().length == 2){
-        billGenerateDetails.om_1Ctrl.text = '0';
-        billGenerateDetails.om_2Ctrl.text = '0';
-        billGenerateDetails.om_3Ctrl.text = '0';
-        billGenerateDetails.om_4Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[0];
-        billGenerateDetails.om_5Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[1];
-      }
-      else if(waterconnection.additionalDetails!.meterReading.toString().length == 3){
-        billGenerateDetails.om_1Ctrl.text = '0';
-        billGenerateDetails.om_2Ctrl.text = '0';
-        billGenerateDetails.om_3Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[0];
-        billGenerateDetails.om_4Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[1];
-        billGenerateDetails.om_5Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[2];
-      }
-      else if(waterconnection.additionalDetails!.meterReading.toString().length == 4){
-        billGenerateDetails.om_1Ctrl.text = '0';
-        billGenerateDetails.om_2Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[0];
-        billGenerateDetails.om_3Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[1];
-        billGenerateDetails.om_4Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[2];
-        billGenerateDetails.om_5Ctrl.text = waterconnection.additionalDetails!.meterReading.toString()[3];
-      }else {
-        billGenerateDetails.om_1Ctrl.text =
-        waterconnection.additionalDetails!.meterReading.toString()[0];
-        billGenerateDetails.om_2Ctrl.text =
-        waterconnection.additionalDetails!.meterReading.toString()[1];
-        billGenerateDetails.om_3Ctrl.text =
-        waterconnection.additionalDetails!.meterReading.toString()[2];
-        billGenerateDetails.om_4Ctrl.text =
-        waterconnection.additionalDetails!.meterReading.toString()[3];
-        billGenerateDetails.om_5Ctrl.text =
-        waterconnection.additionalDetails!.meterReading.toString()[4];
-      }
+    } else if (waterconnection.additionalDetails!.meterReading.toString() != '0') {
+          var previousMeterReading = waterconnection.additionalDetails!.meterReading.toString()
+              .padLeft(5 , '0' );
+          print(previousMeterReading);
+          billGenerateDetails.om_1Ctrl.text = previousMeterReading.toString()[0];
+          billGenerateDetails.om_2Ctrl.text = previousMeterReading.toString()[1];
+          billGenerateDetails.om_3Ctrl.text = previousMeterReading.toString()[2];
+          billGenerateDetails.om_4Ctrl.text = previousMeterReading.toString()[3];
+          billGenerateDetails.om_5Ctrl.text = previousMeterReading.toString()[4];
       prevReadingDate = waterconnection.previousReadingDate;
     }
   }
