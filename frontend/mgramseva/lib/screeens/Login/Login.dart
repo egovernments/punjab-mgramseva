@@ -26,10 +26,32 @@ class _LoginState extends State<Login> {
   var passwordcontroller = new TextEditingController();
   final formKey = GlobalKey<FormState>();
   var autoValidation = false;
+  var phoneNumberAutoValidation = false;
+  FocusNode _numberFocus = new FocusNode();
 
   @override
   void initState() {
+    _numberFocus.addListener(_onFocusChange);
     super.initState();
+  }
+
+  @override
+  dispose(){
+    _numberFocus.removeListener(_onFocusChange);
+    super.dispose();
+  }
+
+  void _onFocusChange(){
+    if(!_numberFocus.hasFocus){
+      setState(() {
+        phoneNumberAutoValidation = true;
+      });
+    }
+  }
+
+  void onChangeOfInput(value){
+    setState(() {
+    });
   }
 
   saveandLogin(context) async {
@@ -65,9 +87,12 @@ class _LoginState extends State<Login> {
                   inputFormatter: [
                     FilteringTextInputFormatter.allow(RegExp("[0-9]"))
                   ],
+                  focusNode: _numberFocus,
+                  autoValidation: phoneNumberAutoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
                   maxLength: 10,
                   validator: Validators.mobileNumberValidator,
                   textInputType: TextInputType.phone,
+                  onChange: onChangeOfInput,
                 ),
                 BuildTextField(
                   i18.login.LOGIN_PASSWORD,
@@ -75,6 +100,7 @@ class _LoginState extends State<Login> {
                   isRequired: true,
                   obscureText: true,
                   maxLines: 1,
+                  onChange: onChangeOfInput,
                 ),
                 GestureDetector(
                   onTap: () =>
@@ -94,7 +120,7 @@ class _LoginState extends State<Login> {
                 Padding(
                     padding: EdgeInsets.only(top: 15, bottom: 15, left: 8, right: 8),
                     child: Button(
-                        i18.common.CONTINUE, () => saveandLogin(context))),
+                        i18.common.CONTINUE, buttonStatus ? () => saveandLogin(context) : null)),
                 SizedBox(
                   height: 10,
                 )
@@ -112,4 +138,6 @@ class _LoginState extends State<Login> {
       }
     }));
   }
+
+  bool get buttonStatus => userNamecontroller.text.trim().length == 10 && userNamecontroller.text.trim().length > 1;
 }
