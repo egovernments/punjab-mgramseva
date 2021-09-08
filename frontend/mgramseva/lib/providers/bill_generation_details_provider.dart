@@ -134,7 +134,6 @@ class BillGenerationProvider with ChangeNotifier {
     } else if (waterconnection.additionalDetails!.meterReading.toString() != '0') {
           var previousMeterReading = waterconnection.additionalDetails!.meterReading.toString()
               .padLeft(5 , '0' );
-          print(previousMeterReading);
           billGenerateDetails.om_1Ctrl.text = previousMeterReading.toString()[0];
           billGenerateDetails.om_2Ctrl.text = previousMeterReading.toString()[1];
           billGenerateDetails.om_3Ctrl.text = previousMeterReading.toString()[2];
