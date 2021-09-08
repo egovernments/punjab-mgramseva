@@ -35,7 +35,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         child: Padding(
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.all(8.0),
             child: Column(
               children: [
                 Padding(
@@ -87,13 +87,13 @@ class HouseConnectionDetailCard extends StatelessWidget {
                           ? waterconnection!.additionalDetails!.doorNo! != ""
                               ? waterconnection!.additionalDetails!.doorNo! +
                                   ', '
-                              : " "
+                              : ""
                           : "") +
                       (waterconnection!.additionalDetails!.street != null
                           ? waterconnection!.additionalDetails!.street! != ""
                               ? waterconnection!.additionalDetails!.street! +
                                   ', '
-                              : " "
+                              : ""
                           : "") +
                       waterconnection!.additionalDetails!.locality!,
                   context,
