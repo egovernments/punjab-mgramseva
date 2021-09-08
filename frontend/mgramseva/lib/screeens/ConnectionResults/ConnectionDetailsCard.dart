@@ -2,10 +2,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
+import 'package:provider/provider.dart';
 
 class SearchConnectionDetailCard extends StatelessWidget {
   final WaterConnections waterconnections;
@@ -57,6 +59,8 @@ class SearchConnectionDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var commonProvider = Provider.of<CommonProvider>(context,
+        listen: false);
     return LayoutBuilder(builder: (context, constraints) {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Padding(
@@ -189,7 +193,9 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                             : ""
                                         : "") +
                                     waterconnections.waterConnection![index]
-                                        .additionalDetails!.locality!,
+                                        .additionalDetails!.locality!
+                                    + ', ' + ApplicationLocalizations.of(context)
+                                    .translate(commonProvider.userDetails!.selectedtenant!.code!),
                                 context,
                                 constraints),
                             SizedBox(

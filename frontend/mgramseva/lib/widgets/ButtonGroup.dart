@@ -38,7 +38,7 @@ class ButtonGroup extends StatelessWidget {
                         style: ButtonStyle(
                           alignment: Alignment.center,
                           padding: MaterialStateProperty.all(
-                              EdgeInsets.symmetric(vertical: 0)),
+                              EdgeInsets.symmetric(vertical: 8)),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(0.0),
@@ -49,7 +49,7 @@ class ButtonGroup extends StatelessWidget {
                         ),
                         icon: (Image.asset('assets/png/whats_app.png')),
                         label: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          padding: const EdgeInsets.symmetric(vertical: 5),
                           child: Text(
                             ApplicationLocalizations.of(context)
                                 .translate(i18.common.SHARE_BILL),
