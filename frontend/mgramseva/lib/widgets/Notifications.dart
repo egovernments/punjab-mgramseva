@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/Events/events_List.dart';
-import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
@@ -64,7 +63,7 @@ class _NotificationsState extends State<Notifications> {
                                         .translate(widget.event!.description!.trim()),
                                     maxLines: 4,
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w400,
                                     color: Theme.of(context).primaryColorLight),
                                     textAlign: TextAlign.left,
@@ -93,6 +92,8 @@ class _NotificationsState extends State<Notifications> {
                                             .translate(
                                                 i18.generateBillDetails.TODAY),
                                     style: TextStyle(
+                                      fontSize: 14,
+                                        fontWeight: FontWeight.w400,
                                         color: Theme.of(context).primaryColorLight),
                                   ))
                             ],

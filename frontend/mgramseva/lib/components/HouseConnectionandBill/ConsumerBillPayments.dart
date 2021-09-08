@@ -145,6 +145,8 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                   ApplicationLocalizations.of(context)
                                       .translate(i18.consumerReciepts
                                           .CONSUMER_RECIEPT_SHARE_RECEIPT),
+                                  style: TextStyle(fontWeight: FontWeight.w400,
+                                    fontSize: 16,),
                                 ),
                               ),
                             ),

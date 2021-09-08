@@ -62,7 +62,8 @@ class MeterReading extends StatelessWidget {
         color: Colors.transparent,
         child: LayoutBuilder(builder: (context, constraints) {
           return Container(
-              margin: const EdgeInsets.only(
+              margin: constraints.maxWidth > 760 ? const EdgeInsets.only(
+                  top: 5.0, bottom: 5, right: 20, left: 20) : const EdgeInsets.only(
                   top: 5.0, bottom: 5, right: 8, left: 8),
               child: constraints.maxWidth > 760
                   ? Row(children: _getConatiner(constraints, context))

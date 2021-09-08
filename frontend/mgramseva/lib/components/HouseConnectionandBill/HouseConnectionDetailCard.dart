@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
+import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/global_variables.dart';
+import 'package:provider/provider.dart';
 
 class HouseConnectionDetailCard extends StatelessWidget {
   final WaterConnection? waterconnection;
@@ -33,9 +36,11 @@ class HouseConnectionDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var commonProvider = Provider.of<CommonProvider>(context,
+        listen: false);
     return Card(
         child: Padding(
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.all(8.0),
             child: Column(
               children: [
                 Padding(
@@ -87,15 +92,17 @@ class HouseConnectionDetailCard extends StatelessWidget {
                           ? waterconnection!.additionalDetails!.doorNo! != ""
                               ? waterconnection!.additionalDetails!.doorNo! +
                                   ', '
-                              : " "
+                              : ""
                           : "") +
                       (waterconnection!.additionalDetails!.street != null
                           ? waterconnection!.additionalDetails!.street! != ""
                               ? waterconnection!.additionalDetails!.street! +
                                   ', '
-                              : " "
+                              : ""
                           : "") +
-                      waterconnection!.additionalDetails!.locality!,
+                      waterconnection!.additionalDetails!.locality!
+                  + ', ' + ApplicationLocalizations.of(context)
+                      .translate(commonProvider.userDetails!.selectedtenant!.code!),
                   context,
                 ),
                 _getLabeltext(i18.searchWaterConnection.PROPERTY_TYPE,

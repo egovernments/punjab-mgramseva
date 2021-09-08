@@ -197,6 +197,8 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                                       .translate(i18
                                                           .generateBillDetails
                                                           .GENERATE_BILL_LABEL),
+                                                    style: TextStyle(fontWeight: FontWeight.w400,
+                                                      fontSize: 16,)
                                                 ),
                                               ),
                                             )),
@@ -225,11 +227,7 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                   }),
                       SizedBox(
                         height: 10,
-                      ),
-                      billpaymentsProvider.isfirstdemand == false
-                          ? Info(ApplicationLocalizations.of(context)
-                              .translate(i18.generateBillDetails.INFO_TEXT))
-                          : Text("")
+                      )
                     ],
                   )))
         ],

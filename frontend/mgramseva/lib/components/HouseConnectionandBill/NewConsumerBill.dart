@@ -231,6 +231,8 @@ class NewConsumerBill extends StatelessWidget {
                                                         context)
                                                     .translate(
                                                         i18.common.SHARE_BILL),
+                                                  style: TextStyle(fontWeight: FontWeight.w400,
+                                                    fontSize: 16,)
                                               ),
                                             ),
                                           ),

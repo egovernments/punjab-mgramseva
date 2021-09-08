@@ -114,7 +114,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
       Card(
           child: Padding(
               padding:
-                  const EdgeInsets.only(left: 24, top: 8, bottom: 8, right: 10),
+                  const EdgeInsets.all(8.0),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -126,7 +126,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
       Card(
         child: Padding(
           padding:
-              const EdgeInsets.only(left: 24, top: 8, bottom: 8, right: 10),
+              const EdgeInsets.all(8.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Consumer<CollectPaymentProvider>(

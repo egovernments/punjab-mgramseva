@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_styles.dart';
 
-class ShortButton extends StatelessWidget {
+class SideButton extends StatelessWidget {
   final String label;
-  final VoidCallback? callBack;
-  ShortButton(this.label, this.callBack);
+  final Function widgetfunction;
+  SideButton(this.label, this.widgetfunction);
 
   @override
   Widget build(BuildContext context) {
@@ -15,16 +15,14 @@ class ShortButton extends StatelessWidget {
           child: Container(
             decoration: CommonStyles.buttonBottomDecoration,
             child: new ElevatedButton(
-              // style: ElevatedButton.styleFrom(
-              //   minimumSize: Size(double.infinity, 30),
-              //   padding: EdgeInsets.all(15),
-              // ),
-              child: new Text(
-                  ApplicationLocalizations.of(context).translate(label),
-                   style:
-                       TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
-            ),
-              onPressed: callBack
+                child: new Text(
+                    ApplicationLocalizations.of(context).translate(label),
+                    style:
+                    TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
+                ),
+                onPressed: () {
+                  widgetfunction();
+                },
             ),
           ));
     });
