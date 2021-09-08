@@ -52,18 +52,21 @@ class _NotificationsState extends State<Notifications> {
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                         fontSize: 16,
-                                        fontWeight: FontWeight.w700),
+                                        fontWeight: FontWeight.w700,
+                                        color: Theme.of(context).primaryColorDark),
                                   )),
                               new Container(
+                                padding: EdgeInsets.all(4),
                                   width:
                                       MediaQuery.of(context).size.width / 1.2,
                                   child: Text(
                                     ApplicationLocalizations.of(context)
-                                        .translate(widget.event!.description!),
+                                        .translate(widget.event!.description!.trim()),
                                     maxLines: 4,
                                     style: TextStyle(
                                         fontSize: 16,
-                                        fontWeight: FontWeight.w400),
+                                        fontWeight: FontWeight.w400,
+                                    color: Theme.of(context).primaryColorLight),
                                     textAlign: TextAlign.left,
                                   )),
                               Padding(
@@ -90,7 +93,7 @@ class _NotificationsState extends State<Notifications> {
                                             .translate(
                                                 i18.generateBillDetails.TODAY),
                                     style: TextStyle(
-                                        color: Theme.of(context).primaryColor),
+                                        color: Theme.of(context).primaryColorLight),
                                   ))
                             ],
                           )))),

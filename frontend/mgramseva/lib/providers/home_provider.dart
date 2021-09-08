@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/screeens/HomeWalkThrough/HomeWalkThroughList.dart';
+import 'package:mgramseva/screeens/Home/HomeWalkThrough/HomeWalkThroughList.dart';
 import 'package:mgramseva/utils/role_actions.dart';
 
 class HomeProvider with ChangeNotifier {

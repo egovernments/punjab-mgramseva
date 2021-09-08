@@ -7,7 +7,7 @@ import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/customAppbar.dart';
+import 'package:mgramseva/widgets/customAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';

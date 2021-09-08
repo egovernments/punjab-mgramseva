@@ -24,7 +24,7 @@ import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
-import 'customAppbar.dart';
+import '../../widgets/customAppbar.dart';
 
 class PaymentFeedBack extends StatefulWidget {
   final Map query;

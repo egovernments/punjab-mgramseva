@@ -29,7 +29,7 @@ import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/Home.dart';
+import 'package:mgramseva/screeens/Home/Home.dart';
 
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
 import 'package:mgramseva/theme.dart';
