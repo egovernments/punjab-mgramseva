@@ -247,7 +247,7 @@ public class DemandService {
 			if( !StringUtils.isEmpty(messageString)) {
 					billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
 					+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
-			messageString = messageString.replace("{ownername}", owner.getUserName());
+			messageString = messageString.replace("{ownername}", owner.getName());
 			messageString = messageString.replace("{Period}", billCycle);
 			messageString = messageString.replace("{consumerno}", consumerCode);
 			messageString = messageString.replace("{billamount}", demandDetails.stream().map(DemandDetail::getTaxAmount)
