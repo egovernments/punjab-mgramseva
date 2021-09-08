@@ -56,7 +56,6 @@ class BasicDateField extends StatelessWidget {
             onShowPicker: (context, currentValue) {
               var languageProvider =
                   Provider.of<LanguageProvider>(context, listen: false);
-              print(languageProvider.selectedLanguage?.value);
               return showDatePicker(
                 context: context,
                 locale: Locale(
