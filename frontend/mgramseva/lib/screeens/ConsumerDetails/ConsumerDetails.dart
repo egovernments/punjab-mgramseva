@@ -8,6 +8,7 @@ import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/WalkFlowContainer.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/walkthrough.dart';
 import 'package:mgramseva/screeens/GenerateBill/widgets/MeterReading.dart';
+import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/customAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -223,6 +224,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               textInputType: TextInputType.number,
                               maxLength: 10,
                               focusNode: _numberFocus,
+                              validator: Validators.mobileNumberValidator,
                               autoValidation: phoneNumberAutoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
                               inputFormatter: [
                                 FilteringTextInputFormatter.allow(
