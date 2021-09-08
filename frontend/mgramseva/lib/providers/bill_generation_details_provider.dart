@@ -303,8 +303,8 @@ class BillGenerationProvider with ChangeNotifier {
                     "Bill": [billList.bill!.first]
                   }, {
                     "key": waterconnection.connectionType == 'Metered'
-                        ? "ws-receipt"
-                        : "ws-receipt-nm",
+                        ? "ws-bill"
+                        : "ws-bill-nm",
                     "tenantId":
                         commonProvider.userDetails!.selectedtenant!.code,
                   }, billList.bill!.first.mobileNumber, billList.bill!.first,
@@ -314,8 +314,8 @@ class BillGenerationProvider with ChangeNotifier {
                     "Bill": [billList.bill!.first],
                   }, {
                     "key": waterconnection.connectionType == 'Metered'
-                        ? "ws-receipt"
-                        : "ws-receipt-nm",
+                        ? "ws-bill"
+                        : "ws-bill-nm",
                     "tenantId":
                         commonProvider.userDetails!.selectedtenant!.code,
                   }, billList.bill!.first.mobileNumber, billList.bill!.first,
