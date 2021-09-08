@@ -44,6 +44,7 @@ import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,6 +76,9 @@ public class SchedulerService {
 
 	@Autowired
 	private Producer producer;
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	public static final String USREVENTS_EVENT_TYPE = "SYSTEMGENERATED";
 	public static final String USREVENTS_EVENT_NAME = "Challan";
@@ -229,7 +233,7 @@ public class SchedulerService {
 										&& !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
 									String message = messageMap.get(NotificationUtil.MSG_KEY);
 
-									message = message.replace("{NEW_EXP_LINK}", config.getExpenditureLink());
+									message = message.replace("{NEW_EXP_LINK}", getShortenedUrl(config.getExpenditureLink()));
 									message = message.replace("{GPWSC}", tenantId); // TODO Replace
 									// <GPWSC> with
 									// value.
@@ -246,6 +250,26 @@ public class SchedulerService {
 				}
 			});
 		}
+	}
+
+	private CharSequence getShortenedUrl(String url) {
+		String res = null;
+		HashMap<String,String> body = new HashMap<>();
+		body.put("url",url);
+		StringBuilder builder = new StringBuilder(config.getUrlShortnerHost());
+		builder.append(config.getUrlShortnerEndpoint());
+		try {
+			res = restTemplate.postForObject(builder.toString(), body, String.class);
+
+		}catch(Exception e) {
+			 log.error("Error while shortening the url: " + url,e);
+			
+		}
+		if(StringUtils.isEmpty(res)){
+			log.error("URL_SHORTENING_ERROR","Unable to shorten url: "+url); ;
+			return url;
+		}
+		else return res;
 	}
 
 	public EventRequest sendGenerateDemandNotification(RequestInfo requestInfo, String tenantId) {
@@ -370,7 +394,7 @@ public class SchedulerService {
 								if (messageMap != null
 										&& !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
 									String message = messageMap.get(NotificationUtil.MSG_KEY);
-									message = message.replace("{EXP_MRK_LINK}", config.getExpenseBillMarkPaidLink());
+									message = message.replace("{EXP_MRK_LINK}", getShortenedUrl(config.getExpenseBillMarkPaidLink()));
 
 									message = message.replace("{GPWSC}", tenantId); // TODO Replace
 									// <GPWSC> with
@@ -487,7 +511,7 @@ public class SchedulerService {
 									String uuidUsername = (String) map.getValue();
 									String message = formatMonthSummaryMessage(requestInfo, tenantId,
 											messageMap.get(NotificationUtil.MSG_KEY));
-									message = message.replace("{LINK}", config.getMonthDashboardLink());
+									message = message.replace("{LINK}", getShortenedUrl(config.getMonthDashboardLink()));
 									message = message.replace("{GPWSC}", tenantId); // TODO Replace
 									// <GPWSC> with
 									// value
@@ -581,7 +605,7 @@ public class SchedulerService {
 									String message = formatPendingCollectionMessage(requestInfo, tenantId,
 											messageMap.get(NotificationUtil.MSG_KEY));
 									message = message.replace("{PENDING_COL_LINK}",
-											config.getMonthRevenueDashboardLink());
+											getShortenedUrl(config.getMonthRevenueDashboardLink()));
 									message = message.replace("{GPWSC}", tenantId);
 									message = message.replace("{ownername}", uuidUsername);
 									message = message.replace("{Date}", LocalDate.now().toString());

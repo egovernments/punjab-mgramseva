@@ -203,4 +203,12 @@ public class WSCalculationConfiguration {
 
 	@Value("${bulk.demand.link}")
 	private String bulkDemandLink;
+	
+	//URL Shorting
+	
+    @Value("${egov.url.shortner.host}")
+    private String urlShortnerHost;
+    
+    @Value("${egov.url.shortner.endpoint}")
+    private String urlShortnerEndpoint;
 }
