@@ -79,7 +79,8 @@ class ConsumerProvider with ChangeNotifier {
     });
 
     property.address.gpNameCtrl.text =
-        commonProvider.userDetails!.selectedtenant!.name! +
+        ApplicationLocalizations.of(navigatorKey.currentContext!)
+                .translate(commonProvider.userDetails!.selectedtenant!.code!) +
             ' - ' +
             commonProvider.userDetails!.selectedtenant!.city!.code!;
   }
@@ -303,10 +304,11 @@ class ConsumerProvider with ChangeNotifier {
           (element) => element.code == property.address.locality!.code);
       onChangeOflocaity(property.address.localityCtrl);
 
-      property.address.gpNameCtrl.text =
-          commonProvider.userDetails!.selectedtenant!.name! +
-              ' - ' +
-              commonProvider.userDetails!.selectedtenant!.city!.code!;
+      property.address.gpNameCtrl
+          .text = ApplicationLocalizations.of(navigatorKey.currentContext!)
+              .translate(commonProvider.userDetails!.selectedtenant!.code!) +
+          ' - ' +
+          commonProvider.userDetails!.selectedtenant!.city!.code!;
       streamController.add(property);
       notifyListeners();
     } catch (e) {
@@ -358,8 +360,9 @@ class ConsumerProvider with ChangeNotifier {
       return (boundaryList).map((value) {
         return DropdownMenuItem(
           value: value,
-          child: new Text(ApplicationLocalizations.of(navigatorKey.currentContext!)
-              .translate(value.code!)),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                  .translate(value.code!)),
         );
       }).toList();
     }
