@@ -5,6 +5,7 @@ import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/forgot_password_repo.dart';
 import 'package:mgramseva/repository/reset_password_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/screeens/PasswordSuccess/Passwordsuccess.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -246,13 +247,9 @@ class _ResetPasswordState extends State<ResetPassword> {
             await ResetPasswordRepository().forgotPassword(body, context);
         Navigator.pop(context);
         if (resetResponse != null) {
-          Navigator.pushReplacementNamed(context, Routes.SUCCESS_VIEW,
-              arguments: SuccessHandler(
-                i18.password.CHANGE_PASSWORD_SUCCESS,
-                i18.password.CHANGE_PASSWORD_SUCCESS_SUBTEXT,
-                i18.common.BACK_HOME,
-                Routes.SUCCESS_VIEW,
-              ));
+          Navigator.push(context, MaterialPageRoute(
+              builder: (_) => PasswordSuccess(),
+              settings: RouteSettings(name: '/resetPasswordSuccess')));
         }
       } catch (e, s) {
         Navigator.pop(context);
