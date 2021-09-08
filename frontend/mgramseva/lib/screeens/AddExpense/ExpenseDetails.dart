@@ -46,9 +46,14 @@ class ExpenseDetails extends StatefulWidget {
 }
 
 class _ExpenseDetailsState extends State<ExpenseDetails> {
+
+  var phoneNumberAutoValidation = false;
+  FocusNode _numberFocus = new FocusNode();
+
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    _numberFocus.addListener(_onFocusChange);
     super.initState();
   }
 
@@ -67,6 +72,18 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
       }).toList());
   }
 
+  dispose() {
+    _numberFocus.addListener(_onFocusChange);
+    super.dispose();
+  }
+
+  void _onFocusChange(){
+    if(!_numberFocus.hasFocus){
+      setState(() {
+        phoneNumberAutoValidation = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,6 +242,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 prefixText: '+91 - ',
                                 textInputType: TextInputType.number,
                                 validator: Validators.mobileNumberValidator,
+                                focusNode: _numberFocus,
+                                autoValidation: phoneNumberAutoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
                                 maxLength: 10,
                                 inputFormatter: [
                                   FilteringTextInputFormatter.allow(

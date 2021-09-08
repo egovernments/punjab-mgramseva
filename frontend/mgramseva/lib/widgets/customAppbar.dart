@@ -176,26 +176,29 @@ class _CustomAppBarState extends State<CustomAppBar> {
         .where((element) => r.contains(element.code?.trim()))
         .toList();
     return GestureDetector(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Consumer<CommonProvider>(
-                builder: (_, commonProvider, child) =>
-                    commonProvider.userDetails!.selectedtenant == null
-                        ? Text("")
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                                Text(ApplicationLocalizations.of(context)
-                                    .translate(commonProvider
-                                        .userDetails!.selectedtenant!.code!)),
-                                Text(ApplicationLocalizations.of(context)
-                                    .translate(commonProvider.userDetails!
-                                        .selectedtenant!.city!.code!))
-                              ])),
-            Icon(Icons.arrow_drop_down)
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 5, right: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Consumer<CommonProvider>(
+                  builder: (_, commonProvider, child) =>
+                      commonProvider.userDetails!.selectedtenant == null
+                          ? Text("")
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                  Text(ApplicationLocalizations.of(context)
+                                      .translate(commonProvider
+                                          .userDetails!.selectedtenant!.code!)),
+                                  Text(ApplicationLocalizations.of(context)
+                                      .translate(commonProvider.userDetails!
+                                          .selectedtenant!.city!.code!))
+                                ])),
+              Icon(Icons.arrow_drop_down)
+            ],
+          ),
         ),
         onTap: () => showdialog(result));
   }
@@ -206,6 +209,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     return AppBar(
+      titleSpacing: 0,
       title: Image(
           width: 130,
           image: NetworkImage(

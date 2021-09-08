@@ -31,6 +31,7 @@ class BuildTextField extends StatefulWidget {
   final Widget? prefixIcon;
   final String? placeHolder;
   final GlobalKey? contextkey;
+  final AutovalidateMode? autoValidation;
 
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
@@ -56,7 +57,7 @@ class BuildTextField extends StatefulWidget {
       this.prefixIcon,
       this.placeHolder,
       this.contextkey,
-      this.requiredMessage});
+      this.requiredMessage, this.autoValidation});
 
   @override
   State<StatefulWidget> createState() => _BuildTextField();
@@ -85,6 +86,7 @@ class _BuildTextField extends State<BuildTextField> {
         maxLength: widget.maxLength,
         maxLines: widget.maxLines,
         focusNode: widget.focusNode,
+        autovalidateMode: widget.autoValidation,
         textCapitalization:
             widget.textCapitalization ?? TextCapitalization.none,
         obscureText: widget.obscureText ?? false,

@@ -22,6 +22,27 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   var mobileNumber = new TextEditingController();
   final formKey = GlobalKey<FormState>();
   var autoValidation = false;
+  var phoneNumberAutoValidation = false;
+  FocusNode _numberFocus = new FocusNode();
+
+  @override
+  void initState() {
+    _numberFocus.addListener(_onFocusChange);
+    super.initState();
+  }
+
+  dispose() {
+    _numberFocus.addListener(_onFocusChange);
+    super.dispose();
+  }
+
+  void _onFocusChange(){
+    if(!_numberFocus.hasFocus){
+      setState(() {
+        phoneNumberAutoValidation = true;
+      });
+    }
+  }
 
   saveInputandcall(context) async {
     print(context);
@@ -78,6 +99,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     inputFormatter: [
                       FilteringTextInputFormatter.allow(RegExp("[0-9]"))
                     ],
+                    focusNode: _numberFocus,
+                    autoValidation: phoneNumberAutoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
                     maxLength: 10,
                     validator: Validators.mobileNumberValidator,
                     textInputType: TextInputType.phone,
