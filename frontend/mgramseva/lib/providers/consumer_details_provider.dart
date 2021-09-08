@@ -91,7 +91,6 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   void onChangeOfCheckBox(bool? value) {
-    print(waterconnection.status);
     if (value == true)
       waterconnection.status = 'Inactive';
     else
@@ -102,7 +101,6 @@ class ConsumerProvider with ChangeNotifier {
   Future<void> setWaterConnection(data) async {
     isEdit = true;
     waterconnection = data;
-    print(waterconnection.status);
     waterconnection.getText();
 
     List<Demand>? demand = await ConsumerRepository().getDemandDetails({

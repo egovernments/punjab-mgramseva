@@ -9,6 +9,7 @@ import 'package:mgramseva/screeens/Home/HomeCard.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/role_actions.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/footer.dart';
@@ -27,18 +28,12 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   void initState() {
-    var homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    homeProvider.homeWalkthrougList =
-        HomeWalkThrough().homeWalkThrough.map((e) {
-      e.key = GlobalKey();
-      return e;
-    }).toList();
-
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
   afterViewBuild() {
+    Provider.of<TenantsProvider>(context, listen: false)..getTenants();
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
 
@@ -82,7 +77,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     var tenantProvider = Provider.of<TenantsProvider>(context, listen: false);
-
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     return Scaffold(
@@ -94,46 +88,64 @@ class _HomeState extends State<Home> {
         body: SingleChildScrollView(
             child: LayoutBuilder(builder: (context, constraint) {
           return Consumer<CommonProvider>(
-              builder: (_, commonProvider, child) => tenantProvider.tenants != null ?  _buildHome(constraint) : StreamBuilder(
-                  stream: tenantProvider.streamController.stream,
-                  builder: (context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
+              builder: (_, commonProvider, child) => tenantProvider.tenants !=
+                      null
+                  ? Consumer<CommonProvider>(builder: (_, userProvider, child) {
+                      Provider.of<HomeProvider>(context, listen: false)
+                        ..setwalkthrough(
+                            HomeWalkThrough().homeWalkThrough.map((e) {
+                          e.key = GlobalKey();
+                          return e;
+                        }).toList());
                       return _buildHome(constraint);
-                    } else if (snapshot.hasError) {
-                      return Notifiers.networkErrorPage(context,
-                          () => languageProvider.getLocalizationData(context));
-                    } else {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
-                          return Loaders.CircularLoader();
-                        case ConnectionState.active:
-                          return Loaders.CircularLoader();
-                        default:
-                          return Container();
-                      }
-                    }
-                  }));
+                    })
+                  : StreamBuilder(
+                      stream: tenantProvider.streamController.stream,
+                      builder: (context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          return Consumer<CommonProvider>(
+                              builder: (_, userProvider, child) {
+                            Provider.of<HomeProvider>(context, listen: false)
+                              ..setwalkthrough(
+                                  HomeWalkThrough().homeWalkThrough.map((e) {
+                                e.key = GlobalKey();
+                                return e;
+                              }).toList());
+                            return _buildHome(constraint);
+                          });
+                        } else if (snapshot.hasError) {
+                          return Notifiers.networkErrorPage(
+                              context,
+                              () => languageProvider
+                                  .getLocalizationData(context));
+                        } else {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.waiting:
+                              return Loaders.CircularLoader();
+                            case ConnectionState.active:
+                              return Loaders.CircularLoader();
+                            default:
+                              return Container();
+                          }
+                        }
+                      }));
         })));
   }
 
-  Widget _buildHome(BoxConstraints constraint){
+  Widget _buildHome(BoxConstraints constraint) {
     var homeProvider = Provider.of<HomeProvider>(context, listen: false);
 
     return _buildView(
       homeProvider,
       constraint.maxWidth < 720
           ? 160 *
-          ((homeProvider.homeWalkthrougList.length == 1
-              ? 3
-              : homeProvider
-              .homeWalkthrougList.length /
-              3)
-              .round())
-              .toDouble()
+              ((homeProvider.homeWalkthrougList.length == 1
+                          ? 3
+                          : homeProvider.homeWalkthrougList.length / 3)
+                      .round())
+                  .toDouble()
           : 200 *
-          ((homeProvider.homeWalkthrougList.length / 3)
-              .round())
-              .toDouble(),
+              ((homeProvider.homeWalkthrougList.length / 3).round()).toDouble(),
       Container(
           margin: constraint.maxWidth < 720
               ? EdgeInsets.all(0)

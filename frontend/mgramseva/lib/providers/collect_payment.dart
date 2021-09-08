@@ -128,7 +128,11 @@ class CollectPaymentProvider with ChangeNotifier {
                   "Payments": [paymentDetails.payments!.first]
                 },
                 {
-                  "key": "consolidatedreceipt",
+                  "key": paymentDetails.payments?.first.paymentDetails?.first
+                              .bill?.waterConnection?.connectionType ==
+                          'Metered'
+                      ? "ws-receipt"
+                      : "ws-receipt-nm",
                   "tenantId": commonProvider.userDetails!.selectedtenant!.code,
                 },
                 paymentDetails.payments!.first.mobileNumber,
@@ -137,7 +141,11 @@ class CollectPaymentProvider with ChangeNotifier {
             callBackwatsapp: () => commonProvider.getFileFromPDFPaymentService({
               "Payments": [paymentDetails..payments!]
             }, {
-              "key": "consolidatedreceipt",
+              "key": paymentDetails.payments?.first.paymentDetails?.first.bill
+                          ?.waterConnection?.connectionType ==
+                      'Metered'
+                  ? "ws-receipt"
+                  : "ws-receipt-nm",
               "tenantId": commonProvider.userDetails!.selectedtenant!.code,
             }, paymentDetails.payments!.first.mobileNumber,
                 paymentDetails.payments!.first, "Share"),

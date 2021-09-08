@@ -44,7 +44,7 @@ class BillGenerationProvider with ChangeNotifier {
   var selectedBillCycle;
   var meterReadingDate;
   var prevReadingDate;
- 
+
   setModel(String? id, WaterConnection? waterConnection,
       BuildContext context) async {
     billGenerateDetails = BillGenerationDetails();
@@ -302,7 +302,9 @@ class BillGenerationProvider with ChangeNotifier {
                       .getFileFromPDFBillService({
                     "Bill": [billList.bill!.first]
                   }, {
-                    "key": "consolidatedbill",
+                    "key": waterconnection.connectionType == 'Metered'
+                        ? "ws-receipt"
+                        : "ws-receipt-nm",
                     "tenantId":
                         commonProvider.userDetails!.selectedtenant!.code,
                   }, billList.bill!.first.mobileNumber, billList.bill!.first,
@@ -311,10 +313,12 @@ class BillGenerationProvider with ChangeNotifier {
                       .getFileFromPDFBillService({
                     "Bill": [billList.bill!.first],
                   }, {
-                    "key": "consolidatedbill",
+                    "key": waterconnection.connectionType == 'Metered'
+                        ? "ws-receipt"
+                        : "ws-receipt-nm",
                     "tenantId":
                         commonProvider.userDetails!.selectedtenant!.code,
-                  }, billList!.bill!.first.mobileNumber, billList.bill!.first,
+                  }, billList.bill!.first.mobileNumber, billList.bill!.first,
                           "Share"),
                   backButton: true,
                 );

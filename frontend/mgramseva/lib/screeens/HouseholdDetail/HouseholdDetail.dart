@@ -46,13 +46,11 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   buildDemandView(BillList data) {
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
-
-    print("printing data");
-    print(data.bill);
     return Column(
       children: [
         data.bill!.isEmpty
-            ? (houseHoldProvider.waterConnection!.connectionType == 'Metered' &&  widget.mode == 'collect'
+            ? (houseHoldProvider.waterConnection!.connectionType == 'Metered' &&
+                    widget.mode == 'collect'
                 ? Align(
                     alignment: Alignment.centerRight,
                     child: ShortButton(
@@ -71,7 +69,8 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                         'Metered' &&
                     houseHoldProvider.isfirstdemand == false)
             ? Text("")
-            : NewConsumerBill(data, widget.mode),
+            : NewConsumerBill(
+                data, widget.mode, houseHoldProvider.waterConnection),
         ConsumerBillPayments(houseHoldProvider.waterConnection)
       ],
     );
