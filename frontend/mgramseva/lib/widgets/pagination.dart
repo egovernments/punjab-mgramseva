@@ -65,6 +65,16 @@ class _PaginationState extends State<Pagination> {
               visible:  widget.offSet > widget.limit,
               child: IconButton(onPressed: () => onChangeOfPage(false), icon: Icon(Icons.arrow_left))),
           Text('${widget.offSet} - ${(widget.offSet + widget.limit - 1) <= widget.totalCount ? (widget.offSet + widget.limit -1) : widget.totalCount}'),
+          Padding(
+            padding: EdgeInsets.only(left: 14),
+            child: Wrap(
+              spacing: 14,
+              children: [
+                Text('${ApplicationLocalizations.of(context).translate(i18.common.OF)}'),
+                Text('${widget.totalCount}'),
+              ],
+            ),
+          ),
           Visibility(
               visible: (widget.offSet + widget.limit - 1) < widget.totalCount ,
               child: IconButton(onPressed: onChangeOfPage, icon:Icon(Icons.arrow_right))),

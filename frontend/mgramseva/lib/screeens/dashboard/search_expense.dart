@@ -152,7 +152,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
                 controller: _tabController,
                 children: List.generate(_tabList.length, (index) => LayoutBuilder(
                     builder : (context, constraints) {
-                      var width = constraints.maxWidth < 760 ?  (expenseList is List<ExpensesDetailsModel> ? 180.0 : 140.0)  : (constraints.maxWidth / (expenseList is List<ExpensesDetailsModel> ? 5 : 3));
+                      var width = constraints.maxWidth < 760 ?  (expenseList is List<ExpensesDetailsModel> ? 180.0 : 145.0)  : (constraints.maxWidth / (expenseList is List<ExpensesDetailsModel> ? 5 : 3));
                       var tableData = expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseData(index, expenseList) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>);
                       return tableData == null || tableData.isEmpty ?
                       CommonWidgets.buildEmptyMessage(ApplicationLocalizations.of(context).translate(i18.dashboard.NO_RECORDS_MSG), context)

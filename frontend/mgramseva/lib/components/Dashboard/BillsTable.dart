@@ -159,8 +159,13 @@ class _BillsTable extends State<BillsTable> {
     return Container(
       child: Row(
         children: <Widget>[
-          Text(ApplicationLocalizations.of(context).translate(input),
-              style: style)
+          Expanded(
+            child: Text(ApplicationLocalizations.of(context).translate(input),
+                style: style,
+            maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          )
         ],
       ),
       width: widget.leftColumnWidth,

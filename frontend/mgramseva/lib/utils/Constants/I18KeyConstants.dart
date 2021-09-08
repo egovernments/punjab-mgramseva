@@ -177,6 +177,7 @@ class Common {
   String get NOV => 'NOV';
   String get DEC => 'DEC';
 
+  String get OF => 'OF';
 }
 
 class Password {

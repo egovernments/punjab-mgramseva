@@ -276,8 +276,8 @@ class DashBoardProvider with ChangeNotifier {
   TableDataRow getCollectionRow(WaterConnection connection){
     return TableDataRow(
         [
-          TableData('...${connection.connectionNo?.split('/').last ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}', callBack: onClickOfCollectionNo, apiKey: connection.connectionNo),
-          TableData('${CommonMethods().truncateWithEllipsis(20,  connection.connectionHolders?.first?.name ?? '')}'),
+          TableData('${connection.connectionNo?.split('/').first ?? ''}/...${connection.connectionNo?.split('/').last ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}', callBack: onClickOfCollectionNo, apiKey: connection.connectionNo),
+          TableData('${connection.connectionHolders?.first?.name ?? ''}'),
           TableData('${connection.additionalDetails?.collectionAmount != null ? '₹ ${connection.additionalDetails?.collectionAmount}' : '-'}'),
         ]
     );
