@@ -211,7 +211,28 @@ public class MasterDataService {
 		}
 		
 		Map<String, Object> billingPeriod = new HashMap<>();
-		if (master.get(WSCalculationConstant.ConnectionType).toString()
+		if(!isconnectionCalculation) {
+			
+			Calendar startDate = Calendar.getInstance();
+			Calendar endDate = Calendar.getInstance();
+			startDate.setTimeInMillis(criteria.getFrom());
+			startDate.set(Calendar.MONTH,3);
+			startDate.set(Calendar.DAY_OF_MONTH, startDate.getActualMinimum(Calendar.DAY_OF_MONTH));
+			estimationService.setTimeToBeginningOfDay(startDate);
+			criteria.setFrom(startDate.getTimeInMillis());
+			if (!master.get(WSCalculationConstant.ConnectionType).toString()
+					.equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
+				
+				endDate.setTimeInMillis(criteria.getTo());
+				endDate.set(Calendar.DAY_OF_MONTH, startDate.getActualMaximum(Calendar.DAY_OF_MONTH));
+				estimationService.setTimeToEndofDay(endDate);
+				criteria.setTo(endDate.getTimeInMillis());
+				
+			}
+			billingPeriod.put(WSCalculationConstant.STARTING_DATE_APPLICABLES, criteria.getFrom());
+			billingPeriod.put(WSCalculationConstant.ENDING_DATE_APPLICABLES, criteria.getTo());
+			
+		}else if (master.get(WSCalculationConstant.ConnectionType).toString()
 				.equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
 			
 			billingPeriod.put(WSCalculationConstant.STARTING_DATE_APPLICABLES, criteria.getFrom());
