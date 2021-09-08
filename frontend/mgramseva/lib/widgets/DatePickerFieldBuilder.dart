@@ -58,13 +58,18 @@ class BasicDateField extends StatelessWidget {
                   Provider.of<LanguageProvider>(context, listen: false);
               return showDatePicker(
                 context: context,
-                locale: Locale(
-                    languageProvider.selectedLanguage!.value
-                        .toString()
-                        .split('_')[0],
-                    languageProvider.selectedLanguage!.value
-                        .toString()
-                        .split('_')[1]),
+                locale: languageProvider.selectedLanguage!.value
+                            .toString()
+                            .split('_')[0] ==
+                        'pn'
+                    ? Locale('pa', 'IN')
+                    : Locale(
+                        languageProvider.selectedLanguage!.value
+                            .toString()
+                            .split('_')[0],
+                        languageProvider.selectedLanguage!.value
+                            .toString()
+                            .split('_')[1]),
                 firstDate: firstDate ?? DateTime(1900),
                 initialDate:
                     initialDate ?? lastDate ?? currentValue ?? DateTime.now(),
