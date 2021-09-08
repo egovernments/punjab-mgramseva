@@ -5,9 +5,13 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
+import 'package:mgramseva/widgets/DrawerWrapper.dart';
+import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/widgets/SideBar.dart';
+import 'package:mgramseva/widgets/customAppbar.dart';
 
 class ExpenseResults extends StatelessWidget {
   final SearchResult searchResult;
@@ -19,16 +23,15 @@ class ExpenseResults extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
-        appBar: BaseAppBar(
-          Text(i18.common.MGRAM_SEVA),
-          AppBar(),
-          <Widget>[Icon(Icons.more_vert)],
+        appBar:  CustomAppBar(),
+        drawer: DrawerWrapper(
+          Drawer(child: SideBar()),
         ),
         body: LayoutBuilder(builder: (context, constraints) {
           return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ignore: unnecessary_null_comparison
+                HomeBack(),
                 LabelText(
                     "${searchResult.result.length} ${ApplicationLocalizations.of(context).translate(i18.common.EXPENSES_FOUND)}"),
                 Padding(

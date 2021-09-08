@@ -14,6 +14,7 @@ import 'package:mgramseva/widgets/SelectFieldBuilder.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
+import 'package:mgramseva/widgets/customAppbar.dart';
 import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:provider/provider.dart';
@@ -41,11 +42,7 @@ class _SearchExpenseState extends State<SearchExpense> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      appBar: BaseAppBar(
-        Text(i18.common.MGRAM_SEVA),
-        AppBar(),
-        <Widget>[Icon(Icons.more_vert)],
-      ),
+      appBar:  CustomAppBar(),
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),
       ),
