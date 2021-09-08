@@ -79,7 +79,10 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                 commonProvider.getFileFromPDFPaymentService({
                               "Payments": [item]
                             }, {
-                              "key": "consolidatedreceipt",
+                              "key": widget.waterconnection?.connectionType ==
+                                      'Metered'
+                                  ? "ws-receipt"
+                                  : "ws-receipt-nm",
                               "tenantId": commonProvider
                                   .userDetails!.selectedtenant!.code,
                             }, item.mobileNumber, item, "Download"),
@@ -115,7 +118,10 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                   commonProvider.getFileFromPDFPaymentService({
                                 "Payments": [item]
                               }, {
-                                "key": "consolidatedreceipt",
+                                "key": widget.waterconnection?.connectionType ==
+                                        'Metered'
+                                    ? "ws-receipt"
+                                    : "ws-receipt-nm",
                                 "tenantId": commonProvider
                                     .userDetails!.selectedtenant!.code,
                               }, item.mobileNumber, item, "Share"),

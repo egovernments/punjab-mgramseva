@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill/billing.dart';
+import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
@@ -14,8 +15,9 @@ import 'package:provider/provider.dart';
 class NewConsumerBill extends StatelessWidget {
   final BillList? billList;
   final String? mode;
+  final WaterConnection? waterConnection;
 
-  const NewConsumerBill(this.billList, this.mode);
+  const NewConsumerBill(this.billList, this.mode, this.waterConnection);
   _getLabeltext(label, value, context) {
     return Container(
         padding: EdgeInsets.only(top: 16, bottom: 16),
@@ -71,7 +73,10 @@ class NewConsumerBill extends StatelessWidget {
                                       .getFileFromPDFBillService({
                                     "Bill": [billList!.bill!.first]
                                   }, {
-                                    "key": "consolidatedbill",
+                                    "key": waterConnection?.connectionType ==
+                                            'Metered'
+                                        ? "ws-bill"
+                                        : "ws-bill-nm",
                                     "tenantId": commonProvider
                                         .userDetails!.selectedtenant!.code,
                                   }, billList!.bill!.first.mobileNumber,
@@ -143,8 +148,11 @@ class NewConsumerBill extends StatelessWidget {
                                                         ]
                                                       },
                                                           {
-                                                        "key":
-                                                            "consolidatedbill",
+                                                        "key": waterConnection
+                                                                    ?.connectionType ==
+                                                                'Metered'
+                                                            ? 'ws-bill'
+                                                            : 'ws-bill-nm',
                                                         "tenantId":
                                                             commonProvider
                                                                 .userDetails!
@@ -181,7 +189,11 @@ class NewConsumerBill extends StatelessWidget {
                                                 "Bill": [billList!.bill!.first]
                                               },
                                               {
-                                                "key": "consolidatedbill",
+                                                "key": waterConnection
+                                                            ?.connectionType ==
+                                                        'Metered'
+                                                    ? 'ws-bill'
+                                                    : 'ws-bill-nm',
                                                 "tenantId": commonProvider
                                                     .userDetails!
                                                     .selectedtenant!
