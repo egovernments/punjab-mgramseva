@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/color_codes.dart';
 import 'package:mgramseva/utils/common_styles.dart';
 
 class BottomButtonBar extends StatelessWidget {
@@ -33,7 +32,7 @@ class BottomButtonBar extends StatelessWidget {
                         decoration: CommonStyles.buttonBottomDecoration,
                         width: constraints.maxWidth,
                         margin:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                         child: _buildButton(context));
                   }
                 })),
