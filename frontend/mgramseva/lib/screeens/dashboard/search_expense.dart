@@ -94,6 +94,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
               borderRadius: BorderRadius.circular(25.0),
             ),
             prefixIcon: Icon(Icons.search_sharp),
+            isFilled: true,
             placeHolder: widget.dashBoardType == DashBoardType.collections ? i18.dashboard.SEARCH_NAME_CONNECTION : i18.dashboard.SEARCH_BY_BILL_OR_VENDOR,
             onChange: (val) => dashBoardProvider.onSearch(val, context),
           ),
