@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/SideBtnButtonGroup.dart';
 
 class ButtonGroup extends StatelessWidget {
@@ -38,7 +37,7 @@ class ButtonGroup extends StatelessWidget {
                         style: ButtonStyle(
                           alignment: Alignment.center,
                           padding: MaterialStateProperty.all(
-                              EdgeInsets.symmetric(vertical: 8)),
+                              EdgeInsets.symmetric(vertical: 0.0)),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(0.0),
@@ -47,9 +46,9 @@ class ButtonGroup extends StatelessWidget {
                                     color: Theme.of(context)
                                         .primaryColor),)),
                         ),
-                        icon: (Image.asset('assets/png/whats_app.png')),
+                        icon: (Image.asset('assets/png/whats_app.png', height: 30,)),
                         label: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Text(
                             ApplicationLocalizations.of(context)
                                 .translate(i18.common.SHARE_BILL),
