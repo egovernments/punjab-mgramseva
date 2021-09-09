@@ -18,7 +18,7 @@ class ShortButton extends StatelessWidget {
               child: new Text(
                   ApplicationLocalizations.of(context).translate(label),
                    style:
-                   Theme.of(context).textTheme.subtitle1
+                   Theme.of(context).textTheme.subtitle1!.apply(color: Colors.white)
             ),
               onPressed: callBack
             ),
