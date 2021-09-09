@@ -12,6 +12,9 @@ class ExpensesDetailsWithPagination {
   @JsonKey(name: "totalCount")
   int? totalCount;
 
+  @JsonKey(name: "billData")
+  BillDataCount? billDataCount;
+
   @JsonKey(name: "challans")
   List<ExpensesDetailsModel>? expenseDetailList = <ExpensesDetailsModel>[];
 
@@ -23,6 +26,21 @@ class ExpensesDetailsWithPagination {
   Map<String, dynamic> toJson() => _$ExpensesDetailsWithPaginationToJson(this);
 }
 
+
+@JsonSerializable()
+class BillDataCount {
+  @JsonKey(name: "notPaidcount")
+  String? notPaidCount;
+
+  @JsonKey(name: "paidcount")
+  String? paidCount;
+
+  BillDataCount();
+
+  factory BillDataCount.fromJson(Map<String, dynamic> json) =>
+      _$BillDataCountFromJson(json);
+
+}
 
 @JsonSerializable()
 class ExpensesDetailsModel {

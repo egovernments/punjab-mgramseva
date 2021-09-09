@@ -5,11 +5,14 @@ import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
+import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/dashboard.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
@@ -32,6 +35,7 @@ class DashBoardProvider with ChangeNotifier {
   WaterConnections? waterConnectionsDetails;
   var selectedDashboardType = DashBoardType.collections;
   Timer? debounce;
+  List<PropertyType> propertyTaxList = <PropertyType>[];
 
   @override
   void dispose() {
@@ -61,7 +65,8 @@ class DashBoardProvider with ChangeNotifier {
       'vendorName' : searchController.text.trim(),
       'challanNo' : searchController.text.trim(),
       'freeSearch' : 'true',
-      'status' : ["ACTIVE", "PAID"]
+      'status' : ["ACTIVE", "PAID"],
+      'isBillCount' : 'true'
     };
 
     if(sortBy != null){
@@ -120,7 +125,8 @@ class DashBoardProvider with ChangeNotifier {
       'limit' : '$limit',
       'fromDate' : '${DateTime(selectedMonth.year, selectedMonth.month, 1).millisecondsSinceEpoch}',
       'toDate' :  '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0).millisecondsSinceEpoch}',
-      'iscollectionAmount' : 'true'
+      'iscollectionAmount' : 'true',
+      'isPropertyCount' : 'true'
     };
 
     if(sortBy != null){
@@ -142,6 +148,20 @@ class DashBoardProvider with ChangeNotifier {
     streamController.add(null);
 
     try{
+
+      if(propertyTaxList.isEmpty) {
+        var languageList = await CoreRepository().getMdms(
+            getServiceTypeConnectionTypePropertyTypeMDMS(
+                commonProvider.userDetails!.userRequest!.tenantId.toString()));
+
+        if (languageList?.mdmsRes?.propertyTax?.PropertyTypeList != null) {
+          var property = PropertyType();
+          property.code = i18.dashboard.ALL;
+          propertyTaxList.add(property);
+          propertyTaxList.addAll(languageList?.mdmsRes?.propertyTax?.PropertyTypeList ?? <PropertyType>[]);
+        }
+      }
+
       var response = await SearchConnectionRepository()
           .getconnection(query);
 
@@ -168,13 +188,12 @@ class DashBoardProvider with ChangeNotifier {
   List<Tab> getExpenseTabList(BuildContext context, List<ExpensesDetailsModel> expenseList) {
     var list = [i18.dashboard.ALL, i18.dashboard.PAID, i18.dashboard.PENDING];
     return List.generate(list.length, (index) => Tab(text: '${ApplicationLocalizations.of(context)
-        .translate(list[index])} (${index == 0 ? getExpenseCount(index) : getExpenseData(index, expenseList).length})'));
+        .translate(list[index])} (${getExpenseCount(index)})'));
   }
 
   List<Tab> getCollectionsTabList(BuildContext context, List<WaterConnection> waterConnectionList) {
-    var list = [i18.dashboard.ALL, i18.dashboard.RESIDENTIAL, i18.dashboard.COMMERCIAL];
-    return List.generate(list.length, (index) => Tab(text: '${ApplicationLocalizations.of(context)
-        .translate(list[index])} (${index == 0 ? getCollectionsCount(index) : getCollectionsData(index, waterConnectionList).length})'));
+    return List.generate(propertyTaxList.length, (index) => Tab(text: '${ApplicationLocalizations.of(context)
+        .translate(propertyTaxList[index].code ?? '')} (${getCollectionsCount(index)})'));
   }
 
   List<TableHeader> get expenseHeaderList => [
@@ -220,9 +239,9 @@ class DashBoardProvider with ChangeNotifier {
       case 0:
         return expenseDashboardDetails?.totalCount ?? 0;
       case 1:
-        return expenseDashboardDetails?.expenseDetailList?.where((e) => e.applicationStatus == 'PAID').toList().length ?? 0;
+        return int.parse(expenseDashboardDetails?.billDataCount?.paidCount ?? '0');
       case 2:
-        return expenseDashboardDetails?.expenseDetailList?.where((e) => e.applicationStatus == 'ACTIVE').toList().length ?? 0;
+        return int.parse(expenseDashboardDetails?.billDataCount?.notPaidCount ?? '0') ;
       default :
         return 0;
     }
@@ -234,14 +253,9 @@ class DashBoardProvider with ChangeNotifier {
     switch(index){
       case 0:
         return list.map((e) => getCollectionRow(e)).toList();
-      case 1:
-        var filteredList =  list.where((e) => e.additionalDetails?.propertyType == 'BUILTUP.INDEPENDENTPROPERTY').toList();
-        return filteredList.map((e) => getCollectionRow(e)).toList();
-      case 2:
-        var filteredList =  list.where((e) => e.additionalDetails?.propertyType != 'BUILTUP.INDEPENDENTPROPERTY').toList();
-        return filteredList.map((e) => getCollectionRow(e)).toList();
       default :
-        return <TableDataRow>[];
+        var filteredList =  list.where((e) => e.additionalDetails?.propertyType?.trim() == propertyTaxList[index].code).toList();
+        return filteredList.map((e) => getCollectionRow(e)).toList();
     }
   }
 
@@ -251,12 +265,8 @@ class DashBoardProvider with ChangeNotifier {
     switch(index){
       case 0:
         return waterConnectionsDetails?.totalCount ?? 0;
-      case 1:
-        return waterConnectionsDetails?.waterConnection?.where((e) => e.additionalDetails?.propertyType == 'BUILTUP.INDEPENDENTPROPERTY').toList().length ?? 0;
-      case 2:
-        return  waterConnectionsDetails?.waterConnection?.where((e) => e.additionalDetails?.propertyType != 'BUILTUP.INDEPENDENTPROPERTY').toList().length ?? 0;
       default :
-        return 0;
+        return int.parse(waterConnectionsDetails?.tabData?[propertyTaxList[index].code] ?? '0');
     }
   }
 
@@ -265,7 +275,7 @@ class DashBoardProvider with ChangeNotifier {
       [
         TableData('${expense.challanNo} \n ${expense.vendorName}', callBack: onClickOfChallanNo, apiKey: expense.challanNo),
         TableData('${expense.expenseType}'),
-        TableData('₹ ${expense.totalAmount}'),
+        TableData('₹ ${expense.totalAmount ?? '-'}'),
         TableData('${DateFormats.timeStampToDate(expense.billDate)}'),
         TableData('${expense.paidDate != null && expense.paidDate != 0 ? DateFormats.timeStampToDate(expense.paidDate) : (ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.dashboard.PENDING))}',
             style: expense.paidDate != null && expense.paidDate != 0 ? null : TextStyle(color: Colors.red)),
