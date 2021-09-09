@@ -14,7 +14,7 @@ class LabelText extends StatelessWidget {
           padding: constraints.maxWidth > 760 ? const EdgeInsets.all(20.0) : const EdgeInsets.all(8.0),
           child: Text(
             ApplicationLocalizations.of(context).translate(input),
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700, fontFamily: 'Roboto Condensed', fontStyle: FontStyle.normal),
+            style: Theme.of(context).textTheme.headline1,
             textAlign: TextAlign.left,
           ),
         )));

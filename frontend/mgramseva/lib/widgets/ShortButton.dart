@@ -10,23 +10,23 @@ class ShortButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      return new FractionallySizedBox(
-          widthFactor: constraints.maxWidth > 760 ? 0.3 : 1,
-          child: Container(
+      return new  Container(
+        height: 40,
+        width: constraints.maxWidth > 760 ? constraints.maxWidth / 4 : constraints.maxWidth,
             decoration: CommonStyles.buttonBottomDecoration,
             child: new ElevatedButton(
-              // style: ElevatedButton.styleFrom(
-              //   minimumSize: Size(double.infinity, 30),
-              //   padding: EdgeInsets.all(15),
-              // ),
+               style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 30),
+                 padding: EdgeInsets.all(15),
+               ),
               child: new Text(
                   ApplicationLocalizations.of(context).translate(label),
                    style:
-                       TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
+                   Theme.of(context).textTheme.subtitle1
             ),
               onPressed: callBack
             ),
-          ));
+          );
     });
   }
 }
