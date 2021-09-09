@@ -45,7 +45,7 @@
           image-name: "ws-calculator-db"
     - name: "builds/mGramSeva/municipal-services/echallan-calculator"
       build:
-        - work-dir: "echallan-calculator"
+        - work-dir: "municipal-services/echallan-calculator"
           image-name: "echallan-calculator"
           dockerfile: "build/maven/Dockerfile"
     - name: "builds/mGramSeva/frontend/frontend-mgramseva"
