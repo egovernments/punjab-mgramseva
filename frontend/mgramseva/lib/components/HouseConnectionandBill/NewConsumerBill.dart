@@ -40,10 +40,8 @@ class NewConsumerBill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    var r = billList!.bill!.first.billDetails!.first.amount as num;
-    print(billList!.bill!.first.toJson());
-
     return LayoutBuilder(builder: (context, constraints) {
+      print(billList?.bill?.first.totalAmount);
       var houseHoldProvider =
           Provider.of<HouseHoldProvider>(context, listen: false);
       return billList!.bill!.first.totalAmount! > 0
@@ -66,16 +64,16 @@ class NewConsumerBill extends StatelessWidget {
                                 child: TextButton.icon(
                                   onPressed: () => commonProvider
                                       .getFileFromPDFBillService({
-                                    "Bill": [billList!.bill!.first]
+                                    "Bill": [billList?.bill?.first]
                                   }, {
                                     "key": waterConnection?.connectionType ==
                                             'Metered'
                                         ? "ws-bill"
                                         : "ws-bill-nm",
                                     "tenantId": commonProvider
-                                        .userDetails!.selectedtenant!.code,
+                                        .userDetails?.selectedtenant?.code,
                                   }, billList!.bill!.first.mobileNumber,
-                                          billList?.bill!.first, "Download"),
+                                          billList?.bill?.first, "Download"),
                                   icon: Icon(Icons.download_sharp),
                                   label: Text(
                                     ApplicationLocalizations.of(context)
@@ -99,14 +97,32 @@ class NewConsumerBill extends StatelessWidget {
                               _getLabeltext(
                                   i18.billDetails.CURRENT_BILL,
                                   ('₹' +
-                                      (billList!.bill?.first.billDetails
-                                              ?.where((element) =>
-                                                  element.billAccountDetails
-                                                      ?.first.taxHeadCode ==
-                                                  '10101')
-                                              .toList()
-                                              .first
-                                              .amount)
+                                      (billList!.bill!.first.billDetails
+                                                      ?.where(
+                                                        (element) =>
+                                                            element
+                                                                .billAccountDetails
+                                                                ?.first
+                                                                .taxHeadCode ==
+                                                            '10101',
+                                                      )
+                                                      .toList()
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? billList
+                                                  ?.bill?.first.billDetails
+                                                  ?.where(
+                                                    (element) =>
+                                                        element
+                                                            .billAccountDetails
+                                                            ?.first
+                                                            .taxHeadCode ==
+                                                        '10101',
+                                                  )
+                                                  .toList()
+                                                  .first
+                                                  .amount
+                                              : "0")
                                           .toString()),
                                   context),
                               houseHoldProvider.isfirstdemand == true
@@ -114,21 +130,36 @@ class NewConsumerBill extends StatelessWidget {
                                       i18.billDetails.ARRERS_DUES,
                                       ('₹' +
                                           (billList!.bill?.first.billDetails
-                                                  ?.where((element) =>
-                                                      element.billAccountDetails
-                                                          ?.first.taxHeadCode ==
-                                                      '10102')
-                                                  .toList()
-                                                  .first
-                                                  .amount)
+                                                          ?.where((element) =>
+                                                              element
+                                                                  .billAccountDetails
+                                                                  ?.first
+                                                                  .taxHeadCode ==
+                                                              '10102')
+                                                          .toList()
+                                                          .isNotEmpty ==
+                                                      true
+                                                  ? billList!
+                                                      .bill?.first.billDetails
+                                                      ?.where((element) =>
+                                                          element
+                                                              .billAccountDetails
+                                                              ?.first
+                                                              .taxHeadCode ==
+                                                          '10102')
+                                                      .toList()
+                                                      .first
+                                                      .amount
+                                                  : "0")
                                               .toString()),
                                       context)
                                   : Text(""),
                               _getLabeltext(
                                   i18.billDetails.TOTAL_AMOUNT,
                                   ('₹' +
-                                      billList!.bill!.first.totalAmount
-                                          .toString()),
+                                          (billList?.bill?.first.totalAmount)
+                                              .toString() ??
+                                      ""),
                                   context),
                               this.mode == 'collect'
                                   ? Align(
