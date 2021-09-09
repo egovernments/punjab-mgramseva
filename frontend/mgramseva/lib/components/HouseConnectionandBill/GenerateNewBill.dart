@@ -9,7 +9,6 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/widgets/Info.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
 import 'package:provider/provider.dart';
@@ -191,20 +190,15 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                               icon: Text(""),
                                               label: Padding(
                                                 padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8),
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 15),
                                                 child: Text(
                                                     ApplicationLocalizations.of(
                                                             context)
                                                         .translate(i18
                                                             .generateBillDetails
                                                             .GENERATE_BILL_LABEL),
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 16,
-                                                    )),
-                                              ),
+                                                    style: Theme.of(context).textTheme.subtitle2)),
                                             )),
                                             Expanded(
                                                 child: ShortButton(
