@@ -33,27 +33,26 @@ class ButtonGroup extends StatelessWidget {
                       Expanded(
                           child: OutlinedButton.icon(
                         onPressed: callBackIcon,
-
                         style: ButtonStyle(
                           alignment: Alignment.center,
                           padding: MaterialStateProperty.all(
                               EdgeInsets.symmetric(vertical: 0.0)),
-                          shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(0.0),
-                                side: BorderSide(
-                                    width: 2,
-                                    color: Theme.of(context)
-                                        .primaryColor),)),
+                          shape:
+                              MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(0.0),
+                            side: BorderSide(
+                                width: 2,
+                                color: Theme.of(context).primaryColor),
+                          )),
                         ),
-                        icon: (Image.asset('assets/png/whats_app.png', height: 30,)),
+                        icon: (Image.asset('assets/png/whats_app.png')),
                         label: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Text(
-                            ApplicationLocalizations.of(context)
-                                .translate(i18.common.SHARE_BILL),
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
-                          ),
+                              ApplicationLocalizations.of(context)
+                                  .translate(i18.common.SHARE_BILL),
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w400)),
                         ),
                       )),
                       Expanded(child: SideButton(label, callBack))
