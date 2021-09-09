@@ -36,9 +36,11 @@ class CollectPaymentProvider with ChangeNotifier {
     try {
       var paymentDetails = await ConsumerRepository().getBillDetails(query);
       if (paymentDetails != null) {
-        var demandDetails = await ConsumerRepository().getDemandDetails(query);
-        if (demandDetails != null)
-          paymentDetails.first.demand = demandDetails.first;
+        paymentDetails.first.billDetails
+            ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
+        // var demandDetails = await ConsumerRepository().getDemandDetails(query);
+        // if (demandDetails != null)
+        // paymentDetails.first.demand = demandDetails.first;
         getPaymentModes(paymentDetails.first);
         paymentStreamController.add(paymentDetails.first);
         notifyListeners();

@@ -57,18 +57,17 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
   buidDemandview(DemandList demandList) {
     var amount = demandList.demands!
         .map((element) {
-      var toalamount = element.demandDetails!
-          .map((e) => e.taxAmount)
-          .toList()
-          .reduce((a, b) => a! + b!);
-      var collectedAmount = element.demandDetails!
-          .map((e) => e.collectionAmount)
-          .toList()
-          .reduce((a, b) => a! + b!);
-      var amount =
-      (toalamount! - collectedAmount!);
-      return amount;
-    })
+          var toalamount = element.demandDetails!
+              .map((e) => e.taxAmount)
+              .toList()
+              .reduce((a, b) => a! + b!);
+          var collectedAmount = element.demandDetails!
+              .map((e) => e.collectionAmount)
+              .toList()
+              .reduce((a, b) => a! + b!);
+          var amount = (toalamount! - collectedAmount!);
+          return amount;
+        })
         .toList()
         .reduce((a, b) => a + b);
     int? num = demandList.demands?.first.auditDetails?.createdTime;
@@ -87,45 +86,51 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _getLabeltext(
-                              i18.generateBillDetails.LAST_BILL_GENERATION_DATE,
-                              DateFormats.timeStampToDate(
-                                      demandList.demands?.first.auditDetails
-                                          ?.createdTime,
-                                      format: "dd-MM-yyyy")
-                                  .toString(),
-                              context),
-                          Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Text(
-                                DateTime.now()
-                                            .difference(DateTime
-                                                .fromMillisecondsSinceEpoch(
-                                                    num!))
-                                            .inDays ==
-                                        0
-                                    ? ApplicationLocalizations.of(context)
-                                        .translate(
-                                            i18.generateBillDetails.TODAY)
-                                    : DateTime.now()
-                                            .difference(DateTime
-                                                .fromMillisecondsSinceEpoch(
-                                                    num))
-                                            .inDays
-                                            .toString() +
-                                        " " +
-                                        ApplicationLocalizations.of(context)
-                                            .translate(i18
-                                                .generateBillDetails.DAYS_AGO),
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor),
-                              ))
-                        ],
-                      ),
+                      billpaymentsProvider.isfirstdemand != false
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                _getLabeltext(
+                                    i18.generateBillDetails
+                                        .LAST_BILL_GENERATION_DATE,
+                                    DateFormats.timeStampToDate(
+                                            demandList.demands?.first
+                                                .auditDetails?.createdTime,
+                                            format: "dd-MM-yyyy")
+                                        .toString(),
+                                    context),
+                                Padding(
+                                    padding: EdgeInsets.all(16),
+                                    child: Text(
+                                      DateTime.now()
+                                                  .difference(DateTime
+                                                      .fromMillisecondsSinceEpoch(
+                                                          num!))
+                                                  .inDays ==
+                                              0
+                                          ? ApplicationLocalizations.of(context)
+                                              .translate(
+                                                  i18.generateBillDetails.TODAY)
+                                          : DateTime.now()
+                                                  .difference(DateTime
+                                                      .fromMillisecondsSinceEpoch(
+                                                          num))
+                                                  .inDays
+                                                  .toString() +
+                                              " " +
+                                              ApplicationLocalizations.of(
+                                                      context)
+                                                  .translate(i18
+                                                      .generateBillDetails
+                                                      .DAYS_AGO),
+                                      style: TextStyle(
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ))
+                              ],
+                            )
+                          : Text(""),
                       _getLabeltext(
                           i18.generateBillDetails.PREVIOUS_METER_READING,
                           demandList.demands?.first.meterReadings == null
@@ -140,11 +145,8 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                   .currentReading
                                   .toString(),
                           context),
-                      _getLabeltext(
-                          i18.generateBillDetails.PENDING_AMOUNT,
-                          ('₹' +
-                                  amount.toString()),
-                          context),
+                      _getLabeltext(i18.generateBillDetails.PENDING_AMOUNT,
+                          ('₹' + amount.toString()), context),
                       billpaymentsProvider.isfirstdemand == false && amount > 0
                           ? new Column(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -192,14 +194,16 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                                     const EdgeInsets.symmetric(
                                                         vertical: 8),
                                                 child: Text(
-                                                  ApplicationLocalizations.of(
-                                                          context)
-                                                      .translate(i18
-                                                          .generateBillDetails
-                                                          .GENERATE_BILL_LABEL),
-                                                    style: TextStyle(fontWeight: FontWeight.w400,
-                                                      fontSize: 16,)
-                                                ),
+                                                    ApplicationLocalizations.of(
+                                                            context)
+                                                        .translate(i18
+                                                            .generateBillDetails
+                                                            .GENERATE_BILL_LABEL),
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 16,
+                                                    )),
                                               ),
                                             )),
                                             Expanded(

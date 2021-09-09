@@ -41,12 +41,7 @@ class NewConsumerBill extends StatelessWidget {
   Widget build(BuildContext context) {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     var r = billList!.bill!.first.billDetails!.first.amount as num;
-    print(billList!.bill!.first.billDetails!
-            .map((ele) => ele.amount)
-            .reduce(((previousValue, element) {
-          return previousValue! + element!;
-        }))! -
-        r);
+    print(billList!.bill!.first.toJson());
 
     return LayoutBuilder(builder: (context, constraints) {
       var houseHoldProvider =
@@ -104,7 +99,13 @@ class NewConsumerBill extends StatelessWidget {
                               _getLabeltext(
                                   i18.billDetails.CURRENT_BILL,
                                   ('₹' +
-                                      (billList!.bill!.first.billDetails!.first
+                                      (billList!.bill?.first.billDetails
+                                              ?.where((element) =>
+                                                  element.billAccountDetails
+                                                      ?.first.taxHeadCode ==
+                                                  '10101')
+                                              .toList()
+                                              .first
                                               .amount)
                                           .toString()),
                                   context),
@@ -112,14 +113,14 @@ class NewConsumerBill extends StatelessWidget {
                                   ? _getLabeltext(
                                       i18.billDetails.ARRERS_DUES,
                                       ('₹' +
-                                          (billList!.bill!.first.billDetails!
-                                                      .map((ele) => ele.amount)
-                                                      .reduce(((previousValue,
-                                                          element) {
-                                                    return previousValue! +
-                                                        element!;
-                                                  }))! -
-                                                  r)
+                                          (billList!.bill?.first.billDetails
+                                                  ?.where((element) =>
+                                                      element.billAccountDetails
+                                                          ?.first.taxHeadCode ==
+                                                      '10102')
+                                                  .toList()
+                                                  .first
+                                                  .amount)
                                               .toString()),
                                       context)
                                   : Text(""),
@@ -227,13 +228,14 @@ class NewConsumerBill extends StatelessWidget {
                                                   const EdgeInsets.symmetric(
                                                       vertical: 5),
                                               child: Text(
-                                                ApplicationLocalizations.of(
-                                                        context)
-                                                    .translate(
-                                                        i18.common.SHARE_BILL),
-                                                  style: TextStyle(fontWeight: FontWeight.w400,
-                                                    fontSize: 16,)
-                                              ),
+                                                  ApplicationLocalizations.of(
+                                                          context)
+                                                      .translate(i18
+                                                          .common.SHARE_BILL),
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 16,
+                                                  )),
                                             ),
                                           ),
                                         )
