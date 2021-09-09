@@ -304,6 +304,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   Future<List<dynamic>> onSearchVendorList(pattern) async {
+    await Future.delayed(Duration(milliseconds: 100));
     notifyListeners();
     if (vendorList.isEmpty) {
       await fetchVendors();
@@ -376,6 +377,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   void validateExpensesDetails(BuildContext context, [isUpdate = false]) {
+    FocusScope.of(context).unfocus();
     if (formKey.currentState!.validate()) {
       addExpensesDetails(context, isUpdate);
     } else {
