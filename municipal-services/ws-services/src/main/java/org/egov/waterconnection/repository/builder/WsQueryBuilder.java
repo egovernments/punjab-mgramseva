@@ -74,6 +74,8 @@ public class WsQueryBuilder {
 
 	public static final String CollectionAmountList = " select sum(payd.amountpaid) from egcl_paymentdetail payd join egcl_bill payspay ON ( payd.billid = payspay.id) where payd.businessservice='WS' ";
 
+	public static final String PROPERTY_COUNT = "select additionaldetails->>'propertyType' as propertytype,count(additionaldetails->>'propertyType') from eg_ws_connection as conn";
+
 	
 	
 	/**
@@ -141,6 +143,22 @@ public class WsQueryBuilder {
 			throw new CustomException("INVALID_SEARCH_CRITERIA", "Invalid serach criteria!");
 		}
 
+		if (!StringUtils.isEmpty(criteria.getPropertyId()) && StringUtils.isEmpty(criteria.getMobileNumber())) {
+			if(propertyIdsPresent)
+				query.append(")");
+			else{
+				addClauseIfRequired(preparedStatement, query);
+				query.append(" conn.property_id = ? ");
+				preparedStatement.add(criteria.getPropertyId());
+			}
+		}
+		query = applyFilters(query, preparedStatement, criteria);
+		
+//		query.append(ORDER_BY_CLAUSE);
+		return addPaginationWrapper(query.toString(), preparedStatement, criteria);
+	}
+	
+	public StringBuilder applyFilters(StringBuilder query, List<Object> preparedStatement, SearchCriteria criteria) {
 		if (!StringUtils.isEmpty(criteria.getTenantId())) {
 			addClauseIfRequired(preparedStatement, query);
 			if(criteria.getTenantId().equalsIgnoreCase(config.getStateLevelTenantId())){
@@ -152,15 +170,7 @@ public class WsQueryBuilder {
 				preparedStatement.add(criteria.getTenantId());
 			}
 		}
-		if (!StringUtils.isEmpty(criteria.getPropertyId()) && StringUtils.isEmpty(criteria.getMobileNumber())) {
-			if(propertyIdsPresent)
-				query.append(")");
-			else{
-				addClauseIfRequired(preparedStatement, query);
-				query.append(" conn.property_id = ? ");
-				preparedStatement.add(criteria.getPropertyId());
-			}
-		}
+		
 		if (!CollectionUtils.isEmpty(criteria.getIds())) {
 			addClauseIfRequired(preparedStatement, query);
 			query.append(" conn.id in (").append(createQuery(criteria.getIds())).append(" )");
@@ -224,10 +234,12 @@ public class WsQueryBuilder {
 			query.append(" conn.locality = ? ");
 			preparedStatement.add(criteria.getLocality());
 		}
-//		query.append(ORDER_BY_CLAUSE);
-		return addPaginationWrapper(query.toString(), preparedStatement, criteria);
-	}
+		
+		return query;
+	}	
 	
+	
+
 	private void addClauseIfRequired(List<Object> values, StringBuilder queryString) {
 		if (values.isEmpty())
 			queryString.append(" WHERE ");

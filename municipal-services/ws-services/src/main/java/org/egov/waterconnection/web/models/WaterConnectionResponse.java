@@ -12,6 +12,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.egov.common.contract.response.ResponseInfo;
 import org.springframework.validation.annotation.Validated;
@@ -33,6 +34,10 @@ public class WaterConnectionResponse {
 
 	@JsonProperty("totalCount")
 	private Integer totalCount =null;
+	
+
+	@JsonProperty("propertyCount")
+	private Map<String, Object> propertyCount = null;
 	
 	@JsonProperty("ResponseInfo")
 	private ResponseInfo responseInfo = null;
