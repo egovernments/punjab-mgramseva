@@ -27,9 +27,6 @@ class SearchExpenseDashboard extends StatefulWidget {
 
 class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with SingleTickerProviderStateMixin {
 
-  late TabController _tabController;
-  late List<Tab> _tabList;
-
   @override
   void initState() {
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false)
@@ -47,11 +44,6 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     dashBoardProvider.searchController.clear();
 
     if(widget.dashBoardType == DashBoardType.Expenditure) {
-      _tabList = [
-        Tab(text: '${i18.dashboard.ALL}'),
-        Tab(text: '${i18.dashboard.PAID}'),
-        Tab(text: '${i18.dashboard.PENDING}')
-      ];
 
       dashBoardProvider
         ..sortBy = SortBy('challanno', false)
@@ -59,24 +51,12 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
         ..expenseDashboardDetails?.totalCount = null
         ..fetchExpenseDashBoardDetails(context, dashBoardProvider.limit, dashBoardProvider.offset);
     }else{
-      _tabList = [
-        Tab(text: '${i18.dashboard.ALL}'),
-        Tab(text: '${i18.dashboard.RESIDENTIAL}'),
-        Tab(text: '${i18.dashboard.COMMERCIAL}')
-      ];
       dashBoardProvider
         ..waterConnectionsDetails?.waterConnection = <WaterConnection>[]
         ..waterConnectionsDetails?.totalCount = null
         ..fetchCollectionsDashBoardDetails(context, dashBoardProvider.limit, dashBoardProvider.offset);
 
     }
-    _tabController = new TabController(vsync: this, length: _tabList.length);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 
   @override
@@ -127,48 +107,51 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
 
   Widget _buildTabView(List<dynamic> expenseList) {
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: ButtonsTabBar(
-            controller: _tabController,
-            backgroundColor: Colors.white,
-            unselectedBackgroundColor: Color.fromRGBO(244, 119, 56, 0.12),
-            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-            buttonMargin: EdgeInsets.symmetric(horizontal: 5),
-            labelStyle: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
-            unselectedLabelStyle: TextStyle(
-                color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400),
-            radius: 25,
-            tabs: expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseTabList(context, expenseList) : dashBoardProvider.getCollectionsTabList(context, expenseList as List<WaterConnection>)
-          ),
-        ),
-        Expanded(
-          child: Consumer<DashBoardProvider>(
-            builder : (_ , dashBoardProvider, child) => TabBarView(
-                physics: NeverScrollableScrollPhysics(),
-                controller: _tabController,
-                children: List.generate(_tabList.length, (index) => LayoutBuilder(
-                    builder : (context, constraints) {
-                      var width = constraints.maxWidth < 760 ?  (expenseList is List<ExpensesDetailsModel> ? 180.0 : 145.0)  : (constraints.maxWidth / (expenseList is List<ExpensesDetailsModel> ? 5 : 3));
-                      var tableData = expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseData(index, expenseList) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>);
-                      return tableData == null || tableData.isEmpty ?
-                      CommonWidgets.buildEmptyMessage(ApplicationLocalizations.of(context).translate(i18.dashboard.NO_RECORDS_MSG), context)
-                          : BillsTable
-                        (headerList: expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
-                        tableData:  tableData,
-                        leftColumnWidth: width,
-                        rightColumnWidth: expenseList is List<ExpensesDetailsModel> ? width * 5 : width * 3,
-                      );
-                    }
-                ))
+    var tabList = expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseTabList(context, expenseList) : dashBoardProvider.getCollectionsTabList(context, expenseList as List<WaterConnection>);
+    return DefaultTabController(
+      length: tabList.length,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: ButtonsTabBar(
+              // controller: _tabController,
+              backgroundColor: Colors.white,
+              unselectedBackgroundColor: Color.fromRGBO(244, 119, 56, 0.12),
+              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+              buttonMargin: EdgeInsets.symmetric(horizontal: 5),
+              labelStyle: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+              unselectedLabelStyle: TextStyle(
+                  color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400),
+              radius: 25,
+              tabs: tabList
             ),
           ),
-        ),
-      ],
+          Expanded(
+            child: Consumer<DashBoardProvider>(
+              builder : (_ , dashBoardProvider, child) => TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  // controller: _tabController,
+                  children: List.generate(tabList.length, (index) => LayoutBuilder(
+                      builder : (context, constraints) {
+                        var width = constraints.maxWidth < 760 ?  (expenseList is List<ExpensesDetailsModel> ? 180.0 : 145.0)  : (constraints.maxWidth / (expenseList is List<ExpensesDetailsModel> ? 5 : 3));
+                        var tableData = expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseData(index, expenseList) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>);
+                        return tableData == null || tableData.isEmpty ?
+                        CommonWidgets.buildEmptyMessage(ApplicationLocalizations.of(context).translate(i18.dashboard.NO_RECORDS_MSG), context)
+                            : BillsTable
+                          (headerList: expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
+                          tableData:  tableData,
+                          leftColumnWidth: width,
+                          rightColumnWidth: expenseList is List<ExpensesDetailsModel> ? width * 5 : width * 3,
+                        );
+                      }
+                  ))
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

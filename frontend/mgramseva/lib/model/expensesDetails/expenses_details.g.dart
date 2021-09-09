@@ -10,6 +10,9 @@ ExpensesDetailsWithPagination _$ExpensesDetailsWithPaginationFromJson(
     Map<String, dynamic> json) {
   return ExpensesDetailsWithPagination()
     ..totalCount = json['totalCount'] as int?
+    ..billDataCount = json['billData'] == null
+        ? null
+        : BillDataCount.fromJson(json['billData'] as Map<String, dynamic>)
     ..expenseDetailList = (json['challans'] as List<dynamic>?)
         ?.map((e) => ExpensesDetailsModel.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -123,3 +126,9 @@ Map<String, dynamic> _$AuditDetailsToJson(AuditDetails instance) =>
       'createdTime': instance.createdTime,
       'lastModifiedTime': instance.lastModifiedTime,
     };
+
+BillDataCount _$BillDataCountFromJson(Map<String, dynamic> json) {
+  return BillDataCount()
+    ..notPaidCount = json['notPaidcount'] as String?
+    ..paidCount = json['paidcount'] as String?;
+}
