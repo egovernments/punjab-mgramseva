@@ -156,7 +156,7 @@ class DashBoardProvider with ChangeNotifier {
               response.waterConnection ?? <WaterConnection>[]);
         }
         notifyListeners();
-        streamController.add(waterConnectionsDetails!.waterConnection!.isEmpty! ? <ExpensesDetailsModel>[] :
+        streamController.add(waterConnectionsDetails!.waterConnection!.isEmpty ? <WaterConnection>[] :
         waterConnectionsDetails?.waterConnection?.sublist(offSet -1, ((offset + limit - 1) > (waterConnectionsDetails?.totalCount ?? 0)) ? (waterConnectionsDetails!.totalCount!) : (offset + limit) -1));
       }
     }catch(e,s){
@@ -193,7 +193,7 @@ class DashBoardProvider with ChangeNotifier {
   List<TableHeader> get collectionHeaderList => [
     TableHeader(i18.common.CONNECTION_ID,  isSortingRequired: true,
         isAscendingOrder : sortBy != null && sortBy!.key == 'connectionNumber' ? sortBy!.isAscending : null, apiKey: 'connectionNumber ', callBack: onExpenseSort),
-    TableHeader(i18.common.NAME,  isSortingRequired: false,
+    TableHeader(i18.common.NAME,  isSortingRequired: true,
         isAscendingOrder : sortBy != null && sortBy!.key == 'name' ? sortBy!.isAscending : null, apiKey: 'name', callBack: onExpenseSort),
     TableHeader(i18.dashboard.COLLECTIONS,  isSortingRequired: true,
         isAscendingOrder : sortBy != null && sortBy!.key == 'collectionAmount' ? sortBy!.isAscending : null, apiKey: 'collectionAmount', callBack: onExpenseSort),
