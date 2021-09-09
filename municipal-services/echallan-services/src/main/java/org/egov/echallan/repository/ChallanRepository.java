@@ -17,6 +17,7 @@ import org.egov.echallan.model.SearchCriteria;
 import org.egov.echallan.producer.Producer;
 import org.egov.echallan.repository.builder.ChallanQueryBuilder;
 import org.egov.echallan.repository.rowmapper.ChallanRowMapper;
+import org.egov.echallan.service.ChallanService;
 import org.egov.echallan.web.models.collection.Bill;
 import org.egov.echallan.web.models.collection.PaymentDetail;
 import org.egov.echallan.web.models.collection.PaymentRequest;
@@ -69,7 +70,6 @@ public class ChallanRepository {
     }
 
 
-
     /**
      * Pushes the request on save topic
      *
@@ -92,10 +92,31 @@ public class ChallanRepository {
     }
     
     
-    public List<Challan> getChallans(SearchCriteria criteria) {
+    public List<Challan> getChallans(SearchCriteria criteria, Map<String, String> finalData) {
         List<Object> preparedStmtList = new ArrayList<>();
         String query = queryBuilder.getChallanSearchQuery(criteria, preparedStmtList);
-        List<Challan> challans =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper);
+        List<Challan> challans =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper); 
+        
+		if (criteria.getIsBillCount()) {
+			List<Object> preparedStmnt = new ArrayList<>();
+			StringBuilder paidQuery = new StringBuilder(queryBuilder.bill_count);
+			paidQuery = queryBuilder.applyFilters(paidQuery, preparedStmnt, criteria);
+			paidQuery.append(" AND isbillpaid=true ");
+			List<Map<String, Object>> paidCountdata = jdbcTemplate.queryForList(paidQuery.toString(),
+					preparedStmnt.toArray());
+			List<Object> prpstmnt = new ArrayList<>();
+			StringBuilder notPaidQuery = new StringBuilder(queryBuilder.bill_count);
+			notPaidQuery = queryBuilder.applyFilters(notPaidQuery, prpstmnt, criteria);
+			notPaidQuery.append(" AND isbillpaid=false ");
+			
+			List<Map<String, Object>> notPaidCountdata = jdbcTemplate.queryForList(notPaidQuery.toString(),
+					preparedStmnt.toArray());
+		
+			finalData.put("paidcount", paidCountdata.get(0).get("count").toString());
+			finalData.put("notPaidcount", notPaidCountdata.get(0).get("count").toString());
+			System.out.println("Map Data Insertion :: " + finalData);
+		}
+		
         return challans;
     }
 

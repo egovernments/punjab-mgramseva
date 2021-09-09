@@ -28,6 +28,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Response to the service request
@@ -43,6 +44,10 @@ public class ChallanResponse {
 	
   @JsonProperty("totalCount")
   private Integer totalCount =null;
+  
+
+  @JsonProperty("billData")
+  private Map<String, String> billData =null;
   
   @JsonProperty("responseInfo")
 
