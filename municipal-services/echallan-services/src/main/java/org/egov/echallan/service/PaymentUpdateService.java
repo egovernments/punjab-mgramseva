@@ -3,6 +3,8 @@ package org.egov.echallan.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
 import org.egov.echallan.model.AuditDetails;
@@ -60,7 +62,8 @@ public class PaymentUpdateService {
 				criteria.setTenantId(paymentRequest.getPayment().getTenantId());
 				criteria.setChallanNo(paymentDetail.getBill().getConsumerCode());
 				criteria.setBusinessService(paymentDetail.getBusinessService());
-				List<Challan> challans = challanService.search(criteria, requestInfo);
+				Map<String, String> finalData = new HashMap<String, String>();
+				List<Challan> challans = challanService.search(criteria, requestInfo, finalData);
 				//update challan only if payment is done for challan. 
 				if(!CollectionUtils.isEmpty(challans) ) {
 					String uuid = requestInfo.getUserInfo().getUuid();
