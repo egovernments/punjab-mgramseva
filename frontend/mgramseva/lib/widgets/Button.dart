@@ -19,7 +19,7 @@ class Button extends StatelessWidget {
           // padding: EdgeInsets.all(15),
       ),
       child: new Text(ApplicationLocalizations.of(context).translate(label),
-          style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500)),
+          style: Theme.of(context).textTheme.button),
       onPressed: () => widgetfunction != null ? widgetfunction!() : null
     ),
         ));

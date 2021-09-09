@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/widgets/SideBtnButtonGroup.dart';
+
+import 'ShortButton.dart';
 
 class ButtonGroup extends StatelessWidget {
   final String label;
@@ -45,17 +46,15 @@ class ButtonGroup extends StatelessWidget {
                                 color: Theme.of(context).primaryColor),
                           )),
                         ),
-                        icon: (Image.asset('assets/png/whats_app.png')),
+                        icon: (Image.asset('assets/png/whats_app.png', fit: BoxFit.fitHeight,)),
                         label: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          padding: const EdgeInsets.symmetric(vertical: 15),
                           child: Text(
                               ApplicationLocalizations.of(context)
                                   .translate(i18.common.SHARE_BILL),
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w400)),
-                        ),
+                              style: Theme.of(context).textTheme.subtitle2)),
                       )),
-                      Expanded(child: SideButton(label, callBack))
+                      Expanded(child: ShortButton(label, callBack))
                     ],
                   ),
                 )

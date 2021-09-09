@@ -14,6 +14,13 @@ ThemeData get theme => ThemeData(
       backgroundColor: Color(0xff0B4B66),
       centerTitle: false,
     ),
+    textTheme: TextTheme(
+      headline1: TextStyle(fontWeight: FontWeight.w700, fontSize: 32, fontFamily: 'Roboto Condensed', fontStyle: FontStyle.normal, color: Color.fromRGBO(11, 12, 12, 1)),
+      headline2: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
+      button: TextStyle(fontWeight: FontWeight.w500, fontSize: 19, color: Colors.white), // Elevated Button(Orange)
+      subtitle1: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Colors.white), //Only for short button text
+      subtitle2: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Color.fromRGBO(244, 119, 56, 1)) // Only for outlined button text
+    ),
 
     /// Background color
     // scaffoldBackgroundColor: Color.fromRGBO(238, 238, 238, 1),
