@@ -11,14 +11,10 @@ class ShortButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return new  Container(
-        height: 40,
+        height: 48,
         width: constraints.maxWidth > 760 ? constraints.maxWidth / 4 : constraints.maxWidth,
             decoration: CommonStyles.buttonBottomDecoration,
             child: new ElevatedButton(
-               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 30),
-                 padding: EdgeInsets.all(15),
-               ),
               child: new Text(
                   ApplicationLocalizations.of(context).translate(label),
                    style:
