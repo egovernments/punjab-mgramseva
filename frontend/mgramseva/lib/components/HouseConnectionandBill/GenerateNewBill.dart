@@ -191,7 +191,7 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                               label: Padding(
                                                 padding:
                                                 const EdgeInsets.symmetric(
-                                                    vertical: 10),
+                                                    vertical: 15),
                                                 child: Text(
                                                     ApplicationLocalizations.of(
                                                             context)

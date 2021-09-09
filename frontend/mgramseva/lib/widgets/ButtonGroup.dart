@@ -47,10 +47,12 @@ class ButtonGroup extends StatelessWidget {
                           )),
                         ),
                         icon: (Image.asset('assets/png/whats_app.png', fit: BoxFit.fitHeight,)),
-                        label: Text(
+                        label: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          child: Text(
                               ApplicationLocalizations.of(context)
                                   .translate(i18.common.SHARE_BILL),
-                              style: Theme.of(context).textTheme.subtitle2),
+                              style: Theme.of(context).textTheme.subtitle2)),
                       )),
                       Expanded(child: ShortButton(label, callBack))
                     ],
