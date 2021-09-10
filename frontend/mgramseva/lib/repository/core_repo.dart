@@ -93,8 +93,7 @@ class CoreRepository extends BaseService {
         }
       } else if (_paths is List<File>) {
         _paths.forEach((file) async {
-          request.files.add(await http.MultipartFile.fromPath(
-              'file', file.path ?? '',
+          request.files.add(await http.MultipartFile.fromPath('file', file.path,
               filename: '${file.path.split('/').last}'));
         });
       }
@@ -217,7 +216,7 @@ class CoreRepository extends BaseService {
 
   Future<bool?> fileDownload(BuildContext context, String url,
       [String? fileName]) async {
-    if(url.contains(',')){
+    if (url.contains(',')) {
       url = url.split(',').first;
     }
 
@@ -255,13 +254,9 @@ class CoreRepository extends BaseService {
     }
   }
 
-
   Future<String?> submitFeedBack(Map body) async {
-
-      var response = await makeRequest(
-          url: Url.POST_PAYMENT_FEEDBACK,
-          body: body,
-          method: RequestType.POST);
-      return response;
+    var response = await makeRequest(
+        url: Url.POST_PAYMENT_FEEDBACK, body: body, method: RequestType.POST);
+    return response;
   }
 }

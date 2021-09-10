@@ -48,7 +48,7 @@ class LanguageSelectMobileView extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Text(
                             ApplicationLocalizations.of(context)
-                                .translate(stateInfo!.code!),
+                                .translate(stateInfo.code!),
                             style: TextStyle(
                                 fontSize: 19,
                                 color: Color.fromRGBO(0, 0, 0, 1),

@@ -77,8 +77,19 @@ class Validators {
   static String? amountValidator(String? v) {
     if (v!.trim().isEmpty) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expense.AMOUNT_MENTIONED_IN_THE_BILL)}';
-    }else if(double.parse(v) <= 0){
+    } else if (double.parse(v) <= 0) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expense.ENTER_VALID_AMOUNT)}';
+    }
+    return null;
+  }
+
+  static String? rangeValidatior(String? v, double? inputnum) {
+    if (v!.trim().isEmpty) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ENTER_METER_NUMBER)}';
+    } else if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(v)) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ENTER_ALPHA_NUMERIC_ONLY)}';
+    } else if (double.parse(v) > (inputnum!)) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.PARTIAL_AMT_OUT_OF_RANGE)}';
     }
     return null;
   }

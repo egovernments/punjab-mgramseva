@@ -2,22 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/fetch_bill_provider.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
+import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/ButtonGroup.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
 import 'package:provider/provider.dart';
+import "package:collection/collection.dart";
 
-class NewConsumerBill extends StatelessWidget {
-  final BillList? billList;
+class NewConsumerBill extends StatefulWidget {
   final String? mode;
   final WaterConnection? waterConnection;
 
-  const NewConsumerBill(this.billList, this.mode, this.waterConnection);
+  const NewConsumerBill(this.mode, this.waterConnection);
+  @override
+  State<StatefulWidget> createState() {
+    return NewConsumerBillState();
+  }
+}
+
+class NewConsumerBillState extends State<NewConsumerBill> {
+  @override
+  void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    super.initState();
+  }
+
+  afterViewBuild() {
+    Provider.of<FetchBillProvider>(context, listen: false)
+      ..fetchBill(widget.waterConnection);
+  }
+
   _getLabeltext(label, value, context) {
     return Container(
         padding: EdgeInsets.only(top: 16, bottom: 16),
@@ -39,12 +60,39 @@ class NewConsumerBill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var billpaymentsProvider =
+        Provider.of<FetchBillProvider>(context, listen: false);
+    return StreamBuilder(
+        stream: billpaymentsProvider.streamController.stream,
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            return buidBillview(snapshot.data);
+          } else if (snapshot.hasError) {
+            return Notifiers.networkErrorPage(context, () {});
+          } else {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return Loaders.CircularLoader();
+              case ConnectionState.active:
+                return Loaders.CircularLoader();
+              default:
+                return Container();
+            }
+          }
+        });
+  }
+
+  buidBillview(BillList billList) {
+    List res = [];
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+    billList.bill?.first.billDetails!.forEach((element) {
+      res.add(element.amount);
+    });
+
     return LayoutBuilder(builder: (context, constraints) {
-      print(billList?.bill?.first.totalAmount);
       var houseHoldProvider =
           Provider.of<HouseHoldProvider>(context, listen: false);
-      return billList!.bill!.first.totalAmount! > 0
+      return billList.bill!.first.totalAmount! > 0
           ? Column(
               children: [
                 Container(
@@ -64,16 +112,17 @@ class NewConsumerBill extends StatelessWidget {
                                 child: TextButton.icon(
                                   onPressed: () => commonProvider
                                       .getFileFromPDFBillService({
-                                    "Bill": [billList?.bill?.first]
+                                    "Bill": [billList.bill?.first]
                                   }, {
-                                    "key": waterConnection?.connectionType ==
+                                    "key": widget.waterConnection
+                                                ?.connectionType ==
                                             'Metered'
                                         ? "ws-bill"
                                         : "ws-bill-nm",
                                     "tenantId": commonProvider
                                         .userDetails?.selectedtenant?.code,
-                                  }, billList!.bill!.first.mobileNumber,
-                                          billList?.bill?.first, "Download"),
+                                  }, billList.bill!.first.mobileNumber,
+                                          billList.bill?.first, "Download"),
                                   icon: Icon(Icons.download_sharp),
                                   label: Text(
                                     ApplicationLocalizations.of(context)
@@ -90,78 +139,41 @@ class NewConsumerBill extends StatelessWidget {
                                   i18.generateBillDetails
                                       .LAST_BILL_GENERATION_DATE,
                                   DateFormats.timeStampToDate(
-                                          billList!.bill!.first.billDate,
+                                          billList.bill!.first.billDate,
                                           format: "dd-MM-yyyy")
                                       .toString(),
                                   context),
                               _getLabeltext(
                                   i18.billDetails.CURRENT_BILL,
                                   ('₹' +
-                                      (billList!.bill!.first.billDetails
-                                                      ?.where(
-                                                        (element) =>
-                                                            element
-                                                                .billAccountDetails
-                                                                ?.first
-                                                                .taxHeadCode ==
-                                                            '10101',
-                                                      )
-                                                      .toList()
-                                                      .isNotEmpty ==
-                                                  true
-                                              ? billList
-                                                  ?.bill?.first.billDetails
-                                                  ?.where(
-                                                    (element) =>
-                                                        element
-                                                            .billAccountDetails
-                                                            ?.first
-                                                            .taxHeadCode ==
-                                                        '10101',
-                                                  )
-                                                  .toList()
-                                                  .first
-                                                  .amount
-                                              : "0")
+                                      billList
+                                          .bill!.first.billDetails!.first.amount
+                                          .toString()
                                           .toString()),
                                   context),
                               houseHoldProvider.isfirstdemand == true
                                   ? _getLabeltext(
                                       i18.billDetails.ARRERS_DUES,
                                       ('₹' +
-                                          (billList!.bill?.first.billDetails
-                                                          ?.where((element) =>
-                                                              element
-                                                                  .billAccountDetails
-                                                                  ?.first
-                                                                  .taxHeadCode ==
-                                                              '10102')
-                                                          .toList()
-                                                          .isNotEmpty ==
-                                                      true
-                                                  ? billList!
-                                                      .bill?.first.billDetails
-                                                      ?.where((element) =>
-                                                          element
-                                                              .billAccountDetails
-                                                              ?.first
-                                                              .taxHeadCode ==
-                                                          '10102')
-                                                      .toList()
-                                                      .first
-                                                      .amount
-                                                  : "0")
+                                          (res.reduce((previousValue,
+                                                          element) =>
+                                                      previousValue + element) -
+                                                  billList
+                                                      .bill
+                                                      ?.first
+                                                      .billDetails
+                                                      ?.first
+                                                      .amount)
                                               .toString()),
                                       context)
                                   : Text(""),
                               _getLabeltext(
                                   i18.billDetails.TOTAL_AMOUNT,
                                   ('₹' +
-                                          (billList?.bill?.first.totalAmount)
-                                              .toString() ??
-                                      ""),
+                                      (billList.bill?.first.totalAmount)
+                                          .toString()),
                                   context),
-                              this.mode == 'collect'
+                              widget.mode == 'collect'
                                   ? Align(
                                       alignment: Alignment.centerLeft,
                                       child: houseHoldProvider.isfirstdemand ==
@@ -176,11 +188,12 @@ class NewConsumerBill extends StatelessWidget {
                                                       .getFileFromPDFBillService(
                                                           {
                                                         "Bill": [
-                                                          billList!.bill!.first
+                                                          billList.bill!.first
                                                         ]
                                                       },
                                                           {
-                                                        "key": waterConnection
+                                                        "key": widget
+                                                                    .waterConnection
                                                                     ?.connectionType ==
                                                                 'Metered'
                                                             ? 'ws-bill'
@@ -191,17 +204,17 @@ class NewConsumerBill extends StatelessWidget {
                                                                 .selectedtenant!
                                                                 .code,
                                                       },
-                                                          billList!.bill!.first
+                                                          billList.bill!.first
                                                               .mobileNumber,
-                                                          billList?.bill!.first,
+                                                          billList.bill!.first,
                                                           "Share"),
                                               () => onClickOfCollectPayment(
-                                                  billList!.bill!.first,
+                                                  billList.bill!.first,
                                                   context))
                                           : ShortButton(
                                               i18.billDetails.COLLECT_PAYMENT,
                                               () => onClickOfCollectPayment(
-                                                  billList!.bill!.first,
+                                                  billList.bill!.first,
                                                   context)))
                                   : houseHoldProvider.isfirstdemand == true
                                       ? Container(
@@ -218,10 +231,10 @@ class NewConsumerBill extends StatelessWidget {
                                             onPressed: () => commonProvider
                                                 .getFileFromPDFBillService(
                                               {
-                                                "Bill": [billList!.bill!.first]
+                                                "Bill": [billList.bill!.first]
                                               },
                                               {
-                                                "key": waterConnection
+                                                "key": widget.waterConnection
                                                             ?.connectionType ==
                                                         'Metered'
                                                     ? 'ws-bill'
@@ -231,9 +244,8 @@ class NewConsumerBill extends StatelessWidget {
                                                     .selectedtenant!
                                                     .code,
                                               },
-                                              billList!
-                                                  .bill!.first.mobileNumber,
-                                              billList!.bill!.first,
+                                              billList.bill!.first.mobileNumber,
+                                              billList.bill!.first,
                                               "Share",
                                             ),
                                             style: ButtonStyle(

@@ -10,14 +10,13 @@ import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/widgets/BaseAppBar.dart';
+import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
-
 import '../../widgets/customAppbar.dart';
 
 class ConnectionPaymentView extends StatefulWidget {
@@ -179,6 +178,8 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               '${i18.common.CUSTOM_AMOUNT}',
               fetchBill.customAmountCtrl,
               isRequired: true,
+              validator: (val) =>
+                  Validators.rangeValidatior(val, fetchBill.totalAmount),
               textInputType: TextInputType.number,
               inputFormatter: [
                 FilteringTextInputFormatter.allow(RegExp("[0-9]"))
@@ -212,7 +213,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               subTitle(i18.payment.BILL_DETAILS),
               _buildLabelValue(i18.common.BILL_ID, '${fetchBill.billNumber}'),
               _buildLabelValue(i18.payment.BILL_PERIOD,
-                  '${DateFormats.getMonthWithDay(fetchBill.billDetails?.last.fromPeriod)} - ${DateFormats.getMonthWithDay(fetchBill.billDetails?.last.toPeriod)}'),
+                  '${DateFormats.getMonthWithDay(fetchBill.billDetails?.first.fromPeriod)} - ${DateFormats.getMonthWithDay(fetchBill.billDetails?.first.toPeriod)}'),
             ]),
           ),
           Padding(

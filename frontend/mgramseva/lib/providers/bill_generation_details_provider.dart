@@ -63,7 +63,7 @@ class BillGenerationProvider with ChangeNotifier {
         var commonProvider = Provider.of<CommonProvider>(
             navigatorKey.currentContext!,
             listen: false);
-        id!.split('_').join('/');
+        id.split('_').join('/');
         try {
           Loaders.showLoadingDialog(context);
 
@@ -130,14 +130,16 @@ class BillGenerationProvider with ChangeNotifier {
       billGenerateDetails.om_5Ctrl.text =
           meterRes.meterReadings!.first.currentReading.toString()[4];
       prevReadingDate = meterRes.meterReadings!.first.currentReadingDate;
-    } else if (waterconnection.additionalDetails!.meterReading.toString() != '0') {
-          var previousMeterReading = waterconnection.additionalDetails!.meterReading.toString()
-              .padLeft(5 , '0' );
-          billGenerateDetails.om_1Ctrl.text = previousMeterReading.toString()[0];
-          billGenerateDetails.om_2Ctrl.text = previousMeterReading.toString()[1];
-          billGenerateDetails.om_3Ctrl.text = previousMeterReading.toString()[2];
-          billGenerateDetails.om_4Ctrl.text = previousMeterReading.toString()[3];
-          billGenerateDetails.om_5Ctrl.text = previousMeterReading.toString()[4];
+    } else if (waterconnection.additionalDetails!.meterReading.toString() !=
+        '0') {
+      var previousMeterReading = waterconnection.additionalDetails!.meterReading
+          .toString()
+          .padLeft(5, '0');
+      billGenerateDetails.om_1Ctrl.text = previousMeterReading.toString()[0];
+      billGenerateDetails.om_2Ctrl.text = previousMeterReading.toString()[1];
+      billGenerateDetails.om_3Ctrl.text = previousMeterReading.toString()[2];
+      billGenerateDetails.om_4Ctrl.text = previousMeterReading.toString()[3];
+      billGenerateDetails.om_5Ctrl.text = previousMeterReading.toString()[4];
       prevReadingDate = waterconnection.previousReadingDate;
     }
   }
@@ -464,7 +466,7 @@ class BillGenerationProvider with ChangeNotifier {
       }
     }
     if (dates.length > 0) {
-      return (dates ?? <Map>[]).map((value) {
+      return (dates).map((value) {
         var d = value['name'] as DateTime;
         return DropdownMenuItem(
           value: value['code'],

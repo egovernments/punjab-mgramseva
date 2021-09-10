@@ -63,7 +63,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             .toSet()
             .toList();
         final result = tenantProvider.tenants!.tenantsList
-            ?.where((element) => r.contains(element.code?.trim()) ?? false)
+            ?.where((element) => r.contains(element.code?.trim()))
             .toList();
         if (result?.length == 1 &&
             commonProvider.userDetails!.selectedtenant == null) {
@@ -124,7 +124,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                ApplicationLocalizations.of(context).translate(result[index].code!),
+                                    ApplicationLocalizations.of(context)
+                                        .translate(result[index].code!),
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,

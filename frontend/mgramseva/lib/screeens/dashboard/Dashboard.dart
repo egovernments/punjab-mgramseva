@@ -70,74 +70,80 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
           drawer: DrawerWrapper(
             Drawer(child: SideBar()),
           ),
-          body: LayoutBuilder( builder: (context, constraints) =>
-             Container(
-               alignment: Alignment.center,
-               margin: constraints.maxWidth < 760 ? null : EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width /25),
+          body: LayoutBuilder(
+            builder: (context, constraints) => Container(
+              alignment: Alignment.center,
+              margin: constraints.maxWidth < 760
+                  ? null
+                  : EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width / 25),
               child: Stack(children: [
                 SingleChildScrollView(
-                  child:
-                   Container(
-                        color: Color.fromRGBO(238, 238, 238, 1),
-                        padding: EdgeInsets.only(left: 8, right: 8),
-                        height: constraints.maxHeight - 50,
-                        child: CustomScrollView(slivers: [
-                          SliverList(
-                              delegate: SliverChildListDelegate([
-                            HomeBack(),
-                              Container(
-                                key: key,
-                                child: DashboardCard(onTapOfMonthPicker)),
-                            TabBar(
-                              labelColor: Theme.of(context).primaryColor,
-                              unselectedLabelColor: Colors.black,
-                              labelStyle:
-                                  TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                              indicatorSize: TabBarIndicatorSize.tab,
-                              controller: _tabController,
-                              indicator: BoxDecoration(
-                                color: Colors.white,
-                                border: Border(
-                                  bottom: BorderSide(
-                                      width: 2, color: Theme.of(context).primaryColor),
-                                ),
+                  child: Container(
+                      color: Color.fromRGBO(238, 238, 238, 1),
+                      padding: EdgeInsets.only(left: 8, right: 8),
+                      height: constraints.maxHeight - 50,
+                      child: CustomScrollView(slivers: [
+                        SliverList(
+                            delegate: SliverChildListDelegate([
+                          HomeBack(),
+                          Container(
+                              key: key,
+                              child: DashboardCard(onTapOfMonthPicker)),
+                          TabBar(
+                            labelColor: Theme.of(context).primaryColor,
+                            unselectedLabelColor: Colors.black,
+                            labelStyle: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            controller: _tabController,
+                            indicator: BoxDecoration(
+                              color: Colors.white,
+                              border: Border(
+                                bottom: BorderSide(
+                                    width: 2,
+                                    color: Theme.of(context).primaryColor),
                               ),
-                              tabs: [
-                                Tab(
-                                  text: ApplicationLocalizations.of(context).translate(i18.dashboard.COLLECTIONS),
-                                ),
-                                Tab(
-                                  text: ApplicationLocalizations.of(context).translate(i18.dashboard.EXPENDITURE),
-                                ),
-                              ],
                             ),
-                          ])),
-                          SliverFillRemaining(
-                              hasScrollBody: true,
-                              fillOverscroll: true,
-                              child: TabBarView(
-                                physics: NeverScrollableScrollPhysics(),
-                                controller: _tabController,
-                                children: [
-                                  SearchExpenseDashboard(
-                                      dashBoardType: DashBoardType.collections),
-                                  SearchExpenseDashboard(
-                                      dashBoardType: DashBoardType.Expenditure)
-                                ],
-                              ))
+                            tabs: [
+                              Tab(
+                                text: ApplicationLocalizations.of(context)
+                                    .translate(i18.dashboard.COLLECTIONS),
+                              ),
+                              Tab(
+                                text: ApplicationLocalizations.of(context)
+                                    .translate(i18.dashboard.EXPENDITURE),
+                              ),
+                            ],
+                          ),
                         ])),
-                  ),
+                        SliverFillRemaining(
+                            hasScrollBody: true,
+                            fillOverscroll: true,
+                            child: TabBarView(
+                              physics: NeverScrollableScrollPhysics(),
+                              controller: _tabController,
+                              children: [
+                                SearchExpenseDashboard(
+                                    dashBoardType: DashBoardType.collections),
+                                SearchExpenseDashboard(
+                                    dashBoardType: DashBoardType.Expenditure)
+                              ],
+                            ))
+                      ])),
+                ),
                 Align(
                     alignment: Alignment.bottomRight,
                     child: Consumer<DashBoardProvider>(
                         builder: (_, dashBoardProvider, child) {
-                      var totalCount = (dashBoardProvider.selectedDashboardType ==
-                                  DashBoardType.Expenditure
-                              ? dashBoardProvider
-                                  ?.expenseDashboardDetails?.totalCount
-                              : dashBoardProvider
-                                  .waterConnectionsDetails?.totalCount) ??
-                          0;
+                      var totalCount =
+                          (dashBoardProvider.selectedDashboardType ==
+                                      DashBoardType.Expenditure
+                                  ? dashBoardProvider
+                                      .expenseDashboardDetails?.totalCount
+                                  : dashBoardProvider
+                                      .waterConnectionsDetails?.totalCount) ??
+                              0;
                       return Visibility(
                           visible: totalCount > 0,
                           child: Pagination(
@@ -232,11 +238,11 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: dashBoardProvider
-                                                        .selectedMonth?.year ==
-                                                    date?.year &&
+                                                        .selectedMonth.year ==
+                                                    date.year &&
                                                 dashBoardProvider
-                                                        .selectedMonth?.month ==
-                                                    date?.month
+                                                        .selectedMonth.month ==
+                                                    date.month
                                             ? FontWeight.bold
                                             : FontWeight.normal),
                                   ),
