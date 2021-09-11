@@ -228,8 +228,6 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ...List.generate(fetchBill.billDetails?.length ?? 0, (index) {
-                // var billAccountDetails = fetchBill.billDetails?[index];
                 len > 0
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -237,14 +235,21 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                             _buildLabelValue(
                                 'WS_${fetchBill.billDetails?.first.billAccountDetails?.last.taxHeadCode}',
                                 '₹ ${fetchBill.billDetails?.first.billAccountDetails?.last.amount}'),
-                            _buildLabelValue(i18.billDetails.ARRERS_DUES,
-                                '₹ ${(res.reduce((value, element) => value + element) - fetchBill.billDetails?.first.billAccountDetails?.last.amount).toString()}')
+                            (res.reduce((value, element) => value + element) -
+                                        fetchBill.billDetails?.first
+                                            .billAccountDetails?.last.amount) >
+                                    0
+                                ? _buildLabelValue(i18.billDetails.ARRERS_DUES,
+                                    '₹ ${(res.reduce((value, element) => value + element) - fetchBill.billDetails?.first.billAccountDetails?.last.amount).toString()}')
+                                : SizedBox(
+                                    height: 0,
+                                  )
                           ])
                     : _buildLabelValue(
                         'WS_${fetchBill.billDetails?.first.billAccountDetails?.last.taxHeadCode}',
                         '₹ ${fetchBill.billDetails?.first.billAccountDetails?.last.amount}'),
                 // }),
-                if (fetchBill.billDetails != null)
+                if (fetchBill.billDetails != null && res.length > 1)
                   _buildWaterCharges(fetchBill, constraints)
               ],
             ),
@@ -284,7 +289,9 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                     ],
                   );
                 } else {
-                  return Text("");
+                  return SizedBox(
+                    height: 0,
+                  );
                 }
               }))
             : Table(
