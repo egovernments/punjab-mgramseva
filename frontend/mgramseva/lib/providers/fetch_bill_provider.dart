@@ -16,9 +16,15 @@ class FetchBillProvider with ChangeNotifier {
         "businessService": "WS"
       });
       if (res != null) {
-        res.bill?.first.billDetails
-            ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
-        streamController.add(res);
+        if (res.bill!.isNotEmpty) {
+          res.bill?.first.billDetails
+              ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
+          streamController.add(res);
+        } else {
+          BillList billList = new BillList();
+          billList.bill = [];
+          streamController.add(billList);
+        }
       } else {
         BillList billList = new BillList();
         billList.bill = [];

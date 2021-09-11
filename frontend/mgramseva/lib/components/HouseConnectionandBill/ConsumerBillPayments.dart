@@ -54,7 +54,6 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
 
   buildBillPaymentsView(BillPayments billpayments) {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    print(billpayments.payments!.length);
     return LayoutBuilder(builder: (context, constraints) {
       return Column(children: [
         billpayments.payments!.length > 0

@@ -182,7 +182,7 @@ class _LandingPageState extends State<LandingPage> {
       String id, DownloadTaskStatus status, int progress) {
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port')!;
-    print(progress);
+
     send.send([id, status, progress]);
   }
 

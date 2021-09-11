@@ -17,7 +17,6 @@ class TenantsProvider with ChangeNotifier {
   Future<void> getTenants() async {
     try {
       var userResponse = await TenantRepo().fetchTenants(getTenantsMDMS('pb'));
-      print(userResponse);
       if (userResponse != null) {
         tenants = userResponse;
         streamController.add(userResponse);
@@ -34,7 +33,6 @@ class TenantsProvider with ChangeNotifier {
   }
 
   getTenant() {
-    print(tenants);
     return tenants!.tenantsList!.length;
   }
 }

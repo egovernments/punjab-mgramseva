@@ -34,13 +34,11 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
   }
 
   buildconsumerView(WaterConnections waterconnsctions) {
-    print(waterconnsctions.waterConnection!.length);
     return SearchConnectionDetailCard(waterconnsctions, widget.arguments);
   }
 
   @override
   Widget build(BuildContext context) {
-    print(['Mode']);
     var waterconnectionsProvider =
         Provider.of<SearchConnectionProvider>(context, listen: false);
 

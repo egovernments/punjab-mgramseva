@@ -85,113 +85,193 @@ class NewConsumerBillState extends State<NewConsumerBill> {
   buidBillview(BillList billList) {
     List res = [];
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    billList.bill?.first.billDetails!.forEach((element) {
-      res.add(element.amount);
-    });
+    if (billList.bill!.isNotEmpty)
+      billList.bill?.first.billDetails!.forEach((element) {
+        res.add(element.amount);
+      });
 
     return LayoutBuilder(builder: (context, constraints) {
       var houseHoldProvider =
           Provider.of<HouseHoldProvider>(context, listen: false);
-      return billList.bill!.first.totalAmount! > 0
-          ? Column(
-              children: [
-                Container(
-                    padding: EdgeInsets.only(top: 24, bottom: 8),
-                    child: ListLabelText(
-                        i18.billDetails.NEW_CONSUMERGENERATE_BILL_LABEL)),
-                Card(
-                    child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Visibility(
-                                visible: houseHoldProvider.isfirstdemand == true
-                                    ? true
-                                    : false,
-                                child: TextButton.icon(
-                                  onPressed: () => commonProvider
-                                      .getFileFromPDFBillService({
-                                    "Bill": [billList.bill?.first]
-                                  }, {
-                                    "key": widget.waterConnection
-                                                ?.connectionType ==
-                                            'Metered'
-                                        ? "ws-bill"
-                                        : "ws-bill-nm",
-                                    "tenantId": commonProvider
-                                        .userDetails?.selectedtenant?.code,
-                                  }, billList.bill!.first.mobileNumber,
-                                          billList.bill?.first, "Download"),
-                                  icon: Icon(Icons.download_sharp),
-                                  label: Text(
-                                    ApplicationLocalizations.of(context)
-                                        .translate(i18.common.BILL_DOWNLOAD),
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ),
-                              ),
-                              _getLabeltext(
-                                  i18.generateBillDetails
-                                      .LAST_BILL_GENERATION_DATE,
-                                  DateFormats.timeStampToDate(
-                                          billList.bill!.first.billDate,
-                                          format: "dd-MM-yyyy")
-                                      .toString(),
-                                  context),
-                              _getLabeltext(
-                                  i18.billDetails.CURRENT_BILL,
-                                  ('₹' +
-                                      billList
-                                          .bill!.first.billDetails!.first.amount
-                                          .toString()
-                                          .toString()),
-                                  context),
-                              houseHoldProvider.isfirstdemand == true
-                                  ? _getLabeltext(
-                                      i18.billDetails.ARRERS_DUES,
-                                      ('₹' +
-                                          (res.reduce((previousValue,
-                                                          element) =>
-                                                      previousValue + element) -
+      return billList.bill!.isEmpty
+          ? Text("")
+          : billList.bill!.first.totalAmount! > 0
+              ? houseHoldProvider.isfirstdemand == false &&
+                      widget.mode != 'collect'
+                  ? Text("")
+                  : Column(
+                      children: [
+                        Container(
+                            padding: EdgeInsets.only(top: 24, bottom: 8),
+                            child: ListLabelText(i18
+                                .billDetails.NEW_CONSUMERGENERATE_BILL_LABEL)),
+                        Card(
+                            child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Visibility(
+                                        visible:
+                                            houseHoldProvider.isfirstdemand ==
+                                                    true
+                                                ? true
+                                                : false,
+                                        child: TextButton.icon(
+                                          onPressed: () => commonProvider
+                                              .getFileFromPDFBillService(
+                                                  {
+                                                "Bill": [billList.bill?.first]
+                                              },
+                                                  {
+                                                "key": widget.waterConnection
+                                                            ?.connectionType ==
+                                                        'Metered'
+                                                    ? "ws-bill"
+                                                    : "ws-bill-nm",
+                                                "tenantId": commonProvider
+                                                    .userDetails
+                                                    ?.selectedtenant
+                                                    ?.code,
+                                              },
                                                   billList
-                                                      .bill
-                                                      ?.first
-                                                      .billDetails
-                                                      ?.first
-                                                      .amount)
-                                              .toString()),
-                                      context)
-                                  : Text(""),
-                              _getLabeltext(
-                                  i18.billDetails.TOTAL_AMOUNT,
-                                  ('₹' +
-                                      (billList.bill?.first.totalAmount)
-                                          .toString()),
-                                  context),
-                              widget.mode == 'collect'
-                                  ? Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: houseHoldProvider.isfirstdemand ==
-                                              true
-                                          /*&&
+                                                      .bill!.first.mobileNumber,
+                                                  billList.bill?.first,
+                                                  "Download"),
+                                          icon: Icon(Icons.download_sharp),
+                                          label: Text(
+                                            ApplicationLocalizations.of(context)
+                                                .translate(
+                                                    i18.common.BILL_DOWNLOAD),
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ),
+                                      ),
+                                      houseHoldProvider.isfirstdemand == true
+                                          ? _getLabeltext(
+                                              i18.generateBillDetails
+                                                  .LAST_BILL_GENERATION_DATE,
+                                              DateFormats.timeStampToDate(
+                                                      billList
+                                                          .bill!.first.billDate,
+                                                      format: "dd-MM-yyyy")
+                                                  .toString(),
+                                              context)
+                                          : Text(""),
+                                      _getLabeltext(
+                                          houseHoldProvider.isfirstdemand ==
+                                                  true
+                                              ? i18.billDetails.CURRENT_BILL
+                                              : i18.billDetails.ARRERS_DUES,
+                                          ('₹' +
+                                              billList.bill!.first.billDetails!
+                                                  .first.amount
+                                                  .toString()),
+                                          context),
+                                      houseHoldProvider.isfirstdemand == true
+                                          ? _getLabeltext(
+                                              i18.billDetails.ARRERS_DUES,
+                                              ('₹' +
+                                                  (res.reduce((previousValue,
+                                                                  element) =>
+                                                              previousValue +
+                                                              element) -
+                                                          billList
+                                                              .bill
+                                                              ?.first
+                                                              .billDetails
+                                                              ?.first
+                                                              .amount)
+                                                      .toString()),
+                                              context)
+                                          : Text(""),
+                                      _getLabeltext(
+                                          i18.billDetails.TOTAL_AMOUNT,
+                                          ('₹' +
+                                              (billList.bill?.first.totalAmount)
+                                                  .toString()),
+                                          context),
+                                      widget.mode == 'collect'
+                                          ? Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: houseHoldProvider
+                                                          .isfirstdemand ==
+                                                      true
+                                                  /*&&
                                              houseHoldProvider.waterConnection!
                                                       .connectionType !=
                                                   'Metered'*/
-                                          ? ButtonGroup(
-                                              i18.billDetails.COLLECT_PAYMENT,
-                                              () => commonProvider
-                                                      .getFileFromPDFBillService(
-                                                          {
+                                                  ? ButtonGroup(
+                                                      i18.billDetails
+                                                          .COLLECT_PAYMENT,
+                                                      () =>
+                                                          commonProvider
+                                                              .getFileFromPDFBillService(
+                                                                  {
+                                                                "Bill": [
+                                                                  billList.bill!
+                                                                      .first
+                                                                ]
+                                                              },
+                                                                  {
+                                                                "key": widget
+                                                                            .waterConnection
+                                                                            ?.connectionType ==
+                                                                        'Metered'
+                                                                    ? 'ws-bill'
+                                                                    : 'ws-bill-nm',
+                                                                "tenantId": commonProvider
+                                                                    .userDetails!
+                                                                    .selectedtenant!
+                                                                    .code,
+                                                              },
+                                                                  billList
+                                                                      .bill!
+                                                                      .first
+                                                                      .mobileNumber,
+                                                                  billList.bill!
+                                                                      .first,
+                                                                  "Share"),
+                                                      () =>
+                                                          onClickOfCollectPayment(
+                                                              billList
+                                                                  .bill!.first,
+                                                              context))
+                                                  : ShortButton(
+                                                      i18.billDetails
+                                                          .COLLECT_PAYMENT,
+                                                      () =>
+                                                          onClickOfCollectPayment(
+                                                              billList
+                                                                  .bill!.first,
+                                                              context)))
+                                          : houseHoldProvider.isfirstdemand ==
+                                                  true
+                                              ? Container(
+                                                  width: constraints.maxWidth >
+                                                          760
+                                                      ? MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                          3
+                                                      : MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                          1.25,
+                                                  child: OutlinedButton.icon(
+                                                    onPressed: () => commonProvider
+                                                        .getFileFromPDFBillService(
+                                                      {
                                                         "Bill": [
                                                           billList.bill!.first
                                                         ]
                                                       },
-                                                          {
+                                                      {
                                                         "key": widget
                                                                     .waterConnection
                                                                     ?.connectionType ==
@@ -204,89 +284,58 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                                 .selectedtenant!
                                                                 .code,
                                                       },
-                                                          billList.bill!.first
-                                                              .mobileNumber,
-                                                          billList.bill!.first,
-                                                          "Share"),
-                                              () => onClickOfCollectPayment(
-                                                  billList.bill!.first,
-                                                  context))
-                                          : ShortButton(
-                                              i18.billDetails.COLLECT_PAYMENT,
-                                              () => onClickOfCollectPayment(
-                                                  billList.bill!.first,
-                                                  context)))
-                                  : houseHoldProvider.isfirstdemand == true
-                                      ? Container(
-                                          width: constraints.maxWidth > 760
-                                              ? MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  3
-                                              : MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  1.25,
-                                          child: OutlinedButton.icon(
-                                            onPressed: () => commonProvider
-                                                .getFileFromPDFBillService(
-                                              {
-                                                "Bill": [billList.bill!.first]
-                                              },
-                                              {
-                                                "key": widget.waterConnection
-                                                            ?.connectionType ==
-                                                        'Metered'
-                                                    ? 'ws-bill'
-                                                    : 'ws-bill-nm',
-                                                "tenantId": commonProvider
-                                                    .userDetails!
-                                                    .selectedtenant!
-                                                    .code,
-                                              },
-                                              billList.bill!.first.mobileNumber,
-                                              billList.bill!.first,
-                                              "Share",
-                                            ),
-                                            style: ButtonStyle(
-                                              alignment: Alignment.center,
-                                              padding:
-                                                  MaterialStateProperty.all(
-                                                      EdgeInsets.symmetric(
-                                                          vertical: 0)),
-                                              shape: MaterialStateProperty.all(
-                                                  RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                    width: 2,
-                                                    color: Theme.of(context)
-                                                        .primaryColor),
-                                                borderRadius:
-                                                    BorderRadius.circular(0.0),
-                                              )),
-                                            ),
-                                            icon: (Image.asset(
-                                                'assets/png/whats_app.png')),
-                                            label: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5),
-                                              child: Text(
-                                                  ApplicationLocalizations.of(
-                                                          context)
-                                                      .translate(i18
-                                                          .common.SHARE_BILL),
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 16,
-                                                  )),
-                                            ),
-                                          ),
-                                        )
-                                      : Text(""),
-                            ])))
-              ],
-            )
-          : Text("");
+                                                      billList.bill!.first
+                                                          .mobileNumber,
+                                                      billList.bill!.first,
+                                                      "Share",
+                                                    ),
+                                                    style: ButtonStyle(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      padding:
+                                                          MaterialStateProperty
+                                                              .all(EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          0)),
+                                                      shape: MaterialStateProperty
+                                                          .all(
+                                                              RoundedRectangleBorder(
+                                                        side: BorderSide(
+                                                            width: 2,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(0.0),
+                                                      )),
+                                                    ),
+                                                    icon: (Image.asset(
+                                                        'assets/png/whats_app.png')),
+                                                    label: Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 5),
+                                                      child: Text(
+                                                          ApplicationLocalizations
+                                                                  .of(context)
+                                                              .translate(i18
+                                                                  .common
+                                                                  .SHARE_BILL),
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            fontSize: 16,
+                                                          )),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Text(""),
+                                    ])))
+                      ],
+                    )
+              : Text("");
     });
   }
 

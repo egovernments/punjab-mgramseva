@@ -182,7 +182,6 @@ class CoreRepository extends BaseService {
   }
 
   Future<EventsList?> fetchNotifications(params) async {
-    print("funcation for Notification");
     EventsList? eventsResponse;
     try {
       var commonProvider = Provider.of<CommonProvider>(

@@ -101,7 +101,6 @@ class WaterConnection {
         : DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(
             meterInstallationDateCtrl.text,
             dateFormat: "dd/MM/yyyy"));
-    print(meterInstallationDate);
   }
 
   getText() {
