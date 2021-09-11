@@ -262,7 +262,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                       : MediaQuery.of(context)
                                                               .size
                                                               .width /
-                                                          1.25,
+                                                          1.12,
                                                   child: OutlinedButton.icon(
                                                     onPressed: () => commonProvider
                                                         .getFileFromPDFBillService(

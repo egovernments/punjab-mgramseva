@@ -31,7 +31,10 @@ class _NotificationsState extends State<Notifications> {
             children: [
               GestureDetector(
                   onTap: () {
-                    widget.event!.actions != null
+                    widget.event!.actions != null &&
+                            widget.event!.actions?.actionUrls?.first
+                                    .actionUrl !=
+                                ""
                         ? Navigator.pushNamed(context,
                             widget.event!.actions!.actionUrls!.first.actionUrl!)
                         : null;
@@ -52,20 +55,23 @@ class _NotificationsState extends State<Notifications> {
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w700,
-                                        color: Theme.of(context).primaryColorDark),
+                                        color:
+                                            Theme.of(context).primaryColorDark),
                                   )),
                               new Container(
-                                padding: EdgeInsets.all(4),
+                                  padding: EdgeInsets.all(4),
                                   width:
                                       MediaQuery.of(context).size.width / 1.2,
                                   child: Text(
                                     ApplicationLocalizations.of(context)
-                                        .translate(widget.event!.description!.trim()),
+                                        .translate(
+                                            widget.event!.description!.trim()),
                                     maxLines: 4,
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
-                                    color: Theme.of(context).primaryColorLight),
+                                        color: Theme.of(context)
+                                            .primaryColorLight),
                                     textAlign: TextAlign.left,
                                   )),
                               Padding(
@@ -92,9 +98,10 @@ class _NotificationsState extends State<Notifications> {
                                             .translate(
                                                 i18.generateBillDetails.TODAY),
                                     style: TextStyle(
-                                      fontSize: 14,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w400,
-                                        color: Theme.of(context).primaryColorLight),
+                                        color: Theme.of(context)
+                                            .primaryColorLight),
                                   ))
                             ],
                           )))),

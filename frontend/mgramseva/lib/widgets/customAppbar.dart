@@ -6,6 +6,7 @@ import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/tenants_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -108,6 +109,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         onTap: () {
                           commonProvider.setTenant(result[index]);
                           Navigator.pop(context);
+                          CommonMethods.home();
                         },
                         child: Material(
                             child: Container(

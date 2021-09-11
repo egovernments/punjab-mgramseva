@@ -4,6 +4,7 @@ import 'package:mgramseva/components/Notifications/notificationsList.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/providers/notifications_provider.dart';
 import 'package:mgramseva/providers/tenants_provider.dart';
 import 'package:mgramseva/screeens/Home/HomeCard.dart';
 import 'package:mgramseva/utils/constants.dart';
@@ -150,7 +151,28 @@ class _HomeState extends State<Home> {
           margin: constraint.maxWidth < 720
               ? EdgeInsets.all(0)
               : EdgeInsets.only(left: 75, right: 75),
-          child: NotificationsList()),
+          child: Consumer<CommonProvider>(builder: (_, userProvider, child) {
+            if (userProvider.userDetails?.selectedtenant?.code != null) {
+              var commonProvider =
+                  Provider.of<CommonProvider>(context, listen: false);
+              Provider.of<NotificationProvider>(context, listen: false)
+                ..getNotiications({
+                  "tenantId": userProvider.userDetails?.selectedtenant?.code!,
+                  "eventType": "SYSTEMGENERATED",
+                  "recepients": commonProvider.userDetails?.userRequest?.uuid,
+                }, {
+                  "tenantId": userProvider.userDetails?.selectedtenant?.code!,
+                  "eventType": "SYSTEMGENERATED",
+                  "roles": commonProvider.userDetails?.userRequest?.roles!
+                      .map((e) => e.code.toString())
+                      .join(',')
+                      .toString(),
+                });
+            }
+            return userProvider.userDetails?.selectedtenant?.code != null
+                ? NotificationsList()
+                : Text("");
+          })),
     );
   }
 }
