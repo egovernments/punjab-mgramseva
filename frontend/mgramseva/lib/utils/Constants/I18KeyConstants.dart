@@ -165,7 +165,7 @@ class Common {
 
   ///Months
   String get JAN => 'JAN';
-  String get FEB  => 'FEB ';
+  String get FEB => 'FEB ';
   String get MAR => 'MAR';
   String get APR => 'APR';
   String get MAY => 'MAY';
@@ -369,6 +369,7 @@ class _Validators {
       'CONFIRM_RECONFIRM_SHOULD_SAME'; //New Password and Confirm password should be same
   String get ENTER_METER_NUMBER => 'ENTER_METER_NUMBER';
   String get ENTER_ALPHA_NUMERIC_ONLY => 'ENTER_ALPHA_NUMERIC_ONLY';
+  String get PARTIAL_AMT_OUT_OF_RANGE => 'PARTIAL_AMT_OUT_OF_RANGE';
 }
 
 class DemandGenerate {

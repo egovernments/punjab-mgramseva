@@ -105,38 +105,42 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var challanDetails = res['challans']?[0];
 
       late String localizationText;
-      if(isUpdate){
-        localizationText = '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_BILL_ID)}';
-        localizationText = localizationText.replaceFirst('< Bill ID>', '${challanDetails['challanNo'] ?? ''}');
-      }else{
-         localizationText = '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}';
-        localizationText = localizationText.replaceFirst('<Vendor>', expenditureDetails.vendorNameCtrl.text.trim());
-        localizationText = localizationText.replaceFirst('<Amount>', expenditureDetails?.expensesAmount?.first?.amount ?? '');
-        localizationText = localizationText.replaceFirst('<type of expense>', expenditureDetails.expenseType ?? '');
+      if (isUpdate) {
+        localizationText =
+            '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_BILL_ID)}';
+        localizationText = localizationText.replaceFirst(
+            '< Bill ID>', '${challanDetails['challanNo'] ?? ''}');
+      } else {
+        localizationText =
+            '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}';
+        localizationText = localizationText.replaceFirst(
+            '<Vendor>', expenditureDetails.vendorNameCtrl.text.trim());
+        localizationText = localizationText.replaceFirst(
+            '<Amount>', expenditureDetails.expensesAmount?.first.amount ?? '');
+        localizationText = localizationText.replaceFirst(
+            '<type of expense>', expenditureDetails.expenseType ?? '');
       }
 
-      navigatorKey.currentState?.push(
-          MaterialPageRoute(builder: (BuildContext context)
-      {
+      navigatorKey.currentState
+          ?.push(MaterialPageRoute(builder: (BuildContext context) {
         return isUpdate
             ? CommonSuccess(SuccessHandler(
-            i18.expense.MODIFIED_EXPENDITURE_SUCCESSFULLY,
-            localizationText,
-            i18.common.BACK_HOME,
-            isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD))
-            : CommonSuccess(SuccessHandler(
-          i18.expense.CORE_EXPENSE_EXPENDITURE_SUCESS,
-          localizationText,
-          i18.expense.ADD_NEW_EXPENSE,
-          isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD,
-          subHeader:
-          '${ApplicationLocalizations.of(context).translate(
-              i18.demandGenerate.BILL_ID_NO)}',
-          subHeaderText:
-          '${challanDetails['challanNo'] ?? ''}',
-        ), callBack : onClickOfBackButton);
-
-          }));
+                i18.expense.MODIFIED_EXPENDITURE_SUCCESSFULLY,
+                localizationText,
+                i18.common.BACK_HOME,
+                isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD))
+            : CommonSuccess(
+                SuccessHandler(
+                  i18.expense.CORE_EXPENSE_EXPENDITURE_SUCESS,
+                  localizationText,
+                  i18.expense.ADD_NEW_EXPENSE,
+                  isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD,
+                  subHeader:
+                      '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)}',
+                  subHeaderText: '${challanDetails['challanNo'] ?? ''}',
+                ),
+                callBack: onClickOfBackButton);
+      }));
     } on CustomException catch (e, s) {
       Navigator.pop(context);
 
@@ -150,11 +154,11 @@ class ExpensesDetailsProvider with ChangeNotifier {
     }
   }
 
-  void onClickOfBackButton(){
+  void onClickOfBackButton() {
     suggestionsBoxController = SuggestionsBoxController();
-      expenditureDetails = ExpensesDetailsModel();
+    expenditureDetails = ExpensesDetailsModel();
     getExpensesDetails(navigatorKey.currentContext!, null, null);
-      autoValidation = false;
+    autoValidation = false;
     notifyListeners();
     Navigator.pop(navigatorKey.currentContext!);
   }
@@ -164,7 +168,10 @@ class ExpensesDetailsProvider with ChangeNotifier {
     expenditureDetails
       ..businessService = commonProvider.getMdmsId(languageList,
           'EXPENSE.${expenditureDetails.expenseType}', MDMSType.BusinessService)
-      ..expensesAmount?.first.taxHeadCode = languageList?.mdmsRes?.expense?.expenseList?.firstWhere((e) => e.code == expenditureDetails.expenseType).taxHeadCode
+      ..expensesAmount?.first.taxHeadCode = languageList
+          ?.mdmsRes?.expense?.expenseList
+          ?.firstWhere((e) => e.code == expenditureDetails.expenseType)
+          .taxHeadCode
       ..consumerType = 'EXPENSE'
       ..tenantId = commonProvider.userDetails?.selectedtenant?.code
       ..setText()
@@ -200,9 +207,8 @@ class ExpensesDetailsProvider with ChangeNotifier {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
     try {
-
       Loaders.showLoadingDialog(context);
-      var  boundaryList = [];
+      var boundaryList = [];
       String? code;
       var result = await ConsumerRepository().getLocations({
         "hierarchyTypeCode": "REVENUE",
@@ -215,56 +221,56 @@ class ExpensesDetailsProvider with ChangeNotifier {
         code = boundaryList.first.code;
       }
 
-    var body = {
-      "vendor": {
-        "tenantId": commonProvider.userDetails?.selectedtenant?.code,
-        "name": expenditureDetails.vendorNameCtrl.text,
-        "address": {
-          "tenantId": commonProvider.userDetails?.selectedtenant?.code,
-          "doorNo": null,
-          "plotNo": null,
-          "landmark": null,
-          "city": null,
-          "district": null,
-          "region": null,
-          "state": "punjab",
-          "country": "in",
-          "pincode": null,
-          "additionDetails": null,
-          "buildingName": null,
-          "street": null,
-          "locality": {
-            "code": code,
-            "name": null,
-            "label": null,
-            "latitude": null,
-            "longitude": null,
-            "area": "null",
-            "pincode": null,
-            "boundaryNum": 1,
-            "children": []
-          },
-          "geoLocation": {
-            "latitude": 0,
-            "longitude": 0,
-            "additionalDetails": {}
-          }
-        },
-        "owner": {
+      var body = {
+        "vendor": {
           "tenantId": commonProvider.userDetails?.selectedtenant?.code,
           "name": expenditureDetails.vendorNameCtrl.text,
-          "fatherOrHusbandName": "defaultName",
-          "relationship": "FATHER",
-          "gender": "MALE",
-          "dob": 550261800000,
-          "emailId": "example@gmail.com",
-          "mobileNumber": expenditureDetails.mobileNumberController.text
-        },
-        "vehicles": [],
-        "drivers": [],
-        "source": "WhatsApp"
-      }
-    };
+          "address": {
+            "tenantId": commonProvider.userDetails?.selectedtenant?.code,
+            "doorNo": null,
+            "plotNo": null,
+            "landmark": null,
+            "city": null,
+            "district": null,
+            "region": null,
+            "state": "punjab",
+            "country": "in",
+            "pincode": null,
+            "additionDetails": null,
+            "buildingName": null,
+            "street": null,
+            "locality": {
+              "code": code,
+              "name": null,
+              "label": null,
+              "latitude": null,
+              "longitude": null,
+              "area": "null",
+              "pincode": null,
+              "boundaryNum": 1,
+              "children": []
+            },
+            "geoLocation": {
+              "latitude": 0,
+              "longitude": 0,
+              "additionalDetails": {}
+            }
+          },
+          "owner": {
+            "tenantId": commonProvider.userDetails?.selectedtenant?.code,
+            "name": expenditureDetails.vendorNameCtrl.text,
+            "fatherOrHusbandName": "defaultName",
+            "relationship": "FATHER",
+            "gender": "MALE",
+            "dob": 550261800000,
+            "emailId": "example@gmail.com",
+            "mobileNumber": expenditureDetails.mobileNumberController.text
+          },
+          "vehicles": [],
+          "drivers": [],
+          "source": "WhatsApp"
+        }
+      };
 
       var res = await ExpensesRepository().createVendor(body);
       if (res != null) {

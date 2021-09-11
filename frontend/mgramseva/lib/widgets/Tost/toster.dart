@@ -9,7 +9,7 @@ class ToastUtils {
   static OverlayEntry? _overlayEntry;
 
   static void showCustomToast(
-      BuildContext context, String message, String type ) {
+      BuildContext context, String message, String type) {
     if (toastTimer != null) {
       print(toastTimer!.isActive);
     }
@@ -31,7 +31,6 @@ class ToastUtils {
 
   static OverlayEntry createOverlayEntry(
       BuildContext context, String message, String type) {
-    print(message);
     return OverlayEntry(
         builder: ((context) => Positioned(
               bottom: 50.0,

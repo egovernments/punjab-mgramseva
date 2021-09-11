@@ -189,16 +189,17 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                               ),
                                               icon: Text(""),
                                               label: Padding(
-                                                padding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 15),
-                                                child: Text(
-                                                    ApplicationLocalizations.of(
-                                                            context)
-                                                        .translate(i18
-                                                            .generateBillDetails
-                                                            .GENERATE_BILL_LABEL),
-                                                    style: Theme.of(context).textTheme.subtitle2)),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 15),
+                                                  child: Text(
+                                                      ApplicationLocalizations
+                                                              .of(context)
+                                                          .translate(i18
+                                                              .generateBillDetails
+                                                              .GENERATE_BILL_LABEL),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .subtitle2)),
                                             )),
                                             Expanded(
                                                 child: ShortButton(
@@ -247,10 +248,9 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
 
   @override
   Widget build(BuildContext context) {
-    var billpaymentsProvider =
-        Provider.of<DemadDetailProvider>(context, listen: false);
+    var billProvider = Provider.of<DemadDetailProvider>(context, listen: false);
     return StreamBuilder(
-        stream: billpaymentsProvider.streamController.stream,
+        stream: billProvider.streamController.stream,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             return buidDemandview(snapshot.data);

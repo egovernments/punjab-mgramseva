@@ -59,7 +59,8 @@ class BuildTextField extends StatefulWidget {
       this.placeHolder,
       this.contextkey,
       this.isFilled,
-      this.requiredMessage, this.autoValidation});
+      this.requiredMessage,
+      this.autoValidation});
 
   @override
   State<StatefulWidget> createState() => _BuildTextField();
@@ -113,7 +114,7 @@ class _BuildTextField extends State<BuildTextField> {
                   .translate((widget.placeHolder!))
               : "",
           border: widget.inputBorder,
-          enabledBorder : widget.inputBorder,
+          enabledBorder: widget.inputBorder,
           errorMaxLines: 2,
           enabled: widget.isDisabled ?? true,
           filled: widget.isFilled,

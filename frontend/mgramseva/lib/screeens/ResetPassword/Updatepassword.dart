@@ -82,7 +82,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
     var tenants = await TenantRepo().fetchTenants(
         getTenantsMDMS(widget.userDetails.userRequest!.tenantId.toString()),
         widget.userDetails.accessToken);
-    final r = widget.userDetails!.userRequest!.roles!
+    final r = widget.userDetails.userRequest!.roles!
         .map((e) => e.tenantId)
         .toSet()
         .toList();
@@ -207,7 +207,12 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                       ApplicationLocalizations.of(context)
                                           .translate(
                                               i18.password.CHANGE_PASSWORD),
-                                     _pinEditingController.text.trim().length != pinLength ? null : updatePassword),
+                                      _pinEditingController.text
+                                                  .trim()
+                                                  .length !=
+                                              pinLength
+                                          ? null
+                                          : updatePassword),
                                   PasswordHint(password)
                                 ],
                               ))))),
@@ -279,7 +284,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
               child: Text(
                   ApplicationLocalizations.of(context)
-                      .translate('${e?.city?.code}'),
+                      .translate('${e.city?.code}'),
                   style: style),
             )),
             TableCell(
@@ -332,9 +337,8 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                 radius: Radius.circular(1),
                 enabled: true,
               ),
-              onChanged: (String value){
-                  setState(() {
-                  });
+              onChanged: (String value) {
+                setState(() {});
               },
               pinLength: pinLength,
               decoration: BoxLooseDecoration(

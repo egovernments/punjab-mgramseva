@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart' as billDetails;
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/providers/collect_payment.dart';
@@ -10,14 +11,13 @@ import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/widgets/BaseAppBar.dart';
+import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
-
 import '../../widgets/customAppbar.dart';
 
 class ConnectionPaymentView extends StatefulWidget {
@@ -179,6 +179,8 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               '${i18.common.CUSTOM_AMOUNT}',
               fetchBill.customAmountCtrl,
               isRequired: true,
+              validator: (val) =>
+                  Validators.rangeValidatior(val, fetchBill.totalAmount),
               textInputType: TextInputType.number,
               inputFormatter: [
                 FilteringTextInputFormatter.allow(RegExp("[0-9]"))
@@ -201,6 +203,12 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   }
 
   Widget _buildViewDetails(FetchBill fetchBill) {
+    List res = [];
+    num len = fetchBill.billDetails?.first.billAccountDetails?.length as num;
+    if (fetchBill.billDetails!.isNotEmpty)
+      fetchBill.billDetails?.forEach((element) {
+        res.add(element.amount);
+      });
     return LayoutBuilder(
       builder: (_, constraints) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,7 +220,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               subTitle(i18.payment.BILL_DETAILS),
               _buildLabelValue(i18.common.BILL_ID, '${fetchBill.billNumber}'),
               _buildLabelValue(i18.payment.BILL_PERIOD,
-                  '${DateFormats.getMonthWithDay(fetchBill.billDetails?.last.fromPeriod)} - ${DateFormats.getMonthWithDay(fetchBill.billDetails?.last.toPeriod)}'),
+                  '${DateFormats.getMonthWithDay(fetchBill.billDetails?.first.fromPeriod)} - ${DateFormats.getMonthWithDay(fetchBill.billDetails?.first.toPeriod)}'),
             ]),
           ),
           Padding(
@@ -220,13 +228,23 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ...List.generate(fetchBill.billDetails?.length ?? 0, (index) {
-                  var billAccountDetails = fetchBill.billDetails?[index];
-                  return _buildLabelValue(
-                      'WS_${billAccountDetails!.billAccountDetails?.last.taxHeadCode}',
-                      '₹ ${billAccountDetails.billAccountDetails?.last.amount}');
-                }),
-                if (fetchBill.demand != null)
+                // ...List.generate(fetchBill.billDetails?.length ?? 0, (index) {
+                // var billAccountDetails = fetchBill.billDetails?[index];
+                len > 0
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                            _buildLabelValue(
+                                'WS_${fetchBill.billDetails?.first.billAccountDetails?.last.taxHeadCode}',
+                                '₹ ${fetchBill.billDetails?.first.billAccountDetails?.last.amount}'),
+                            _buildLabelValue(i18.billDetails.ARRERS_DUES,
+                                '₹ ${(res.reduce((value, element) => value + element) - fetchBill.billDetails?.first.billAccountDetails?.last.amount).toString()}')
+                          ])
+                    : _buildLabelValue(
+                        'WS_${fetchBill.billDetails?.first.billAccountDetails?.last.taxHeadCode}',
+                        '₹ ${fetchBill.billDetails?.first.billAccountDetails?.last.amount}'),
+                // }),
+                if (fetchBill.billDetails != null)
                   _buildWaterCharges(fetchBill, constraints)
               ],
             ),
@@ -249,31 +267,43 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         child: constraints.maxWidth > 760
             ? Column(
                 children: List.generate(bill.billDetails?.length ?? 0, (index) {
-                return Row(
-                  children: [
-                    Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        padding: EdgeInsets.only(top: 18, bottom: 3),
-                        child: new Align(
-                            alignment: Alignment.centerLeft,
-                            child: _buildDemandDetails(
-                                bill, bill.billDetails![index]))),
-                    Container(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        padding: EdgeInsets.only(top: 18, bottom: 3),
-                        child: Text('₹ ${bill.paymentAmount}')),
-                  ],
-                );
+                if (index != 0) {
+                  return Row(
+                    children: [
+                      Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          padding: EdgeInsets.only(top: 18, bottom: 3),
+                          child: new Align(
+                              alignment: Alignment.centerLeft,
+                              child: _buildDemandDetails(
+                                  bill, bill.billDetails![index]))),
+                      Container(
+                          width: MediaQuery.of(context).size.width / 2.5,
+                          padding: EdgeInsets.only(top: 18, bottom: 3),
+                          child: Text('₹ ${bill.billDetails![index].amount}')),
+                    ],
+                  );
+                } else {
+                  return Text("");
+                }
               }))
             : Table(
                 defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                 children: List.generate(bill.billDetails?.length ?? 0, (index) {
-                  return TableRow(children: [
-                    TableCell(
-                        child: _buildDemandDetails(
-                            bill, bill.billDetails![index])),
-                    TableCell(child: Text('₹ ${bill.paymentAmount}'))
-                  ]);
+                  if (index == 0) {
+                    return TableRow(children: [
+                      TableCell(child: Text("")),
+                      TableCell(child: Text(""))
+                    ]);
+                  } else {
+                    return TableRow(children: [
+                      TableCell(
+                          child: _buildDemandDetails(
+                              bill, bill.billDetails![index])),
+                      TableCell(
+                          child: Text('₹ ${bill.billDetails![index].amount}'))
+                    ]);
+                  }
                 }).toList()));
   }
 
@@ -288,7 +318,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         spacing: 3,
         children: [
           Text(
-              '${ApplicationLocalizations.of(context).translate('WS_$billdemandDetails?.billAccountDetails?.first.taxHeadCode')}',
+              '${ApplicationLocalizations.of(context).translate('BL_${billdemandDetails?.billAccountDetails?.first.taxHeadCode}')}',
               style: style),
           Text(
               '${DateFormats.getMonthWithDay(billdemandDetails?.fromPeriod)}-${DateFormats.getMonthWithDay(billdemandDetails?.toPeriod)}',

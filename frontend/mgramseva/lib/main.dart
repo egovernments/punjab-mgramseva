@@ -14,6 +14,7 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/providers/demand_details_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
+import 'package:mgramseva/providers/fetch_bill_provider.dart';
 import 'package:mgramseva/providers/forgot_password_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
@@ -117,6 +118,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => BillPayemntsProvider()),
           ChangeNotifierProvider(create: (_) => HomeProvider()),
           ChangeNotifierProvider(create: (_) => DemadDetailProvider()),
+          ChangeNotifierProvider(create: (_) => FetchBillProvider()),
           ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ],
         child: Consumer<LanguageProvider>(
@@ -180,7 +182,7 @@ class _LandingPageState extends State<LandingPage> {
       String id, DownloadTaskStatus status, int progress) {
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port')!;
-    print(progress);
+
     send.send([id, status, progress]);
   }
 
