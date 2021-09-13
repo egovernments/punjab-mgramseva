@@ -71,9 +71,6 @@ class BillGenerationProvider with ChangeNotifier {
             "tenantId": commonProvider.userDetails!.selectedtenant!.code,
             ...{'connectionNumber': id.split('_').join('/')},
           });
-
-          fetchBill(res.waterConnection!.first);
-
           Navigator.pop(context);
           waterconnection = res.waterConnection!.first;
           billGenerateDetails.propertyType =
@@ -106,7 +103,6 @@ class BillGenerationProvider with ChangeNotifier {
             "tenantId": commonProvider.userDetails!.selectedtenant!.code,
             ...{'connectionNos': id.split('_').join('/')},
           });
-          fetchBill(waterConnection);
           setMeterReading(meterRes);
           if (meterRes.meterReadings!.length == 0) {
             prevReadingDate = waterConnection.previousReadingDate;
@@ -215,14 +211,6 @@ class BillGenerationProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchBill(data) async {
-    await BillingServiceRepository().fetchdBill({
-      "tenantId": data.tenantId,
-      "consumerCode": data.connectionNo.toString(),
-      "businessService": "WS"
-    }).then((value) => billList = value);
-  }
-
   void onSubmit(context) async {
     if (formKey.currentState!.validate() &&
         billGenerateDetails.serviceType == "Metered") {
@@ -274,6 +262,11 @@ class BillGenerationProvider with ChangeNotifier {
             };
             var billResponse1 =
                 await BillGenerateRepository().calculateMeterConnection(res1);
+            var fetchResponse = await BillingServiceRepository().fetchdBill({
+              "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+              "consumerCode": waterconnection.connectionNo.toString(),
+              "businessService": "WS"
+            }).then((value) => billList = value);
             Navigator.pop(context);
             if (billResponse1 != null) {
               Navigator.of(context).pushReplacement(
