@@ -33,7 +33,7 @@ public class MgramasevaAdapterPaymentConsumer {
 			log.debug("Consuming record: " + record);
 			paymentRequest = mapper.convertValue(record, PaymentRequest.class);
 			String eventType=null;
-			if(paymentRequest.getPayment().getPaymentDetails().get(0).getBill().getBusinessService().contains(Constants.EXPENSE))
+			if(paymentRequest.getPayment().getPaymentDetails().get(0).getBusinessService().contains(Constants.EXPENSE))
 			{
 				eventType=EventTypeEnum.PAYMENT.toString();
 			}else {
