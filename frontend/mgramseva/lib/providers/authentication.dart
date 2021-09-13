@@ -9,10 +9,12 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
+import 'language.dart';
 
 class AuthenticationProvider with ChangeNotifier {
   validateLogin(BuildContext context, String userName, String password) async {
@@ -20,12 +22,15 @@ class AuthenticationProvider with ChangeNotifier {
     FocusScope.of(context).unfocus();
 
     try {
+      var languageProvider = Provider.of<LanguageProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
       var body = {
         "username": userName,
         "password": password,
         "scope": "read",
         "grant_type": "password",
-        "tenantId": "pb",
+        "tenantId": languageProvider.stateInfo!.code,
         "userType": "EMPLOYEE"
       };
 

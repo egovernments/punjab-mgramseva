@@ -242,9 +242,12 @@ class ConsumerProvider with ChangeNotifier {
 
   Future<void> getConnectionTypePropertyTypeTaxPeriod() async {
     try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
       var res = await CoreRepository().getMdms(
           getConnectionTypePropertyTypeTaxPeriodMDMS(
-              'pb',
+              commonProvider.userDetails!.userRequest!.tenantId.toString(),
               (DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(
                   new DateTime.now().toLocal().toString())))));
       languageList = res;
