@@ -2,6 +2,7 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
 import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/MobileView.dart';
@@ -49,25 +50,12 @@ class _PasswordSuccessState extends State<PasswordSuccess> {
                       .translate(i18.password.CHANGE_PASSWORD_SUCCESS_SUBTEXT),
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
             )),
-        SizedBox(
-          height: 10,
-        ),
-        FractionallySizedBox(
-            widthFactor: 0.90,
-            child: new ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.all(15),
-              ),
-              child: new Text(
-                  ApplicationLocalizations.of(context)
-                      .translate(i18.common.CONTINUE_TO_LOGIN),
-                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500)),
-              onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
-                  Routes.LOGIN, (Route<dynamic> route) => false),
-            )),
-        SizedBox(
-          height: 10,
-        ),
+        Padding(
+            padding: EdgeInsets.only(top: 15, bottom: 15, left: 8, right: 8),
+            child: Button(
+                i18.common.CONTINUE_TO_LOGIN,
+                () => Navigator.of(context).pushNamedAndRemoveUntil(
+                    Routes.LOGIN, (Route<dynamic> route) => false))),
       ],
     )));
   }
