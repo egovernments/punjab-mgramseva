@@ -374,7 +374,10 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
   Future<void> getExpenses() async {
     try {
-      var res = await CoreRepository().getMdms(getExpenseMDMS('pb'));
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+      var res = await CoreRepository().getMdms(getExpenseMDMS(commonProvider.userDetails!.userRequest!.tenantId.toString()));
       languageList = res;
       notifyListeners();
     } catch (e, s) {
