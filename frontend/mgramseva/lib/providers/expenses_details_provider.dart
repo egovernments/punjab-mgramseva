@@ -118,7 +118,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
         localizationText = localizationText.replaceFirst(
             '<Amount>', expenditureDetails.expensesAmount?.first.amount ?? '');
         localizationText = localizationText.replaceFirst(
-            '<type of expense>', expenditureDetails.expenseType ?? '');
+            '<type of expense>', '${ApplicationLocalizations.of(context).translate(expenditureDetails.expenseType ?? '')}');
       }
 
       navigatorKey.currentState
