@@ -151,7 +151,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                               offSet: dashBoardProvider.offset,
                               callBack: (pageResponse) => dashBoardProvider
                                   .onChangeOfPageLimit(pageResponse, context),
-                              totalCount: totalCount));
+                              totalCount: totalCount, isDisabled: dashBoardProvider.isLoaderEnabled));
                     }))
               ]),
             ),

@@ -7,6 +7,7 @@ import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
+import 'package:mgramseva/screeens/dashboard/individual_tab.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
@@ -42,20 +43,18 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
   afterViewBuild() {
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     dashBoardProvider.searchController.clear();
-
+    dashBoardProvider.fetchData();
+    dashBoardProvider.selectedTab = 'all';
     if(widget.dashBoardType == DashBoardType.Expenditure) {
 
       dashBoardProvider
         ..sortBy = SortBy('challanno', false)
         ..expenseDashboardDetails?.expenseDetailList = <ExpensesDetailsModel>[]
-        ..expenseDashboardDetails?.totalCount = null
-        ..fetchExpenseDashBoardDetails(context, dashBoardProvider.limit, dashBoardProvider.offset);
+        ..expenseDashboardDetails?.totalCount = null;
     }else{
       dashBoardProvider
         ..waterConnectionsDetails?.waterConnection = <WaterConnection>[]
-        ..waterConnectionsDetails?.totalCount = null
-        ..fetchCollectionsDashBoardDetails(context, dashBoardProvider.limit, dashBoardProvider.offset);
-
+        ..waterConnectionsDetails?.totalCount = null;
     }
   }
 
@@ -73,20 +72,22 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
             inputBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(25.0),
             ),
-            prefixIcon: Icon(Icons.search_sharp),
+            prefixIcon: Padding(
+                padding: EdgeInsets.all(10),
+                child: Icon(Icons.search_sharp)),
             isFilled: true,
             placeHolder: widget.dashBoardType == DashBoardType.collections ? i18.dashboard.SEARCH_NAME_CONNECTION : i18.dashboard.SEARCH_BY_BILL_OR_VENDOR,
             onChange: (val) => dashBoardProvider.onSearch(val, context),
           ),
           Expanded(
             child: StreamBuilder(
-                stream: dashBoardProvider.streamController.stream,
+                stream: dashBoardProvider.initialStreamController.stream,
                 builder: (context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData) {
                     if(snapshot.data is String){
                       return CommonWidgets.buildEmptyMessage(snapshot.data, context);
                     }
-                    return _buildTabView(snapshot.data);
+                    return _buildTabView();
                   } else if (snapshot.hasError) {
                     return Notifiers.networkErrorPage(context, () => {});
                   } else {
@@ -105,54 +106,54 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     );
   }
 
-  Widget _buildTabView(List<dynamic> expenseList) {
+  Widget _buildTabView() {
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
-    var tabList = expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseTabList(context, expenseList) : dashBoardProvider.getCollectionsTabList(context, expenseList as List<WaterConnection>);
-    return DefaultTabController(
-      length: tabList.length,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: ButtonsTabBar(
-              // controller: _tabController,
-              backgroundColor: Colors.white,
-              unselectedBackgroundColor: Color.fromRGBO(244, 119, 56, 0.12),
-              contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-              buttonMargin: EdgeInsets.symmetric(horizontal: 5),
-              labelStyle: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
-              unselectedLabelStyle: TextStyle(
-                  color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400),
-              radius: 25,
-              tabs: tabList
-            ),
-          ),
-          Expanded(
-            child: Consumer<DashBoardProvider>(
-              builder : (_ , dashBoardProvider, child) => TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  // controller: _tabController,
-                  children: List.generate(tabList.length, (index) => LayoutBuilder(
-                      builder : (context, constraints) {
-                        var width = constraints.maxWidth < 760 ?  (expenseList is List<ExpensesDetailsModel> ? 180.0 : 145.0)  : (constraints.maxWidth / (expenseList is List<ExpensesDetailsModel> ? 5 : 3));
-                        var tableData = expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.getExpenseData(index, expenseList) : dashBoardProvider.getCollectionsData(index, expenseList  as List<WaterConnection>);
-                        return tableData == null || tableData.isEmpty ?
-                        CommonWidgets.buildEmptyMessage(ApplicationLocalizations.of(context).translate(i18.dashboard.NO_RECORDS_MSG), context)
-                            : BillsTable
-                          (headerList: expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
-                          tableData:  tableData,
-                          leftColumnWidth: width,
-                          rightColumnWidth: expenseList is List<ExpensesDetailsModel> ? width * 5 : width * 3,
-                        );
-                      }
-                  ))
+    return Consumer<DashBoardProvider>(
+      builder: (_, dashBoardProvider, child)
+    {
+      var tabList = dashBoardProvider.selectedDashboardType == DashBoardType.Expenditure ? dashBoardProvider.getExpenseTabList(context) : dashBoardProvider.getCollectionsTabList(context);
+
+      return DefaultTabController(
+        length: tabList.length,
+        // initialIndex: ,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: ButtonsTabBar(
+                // controller: _tabController,
+                  backgroundColor: Colors.white,
+                  unselectedBackgroundColor: Color.fromRGBO(244, 119, 56, 0.12),
+                  contentPadding: EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 3),
+                  buttonMargin: EdgeInsets.symmetric(horizontal: 5),
+                  labelStyle: TextStyle(color: Theme
+                      .of(context)
+                      .primaryColor, fontWeight: FontWeight.bold),
+                  unselectedLabelStyle: TextStyle(
+                      color: Theme
+                          .of(context)
+                          .primaryColor, fontWeight: FontWeight.w400),
+                  radius: 25,
+                  tabs: tabList
               ),
             ),
-          ),
-        ],
-      ),
-    );
+            Expanded(
+              child: Consumer<DashBoardProvider>(
+                builder: (_, dashBoardProvider, child) =>
+                    TabBarView(
+                        physics: NeverScrollableScrollPhysics(),
+                        // controller: _tabController,
+                        children: List.generate(tabList.length, (index) =>
+                            IndividualTab(index: index))
+                    ),
+              ),
+            ),
+          ],
+        ),
+      );
+      });
   }
 
 }

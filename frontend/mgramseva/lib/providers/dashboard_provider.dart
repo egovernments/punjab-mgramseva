@@ -25,6 +25,7 @@ import 'package:provider/provider.dart';
 
 class DashBoardProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
+  var initialStreamController = StreamController.broadcast();
   TextEditingController searchController = TextEditingController();
   ExpensesDetailsWithPagination? expenseDashboardDetails;
   int offset = 1;
@@ -34,13 +35,42 @@ class DashBoardProvider with ChangeNotifier {
   late List<DateTime> dateList;
   WaterConnections? waterConnectionsDetails;
   var selectedDashboardType = DashBoardType.collections;
+  String selectedTab = 'all';
+  Map<String, int> expenditureCountHolder= {};
+  Map<String, int> collectionCountHolder= {};
   Timer? debounce;
   List<PropertyType> propertyTaxList = <PropertyType>[];
+  bool isLoaderEnabled = false;
 
   @override
   void dispose() {
     streamController.close();
+    initialStreamController.close();
     super.dispose();
+  }
+
+
+
+  fetchData() async {
+    var commonProvider = Provider.of<CommonProvider>(navigatorKey.currentContext!, listen: false);
+
+    if (propertyTaxList.isEmpty) {
+      var languageList = await CoreRepository().getMdms(
+          getServiceTypeConnectionTypePropertyTypeMDMS(
+              commonProvider.userDetails!.userRequest!.tenantId.toString()));
+
+      if (languageList.mdmsRes?.propertyTax?.PropertyTypeList != null) {
+        var property = PropertyType();
+        property.code = i18.dashboard.ALL;
+        propertyTaxList.add(property);
+        propertyTaxList.addAll(
+            languageList.mdmsRes?.propertyTax?.PropertyTypeList ??
+                <PropertyType>[]);
+      }
+    }else{
+      await Future.delayed(Duration(seconds: 1));
+    }
+    initialStreamController.add([]);
   }
 
   Future<void> fetchExpenseDashBoardDetails(
@@ -87,16 +117,27 @@ class DashBoardProvider with ChangeNotifier {
       });
     }
 
+    if(selectedTab != 'all'){
+    query['isBillPaid'] = selectedTab == 'ACTIVE' ? 'false' : 'true';
+    };
+
     query
         .removeWhere((key, value) => (value is String && value.trim().isEmpty));
     streamController.add(null);
-
+    isLoaderEnabled = true;
+    notifyListeners();
     try {
       var response = await ExpensesRepository().expenseDashboard(query);
+      isLoaderEnabled = false;
 
       if (selectedDashboardType != DashBoardType.Expenditure) return;
 
       if (response != null) {
+        if(selectedTab == 'all'){
+        expenditureCountHolder['all'] = response.totalCount ?? 0;
+        expenditureCountHolder['active'] = int.parse(response.billDataCount?.notPaidCount ?? '0');
+        expenditureCountHolder['pending'] = int.parse(response.billDataCount?.paidCount ?? '0');
+         }
         if (expenseDashboardDetails == null) {
           expenseDashboardDetails = response;
           notifyListeners();
@@ -117,6 +158,8 @@ class DashBoardProvider with ChangeNotifier {
                         : (offset + limit - 1)));
       }
     } catch (e, s) {
+      isLoaderEnabled = false;
+      notifyListeners();
       streamController.addError('error');
       ErrorHandler().allExceptionsHandler(context, e, s);
     }
@@ -154,7 +197,11 @@ class DashBoardProvider with ChangeNotifier {
       'toDate':
           '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0).millisecondsSinceEpoch}',
       'iscollectionAmount': 'true',
-      'isPropertyCount': 'true'
+      'isPropertyCount': 'true',
+    };
+
+    if(selectedTab != 'all'){
+      query['propertyType'] = selectedTab;
     };
 
     if (sortBy != null) {
@@ -176,27 +223,22 @@ class DashBoardProvider with ChangeNotifier {
     streamController.add(null);
 
     try {
-      if (propertyTaxList.isEmpty) {
-        var languageList = await CoreRepository().getMdms(
-            getServiceTypeConnectionTypePropertyTypeMDMS(
-                commonProvider.userDetails!.userRequest!.tenantId.toString()));
-
-        if (languageList.mdmsRes?.propertyTax?.PropertyTypeList != null) {
-          var property = PropertyType();
-          property.code = i18.dashboard.ALL;
-          propertyTaxList.add(property);
-          propertyTaxList.addAll(
-              languageList.mdmsRes?.propertyTax?.PropertyTypeList ??
-                  <PropertyType>[]);
-        }
-      }
-
+      isLoaderEnabled = true;
+      notifyListeners();
       var response = await SearchConnectionRepository().getconnection(query);
-
+      isLoaderEnabled = false;
       if (selectedDashboardType != DashBoardType.collections) return;
       if (response != null) {
         if (waterConnectionsDetails == null) {
           waterConnectionsDetails = response;
+
+          if(selectedTab == 'all'){
+            collectionCountHolder['all'] = response.totalCount ?? 0;
+            propertyTaxList.forEach((key) {
+              collectionCountHolder[key.code!] = int.parse(response.tabData?[key.code!] ?? '0');
+            });
+          }
+
           notifyListeners();
         } else {
           waterConnectionsDetails?.totalCount = response.totalCount;
@@ -214,13 +256,15 @@ class DashBoardProvider with ChangeNotifier {
                     : (offset + limit) - 1));
       }
     } catch (e, s) {
+      isLoaderEnabled = false;
+      notifyListeners();
       streamController.addError('error');
       ErrorHandler().allExceptionsHandler(context, e, s);
     }
   }
 
   List<Tab> getExpenseTabList(
-      BuildContext context, List<ExpensesDetailsModel> expenseList) {
+      BuildContext context) {
     var list = [i18.dashboard.ALL, i18.dashboard.PAID, i18.dashboard.PENDING];
     return List.generate(
         list.length,
@@ -230,7 +274,7 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   List<Tab> getCollectionsTabList(
-      BuildContext context, List<WaterConnection> waterConnectionList) {
+      BuildContext context) {
     return List.generate(
         propertyTaxList.length,
         (index) => Tab(
@@ -304,59 +348,34 @@ class DashBoardProvider with ChangeNotifier {
 
   List<TableDataRow> getExpenseData(
       int index, List<ExpensesDetailsModel> list) {
-    switch (index) {
-      case 0:
-        return list.map((e) => getExpenseRow(e)).toList();
-      case 1:
-        var filteredList =
-            list.where((e) => e.applicationStatus == 'PAID').toList();
-        return filteredList.map((e) => getExpenseRow(e)).toList();
-      case 2:
-        var filteredList =
-            list.where((e) => e.applicationStatus == 'ACTIVE').toList();
-        return filteredList.map((e) => getExpenseRow(e)).toList();
-      default:
-        return <TableDataRow>[];
-    }
+    return list.map((e) => getExpenseRow(e)).toList();
   }
 
   int getExpenseCount(int index) {
     switch (index) {
       case 0:
-        return expenseDashboardDetails?.totalCount ?? 0;
+        return expenditureCountHolder['all'] ?? 0;
       case 1:
-        return int.parse(
-            expenseDashboardDetails?.billDataCount?.paidCount ?? '0');
+        return
+            expenditureCountHolder['active'] ?? 0;
       case 2:
-        return int.parse(
-            expenseDashboardDetails?.billDataCount?.notPaidCount ?? '0');
+        return
+          expenditureCountHolder['pending'] ?? 0;
       default:
         return 0;
     }
   }
 
   List<TableDataRow> getCollectionsData(int index, List<WaterConnection> list) {
-    switch (index) {
-      case 0:
-        return list.map((e) => getCollectionRow(e)).toList();
-      default:
-        var filteredList = list
-            .where((e) =>
-                e.additionalDetails?.propertyType?.trim() ==
-                propertyTaxList[index].code)
-            .toList();
-        return filteredList.map((e) => getCollectionRow(e)).toList();
-    }
+    return list.map((e) => getCollectionRow(e)).toList();
   }
 
   int getCollectionsCount(int index) {
     switch (index) {
       case 0:
-        return waterConnectionsDetails?.totalCount ?? 0;
+        return collectionCountHolder['all'] ?? 0;
       default:
-        return int.parse(
-            waterConnectionsDetails?.tabData?[propertyTaxList[index].code] ??
-                '0');
+        return collectionCountHolder[propertyTaxList[index].code] ?? 0;
     }
   }
 
@@ -441,6 +460,8 @@ class DashBoardProvider with ChangeNotifier {
 
   fetchDetails(BuildContext context,
       [int? localLimit, int? localOffSet, bool isSearch = false]) {
+    if(isLoaderEnabled) return;
+
     if (selectedDashboardType == DashBoardType.Expenditure) {
       fetchExpenseDashBoardDetails(
           context, localLimit ?? limit, localOffSet ?? 1, isSearch);

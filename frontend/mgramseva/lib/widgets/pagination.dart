@@ -10,7 +10,8 @@ class Pagination extends StatefulWidget {
  final int offSet;
  final int totalCount;
  final Function(PaginationResponse) callBack;
-  const Pagination({Key? key, required this.limit, required this.offSet, required this.callBack, required this.totalCount}) : super(key: key);
+ final bool isDisabled;
+  const Pagination({Key? key, required this.limit, required this.offSet, required this.callBack, required this.totalCount, this.isDisabled = false}) : super(key: key);
 
   @override
   _PaginationState createState() => _PaginationState();
@@ -38,7 +39,7 @@ class _PaginationState extends State<Pagination> {
                   ),
                     items: dropDownItems,
                 value: widget.limit,
-                  onChanged: onChangeOfPageCount,
+                  onChanged:  widget.isDisabled ? null : onChangeOfPageCount,
                 ),
               ),
              _buildPageDetails()
@@ -63,7 +64,7 @@ class _PaginationState extends State<Pagination> {
         children: [
           Visibility(
               visible:  widget.offSet > widget.limit,
-              child: IconButton(onPressed: () => onChangeOfPage(false), icon: Icon(Icons.arrow_left))),
+              child: IconButton(onPressed: widget.isDisabled ? null : () => onChangeOfPage(false), icon: Icon(Icons.arrow_left))),
           Text('${widget.offSet} - ${(widget.offSet + widget.limit - 1) <= widget.totalCount ? (widget.offSet + widget.limit -1) : widget.totalCount}'),
           Padding(
             padding: EdgeInsets.only(left: 14),
@@ -77,7 +78,7 @@ class _PaginationState extends State<Pagination> {
           ),
           Visibility(
               visible: (widget.offSet + widget.limit - 1) < widget.totalCount ,
-              child: IconButton(onPressed: onChangeOfPage, icon:Icon(Icons.arrow_right))),
+              child: IconButton(onPressed:  widget.isDisabled ? null : onChangeOfPage, icon:Icon(Icons.arrow_right))),
         ],
       ),
     );
