@@ -4,7 +4,6 @@ import 'package:mgramseva/model/expensesDetails/vendor.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 
-
 part 'expenses_details.g.dart';
 
 @JsonSerializable()
@@ -26,7 +25,6 @@ class ExpensesDetailsWithPagination {
   Map<String, dynamic> toJson() => _$ExpensesDetailsWithPaginationToJson(this);
 }
 
-
 @JsonSerializable()
 class BillDataCount {
   @JsonKey(name: "notPaidcount")
@@ -39,7 +37,6 @@ class BillDataCount {
 
   factory BillDataCount.fromJson(Map<String, dynamic> json) =>
       _$BillDataCountFromJson(json);
-
 }
 
 @JsonSerializable()
@@ -137,6 +134,9 @@ class ExpensesDetailsModel {
   @JsonKey(ignore: true)
   var mobileNumberController = TextEditingController();
 
+  @JsonKey(ignore: true)
+  var expenseTypeController = TextEditingController();
+
   ExpensesDetailsModel();
 
   setText() {
@@ -158,18 +158,20 @@ class ExpensesDetailsModel {
     expensesAmount?.first.amountCtrl.text =
         expensesAmount?.first.amount ?? totalAmount?.toString() ?? '';
     billDateCtrl.text = DateFormats.timeStampToDate(billDate);
-    paidDateCtrl.text = paidDate == 0 ? '' : DateFormats.timeStampToDate(paidDate);
-    billIssuedDateCtrl.text = billIssuedDate == 0 ? '' : DateFormats.timeStampToDate(billIssuedDate);
+    paidDateCtrl.text =
+        paidDate == 0 ? '' : DateFormats.timeStampToDate(paidDate);
+    billIssuedDateCtrl.text =
+        billIssuedDate == 0 ? '' : DateFormats.timeStampToDate(billIssuedDate);
     isBillPaid ??= false;
     challanNumberCtrl.text = challanNo?.toString() ?? '';
 
-    if(selectedVendor == null && challanNo != null){
+    if (selectedVendor == null && challanNo != null) {
       selectedVendor = Vendor(vendorName ?? '', vendorId ?? '');
     }
 
-    if(isBillPaid!){
+    if (isBillPaid!) {
       allowEdit = false;
-    }else{
+    } else {
       paidDateCtrl.text = '';
       allowEdit = true;
     }
@@ -199,7 +201,6 @@ class ExpensesAmount {
 
   Map<String, dynamic> toJson() => _$ExpensesAmountToJson(this);
 }
-
 
 @JsonSerializable()
 class Citizen {

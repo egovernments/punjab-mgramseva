@@ -88,6 +88,9 @@ class Address {
   var gpNameCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
+  var propertyCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
   var localityCtrl;
 
   Address();

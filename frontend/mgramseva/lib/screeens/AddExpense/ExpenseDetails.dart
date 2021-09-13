@@ -214,6 +214,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   i18.expense.SELECT_EXPENDITURE_CATEGORY,
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[0].key,
+                              controller: expenseDetails.expenseTypeController,
                             ),
                             AutoCompleteView(
                               labelText: i18.expense.VENDOR_NAME,

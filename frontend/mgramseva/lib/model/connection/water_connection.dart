@@ -72,6 +72,9 @@ class WaterConnection {
   var meterInstallationDateCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
+  var ServiceTypeCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
   var om_1Ctrl = new TextEditingController();
   @JsonKey(ignore: true)
   var om_2Ctrl = new TextEditingController();
