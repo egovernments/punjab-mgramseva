@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/Events/events_List.dart';
-import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
@@ -32,7 +31,10 @@ class _NotificationsState extends State<Notifications> {
             children: [
               GestureDetector(
                   onTap: () {
-                    widget.event!.actions != null
+                    widget.event!.actions != null &&
+                            widget.event!.actions?.actionUrls?.first
+                                    .actionUrl !=
+                                ""
                         ? Navigator.pushNamed(context,
                             widget.event!.actions!.actionUrls!.first.actionUrl!)
                         : null;
@@ -52,18 +54,24 @@ class _NotificationsState extends State<Notifications> {
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                         fontSize: 16,
-                                        fontWeight: FontWeight.w700),
+                                        fontWeight: FontWeight.w700,
+                                        color:
+                                            Theme.of(context).primaryColorDark),
                                   )),
                               new Container(
+                                  padding: EdgeInsets.all(4),
                                   width:
                                       MediaQuery.of(context).size.width / 1.2,
                                   child: Text(
                                     ApplicationLocalizations.of(context)
-                                        .translate(widget.event!.description!),
+                                        .translate(
+                                            widget.event!.description!.trim()),
                                     maxLines: 4,
                                     style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: Theme.of(context)
+                                            .primaryColorLight),
                                     textAlign: TextAlign.left,
                                   )),
                               Padding(
@@ -90,7 +98,10 @@ class _NotificationsState extends State<Notifications> {
                                             .translate(
                                                 i18.generateBillDetails.TODAY),
                                     style: TextStyle(
-                                        color: Theme.of(context).primaryColor),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: Theme.of(context)
+                                            .primaryColorLight),
                                   ))
                             ],
                           )))),

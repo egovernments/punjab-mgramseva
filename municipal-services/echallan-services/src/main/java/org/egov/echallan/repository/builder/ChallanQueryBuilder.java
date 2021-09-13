@@ -52,129 +52,140 @@ public class ChallanQueryBuilder {
       
       public static final String ACTIVEEXPENSECOUNTQUERY =  "select count(*) from eg_echallan  where applicationstatus ='ACTIVE' ";
       
-      public static final String PENDINGCOLLECTION = "select (sum(demanddtl.taxamount)-sum(demanddtl.collectionamount)) as pendingamount from egbs_demand_v1 demand, egbs_demanddetail_v1 demanddtl where  demand.id= demanddtl.demandid and demand.businessservice='WS' ";
+      public static final String PENDINGCOLLECTION = "SELECT SUM(DEMANDDTL.TAXAMOUNT) FROM EGBS_DEMANDDETAIL_V1 DEMANDDTL JOIN EGBS_DEMAND_V1 DEMAND ON(DEMANDDTL.DEMANDID = DEMAND.ID) JOIN EG_WS_CONNECTION CONN ON(DEMAND.CONSUMERCODE = CONN.CONNECTIONNO) WHERE DEMANDDTL.COLLECTIONAMOUNT <= 0";
 
 	  public static final String PREVIOUSMONTHEXPENSE = " select sum(billdtl.totalamount) from eg_echallan challan, egbs_billdetail_v1 billdtl, egbs_bill_v1 bill  where challan.challanno= billdtl.consumercode  and billdtl.billid = bill.id and challan.isbillpaid ='true'  ";
 	  
-	  public static final String PREVIOUSMONTHCOLLECTION = " select count(pd.amountpaid) from egcl_paymentdetail pd, egcl_payment p where p.id= pd.paymentid and businessservice='EXPENSE.ADVANCE'  ";
+	  public static final String PREVIOUSMONTHEXPPAYMENT = "SELECT SUM(PAYMT.TOTALAMOUNTPAID) FROM EGCL_PAYMENT PAYMT JOIN EGCL_PAYMENTDETAIL PAYMTDTL ON (PAYMTDTL.PAYMENTID = PAYMT.ID) WHERE PAYMTDTL.BUSINESSSERVICE like '%EXPENSE%' ";
 
 	  public static final String PREVIOUSDAYCASHCOLLECTION = "select  count(*), sum(totalamountpaid) from egcl_payment where paymentmode='CASH' ";
 	  public static final String PREVIOUSDAYONLINECOLLECTION = "select  count(*), sum(totalamountpaid) from egcl_payment where paymentmode='ONLINE' ";
 
-	  public static final String PREVIOUSMONTHNEWEXPENSE = "  select sum(demanddtl.taxamount) from eg_echallan challan, egbs_billdetail_v1 billdtl,egbs_demanddetail_v1 demanddtl  where challan.challanno= billdtl.consumercode   and billdtl.demandid= billdtl.demandid";
+	  public static final String PREVIOUSMONTHNEWEXPENSE = " SELECT SUM(DEMANDDTL.TAXAMOUNT) FROM EGBS_DEMANDDETAIL_V1 DEMANDDTL JOIN EGBS_DEMAND_V1 DEMAND ON(DEMANDDTL.DEMANDID = DEMAND.ID) JOIN EG_ECHALLAN CHALLAN ON(CHALLAN.CHALLANNO = DEMAND.CONSUMERCODE) ";
 	  
-	  public static final String CUMULATIVEPENDINGEXPENSE = " select sum(demanddtl.taxamount-demanddtl.collectionamount) from eg_echallan challan, egbs_billdetail_v1 billdtl,egbs_demanddetail_v1 demanddtl  where challan.challanno= billdtl.consumercode  and billdtl.demandid= billdtl.demandid ";
+	  public static final String CUMULATIVEPENDINGEXPENSE = " SELECT SUM(DEMANDDTL.TAXAMOUNT) FROM EGBS_DEMANDDETAIL_V1 DEMANDDTL JOIN EGBS_DEMAND_V1 DEMAND ON(DEMANDDTL.DEMANDID = DEMAND.ID) JOIN EG_ECHALLAN CHALLAN ON(DEMAND.CONSUMERCODE = CHALLAN.CHALLANNO) WHERE DEMANDDTL.COLLECTIONAMOUNT <= 0 ";
 
 	  public static final String NEWDEMAND ="select sum(dmdl.taxamount) FROM egbs_demand_v1 dmd INNER JOIN egbs_demanddetail_v1 dmdl ON dmd.id=dmdl.demandid AND dmd.tenantid=dmdl.tenantid WHERE dmd.businessservice='WS' ";
 	  
 	  public static final String ACTUALCOLLECTION =" select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id where pyd.businessservice='WS' ";
 
+	  public static final String bill_count = " select count(*) from eg_echallan as challan ";
 
 
 
-    public String getChallanSearchQuery(SearchCriteria criteria, List<Object> preparedStmtList) {
 
-        StringBuilder builder = new StringBuilder(QUERY);
+		public String getChallanSearchQuery(SearchCriteria criteria, List<Object> preparedStmtList) {
 
-        addBusinessServiceClause(criteria,preparedStmtList,builder);
+			StringBuilder builder = new StringBuilder(QUERY);
+
+			addBusinessServiceClause(criteria, preparedStmtList, builder);
+
+			if (criteria.getAccountId() != null) {
+				addClauseIfRequired(preparedStmtList, builder);
+				builder.append(" challan.accountid = ? ");
+				preparedStmtList.add(criteria.getAccountId());
+
+				List<String> ownerIds = criteria.getUserIds();
+				if (!CollectionUtils.isEmpty(ownerIds)) {
+					builder.append(" OR (challan.accountid IN (").append(createQuery(ownerIds)).append(")");
+					addToPreparedStatement(preparedStmtList, ownerIds);
+					addBusinessServiceClause(criteria, preparedStmtList, builder);
+				}
+			} else {
+
+				builder = applyFilters(builder, preparedStmtList, criteria);
+
+			}
+
+			return addPaginationWrapper(builder.toString(), preparedStmtList, criteria);
+		}
 
 
-        if(criteria.getAccountId()!=null){
-            addClauseIfRequired(preparedStmtList,builder);
-            builder.append(" challan.accountid = ? ");
-            preparedStmtList.add(criteria.getAccountId());
+		public StringBuilder applyFilters(StringBuilder builder, List<Object> preparedStmtList,
+				SearchCriteria criteria) {
 
-            List<String> ownerIds = criteria.getUserIds();
-            if(!CollectionUtils.isEmpty(ownerIds)) {
-                builder.append(" OR (challan.accountid IN (").append(createQuery(ownerIds)).append(")");
-                addToPreparedStatement(preparedStmtList,ownerIds);
-                addBusinessServiceClause(criteria,preparedStmtList,builder);
-            }
-        }
-        else {
+			if (criteria.getTenantId() != null) {
+				addClauseIfRequired(preparedStmtList, builder);
+				builder.append(" challan.tenantid=? ");
+				preparedStmtList.add(criteria.getTenantId());
+			}
+			List<String> ids = criteria.getIds();
+			if (!CollectionUtils.isEmpty(ids)) {
+				addClauseIfRequired(preparedStmtList, builder);
+				builder.append(" challan.id IN (").append(createQuery(ids)).append(")");
+				addToPreparedStatement(preparedStmtList, ids);
+			}
 
-            if (criteria.getTenantId() != null) {
-                addClauseIfRequired(preparedStmtList, builder);
-                builder.append(" challan.tenantid=? ");
-                preparedStmtList.add(criteria.getTenantId());
-            }
-            List<String> ids = criteria.getIds();
-            if (!CollectionUtils.isEmpty(ids)) {
-                addClauseIfRequired(preparedStmtList, builder);
-                builder.append(" challan.id IN (").append(createQuery(ids)).append(")");
-                addToPreparedStatement(preparedStmtList, ids);
-            }
-
-            List<String> ownerIds = criteria.getUserIds();
-            if (!CollectionUtils.isEmpty(ownerIds)) {
-                addClauseIfRequired(preparedStmtList, builder);
-                builder.append(" challan.accountid IN (").append(createQuery(ownerIds)).append(")");
-                addToPreparedStatement(preparedStmtList, ownerIds);
-                //addClauseIfRequired(preparedStmtList, builder);
-            }
+			List<String> ownerIds = criteria.getUserIds();
+			if (!CollectionUtils.isEmpty(ownerIds)) {
+				addClauseIfRequired(preparedStmtList, builder);
+				builder.append(" challan.accountid IN (").append(createQuery(ownerIds)).append(")");
+				addToPreparedStatement(preparedStmtList, ownerIds);
+				// addClauseIfRequired(preparedStmtList, builder);
+			}
 
 			if (criteria.getFreeSearch()) {
 				if (criteria.getChallanNo() != null || criteria.getVendorName() != null) {
 					addClauseIfRequired(preparedStmtList, builder);
-					builder.append("  challan.challanno like ?");
-					preparedStmtList.add('%' + criteria.getChallanNo() + '%');
+					builder.append("  challan.challanno ~*  ?");
+					preparedStmtList.add(criteria.getChallanNo());
 
-					builder.append(" OR vendor.name like ?");
-					preparedStmtList.add('%' + criteria.getVendorName() + '%');
+					builder.append(" OR vendor.name ~*  ?");
+					preparedStmtList.add(criteria.getVendorName());
 				}
 			} else {
 				if (criteria.getChallanNo() != null) {
 					addClauseIfRequired(preparedStmtList, builder);
-					builder.append("  challan.challanno like ?");
-					preparedStmtList.add('%' + criteria.getChallanNo() + '%');
+					builder.append("  challan.challanno ~*  ?");
+					preparedStmtList.add(criteria.getChallanNo());
 				}
 				if (criteria.getVendorName() != null) {
 					addClauseIfRequired(preparedStmtList, builder);
-					builder.append(" vendor.name like ?");
-					preparedStmtList.add('%' + criteria.getVendorName() + '%');
+					builder.append(" vendor.name ~* ?");
+					preparedStmtList.add(criteria.getVendorName());
 				}
 			}
-            if (criteria.getStatus() != null) {
-                addClauseIfRequired(preparedStmtList, builder);
-                builder.append(" challan.applicationstatus IN (").append(createQuery(criteria.getStatus())).append(")");
-                addToPreparedStatement(preparedStmtList, criteria.getStatus());
-            }
+			if (criteria.getStatus() != null) {
+				addClauseIfRequired(preparedStmtList, builder);
+				builder.append(" challan.applicationstatus IN (").append(createQuery(criteria.getStatus())).append(")");
+				addToPreparedStatement(preparedStmtList, criteria.getStatus());
+			}
 
-            if(criteria.getExpenseType() != null){
-            	addClauseIfRequired(preparedStmtList, builder);
-            	builder.append( " challan.typeOfExpense = ? ");
-            	preparedStmtList.add(criteria.getExpenseType());
-            }
-            
-            if (criteria.getFromDate() != null) {
-    			addClauseIfRequired(preparedStmtList, builder);
-    			builder.append("  challan.createdTime >= ? ");
-    			preparedStmtList.add(criteria.getFromDate());
-    		}
-    		if (criteria.getToDate() != null) {
-    			addClauseIfRequired(preparedStmtList, builder);
-    			builder.append("  challan.createdTime <= ? ");
-    			preparedStmtList.add(criteria.getToDate());
-    		}
-    		if (criteria.getIsBillPaid() != null) {
-    			addClauseIfRequired(preparedStmtList, builder);
-    			builder.append("  challan.isBillPaid = ? ");
-    			preparedStmtList.add(criteria.getIsBillPaid());
-    		}
-        }
+			if (criteria.getExpenseType() != null) {
+				addClauseIfRequired(preparedStmtList, builder);
+				builder.append(" challan.typeOfExpense = ? ");
+				preparedStmtList.add(criteria.getExpenseType());
+			}
 
-        return addPaginationWrapper(builder.toString(),preparedStmtList,criteria);
-    }
+			if (criteria.getFromDate() != null) {
+				addClauseIfRequired(preparedStmtList, builder);
+				builder.append("  challan.createdTime >= ? ");
+				preparedStmtList.add(criteria.getFromDate());
+			}
+			if (criteria.getToDate() != null) {
+				addClauseIfRequired(preparedStmtList, builder);
+				builder.append("  challan.createdTime <= ? ");
+				preparedStmtList.add(criteria.getToDate());
+			}
+			if (criteria.getIsBillPaid() != null) {
+				addClauseIfRequired(preparedStmtList, builder);
+				builder.append("  challan.isBillPaid = ? ");
+				preparedStmtList.add(criteria.getIsBillPaid());
+			}
+
+			return builder;
+		}
 
 
-    private void addBusinessServiceClause(SearchCriteria criteria,List<Object> preparedStmtList,StringBuilder builder){
-    	if(criteria.getBusinessService()!=null) {
-    	List<String> businessServices = Arrays.asList(criteria.getBusinessService().split(","));
-            addClauseIfRequired(preparedStmtList, builder);
-            builder.append(" challan.businessservice IN (").append(createQuery(businessServices)).append(")");
-            addToPreparedStatement(preparedStmtList, businessServices);
-    }
-    }
+	private void addBusinessServiceClause(SearchCriteria criteria, List<Object> preparedStmtList,
+			StringBuilder builder) {
+		if (criteria.getBusinessService() != null) {
+			List<String> businessServices = Arrays.asList(criteria.getBusinessService().split(","));
+			addClauseIfRequired(preparedStmtList, builder);
+			builder.append(" challan.businessservice IN (").append(createQuery(businessServices)).append(")");
+			addToPreparedStatement(preparedStmtList, businessServices);
+		}
+	}
 
     private String createQuery(List<String> ids) {
         StringBuilder builder = new StringBuilder();
@@ -202,7 +213,7 @@ public class ChallanQueryBuilder {
 
 		finalQuery = finalQuery.replace("{orderby}", string);
 
-		finalQuery = finalQuery.replace("{amount}", "(select nullif(sum(bi.totalamount),0) from egbs_billdetail_v1 bi where bi.businessservice = challan.businessservice and bi.consumercode = challan.challanno group by bi.consumercode) as totalamount,");
+		finalQuery = finalQuery.replace("{amount}", "(select nullif(sum(bi.totalamount),0) from egbs_billdetail_v1 bi join egbs_bill_v1 b on bi.billid=b.id where bi.businessservice = challan.businessservice and bi.consumercode = challan.challanno and b.status='ACTIVE' group by bi.consumercode) as totalamount,");
 		
         if(criteria.getLimit()!=null && criteria.getLimit()<=config.getMaxSearchLimit())
             limit = criteria.getLimit();

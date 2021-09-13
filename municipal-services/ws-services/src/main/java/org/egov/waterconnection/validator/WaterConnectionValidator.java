@@ -15,6 +15,7 @@ import org.egov.waterconnection.service.PropertyValidator;
 import org.egov.waterconnection.service.WaterFieldValidator;
 import org.egov.waterconnection.web.models.CalculationRes;
 import org.egov.waterconnection.web.models.Demand;
+import org.egov.waterconnection.web.models.DemandDetail;
 import org.egov.waterconnection.web.models.DemandResponse;
 import org.egov.waterconnection.web.models.RequestInfoWrapper;
 import org.egov.waterconnection.web.models.ValidatorResult;
@@ -134,7 +135,9 @@ public class WaterConnectionValidator {
 		
 		if( demandResponse!= null && demandResponse.getDemands().size() >0 ) {
 			List<Demand> demands = demandResponse.getDemands().stream().filter( d-> !d.getConsumerType().equalsIgnoreCase("waterConnection-arrears")).collect(Collectors.toList());
-			if(demands.size() > 0 ) {
+			List<Demand> arrearDemands = demandResponse.getDemands().stream().filter( d-> d.getConsumerType().equalsIgnoreCase("waterConnection-arrears")).collect(Collectors.toList());
+			List<DemandDetail> collect = arrearDemands.get(0).getDemandDetails().stream().filter( d-> d.getCollectionAmount().intValue()>0).collect(Collectors.toList());
+			if(demands.size() > 0 || collect.size() >0 ) {
 				if(!searchResult.getOldConnectionNo().equalsIgnoreCase(request.getWaterConnection().getOldConnectionNo())) {
 					errorMap.put("INVALID_UPDATE_OLD_CONNO", "Old ConnectionNo cannot be modified!!");
 				}

@@ -18,32 +18,7 @@ class NotificationsList extends StatefulWidget {
 }
 
 class NotificationsListState extends State<NotificationsList> {
-  @override
-  void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
-    super.initState();
-  }
-
-  afterViewBuild() {
-    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-
-    Provider.of<NotificationProvider>(context, listen: false)
-      ..getNotiications({
-        "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-        "eventType": "SYSTEMGENERATED",
-        "recepients": commonProvider.userDetails!.userRequest!.uuid,
-      }, {
-        "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-        "eventType": "SYSTEMGENERATED",
-        "roles": commonProvider.userDetails!.userRequest!.roles!
-            .map((e) => e.code.toString())
-            .join(',')
-            .toString(),
-      });
-  }
-
   buildNotificationsView(List<Events>? events) {
-    print(events);
     return LayoutBuilder(builder: (context, constraints) {
       return Column(children: [
         events!.length > 0

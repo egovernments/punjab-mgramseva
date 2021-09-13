@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/screeens/ConnectionResults/ConnectionDetailsCard.dart';
-import 'package:mgramseva/screeens/customAppbar.dart';
+import 'package:mgramseva/widgets/customAppbar.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
@@ -34,13 +34,11 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
   }
 
   buildconsumerView(WaterConnections waterconnsctions) {
-    print(waterconnsctions.waterConnection!.length);
     return SearchConnectionDetailCard(waterconnsctions, widget.arguments);
   }
 
   @override
   Widget build(BuildContext context) {
-    print(['Mode']);
     var waterconnectionsProvider =
         Provider.of<SearchConnectionProvider>(context, listen: false);
 

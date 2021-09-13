@@ -6,6 +6,7 @@ import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/tenants_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -42,7 +43,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           .toSet()
           .toList();
       final result = tenantProvider.tenants!.tenantsList
-          ?.where((element) => r.contains(element.code) ?? false)
+          ?.where((element) => r.contains(element.code?.trim()))
           .toList();
       if (result?.length == 1 &&
           commonProvider.userDetails!.selectedtenant == null) {
@@ -63,7 +64,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             .toSet()
             .toList();
         final result = tenantProvider.tenants!.tenantsList
-            ?.where((element) => r.contains(element.code) ?? false)
+            ?.where((element) => r.contains(element.code?.trim()))
             .toList();
         if (result?.length == 1 &&
             commonProvider.userDetails!.selectedtenant == null) {
@@ -108,6 +109,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         onTap: () {
                           commonProvider.setTenant(result[index]);
                           Navigator.pop(context);
+                          CommonMethods.home();
                         },
                         child: Material(
                             child: Container(
@@ -124,7 +126,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                ApplicationLocalizations.of(context).translate(result[index].code!),
+                                    ApplicationLocalizations.of(context)
+                                        .translate(result[index].code!),
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
@@ -173,29 +176,32 @@ class _CustomAppBarState extends State<CustomAppBar> {
         .toSet()
         .toList();
     final result = tenant.tenantsList!
-        .where((element) => r.contains(element.code))
+        .where((element) => r.contains(element.code?.trim()))
         .toList();
     return GestureDetector(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Consumer<CommonProvider>(
-                builder: (_, commonProvider, child) =>
-                    commonProvider.userDetails!.selectedtenant == null
-                        ? Text("")
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                                Text(ApplicationLocalizations.of(context)
-                                    .translate(commonProvider
-                                        .userDetails!.selectedtenant!.code!)),
-                                Text(ApplicationLocalizations.of(context)
-                                    .translate(commonProvider.userDetails!
-                                        .selectedtenant!.city!.code!))
-                              ])),
-            Icon(Icons.arrow_drop_down)
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 5, right: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Consumer<CommonProvider>(
+                  builder: (_, commonProvider, child) =>
+                      commonProvider.userDetails!.selectedtenant == null
+                          ? Text("")
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                  Text(ApplicationLocalizations.of(context)
+                                      .translate(commonProvider
+                                          .userDetails!.selectedtenant!.code!)),
+                                  Text(ApplicationLocalizations.of(context)
+                                      .translate(commonProvider.userDetails!
+                                          .selectedtenant!.city!.code!))
+                                ])),
+              Icon(Icons.arrow_drop_down)
+            ],
+          ),
         ),
         onTap: () => showdialog(result));
   }
@@ -206,8 +212,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     return AppBar(
+      titleSpacing: 0,
       title: Image(
-          width: 150,
+          width: 130,
           image: NetworkImage(
             languageProvider.stateInfo!.logoUrlWhite!,
           )),

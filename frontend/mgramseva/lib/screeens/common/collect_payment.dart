@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mgramseva/model/common/demand.dart';
+import 'package:http/http.dart';
+import 'package:mgramseva/model/common/fetch_bill.dart' as billDetails;
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/providers/collect_payment.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -10,15 +11,14 @@ import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/widgets/BaseAppBar.dart';
+import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
-
-import '../customAppbar.dart';
+import '../../widgets/customAppbar.dart';
 
 class ConnectionPaymentView extends StatefulWidget {
   final Map<String, dynamic> query;
@@ -113,8 +113,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Card(
           child: Padding(
-              padding:
-                  const EdgeInsets.only(left: 24, top: 8, bottom: 8, right: 10),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -125,8 +124,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                   ]))),
       Card(
         child: Padding(
-          padding:
-              const EdgeInsets.only(left: 24, top: 8, bottom: 8, right: 10),
+          padding: const EdgeInsets.all(8.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Consumer<CollectPaymentProvider>(
@@ -181,6 +179,8 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               '${i18.common.CUSTOM_AMOUNT}',
               fetchBill.customAmountCtrl,
               isRequired: true,
+              validator: (val) =>
+                  Validators.rangeValidatior(val, fetchBill.totalAmount),
               textInputType: TextInputType.number,
               inputFormatter: [
                 FilteringTextInputFormatter.allow(RegExp("[0-9]"))
@@ -203,6 +203,12 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   }
 
   Widget _buildViewDetails(FetchBill fetchBill) {
+    List res = [];
+    num len = fetchBill.billDetails?.first.billAccountDetails?.length as num;
+    if (fetchBill.billDetails!.isNotEmpty)
+      fetchBill.billDetails?.forEach((element) {
+        res.add(element.amount);
+      });
     return LayoutBuilder(
       builder: (_, constraints) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,7 +220,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               subTitle(i18.payment.BILL_DETAILS),
               _buildLabelValue(i18.common.BILL_ID, '${fetchBill.billNumber}'),
               _buildLabelValue(i18.payment.BILL_PERIOD,
-                  '${DateFormats.getMonthWithDay(fetchBill.billDetails?.first?.fromPeriod)} - ${DateFormats.getMonthWithDay(fetchBill.billDetails?.first?.toPeriod)}'),
+                  '${DateFormats.getMonthWithDay(fetchBill.billDetails?.first.fromPeriod)} - ${DateFormats.getMonthWithDay(fetchBill.billDetails?.first.toPeriod)}'),
             ]),
           ),
           Padding(
@@ -222,17 +228,29 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ...List.generate(
-                    fetchBill.billDetails?.first.billAccountDetails?.length ??
-                        0, (index) {
-                  var billAccountDetails =
-                      fetchBill.billDetails?.first.billAccountDetails?[index];
-                  return _buildLabelValue(
-                      'WS_${billAccountDetails!.taxHeadCode}',
-                      '₹ ${billAccountDetails!.amount}');
-                }),
-                if (fetchBill.demand != null)
-                  _buildWaterCharges(fetchBill.demand!, constraints)
+                len > 0
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                            _buildLabelValue(
+                                'WS_${fetchBill.billDetails?.first.billAccountDetails?.last.taxHeadCode}',
+                                '₹ ${fetchBill.billDetails?.first.billAccountDetails?.last.amount}'),
+                            (res.reduce((value, element) => value + element) -
+                                        fetchBill.billDetails?.first
+                                            .billAccountDetails?.last.amount) >
+                                    0
+                                ? _buildLabelValue(i18.billDetails.ARRERS_DUES,
+                                    '₹ ${(res.reduce((value, element) => value + element) - fetchBill.billDetails?.first.billAccountDetails?.last.amount).toString()}')
+                                : SizedBox(
+                                    height: 0,
+                                  )
+                          ])
+                    : _buildLabelValue(
+                        'WS_${fetchBill.billDetails?.first.billAccountDetails?.last.taxHeadCode}',
+                        '₹ ${fetchBill.billDetails?.first.billAccountDetails?.last.amount}'),
+                // }),
+                if (fetchBill.billDetails != null && res.length > 1)
+                  _buildWaterCharges(fetchBill, constraints)
               ],
             ),
           )
@@ -241,7 +259,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
     );
   }
 
-  Widget _buildWaterCharges(Demand demand, BoxConstraints constraints) {
+  Widget _buildWaterCharges(FetchBill bill, BoxConstraints constraints) {
     var style = TextStyle(
         fontSize: 14,
         color: Color.fromRGBO(80, 90, 95, 1),
@@ -253,38 +271,51 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(4)),
         child: constraints.maxWidth > 760
             ? Column(
-                children:
-                    List.generate(demand.demandDetails?.length ?? 0, (index) {
-                var demandDetails = demand.demandDetails![index];
-                return Row(
-                  children: [
-                    Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        padding: EdgeInsets.only(top: 18, bottom: 3),
-                        child: new Align(
-                            alignment: Alignment.centerLeft,
-                            child: _buildDemandDetails(demand, demandDetails))),
-                    Container(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        padding: EdgeInsets.only(top: 18, bottom: 3),
-                        child: Text('₹ ${demandDetails.taxAmount}')),
-                  ],
-                );
+                children: List.generate(bill.billDetails?.length ?? 0, (index) {
+                if (index != 0) {
+                  return Row(
+                    children: [
+                      Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          padding: EdgeInsets.only(top: 18, bottom: 3),
+                          child: new Align(
+                              alignment: Alignment.centerLeft,
+                              child: _buildDemandDetails(
+                                  bill, bill.billDetails![index]))),
+                      Container(
+                          width: MediaQuery.of(context).size.width / 2.5,
+                          padding: EdgeInsets.only(top: 18, bottom: 3),
+                          child: Text('₹ ${bill.billDetails![index].amount}')),
+                    ],
+                  );
+                } else {
+                  return SizedBox(
+                    height: 0,
+                  );
+                }
               }))
             : Table(
                 defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                children:
-                    List.generate(demand.demandDetails?.length ?? 0, (index) {
-                  var demandDetails = demand.demandDetails![index];
-                  return TableRow(children: [
-                    TableCell(
-                        child: _buildDemandDetails(demand, demandDetails)),
-                    TableCell(child: Text('₹ ${demandDetails.taxAmount}'))
-                  ]);
+                children: List.generate(bill.billDetails?.length ?? 0, (index) {
+                  if (index == 0) {
+                    return TableRow(children: [
+                      TableCell(child: Text("")),
+                      TableCell(child: Text(""))
+                    ]);
+                  } else {
+                    return TableRow(children: [
+                      TableCell(
+                          child: _buildDemandDetails(
+                              bill, bill.billDetails![index])),
+                      TableCell(
+                          child: Text('₹ ${bill.billDetails![index].amount}'))
+                    ]);
+                  }
                 }).toList()));
   }
 
-  Widget _buildDemandDetails(Demand demand, DemandDetails demandDetails) {
+  Widget _buildDemandDetails(
+      FetchBill bill, billDetails.BillDetails? billdemandDetails) {
     var style = TextStyle(fontSize: 14, color: Color.fromRGBO(80, 90, 95, 1));
 
     return Padding(
@@ -294,10 +325,10 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         spacing: 3,
         children: [
           Text(
-              '${ApplicationLocalizations.of(context).translate(demandDetails.taxHeadMasterCode)}',
+              '${ApplicationLocalizations.of(context).translate('BL_${billdemandDetails?.billAccountDetails?.first.taxHeadCode}')}',
               style: style),
           Text(
-              '${DateFormats.getMonthWithDay(demand.taxPeriodFrom)}-${DateFormats.getMonthWithDay(demand.taxPeriodTo)}',
+              '${DateFormats.getMonthWithDay(billdemandDetails?.fromPeriod)}-${DateFormats.getMonthWithDay(billdemandDetails?.toPeriod)}',
               style: style),
         ],
       ),

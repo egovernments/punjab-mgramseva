@@ -44,6 +44,7 @@ import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,6 +76,9 @@ public class SchedulerService {
 
 	@Autowired
 	private Producer producer;
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	public static final String USREVENTS_EVENT_TYPE = "SYSTEMGENERATED";
 	public static final String USREVENTS_EVENT_NAME = "Challan";
@@ -85,10 +89,10 @@ public class SchedulerService {
 	private static final String NEW_EXPENDITURE_EVENT = "NEW_ENPENDITURE_EN_REMINDER";
 	private static final String MARK_PAID_BILL_EVENT = "MARK_PAID_BILL_EN_REMINDER";
 	private static final String GENERATE_DEMAND_EVENT = "GENERATE_DEMAND_EN_REMINDER";
-	private static final String NEW_EXPENDITURE_SMS = "NEW_ENPENDITURE_SMS_EN_REMINDER";
-	private static final String MONTHLY_SUMMARY_SMS = "MONTHLY_SUMMARY_SMS_EN_REMINDER";
-	private static final String MARK_PAID_BILL_SMS = "MARK_PAID_BILL_SMS_EN_REMINDER";
-	private static final String PENDING_COLLECTION_SMS = "PENDING_COLLECTION_SMS_EN_REMINDER";
+	private static final String NEW_EXPENDITURE_SMS = "mGram.GPUser.EnterExpense";
+	private static final String MONTHLY_SUMMARY_SMS = "mGram.GPUser.PreviousMonthSummary";
+	private static final String MARK_PAID_BILL_SMS = "mGram.GPUser.MarkExpense";
+	private static final String PENDING_COLLECTION_SMS = "mGram.GPUser.CollectionReminder";
 
 	private static final String TODAY_CASH_COLLECTION = "TODAY_COLLECTION_AS_CASH_SMS";
 	private static final String TODAY_ONLINE_COLLECTION = "TODAY_COLLECTION_FROM_ONLINE_SMS";
@@ -211,16 +215,25 @@ public class SchedulerService {
 
 					if (null != config.getIsSMSEnabled()) {
 						if (config.getIsSMSEnabled()) {
-							Map<String, String> mobileNumberIdMap = getMobilenumberUuidMap(requestInfo);
+							
+							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
+									tenantId, Arrays.asList("EXPENSE_PROCESSING"));
+							Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+
 							HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
 									NEW_EXPENDITURE_SMS, tenantId);
-
+							for (UserInfo userInfo : userDetailResponse.getUser())
+								if (userInfo.getName() != null) {
+									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
+								} else {
+									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
+								}
 							mobileNumberIdMap.entrySet().stream().forEach(map -> {
 								if (messageMap != null
 										&& !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
 									String message = messageMap.get(NotificationUtil.MSG_KEY);
 
-									message = message.replace("{NEW_EXP_LINK}", config.getExpenditureLink());
+									message = message.replace("{NEW_EXP_LINK}", getShortenedUrl(config.getExpenditureLink()));
 									message = message.replace("{GPWSC}", tenantId); // TODO Replace
 									// <GPWSC> with
 									// value.
@@ -239,6 +252,26 @@ public class SchedulerService {
 		}
 	}
 
+	private CharSequence getShortenedUrl(String url) {
+		String res = null;
+		HashMap<String,String> body = new HashMap<>();
+		body.put("url",url);
+		StringBuilder builder = new StringBuilder(config.getUrlShortnerHost());
+		builder.append(config.getUrlShortnerEndpoint());
+		try {
+			res = restTemplate.postForObject(builder.toString(), body, String.class);
+
+		}catch(Exception e) {
+			 log.error("Error while shortening the url: " + url,e);
+			
+		}
+		if(StringUtils.isEmpty(res)){
+			log.error("URL_SHORTENING_ERROR","Unable to shorten url: "+url); ;
+			return url;
+		}
+		else return res;
+	}
+
 	public EventRequest sendGenerateDemandNotification(RequestInfo requestInfo, String tenantId) {
 
 		List<ActionItem> items = new ArrayList<>();
@@ -248,8 +281,10 @@ public class SchedulerService {
 		Action action = Action.builder().actionUrls(items).build();
 		List<Event> events = new ArrayList<>();
 		HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, GENERATE_DEMAND_EVENT, tenantId);
+		String message = messageMap.get(NotificationUtil.MSG_KEY);
+		message = message.replace("{BILLING_CYCLE}", LocalDate.now().getMonth().toString());
 		System.out.println("Demand Genaration Failed::" + messageMap);
-		events.add(Event.builder().tenantId(tenantId).description(messageMap.get(NotificationUtil.MSG_KEY))
+		events.add(Event.builder().tenantId(tenantId).description(message)
 				.eventType(USREVENTS_EVENT_TYPE).name(USREVENTS_EVENT_NAME).postedBy(USREVENTS_EVENT_POSTEDBY)
 				.recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP).eventDetails(null).actions(action)
 				.build());
@@ -340,7 +375,18 @@ public class SchedulerService {
 
 					if (null != config.getIsSMSEnabled()) {
 						if (config.getIsSMSEnabled()) {
-							Map<String, String> mobileNumberIdMap = getMobilenumberUuidMap(requestInfo);
+							
+							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
+									tenantId, Arrays.asList("EXPENSE_PROCESSING"));
+							Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+
+							for (UserInfo userInfo : userDetailResponse.getUser())
+								if (userInfo.getName() != null) {
+									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
+								} else {
+									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
+								}
+							
 							HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
 									MARK_PAID_BILL_SMS, tenantId);
 
@@ -348,7 +394,7 @@ public class SchedulerService {
 								if (messageMap != null
 										&& !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
 									String message = messageMap.get(NotificationUtil.MSG_KEY);
-									message = message.replace("{EXP_MRK_LINK}", config.getExpenseBillMarkPaidLink());
+									message = message.replace("{EXP_MRK_LINK}", getShortenedUrl(config.getExpenseBillMarkPaidLink()));
 
 									message = message.replace("{GPWSC}", tenantId); // TODO Replace
 									// <GPWSC> with
@@ -399,12 +445,13 @@ public class SchedulerService {
 		LocalDateTime previousMonthEndDateTime = LocalDateTime.of(prviousMonthEnd.getYear(), prviousMonthEnd.getMonth(),
 				prviousMonthEnd.getDayOfMonth(), 23, 59, 59);
 
-		List<String> previousMonthCollection = repository.getPreviousMonthCollection(tenantId,
-				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
-						.toString(),
-				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).toString());
-		if (null != previousMonthCollection && previousMonthCollection.size() > 0)
-			message = message.replace("{PREVIOUS_MONTH_COLLECTION}", previousMonthCollection.get(0));
+
+		Integer previousMonthCollection = repository.getPreviousMonthExpensePayments(tenantId,
+				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
+				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+		if (null != previousMonthCollection )
+			message = message.replace("{PREVIOUS_MONTH_COLLECTION}", previousMonthCollection.toString());
+
 
 		message = message.replace("{PREVIOUS_MONTH}", LocalDate.now().minusMonths(1).getMonth().toString());
 		List<String> previousMonthExpense = repository.getPreviousMonthExpenseExpenses(tenantId,
@@ -448,8 +495,8 @@ public class SchedulerService {
 						if (config.getIsSMSEnabled()) {
 							HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
 									MONTHLY_SUMMARY_SMS, tenantId);
-							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, "pb",
-									Arrays.asList("GP_ADMIN"));
+							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
+									Arrays.asList("EXPENSE_PROCESSING"));
 
 							Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 							for (UserInfo userInfo : userDetailResponse.getUser())
@@ -464,7 +511,7 @@ public class SchedulerService {
 									String uuidUsername = (String) map.getValue();
 									String message = formatMonthSummaryMessage(requestInfo, tenantId,
 											messageMap.get(NotificationUtil.MSG_KEY));
-									message = message.replace("{link}", config.getMonthDashboardLink());
+									message = message.replace("{LINK}", getShortenedUrl(config.getMonthDashboardLink()));
 									message = message.replace("{GPWSC}", tenantId); // TODO Replace
 									// <GPWSC> with
 									// value
@@ -558,7 +605,7 @@ public class SchedulerService {
 									String message = formatPendingCollectionMessage(requestInfo, tenantId,
 											messageMap.get(NotificationUtil.MSG_KEY));
 									message = message.replace("{PENDING_COL_LINK}",
-											config.getMonthRevenueDashboardLink());
+											getShortenedUrl(config.getMonthRevenueDashboardLink()));
 									message = message.replace("{GPWSC}", tenantId);
 									message = message.replace("{ownername}", uuidUsername);
 									message = message.replace("{Date}", LocalDate.now().toString());
@@ -595,8 +642,9 @@ public class SchedulerService {
 				else
 					message = message.replace("{amount}", "0");
 				System.out.println("Final SMS MEssage is :" + message);
+			}if(message.contains("{TODAY_DATE}")) {
+				message = message.replace("{TODAY_DATE}", LocalDate.now().toString());
 			}
-		message = message.replace("{TODAY_DATE}", LocalDate.now().toString());
 		System.out.println("Final message is :" + message);
 		return message;
 	}
@@ -754,9 +802,9 @@ public class SchedulerService {
 					Object value = entry.getValue();
 					if (key.equalsIgnoreCase("sum")) {
 						if (value != null)
-							message = message.replace(" {amount}", value.toString());
+							message = message.replace("{amount}", value.toString());
 						else
-							message = message.replace(" {amount}", "0");
+							message = message.replace("{amount}", "0");
 					}
 					if (key.equalsIgnoreCase("count")) {
 						if (message.contains("{no}")) {

@@ -6,6 +6,7 @@ import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/model/user/user_details.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/forgot_password_repo.dart';
 import 'package:mgramseva/repository/reset_password_repo.dart';
 import 'package:mgramseva/repository/tendants_repo.dart';
@@ -17,6 +18,7 @@ import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
@@ -48,12 +50,19 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   TextEditingController _pinEditingController = TextEditingController();
   var autoValidate = false;
   var password = "";
+  var pinLength = 6;
 
   @override
   void initState() {
     afterBuildContext();
     super.initState();
     timerController = CountdownTimerController(endTime: endTime, onEnd: onEnd);
+  }
+
+  @override
+  void dispose() {
+    timerController.dispose();
+    super.dispose();
   }
 
   saveInput(context) async {
@@ -73,12 +82,12 @@ class _UpdatePasswordState extends State<UpdatePassword> {
     var tenants = await TenantRepo().fetchTenants(
         getTenantsMDMS(widget.userDetails.userRequest!.tenantId.toString()),
         widget.userDetails.accessToken);
-    final r = widget.userDetails!.userRequest!.roles!
+    final r = widget.userDetails.userRequest!.roles!
         .map((e) => e.tenantId)
         .toSet()
         .toList();
     var result = tenants.tenantsList!
-        .where((element) => r.contains(element.code))
+        .where((element) => r.contains(element.code?.trim()))
         .toList();
 
     setState(() {
@@ -188,7 +197,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                             ApplicationLocalizations.of(context)
                                                 .translate(i18.password
                                                     .CORE_COMMON_CONFIRM_NEW_PASSWORD),
-                                            confirmPassword.text),
+                                            newPassword.text),
                                     onChange: saveInput,
                                   ),
                                   SizedBox(
@@ -198,7 +207,12 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                       ApplicationLocalizations.of(context)
                                           .translate(
                                               i18.password.CHANGE_PASSWORD),
-                                      updatePassword),
+                                      _pinEditingController.text
+                                                  .trim()
+                                                  .length !=
+                                              pinLength
+                                          ? null
+                                          : updatePassword),
                                   PasswordHint(password)
                                 ],
                               ))))),
@@ -224,7 +238,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
     return Align(
         alignment: Alignment.centerLeft,
         child: Container(
-          margin: const EdgeInsets.only(left: 20, bottom: 20, top: 20),
+          margin: const EdgeInsets.only(left: 8, bottom: 20, top: 20, right: 8),
           child: Text(
               '${ApplicationLocalizations.of(context).translate(i18.common.DEAR)} ${widget.userDetails.userRequest?.name}, ' +
                   (tenantsList!.length == 1
@@ -270,7 +284,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
               child: Text(
                   ApplicationLocalizations.of(context)
-                      .translate('${e?.city?.code}'),
+                      .translate('${e.city?.code}'),
                   style: style),
             )),
             TableCell(
@@ -323,7 +337,10 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                 radius: Radius.circular(1),
                 enabled: true,
               ),
-              pinLength: 6,
+              onChanged: (String value) {
+                setState(() {});
+              },
+              pinLength: pinLength,
               decoration: BoxLooseDecoration(
                   strokeColorBuilder: PinListenColorBuilder(
                       Theme.of(context).primaryColor, Colors.grey),
@@ -370,7 +387,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   }
 
   void updatePassword() async {
-    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+    FocusScope.of(context).unfocus();
 
     if (formKey.currentState!.validate()) {
       var body = {
@@ -409,11 +426,14 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   }
 
   sendOtp() async {
+    var languagteProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
     var body = {
       "otp": {
         "mobileNumber": widget.userDetails.userRequest?.userName,
         "tenantId": widget.userDetails.userRequest?.tenantId,
         "type": "passwordreset",
+        "locale": languagteProvider.selectedLanguage?.value,
         "userType": widget.userDetails.userRequest?.type
       }
     };

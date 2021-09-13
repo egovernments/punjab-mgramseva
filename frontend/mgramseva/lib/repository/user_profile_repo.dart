@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 
 class UserProfileRepository extends BaseService {
   Future<UserProfile> getProfile(Map body) async {
-    print(navigatorKey.currentContext!);
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);

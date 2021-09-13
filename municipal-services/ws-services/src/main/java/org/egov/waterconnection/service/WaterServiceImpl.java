@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -340,10 +341,11 @@ public class WaterServiceImpl implements WaterService {
 		return data;
 	}
 
-	private Object  getFeedBackRatingsAvarage(List<Feedback> feedbackList)
+	private Map<String, Integer>  getFeedBackRatingsAvarage(List<Feedback> feedbackList)
 			throws JsonMappingException, JsonProcessingException {
-		
-		Object	 feedbackGroupByCode=null;
+
+		Map<Object, Double> feedbackGroupByCode = null;
+		Map<String,Integer> returnMap= new HashMap<String,Integer>();
 		// TODO Auto-generated method stub
 		List<CheckList> checkList = new ArrayList<CheckList>();
 		ObjectMapper mapper = new ObjectMapper();
@@ -360,16 +362,21 @@ public class WaterServiceImpl implements WaterService {
 
 				}
 			}
-			
-		}
-		
-		if(checkList.size()>0) {
 
-	feedbackGroupByCode=  checkList.stream().collect(Collectors.groupingBy(e -> e.getCode(),
-                                    Collectors.averagingInt(CheckList::getValue)));
 		}
-		
-		return feedbackGroupByCode;
+
+		if (checkList.size() > 0) {
+
+			feedbackGroupByCode = checkList.stream()
+					.collect(Collectors.groupingBy(e -> e.getCode(), Collectors.averagingInt(CheckList::getValue)));
+		}
+		if(!CollectionUtils.isEmpty(feedbackGroupByCode)) {
+			for (Map.Entry<Object,Double> entry : feedbackGroupByCode.entrySet()) {
+				returnMap.put(entry.getKey().toString(), entry.getValue().intValue());
+			}
+		}
+
+		return returnMap;
 	}
 	
 	

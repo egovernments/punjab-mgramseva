@@ -4,10 +4,12 @@ import 'package:mgramseva/components/HouseConnectionandBill/GenerateNewBill.dart
 import 'package:mgramseva/components/HouseConnectionandBill/HouseConnectionDetailCard.dart';
 import 'package:mgramseva/components/HouseConnectionandBill/NewConsumerBill.dart';
 import 'package:mgramseva/model/bill/billing.dart';
+import 'package:mgramseva/model/common/demand.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
+import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/customAppbar.dart';
+import 'package:mgramseva/widgets/customAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -43,16 +45,14 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
       ..fetchDemand(widget.waterconnection, widget.id);
   }
 
-  buildDemandView(BillList data) {
+  buildDemandView(DemandList data) {
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
-
-    print("printing data");
-    print(data.bill);
     return Column(
       children: [
-        data.bill!.isEmpty
-            ? (houseHoldProvider.waterConnection!.connectionType == 'Metered'
+        data.demands!.isEmpty
+            ? (houseHoldProvider.waterConnection!.connectionType == 'Metered' &&
+                    widget.mode == 'collect'
                 ? Align(
                     alignment: Alignment.centerRight,
                     child: ShortButton(
@@ -62,16 +62,17 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                                   arguments: houseHoldProvider.waterConnection)
                             }))
                 : Text(""))
-            : houseHoldProvider.waterConnection!.connectionType == 'Metered' &&
-                    widget.mode == 'collect'
-                ? GenerateNewBill(houseHoldProvider.waterConnection)
-                : Text(""),
-        data.bill!.isEmpty ||
+            : Text(""),
+        houseHoldProvider.waterConnection!.connectionType == 'Metered' &&
+                widget.mode == 'collect'
+            ? GenerateNewBill(houseHoldProvider.waterConnection)
+            : Text(""),
+        data.demands!.isEmpty ||
                 (houseHoldProvider.waterConnection?.connectionType ==
                         'Metered' &&
                     houseHoldProvider.isfirstdemand == false)
             ? Text("")
-            : NewConsumerBill(data, widget.mode),
+            : NewConsumerBill(widget.mode, houseHoldProvider.waterConnection),
         ConsumerBillPayments(houseHoldProvider.waterConnection)
       ],
     );

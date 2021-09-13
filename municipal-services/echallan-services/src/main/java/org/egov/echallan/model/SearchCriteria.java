@@ -78,6 +78,12 @@ public class SearchCriteria {
 	
 	@JsonProperty("freeSearch")
 	private Boolean freeSearch = false;
+	
+	@JsonProperty("currentDate")
+	private Long currentDate;
+	
+	@JsonProperty("isBillCount")
+	private Boolean isBillCount = false;
 	    
 	public enum SortOrder {
 	    ASC,

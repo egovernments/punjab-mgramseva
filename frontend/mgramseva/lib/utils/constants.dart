@@ -109,4 +109,19 @@ class Constants {
     KeyValue(i18.common.OFFLINE_RTGS, 'OFFLINE_RTGS'),
     KeyValue(i18.common.POSTAL_ORDER, 'POSTAL_ORDER'),
   ];
+
+  static List<String> MONTHS = [
+    i18.common.JAN,
+    i18.common.FEB,
+    i18.common.MAR,
+    i18.common.APR,
+    i18.common.MAY,
+    i18.common.JUN,
+    i18.common.JULY,
+    i18.common.AUG,
+    i18.common.SEP,
+    i18.common.OCT,
+    i18.common.NOV,
+    i18.common.DEC,
+  ];
 }

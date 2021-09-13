@@ -11,6 +11,7 @@ WaterConnections _$WaterConnectionsFromJson(Map<String, dynamic> json) {
     ..waterConnection = (json['WaterConnection'] as List<dynamic>?)
         ?.map((e) => WaterConnection.fromJson(e as Map<String, dynamic>))
         .toList()
+    ..tabData = json['propertyCount'] as Map<String, dynamic>
     ..totalCount = json['totalCount'] as int? ?? 0;
 }
 

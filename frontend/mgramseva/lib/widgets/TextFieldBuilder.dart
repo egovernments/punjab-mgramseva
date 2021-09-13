@@ -31,6 +31,8 @@ class BuildTextField extends StatefulWidget {
   final Widget? prefixIcon;
   final String? placeHolder;
   final GlobalKey? contextkey;
+  final AutovalidateMode? autoValidation;
+  final bool? isFilled;
 
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
@@ -56,7 +58,9 @@ class BuildTextField extends StatefulWidget {
       this.prefixIcon,
       this.placeHolder,
       this.contextkey,
-      this.requiredMessage});
+      this.isFilled,
+      this.requiredMessage,
+      this.autoValidation});
 
   @override
   State<StatefulWidget> createState() => _BuildTextField();
@@ -68,7 +72,8 @@ class _BuildTextField extends State<BuildTextField> {
     // TextForm
     Widget textFormwidget = TextFormField(
         style: TextStyle(
-          fontSize: 16,
+            fontWeight: FontWeight.w400,
+            fontSize: 16,
             color: widget.isDisabled != null && widget.isDisabled!
                 ? Colors.grey
                 : Theme.of(context).primaryColorDark),
@@ -84,6 +89,7 @@ class _BuildTextField extends State<BuildTextField> {
         maxLength: widget.maxLength,
         maxLines: widget.maxLines,
         focusNode: widget.focusNode,
+        autovalidateMode: widget.autoValidation,
         textCapitalization:
             widget.textCapitalization ?? TextCapitalization.none,
         obscureText: widget.obscureText ?? false,
@@ -108,8 +114,10 @@ class _BuildTextField extends State<BuildTextField> {
                   .translate((widget.placeHolder!))
               : "",
           border: widget.inputBorder,
+          enabledBorder: widget.inputBorder,
           errorMaxLines: 2,
           enabled: widget.isDisabled ?? true,
+          filled: widget.isFilled,
           fillColor: widget.isDisabled != null && widget.isDisabled!
               ? Colors.grey
               : Colors.white,

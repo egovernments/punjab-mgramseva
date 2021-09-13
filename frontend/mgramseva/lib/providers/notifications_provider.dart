@@ -15,10 +15,7 @@ class NotificationProvider with ChangeNotifier {
       List<Events> res = []
         ..addAll(notifications2!.events!)
         ..addAll(notifications1!.events!);
-
-      // print(notifications2);
-      print(res.length);
-      if (res.length > 0) {
+      if (res != null && res.length > 0) {
         streamController.add(res);
         enableNotification = true;
       } else {

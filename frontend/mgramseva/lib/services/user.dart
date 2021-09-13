@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/screeens/Home.dart';
+import 'package:mgramseva/screeens/Home/Home.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/common_methods.dart';

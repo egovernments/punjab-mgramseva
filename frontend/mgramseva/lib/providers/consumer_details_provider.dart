@@ -15,6 +15,7 @@ import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -37,20 +38,6 @@ class ConsumerProvider with ChangeNotifier {
   late Property property;
   late List dates = [];
   late bool isEdit = false;
-  List months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-  ];
   LanguageList? languageList;
   setModel() async {
     var commonProvider = Provider.of<CommonProvider>(
@@ -79,7 +66,8 @@ class ConsumerProvider with ChangeNotifier {
     });
 
     property.address.gpNameCtrl.text =
-        commonProvider.userDetails!.selectedtenant!.name! +
+        ApplicationLocalizations.of(navigatorKey.currentContext!)
+                .translate(commonProvider.userDetails!.selectedtenant!.code!) +
             ' - ' +
             commonProvider.userDetails!.selectedtenant!.city!.code!;
   }
@@ -90,7 +78,6 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   void onChangeOfCheckBox(bool? value) {
-    print(waterconnection.status);
     if (value == true)
       waterconnection.status = 'Inactive';
     else
@@ -101,7 +88,6 @@ class ConsumerProvider with ChangeNotifier {
   Future<void> setWaterConnection(data) async {
     isEdit = true;
     waterconnection = data;
-    print(waterconnection.status);
     waterconnection.getText();
 
     List<Demand>? demand = await ConsumerRepository().getDemandDetails({
@@ -110,32 +96,13 @@ class ConsumerProvider with ChangeNotifier {
       "tenantId": waterconnection.tenantId
     });
     if (waterconnection.connectionType == 'Metered' &&
-        waterconnection.additionalDetails!.meterReading != null) {
-      waterconnection.om_1Ctrl.text = waterconnection
-          .additionalDetails!.meterReading
-          .toString()
-          .characters
-          .elementAt(0);
-      waterconnection.om_2Ctrl.text = waterconnection
-          .additionalDetails!.meterReading
-          .toString()
-          .characters
-          .elementAt(1);
-      waterconnection.om_3Ctrl.text = waterconnection
-          .additionalDetails!.meterReading
-          .toString()
-          .characters
-          .elementAt(2);
-      waterconnection.om_4Ctrl.text = waterconnection
-          .additionalDetails!.meterReading
-          .toString()
-          .characters
-          .elementAt(3);
-      waterconnection.om_5Ctrl.text = waterconnection
-          .additionalDetails!.meterReading
-          .toString()
-          .characters
-          .elementAt(4);
+        waterconnection.additionalDetails!.meterReading.toString() != '0') {
+      var meterReading = waterconnection.additionalDetails!.meterReading.toString().padLeft(5 , '0' );
+      waterconnection.om_1Ctrl.text = meterReading.toString().characters.elementAt(0);
+      waterconnection.om_2Ctrl.text =meterReading.toString().characters.elementAt(1);
+      waterconnection.om_3Ctrl.text = meterReading.toString().characters.elementAt(2);
+      waterconnection.om_4Ctrl.text = meterReading.toString().characters.elementAt(3);
+      waterconnection.om_5Ctrl.text = meterReading.toString().characters.elementAt(4);
     }
     if (demand?.isEmpty == true) {
       isfirstdemand = false;
@@ -185,17 +152,16 @@ class ConsumerProvider with ChangeNotifier {
 
         // ignore: unrelated_type_equality_checks
         waterconnection.previousReading =
-            (waterconnection.om_1Ctrl.text != "" &&
-                    waterconnection.om_2Ctrl.text != "" &&
-                    waterconnection.om_3Ctrl.text != "" &&
-                    waterconnection.om_4Ctrl.text != "" &&
-                    waterconnection.om_5Ctrl.text != "")
-                ? int.parse(waterconnection.om_1Ctrl.text +
+            (waterconnection.om_1Ctrl.text == "" &&
+                    waterconnection.om_2Ctrl.text == "" &&
+                    waterconnection.om_3Ctrl.text == "" &&
+                    waterconnection.om_4Ctrl.text == "" &&
+                    waterconnection.om_5Ctrl.text == "")
+                ? 0 : int.parse(waterconnection.om_1Ctrl.text +
                     waterconnection.om_2Ctrl.text +
                     waterconnection.om_3Ctrl.text +
                     waterconnection.om_4Ctrl.text +
-                    waterconnection.om_5Ctrl.text)
-                : 000000;
+                    waterconnection.om_5Ctrl.text);
       } else {
         waterconnection.previousReadingDate =
             waterconnection.meterInstallationDate;
@@ -303,10 +269,11 @@ class ConsumerProvider with ChangeNotifier {
           (element) => element.code == property.address.locality!.code);
       onChangeOflocaity(property.address.localityCtrl);
 
-      property.address.gpNameCtrl.text =
-          commonProvider.userDetails!.selectedtenant!.name! +
-              ' - ' +
-              commonProvider.userDetails!.selectedtenant!.city!.code!;
+      property.address.gpNameCtrl
+          .text = ApplicationLocalizations.of(navigatorKey.currentContext!)
+              .translate(commonProvider.userDetails!.selectedtenant!.code!) +
+          ' - ' +
+          commonProvider.userDetails!.selectedtenant!.city!.code!;
       streamController.add(property);
       notifyListeners();
     } catch (e) {
@@ -358,8 +325,9 @@ class ConsumerProvider with ChangeNotifier {
       return (boundaryList).map((value) {
         return DropdownMenuItem(
           value: value,
-          child: new Text(ApplicationLocalizations.of(navigatorKey.currentContext!)
-              .translate(value.code!)),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                  .translate(value.code!)),
         );
       }).toList();
     }
@@ -406,7 +374,7 @@ class ConsumerProvider with ChangeNotifier {
           value: value.code,
           child: new Text(
               ApplicationLocalizations.of(navigatorKey.currentContext!)
-                  .translate(value.name!)),
+                  .translate(value.code!)),
         );
       }).toList();
     }
@@ -437,14 +405,14 @@ class ConsumerProvider with ChangeNotifier {
         dates.add(r);
       }
     }
-    if (dates.length > 0 && waterconnection.connectionType == 'Non Metered') {
+    if (dates.length > 0 && waterconnection.connectionType == 'Non_Metered') {
       return (dates).map((value) {
         var d = value['name'];
         return DropdownMenuItem(
           value: value['code'].toLocal().toString(),
           child: new Text(
               ApplicationLocalizations.of(navigatorKey.currentContext!)
-                      .translate(months[d.month - 1]) +
+                      .translate(Constants.MONTHS[d.month - 1]) +
                   " - " +
                   d.year.toString()),
         );

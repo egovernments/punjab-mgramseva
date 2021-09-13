@@ -36,9 +36,11 @@ class CollectPaymentProvider with ChangeNotifier {
     try {
       var paymentDetails = await ConsumerRepository().getBillDetails(query);
       if (paymentDetails != null) {
-        var demandDetails = await ConsumerRepository().getDemandDetails(query);
-        if (demandDetails != null)
-          paymentDetails.first.demand = demandDetails.first;
+        paymentDetails.first.billDetails
+            ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
+        // var demandDetails = await ConsumerRepository().getDemandDetails(query);
+        // if (demandDetails != null)
+        // paymentDetails.first.demand = demandDetails.first;
         getPaymentModes(paymentDetails.first);
         paymentStreamController.add(paymentDetails.first);
         notifyListeners();
@@ -123,18 +125,32 @@ class CollectPaymentProvider with ChangeNotifier {
               whatsAppShare: i18.common.SHARE_RECEIPTS,
               downloadLinkLabel: i18.common.RECEIPT_DOWNLOAD,
             ),
-            callBackdownload: () => commonProvider.getFileFromPDFService({
-              "Payments": [paymentDetails.payments!.first]
-            }, {
-              "key": "consolidatedreceipt",
-              "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-            }, paymentDetails.payments!.first.mobileNumber, "Download"),
-            callBackwatsapp: () => commonProvider.getFileFromPDFService({
+            callBackdownload: () => commonProvider.getFileFromPDFPaymentService(
+                {
+                  "Payments": [paymentDetails.payments!.first]
+                },
+                {
+                  "key": paymentDetails.payments?.first.paymentDetails?.first
+                              .bill?.waterConnection?.connectionType ==
+                          'Metered'
+                      ? "ws-receipt"
+                      : "ws-receipt-nm",
+                  "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+                },
+                paymentDetails.payments!.first.mobileNumber,
+                paymentDetails.payments!.first,
+                "Download"),
+            callBackwatsapp: () => commonProvider.getFileFromPDFPaymentService({
               "Payments": [paymentDetails..payments!]
             }, {
-              "key": "consolidatedreceipt",
+              "key": paymentDetails.payments?.first.paymentDetails?.first.bill
+                          ?.waterConnection?.connectionType ==
+                      'Metered'
+                  ? "ws-receipt"
+                  : "ws-receipt-nm",
               "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-            }, paymentDetails.payments!.first.mobileNumber, "Share"),
+            }, paymentDetails.payments!.first.mobileNumber,
+                paymentDetails.payments!.first, "Share"),
             backButton: true,
           );
         }));

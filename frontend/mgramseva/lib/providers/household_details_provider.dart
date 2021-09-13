@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/bill/meter_demand_details.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
+import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/repository/bill_generation_details_repo.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
@@ -95,11 +96,13 @@ class HouseHoldProvider with ChangeNotifier {
           } else {
             isfirstdemand = true;
           }
-          fetchBill(data);
+          streamController.add(value);
+
+          // fetchBill(data);
         } else {
-          BillList bill = new BillList();
-          bill.bill = [];
-          streamController.add(bill);
+          DemandList demandList = new DemandList();
+          demandList.demands = [];
+          streamController.add(demandList);
         }
       });
     } catch (e, s) {

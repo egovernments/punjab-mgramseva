@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/AddExpense/AddExpenseWalkThrough/expenseWalkThrough.dart';
-import 'package:mgramseva/screeens/customAppbar.dart';
+import 'package:mgramseva/widgets/customAppbar.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
@@ -46,9 +46,13 @@ class ExpenseDetails extends StatefulWidget {
 }
 
 class _ExpenseDetailsState extends State<ExpenseDetails> {
+  var phoneNumberAutoValidation = false;
+  FocusNode _numberFocus = new FocusNode();
+
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    _numberFocus.addListener(_onFocusChange);
     super.initState();
   }
 
@@ -67,6 +71,18 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
       }).toList());
   }
 
+  dispose() {
+    _numberFocus.addListener(_onFocusChange);
+    super.dispose();
+  }
+
+  void _onFocusChange() {
+    if (!_numberFocus.hasFocus) {
+      setState(() {
+        phoneNumberAutoValidation = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,14 +127,14 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
               i18.common.SUBMIT,
               (isUpdate &&
                           (expensesDetailsProvider
-                                  .expenditureDetails?.allowEdit ??
+                                  .expenditureDetails.allowEdit ??
                               false)) ||
                       ((isUpdate &&
                               !(expensesDetailsProvider
-                                      .expenditureDetails?.allowEdit ??
+                                      .expenditureDetails.allowEdit ??
                                   false) &&
                               (expensesDetailsProvider
-                                      .expenditureDetails?.isBillCancelled ??
+                                      .expenditureDetails.isBillCancelled ??
                                   false)) ||
                           !isUpdate)
                   ? () => expensesDetailsProvider.validateExpensesDetails(
@@ -160,7 +176,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                           child: child,
                         );
                       },
-                    ),walkThroughKey: Constants.ADD_EXPENSE_KEY,
+                    ),
+                    walkThroughKey: Constants.ADD_EXPENSE_KEY,
                   )),
                   Card(
                       child: Consumer<ExpensesDetailsProvider>(
@@ -212,8 +229,10 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               isEnabled: expenseDetails.allowEdit,
                               requiredMessage:
                                   i18.expense.MENTION_NAME_OF_VENDOR,
-                              inputFormatter: [FilteringTextInputFormatter.allow(
-                                  RegExp("[a-zA-Z ]"))],
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[a-zA-Z ]"))
+                              ],
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[1].key,
                             ),
@@ -225,6 +244,10 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 prefixText: '+91 - ',
                                 textInputType: TextInputType.number,
                                 validator: Validators.mobileNumberValidator,
+                                focusNode: _numberFocus,
+                                autoValidation: phoneNumberAutoValidation
+                                    ? AutovalidateMode.always
+                                    : AutovalidateMode.disabled,
                                 maxLength: 10,
                                 inputFormatter: [
                                   FilteringTextInputFormatter.allow(
@@ -321,7 +344,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                       expensesDetailsProvider.onChangeOfDate,
                                   isEnabled: expenseDetails.allowEdit),
                             if (isUpdate &&
-                                expenseDetails.fileStoreList != null && expenseDetails.fileStoreList!.isNotEmpty)
+                                expenseDetails.fileStoreList != null &&
+                                expenseDetails.fileStoreList!.isNotEmpty)
                               Container(
                                 margin: const EdgeInsets.only(
                                     top: 20.0, bottom: 5, right: 20, left: 20),
@@ -340,24 +364,28 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                             .map<Widget>((e) => InkWell(
                                                   onTap: () =>
                                                       expensesDetailsProvider
-                                                          .onTapOfAttachment(e, context),
+                                                          .onTapOfAttachment(
+                                                              e, context),
                                                   child: Container(
-                                                    width: 50,
-                                                    margin:
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 10,
-                                                            horizontal: 5),
-                                                    child: Wrap(
-                                                      runSpacing: 5,
-                                                   spacing: 8,
-                                                   children : [
-                                                     Image.asset('assets/png/attachment.png'),
-                                                     Text('${CommonMethods.getExtension(e.url ?? '')}',
-                                                     maxLines: 2,
-                                                     overflow: TextOverflow.ellipsis,
-                                                     )
-                                                    ]
-                                                  )),
+                                                      width: 50,
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 10,
+                                                              horizontal: 5),
+                                                      child: Wrap(
+                                                          runSpacing: 5,
+                                                          spacing: 8,
+                                                          children: [
+                                                            Image.asset(
+                                                                'assets/png/attachment.png'),
+                                                            Text(
+                                                              '${CommonMethods.getExtension(e.url ?? '')}',
+                                                              maxLines: 2,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            )
+                                                          ])),
                                                 ))
                                             .toList())
                                   ],
@@ -374,7 +402,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                             if (isUpdate)
                               Container(
                                 alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 18),
                                 child: Wrap(
                                   direction: Axis.horizontal,
                                   crossAxisAlignment: WrapCrossAlignment.center,

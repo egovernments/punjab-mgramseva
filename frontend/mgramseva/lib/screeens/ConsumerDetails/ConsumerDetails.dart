@@ -8,7 +8,8 @@ import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/WalkFlowContainer.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/walkthrough.dart';
 import 'package:mgramseva/screeens/GenerateBill/widgets/MeterReading.dart';
-import 'package:mgramseva/screeens/customAppbar.dart';
+import 'package:mgramseva/utils/validators/Validators.dart';
+import 'package:mgramseva/widgets/customAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
@@ -44,6 +45,9 @@ class ConsumerDetails extends StatefulWidget {
 }
 
 class _ConsumerDetailsState extends State<ConsumerDetails> {
+  var phoneNumberAutoValidation = false;
+  FocusNode _numberFocus = new FocusNode();
+
   saveInput(context) async {
     print(context);
   }
@@ -80,11 +84,21 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
       WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     }
 
+    _numberFocus.addListener(_onFocusChange);
     super.initState();
   }
 
   dispose() {
+    _numberFocus.addListener(_onFocusChange);
     super.dispose();
+  }
+
+  void _onFocusChange() {
+    if (!_numberFocus.hasFocus) {
+      setState(() {
+        phoneNumberAutoValidation = true;
+      });
+    }
   }
 
   afterViewBuild() {
@@ -208,6 +222,11 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               isRequired: true,
                               textInputType: TextInputType.number,
                               maxLength: 10,
+                              focusNode: _numberFocus,
+                              validator: Validators.mobileNumberValidator,
+                              autoValidation: phoneNumberAutoValidation
+                                  ? AutovalidateMode.always
+                                  : AutovalidateMode.disabled,
                               inputFormatter: [
                                 FilteringTextInputFormatter.allow(
                                     RegExp("[0-9]"))
@@ -360,7 +379,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                               ),
                                         consumerProvider.waterconnection
                                                     .connectionType !=
-                                                'Non Metered'
+                                                'Non_Metered'
                                             ? Container()
                                             : Consumer<
                                                     ConsumerProvider>(

@@ -35,7 +35,6 @@ class _ExpenseWalkThroughContainerState
           .currentContext!
           .findRenderObject() as RenderBox?;
       Offset position = box!.localToGlobal(Offset.zero);
-      print(expenseProvider.activeindex);
       return Stack(children: [
         Positioned(
             left: position.dx,
@@ -100,12 +99,16 @@ class _ExpenseWalkThroughContainerState
                                     .expenseWalkthrougList[
                                         expenseProvider.activeindex]
                                     .name),
-                            style: TextStyle(fontSize: 14, color: Theme.of(context).primaryColorLight),
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).primaryColorLight),
                             textAlign: TextAlign.start,
                           )),
-                          expenseProvider.activeindex == expenseProvider.expenseWalkthrougList.length - 1
-                              ? Padding(
-                              padding: EdgeInsets.only(top: 10, right: 20, bottom: 10),
+                      expenseProvider.activeindex ==
+                              expenseProvider.expenseWalkthrougList.length - 1
+                          ? Padding(
+                              padding: EdgeInsets.only(
+                                  top: 10, right: 20, bottom: 10),
                               child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -115,8 +118,8 @@ class _ExpenseWalkThroughContainerState
                                           Navigator.pop(context);
                                           Provider.of<CommonProvider>(context,
                                               listen: false)
-                                            ..walkThroughCondition(
-                                                false, Constants.ADD_EXPENSE_KEY);
+                                            ..walkThroughCondition(false,
+                                                Constants.ADD_EXPENSE_KEY);
                                           setState(() {
                                             active = 0;
                                           });
@@ -127,101 +130,111 @@ class _ExpenseWalkThroughContainerState
                                           width: 80,
                                           decoration: BoxDecoration(
                                             borderRadius:
-                                            BorderRadius.circular(10.0),
+                                                BorderRadius.circular(10.0),
                                             color:
-                                            Theme.of(context).primaryColor,
+                                                Theme.of(context).primaryColor,
                                             boxShadow: [
                                               BoxShadow(
                                                 color: Colors.grey,
                                                 offset:
-                                                Offset(0.0, 1.0), //(x,y)
+                                                    Offset(0.0, 1.0), //(x,y)
                                                 blurRadius: 6.0,
                                               ),
                                             ],
                                           ),
                                           child: Center(
                                               child: Text(
-                                                ApplicationLocalizations.of(context)
-                                                    .translate(i18.common.END),
-                                                style:
-                                                TextStyle(color: Colors.white,
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18.common.END),
+                                            style: TextStyle(
+                                                color: Colors.white,
                                                 fontSize: 12),
-                                              )),
-                                        ))]))
-                              : Padding(
-                          padding: EdgeInsets.all(0),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                TextButton(
-                                    onPressed: () async {
-                                      expenseProvider.activeindex = 0;
-                                      Navigator.pop(context);
-                                      Provider.of<CommonProvider>(context,
-                                          listen: false)
-                                        ..walkThroughCondition(
-                                            false, Constants.ADD_EXPENSE_KEY);
-                                      setState(() {
-                                        active = 0;
-                                      });
-                                    },
-                                    child: Text(
-                                        ApplicationLocalizations.of(context)
-                                            .translate(i18.common.SKIP),
-                                    style: TextStyle(fontSize: 12, color: Theme.of(context).primaryColorLight),)),
-                                GestureDetector(
-                                    onTap: () async {
-                                      if (expenseProvider.expenseWalkthrougList
-                                                  .length -
-                                              1 <=
-                                          active) {
-                                        expenseProvider.activeindex = 0;
-                                        Navigator.pop(context);
-                                        setState(() {
-                                          active = 0;
-                                        });
-                                      } else {
-                                        widget.onnext!(
-                                            expenseProvider.activeindex);
-                                        await Scrollable.ensureVisible(
-                                            expenseProvider
-                                                .expenseWalkthrougList[
-                                                    expenseProvider.activeindex]
-                                                .key!
-                                                .currentContext!,
-                                            duration: new Duration(
-                                                milliseconds: 100));
+                                          )),
+                                        ))
+                                  ]))
+                          : Padding(
+                              padding: EdgeInsets.all(0),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () async {
+                                          expenseProvider.activeindex = 0;
+                                          Navigator.pop(context);
+                                          Provider.of<CommonProvider>(context,
+                                              listen: false)
+                                            ..walkThroughCondition(false,
+                                                Constants.ADD_EXPENSE_KEY);
+                                          setState(() {
+                                            active = 0;
+                                          });
+                                        },
+                                        child: Text(
+                                          ApplicationLocalizations.of(context)
+                                              .translate(i18.common.SKIP),
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Theme.of(context)
+                                                  .primaryColorLight),
+                                        )),
+                                    GestureDetector(
+                                        onTap: () async {
+                                          if (expenseProvider
+                                                      .expenseWalkthrougList
+                                                      .length -
+                                                  1 <=
+                                              active) {
+                                            expenseProvider.activeindex = 0;
+                                            Navigator.pop(context);
+                                            setState(() {
+                                              active = 0;
+                                            });
+                                          } else {
+                                            widget.onnext!(
+                                                expenseProvider.activeindex);
+                                            await Scrollable.ensureVisible(
+                                                expenseProvider
+                                                    .expenseWalkthrougList[
+                                                        expenseProvider
+                                                            .activeindex]
+                                                    .key!
+                                                    .currentContext!,
+                                                duration: new Duration(
+                                                    milliseconds: 100));
 
-                                        setState(() {
-                                          active = active + 1;
-                                        });
-                                      }
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.all(5.0),
-                                      height: 35,
-                                      width: 80,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        color: Theme.of(context).primaryColor,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey,
-                                            offset: Offset(0.0, 1.0), //(x,y)
-                                            blurRadius: 6.0,
+                                            setState(() {
+                                              active = active + 1;
+                                            });
+                                          }
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.all(5.0),
+                                          height: 35,
+                                          width: 80,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey,
+                                                offset:
+                                                    Offset(0.0, 1.0), //(x,y)
+                                                blurRadius: 6.0,
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                      child: Center(
-                                          child: Text(
-                                        ApplicationLocalizations.of(context)
-                                            .translate(i18.common.NEXT),
-                                        style: TextStyle(color: Colors.white,
-                                        fontSize: 12),
-                                      )),
-                                    ))
-                              ]))
+                                          child: Center(
+                                              child: Text(
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18.common.NEXT),
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12),
+                                          )),
+                                        ))
+                                  ]))
                     ]))))
       ]);
     });

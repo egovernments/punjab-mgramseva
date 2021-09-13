@@ -17,6 +17,7 @@ import org.egov.echallan.model.SearchCriteria;
 import org.egov.echallan.producer.Producer;
 import org.egov.echallan.repository.builder.ChallanQueryBuilder;
 import org.egov.echallan.repository.rowmapper.ChallanRowMapper;
+import org.egov.echallan.service.ChallanService;
 import org.egov.echallan.web.models.collection.Bill;
 import org.egov.echallan.web.models.collection.PaymentDetail;
 import org.egov.echallan.web.models.collection.PaymentRequest;
@@ -69,7 +70,6 @@ public class ChallanRepository {
     }
 
 
-
     /**
      * Pushes the request on save topic
      *
@@ -92,10 +92,31 @@ public class ChallanRepository {
     }
     
     
-    public List<Challan> getChallans(SearchCriteria criteria) {
+    public List<Challan> getChallans(SearchCriteria criteria, Map<String, String> finalData) {
         List<Object> preparedStmtList = new ArrayList<>();
         String query = queryBuilder.getChallanSearchQuery(criteria, preparedStmtList);
-        List<Challan> challans =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper);
+        List<Challan> challans =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper); 
+        
+		if (criteria.getIsBillCount()) {
+			List<Object> preparedStmnt = new ArrayList<>();
+			StringBuilder paidQuery = new StringBuilder(queryBuilder.bill_count);
+			paidQuery = queryBuilder.applyFilters(paidQuery, preparedStmnt, criteria);
+			paidQuery.append(" AND isbillpaid=true ");
+			List<Map<String, Object>> paidCountdata = jdbcTemplate.queryForList(paidQuery.toString(),
+					preparedStmnt.toArray());
+			List<Object> prpstmnt = new ArrayList<>();
+			StringBuilder notPaidQuery = new StringBuilder(queryBuilder.bill_count);
+			notPaidQuery = queryBuilder.applyFilters(notPaidQuery, prpstmnt, criteria);
+			notPaidQuery.append(" AND isbillpaid=false ");
+			
+			List<Map<String, Object>> notPaidCountdata = jdbcTemplate.queryForList(notPaidQuery.toString(),
+					preparedStmnt.toArray());
+		
+			finalData.put("paidcount", paidCountdata.get(0).get("count").toString());
+			finalData.put("notPaidcount", notPaidCountdata.get(0).get("count").toString());
+			System.out.println("Map Data Insertion :: " + finalData);
+		}
+		
         return challans;
     }
 
@@ -161,16 +182,16 @@ public class ChallanRepository {
 
 
 
-	public List<String> getPreviousMonthCollection(String tenantId, String startDate, String endDate) {
-		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHCOLLECTION);
+	public Integer getPreviousMonthExpensePayments(String tenantId, Long startDate, Long endDate) {
+		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHEXPPAYMENT);
 		
 		//previous month start date startDate
 		// previous month end date endDate
 		
-		query.append( " and receiptdate  >= ").append( startDate)  
-		.append(" and  receiptdate <= " ).append(endDate); 
-		log.info("Previous month collection query : " + query);
-		return jdbcTemplate.queryForList(query.toString(), String.class);
+		query.append( " and PAYMTDTL.receiptdate  >= ").append( startDate)  
+		.append(" and  PAYMTDTL.receiptdate <= " ).append(endDate); 
+		log.info("Previous month expense paid query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 	}
 
 
@@ -211,39 +232,39 @@ public class ChallanRepository {
 		return list;
 	}
 	
-	public List<String> getPreviousMonthNewExpense(String tenantId, String startDate, String endDate) {
+	public Integer getPreviousMonthNewExpense(String tenantId, Long startDate, Long endDate) {
 		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHNEWEXPENSE);
-		query.append(" and challan.createdtime  >= ").append(startDate).append(" and  challan.createdtime <= ")
-				.append(endDate).append(" and challan.tenantId = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForList(query.toString(), String.class);
+		query.append("  WHERE  CHALLAN.BILLISSUEDDATE BETWEEN ").append(startDate).append(" and  ")
+				.append(endDate).append(" and CHALLAN.TENANTID = '").append(tenantId).append("'");
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 	}
 
-	public List<String> getCumulativePendingExpense(String tenantId) {
+	public Integer getCumulativePendingExpense(String tenantId) {
 		StringBuilder query = new StringBuilder(queryBuilder.CUMULATIVEPENDINGEXPENSE);
 		query.append(" and challan.tenantId = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForList(query.toString(), String.class);
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 	}
 
-	public List<String> getTotalPendingCollection(String tenantId) {
+	public Integer getTotalPendingCollection(String tenantId) {
 		StringBuilder query = new StringBuilder(queryBuilder.PENDINGCOLLECTION);
-		query.append(" and demand.tenantid = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForList(query.toString(), String.class);
+		query.append(" and CONN.tenantid = '").append(tenantId).append("'");
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
 	}
 
-	public List<String> getNewDemand(String tenantId, String startDate, String endDate) {
+	public Integer getNewDemand(String tenantId, Long startDate, Long endDate) {
 		StringBuilder query = new StringBuilder(queryBuilder.NEWDEMAND);
 		query.append(" and dmd.taxPeriodFrom  >= ").append(startDate).append(" and dmd.taxPeriodTo <= ").append(endDate)
 				.append(" and dmd.tenantId = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForList(query.toString(), String.class);
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
 	}
 
-	public List<String> getActualCollection(String tenantId, String startDate, String endDate) {
+	public Integer getActualCollection(String tenantId, Long startDate, Long endDate) {
 		StringBuilder query = new StringBuilder(queryBuilder.ACTUALCOLLECTION);
 		query.append(" and py.transactionDate  >= ").append(startDate).append(" and py.transactionDate <= ")
 				.append(endDate).append(" and py.tenantId = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForList(query.toString(), String.class);
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
 	}
 	

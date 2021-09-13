@@ -1,7 +1,9 @@
 package org.egov.echallan.web.controllers;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -13,6 +15,7 @@ import org.egov.echallan.model.LastMonthSummary;
 import org.egov.echallan.model.LastMonthSummaryResponse;
 import org.egov.echallan.model.RequestInfoWrapper;
 import org.egov.echallan.model.SearchCriteria;
+import org.egov.echallan.repository.ChallanRepository;
 import org.egov.echallan.repository.rowmapper.ChallanRowMapper;
 import org.egov.echallan.service.ChallanService;
 import org.egov.echallan.service.SchedulerService;
@@ -41,6 +44,10 @@ public class ChallanController {
 	@Autowired
 	private SchedulerService schedulerService;
 	
+
+	@Autowired
+	private ChallanRepository repository;
+	
 	@Autowired
 	private ChallanRowMapper mapper;
 
@@ -58,9 +65,9 @@ public class ChallanController {
 	 @RequestMapping(value = "/_search", method = RequestMethod.POST)
 	 public ResponseEntity<ChallanResponse> search(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
 	                                                       @Valid @ModelAttribute SearchCriteria criteria) {
-	     List<Challan> challans = challanService.search(criteria, requestInfoWrapper.getRequestInfo());
-
-	     ChallanResponse response = ChallanResponse.builder().challans(challans).totalCount(mapper.getFull_count()).responseInfo(
+		 Map<String, String> finalData = new HashMap<String, String>();
+	     List<Challan> challans = challanService.search(criteria, requestInfoWrapper.getRequestInfo(), finalData);
+	     ChallanResponse response = ChallanResponse.builder().challans(challans).totalCount(mapper.getFull_count()).billData(finalData).responseInfo(
 	               responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true))
 	              .build();
 	     return new ResponseEntity<>(response, HttpStatus.OK);
@@ -68,7 +75,8 @@ public class ChallanController {
 
 	 @PostMapping("/_update")
 	 public ResponseEntity<ChallanResponse> update(@Valid @RequestBody ChallanRequest challanRequest) {
-		Challan challan = challanService.update(challanRequest);
+		Map<String, String> finalData = new HashMap<String, String>();
+		Challan challan = challanService.update(challanRequest, finalData);
 		ResponseInfo resInfo = responseInfoFactory.createResponseInfoFromRequestInfo(challanRequest.getRequestInfo(), true);
 		ChallanResponse response = ChallanResponse.builder().challans(Arrays.asList(challan))
 				.responseInfo(resInfo)

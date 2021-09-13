@@ -1,4 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/constants.dart';
+
+import 'Locilization/application_localizations.dart';
 
 class DateFormats {
 
@@ -86,9 +91,9 @@ class DateFormats {
     }
   }
 
-  static String getMonthAndYear(DateTime date){
+  static String getMonthAndYear(DateTime date, BuildContext context){
     try{
-      return '${DateFormat.MMMM().format(date)} ${date.year}';
+      return '${ApplicationLocalizations.of(context).translate(Constants.MONTHS[date.month - 1])} ${date.year}';
     }catch(e){
       return '';
     }

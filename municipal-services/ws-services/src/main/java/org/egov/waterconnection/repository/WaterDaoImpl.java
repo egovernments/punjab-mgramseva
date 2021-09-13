@@ -1,7 +1,9 @@
 package org.egov.waterconnection.repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.egov.common.contract.request.RequestInfo;
@@ -69,27 +71,40 @@ public class WaterDaoImpl implements WaterDao {
 	}
 
 	@Override
-	public WaterConnectionResponse getWaterConnectionList(SearchCriteria criteria,
-			RequestInfo requestInfo) {
-		
+	public WaterConnectionResponse getWaterConnectionList(SearchCriteria criteria, RequestInfo requestInfo) {
+
 		List<WaterConnection> waterConnectionList = new ArrayList<>();
 		List<Object> preparedStatement = new ArrayList<>();
 		String query = wsQueryBuilder.getSearchQueryString(criteria, preparedStatement, requestInfo);
-		
+
 		if (query == null)
 			return null;
-		
+
 		Boolean isOpenSearch = isSearchOpen(requestInfo.getUserInfo());
 		WaterConnectionResponse connectionResponse = new WaterConnectionResponse();
-		if(isOpenSearch) {
-			waterConnectionList = jdbcTemplate.query(query, preparedStatement.toArray(),
-					openWaterRowMapper);
-			connectionResponse = WaterConnectionResponse.builder().waterConnection(waterConnectionList).totalCount(openWaterRowMapper.getFull_count()).build();
-		}
-		else {
-			waterConnectionList = jdbcTemplate.query(query, preparedStatement.toArray(),
-					waterRowMapper);
-			connectionResponse = WaterConnectionResponse.builder().waterConnection(waterConnectionList).totalCount(waterRowMapper.getFull_count()).build();
+		if (isOpenSearch) {
+			waterConnectionList = jdbcTemplate.query(query, preparedStatement.toArray(), openWaterRowMapper);
+			connectionResponse = WaterConnectionResponse.builder().waterConnection(waterConnectionList)
+					.totalCount(openWaterRowMapper.getFull_count()).build();
+		} else {
+
+			waterConnectionList = jdbcTemplate.query(query, preparedStatement.toArray(), waterRowMapper);
+			Map<String, Object> counter = new HashMap();
+			if (criteria.getIsPropertyCount()!= null && criteria.getIsPropertyCount()) {
+				List<Object> preparedStmnt = new ArrayList<>();
+				StringBuilder propertyQuery = new StringBuilder(wsQueryBuilder.PROPERTY_COUNT);
+				propertyQuery = wsQueryBuilder.applyFilters(propertyQuery, preparedStmnt, criteria);
+				propertyQuery.append("GROUP BY additionaldetails->>'propertyType'");
+				List<Map<String, Object>> data = jdbcTemplate.queryForList(propertyQuery.toString(),
+						preparedStmnt.toArray());
+				for (Map<String, Object> map : data) {
+					if(map.get("propertytype")!=null) {
+						counter.put(map.get("propertytype").toString(), map.get("count").toString()) ;
+					}
+				}
+			}
+			connectionResponse = WaterConnectionResponse.builder().waterConnection(waterConnectionList)
+					.totalCount(waterRowMapper.getFull_count()).propertyCount(counter).build();
 		}
 		return connectionResponse;
 	}

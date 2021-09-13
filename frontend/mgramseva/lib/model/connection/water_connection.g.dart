@@ -79,7 +79,7 @@ Map<String, dynamic> _$ProcessInstanceToJson(ProcessInstance instance) =>
 
 AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) {
   return AdditionalDetails()
-    ..initialMeterReading = json['initialMeterReading'] as int?
+    ..initialMeterReading = json['initialMeterReading'] is double ? json['initialMeterReading'].toInt()  : json['initialMeterReading'] as int?
     ..meterReading = json['meterReading'] as int?
     ..locality = json['locality'] as String?
     ..propertyType = json['propertyType'] as String?

@@ -19,7 +19,7 @@ class ResetPasswordRepository extends BaseService {
         APIConstants.API_DID,
         APIConstants.API_KEY,
         APIConstants.API_MESSAGE_ID,
-        token ?? commonProvider.userDetails!.accessToken);
+        token ?? commonProvider.userDetails?.accessToken);
     late ResetPasswordDetails resetPasswordDetails;
     var res = await makeRequest(
         url: UserUrl.RESET_PASSWORD,

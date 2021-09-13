@@ -61,6 +61,8 @@ class Common {
   String get RESET_PASSWORD_LABEL => 'RESET_PASSWORD_LABEL';
   String get BILL_DOWNLOAD => 'BILL_DOWNLOAD';
   String get RECEIPT_DOWNLOAD => 'RECEIPT_DOWNLOAD';
+  String get SHARE_BILL_LINK => 'SHARE_BILL_LINK';
+  String get SHARE_RECEIPT_LINK => 'SHARE_RECEIPT_LINK';
   String get NOTIFICATIONS => 'NOTIFICATIONS';
   String get BACK => 'BACK';
   String get DEAR => 'DEAR';
@@ -156,6 +158,26 @@ class Common {
   String get NEXT => 'NEXT';
   String get END => 'END';
   String get ROWS_PER_PAGE => 'ROWS_PER_PAGE';
+  String get CAMERA => 'CAMERA';
+  String get FILE_MANAGER => 'FILE_MANAGER';
+  String get FILE_SIZE => 'FILE_SIZE';
+  String get CHOOSE_AN_ACTION => 'CHOOSE_AN_ACTION';
+
+  ///Months
+  String get JAN => 'JAN';
+  String get FEB => 'FEB ';
+  String get MAR => 'MAR';
+  String get APR => 'APR';
+  String get MAY => 'MAY';
+  String get JUN => 'JUN';
+  String get JULY => 'JULY';
+  String get AUG => 'AUG';
+  String get SEP => 'SEP';
+  String get OCT => 'OCT';
+  String get NOV => 'NOV';
+  String get DEC => 'DEC';
+
+  String get OF => 'OF';
 }
 
 class Password {
@@ -347,6 +369,7 @@ class _Validators {
       'CONFIRM_RECONFIRM_SHOULD_SAME'; //New Password and Confirm password should be same
   String get ENTER_METER_NUMBER => 'ENTER_METER_NUMBER';
   String get ENTER_ALPHA_NUMERIC_ONLY => 'ENTER_ALPHA_NUMERIC_ONLY';
+  String get PARTIAL_AMT_OUT_OF_RANGE => 'PARTIAL_AMT_OUT_OF_RANGE';
 }
 
 class DemandGenerate {
@@ -480,6 +503,7 @@ class _DashBoard {
   String get SEARCH_NAME_CONNECTION => 'SEARCH_NAME_CONNECTION';
   String get DASHBOARD => 'DASHBOARD';
   String get BILL_ID_VENDOR => 'BILL_ID_VENDOR';
+  String get NO_RECORDS_MSG => 'NO_RECORDS_MSG';
 }
 
 class _ExpenseWalkThroughMsg {

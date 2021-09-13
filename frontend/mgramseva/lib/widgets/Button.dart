@@ -4,7 +4,7 @@ import 'package:mgramseva/utils/common_styles.dart';
 
 class Button extends StatelessWidget {
   final String label;
-  final Function widgetfunction;
+  final Function()? widgetfunction;
   Button(this.label, this.widgetfunction);
 
   @override
@@ -15,13 +15,12 @@ class Button extends StatelessWidget {
           child: new ElevatedButton(
       style: ElevatedButton.styleFrom(
           minimumSize: Size(double.infinity, 30),
+          primary: widgetfunction == null ? Color.fromRGBO(244, 119, 56, 0.7) : null
           // padding: EdgeInsets.all(15),
       ),
       child: new Text(ApplicationLocalizations.of(context).translate(label),
-          style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500)),
-      onPressed: () {
-          widgetfunction();
-      },
+          style: Theme.of(context).textTheme.button),
+      onPressed: () => widgetfunction != null ? widgetfunction!() : null
     ),
         ));
   }

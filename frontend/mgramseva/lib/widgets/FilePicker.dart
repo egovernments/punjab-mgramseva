@@ -4,11 +4,15 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/notifyers.dart';
+import 'package:path/path.dart' as path;
 
 class FilePickerDemo extends StatefulWidget {
   final Function(List<FileStore>?) callBack;
@@ -23,7 +27,7 @@ class FilePickerDemo extends StatefulWidget {
 
 class _FilePickerDemoState extends State<FilePickerDemo> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<PlatformFile> _selectedFiles = <PlatformFile>[];
+  List<dynamic> _selectedFiles = <dynamic>[];
   List<FileStore> _fileStoreList = <FileStore>[];
   String? _directoryPath;
   String? _extension;
@@ -31,6 +35,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
   bool _multiPick = false;
   FileType _pickingType = FileType.custom;
   TextEditingController _controller = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -52,21 +57,27 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
           ?.files;
 
       if(paths != null){
+        var isNotValidSize = false;
+        for(var path in paths){
+          if (!(await CommonMethods.isValidFileSize(path.size))) isNotValidSize = true;;
+        }
+
+        if(isNotValidSize){
+          Notifiers.getToastMessage(context, i18.common.FILE_SIZE, 'ERROR');
+          return;
+        }
         if(_multiPick){
           _selectedFiles.addAll(paths);
         }else{
           _selectedFiles = paths;
         }
 
-         List<dynamic> files = paths;
+        List<dynamic> files = paths;
         if(!kIsWeb){
           files = paths.map((e) => File(e.path ?? '')).toList();
         }
 
-      var response = await CoreRepository().uploadFiles(files, widget.moduleName ?? APIConstants.API_MODULE_NAME);
-        _fileStoreList.addAll(response);
-        if(_selectedFiles.isNotEmpty)
-      widget.callBack(_fileStoreList);
+        uploadFiles(files);
       }
     } on PlatformException catch (e) {
       print("Unsupported operation" + e.toString());
@@ -77,6 +88,17 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
     setState(() {
       _loadingPath = false;
     });
+  }
+
+  uploadFiles(List<dynamic> files) async {
+    try{
+      var response = await CoreRepository().uploadFiles(files, widget.moduleName ?? APIConstants.API_MODULE_NAME);
+      _fileStoreList.addAll(response);
+      if(_selectedFiles.isNotEmpty)
+        widget.callBack(_fileStoreList);
+    }catch(e){
+      Notifiers.getToastMessage(context, e.toString(), 'ERROR');
+    }
   }
 
   void _clearCachedFiles() {
@@ -137,7 +159,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                           ),
                         )
                         ),
-                    onPressed: () => _openFileExplorer(),
+                    onPressed: () => selectDocumentOrImage(),
                     child: Text(
                       "${ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_FILE)}",
                       style: TextStyle(color: Theme.of(context).primaryColorDark, fontSize: 16),
@@ -154,7 +176,10 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       spacing: 2,
                       children: [
-                        Text(_selectedFiles[index].name),
+                        Text(_selectedFiles[index] is File ? (path.basename(_selectedFiles[index].path)) : _selectedFiles[index].name,
+                        maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         IconButton(
                             padding: EdgeInsets.all(5),
                             onPressed: ()=> onClickOfClear(index), icon: Icon(Icons.cancel))
@@ -198,5 +223,124 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                 ),
               )));
     });
+  }
+
+
+  Future<void> selectDocumentOrImage() async {
+    FocusScope.of(context).unfocus();
+    var list = [
+      {
+        "label" :  i18.common.CAMERA,
+        'icon' : Icons.camera_alt
+      },
+      {
+        "label" :  i18.common.FILE_MANAGER,
+        'icon' : Icons.drive_folder_upload
+      },
+    ];
+
+    if(kIsWeb){
+      _openFileExplorer();
+      return ;
+    }
+
+    callBack(String value){
+      Navigator.pop(context);
+      if(list.first['label'] == value){
+        imagePath(context, selectionMode: 'camera');
+      }else{
+        imagePath(context, selectionMode: 'filePicker');
+      }
+    }
+
+    await showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+        ),
+        builder: (BuildContext context) {
+         return Padding(
+           padding: const EdgeInsets.only(bottom: 25, left: 25, right: 25, top: 10),
+           child: Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             mainAxisSize: MainAxisSize.min,
+             children : [
+               Container(
+                 padding: EdgeInsets.symmetric(vertical: 8),
+                 alignment: Alignment.center,
+                 child: Container(
+                   height: 2,
+                   width: 30,
+                   color: Colors.grey,
+                 ),
+               ),
+               Padding(
+                 padding: const EdgeInsets.only(bottom: 16, top: 5),
+                 child: Text(ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_AN_ACTION), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+               ),
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+               children: list.map((e) => _buildIcon(e['label'] as String,e['icon'] as IconData, callBack)).toList()
+             ),
+           ]
+           ),
+         );
+        });
+  }
+
+
+  Future<void> imagePath(BuildContext context, { required String selectionMode}) async {
+    FocusScope.of(context).unfocus();
+    try {
+      if (selectionMode == 'camera') {
+        final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+        if (pickedFile != null) {
+          String newPath = path.join(path.dirname(pickedFile.path), '${CommonMethods.getRandomName()}${path.extension(pickedFile.path)}');
+          final File? file = await File(pickedFile.path).copy(newPath);
+          if (file != null) {
+            if (!(await CommonMethods.isValidFileSize(await file.length()))){
+              Notifiers.getToastMessage(context, i18.common.FILE_SIZE, 'ERROR');
+              return;
+            };
+            if(_multiPick){
+              _selectedFiles.addAll([file]);
+            }else{
+              _selectedFiles = [file];
+            }
+            uploadFiles(<File>[file]);
+            return;
+          } else {
+            return null;
+          }
+        } else {
+          _openFileExplorer();
+        }
+      } else {
+        _openFileExplorer();
+      }
+    } on Exception catch (e) {
+      Notifiers.getToastMessage(context, e.toString(), 'ERROR');
+    }
+  }
+
+
+  Widget _buildIcon(String label, IconData icon, Function(String) callBack){
+    return Wrap(
+      direction: Axis.vertical,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      alignment: WrapAlignment.center,
+      spacing: 8,
+      children: [
+       IconButton(onPressed: ()=> callBack(label), iconSize: 45, icon: Icon(icon)),
+        Text( ApplicationLocalizations.of(
+            context)
+            .translate(label),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 15
+        ),
+        )
+      ],
+    );
   }
 }
