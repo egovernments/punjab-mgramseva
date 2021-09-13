@@ -220,7 +220,7 @@ public class WsQueryBuilder {
 		}
 		if(!StringUtils.isEmpty(criteria.getPropertyType())) {
 			addClauseIfRequired(preparedStatement, query);
-			query.append(" conn.additionaldetails.propertyType = ? ");
+			query.append(" conn.additionaldetails->>'propertyType' = ? ");
 			preparedStatement.add(criteria.getPropertyType());
 		}
 		if(!StringUtils.isEmpty(criteria.getSearchType())
