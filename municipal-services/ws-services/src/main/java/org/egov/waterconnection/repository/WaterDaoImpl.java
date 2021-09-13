@@ -90,7 +90,7 @@ public class WaterDaoImpl implements WaterDao {
 
 			waterConnectionList = jdbcTemplate.query(query, preparedStatement.toArray(), waterRowMapper);
 			Map<String, Object> counter = new HashMap();
-			if (criteria.getIsPropertyCount()) {
+			if (criteria.getIsPropertyCount()!= null && criteria.getIsPropertyCount()) {
 				List<Object> preparedStmnt = new ArrayList<>();
 				StringBuilder propertyQuery = new StringBuilder(wsQueryBuilder.PROPERTY_COUNT);
 				propertyQuery = wsQueryBuilder.applyFilters(propertyQuery, preparedStmnt, criteria);
