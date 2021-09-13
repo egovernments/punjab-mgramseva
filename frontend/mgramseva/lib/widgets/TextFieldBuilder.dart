@@ -129,7 +129,7 @@ class _BuildTextField extends State<BuildTextField> {
                     child: Text(
                       widget.prefixText,
                       style: TextStyle(
-                          fontSize: 15,
+                          fontSize: kIsWeb ? 15 : 16,
                           fontWeight: FontWeight.w400,
                           color:
                               widget.isDisabled != null && widget.isDisabled!
