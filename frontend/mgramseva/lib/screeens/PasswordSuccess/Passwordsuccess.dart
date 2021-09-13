@@ -50,18 +50,12 @@ class _PasswordSuccessState extends State<PasswordSuccess> {
                       .translate(i18.password.CHANGE_PASSWORD_SUCCESS_SUBTEXT),
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
             )),
-        SizedBox(
-          height: 10,
-        ),
         Padding(
             padding: EdgeInsets.only(top: 15, bottom: 15, left: 8, right: 8),
             child: Button(
                 i18.common.CONTINUE_TO_LOGIN,
                 () => Navigator.of(context).pushNamedAndRemoveUntil(
                     Routes.LOGIN, (Route<dynamic> route) => false))),
-        SizedBox(
-          height: 10,
-        ),
       ],
     )));
   }
