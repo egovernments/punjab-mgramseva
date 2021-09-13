@@ -53,6 +53,12 @@ public class MgramasevaAdapterWrapperUtil {
 			break;
 
 		}
+		
+		case "PAYMENT": {
+			eventObj.setEventType(EventTypeEnum.PAYMENT);
+			break;
+
+		}
 
 		default:
 			break;
