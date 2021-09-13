@@ -121,24 +121,30 @@ class _BuildTextField extends State<BuildTextField> {
           fillColor: widget.isDisabled != null && widget.isDisabled!
               ? Colors.grey
               : Colors.white,
+          prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+          prefixStyle: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              color:
+              widget.isDisabled != null && widget.isDisabled!
+                  ? Colors.grey
+                  : Theme.of(context).primaryColorDark),
           prefixIcon: widget.prefixIcon ??
               (widget.prefixText == ''
                   ? null
                   : Padding(
-                      padding: EdgeInsets.only(
-                          left: 15,
-                          top: kIsWeb ? 12 : 14,
-                          bottom: kIsWeb ? 12 : 14),
-                      child: Text(
-                        widget.prefixText,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color:
-                                widget.isDisabled != null && widget.isDisabled!
-                                    ? Colors.grey
-                                    : Theme.of(context).primaryColorDark),
-                      ))),
+                    padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10, right: 0),
+                    child: Text(
+                      widget.prefixText,
+                      style: TextStyle(
+                          fontSize: kIsWeb ? 15 : 16,
+                          fontWeight: FontWeight.w400,
+                          color:
+                              widget.isDisabled != null && widget.isDisabled!
+                                  ? Colors.grey
+                                  : Theme.of(context).primaryColorDark),
+                    ),
+                  )),
         ),
         onChanged: widget.onChange);
 // Label Text
