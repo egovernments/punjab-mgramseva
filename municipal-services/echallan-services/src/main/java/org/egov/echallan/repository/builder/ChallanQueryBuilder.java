@@ -69,7 +69,7 @@ public class ChallanQueryBuilder {
 	  
 	  public static final String ACTUALCOLLECTION =" select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id where pyd.businessservice='WS' ";
 
-	  public static final String bill_count = " select count(*) from eg_echallan as challan ";
+	  public static final String bill_count = " select count(*) from eg_echallan as challan INNER JOIN eg_vendor vendor on vendor.id = challan.vendor ";
 
 
 
