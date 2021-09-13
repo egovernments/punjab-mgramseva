@@ -162,7 +162,7 @@ class _SearchExpenseState extends State<SearchExpense> {
         switch (key) {
           case 'expenseType':
             criteria +=
-                '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)} $expenseType \t';
+                '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)} ${ApplicationLocalizations.of(context).translate(expenseType ?? '')} \t';
             break;
           case 'challanNo':
             criteria +=
