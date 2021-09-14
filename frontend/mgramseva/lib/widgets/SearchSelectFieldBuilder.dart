@@ -50,7 +50,8 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
       setState(() {
         isinit = true;
         Options = widget.options
-            .where((element) => element.value
+            .where((element) => (element.child as Text)
+                .data
                 .toString()
                 .toLowerCase()
                 .contains(val.toString().toLowerCase()))
@@ -78,9 +79,11 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
               child: Material(
                 elevation: 4.0,
                 child: Container(
-                  height: widget.options.length * 50 < 200
-                      ? widget.options.length * 50
-                      : 200,
+                  height: Options.length == 0 && isinit == false
+                      ? (widget.options.length * 50 < 200
+                          ? widget.options.length * 50
+                          : 200)
+                      : (Options.length * 50 < 200 ? Options.length * 50 : 200),
                   child: ListView(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
