@@ -91,6 +91,11 @@ class ConsumerProvider with ChangeNotifier {
     isEdit = true;
     waterconnection = data;
     waterconnection.getText();
+    selectedcycle = DateFormats.timeStampToDate(
+                waterconnection.meterInstallationDate,
+                format: 'yyyy-MM-dd')
+            .toString() +
+        " 00:00:00.000";
 
     List<Demand>? demand = await ConsumerRepository().getDemandDetails({
       "consumerCode": waterconnection.connectionNo,
@@ -375,6 +380,7 @@ class ConsumerProvider with ChangeNotifier {
   onChangeBillingcycle(val) {
     selectedcycle = val;
     var date = val;
+    waterconnection.BillingCycleCtrl.text = selectedcycle;
     waterconnection.meterInstallationDateCtrl.text = selectedcycle;
   }
 
