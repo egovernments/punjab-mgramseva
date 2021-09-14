@@ -4,12 +4,14 @@ import 'package:mgramseva/model/common/demand.dart';
 import 'package:mgramseva/model/connection/property.dart';
 import 'package:mgramseva/model/connection/tenant_boundary.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
+import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/connection_type.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
+import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/walkthrough.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -85,6 +87,26 @@ class ConsumerProvider with ChangeNotifier {
     else
       waterconnection.status = 'Active';
     notifyListeners();
+  }
+
+  Future<void> getWaterConnection(id) async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+      WaterConnections waterconnections =
+          await SearchConnectionRepository().getconnection({
+        "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+        "connectionNumber": id.split('_').join('/')
+      });
+      if (waterconnections.waterConnection!.isNotEmpty) {
+        setWaterConnection(waterconnections.waterConnection!.first);
+        getProperty({
+          "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+          "propertyIds": waterconnections.waterConnection!.first.propertyId
+        });
+      }
+    } catch (e) {}
   }
 
   Future<void> setWaterConnection(data) async {
@@ -454,7 +476,7 @@ class ConsumerProvider with ChangeNotifier {
         duration: new Duration(milliseconds: 100));
   }
 
-  callNotifyer(){
+  callNotifyer() {
     notifyListeners();
   }
 }

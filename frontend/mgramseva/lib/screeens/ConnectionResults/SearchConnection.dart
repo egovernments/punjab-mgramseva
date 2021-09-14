@@ -19,7 +19,7 @@ import 'package:mgramseva/widgets/footer.dart';
 import 'package:provider/provider.dart';
 
 class SearchConsumerConnection extends StatefulWidget {
-  final Map arguments;
+  final Map? arguments;
   SearchConsumerConnection(this.arguments);
   State<StatefulWidget> createState() {
     return _SearchConsumerConnectionState();
@@ -31,10 +31,12 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
 
   @override
   void initState() {
-    var searchConnectionProvider =
     Provider.of<SearchConnectionProvider>(context, listen: false)
-    ..searchconnection = SearchConnection();
+      ..searchconnection = SearchConnection();
     super.initState();
+    if (widget.arguments == null) {
+      print("null value printing");
+    }
   }
 
   @override

@@ -104,23 +104,55 @@ class router {
         return MaterialPageRoute(
             builder: (_) => Home(), settings: RouteSettings(name: Routes.HOME));
       case Routes.HOUSEHOLD:
+        var queryString = '';
+        Map<String, dynamic>? filteredQuery;
+        if (settings.arguments != null) {
+          filteredQuery = {};
+          (settings.arguments as Map).forEach((key, value) {
+            filteredQuery![key] = value;
+          });
+        }
+        queryString = Uri(queryParameters: filteredQuery ?? query).query;
         return MaterialPageRoute(
-            builder: (_) => SearchConsumerConnection(settings.arguments as Map),
-            settings: RouteSettings(name: Routes.HOUSEHOLD));
+            builder: (_) =>
+                SearchConsumerConnection((settings.arguments ?? query) as Map),
+            settings: RouteSettings(name: '${Routes.HOUSEHOLD}?$queryString'));
       case Routes.DEFAULT_PASSWORD_UPDATE:
         return MaterialPageRoute(
             builder: (_) => PasswordSuccess(),
             settings: RouteSettings(name: Routes.DEFAULT_PASSWORD_UPDATE));
 
       case Routes.HOUSEHOLDRECEIPTS:
+        var queryString = '';
+        Map<String, dynamic>? filteredQuery;
+        if (settings.arguments != null) {
+          filteredQuery = {};
+          (settings.arguments as Map).forEach((key, value) {
+            filteredQuery![key] = value;
+          });
+        }
+        queryString = Uri(queryParameters: filteredQuery ?? query).query;
         return MaterialPageRoute(
-            builder: (_) => SearchConsumerConnection(settings.arguments as Map),
-            settings: RouteSettings(name: Routes.HOUSEHOLDRECEIPTS));
+            builder: (_) =>
+                SearchConsumerConnection((settings.arguments ?? query) as Map),
+            settings: RouteSettings(
+                name: '${Routes.HOUSEHOLDRECEIPTS}?$queryString'));
 
       case Routes.CONSUMER_SEARCH_UPDATE:
+        var queryString = '';
+        Map<String, dynamic>? filteredQuery;
+        if (settings.arguments != null) {
+          filteredQuery = {};
+          (settings.arguments as Map).forEach((key, value) {
+            filteredQuery![key] = value;
+          });
+        }
+        queryString = Uri(queryParameters: filteredQuery ?? query).query;
         return MaterialPageRoute(
-            builder: (_) => SearchConsumerConnection(settings.arguments as Map),
-            settings: RouteSettings(name: Routes.CONSUMER_SEARCH_UPDATE));
+            builder: (_) =>
+                SearchConsumerConnection((settings.arguments ?? query) as Map),
+            settings: RouteSettings(
+                name: '${Routes.CONSUMER_SEARCH_UPDATE}?$queryString'));
 
       case Routes.EDIT_PROFILE:
         return MaterialPageRoute(
@@ -146,7 +178,9 @@ class router {
         if (settings.arguments != null) {
           id = ((settings.arguments as Map)['waterconnections']
                   as WaterConnection)
-              .connectionNo;
+              .connectionNo!
+              .split('/')
+              .join("_");
         } else {
           if (queryValidator(Routes.CONSUMER_UPDATE, query)) {
             id = query['applicationNo'];
@@ -225,9 +259,8 @@ class router {
       case Routes.SEARCH_CONSUMER_RESULT:
         if (settings.arguments == null) {
           return MaterialPageRoute(
-              builder: (_) =>
-                  SearchConsumerConnection(settings.arguments as Map),
-              settings: RouteSettings(name: Routes.CONSUMER_SEARCH));
+              builder: (_) => Home(),
+              settings: RouteSettings(name: Routes.HOME));
         }
         return MaterialPageRoute(
             builder: (_) => SearchConsumerResult(settings.arguments as Map),
@@ -356,6 +389,7 @@ class router {
         return false;
 
       case Routes.BILL_GENERATE:
+      case Routes.CONSUMER_UPDATE:
         if (query.keys.contains('applicationNo')) return true;
         return false;
       case Routes.POST_PAYMENT_FEED_BACK:
