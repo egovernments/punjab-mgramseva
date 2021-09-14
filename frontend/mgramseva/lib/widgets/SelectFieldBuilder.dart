@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
-import 'package:mgramseva/widgets/sample.dart';
+import 'package:mgramseva/widgets/SearchSelectFieldBuilder.dart';
 
 class SelectFieldBuilder extends StatelessWidget {
   final String labelText;
@@ -54,7 +54,8 @@ class SelectFieldBuilder extends StatelessWidget {
                     : Colors.grey)),
       ),
     ]);
-    //DropDown
+
+    // //DropDown
     // Widget dropDown = DropdownButtonFormField(
     //   decoration: InputDecoration(
     //     prefixText: prefixText,
@@ -93,8 +94,8 @@ class SelectFieldBuilder extends StatelessWidget {
                 padding: EdgeInsets.only(top: 18, bottom: 3),
                 child: Column(
                   children: [
-                    CountriesField(
-                        options, controller, widget, value, isEnabled),
+                    SearchSelectField(labelText, options, controller, widget,
+                        value, isEnabled, isRequired, requiredMessage),
                     CommonWidgets().buildHint(
                       hint,
                       context,
@@ -111,7 +112,8 @@ class SelectFieldBuilder extends StatelessWidget {
                 padding: EdgeInsets.only(top: 18, bottom: 3),
                 child: new Align(
                     alignment: Alignment.centerLeft, child: textLabelwidget)),
-            CountriesField(options, controller, widget, value, isEnabled),
+            SearchSelectField(labelText, options, controller, widget, value,
+                isEnabled, isRequired, requiredMessage),
             CommonWidgets().buildHint(hint, context)
           ]),
         );

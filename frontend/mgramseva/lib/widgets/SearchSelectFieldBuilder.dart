@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
-class CountriesField extends StatefulWidget {
+class SearchSelectField extends StatefulWidget {
+  final String labelText;
   final List<DropdownMenuItem<Object>> options;
   final dynamic value;
   final Function(dynamic) widget;
   final bool? isEnabled;
-
+  final bool isRequired;
+  final String? requiredMessage;
   final TextEditingController? controller;
-  CountriesField(
-      this.options, this.controller, this.widget, this.value, this.isEnabled);
+  SearchSelectField(this.labelText, this.options, this.controller, this.widget,
+      this.value, this.isEnabled, this.isRequired, this.requiredMessage);
   @override
-  _CountriesFieldState createState() => _CountriesFieldState();
+  _SearchSelectFieldState createState() => _SearchSelectFieldState();
 }
 
-class _CountriesFieldState extends State<CountriesField> {
+class _SearchSelectFieldState extends State<SearchSelectField> {
   final FocusNode _focusNode = FocusNode();
+  bool isinit = false;
   // ignore: non_constant_identifier_names
   List<DropdownMenuItem<Object>> Options = [];
   late OverlayEntry _overlayEntry;
@@ -45,6 +48,7 @@ class _CountriesFieldState extends State<CountriesField> {
   filerobjects(val) {
     if (val != "") {
       setState(() {
+        isinit = true;
         Options = widget.options
             .where((element) => element.value
                 .toString()
@@ -66,19 +70,24 @@ class _CountriesFieldState extends State<CountriesField> {
 
     return OverlayEntry(
         builder: (context) => Positioned(
-              width: size.width,
-              child: CompositedTransformFollower(
-                link: this._layerLink,
-                showWhenUnlinked: false,
-                offset: Offset(0.0, size.height + 5.0),
-                child: Material(
-                  elevation: 4.0,
+            width: size.width,
+            child: CompositedTransformFollower(
+              link: this._layerLink,
+              showWhenUnlinked: true,
+              offset: Offset(0.0, size.height + 5.0),
+              child: Material(
+                elevation: 4.0,
+                child: Container(
+                  height: widget.options.length * 50 < 200
+                      ? widget.options.length * 50
+                      : 200,
                   child: ListView(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     children: <Widget>[
-                      for (var item
-                          in Options.length == 0 ? widget.options : Options)
+                      for (var item in Options.length == 0 && isinit == false
+                          ? widget.options
+                          : Options)
                         Ink(
                             color: Colors.white,
                             child: ListTile(
@@ -94,7 +103,7 @@ class _CountriesFieldState extends State<CountriesField> {
                   ),
                 ),
               ),
-            ));
+            )));
   }
 
   @override
@@ -111,6 +120,22 @@ class _CountriesFieldState extends State<CountriesField> {
         controller: widget.controller,
         onChanged: (value) => filerobjects(value),
         focusNode: this._focusNode,
+        validator: (value) {
+          if (widget.options
+              .where((element) =>
+                  element.value.toString().toLowerCase() ==
+                  (value.toString().toLowerCase()))
+              .toList()
+              .isEmpty) {
+            return ApplicationLocalizations.of(context).translate(
+                widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
+          }
+          if (value!.trim().isEmpty && widget.isRequired) {
+            return ApplicationLocalizations.of(context).translate(
+                widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
+          }
+          return null;
+        },
         decoration: InputDecoration(
           suffixIcon: Icon(Icons.arrow_drop_down),
           errorMaxLines: 2,
