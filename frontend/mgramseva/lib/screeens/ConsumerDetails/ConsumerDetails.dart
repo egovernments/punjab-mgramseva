@@ -283,34 +283,38 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             Consumer<ConsumerProvider>(
                               builder: (_, consumerProvider, child) =>
                                   SelectFieldBuilder(
-                                i18.consumer.PROPERTY_TYPE,
-                                property.propertyType,
-                                '',
-                                '',
-                                consumerProvider.onChangeOfPropertyType,
-                                consumerProvider.getPropertTypeList(),
-                                true,
-                                contextkey: consumerProvider
-                                    .consmerWalkthrougList[6].key,
-                              ),
+                                      i18.consumer.PROPERTY_TYPE,
+                                      property.propertyType,
+                                      '',
+                                      '',
+                                      consumerProvider.onChangeOfPropertyType,
+                                      consumerProvider.getPropertTypeList(),
+                                      true,
+                                      contextkey: consumerProvider
+                                          .consmerWalkthrougList[6].key,
+                                      controller:
+                                          property.address.propertyCtrl),
                             ),
                             //Consumer Service Type Field
                             Consumer<ConsumerProvider>(
                                 builder: (_, consumerProvider, child) => Column(
                                       children: [
                                         SelectFieldBuilder(
-                                            i18.consumer.SERVICE_TYPE,
-                                            consumerProvider
-                                                .waterconnection.connectionType,
-                                            '',
-                                            '',
-                                            consumerProvider
-                                                .onChangeOfConnectionType,
-                                            consumerProvider
-                                                .getConnectionTypeList(),
-                                            true,
-                                            contextkey: consumerProvider
-                                                .consmerWalkthrougList[7].key),
+                                          i18.consumer.SERVICE_TYPE,
+                                          consumerProvider
+                                              .waterconnection.connectionType,
+                                          '',
+                                          '',
+                                          consumerProvider
+                                              .onChangeOfConnectionType,
+                                          consumerProvider
+                                              .getConnectionTypeList(),
+                                          true,
+                                          contextkey: consumerProvider
+                                              .consmerWalkthrougList[7].key,
+                                          controller: consumerProvider
+                                              .waterconnection.ServiceTypeCtrl,
+                                        ),
 
                                         //Consumer Service Type Field),
                                         consumerProvider.waterconnection
@@ -381,8 +385,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                     .connectionType !=
                                                 'Non_Metered'
                                             ? Container()
-                                            : Consumer<
-                                                    ConsumerProvider>(
+                                            : Consumer<ConsumerProvider>(
                                                 builder: (_, consumerProvider,
                                                         child) =>
                                                     consumerProvider.isEdit ==
@@ -401,7 +404,11 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                                 .onChangeBillingcycle,
                                                             consumerProvider
                                                                 .getBillingCycle(),
-                                                            true)
+                                                            true,
+                                                            controller: consumerProvider
+                                                                .waterconnection
+                                                                .BillingCycleCtrl,
+                                                          )
                                                         : Text("")),
                                       ],
                                     )),

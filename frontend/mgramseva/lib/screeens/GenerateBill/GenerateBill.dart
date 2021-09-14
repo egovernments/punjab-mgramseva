@@ -63,23 +63,23 @@ class _GenerateBillState extends State<GenerateBill> {
           Container(
               width: MediaQuery.of(context).size.width,
               child: Card(
-                child: Padding(
-                padding: EdgeInsets.only(bottom: 20),
-                  child: Consumer<BillGenerationProvider>(
-                      builder: (_, billgenerationprovider, child) => Form(
-                          key: billgenerationprovider.formKey,
-                          autovalidateMode:
-                              billgenerationprovider.autoValidation
-                                  ? AutovalidateMode.always
-                                  : AutovalidateMode.disabled,
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                LabelText(
-                                    '${widget.id == null ? i18.demandGenerate.SERVICE_DETAILS_HEADER : i18.demandGenerate.GENERATE_BILL_HEADER}'),
-                                Consumer<BillGenerationProvider>(
-                                    builder:
-                                        (_, billgenerationprovider, child) =>
+                  child: Padding(
+                      padding: EdgeInsets.only(bottom: 20),
+                      child: Consumer<BillGenerationProvider>(
+                          builder: (_, billgenerationprovider, child) => Form(
+                              key: billgenerationprovider.formKey,
+                              autovalidateMode:
+                                  billgenerationprovider.autoValidation
+                                      ? AutovalidateMode.always
+                                      : AutovalidateMode.disabled,
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    LabelText(
+                                        '${widget.id == null ? i18.demandGenerate.SERVICE_DETAILS_HEADER : i18.demandGenerate.GENERATE_BILL_HEADER}'),
+                                    Consumer<BillGenerationProvider>(
+                                        builder: (_, billgenerationprovider,
+                                                child) =>
                                             SelectFieldBuilder(
                                               i18.demandGenerate
                                                   .SERVICE_CATEGORY_LABEL,
@@ -95,162 +95,197 @@ class _GenerateBillState extends State<GenerateBill> {
                                               true,
                                               readOnly: true,
                                               isEnabled: false,
+                                              controller: billgenerationprovider
+                                                  .billGenerateDetails
+                                                  .serviceCategoryCtrl,
                                             )),
-                                Consumer<BillGenerationProvider>(
-                                    builder: (_, billgenerationprovider,
-                                            child) =>
-                                        SelectFieldBuilder(
-                                          i18.demandGenerate.SERVICE_TYPE_LABEL,
-                                          billgenerationprovider
-                                              .billGenerateDetails.serviceType,
-                                          '',
-                                          '',
-                                          billgenerationprovider
-                                              .onChangeOfServiceType,
-                                          billgenerationprovider
-                                              .getConnectionTypeList(),
-                                          true,
-                                          readOnly: true,
-                                          isEnabled: false,
-                                        )),
-                                billgenerationprovider
-                                            .billGenerateDetails.serviceType !=
-                                        "Metered"
-                                    ? Container()
-                                    : Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        child: Column(children: [
-                                          Consumer<BillGenerationProvider>(
-                                              builder: (_,
-                                                      billgenerationprovider,
-                                                      child) =>
-                                                  SelectFieldBuilder(
-                                                    i18.demandGenerate
-                                                        .PROPERTY_TYPE_LABEL,
+                                    Consumer<BillGenerationProvider>(
+                                        builder: (_,
+                                                billgenerationprovider, child) =>
+                                            SelectFieldBuilder(
+                                                i18.demandGenerate
+                                                    .SERVICE_TYPE_LABEL,
+                                                billgenerationprovider
+                                                    .billGenerateDetails
+                                                    .serviceType,
+                                                '',
+                                                '',
+                                                billgenerationprovider
+                                                    .onChangeOfServiceType,
+                                                billgenerationprovider
+                                                    .getConnectionTypeList(),
+                                                true,
+                                                readOnly: true,
+                                                isEnabled: false,
+                                                controller:
                                                     billgenerationprovider
                                                         .billGenerateDetails
-                                                        .propertyType,
-                                                    '',
-                                                    '',
-                                                    billgenerationprovider
-                                                        .onChangeOfProperty,
-                                                    billgenerationprovider
-                                                        .getPropertyTypeList(),
-                                                    true,
-                                                    readOnly: true,
-                                                    isEnabled: false,
-                                                  )),
-                                          Consumer<BillGenerationProvider>(
-                                              builder: (_, billgenerationprovider,
-                                                      child) =>
-                                                  BuildTextField(
-                                                      i18.demandGenerate
-                                                          .METER_NUMBER_LABEL,
+                                                        .serviceTypeCtrl)),
+                                    billgenerationprovider.billGenerateDetails
+                                                .serviceType !=
+                                            "Metered"
+                                        ? Container()
+                                        : Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Column(children: [
+                                              Consumer<BillGenerationProvider>(
+                                                  builder: (_,
+                                                          billgenerationprovider,
+                                                          child) =>
+                                                      SelectFieldBuilder(
+                                                          i18.demandGenerate
+                                                              .PROPERTY_TYPE_LABEL,
+                                                          billgenerationprovider
+                                                              .billGenerateDetails
+                                                              .propertyType,
+                                                          '',
+                                                          '',
+                                                          billgenerationprovider
+                                                              .onChangeOfProperty,
+                                                          billgenerationprovider
+                                                              .getPropertyTypeList(),
+                                                          true,
+                                                          readOnly: true,
+                                                          isEnabled: false,
+                                                          controller: billgenerationprovider
+                                                              .billGenerateDetails
+                                                              .propertyTypeCtrl)),
+                                              Consumer<BillGenerationProvider>(
+                                                  builder: (_,
+                                                          billgenerationprovider,
+                                                          child) =>
+                                                      BuildTextField(
+                                                        i18.demandGenerate
+                                                            .METER_NUMBER_LABEL,
+                                                        billgenerationprovider
+                                                            .billGenerateDetails
+                                                            .meterNumberCtrl,
+                                                        isRequired: true,
+                                                        validator: Validators
+                                                            .meterNumberValidator,
+                                                        textInputType:
+                                                            TextInputType
+                                                                .number,
+                                                        onChange: (value) =>
+                                                            saveInput(value),
+                                                        isDisabled: true,
+                                                        readOnly:
+                                                            widget.id == null
+                                                                ? false
+                                                                : true,
+                                                      )),
+                                              MeterReading(
+                                                i18.demandGenerate
+                                                    .PREV_METER_READING_LABEL,
+                                                billgenerationprovider
+                                                    .billGenerateDetails
+                                                    .om_1Ctrl,
+                                                billgenerationprovider
+                                                    .billGenerateDetails
+                                                    .om_2Ctrl,
+                                                billgenerationprovider
+                                                    .billGenerateDetails
+                                                    .om_3Ctrl,
+                                                billgenerationprovider
+                                                    .billGenerateDetails
+                                                    .om_4Ctrl,
+                                                billgenerationprovider
+                                                    .billGenerateDetails
+                                                    .om_5Ctrl,
+                                                isRequired: true,
+                                              ),
+                                              MeterReading(
+                                                i18.demandGenerate
+                                                    .NEW_METER_READING_LABEL,
+                                                billgenerationprovider
+                                                    .billGenerateDetails
+                                                    .nm_1Ctrl,
+                                                billgenerationprovider
+                                                    .billGenerateDetails
+                                                    .nm_2Ctrl,
+                                                billgenerationprovider
+                                                    .billGenerateDetails
+                                                    .nm_3Ctrl,
+                                                billgenerationprovider
+                                                    .billGenerateDetails
+                                                    .nm_4Ctrl,
+                                                billgenerationprovider
+                                                    .billGenerateDetails
+                                                    .nm_5Ctrl,
+                                                isRequired: true,
+                                              ),
+                                              BasicDateField(
+                                                  i18.demandGenerate
+                                                      .METER_READING_DATE,
+                                                  true,
+                                                  billGenerationDetails
+                                                      .meterReadingDateCtrl,
+                                                  lastDate: DateTime.now(),
+                                                  onChangeOfDate:
                                                       billgenerationprovider
-                                                          .billGenerateDetails
-                                                          .meterNumberCtrl,
-                                                      isRequired: true,
-                                                      validator: Validators
-                                                          .meterNumberValidator,
-                                                      textInputType:
-                                                          TextInputType.number,
-                                                      onChange: (value) =>
-                                                          saveInput(value),
-                                                      isDisabled: true,
-                                                      readOnly:
-                                                          widget.id == null
-                                                              ? false
-                                                              : true)),
-                                          MeterReading(
-                                            i18.demandGenerate
-                                                .PREV_METER_READING_LABEL,
-                                            billgenerationprovider
-                                                .billGenerateDetails.om_1Ctrl,
-                                            billgenerationprovider
-                                                .billGenerateDetails.om_2Ctrl,
-                                            billgenerationprovider
-                                                .billGenerateDetails.om_3Ctrl,
-                                            billgenerationprovider
-                                                .billGenerateDetails.om_4Ctrl,
-                                            billgenerationprovider
-                                                .billGenerateDetails.om_5Ctrl,
-                                            isRequired: true,
-                                          ),
-                                          MeterReading(
-                                            i18.demandGenerate
-                                                .NEW_METER_READING_LABEL,
-                                            billgenerationprovider
-                                                .billGenerateDetails.nm_1Ctrl,
-                                            billgenerationprovider
-                                                .billGenerateDetails.nm_2Ctrl,
-                                            billgenerationprovider
-                                                .billGenerateDetails.nm_3Ctrl,
-                                            billgenerationprovider
-                                                .billGenerateDetails.nm_4Ctrl,
-                                            billgenerationprovider
-                                                .billGenerateDetails.nm_5Ctrl,
-                                            isRequired: true,
-                                          ),
-                                          BasicDateField(
-                                              i18.demandGenerate
-                                                  .METER_READING_DATE,
-                                              true,
-                                              billGenerationDetails
-                                                  .meterReadingDateCtrl,
-                                              lastDate: DateTime.now(),
-                                              onChangeOfDate:
-                                                  billgenerationprovider
-                                                      .onChangeOfDate),
-                                        ])),
-                                billgenerationprovider
-                                            .billGenerateDetails.serviceType !=
-                                        "Non_Metered"
-                                    ? Container()
-                                    : Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Consumer<BillGenerationProvider>(
-                                                  builder: (_,
-                                                          billgenerationprovider,
-                                                          child) =>
-                                                      SelectFieldBuilder(
-                                                          i18.demandGenerate
-                                                              .BILLING_YEAR_LABEL,
-                                                          billgenerationprovider
-                                                              .billGenerateDetails
-                                                              .billYear,
-                                                          '',
-                                                          '',
-                                                          billgenerationprovider
-                                                              .onChangeOfBillYear,
-                                                          billgenerationprovider
-                                                              .getFinancialYearList(),
-                                                          true)),
-                                              Consumer<BillGenerationProvider>(
-                                                  builder: (_,
-                                                          billgenerationprovider,
-                                                          child) =>
-                                                      SelectFieldBuilder(
-                                                          i18.demandGenerate
-                                                              .BILLING_CYCLE_LABEL,
-                                                          billgenerationprovider
-                                                              .billGenerateDetails
-                                                              .billCycle,
-                                                          '',
-                                                          '',
-                                                          billgenerationprovider
-                                                              .onChangeOfBillCycle,
-                                                          billgenerationprovider
-                                                              .getBillingCycle(),
-                                                          true)),
+                                                          .onChangeOfDate),
                                             ])),
-                              ])))))
-          )])));
+                                    billgenerationprovider.billGenerateDetails
+                                                .serviceType !=
+                                            "Non_Metered"
+                                        ? Container()
+                                        : Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Consumer<
+                                                          BillGenerationProvider>(
+                                                      builder: (_,
+                                                              billgenerationprovider,
+                                                              child) =>
+                                                          SelectFieldBuilder(
+                                                            i18.demandGenerate
+                                                                .BILLING_YEAR_LABEL,
+                                                            billgenerationprovider
+                                                                .billGenerateDetails
+                                                                .billYear,
+                                                            '',
+                                                            '',
+                                                            billgenerationprovider
+                                                                .onChangeOfBillYear,
+                                                            billgenerationprovider
+                                                                .getFinancialYearList(),
+                                                            true,
+                                                            controller: billgenerationprovider
+                                                                .billGenerateDetails
+                                                                .billingyearCtrl,
+                                                          )),
+                                                  Consumer<
+                                                          BillGenerationProvider>(
+                                                      builder: (_,
+                                                              billgenerationprovider,
+                                                              child) =>
+                                                          SelectFieldBuilder(
+                                                            i18.demandGenerate
+                                                                .BILLING_CYCLE_LABEL,
+                                                            billgenerationprovider
+                                                                .billGenerateDetails
+                                                                .billCycle,
+                                                            '',
+                                                            '',
+                                                            billgenerationprovider
+                                                                .onChangeOfBillCycle,
+                                                            billgenerationprovider
+                                                                .getBillingCycle(),
+                                                            true,
+                                                            controller: billgenerationprovider
+                                                                .billGenerateDetails
+                                                                .billingcycleCtrl,
+                                                          )),
+                                                ])),
+                                  ]))))))
+        ])));
   }
 
   @override

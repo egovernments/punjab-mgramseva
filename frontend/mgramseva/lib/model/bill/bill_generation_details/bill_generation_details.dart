@@ -69,19 +69,35 @@ class BillGenerationDetails {
   var nm_5Ctrl = new TextEditingController();
   @JsonKey(ignore: true)
   var meterReadingDateCtrl = TextEditingController();
+  @JsonKey(ignore: true)
+  var serviceCategoryCtrl = TextEditingController();
+  @JsonKey(ignore: true)
+  var serviceTypeCtrl = TextEditingController();
+  @JsonKey(ignore: true)
+  var propertyTypeCtrl = TextEditingController();
+  @JsonKey(ignore: true)
+  var billingyearCtrl = TextEditingController();
+  @JsonKey(ignore: true)
+  var billingcycleCtrl = TextEditingController();
 
   BillGenerationDetails();
 
-  getText(){
-    lastReading = int.parse(om_1Ctrl.text+om_2Ctrl.text+om_3Ctrl.text+om_4Ctrl.text+om_5Ctrl.text);
-    currentReading = int.parse(nm_1Ctrl.text+nm_2Ctrl.text+nm_3Ctrl.text+nm_4Ctrl.text+nm_5Ctrl.text);
-    meterReadingDate =
-        DateFormats.dateToTimeStamp(meterReadingDateCtrl.text);
+  getText() {
+    lastReading = int.parse(om_1Ctrl.text +
+        om_2Ctrl.text +
+        om_3Ctrl.text +
+        om_4Ctrl.text +
+        om_5Ctrl.text);
+    currentReading = int.parse(nm_1Ctrl.text +
+        nm_2Ctrl.text +
+        nm_3Ctrl.text +
+        nm_4Ctrl.text +
+        nm_5Ctrl.text);
+    meterReadingDate = DateFormats.dateToTimeStamp(meterReadingDateCtrl.text);
   }
 
   factory BillGenerationDetails.fromJson(Map<String, dynamic> json) =>
       _$BillGenerationDetailsFromJson(json);
 
   Map<String, dynamic> toJson() => _$BillGenerationDetailsToJson(this);
-
 }
