@@ -46,7 +46,6 @@ class ExpenseDetails extends StatefulWidget {
 }
 
 class _ExpenseDetailsState extends State<ExpenseDetails> {
-  var phoneNumberAutoValidation = false;
   FocusNode _numberFocus = new FocusNode();
 
   @override
@@ -58,6 +57,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
 
   afterViewBuild() {
     Provider.of<ExpensesDetailsProvider>(context, listen: false)
+      ..phoneNumberAutoValidation = false
       ..formKey = GlobalKey<FormState>()
       ..suggestionsBoxController = SuggestionsBoxController()
       ..expenditureDetails = ExpensesDetailsModel()
@@ -78,9 +78,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
 
   void _onFocusChange() {
     if (!_numberFocus.hasFocus) {
-      setState(() {
-        phoneNumberAutoValidation = true;
-      });
+      Provider.of<ExpensesDetailsProvider>(context, listen: false)
+        ..phoneNumberAutoValidation = true
+      ..callNotifyer();
     }
   }
 
@@ -246,7 +246,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 textInputType: TextInputType.number,
                                 validator: Validators.mobileNumberValidator,
                                 focusNode: _numberFocus,
-                                autoValidation: phoneNumberAutoValidation
+                                autoValidation: expensesDetailsProvider.phoneNumberAutoValidation
                                     ? AutovalidateMode.always
                                     : AutovalidateMode.disabled,
                                 maxLength: 10,
@@ -254,6 +254,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   FilteringTextInputFormatter.allow(
                                       RegExp("[0-9]"))
                                 ],
+                                onChange: expensesDetailsProvider.onChangeOfMobileNumber,
                               ),
                             BuildTextField(
                               '${i18.expense.AMOUNT}',

@@ -118,7 +118,7 @@ class DashBoardProvider with ChangeNotifier {
     }
 
     if(selectedTab != 'all'){
-    query['isBillPaid'] = selectedTab == 'ACTIVE' ? 'false' : 'true';
+    query['isBillPaid'] = ((selectedTab == 'ACTIVE') ? 'false' : 'true');
     };
 
     query
@@ -135,8 +135,8 @@ class DashBoardProvider with ChangeNotifier {
       if (response != null) {
         if(selectedTab == 'all'){
         expenditureCountHolder['all'] = response.totalCount ?? 0;
-        expenditureCountHolder['active'] = int.parse(response.billDataCount?.notPaidCount ?? '0');
-        expenditureCountHolder['pending'] = int.parse(response.billDataCount?.paidCount ?? '0');
+        expenditureCountHolder['pending'] = int.parse(response.billDataCount?.notPaidCount ?? '0');
+        expenditureCountHolder['paid'] = int.parse(response.billDataCount?.paidCount ?? '0');
          }
         if (expenseDashboardDetails == null) {
           expenseDashboardDetails = response;
@@ -357,7 +357,7 @@ class DashBoardProvider with ChangeNotifier {
         return expenditureCountHolder['all'] ?? 0;
       case 1:
         return
-            expenditureCountHolder['active'] ?? 0;
+            expenditureCountHolder['paid'] ?? 0;
       case 2:
         return
           expenditureCountHolder['pending'] ?? 0;

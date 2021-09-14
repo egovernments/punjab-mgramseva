@@ -43,6 +43,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   LanguageList? languageList;
   var vendorList = <Vendor>[];
   late SuggestionsBoxController suggestionsBoxController;
+  var phoneNumberAutoValidation = false;
 
   dispose() {
     streamController.close();
@@ -128,7 +129,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
                 i18.expense.MODIFIED_EXPENDITURE_SUCCESSFULLY,
                 localizationText,
                 i18.common.BACK_HOME,
-                isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD))
+                isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD), backButton: true)
             : CommonSuccess(
                 SuccessHandler(
                   i18.expense.CORE_EXPENSE_EXPENDITURE_SUCESS,
@@ -138,7 +139,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
                   subHeader:
                       '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)}',
                   subHeaderText: '${challanDetails['challanNo'] ?? ''}',
-                ),
+                ),backButton: true,
                 callBack: onClickOfBackButton);
       }));
     } on CustomException catch (e, s) {
@@ -159,6 +160,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     expenditureDetails = ExpensesDetailsModel();
     getExpensesDetails(navigatorKey.currentContext!, null, null);
     autoValidation = false;
+    phoneNumberAutoValidation = false;
     notifyListeners();
     Navigator.pop(navigatorKey.currentContext!);
   }
@@ -215,10 +217,16 @@ class ExpensesDetailsProvider with ChangeNotifier {
         "boundaryType": "Locality",
         "tenantId": commonProvider.userDetails!.selectedtenant!.code
       });
-      boundaryList.addAll(
-          TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!);
+      if(result['TenantBoundary'] != null && result['TenantBoundary'].length > 0) {
+        boundaryList.addAll(
+            TenantBoundary
+                .fromJson(result['TenantBoundary'][0])
+                .boundary!);
+      }
       if (boundaryList.length > 0) {
         code = boundaryList.first.code;
+      }else{
+        code = commonProvider.userDetails?.selectedtenant?.city?.code;
       }
 
       var body = {
@@ -448,5 +456,19 @@ class ExpensesDetailsProvider with ChangeNotifier {
     activeindex = index + 1;
     await Scrollable.ensureVisible(expenseKey.currentContext!,
         duration: new Duration(milliseconds: 100));
+  }
+
+  onChangeOfMobileNumber(val){
+   var mobileNumber = expenditureDetails.mobileNumberController.text.trim();
+   if(mobileNumber.length < 10 || vendorList.isEmpty) return;
+   var index = vendorList.indexWhere((e) => e.owner?.mobileNumber.trim() == mobileNumber);
+
+   if(index != -1){
+    expenditureDetails.vendorNameCtrl.text = vendorList[index].name.trim();
+      }
+       }
+
+  callNotifyer(){
+    notifyListeners();
   }
 }
