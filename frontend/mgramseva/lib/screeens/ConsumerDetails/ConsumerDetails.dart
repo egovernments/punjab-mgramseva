@@ -45,7 +45,6 @@ class ConsumerDetails extends StatefulWidget {
 }
 
 class _ConsumerDetailsState extends State<ConsumerDetails> {
-  var phoneNumberAutoValidation = false;
   FocusNode _numberFocus = new FocusNode();
 
   saveInput(context) async {
@@ -55,6 +54,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   @override
   void initState() {
     var consumerProvider = Provider.of<ConsumerProvider>(context, listen: false)
+       ..phoneNumberAutoValidation = false
       ..waterconnection = WaterConnection()
       ..property = Property();
 
@@ -95,9 +95,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
 
   void _onFocusChange() {
     if (!_numberFocus.hasFocus) {
-      setState(() {
-        phoneNumberAutoValidation = true;
-      });
+       Provider.of<ConsumerProvider>(context, listen: false)
+      ..phoneNumberAutoValidation = true
+      ..callNotifyer();
     }
   }
 
@@ -224,7 +224,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               maxLength: 10,
                               focusNode: _numberFocus,
                               validator: Validators.mobileNumberValidator,
-                              autoValidation: phoneNumberAutoValidation
+                              autoValidation: consumerProvider.phoneNumberAutoValidation
                                   ? AutovalidateMode.always
                                   : AutovalidateMode.disabled,
                               inputFormatter: [

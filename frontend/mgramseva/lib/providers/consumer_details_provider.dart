@@ -39,6 +39,8 @@ class ConsumerProvider with ChangeNotifier {
   late List dates = [];
   late bool isEdit = false;
   LanguageList? languageList;
+  bool phoneNumberAutoValidation = false;
+
   setModel() async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
@@ -202,6 +204,7 @@ class ConsumerProvider with ChangeNotifier {
               .addconnection(waterconnection.toJson());
           if (result2 != null) {
             setModel();
+            phoneNumberAutoValidation = false;
             streamController.add(property);
             Notifiers.getToastMessage(
                 context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
@@ -436,5 +439,9 @@ class ConsumerProvider with ChangeNotifier {
     }
     await Scrollable.ensureVisible(consumerGenderKey.currentContext!,
         duration: new Duration(milliseconds: 100));
+  }
+
+  callNotifyer(){
+    notifyListeners();
   }
 }
