@@ -465,6 +465,8 @@ class ExpensesDetailsProvider with ChangeNotifier {
 
    if(index != -1){
     expenditureDetails.vendorNameCtrl.text = vendorList[index].name.trim();
+    expenditureDetails.selectedVendor = Vendor(vendorList[index].name.trim(), vendorList[index].id);
+    notifyListeners();
       }
        }
 
