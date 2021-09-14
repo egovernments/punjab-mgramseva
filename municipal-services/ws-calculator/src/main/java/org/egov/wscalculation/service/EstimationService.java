@@ -62,7 +62,7 @@ public class EstimationService {
 	@SuppressWarnings("rawtypes")
 	public Map<String, List> getEstimationMap(CalculationCriteria criteria, RequestInfo requestInfo,
 			Map<String, Object> masterData,boolean isconnectionCalculation) {
-		String tenantId = requestInfo.getUserInfo().getTenantId();
+		String tenantId = criteria.getTenantId();
 		if (criteria.getWaterConnection() == null && !StringUtils.isEmpty(criteria.getConnectionNo())) {
 			List<WaterConnection> waterConnectionList = calculatorUtil.getWaterConnection(requestInfo, criteria.getConnectionNo(), tenantId);
 			WaterConnection waterConnection = calculatorUtil.getWaterConnectionObject(waterConnectionList);
@@ -173,12 +173,19 @@ public class EstimationService {
 		if (isRangeCalculation(calculationAttribute)) {
 			if (waterConnection.getConnectionType().equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
 				for (Slab slab : billSlab.getSlabs()) {
-					if (totalUOM > slab.getTo()) {
-						waterCharge = waterCharge.add(BigDecimal.valueOf(((slab.getTo()) - (slab.getFrom())) * slab.getCharge()));
-						totalUOM = totalUOM - ((slab.getTo()) - (slab.getFrom()));
-					} else if (totalUOM < slab.getTo()) {
+
+					/*
+					 * if (totalUOM > slab.getTo()) { waterCharge = waterCharge
+					 * .add(BigDecimal.valueOf(((slab.getTo()) - (slab.getFrom())) *
+					 * slab.getCharge())); totalUOM = totalUOM - ((slab.getTo()) -
+					 * (slab.getFrom())); } else if (totalUOM < slab.getTo()) { waterCharge =
+					 * waterCharge.add(BigDecimal.valueOf(totalUOM * slab.getCharge())); totalUOM =
+					 * ((slab.getTo()) - (slab.getFrom())) - totalUOM; break; }
+					 */
+
+					if (slab.getTo() >= totalUOM && totalUOM <= slab.getTo()) {
 						waterCharge = waterCharge.add(BigDecimal.valueOf(totalUOM * slab.getCharge()));
-						totalUOM = ((slab.getTo()) - (slab.getFrom())) - totalUOM;
+						System.out.println("Water Charge::" + waterCharge.toString());
 						break;
 					}
 				}
