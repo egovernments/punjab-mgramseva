@@ -118,9 +118,18 @@ class router {
             settings: RouteSettings(name: Routes.HOUSEHOLDRECEIPTS));
 
       case Routes.CONSUMER_SEARCH_UPDATE:
+        var queryString = '';
+        Map<String, dynamic>? filteredQuery;
+        if(settings.arguments != null){
+          filteredQuery = {};
+          (settings.arguments as Map).forEach((key, value) {
+            filteredQuery![key] = value;
+          });
+        }
+        queryString = Uri(queryParameters: filteredQuery ?? query).query;
         return MaterialPageRoute(
-            builder: (_) => SearchConsumerConnection(settings.arguments as Map),
-            settings: RouteSettings(name: Routes.CONSUMER_SEARCH_UPDATE));
+            builder: (_) => SearchConsumerConnection((settings.arguments ?? query) as Map),
+            settings: RouteSettings(name: '${Routes.CONSUMER_SEARCH_UPDATE}?$queryString'));
 
       case Routes.EDIT_PROFILE:
         return MaterialPageRoute(
@@ -355,7 +364,7 @@ class router {
             query.keys.contains('tenantId')) return true;
         return false;
 
-      case Routes.BILL_GENERATE:
+      case Routes.BILL_GENERATE: case Routes.CONSUMER_UPDATE :
         if (query.keys.contains('applicationNo')) return true;
         return false;
       case Routes.POST_PAYMENT_FEED_BACK:

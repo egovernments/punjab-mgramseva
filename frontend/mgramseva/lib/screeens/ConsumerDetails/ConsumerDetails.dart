@@ -80,6 +80,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
           }).toList());
       });
     } else if (widget.id != null) {
+
     } else {
       WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     }
