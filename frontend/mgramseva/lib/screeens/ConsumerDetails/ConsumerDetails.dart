@@ -54,7 +54,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   @override
   void initState() {
     var consumerProvider = Provider.of<ConsumerProvider>(context, listen: false)
-       ..phoneNumberAutoValidation = false
+      ..phoneNumberAutoValidation = false
       ..waterconnection = WaterConnection()
       ..property = Property();
 
@@ -80,7 +80,21 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
           }).toList());
       });
     } else if (widget.id != null) {
-
+      print(widget.id);
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        Provider.of<CommonProvider>(navigatorKey.currentContext!,
+            listen: false);
+        consumerProvider
+          ..setModel()
+          ..getWaterConnection(widget.id)
+          ..fetchBoundary()
+          ..autoValidation = false
+          ..formKey = GlobalKey<FormState>()
+          ..setwallthrough(ConsumerWalkThrough().consumerWalkThrough.map((e) {
+            e.key = GlobalKey();
+            return e;
+          }).toList());
+      });
     } else {
       WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     }
@@ -96,9 +110,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
 
   void _onFocusChange() {
     if (!_numberFocus.hasFocus) {
-       Provider.of<ConsumerProvider>(context, listen: false)
-      ..phoneNumberAutoValidation = true
-      ..callNotifyer();
+      Provider.of<ConsumerProvider>(context, listen: false)
+        ..phoneNumberAutoValidation = true
+        ..callNotifyer();
     }
   }
 
@@ -225,9 +239,10 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               maxLength: 10,
                               focusNode: _numberFocus,
                               validator: Validators.mobileNumberValidator,
-                              autoValidation: consumerProvider.phoneNumberAutoValidation
-                                  ? AutovalidateMode.always
-                                  : AutovalidateMode.disabled,
+                              autoValidation:
+                                  consumerProvider.phoneNumberAutoValidation
+                                      ? AutovalidateMode.always
+                                      : AutovalidateMode.disabled,
                               inputFormatter: [
                                 FilteringTextInputFormatter.allow(
                                     RegExp("[0-9]"))

@@ -170,7 +170,7 @@ class _HomeState extends State<Home> {
                 });
             }
             return userProvider.userDetails?.selectedtenant?.code != null
-                ? NotificationsList()
+                ? Text("")
                 : Text("");
           })),
     );

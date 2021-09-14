@@ -21,7 +21,7 @@ class Routes {
 
   static const String RESET_PASSWORD = '$FORGOT_PASSWORD/resetPassword';
 
-  static const String CONSUMER_SEARCH = 'consumer/search';
+  static const String CONSUMER_SEARCH = 'home/consumerSearch';
 
   /// Profile
   static const String EDIT_PROFILE = '/home/editProfile';
@@ -44,7 +44,7 @@ class Routes {
   static const String EXPENSE_UPDATE =
       '/home/searchExpense/result/updateExpense';
 
-  static const String HOUSEHOLD_DETAILS = '/household/details';
+  static const String HOUSEHOLD_DETAILS = '/home/householddetails';
 
   static const String HOUSEHOLD_DETAILS_COLLECT_PAYMENT =
       '/household/details/collectPayment';
@@ -54,17 +54,17 @@ class Routes {
 
   static const String DASHBOARD = '/home/dashboard';
 
-  static const String BILL_GENERATE = '/bill/generate';
+  static const String BILL_GENERATE = '/home/householddetails/billgenerate';
 
-  static const String MANUAL_BILL_GENERATE = 'bill/manual/generate';
+  static const String MANUAL_BILL_GENERATE = '/home/billmanualgenerate';
 
   ///  Consumer
-  static const String CONSUMER_CREATE = '/home/consumer/create';
+  static const String CONSUMER_CREATE = '/home/consumercreate';
 
   static const String CONSUMER_SEARCH_UPDATE = '/home/consumer/searchupdate';
-  static const String CONSUMER_UPDATE = '/home/consumer/update';
+  static const String CONSUMER_UPDATE = '/home/consumerupdate';
 
-  static const String SEARCH_CONSUMER_RESULT = '/home/consumer/search';
+  static const String SEARCH_CONSUMER_RESULT = '/home/consumersearchresult';
 
   static const String PAYMENT_SUCCESS = 'paymentSuccess';
 
