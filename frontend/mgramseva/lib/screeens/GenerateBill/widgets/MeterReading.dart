@@ -11,9 +11,10 @@ class MeterReading extends StatelessWidget {
   final controller3;
   final controller4;
   final controller5;
+  final bool? isDisabled;
   MeterReading(this.label, this.controller1, this.controller2, this.controller3,
       this.controller4, this.controller5,
-      {this.isRequired});
+      {this.isRequired, this.isDisabled});
 
   _getConatiner(constraints, context) {
     return [
@@ -30,13 +31,13 @@ class MeterReading extends StatelessWidget {
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 16,
-                        color: Theme.of(context).primaryColorDark)),
+                        color: isDisabled == true ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColorDark)),
                 Text(isRequired! ? '* ' : ' ',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 16,
-                        color: Theme.of(context).primaryColorDark)),
+                        color: isDisabled == true ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColorDark)),
               ]))),
       Container(
           width: constraints.maxWidth > 760
@@ -46,11 +47,11 @@ class MeterReading extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              MeterReadingDigitTextFieldBox(this.controller1, true, false),
-              MeterReadingDigitTextFieldBox(this.controller2, false, false),
-              MeterReadingDigitTextFieldBox(this.controller3, false, false),
-              MeterReadingDigitTextFieldBox(this.controller4, false, false),
-              MeterReadingDigitTextFieldBox(this.controller5, false, true),
+              MeterReadingDigitTextFieldBox(this.controller1, true, false, isDisabled: this.isDisabled,),
+              MeterReadingDigitTextFieldBox(this.controller2, false, false, isDisabled: this.isDisabled,),
+              MeterReadingDigitTextFieldBox(this.controller3, false, false, isDisabled: this.isDisabled),
+              MeterReadingDigitTextFieldBox(this.controller4, false, false, isDisabled: this.isDisabled),
+              MeterReadingDigitTextFieldBox(this.controller5, false, true, isDisabled: this.isDisabled),
             ],
           ))
     ];
@@ -76,7 +77,8 @@ class MeterReadingDigitTextFieldBox extends StatelessWidget {
   final bool first;
   final bool last;
   final controller;
-  const MeterReadingDigitTextFieldBox(this.controller, this.first, this.last)
+  final bool? isDisabled;
+  const MeterReadingDigitTextFieldBox(this.controller, this.first, this.last, {this.isDisabled})
       : super();
 
   @override
@@ -96,8 +98,9 @@ class MeterReadingDigitTextFieldBox extends StatelessWidget {
               FocusScope.of(context).previousFocus();
             }
           },
-          showCursor: true,
-          readOnly: false,
+          style: TextStyle(color: isDisabled == true ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColorDark),
+          showCursor: isDisabled == true ? false : true,
+          readOnly: isDisabled == true ? true : false,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
           maxLength: 1,
