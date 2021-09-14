@@ -31,13 +31,13 @@ class MeterReading extends StatelessWidget {
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 16,
-                        color: isDisabled == true ? Colors.grey : Theme.of(context).primaryColorDark)),
+                        color: isDisabled == true ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColorDark)),
                 Text(isRequired! ? '* ' : ' ',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 16,
-                        color: isDisabled == true ? Colors.grey : Theme.of(context).primaryColorDark)),
+                        color: isDisabled == true ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColorDark)),
               ]))),
       Container(
           width: constraints.maxWidth > 760
@@ -98,7 +98,7 @@ class MeterReadingDigitTextFieldBox extends StatelessWidget {
               FocusScope.of(context).previousFocus();
             }
           },
-          style: TextStyle(color: isDisabled == true ? Colors.grey : Theme.of(context).primaryColorDark),
+          style: TextStyle(color: isDisabled == true ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColorDark),
           showCursor: isDisabled == true ? false : true,
           readOnly: isDisabled == true ? true : false,
           textAlign: TextAlign.center,
