@@ -36,7 +36,7 @@ class MobileView extends StatelessWidget {
                                 (new Positioned(
                                     bottom: 30.0,
                                     child: new Container(
-                                        margin: EdgeInsets.only(bottom: 5),
+                                        margin: EdgeInsets.only(bottom: 24),
                                         width:
                                             MediaQuery.of(context).size.width,
                                         // height: MediaQuery.of(context).size.height + 20,
