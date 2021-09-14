@@ -140,6 +140,7 @@ class BillGenerationProvider with ChangeNotifier {
     else{
       readingExist = true;
     }
+    notifyListeners();
   }
 
   dispose() {
