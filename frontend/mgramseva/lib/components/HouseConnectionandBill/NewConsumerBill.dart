@@ -102,7 +102,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                   : Column(
                       children: [
                         Container(
-                            padding: EdgeInsets.only(top: 24, bottom: 8),
+                            padding: EdgeInsets.only(top: 16, bottom: 8),
                             child: ListLabelText(i18
                                 .billDetails.NEW_CONSUMERGENERATE_BILL_LABEL)),
                         Card(

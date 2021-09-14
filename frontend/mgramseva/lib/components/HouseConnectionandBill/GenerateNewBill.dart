@@ -77,7 +77,7 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
         return Column(
           children: [
             Container(
-                padding: EdgeInsets.only(top: 24, bottom: 8.0),
+                padding: EdgeInsets.only(top: 16.0, bottom: 8.0),
                 child:
                     ListLabelText(i18.generateBillDetails.GENERATE_BILL_LABEL)),
             Card(
