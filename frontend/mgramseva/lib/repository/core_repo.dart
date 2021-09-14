@@ -89,7 +89,7 @@ class CoreRepository extends BaseService {
           var path = _paths[i];
           http.MultipartFile multipartFile = http.MultipartFile.fromBytes(
               'file', path.bytes!,
-              filename: '${path.name}.${path.extension}');
+              filename: '${path.name}.${path.extension?.toLowerCase()}');
           request.files.add(multipartFile);
         }
       } else if (_paths is List<File>) {

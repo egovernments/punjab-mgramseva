@@ -43,9 +43,9 @@ class _IndividualTabState extends State<IndividualTab> {
       if(widget.index == 0) {
         dashBoardProvider.selectedTab = 'all';
       }else if(widget.index == 1){
-        dashBoardProvider.selectedTab = 'ACTIVE';
-      }else{
         dashBoardProvider.selectedTab = 'PAID';
+      }else{
+        dashBoardProvider.selectedTab = 'ACTIVE';
       }
 
       dashBoardProvider.fetchExpenseDashBoardDetails(
@@ -88,26 +88,6 @@ class _IndividualTabState extends State<IndividualTab> {
             }
           }
         });
-  }
-
-
-  Widget _buildView(List<dynamic> expenseList){
-    var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
-
-    return LayoutBuilder(
-        builder : (context, constraints) {
-          var width = constraints.maxWidth < 760 ?  (expenseList is List<ExpensesDetailsModel> ? 180.0 : 145.0)  : (constraints.maxWidth / (expenseList is List<ExpensesDetailsModel> ? 5 : 3));
-          var tableData = expenseList is List<ExpensesDetailsModel> ?  dashBoardProvider.getExpenseData(widget.index, expenseList as List<ExpensesDetailsModel>) : dashBoardProvider.getCollectionsData(widget.index, expenseList  as List<WaterConnection>);
-          return tableData == null || tableData.isEmpty ?
-          CommonWidgets.buildEmptyMessage(ApplicationLocalizations.of(context).translate(i18.dashboard.NO_RECORDS_MSG), context)
-              : BillsTable
-            (headerList: expenseList is List<ExpensesDetailsModel> ? dashBoardProvider.expenseHeaderList : dashBoardProvider.collectionHeaderList,
-            tableData:  tableData,
-            leftColumnWidth: width,
-            rightColumnWidth: expenseList is List<ExpensesDetailsModel> ? width * 5 : width * 3,
-          );
-        }
-    );
   }
 
 
