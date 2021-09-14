@@ -183,14 +183,13 @@ public class EstimationService {
 					 * ((slab.getTo()) - (slab.getFrom())) - totalUOM; break; }
 					 */
 
-					if (slab.getTo() >= totalUOM && totalUOM <= slab.getTo()) {
-						waterCharge = waterCharge.add(BigDecimal.valueOf(totalUOM * slab.getCharge()));
-						System.out.println("Water Charge::" + waterCharge.toString());
+					if (totalUOM >= slab.getFrom() && totalUOM < slab.getTo()) {
+						waterCharge = BigDecimal.valueOf((totalUOM * slab.getCharge()));
+						if (billSlab.getMinimumCharge() > waterCharge.doubleValue()) {
+							waterCharge = BigDecimal.valueOf(billSlab.getMinimumCharge());
+						}
 						break;
 					}
-				}
-				if (billSlab.getMinimumCharge() > waterCharge.doubleValue()) {
-					waterCharge = BigDecimal.valueOf(billSlab.getMinimumCharge());
 				}
 			} else if (waterConnection.getConnectionType()
 					.equalsIgnoreCase(WSCalculationConstant.nonMeterdConnection)) {
