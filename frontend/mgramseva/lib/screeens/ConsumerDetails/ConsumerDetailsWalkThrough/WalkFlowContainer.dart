@@ -38,7 +38,7 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
             left: position.dx,
             top: position.dy,
             child: Container(
-                width: MediaQuery.of(context).size.width / 1.1,
+                width: MediaQuery.of(context).size.width / 1.06,
                 child: Card(
                     child: Padding(
                         padding: EdgeInsets.only(bottom: 20),
