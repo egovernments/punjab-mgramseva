@@ -595,7 +595,7 @@ public class DemandService {
 		List<Demand> demands = new LinkedList<>();
 		Long fromDateSearch = fromDate; //isForConnectionNo ? fromDate : null;
 		Long toDateSearch = toDate; //isForConnectionNo ? toDate : null;
-
+		String billCycle = "";
 		for (Calculation calculation : calculations) {
 			Set<String> consumerCodes = Collections.singleton(calculation.getWaterConnection().getConnectionNo());
 			List<Demand> searchResult = searchDemand(calculation.getTenantId(), consumerCodes, fromDateSearch,
@@ -606,6 +606,47 @@ public class DemandService {
 			Demand demand = searchResult.get(0);
 			demand.setDemandDetails(getUpdatedDemandDetails(calculation, demand.getDemandDetails()));
 
+			
+			
+			WaterConnectionRequest waterConnectionRequest = WaterConnectionRequest.builder().waterConnection(calculation.getWaterConnection())
+					.requestInfo(requestInfo).build();
+			Property property = wsCalculationUtil.getProperty(waterConnectionRequest);
+			String tenantId = calculation.getTenantId();
+			User owner = property.getOwners().get(0).toCommonUser();
+			if (!CollectionUtils.isEmpty(waterConnectionRequest.getWaterConnection().getConnectionHolders())) {
+				owner = waterConnectionRequest.getWaterConnection().getConnectionHolders().get(0).toCommonUser();
+			}
+			
+			List<DemandDetail> demandDetails = new LinkedList<>();
+			calculation.getTaxHeadEstimates().forEach(taxHeadEstimate -> {
+				demandDetails.add(DemandDetail.builder().taxAmount(taxHeadEstimate.getEstimateAmount())
+						.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).collectionAmount(BigDecimal.ZERO)
+						.tenantId(calculation.getTenantId()).build());
+			});
+
+			HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo, WSCalculationConstant.mGram_Consumer_NewBill, calculation.getTenantId());
+			
+			String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
+
+			System.out.println("Localization message::" + messageString);
+			if( !StringUtils.isEmpty(messageString)) {
+					billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
+					+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
+			messageString = messageString.replace("{ownername}", owner.getName());
+			messageString = messageString.replace("{Period}", billCycle);
+			messageString = messageString.replace("{consumerno}", calculation.getConnectionNo());
+			messageString = messageString.replace("{billamount}", demandDetails.stream().map(DemandDetail::getTaxAmount)
+					.reduce(BigDecimal.ZERO, BigDecimal::add).toString());
+			messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(configs.getDownLoadBillLink()));
+			
+			System.out.println("Demand genaratio Message::" + messageString);
+			
+			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
+					.category(Category.TRANSACTION).build();
+			producer.push(config.getSmsNotifTopic(), sms);
+			
+			}
+			
 			if(isForConnectionNo){
 				WaterConnection connection = calculation.getWaterConnection();
 				if (connection == null) {
