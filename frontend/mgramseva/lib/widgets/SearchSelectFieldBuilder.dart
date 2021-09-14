@@ -42,7 +42,7 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
 
   afterViewBuild() {
     widget.controller?.text =
-        ApplicationLocalizations.of(context).translate(widget.value);
+        ApplicationLocalizations.of(context).translate(widget.value ?? '');
   }
 
   filerobjects(val) {

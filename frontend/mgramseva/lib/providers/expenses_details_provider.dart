@@ -329,7 +329,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     return vendorList.where((vendor) {
       if (vendor.name
           .toLowerCase()
-          .contains(pattern.toString().toLowerCase())) {
+          .contains(pattern.toString().trim().toLowerCase())) {
         return true;
       } else {
         return false;
