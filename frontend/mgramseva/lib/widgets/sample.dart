@@ -1,0 +1,126 @@
+import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+
+class CountriesField extends StatefulWidget {
+  final List<DropdownMenuItem<Object>> options;
+  final dynamic value;
+  final Function(dynamic) widget;
+  final bool? isEnabled;
+
+  final TextEditingController? controller;
+  CountriesField(
+      this.options, this.controller, this.widget, this.value, this.isEnabled);
+  @override
+  _CountriesFieldState createState() => _CountriesFieldState();
+}
+
+class _CountriesFieldState extends State<CountriesField> {
+  final FocusNode _focusNode = FocusNode();
+  // ignore: non_constant_identifier_names
+  List<DropdownMenuItem<Object>> Options = [];
+  late OverlayEntry _overlayEntry;
+
+  final LayerLink _layerLink = LayerLink();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        this._overlayEntry = this._createOverlayEntry();
+        Overlay.of(context)!.insert(this._overlayEntry);
+      } else {
+        this._overlayEntry.remove();
+      }
+    });
+    super.initState();
+    filerobjects("");
+  }
+
+  afterViewBuild() {
+    widget.controller?.text =
+        ApplicationLocalizations.of(context).translate(widget.value);
+  }
+
+  filerobjects(val) {
+    if (val != "") {
+      setState(() {
+        Options = widget.options
+            .where((element) => element.value
+                .toString()
+                .toLowerCase()
+                .contains(val.toString().toLowerCase()))
+            .toList();
+      });
+    } else {
+      setState(() {
+        Options = widget.options;
+      });
+    }
+  }
+
+  OverlayEntry _createOverlayEntry() {
+    RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+
+    var size = renderBox!.size;
+
+    return OverlayEntry(
+        builder: (context) => Positioned(
+              width: size.width,
+              child: CompositedTransformFollower(
+                link: this._layerLink,
+                showWhenUnlinked: false,
+                offset: Offset(0.0, size.height + 5.0),
+                child: Material(
+                  elevation: 4.0,
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      for (var item
+                          in Options.length == 0 ? widget.options : Options)
+                        Ink(
+                            color: Colors.white,
+                            child: ListTile(
+                              title: item.child,
+                              onTap: () {
+                                Text txt = item.child as Text;
+                                widget.widget(item.value);
+                                widget.controller?.text = (txt.data.toString());
+                                _focusNode.unfocus();
+                              },
+                            )),
+                    ],
+                  ),
+                ),
+              ),
+            ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CompositedTransformTarget(
+      link: this._layerLink,
+      child: TextFormField(
+        style: TextStyle(
+            fontWeight: FontWeight.w400,
+            fontSize: 16,
+            color: (widget.isEnabled ?? true)
+                ? Theme.of(context).primaryColorDark
+                : Colors.grey),
+        controller: widget.controller,
+        onChanged: (value) => filerobjects(value),
+        focusNode: this._focusNode,
+        decoration: InputDecoration(
+          suffixIcon: Icon(Icons.arrow_drop_down),
+          errorMaxLines: 2,
+          enabled: widget.isEnabled ?? true,
+          fillColor: widget.isEnabled != null && widget.isEnabled!
+              ? Colors.grey
+              : Colors.white,
+          prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+        ),
+      ),
+    );
+  }
+}

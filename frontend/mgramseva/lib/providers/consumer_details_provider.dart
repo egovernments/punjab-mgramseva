@@ -99,12 +99,19 @@ class ConsumerProvider with ChangeNotifier {
     });
     if (waterconnection.connectionType == 'Metered' &&
         waterconnection.additionalDetails!.meterReading.toString() != '0') {
-      var meterReading = waterconnection.additionalDetails!.meterReading.toString().padLeft(5 , '0' );
-      waterconnection.om_1Ctrl.text = meterReading.toString().characters.elementAt(0);
-      waterconnection.om_2Ctrl.text =meterReading.toString().characters.elementAt(1);
-      waterconnection.om_3Ctrl.text = meterReading.toString().characters.elementAt(2);
-      waterconnection.om_4Ctrl.text = meterReading.toString().characters.elementAt(3);
-      waterconnection.om_5Ctrl.text = meterReading.toString().characters.elementAt(4);
+      var meterReading = waterconnection.additionalDetails!.meterReading
+          .toString()
+          .padLeft(5, '0');
+      waterconnection.om_1Ctrl.text =
+          meterReading.toString().characters.elementAt(0);
+      waterconnection.om_2Ctrl.text =
+          meterReading.toString().characters.elementAt(1);
+      waterconnection.om_3Ctrl.text =
+          meterReading.toString().characters.elementAt(2);
+      waterconnection.om_4Ctrl.text =
+          meterReading.toString().characters.elementAt(3);
+      waterconnection.om_5Ctrl.text =
+          meterReading.toString().characters.elementAt(4);
     }
     if (demand?.isEmpty == true) {
       isfirstdemand = false;
@@ -159,7 +166,8 @@ class ConsumerProvider with ChangeNotifier {
                     waterconnection.om_3Ctrl.text == "" &&
                     waterconnection.om_4Ctrl.text == "" &&
                     waterconnection.om_5Ctrl.text == "")
-                ? 0 : int.parse(waterconnection.om_1Ctrl.text +
+                ? 0
+                : int.parse(waterconnection.om_1Ctrl.text +
                     waterconnection.om_2Ctrl.text +
                     waterconnection.om_3Ctrl.text +
                     waterconnection.om_4Ctrl.text +
@@ -416,11 +424,10 @@ class ConsumerProvider with ChangeNotifier {
         var d = value['name'];
         return DropdownMenuItem(
           value: value['code'].toLocal().toString(),
-          child: new Text(
-              ApplicationLocalizations.of(navigatorKey.currentContext!)
-                      .translate(Constants.MONTHS[d.month - 1]) +
-                  " - " +
-                  d.year.toString()),
+          child: Text(ApplicationLocalizations.of(navigatorKey.currentContext!)
+                  .translate(Constants.MONTHS[d.month - 1]) +
+              " - " +
+              d.year.toString()),
         );
       }).toList();
     }

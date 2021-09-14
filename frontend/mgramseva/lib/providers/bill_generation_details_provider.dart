@@ -167,12 +167,14 @@ class BillGenerationProvider with ChangeNotifier {
   }
 
   void onChangeOfBillCycle(val) {
-    selectedBillCycle = (DateFormats.getMonth(val));
-    selectedBillPeriod = (DateFormats.getFilteredDate(val.toLocal().toString(),
+    var result = DateTime.parse(val);
+    selectedBillCycle = (DateFormats.getMonth(result));
+    selectedBillPeriod = (DateFormats.getFilteredDate(
+            result.toLocal().toString(),
             dateFormat: "dd/MM/yyyy")) +
         "-" +
         DateFormats.getFilteredDate(
-            (new DateTime(val.year, val.month + 1, val.day))
+            (new DateTime(result.year, result.month + 1, result.day))
                 .toLocal()
                 .toString(),
             dateFormat: "dd/MM/yyyy");
@@ -460,9 +462,9 @@ class BillGenerationProvider with ChangeNotifier {
     }
     if (dates.length > 0) {
       return (dates).map((value) {
-        var d = value['name'] as DateTime;
+        var d = value['name'];
         return DropdownMenuItem(
-          value: value['code'],
+          value: value['code'].toLocal().toString(),
           child: new Text(
               ApplicationLocalizations.of(navigatorKey.currentContext!)
                       .translate(Constants.MONTHS[d.month - 1]) +

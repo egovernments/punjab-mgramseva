@@ -69,7 +69,13 @@ class WaterConnection {
   var OldConnectionCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
+  var BillingCycleCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
   var meterInstallationDateCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var ServiceTypeCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
   var om_1Ctrl = new TextEditingController();

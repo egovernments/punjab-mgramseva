@@ -30,6 +30,7 @@ class _SearchExpenseState extends State<SearchExpense> {
   var vendorNameCtrl = TextEditingController();
   String? expenseType;
   var billIdCtrl = TextEditingController();
+  var expenseTypeCtrl = TextEditingController();
   bool isVisible = false;
 
   @override
@@ -42,7 +43,7 @@ class _SearchExpenseState extends State<SearchExpense> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      appBar:  CustomAppBar(),
+      appBar: CustomAppBar(),
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),
       ),
@@ -81,6 +82,7 @@ class _SearchExpenseState extends State<SearchExpense> {
                           false,
                           hint:
                               '${ApplicationLocalizations.of(context).translate(i18.common.ELECTRICITY_HINT)}',
+                          controller: expenseTypeCtrl,
                         ),
                       ),
                       Visibility(
