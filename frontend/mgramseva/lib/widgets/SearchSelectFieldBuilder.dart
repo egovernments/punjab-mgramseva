@@ -126,7 +126,7 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
         validator: (value) {
           if (widget.options
               .where((element) =>
-                  element.value.toString().toLowerCase() ==
+                  (element.child as Text).data.toString().toLowerCase() ==
                   (value.toString().toLowerCase()))
               .toList()
               .isEmpty) {
