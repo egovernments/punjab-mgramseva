@@ -150,7 +150,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                             val,
                                           ApplicationLocalizations.of(context).translate(i18.password
                                                 .CORE_COMMON_CONFIRM_NEW_PASSWORD),
-                                            confirmPassword.text),
+                                            newPassword.text),
                                     onChange: saveInput,
                                   ),
                                   SizedBox(
