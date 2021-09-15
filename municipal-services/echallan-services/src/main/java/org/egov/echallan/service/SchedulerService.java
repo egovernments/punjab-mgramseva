@@ -158,6 +158,7 @@ public class SchedulerService {
 
 		List<ActionItem> items = new ArrayList<>();
 		String actionLink = config.getUiAppHost() + config.getNewExpenditureLink();
+		System.out.println("Action URL::" + actionLink);
 		ActionItem item = ActionItem.builder().actionUrl(actionLink).build();
 		items.add(item);
 		Action action = Action.builder().actionUrls(items).build();
