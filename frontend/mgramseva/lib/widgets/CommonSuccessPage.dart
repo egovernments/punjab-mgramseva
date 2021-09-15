@@ -57,7 +57,7 @@ class CommonSuccess extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SuccessPage(successHandler.header,
-                            subTextHeader: successHandler.subHeader,
+                            subTextHeader:  successHandler.subHeaderFun != null ? successHandler.subHeaderFun!() : successHandler.subHeader,
                             subText: successHandler.subTextFun != null ? successHandler.subTextFun!() : successHandler.subHeaderText),
                         Align(
                             alignment: Alignment.centerLeft,

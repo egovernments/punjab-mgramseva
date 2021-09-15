@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
@@ -124,6 +125,8 @@ class CollectPaymentProvider with ChangeNotifier {
               downloadLink: i18.common.RECEIPT_DOWNLOAD,
               whatsAppShare: i18.common.SHARE_RECEIPTS,
               downloadLinkLabel: i18.common.RECEIPT_DOWNLOAD,
+              subtitleFun: () => getSubtitleDynamicLocalization(context, fetchBill),
+              subHeaderFun: () => getSubHeaderDynamicLocalization(context, paymentDetails)
             ),
             callBackdownload: () => commonProvider.getFileFromPDFPaymentService(
                 {
@@ -165,6 +168,17 @@ class CollectPaymentProvider with ChangeNotifier {
       Notifiers.getToastMessage(context, e.toString(), 'ERROR');
       ErrorHandler.logError(e.toString(), s);
     }
+  }
+
+  String getSubtitleDynamicLocalization(BuildContext context, FetchBill fetchBill){
+    String localizationText = '';
+    localizationText = '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)}';
+    localizationText = localizationText.replaceFirst('<Number>', '(+91 - ${fetchBill.mobileNumber})');
+    return localizationText;
+  }
+
+  String getSubHeaderDynamicLocalization(BuildContext context, BillPayments paymentDetails){
+   return '${ApplicationLocalizations.of(context).translate(i18.common.RECEIPT_NO)} \n ${paymentDetails.payments!.first.paymentDetails!.first.receiptNumber}';
   }
 
   onClickOfViewOrHideDetails(FetchBill fetchBill, BuildContext context) {
