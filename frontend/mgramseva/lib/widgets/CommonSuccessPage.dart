@@ -58,7 +58,7 @@ class CommonSuccess extends StatelessWidget {
                       children: [
                         SuccessPage(successHandler.header,
                             subTextHeader: successHandler.subHeader,
-                            subText: successHandler.subHeaderText),
+                            subText: successHandler.subTextFun != null ? successHandler.subTextFun!() : successHandler.subHeaderText),
                         Align(
                             alignment: Alignment.centerLeft,
                             child: Container(
@@ -66,7 +66,7 @@ class CommonSuccess extends StatelessWidget {
                                   left: 10, bottom: 20, top: 20, right: 10),
                               child: Text(
                                 ApplicationLocalizations.of(context)
-                                    .translate(successHandler.subtitle),
+                                    .translate(successHandler.subtitleFun != null ? successHandler.subtitleFun!() : successHandler.subtitle),
                                 style: TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w400),
                                 textAlign: TextAlign.start,
