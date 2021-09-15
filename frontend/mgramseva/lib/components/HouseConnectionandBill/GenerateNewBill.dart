@@ -98,7 +98,7 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                       DateFormats.timeStampToDate(
                                               demandList.demands?.first
                                                   .auditDetails?.createdTime,
-                                              format: "dd-MM-yyyy")
+                                              format: "dd/MM/yyyy")
                                           .toString(),
                                       context),
                                   Padding(

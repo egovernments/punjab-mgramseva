@@ -49,6 +49,9 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
       widget.controller?.text = ApplicationLocalizations.of(context)
           .translate((res.first.child as Text).data.toString());
     }
+    setState(() {
+      Options = widget.options;
+    });
   }
 
   filerobjects(val) {
@@ -81,15 +84,15 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
             child: CompositedTransformFollower(
               link: this._layerLink,
               showWhenUnlinked: true,
-              offset: Offset(0.0, size.height + 5.0),
+              offset: Offset(0.0, size.height),
               child: Material(
                 elevation: 4.0,
                 child: Container(
                   height: Options.length == 0 && isinit == false
-                      ? (widget.options.length * 50 < 200
+                      ? (widget.options.length * 50 < 150
                           ? widget.options.length * 50
-                          : 200)
-                      : (Options.length * 50 < 200 ? Options.length * 50 : 200),
+                          : 150)
+                      : (Options.length * 50 < 150 ? Options.length * 50 : 150),
                   child: ListView(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
@@ -127,6 +130,7 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
     return Column(children: [
       Consumer<LanguageProvider>(builder: (_, consumerProvider, child) {
         WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+
         return Text('');
       }),
       CompositedTransformTarget(

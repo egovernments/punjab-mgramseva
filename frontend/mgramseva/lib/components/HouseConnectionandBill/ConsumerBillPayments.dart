@@ -110,7 +110,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                 i18.consumerReciepts.CONSUMER_RECIEPT_PAID_DATE,
                                 DateFormats.timeStampToDate(
                                         item.transactionDate,
-                                        format: "dd-MM-yyyy")
+                                        format: "dd/MM/yyyy")
                                     .toString(),
                                 context),
                             Row(children: [

@@ -44,6 +44,7 @@ class ConsumerProvider with ChangeNotifier {
   bool phoneNumberAutoValidation = false;
 
   setModel() async {
+    waterconnection.BillingCycleCtrl.text = "";
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -400,6 +401,7 @@ class ConsumerProvider with ChangeNotifier {
     var date = val;
     waterconnection.BillingCycleCtrl.text = selectedcycle;
     waterconnection.meterInstallationDateCtrl.text = selectedcycle;
+    notifyListeners();
   }
 
 //Displaying ConnectionType data Fetched From MDMD (Ex Metered, Non Metered..)
@@ -419,13 +421,14 @@ class ConsumerProvider with ChangeNotifier {
 
   //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
   List<DropdownMenuItem<Object>> getBillingCycle() {
+    dates = [];
     if (languageList?.mdmsRes?.taxPeriodList!.TaxPeriodList! != null &&
         dates.length == 0) {
       var date2 = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch));
       var date1 = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(languageList!
-              .mdmsRes?.taxPeriodList!.TaxPeriodList!.first.fromDate));
+              .mdmsRes!.taxPeriodList!.TaxPeriodList!.first.fromDate));
       var d = date2 as DateTime;
       var now = date1 as DateTime;
       var days = d.day - now.day;
@@ -446,8 +449,11 @@ class ConsumerProvider with ChangeNotifier {
         var d = value['name'];
         return DropdownMenuItem(
           value: value['code'].toLocal().toString(),
-          child:
-              Text((Constants.MONTHS[d.month - 1]) + " - " + d.year.toString()),
+          child: new Text(
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                      .translate((Constants.MONTHS[d.month - 1])) +
+                  " - " +
+                  d.year.toString()),
         );
       }).toList();
     }

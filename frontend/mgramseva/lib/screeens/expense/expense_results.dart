@@ -80,7 +80,7 @@ class ExpenseResults extends StatelessWidget {
                                         i18.expense.BILL_DATE,
                                         DateFormats.timeStampToDate(
                                             expense.billDate!.toInt(),
-                                            format: 'dd-MM-yyyy'),
+                                            format: 'dd/MM/yyyy'),
                                         context),
                                     _getDetailtext(
                                         i18.common.STATUS,
