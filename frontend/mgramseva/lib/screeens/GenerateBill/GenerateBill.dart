@@ -40,6 +40,7 @@ class _GenerateBillState extends State<GenerateBill> {
   afterViewBuild() {
     Provider.of<BillGenerationProvider>(context, listen: false)
       ..setModel(widget.id, widget.waterconnection, context)
+      ..readingExist
       ..getServiceTypePropertyTypeandConnectionType()
       ..autoValidation = false
       ..formKey = GlobalKey<FormState>();
@@ -195,6 +196,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                     .billGenerateDetails
                                                     .om_5Ctrl,
                                                 isRequired: true,
+                                                isDisabled: billgenerationprovider.readingExist == false ? true : false,
                                               ),
                                               MeterReading(
                                                 i18.demandGenerate
@@ -215,6 +217,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                     .billGenerateDetails
                                                     .nm_5Ctrl,
                                                 isRequired: true,
+                                                isDisabled: false,
                                               ),
                                               BasicDateField(
                                                   i18.demandGenerate

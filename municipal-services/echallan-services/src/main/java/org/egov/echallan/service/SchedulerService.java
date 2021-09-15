@@ -157,12 +157,12 @@ public class SchedulerService {
 	public EventRequest sendNewExpenditureNotification(RequestInfo requestInfo, String tenantId) {
 
 		List<ActionItem> items = new ArrayList<>();
-		String actionLink = config.getUiAppHost() + config.getExpenditureLink();
+		String actionLink = config.getNewExpenditureLink();
 		ActionItem item = ActionItem.builder().actionUrl(actionLink).build();
 		items.add(item);
 		Action action = Action.builder().actionUrls(items).build();
 		List<Event> events = new ArrayList<>();
-
+		System.out.println("Action Link::" + actionLink);
 		if (tenantId.split("\\.").length >= 2) {
 			HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, NEW_EXPENDITURE_EVENT,
 					tenantId);
@@ -198,7 +198,6 @@ public class SchedulerService {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
 				dateTimeFormatter);
-
 		List<String> tenantIds = repository.getTenantId();
 		if (!currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
 
@@ -234,9 +233,7 @@ public class SchedulerService {
 									String message = messageMap.get(NotificationUtil.MSG_KEY);
 
 									message = message.replace("{NEW_EXP_LINK}", getShortenedUrl(config.getExpenditureLink()));
-									message = message.replace("{GPWSC}", tenantId); // TODO Replace
-									// <GPWSC> with
-									// value.
+									message = message.replace("{GPWSC}", tenantId);
 									System.out.println("New Expenditure SMS :: " + message);
 
 									SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
@@ -275,10 +272,12 @@ public class SchedulerService {
 	public EventRequest sendGenerateDemandNotification(RequestInfo requestInfo, String tenantId) {
 
 		List<ActionItem> items = new ArrayList<>();
-		String actionLink = config.getDemanGenerationLink();
+		String actionLink = config.getBulkDemandFailedLink();
 		ActionItem item = ActionItem.builder().actionUrl(actionLink).build();
 		items.add(item);
 		Action action = Action.builder().actionUrls(items).build();
+		System.out.println("Action Link::" + actionLink);
+		
 		List<Event> events = new ArrayList<>();
 		HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, GENERATE_DEMAND_EVENT, tenantId);
 		String message = messageMap.get(NotificationUtil.MSG_KEY);
@@ -323,12 +322,20 @@ public class SchedulerService {
 
 	public EventRequest sendMarkExpensebillNotification(RequestInfo requestInfo, String tenantId) {
 
+
+		List<ActionItem> items = new ArrayList<>();
+		String actionLink = config.getMarkPaidExpenditureLink();
+		ActionItem item = ActionItem.builder().actionUrl(actionLink).build();
+		items.add(item);
+		Action action = Action.builder().actionUrls(items).build();
+		System.out.println("ActionLink::" + actionLink);
+
 		List<Event> events = new ArrayList<>();
 		HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, MARK_PAID_BILL_EVENT, tenantId);
 		events.add(Event.builder().tenantId(tenantId)
 				.description(formatMarkExpenseMessage(tenantId, messageMap.get(NotificationUtil.MSG_KEY)))
 				.eventType(USREVENTS_EVENT_TYPE).name(USREVENTS_EVENT_NAME).postedBy(USREVENTS_EVENT_POSTEDBY)
-				.recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP).eventDetails(null).build());
+				.recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP).eventDetails(null).actions(action).build());
 
 		if (!CollectionUtils.isEmpty(events)) {
 			return EventRequest.builder().requestInfo(requestInfo).events(events).build();
@@ -416,10 +423,11 @@ public class SchedulerService {
 	public EventRequest sendMonthSummaryNotification(RequestInfo requestInfo, String tenantId) {
 
 		List<ActionItem> items = new ArrayList<>();
-		String actionLink = config.getMonthDashboardLink();
+		String actionLink = config.getMonthlySummary();
 		ActionItem item = ActionItem.builder().actionUrl(actionLink).build();
 		items.add(item);
 		Action action = Action.builder().actionUrls(items).build();
+		System.out.println("ActionLink::" + actionLink);
 
 		List<Event> events = new ArrayList<>();
 		HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, MONTHLY_SUMMARY_EVENT, tenantId);
@@ -532,13 +540,13 @@ public class SchedulerService {
 	}
 
 	public EventRequest sendPendingCollectionNotification(RequestInfo requestInfo, String tenantId) {
-
 		List<ActionItem> items = new ArrayList<>();
-		String actionLink = config.getMonthRevenueDashboardLink();
+		String actionLink = config.getPendingCollectionLink();
 		ActionItem item = ActionItem.builder().actionUrl(actionLink).build();
 		items.add(item);
 		Action action = Action.builder().actionUrls(items).build();
 		List<Event> events = new ArrayList<>();
+		System.out.println("Action Link::" + actionLink);
 		HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, PENDING_COLLECTION_EVENT,
 				tenantId);
 		events.add(Event.builder().tenantId(tenantId)
@@ -751,10 +759,11 @@ public class SchedulerService {
 		// TODO Auto-generated method stub
 
 		List<ActionItem> items = new ArrayList<>();
-		String actionLink = config.getDayCollectionLink();
+		String actionLink = config.getTodayCollectionLink();
 		ActionItem item = ActionItem.builder().actionUrl(actionLink).build();
 		items.add(item);
 		Action action = Action.builder().actionUrls(items).build();
+		System.out.println("Action Link::" + actionLink);
 		List<Event> events = new ArrayList<>();
 		List<String> messages = new ArrayList<String>();
 		HashMap<String, String> cashMessageMap = util.getLocalizationMessage(requestInfo, TODAY_CASH_COLLECTION,

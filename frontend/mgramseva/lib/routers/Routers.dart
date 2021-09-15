@@ -3,13 +3,13 @@ class Routes {
   static const String LANDING_PAGE = '/';
 
   static const String DEFAULT_PASSWORD_UPDATE = '/passwordupdated';
-  static const String LOGIN = '/login';
 
   static const String SELECT_LANGUAGE = '/selectLanguage';
+  static const String LOGIN = '$SELECT_LANGUAGE/login';
 
   static const String HOME = '/home';
 
-  static const String FORGOT_PASSWORD = '/forgotPassword';
+  static const String FORGOT_PASSWORD = '$LOGIN/forgotPassword';
 
   // static const String HOUSE_HOLD = 'household/search';
 
@@ -17,7 +17,7 @@ class Routes {
   static const String HOUSEHOLDRECEIPTS = '/home/householdReceiptsSearch';
   static const String HOUSEHOLD_REGISTER = '/home/householdRegister';
 
-  static const String UPDATE_PASSWORD = 'updatepassword';
+  static const String UPDATE_PASSWORD = '$LOGIN/updatepassword';
 
   static const String RESET_PASSWORD = '$FORGOT_PASSWORD/resetPassword';
 
@@ -26,7 +26,7 @@ class Routes {
   /// Profile
   static const String EDIT_PROFILE = '/home/editProfile';
 
-  static const String CHANGE_PASSWORD = '/home/editProfile/changepassword';
+  static const String CHANGE_PASSWORD = '/home/changepassword';
 
   static const String CHANGE_PASSWORD_SUCCESS = '$CHANGE_PASSWORD/success';
 
@@ -61,7 +61,7 @@ class Routes {
   ///  Consumer
   static const String CONSUMER_CREATE = '/home/consumercreate';
 
-  static const String CONSUMER_SEARCH_UPDATE = '/home/consumer/searchupdate';
+  static const String CONSUMER_SEARCH_UPDATE = '/home/consumersearchupdate';
   static const String CONSUMER_UPDATE = '/home/consumerupdate';
 
   static const String SEARCH_CONSUMER_RESULT = '/home/consumersearchresult';

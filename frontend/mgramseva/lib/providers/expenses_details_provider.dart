@@ -57,8 +57,14 @@ class ExpensesDetailsProvider with ChangeNotifier {
         expenditureDetails = expensesDetails;
         getStoreFileDetails();
       } else if (id != null) {
+        var commonProvider =
+        Provider.of<CommonProvider>(context, listen: false);
+        var query = {
+          'tenantId': commonProvider.userDetails?.selectedtenant?.code,
+          'challanNo': id
+        };
         var expenditure =
-            await ExpensesRepository().searchExpense({'challanNo': id});
+        await ExpensesRepository().searchExpense(query);
         if (expenditure != null && expenditure.isNotEmpty) {
           expenditureDetails = expenditure.first;
           getStoreFileDetails();
@@ -104,34 +110,20 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var res = await ExpensesRepository().addExpenses(body, isUpdate);
       Navigator.pop(context);
       var challanDetails = res['challans']?[0];
+       String localizationText = getLocalizedData(isUpdate, context, challanDetails);
 
-      late String localizationText;
-      if (isUpdate) {
-        localizationText =
-            '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_BILL_ID)}';
-        localizationText = localizationText.replaceFirst(
-            '< Bill ID>', '${challanDetails['challanNo'] ?? ''}');
-      } else {
-        localizationText =
-            '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}';
-        localizationText = localizationText.replaceFirst(
-            '<Vendor>', expenditureDetails.vendorNameCtrl.text.trim());
-        localizationText = localizationText.replaceFirst(
-            '<Amount>', expenditureDetails.expensesAmount?.first.amount ?? '');
-        localizationText = localizationText.replaceFirst('<type of expense>',
-            '${ApplicationLocalizations.of(context).translate(expenditureDetails.expenseType ?? '')}');
-      }
 
       navigatorKey.currentState
           ?.push(MaterialPageRoute(builder: (BuildContext context) {
         return isUpdate
-            ? CommonSuccess(
-                SuccessHandler(
-                    i18.expense.MODIFIED_EXPENDITURE_SUCCESSFULLY,
-                    localizationText,
-                    i18.common.BACK_HOME,
-                    isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD),
-                backButton: true)
+
+            ? CommonSuccess(SuccessHandler(
+                i18.expense.MODIFIED_EXPENDITURE_SUCCESSFULLY,
+                localizationText,
+                i18.common.BACK_HOME,
+                isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD, subtitleFun: () => getLocalizedData(isUpdate, context, challanDetails)), backButton: true,
+        )
+
             : CommonSuccess(
                 SuccessHandler(
                   i18.expense.CORE_EXPENSE_EXPENDITURE_SUCESS,
@@ -141,9 +133,11 @@ class ExpensesDetailsProvider with ChangeNotifier {
                   subHeader:
                       '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)}',
                   subHeaderText: '${challanDetails['challanNo'] ?? ''}',
-                ),
-                backButton: true,
-                callBack: onClickOfBackButton);
+            subtitleFun: () => getLocalizedData(isUpdate, context, challanDetails)
+                ),backButton: true,
+                callBack: onClickOfBackButton,
+        );
+
       }));
     } on CustomException catch (e, s) {
       Navigator.pop(context);
@@ -156,6 +150,27 @@ class ExpensesDetailsProvider with ChangeNotifier {
       ErrorHandler.logError(e.toString(), s);
       Navigator.pop(context);
     }
+  }
+
+
+  String getLocalizedData(bool isUpdate, BuildContext context, Map challanDetails){
+    late String localizationText;
+    if (isUpdate) {
+      localizationText =
+      '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_BILL_ID)}';
+      localizationText = localizationText.replaceFirst(
+          '< Bill ID>', '${challanDetails['challanNo'] ?? ''}');
+    } else {
+      localizationText =
+      '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}';
+      localizationText = localizationText.replaceFirst(
+          '<Vendor>', expenditureDetails.vendorNameCtrl.text.trim());
+      localizationText = localizationText.replaceFirst(
+          '<Amount>', expenditureDetails.expensesAmount?.first.amount ?? '');
+      localizationText = localizationText.replaceFirst(
+          '<type of expense>', '${ApplicationLocalizations.of(context).translate(expenditureDetails.expenseType ?? '')}');
+    }
+    return localizationText;
   }
 
   void onClickOfBackButton() {
@@ -297,7 +312,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   Future<void> searchExpense(
-      Map<String, dynamic> query, String criteria, BuildContext context) async {
+      Map<String, dynamic> query, String Function() criteria, BuildContext context) async {
     try {
       Loaders.showLoadingDialog(context);
 

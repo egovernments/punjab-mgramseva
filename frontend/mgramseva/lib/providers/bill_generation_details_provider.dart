@@ -44,6 +44,7 @@ class BillGenerationProvider with ChangeNotifier {
   var selectedBillCycle;
   var meterReadingDate;
   var prevReadingDate;
+  var readingExist;
 
   setModel(String? id, WaterConnection? waterConnection,
       BuildContext context) async {
@@ -113,21 +114,19 @@ class BillGenerationProvider with ChangeNotifier {
   }
 
   setMeterReading(meterRes) {
-    if (meterRes.meterReadings!.length > 0) {
+    if (meterRes.meterReadings!.length > 0 && meterRes.meterReadings!.first.currentReading.toString() != '0') {
+      readingExist = false;
+      var previousMeterReading = meterRes.meterReadings!.first.currentReading.toString().padLeft(5, '0');
       billGenerateDetails.meterNumberCtrl.text = waterconnection.meterId!;
-      billGenerateDetails.om_1Ctrl.text =
-          meterRes.meterReadings!.first.currentReading.toString()[0];
-      billGenerateDetails.om_2Ctrl.text =
-          meterRes.meterReadings!.first.currentReading.toString()[1];
-      billGenerateDetails.om_3Ctrl.text =
-          meterRes.meterReadings!.first.currentReading.toString()[2];
-      billGenerateDetails.om_4Ctrl.text =
-          meterRes.meterReadings!.first.currentReading.toString()[3];
-      billGenerateDetails.om_5Ctrl.text =
-          meterRes.meterReadings!.first.currentReading.toString()[4];
+      billGenerateDetails.om_1Ctrl.text = previousMeterReading.toString()[0];
+      billGenerateDetails.om_2Ctrl.text = previousMeterReading.toString()[1];
+      billGenerateDetails.om_3Ctrl.text = previousMeterReading.toString()[2];
+      billGenerateDetails.om_4Ctrl.text = previousMeterReading.toString()[3];
+      billGenerateDetails.om_5Ctrl.text = previousMeterReading.toString()[4];
       prevReadingDate = meterRes.meterReadings!.first.currentReadingDate;
     } else if (waterconnection.additionalDetails!.meterReading.toString() !=
         '0') {
+      readingExist = false;
       var previousMeterReading = waterconnection.additionalDetails!.meterReading
           .toString()
           .padLeft(5, '0');
@@ -138,6 +137,10 @@ class BillGenerationProvider with ChangeNotifier {
       billGenerateDetails.om_5Ctrl.text = previousMeterReading.toString()[4];
       prevReadingDate = waterconnection.previousReadingDate;
     }
+    else{
+      readingExist = true;
+    }
+    notifyListeners();
   }
 
   dispose() {
@@ -174,7 +177,7 @@ class BillGenerationProvider with ChangeNotifier {
             dateFormat: "dd/MM/yyyy")) +
         "-" +
         DateFormats.getFilteredDate(
-            (new DateTime(result.year, result.month + 1, result.day))
+            (new DateTime(result.year, result.month + 1, 0))
                 .toLocal()
                 .toString(),
             dateFormat: "dd/MM/yyyy");
@@ -271,14 +274,16 @@ class BillGenerationProvider with ChangeNotifier {
             }).then((value) => billList = value);
             Navigator.pop(context);
             if (billResponse1 != null) {
+              late String localizationText;
+              localizationText = '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT)}';
+              localizationText = localizationText.replaceFirst('<number>', '(+91 - ${billList.bill!.first.mobileNumber})');
               Navigator.of(context).pushReplacement(
                   new MaterialPageRoute(builder: (BuildContext context) {
                 return CommonSuccess(
                   SuccessHandler(
                       ApplicationLocalizations.of(context)
                           .translate(i18.demandGenerate.GENERATE_BILL_SUCCESS),
-                      '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT)}'
-                      ' (+91 - ${billList.bill!.first.mobileNumber})',
+                      localizationText,
                       ApplicationLocalizations.of(context)
                           .translate(i18.common.COLLECT_PAYMENT),
                       Routes.BILL_GENERATE,
@@ -344,23 +349,19 @@ class BillGenerationProvider with ChangeNotifier {
         var billResponse2 = await BillGenerateRepository().bulkDemand(res2);
         Navigator.pop(context);
         if (billResponse2 != null) {
+           String localizationText = getSubtitleText(context);
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
             return CommonSuccess(SuccessHandler(
               ApplicationLocalizations.of(context)
                   .translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS),
-              ApplicationLocalizations.of(context).translate(
-                      i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT) +
-                  ' $selectedBillCycle' +
-                  ' ${selectedBillYear.financialYear!.toString().substring(2)}. ' +
-                  ApplicationLocalizations.of(context).translate(
-                      i18.demandGenerate.GENERATE_DEMAND_SUCCESS_NEXT_SUBTEXT),
+              localizationText,
               i18.common.BACK_HOME,
               Routes.BILL_GENERATE,
               subHeader:
                   '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)}',
-              subHeaderText: '$selectedBillCycle' +
-                  ' ${selectedBillYear.financialYear!.toString().substring(2)}',
+              subTextFun: () => getLocalizedText(context),
+              subtitleFun: () => getSubtitleText(context)
             ));
           }));
         }
@@ -374,6 +375,20 @@ class BillGenerationProvider with ChangeNotifier {
       autoValidation = true;
       notifyListeners();
     }
+  }
+
+  String getSubtitleText(BuildContext context){
+    late String localizationText;
+
+    localizationText = '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT)}';
+    localizationText = localizationText.replaceFirst('<billing cycle>', '${ApplicationLocalizations.of(context).translate(selectedBillCycle.toString())}' +
+        ' ${selectedBillYear.financialYear!.toString().substring(2)}');
+    return localizationText;
+  }
+
+  String getLocalizedText(BuildContext context){
+   return  '${ApplicationLocalizations.of(context).translate(selectedBillCycle)}' +
+        ' ${selectedBillYear.financialYear!.toString().substring(2)}';
   }
 
   List<DropdownMenuItem<Object>> getPropertyTypeList() {

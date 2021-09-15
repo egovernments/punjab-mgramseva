@@ -83,6 +83,7 @@ class SelectFieldBuilder extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
         return Container(
+          key: contextkey,
           margin:
               const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
           child: Row(children: [
@@ -108,6 +109,7 @@ class SelectFieldBuilder extends StatelessWidget {
         );
       } else {
         return Container(
+          key: contextkey,
           margin: const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
           child: Column(children: [
             Container(

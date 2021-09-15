@@ -32,13 +32,22 @@ class SuccessHandler {
   @JsonKey(name: "downloadLinkLabel")
   String? downloadLinkLabel;
 
+  @JsonKey(name: "subHeaderFun")
+  String Function()? subTextFun;
+
+  @JsonKey(name: "subtitleFun")
+  String Function()? subtitleFun;
+
+  @JsonKey(name: "subHeaderFun")
+  String Function()? subHeaderFun;
+
   SuccessHandler(
       this.header, this.subtitle, this.backButtonText, this.routeParentPath,
       {this.subHeader,
       this.whatsAppShare,
       this.downloadLink,
       this.downloadLinkLabel,
-      this.subHeaderText});
+      this.subHeaderText, this.subTextFun, this.subtitleFun, this.subHeaderFun});
 
   factory SuccessHandler.fromJson(Map<String, dynamic> json) =>
       _$SuccessHandlerFromJson(json);
