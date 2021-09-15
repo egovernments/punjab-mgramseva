@@ -349,10 +349,7 @@ class BillGenerationProvider with ChangeNotifier {
         var billResponse2 = await BillGenerateRepository().bulkDemand(res2);
         Navigator.pop(context);
         if (billResponse2 != null) {
-          late String localizationText;
-          localizationText = '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT)}';
-          localizationText = localizationText.replaceFirst('<billing cycle>', '${ApplicationLocalizations.of(context).translate(selectedBillCycle.toString())}' +
-              ' ${selectedBillYear.financialYear!.toString().substring(2)}');
+           String localizationText = getSubtitleText(context);
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
             return CommonSuccess(SuccessHandler(
@@ -363,8 +360,8 @@ class BillGenerationProvider with ChangeNotifier {
               Routes.BILL_GENERATE,
               subHeader:
                   '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)}',
-              subHeaderText: '$selectedBillCycle' +
-                  ' ${selectedBillYear.financialYear!.toString().substring(2)}',
+              subTextFun: () => getLocalizedText(context),
+              subtitleFun: () => getSubtitleText(context)
             ));
           }));
         }
@@ -378,6 +375,20 @@ class BillGenerationProvider with ChangeNotifier {
       autoValidation = true;
       notifyListeners();
     }
+  }
+
+  String getSubtitleText(BuildContext context){
+    late String localizationText;
+
+    localizationText = '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT)}';
+    localizationText = localizationText.replaceFirst('<billing cycle>', '${ApplicationLocalizations.of(context).translate(selectedBillCycle.toString())}' +
+        ' ${selectedBillYear.financialYear!.toString().substring(2)}');
+    return localizationText;
+  }
+
+  String getLocalizedText(BuildContext context){
+   return  '${ApplicationLocalizations.of(context).translate(selectedBillCycle)}' +
+        ' ${selectedBillYear.financialYear!.toString().substring(2)}';
   }
 
   List<DropdownMenuItem<Object>> getPropertyTypeList() {

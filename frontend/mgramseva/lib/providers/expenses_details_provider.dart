@@ -121,8 +121,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
                 i18.expense.MODIFIED_EXPENDITURE_SUCCESSFULLY,
                 localizationText,
                 i18.common.BACK_HOME,
-                isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD), backButton: true,
-                subText: () => getLocalizedData(isUpdate, context, challanDetails),
+                isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD, subtitleFun: () => getLocalizedData(isUpdate, context, challanDetails)), backButton: true,
         )
             : CommonSuccess(
                 SuccessHandler(
@@ -133,9 +132,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
                   subHeader:
                       '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)}',
                   subHeaderText: '${challanDetails['challanNo'] ?? ''}',
+            subtitleFun: () => getLocalizedData(isUpdate, context, challanDetails)
                 ),backButton: true,
                 callBack: onClickOfBackButton,
-            subText: () => getLocalizedData(isUpdate, context, challanDetails)
         );
       }));
     } on CustomException catch (e, s) {
