@@ -256,7 +256,7 @@ class CommonProvider with ChangeNotifier {
 
   void onLogout() {
     navigatorKey.currentState
-        ?.pushNamedAndRemoveUntil(Routes.LOGIN, (route) => false);
+        ?.pushNamedAndRemoveUntil(Routes.SELECT_LANGUAGE, (route) => false);
     loginCredentails = null;
   }
 
