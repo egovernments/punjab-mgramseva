@@ -324,12 +324,14 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         direction: Axis.vertical,
         spacing: 3,
         children: [
-          Text(
+          Padding(padding: EdgeInsets.only(right: 8),
+              child: Text(
               '${ApplicationLocalizations.of(context).translate('BL_${billdemandDetails?.billAccountDetails?.first.taxHeadCode}')}',
-              style: style),
-          Text(
+              style: style)),
+          Padding(padding: EdgeInsets.only(right: 8),
+            child:Text(
               '${DateFormats.getMonthWithDay(billdemandDetails?.fromPeriod)}-${DateFormats.getMonthWithDay(billdemandDetails?.toPeriod)}',
-              style: style),
+              style: style)),
         ],
       ),
     );
