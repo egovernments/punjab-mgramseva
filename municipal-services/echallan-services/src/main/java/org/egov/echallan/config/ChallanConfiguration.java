@@ -233,4 +233,10 @@ public class ChallanConfiguration {
 	@Value("${egov.day.collection.link}")
 	private String dayCollectionLink;
 	
+	
+// adding Event notification paths.
+	
+	@Value("${egov.expenditure.link}")
+	private String newExpenditureLink;
+	
 }

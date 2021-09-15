@@ -157,7 +157,7 @@ public class SchedulerService {
 	public EventRequest sendNewExpenditureNotification(RequestInfo requestInfo, String tenantId) {
 
 		List<ActionItem> items = new ArrayList<>();
-		String actionLink = config.getUiAppHost() + config.getExpenditureLink();
+		String actionLink = config.getUiAppHost() + config.getNewExpenditureLink();
 		ActionItem item = ActionItem.builder().actionUrl(actionLink).build();
 		items.add(item);
 		Action action = Action.builder().actionUrls(items).build();
