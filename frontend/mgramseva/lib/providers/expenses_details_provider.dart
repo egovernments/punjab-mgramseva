@@ -57,8 +57,14 @@ class ExpensesDetailsProvider with ChangeNotifier {
         expenditureDetails = expensesDetails;
         getStoreFileDetails();
       } else if (id != null) {
+        var commonProvider =
+        Provider.of<CommonProvider>(context, listen: false);
+        var query = {
+          'tenantId': commonProvider.userDetails?.selectedtenant?.code,
+          'challanNo': id
+        };
         var expenditure =
-            await ExpensesRepository().searchExpense({'challanNo': id});
+        await ExpensesRepository().searchExpense(query);
         if (expenditure != null && expenditure.isNotEmpty) {
           expenditureDetails = expenditure.first;
           getStoreFileDetails();

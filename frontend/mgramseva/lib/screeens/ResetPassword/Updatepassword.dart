@@ -180,8 +180,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                         Validators.passwordComparision(
                                             val,
                                             ApplicationLocalizations.of(context)
-                                                .translate(i18.password
-                                                    .CORE_COMMON_NEW_PASSWORD)),
+                                                .translate(i18.password.NEW_PASSWORD_ENTER)),
                                     onChange: saveInput,
                                   ),
                                   BuildTextField(
@@ -195,8 +194,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                         Validators.passwordComparision(
                                             val,
                                             ApplicationLocalizations.of(context)
-                                                .translate(i18.password
-                                                    .CORE_COMMON_CONFIRM_NEW_PASSWORD),
+                                                .translate(i18.password.CONFIRM_PASSWORD_ENTER),
                                             newPassword.text),
                                     onChange: saveInput,
                                   ),
