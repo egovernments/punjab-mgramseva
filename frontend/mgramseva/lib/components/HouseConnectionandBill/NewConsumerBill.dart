@@ -159,7 +159,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                               DateFormats.timeStampToDate(
                                                       billList
                                                           .bill!.first.billDate,
-                                                      format: "dd-MM-yyyy")
+                                                      format: "dd/MM/yyyy")
                                                   .toString(),
                                               context)
                                           : Text(""),

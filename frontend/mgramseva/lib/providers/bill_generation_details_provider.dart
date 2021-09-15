@@ -477,7 +477,7 @@ class BillGenerationProvider with ChangeNotifier {
         return DropdownMenuItem(
           value: value['code'].toLocal().toString(),
           child: new Text(
-              (Constants.MONTHS[d.month - 1]) + " - " + d.year.toString()),
+          ApplicationLocalizations.of(navigatorKey.currentContext!).translate((Constants.MONTHS[d.month - 1])) + " - " + d.year.toString()),
         );
       }).toList();
     }
