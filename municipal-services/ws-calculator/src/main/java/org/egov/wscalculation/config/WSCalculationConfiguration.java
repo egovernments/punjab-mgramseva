@@ -211,4 +211,10 @@ public class WSCalculationConfiguration {
     
     @Value("${egov.url.shortner.endpoint}")
     private String urlShortnerEndpoint;
+    
+    // Demand SMS link 
+
+	@Value("${egov.demand.gp.user.link}")
+	private String gpUserDemandLink;
+	
 }

@@ -257,6 +257,8 @@ public class WSCalculationConstant {
 	public static final String WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE = "WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE";
 
 	public static final String mGram_Consumer_NewBill = "mGram.Consumer.NewBill";
+	
+	public static final String mGram_Consumer_NewDemand = "mGram.GP.MonthlyDemandGenerated";
 
 	public static final String NEW_BULK_DEMAND_EVENT = "NEW_BULK_DEMAND_EVENT";
 

@@ -221,6 +221,9 @@ public class SchedulerService {
 
 							HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
 									NEW_EXPENDITURE_SMS, tenantId);
+							
+							String addExpense = config.getUiAppHost() + config.getExpenditureLink();
+							System.out.println("ADD Expense Link :: " + addExpense);
 							for (UserInfo userInfo : userDetailResponse.getUser())
 								if (userInfo.getName() != null) {
 									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
@@ -232,7 +235,7 @@ public class SchedulerService {
 										&& !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
 									String message = messageMap.get(NotificationUtil.MSG_KEY);
 
-									message = message.replace("{NEW_EXP_LINK}", getShortenedUrl(config.getExpenditureLink()));
+									message = message.replace("{NEW_EXP_LINK}", getShortenedUrl(addExpense));
 									message = message.replace("{GPWSC}", tenantId);
 									System.out.println("New Expenditure SMS :: " + message);
 
@@ -393,6 +396,9 @@ public class SchedulerService {
 								} else {
 									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
 								}
+
+							String addExpense = config.getUiAppHost() + config.getMarkPaidExpenditureLink();
+							System.out.println("ADD Expense Link :: " + addExpense);
 							
 							HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
 									MARK_PAID_BILL_SMS, tenantId);
@@ -401,7 +407,7 @@ public class SchedulerService {
 								if (messageMap != null
 										&& !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
 									String message = messageMap.get(NotificationUtil.MSG_KEY);
-									message = message.replace("{EXP_MRK_LINK}", getShortenedUrl(config.getExpenseBillMarkPaidLink()));
+									message = message.replace("{EXP_MRK_LINK}", getShortenedUrl(addExpense));
 
 									message = message.replace("{GPWSC}", tenantId); // TODO Replace
 									// <GPWSC> with
@@ -506,6 +512,8 @@ public class SchedulerService {
 							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
 									Arrays.asList("EXPENSE_PROCESSING"));
 
+							String revenueLink = config.getUiAppHost() + config.getMonthRevenueDashboardLink();
+							
 							Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 							for (UserInfo userInfo : userDetailResponse.getUser())
 								if (userInfo.getName() != null) {
@@ -519,7 +527,7 @@ public class SchedulerService {
 									String uuidUsername = (String) map.getValue();
 									String message = formatMonthSummaryMessage(requestInfo, tenantId,
 											messageMap.get(NotificationUtil.MSG_KEY));
-									message = message.replace("{LINK}", getShortenedUrl(config.getMonthDashboardLink()));
+									message = message.replace("{LINK}", getShortenedUrl(revenueLink));
 									message = message.replace("{GPWSC}", tenantId); // TODO Replace
 									// <GPWSC> with
 									// value
@@ -598,6 +606,7 @@ public class SchedulerService {
 							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
 									tenantId, Arrays.asList("GP_ADMIN"));
 
+							String penColLink = config.getUiAppHost() + config.getMonthRevenueDashboardLink();
 							Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 
 							for (UserInfo userInfo : userDetailResponse.getUser())
@@ -613,7 +622,7 @@ public class SchedulerService {
 									String message = formatPendingCollectionMessage(requestInfo, tenantId,
 											messageMap.get(NotificationUtil.MSG_KEY));
 									message = message.replace("{PENDING_COL_LINK}",
-											getShortenedUrl(config.getMonthRevenueDashboardLink()));
+											getShortenedUrl(penColLink));
 									message = message.replace("{GPWSC}", tenantId);
 									message = message.replace("{ownername}", uuidUsername);
 									message = message.replace("{Date}", LocalDate.now().toString());

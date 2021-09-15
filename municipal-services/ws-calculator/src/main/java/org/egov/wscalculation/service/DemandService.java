@@ -880,6 +880,41 @@ public class DemandService {
 			util.sendEventNotification(eventReq);
 		} 
 		
+		
+		// GP User message
+		
+		HashMap<String, String> demandMessage = util.getLocalizationMessage(bulkDemand.getRequestInfo(),
+				WSCalculationConstant.mGram_Consumer_NewDemand, bulkDemand.getTenantId());
+
+		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(bulkDemand.getRequestInfo(),
+				Arrays.asList("COLLECTION_OPERATOR"), bulkDemand.getTenantId());
+		Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+
+		
+		String msgLink = config.getUiAppHost() + config.getGpUserDemandLink();
+		
+		for (OwnerInfo userInfo : userDetailResponse.getUser())
+			if (userInfo.getName() != null) {
+				mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
+			} else {
+				mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
+			}
+		mobileNumberIdMap.entrySet().stream().forEach(map -> {
+			String msg = demandMessage.get(WSCalculationConstant.MSG_KEY);
+			msg = msg.replace("{ownername}", map.getValue());
+			msg = msg.replace("{villagename}", bulkDemand.getTenantId());
+			msg = msg.replace("{billingcycle}", billingPeriod);
+			msg = msg.replace("{LINK}", msgLink);
+
+			System.out.println("Demand GP USER SMS::" + msg);
+
+			SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(msg)
+					.category(Category.TRANSACTION).build();
+
+			producer.push(config.getSmsNotifTopic(), smsRequest);
+
+		});
+		
 		Set<String> connectionSet = connectionNos.stream().collect(Collectors.toSet());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		Date billingStrartDate;
