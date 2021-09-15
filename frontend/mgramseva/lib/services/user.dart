@@ -17,9 +17,6 @@ import 'dart:convert';
 import 'package:mgramseva/services/LocalStorage.dart';
 
 Future<http.Response> login(url, details, context) async {
-  print(url);
-  print(details);
-
   var response = await http.post(Uri.parse(url),
       headers: {
         HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
@@ -54,7 +51,14 @@ Future<http.Response> login(url, details, context) async {
 }
 
 Future otpforresetpassword(details, context) async {
-  final requestInfo = RequestInfo(APIConstants.API_MODULE_NAME, APIConstants.API_VERSION, APIConstants.API_TS, "_search", APIConstants.API_DID, APIConstants.API_KEY, APIConstants.API_MESSAGE_ID,
+  final requestInfo = RequestInfo(
+      APIConstants.API_MODULE_NAME,
+      APIConstants.API_VERSION,
+      APIConstants.API_TS,
+      "_search",
+      APIConstants.API_DID,
+      APIConstants.API_KEY,
+      APIConstants.API_MESSAGE_ID,
       "2cc113a0-e3c8-4665-9a41-21746e27f2fb");
   var response = await http.post(
       Uri.parse(apiBaseUrl.toString() + UserUrl.OTP_RESET_PASSWORD),

@@ -111,23 +111,23 @@ class CollectPaymentProvider with ChangeNotifier {
       var paymentDetails = await ConsumerRepository().collectPayment(payment);
       if (paymentDetails != null && paymentDetails.payments!.length > 0) {
         Navigator.pop(context);
-        print(paymentDetails);
         Navigator.of(context).pushReplacement(
             new MaterialPageRoute(builder: (BuildContext context) {
           return CommonSuccess(
             SuccessHandler(
-              i18.common.PAYMENT_COMPLETE,
-              '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${fetchBill.mobileNumber})',
-              i18.common.BACK_HOME,
-              Routes.HOUSEHOLD_DETAILS_SUCCESS,
-              subHeader:
-                  '${ApplicationLocalizations.of(context).translate(i18.common.RECEIPT_NO)} \n ${paymentDetails.payments!.first.paymentDetails!.first.receiptNumber}',
-              downloadLink: i18.common.RECEIPT_DOWNLOAD,
-              whatsAppShare: i18.common.SHARE_RECEIPTS,
-              downloadLinkLabel: i18.common.RECEIPT_DOWNLOAD,
-              subtitleFun: () => getSubtitleDynamicLocalization(context, fetchBill),
-              subHeaderFun: () => getSubHeaderDynamicLocalization(context, paymentDetails)
-            ),
+                i18.common.PAYMENT_COMPLETE,
+                '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${fetchBill.mobileNumber})',
+                i18.common.BACK_HOME,
+                Routes.HOUSEHOLD_DETAILS_SUCCESS,
+                subHeader:
+                    '${ApplicationLocalizations.of(context).translate(i18.common.RECEIPT_NO)} \n ${paymentDetails.payments!.first.paymentDetails!.first.receiptNumber}',
+                downloadLink: i18.common.RECEIPT_DOWNLOAD,
+                whatsAppShare: i18.common.SHARE_RECEIPTS,
+                downloadLinkLabel: i18.common.RECEIPT_DOWNLOAD,
+                subtitleFun: () =>
+                    getSubtitleDynamicLocalization(context, fetchBill),
+                subHeaderFun: () =>
+                    getSubHeaderDynamicLocalization(context, paymentDetails)),
             callBackdownload: () => commonProvider.getFileFromPDFPaymentService(
                 {
                   "Payments": [paymentDetails.payments!.first]
@@ -170,15 +170,19 @@ class CollectPaymentProvider with ChangeNotifier {
     }
   }
 
-  String getSubtitleDynamicLocalization(BuildContext context, FetchBill fetchBill){
+  String getSubtitleDynamicLocalization(
+      BuildContext context, FetchBill fetchBill) {
     String localizationText = '';
-    localizationText = '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)}';
-    localizationText = localizationText.replaceFirst('<Number>', '(+91 - ${fetchBill.mobileNumber})');
+    localizationText =
+        '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)}';
+    localizationText = localizationText.replaceFirst(
+        '<Number>', '(+91 - ${fetchBill.mobileNumber})');
     return localizationText;
   }
 
-  String getSubHeaderDynamicLocalization(BuildContext context, BillPayments paymentDetails){
-   return '${ApplicationLocalizations.of(context).translate(i18.common.RECEIPT_NO)} \n ${paymentDetails.payments!.first.paymentDetails!.first.receiptNumber}';
+  String getSubHeaderDynamicLocalization(
+      BuildContext context, BillPayments paymentDetails) {
+    return '${ApplicationLocalizations.of(context).translate(i18.common.RECEIPT_NO)} \n ${paymentDetails.payments!.first.paymentDetails!.first.receiptNumber}';
   }
 
   onClickOfViewOrHideDetails(FetchBill fetchBill, BuildContext context) {

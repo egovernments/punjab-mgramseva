@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/widgets/SearchSelectFieldBuilder.dart';
+import 'package:provider/provider.dart';
 
 class SelectFieldBuilder extends StatelessWidget {
   final String labelText;
@@ -95,8 +97,17 @@ class SelectFieldBuilder extends StatelessWidget {
                 padding: EdgeInsets.only(top: 18, bottom: 3),
                 child: Column(
                   children: [
-                    SearchSelectField(labelText, options, controller, widget,
-                        value, isEnabled, isRequired, requiredMessage),
+                    Consumer<LanguageProvider>(
+                        builder: (_, consumerProvider, child) =>
+                            SearchSelectField(
+                                labelText,
+                                options,
+                                controller,
+                                widget,
+                                value,
+                                isEnabled,
+                                isRequired,
+                                requiredMessage)),
                     CommonWidgets().buildHint(
                       hint,
                       context,
@@ -114,8 +125,16 @@ class SelectFieldBuilder extends StatelessWidget {
                 padding: EdgeInsets.only(top: 18, bottom: 3),
                 child: new Align(
                     alignment: Alignment.centerLeft, child: textLabelwidget)),
-            SearchSelectField(labelText, options, controller, widget, value,
-                isEnabled, isRequired, requiredMessage),
+            Consumer<LanguageProvider>(
+                builder: (_, consumerProvider, child) => SearchSelectField(
+                    labelText,
+                    options,
+                    controller,
+                    widget,
+                    value,
+                    isEnabled,
+                    isRequired,
+                    requiredMessage)),
             CommonWidgets().buildHint(hint, context)
           ]),
         );

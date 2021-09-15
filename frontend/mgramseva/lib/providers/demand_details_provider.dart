@@ -21,7 +21,6 @@ class DemadDetailProvider with ChangeNotifier {
         "consumerCode": data.connectionNo.toString(),
         "businessService": "WS"
       }).then((value) {
-        print(value.demands!.length);
         if (value.demands!.length > 0) {
           value.demands!.sort((a, b) => b
               .demandDetails!.first.auditDetails!.createdTime!

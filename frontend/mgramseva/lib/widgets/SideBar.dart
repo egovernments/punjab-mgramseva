@@ -17,7 +17,6 @@ class SideBar extends StatelessWidget {
   Widget build(BuildContext context) {
     const iconColor = Color(0xff505A5F);
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    print(commonProvider);
     return new ListView(children: <Widget>[
       Container(
           height: 200.0,

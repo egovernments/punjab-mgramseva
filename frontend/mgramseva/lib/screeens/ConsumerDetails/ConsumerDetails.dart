@@ -48,7 +48,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   FocusNode _numberFocus = new FocusNode();
 
   saveInput(context) async {
-    print(context);
+    // print(context);
   }
 
   @override

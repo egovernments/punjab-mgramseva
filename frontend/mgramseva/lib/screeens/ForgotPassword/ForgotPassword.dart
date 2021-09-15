@@ -36,8 +36,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     super.dispose();
   }
 
-  void _onFocusChange(){
-    if(!_numberFocus.hasFocus){
+  void _onFocusChange() {
+    if (!_numberFocus.hasFocus) {
       setState(() {
         phoneNumberAutoValidation = true;
       });
@@ -45,7 +45,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   }
 
   saveInputandcall(context) async {
-    print(context);
     var otpProvider =
         Provider.of<ForgotPasswordProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
@@ -100,7 +99,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       FilteringTextInputFormatter.allow(RegExp("[0-9]"))
                     ],
                     focusNode: _numberFocus,
-                    autoValidation: phoneNumberAutoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
+                    autoValidation: phoneNumberAutoValidation
+                        ? AutovalidateMode.always
+                        : AutovalidateMode.disabled,
                     maxLength: 10,
                     validator: Validators.mobileNumberValidator,
                     textInputType: TextInputType.phone,
