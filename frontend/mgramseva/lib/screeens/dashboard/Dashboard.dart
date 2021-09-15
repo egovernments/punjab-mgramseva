@@ -20,6 +20,10 @@ import 'search_expense.dart';
 import 'package:mgramseva/widgets/pagination.dart';
 
 class Dashboard extends StatefulWidget {
+  final int initialTabIndex;
+
+  const Dashboard({Key? key, this.initialTabIndex = 0}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _Dashboard();
@@ -46,7 +50,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
               CommonMethods.getPastMonthUntilFinancialYear().reversed.toList();
     dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
     dashBoardProvider.debounce = null;
-    _tabController = new TabController(vsync: this, length: 2);
+    _tabController = new TabController(vsync: this, length: 2, initialIndex: widget.initialTabIndex);
     _tabController.addListener(() {
       FocusScope.of(context).unfocus();
       dashBoardProvider.debounce = null;
