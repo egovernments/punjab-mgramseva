@@ -236,7 +236,23 @@ public class ChallanConfiguration {
 	
 // adding Event notification paths.
 	
-	@Value("${egov.expenditure.link}")
+	@Value("${egov.pending.collection.link}")
+	private String pendingCollectionLink;
+	
+	@Value("${egov.monthly.summary.link}")
+	private String monthlySummary;
+
+	@Value("${egov.new.Expenditure.link}")
 	private String newExpenditureLink;
+
+	@Value("${egov.mark.paid.Expenditure.link}")
+	private String markPaidExpenditureLink;
+
+	@Value("${egov.bilk.demand.failed.link}")
+	private String bulkDemandFailedLink;
+
+	@Value("${egov.today.collection.link}")
+	private String todayCollectionLink;
+	
 	
 }
