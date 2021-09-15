@@ -128,6 +128,13 @@ class DashBoardProvider with ChangeNotifier {
     notifyListeners();
     try {
       var response = await ExpensesRepository().expenseDashboard(query);
+
+      var searchResponse;
+      if(isSearch && selectedTab != 'all'){
+        query.remove('isBillPaid');
+        searchResponse = await ExpensesRepository().expenseDashboard(query);
+      }
+
       isLoaderEnabled = false;
 
       if (selectedDashboardType != DashBoardType.Expenditure) return;
@@ -137,7 +144,12 @@ class DashBoardProvider with ChangeNotifier {
         expenditureCountHolder['all'] = response.totalCount ?? 0;
         expenditureCountHolder['pending'] = int.parse(response.billDataCount?.notPaidCount ?? '0');
         expenditureCountHolder['paid'] = int.parse(response.billDataCount?.paidCount ?? '0');
-         }
+         }else if(searchResponse != null){
+          expenditureCountHolder['all'] = searchResponse.totalCount ?? 0;
+          expenditureCountHolder['pending'] = int.parse(searchResponse.billDataCount?.notPaidCount ?? '0');
+          expenditureCountHolder['paid'] = int.parse(searchResponse.billDataCount?.paidCount ?? '0');
+        }
+
         if (expenseDashboardDetails == null) {
           expenseDashboardDetails = response;
           notifyListeners();
@@ -226,6 +238,13 @@ class DashBoardProvider with ChangeNotifier {
       isLoaderEnabled = true;
       notifyListeners();
       var response = await SearchConnectionRepository().getconnection(query);
+
+      var searchResponse;
+      if(isSearch && selectedTab != 'all'){
+        query.remove('propertyType');
+        searchResponse = await SearchConnectionRepository().getconnection(query);
+      }
+
       isLoaderEnabled = false;
       if (selectedDashboardType != DashBoardType.collections) return;
       if (response != null) {
@@ -236,6 +255,11 @@ class DashBoardProvider with ChangeNotifier {
             collectionCountHolder['all'] = response.totalCount ?? 0;
             propertyTaxList.forEach((key) {
               collectionCountHolder[key.code!] = int.parse(response.tabData?[key.code!] ?? '0');
+            });
+          }else if(searchResponse != null){
+            collectionCountHolder['all'] = searchResponse.totalCount ?? 0;
+            propertyTaxList.forEach((key) {
+              collectionCountHolder[key.code!] = int.parse(searchResponse.tabData?[key.code!] ?? '0');
             });
           }
 
