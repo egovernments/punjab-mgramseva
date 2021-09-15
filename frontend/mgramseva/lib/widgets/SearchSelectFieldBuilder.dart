@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:provider/provider.dart';
 
 class SearchSelectField extends StatefulWidget {
   final String labelText;
@@ -19,6 +21,7 @@ class SearchSelectField extends StatefulWidget {
 class _SearchSelectFieldState extends State<SearchSelectField> {
   final FocusNode _focusNode = FocusNode();
   bool isinit = false;
+  var selectedCode;
   // ignore: non_constant_identifier_names
   List<DropdownMenuItem<Object>> Options = [];
   late OverlayEntry _overlayEntry;
@@ -27,7 +30,6 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         this._overlayEntry = this._createOverlayEntry();
@@ -41,8 +43,12 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
   }
 
   afterViewBuild() {
-    widget.controller?.text =
-        ApplicationLocalizations.of(context).translate(widget.value ?? '');
+    var res = widget.options
+        .where((e) => (e.value.toString() == (widget.value.toString())));
+    if (res.isNotEmpty && _focusNode.hasFocus == false) {
+      widget.controller?.text = ApplicationLocalizations.of(context)
+          .translate((res.first.child as Text).data.toString());
+    }
   }
 
   filerobjects(val) {
@@ -94,11 +100,18 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
                         Ink(
                             color: Colors.white,
                             child: ListTile(
-                              title: item.child,
+                              title: Text(ApplicationLocalizations.of(context)
+                                  .translate(
+                                      (item.child as Text).data.toString())),
                               onTap: () {
                                 Text txt = item.child as Text;
                                 widget.widget(item.value);
-                                widget.controller?.text = (txt.data.toString());
+                                setState(() {
+                                  selectedCode = item.value;
+                                });
+                                widget.controller?.text =
+                                    ApplicationLocalizations.of(context)
+                                        .translate((txt.data.toString()));
                                 _focusNode.unfocus();
                               },
                             )),
@@ -111,44 +124,52 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
 
   @override
   Widget build(BuildContext context) {
-    return CompositedTransformTarget(
-      link: this._layerLink,
-      child: TextFormField(
-        style: TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            color: (widget.isEnabled ?? true)
-                ? Theme.of(context).primaryColorDark
-                : Colors.grey),
-        controller: widget.controller,
-        onChanged: (value) => filerobjects(value),
-        focusNode: this._focusNode,
-        validator: (value) {
-          if (widget.options
-              .where((element) =>
-                  (element.child as Text).data.toString().toLowerCase() ==
-                  (value.toString().toLowerCase()))
-              .toList()
-              .isEmpty) {
-            return ApplicationLocalizations.of(context).translate(
-                widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
-          }
-          if (value!.trim().isEmpty && widget.isRequired) {
-            return ApplicationLocalizations.of(context).translate(
-                widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-          suffixIcon: Icon(Icons.arrow_drop_down),
-          errorMaxLines: 2,
-          enabled: widget.isEnabled ?? true,
-          fillColor: widget.isEnabled != null && widget.isEnabled!
-              ? Colors.grey
-              : Colors.white,
-          prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+    return Column(children: [
+      Consumer<LanguageProvider>(builder: (_, consumerProvider, child) {
+        WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+        return Text('');
+      }),
+      CompositedTransformTarget(
+        link: this._layerLink,
+        child: TextFormField(
+          style: TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: (widget.isEnabled ?? true)
+                  ? Theme.of(context).primaryColorDark
+                  : Colors.grey),
+          controller: widget.controller,
+          onChanged: (value) => filerobjects(value),
+          focusNode: this._focusNode,
+          validator: (value) {
+            if (widget.options
+                .where((element) =>
+                    ApplicationLocalizations.of(context)
+                        .translate((element.child as Text).data.toString())
+                        .toLowerCase() ==
+                    (value.toString().toLowerCase()))
+                .toList()
+                .isEmpty) {
+              return ApplicationLocalizations.of(context).translate(
+                  widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
+            }
+            if (value!.trim().isEmpty && widget.isRequired) {
+              return ApplicationLocalizations.of(context).translate(
+                  widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
+            }
+            return null;
+          },
+          decoration: InputDecoration(
+            suffixIcon: Icon(Icons.arrow_drop_down),
+            errorMaxLines: 2,
+            enabled: widget.isEnabled ?? true,
+            fillColor: widget.isEnabled != null && widget.isEnabled!
+                ? Colors.grey
+                : Colors.white,
+            prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+          ),
         ),
-      ),
-    );
+      )
+    ]);
   }
 }

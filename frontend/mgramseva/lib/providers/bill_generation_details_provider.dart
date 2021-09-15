@@ -413,9 +413,7 @@ class BillGenerationProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value,
-          child: new Text(
-              ApplicationLocalizations.of(navigatorKey.currentContext!)
-                  .translate(value.financialYear!)),
+          child: new Text((value.financialYear!)),
         );
       }).toList();
     }
@@ -429,9 +427,7 @@ class BillGenerationProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
-          child: new Text(
-              ApplicationLocalizations.of(navigatorKey.currentContext!)
-                  .translate(value.code!)),
+          child: new Text((value.code!)),
         );
       }).toList();
     }
@@ -466,10 +462,7 @@ class BillGenerationProvider with ChangeNotifier {
         return DropdownMenuItem(
           value: value['code'].toLocal().toString(),
           child: new Text(
-              ApplicationLocalizations.of(navigatorKey.currentContext!)
-                      .translate(Constants.MONTHS[d.month - 1]) +
-                  " - " +
-                  d.year.toString()),
+              (Constants.MONTHS[d.month - 1]) + " - " + d.year.toString()),
         );
       }).toList();
     }

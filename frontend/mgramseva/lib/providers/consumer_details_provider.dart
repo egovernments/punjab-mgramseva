@@ -361,9 +361,7 @@ class ConsumerProvider with ChangeNotifier {
       return (boundaryList).map((value) {
         return DropdownMenuItem(
           value: value,
-          child: new Text(
-              ApplicationLocalizations.of(navigatorKey.currentContext!)
-                  .translate(value.code!)),
+          child: new Text(value.code!),
         );
       }).toList();
     }
@@ -377,9 +375,7 @@ class ConsumerProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
-          child: new Text(
-              ApplicationLocalizations.of(navigatorKey.currentContext!)
-                  .translate(value.code!)),
+          child: new Text(value.code!),
         );
       }).toList();
     }
@@ -408,9 +404,7 @@ class ConsumerProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
-          child: new Text(
-              ApplicationLocalizations.of(navigatorKey.currentContext!)
-                  .translate(value.code!)),
+          child: new Text((value.code!)),
         );
       }).toList();
     }
@@ -446,10 +440,8 @@ class ConsumerProvider with ChangeNotifier {
         var d = value['name'];
         return DropdownMenuItem(
           value: value['code'].toLocal().toString(),
-          child: Text(ApplicationLocalizations.of(navigatorKey.currentContext!)
-                  .translate(Constants.MONTHS[d.month - 1]) +
-              " - " +
-              d.year.toString()),
+          child:
+              Text((Constants.MONTHS[d.month - 1]) + " - " + d.year.toString()),
         );
       }).toList();
     }

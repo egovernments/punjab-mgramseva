@@ -118,18 +118,20 @@ class ExpensesDetailsProvider with ChangeNotifier {
             '<Vendor>', expenditureDetails.vendorNameCtrl.text.trim());
         localizationText = localizationText.replaceFirst(
             '<Amount>', expenditureDetails.expensesAmount?.first.amount ?? '');
-        localizationText = localizationText.replaceFirst(
-            '<type of expense>', '${ApplicationLocalizations.of(context).translate(expenditureDetails.expenseType ?? '')}');
+        localizationText = localizationText.replaceFirst('<type of expense>',
+            '${ApplicationLocalizations.of(context).translate(expenditureDetails.expenseType ?? '')}');
       }
 
       navigatorKey.currentState
           ?.push(MaterialPageRoute(builder: (BuildContext context) {
         return isUpdate
-            ? CommonSuccess(SuccessHandler(
-                i18.expense.MODIFIED_EXPENDITURE_SUCCESSFULLY,
-                localizationText,
-                i18.common.BACK_HOME,
-                isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD), backButton: true)
+            ? CommonSuccess(
+                SuccessHandler(
+                    i18.expense.MODIFIED_EXPENDITURE_SUCCESSFULLY,
+                    localizationText,
+                    i18.common.BACK_HOME,
+                    isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD),
+                backButton: true)
             : CommonSuccess(
                 SuccessHandler(
                   i18.expense.CORE_EXPENSE_EXPENDITURE_SUCESS,
@@ -139,7 +141,8 @@ class ExpensesDetailsProvider with ChangeNotifier {
                   subHeader:
                       '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)}',
                   subHeaderText: '${challanDetails['challanNo'] ?? ''}',
-                ),backButton: true,
+                ),
+                backButton: true,
                 callBack: onClickOfBackButton);
       }));
     } on CustomException catch (e, s) {
@@ -217,15 +220,14 @@ class ExpensesDetailsProvider with ChangeNotifier {
         "boundaryType": "Locality",
         "tenantId": commonProvider.userDetails!.selectedtenant!.code
       });
-      if(result['TenantBoundary'] != null && result['TenantBoundary'].length > 0) {
+      if (result['TenantBoundary'] != null &&
+          result['TenantBoundary'].length > 0) {
         boundaryList.addAll(
-            TenantBoundary
-                .fromJson(result['TenantBoundary'][0])
-                .boundary!);
+            TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!);
       }
       if (boundaryList.length > 0) {
         code = boundaryList.first.code;
-      }else{
+      } else {
         code = commonProvider.userDetails?.selectedtenant?.city?.code;
       }
 
@@ -385,7 +387,8 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
-      var res = await CoreRepository().getMdms(getExpenseMDMS(commonProvider.userDetails!.userRequest!.tenantId.toString()));
+      var res = await CoreRepository().getMdms(getExpenseMDMS(
+          commonProvider.userDetails!.userRequest!.tenantId.toString()));
       languageList = res;
       notifyListeners();
     } catch (e, s) {
@@ -443,9 +446,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
-          child: new Text(
-              ApplicationLocalizations.of(navigatorKey.currentContext!)
-                  .translate(value.code!)),
+          child: new Text((value.code!)),
         );
       }).toList();
     }
@@ -458,19 +459,21 @@ class ExpensesDetailsProvider with ChangeNotifier {
         duration: new Duration(milliseconds: 100));
   }
 
-  onChangeOfMobileNumber(val){
-   var mobileNumber = expenditureDetails.mobileNumberController.text.trim();
-   if(mobileNumber.length < 10 || vendorList.isEmpty) return;
-   var index = vendorList.indexWhere((e) => e.owner?.mobileNumber.trim() == mobileNumber);
+  onChangeOfMobileNumber(val) {
+    var mobileNumber = expenditureDetails.mobileNumberController.text.trim();
+    if (mobileNumber.length < 10 || vendorList.isEmpty) return;
+    var index = vendorList
+        .indexWhere((e) => e.owner?.mobileNumber.trim() == mobileNumber);
 
-   if(index != -1){
-    expenditureDetails.vendorNameCtrl.text = vendorList[index].name.trim();
-    expenditureDetails.selectedVendor = Vendor(vendorList[index].name.trim(), vendorList[index].id);
-    notifyListeners();
-      }
-       }
+    if (index != -1) {
+      expenditureDetails.vendorNameCtrl.text = vendorList[index].name.trim();
+      expenditureDetails.selectedVendor =
+          Vendor(vendorList[index].name.trim(), vendorList[index].id);
+      notifyListeners();
+    }
+  }
 
-  callNotifyer(){
+  callNotifyer() {
     notifyListeners();
   }
 }
