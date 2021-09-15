@@ -38,7 +38,7 @@ class HomeItem {
 }
 
 class SearchResult {
-  final String label;
+  final String Function() label;
   final List<dynamic> result;
 
   SearchResult(this.label, this.result);

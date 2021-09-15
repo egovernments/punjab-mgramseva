@@ -48,7 +48,7 @@ class ExpenseResults extends StatelessWidget {
                                   '${ApplicationLocalizations.of(context).translate(i18.expense.FOLLOWING_EXPENDITURE_BILL_MATCH)}',
                             ),
                             TextSpan(
-                                text: '\t${searchResult.label}',
+                                text: '\t${searchResult.label()}',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontStyle: FontStyle.italic,

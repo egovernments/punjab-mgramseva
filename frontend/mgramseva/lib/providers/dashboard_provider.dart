@@ -160,7 +160,7 @@ class DashBoardProvider with ChangeNotifier {
         }
         notifyListeners();
         streamController.add(
-            expenseDashboardDetails!.expenseDetailList!.isEmpty!
+            expenseDashboardDetails!.expenseDetailList!.isEmpty
                 ? <ExpensesDetailsModel>[]
                 : expenseDashboardDetails?.expenseDetailList?.sublist(
                     offSet - 1,

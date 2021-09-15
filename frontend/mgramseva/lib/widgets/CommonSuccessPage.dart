@@ -19,12 +19,13 @@ class CommonSuccess extends StatelessWidget {
   final VoidCallback? callBackdownload;
   final bool? backButton;
   final bool isWithoutLogin;
+  final String Function()? subText;
 
   CommonSuccess(this.successHandler,
       {this.callBack,
       this.callBackwatsapp,
       this.callBackdownload,
-      this.backButton, this.isWithoutLogin = false});
+      this.backButton, this.isWithoutLogin = false, this.subText});
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +67,7 @@ class CommonSuccess extends StatelessWidget {
                                   left: 10, bottom: 20, top: 20, right: 10),
                               child: Text(
                                 ApplicationLocalizations.of(context)
-                                    .translate(successHandler.subtitle),
+                                    .translate(subText != null ? subText!() : successHandler.subtitle),
                                 style: TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w400),
                                 textAlign: TextAlign.start,

@@ -111,22 +111,8 @@ class ExpensesDetailsProvider with ChangeNotifier {
       Navigator.pop(context);
       var challanDetails = res['challans']?[0];
 
-      late String localizationText;
-      if (isUpdate) {
-        localizationText =
-            '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_BILL_ID)}';
-        localizationText = localizationText.replaceFirst(
-            '< Bill ID>', '${challanDetails['challanNo'] ?? ''}');
-      } else {
-        localizationText =
-            '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}';
-        localizationText = localizationText.replaceFirst(
-            '<Vendor>', expenditureDetails.vendorNameCtrl.text.trim());
-        localizationText = localizationText.replaceFirst(
-            '<Amount>', expenditureDetails.expensesAmount?.first.amount ?? '');
-        localizationText = localizationText.replaceFirst(
-            '<type of expense>', '${ApplicationLocalizations.of(context).translate(expenditureDetails.expenseType ?? '')}');
-      }
+       String localizationText = getLocalizedData(isUpdate, context, challanDetails);
+
 
       navigatorKey.currentState
           ?.push(MaterialPageRoute(builder: (BuildContext context) {
@@ -135,7 +121,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
                 i18.expense.MODIFIED_EXPENDITURE_SUCCESSFULLY,
                 localizationText,
                 i18.common.BACK_HOME,
-                isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD), backButton: true)
+                isUpdate ? Routes.EXPENSE_UPDATE : Routes.EXPENSES_ADD), backButton: true,
+                subText: () => getLocalizedData(isUpdate, context, challanDetails),
+        )
             : CommonSuccess(
                 SuccessHandler(
                   i18.expense.CORE_EXPENSE_EXPENDITURE_SUCESS,
@@ -146,7 +134,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
                       '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)}',
                   subHeaderText: '${challanDetails['challanNo'] ?? ''}',
                 ),backButton: true,
-                callBack: onClickOfBackButton);
+                callBack: onClickOfBackButton,
+            subText: () => getLocalizedData(isUpdate, context, challanDetails)
+        );
       }));
     } on CustomException catch (e, s) {
       Navigator.pop(context);
@@ -159,6 +149,27 @@ class ExpensesDetailsProvider with ChangeNotifier {
       ErrorHandler.logError(e.toString(), s);
       Navigator.pop(context);
     }
+  }
+
+
+  String getLocalizedData(bool isUpdate, BuildContext context, Map challanDetails){
+    late String localizationText;
+    if (isUpdate) {
+      localizationText =
+      '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_BILL_ID)}';
+      localizationText = localizationText.replaceFirst(
+          '< Bill ID>', '${challanDetails['challanNo'] ?? ''}');
+    } else {
+      localizationText =
+      '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENDITURE_SUCESS)}';
+      localizationText = localizationText.replaceFirst(
+          '<Vendor>', expenditureDetails.vendorNameCtrl.text.trim());
+      localizationText = localizationText.replaceFirst(
+          '<Amount>', expenditureDetails.expensesAmount?.first.amount ?? '');
+      localizationText = localizationText.replaceFirst(
+          '<type of expense>', '${ApplicationLocalizations.of(context).translate(expenditureDetails.expenseType ?? '')}');
+    }
+    return localizationText;
   }
 
   void onClickOfBackButton() {
@@ -301,7 +312,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   Future<void> searchExpense(
-      Map<String, dynamic> query, String criteria, BuildContext context) async {
+      Map<String, dynamic> query, String Function() criteria, BuildContext context) async {
     try {
       Loaders.showLoadingDialog(context);
 
