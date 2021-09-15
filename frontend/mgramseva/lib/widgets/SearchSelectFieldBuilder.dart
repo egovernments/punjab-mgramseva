@@ -49,6 +49,9 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
       widget.controller?.text = ApplicationLocalizations.of(context)
           .translate((res.first.child as Text).data.toString());
     }
+    setState(() {
+      Options = widget.options;
+    });
   }
 
   filerobjects(val) {
@@ -127,6 +130,7 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
     return Column(children: [
       Consumer<LanguageProvider>(builder: (_, consumerProvider, child) {
         WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+
         return Text('');
       }),
       CompositedTransformTarget(
