@@ -41,7 +41,6 @@ class SearchConnection {
   var controllers = [ownername, mobile, oldConnectionId, newConnectionId];
 
   getdetails(value, controller) {
-    print(controller);
     controllers.forEach((element) {
       element = true;
     });

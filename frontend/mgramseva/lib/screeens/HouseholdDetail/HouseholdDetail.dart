@@ -98,7 +98,6 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                   stream: houseHoldProvider.streamController.stream,
                   builder: (context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
-                      print(snapshot.hasData);
                       return Column(
                         children: [
                           HouseConnectionDetailCard(

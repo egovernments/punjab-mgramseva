@@ -34,9 +34,6 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
     Provider.of<SearchConnectionProvider>(context, listen: false)
       ..searchconnection = SearchConnection();
     super.initState();
-    if (widget.arguments == null) {
-      print("null value printing");
-    }
   }
 
   @override
