@@ -247,7 +247,7 @@ public class DemandService {
 			String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 
 			System.out.println("Localization message::" + messageString);
-			if( !StringUtils.isEmpty(messageString)) {
+			if( !StringUtils.isEmpty(messageString) && isForConnectionNO) {
 					billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
 					+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
 			messageString = messageString.replace("{ownername}", owner.getName());
