@@ -76,7 +76,7 @@ class router {
           }
         }
         routePath =
-            '${Routes.COMMON_DOWNLOAD}?mode=${localQuery['mode']}status=${localQuery['status']}&consumerCode=${localQuery['consumerCode']}&tenantId=${localQuery['tenantId']}&businessService=${localQuery['businessService']}&key=${localQuery['key']}';
+            '${Routes.COMMON_DOWNLOAD}?mode=${localQuery['mode']}&status=${localQuery['status']}&consumerCode=${localQuery['consumerCode']}&tenantId=${localQuery['tenantId']}&businessService=${localQuery['businessService']}&key=${localQuery['key']}&receiptNumber=${localQuery['receiptNumber']}';
         return MaterialPageRoute(
             builder: (_) => CommonDownload(query: localQuery),
             settings: RouteSettings(name: routePath));
