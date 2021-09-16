@@ -230,6 +230,7 @@ public class ChallanService {
 					+ (Integer.toString(YearMonth.now().getYear()).substring(2, monthYear.length() - 1));
 
 		}
+		localDateTime.minusMonths(1);
 		StringBuilder monthYearBuilder = new StringBuilder(localDateTime.getMonth().toString()).append(" ").append(monthYear);
 
 		return monthYearBuilder.toString() ;
