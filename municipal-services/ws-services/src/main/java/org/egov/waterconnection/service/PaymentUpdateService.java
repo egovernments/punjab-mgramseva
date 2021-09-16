@@ -404,7 +404,7 @@ public class PaymentUpdateService {
 				}else {
 					link = link.replace("$key", "ws-receipt-nm");
 				}
-				
+				System.out.println("Complete Link:: " + link );
 				
 				link = waterServiceUtil.getShortnerURL(link);
 				message = message.replace("{RECEIPT_LINK}",link);
