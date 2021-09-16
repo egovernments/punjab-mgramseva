@@ -40,6 +40,7 @@ class Url {
   static const String FETCH_DEMAND = 'billing-service/demand/_search';
 
   static const String FETCH_BILL = 'billing-service/bill/v2/_fetchbill';
+  static const String SEARCH_BILL = 'billing-service/bill/v2/_search';
   // Connection Fetch
   static const String FETCH_WC_CONNECTION = 'ws-services/wc/_search';
   static const String VENDOR_SEARCH = 'vendor/v1/_search';

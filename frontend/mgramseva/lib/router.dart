@@ -20,6 +20,7 @@ import 'package:mgramseva/screeens/HouseholdDetail/HouseholdDetail.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/ResetPassword/Updatepassword.dart';
 import 'package:mgramseva/screeens/Feedback/feed_back.dart';
+import 'package:mgramseva/screeens/common/commondownload.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/role_actions.dart';
@@ -61,6 +62,23 @@ class router {
             '${Routes.POST_PAYMENT_FEED_BACK}?paymentId=${localQuery['paymentId']}&connectionno=${localQuery['connectionno']}&tenantId=${localQuery['tenantId']}';
         return MaterialPageRoute(
             builder: (_) => PaymentFeedBack(query: localQuery),
+            settings: RouteSettings(name: routePath));
+      } else if (Routes.COMMON_DOWNLOAD == path && settings.arguments == null) {
+        Map localQuery;
+        String routePath;
+        if (settings.arguments != null) {
+          localQuery = settings.arguments as Map;
+        } else {
+          if (queryValidator(Routes.COMMON_DOWNLOAD, query)) {
+            localQuery = query;
+          } else {
+            return pageNotAvailable;
+          }
+        }
+        routePath =
+            '${Routes.COMMON_DOWNLOAD}?mode=${localQuery['mode']}&status=${localQuery['status']}&consumerCode=${localQuery['consumerCode']}&tenantId=${localQuery['tenantId']}&businessService=${localQuery['businessService']}&key=${localQuery['key']}&receiptNumber=${localQuery['receiptNumber']}';
+        return MaterialPageRoute(
+            builder: (_) => CommonDownload(query: localQuery),
             settings: RouteSettings(name: routePath));
       }
 
@@ -254,7 +272,7 @@ class router {
 
       case Routes.DASHBOARD:
         var tabIndex = 0;
-        if(query.isNotEmpty && query.containsKey('tab')){
+        if (query.isNotEmpty && query.containsKey('tab')) {
           tabIndex = int.parse(query['tab'] ?? '0');
         }
         return MaterialPageRoute(
@@ -400,6 +418,11 @@ class router {
         if (query.keys.contains('paymentId') &&
             query.keys.contains('connectionno') &&
             query.keys.contains('tenantId')) return true;
+        return false;
+      case Routes.COMMON_DOWNLOAD:
+        if (query.keys.contains('mode') &&
+            query.keys.contains('consumerCode') &&
+            query.keys.contains('businessService')) return true;
         return false;
       default:
         return false;
