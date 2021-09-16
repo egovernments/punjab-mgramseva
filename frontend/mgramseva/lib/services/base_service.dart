@@ -70,10 +70,8 @@ class BaseService {
         case RequestType.DELETE:
           response = await http.delete(uri, body: json.encode(body));
       }
-      print(response);
       return _response(response);
     } on CustomException catch (e) {
-      print(e);
       throw e;
     } catch (e) {
       print(e);

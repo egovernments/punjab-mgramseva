@@ -394,7 +394,6 @@ class router {
   }
 
   static bool queryValidator(String route, Map? query) {
-    print(query);
     if (query == null) return false;
 
     switch (route) {
