@@ -70,10 +70,13 @@ class BaseService {
         case RequestType.DELETE:
           response = await http.delete(uri, body: json.encode(body));
       }
+      print(response);
       return _response(response);
     } on CustomException catch (e) {
+      print(e);
       throw e;
     } catch (e) {
+      print(e);
       throw CustomException('', 502, ExceptionType.CONNECTIONISSUE);
     }
   }
@@ -81,16 +84,20 @@ class BaseService {
 
 dynamic _response(http.Response response) {
   var data;
-  try{
-   data = json.decode(utf8.decode(response.bodyBytes));
-  }catch(e){
+  try {
+    data = json.decode(utf8.decode(response.bodyBytes));
+  } catch (e) {
     /// if response was string then it will come to this exception block
     data = utf8.decode(response.bodyBytes);
     return data;
   }
 
   var errorMessage = data?['Errors']?[0]?['code'] ??
-      data?['Errors']?[0]?['message'] ?? data?['Errors']?[0]?['description'] ?? data?['error_description'] ?? data?['error']?['fields']?[0]?['code'] ?? data?['error']?['fields']?[0]?['message'];
+      data?['Errors']?[0]?['message'] ??
+      data?['Errors']?[0]?['description'] ??
+      data?['error_description'] ??
+      data?['error']?['fields']?[0]?['code'] ??
+      data?['error']?['fields']?[0]?['message'];
 
   switch (response.statusCode) {
     case 200:

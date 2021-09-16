@@ -40,6 +40,7 @@ class Url {
   static const String FETCH_DEMAND = 'billing-service/demand/_search';
 
   static const String FETCH_BILL = 'billing-service/bill/v2/_fetchbill';
+  static const String SEARCH_BILL = 'billing-service/bill/v2/_search';
   // Connection Fetch
   static const String FETCH_WC_CONNECTION = 'ws-services/wc/_search';
   static const String VENDOR_SEARCH = 'vendor/v1/_search';
@@ -51,10 +52,9 @@ class Url {
   static const String COLLECT_PAYMENT = 'collection-services/payments/_create';
 
   static const String FETCH_BILL_PAYMENTS =
-      'collection-services/payments/_search';
+      'collection-services/payments/WS/_search';
 
-  static const String POST_PAYMENT_FEEDBACK =
-      'ws-services/wc/_submitfeedback';
+  static const String POST_PAYMENT_FEEDBACK = 'ws-services/wc/_submitfeedback';
 }
 
 class UserUrl {

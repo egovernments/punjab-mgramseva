@@ -74,4 +74,6 @@ class Routes {
 
   static const String FEED_BACK_SUBMITTED_SUCCESSFULLY =
       '/feedBack/submittedSuccessfully';
+
+  static const String COMMON_DOWNLOAD = '/withoutAuth/mgramseva-common';
 }

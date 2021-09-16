@@ -105,6 +105,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
 
   dispose() {
     _numberFocus.addListener(_onFocusChange);
+    Provider.of<ConsumerProvider>(context, listen: false).dispose();
     super.dispose();
   }
 

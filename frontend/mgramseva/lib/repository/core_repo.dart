@@ -54,6 +54,8 @@ class CoreRepository extends BaseService {
   }
 
   Future<LanguageList> getMdms(Map body) async {
+    print("api called");
+    print(Url.MDMS);
     late LanguageList languageList;
     var res = await makeRequest(
         url: Url.MDMS,
