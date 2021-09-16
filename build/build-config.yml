@@ -70,7 +70,7 @@ config:
       - work-dir: "core-services/user-otp"
         image-name: "user-otp"
         dockerfile: "build/maven/Dockerfile"        
-  - name: "builds/mGramSeva/core-services/user-otp"
+  - name: "builds/mGramSeva/core-services/egov-notification-sms"
     build:
       - work-dir: "core-services/egov-notification-sms"
         image-name: "egov-notification-sms"
