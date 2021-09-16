@@ -49,6 +49,7 @@ import 'providers/dashboard_provider.dart';
 import 'screeens/common/collect_payment.dart';
 
 void main() {
+  HttpOverrides.global = new MyHttpOverrides();
   setPathUrlStrategy();
   setEnvironment(Environment.dev);
 
@@ -226,5 +227,14 @@ class _LandingPageState extends State<LandingPage> {
               }
           }
         });
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
