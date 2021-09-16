@@ -636,7 +636,7 @@ public class DemandService {
 
 			HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo, WSCalculationConstant.mGram_Consumer_NewBill, calculation.getTenantId());
 			
-			String actionLink = config.getUiAppHost() + config.getBillDownloadSMSLink().replace("$mobile", owner.getMobileNumber())
+			String actionLink = config.getNotificationUrl() + config.getBillDownloadSMSLink().replace("$mobile", owner.getMobileNumber())
 					.replace("$consumerCode", waterConnectionRequest.getWaterConnection().getConnectionNo())
 					.replace("$tenantId", property.getTenantId());
 			
@@ -645,7 +645,7 @@ public class DemandService {
 			}else {
 				actionLink = actionLink.replace("$key", "ws-receipt-nm");
 			}
-			
+			actionLink = getShortenedUrl(actionLink);
 			String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 
 			System.out.println("Localization message::" + messageString);
