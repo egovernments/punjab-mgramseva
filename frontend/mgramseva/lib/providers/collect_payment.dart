@@ -144,7 +144,7 @@ class CollectPaymentProvider with ChangeNotifier {
                 paymentDetails.payments!.first,
                 "Download"),
             callBackwatsapp: () => commonProvider.getFileFromPDFPaymentService({
-              "Payments": [paymentDetails..payments!]
+              "Payments": [paymentDetails.payments!.first]
             }, {
               "key": paymentDetails.payments?.first.paymentDetails?.first.bill
                           ?.waterConnection?.connectionType ==
