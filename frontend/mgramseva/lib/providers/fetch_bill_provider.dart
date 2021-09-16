@@ -64,11 +64,11 @@ class FetchBillProvider with ChangeNotifier {
               .fetchFiles(value!.filestoreIds!, data['tenantId']);
           CommonProvider()
             ..onTapOfAttachment(output!.first, navigatorKey.currentContext);
-          window.location.href = "https://www.google.com/";
+          // window.location.href = "https://www.google.com/";
         });
       });
     } catch (e) {
-      window.location.href = "https://www.google.com/";
+      // window.location.href = "https://www.google.com/";
     }
   }
 
