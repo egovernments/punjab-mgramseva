@@ -217,4 +217,7 @@ public class WSCalculationConfiguration {
 	@Value("${egov.demand.gp.user.link}")
 	private String gpUserDemandLink;
 	
+	@Value("${egov.sms.bill.download.link}")
+	private String billDownloadSMSLink;
+	
 }

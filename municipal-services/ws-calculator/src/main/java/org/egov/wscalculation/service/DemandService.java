@@ -244,6 +244,16 @@ public class DemandService {
 
 			HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo, WSCalculationConstant.mGram_Consumer_NewBill, tenantId);
 			
+			String actionLink = config.getUiAppHost() + config.getBillDownloadSMSLink().replace("$mobile", owner.getMobileNumber())
+					.replace("$consumerCode", waterConnectionRequest.getWaterConnection().getConnectionNo())
+					.replace("$tenantId", property.getTenantId());
+			
+			if(waterConnectionRequest.getWaterConnection().getConnectionType().equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
+				actionLink = actionLink.replace("$key", "ws-receipt");
+			}else {
+				actionLink = actionLink.replace("$key", "ws-receipt-nm");
+			}
+			
 			String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 
 			System.out.println("Localization message::" + messageString);
@@ -255,7 +265,7 @@ public class DemandService {
 			messageString = messageString.replace("{consumerno}", consumerCode);
 			messageString = messageString.replace("{billamount}", demandDetails.stream().map(DemandDetail::getTaxAmount)
 					.reduce(BigDecimal.ZERO, BigDecimal::add).toString());
-			messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(configs.getDownLoadBillLink()));
+			messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionLink));
 			
 			System.out.println("Demand genaratio Message::" + messageString);
 			
@@ -626,6 +636,16 @@ public class DemandService {
 
 			HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo, WSCalculationConstant.mGram_Consumer_NewBill, calculation.getTenantId());
 			
+			String actionLink = config.getUiAppHost() + config.getBillDownloadSMSLink().replace("$mobile", owner.getMobileNumber())
+					.replace("$consumerCode", waterConnectionRequest.getWaterConnection().getConnectionNo())
+					.replace("$tenantId", property.getTenantId());
+			
+			if(waterConnectionRequest.getWaterConnection().getConnectionType().equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
+				actionLink = actionLink.replace("$key", "ws-receipt");
+			}else {
+				actionLink = actionLink.replace("$key", "ws-receipt-nm");
+			}
+			
 			String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 
 			System.out.println("Localization message::" + messageString);
@@ -637,7 +657,7 @@ public class DemandService {
 			messageString = messageString.replace("{consumerno}", calculation.getConnectionNo());
 			messageString = messageString.replace("{billamount}", demandDetails.stream().map(DemandDetail::getTaxAmount)
 					.reduce(BigDecimal.ZERO, BigDecimal::add).toString());
-			messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(configs.getDownLoadBillLink()));
+			messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionLink));
 			
 			System.out.println("Demand genaratio Message::" + messageString);
 			

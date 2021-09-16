@@ -15,6 +15,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.Size;
+
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
 import org.egov.tracer.model.CustomException;
@@ -280,7 +282,7 @@ public class PaymentUpdateService {
 		}
 		Map<String, String> getReplacedMessage = workflowNotificationService.getMessageForMobileNumber(mobileNumbersAndNames, request,
 				message, property);
-		Map<String, String> mobileNumberAndMesssage = replacePaymentInfo(getReplacedMessage, paymentDetail,null);
+		Map<String, String> mobileNumberAndMesssage = replacePaymentInfo(getReplacedMessage, paymentDetail,null, request.getWaterConnection().getConnectionType());
 		Set<String> mobileNumbers = mobileNumberAndMesssage.keySet().stream().collect(Collectors.toSet());
 		Map<String, String> mapOfPhnoAndUUIDs = workflowNotificationService.fetchUserUUIDs(mobileNumbers, request.getRequestInfo(), property.getTenantId());
 		if (CollectionUtils.isEmpty(mapOfPhnoAndUUIDs.keySet())) {
@@ -340,7 +342,7 @@ public class PaymentUpdateService {
 		}
 		Map<String, String> getReplacedMessage = workflowNotificationService.getMessageForMobileNumber(mobileNumbersAndNames,
 				waterConnectionRequest, message, property);
-		Map<String, String> mobileNumberAndMessage = replacePaymentInfo(getReplacedMessage, paymentDetail,paymentId);
+		Map<String, String> mobileNumberAndMessage = replacePaymentInfo(getReplacedMessage, paymentDetail,paymentId, waterConnectionRequest.getWaterConnection().getConnectionType());
 
 		List<SMSRequest> smsRequest = new ArrayList<>();
 		mobileNumberAndMessage.forEach((mobileNumber, msg) -> {
@@ -354,9 +356,10 @@ public class PaymentUpdateService {
 	 *
 	 * @param mobileAndMessage
 	 * @param paymentDetail
+	 * @param string 
 	 * @return replaced message
 	 */
-	private Map<String, String> replacePaymentInfo(Map<String, String> mobileAndMessage, PaymentDetail paymentDetail,String paymentId) {
+	private Map<String, String> replacePaymentInfo(Map<String, String> mobileAndMessage, PaymentDetail paymentDetail,String paymentId, String connectionType) {
 		Map<String, String> messageToReturn = new HashMap<>();
 		for (Map.Entry<String, String> mobAndMesg : mobileAndMessage.entrySet()) {
 			String message = mobAndMesg.getValue();
@@ -395,6 +398,14 @@ public class PaymentUpdateService {
 				link = link.replace("$businessService",paymentDetail.getBusinessService());
 				link = link.replace("$receiptNumber",paymentDetail.getReceiptNumber());
 				link = link.replace("$mobile", mobAndMesg.getKey());
+				
+				if(connectionType.equalsIgnoreCase(WCConstants.METERED_CONNECTION)) {
+					link = link.replace("$key", "ws-receipt");
+				}else {
+					link = link.replace("$key", "ws-receipt-nm");
+				}
+				
+				
 				link = waterServiceUtil.getShortnerURL(link);
 				message = message.replace("{RECEIPT_LINK}",link);
 			}
