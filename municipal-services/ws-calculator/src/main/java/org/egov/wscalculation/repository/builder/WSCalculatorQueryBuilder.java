@@ -1,7 +1,12 @@
 package org.egov.wscalculation.repository.builder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.egov.wscalculation.config.WSCalculationConfiguration;
 import org.egov.wscalculation.web.models.MeterReadingSearchCriteria;
@@ -175,12 +180,22 @@ public class WSCalculatorQueryBuilder {
 	}
 	
 	public String isBillingPeriodExists(String connectionNo, String billingPeriod, List<Object> preparedStatement) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Date billingStrartDate = null;
+		Calendar startCal = Calendar.getInstance();
+		try {
+			billingStrartDate = sdf.parse(billingPeriod.split("-")[0].trim());
+			startCal.setTime(billingStrartDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		StringBuilder query = new StringBuilder(noOfConnectionSearchQuery);
 		query.append(" connectionNo = ? ");
 		preparedStatement.add(connectionNo);
 		addClauseIfRequired(preparedStatement, query);
-		query.append(" billingPeriod = ? ");
-		preparedStatement.add(billingPeriod);
+		query.append(" ? between lastreadingdate and currentreadingdate ");
+		preparedStatement.add(startCal.getTimeInMillis());
 		return query.toString();
 	}
 	
