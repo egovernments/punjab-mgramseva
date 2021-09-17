@@ -126,7 +126,6 @@ class SelectFieldBuilder extends StatelessWidget {
                 child: new Align(
                     alignment: Alignment.centerLeft, child: textLabelwidget)),
             Consumer<LanguageProvider>(builder: (_, consumerProvider, child) {
-              print("value changes");
               return SearchSelectField(labelText, options, controller, widget,
                   value, isEnabled, isRequired, requiredMessage);
             }),
