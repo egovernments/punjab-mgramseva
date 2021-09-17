@@ -911,7 +911,7 @@ public class DemandService {
 		Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 
 		
-		String msgLink = config.getUiAppHost() + config.getGpUserDemandLink();
+		String msgLink = config.getNotificationUrl() + config.getGpUserDemandLink();
 		
 		for (OwnerInfo userInfo : userDetailResponse.getUser())
 			if (userInfo.getName() != null) {
