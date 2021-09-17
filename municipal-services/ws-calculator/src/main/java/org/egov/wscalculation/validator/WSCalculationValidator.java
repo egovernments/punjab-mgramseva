@@ -103,10 +103,33 @@ public class WSCalculationValidator {
 				errorMap.put("INVALID_METER_READING_CONNECTION", "Meter reading Id already present");
 			}
 		}
+		
 		if (StringUtils.isEmpty(meterReading.getBillingPeriod())) {
 			errorMap.put("INVALID_BILLING_PERIOD", "Meter Reading cannot be updated without billing period");
 		}
 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Date billingStrartDate = null;
+		Date billingEndDate = null;
+		Calendar startCal = Calendar.getInstance();
+
+		Calendar endCal = Calendar.getInstance();
+		try {
+			billingStrartDate = sdf.parse(meterReading.getBillingPeriod().split("-")[0].trim());
+			billingEndDate = sdf.parse(meterReading.getBillingPeriod().split("-")[1].trim());
+			startCal.setTime(billingStrartDate);
+			endCal.setTime(billingEndDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			errorMap.put("INVALID_BILLING_PERIOD", "Meter Reading cannot be updated without billing period");
+		}
+		if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
+			errorMap.put("INVALID_BILLING_PERIOD", "Billing period Start can not be greater than End date");
+		} else {
+			meterReading.setLastReadingDate(startCal.getTimeInMillis());
+			meterReading.setCurrentReadingDate(endCal.getTimeInMillis());
+		}
+		
 		int billingPeriodNumber = wSCalculationDao.isBillingPeriodExists(meterReading.getConnectionNo(),
 				meterReading.getBillingPeriod());
 		if (billingPeriodNumber > 0)
