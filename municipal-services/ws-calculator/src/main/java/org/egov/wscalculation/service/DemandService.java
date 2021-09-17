@@ -60,9 +60,11 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 
 @Service
 @Slf4j
@@ -257,29 +259,31 @@ public class DemandService {
 			String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 
 			System.out.println("Localization message::" + messageString);
-			if( !StringUtils.isEmpty(messageString) && isForConnectionNO) {
-					billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
-					+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
-			messageString = messageString.replace("{ownername}", owner.getName());
-			messageString = messageString.replace("{Period}", billCycle);
-			messageString = messageString.replace("{consumerno}", consumerCode);
-			messageString = messageString.replace("{billamount}", demandDetails.stream().map(DemandDetail::getTaxAmount)
-					.reduce(BigDecimal.ZERO, BigDecimal::add).toString());
-			messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionLink));
-			
-			System.out.println("Demand genaratio Message::" + messageString);
-			
-			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
-					.category(Category.TRANSACTION).build();
-			producer.push(config.getSmsNotifTopic(), sms);
-			
+			if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
+				log.info("Demand Object" + demands.toString());
+
+				List<String> billNumber = fetchBill(demands, requestInfo);
+				actionLink = actionLink.replace("$billNumber", billNumber.get(0));		
+				billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
+						+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
+				messageString = messageString.replace("{ownername}", owner.getName());
+				messageString = messageString.replace("{Period}", billCycle);
+				messageString = messageString.replace("{consumerno}", consumerCode);
+				messageString = messageString.replace("{billamount}", demandDetails.stream()
+						.map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add).toString());
+				messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionLink));
+
+				System.out.println("Demand genaratio Message::" + messageString);
+
+				SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
+						.category(Category.TRANSACTION).build();
+				producer.push(config.getSmsNotifTopic(), sms);
+
 			}
 		}
 		log.info("Demand Object" + demands.toString());
 		List<Demand> demandRes = demandRepository.saveDemand(requestInfo, demands);
 				
-		if(isForConnectionNO)
-		fetchBill(demandRes, requestInfo);
 		return demandRes;
 	}
 
@@ -1041,14 +1045,19 @@ public class DemandService {
 		return true;
 	}
 	
-	public boolean fetchBill(List<Demand> demandResponse, RequestInfo requestInfo) {
+	public List<String> fetchBill(List<Demand> demandResponse, RequestInfo requestInfo) {
 		boolean notificationSent = false;
+		List<String> billNumber = new ArrayList<>();
 		for (Demand demand : demandResponse) {
 			try {
 				Object result = serviceRequestRepository.fetchResult(
 						calculatorUtils.getFetchBillURL(demand.getTenantId(), demand.getConsumerCode()),
 						RequestInfoWrapper.builder().requestInfo(requestInfo).build());
+				billNumber = JsonPath.read(result, "$.Bill.*.billNumber");
+				
+
 				HashMap<String, Object> billResponse = new HashMap<>();
+				
 				billResponse.put("requestInfo", requestInfo);
 				billResponse.put("billResponse", result);
 				wsCalculationProducer.push(configs.getPayTriggers(), billResponse);
@@ -1057,7 +1066,7 @@ public class DemandService {
 				log.error("Fetch Bill Error", ex);
 			}
 		}
-		return notificationSent;
+		return billNumber;
 	}
 	
 /**
