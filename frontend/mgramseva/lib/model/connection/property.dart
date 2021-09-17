@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/utils/global_variables.dart';
-import 'package:provider/provider.dart';
 
 part 'property.g.dart';
 
@@ -71,6 +68,8 @@ class Address {
   Locality? locality;
   @JsonKey(name: "street")
   String? street;
+  @JsonKey(name: "geoLocation")
+  GeoLocation? geoLocation;
   @JsonKey(name: "doorNo")
   String? doorNo;
   @JsonKey(name: "landmark")
@@ -204,6 +203,19 @@ class Institution {
   Institution();
   factory Institution.fromJson(Map<String, dynamic> json) =>
       _$InstitutionFromJson(json);
+}
+
+@JsonSerializable()
+class GeoLocation {
+  @JsonKey(name: "latitude")
+  double? latitude;
+  @JsonKey(name: "longitude")
+  double? longitude;
+
+  GeoLocation();
+  factory GeoLocation.fromJson(Map<String, dynamic> json) =>
+      _$GeoLocationFromJson(json);
+  Map<String, dynamic> toJson() => _$GeoLocationToJson(this);
 }
 
 @JsonSerializable()

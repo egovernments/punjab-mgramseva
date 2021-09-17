@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/Events/events_List.dart';
@@ -16,7 +17,13 @@ class NotificationProvider with ChangeNotifier {
         ..addAll(notifications2!.events!)
         ..addAll(notifications1!.events!);
       if (res != null && res.length > 0) {
-        streamController.add(res);
+        final jsonList = res.map((item) => jsonEncode(item)).toList();
+        final uniqueJsonList = jsonList.toSet().toList();
+        var result = EventsList.fromJson({
+          "events": uniqueJsonList.map((item) => jsonDecode(item)).toList()
+        });
+
+        streamController.add(result.events);
         enableNotification = true;
       } else {
         streamController.add(res);

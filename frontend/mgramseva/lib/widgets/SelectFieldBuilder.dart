@@ -125,16 +125,11 @@ class SelectFieldBuilder extends StatelessWidget {
                 padding: EdgeInsets.only(top: 18, bottom: 3),
                 child: new Align(
                     alignment: Alignment.centerLeft, child: textLabelwidget)),
-            Consumer<LanguageProvider>(
-                builder: (_, consumerProvider, child) => SearchSelectField(
-                    labelText,
-                    options,
-                    controller,
-                    widget,
-                    value,
-                    isEnabled,
-                    isRequired,
-                    requiredMessage)),
+            Consumer<LanguageProvider>(builder: (_, consumerProvider, child) {
+              print("value changes");
+              return SearchSelectField(labelText, options, controller, widget,
+                  value, isEnabled, isRequired, requiredMessage);
+            }),
             CommonWidgets().buildHint(hint, context)
           ]),
         );
