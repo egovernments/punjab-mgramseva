@@ -45,6 +45,7 @@ class FetchBillProvider with ChangeNotifier {
         "tenantId": data['tenantId'],
         "consumerCode": data['consumerCode'],
         "service": "WS",
+        "billNumber": data['billNumber']
       };
 
       await BillingServiceRepository()
@@ -58,8 +59,6 @@ class FetchBillProvider with ChangeNotifier {
         await BillingServiceRepository()
             .fetchdfilestordIDNoAuth(body, prams)
             .then((value) async {
-          print(value?.filestoreIds?.first);
-
           var output = await BillingServiceRepository()
               .fetchFiles(value!.filestoreIds!, data['tenantId']);
           CommonProvider()
