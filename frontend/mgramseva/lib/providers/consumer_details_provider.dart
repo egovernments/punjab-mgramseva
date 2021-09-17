@@ -69,12 +69,13 @@ class ConsumerProvider with ChangeNotifier {
       ],
       "address": Address().toJson()
     });
-
-    property.address.gpNameCtrl.text =
-        ApplicationLocalizations.of(navigatorKey.currentContext!)
-                .translate(commonProvider.userDetails!.selectedtenant!.code!) +
-            ' - ' +
-            commonProvider.userDetails!.selectedtenant!.city!.code!;
+    if (commonProvider.userDetails?.selectedtenant?.code != null) {
+      property.address.gpNameCtrl
+          .text = ApplicationLocalizations.of(navigatorKey.currentContext!)
+              .translate(commonProvider.userDetails!.selectedtenant!.code!) +
+          ' - ' +
+          commonProvider.userDetails?.selectedtenant?.city?.code!;
+    }
   }
 
   dispose() {
@@ -100,11 +101,13 @@ class ConsumerProvider with ChangeNotifier {
         "tenantId": commonProvider.userDetails!.selectedtenant!.code,
         "connectionNumber": id.split('_').join('/')
       });
-      if (waterconnections.waterConnection!.isNotEmpty) {
-        setWaterConnection(waterconnections.waterConnection!.first);
+      if (waterconnections.waterConnection != null &&
+          waterconnections.waterConnection!.isNotEmpty) {
+        setWaterConnection(waterconnections.waterConnection?.first);
+        fetchBoundary();
         getProperty({
-          "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-          "propertyIds": waterconnections.waterConnection!.first.propertyId
+          "tenantId": commonProvider.userDetails?.selectedtenant?.code,
+          "propertyIds": waterconnections.waterConnection?.first.propertyId
         });
       }
     } catch (e) {}
@@ -126,8 +129,8 @@ class ConsumerProvider with ChangeNotifier {
       "tenantId": waterconnection.tenantId
     });
     if (waterconnection.connectionType == 'Metered' &&
-        waterconnection.additionalDetails!.meterReading.toString() != '0') {
-      var meterReading = waterconnection.additionalDetails!.meterReading
+        waterconnection.additionalDetails?.meterReading.toString() != '0') {
+      var meterReading = waterconnection.additionalDetails?.meterReading
           .toString()
           .padLeft(5, '0');
       waterconnection.om_1Ctrl.text =
@@ -149,8 +152,6 @@ class ConsumerProvider with ChangeNotifier {
     } else {
       isfirstdemand = true;
     }
-
-    notifyListeners();
   }
 
   Future<void> getConsumerDetails() async {
@@ -170,6 +171,7 @@ class ConsumerProvider with ChangeNotifier {
       waterconnection.setText();
       property.owners!.first.setText();
       property.address.setText();
+
       property.tenantId = commonProvider.userDetails!.selectedtenant!.code;
       property.address.city = commonProvider.userDetails!.selectedtenant!.name;
       waterconnection.setText();
@@ -248,7 +250,9 @@ class ConsumerProvider with ChangeNotifier {
           }
         } else {
           property.creationReason = 'UPDATE';
-
+          property.address.geoLocation = GeoLocation();
+          property.address.geoLocation?.latitude = null;
+          property.address.geoLocation?.longitude = null;
           var result1 =
               await ConsumerRepository().updateProperty(property.toJson());
           var result2 = await ConsumerRepository()
@@ -290,7 +294,6 @@ class ConsumerProvider with ChangeNotifier {
               (DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(
                   new DateTime.now().toLocal().toString())))));
       languageList = res;
-      notifyListeners();
     } catch (e) {
       print(e);
     }
@@ -327,20 +330,21 @@ class ConsumerProvider with ChangeNotifier {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    boundaryList = [];
+
     try {
       var result = await ConsumerRepository().getLocations({
         "hierarchyTypeCode": "REVENUE",
         "boundaryType": "Locality",
         "tenantId": commonProvider.userDetails!.selectedtenant!.code
       });
+      boundaryList = [];
       boundaryList.addAll(
           TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!);
       if (boundaryList.length == 1) {
         property.address.localityCtrl = boundaryList.first;
         onChangeOflocaity(property.address.localityCtrl);
       }
-      notifyListeners();
+      // notifyListeners();
     } catch (e) {
       print(e);
     }

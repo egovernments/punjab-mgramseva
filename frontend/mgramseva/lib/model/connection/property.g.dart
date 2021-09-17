@@ -75,6 +75,9 @@ Address _$AddressFromJson(Map<String, dynamic> json) {
         ? null
         : Locality.fromJson(json['locality'] as Map<String, dynamic>)
     ..street = json['street'] as String?
+    ..geoLocation = json['geoLocation'] == null
+        ? null
+        : GeoLocation.fromJson(json['geoLocation'] as Map<String, dynamic>)
     ..doorNo = json['doorNo'] as String?
     ..landmark = json['landmark'] as String?
     ..documents = (json['documents'] as List<dynamic>?)
@@ -86,6 +89,7 @@ Map<String, dynamic> _$AddressToJson(Address instance) => <String, dynamic>{
       'city': instance.city,
       'locality': instance.locality,
       'street': instance.street,
+      'geoLocation': instance.geoLocation,
       'doorNo': instance.doorNo,
       'landmark': instance.landmark,
       'documents': instance.documents,
@@ -160,6 +164,18 @@ Map<String, dynamic> _$InstitutionToJson(Institution instance) =>
       'nameOfAuthorizedPerson': instance.nameOfAuthorizedPerson,
       'tenantId': instance.tenantId,
       'type': instance.type,
+    };
+
+GeoLocation _$GeoLocationFromJson(Map<String, dynamic> json) {
+  return GeoLocation()
+    ..latitude = (json['latitude'] as num?)?.toDouble()
+    ..longitude = (json['longitude'] as num?)?.toDouble();
+}
+
+Map<String, dynamic> _$GeoLocationToJson(GeoLocation instance) =>
+    <String, dynamic>{
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
     };
 
 Units _$UnitsFromJson(Map<String, dynamic> json) {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/Events/events_List.dart';
-import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/notifications_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -20,7 +19,7 @@ class NotificationsList extends StatefulWidget {
 class NotificationsListState extends State<NotificationsList> {
   buildNotificationsView(List<Events>? events) {
     return LayoutBuilder(builder: (context, constraints) {
-      return Column(children: [
+      return Column(mainAxisSize: MainAxisSize.min, children: [
         events!.length > 0
             ? ListLabelText(ApplicationLocalizations.of(context)
                     .translate(i18.common.NOTIFICATIONS) +
@@ -28,7 +27,14 @@ class NotificationsListState extends State<NotificationsList> {
                 events.length.toString() +
                 ")")
             : Text(""),
-        for (var item in events) Notifications(item)
+        ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: events.length,
+            itemBuilder: (context, i) {
+              var item = events[i];
+              return Notifications(item);
+            })
       ]);
     });
   }
