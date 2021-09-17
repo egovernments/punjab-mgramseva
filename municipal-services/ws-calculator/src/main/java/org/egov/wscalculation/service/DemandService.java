@@ -251,9 +251,9 @@ public class DemandService {
 					.replace("$tenantId", property.getTenantId());
 			
 			if(waterConnectionRequest.getWaterConnection().getConnectionType().equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
-				actionLink = actionLink.replace("$key", "ws-receipt");
+				actionLink = actionLink.replace("$key", "ws-bill");
 			}else {
-				actionLink = actionLink.replace("$key", "ws-receipt-nm");
+				actionLink = actionLink.replace("$key", "ws-bill-nm");
 			}
 			
 			String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
