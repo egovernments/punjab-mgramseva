@@ -246,7 +246,7 @@ public class DemandService {
 
 			HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo, WSCalculationConstant.mGram_Consumer_NewBill, tenantId);
 			
-			String actionLink = config.getUiAppHost() + config.getBillDownloadSMSLink().replace("$mobile", owner.getMobileNumber())
+			String actionLink = config.getNotificationUrl() + config.getBillDownloadSMSLink().replace("$mobile", owner.getMobileNumber())
 					.replace("$consumerCode", waterConnectionRequest.getWaterConnection().getConnectionNo())
 					.replace("$tenantId", property.getTenantId());
 			
