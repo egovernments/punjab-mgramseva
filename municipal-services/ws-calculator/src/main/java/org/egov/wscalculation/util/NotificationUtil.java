@@ -200,6 +200,9 @@ public class NotificationUtil {
 	public HashMap<String, String> getLocalizationMessage(RequestInfo requestInfo, String code,String tenantId) {
 		HashMap<String, String> msgDetail = new HashMap<String, String>();
 		String locale = WSCalculationConstant.NOTIFICATION_LOCALE;
+		if (!StringUtils.isEmpty(requestInfo.getMsgId()) && requestInfo.getMsgId().split("|").length >= 2)
+			locale = requestInfo.getMsgId().split("\\|")[1];
+		
 		String templateId = null;
 		Object result = null;
 		StringBuilder uri = new StringBuilder();
