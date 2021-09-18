@@ -19,6 +19,7 @@ class ForgotPasswordProvider with ChangeNotifier {
           "mobileNumber": mobileNumber,
           "tenantId": languageProvider.stateInfo!.code,
           "type": "passwordreset",
+          "locale": languageProvider.selectedLanguage?.value,
           "userType": "Employee"
         }
       };
