@@ -276,7 +276,8 @@ class CommonProvider with ChangeNotifier {
         anchorElement.target = "_blank";
         anchorElement.click();
       } else {
-        var link = "https://wa.me/+91$mobileNumber?text=" + input;
+        var link = "https://wa.me/+91$mobileNumber?text=" +
+            input.toString().replaceFirst('<link>', res!);
         await canLaunch(link)
             ? launch(link)
             : ErrorHandler.logError('failed to launch the url ${link}');
