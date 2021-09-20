@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_countdown_timer/index.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/forgot_password_repo.dart';
 import 'package:mgramseva/repository/reset_password_repo.dart';
@@ -29,6 +30,8 @@ class ResetPassword extends StatefulWidget {
 }
 
 class _ResetPasswordState extends State<ResetPassword> {
+  late CountdownTimerController timerController;
+  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 30;
   var newPassword = new TextEditingController();
   var confirmPassword = new TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -37,17 +40,31 @@ class _ResetPasswordState extends State<ResetPassword> {
   var autoValidate = false;
   var password = "";
   var pinLength = 6;
+  bool isdisabled = true;
 
   @override
   void initState() {
     afterBuildContext();
     super.initState();
+    timerController = CountdownTimerController(endTime: endTime, onEnd: onEnd);
   }
 
   saveInput(context) async {
     setState(() {
       password = context;
     });
+  }
+
+  void onEnd() {
+    setState(() {
+      isdisabled = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    timerController.dispose();
+    super.dispose();
   }
 
   afterBuildContext() async {
@@ -134,7 +151,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     validator: (val) =>
                                         Validators.passwordComparision(
                                             val,
-                                          ApplicationLocalizations.of(context).translate(i18.password.NEW_PASSWORD_ENTER)),
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18.password
+                                                    .NEW_PASSWORD_ENTER)),
                                     onChange: saveInput,
                                   ),
                                   BuildTextField(
@@ -147,7 +166,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     validator: (val) =>
                                         Validators.passwordComparision(
                                             val,
-                                          ApplicationLocalizations.of(context).translate(i18.password.CONFIRM_PASSWORD_ENTER),
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18.password
+                                                    .CONFIRM_PASSWORD_ENTER),
                                             newPassword.text),
                                     onChange: saveInput,
                                   ),
@@ -157,8 +178,13 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   BottomButtonBar(
                                       ApplicationLocalizations.of(context)
                                           .translate(
-                                          i18.password.CHANGE_PASSWORD),
-                                      _pinEditingController.text.trim().length != pinLength ? null : updatePassword),
+                                              i18.password.CHANGE_PASSWORD),
+                                      _pinEditingController.text
+                                                  .trim()
+                                                  .length !=
+                                              pinLength
+                                          ? null
+                                          : updatePassword),
                                   PasswordHint(password)
                                 ],
                               ))))),
@@ -220,10 +246,33 @@ class _ResetPasswordState extends State<ResetPassword> {
               ],
             ),
           ),
-          TextButton(
-              onPressed: sendOtp,
-              child: Text(ApplicationLocalizations.of(context)
-                  .translate(i18.password.RESENT_OTP)))
+          Visibility(
+            child: CountdownTimer(
+                controller: timerController, onEnd: onEnd, endTime: endTime),
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            visible: isdisabled,
+          ),
+          Visibility(
+            child: TextButton(
+                onPressed: () => {
+                      sendOtp(),
+                      endTime =
+                          DateTime.now().millisecondsSinceEpoch + 1000 * 30,
+                      timerController = CountdownTimerController(
+                          endTime: endTime, onEnd: onEnd),
+                      setState(() {
+                        isdisabled = true;
+                      }),
+                    },
+                child: Text(ApplicationLocalizations.of(context)
+                    .translate(i18.password.RESENT_OTP))),
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            visible: !isdisabled,
+          ),
         ],
       ),
     );
@@ -248,9 +297,11 @@ class _ResetPasswordState extends State<ResetPassword> {
             await ResetPasswordRepository().forgotPassword(body, context);
         Navigator.pop(context);
         if (resetResponse != null) {
-          Navigator.push(context, MaterialPageRoute(
-              builder: (_) => PasswordSuccess(),
-              settings: RouteSettings(name: '/resetPasswordSuccess')));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => PasswordSuccess(),
+                  settings: RouteSettings(name: '/resetPasswordSuccess')));
         }
       } catch (e, s) {
         Navigator.pop(context);
@@ -264,12 +315,14 @@ class _ResetPasswordState extends State<ResetPassword> {
   }
 
   sendOtp() async {
-    var commonProvider = Provider.of<LanguageProvider>(context, listen: false);
+    var languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
     var body = {
       "otp": {
         "mobileNumber": widget.id,
-        "tenantId": commonProvider.stateInfo!.code,
+        "tenantId": languageProvider.stateInfo!.code,
         "type": "passwordreset",
+        "locale": languageProvider.selectedLanguage?.value,
         "userType": 'Employee'
       }
     };
