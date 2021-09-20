@@ -252,7 +252,9 @@ public class NotificationUtil {
 	
 	public HashMap<String, String> getLocalizationMessage(RequestInfo requestInfo, String code,String tenantId) {
 		HashMap<String, String> msgDetail = new HashMap<String, String>();
-		String locale = NOTIFICATION_LOCALE;
+		String locale = requestInfo.getMsgId().split("[|]")[1]; // Conventionally locale is sent in the first index of msgid split by |
+		if(StringUtils.isEmpty(locale))
+			locale = NOTIFICATION_LOCALE;
 		String templateId = null;
 		Object result = null;
 		StringBuilder uri = new StringBuilder();
