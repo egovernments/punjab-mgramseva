@@ -143,7 +143,7 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 	public int isBillingPeriodExists(String connectionNo, String billingPeriod) {
 		List<Object> preparedStatement = new ArrayList<>();
 		String query = queryBuilder.isBillingPeriodExists(connectionNo, billingPeriod, preparedStatement);
-		log.info("Is BillingPeriod Exits Query: " + query + preparedStatement.toString());
+		log.info("Is BillingPeriod Exits Query: " + query);
 		return jdbcTemplate.queryForObject(query, preparedStatement.toArray(), Integer.class);
 	}
 	
