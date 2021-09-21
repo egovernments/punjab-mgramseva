@@ -50,7 +50,9 @@ class _NotificationsState extends State<Notifications> {
                                   padding: EdgeInsets.all(4),
                                   child: Text(
                                     ApplicationLocalizations.of(context)
-                                        .translate(widget.event!.name!),
+                                        .translate(widget.event?.name != null
+                                            ? widget.event!.name!
+                                            : ""),
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                         fontSize: 16,
@@ -64,8 +66,10 @@ class _NotificationsState extends State<Notifications> {
                                       MediaQuery.of(context).size.width / 1.2,
                                   child: Text(
                                     ApplicationLocalizations.of(context)
-                                        .translate(
-                                            widget.event!.description!.trim()),
+                                        .translate(widget.event?.description !=
+                                                null
+                                            ? widget.event!.description!.trim()
+                                            : ""),
                                     maxLines: 4,
                                     style: TextStyle(
                                         fontSize: 14,
