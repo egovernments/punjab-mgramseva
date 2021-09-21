@@ -41,7 +41,7 @@ class _HomeState extends State<Home> {
     languageProvider.getLocalizationData(context);
   }
 
-  _buildView(homeProvider, constraint, Widget Notid) {
+  _buildView(homeProvider, Widget Notid) {
     return Column(children: [
       Align(
           alignment: Alignment.centerRight,
@@ -67,10 +67,8 @@ class _HomeState extends State<Home> {
             ),
             walkThroughKey: Constants.HOME_KEY,
           )),
-      SizedBox(child: HomeCard(), height: constraint),
+      HomeCard(),
       Notid,
-
-      // Notifications(),
       Footer()
     ]);
   }
@@ -138,15 +136,6 @@ class _HomeState extends State<Home> {
 
     return _buildView(
       homeProvider,
-      constraint.maxWidth < 720
-          ? 160 *
-              ((homeProvider.homeWalkthrougList.length == 1
-                          ? 3
-                          : homeProvider.homeWalkthrougList.length / 3)
-                      .round())
-                  .toDouble()
-          : 200 *
-              ((homeProvider.homeWalkthrougList.length / 3).round()).toDouble(),
       Container(
           margin: constraint.maxWidth < 720
               ? EdgeInsets.all(0)
