@@ -13,9 +13,11 @@ import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
+import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
+import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/customAppbar.dart';
@@ -47,6 +49,9 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         Provider.of<CollectPaymentProvider>(context, listen: false);
     FetchBill? fetchBill;
     return Scaffold(
+      drawer: DrawerWrapper(
+        Drawer(child: SideBar()),
+      ),
       appBar: CustomAppBar(),
       body: StreamBuilder(
           stream: consumerPaymentProvider.paymentStreamController.stream,
@@ -324,14 +329,16 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         direction: Axis.vertical,
         spacing: 3,
         children: [
-          Padding(padding: EdgeInsets.only(right: 8),
+          Padding(
+              padding: EdgeInsets.only(right: 8),
               child: Text(
-              '${ApplicationLocalizations.of(context).translate('BL_${billdemandDetails?.billAccountDetails?.first.taxHeadCode}')}',
-              style: style)),
-          Padding(padding: EdgeInsets.only(right: 8),
-            child:Text(
-              '${DateFormats.getMonthWithDay(billdemandDetails?.fromPeriod)}-${DateFormats.getMonthWithDay(billdemandDetails?.toPeriod)}',
-              style: style)),
+                  '${ApplicationLocalizations.of(context).translate('BL_${billdemandDetails?.billAccountDetails?.first.taxHeadCode}')}',
+                  style: style)),
+          Padding(
+              padding: EdgeInsets.only(right: 8),
+              child: Text(
+                  '${DateFormats.getMonthWithDay(billdemandDetails?.fromPeriod)}-${DateFormats.getMonthWithDay(billdemandDetails?.toPeriod)}',
+                  style: style)),
         ],
       ),
     );

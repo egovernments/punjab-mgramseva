@@ -11,9 +11,11 @@ import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
+import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
+import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/footer.dart';
 import 'package:provider/provider.dart';
@@ -142,6 +144,9 @@ class _EditProfileState extends State<EditProfile> {
         Text(i18.common.MGRAM_SEVA),
         AppBar(),
         <Widget>[Icon(Icons.more_vert)],
+      ),
+      drawer: DrawerWrapper(
+        Drawer(child: SideBar()),
       ),
       body: SingleChildScrollView(
         child: Container(
