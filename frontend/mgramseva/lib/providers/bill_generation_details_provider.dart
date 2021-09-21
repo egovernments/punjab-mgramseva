@@ -114,9 +114,12 @@ class BillGenerationProvider with ChangeNotifier {
   }
 
   setMeterReading(meterRes) {
-    if (meterRes.meterReadings!.length > 0 && meterRes.meterReadings!.first.currentReading.toString() != '0') {
+    if (meterRes.meterReadings!.length > 0 &&
+        meterRes.meterReadings!.first.currentReading.toString() != '0') {
       readingExist = false;
-      var previousMeterReading = meterRes.meterReadings!.first.currentReading.toString().padLeft(5, '0');
+      var previousMeterReading = meterRes.meterReadings!.first.currentReading
+          .toString()
+          .padLeft(5, '0');
       billGenerateDetails.meterNumberCtrl.text = waterconnection.meterId!;
       billGenerateDetails.om_1Ctrl.text = previousMeterReading.toString()[0];
       billGenerateDetails.om_2Ctrl.text = previousMeterReading.toString()[1];
@@ -136,8 +139,7 @@ class BillGenerationProvider with ChangeNotifier {
       billGenerateDetails.om_4Ctrl.text = previousMeterReading.toString()[3];
       billGenerateDetails.om_5Ctrl.text = previousMeterReading.toString()[4];
       prevReadingDate = waterconnection.previousReadingDate;
-    }
-    else{
+    } else {
       readingExist = true;
     }
     notifyListeners();
@@ -260,7 +262,7 @@ class BillGenerationProvider with ChangeNotifier {
                 "meterStatus": "Working",
                 "connectionNo": waterconnection.connectionNo,
                 "lastReading": int.parse(oldMeter),
-                "lastReadingDate": waterconnection.previousReadingDate,
+                "lastReadingDate": prevReadingDate,
                 "generateDemand": true,
                 "tenantId": commonProvider.userDetails!.selectedtenant!.code
               }
@@ -275,8 +277,10 @@ class BillGenerationProvider with ChangeNotifier {
             Navigator.pop(context);
             if (billResponse1 != null) {
               late String localizationText;
-              localizationText = '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT)}';
-              localizationText = localizationText.replaceFirst('<number>', '(+91 - ${billList.bill!.first.mobileNumber})');
+              localizationText =
+                  '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT)}';
+              localizationText = localizationText.replaceFirst(
+                  '<number>', '(+91 - ${billList.bill!.first.mobileNumber})');
               Navigator.of(context).pushReplacement(
                   new MaterialPageRoute(builder: (BuildContext context) {
                 return CommonSuccess(
@@ -349,20 +353,19 @@ class BillGenerationProvider with ChangeNotifier {
         var billResponse2 = await BillGenerateRepository().bulkDemand(res2);
         Navigator.pop(context);
         if (billResponse2 != null) {
-           String localizationText = getSubtitleText(context);
+          String localizationText = getSubtitleText(context);
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
             return CommonSuccess(SuccessHandler(
-              ApplicationLocalizations.of(context)
-                  .translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS),
-              localizationText,
-              i18.common.BACK_HOME,
-              Routes.BILL_GENERATE,
-              subHeader:
-                  '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)}',
-              subTextFun: () => getLocalizedText(context),
-              subtitleFun: () => getSubtitleText(context)
-            ));
+                ApplicationLocalizations.of(context)
+                    .translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS),
+                localizationText,
+                i18.common.BACK_HOME,
+                Routes.BILL_GENERATE,
+                subHeader:
+                    '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)}',
+                subTextFun: () => getLocalizedText(context),
+                subtitleFun: () => getSubtitleText(context)));
           }));
         }
       } catch (e) {
@@ -377,17 +380,20 @@ class BillGenerationProvider with ChangeNotifier {
     }
   }
 
-  String getSubtitleText(BuildContext context){
+  String getSubtitleText(BuildContext context) {
     late String localizationText;
 
-    localizationText = '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT)}';
-    localizationText = localizationText.replaceFirst('<billing cycle>', '${ApplicationLocalizations.of(context).translate(selectedBillCycle.toString())}' +
-        ' ${selectedBillYear.financialYear!.toString().substring(2)}');
+    localizationText =
+        '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT)}';
+    localizationText = localizationText.replaceFirst(
+        '<billing cycle>',
+        '${ApplicationLocalizations.of(context).translate(selectedBillCycle.toString())}' +
+            ' ${selectedBillYear.financialYear!.toString().substring(2)}');
     return localizationText;
   }
 
-  String getLocalizedText(BuildContext context){
-   return  '${ApplicationLocalizations.of(context).translate(selectedBillCycle)}' +
+  String getLocalizedText(BuildContext context) {
+    return '${ApplicationLocalizations.of(context).translate(selectedBillCycle)}' +
         ' ${selectedBillYear.financialYear!.toString().substring(2)}';
   }
 
@@ -477,7 +483,10 @@ class BillGenerationProvider with ChangeNotifier {
         return DropdownMenuItem(
           value: value['code'].toLocal().toString(),
           child: new Text(
-          ApplicationLocalizations.of(navigatorKey.currentContext!).translate((Constants.MONTHS[d.month - 1])) + " - " + d.year.toString()),
+              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                      .translate((Constants.MONTHS[d.month - 1])) +
+                  " - " +
+                  d.year.toString()),
         );
       }).toList();
     }
