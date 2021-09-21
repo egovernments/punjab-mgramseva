@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
@@ -577,7 +580,6 @@ public class SchedulerService {
 	 * 
 	 * @param requestInfo
 	 */
-
 	public void sendPendingCollectionEvent(RequestInfo requestInfo) {
 		LocalDate dayofmonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
 		LocalDateTime scheduleTimeFirst = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(),
@@ -625,6 +627,11 @@ public class SchedulerService {
 											getShortenedUrl(penColLink));
 									message = message.replace("{GPWSC}", tenantId);
 									message = message.replace("{ownername}", uuidUsername);
+									DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                                                                        Date today = new Date();
+                                                                        String formattedDate = format.format(today);
+                                                                        message = message.replace("{Date}", formattedDate);
+
 									message = message.replace("{Date}", LocalDate.now().toString());
 									System.out.println("PENDING Coll SMS::" + message);
 									SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
@@ -660,7 +667,10 @@ public class SchedulerService {
 					message = message.replace("{amount}", "0");
 				System.out.println("Final SMS MEssage is :" + message);
 			}if(message.contains("{TODAY_DATE}")) {
-				message = message.replace("{TODAY_DATE}", LocalDate.now().toString());
+				DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                                Date today = new Date();
+                                String formattedDate = format.format(today);
+                                message = message.replace("{TODAY_DATE}", formattedDate);
 			}
 		System.out.println("Final message is :" + message);
 		return message;
@@ -745,7 +755,10 @@ public class SchedulerService {
 										messages.forEach(msg -> {
 											msg = msg.replace("{ownername}", uuidUsername);
 											msg = msg.replace("{GPWSC}", tenantId);
-											msg = msg.replace("{date}", LocalDate.now().toString());
+											DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                                                                                        Date today = new Date();
+                                                                                        String formattedDate = format.format(today);
+                                                                                        msg = msg.replace("{date}", formattedDate);
 											System.out.println("TODAY Coll SMS::" + msg);
 											SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
 													.message(msg)
