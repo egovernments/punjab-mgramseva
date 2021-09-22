@@ -126,7 +126,9 @@ class BillGenerationProvider with ChangeNotifier {
       billGenerateDetails.om_3Ctrl.text = previousMeterReading.toString()[2];
       billGenerateDetails.om_4Ctrl.text = previousMeterReading.toString()[3];
       billGenerateDetails.om_5Ctrl.text = previousMeterReading.toString()[4];
-      prevReadingDate = meterRes.meterReadings!.first.currentReadingDate;
+      var readDate = DateTime.fromMillisecondsSinceEpoch(meterRes.meterReadings!.first.currentReadingDate) ;
+      var reqDate = readDate.add(Duration(days: 1)).toLocal().toString();
+      prevReadingDate = DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(reqDate, dateFormat: 'dd/MM/yyyy'));
     } else if (waterconnection.additionalDetails!.meterReading.toString() !=
         '0') {
       readingExist = false;
