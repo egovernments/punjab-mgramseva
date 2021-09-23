@@ -309,8 +309,13 @@ public class WorkflowNotificationService {
 		Map<String, String> messageToReturn = new HashMap<>();
 		for (Entry<String, String> mobileAndName : mobileNumbersAndNames.entrySet()) {
 			String messageToReplace = message;
-			if (messageToReplace.contains("<Owner Name>"))
-				messageToReplace = messageToReplace.replace("<Owner Name>", mobileAndName.getValue());
+			if (messageToReplace.contains("{ownername}"))
+				messageToReplace = messageToReplace.replace("{ownername}", mobileAndName.getValue());
+			
+
+			if (messageToReplace.contains("{consumercode}"))
+				messageToReplace = messageToReplace.replace("{consumercode}",waterConnectionRequest.getWaterConnection().getConnectionNo());
+			
 			if (messageToReplace.contains("<Service>"))
 				messageToReplace = messageToReplace.replace("<Service>", WCConstants.SERVICE_FIELD_VALUE_NOTIFICATION);
 
@@ -320,6 +325,9 @@ public class WorkflowNotificationService {
 			if (messageToReplace.contains("<SLA>"))
 				messageToReplace = messageToReplace.replace("<SLA>", getSLAForState(waterConnectionRequest, property, config.getBusinessServiceValue()));
 
+			if (messageToReplace.contains("<GPWSC>"))
+				messageToReplace = messageToReplace.replace("<GPWSC>",property.getTenantId()); 
+			
 			if (messageToReplace.contains("<Application number>"))
 				messageToReplace = messageToReplace.replace("<Application number>", waterConnectionRequest.getWaterConnection().getApplicationNo());
 
@@ -335,6 +343,10 @@ public class WorkflowNotificationService {
 				messageToReplace = messageToReplace.replace("<mseva app link>",
 						waterServiceUtil.getShortnerURL(config.getMSevaAppLink()));
 
+			if (messageToReplace.contains("<Consumer Id>"))
+				messageToReplace = messageToReplace.replace("<Consumer Id>",
+						waterConnectionRequest.getWaterConnection().getApplicationNo()  );
+			
 			if (messageToReplace.contains("<View History Link>")) {
 				String historyLink = config.getNotificationUrl() + config.getViewHistoryLink();
 				historyLink = historyLink.replace(mobileNoReplacer, mobileAndName.getKey());
@@ -351,10 +363,7 @@ public class WorkflowNotificationService {
 				messageToReplace = messageToReplace.replace("<payment link>",
 						waterServiceUtil.getShortnerURL(paymentLink));
 			}
-			/*if (messageToReplace.contains("<receipt download link>")){
-				messageToReplace = messageToReplace.replace("<receipt download link>",
-						waterServiceUtil.getShortnerURL(config.getNotificationUrl()));
-			}*/
+			
 			if (messageToReplace.contains("<connection details page>")) {
 				String connectionDetaislLink = config.getNotificationUrl() + config.getConnectionDetailsLink();
 				connectionDetaislLink = connectionDetaislLink.replace(connectionNoReplacer,

@@ -1,6 +1,10 @@
 
 All notable changes to this module will be documented in this file.
 
+## 1.3.4 - 2021-07-26
+
+ - Change in event type and project id.
+
 ## 1.3.3 - 2021-07-26
 
  - Earliest bill search

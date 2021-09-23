@@ -1,22 +1,41 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mgramseva/model/file/file_store.dart';
+import 'package:mgramseva/repository/core_repo.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/common_methods.dart';
+import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/notifyers.dart';
+import 'package:path/path.dart' as path;
 
 class FilePickerDemo extends StatefulWidget {
+  final Function(List<FileStore>?) callBack;
+  final String? moduleName;
+  final List<String>? extensions;
+  final GlobalKey? contextkey;
+
+  const FilePickerDemo({Key? key, required this.callBack, this.moduleName, this.extensions, this.contextkey}) : super(key: key);
   @override
   _FilePickerDemoState createState() => _FilePickerDemoState();
 }
 
 class _FilePickerDemoState extends State<FilePickerDemo> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  String? _fileName;
-  List<PlatformFile>? _paths;
+  List<dynamic> _selectedFiles = <dynamic>[];
+  List<FileStore> _fileStoreList = <FileStore>[];
   String? _directoryPath;
   String? _extension;
   bool _loadingPath = false;
   bool _multiPick = false;
-  FileType _pickingType = FileType.any;
+  FileType _pickingType = FileType.custom;
   TextEditingController _controller = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -28,14 +47,38 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
     setState(() => _loadingPath = true);
     try {
       _directoryPath = null;
-      _paths = (await FilePicker.platform.pickFiles(
+      var paths = (await FilePicker.platform.pickFiles(
         type: _pickingType,
         allowMultiple: _multiPick,
-        allowedExtensions: (_extension?.isNotEmpty ?? false)
+        allowedExtensions: widget.extensions ?? ((_extension?.isNotEmpty ?? false)
             ? _extension?.replaceAll(' ', '').split(',')
-            : null,
+            : null),
       ))
           ?.files;
+
+      if(paths != null){
+        var isNotValidSize = false;
+        for(var path in paths){
+          if (!(await CommonMethods.isValidFileSize(path.size))) isNotValidSize = true;;
+        }
+
+        if(isNotValidSize){
+          Notifiers.getToastMessage(context, i18.common.FILE_SIZE, 'ERROR');
+          return;
+        }
+        if(_multiPick){
+          _selectedFiles.addAll(paths);
+        }else{
+          _selectedFiles = paths;
+        }
+
+        List<dynamic> files = paths;
+        if(!kIsWeb){
+          files = paths.map((e) => File(e.path ?? '')).toList();
+        }
+
+        uploadFiles(files);
+      }
     } on PlatformException catch (e) {
       print("Unsupported operation" + e.toString());
     } catch (ex) {
@@ -44,10 +87,18 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
     if (!mounted) return;
     setState(() {
       _loadingPath = false;
-      print(_paths!.first.extension);
-      _fileName =
-          _paths != null ? _paths!.map((e) => e.name).toString() : '...';
     });
+  }
+
+  uploadFiles(List<dynamic> files) async {
+    try{
+      var response = await CoreRepository().uploadFiles(files, widget.moduleName ?? APIConstants.API_MODULE_NAME);
+      _fileStoreList.addAll(response);
+      if(_selectedFiles.isNotEmpty)
+        widget.callBack(_fileStoreList);
+    }catch(e){
+      Notifiers.getToastMessage(context, e.toString(), 'ERROR');
+    }
   }
 
   void _clearCachedFiles() {
@@ -56,8 +107,8 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
         SnackBar(
           backgroundColor: result! ? Colors.green : Colors.red,
           content: Text((result
-              ? 'Temporary files removed with success.'
-              : 'Failed to clean temporary files')),
+              ? '${ApplicationLocalizations.of(context).translate(i18.common.TEMPORARY_FILES_REMOVED)}'
+              : '${ApplicationLocalizations.of(context).translate(i18.common.FALIED_TO_FETCH_TEMPORARY_FILES)}')),
         ),
       );
     });
@@ -78,24 +129,27 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
           padding: EdgeInsets.only(top: 18, bottom: 3),
           child: new Align(
               alignment: Alignment.centerLeft,
-              child: Text("Attach Bill",
+              child: Text("${ApplicationLocalizations.of(context).translate(i18.common.ATTACH_BILL)}",
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       fontWeight: FontWeight.w400,
-                      fontSize: 19,
-                      color: Colors.black)))),
+                      fontSize: 16,
+                  color: Theme.of(context).primaryColorDark)))),
       Container(
           width: constraints.maxWidth > 760
               ? MediaQuery.of(context).size.width / 2.5
               : MediaQuery.of(context).size.width,
-          height: 50,
+          // height: 50,
           decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                  margin: EdgeInsets.all(10),
+                  margin: EdgeInsets.only(left: 4.0, right: 16.0, top: 4.0 , bottom: 4.0),
+                  alignment: Alignment.centerLeft,
                   child: ElevatedButton(
                     style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 15)),
                         backgroundColor:
                             MaterialStateProperty.all<Color>(Color(0XFFD6D5D4)),
                         shape:
@@ -104,22 +158,37 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                             borderRadius: BorderRadius.zero,
                           ),
                         )
-// )
-//                               ElevatedButton.styleFrom(
-//                                 primary:Color(0XFFD6D5D4),
-//                                 padding: EdgeInsets.all(20),
-
                         ),
-                    onPressed: () => _openFileExplorer(),
-                    child: Padding(
-                        padding: const EdgeInsets.only(left: 24, right: 24),
-                        child: const Text(
-                          "Choose File",
-                          style: TextStyle(color: Colors.black, fontSize: 16),
-                        )),
+                    onPressed: () => selectDocumentOrImage(),
+                    child: Text(
+                      "${ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_FILE)}",
+                      style: TextStyle(color: Theme.of(context).primaryColorDark, fontSize: 16),
+                    ),
                   )),
-              Text(
-                "No File Uploaded",
+            _selectedFiles.isNotEmpty ?
+            Expanded(
+              child: SingleChildScrollView(
+                child: Wrap(
+                    direction: Axis.horizontal,
+                    spacing: 3,
+                    children : List.generate(_selectedFiles.length, (index) => Wrap(
+                      direction: Axis.horizontal,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 2,
+                      children: [
+                        Text(_selectedFiles[index] is File ? (path.basename(_selectedFiles[index].path)) : _selectedFiles[index].name,
+                        maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        IconButton(
+                            padding: EdgeInsets.all(5),
+                            onPressed: ()=> onClickOfClear(index), icon: Icon(Icons.cancel))
+                      ],
+                    )).toList()),
+              ),
+            )
+            : Text(
+                "${ApplicationLocalizations.of(context).translate(i18.common.NO_FILE_UPLOADED)}",
                 style: TextStyle(color: Colors.black, fontSize: 16),
               )
             ],
@@ -127,84 +196,151 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
     ];
   }
 
+  void onClickOfClear(int index){
+    setState(() {
+      _selectedFiles.removeAt(index);
+    if(index < _fileStoreList.length)  _fileStoreList.removeAt(index);
+    });
+    widget.callBack(_fileStoreList);
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Center(
           child: Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
               child: SingleChildScrollView(
                 child: Container(
-                  margin: const EdgeInsets.only(
-                      top: 5.0, bottom: 5, right: 10, left: 10),
+                  key: widget.contextkey,
+                  margin: constraints.maxWidth > 760 ? const EdgeInsets.only(
+                      top: 5.0, bottom: 5, right: 10, left: 10) : const EdgeInsets.only(
+                      top: 5.0, bottom: 5, right: 0, left: 0),
                   child: constraints.maxWidth > 760
                       ? Row(children: _getConatiner(constraints, context))
                       : Column(children: _getConatiner(constraints, context))
-                  // Padding(
-                  //   padding: const EdgeInsets.only(top: 50.0, bottom: 20.0),
-                  //   child: Column(
-                  //     children: <Widget>[
-                  //       ElevatedButton(
-                  //         onPressed: () => _openFileExplorer(),
-                  //         child: const Text("Open file picker"),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  // Builder(
-                  //   builder: (BuildContext context) => _loadingPath
-                  //       ? Padding(
-                  //           padding: const EdgeInsets.only(bottom: 10.0),
-                  //           child: const CircularProgressIndicator(),
-                  //         )
-                  //       : _directoryPath != null
-                  //           ? ListTile(
-                  //               title: const Text('Directory path'),
-                  //               subtitle: Text(_directoryPath!),
-                  //             )
-                  //           : _paths != null
-                  //               ? Container(
-                  //                   padding: const EdgeInsets.only(bottom: 30.0),
-                  //                   height:
-                  //                       MediaQuery.of(context).size.height * 0.50,
-                  //                   child: Scrollbar(
-                  //                       child: ListView.separated(
-                  //                     itemCount:
-                  //                         _paths != null && _paths!.isNotEmpty
-                  //                             ? _paths!.length
-                  //                             : 1,
-                  //                     itemBuilder:
-                  //                         (BuildContext context, int index) {
-                  //                       final bool isMultiPath =
-                  //                           _paths != null && _paths!.isNotEmpty;
-                  //                       final String name = 'File $index: ' +
-                  //                           (isMultiPath
-                  //                               ? _paths!
-                  //                                   .map((e) => e.name)
-                  //                                   .toList()[index]
-                  //                               : _fileName ?? '...');
-                  //                       final path = _paths!
-                  //                           .map((e) => e.path)
-                  //                           .toList()[index]
-                  //                           .toString();
-
-                  //                       return ListTile(
-                  //                         title: Text(
-                  //                           name,
-                  //                         ),
-                  //                         subtitle: Text(path),
-                  //                       );
-                  //                     },
-                  //                     separatorBuilder:
-                  //                         (BuildContext context, int index) =>
-                  //                             const Divider(),
-                  //                   )),
-                  //                 )
-                  //               : const SizedBox(),
-                  // ),
                   ,
                 ),
               )));
     });
+  }
+
+
+  Future<void> selectDocumentOrImage() async {
+    FocusScope.of(context).unfocus();
+    var list = [
+      {
+        "label" :  i18.common.CAMERA,
+        'icon' : Icons.camera_alt
+      },
+      {
+        "label" :  i18.common.FILE_MANAGER,
+        'icon' : Icons.drive_folder_upload
+      },
+    ];
+
+    if(kIsWeb){
+      _openFileExplorer();
+      return ;
+    }
+
+    callBack(String value){
+      Navigator.pop(context);
+      if(list.first['label'] == value){
+        imagePath(context, selectionMode: 'camera');
+      }else{
+        imagePath(context, selectionMode: 'filePicker');
+      }
+    }
+
+    await showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+        ),
+        builder: (BuildContext context) {
+         return Padding(
+           padding: const EdgeInsets.only(bottom: 25, left: 25, right: 25, top: 10),
+           child: Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             mainAxisSize: MainAxisSize.min,
+             children : [
+               Container(
+                 padding: EdgeInsets.symmetric(vertical: 8),
+                 alignment: Alignment.center,
+                 child: Container(
+                   height: 2,
+                   width: 30,
+                   color: Colors.grey,
+                 ),
+               ),
+               Padding(
+                 padding: const EdgeInsets.only(bottom: 16, top: 5),
+                 child: Text(ApplicationLocalizations.of(context).translate(i18.common.CHOOSE_AN_ACTION), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+               ),
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+               children: list.map((e) => _buildIcon(e['label'] as String,e['icon'] as IconData, callBack)).toList()
+             ),
+           ]
+           ),
+         );
+        });
+  }
+
+
+  Future<void> imagePath(BuildContext context, { required String selectionMode}) async {
+    FocusScope.of(context).unfocus();
+    try {
+      if (selectionMode == 'camera') {
+        final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+        if (pickedFile != null) {
+          String newPath = path.join(path.dirname(pickedFile.path), '${CommonMethods.getRandomName()}${path.extension(pickedFile.path)}');
+          final File? file = await File(pickedFile.path).copy(newPath);
+          if (file != null) {
+            if (!(await CommonMethods.isValidFileSize(await file.length()))){
+              Notifiers.getToastMessage(context, i18.common.FILE_SIZE, 'ERROR');
+              return;
+            };
+            if(_multiPick){
+              _selectedFiles.addAll([file]);
+            }else{
+              _selectedFiles = [file];
+            }
+            uploadFiles(<File>[file]);
+            return;
+          } else {
+            return null;
+          }
+        } else {
+          _openFileExplorer();
+        }
+      } else {
+        _openFileExplorer();
+      }
+    } on Exception catch (e) {
+      Notifiers.getToastMessage(context, e.toString(), 'ERROR');
+    }
+  }
+
+
+  Widget _buildIcon(String label, IconData icon, Function(String) callBack){
+    return Wrap(
+      direction: Axis.vertical,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      alignment: WrapAlignment.center,
+      spacing: 8,
+      children: [
+       IconButton(onPressed: ()=> callBack(label), iconSize: 45, icon: Icon(icon)),
+        Text( ApplicationLocalizations.of(
+            context)
+            .translate(label),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 15
+        ),
+        )
+      ],
+    );
   }
 }

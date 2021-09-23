@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mgramseva/model/localization/language.dart';
+import 'package:mgramseva/model/mdms/tenants.dart';
 
 part 'user_details.g.dart';
 
@@ -19,6 +20,13 @@ class UserDetails {
   UserRequest? userRequest;
   @JsonKey(name: "selectedLanguage")
   Languages? selectedLanguage;
+
+  @JsonKey(name: "selectedTenant")
+  Tenants? selectedtenant;
+
+  @JsonKey(name: 'isFirstTimeLogin')
+  bool? isFirstTimeLogin;
+
   UserDetails();
 
   factory UserDetails.fromJson(Map<String, dynamic> json) =>

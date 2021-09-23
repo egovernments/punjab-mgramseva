@@ -17,47 +17,47 @@ class SelectLanguage extends StatefulWidget {
 }
 
 class _SelectLanguage extends State<SelectLanguage> {
-
   @override
   void initState() {
     super.initState();
-    var languageProvider = Provider.of<LanguageProvider>(context, listen: false);
-    languageProvider.getLocalizationData();
+    var languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
+    languageProvider.getLocalizationData(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    var languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+    var languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
 
-    return Scaffold(body:
-    StreamBuilder(
-        stream: languageProvider.streamController.stream,
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return _buildView(snapshot.data);
-          } else if (snapshot.hasError) {
-            return Notifiers.networkErrorPage(
-                context, (){});
-          } else {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return Loaders.CircularLoader();
-              case ConnectionState.active:
-                return Loaders.CircularLoader();
-              default:
-                return Container();
-            }
-          }
-        })
-   );
+    return Scaffold(
+        body: StreamBuilder(
+            stream: languageProvider.streamController.stream,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return _buildView(snapshot.data);
+              } else if (snapshot.hasError) {
+                return Notifiers.networkErrorPage(context,
+                    () => languageProvider.getLocalizationData(context));
+              } else {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return Loaders.CircularLoader();
+                  case ConnectionState.active:
+                    return Loaders.CircularLoader();
+                  default:
+                    return Container();
+                }
+              }
+            }));
   }
 
   Widget _buildView(List<StateInfo> stateList) {
-    return  LayoutBuilder(builder: (context, constraints) {
+    return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 760) {
         return LanguageSelectMobileView(stateList.first);
       } else {
-        return  LanguageSelectionDesktopView(stateList.first, () {});
+        return LanguageSelectionDesktopView(stateList.first, () {});
       }
     });
   }

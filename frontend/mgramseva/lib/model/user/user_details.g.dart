@@ -18,7 +18,11 @@ UserDetails _$UserDetailsFromJson(Map<String, dynamic> json) {
         : UserRequest.fromJson(json['UserRequest'] as Map<String, dynamic>)
     ..selectedLanguage = json['selectedLanguage'] == null
         ? null
-        : Languages.fromJson(json['selectedLanguage'] as Map<String, dynamic>);
+        : Languages.fromJson(json['selectedLanguage'] as Map<String, dynamic>)
+    ..selectedtenant = json['selectedTenant'] == null
+        ? null
+        : Tenants.fromJson(json['selectedTenant'] as Map<String, dynamic>)
+    ..isFirstTimeLogin = json['isFirstTimeLogin'] as bool?;
 }
 
 Map<String, dynamic> _$UserDetailsToJson(UserDetails instance) =>
@@ -30,6 +34,8 @@ Map<String, dynamic> _$UserDetailsToJson(UserDetails instance) =>
       'scope': instance.scope,
       'UserRequest': instance.userRequest,
       'selectedLanguage': instance.selectedLanguage,
+      'selectedTenant': instance.selectedtenant,
+      'isFirstTimeLogin': instance.isFirstTimeLogin,
     };
 
 UserRequest _$UserRequestFromJson(Map<String, dynamic> json) {

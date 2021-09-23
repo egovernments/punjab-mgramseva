@@ -6,12 +6,13 @@ class DrawerWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      return Container(
-          width: constraints.maxWidth < 760
-              ? MediaQuery.of(context).size.width * .7
-              : MediaQuery.of(context).size.width / 4,
-          margin: EdgeInsets.only(top: 60),
-          child: widget);
+      return SafeArea(
+          child: Container(
+              width: constraints.maxWidth < 760
+                  ? MediaQuery.of(context).size.width * .9
+                  : MediaQuery.of(context).size.width / 4,
+              margin: EdgeInsets.only(top: kToolbarHeight),
+              child: widget));
     });
   }
 }

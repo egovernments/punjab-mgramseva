@@ -7,16 +7,14 @@ class Back extends StatelessWidget {
       top: 30.0,
       left: 10,
       child: IconButton(
-        icon: Icon(
-          Icons.arrow_back,
-        ),
-        iconSize: 25,
-        color: Colors.white,
-        splashColor: Colors.purple,
-        onPressed: () {
-          return Navigator.pop(context);
-        },
-      ),
+          icon: Icon(
+            Icons.arrow_back,
+          ),
+          iconSize: 25,
+          color: Colors.white,
+          splashColor: Colors.purple,
+          onPressed: () =>
+              Navigator.of(context, rootNavigator: true).maybePop()),
     );
   }
 }

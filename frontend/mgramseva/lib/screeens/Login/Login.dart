@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/providers/authentication.dart';
+import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
 import 'package:mgramseva/widgets/HeadingText.dart';
@@ -22,17 +25,45 @@ class _LoginState extends State<Login> {
   var userNamecontroller = new TextEditingController();
   var passwordcontroller = new TextEditingController();
   final formKey = GlobalKey<FormState>();
+  var autoValidation = false;
+  var phoneNumberAutoValidation = false;
+  FocusNode _numberFocus = new FocusNode();
 
-  saveInput(context) async {
-    print(context);
+  @override
+  void initState() {
+    _numberFocus.addListener(_onFocusChange);
+    super.initState();
+  }
+
+  @override
+  dispose(){
+    _numberFocus.removeListener(_onFocusChange);
+    super.dispose();
+  }
+
+  void _onFocusChange(){
+    if(!_numberFocus.hasFocus){
+      setState(() {
+        phoneNumberAutoValidation = true;
+      });
+    }
+  }
+
+  void onChangeOfInput(){
+    setState(() {
+    });
   }
 
   saveandLogin(context) async {
+    var authProvider =
+        Provider.of<AuthenticationProvider>(context, listen: false);
+
     if (formKey.currentState!.validate()) {
-      var authProvider =
-          Provider.of<AuthenticationProvider>(context, listen: false);
       authProvider.validateLogin(context, userNamecontroller.text.trim(),
           passwordcontroller.text.trim());
+    } else {
+      autoValidation = true;
+      authProvider.callNotifyer();
     }
   }
 
@@ -40,33 +71,42 @@ class _LoginState extends State<Login> {
     return Card(
         child: Form(
             key: formKey,
+            onChanged: onChangeOfInput,
+            autovalidateMode: autoValidation
+                ? AutovalidateMode.always
+                : AutovalidateMode.disabled,
             child: (Column(
               children: [
                 Logo(),
                 HeadingText(ApplicationLocalizations.of(context)
                     .translate(i18.login.LOGIN_LABEL)),
-                // BuildTextField(
-                //     context, 'Phone Number', mobileNumber, '', '+91-', saveInput),
                 BuildTextField(
-                  i18.login.LOGIN_NAME,
+                  i18.login.LOGIN_PHONE_NO,
                   userNamecontroller,
+                  prefixText: '+91 - ',
                   isRequired: true,
-                  onChange: (dynamic) => saveInput(dynamic),
+                  inputFormatter: [
+                    FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                  ],
+                  focusNode: _numberFocus,
+                  autoValidation: phoneNumberAutoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
+                  maxLength: 10,
+                  validator: Validators.mobileNumberValidator,
+                  textInputType: TextInputType.phone,
                 ),
                 BuildTextField(
                   i18.login.LOGIN_PASSWORD,
                   passwordcontroller,
                   isRequired: true,
-                  onChange: (dynamic) => saveInput(dynamic),
+                  obscureText: true,
+                  maxLines: 1,
                 ),
                 GestureDetector(
-                  onTap: () => Navigator.push<bool>(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => ForgotPassword())),
+                  onTap: () =>
+                      Navigator.pushNamed(context, Routes.FORGOT_PASSWORD),
                   child: Padding(
                       padding: const EdgeInsets.only(
-                          left: 25, top: 10, bottom: 10, right: 25),
+                          left: 8, top: 10, bottom: 10, right: 25),
                       child: new Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
@@ -77,9 +117,9 @@ class _LoginState extends State<Login> {
                           ))),
                 ),
                 Padding(
-                    padding: EdgeInsets.all(15),
+                    padding: EdgeInsets.only(top: 15, bottom: 15, left: 8, right: 8),
                     child: Button(
-                        i18.common.CONTINUE, () => saveandLogin(context))),
+                        i18.common.CONTINUE, buttonStatus ? () => saveandLogin(context) : null)),
                 SizedBox(
                   height: 10,
                 )
@@ -97,4 +137,6 @@ class _LoginState extends State<Login> {
       }
     }));
   }
+
+  bool get buttonStatus => userNamecontroller.text.trim().length == 10 && passwordcontroller.text.trim().length > 1;
 }

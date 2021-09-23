@@ -39,6 +39,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
     ..active = json['active'] as bool?
     ..locale = json['locale'] as String?
     ..type = json['type'] as String?
+    ..defaultPwdChgd = json['defaultPwdChgd'] as bool?
     ..accountLocked = json['accountLocked'] as bool?
     ..accountLockedDate = json['accountLockedDate'] as int?
     ..fatherOrHusbandName = json['fatherOrHusbandName'] as String?
@@ -50,7 +51,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
     ..createdBy = json['createdBy'] as int?
     ..lastModifiedBy = json['lastModifiedBy'] as int?
     ..tenantId = json['tenantId'] as String?
-    ..roles = (json['code'] as List<dynamic>?)
+    ..roles = (json['roles'] as List<dynamic>?)
         ?.map((e) => Roles.fromJson(e as Map<String, dynamic>))
         .toList()
     ..uuid = json['uuid'] as String?
@@ -80,6 +81,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'active': instance.active,
       'locale': instance.locale,
       'type': instance.type,
+      'defaultPwdChgd': instance.defaultPwdChgd,
       'accountLocked': instance.accountLocked,
       'accountLockedDate': instance.accountLockedDate,
       'fatherOrHusbandName': instance.fatherOrHusbandName,
@@ -91,10 +93,23 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'createdBy': instance.createdBy,
       'lastModifiedBy': instance.lastModifiedBy,
       'tenantId': instance.tenantId,
-      'code': instance.roles,
+      'roles': instance.roles,
       'uuid': instance.uuid,
       'createdDate': instance.createdDate,
       'lastModifiedDate': instance.lastModifiedDate,
       'dob': instance.dob,
       'pwdExpiryDate': instance.pwdExpiryDate,
+    };
+
+Roles _$RolesFromJson(Map<String, dynamic> json) {
+  return Roles()
+    ..name = json['name'] as String?
+    ..code = json['code'] as String?
+    ..tenantId = json['tenantId'] as String?;
+}
+
+Map<String, dynamic> _$RolesToJson(Roles instance) => <String, dynamic>{
+      'name': instance.name,
+      'code': instance.code,
+      'tenantId': instance.tenantId,
     };

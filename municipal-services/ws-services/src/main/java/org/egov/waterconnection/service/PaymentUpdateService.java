@@ -15,6 +15,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.Size;
+
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
 import org.egov.tracer.model.CustomException;
@@ -36,6 +38,7 @@ import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.Source;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
+import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.egov.waterconnection.web.models.collection.PaymentDetail;
 import org.egov.waterconnection.web.models.collection.PaymentRequest;
 import org.egov.waterconnection.workflow.WorkflowIntegrator;
@@ -113,8 +116,10 @@ public class PaymentUpdateService {
 					SearchCriteria criteria = SearchCriteria.builder()
 							.tenantId(paymentRequest.getPayment().getTenantId())
 							.applicationNumber(paymentDetail.getBill().getConsumerCode()).build();
-					List<WaterConnection> waterConnections = waterService.search(criteria,
+					List<WaterConnection> waterConnections;
+					WaterConnectionResponse response = waterService.search(criteria,
 							paymentRequest.getRequestInfo());
+					waterConnections = response.getWaterConnection();
 					if (CollectionUtils.isEmpty(waterConnections)) {
 						throw new CustomException("INVALID_RECEIPT",
 								"No waterConnection found for the consumerCode " + criteria.getApplicationNumber());
@@ -122,7 +127,7 @@ public class PaymentUpdateService {
 					Optional<WaterConnection> connections = waterConnections.stream().findFirst();
 					WaterConnection connection = connections.get();
 					if (waterConnections.size() > 1) {
-						throw new CustomException("INVALID_RECEIPT",
+						throw new CustomException("MULTI_RECEIPT_ERROR",
 								"More than one application found on consumerCode " + criteria.getApplicationNumber());
 					}
 					waterConnections.forEach(waterConnection -> waterConnection.getProcessInstance().setAction((WCConstants.ACTION_PAY)));
@@ -206,8 +211,10 @@ public class PaymentUpdateService {
 								.tenantId(paymentRequest.getPayment().getTenantId())
 								.applicationNumber(paymentDetail.getBill().getConsumerCode()).build();
 					}
-					List<WaterConnection> waterConnections = waterService.search(criteria,
+					List<WaterConnection> waterConnections;
+					WaterConnectionResponse response = waterService.search(criteria,
 							paymentRequest.getRequestInfo());
+					waterConnections = response.getWaterConnection();
 					if (CollectionUtils.isEmpty(waterConnections)) {
 						throw new CustomException("INVALID_RECEIPT",
 								"No waterConnection found for the consumerCode " + paymentDetail.getBill().getConsumerCode());
@@ -218,7 +225,7 @@ public class PaymentUpdateService {
 					WaterConnectionRequest waterConnectionRequest = WaterConnectionRequest.builder()
 							.waterConnection(connections.get()).requestInfo(paymentRequest.getRequestInfo())
 							.build();
-					sendPaymentNotification(waterConnectionRequest, paymentDetail);
+					sendPaymentNotification(waterConnectionRequest, paymentDetail,paymentRequest.getPayment().getId());
 				}
 			}
 		} catch (Exception ex) {
@@ -230,7 +237,7 @@ public class PaymentUpdateService {
 	 *
 	 * @param waterConnectionRequest
 	 */
-	public void sendPaymentNotification(WaterConnectionRequest waterConnectionRequest, PaymentDetail paymentDetail) {
+	public void sendPaymentNotification(WaterConnectionRequest waterConnectionRequest, PaymentDetail paymentDetail,String paymentId) {
 		Property property = validateProperty.getOrValidateProperty(waterConnectionRequest);
 		if (config.getIsUserEventsNotificationEnabled() != null && config.getIsUserEventsNotificationEnabled()) {
 			EventRequest eventRequest = getEventRequest(waterConnectionRequest, property, paymentDetail);
@@ -239,7 +246,8 @@ public class PaymentUpdateService {
 			}
 		}
 		if (config.getIsSMSEnabled() != null && config.getIsSMSEnabled()) {
-			List<SMSRequest> smsRequests = getSmsRequest(waterConnectionRequest, property, paymentDetail);
+			List<SMSRequest> smsRequests = getSmsRequest(waterConnectionRequest, property, paymentDetail,WCConstants.PAYMENT_NOTIFICATION_SMS,paymentId);
+			smsRequests.addAll( getSmsRequest(waterConnectionRequest, property, paymentDetail,WCConstants.FEEDBACK_NOTIFICATION_SMS,paymentId));
 			if (!CollectionUtils.isEmpty(smsRequests)) {
 				notificationUtil.sendSMS(smsRequests);
 			}
@@ -274,7 +282,7 @@ public class PaymentUpdateService {
 		}
 		Map<String, String> getReplacedMessage = workflowNotificationService.getMessageForMobileNumber(mobileNumbersAndNames, request,
 				message, property);
-		Map<String, String> mobileNumberAndMesssage = replacePaymentInfo(getReplacedMessage, paymentDetail);
+		Map<String, String> mobileNumberAndMesssage = replacePaymentInfo(getReplacedMessage, paymentDetail,null, request.getWaterConnection().getConnectionType());
 		Set<String> mobileNumbers = mobileNumberAndMesssage.keySet().stream().collect(Collectors.toSet());
 		Map<String, String> mapOfPhnoAndUUIDs = workflowNotificationService.fetchUserUUIDs(mobileNumbers, request.getRequestInfo(), property.getTenantId());
 		if (CollectionUtils.isEmpty(mapOfPhnoAndUUIDs.keySet())) {
@@ -309,12 +317,14 @@ public class PaymentUpdateService {
 	 * @return
 	 */
 	private List<SMSRequest> getSmsRequest(WaterConnectionRequest waterConnectionRequest,
-										   Property property, PaymentDetail paymentDetail) {
+										   Property property, PaymentDetail paymentDetail, String smsCode,String paymentId) {
 		String localizationMessage = notificationUtil.getLocalizationMessages(property.getTenantId(),
 				waterConnectionRequest.getRequestInfo());
-		String message = notificationUtil.getMessageTemplate(WCConstants.PAYMENT_NOTIFICATION_SMS, localizationMessage);
+
+		String message = notificationUtil.getMessageTemplate((smsCode ==null ? WCConstants.PAYMENT_NOTIFICATION_SMS: smsCode), localizationMessage);
+
 		if (message == null) {
-			log.info("No message template found for, {} " + WCConstants.PAYMENT_NOTIFICATION_SMS);
+			log.info("No message template found for, {} " + (smsCode ==null ? WCConstants.PAYMENT_NOTIFICATION_SMS: smsCode));
 			return Collections.emptyList();
 		}
 		Map<String, String> mobileNumbersAndNames = new HashMap<>();
@@ -332,7 +342,8 @@ public class PaymentUpdateService {
 		}
 		Map<String, String> getReplacedMessage = workflowNotificationService.getMessageForMobileNumber(mobileNumbersAndNames,
 				waterConnectionRequest, message, property);
-		Map<String, String> mobileNumberAndMessage = replacePaymentInfo(getReplacedMessage, paymentDetail);
+		Map<String, String> mobileNumberAndMessage = replacePaymentInfo(getReplacedMessage, paymentDetail,paymentId, waterConnectionRequest.getWaterConnection().getConnectionType());
+
 		List<SMSRequest> smsRequest = new ArrayList<>();
 		mobileNumberAndMessage.forEach((mobileNumber, msg) -> {
 			SMSRequest req = SMSRequest.builder().mobileNumber(mobileNumber).message(msg).category(Category.TRANSACTION).build();
@@ -345,14 +356,19 @@ public class PaymentUpdateService {
 	 *
 	 * @param mobileAndMessage
 	 * @param paymentDetail
+	 * @param string 
 	 * @return replaced message
 	 */
-	private Map<String, String> replacePaymentInfo(Map<String, String> mobileAndMessage, PaymentDetail paymentDetail) {
+	private Map<String, String> replacePaymentInfo(Map<String, String> mobileAndMessage, PaymentDetail paymentDetail,String paymentId, String connectionType) {
 		Map<String, String> messageToReturn = new HashMap<>();
 		for (Map.Entry<String, String> mobAndMesg : mobileAndMessage.entrySet()) {
 			String message = mobAndMesg.getValue();
-			if (message.contains("<Amount paid>")) {
-				message = message.replace("<Amount paid>", paymentDetail.getTotalAmountPaid().toString());
+			if (message.contains("{amountpaid}")) {
+				message = message.replace("{amountpaid}", paymentDetail.getTotalAmountPaid().toString());
+			}
+			
+			if (message.contains("{pendingamount}")) {
+				message = message.replace("{pendingamount}", paymentDetail.getTotalDue().subtract(paymentDetail.getTotalAmountPaid()).toString());
 			}
 			if (message.contains("<Billing Period>")) {
 				int fromDateLength = (int) (Math.log10(paymentDetail.getBill().getBillDetails().get(0).getFromPeriod()) + 1);
@@ -370,16 +386,42 @@ public class PaymentUpdateService {
 				String billingPeriod = builder.append(fromDate.format(formatter)).append(" - ").append(toDate.format(formatter)).toString();
 				message = message.replace("<Billing Period>", billingPeriod);
 			}
+			if (message.contains("<Pending Amount>")) {
+				
+				message = message.replace("<Pending Amount>", paymentDetail.getTotalDue().subtract(paymentDetail.getTotalAmountPaid()).toString());
+			}
 
-			if (message.contains("<receipt download link>")){
+			if (message.contains("{RECEIPT_LINK}")){
 				String link = config.getNotificationUrl() + config.getReceiptDownloadLink();
 				link = link.replace("$consumerCode", paymentDetail.getBill().getConsumerCode());
 				link = link.replace("$tenantId", paymentDetail.getTenantId());
 				link = link.replace("$businessService",paymentDetail.getBusinessService());
 				link = link.replace("$receiptNumber",paymentDetail.getReceiptNumber());
 				link = link.replace("$mobile", mobAndMesg.getKey());
+				
+				if(connectionType.equalsIgnoreCase(WCConstants.METERED_CONNECTION)) {
+					link = link.replace("$key", "ws-receipt");
+				}else {
+					link = link.replace("$key", "ws-receipt-nm");
+				}
+				System.out.println("Complete Link:: " + link );
+				
 				link = waterServiceUtil.getShortnerURL(link);
-				message = message.replace("<receipt download link>",link);
+				message = message.replace("{RECEIPT_LINK}",link);
+			}
+			
+			if (message.contains("{GPWSC}")){
+				
+				message = message.replace("{GPWSC}","GPWSC");
+			}
+			
+			if (message.contains("{SURVEY_LINK}")){
+				String link = config.getNotificationUrl() + config.getFeedbackLink();
+				link = link.replace("$paymentId",paymentId);
+				link = link.replace("$connectionNo", paymentDetail.getBill().getConsumerCode());
+				link = link.replace("$tenantId", paymentDetail.getTenantId());
+				link = waterServiceUtil.getShortnerURL(link);
+				message = message.replace("{SURVEY_LINK}",link);
 			}
 
 			messageToReturn.put(mobAndMesg.getKey(), message);
