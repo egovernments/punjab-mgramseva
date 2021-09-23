@@ -1,7 +1,7 @@
 All notable changes to this module will be documented in this file.
 
 
-## 1.2.2 - 2021-05-11
+## 1.2.3 - 2021-05-11
 
 - Sequence number format changed.
 
