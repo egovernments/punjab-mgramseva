@@ -1,7 +1,7 @@
 
 All notable changes to this module will be documented in this file.
 
-## 1.3.4 - 2021-07-26
+## 1.3.4 - 2021-09-23
 
  - Change in event type and project id.
 

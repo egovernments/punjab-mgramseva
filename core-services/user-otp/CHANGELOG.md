@@ -1,10 +1,10 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
-## 1.1.4 - 2021-05-11
+## 1.1.4 - 2021-09-23
 
 - Changes for first time login User OTP
-- Added locale param to support muli language.
+- Added locale param to support multiple language.
  
 ## 1.1.3 - 2021-05-11
 
