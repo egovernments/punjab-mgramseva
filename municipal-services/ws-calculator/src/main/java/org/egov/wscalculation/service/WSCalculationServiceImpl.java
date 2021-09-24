@@ -29,6 +29,7 @@ import org.egov.wscalculation.web.models.TaxHeadEstimate;
 import org.egov.wscalculation.web.models.TaxHeadMaster;
 import org.egov.wscalculation.web.models.WaterConnection;
 import org.egov.wscalculation.web.models.WaterConnectionRequest;
+import org.egov.wscalculation.repository.DemandRepository;
 import org.egov.wscalculation.repository.ServiceRequestRepository;
 import org.egov.wscalculation.repository.WSCalculationDao;
 import org.egov.wscalculation.util.CalculatorUtil;
@@ -67,6 +68,9 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	
 	@Autowired
 	private WSCalculationUtil wSCalculationUtil;
+	
+	@Autowired
+	private DemandRepository demandRepository;
 
 	/**
 	 * Get CalculationReq and Calculate the Tax Head on Water Charge And Estimation Charge
@@ -92,6 +96,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		if (searchResult != null && searchResult.size() > 0
 				&& searchResult.get(0).getConsumerType().equalsIgnoreCase("waterConnection-arrears")) {
 			searchResult.get(0).setStatus(StatusEnum.CANCELLED);
+			demandRepository.updateDemand(request.getRequestInfo(), searchResult);
 		}
 		demandService.generateDemand(request.getRequestInfo(), calculations, masterMap,
 				request.getIsconnectionCalculation());
