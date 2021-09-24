@@ -82,7 +82,8 @@ class HouseHoldProvider with ChangeNotifier {
       await BillingServiceRepository().fetchdDemand({
         "tenantId": data.tenantId,
         "consumerCode": data.connectionNo.toString(),
-        "businessService": "WS"
+        "businessService": "WS",
+        "status": "ACTIVE"
       }).then((value) {
         if (value.demands!.length > 0) {
           value.demands!.sort((a, b) => b

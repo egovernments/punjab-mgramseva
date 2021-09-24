@@ -17,7 +17,6 @@ class BillPayemntsProvider with ChangeNotifier {
       "consumerCodes": data.connectionNo.toString(),
       "businessService": "WS"
     });
-    print(res);
     streamController.add(res);
   }
 

@@ -67,7 +67,6 @@ class CollectPaymentProvider with ChangeNotifier {
         commonProvider.userDetails!.userRequest!.tenantId.toString()));
     if (res.mdmsRes?.billingService != null &&
         res.mdmsRes?.billingService?.businessServiceList != null) {
-      print(i18.common.PAYMENT_METHOD);
       Constants.PAYMENT_METHOD.forEach((e) {
         var index = res.mdmsRes?.billingService?.businessServiceList?.first
             .collectionModesNotAllowed!

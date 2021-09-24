@@ -36,8 +36,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   afterViewBuild() {
-    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    print(commonProvider.userDetails!.userRequest!.tenantId);
+    Provider.of<CommonProvider>(context, listen: false);
     Provider.of<UserProfileProvider>(context, listen: false)
       ..formKey = GlobalKey<FormState>()
       ..autoValidation = false
