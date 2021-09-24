@@ -493,7 +493,7 @@ public class DemandService {
 	 * @param requestInfo - RequestInfo
 	 * @return List of Demand
 	 */
-	private List<Demand> searchDemandBasedOnConsumerCode(String tenantId, String consumerCode,
+	public List<Demand> searchDemandBasedOnConsumerCode(String tenantId, String consumerCode,
 			RequestInfo requestInfo) {
 		String uri = getDemandSearchURLForDemandId().toString();
 		uri = uri.replace("{1}", tenantId);
