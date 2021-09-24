@@ -19,8 +19,11 @@ import org.egov.wscalculation.web.models.BulkDemand;
 import org.egov.wscalculation.web.models.Calculation;
 import org.egov.wscalculation.web.models.CalculationCriteria;
 import org.egov.wscalculation.web.models.CalculationReq;
+import org.egov.wscalculation.web.models.Demand;
+import org.egov.wscalculation.web.models.GetBillCriteria;
 import org.egov.wscalculation.web.models.TaxHeadCategory;
 import org.egov.wscalculation.web.models.Property;
+import org.egov.wscalculation.web.models.RequestInfoWrapper;
 import org.egov.wscalculation.web.models.TaxHeadEstimate;
 import org.egov.wscalculation.web.models.TaxHeadMaster;
 import org.egov.wscalculation.web.models.WaterConnection;
@@ -72,17 +75,31 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 
 		Map<String, Object> masterMap;
 //		if (request.getIsconnectionCalculation()) {
-			//Calculate and create demand for connection
-			masterMap = masterDataService.loadMasterData(request.getRequestInfo(),
-					request.getCalculationCriteria().get(0).getTenantId());
-			calculations = getCalculations(request, masterMap);
+		// Calculate and create demand for connection
+		masterMap = masterDataService.loadMasterData(request.getRequestInfo(),
+				request.getCalculationCriteria().get(0).getTenantId());
+		calculations = getCalculations(request, masterMap);
 //		} else {
 //			//Calculate and create demand for application
 //			masterMap = masterDataService.loadMasterData(request.getRequestInfo(),
 //					request.getCalculationCriteria().get(0).getTenantId());
 //			calculations = getCalculations(request, masterMap);
 //		}
-		demandService.generateDemand(request.getRequestInfo(), calculations, masterMap,request.getIsconnectionCalculation());
+		List<Demand> searchResult = demandService.searchDemandBasedOnConsumerCode(
+				request.getCalculationCriteria().get(0).getTenantId(),
+				request.getCalculationCriteria().get(0).getConnectionNo(), request.getRequestInfo());
+		if (searchResult != null && searchResult.size() > 0
+				&& searchResult.get(0).getConsumerType().equalsIgnoreCase("waterConnection-arrears")) {
+			GetBillCriteria getBillCriteria = new GetBillCriteria();
+			getBillCriteria.setConnectionNumber(request.getCalculationCriteria().get(0).getConnectionNo());
+			getBillCriteria.setTenantId(request.getCalculationCriteria().get(0).getTenantId());
+			RequestInfoWrapper requestInfoWrapper = new RequestInfoWrapper();
+			requestInfoWrapper.setRequestInfo(request.getRequestInfo());
+			demandService.updateDemands(getBillCriteria, requestInfoWrapper);
+		} else {
+			demandService.generateDemand(request.getRequestInfo(), calculations, masterMap,
+					request.getIsconnectionCalculation());
+		}
 		unsetWaterConnection(calculations);
 		return calculations;
 	}
