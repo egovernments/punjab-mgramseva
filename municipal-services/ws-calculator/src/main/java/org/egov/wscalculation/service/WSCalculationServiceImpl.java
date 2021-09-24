@@ -20,6 +20,7 @@ import org.egov.wscalculation.web.models.Calculation;
 import org.egov.wscalculation.web.models.CalculationCriteria;
 import org.egov.wscalculation.web.models.CalculationReq;
 import org.egov.wscalculation.web.models.Demand;
+import org.egov.wscalculation.web.models.Demand.StatusEnum;
 import org.egov.wscalculation.web.models.GetBillCriteria;
 import org.egov.wscalculation.web.models.TaxHeadCategory;
 import org.egov.wscalculation.web.models.Property;
@@ -90,16 +91,11 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 				request.getCalculationCriteria().get(0).getConnectionNo(), request.getRequestInfo());
 		if (searchResult != null && searchResult.size() > 0
 				&& searchResult.get(0).getConsumerType().equalsIgnoreCase("waterConnection-arrears")) {
-			GetBillCriteria getBillCriteria = new GetBillCriteria();
-			getBillCriteria.setConnectionNumber(request.getCalculationCriteria().get(0).getConnectionNo());
-			getBillCriteria.setTenantId(request.getCalculationCriteria().get(0).getTenantId());
-			RequestInfoWrapper requestInfoWrapper = new RequestInfoWrapper();
-			requestInfoWrapper.setRequestInfo(request.getRequestInfo());
-			demandService.updateDemands(getBillCriteria, requestInfoWrapper);
-		} else {
-			demandService.generateDemand(request.getRequestInfo(), calculations, masterMap,
-					request.getIsconnectionCalculation());
+			searchResult.get(0).setStatus(StatusEnum.CANCELLED);
 		}
+		demandService.generateDemand(request.getRequestInfo(), calculations, masterMap,
+				request.getIsconnectionCalculation());
+
 		unsetWaterConnection(calculations);
 		return calculations;
 	}
