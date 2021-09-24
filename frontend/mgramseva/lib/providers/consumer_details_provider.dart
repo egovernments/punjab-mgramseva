@@ -126,7 +126,8 @@ class ConsumerProvider with ChangeNotifier {
     List<Demand>? demand = await ConsumerRepository().getDemandDetails({
       "consumerCode": waterconnection.connectionNo,
       "businessService": "WS",
-      "tenantId": waterconnection.tenantId
+      "tenantId": waterconnection.tenantId,
+      "status": "ACTIVE"
     });
     if (waterconnection.connectionType == 'Metered' &&
         waterconnection.additionalDetails?.meterReading.toString() != '0') {
