@@ -400,7 +400,7 @@ public class SchedulerService {
 									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
 								}
 
-							String addExpense = config.getUiAppHost() + config.getMarkPaidExpenditureLink();
+							String addExpense = config.getUiAppHost() + config.getExpenseBillMarkPaidLink();
 							System.out.println("ADD Expense Link :: " + addExpense);
 							
 							HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
