@@ -267,8 +267,7 @@ public class DemandService {
 				
 				if(billNumber.size() > 0 ) {
 					actionLink = actionLink.replace("$billNumber", billNumber.get(0));		
-				}
-				actionLink = actionLink.replace("$billNumber", billNumber.get(0));		
+				}		
 				billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
 						+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
 				messageString = messageString.replace("{ownername}", owner.getName());
@@ -1059,7 +1058,7 @@ public class DemandService {
 						calculatorUtils.getFetchBillURL(demand.getTenantId(), demand.getConsumerCode()),
 						RequestInfoWrapper.builder().requestInfo(requestInfo).build());
 				billNumber = JsonPath.read(result, "$.Bill.*.billNumber");
-				
+				log.info("Bill Response :: " + result);
 
 				HashMap<String, Object> billResponse = new HashMap<>();
 				
