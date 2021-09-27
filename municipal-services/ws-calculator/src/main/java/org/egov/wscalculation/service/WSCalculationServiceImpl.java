@@ -94,7 +94,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 				request.getCalculationCriteria().get(0).getTenantId(),
 				request.getCalculationCriteria().get(0).getConnectionNo(), request.getRequestInfo());
 		if (searchResult != null && searchResult.size() > 0
-				&& searchResult.get(0).getConsumerType().equalsIgnoreCase("waterConnection-arrears")) {
+				&& searchResult.get(0).getConsumerType().equalsIgnoreCase("waterConnection-arrears") && !request.getIsconnectionCalculation()) {
 			searchResult.get(0).setStatus(StatusEnum.CANCELLED);
 			demandRepository.updateDemand(request.getRequestInfo(), searchResult);
 		}
