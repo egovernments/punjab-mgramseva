@@ -263,6 +263,11 @@ public class DemandService {
 				log.info("Demand Object" + demands.toString());
 
 				List<String> billNumber = fetchBill(demands, requestInfo);
+				log.info("Bill Number :: " + billNumber.toString());
+				
+				if(billNumber.size() > 0 ) {
+					actionLink = actionLink.replace("$billNumber", billNumber.get(0));		
+				}
 				actionLink = actionLink.replace("$billNumber", billNumber.get(0));		
 				billCycle = (Instant.ofEpochMilli(fromDate).atZone(ZoneId.systemDefault()).toLocalDate() + "-"
 						+ Instant.ofEpochMilli(toDate).atZone(ZoneId.systemDefault()).toLocalDate());
