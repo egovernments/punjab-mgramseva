@@ -69,6 +69,7 @@ class _HomeCard extends State<HomeCard> {
                     commonProvider.userDetails?.userRequest != null
                 ? (new GridView.count(
                     shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     crossAxisCount: 3,
                     childAspectRatio: .85,
                     children: getList(homeProvider),
@@ -81,6 +82,7 @@ class _HomeCard extends State<HomeCard> {
                     commonProvider.userDetails?.userRequest != null
                 ? (new GridView.count(
                     shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     crossAxisCount: 3,
                     childAspectRatio: 3,
                     children: getList(homeProvider),
