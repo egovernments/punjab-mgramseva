@@ -59,8 +59,7 @@ class SearchConnectionDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var commonProvider = Provider.of<CommonProvider>(context,
-        listen: false);
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     return LayoutBuilder(builder: (context, constraints) {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Padding(
@@ -92,8 +91,9 @@ class SearchConnectionDetailCard extends StatelessWidget {
                     ),
                     TextSpan(
                         text: " " +
-                            '${arguments.keys.first.toString() == 'mobileNumber' ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.RESULTS_PHONE_NUM) : arguments.keys.first.toString()}' +
-                            " as " +
+                            '${arguments.keys.first.toString() == 'mobileNumber' ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.RESULTS_PHONE_NUM) : ApplicationLocalizations.of(context).translate(arguments.keys.first.toString())}' +
+                            ApplicationLocalizations.of(context)
+                                .translate(" as ") +
                             '${arguments.keys.first.toString() == 'mobileNumber' ? '+91 - ' + '${arguments.values.first.toString()}' : arguments.values.first.toString()}',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -193,9 +193,10 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                             : ""
                                         : "") +
                                     waterconnections.waterConnection![index]
-                                        .additionalDetails!.locality!
-                                    + ', ' + ApplicationLocalizations.of(context)
-                                    .translate(commonProvider.userDetails!.selectedtenant!.code!),
+                                        .additionalDetails!.locality! +
+                                    ', ' +
+                                    ApplicationLocalizations.of(context)
+                                        .translate(commonProvider.userDetails!.selectedtenant!.code!),
                                 context,
                                 constraints),
                             SizedBox(
