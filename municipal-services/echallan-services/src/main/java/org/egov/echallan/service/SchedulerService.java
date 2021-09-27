@@ -202,7 +202,7 @@ public class SchedulerService {
 		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
 				dateTimeFormatter);
 		List<String> tenantIds = repository.getTenantId();
-		if (!currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
+		if (currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
 
 			tenantIds.forEach(tenantId -> {
 				if (tenantId.split("\\.").length >= 2) {
@@ -311,7 +311,7 @@ public class SchedulerService {
 				dateTimeFormatter);
 
 		List<String> tenantIds = repository.getTenantId();
-		if (!currentTime.isEqual(scheduleTime)) {
+		if (currentTime.isEqual(scheduleTime)) {
 			tenantIds.forEach(tenantId -> {
 				if (tenantId.split("\\.").length >= 2) {
 					if (null != config.getIsUserEventEnabled()) {
@@ -374,7 +374,7 @@ public class SchedulerService {
 				dateTimeFormatter);
 
 		List<String> tenantIds = repository.getTenantId();
-		if (!currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
+		if (currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
 
 			tenantIds.forEach(tenantId -> {
 				if (tenantId.split("\\.").length >= 2) {
@@ -497,7 +497,7 @@ public class SchedulerService {
 				dateTimeFormatter);
 
 		List<String> tenantIds = repository.getTenantId();
-		if (!currentTime.isEqual(scheduleTime)) {
+		if (currentTime.isEqual(scheduleTime)) {
 			tenantIds.forEach(tenantId -> {
 				if (tenantId.split("\\.").length >= 2) {
 					if (null != config.getIsUserEventEnabled()) {
@@ -590,7 +590,7 @@ public class SchedulerService {
 				dateTimeFormatter);
 
 		List<String> tenantIds = repository.getTenantId();
-		if (!currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
+		if (currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
 			tenantIds.forEach(tenantId -> {
 				if (tenantId.split("\\.").length >= 2) {
 					if (null != config.getIsUserEventEnabled()) {
@@ -711,7 +711,7 @@ public class SchedulerService {
 				dateTimeFormatter);
 		List<String> tenantIds = repository.getTenantId();
 
-		if (!currentTime.isEqual(scheduleTime)) {
+		if (currentTime.isEqual(scheduleTime)) {
 			tenantIds.forEach(tenantId -> {
 				if (tenantId.split("\\.").length >= 2) {
 					if (!currentTime.isEqual(scheduleTime)) {
