@@ -9,7 +9,7 @@ job_name = sys.argv[1]
 
 # Calls MDMS service to fetch cron job API endpoints configuration
 
-mdms_url = "http://egov-mdms-service.egov:8080/egov-mdms-service/v1/_search"
+mdms_url = "http://egov-mdms-service.mgramseva:8080/egov-mdms-service/v1/_search"
 mdms_payload = "{\n \"RequestInfo\": {\n   \"apiId\": \"asset-services\",\n   \"ver\": null,\n   \"ts\": null,\n   \"action\": null,\n   \"did\": null,\n   \"key\": null,\n   \"msgId\": \"search with from and to values\",\n   \"authToken\": \"f81648a6-bfa0-4a5e-afc2-57d751f256b7\"\n },\n \"MdmsCriteria\": {\n   \"tenantId\": \"pb\",\n   \"moduleDetails\": [\n     {\n       \"moduleName\": \"common-masters\",\n       \"masterDetails\": [\n         {\n           \"name\": \"CronJobAPIConfig\"\n         }\n       ]\n     }\n   ]\n }\n}"
 mdms_headers = {
   'Content-Type': 'application/json'
@@ -21,7 +21,7 @@ mdms_data = response.json()
 
 
 # Call user search to fetch SYSTEM user
-user_url = "http://egov-user.egov:8080/user/v1/_search?tenantId=pb"
+user_url = "http://egov-user.mgramseva:8080/user/v1/_search?tenantId=pb"
 user_payload = "{\n\t\"requestInfo\" :{\n   \"apiId\": \"ap.public\",\n    \"ver\": \"1\",\n    \"ts\": 45646456,\n    \"action\": \"POST\",\n    \"did\": null,\n    \"key\": null,\n    \"msgId\": \"8c11c5ca-03bd-11e7-93ae-92361f002671\",\n    \"userInfo\": {\n    \t\"id\" : 32\n    },\n    \"authToken\": \"5eb3655f-31b1-4cd5-b8c2-4f9c033510d4\"\n\t},\n\t\n   \"tenantId\" : \"pb\",\n   \"userType\":\"SYSTEM\",\n   \"userName\" : \"CRONJOB\",\n   \"pageSize\": \"1\",\n   \"roleCodes\" : [\"SYSTEM\"]\n\n\n}\n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n   \n}\n"
 user_headers = {
   'Content-Type': 'application/json'
