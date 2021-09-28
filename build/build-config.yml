@@ -75,8 +75,8 @@ config:
       - work-dir: "core-services/egov-notification-sms"
         image-name: "egov-notification-sms"
         dockerfile: "build/maven/Dockerfile"  
-   - name: "builds/mGramSeva/utilities/mdms-read-cronjob"
-     build:
+  - name: "builds/mGramSeva/utilities/mdms-read-cronjob"
+    build:
       - work-dir: "utilities/mdms-read-cronjob"
         image-name: "api-cronjob"
         dockerfile: "utilities/Dockerfile"  
