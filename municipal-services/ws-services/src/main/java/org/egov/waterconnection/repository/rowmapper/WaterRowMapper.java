@@ -102,6 +102,7 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 				additionalDetails.put(WCConstants.ESTIMATION_DATE_CONST, rs.getBigDecimal("estimationLetterDate"));
 				additionalDetails.put(WCConstants.LOCALITY, rs.getString("locality"));
 				additionalDetails.put("collectionAmount", rs.getString("collectionamount"));
+				additionalDetails.put("collectionPendingAmount", rs.getString("pendingamount"));
 
 				currentWaterConnection.setAdditionalDetails(additionalDetails);
 				currentWaterConnection

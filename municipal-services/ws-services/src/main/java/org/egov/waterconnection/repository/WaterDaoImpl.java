@@ -1,5 +1,6 @@
 package org.egov.waterconnection.repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.jayway.jsonpath.Criteria;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -75,10 +80,25 @@ public class WaterDaoImpl implements WaterDao {
 
 		List<WaterConnection> waterConnectionList = new ArrayList<>();
 		List<Object> preparedStatement = new ArrayList<>();
+		Map<String, Long> collectionDataCount = null;
+		List<Map<String, Object>> countData = null;
+		Boolean flag = null;
+		
 		String query = wsQueryBuilder.getSearchQueryString(criteria, preparedStatement, requestInfo);
 
 		if (query == null)
 			return null;
+	
+		if(criteria.getIsHouseHoldSearch()) {
+			List<Object> preparedStmntforCollectionDataCount = new ArrayList<>();
+			StringBuilder collectionDataCountQuery = new StringBuilder(wsQueryBuilder.COLLECTION_DATA_COUNT);
+			criteria.setIsCollectionDataCount(Boolean.TRUE);
+			collectionDataCountQuery = wsQueryBuilder.applyFilters(collectionDataCountQuery, preparedStmntforCollectionDataCount, criteria);
+			collectionDataCountQuery.append(" ORDER BY wc.appCreatedDate  DESC");
+		    countData = jdbcTemplate.queryForList(collectionDataCountQuery.toString(), preparedStmntforCollectionDataCount.toArray());
+		    if(criteria.getIsBillPaid() != null)
+		    	flag = criteria.getIsBillPaid();
+		}
 
 		Boolean isOpenSearch = isSearchOpen(requestInfo.getUserInfo());
 		WaterConnectionResponse connectionResponse = new WaterConnectionResponse();
@@ -87,12 +107,11 @@ public class WaterDaoImpl implements WaterDao {
 			connectionResponse = WaterConnectionResponse.builder().waterConnection(waterConnectionList)
 					.totalCount(openWaterRowMapper.getFull_count()).build();
 		} else {
-
 			waterConnectionList = jdbcTemplate.query(query, preparedStatement.toArray(), waterRowMapper);
 			Map<String, Object> counter = new HashMap();
 			if (criteria.getIsPropertyCount()!= null && criteria.getIsPropertyCount()) {
 				List<Object> preparedStmnt = new ArrayList<>();
-				StringBuilder propertyQuery = new StringBuilder(wsQueryBuilder.PROPERTY_COUNT);
+				StringBuilder propertyQuery = new StringBuilder(wsQueryBuilder.PROPERTY_COUNT);	
 				propertyQuery = wsQueryBuilder.applyFilters(propertyQuery, preparedStmnt, criteria);
 				propertyQuery.append("GROUP BY additionaldetails->>'propertyType'");
 				List<Map<String, Object>> data = jdbcTemplate.queryForList(propertyQuery.toString(),
@@ -103,8 +122,9 @@ public class WaterDaoImpl implements WaterDao {
 					}
 				}
 			}
+			collectionDataCount =  getCollectionDataCounter(countData, flag);
 			connectionResponse = WaterConnectionResponse.builder().waterConnection(waterConnectionList)
-					.totalCount(waterRowMapper.getFull_count()).propertyCount(counter).build();
+					.totalCount(waterRowMapper.getFull_count()).collectionDataCount(collectionDataCount).propertyCount(counter).build();
 		}
 		return connectionResponse;
 	}
@@ -185,5 +205,34 @@ public class WaterDaoImpl implements WaterDao {
 		List<Feedback> feedBackList = jdbcTemplate.query(query, preparedStamentValues.toArray(), feedbackRowMapper);
 		return feedBackList;
 	}
-
+	
+	public Map<String, Long> getCollectionDataCounter(List<Map<String, Object>> countDataMap, Boolean flag) {
+		Map<String, Long> collectionDataCountMap = new HashMap<>();
+		Long paidCount = 0L;
+		Long pendingCount = 0L;
+		
+		if(!CollectionUtils.isEmpty(countDataMap)) {
+			for(Map<String, Object> wc : countDataMap) {
+				BigDecimal collectionPendingAmount = (BigDecimal)wc.get("pendingamount");
+				if(collectionPendingAmount != null ) {
+					if(collectionPendingAmount.compareTo(BigDecimal.ZERO) == 0) {
+						++paidCount;
+					}
+					else {
+						++pendingCount;
+					}
+				}
+			}
+			if(flag != null) {
+				if(flag) 
+					collectionDataCountMap.put("collectionPaid", paidCount);
+				else if(!flag) 
+					collectionDataCountMap.put("collectionPending", pendingCount);
+			}else {
+				collectionDataCountMap.put("collectionPaid", paidCount);
+				collectionDataCountMap.put("collectionPending", pendingCount);
+			}
+		}
+		return collectionDataCountMap;
+	}
 }
