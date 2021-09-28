@@ -58,6 +58,8 @@ config:
       - work-dir: "municipal-services/vendor"
         image-name: "vendor"
         dockerfile: "build/maven/Dockerfile"
+      - work-dir: "municipal-services/vendor/src/main/resources/db"
+        image-name: "vendor-db"
   - name: "builds/mGramSeva/business-services/billing-service"
     build:
       - work-dir: "business-services/billing-service"
