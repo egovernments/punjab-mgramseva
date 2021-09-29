@@ -10,6 +10,9 @@ class WaterConnections {
   @JsonKey(name: "propertyCount")
   Map<String, dynamic>? tabData;
 
+  @JsonKey(name: "collectionDataCount")
+  CollectionDataCount? collectionDataCount;
+
   @JsonKey(name: "totalCount", defaultValue: 0)
   int? totalCount;
 
@@ -18,4 +21,18 @@ class WaterConnections {
   factory WaterConnections.fromJson(Map<String, dynamic> json) =>
       _$WaterConnectionsFromJson(json);
   Map<String, dynamic> toJson() => _$WaterConnectionsToJson(this);
+}
+
+@JsonSerializable()
+class CollectionDataCount {
+  @JsonKey(name: "collectionPending")
+  String? collectionPending;
+
+  @JsonKey(name: "collectionPaid")
+  String? collectionPaid;
+
+  CollectionDataCount();
+
+  factory CollectionDataCount.fromJson(Map<String, dynamic> json) =>
+      _$CollectionDataCountFromJson(json);
 }
