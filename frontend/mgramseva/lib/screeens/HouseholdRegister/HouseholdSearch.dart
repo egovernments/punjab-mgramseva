@@ -41,7 +41,6 @@ class _HouseholdSearchState extends State<HouseholdSearch> with SingleTickerProv
   afterViewBuild() {
     var householdRegisterProvider = Provider.of<HouseholdRegisterProvider>(context, listen: false);
     householdRegisterProvider.searchController.clear();
-    householdRegisterProvider.fetchData();
     householdRegisterProvider.selectedTab = 'all';
       householdRegisterProvider
         ..waterConnectionsDetails?.waterConnection = <WaterConnection>[]
@@ -69,7 +68,7 @@ class _HouseholdSearchState extends State<HouseholdSearch> with SingleTickerProv
           ),
           Expanded(
             child: StreamBuilder(
-                stream: householdRegisterProvider.initialStreamController.stream,
+                stream: householdRegisterProvider.streamController.stream,
                 builder: (context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData) {
                     if(snapshot.data is String){

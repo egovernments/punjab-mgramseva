@@ -43,7 +43,7 @@ class _HouseholdRegister extends State<HouseholdRegister> with SingleTickerProvi
     super.initState();
     var householdRegisterProvider =
     Provider.of<HouseholdRegisterProvider>(context, listen: false);
-    householdRegisterProvider.selectedDate = DateTime(DateTime.now().year, DateTime.now().month);
+    //householdRegisterProvider.selectedDate = DateTime(DateTime.now().year, DateTime.now().month);
     householdRegisterProvider.debounce = null;
   }
 

@@ -25,7 +25,6 @@ import 'package:provider/provider.dart';
 
 class HouseholdRegisterProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
-  var initialStreamController = StreamController.broadcast();
   TextEditingController searchController = TextEditingController();
   int offset = 1;
   int limit = 10;
@@ -35,47 +34,19 @@ class HouseholdRegisterProvider with ChangeNotifier {
   String selectedTab = 'all';
   Map<String, int> collectionCountHolder= {};
   Timer? debounce;
-  List<PropertyType> propertyTaxList = <PropertyType>[];
   bool isLoaderEnabled = false;
 
   @override
   void dispose() {
     streamController.close();
-    initialStreamController.close();
     super.dispose();
   }
-
-
-
- /* fetchData() async {
-    var commonProvider = Provider.of<CommonProvider>(navigatorKey.currentContext!, listen: false);
-
-    if (propertyTaxList.isEmpty) {
-      var languageList = await CoreRepository().getMdms(
-          getServiceTypeConnectionTypePropertyTypeMDMS(
-              commonProvider.userDetails!.userRequest!.tenantId.toString()));
-
-      if (languageList.mdmsRes?.propertyTax?.PropertyTypeList != null) {
-        var property = PropertyType();
-        property.code = i18.dashboard.ALL;
-        propertyTaxList.add(property);
-        propertyTaxList.addAll(
-            languageList.mdmsRes?.propertyTax?.PropertyTypeList ??
-                <PropertyType>[]);
-      }
-    }else{
-      await Future.delayed(Duration(seconds: 1));
-    }
-    initialStreamController.add([]);
-  }*/
-
 
   Future<void> fetchCollectionsDashBoardDetails(
       BuildContext context, int limit, int offSet,
       [bool isSearch = false]) async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     var totalCount = waterConnectionsDetails?.totalCount ?? 0;
-
     this.limit = limit;
     this.offset = offSet;
     notifyListeners();
@@ -98,12 +69,12 @@ class HouseholdRegisterProvider with ChangeNotifier {
       'offset': '${offset - 1}',
       'limit': '$limit',
       'toDate':
-      '${DateTime(selectedDate.year, selectedDate.month + 1, 0).millisecondsSinceEpoch}',
+      '${DateTime(DateTime.now().year, DateTime.now().month).millisecondsSinceEpoch}',
       'isHouseHoldSearch': 'true',
     };
 
     if(selectedTab != 'all'){
-    query['isBillPaid'] = ((selectedTab == 'PAID') ? 'true' : 'false');
+      query['isBillPaid'] = ((selectedTab == 'PAID') ? 'true' : 'false');
     }
 
     if (sortBy != null) {
@@ -121,37 +92,36 @@ class HouseholdRegisterProvider with ChangeNotifier {
       });
     }
 
-    // query.removeWhere((key, value) => (value is String && value.trim().isEmpty));
+    query.removeWhere((key, value) => (value is String && value.trim().isEmpty));
     streamController.add(null);
 
+    isLoaderEnabled = true;
+    notifyListeners();
     try {
-      isLoaderEnabled = true;
-      notifyListeners();
       var response = await SearchConnectionRepository().getconnection(query);
 
       var searchResponse;
       if(isSearch && selectedTab != 'all'){
-        query.remove('propertyType');
+        query.remove('isBillPaid');
         searchResponse = await SearchConnectionRepository().getconnection(query);
       }
 
       isLoaderEnabled = false;
+
+
       if (response != null) {
+        if(selectedTab == 'all'){
+          collectionCountHolder['all'] = response.totalCount ?? 0;
+          collectionCountHolder['PAID'] = int.parse(response.collectionDataCount?.collectionPaid ?? '0');
+          collectionCountHolder['PENDING'] = int.parse(response.collectionDataCount?.collectionPending ?? '0');
+        }else if(searchResponse != null){
+          collectionCountHolder['all'] = searchResponse.totalCount ?? 0;
+          collectionCountHolder['PAID'] = int.parse(searchResponse.collectionDataCount?.collectionPaid ?? '0');
+          collectionCountHolder['PENDING'] = int.parse(searchResponse.collectionDataCount?.collectionPending ?? '0');
+        }
+
         if (waterConnectionsDetails == null) {
           waterConnectionsDetails = response;
-
-          if(selectedTab == 'all'){
-            collectionCountHolder['all'] = response.totalCount ?? 0;
-            propertyTaxList.forEach((key) {
-              collectionCountHolder[key.code!] = int.parse(response.tabData?[key.code!] ?? '0');
-            });
-          }else if(searchResponse != null){
-            collectionCountHolder['all'] = searchResponse.totalCount ?? 0;
-            propertyTaxList.forEach((key) {
-              collectionCountHolder[key.code!] = int.parse(searchResponse.tabData?[key.code!] ?? '0');
-            });
-          }
-
           notifyListeners();
         } else {
           waterConnectionsDetails?.totalCount = response.totalCount;
@@ -178,11 +148,12 @@ class HouseholdRegisterProvider with ChangeNotifier {
 
   List<Tab> getCollectionsTabList(
       BuildContext context) {
+    var list = [i18.dashboard.ALL, i18.dashboard.PAID, i18.dashboard.PENDING];
     return List.generate(
-        propertyTaxList.length,
+        list.length,
             (index) => Tab(
             text:
-            '${ApplicationLocalizations.of(context).translate(propertyTaxList[index].code ?? '')} (${getCollectionsCount(index)})'));
+            '${ApplicationLocalizations.of(context).translate(list[index])} (${getCollectionsCount(index)})'));
   }
 
   List<TableHeader> get collectionHeaderList => [
@@ -193,22 +164,22 @@ class HouseholdRegisterProvider with ChangeNotifier {
             ? sortBy!.isAscending
             : null,
         apiKey: 'connectionNumber ',
-        callBack: onExpenseSort),
+        callBack: onSort),
     TableHeader(i18.common.NAME,
         isSortingRequired: true,
         isAscendingOrder: sortBy != null && sortBy!.key == 'name'
             ? sortBy!.isAscending
             : null,
         apiKey: 'name',
-        callBack: onExpenseSort),
-    TableHeader(i18.dashboard.COLLECTIONS,
+        callBack: onSort),
+    TableHeader('Pending Collections',
         isSortingRequired: true,
         isAscendingOrder:
-        sortBy != null && sortBy!.key == 'collectionAmount'
+        sortBy != null && sortBy!.key == 'collectionPendingAmount'
             ? sortBy!.isAscending
             : null,
-        apiKey: 'collectionAmount',
-        callBack: onExpenseSort),
+        apiKey: 'collectionPendingAmount',
+        callBack: onSort),
   ];
 
 
@@ -220,8 +191,12 @@ class HouseholdRegisterProvider with ChangeNotifier {
     switch (index) {
       case 0:
         return collectionCountHolder['all'] ?? 0;
+      case 1:
+        return collectionCountHolder['PAID'] ?? 0;
+      case 2:
+        return collectionCountHolder['PENDING'] ?? 0;
       default:
-        return collectionCountHolder[propertyTaxList[index].code] ?? 0;
+        return 0;
     }
   }
 
@@ -234,7 +209,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
           apiKey: connection.connectionNo),
       TableData('${connection.connectionHolders?.first.name ?? ''}'),
       TableData(
-          '${connection.additionalDetails?.collectionAmount != null ? '₹ ${connection.additionalDetails?.collectionAmount}' : '-'}'),
+          '${connection.additionalDetails?.collectionPendingAmount != null ? '₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}'),
     ]);
   }
 
@@ -246,7 +221,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
         arguments: {'waterconnections': waterConnection, 'mode': 'collect'});
   }
 
-  onExpenseSort(TableHeader header) {
+  onSort(TableHeader header) {
     if (sortBy != null && sortBy!.key == header.apiKey) {
       header.isAscendingOrder = !sortBy!.isAscending;
     } else if (header.isAscendingOrder == null) {
