@@ -1,15 +1,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/components/Dashboard/BillsTable.dart';
-import 'package:mgramseva/components/HouseholdRegister/HouseholdTable.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
-import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
-import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/providers/household_register_provider.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -47,7 +43,7 @@ class _HouseholdListState extends State<HouseholdList> {
       }else{
         householdProvider.selectedTab = 'PENDING';
       }
-      householdProvider.fetchCollectionsDashBoardDetails(context, householdProvider.limit, householdProvider.offset, true);
+      householdProvider.fetchHouseholdDetails(context, householdProvider.limit, householdProvider.offset, true);
   }
 
   @override
@@ -86,7 +82,7 @@ class _HouseholdListState extends State<HouseholdList> {
           var tableData = householdProvider.getCollectionsData(widget.index, expenseList  as List<WaterConnection>);
           return tableData == null || tableData.isEmpty ?
           CommonWidgets.buildEmptyMessage(ApplicationLocalizations.of(context).translate(i18.dashboard.NO_RECORDS_MSG), context)
-              : HouseholdTable
+              : BillsTable
             (headerList: householdProvider.collectionHeaderList,
             tableData:  tableData,
             leftColumnWidth: width,

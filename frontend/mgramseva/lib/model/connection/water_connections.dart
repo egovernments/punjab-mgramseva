@@ -26,13 +26,14 @@ class WaterConnections {
 @JsonSerializable()
 class CollectionDataCount {
   @JsonKey(name: "collectionPending")
-  String? collectionPending;
+  int? collectionPending;
 
   @JsonKey(name: "collectionPaid")
-  String? collectionPaid;
+  int? collectionPaid;
 
   CollectionDataCount();
 
   factory CollectionDataCount.fromJson(Map<String, dynamic> json) =>
       _$CollectionDataCountFromJson(json);
+  Map<String, dynamic> toJson() => _$CollectionDataCountToJson(this);
 }

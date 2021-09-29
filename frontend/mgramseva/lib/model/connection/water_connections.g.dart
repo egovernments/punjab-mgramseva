@@ -29,8 +29,8 @@ Map<String, dynamic> _$WaterConnectionsToJson(WaterConnections instance) =>
 
 CollectionDataCount _$CollectionDataCountFromJson(Map<String, dynamic> json) {
   return CollectionDataCount()
-    ..collectionPending = json['collectionPending'] as String?
-    ..collectionPaid = json['collectionPaid'] as String?;
+    ..collectionPending = json['collectionPending'] as int?
+    ..collectionPaid = json['collectionPaid'] as int?;
 }
 
 Map<String, dynamic> _$CollectionDataCountToJson(

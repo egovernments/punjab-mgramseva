@@ -3,23 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
-import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
-import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
-import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/repository/core_repo.dart';
-import 'package:mgramseva/repository/dashboard.dart';
-import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/common_methods.dart';
-import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
-import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 
@@ -35,14 +25,13 @@ class HouseholdRegisterProvider with ChangeNotifier {
   Map<String, int> collectionCountHolder= {};
   Timer? debounce;
   bool isLoaderEnabled = false;
-
   @override
   void dispose() {
     streamController.close();
     super.dispose();
   }
 
-  Future<void> fetchCollectionsDashBoardDetails(
+  Future<void> fetchHouseholdDetails(
       BuildContext context, int limit, int offSet,
       [bool isSearch = false]) async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
@@ -74,7 +63,9 @@ class HouseholdRegisterProvider with ChangeNotifier {
     };
 
     if(selectedTab != 'all'){
-      query['isBillPaid'] = ((selectedTab == 'PAID') ? 'true' : 'false');
+      query.addAll({
+        'isBillPaid' : (selectedTab == 'PAID') ? 'true' : 'false'
+      });
     }
 
     if (sortBy != null) {
@@ -112,12 +103,12 @@ class HouseholdRegisterProvider with ChangeNotifier {
       if (response != null) {
         if(selectedTab == 'all'){
           collectionCountHolder['all'] = response.totalCount ?? 0;
-          collectionCountHolder['PAID'] = int.parse(response.collectionDataCount?.collectionPaid ?? '0');
-          collectionCountHolder['PENDING'] = int.parse(response.collectionDataCount?.collectionPending ?? '0');
+          collectionCountHolder['PAID'] = response.collectionDataCount?.collectionPaid ?? 0;
+          collectionCountHolder['PENDING'] = response.collectionDataCount?.collectionPending ?? 0;
         }else if(searchResponse != null){
           collectionCountHolder['all'] = searchResponse.totalCount ?? 0;
-          collectionCountHolder['PAID'] = int.parse(searchResponse.collectionDataCount?.collectionPaid ?? '0');
-          collectionCountHolder['PENDING'] = int.parse(searchResponse.collectionDataCount?.collectionPending ?? '0');
+          collectionCountHolder['PAID'] = searchResponse.collectionDataCount?.collectionPaid ?? 0;
+          collectionCountHolder['PENDING'] = searchResponse.collectionDataCount?.collectionPending ?? 0;
         }
 
         if (waterConnectionsDetails == null) {
@@ -172,7 +163,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
             : null,
         apiKey: 'name',
         callBack: onSort),
-    TableHeader('Pending Collections',
+    TableHeader(i18.householdRegister.PENDING_COLLECTIONS,
         isSortingRequired: true,
         isAscendingOrder:
         sortBy != null && sortBy!.key == 'collectionPendingAmount'
@@ -185,6 +176,10 @@ class HouseholdRegisterProvider with ChangeNotifier {
 
   List<TableDataRow> getCollectionsData(int index, List<WaterConnection> list) {
     return list.map((e) => getCollectionRow(e)).toList();
+  }
+
+  getDownloadList(){
+    return collectionCountHolder[selectedTab] ?? 0;
   }
 
   int getCollectionsCount(int index) {
@@ -231,7 +226,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
     }
     sortBy = SortBy(header.apiKey ?? '', header.isAscendingOrder!);
     notifyListeners();
-      fetchCollectionsDashBoardDetails(
+      fetchHouseholdDetails(
           navigatorKey.currentContext!, limit, 1, true);
   }
 
@@ -239,7 +234,6 @@ class HouseholdRegisterProvider with ChangeNotifier {
   void onSearch(String val, BuildContext context) {
     if (debounce?.isActive ?? false) debounce?.cancel();
     debounce = Timer(const Duration(milliseconds: 500), () {
-      print('search');
       fetchDetails(context, limit, 1, true);
     });
   }
@@ -253,7 +247,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
       [int? localLimit, int? localOffSet, bool isSearch = false]) {
     if(isLoaderEnabled) return;
 
-      fetchCollectionsDashBoardDetails(
+      fetchHouseholdDetails(
           context, localLimit ?? limit, localOffSet ?? 1, isSearch);
   }
 
