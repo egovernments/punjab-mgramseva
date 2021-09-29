@@ -714,7 +714,6 @@ public class SchedulerService {
 		if (currentTime.isEqual(scheduleTime)) {
 			tenantIds.forEach(tenantId -> {
 				if (tenantId.split("\\.").length >= 2) {
-					if (!currentTime.isEqual(scheduleTime)) {
 						if (null != config.getIsUserEventEnabled()) {
 							if (config.getIsUserEventEnabled()) {
 								EventRequest eventRequest = sendDayCollectionNotification(requestInfo, tenantId);
@@ -770,7 +769,6 @@ public class SchedulerService {
 								});
 							}
 						}
-					}
 				}
 			});
 		}
