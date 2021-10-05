@@ -75,7 +75,7 @@ config:
       - work-dir: "core-services/egov-notification-sms"
         image-name: "egov-notification-sms"
         dockerfile: "build/maven/Dockerfile"  
-  - name: "builds/mGramSeva/municipal-services"
+  - name: "builds/mGramSeva/municipal-services/egov-user-event"
     build:
       - work-dir: "municipal-services/egov-user-event"
         image-name: "egov-user-event"
