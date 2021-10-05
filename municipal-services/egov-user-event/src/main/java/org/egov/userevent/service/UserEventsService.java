@@ -326,7 +326,7 @@ public class UserEventsService {
 				}// BROADCASTs are ACTIVE only between the given from and to date, they're INACTIVE beyond that.
 				
 				else {
-					if(null != event.getEventDetails().getToDate()) {
+					if(null != event.getEventDetails().getToDate() && !event.getStatus().equals(Status.READ)) {
 						if((event.getEventDetails().getToDate() < new Date().getTime())) {
 							event.setStatus(Status.INACTIVE);
 							tobeAdded = true;
