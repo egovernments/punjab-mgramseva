@@ -87,3 +87,9 @@ config:
       - work-dir: "utilities/mdms-read-cronjob"
         image-name: "api-cronjob"
         dockerfile: "utilities/mdms-read-cronjob/Dockerfile"  
+
+  - name: "builds/mGramSeva/municipal-services"
+    build:
+      - work-dir: "municipal-services/egov-user-event"
+        image-name: "egov-user-event"
+        dockerfile: "build/maven/Dockerfile"  
