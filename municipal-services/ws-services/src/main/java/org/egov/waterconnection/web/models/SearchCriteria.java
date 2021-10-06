@@ -104,7 +104,15 @@ public class SearchCriteria {
 	
 	@JsonProperty("isPropertyCount")
 	private Boolean isPropertyCount = false;
-	    
+	
+	@JsonProperty("isBillPaid")
+	private Boolean isBillPaid;
+	
+	private Boolean isCollectionDataCount = false;
+	
+	@JsonProperty("isCollectionCount") 
+	private Boolean isCollectionCount = false;
+	
 	public enum SortOrder {
 	    ASC,
 	    DESC
