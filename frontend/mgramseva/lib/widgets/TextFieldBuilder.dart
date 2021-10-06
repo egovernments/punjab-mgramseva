@@ -33,6 +33,7 @@ class BuildTextField extends StatefulWidget {
   final GlobalKey? contextkey;
   final AutovalidateMode? autoValidation;
   final bool? isFilled;
+  final Widget? suffixIcon;
 
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
@@ -60,7 +61,8 @@ class BuildTextField extends StatefulWidget {
       this.contextkey,
       this.isFilled,
       this.requiredMessage,
-      this.autoValidation});
+      this.autoValidation,
+      this.suffixIcon});
 
   @override
   State<StatefulWidget> createState() => _BuildTextField();
@@ -145,6 +147,7 @@ class _BuildTextField extends State<BuildTextField> {
                                   : Theme.of(context).primaryColorDark),
                     ),
                   )),
+          suffixIcon: widget.suffixIcon
         ),
         onChanged: widget.onChange);
 // Label Text
