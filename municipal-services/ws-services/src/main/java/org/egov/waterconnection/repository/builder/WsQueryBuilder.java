@@ -235,7 +235,7 @@ public class WsQueryBuilder {
 			query.append(" conn.locality = ? ");
 			preparedStatement.add(criteria.getLocality());
 		}
-		if((criteria.getIsHouseHoldSearch() && criteria.getIsBillPaid() != null) && criteria.getIsCollectionDataCount() == false) {
+		if((criteria.getIsCollectionCount() && criteria.getIsBillPaid() != null) && criteria.getIsCollectionDataCount() == false) {
 			StringBuilder paidOrPendingQuery = new StringBuilder("with td as (");
 			paidOrPendingQuery.append(query).append("{orderby}").append(") ").append("select count(*) OVER() AS full_count, * from td where ");
 		
@@ -293,7 +293,7 @@ public class WsQueryBuilder {
 		Integer offset = config.getDefaultOffset();
 		String finalQuery = null;
 		
-		if(criteria.getIsBillPaid() != null && criteria.getIsHouseHoldSearch()) {
+		if(criteria.getIsBillPaid() != null && criteria.getIsCollectionCount()) {
 			finalQuery = query;
 		}else {
 			finalQuery = PAGINATION_WRAPPER.replace("{}",query);

@@ -89,7 +89,7 @@ public class WaterDaoImpl implements WaterDao {
 		if (query == null)
 			return null;
 	
-		if(criteria.getIsHouseHoldSearch()) {
+		if(criteria.getIsCollectionCount()) {
 			List<Object> preparedStmntforCollectionDataCount = new ArrayList<>();
 			StringBuilder collectionDataCountQuery = new StringBuilder(wsQueryBuilder.COLLECTION_DATA_COUNT);
 			criteria.setIsCollectionDataCount(Boolean.TRUE);

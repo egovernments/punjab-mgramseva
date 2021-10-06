@@ -110,8 +110,8 @@ public class SearchCriteria {
 	
 	private Boolean isCollectionDataCount = false;
 	
-	@JsonProperty("isHouseHoldSearch") 
-	private Boolean isHouseHoldSearch = false;
+	@JsonProperty("isCollectionCount") 
+	private Boolean isCollectionCount = false;
 	    
 	public enum SortOrder {
 	    ASC,
