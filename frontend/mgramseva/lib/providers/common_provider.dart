@@ -267,12 +267,21 @@ class CommonProvider with ChangeNotifier {
 
   void shareonwatsapp(FileStore store, mobileNumber, input) async {
     if (store.url == null) return;
+    late html.AnchorElement anchorElement;
     try {
       var res = await CoreRepository().urlShotner(store.url as String);
       if (kIsWeb) {
-        html.AnchorElement anchorElement = new html.AnchorElement(
-            href: "https://wa.me/+91$mobileNumber?text=" +
-                input.toString().replaceFirst('<link>', res!));
+
+        if(mobileNumber == null){
+          anchorElement = new html.AnchorElement(
+              href: "https://wa.me/send?text=" +
+                  input.toString().replaceFirst('<link>', res!));
+        }else{
+           anchorElement = new html.AnchorElement(
+              href: "https://wa.me/+91$mobileNumber?text=" +
+                  input.toString().replaceFirst('<link>', res!));
+        }
+
         anchorElement.target = "_blank";
         anchorElement.click();
       } else {

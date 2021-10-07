@@ -54,6 +54,8 @@ dependencies:
     git:
       url: git://github.com/google/charts.git
       path: charts_flutter
+  screenshot: ^1.2.3
+  flutter_share_me: ^1.2.0
 
 dev_dependencies:
   flutter_launcher_icons: "^0.9.2"

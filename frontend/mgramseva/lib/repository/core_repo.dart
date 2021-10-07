@@ -97,6 +97,14 @@ class CoreRepository extends BaseService {
           request.files.add(await http.MultipartFile.fromPath('file', file.path,
               filename: '${file.path.split('/').last}'));
         });
+      }else if(_paths is List<CustomFile>){
+        for (var i = 0; i < _paths.length; i++) {
+          var path = _paths[i];
+          http.MultipartFile multipartFile = http.MultipartFile.fromBytes(
+              'file', path.bytes,
+              filename: '${path.name}.${path.extension.toLowerCase()}');
+          request.files.add(multipartFile);
+        }
       }
       request.fields['tenantId'] =
           commonProvider.userDetails!.selectedtenant!.code!;
