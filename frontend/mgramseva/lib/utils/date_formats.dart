@@ -96,7 +96,7 @@ class DateFormats {
     try{
       switch(date.dateType){
         case DateType.YTD:
-          return 'YTD ${date.startDate.year} - ${date.endDate.year.toString().substring(2)}';
+          return '${ApplicationLocalizations.of(context).translate(i18.common.YTD)} ${date.startDate.year} - ${date.endDate.year.toString().substring(2)}';
         case DateType.MONTH:
           return '${ApplicationLocalizations.of(context).translate(Constants.MONTHS[date.startDate.month - 1])} - ${date.startDate.year}';
         case DateType.YEAR:

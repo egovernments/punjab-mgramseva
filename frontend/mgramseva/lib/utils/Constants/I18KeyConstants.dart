@@ -180,6 +180,7 @@ class Common {
   String get OF => 'OF';
   String get NOTE => 'NOTE';
   String get MONTH => 'MONTH';
+  String get YTD => 'YTD';
 }
 
 class Password {
@@ -521,6 +522,8 @@ class _DashBoard {
   String get PENDING_EXPENDITURE => 'PENDING_EXPENDITURE';
   String get ACTUAL_PAYMENT => 'ACTUAL_PAYMENT';
   String get SUMMARY_REPORT => 'SUMMARY_REPORT';
+
+  String get USER_GAVE_FEEDBACK => 'USER_GAVE_FEEDBACK';
 }
 
 class _ExpenseWalkThroughMsg {

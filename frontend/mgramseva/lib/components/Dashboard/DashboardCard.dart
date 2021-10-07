@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/LabelText.dart';
@@ -103,7 +104,7 @@ class DashboardCard extends StatelessWidget {
                                               ),
                                               Expanded(
                                                 child: Text(
-                                                  rating[index]["label"].toString(),
+                                                  '${ApplicationLocalizations.of(context).translate(rating[index]["label"].toString())}',
                                                   textAlign: TextAlign.center,
                                                 ),
                                               )
@@ -113,7 +114,7 @@ class DashboardCard extends StatelessWidget {
                             ).toList(),
                           ),
                           SizedBox(height: 10),
-                          Text("230 Users gave feedback",
+                          Text("230 ${ApplicationLocalizations.of(context).translate(i18.dashboard.USER_GAVE_FEEDBACK)}",
                             textAlign: TextAlign.start,
                             style: TextStyle(
                                 fontSize: 12,
