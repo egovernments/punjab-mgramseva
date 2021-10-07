@@ -22,6 +22,7 @@ class i18 {
       const _ExpenseWalkThroughMsg();
   static _POSTPAYMENTFEEDBACK postPaymentFeedback =
       const _POSTPAYMENTFEEDBACK();
+  static HouseholdRegistry householdRegister = const HouseholdRegistry();
 }
 
 class Login {
@@ -373,6 +374,8 @@ class _Validators {
   String get ENTER_METER_NUMBER => 'ENTER_METER_NUMBER';
   String get ENTER_ALPHA_NUMERIC_ONLY => 'ENTER_ALPHA_NUMERIC_ONLY';
   String get PARTIAL_AMT_OUT_OF_RANGE => 'PARTIAL_AMT_OUT_OF_RANGE';
+  String get CANNOT_BE_EMPTY => 'CANNOT_BE_EMPTY';
+  String get AMOUNT_EXCEEDS => 'AMOUNT_EXCEEDS';
 }
 
 class DemandGenerate {
@@ -549,4 +552,13 @@ class _POSTPAYMENTFEEDBACK {
       'FEED_BACK_SUBMITTED_SUCCESSFULLY';
   String get FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY =>
       'FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY';
+}
+
+class HouseholdRegistry{
+  const HouseholdRegistry();
+
+  String get HOUSEHOLD_REGISTER_LABEL => 'HOUSEHOLD_REGISTER_LABEL';
+  String get PENDING_COLLECTIONS => 'PENDING_COLLECTIONS';
+  String get AS_OF_DATE => 'AS_OF_DATE';
+  String get RECORDS => 'RECORDS';
 }
