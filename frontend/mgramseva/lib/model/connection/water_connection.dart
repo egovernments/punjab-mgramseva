@@ -170,6 +170,10 @@ class AdditionalDetails {
   @JsonKey(name: "collectionAmount")
   String? collectionAmount;
 
+  @JsonKey(name: "collectionPendingAmount")
+  String? collectionPendingAmount;
+
+
   @JsonKey(ignore: true)
   var initialMeterReadingCtrl = TextEditingController();
   String? action;

@@ -4,7 +4,6 @@ import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/components/Dashboard/BillsTable.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
-import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/screeens/dashboard/individual_tab.dart';

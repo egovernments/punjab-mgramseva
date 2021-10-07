@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
-import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -30,9 +29,9 @@ class DashBoardProvider with ChangeNotifier {
   ExpensesDetailsWithPagination? expenseDashboardDetails;
   int offset = 1;
   int limit = 10;
-  late DateTime selectedMonth;
+  late DatePeriod selectedMonth;
   SortBy? sortBy;
-  late List<DateTime> dateList;
+  late List<DatePeriod> dateList;
   WaterConnections? waterConnectionsDetails;
   var selectedDashboardType = DashBoardType.collections;
   String selectedTab = 'all';
@@ -100,9 +99,9 @@ class DashBoardProvider with ChangeNotifier {
       'offset': '${offset - 1}',
       'limit': '$limit',
       'fromDate':
-          '${DateTime(selectedMonth.year, selectedMonth.month, 1).millisecondsSinceEpoch}',
+      '${selectedMonth.startDate.millisecondsSinceEpoch}',
       'toDate':
-          '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0).millisecondsSinceEpoch}',
+      '${selectedMonth.endDate.millisecondsSinceEpoch}',
       'vendorName': searchController.text.trim(),
       'challanNo': searchController.text.trim(),
       'freeSearch': 'true',
@@ -118,7 +117,7 @@ class DashBoardProvider with ChangeNotifier {
     }
 
     if(selectedTab != 'all'){
-    query['isBillPaid'] = ((selectedTab == 'ACTIVE') ? 'false' : 'true');
+      query['isBillPaid'] = ((selectedTab == 'ACTIVE') ? 'false' : 'true');
     };
 
     query
@@ -141,10 +140,10 @@ class DashBoardProvider with ChangeNotifier {
 
       if (response != null) {
         if(selectedTab == 'all'){
-        expenditureCountHolder['all'] = response.totalCount ?? 0;
-        expenditureCountHolder['pending'] = int.parse(response.billDataCount?.notPaidCount ?? '0');
-        expenditureCountHolder['paid'] = int.parse(response.billDataCount?.paidCount ?? '0');
-         }else if(searchResponse != null){
+          expenditureCountHolder['all'] = response.totalCount ?? 0;
+          expenditureCountHolder['pending'] = int.parse(response.billDataCount?.notPaidCount ?? '0');
+          expenditureCountHolder['paid'] = int.parse(response.billDataCount?.paidCount ?? '0');
+        }else if(searchResponse != null){
           expenditureCountHolder['all'] = searchResponse.totalCount ?? 0;
           expenditureCountHolder['pending'] = int.parse(searchResponse.billDataCount?.notPaidCount ?? '0');
           expenditureCountHolder['paid'] = int.parse(searchResponse.billDataCount?.paidCount ?? '0');
@@ -163,11 +162,11 @@ class DashBoardProvider with ChangeNotifier {
             expenseDashboardDetails!.expenseDetailList!.isEmpty
                 ? <ExpensesDetailsModel>[]
                 : expenseDashboardDetails?.expenseDetailList?.sublist(
-                    offSet - 1,
-                    ((offset + limit - 1) >
-                            (expenseDashboardDetails?.totalCount ?? 0))
-                        ? (expenseDashboardDetails!.totalCount!)
-                        : (offset + limit - 1)));
+                offSet - 1,
+                ((offset + limit - 1) >
+                    (expenseDashboardDetails?.totalCount ?? 0))
+                    ? (expenseDashboardDetails!.totalCount!)
+                    : (offset + limit - 1)));
       }
     } catch (e, s) {
       isLoaderEnabled = false;
@@ -205,9 +204,9 @@ class DashBoardProvider with ChangeNotifier {
       'offset': '${offset - 1}',
       'limit': '$limit',
       'fromDate':
-          '${DateTime(selectedMonth.year, selectedMonth.month, 1).millisecondsSinceEpoch}',
+      '${selectedMonth.startDate.millisecondsSinceEpoch}',
       'toDate':
-          '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0).millisecondsSinceEpoch}',
+      '${selectedMonth.endDate.millisecondsSinceEpoch}',
       'iscollectionAmount': 'true',
       'isPropertyCount': 'true',
     };
@@ -273,11 +272,11 @@ class DashBoardProvider with ChangeNotifier {
         streamController.add(waterConnectionsDetails!.waterConnection!.isEmpty
             ? <WaterConnection>[]
             : waterConnectionsDetails?.waterConnection?.sublist(
-                offSet - 1,
-                ((offset + limit - 1) >
-                        (waterConnectionsDetails?.totalCount ?? 0))
-                    ? (waterConnectionsDetails!.totalCount!)
-                    : (offset + limit) - 1));
+            offSet - 1,
+            ((offset + limit - 1) >
+                (waterConnectionsDetails?.totalCount ?? 0))
+                ? (waterConnectionsDetails!.totalCount!)
+                : (offset + limit) - 1));
       }
     } catch (e, s) {
       isLoaderEnabled = false;
@@ -292,83 +291,83 @@ class DashBoardProvider with ChangeNotifier {
     var list = [i18.dashboard.ALL, i18.dashboard.PAID, i18.dashboard.PENDING];
     return List.generate(
         list.length,
-        (index) => Tab(
+            (index) => Tab(
             text:
-                '${ApplicationLocalizations.of(context).translate(list[index])} (${getExpenseCount(index)})'));
+            '${ApplicationLocalizations.of(context).translate(list[index])} (${getExpenseCount(index)})'));
   }
 
   List<Tab> getCollectionsTabList(
       BuildContext context) {
     return List.generate(
         propertyTaxList.length,
-        (index) => Tab(
+            (index) => Tab(
             text:
-                '${ApplicationLocalizations.of(context).translate(propertyTaxList[index].code ?? '')} (${getCollectionsCount(index)})'));
+            '${ApplicationLocalizations.of(context).translate(propertyTaxList[index].code ?? '')} (${getCollectionsCount(index)})'));
   }
 
   List<TableHeader> get expenseHeaderList => [
-        TableHeader(i18.dashboard.BILL_ID_VENDOR,
-            isSortingRequired: true,
-            isAscendingOrder: sortBy != null && sortBy!.key == 'challanno'
-                ? sortBy!.isAscending
-                : null,
-            callBack: onExpenseSort,
-            apiKey: 'challanno'),
-        TableHeader(i18.expense.EXPENSE_TYPE,
-            isSortingRequired: true,
-            isAscendingOrder: sortBy != null && sortBy!.key == 'typeOfExpense'
-                ? sortBy!.isAscending
-                : null,
-            apiKey: 'typeOfExpense',
-            callBack: onExpenseSort),
-        TableHeader(i18.common.AMOUNT,
-            isSortingRequired: true,
-            isAscendingOrder: sortBy != null && sortBy!.key == 'totalAmount'
-                ? sortBy!.isAscending
-                : null,
-            apiKey: 'totalAmount',
-            callBack: onExpenseSort),
-        TableHeader(i18.expense.BILL_DATE,
-            isSortingRequired: true,
-            isAscendingOrder: sortBy != null && sortBy!.key == 'billDate'
-                ? sortBy!.isAscending
-                : null,
-            apiKey: 'billDate',
-            callBack: onExpenseSort),
-        TableHeader(i18.common.PAID_DATE,
-            isSortingRequired: true,
-            isAscendingOrder: sortBy != null && sortBy!.key == 'paidDate'
-                ? sortBy!.isAscending
-                : null,
-            apiKey: 'paidDate',
-            callBack: onExpenseSort),
-      ];
+    TableHeader(i18.dashboard.BILL_ID_VENDOR,
+        isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'challanno'
+            ? sortBy!.isAscending
+            : null,
+        callBack: onExpenseSort,
+        apiKey: 'challanno'),
+    TableHeader(i18.expense.EXPENSE_TYPE,
+        isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'typeOfExpense'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'typeOfExpense',
+        callBack: onExpenseSort),
+    TableHeader(i18.common.AMOUNT,
+        isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'totalAmount'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'totalAmount',
+        callBack: onExpenseSort),
+    TableHeader(i18.expense.BILL_DATE,
+        isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'billDate'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'billDate',
+        callBack: onExpenseSort),
+    TableHeader(i18.common.PAID_DATE,
+        isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'paidDate'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'paidDate',
+        callBack: onExpenseSort),
+  ];
 
   List<TableHeader> get collectionHeaderList => [
-        TableHeader(i18.common.CONNECTION_ID,
-            isSortingRequired: true,
-            isAscendingOrder:
-                sortBy != null && sortBy!.key == 'connectionNumber'
-                    ? sortBy!.isAscending
-                    : null,
-            apiKey: 'connectionNumber ',
-            callBack: onExpenseSort),
-        TableHeader(i18.common.NAME,
-            isSortingRequired: true,
-            isAscendingOrder: sortBy != null && sortBy!.key == 'name'
-                ? sortBy!.isAscending
-                : null,
-            apiKey: 'name',
-            callBack: onExpenseSort),
-        TableHeader(i18.dashboard.COLLECTIONS,
-            isSortingRequired: true,
-            isAscendingOrder:
-                sortBy != null && sortBy!.key == 'collectionAmount'
-                    ? sortBy!.isAscending
-                    : null,
-            apiKey: 'collectionAmount',
-            callBack: onExpenseSort),
-      ];
+    TableHeader(i18.common.CONNECTION_ID,
+        isSortingRequired: true,
+        isAscendingOrder:
+        sortBy != null && sortBy!.key == 'connectionNumber'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'connectionNumber ',
+        callBack: onExpenseSort),
+    TableHeader(i18.common.NAME,
+        isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'name'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'name',
+        callBack: onExpenseSort),
+    TableHeader(i18.dashboard.COLLECTIONS,
+        isSortingRequired: true,
+        isAscendingOrder:
+        sortBy != null && sortBy!.key == 'collectionAmount'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'collectionAmount',
+        callBack: onExpenseSort),
+  ];
 
   List<TableDataRow> getExpenseData(
       int index, List<ExpensesDetailsModel> list) {
@@ -381,7 +380,7 @@ class DashBoardProvider with ChangeNotifier {
         return expenditureCountHolder['all'] ?? 0;
       case 1:
         return
-            expenditureCountHolder['paid'] ?? 0;
+          expenditureCountHolder['paid'] ?? 0;
       case 2:
         return
           expenditureCountHolder['pending'] ?? 0;
@@ -471,8 +470,8 @@ class DashBoardProvider with ChangeNotifier {
     });
   }
 
-  void onChangeOfDate(DateTime? date, BuildContext context, _overlayEntry) {
-    selectedMonth = date ?? DateTime.now();
+  void onChangeOfDate(DatePeriod? date, BuildContext context, _overlayEntry) {
+    selectedMonth = date ?? DatePeriod(DateTime.now(),DateTime.now(), DateType.MONTH);
     notifyListeners();
     removeOverLay(_overlayEntry);
     fetchDetails(context, limit, 1, true);

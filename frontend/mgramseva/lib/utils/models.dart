@@ -15,6 +15,8 @@ enum MDMSType { BusinessService, ConsumerType, TaxHeadCode }
 
 enum DashBoardType { collections, Expenditure }
 
+enum DateType {YTD, MONTH, YEAR, LABEL}
+
 class KeyValue {
   String label;
   dynamic key;
@@ -80,4 +82,19 @@ class SortBy {
   final String key;
   final bool isAscending;
   SortBy(this.key, this.isAscending);
+}
+
+class DatePeriod {
+  final DateTime startDate;
+  final DateTime endDate;
+  final DateType dateType;
+  final String? label;
+  DatePeriod(this.startDate, this.endDate, this.dateType, [this.label]);
+}
+
+class Legend {
+  final String label;
+  final Color color;
+
+  Legend(this.label, this.color);
 }

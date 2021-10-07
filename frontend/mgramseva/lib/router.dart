@@ -6,6 +6,7 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetails.dart';
 import 'package:mgramseva/screeens/Home/Home.dart';
+import 'package:mgramseva/screeens/HouseholdRegister/HouseholdRegister.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
 import 'package:mgramseva/screeens/ConnectionResults/SearchConnection.dart';
 import 'package:mgramseva/screeens/PasswordSuccess/Passwordsuccess.dart';
@@ -386,6 +387,10 @@ class router {
         return MaterialPageRoute(
             builder: (_) => GenerateBill(),
             settings: RouteSettings(name: Routes.MANUAL_BILL_GENERATE));
+      case Routes.HOUSEHOLD_REGISTER:
+        return MaterialPageRoute(
+            builder: (_) => HouseholdRegister(),
+            settings: RouteSettings(name: Routes.HOUSEHOLD_REGISTER));
       default:
         return MaterialPageRoute(
           builder: (_) => SelectLanguage(),

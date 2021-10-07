@@ -50,6 +50,10 @@ dependencies:
   collection: ^1.15.0
   image_picker: ^0.8.4
   path: ^1.8.0
+  charts_flutter:
+    git:
+      url: git://github.com/google/charts.git
+      path: charts_flutter
 
 dev_dependencies:
   flutter_launcher_icons: "^0.9.2"

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart' as billDetails;
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/providers/collect_payment.dart';
@@ -18,7 +17,6 @@ import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
-import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/customAppbar.dart';
 
@@ -178,20 +176,32 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               true,
               Constants.PAYMENT_AMOUNT,
               (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(
-                  fetchBill, val, true)),
-          if (fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key)
-            BuildTextField(
-              '${i18.common.CUSTOM_AMOUNT}',
-              fetchBill.customAmountCtrl,
-              isRequired: true,
-              validator: (val) =>
-                  Validators.rangeValidatior(val, fetchBill.totalAmount),
-              textInputType: TextInputType.number,
-              inputFormatter: [
-                FilteringTextInputFormatter.allow(RegExp("[0-9]"))
-              ],
-              labelSuffix: '(₹)',
-            ),
+                  fetchBill, val, true),
+              refTextRadioBtn: Constants.PAYMENT_AMOUNT.last.key,
+              secondaryBox: fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key ?
+              TextFormField(
+                style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                    color: Theme.of(context).primaryColorDark),
+                controller: fetchBill.customAmountCtrl,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                ],
+                validator: (val) =>
+                    Validators.partialAmountValidatior(val, fetchBill.totalAmount),
+                decoration: const InputDecoration(
+                  prefixText: '₹ ',
+                  prefixStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400),
+                  errorMaxLines: 1,
+                  errorStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400),
+                ),
+              ) : null),
           RadioButtonFieldBuilder(
               context,
               i18.common.PAYMENT_METHOD,

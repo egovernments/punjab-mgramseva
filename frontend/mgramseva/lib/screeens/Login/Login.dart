@@ -11,7 +11,6 @@ import 'package:mgramseva/widgets/HeadingText.dart';
 import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/MobileView.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/screeens/ForgotPassword/ForgotPassword.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
@@ -28,6 +27,7 @@ class _LoginState extends State<Login> {
   var autoValidation = false;
   var phoneNumberAutoValidation = false;
   FocusNode _numberFocus = new FocusNode();
+  var passwordVisible = false;
 
   @override
   void initState() {
@@ -98,7 +98,8 @@ class _LoginState extends State<Login> {
                   i18.login.LOGIN_PASSWORD,
                   passwordcontroller,
                   isRequired: true,
-                  obscureText: true,
+                  obscureText: !passwordVisible,
+                  suffixIcon: buildPasswordVisibility(),
                   maxLines: 1,
                 ),
                 GestureDetector(
@@ -125,6 +126,22 @@ class _LoginState extends State<Login> {
                 )
               ],
             ))));
+  }
+
+  Widget buildPasswordVisibility(){
+    return IconButton(
+      icon: Icon(
+        passwordVisible
+            ? Icons.visibility
+            : Icons.visibility_off,
+        color: Theme.of(context).primaryColorDark,
+      ),
+      onPressed: () {
+        setState(() {
+          passwordVisible = !passwordVisible;
+        });
+      },
+    );
   }
 
   @override
