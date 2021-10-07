@@ -18,6 +18,7 @@ import 'package:mgramseva/providers/fetch_bill_provider.dart';
 import 'package:mgramseva/providers/forgot_password_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
+import 'package:mgramseva/providers/household_register_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/providers/notifications_provider.dart';
@@ -121,6 +122,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => DemadDetailProvider()),
           ChangeNotifierProvider(create: (_) => FetchBillProvider()),
           ChangeNotifierProvider(create: (_) => NotificationProvider()),
+          ChangeNotifierProvider(create: (_) => HouseholdRegisterProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(

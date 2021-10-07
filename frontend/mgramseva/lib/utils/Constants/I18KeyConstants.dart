@@ -22,6 +22,7 @@ class i18 {
       const _ExpenseWalkThroughMsg();
   static _POSTPAYMENTFEEDBACK postPaymentFeedback =
       const _POSTPAYMENTFEEDBACK();
+  static HouseholdRegistry householdRegister = const HouseholdRegistry();
 }
 
 class Login {
@@ -529,4 +530,13 @@ class _POSTPAYMENTFEEDBACK {
       'FEED_BACK_SUBMITTED_SUCCESSFULLY';
   String get FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY =>
       'FEEDBACK_RESPONSE_SUBMITTED_SUCCESSFULLY';
+}
+
+class HouseholdRegistry{
+  const HouseholdRegistry();
+
+  String get HOUSEHOLD_REGISTER_LABEL => 'HOUSEHOLD_REGISTER_LABEL';
+  String get PENDING_COLLECTIONS => 'PENDING_COLLECTIONS';
+  String get AS_OF_DATE => 'AS_OF_DATE';
+  String get RECORDS => 'RECORDS';
 }
