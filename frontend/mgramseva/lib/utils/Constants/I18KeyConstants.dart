@@ -371,6 +371,8 @@ class _Validators {
   String get ENTER_METER_NUMBER => 'ENTER_METER_NUMBER';
   String get ENTER_ALPHA_NUMERIC_ONLY => 'ENTER_ALPHA_NUMERIC_ONLY';
   String get PARTIAL_AMT_OUT_OF_RANGE => 'PARTIAL_AMT_OUT_OF_RANGE';
+  String get CANNOT_BE_EMPTY => 'CANNOT_BE_EMPTY';
+  String get AMOUNT_EXCEEDS => 'AMOUNT_EXCEEDS';
 }
 
 class DemandGenerate {

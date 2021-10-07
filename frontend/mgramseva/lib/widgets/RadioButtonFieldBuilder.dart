@@ -14,10 +14,12 @@ class RadioButtonFieldBuilder extends StatelessWidget {
   final ValueChanged widget1;
   final bool? isEnabled;
   final GlobalKey? contextkey;
+  final Widget? secondaryBox;
+  final String? refTextRadioBtn;
 
   RadioButtonFieldBuilder(this.context, this.labelText, this.controller,
       this.input, this.prefixText, this.isRequired, this.options, this.widget1,
-      {this.isEnabled, this.contextkey});
+      {this.isEnabled, this.contextkey, this.secondaryBox, this.refTextRadioBtn});
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +61,8 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                         value: data.key,
                         groupValue: controller,
                         onChanged: (isEnabled ?? true) ? widget1 : null,
+                        secondary: data.key == refTextRadioBtn ? Container( width: MediaQuery.of(context).size.width / 3.8,
+                            child: secondaryBox ) : null,
                       );
                     },
                   ).toList())),
@@ -97,6 +101,8 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                     value: data.key,
                     groupValue: controller,
                     onChanged: (isEnabled ?? true) ? widget1 : null,
+                    secondary: data.key == refTextRadioBtn ? Container( width: MediaQuery.of(context).size.width / 2.8,
+                        child: secondaryBox ) : null,
                   );
                 },
               ).toList()),
