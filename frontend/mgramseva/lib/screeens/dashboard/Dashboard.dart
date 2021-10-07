@@ -400,7 +400,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
         // html.Url.revokeObjectUrl(url);
 
        var file = CustomFile(capturedImage, fileName, 'png');
-       CoreRepository().uploadFiles([file], APIConstants.API_MODULE_NAME).then((value) =>
+       CoreRepository().uploadFiles(<CustomFile>[file], APIConstants.API_MODULE_NAME).then((value) =>
            Provider.of<CommonProvider>(context, listen: false).getStoreFileDetails(value.first.id, 'Share', null, context,  'screenshot of anual dashbard <link>')
       ,
       onError: (e,s){
