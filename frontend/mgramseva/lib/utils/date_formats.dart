@@ -4,6 +4,7 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 
 import 'Locilization/application_localizations.dart';
+import 'models.dart';
 
 class DateFormats {
 
@@ -91,9 +92,19 @@ class DateFormats {
     }
   }
 
-  static String getMonthAndYear(DateTime date, BuildContext context){
+  static String getMonthAndYear(DatePeriod date, BuildContext context){
     try{
-      return '${ApplicationLocalizations.of(context).translate(Constants.MONTHS[date.month - 1])} ${date.year}';
+      switch(date.dateType){
+        case DateType.YTD:
+          return '${ApplicationLocalizations.of(context).translate(i18.common.YTD)} ${date.startDate.year} - ${date.endDate.year.toString().substring(2)}';
+        case DateType.MONTH:
+          return '${ApplicationLocalizations.of(context).translate(Constants.MONTHS[date.startDate.month - 1])} - ${date.startDate.year}';
+        case DateType.YEAR:
+          return '${date.startDate.year} - ${date.endDate.year.toString().substring(2)}';
+        default :
+          return '';
+      }
+
     }catch(e){
       return '';
     }

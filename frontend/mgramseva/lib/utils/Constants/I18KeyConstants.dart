@@ -179,6 +179,9 @@ class Common {
   String get DEC => 'DEC';
 
   String get OF => 'OF';
+  String get NOTE => 'NOTE';
+  String get MONTH => 'MONTH';
+  String get YTD => 'YTD';
 }
 
 class Password {
@@ -507,6 +510,23 @@ class _DashBoard {
   String get DASHBOARD => 'DASHBOARD';
   String get BILL_ID_VENDOR => 'BILL_ID_VENDOR';
   String get NO_RECORDS_MSG => 'NO_RECORDS_MSG';
+
+  String get REVENUE_EXPENDITURE_TREND => 'REVENUE_EXPENDITURE_TREND'; /// Revenue and Expenditure Trend
+  String get STACKED_BAR => 'STACKED_BAR';
+  String get TREND_LINE => 'TREND_LINE';
+  String get REVENUE => 'REVENUE'; //Revenue
+  String get REVENUE_NOTE => 'REVENUE_NOTE'; //Click on individual cells to see details of collections and expenditure for the selected month.
+
+  /// table labels
+  String get SURPLUS_DEFICIT => 'SURPLUS_DEFICIT';
+  String get DEMAND_ARREARS => 'DEMAND_ARREARS';
+  String get PENIDNG_COLLECTIONS => 'PENIDNG_COLLECTIONS';
+  String get ACTUAL_COLLECTIONS => 'ACTUAL_COLLECTIONS';
+  String get PENDING_EXPENDITURE => 'PENDING_EXPENDITURE';
+  String get ACTUAL_PAYMENT => 'ACTUAL_PAYMENT';
+  String get SUMMARY_REPORT => 'SUMMARY_REPORT';
+
+  String get USER_GAVE_FEEDBACK => 'USER_GAVE_FEEDBACK';
 }
 
 class _ExpenseWalkThroughMsg {
