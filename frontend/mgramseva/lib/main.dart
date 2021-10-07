@@ -46,6 +46,7 @@ import 'package:url_strategy/url_strategy.dart';
 
 import 'providers/collect_payment.dart';
 import 'providers/dashboard_provider.dart';
+import 'providers/revenuedashboard_provider.dart';
 import 'screeens/common/collect_payment.dart';
 
 void main() {
@@ -121,6 +122,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => DemadDetailProvider()),
           ChangeNotifierProvider(create: (_) => FetchBillProvider()),
           ChangeNotifierProvider(create: (_) => NotificationProvider()),
+          ChangeNotifierProvider(create: (_) => RevenueDashboard()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => MaterialApp(

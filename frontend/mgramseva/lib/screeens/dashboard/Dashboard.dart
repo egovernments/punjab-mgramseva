@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/components/Dashboard/BillsTable.dart';
 import 'package:mgramseva/components/Dashboard/DashboardCard.dart';
+import 'package:mgramseva/model/common/metric.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -14,15 +15,18 @@ import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
+import 'package:mgramseva/widgets/grid_view.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/customAppbar.dart';
+import 'revenue_dashboard/revenue_dashboard.dart';
 import 'search_expense.dart';
 import 'package:mgramseva/widgets/pagination.dart';
 
 class Dashboard extends StatefulWidget {
   final int initialTabIndex;
+  final DatePeriod? selectedMonth;
 
-  const Dashboard({Key? key, this.initialTabIndex = 0}) : super(key: key);
+  const Dashboard({Key? key, this.initialTabIndex = 0, this.selectedMonth}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -47,8 +51,16 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
     var dashBoardProvider =
         Provider.of<DashBoardProvider>(context, listen: false)
           ..dateList =
-              CommonMethods.getPastMonthUntilFinancialYear().reversed.toList();
+          CommonMethods.getPastMonthUntilFinancialYear()
+          ..dateList.add(DatePeriod(DateTime.now(), DateTime.now(), DateType.LABEL, i18.dashboard.SUMMARY_REPORT))
+          ..dateList.addAll(CommonMethods.getFinancialYearList());
+        if(widget.selectedMonth == null) {
     dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
+    }else{
+          dashBoardProvider.selectedMonth = widget.selectedMonth!;
+        }
+
+
     dashBoardProvider.debounce = null;
     _tabController = new TabController(vsync: this, length: 2, initialIndex: widget.initialTabIndex);
     _tabController.addListener(() {
@@ -74,6 +86,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
           drawer: DrawerWrapper(
             Drawer(child: SideBar()),
           ),
+          backgroundColor: Color.fromRGBO(238, 238, 238, 1),
           body: LayoutBuilder(
             builder: (context, constraints) => Container(
               alignment: Alignment.center,
@@ -83,58 +96,58 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                       horizontal: MediaQuery.of(context).size.width / 25),
               child: Stack(children: [
                 SingleChildScrollView(
-                  child: Container(
-                      color: Color.fromRGBO(238, 238, 238, 1),
-                      padding: EdgeInsets.only(left: 8, right: 8),
-                      height: constraints.maxHeight - 50,
-                      child: CustomScrollView(slivers: [
-                        SliverList(
-                            delegate: SliverChildListDelegate([
-                          HomeBack(),
-                          Container(
-                              key: key,
-                              child: DashboardCard(onTapOfMonthPicker)),
-                          TabBar(
-                            labelColor: Theme.of(context).primaryColor,
-                            unselectedLabelColor: Colors.black,
-                            labelStyle: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                            indicatorSize: TabBarIndicatorSize.tab,
-                            controller: _tabController,
-                            indicator: BoxDecoration(
-                              color: Colors.white,
-                              border: Border(
-                                bottom: BorderSide(
-                                    width: 2,
-                                    color: Theme.of(context).primaryColor),
+                  child: Consumer<DashBoardProvider>(
+                    builder: (_, dashBoardProvider, child) => Container(
+                        color: Color.fromRGBO(238, 238, 238, 1),
+                        padding: EdgeInsets.only(left: 8, right: 8),
+                        height: (dashBoardProvider.selectedMonth.dateType != DateType.MONTH)  ?  constraints.maxHeight : constraints.maxHeight - 50,
+                        child: CustomScrollView(slivers: [
+                          SliverList(
+                              delegate: SliverChildListDelegate([
+                            HomeBack(),
+                            Container(
+                                key: key,
+                                child: DashboardCard(onTapOfMonthPicker)),
+                                Visibility(
+                                    visible: !(dashBoardProvider.selectedMonth.dateType != DateType.MONTH),
+                                    child: TabBar(
+                                labelColor: Theme.of(context).primaryColor,
+                                unselectedLabelColor: Colors.black,
+                                labelStyle: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 16),
+                                indicatorSize: TabBarIndicatorSize.tab,
+                                controller: _tabController,
+                                indicator: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border(
+                                      bottom: BorderSide(
+                                          width: 2,
+                                          color: Theme.of(context).primaryColor),
+                                    ),
+                                ),
+                                tabs: [
+                                    Tab(
+                                      text: ApplicationLocalizations.of(context)
+                                          .translate(i18.dashboard.COLLECTIONS),
+                                    ),
+                                    Tab(
+                                      text: ApplicationLocalizations.of(context)
+                                          .translate(i18.dashboard.EXPENDITURE),
+                                    ),
+                                ],
                               ),
                             ),
-                            tabs: [
-                              Tab(
-                                text: ApplicationLocalizations.of(context)
-                                    .translate(i18.dashboard.COLLECTIONS),
-                              ),
-                              Tab(
-                                text: ApplicationLocalizations.of(context)
-                                    .translate(i18.dashboard.EXPENDITURE),
-                              ),
-                            ],
-                          ),
+                           Visibility(
+                               visible: dashBoardProvider.selectedMonth.dateType == DateType.MONTH,
+                               child: Padding(
+                                 padding: const EdgeInsets.only(top: 5),
+                                 child: GridViewBuilder(gridList: a, physics: NeverScrollableScrollPhysics()),
+                               )
+                           )
+                          ])),
+                          _buildViewBasedOnTheSelection(dashBoardProvider)
                         ])),
-                        SliverFillRemaining(
-                            hasScrollBody: true,
-                            fillOverscroll: true,
-                            child: TabBarView(
-                              physics: NeverScrollableScrollPhysics(),
-                              controller: _tabController,
-                              children: [
-                                SearchExpenseDashboard(
-                                    dashBoardType: DashBoardType.collections),
-                                SearchExpenseDashboard(
-                                    dashBoardType: DashBoardType.Expenditure)
-                              ],
-                            ))
-                      ])),
+                  ),
                 ),
                 Align(
                     alignment: Alignment.bottomRight,
@@ -149,7 +162,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                                       .waterConnectionsDetails?.totalCount) ??
                               0;
                       return Visibility(
-                          visible: totalCount > 0,
+                          visible: totalCount > 0 && !(dashBoardProvider.selectedMonth.dateType != DateType.MONTH),
                           child: Pagination(
                               limit: dashBoardProvider.limit,
                               offSet: dashBoardProvider.offset,
@@ -162,6 +175,27 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
           ),
         ),
       ),
+    );
+  }
+
+
+  Widget _buildViewBasedOnTheSelection(DashBoardProvider dashBoardProvider) {
+    return dashBoardProvider.selectedMonth.dateType != DateType.MONTH ? SliverToBoxAdapter(
+                    child: RevenueDashBoard()
+                ) :
+      SliverFillRemaining(
+          hasScrollBody: true,
+          fillOverscroll: true,
+          child: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: _tabController,
+            children: [
+              SearchExpenseDashboard(
+                  dashBoardType: DashBoardType.collections),
+              SearchExpenseDashboard(
+                  dashBoardType: DashBoardType.Expenditure)
+            ],
+          )
     );
   }
 
@@ -180,13 +214,18 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
     RenderBox? box = key.currentContext!.findRenderObject() as RenderBox?;
     Offset position = box!.localToGlobal(Offset.zero);
 
+    var height = MediaQuery.of(context).size.height;
+
     _overlayEntry = new OverlayEntry(
         builder: (BuildContext context) => Positioned(
             left: position.dx + box.size.width - 200,
-            top: position.dy + box.size.height - 10,
+            top: position.dy + 60  - 10,
             child: Material(
                 color: Colors.transparent,
                 child: Container(
+                    constraints: BoxConstraints(
+                      maxHeight: (height - position.dy) - 60
+                    ),
                     padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
@@ -205,65 +244,86 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                         )
                       ],
                     ),
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: List.generate(
-                            dashBoardProvider.dateList.length, (index) {
-                          var date = dashBoardProvider.dateList[index];
-                          return InkWell(
-                            onTap: () => dashBoardProvider.onChangeOfDate(
-                                date, context, _overlayEntry),
-                            child: Container(
-                              width: 195,
-                              decoration: index ==
-                                      dashBoardProvider.dateList.length - 1
-                                  ? BoxDecoration(
-                                      color: index % 2 == 0
-                                          ? Color.fromRGBO(238, 238, 238, 1)
-                                          : Color.fromRGBO(255, 255, 255, 1),
-                                      borderRadius: BorderRadius.only(
-                                        bottomRight: Radius.circular(5.0),
-                                        bottomLeft: Radius.circular(5.0),
-                                      ))
-                                  : BoxDecoration(
-                                      color: index % 2 == 0
-                                          ? Color.fromRGBO(238, 238, 238, 1)
-                                          : Color.fromRGBO(255, 255, 255, 1),
-                                    ),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 8),
-                              child: Wrap(
-                                spacing: 5,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                alignment: WrapAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '${DateFormats.getMonthAndYear(dashBoardProvider.dateList[index], context)}',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: dashBoardProvider
-                                                        .selectedMonth.year ==
-                                                    date.year &&
-                                                dashBoardProvider
-                                                        .selectedMonth.month ==
-                                                    date.month
-                                            ? FontWeight.bold
-                                            : FontWeight.normal),
+                    child: SingleChildScrollView(
+                      child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                              dashBoardProvider.dateList.length, (index) {
+                            var date = dashBoardProvider.dateList[index];
+                            return InkWell(
+                              onTap: () => dashBoardProvider.onChangeOfDate(
+                                  date, context, _overlayEntry),
+                              child: Container(
+                                width: 195,
+                                decoration: index ==
+                                        dashBoardProvider.dateList.length - 1
+                                    ? BoxDecoration(
+                                        color: index % 2 == 0
+                                            ? Color.fromRGBO(238, 238, 238, 1)
+                                            : Color.fromRGBO(255, 255, 255, 1),
+                                        borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(5.0),
+                                          bottomLeft: Radius.circular(5.0),
+                                        ))
+                                    : BoxDecoration(
+                                        color: index % 2 == 0
+                                            ? Color.fromRGBO(238, 238, 238, 1)
+                                            : Color.fromRGBO(255, 255, 255, 1),
+                                      ),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 8),
+                                child: date.dateType == DateType.LABEL ?
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  child: Text(ApplicationLocalizations.of(context)
+                                      .translate(date.label ?? ''),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color.fromRGBO(80, 90, 95, 1)
                                   ),
-                                  Radio(
-                                      value: date,
-                                      groupValue:
-                                          dashBoardProvider.selectedMonth,
-                                      onChanged: (date) =>
-                                          dashBoardProvider.onChangeOfDate(
-                                              date as DateTime,
-                                              context,
-                                              _overlayEntry))
-                                ],
+                                  ),
+                                ) :
+                                Wrap(
+                                  spacing: 5,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  alignment: WrapAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '${DateFormats.getMonthAndYear(date, context)}',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: dashBoardProvider
+                                                          .selectedMonth == date
+                                              ? FontWeight.bold
+                                              : FontWeight.normal),
+                                    ),
+                                    Radio(
+                                        value: date,
+                                        groupValue:
+                                            dashBoardProvider.selectedMonth,
+                                        onChanged: (date) =>
+                                            dashBoardProvider.onChangeOfDate(
+                                                date as DatePeriod,
+                                                context,
+                                                _overlayEntry))
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        }))))));
+                            );
+                          }),
+                ),
+                    )))));
     if (_overlayEntry != null) overlayState?.insert(_overlayEntry!);
   }
 }
+
+var a = [
+  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
+  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
+  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
+  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
+  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
+  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
+  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
+  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
+];
