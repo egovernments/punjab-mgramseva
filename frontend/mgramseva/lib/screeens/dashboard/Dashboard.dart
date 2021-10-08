@@ -404,18 +404,27 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                    url = url.split(',').first;
                  }
                  response.first.url = url;
+
+                 /// Message which will be share on what's app via web
+                 var localizedText = '${ApplicationLocalizations.of(context).translate(i18.dashboard.ANNUAL_SHARE_MSG_WEB)}';
+                 localizedText = localizedText.replaceFirst('<year-year>', '${DateFormats.getMonthAndYear(dashBoardProvider.selectedMonth, context)}');
                  commonProvider.shareonwatsapp(
                      response.first, null,
-                     '<link>');
+                     localizedText);
                }
               }
             } else {
               final Directory? directory = await getExternalStorageDirectory();
               final file = await File('${directory?.path}/$fileName.png')
                   .writeAsBytes(capturedImage);
+
+              /// Message which will be share on what's app via mobile
+              var localizedText = '${ApplicationLocalizations.of(context).translate(i18.dashboard.ANNUAL_SHARE_MSG_MOBILE)}';
+              localizedText = localizedText.replaceFirst('<year-year>', '${DateFormats.getMonthAndYear(dashBoardProvider.selectedMonth, context)}');
+
               var response = await flutterShareMe.shareToWhatsApp(
                   imagePath: file.path,
-                  fileType: FileType.image);
+                  fileType: FileType.image, msg: localizedText);
               if(response != null && response.contains('PlatformException'))
                 ErrorHandler().allExceptionsHandler(context, response );
             }
