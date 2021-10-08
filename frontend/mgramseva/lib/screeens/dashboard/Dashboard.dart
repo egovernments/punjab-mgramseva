@@ -363,6 +363,11 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
   }
 
   Future<void> takeScreenShotOfDashboard() async {
+    var dashBoardProvider =
+    Provider.of<DashBoardProvider>(context, listen: false);
+
+    if(dashBoardProvider.selectedMonth.dateType == DateType.MONTH) return;
+
     final FlutterShareMe flutterShareMe = FlutterShareMe();
     var fileName = 'annualdashboard';
 
@@ -383,23 +388,6 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
             });
 
             if (kIsWeb && capturedImage != null) {
-              // final blob = html.Blob(
-              //     [await capturedImage]);
-              // final url = html.Url
-              //     .createObjectUrlFromBlob(blob);
-              // final anchor = html.document
-              //     .createElement('a') as html
-              //     .AnchorElement
-              //   ..href = url
-              //   ..style.display = 'none'
-              //   ..download = 'some_name.png';
-              // html.document.body?.children.add(
-              //     anchor);
-              // anchor.click();
-              // html.document.body?.children.remove(
-              //     anchor);
-              // html.Url.revokeObjectUrl(url);
-
               var file = CustomFile(capturedImage, fileName, 'png');
               var response = await CoreRepository().uploadFiles(
                   <CustomFile>[file], APIConstants.API_MODULE_NAME);
