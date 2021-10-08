@@ -407,7 +407,8 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
 
                  /// Message which will be share on what's app via web
                  var localizedText = '${ApplicationLocalizations.of(context).translate(i18.dashboard.ANNUAL_SHARE_MSG_WEB)}';
-                 localizedText = localizedText.replaceFirst('<year-year>', '${DateFormats.getMonthAndYear(dashBoardProvider.selectedMonth, context)}');
+                 localizedText = localizedText.replaceFirst('{year-year}', '${DateFormats.getMonthAndYear(dashBoardProvider.selectedMonth, context)}');
+                 localizedText = localizedText.replaceFirst('{link}', '<link>');
                  commonProvider.shareonwatsapp(
                      response.first, null,
                      localizedText);
@@ -420,7 +421,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
 
               /// Message which will be share on what's app via mobile
               var localizedText = '${ApplicationLocalizations.of(context).translate(i18.dashboard.ANNUAL_SHARE_MSG_MOBILE)}';
-              localizedText = localizedText.replaceFirst('<year-year>', '${DateFormats.getMonthAndYear(dashBoardProvider.selectedMonth, context)}');
+              localizedText = localizedText.replaceFirst('{year-year}', '${DateFormats.getMonthAndYear(dashBoardProvider.selectedMonth, context)}');
 
               var response = await flutterShareMe.shareToWhatsApp(
                   imagePath: file.path,
