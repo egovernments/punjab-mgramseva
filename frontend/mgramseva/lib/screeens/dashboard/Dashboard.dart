@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/components/Dashboard/BillsTable.dart';
 import 'package:mgramseva/components/Dashboard/DashboardCard.dart';
 import 'package:mgramseva/model/common/metric.dart';
+import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/repository/core_repo.dart';
@@ -376,47 +377,62 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
         delay: Duration(seconds: 1))
         .then((capturedImage) async {
 
-      Navigator.pop(context);
-      setState(() {
-        takeScreenShot = false;
-      });
+          try {
+            setState(() {
+              takeScreenShot = false;
+            });
 
-      if(kIsWeb && capturedImage !=null) {
-        // final blob = html.Blob(
-        //     [await capturedImage]);
-        // final url = html.Url
-        //     .createObjectUrlFromBlob(blob);
-        // final anchor = html.document
-        //     .createElement('a') as html
-        //     .AnchorElement
-        //   ..href = url
-        //   ..style.display = 'none'
-        //   ..download = 'some_name.png';
-        // html.document.body?.children.add(
-        //     anchor);
-        // anchor.click();
-        // html.document.body?.children.remove(
-        //     anchor);
-        // html.Url.revokeObjectUrl(url);
+            if (kIsWeb && capturedImage != null) {
+              // final blob = html.Blob(
+              //     [await capturedImage]);
+              // final url = html.Url
+              //     .createObjectUrlFromBlob(blob);
+              // final anchor = html.document
+              //     .createElement('a') as html
+              //     .AnchorElement
+              //   ..href = url
+              //   ..style.display = 'none'
+              //   ..download = 'some_name.png';
+              // html.document.body?.children.add(
+              //     anchor);
+              // anchor.click();
+              // html.document.body?.children.remove(
+              //     anchor);
+              // html.Url.revokeObjectUrl(url);
 
-       var file = CustomFile(capturedImage, fileName, 'png');
-       CoreRepository().uploadFiles(<CustomFile>[file], APIConstants.API_MODULE_NAME).then((value) =>
-           Provider.of<CommonProvider>(context, listen: false).getStoreFileDetails(value.first.id, 'Share', null, context,  'screenshot of anual dashbard <link>')
-      ,
-      onError: (e,s){
-        ErrorHandler().allExceptionsHandler(context, e,s);
-      }
-      );
+              var file = CustomFile(capturedImage, fileName, 'png');
+              var response = await CoreRepository().uploadFiles(
+                  <CustomFile>[file], APIConstants.API_MODULE_NAME);
 
-      }else{
-        final Directory? directory = await getExternalStorageDirectory();
-        final file = await File('${directory?.path}/$fileName.png').writeAsBytes(capturedImage!);
-        var response = await flutterShareMe.shareToWhatsApp(
-            imagePath: file.path,
-            fileType: FileType.image);
-      }
-
-      ShowCapturedWidget(context, capturedImage);
+              if(response.isNotEmpty){
+               var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+               var res = await CoreRepository().fetchFiles([response.first.fileStoreId!]);
+               if(res != null && res.isNotEmpty) {
+                 var url = res.first.url ?? '';
+                 if (url.contains(',')) {
+                   url = url.split(',').first;
+                 }
+                 response.first.url = url;
+                 commonProvider.shareonwatsapp(
+                     response.first, null,
+                     '<link>');
+               }
+              }
+            } else {
+              final Directory? directory = await getExternalStorageDirectory();
+              final file = await File('${directory?.path}/$fileName.png')
+                  .writeAsBytes(capturedImage!);
+              var response = await flutterShareMe.shareToWhatsApp(
+                  imagePath: file.path,
+                  fileType: FileType.image);
+              if(response != null && response.contains('PlatformException'))
+                ErrorHandler().allExceptionsHandler(context, response );
+            }
+            Navigator.pop(context);
+          }catch(e,s){
+            Navigator.pop(context);
+            ErrorHandler().allExceptionsHandler(context, e, s);
+          }
     }).catchError((onError,s) {
       setState(() {
         takeScreenShot = false;
