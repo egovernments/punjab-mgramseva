@@ -14,7 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class RevenueDashBoard extends StatefulWidget {
-  const RevenueDashBoard({Key? key}) : super(key: key);
+  final bool isFromScreenshot;
+  const RevenueDashBoard({Key? key, this.isFromScreenshot = false}) : super(key: key);
 
   @override
   _RevenueDashBoardState createState() => _RevenueDashBoardState();
@@ -37,9 +38,12 @@ class _RevenueDashBoardState extends State<RevenueDashBoard> {
         children: [
           RevenueCharts(),
           _buildLoaderView(),
-          Align(
-              alignment: Alignment.centerLeft,
-              child: _buildNote()),
+          Visibility(
+            visible: !widget.isFromScreenshot,
+            child: Align(
+                alignment: Alignment.centerLeft,
+                child: _buildNote()),
+          ),
           Footer()
         ],
       ),

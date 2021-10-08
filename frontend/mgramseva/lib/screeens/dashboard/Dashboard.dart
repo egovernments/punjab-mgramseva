@@ -220,8 +220,9 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Column(children : [
+                                CustomAppBar(),
                                 DashboardCard((){}),
-                                RevenueDashBoard(),
+                                RevenueDashBoard(isFromScreenshot: true),
                               ]
                               ),
                             ))),
@@ -382,12 +383,14 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
         delay: Duration(seconds: 1))
         .then((capturedImage) async {
 
+          if(capturedImage == null) return;
+
           try {
             setState(() {
               takeScreenShot = false;
             });
 
-            if (kIsWeb && capturedImage != null) {
+            if (kIsWeb) {
               var file = CustomFile(capturedImage, fileName, 'png');
               var response = await CoreRepository().uploadFiles(
                   <CustomFile>[file], APIConstants.API_MODULE_NAME);
@@ -409,7 +412,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
             } else {
               final Directory? directory = await getExternalStorageDirectory();
               final file = await File('${directory?.path}/$fileName.png')
-                  .writeAsBytes(capturedImage!);
+                  .writeAsBytes(capturedImage);
               var response = await flutterShareMe.shareToWhatsApp(
                   imagePath: file.path,
                   fileType: FileType.image);
@@ -427,23 +430,6 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
       });
       ErrorHandler().allExceptionsHandler(context, onError,s);
     });
-  }
-
-  Future<dynamic> ShowCapturedWidget(
-      BuildContext context, Uint8List capturedImage) {
-    return showDialog(
-      useSafeArea: false,
-      context: context,
-      builder: (context) => Scaffold(
-        appBar: AppBar(
-          title: Text("Captured widget screenshot"),
-        ),
-        body: Center(
-            child: capturedImage != null
-                ? Image.memory(capturedImage)
-                : Container()),
-      ),
-    );
   }
 
 }
