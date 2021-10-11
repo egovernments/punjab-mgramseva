@@ -202,7 +202,7 @@ public class SchedulerService {
 		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
 				dateTimeFormatter);
 		List<String> tenantIds = repository.getTenantId();
-		if (currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
+//		if (currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
 
 			tenantIds.forEach(tenantId -> {
 				if (tenantId.split("\\.").length >= 2) {
@@ -252,7 +252,7 @@ public class SchedulerService {
 					}
 				}
 			});
-		}
+//		}
 	}
 
 	private CharSequence getShortenedUrl(String url) {
@@ -311,7 +311,7 @@ public class SchedulerService {
 				dateTimeFormatter);
 
 		List<String> tenantIds = repository.getTenantId();
-		if (currentTime.isEqual(scheduleTime)) {
+//		if (currentTime.isEqual(scheduleTime)) {
 			tenantIds.forEach(tenantId -> {
 				if (tenantId.split("\\.").length >= 2) {
 					if (null != config.getIsUserEventEnabled()) {
@@ -323,7 +323,7 @@ public class SchedulerService {
 					}
 				}
 			});
-		}
+//		}
 	}
 
 	public EventRequest sendMarkExpensebillNotification(RequestInfo requestInfo, String tenantId) {
@@ -374,7 +374,7 @@ public class SchedulerService {
 				dateTimeFormatter);
 
 		List<String> tenantIds = repository.getTenantId();
-		if (currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
+//		if (currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
 
 			tenantIds.forEach(tenantId -> {
 				if (tenantId.split("\\.").length >= 2) {
@@ -426,7 +426,7 @@ public class SchedulerService {
 					}
 				}
 			});
-		}
+//		}
 	}
 
 	public EventRequest sendMonthSummaryNotification(RequestInfo requestInfo, String tenantId) {
@@ -497,7 +497,7 @@ public class SchedulerService {
 				dateTimeFormatter);
 
 		List<String> tenantIds = repository.getTenantId();
-		if (currentTime.isEqual(scheduleTime)) {
+//		if (currentTime.isEqual(scheduleTime)) {
 			tenantIds.forEach(tenantId -> {
 				if (tenantId.split("\\.").length >= 2) {
 					if (null != config.getIsUserEventEnabled()) {
@@ -547,7 +547,7 @@ public class SchedulerService {
 				}
 			});
 
-		}
+//		}
 	}
 
 	public EventRequest sendPendingCollectionNotification(RequestInfo requestInfo, String tenantId) {
@@ -590,7 +590,7 @@ public class SchedulerService {
 				dateTimeFormatter);
 
 		List<String> tenantIds = repository.getTenantId();
-		if (currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
+//		if (currentTime.isEqual(scheduleTimeFirst) || currentTime.isEqual(scheduleTimeSecond)) {
 			tenantIds.forEach(tenantId -> {
 				if (tenantId.split("\\.").length >= 2) {
 					if (null != config.getIsUserEventEnabled()) {
@@ -645,7 +645,7 @@ public class SchedulerService {
 					}
 				}
 			});
-		}
+//		}
 	}
 
 	public String formatPendingCollectionMessage(RequestInfo requestInfo, String tenantId, String message) {
@@ -711,7 +711,7 @@ public class SchedulerService {
 				dateTimeFormatter);
 		List<String> tenantIds = repository.getTenantId();
 
-		if (currentTime.isEqual(scheduleTime)) {
+//		if (currentTime.isEqual(scheduleTime)) {
 			tenantIds.forEach(tenantId -> {
 				if (tenantId.split("\\.").length >= 2) {
 						if (null != config.getIsUserEventEnabled()) {
@@ -771,7 +771,7 @@ public class SchedulerService {
 						}
 				}
 			});
-		}
+//		}
 	}
 
 	@SuppressWarnings("null")
