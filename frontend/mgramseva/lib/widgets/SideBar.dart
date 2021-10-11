@@ -116,6 +116,14 @@ class SideBar extends StatelessWidget {
           ),
           onTap: () => Navigator.pushNamed(context, Routes.CHANGE_PASSWORD)),
       ListTile(
+          title: Text(ApplicationLocalizations.of(context)
+              .translate(i18.common.NOTIFICATIONS)),
+          leading: Icon(
+            Icons.notifications,
+            color: iconColor,
+          ),
+          onTap: () => Navigator.pushNamed(context, Routes.NOTIFICATIONS)),
+      ListTile(
         title: Text(
             ApplicationLocalizations.of(context).translate(i18.common.LOGOUT)),
         leading: Icon(

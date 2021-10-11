@@ -5,7 +5,9 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class Notifications extends StatefulWidget {
   final Events? event;
-  Notifications(this.event);
+  final VoidCallback? callback;
+  final bool close;
+  Notifications(this.event, this.callback, this.close);
   @override
   State<StatefulWidget> createState() {
     return _NotificationsState();
@@ -63,7 +65,7 @@ class _NotificationsState extends State<Notifications> {
                               new Container(
                                   padding: EdgeInsets.all(4),
                                   width:
-                                      MediaQuery.of(context).size.width / 1.2,
+                                      MediaQuery.of(context).size.width / 1.5,
                                   child: Text(
                                     ApplicationLocalizations.of(context)
                                         .translate(widget.event?.description !=
@@ -109,13 +111,17 @@ class _NotificationsState extends State<Notifications> {
                                   ))
                             ],
                           )))),
-              // Align(
-              //     alignment: Alignment.topRight,
-              //     child: Container(
-              //         child: IconButton(
-              //       icon: Icon(Icons.close),
-              //       onPressed: null,
-              //     ))),
+              Visibility(
+                visible: widget.close,
+                  child: Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                      child: IconButton(
+                      icon: Icon(Icons.close ,
+                      color: Theme.of(context).primaryColorLight,),
+                     onPressed: widget.callback,
+                   )))
+              ),
             ],
           )),
     );

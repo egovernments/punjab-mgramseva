@@ -8,6 +8,8 @@ import 'package:mgramseva/providers/notifications_provider.dart';
 import 'package:mgramseva/providers/tenants_provider.dart';
 import 'package:mgramseva/screeens/Home/HomeCard.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/error_logging.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/role_actions.dart';
@@ -144,22 +146,27 @@ class _HomeState extends State<Home> {
             if (userProvider.userDetails?.selectedtenant?.code != null) {
               var commonProvider =
                   Provider.of<CommonProvider>(context, listen: false);
-              Provider.of<NotificationProvider>(context, listen: false)
-                ..getNotiications({
-                  "tenantId": userProvider.userDetails?.selectedtenant?.code!,
-                  "eventType": "SYSTEMGENERATED",
-                  "recepients": commonProvider.userDetails?.userRequest?.uuid,
-                }, {
-                  "tenantId": userProvider.userDetails?.selectedtenant?.code!,
-                  "eventType": "SYSTEMGENERATED",
-                  "roles": commonProvider.userDetails?.userRequest?.roles!
-                      .map((e) => e.code.toString())
-                      .join(',')
-                      .toString(),
-                });
+              try {
+                Provider.of<NotificationProvider>(context, listen: false)
+                  ..getNotiications({
+                    "tenantId": userProvider.userDetails?.selectedtenant?.code!,
+                    "eventType": "SYSTEMGENERATED",
+                    "recepients": commonProvider.userDetails?.userRequest?.uuid,
+                  }, {
+                    "tenantId": userProvider.userDetails?.selectedtenant?.code!,
+                    "eventType": "SYSTEMGENERATED",
+                    "roles": commonProvider.userDetails?.userRequest?.roles!
+                        .map((e) => e.code.toString())
+                        .join(',')
+                        .toString(),
+                  });
+              }
+              catch (e, s) {
+                ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+              }
             }
             return userProvider.userDetails?.selectedtenant?.code != null
-                ? NotificationsList()
+                ? NotificationsList(close: true,)
                 : Text("");
           })),
     );
