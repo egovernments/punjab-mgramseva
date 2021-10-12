@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 enum RequestType { GET, PUT, POST, DELETE }
@@ -97,4 +99,13 @@ class Legend {
   final Color color;
 
   Legend(this.label, this.color);
+}
+
+
+class CustomFile {
+  final Uint8List bytes;
+  final String name;
+  final String extension;
+
+  CustomFile(this.bytes, this.name, this.extension);
 }

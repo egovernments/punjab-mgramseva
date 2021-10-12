@@ -527,6 +527,8 @@ class _DashBoard {
   String get SUMMARY_REPORT => 'SUMMARY_REPORT';
 
   String get USER_GAVE_FEEDBACK => 'USER_GAVE_FEEDBACK';
+  String get ANNUAL_SHARE_MSG_WEB => 'ANNUAL_SHARE_MSG_WEB';
+  String get ANNUAL_SHARE_MSG_MOBILE => 'ANNUAL_SHARE_MSG_MOBILE';
 }
 
 class _ExpenseWalkThroughMsg {

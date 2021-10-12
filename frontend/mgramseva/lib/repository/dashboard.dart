@@ -93,7 +93,63 @@ class DashBoardRepository extends BaseService {
         "expenditure" : 343434,
         "pendingExpendtiure" : 443545,
         "actualPayment" : 35435
-      }
+      },
+      {
+        "month" : "March",
+        "surplus" : 1200,
+        "demand" : 123,
+        "arrears" : 456,
+        "pendingCollections" : 2345,
+        "actualCollection" : 576787,
+        "expenditure" : 343434,
+        "pendingExpendtiure" : 443545,
+        "actualPayment" : 35435
+      },
+      {
+        "month" : "April",
+        "surplus" : 1200,
+        "demand" : 123,
+        "arrears" : 456,
+        "pendingCollections" : 2345,
+        "actualCollection" : 576787,
+        "expenditure" : 343434,
+        "pendingExpendtiure" : 443545,
+        "actualPayment" : 35435
+      },
+      {
+        "month" : "May",
+        "surplus" : 1200,
+        "demand" : 123,
+        "arrears" : 456,
+        "pendingCollections" : 2345,
+        "actualCollection" : 576787,
+        "expenditure" : 343434,
+        "pendingExpendtiure" : 443545,
+        "actualPayment" : 35435
+      },
+      {
+        "month" : "June",
+        "surplus" : 1200,
+        "demand" : 123,
+        "arrears" : 456,
+        "pendingCollections" : 2345,
+        "actualCollection" : 576787,
+        "expenditure" : 343434,
+        "pendingExpendtiure" : 443545,
+        "actualPayment" : 35435
+      },
+      {
+        "month" : "July",
+        "surplus" : 1200,
+        "demand" : 123,
+        "arrears" : 456,
+        "pendingCollections" : 2345,
+        "actualCollection" : 576787,
+        "expenditure" : 343434,
+        "pendingExpendtiure" : 443545,
+        "actualPayment" : 35435
+      },
+
     ]
   };
 }
