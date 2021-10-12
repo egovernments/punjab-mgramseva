@@ -217,6 +217,38 @@ class CoreRepository extends BaseService {
     }
   }
 
+  Future<bool?> updateNotifications(events) async {
+    EventsList? eventsResponse;
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+
+      var res = await makeRequest(
+          url: Url.UPDATE_EVENTS,
+          method: RequestType.POST,
+          body: events,
+          requestInfo: RequestInfo(
+              APIConstants.API_MODULE_NAME,
+              APIConstants.API_VERSION,
+              APIConstants.API_TS,
+              "_update",
+              APIConstants.API_DID,
+              APIConstants.API_KEY,
+              APIConstants.API_MESSAGE_ID,
+              commonProvider.userDetails!.accessToken));
+
+      if (res != null) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+    }
+  }
+
   Future<bool?> fileDownload(BuildContext context, String url,
       [String? fileName]) async {
     if (url.contains(',')) {

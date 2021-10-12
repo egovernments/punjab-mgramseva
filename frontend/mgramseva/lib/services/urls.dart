@@ -36,6 +36,9 @@ class Url {
   //Fetch Events
   static const String FETCH_EVENTS = 'egov-user-event/v1/events/_search';
 
+  //Update Events
+  static const String UPDATE_EVENTS = 'egov-user-event/v1/events/_update';
+
   ///Fetch Demands
   static const String FETCH_DEMAND = 'billing-service/demand/_search';
 

@@ -10,6 +10,9 @@ import 'package:mgramseva/widgets/Notifications.dart';
 import 'package:provider/provider.dart';
 
 class NotificationsList extends StatefulWidget {
+  final bool close;
+  const NotificationsList({Key? key, required this.close})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return NotificationsListState();
@@ -33,7 +36,11 @@ class NotificationsListState extends State<NotificationsList> {
             itemCount: events.length,
             itemBuilder: (context, i) {
               var item = events[i];
-              return Notifications(item);
+              callBack() {
+                Provider.of<NotificationProvider>(context, listen: false)
+              ..updateNotify(item, events);
+              }
+              return Notifications(item, callBack, widget.close);
             })
       ]);
     });

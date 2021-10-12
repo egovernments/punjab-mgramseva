@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/Events/events_List.dart';
 
 import 'package:mgramseva/repository/core_repo.dart';
+import 'package:mgramseva/utils/error_logging.dart';
+import 'package:mgramseva/utils/global_variables.dart';
 
 class NotificationProvider with ChangeNotifier {
   var enableNotification = false;
@@ -30,6 +32,24 @@ class NotificationProvider with ChangeNotifier {
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  void updateNotify(item , events) async{
+    item.status = "READ";
+    try {
+      var res = await CoreRepository().updateNotifications({
+        "events": [item]
+      });
+      if(res != null) {
+        events.remove(item);
+        streamController.add(events);
+        notifyListeners();
+
+      }
+    }
+    catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
     }
   }
 
