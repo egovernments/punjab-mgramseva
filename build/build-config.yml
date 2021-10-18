@@ -91,4 +91,6 @@ config:
     build:
       - work-dir: "municipal-services/egov-user-event"
         image-name: "egov-user-event"
-        dockerfile: "build/maven/Dockerfile" 
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "municipal-services/egov-user-event/src/main/resources/db"
+        image-name: "egov-user-event-db"         
