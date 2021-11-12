@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:http/http.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart' as billDetails;
 import 'package:mgramseva/model/common/fetch_bill.dart';
@@ -48,7 +49,8 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
     var consumerPaymentProvider =
         Provider.of<CollectPaymentProvider>(context, listen: false);
     FetchBill? fetchBill;
-    return Scaffold(
+    return FocusWatcher(
+        child: Scaffold(
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),
       ),
@@ -85,7 +87,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                 '${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}',
                 () => paymentInfo(fetchBill!, context))),
       ),
-    );
+    ));
   }
 
   Widget _buildView(FetchBill fetchBill) {

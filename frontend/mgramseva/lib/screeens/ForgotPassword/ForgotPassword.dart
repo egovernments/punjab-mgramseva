@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/providers/forgot_password_provider.dart';
 
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -113,12 +114,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
+    return FocusWatcher(
+        child: Scaffold(body: LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 760) {
         return MobileView(getForgotPasswordCard());
       } else {
         return DesktopView(getForgotPasswordCard());
       }
-    }));
+    })));
   }
 }

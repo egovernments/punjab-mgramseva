@@ -49,6 +49,7 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   collection: ^1.15.0
   image_picker: ^0.8.4
+  flutter_focus_watcher: ^2.0.0
   path: ^1.8.0
 
 dev_dependencies:

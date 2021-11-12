@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/model/connection/search_connection.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/widgets/customAppbar.dart';
@@ -40,7 +41,8 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
   Widget build(BuildContext context) {
     var searchConnectionProvider =
         Provider.of<SearchConnectionProvider>(context, listen: false);
-    return Scaffold(
+    return FocusWatcher(
+        child: Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
@@ -192,6 +194,6 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
           i18.searchWaterConnection.SEARCH_CONNECTION_BUTTON,
           () => searchConnectionProvider.validatesearchConnectionDetails(
               context, widget.arguments)),
-    );
+    ));
   }
 }

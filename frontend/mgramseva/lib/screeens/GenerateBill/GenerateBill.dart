@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/model/bill/bill_generation_details/bill_generation_details.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/bill_generation_details_provider.dart';
@@ -196,7 +197,12 @@ class _GenerateBillState extends State<GenerateBill> {
                                                     .billGenerateDetails
                                                     .om_5Ctrl,
                                                 isRequired: true,
-                                                isDisabled: billgenerationprovider.readingExist == false ? true : false,
+                                                isDisabled:
+                                                    billgenerationprovider
+                                                                .readingExist ==
+                                                            false
+                                                        ? true
+                                                        : false,
                                               ),
                                               MeterReading(
                                                 i18.demandGenerate
@@ -295,41 +301,42 @@ class _GenerateBillState extends State<GenerateBill> {
   Widget build(BuildContext context) {
     var billgenerateProvider =
         Provider.of<BillGenerationProvider>(context, listen: false);
-    return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        appBar: BaseAppBar(
-          Text(i18.common.MGRAM_SEVA),
-          AppBar(),
-          <Widget>[Icon(Icons.more_vert)],
-        ),
-        drawer: DrawerWrapper(
-          Drawer(child: SideBar()),
-        ),
-        body: SingleChildScrollView(
-            child: Container(
-                child: Column(children: [
-          StreamBuilder(
-              stream: billgenerateProvider.streamController.stream,
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  return buildview(snapshot.data);
-                } else if (snapshot.hasError) {
-                  return Notifiers.networkErrorPage(context, () {});
-                } else {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return Loaders.CircularLoader();
-                    case ConnectionState.active:
-                      return Loaders.CircularLoader();
-                    default:
-                      return Container();
-                  }
-                }
-              }),
-          Footer()
-        ]))),
-        bottomNavigationBar: BottomButtonBar(
-            '${widget.id == null ? i18.demandGenerate.GENERATE_DEMAND_BUTTON : i18.demandGenerate.GENERATE_BILL_BUTTON}',
-            () => {billgenerateProvider.onSubmit(context)}));
+    return FocusWatcher(
+        child: Scaffold(
+            backgroundColor: Theme.of(context).backgroundColor,
+            appBar: BaseAppBar(
+              Text(i18.common.MGRAM_SEVA),
+              AppBar(),
+              <Widget>[Icon(Icons.more_vert)],
+            ),
+            drawer: DrawerWrapper(
+              Drawer(child: SideBar()),
+            ),
+            body: SingleChildScrollView(
+                child: Container(
+                    child: Column(children: [
+              StreamBuilder(
+                  stream: billgenerateProvider.streamController.stream,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return buildview(snapshot.data);
+                    } else if (snapshot.hasError) {
+                      return Notifiers.networkErrorPage(context, () {});
+                    } else {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return Loaders.CircularLoader();
+                        case ConnectionState.active:
+                          return Loaders.CircularLoader();
+                        default:
+                          return Container();
+                      }
+                    }
+                  }),
+              Footer()
+            ]))),
+            bottomNavigationBar: BottomButtonBar(
+                '${widget.id == null ? i18.demandGenerate.GENERATE_DEMAND_BUTTON : i18.demandGenerate.GENERATE_BILL_BUTTON}',
+                () => {billgenerateProvider.onSubmit(context)})));
   }
 }

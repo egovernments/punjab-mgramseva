@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 
@@ -70,83 +71,85 @@ class _BuildTextField extends State<BuildTextField> {
   @override
   Widget build(BuildContext context) {
     // TextForm
-    Widget textFormwidget = TextFormField(
-        style: TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            color: widget.isDisabled != null && widget.isDisabled!
-                ? Colors.grey
-                : Theme.of(context).primaryColorDark),
-        enabled: widget.isDisabled != null
-            ? (widget.isDisabled == true)
-                ? false
-                : true
-            : true,
-        controller: widget.controller,
-        keyboardType: widget.textInputType ?? TextInputType.text,
-        inputFormatters: widget.inputFormatter,
-        autofocus: false,
-        maxLength: widget.maxLength,
-        maxLines: widget.maxLines,
-        focusNode: widget.focusNode,
-        autovalidateMode: widget.autoValidation,
-        textCapitalization:
-            widget.textCapitalization ?? TextCapitalization.none,
-        obscureText: widget.obscureText ?? false,
-        readOnly: widget.readOnly ?? false,
-        validator: widget.validator != null
-            ? (val) => widget.validator!(val)
-            : (value) {
-                if (value!.trim().isEmpty && widget.isRequired) {
-                  return ApplicationLocalizations.of(context).translate(
-                      widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
-                } else if (widget.pattern != null && widget.pattern != '') {
-                  return (new RegExp(widget.pattern!).hasMatch(value))
-                      ? null
-                      : ApplicationLocalizations.of(context)
-                          .translate(widget.message);
-                }
-                return null;
-              },
-        decoration: InputDecoration(
-          hintText: widget.placeHolder != null
-              ? ApplicationLocalizations.of(context)
-                  .translate((widget.placeHolder!))
-              : "",
-          border: widget.inputBorder,
-          enabledBorder: widget.inputBorder,
-          errorMaxLines: 2,
-          enabled: widget.isDisabled ?? true,
-          filled: widget.isFilled,
-          fillColor: widget.isDisabled != null && widget.isDisabled!
-              ? Colors.grey
-              : Colors.white,
-          prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-          prefixStyle: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              color:
-              widget.isDisabled != null && widget.isDisabled!
+    Widget textFormwidget = ForceFocusWatcher(
+        child: TextFormField(
+            style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 16,
+                color: widget.isDisabled != null && widget.isDisabled!
+                    ? Colors.grey
+                    : Theme.of(context).primaryColorDark),
+            enabled: widget.isDisabled != null
+                ? (widget.isDisabled == true)
+                    ? false
+                    : true
+                : true,
+            controller: widget.controller,
+            keyboardType: widget.textInputType ?? TextInputType.text,
+            inputFormatters: widget.inputFormatter,
+            autofocus: false,
+            maxLength: widget.maxLength,
+            maxLines: widget.maxLines,
+            focusNode: widget.focusNode,
+            autovalidateMode: widget.autoValidation,
+            textCapitalization:
+                widget.textCapitalization ?? TextCapitalization.none,
+            obscureText: widget.obscureText ?? false,
+            readOnly: widget.readOnly ?? false,
+            validator: widget.validator != null
+                ? (val) => widget.validator!(val)
+                : (value) {
+                    if (value!.trim().isEmpty && widget.isRequired) {
+                      return ApplicationLocalizations.of(context).translate(
+                          widget.requiredMessage ??
+                              '${widget.labelText}_REQUIRED');
+                    } else if (widget.pattern != null && widget.pattern != '') {
+                      return (new RegExp(widget.pattern!).hasMatch(value))
+                          ? null
+                          : ApplicationLocalizations.of(context)
+                              .translate(widget.message);
+                    }
+                    return null;
+                  },
+            decoration: InputDecoration(
+              hintText: widget.placeHolder != null
+                  ? ApplicationLocalizations.of(context)
+                      .translate((widget.placeHolder!))
+                  : "",
+              border: widget.inputBorder,
+              enabledBorder: widget.inputBorder,
+              errorMaxLines: 2,
+              enabled: widget.isDisabled ?? true,
+              filled: widget.isFilled,
+              fillColor: widget.isDisabled != null && widget.isDisabled!
                   ? Colors.grey
-                  : Theme.of(context).primaryColorDark),
-          prefixIcon: widget.prefixIcon ??
-              (widget.prefixText == ''
-                  ? null
-                  : Padding(
-                    padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10, right: 0),
-                    child: Text(
-                      widget.prefixText,
-                      style: TextStyle(
-                          fontSize: kIsWeb ? 15 : 16,
-                          fontWeight: FontWeight.w400,
-                          color:
-                              widget.isDisabled != null && widget.isDisabled!
-                                  ? Colors.grey
-                                  : Theme.of(context).primaryColorDark),
-                    ),
-                  )),
-        ),
-        onChanged: widget.onChange);
+                  : Colors.white,
+              prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+              prefixStyle: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: widget.isDisabled != null && widget.isDisabled!
+                      ? Colors.grey
+                      : Theme.of(context).primaryColorDark),
+              prefixIcon: widget.prefixIcon ??
+                  (widget.prefixText == ''
+                      ? null
+                      : Padding(
+                          padding: const EdgeInsets.only(
+                              top: 10, left: 10, bottom: 10, right: 0),
+                          child: Text(
+                            widget.prefixText,
+                            style: TextStyle(
+                                fontSize: kIsWeb ? 15 : 16,
+                                fontWeight: FontWeight.w400,
+                                color: widget.isDisabled != null &&
+                                        widget.isDisabled!
+                                    ? Colors.grey
+                                    : Theme.of(context).primaryColorDark),
+                          ),
+                        )),
+            ),
+            onChanged: widget.onChange));
 // Label Text
     Widget textLabelwidget =
         Wrap(direction: Axis.horizontal, children: <Widget>[

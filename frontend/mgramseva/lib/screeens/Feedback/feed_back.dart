@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/success_handler.dart';
@@ -56,14 +57,15 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        appBar: AppBar(
-          title: Text('mGramSeva'),
-          automaticallyImplyLeading: false,
-          actions: [_buildDropDown()],
-        ),
-        body: _buildLocalizationData());
+    return FocusWatcher(
+        child: Scaffold(
+            backgroundColor: Theme.of(context).backgroundColor,
+            appBar: AppBar(
+              title: Text('mGramSeva'),
+              automaticallyImplyLeading: false,
+              actions: [_buildDropDown()],
+            ),
+            body: _buildLocalizationData()));
   }
 
   Widget _buildView() {

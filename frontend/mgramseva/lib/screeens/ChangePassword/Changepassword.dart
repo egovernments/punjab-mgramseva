@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/model/changePasswordDetails/changePassword_details.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/changePassword_details_provider.dart';
@@ -93,7 +94,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                     isRequired: true,
                     maxLines: 1,
                     validator: (val) => Validators.passwordComparision(
-                        val, ApplicationLocalizations.of(context).translate(i18.password.NEW_PASSWORD_ENTER)),
+                        val,
+                        ApplicationLocalizations.of(context)
+                            .translate(i18.password.NEW_PASSWORD_ENTER)),
                     onChange: (value) => saveInput(value),
                   ),
                   BuildTextField(
@@ -104,7 +107,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                     maxLines: 1,
                     validator: (val) => Validators.passwordComparision(
                         val,
-                        ApplicationLocalizations.of(context).translate(i18.password.CONFIRM_PASSWORD_ENTER),
+                        ApplicationLocalizations.of(context)
+                            .translate(i18.password.CONFIRM_PASSWORD_ENTER),
                         passwordDetails.newpasswordCtrl.text),
                     onChange: (value) => saveInput(value),
                   ),
@@ -128,28 +132,29 @@ class _ChangePasswordState extends State<ChangePassword> {
   Widget build(BuildContext context) {
     var changePasswordProvider =
         Provider.of<ChangePasswordProvider>(context, listen: false);
-    return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        appBar: BaseAppBar(
-          Text(i18.common.MGRAM_SEVA),
-          AppBar(),
-          <Widget>[Icon(Icons.more_vert)],
-        ),
-        drawer: DrawerWrapper(
-          Drawer(child: SideBar()),
-        ),
-        body: SingleChildScrollView(
-            child: Column(
-          children: [
-            builduserView(changePasswordProvider.changePasswordDetails),
-            Footer()
-          ],
-        )),
-        bottomNavigationBar: BottomButtonBar(
-            i18.password.CHANGE_PASSWORD,
-            () => saveInputandchangepass(
-                context,
-                changePasswordProvider.changePasswordDetails.getText(),
-                changePasswordProvider.changePasswordDetails)));
+    return FocusWatcher(
+        child: Scaffold(
+            backgroundColor: Theme.of(context).backgroundColor,
+            appBar: BaseAppBar(
+              Text(i18.common.MGRAM_SEVA),
+              AppBar(),
+              <Widget>[Icon(Icons.more_vert)],
+            ),
+            drawer: DrawerWrapper(
+              Drawer(child: SideBar()),
+            ),
+            body: SingleChildScrollView(
+                child: Column(
+              children: [
+                builduserView(changePasswordProvider.changePasswordDetails),
+                Footer()
+              ],
+            )),
+            bottomNavigationBar: BottomButtonBar(
+                i18.password.CHANGE_PASSWORD,
+                () => saveInputandchangepass(
+                    context,
+                    changePasswordProvider.changePasswordDetails.getText(),
+                    changePasswordProvider.changePasswordDetails))));
   }
 }

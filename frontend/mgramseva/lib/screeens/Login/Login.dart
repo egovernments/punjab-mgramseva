@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/providers/authentication.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -36,22 +37,21 @@ class _LoginState extends State<Login> {
   }
 
   @override
-  dispose(){
+  dispose() {
     _numberFocus.removeListener(_onFocusChange);
     super.dispose();
   }
 
-  void _onFocusChange(){
-    if(!_numberFocus.hasFocus){
+  void _onFocusChange() {
+    if (!_numberFocus.hasFocus) {
       setState(() {
         phoneNumberAutoValidation = true;
       });
     }
   }
 
-  void onChangeOfInput(){
-    setState(() {
-    });
+  void onChangeOfInput() {
+    setState(() {});
   }
 
   saveandLogin(context) async {
@@ -89,7 +89,9 @@ class _LoginState extends State<Login> {
                     FilteringTextInputFormatter.allow(RegExp("[0-9]"))
                   ],
                   focusNode: _numberFocus,
-                  autoValidation: phoneNumberAutoValidation ? AutovalidateMode.always : AutovalidateMode.disabled,
+                  autoValidation: phoneNumberAutoValidation
+                      ? AutovalidateMode.always
+                      : AutovalidateMode.disabled,
                   maxLength: 10,
                   validator: Validators.mobileNumberValidator,
                   textInputType: TextInputType.phone,
@@ -117,9 +119,10 @@ class _LoginState extends State<Login> {
                           ))),
                 ),
                 Padding(
-                    padding: EdgeInsets.only(top: 15, bottom: 15, left: 8, right: 8),
-                    child: Button(
-                        i18.common.CONTINUE, buttonStatus ? () => saveandLogin(context) : null)),
+                    padding:
+                        EdgeInsets.only(top: 15, bottom: 15, left: 8, right: 8),
+                    child: Button(i18.common.CONTINUE,
+                        buttonStatus ? () => saveandLogin(context) : null)),
                 SizedBox(
                   height: 10,
                 )
@@ -129,14 +132,17 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
+    return FocusWatcher(
+        child: Scaffold(body: LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 760) {
         return MobileView(getLoginCard());
       } else {
         return DesktopView(getLoginCard());
       }
-    }));
+    })));
   }
 
-  bool get buttonStatus => userNamecontroller.text.trim().length == 10 && passwordcontroller.text.trim().length > 1;
+  bool get buttonStatus =>
+      userNamecontroller.text.trim().length == 10 &&
+      passwordcontroller.text.trim().length > 1;
 }

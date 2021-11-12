@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/AddExpense/AddExpenseWalkThrough/expenseWalkThrough.dart';
@@ -80,7 +81,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
     if (!_numberFocus.hasFocus) {
       Provider.of<ExpensesDetailsProvider>(context, listen: false)
         ..phoneNumberAutoValidation = true
-      ..callNotifyer();
+        ..callNotifyer();
     }
   }
 
@@ -88,59 +89,60 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   Widget build(BuildContext context) {
     var expensesDetailsProvider =
         Provider.of<ExpensesDetailsProvider>(context, listen: false);
-    return Scaffold(
-        appBar: CustomAppBar(),
-        drawer: DrawerWrapper(
-          Drawer(child: SideBar()),
-        ),
-        body: SingleChildScrollView(
-            child: Column(children: [
-          StreamBuilder(
-              stream: expensesDetailsProvider.streamController.stream,
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.data is String) {
-                    return CommonWidgets.buildEmptyMessage(
-                        snapshot.data, context);
-                  }
-                  return _buildUserView(snapshot.data);
-                } else if (snapshot.hasError) {
-                  return Notifiers.networkErrorPage(
-                      context,
-                      () => expensesDetailsProvider.getExpensesDetails(
-                          context, widget.expensesDetails, widget.id));
-                } else {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return Loaders.CircularLoader();
-                    case ConnectionState.active:
-                      return Loaders.CircularLoader();
-                    default:
-                      return Container();
-                  }
-                }
-              }),
-          Footer()
-        ])),
-        bottomNavigationBar: Consumer<ExpensesDetailsProvider>(
-          builder: (_, expensesDetailsProvider, child) => BottomButtonBar(
-              i18.common.SUBMIT,
-              (isUpdate &&
-                          (expensesDetailsProvider
-                                  .expenditureDetails.allowEdit ??
-                              false)) ||
-                      ((isUpdate &&
-                              !(expensesDetailsProvider
-                                      .expenditureDetails.allowEdit ??
-                                  false) &&
+    return FocusWatcher(
+        child: Scaffold(
+            appBar: CustomAppBar(),
+            drawer: DrawerWrapper(
+              Drawer(child: SideBar()),
+            ),
+            body: SingleChildScrollView(
+                child: Column(children: [
+              StreamBuilder(
+                  stream: expensesDetailsProvider.streamController.stream,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data is String) {
+                        return CommonWidgets.buildEmptyMessage(
+                            snapshot.data, context);
+                      }
+                      return _buildUserView(snapshot.data);
+                    } else if (snapshot.hasError) {
+                      return Notifiers.networkErrorPage(
+                          context,
+                          () => expensesDetailsProvider.getExpensesDetails(
+                              context, widget.expensesDetails, widget.id));
+                    } else {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return Loaders.CircularLoader();
+                        case ConnectionState.active:
+                          return Loaders.CircularLoader();
+                        default:
+                          return Container();
+                      }
+                    }
+                  }),
+              Footer()
+            ])),
+            bottomNavigationBar: Consumer<ExpensesDetailsProvider>(
+              builder: (_, expensesDetailsProvider, child) => BottomButtonBar(
+                  i18.common.SUBMIT,
+                  (isUpdate &&
                               (expensesDetailsProvider
-                                      .expenditureDetails.isBillCancelled ??
+                                      .expenditureDetails.allowEdit ??
                                   false)) ||
-                          !isUpdate)
-                  ? () => expensesDetailsProvider.validateExpensesDetails(
-                      context, isUpdate)
-                  : null),
-        ));
+                          ((isUpdate &&
+                                  !(expensesDetailsProvider
+                                          .expenditureDetails.allowEdit ??
+                                      false) &&
+                                  (expensesDetailsProvider
+                                          .expenditureDetails.isBillCancelled ??
+                                      false)) ||
+                              !isUpdate)
+                      ? () => expensesDetailsProvider.validateExpensesDetails(
+                          context, isUpdate)
+                      : null),
+            )));
   }
 
   saveInput(context) async {
@@ -246,7 +248,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 textInputType: TextInputType.number,
                                 validator: Validators.mobileNumberValidator,
                                 focusNode: _numberFocus,
-                                autoValidation: expensesDetailsProvider.phoneNumberAutoValidation
+                                autoValidation: expensesDetailsProvider
+                                        .phoneNumberAutoValidation
                                     ? AutovalidateMode.always
                                     : AutovalidateMode.disabled,
                                 maxLength: 10,
@@ -254,7 +257,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   FilteringTextInputFormatter.allow(
                                       RegExp("[0-9]"))
                                 ],
-                                onChange: expensesDetailsProvider.onChangeOfMobileNumber,
+                                onChange: expensesDetailsProvider
+                                    .onChangeOfMobileNumber,
                               ),
                             BuildTextField(
                               '${i18.expense.AMOUNT}',
