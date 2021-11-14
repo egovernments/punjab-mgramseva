@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/components/Dashboard/BillsTable.dart';
 import 'package:mgramseva/components/Dashboard/DashboardCard.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
@@ -50,7 +51,8 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
               CommonMethods.getPastMonthUntilFinancialYear().reversed.toList();
     dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
     dashBoardProvider.debounce = null;
-    _tabController = new TabController(vsync: this, length: 2, initialIndex: widget.initialTabIndex);
+    _tabController = new TabController(
+        vsync: this, length: 2, initialIndex: widget.initialTabIndex);
     _tabController.addListener(() {
       FocusScope.of(context).unfocus();
       dashBoardProvider.debounce = null;
@@ -63,106 +65,113 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
         Provider.of<DashBoardProvider>(context, listen: false);
 
     return WillPopScope(
-      onWillPop: () async {
-        if (dashBoardProvider.removeOverLay(_overlayEntry)) return false;
-        return true;
-      },
-      child: GestureDetector(
-        onTap: () => dashBoardProvider.removeOverLay(_overlayEntry),
-        child: Scaffold(
-          appBar: CustomAppBar(),
-          drawer: DrawerWrapper(
-            Drawer(child: SideBar()),
-          ),
-          body: LayoutBuilder(
-            builder: (context, constraints) => Container(
-              alignment: Alignment.center,
-              margin: constraints.maxWidth < 760
-                  ? null
-                  : EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width / 25),
-              child: Stack(children: [
-                SingleChildScrollView(
-                  child: Container(
-                      color: Color.fromRGBO(238, 238, 238, 1),
-                      padding: EdgeInsets.only(left: 8, right: 8),
-                      height: constraints.maxHeight - 50,
-                      child: CustomScrollView(slivers: [
-                        SliverList(
-                            delegate: SliverChildListDelegate([
-                          HomeBack(),
-                          Container(
-                              key: key,
-                              child: DashboardCard(onTapOfMonthPicker)),
-                          TabBar(
-                            labelColor: Theme.of(context).primaryColor,
-                            unselectedLabelColor: Colors.black,
-                            labelStyle: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                            indicatorSize: TabBarIndicatorSize.tab,
-                            controller: _tabController,
-                            indicator: BoxDecoration(
-                              color: Colors.white,
-                              border: Border(
-                                bottom: BorderSide(
-                                    width: 2,
-                                    color: Theme.of(context).primaryColor),
+        onWillPop: () async {
+          if (dashBoardProvider.removeOverLay(_overlayEntry)) return false;
+          return true;
+        },
+        child: GestureDetector(
+          onTap: () => dashBoardProvider.removeOverLay(_overlayEntry),
+          child: FocusWatcher(
+            child: Scaffold(
+              appBar: CustomAppBar(),
+              drawer: DrawerWrapper(
+                Drawer(child: SideBar()),
+              ),
+              body: LayoutBuilder(
+                builder: (context, constraints) => Container(
+                  alignment: Alignment.center,
+                  margin: constraints.maxWidth < 760
+                      ? null
+                      : EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width / 25),
+                  child: Stack(children: [
+                    SingleChildScrollView(
+                      child: Container(
+                          color: Color.fromRGBO(238, 238, 238, 1),
+                          padding: EdgeInsets.only(left: 8, right: 8),
+                          height: constraints.maxHeight - 50,
+                          child: CustomScrollView(slivers: [
+                            SliverList(
+                                delegate: SliverChildListDelegate([
+                              HomeBack(),
+                              Container(
+                                  key: key,
+                                  child: DashboardCard(onTapOfMonthPicker)),
+                              TabBar(
+                                labelColor: Theme.of(context).primaryColor,
+                                unselectedLabelColor: Colors.black,
+                                labelStyle: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                                indicatorSize: TabBarIndicatorSize.tab,
+                                controller: _tabController,
+                                indicator: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border(
+                                    bottom: BorderSide(
+                                        width: 2,
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                ),
+                                tabs: [
+                                  Tab(
+                                    text: ApplicationLocalizations.of(context)
+                                        .translate(i18.dashboard.COLLECTIONS),
+                                  ),
+                                  Tab(
+                                    text: ApplicationLocalizations.of(context)
+                                        .translate(i18.dashboard.EXPENDITURE),
+                                  ),
+                                ],
                               ),
-                            ),
-                            tabs: [
-                              Tab(
-                                text: ApplicationLocalizations.of(context)
-                                    .translate(i18.dashboard.COLLECTIONS),
-                              ),
-                              Tab(
-                                text: ApplicationLocalizations.of(context)
-                                    .translate(i18.dashboard.EXPENDITURE),
-                              ),
-                            ],
-                          ),
-                        ])),
-                        SliverFillRemaining(
-                            hasScrollBody: true,
-                            fillOverscroll: true,
-                            child: TabBarView(
-                              physics: NeverScrollableScrollPhysics(),
-                              controller: _tabController,
-                              children: [
-                                SearchExpenseDashboard(
-                                    dashBoardType: DashBoardType.collections),
-                                SearchExpenseDashboard(
-                                    dashBoardType: DashBoardType.Expenditure)
-                              ],
-                            ))
-                      ])),
+                            ])),
+                            SliverFillRemaining(
+                                hasScrollBody: true,
+                                fillOverscroll: true,
+                                child: TabBarView(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  controller: _tabController,
+                                  children: [
+                                    SearchExpenseDashboard(
+                                        dashBoardType:
+                                            DashBoardType.collections),
+                                    SearchExpenseDashboard(
+                                        dashBoardType:
+                                            DashBoardType.Expenditure)
+                                  ],
+                                ))
+                          ])),
+                    ),
+                    Align(
+                        alignment: Alignment.bottomRight,
+                        child: Consumer<DashBoardProvider>(
+                            builder: (_, dashBoardProvider, child) {
+                          var totalCount =
+                              (dashBoardProvider.selectedDashboardType ==
+                                          DashBoardType.Expenditure
+                                      ? dashBoardProvider
+                                          .expenseDashboardDetails?.totalCount
+                                      : dashBoardProvider
+                                          .waterConnectionsDetails
+                                          ?.totalCount) ??
+                                  0;
+                          return Visibility(
+                              visible: totalCount > 0,
+                              child: Pagination(
+                                  limit: dashBoardProvider.limit,
+                                  offSet: dashBoardProvider.offset,
+                                  callBack: (pageResponse) =>
+                                      dashBoardProvider.onChangeOfPageLimit(
+                                          pageResponse, context),
+                                  totalCount: totalCount,
+                                  isDisabled:
+                                      dashBoardProvider.isLoaderEnabled));
+                        }))
+                  ]),
                 ),
-                Align(
-                    alignment: Alignment.bottomRight,
-                    child: Consumer<DashBoardProvider>(
-                        builder: (_, dashBoardProvider, child) {
-                      var totalCount =
-                          (dashBoardProvider.selectedDashboardType ==
-                                      DashBoardType.Expenditure
-                                  ? dashBoardProvider
-                                      .expenseDashboardDetails?.totalCount
-                                  : dashBoardProvider
-                                      .waterConnectionsDetails?.totalCount) ??
-                              0;
-                      return Visibility(
-                          visible: totalCount > 0,
-                          child: Pagination(
-                              limit: dashBoardProvider.limit,
-                              offSet: dashBoardProvider.offset,
-                              callBack: (pageResponse) => dashBoardProvider
-                                  .onChangeOfPageLimit(pageResponse, context),
-                              totalCount: totalCount, isDisabled: dashBoardProvider.isLoaderEnabled));
-                    }))
-              ]),
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget get _buildShare => TextButton.icon(
