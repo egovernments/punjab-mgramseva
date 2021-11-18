@@ -69,6 +69,10 @@ class ConsumerProvider with ChangeNotifier {
       ],
       "address": Address().toJson()
     });
+    if (boundaryList.length == 1) {
+      property.address.localityCtrl = boundaryList.first;
+      onChangeOflocaity(property.address.localityCtrl);
+    }
     if (commonProvider.userDetails?.selectedtenant?.code != null) {
       property.address.gpNameCtrl
           .text = ApplicationLocalizations.of(navigatorKey.currentContext!)
@@ -247,6 +251,8 @@ class ConsumerProvider with ChangeNotifier {
             streamController.add(property);
             Notifiers.getToastMessage(
                 context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
+            selectedcycle = '';
+            waterconnection.connectionType = '';
             Navigator.pop(context);
           }
         } else {

@@ -41,7 +41,7 @@ class Events {
   @JsonKey(name: "actions")
   Actions? actions;
   @JsonKey(name: "eventDetails")
-  String? eventDetails;
+  dynamic? eventDetails;
   @JsonKey(name: "auditDetails")
   AuditDetails? auditDetails;
   @JsonKey(name: "recepientEventMap")

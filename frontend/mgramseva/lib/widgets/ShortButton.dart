@@ -15,6 +15,9 @@ class ShortButton extends StatelessWidget {
         width: constraints.maxWidth > 760 ? constraints.maxWidth / 4 : constraints.maxWidth,
             decoration: CommonStyles.buttonBottomDecoration,
             child: new ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 13)
+              ),
               child: new Text(
                   ApplicationLocalizations.of(context).translate(label),
                    style:

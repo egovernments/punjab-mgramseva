@@ -410,10 +410,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 alignment: Alignment.centerLeft,
                                 padding: EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 18),
-                                child: Wrap(
-                                  direction: Axis.horizontal,
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  spacing: 8,
+                                child: Row(
                                   children: [
                                     SizedBox(
                                       width: 20,
@@ -423,13 +420,18 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                           onChanged: expensesDetailsProvider
                                               .onChangeOfCheckBox),
                                     ),
-                                    Text(
-                                        ApplicationLocalizations.of(context)
-                                            .translate(i18.expense
-                                                .MARK_BILL_HAS_CANCELLED),
-                                        style: TextStyle(
-                                            fontSize: 19,
-                                            fontWeight: FontWeight.normal))
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left : 8.0),
+                                        child: Text(
+                                            '${ApplicationLocalizations.of(context)
+                                                .translate(i18.expense
+                                                    .MARK_BILL_HAS_CANCELLED)}',
+                                            style: TextStyle(
+                                                fontSize: 19,
+                                                fontWeight: FontWeight.normal)),
+                                      ),
+                                    )
                                   ],
                                 ),
                               ),
