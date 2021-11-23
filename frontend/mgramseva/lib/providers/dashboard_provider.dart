@@ -102,7 +102,7 @@ class DashBoardProvider with ChangeNotifier {
       'fromDate':
           '${DateTime(selectedMonth.year, selectedMonth.month, 1).millisecondsSinceEpoch}',
       'toDate':
-          '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0).millisecondsSinceEpoch}',
+          '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0, 23,59, 59, 999).millisecondsSinceEpoch}',
       'vendorName': searchController.text.trim(),
       'challanNo': searchController.text.trim(),
       'freeSearch': 'true',
@@ -207,7 +207,7 @@ class DashBoardProvider with ChangeNotifier {
       'fromDate':
           '${DateTime(selectedMonth.year, selectedMonth.month, 1).millisecondsSinceEpoch}',
       'toDate':
-          '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0).millisecondsSinceEpoch}',
+          '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0,  0, 23,59, 59, 999).millisecondsSinceEpoch}',
       'iscollectionAmount': 'true',
       'isPropertyCount': 'true',
     };
