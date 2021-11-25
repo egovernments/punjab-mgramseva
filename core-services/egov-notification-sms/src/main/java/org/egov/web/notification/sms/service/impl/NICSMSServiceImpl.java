@@ -134,14 +134,16 @@ public class NICSMSServiceImpl extends BaseSMSService {
         	}
       
         	String message= "" + smsBody + smsProperties.getSmsMsgAppend();
-        	if(textIsInEnglish(message)) {
-				message=URLEncoder.encode(message,"UTF-8");
-        	}
-			else{
-				message = Hex.encodeHexString(message.getBytes("UTF-16")).toUpperCase();
-			    final_data+="&msgType=UC";
-        		log.info("Non-English");
-			}
+        	
+        	//TODO not encryppt the message.
+//        	if(textIsInEnglish(message)) {
+//				message=URLEncoder.encode(message,"UTF-8");
+//        	}
+//			else{
+//				message = Hex.encodeHexString(message.getBytes("UTF-16")).toUpperCase();
+//			    final_data+="&msgType=UC";
+//        		log.info("Non-English");
+//			}
         			
         	final_data+="&message="+ message;
         	final_data+="&mnumber=91"+ sms.getMobileNumber();
