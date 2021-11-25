@@ -3,6 +3,10 @@
 All notable changes to this module will be documented in this file.
 
 
+## 1.1.1 - 2021-11-25
+
+- Fixes to the lastmoth summary and expense dashboard service
+
 ## 1.1.0 - 2021-09-23
 
 - Added new service to get last month summary

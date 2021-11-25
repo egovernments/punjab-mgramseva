@@ -1,0 +1,21 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: monthly
+spec:
+  schedule: "30 3 4 * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: monthly
+            image: mgramseva/api-cronjob-image-4
+            command: ["python3","cronJobAPIConfig.py"]
+            args: ["monthly"]  
+            env:
+              - name: JOB_NAME
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.name
+          restartPolicy: OnFailure            

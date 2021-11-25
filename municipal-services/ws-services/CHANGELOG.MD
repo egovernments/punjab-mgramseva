@@ -1,6 +1,12 @@
 # Change log
 All notable changes to this module will be documented in this file.
 
+
+## 1.5.1 - 2021-11-25
+
+- Fixes to revenueDashboard Service
+- Schedulers code cleanup
+
 ## 1.5.0 - 2021-09-23
 
 - Added submit feed back and get feed back services

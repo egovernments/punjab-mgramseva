@@ -104,7 +104,18 @@ public class SearchCriteria {
 	
 	@JsonProperty("isPropertyCount")
 	private Boolean isPropertyCount = false;
-	    
+	
+	@JsonProperty("isBillPaid")
+	private Boolean isBillPaid;
+	
+	private Boolean isCollectionDataCount = false;
+	
+	@JsonProperty("isCollectionCount") 
+	private Boolean isCollectionCount = false;
+
+	@JsonProperty("currentDate")
+	private Long currentDate;
+	
 	public enum SortOrder {
 	    ASC,
 	    DESC
@@ -112,7 +123,8 @@ public class SearchCriteria {
 	public enum SortBy {
 		connectionNumber,
 		name,
-		collectionAmount
+		collectionAmount,
+		collectionPendingAmount
 	}
 
 	public boolean isEmpty() {

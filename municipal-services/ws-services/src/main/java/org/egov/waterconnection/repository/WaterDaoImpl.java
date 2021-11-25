@@ -1,14 +1,20 @@
 package org.egov.waterconnection.repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
+import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.Role;
 import org.egov.common.contract.request.User;
+import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.producer.WaterConnectionProducer;
@@ -27,7 +33,9 @@ import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -75,10 +83,26 @@ public class WaterDaoImpl implements WaterDao {
 
 		List<WaterConnection> waterConnectionList = new ArrayList<>();
 		List<Object> preparedStatement = new ArrayList<>();
+		Map<String, Long> collectionDataCount = null;
+		List<Map<String, Object>> countData = null;
+		Boolean flag = null;
+		Set<String> consumerCodeSet = null;
+		
 		String query = wsQueryBuilder.getSearchQueryString(criteria, preparedStatement, requestInfo);
 
 		if (query == null)
 			return null;
+		
+		if(criteria.getIsCollectionCount() != null && criteria.getIsCollectionCount()) {
+			List<Object> preparedStmntforCollectionDataCount = new ArrayList<>();
+			StringBuilder collectionDataCountQuery = new StringBuilder(wsQueryBuilder.COLLECTION_DATA_COUNT);
+			criteria.setIsCollectionDataCount(Boolean.TRUE);
+			collectionDataCountQuery = wsQueryBuilder.applyFilters(collectionDataCountQuery, preparedStmntforCollectionDataCount, criteria);
+			collectionDataCountQuery.append(" ORDER BY wc.appCreatedDate  DESC");
+		    countData = jdbcTemplate.queryForList(collectionDataCountQuery.toString(), preparedStmntforCollectionDataCount.toArray());
+		    if(criteria.getIsBillPaid() != null)
+		    	flag = criteria.getIsBillPaid();
+		}
 
 		Boolean isOpenSearch = isSearchOpen(requestInfo.getUserInfo());
 		WaterConnectionResponse connectionResponse = new WaterConnectionResponse();
@@ -103,8 +127,9 @@ public class WaterDaoImpl implements WaterDao {
 					}
 				}
 			}
+			collectionDataCount =  getCollectionDataCounter(countData, flag);
 			connectionResponse = WaterConnectionResponse.builder().waterConnection(waterConnectionList)
-					.totalCount(waterRowMapper.getFull_count()).propertyCount(counter).build();
+					.totalCount(waterRowMapper.getFull_count()).collectionDataCount(collectionDataCount).propertyCount(counter).build();
 		}
 		return connectionResponse;
 	}
@@ -185,5 +210,75 @@ public class WaterDaoImpl implements WaterDao {
 		List<Feedback> feedBackList = jdbcTemplate.query(query, preparedStamentValues.toArray(), feedbackRowMapper);
 		return feedBackList;
 	}
+	
+	public Map<String, Long> getCollectionDataCounter(List<Map<String, Object>> countDataMap, Boolean flag) {
+		Map<String, Long> collectionDataCountMap = new HashMap<>();
+		Long paidCount = 0L;
+		Long pendingCount = 0L;
+		
+		if(!CollectionUtils.isEmpty(countDataMap)) {
+			for(Map<String, Object> wc : countDataMap) {
+				BigDecimal collectionPendingAmount = (BigDecimal)wc.get("pendingamount");
+				if(collectionPendingAmount != null ) {
+					if(collectionPendingAmount.compareTo(BigDecimal.ZERO) <= 0) {
+						++paidCount;
+					}
+					else {
+						++pendingCount;
+					}
+				}else {
+					++paidCount;
+				}
+			}
+			if(flag != null) {
+				if(flag) 
+					collectionDataCountMap.put("collectionPaid", paidCount);
+				else if(!flag) 
+					collectionDataCountMap.put("collectionPending", pendingCount);
+			}else {
+				collectionDataCountMap.put("collectionPaid", paidCount);
+				collectionDataCountMap.put("collectionPending", pendingCount);
+			}
+		}
+		return collectionDataCountMap;
+	}
 
+	public Integer getTotalDemandAmount(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(wsQueryBuilder.NEWDEMAND);
+		query.append(" and dmd.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
+	}
+
+	public Integer getActualCollectionAmount(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(wsQueryBuilder.ACTUALCOLLECTION);
+		query.append(" and py.transactionDate  >= ").append(criteria.getFromDate()).append(" and py.transactionDate <= ")
+				.append(criteria.getToDate()).append(" and py.tenantId = '").append(criteria.getTenantId()).append("'");
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
+
+	}
+
+	public Integer getPendingCollectionAmount(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(wsQueryBuilder.PENDINGCOLLECTION);
+		query.append(" and dmd.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("Active pending collection query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
+
+	}
+
+	@Override
+	public List<String> getWCListFuzzySearch(SearchCriteria criteria) {
+		List<Object> preparedStatementList = new ArrayList<>();
+
+		String query = wsQueryBuilder.getIds(criteria, preparedStatementList);
+		
+		try {
+			return jdbcTemplate.query(query, preparedStatementList.toArray(), new SingleColumnRowMapper<>());
+		}catch (Exception e) {
+			log.error("error while getting ids from db: "+e.getMessage());
+			throw new CustomException("EG_WC_QUERY_EXCEPTION", "error while getting ids from db");
+		}
+		
+	}
 }

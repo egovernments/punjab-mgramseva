@@ -35,15 +35,6 @@ public class LastMonthSummary {
 
 	@JsonProperty("cumulativePendingExpense")
 	private String cumulativePendingExpense = "0";
-
-	@JsonProperty("cumulativePendingCollection")
-	private String cumulativePendingCollection = "0";
-
-	@JsonProperty("newDemand")
-	private String newDemand = "0";
-
-	@JsonProperty("actualCollection")
-	private String actualCollection = "0";
 	
 	@JsonProperty("previousMonthYear")
 	private String previousMonthYear ="";

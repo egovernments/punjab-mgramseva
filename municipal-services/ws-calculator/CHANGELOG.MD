@@ -1,6 +1,12 @@
 # Change log
 All notable changes to this module will be documented in this file.
 
+## 1.4.1 - 2021-11-25
+
+- Calculator services to fix the timezone issues
+- BulkDemand Generation issue fixes
+- Notification enhancements to support localization
+
 
 ## 1.4.0 - 2021-09-23
 

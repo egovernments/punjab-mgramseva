@@ -119,6 +119,7 @@ public class PaymentService {
 			StringBuilder uri = new StringBuilder(config.getPaymentContextPath())
 					.append(config.getPaymentUpdateEndpoint());
 
+			System.out.println("URL to check the payment search::" + uri);
 			Object result = serviceRequestRepository.fetchResult(uri, PaymentWorkflowRequest.builder()
 					.paymentWorkflows(Arrays.asList(paymentWorkflow)).requestInfo(request.getRequestInfo()).build());
 			try {
@@ -133,7 +134,8 @@ public class PaymentService {
 	}
 
 	public String searchPayment(ChallanRequest request) {
-		StringBuilder uri = new StringBuilder(config.getPaymentContextPath()).append(config.getPaymentSearchEndpoint())
+		StringBuilder uri = new StringBuilder(config.getPaymentContextPath()).append(config.getPaymentUpdateSearch())
+				.append("/" + request.getChallan().getBusinessService()).append(config.getPaymentUpdateSearchEndpoint())
 				.append("?consumerCodes=").append(request.getChallan().getChallanNo()).append(" &tenantId=")
 				.append(request.getChallan().getTenantId());
 		RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(request.getRequestInfo())

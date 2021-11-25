@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.expense.service.PaymentService;
 import org.egov.echallan.expense.validator.ExpenseValidator;
@@ -23,6 +25,7 @@ import org.egov.echallan.model.SearchCriteria;
 import org.egov.echallan.repository.ChallanRepository;
 import org.egov.echallan.util.CommonUtils;
 import org.egov.echallan.validator.ChallanValidator;
+import org.egov.echallan.web.models.ExpenseDashboard;
 import org.egov.echallan.web.models.user.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -171,13 +174,13 @@ public class ChallanService {
 		LocalDateTime previousMonthStartDateTime = LocalDateTime.of(prviousMonthStart.getYear(),
 				prviousMonthStart.getMonth(), prviousMonthStart.getDayOfMonth(), 0, 0, 0);
 		LocalDateTime previousMonthEndDateTime = LocalDateTime.of(prviousMonthEnd.getYear(), prviousMonthEnd.getMonth(),
-				prviousMonthEnd.getDayOfMonth(), 23, 59, 59);
+				prviousMonthEnd.getDayOfMonth(), 23, 59, 59, 999000000);
 
 		// actual payments
-		Integer previousMonthExpensePayments = repository.getPreviousMonthExpensePayments(tenantId,
+		Integer previousMonthExpensePayments = repository.getLastsMonthExpensePayments(tenantId,
 				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
 				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
-		if (null != previousMonthExpensePayments)
+		if (previousMonthExpensePayments!=null)
 			lastMonthSummary.setPreviousMonthCollection(previousMonthExpensePayments.toString());
 
 		// new expenditure
@@ -188,28 +191,10 @@ public class ChallanService {
 			lastMonthSummary.setPreviousMonthNewExpense(previousMonthNewExpense.toString());
 
 		// pending expenes to be paid
-		Integer cumulativePendingExpense = repository.getCumulativePendingExpense(tenantId);
+		Integer cumulativePendingExpense = repository.getCumulativePendingExpense(tenantId,
+				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
 		if (null != cumulativePendingExpense )
 			lastMonthSummary.setCumulativePendingExpense(cumulativePendingExpense.toString());
-
-		//pending ws collectioni
-		Integer cumulativePendingCollection = repository.getTotalPendingCollection(tenantId);
-		if (null != cumulativePendingExpense )
-			lastMonthSummary.setCumulativePendingCollection(cumulativePendingCollection.toString());
-
-		// ws demands in period
-		Integer newDemand = repository.getNewDemand(tenantId,
-				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
-				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
-		if (null != newDemand )
-			lastMonthSummary.setNewDemand(newDemand.toString());
-
-		// actuall ws collection
-		Integer actualCollection = repository.getActualCollection(tenantId,
-				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
-				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
-		if (null != actualCollection )
-			lastMonthSummary.setActualCollection(actualCollection.toString());
 
 		lastMonthSummary.setPreviousMonthYear(getMonthYear());
 		
@@ -230,10 +215,28 @@ public class ChallanService {
 					+ (Integer.toString(YearMonth.now().getYear()).substring(2, monthYear.length() - 1));
 
 		}
-		localDateTime.minusMonths(1);
-		StringBuilder monthYearBuilder = new StringBuilder(localDateTime.getMonth().toString()).append(" ").append(monthYear);
+		StringBuilder monthYearBuilder = new StringBuilder(localDateTime.minusMonths(1).getMonth().toString()).append(" ").append(monthYear);
 
 		return monthYearBuilder.toString() ;
+	}
+
+	public ExpenseDashboard getExpenseDashboardData(@Valid SearchCriteria criteria, RequestInfo requestInfo) {
+		ExpenseDashboard dashboardData = new ExpenseDashboard();
+		String tenantId = criteria.getTenantId();
+		Long totalExpenses = repository.getTotalExpense(criteria);
+		if (null != totalExpenses) {
+			dashboardData.setTotalExpenditure(totalExpenses.toString());
+		}
+		Long paidAmount = repository.getPaidAmountDetails(criteria);
+		if (null != paidAmount) {
+			dashboardData.setAmountPaid(paidAmount.toString());
+		}
+		Long amountUnpaid = repository.getPendingAmount(criteria);
+		if (null != amountUnpaid) {
+			dashboardData.setAmountUnpaid(amountUnpaid.toString());
+		}
+
+		return dashboardData;
 	}
 	
 }

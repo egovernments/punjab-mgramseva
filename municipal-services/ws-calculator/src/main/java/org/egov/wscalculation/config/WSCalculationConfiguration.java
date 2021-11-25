@@ -185,7 +185,7 @@ public class WSCalculationConfiguration {
 
     	@Value("${egov.shortener.url}")
 	private String shortenerURL;
-    
+     
     	@Value("${egov.property.service.host}")
 	private String propertyHost;
 
@@ -219,5 +219,19 @@ public class WSCalculationConfiguration {
 	
 	@Value("${egov.sms.bill.download.link}")
 	private String billDownloadSMSLink;
+	
+	//Bulk Demand configuration Topics
+
+
+	@Value("${egov.wscal.bulk.demand.schedular.topic}")
+	private String bulkDemandSchedularTopic;
+	
+	@Value("${egov.generate.bulk.demand.manually.topic}")
+	private String generateBulkDemandTopic;
+
+	@Value("${egov.bilk.demand.failed.link}")
+	private String bulkDemandFailedLink;
+	
+
 	
 }

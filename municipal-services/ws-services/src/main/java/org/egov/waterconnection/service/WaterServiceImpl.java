@@ -1,24 +1,38 @@
 package org.egov.waterconnection.service;
 
+import static org.egov.waterconnection.constants.WCConstants.APPROVE_CONNECTION;
+
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.producer.WaterConnectionProducer;
+import org.egov.waterconnection.repository.ElasticSearchRepository;
 import org.egov.waterconnection.repository.WaterDao;
 import org.egov.waterconnection.repository.WaterDaoImpl;
+import org.egov.waterconnection.repository.WaterRepository;
 import org.egov.waterconnection.util.WaterServicesUtil;
 import org.egov.waterconnection.validator.ActionValidator;
 import org.egov.waterconnection.validator.MDMSValidator;
@@ -30,7 +44,9 @@ import org.egov.waterconnection.web.models.CheckList;
 import org.egov.waterconnection.web.models.Feedback;
 import org.egov.waterconnection.web.models.FeedbackRequest;
 import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
+import org.egov.waterconnection.web.models.LastMonthSummary;
 import org.egov.waterconnection.web.models.Property;
+import org.egov.waterconnection.web.models.RevenueDashboard;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
@@ -48,8 +64,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import static org.egov.waterconnection.constants.WCConstants.APPROVE_CONNECTION;
+import com.jayway.jsonpath.JsonPath;
 
 @Component
 public class WaterServiceImpl implements WaterService {
@@ -97,8 +112,13 @@ public class WaterServiceImpl implements WaterService {
 	private WaterServicesUtil wsUtil;
 
 	@Autowired
-
 	private WaterConnectionProducer waterConnectionProducer;
+
+	@Autowired
+	private WaterRepository repository;
+	
+	@Autowired
+	private ElasticSearchRepository elasticSearchRepository;
 
 	/**
 	 * 
@@ -119,6 +139,7 @@ public class WaterServiceImpl implements WaterService {
 //			}
 			reqType = WCConstants.MODIFY_CONNECTION;
 		}
+		mDMSValidator.validateMISFields(waterConnectionRequest);
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, reqType);
 		Property property = validateProperty.getOrValidateProperty(waterConnectionRequest);
 		validateProperty.validatePropertyFields(property, waterConnectionRequest.getRequestInfo());
@@ -190,6 +211,7 @@ public class WaterServiceImpl implements WaterService {
 			// Received request to update the connection for modifyConnection WF
 			return updateWaterConnectionForModifyFlow(waterConnectionRequest);
 		}
+		mDMSValidator.validateMISFields(waterConnectionRequest);
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, WCConstants.UPDATE_APPLICATION);
 		mDMSValidator.validateMasterData(waterConnectionRequest, WCConstants.UPDATE_APPLICATION);
 		Property property = validateProperty.getOrValidateProperty(waterConnectionRequest);
@@ -336,16 +358,15 @@ public class WaterServiceImpl implements WaterService {
 		// TODO Auto-generated method stub
 		List<Feedback> feedbackList = waterDaoImpl.getFeebback(feedbackSearchCriteria);
 
-	Object data=	getFeedBackRatingsAvarage(feedbackList);
-
+		Object data = getFeedBackRatingsAvarage(feedbackList);
 		return data;
 	}
 
-	private Map<String, Integer>  getFeedBackRatingsAvarage(List<Feedback> feedbackList)
+	private Map<String, Integer> getFeedBackRatingsAvarage(List<Feedback> feedbackList)
 			throws JsonMappingException, JsonProcessingException {
 
 		Map<Object, Double> feedbackGroupByCode = null;
-		Map<String,Integer> returnMap= new HashMap<String,Integer>();
+		Map<String, Integer> returnMap = new HashMap<String, Integer>();
 		// TODO Auto-generated method stub
 		List<CheckList> checkList = new ArrayList<CheckList>();
 		ObjectMapper mapper = new ObjectMapper();
@@ -370,14 +391,133 @@ public class WaterServiceImpl implements WaterService {
 			feedbackGroupByCode = checkList.stream()
 					.collect(Collectors.groupingBy(e -> e.getCode(), Collectors.averagingInt(CheckList::getValue)));
 		}
-		if(!CollectionUtils.isEmpty(feedbackGroupByCode)) {
-			for (Map.Entry<Object,Double> entry : feedbackGroupByCode.entrySet()) {
+		if (!CollectionUtils.isEmpty(feedbackGroupByCode)) {
+			for (Map.Entry<Object, Double> entry : feedbackGroupByCode.entrySet()) {
 				returnMap.put(entry.getKey().toString(), entry.getValue().intValue());
 			}
+			returnMap.put("count", feedbackList.size());
 		}
 
 		return returnMap;
 	}
+
+	public LastMonthSummary getLastMonthSummary(SearchCriteria criteria, RequestInfo requestInfo) {
+
+		LastMonthSummary lastMonthSummary = new LastMonthSummary();
+		String tenantId = criteria.getTenantId();
+		LocalDate currentMonthDate = LocalDate.now();
+		if (criteria.getCurrentDate() != null) {
+			Calendar currentDate = Calendar.getInstance();
+			currentDate.setTimeInMillis(criteria.getCurrentDate());
+			currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH)+1,
+					currentDate.get(Calendar.DAY_OF_MONTH));
+		}
+		LocalDate prviousMonthStart = currentMonthDate.minusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+		LocalDate prviousMonthEnd = currentMonthDate.minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
+
+		LocalDateTime previousMonthStartDateTime = LocalDateTime.of(prviousMonthStart.getYear(),
+				prviousMonthStart.getMonth(), prviousMonthStart.getDayOfMonth(), 0, 0, 0);
+		LocalDateTime previousMonthEndDateTime = LocalDateTime.of(prviousMonthEnd.getYear(), prviousMonthEnd.getMonth(),
+				prviousMonthEnd.getDayOfMonth(), 23, 59, 59, 999000000);
+
+		// pending ws collectioni
+		Integer cumulativePendingCollection = repository.getTotalPendingCollection(tenantId,
+				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+		if (null != cumulativePendingCollection)
+			lastMonthSummary.setCumulativePendingCollection(cumulativePendingCollection.toString());
+
+		// ws demands in period
+		Integer newDemand = repository.getNewDemand(tenantId,
+				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
+				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+		if (null != newDemand)
+			lastMonthSummary.setNewDemand(newDemand.toString());
+
+		// actuall ws collection
+		Integer actualCollection = repository.getActualCollection(tenantId,
+				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
+				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+		if (null != actualCollection)
+			lastMonthSummary.setActualCollection(actualCollection.toString());
+
+		lastMonthSummary.setPreviousMonthYear(getMonthYear());
+
+		return lastMonthSummary;
+
+	}
+
+	public String getMonthYear() {
+		LocalDateTime localDateTime = LocalDateTime.now();
+		int currentMonth = localDateTime.getMonthValue();
+		String monthYear;
+		if (currentMonth >= Month.APRIL.getValue()) {
+			monthYear = YearMonth.now().getYear() + "-";
+			monthYear = monthYear
+					+ (Integer.toString(YearMonth.now().getYear() + 1).substring(2, monthYear.length() - 1));
+		} else {
+			monthYear = YearMonth.now().getYear() - 1 + "-";
+			monthYear = monthYear + (Integer.toString(YearMonth.now().getYear()).substring(2, monthYear.length() - 1));
+
+		}
+		StringBuilder monthYearBuilder = new StringBuilder(localDateTime.minusMonths(1).getMonth().toString()).append(" ")
+				.append(monthYear);
+
+		return monthYearBuilder.toString();
+	}
+
+	@Override
+	public RevenueDashboard getRevenueDashboardData(@Valid SearchCriteria criteria, RequestInfo requestInfo) {
+		RevenueDashboard dashboardData = new RevenueDashboard();
+		String tenantId = criteria.getTenantId();
+		Integer demand = waterDaoImpl.getTotalDemandAmount(criteria);
+		if (null != demand) {
+			dashboardData.setDemand(demand.toString());
+		}
+		Integer paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
+		if (null != paidAmount) {
+			dashboardData.setActualCollection(paidAmount.toString());
+		}
+		Integer unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
+		if (null != unpaidAmount) {
+			dashboardData.setPendingCollection(unpaidAmount.toString());
+		}
+
+		return dashboardData;
+
+	}
+
+	@Override
+	public WaterConnectionResponse getWCListFuzzySearch(SearchCriteria criteria, RequestInfo requestInfo) {
+		 
+		List<String> idsfromDB = waterDao.getWCListFuzzySearch(criteria);
+		
+		 if(CollectionUtils.isEmpty(idsfromDB))
+			 WaterConnectionResponse.builder().waterConnection(new LinkedList<>());
+
+	     validateFuzzySearchCriteria(criteria);
+		
+		 Object esResponse = elasticSearchRepository.fuzzySearchProperties(criteria, idsfromDB);
+		
+		 List<Map<String, Object>> data = wsDataResponse(esResponse);
+		 
+		 return WaterConnectionResponse.builder().waterConnectionData(data).totalCount(data.size()).build();
+	}
 	
+	private void validateFuzzySearchCriteria(SearchCriteria criteria){
+
+        if(org.apache.commons.lang3.StringUtils.isBlank(criteria.getName()) && org.apache.commons.lang3.StringUtils.isBlank(criteria.getMobileNumber()))
+            throw new CustomException("EG_WC_SEARCH_ERROR"," No criteria given for the WC search");
+    }
 	
+	private List<Map<String, Object>> wsDataResponse(Object esResponse) {
+
+	        List<Map<String, Object>> data;
+	        try {
+	            data = JsonPath.read(esResponse, WCConstants.ES_DATA_PATH);
+	        } catch (Exception e) {
+	            throw new CustomException("PARSING_ERROR", "Failed to extract data from es response");
+	        }
+
+	        return data;
+	    }
 }

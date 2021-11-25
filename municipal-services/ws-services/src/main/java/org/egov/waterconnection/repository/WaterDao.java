@@ -1,5 +1,7 @@
 package org.egov.waterconnection.repository;
 
+import java.util.List;
+
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
@@ -11,4 +13,6 @@ public interface WaterDao {
 	WaterConnectionResponse getWaterConnectionList(SearchCriteria criteria,RequestInfo requestInfo);
 	
 	void updateWaterConnection(WaterConnectionRequest waterConnectionRequest, boolean isStateUpdatable);
+
+	List<String> getWCListFuzzySearch(SearchCriteria criteria);
 }

@@ -24,4 +24,6 @@ public class Constants {
 
 	public static final String EXPENSE = "EXPENSE";
 	
+	public static final String CANCELLED = "CANCELLED";
+	
 }

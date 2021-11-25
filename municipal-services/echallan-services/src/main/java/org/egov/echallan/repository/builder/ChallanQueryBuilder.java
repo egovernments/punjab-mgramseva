@@ -51,25 +51,26 @@ public class ChallanQueryBuilder {
       private static final String TENANTIDS = "SELECT distinct(tenantid) FROM eg_echallan challan";
       
       public static final String ACTIVEEXPENSECOUNTQUERY =  "select count(*) from eg_echallan  where applicationstatus ='ACTIVE' ";
-      
-      public static final String PENDINGCOLLECTION = "SELECT SUM(DEMANDDTL.TAXAMOUNT) FROM EGBS_DEMANDDETAIL_V1 DEMANDDTL JOIN EGBS_DEMAND_V1 DEMAND ON(DEMANDDTL.DEMANDID = DEMAND.ID) JOIN EG_WS_CONNECTION CONN ON(DEMAND.CONSUMERCODE = CONN.CONNECTIONNO) WHERE DEMANDDTL.COLLECTIONAMOUNT <= 0";
 
 	  public static final String PREVIOUSMONTHEXPENSE = " select sum(billdtl.totalamount) from eg_echallan challan, egbs_billdetail_v1 billdtl, egbs_bill_v1 bill  where challan.challanno= billdtl.consumercode  and billdtl.billid = bill.id and challan.isbillpaid ='true'  ";
 	  
 	  public static final String PREVIOUSMONTHEXPPAYMENT = "SELECT SUM(PAYMT.TOTALAMOUNTPAID) FROM EGCL_PAYMENT PAYMT JOIN EGCL_PAYMENTDETAIL PAYMTDTL ON (PAYMTDTL.PAYMENTID = PAYMT.ID) WHERE PAYMTDTL.BUSINESSSERVICE like '%EXPENSE%' ";
 
 	  public static final String PREVIOUSDAYCASHCOLLECTION = "select  count(*), sum(totalamountpaid) from egcl_payment where paymentmode='CASH' ";
+	  
 	  public static final String PREVIOUSDAYONLINECOLLECTION = "select  count(*), sum(totalamountpaid) from egcl_payment where paymentmode='ONLINE' ";
 
-	  public static final String PREVIOUSMONTHNEWEXPENSE = " SELECT SUM(DEMANDDTL.TAXAMOUNT) FROM EGBS_DEMANDDETAIL_V1 DEMANDDTL JOIN EGBS_DEMAND_V1 DEMAND ON(DEMANDDTL.DEMANDID = DEMAND.ID) JOIN EG_ECHALLAN CHALLAN ON(CHALLAN.CHALLANNO = DEMAND.CONSUMERCODE) ";
+	  public static final String PREVIOUSMONTHNEWEXPENSE = " SELECT SUM(DEMANDDTL.TAXAMOUNT) FROM EGBS_DEMANDDETAIL_V1 DEMANDDTL JOIN EGBS_DEMAND_V1 DEMAND ON(DEMANDDTL.DEMANDID = DEMAND.ID) JOIN EG_ECHALLAN CHALLAN ON(CHALLAN.CHALLANNO = DEMAND.CONSUMERCODE) where DEMAND.status = 'ACTIVE' ";
 	  
-	  public static final String CUMULATIVEPENDINGEXPENSE = " SELECT SUM(DEMANDDTL.TAXAMOUNT) FROM EGBS_DEMANDDETAIL_V1 DEMANDDTL JOIN EGBS_DEMAND_V1 DEMAND ON(DEMANDDTL.DEMANDID = DEMAND.ID) JOIN EG_ECHALLAN CHALLAN ON(DEMAND.CONSUMERCODE = CHALLAN.CHALLANNO) WHERE DEMANDDTL.COLLECTIONAMOUNT <= 0 ";
-
-	  public static final String NEWDEMAND ="select sum(dmdl.taxamount) FROM egbs_demand_v1 dmd INNER JOIN egbs_demanddetail_v1 dmdl ON dmd.id=dmdl.demandid AND dmd.tenantid=dmdl.tenantid WHERE dmd.businessservice='WS' ";
-	  
-	  public static final String ACTUALCOLLECTION =" select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id where pyd.businessservice='WS' ";
+	  public static final String CUMULATIVEPENDINGEXPENSE = " SELECT SUM(DEMANDDTL.TAXAMOUNT) FROM EGBS_DEMANDDETAIL_V1 DEMANDDTL JOIN EGBS_DEMAND_V1 DEMAND ON(DEMANDDTL.DEMANDID = DEMAND.ID) JOIN EG_ECHALLAN CHALLAN ON(DEMAND.CONSUMERCODE = CHALLAN.CHALLANNO) WHERE DEMANDDTL.COLLECTIONAMOUNT <= 0 and DEMAND.status = 'ACTIVE' ";
 
 	  public static final String bill_count = " select count(*) from eg_echallan as challan INNER JOIN eg_vendor vendor on vendor.id = challan.vendor ";
+
+	  public static final String NEWEXPDEMAND = "SELECT SUM(DMDL.TAXAMOUNT) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE LIKE '%EXPENSE%' and DMD.status = 'ACTIVE' ";
+	
+	  public static final String PENDINGEXPCOLL = "SELECT SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE LIKE '%EXPENSE%' and DMD.status='ACTIVE' ";
+	
+	  public static final String ACTUALEXPCOLLECTION = " SELECT SUM(PY.TOTALAMOUNTPAID) FROM EGCL_PAYMENT PY INNER JOIN EGCL_PAYMENTDETAIL PYD ON PYD.PAYMENTID = PY.ID WHERE PYD.BUSINESSSERVICE LIKE '%EXPENSE%' ";
 
 
 
@@ -157,15 +158,10 @@ public class ChallanQueryBuilder {
 				preparedStmtList.add(criteria.getExpenseType());
 			}
 
-			if (criteria.getFromDate() != null) {
+			if (criteria.getFromDate() != null && criteria.getToDate() != null) {
 				addClauseIfRequired(preparedStmtList, builder);
-				builder.append("  challan.createdTime >= ? ");
-				preparedStmtList.add(criteria.getFromDate());
-			}
-			if (criteria.getToDate() != null) {
-				addClauseIfRequired(preparedStmtList, builder);
-				builder.append("  challan.createdTime <= ? ");
-				preparedStmtList.add(criteria.getToDate());
+				builder.append(
+						" challan.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate());
 			}
 			if (criteria.getIsBillPaid() != null) {
 				addClauseIfRequired(preparedStmtList, builder);
