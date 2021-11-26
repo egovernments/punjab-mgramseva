@@ -256,7 +256,7 @@ public class WSCalculatorQueryBuilder {
 
 		if (!CollectionUtils.isEmpty(connectionNos)) {
 			addClauseIfRequired(preparedStmtList, builder);
-			builder.append(" consumercode IN (").append(createQuery(connectionNos)).append(")");
+			builder.append(" connectionno IN (").append(createQuery(connectionNos)).append(")");
 			addToPreparedStatement(preparedStmtList, connectionNos);
 		}
 		if (startDate != null && endDate != null) {
