@@ -313,8 +313,12 @@ public class DemandGenerationConsumer {
 			Set<String> consumerCodes = new LinkedHashSet<String>();
 			consumerCodes.add(connectionNo);
 
-			if (!waterCalculatorDao.isDemandExists(tenantId, previousFromDate.getTimeInMillis(), previousToDate.getTimeInMillis(), consumerCodes)) {
-				log.warn("this connection doen't have the demand in previous billing cycle :" + connectionNo );
+			if (!waterCalculatorDao.isDemandExists(tenantId, previousFromDate.getTimeInMillis(),
+					previousToDate.getTimeInMillis(), consumerCodes)
+					&& !waterCalculatorDao.isConnectionExists(tenantId, previousFromDate.getTimeInMillis(),
+							previousToDate.getTimeInMillis(), consumerCodes)) {
+				log.warn("this connection doen't have the demand in previous billing cycle :" + connectionNo);
+				failedConnectionNos.add(connectionNo);
 				continue;
 			}
 			

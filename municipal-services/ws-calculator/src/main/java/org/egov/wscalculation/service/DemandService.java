@@ -6,8 +6,10 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -18,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -870,6 +873,12 @@ public class DemandService {
 		List<String> connectionNos = waterCalculatorDao.getNonMeterConnectionsList(tenantId, dayStartTime, dayEndTime);;
 		Set<String> connectionSet = connectionNos.stream().collect(Collectors.toSet());
 
+		
+		if( connectionNos.size() == 0) {
+			List<String> allConnections = waterCalculatorDao.searchConnectionNos(WSCalculationConstant.nonMeterdConnection, tenantId);
+			throw new CustomException("NO_CONNECTIONS_TO_GENERATE_DEMANDS",
+					"Zero Demands Generated Successfully, "+ allConnections.size() +" connections already have demands in this billing cycle!");
+		}
 
 		wsCalculationValidator.validateBulkDemandBillingPeriod(dayStartTime, dayEndTime, connectionSet,
 				bulkDemand.getTenantId(), (String) billingMasterData.get(WSCalculationConstant.Billing_Cycle_String));

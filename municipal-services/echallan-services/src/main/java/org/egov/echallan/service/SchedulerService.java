@@ -355,13 +355,16 @@ public class SchedulerService {
 		Map<String, Object> additionalDetailsMap = new HashMap<String, Object>();
 		additionalDetailsMap.put("localizationCode", MARK_PAID_BILL_EVENT);
 		List<Event> events = new ArrayList<>();
-		HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, MARK_PAID_BILL_EVENT, tenantId);
-		events.add(Event.builder().tenantId(tenantId)
-				.description(formatMarkExpenseMessage(tenantId, messageMap.get(NotificationUtil.MSG_KEY), additionalDetailsMap))
-				.eventType(USREVENTS_EVENT_TYPE).name(EXPENSE_PAYMENT).postedBy(USREVENTS_EVENT_POSTEDBY)
-				.recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP).eventDetails(null).actions(action)
-				.additionalDetails(additionalDetailsMap)
-				.build());
+		List<String> activeExpenseCount = repository.getActiveExpenses(tenantId);
+		if (null != activeExpenseCount && activeExpenseCount.size() > 0) {
+			HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, MARK_PAID_BILL_EVENT, tenantId);
+			events.add(Event.builder().tenantId(tenantId)
+					.description(formatMarkExpenseMessage(tenantId, messageMap.get(NotificationUtil.MSG_KEY), additionalDetailsMap))
+					.eventType(USREVENTS_EVENT_TYPE).name(EXPENSE_PAYMENT).postedBy(USREVENTS_EVENT_POSTEDBY)
+					.recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP).eventDetails(null).actions(action)
+					.additionalDetails(additionalDetailsMap)
+					.build());
+		}		
 
 		if (!CollectionUtils.isEmpty(events)) {
 			return EventRequest.builder().requestInfo(requestInfo).events(events).build();

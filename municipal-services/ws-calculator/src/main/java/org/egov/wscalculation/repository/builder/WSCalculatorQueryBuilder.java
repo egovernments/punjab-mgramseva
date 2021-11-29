@@ -43,7 +43,7 @@ public class WSCalculatorQueryBuilder {
 	
 	private static final String PREVIOUS_BILLING_CYCLE_CONNECTION = " select count(*) from eg_ws_connection ";
 
-	private static final String nonmeteredConnectionList = "SELECT distinct(conn.connectionno) FROM eg_ws_connection conn INNER JOIN eg_ws_service ws ON conn.id = ws.connection_id INNER JOIN egbs_demand_v1 dmd ON conn.connectionno = dmd.consumercode where  ws.connectiontype = 'Non_Metered' ";
+	private static final String nonmeteredConnectionList = " select distinct(conn.connectionno) from eg_ws_connection conn join eg_ws_service ws on conn.id=ws.connection_id where ws.connectiontype='Non_Metered' and conn.connectionno not in ( select distinct(consumercode) from egbs_demand_v1 d where d.businessservice='WS' ";
 
 	public String getDistinctTenantIds() {
 		return distinctTenantIdsCriteria;
@@ -191,12 +191,12 @@ public class WSCalculatorQueryBuilder {
 		StringBuilder query = new StringBuilder(nonmeteredConnectionList);
 
 		// add tenantid
-		query.append(" and conn.tenantid = ? ");
+		query.append(" and d.tenantid = ? ");
 		preparedStatement.add(tenantId);
 		addClauseIfRequired(preparedStatement, query);
-		query.append(" dmd.taxperiodto not between " + dayStartTime + " and " + dayEndTime);
-		addClauseIfRequired(preparedStatement, query);
-		query.append(" conn.connectionno is not null");
+		query.append(" ( d.taxperiodto  between " + dayStartTime + " and " + dayEndTime +" ) )");
+		query.append(" and conn.tenantid = ?  ");
+		preparedStatement.add(tenantId);
 		return query.toString();
 
 	}
@@ -261,7 +261,7 @@ public class WSCalculatorQueryBuilder {
 		}
 		if (startDate != null && endDate != null) {
 			addClauseIfRequired(preparedStmtList, builder);
-			builder.append(" priviousmeterreadingdate between  ?  and  ? ");
+			builder.append(" previousreadingdate between  ?  and  ? ");
 			preparedStmtList.add(startDate);
 			preparedStmtList.add(endDate);
 		}
