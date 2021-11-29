@@ -1,10 +1,11 @@
 package org.egov.mgramsevaifixadaptor.consumer;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 
-import org.egov.mgramsevaifixadaptor.config.PropertyConfiguration;
 import org.egov.mgramsevaifixadaptor.contract.PaymentRequest;
 import org.egov.mgramsevaifixadaptor.models.EventTypeEnum;
+import org.egov.mgramsevaifixadaptor.models.PaymentDetail;
 import org.egov.mgramsevaifixadaptor.util.Constants;
 import org.egov.mgramsevaifixadaptor.util.MgramasevaAdapterWrapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,6 +31,7 @@ public class MgramasevaAdapterPaymentConsumer {
 			throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		PaymentRequest paymentRequest = null;
+		log.info("crate payment topic");
 		try {
 			log.debug("Consuming record: " + record);
 			paymentRequest = mapper.convertValue(record, PaymentRequest.class);
@@ -38,6 +41,13 @@ public class MgramasevaAdapterPaymentConsumer {
 				eventType=EventTypeEnum.PAYMENT.toString();
 			}else {
 				eventType=EventTypeEnum.RECEIPT.toString();
+			}
+			
+			if(paymentRequest != null && paymentRequest.getPayment() != null &&
+					!CollectionUtils.isEmpty(paymentRequest.getPayment().getPaymentDetails())) {
+				for(PaymentDetail pd : paymentRequest.getPayment().getPaymentDetails()) {
+					pd.getBill().getBillDetails().removeIf(bd -> bd.getAmountPaid().equals(BigDecimal.ZERO));
+				}
 			}
 			util.callIFIXAdapter(paymentRequest, eventType, paymentRequest.getPayment().getTenantId(),paymentRequest.getRequestInfo());
 		} catch (final Exception e) {
