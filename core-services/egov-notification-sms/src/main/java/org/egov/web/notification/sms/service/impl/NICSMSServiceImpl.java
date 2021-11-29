@@ -25,6 +25,7 @@ import org.egov.web.notification.sms.service.BaseSMSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,42 +35,13 @@ import lombok.extern.slf4j.Slf4j;
 @ConditionalOnProperty(value = "sms.provider.class", matchIfMissing = true, havingValue = "NIC")
 public class NICSMSServiceImpl extends BaseSMSService {
 
-	
-//	@Value("${sms.url.dont_encode_url:true}") private boolean dontEncodeURL;
-//	 
-//	
-//	@Autowired
-//	SMSProperties smsProperties;
-//	
-//    public void submitToExternalSmsService(Sms sms) {
-//    	log.info("submitToExternalSmsService() start");
-//    	try {
-//        	String url = smsProperties.getUrl();
-//        	
-//            if (smsProperties.requestType.equals("POST")) {
-//                HttpEntity<MultiValueMap<String, String>> request = getRequest(sms);
-//                log.info("calling executeApi() method :: POST call");
-//                executeAPI(URI.create(url), HttpMethod.POST, request, String.class);
-//
-//            } else {
-//                final MultiValueMap<String, String> requestBody = getSmsRequestBody(sms);
-//
-//                URI final_url = UriComponentsBuilder.fromHttpUrl(url).queryParams(requestBody).build().encode().toUri();
-//                log.info("calling executeApi() method :: GET call");
-//                executeAPI(final_url, HttpMethod.GET, null, String.class);
-//            }
-//            
-//        } catch (RestClientException e) {
-//            log.error("Error occurred while sending SMS to " + sms.getMobileNumber(), e);
-//            throw e;
-//        }
-//    }
+
 
 	@Autowired
-    private SMSProperties smsProperties;
-    
-    private SSLContext sslContext;
-    
+	private SMSProperties smsProperties;
+
+	private SSLContext sslContext;
+
 	@PostConstruct
 	private void postConstruct() {
 		log.info("postConstruct() start");
@@ -116,39 +88,35 @@ public class NICSMSServiceImpl extends BaseSMSService {
 		}
 	}
 
-    protected void submitToExternalSmsService(Sms sms) {
-    	log.info("submitToExternalSmsService() start");
-    	try {
-        	
-        	String final_data="";
-        	final_data+="username="+ smsProperties.getUsername();
-        	final_data+="&pin="+ smsProperties.getPassword();
-        	
-        	String smsBody = sms.getMessage();
-                	
-        	if(smsBody.split("#").length > 1) {
-        		String templateId = smsBody.split("#")[1];
-            	
-            	sms.setTemplateId(templateId);
-            	smsBody = smsBody.split("#")[0];
-        	}
-      
-        	String message= "" + smsBody + smsProperties.getSmsMsgAppend();
-        	message=URLEncoder.encode(message,"UTF-8");
-        	//TODO not encryppt the message.
-//        	if(textIsInEnglish(message)) {
-//				message=URLEncoder.encode(message,"UTF-8");
-//        	}
-//			else{
-//				message = Hex.encodeHexString(message.getBytes("UTF-16")).toUpperCase();
-//			    final_data+="&msgType=UC";
-//        		log.info("Non-English");
-//			}
-        			
-        	final_data+="&message="+ message;
-        	final_data+="&mnumber=91"+ sms.getMobileNumber();
-        	final_data+="&signature="+ smsProperties.getSenderid();
-        	final_data+="&dlt_entity_id="+ smsProperties.getSmsEntityId();
+	protected void submitToExternalSmsService(Sms sms) {
+		log.info("submitToExternalSmsService() start");
+		try {
+
+			String final_data="";
+			final_data+="username="+ smsProperties.getUsername();
+			final_data+="&pin="+ smsProperties.getPassword();
+
+			String smsBody = sms.getMessage();
+
+			if(smsBody.split("#").length > 1) {
+				String templateId = smsBody.split("#")[1];
+
+				sms.setTemplateId(templateId);
+				smsBody = smsBody.split("#")[0];
+				
+			}else if(StringUtils.isEmpty(sms.getTemplateId())){
+				log.info("No template Id, Message Not sent"+smsBody);
+				return;
+			}
+
+			String message= "" + smsBody ;
+			message=URLEncoder.encode(message,"UTF-8");
+
+
+			final_data+="&message="+ message;
+			final_data+="&mnumber=91"+ sms.getMobileNumber();
+			final_data+="&signature="+ smsProperties.getSenderid();
+			final_data+="&dlt_entity_id="+ smsProperties.getSmsEntityId();
 			if(null == sms.getTemplateId())
 			{
 				final_data+="&dlt_template_id="+smsProperties.getSmsDefaultTmplid();
@@ -156,13 +124,11 @@ public class NICSMSServiceImpl extends BaseSMSService {
 			else
 				final_data+="&dlt_template_id="+sms.getTemplateId();
 
-	    	if(smsProperties.isSmsEnabled()) {
-	    		HttpsURLConnection conn = (HttpsURLConnection) new URL(smsProperties.getUrl()).openConnection();
+			if(smsProperties.isSmsEnabled()) {
+				HttpsURLConnection conn = (HttpsURLConnection) new URL(smsProperties.getUrl()+"?"+final_data).openConnection();
 				conn.setSSLSocketFactory(sslContext.getSocketFactory());
 				conn.setDoOutput(true);
-				//conn.setRequestMethod("POST");
-				conn.setRequestProperty("Content-Length", Integer.toString(final_data.length()));
-				conn.getOutputStream().write(final_data.getBytes());
+				conn.setRequestMethod("GET");
 				final BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				final StringBuffer stringBuffer = new StringBuffer();
 				String line;
@@ -172,22 +138,23 @@ public class NICSMSServiceImpl extends BaseSMSService {
 				log.info("conn: "+conn.toString());
 				if(smsProperties.isDebugMsggateway())
 				{
+					log.info("sms api url : "+ smsProperties.getUrl() );
 					log.info("sms response: " + stringBuffer.toString());
 					log.info("sms data: " + final_data);
 				}
 				rd.close();
 				conn.disconnect();
-	    	}
-    		else {
-    			log.info("SMS Data: "+final_data);
-    		}
-        }
-        catch(Exception e) {
-        	e.printStackTrace();
-        	log.error("Error occurred while sending SMS to : " + sms.getMobileNumber(), e);
-        }
-    }
-    
+			}
+			else {
+				log.info("SMS Data: "+final_data);
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			log.error("Error occurred while sending SMS to : " + sms.getMobileNumber(), e);
+		}
+	}
+
 	private boolean textIsInEnglish(String text) {
 		ArrayList<Character.UnicodeBlock> english = new ArrayList<>();
 		english.add(Character.UnicodeBlock.BASIC_LATIN);
@@ -195,16 +162,16 @@ public class NICSMSServiceImpl extends BaseSMSService {
 		english.add(Character.UnicodeBlock.LATIN_EXTENDED_A);
 		english.add(Character.UnicodeBlock.GENERAL_PUNCTUATION);
 		for (char currentChar : text.toCharArray()) {
-		    Character.UnicodeBlock unicodeBlock = Character.UnicodeBlock.of(currentChar);
-		    if (!english.contains(unicodeBlock)){
-		        return false;
-		    }
+			Character.UnicodeBlock unicodeBlock = Character.UnicodeBlock.of(currentChar);
+			if (!english.contains(unicodeBlock)){
+				return false;
+			}
 		}
 		return true;
 	}
-	
-	
-	
-	
+
+
+
+
 
 }
