@@ -56,4 +56,29 @@ public class MgramasevaAdapterPaymentConsumer {
 
 		// TODO enable after implementation
 	}
+	
+	@KafkaListener(topics = { "${kafka.topics.cancel.payment}" })
+	public void listenForCancel(final HashMap<String, Object> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic)
+			throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		PaymentRequest paymentRequest = null;
+		log.info("cancel payment topic");
+		try {
+			log.debug("Consuming record: " + record);
+			paymentRequest = mapper.convertValue(record, PaymentRequest.class);
+			String eventType=null;
+			if(paymentRequest.getPayment().getPaymentDetails().get(0).getBusinessService().contains(Constants.EXPENSE))
+			{
+				eventType=EventTypeEnum.PAYMENT.toString();
+			}else {
+				eventType=EventTypeEnum.RECEIPT.toString();
+			}
+			paymentRequest.getPayment().getPaymentDetails().get(0).getBill().getBillDetails().get(0).getBillAccountDetails().get(0).setAmount(paymentRequest.getPayment().getPaymentDetails().get(0).getBill().getBillDetails().get(0).getBillAccountDetails().get(0).getAmount().negate());			
+			paymentRequest.getPayment().getPaymentDetails().get(0).getBill().getBillDetails().get(0).getBillAccountDetails().get(0).setAdjustedAmount(paymentRequest.getPayment().getPaymentDetails().get(0).getBill().getBillDetails().get(0).getBillAccountDetails().get(0).getAdjustedAmount().negate());
+			util.callIFIXAdapter(paymentRequest, eventType, paymentRequest.getPayment().getTenantId(),paymentRequest.getRequestInfo());
+		} catch (final Exception e) {
+			log.error("Error while listening to value: " + record + " on topic: " + topic + ": " + e);
+		}
+	}
+	
 }
