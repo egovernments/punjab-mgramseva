@@ -271,7 +271,7 @@ public class DemandGenerationConsumer {
 
 
 		LocalDate fromDate = LocalDate.parse(billingCycle.split("-")[0].trim(), formatter);
-		LocalDate toDate = LocalDate.parse(billingCycle.split("-")[0].trim(), formatter);
+		LocalDate toDate = LocalDate.parse(billingCycle.split("-")[1].trim(), formatter);
 
 		Long dayStartTime = LocalDateTime
 				.of(fromDate.getYear(), fromDate.getMonth(), fromDate.getDayOfMonth(), 0, 0, 0)
