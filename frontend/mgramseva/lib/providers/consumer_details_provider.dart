@@ -122,7 +122,7 @@ class ConsumerProvider with ChangeNotifier {
     waterconnection = data;
     waterconnection.getText();
     selectedcycle = DateFormats.timeStampToDate(
-                waterconnection.meterInstallationDate,
+                waterconnection.previousReadingDate,
                 format: 'yyyy-MM-dd')
             .toString() +
         " 00:00:00.000";
@@ -410,8 +410,8 @@ class ConsumerProvider with ChangeNotifier {
   onChangeBillingcycle(val) {
     selectedcycle = val;
     var date = val;
-    waterconnection.BillingCycleCtrl.text = selectedcycle;
-    waterconnection.meterInstallationDateCtrl.text = selectedcycle;
+    waterconnection.BillingCycleCtrl.text = selectedcycle ?? '';
+    waterconnection.meterInstallationDateCtrl.text = selectedcycle ?? '';
     notifyListeners();
   }
 

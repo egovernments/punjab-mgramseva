@@ -107,6 +107,14 @@ class WaterConnection {
         : DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(
             meterInstallationDateCtrl.text,
             dateFormat: "dd/MM/yyyy"));
+
+    if (connectionType != 'Metered') {
+      previousReadingDate = BillingCycleCtrl.text.trim() != ""
+          ? DateFormats.dateToTimeStamp(
+        BillingCycleCtrl.text.trim(),
+      )
+          : null;
+    }
   }
 
   getText() {
