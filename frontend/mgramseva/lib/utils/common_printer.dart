@@ -1,6 +1,10 @@
 import 'package:bluetooth_thermal_printer/bluetooth_thermal_printer.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+
+import 'Locilization/application_localizations.dart';
+import 'global_variables.dart';
 
 class CommonPrinter {
   static bool connected = false;
@@ -92,7 +96,8 @@ class CommonPrinter {
     bytes += generator.image(value);
     bytes += generator.text('--***--',
         styles: PosStyles(align: PosAlign.center), linesAfter: 1);
-    bytes += generator.text("Powered by eGov Foundation",
+    bytes += generator.text("${ApplicationLocalizations.of(navigatorKey.currentContext!)
+        .translate(i18.common.RECEIPT_FOOTER)}",
         styles: PosStyles(align: PosAlign.center), linesAfter: 1);
 
     // ticket.feed(2);

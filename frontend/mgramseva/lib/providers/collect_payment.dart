@@ -123,8 +123,9 @@ class CollectPaymentProvider with ChangeNotifier {
                         width: 20,
                         height: 40,
                         image: NetworkImage(
-                          apiBaseUrl + 'logo/punjab-logo.png',
-                        )),
+              apiBaseUrl +
+              '/mgramseva-dev-assets/logo/punjab-logo.png',
+            )),
                     Container(
                       width: 90,
                       margin: EdgeInsets.all(5),

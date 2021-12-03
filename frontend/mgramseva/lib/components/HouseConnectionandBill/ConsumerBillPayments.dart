@@ -88,7 +88,8 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                         width: 20,
                         height: 40,
                         image: NetworkImage(
-                          apiBaseUrl + 'logo/punjab-logo.png',
+                          apiBaseUrl +
+                              '/mgramseva-dev-assets/logo/punjab-logo.png',
                         )),
                     Container(
                       width: 90,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mgramseva/model/connection/property.dart';
@@ -120,7 +121,7 @@ class WaterConnection {
   getText() {
     OldConnectionCtrl.text = oldConnectionNo ?? "";
     meterIdCtrl.text = meterId ?? "";
-    arrearsCtrl.text = arrears == null ? '' : arrears.toString();
+    arrearsCtrl.text = (arrears == null ? '' : getFilteredAmount(arrears!));
 
     previousReadingDateCtrl.text = previousReadingDate == null
         ? DateFormats.timeStampToDate(meterInstallationDate)
@@ -136,6 +137,12 @@ class WaterConnection {
       om_4Ctrl.text = additionalDetails!.initialMeterReading!.toString()[3];
       om_5Ctrl.text = additionalDetails!.initialMeterReading!.toString()[4];
     }
+  }
+
+ String getFilteredAmount(double amount) {
+     if(kIsWeb) return amount.toString();
+     var decimalAmount = (amount.toString().split('.'))[1];
+     return int.parse(decimalAmount) > 0 ? amount.toString() : amount.toString().split('.').first;
   }
 
   WaterConnection();
