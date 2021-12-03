@@ -15,7 +15,7 @@ import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 
 class SearchConnectionProvider with ChangeNotifier {
-  late WaterConnections waterConnections;
+  WaterConnections? waterConnections;
   final formKey = GlobalKey<FormState>();
   var autoValidation = false;
   var streamController = StreamController.broadcast();
