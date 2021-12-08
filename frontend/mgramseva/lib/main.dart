@@ -39,6 +39,7 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:new_version/new_version.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -171,6 +172,40 @@ class _LandingPageState extends State<LandingPage> {
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
+    checkVersion();
+  }
+
+  void checkVersion() async {
+    final newVersion = NewVersion(
+      androidId: "com.dwss.mgramseva",
+      //iOSId: "com.dwss.mgramseva",
+    );
+    //newVersion.showAlertIfNecessary(context: context); //Use this if you want the update alert with default settings
+    final status = await newVersion.getVersionStatus();
+
+    if (status != null && status.canUpdate) {
+      int.parse(status.storeVersion.split('.').first) >
+              int.parse(status.localVersion.split('.').first)
+          ? newVersion.showUpdateDialog(
+              context: context,
+              versionStatus: status,
+              dialogTitle: 'UPDATE AVAILABLE',
+              updateButtonText: 'Update Now',
+              allowDismissal: false,
+              dismissButtonText: '',
+              dialogText:
+                  'Please update the app from ${status.localVersion} to ${status.storeVersion}',
+            )
+          : newVersion.showUpdateDialog(
+              context: context,
+              versionStatus: status,
+              dialogTitle: 'UPDATE AVAILABLE',
+              updateButtonText: 'Update Now',
+              dismissButtonText: 'Skip',
+              dialogText:
+                  'Please update the app from ${status.localVersion} to ${status.storeVersion}',
+            );
+    }
   }
 
   @override

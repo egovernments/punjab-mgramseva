@@ -57,6 +57,7 @@ dependencies:
   flutter_focus_watcher: ^2.0.0
   path: ^1.8.0
   esc_pos_utils: ^1.1.0
+  new_version: ^0.2.3
 
 dev_dependencies:
   flutter_launcher_icons: "^0.9.2"
