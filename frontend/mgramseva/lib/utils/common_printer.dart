@@ -94,11 +94,6 @@ class CommonPrinter {
     CapabilityProfile profile = await CapabilityProfile.load();
     final generator = Generator(PaperSize.mm80, profile);
     bytes += generator.image(value);
-    bytes += generator.text('--***--',
-        styles: PosStyles(align: PosAlign.center), linesAfter: 1);
-    bytes += generator.text("${ApplicationLocalizations.of(navigatorKey.currentContext!)
-        .translate(i18.common.RECEIPT_FOOTER)}",
-        styles: PosStyles(align: PosAlign.center), linesAfter: 1);
 
     // ticket.feed(2);
     bytes += generator.cut();

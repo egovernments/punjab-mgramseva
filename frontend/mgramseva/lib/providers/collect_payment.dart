@@ -1,18 +1,16 @@
 import 'dart:async';
 import 'dart:typed_data';
-
+import '../components/HouseConnectionandBill/jsconnnector.dart' as js;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
-import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
-import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/ConnectionResults/ConnectionDetailsCard.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_printer.dart';
@@ -76,24 +74,33 @@ class CollectPaymentProvider with ChangeNotifier {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-            width: 60,
+            margin: EdgeInsets.zero,
+            padding: EdgeInsets.zero,
+            width: kIsWeb ? 150 : 65,
             child: Text(
                 ApplicationLocalizations.of(navigatorKey.currentContext!)
                     .translate(key),
+                maxLines: 3,
+                textScaleFactor: kIsWeb ? 2.5 : 1,
+                textAlign: TextAlign.start,
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 6,
-                    fontWeight: FontWeight.bold))),
+                    color: Colors.red,
+                    fontSize: kIsWeb ? 5 : 6,
+                    fontWeight: FontWeight.w900))),
         Container(
-          width: 90,
-          child: Text(
+            width: kIsWeb ? 215 : 85,
+            child: Text(
               ApplicationLocalizations.of(navigatorKey.currentContext!)
                   .translate(value),
+              maxLines: 3,
+              overflow: TextOverflow.fade,
+              textAlign: TextAlign.start,
+              textScaleFactor: kIsWeb ? 2.5 : 1,
               style: TextStyle(
-                color: Colors.black,
-                fontSize: 6,
-              )),
-        ),
+                  color: Colors.red,
+                  fontSize: kIsWeb ? 5 : 6,
+                  fontWeight: FontWeight.w900),
+            )),
       ],
     );
   }
@@ -110,34 +117,41 @@ class CollectPaymentProvider with ChangeNotifier {
     // getBluetooth();
     screenshotController
         .captureFromWidget(Container(
-            margin: EdgeInsets.zero,
-            padding: EdgeInsets.zero,
-            width: 150,
+            width: 375,
+            margin: EdgeInsets.all(10),
+            padding: EdgeInsets.all(10),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Image(
-                        width: 20,
-                        height: 40,
-                        image: NetworkImage(
-              apiBaseUrl +
-              '/mgramseva-dev-assets/logo/punjab-logo.png',
-            )),
+                    kIsWeb
+                        ? SizedBox(
+                            width: 70,
+                            height: 70,
+                          )
+                        : Image(
+                            width: 40,
+                            height: 40,
+                            image: NetworkImage(
+                              apiBaseUrl +
+                                  '/mgramseva-dev-assets/logo/govt-of-punjab-logo.png',
+                            )),
                     Container(
-                      width: 90,
+                       width: kIsWeb ? 290 : 90,
                       margin: EdgeInsets.all(5),
                       child: Text(
                         ApplicationLocalizations.of(
                                 navigatorKey.currentContext!)
                             .translate(i18.consumerReciepts
                                 .GRAM_PANCHAYAT_WATER_SUPPLY_AND_SANITATION),
+                        textScaleFactor: kIsWeb ? 3 : 1,
+                        maxLines: 3,
                         style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
-                            height: 1.2,
+                            color: Colors.blue,
+                            fontSize: 10,
+                            height: 1,
                             fontWeight: FontWeight.bold,
                             fontStyle: FontStyle.italic),
                         textAlign: TextAlign.left,
@@ -148,15 +162,22 @@ class CollectPaymentProvider with ChangeNotifier {
                 SizedBox(
                   height: 5,
                 ),
-                Text(
-                    ApplicationLocalizations.of(navigatorKey.currentContext!)
-                        .translate(i18.consumerReciepts.WATER_RECEIPT),
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12,
-                      height: 1,
-                      fontWeight: FontWeight.bold,
-                    )),
+                Container(
+                    width: kIsWeb
+                        ? MediaQuery.of(navigatorKey.currentContext!).size.width
+                        : 90,
+                    margin: EdgeInsets.all(5),
+                    child: Text(
+                        ApplicationLocalizations.of(
+                                navigatorKey.currentContext!)
+                            .translate(i18.consumerReciepts.WATER_RECEIPT),
+                        textScaleFactor: kIsWeb ? 3 : 1,
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 10,
+                          height: 1,
+                          fontWeight: FontWeight.bold,
+                        ))),
                 SizedBox(
                   height: 8,
                 ),
@@ -210,12 +231,12 @@ class CollectPaymentProvider with ChangeNotifier {
                 getprinterlabel(
                     i18.consumerReciepts.RECEIPT_BILL_PERIOD,
                     DateFormats.timeStampToDate(
-                            item.paymentDetails.first.bill.billDetails.last
+                            item.paymentDetails.first.bill.billDetails.first
                                 .fromPeriod,
                             format: "dd/MM/yyyy") +
                         '-' +
                         DateFormats.timeStampToDate(
-                                item.paymentDetails.first.bill.billDetails.last
+                                item.paymentDetails.first.bill.billDetails.first
                                     .toPeriod,
                                 format: "dd/MM/yyyy")
                             .toString()),
@@ -231,11 +252,34 @@ class CollectPaymentProvider with ChangeNotifier {
                             .convert('en-in', item.totalAmountPaid.toInt())
                             .toString()) +
                         ' only')),
+                SizedBox(
+                  height: 5,
+                ),
+                Text('- - *** - -',
+                    textScaleFactor: kIsWeb ? 3 : 1,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 6,
+                        fontWeight: FontWeight.bold)),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                    "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.RECEIPT_FOOTER)}",
+                    textScaleFactor: kIsWeb ? 3 : 1,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 6,
+                        fontWeight: FontWeight.bold))
               ],
             )))
         .then((value) => {
-              CommonPrinter.printTicket(
-                  img.decodeImage(value), navigatorKey.currentContext!),
+              kIsWeb
+                  ? js.onButtonClick(value)
+                  : CommonPrinter.printTicket(
+                      img.decodeImage(value), navigatorKey.currentContext!)
               // print(value as Image),
             });
   }
