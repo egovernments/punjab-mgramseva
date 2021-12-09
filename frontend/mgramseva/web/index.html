@@ -237,7 +237,7 @@
         .catch(handleError);
     }
 
-    function onButtonClick(value) {
+    function onButtonClick(value, logo) {
       console.log("Button click function called");
       printCharacteristic = null;
       index = 0;
@@ -277,7 +277,7 @@
             }, ''));
 
             var img1 = new Image();
-            image1.src = 'https://mgramseva-qa.egov.org.in/mgramseva-dev-assets/logo/punjab-logo.png';
+            image1.src = logo;
             var img = new Image();
             img.src = 'data:image/png;base64, ' + base64Data;
             image.src = img.src;

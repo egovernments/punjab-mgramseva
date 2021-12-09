@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:mgramseva/providers/language.dart';
+
 import '../components/HouseConnectionandBill/jsconnnector.dart' as js;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -106,6 +108,13 @@ class CollectPaymentProvider with ChangeNotifier {
   }
 
   Future<Uint8List?> _capturePng(item, FetchBill fetchBill) async {
+    item.paymentDetails!.last.bill!.billDetails
+        ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
+
+    var stateProvider = Provider.of<LanguageProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -134,12 +143,11 @@ class CollectPaymentProvider with ChangeNotifier {
                         : Image(
                             width: 40,
                             height: 40,
-                            image: NetworkImage(
-                              apiBaseUrl +
-                                  '/mgramseva-dev-assets/logo/govt-of-punjab-logo.png',
-                            )),
+                            image: NetworkImage(stateProvider
+                                .stateInfo!.stateLogoURL
+                                .toString())),
                     Container(
-                       width: kIsWeb ? 290 : 90,
+                      width: kIsWeb ? 290 : 90,
                       margin: EdgeInsets.all(5),
                       child: Text(
                         ApplicationLocalizations.of(
@@ -277,7 +285,8 @@ class CollectPaymentProvider with ChangeNotifier {
             )))
         .then((value) => {
               kIsWeb
-                  ? js.onButtonClick(value)
+                  ? js.onButtonClick(
+                      value, stateProvider.stateInfo!.stateLogoURL.toString())
                   : CommonPrinter.printTicket(
                       img.decodeImage(value), navigatorKey.currentContext!)
               // print(value as Image),
