@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/Env/app_config.dart';
+import 'package:mgramseva/utils/constants.dart';
 
 class FooterBanner extends StatelessWidget {
   @override
@@ -10,7 +12,7 @@ class FooterBanner extends StatelessWidget {
         child: Image(
             width: 140,
             image: NetworkImage(
-              "https://s3.ap-south-1.amazonaws.com/egov-qa-assets/digit-footer-bw.png",
+              "$apiBaseUrl${Constants.DIGIT_FOOTER_WHITE_ENDPOINT}",
             )),
       ),
     );
