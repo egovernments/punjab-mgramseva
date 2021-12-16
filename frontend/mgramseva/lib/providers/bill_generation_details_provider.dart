@@ -215,8 +215,9 @@ class BillGenerationProvider with ChangeNotifier {
               commonProvider.userDetails!.userRequest!.tenantId.toString()));
       languageList = res;
       streamController.add(billGenerateDetails);
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
     }
   }
 

@@ -76,4 +76,6 @@ class Routes {
       '/feedBack/submittedSuccessfully';
 
   static const String COMMON_DOWNLOAD = '/withoutAuth/mgramseva-common';
+
+  static const String NOTIFICATIONS = '/home/notifications';
 }

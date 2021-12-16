@@ -34,6 +34,7 @@ class BuildTextField extends StatefulWidget {
   final GlobalKey? contextkey;
   final AutovalidateMode? autoValidation;
   final bool? isFilled;
+  final Widget? suffixIcon;
 
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
@@ -61,7 +62,8 @@ class BuildTextField extends StatefulWidget {
       this.contextkey,
       this.isFilled,
       this.requiredMessage,
-      this.autoValidation});
+      this.autoValidation,
+      this.suffixIcon});
 
   @override
   State<StatefulWidget> createState() => _BuildTextField();
@@ -112,43 +114,44 @@ class _BuildTextField extends State<BuildTextField> {
                     return null;
                   },
             decoration: InputDecoration(
-              hintText: widget.placeHolder != null
-                  ? ApplicationLocalizations.of(context)
-                      .translate((widget.placeHolder!))
-                  : "",
-              border: widget.inputBorder,
-              enabledBorder: widget.inputBorder,
-              errorMaxLines: 2,
-              enabled: widget.isDisabled ?? true,
-              filled: widget.isFilled,
-              fillColor: widget.isDisabled != null && widget.isDisabled!
-                  ? Colors.grey
-                  : Colors.white,
-              prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-              prefixStyle: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: widget.isDisabled != null && widget.isDisabled!
-                      ? Colors.grey
-                      : Theme.of(context).primaryColorDark),
-              prefixIcon: widget.prefixIcon ??
-                  (widget.prefixText == ''
-                      ? null
-                      : Padding(
-                          padding: const EdgeInsets.only(
-                              top: 10, left: 10, bottom: 10, right: 0),
-                          child: Text(
-                            widget.prefixText,
-                            style: TextStyle(
-                                fontSize: kIsWeb ? 15 : 16,
-                                fontWeight: FontWeight.w400,
-                                color: widget.isDisabled != null &&
-                                        widget.isDisabled!
-                                    ? Colors.grey
-                                    : Theme.of(context).primaryColorDark),
-                          ),
-                        )),
-            ),
+                hintText: widget.placeHolder != null
+                    ? ApplicationLocalizations.of(context)
+                        .translate((widget.placeHolder!))
+                    : "",
+                border: widget.inputBorder,
+                enabledBorder: widget.inputBorder,
+                errorMaxLines: 2,
+                enabled: widget.isDisabled ?? true,
+                filled: widget.isFilled,
+                fillColor: widget.isDisabled != null && widget.isDisabled!
+                    ? Colors.grey
+                    : Colors.white,
+                prefixIconConstraints:
+                    BoxConstraints(minWidth: 0, minHeight: 0),
+                prefixStyle: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: widget.isDisabled != null && widget.isDisabled!
+                        ? Colors.grey
+                        : Theme.of(context).primaryColorDark),
+                prefixIcon: widget.prefixIcon ??
+                    (widget.prefixText == ''
+                        ? null
+                        : Padding(
+                            padding: const EdgeInsets.only(
+                                top: 10, left: 10, bottom: 10, right: 0),
+                            child: Text(
+                              widget.prefixText,
+                              style: TextStyle(
+                                  fontSize: kIsWeb ? 15 : 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: widget.isDisabled != null &&
+                                          widget.isDisabled!
+                                      ? Colors.grey
+                                      : Theme.of(context).primaryColorDark),
+                            ),
+                          )),
+                suffixIcon: widget.suffixIcon),
             onChanged: widget.onChange));
 // Label Text
     Widget textLabelwidget =

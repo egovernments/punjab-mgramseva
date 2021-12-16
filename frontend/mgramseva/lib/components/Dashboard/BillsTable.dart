@@ -26,6 +26,7 @@ class BillsTable extends StatefulWidget {
 
 class _BillsTable extends State<BillsTable> {
   final ScrollController controller = ScrollController();
+  final double columnRowFixedHeight = 52.0;
 
   @override
   void initState() {
@@ -121,6 +122,15 @@ class _BillsTable extends State<BillsTable> {
     );
   }
 
+  double columnRowIncreasedHeight(int index) {
+    return (50 +
+        widget.tableData[index].tableRow.first.label
+            .substring(28)
+            .length
+            .toDouble());
+    //if greater than 28 characters
+  }
+
   Widget _generateFirstColumnRow(BuildContext context, int index) {
     return LayoutBuilder(builder: (context, constraints) {
       var data = widget.tableData[index].tableRow.first;
@@ -145,7 +155,9 @@ class _BillsTable extends State<BillsTable> {
                 style: TextStyle(color: Theme.of(context).primaryColor),
               ),
               width: widget.leftColumnWidth,
-              height: 52,
+              height: widget.tableData[index].tableRow.first.label.length > 28
+                  ? columnRowIncreasedHeight(index)
+                  : columnRowFixedHeight,
               padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
               alignment: Alignment.centerLeft,
             ),
@@ -160,16 +172,19 @@ class _BillsTable extends State<BillsTable> {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: Text(ApplicationLocalizations.of(context).translate(input),
-                style: style,
-            maxLines: 2,
+            child: Text(
+              ApplicationLocalizations.of(context).translate(input),
+              style: style,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           )
         ],
       ),
       width: widget.leftColumnWidth,
-      height: 52,
+      height: widget.tableData[index].tableRow.first.label.length > 28
+          ? columnRowIncreasedHeight(index)
+          : columnRowFixedHeight,
       padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
       alignment: Alignment.centerLeft,
     );

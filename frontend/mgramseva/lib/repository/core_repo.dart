@@ -89,14 +89,26 @@ class CoreRepository extends BaseService {
           var path = _paths[i];
           http.MultipartFile multipartFile = http.MultipartFile.fromBytes(
               'file', path.bytes!,
+              contentType: CommonMethods().getMediaType(path.path),
               filename: '${path.name}.${path.extension?.toLowerCase()}');
           request.files.add(multipartFile);
         }
       } else if (_paths is List<File>) {
         _paths.forEach((file) async {
           request.files.add(await http.MultipartFile.fromPath('file', file.path,
+              contentType: CommonMethods().getMediaType(file.path),
               filename: '${file.path.split('/').last}'));
         });
+      } else if (_paths is List<CustomFile>) {
+        for (var i = 0; i < _paths.length; i++) {
+          var path = _paths[i];
+          var fileName = '${path.name}.${path.extension.toLowerCase()}';
+          http.MultipartFile multipartFile = http.MultipartFile.fromBytes(
+              'file', path.bytes,
+              contentType: CommonMethods().getMediaType(fileName),
+              filename: fileName);
+          request.files.add(multipartFile);
+        }
       }
       request.fields['tenantId'] =
           commonProvider.userDetails!.selectedtenant!.code!;
@@ -211,6 +223,37 @@ class CoreRepository extends BaseService {
         eventsResponse = EventsList.fromJson((res));
 
         return eventsResponse;
+      }
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+    }
+  }
+
+  Future<bool?> updateNotifications(events) async {
+    EventsList? eventsResponse;
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+
+      var res = await makeRequest(
+          url: Url.UPDATE_EVENTS,
+          method: RequestType.POST,
+          body: events,
+          requestInfo: RequestInfo(
+              APIConstants.API_MODULE_NAME,
+              APIConstants.API_VERSION,
+              APIConstants.API_TS,
+              "_update",
+              APIConstants.API_DID,
+              APIConstants.API_KEY,
+              APIConstants.API_MESSAGE_ID,
+              commonProvider.userDetails!.accessToken));
+
+      if (res != null) {
+        return true;
+      } else {
+        return false;
       }
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);

@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
-import 'package:universal_html/html.dart';
 
 class FetchBillProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -33,8 +33,9 @@ class FetchBillProvider with ChangeNotifier {
         billList.bill = [];
         streamController.add(billList);
       }
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
     }
   }
 
@@ -66,8 +67,9 @@ class FetchBillProvider with ChangeNotifier {
           // window.location.href = "https://www.google.com/";
         });
       });
-    } catch (e) {
-      // window.location.href = "https://www.google.com/";
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
     }
   }
 

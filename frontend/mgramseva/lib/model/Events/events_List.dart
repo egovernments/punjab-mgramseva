@@ -7,6 +7,9 @@ class EventsList {
   @JsonKey(name: "events")
   List<Events>? events;
 
+  @JsonKey(name: "totalCount")
+  int? totalCount;
+
   EventsList();
   factory EventsList.fromJson(Map<String, dynamic> json) =>
       _$EventsListFromJson(json);
@@ -41,15 +44,18 @@ class Events {
   @JsonKey(name: "actions")
   Actions? actions;
   @JsonKey(name: "eventDetails")
+  // ignore: unnecessary_question_mark
   dynamic? eventDetails;
   @JsonKey(name: "auditDetails")
   AuditDetails? auditDetails;
+  @JsonKey(name: "additionalDetails")
+  AdditionalDetails? additionalDetails;
   @JsonKey(name: "recepientEventMap")
   String? recepientEventMap;
   @JsonKey(name: "generateCounterEvent")
   String? generateCounterEvent;
   @JsonKey(name: "internallyUpdted")
-  String? internallyUpdted;
+  bool? internallyUpdted;
   Events();
   factory Events.fromJson(Map<String, dynamic> json) => _$EventsFromJson(json);
 
@@ -110,4 +116,17 @@ class Recepient {
       _$RecepientFromJson(json);
 
   Map<String, dynamic> toJson() => _$RecepientToJson(this);
+}
+
+@JsonSerializable()
+class AdditionalDetails {
+  dynamic attributes;
+  dynamic localizationCode;
+
+  AdditionalDetails({this.attributes, this.localizationCode});
+
+  factory AdditionalDetails.fromJson(Map<String, dynamic> json) =>
+      _$AdditionalDetailsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AdditionalDetailsToJson(this);
 }

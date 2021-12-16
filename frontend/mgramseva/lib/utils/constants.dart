@@ -7,6 +7,8 @@ import 'package:mgramseva/utils/models.dart';
 // ignore: non_constant_identifier_names
 class Constants {
   static const int PAGINATION_LIMIT = 75;
+  static const int MAX_PDF_PAGES = 100;
+
   static const String DIGIT_FOOTER_ENDPOINT =
       'mgramseva-dev-assets/logo/digit-footer.png';
   static const String DIGIT_FOOTER_WHITE_ENDPOINT =
@@ -35,13 +37,13 @@ class Constants {
   ];
 
   static List<HomeItem> HOME_ITEMS = [
-    // HomeItem(
-    //   "CORE_HOUSEHOLD_REGISTER",
-    //   (i18.homeWalkThroughMSg.HOUSEHOLD_REGISTER_MSG),
-    //   HomeIcons.hhregister,
-    //   Routes.HOUSEHOLD_REGISTER,
-    //   {},
-    // ),
+    HomeItem(
+      "CORE_HOUSEHOLD_REGISTER",
+      (i18.homeWalkThroughMSg.HOUSEHOLD_REGISTER_MSG),
+      HomeIcons.hhregister,
+      Routes.HOUSEHOLD_REGISTER,
+      {},
+    ),
     HomeItem(
         "CORE_COLLECT_PAYMENTS",
         (i18.homeWalkThroughMSg.COLLECT_PAYMENTS_MSG),

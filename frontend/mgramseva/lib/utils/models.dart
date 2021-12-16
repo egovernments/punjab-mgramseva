@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 enum RequestType { GET, PUT, POST, DELETE }
@@ -14,6 +16,8 @@ enum ExceptionType {
 enum MDMSType { BusinessService, ConsumerType, TaxHeadCode }
 
 enum DashBoardType { collections, Expenditure }
+
+enum DateType { YTD, MONTH, YEAR, LABEL }
 
 class KeyValue {
   String label;
@@ -80,4 +84,34 @@ class SortBy {
   final String key;
   final bool isAscending;
   SortBy(this.key, this.isAscending);
+}
+
+class DatePeriod {
+  final DateTime startDate;
+  final DateTime endDate;
+  final DateType dateType;
+  final String? label;
+  DatePeriod(this.startDate, this.endDate, this.dateType, [this.label]);
+}
+
+class Legend {
+  final String label;
+  final Color color;
+
+  Legend(this.label, this.color);
+}
+
+class CustomFile {
+  final Uint8List bytes;
+  final String name;
+  final String extension;
+
+  CustomFile(this.bytes, this.name, this.extension);
+}
+
+class YearWithMonths {
+  final List<DatePeriod> monthList;
+  final DatePeriod year;
+  bool isExpanded = false;
+  YearWithMonths(this.monthList, this.year);
 }
