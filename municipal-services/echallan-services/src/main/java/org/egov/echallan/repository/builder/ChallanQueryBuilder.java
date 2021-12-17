@@ -222,7 +222,7 @@ public class ChallanQueryBuilder {
         
         finalQuery = finalQuery.replace("{pagination}", " offset ?  limit ?  ");
 	    preparedStmtList.add(offset);
-        preparedStmtList.add(limit+offset);
+        preparedStmtList.add(limit);
 
        return finalQuery;
     }

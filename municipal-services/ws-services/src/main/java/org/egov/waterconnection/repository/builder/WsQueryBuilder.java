@@ -399,7 +399,7 @@ public class WsQueryBuilder {
 		} else {
 			finalQuery = finalQuery.replace("{pagination}", " offset ?  limit ?  ");
 			preparedStmtList.add(offset);
-			preparedStmtList.add(limit + offset);
+			preparedStmtList.add(limit);
 		}
 		System.out.println("Final Query ::" + finalQuery);
 		return finalQuery;
