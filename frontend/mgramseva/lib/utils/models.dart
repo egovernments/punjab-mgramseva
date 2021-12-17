@@ -51,7 +51,8 @@ class SearchResult {
 class PaginationResponse {
   int offset = 0;
   int limit;
-  PaginationResponse(this.limit, this.offset);
+  bool isPageChange;
+  PaginationResponse(this.limit, this.offset, [this.isPageChange = false]);
 }
 
 class TableHeader {
