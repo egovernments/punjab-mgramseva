@@ -6,6 +6,7 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/household_register_provider.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
@@ -123,5 +124,6 @@ class _HouseholdRegister extends State<HouseholdRegister>
           ..createPdfForAllConnections(context, false);
       },
       icon: Image.asset('assets/png/whats_app.png'),
-      label: Text(i18.common.SHARE));
+      label: Text(
+          ApplicationLocalizations.of(context).translate(i18.common.SHARE)));
 }

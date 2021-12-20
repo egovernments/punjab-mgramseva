@@ -14,3 +14,7 @@ class APIConstants {
   static const String API_KEY = '';
   static const String API_TS = '';
 }
+
+/// Custom overly
+OverlayState? overlayState;
+OverlayEntry? overlayEntry;

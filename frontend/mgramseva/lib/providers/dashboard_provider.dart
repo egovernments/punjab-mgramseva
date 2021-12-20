@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/common/metric.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
-import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -12,6 +12,7 @@ import 'package:mgramseva/repository/dashboard.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/screeens/dashboard/dashboard_pdf.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -19,6 +20,7 @@ import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
@@ -30,9 +32,9 @@ class DashBoardProvider with ChangeNotifier {
   ExpensesDetailsWithPagination? expenseDashboardDetails;
   int offset = 1;
   int limit = 10;
-  late DateTime selectedMonth;
+  late DatePeriod selectedMonth;
   SortBy? sortBy;
-  late List<DateTime> dateList;
+  late List<DatePeriod> dateList;
   WaterConnections? waterConnectionsDetails;
   var selectedDashboardType = DashBoardType.collections;
   String selectedTab = 'all';
@@ -41,6 +43,9 @@ class DashBoardProvider with ChangeNotifier {
   Timer? debounce;
   List<PropertyType> propertyTaxList = <PropertyType>[];
   bool isLoaderEnabled = false;
+  var scrollController = ScrollController();
+  Map? userFeedBackInformation;
+  List<Metric>? metricInformation;
 
   @override
   void dispose() {
@@ -100,9 +105,9 @@ class DashBoardProvider with ChangeNotifier {
       'offset': '${offset - 1}',
       'limit': '$limit',
       'fromDate':
-          '${DateTime(selectedMonth.year, selectedMonth.month, 1).millisecondsSinceEpoch}',
+      '${selectedMonth.startDate.millisecondsSinceEpoch}',
       'toDate':
-          '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0, 23,59, 59, 999).millisecondsSinceEpoch}',
+      '${selectedMonth.endDate.millisecondsSinceEpoch}',
       'vendorName': searchController.text.trim(),
       'challanNo': searchController.text.trim(),
       'freeSearch': 'true',
@@ -118,7 +123,7 @@ class DashBoardProvider with ChangeNotifier {
     }
 
     if(selectedTab != 'all'){
-    query['isBillPaid'] = ((selectedTab == 'ACTIVE') ? 'false' : 'true');
+      query['isBillPaid'] = ((selectedTab == 'ACTIVE') ? 'false' : 'true');
     };
 
     query
@@ -141,10 +146,10 @@ class DashBoardProvider with ChangeNotifier {
 
       if (response != null) {
         if(selectedTab == 'all'){
-        expenditureCountHolder['all'] = response.totalCount ?? 0;
-        expenditureCountHolder['pending'] = int.parse(response.billDataCount?.notPaidCount ?? '0');
-        expenditureCountHolder['paid'] = int.parse(response.billDataCount?.paidCount ?? '0');
-         }else if(searchResponse != null){
+          expenditureCountHolder['all'] = response.totalCount ?? 0;
+          expenditureCountHolder['pending'] = int.parse(response.billDataCount?.notPaidCount ?? '0');
+          expenditureCountHolder['paid'] = int.parse(response.billDataCount?.paidCount ?? '0');
+        }else if(searchResponse != null){
           expenditureCountHolder['all'] = searchResponse.totalCount ?? 0;
           expenditureCountHolder['pending'] = int.parse(searchResponse.billDataCount?.notPaidCount ?? '0');
           expenditureCountHolder['paid'] = int.parse(searchResponse.billDataCount?.paidCount ?? '0');
@@ -163,11 +168,11 @@ class DashBoardProvider with ChangeNotifier {
             expenseDashboardDetails!.expenseDetailList!.isEmpty
                 ? <ExpensesDetailsModel>[]
                 : expenseDashboardDetails?.expenseDetailList?.sublist(
-                    offSet - 1,
-                    ((offset + limit - 1) >
-                            (expenseDashboardDetails?.totalCount ?? 0))
-                        ? (expenseDashboardDetails!.totalCount!)
-                        : (offset + limit - 1)));
+                offSet - 1,
+                ((offset + limit - 1) >
+                    (expenseDashboardDetails?.totalCount ?? 0))
+                    ? (expenseDashboardDetails!.totalCount!)
+                    : (offset + limit - 1)));
       }
     } catch (e, s) {
       isLoaderEnabled = false;
@@ -205,9 +210,9 @@ class DashBoardProvider with ChangeNotifier {
       'offset': '${offset - 1}',
       'limit': '$limit',
       'fromDate':
-          '${DateTime(selectedMonth.year, selectedMonth.month, 1).millisecondsSinceEpoch}',
+      '${selectedMonth.startDate.millisecondsSinceEpoch}',
       'toDate':
-          '${DateTime(selectedMonth.year, selectedMonth.month + 1, 0,  0, 23,59, 59, 999).millisecondsSinceEpoch}',
+      '${selectedMonth.endDate.millisecondsSinceEpoch}',
       'iscollectionAmount': 'true',
       'isPropertyCount': 'true',
     };
@@ -273,11 +278,11 @@ class DashBoardProvider with ChangeNotifier {
         streamController.add(waterConnectionsDetails!.waterConnection!.isEmpty
             ? <WaterConnection>[]
             : waterConnectionsDetails?.waterConnection?.sublist(
-                offSet - 1,
-                ((offset + limit - 1) >
-                        (waterConnectionsDetails?.totalCount ?? 0))
-                    ? (waterConnectionsDetails!.totalCount!)
-                    : (offset + limit) - 1));
+            offSet - 1,
+            ((offset + limit - 1) >
+                (waterConnectionsDetails?.totalCount ?? 0))
+                ? (waterConnectionsDetails!.totalCount!)
+                : (offset + limit) - 1));
       }
     } catch (e, s) {
       isLoaderEnabled = false;
@@ -292,83 +297,83 @@ class DashBoardProvider with ChangeNotifier {
     var list = [i18.dashboard.ALL, i18.dashboard.PAID, i18.dashboard.PENDING];
     return List.generate(
         list.length,
-        (index) => Tab(
+            (index) => Tab(
             text:
-                '${ApplicationLocalizations.of(context).translate(list[index])} (${getExpenseCount(index)})'));
+            '${ApplicationLocalizations.of(context).translate(list[index])} (${getExpenseCount(index)})'));
   }
 
   List<Tab> getCollectionsTabList(
       BuildContext context) {
     return List.generate(
         propertyTaxList.length,
-        (index) => Tab(
+            (index) => Tab(
             text:
-                '${ApplicationLocalizations.of(context).translate(propertyTaxList[index].code ?? '')} (${getCollectionsCount(index)})'));
+            '${ApplicationLocalizations.of(context).translate(propertyTaxList[index].code ?? '')} (${getCollectionsCount(index)})'));
   }
 
   List<TableHeader> get expenseHeaderList => [
-        TableHeader(i18.dashboard.BILL_ID_VENDOR,
-            isSortingRequired: true,
-            isAscendingOrder: sortBy != null && sortBy!.key == 'challanno'
-                ? sortBy!.isAscending
-                : null,
-            callBack: onExpenseSort,
-            apiKey: 'challanno'),
-        TableHeader(i18.expense.EXPENSE_TYPE,
-            isSortingRequired: true,
-            isAscendingOrder: sortBy != null && sortBy!.key == 'typeOfExpense'
-                ? sortBy!.isAscending
-                : null,
-            apiKey: 'typeOfExpense',
-            callBack: onExpenseSort),
-        TableHeader(i18.common.AMOUNT,
-            isSortingRequired: true,
-            isAscendingOrder: sortBy != null && sortBy!.key == 'totalAmount'
-                ? sortBy!.isAscending
-                : null,
-            apiKey: 'totalAmount',
-            callBack: onExpenseSort),
-        TableHeader(i18.expense.BILL_DATE,
-            isSortingRequired: true,
-            isAscendingOrder: sortBy != null && sortBy!.key == 'billDate'
-                ? sortBy!.isAscending
-                : null,
-            apiKey: 'billDate',
-            callBack: onExpenseSort),
-        TableHeader(i18.common.PAID_DATE,
-            isSortingRequired: true,
-            isAscendingOrder: sortBy != null && sortBy!.key == 'paidDate'
-                ? sortBy!.isAscending
-                : null,
-            apiKey: 'paidDate',
-            callBack: onExpenseSort),
-      ];
+    TableHeader(i18.dashboard.BILL_ID_VENDOR,
+        isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'challanno'
+            ? sortBy!.isAscending
+            : null,
+        callBack: onExpenseSort,
+        apiKey: 'challanno'),
+    TableHeader(i18.expense.EXPENSE_TYPE,
+        isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'typeOfExpense'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'typeOfExpense',
+        callBack: onExpenseSort),
+    TableHeader(i18.common.AMOUNT,
+        isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'totalAmount'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'totalAmount',
+        callBack: onExpenseSort),
+    TableHeader(i18.expense.BILL_DATE,
+        isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'billDate'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'billDate',
+        callBack: onExpenseSort),
+    TableHeader(i18.common.PAID_DATE,
+        isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'paidDate'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'paidDate',
+        callBack: onExpenseSort),
+  ];
 
   List<TableHeader> get collectionHeaderList => [
-        TableHeader(i18.common.CONNECTION_ID,
-            isSortingRequired: true,
-            isAscendingOrder:
-                sortBy != null && sortBy!.key == 'connectionNumber'
-                    ? sortBy!.isAscending
-                    : null,
-            apiKey: 'connectionNumber ',
-            callBack: onExpenseSort),
-        TableHeader(i18.common.NAME,
-            isSortingRequired: true,
-            isAscendingOrder: sortBy != null && sortBy!.key == 'name'
-                ? sortBy!.isAscending
-                : null,
-            apiKey: 'name',
-            callBack: onExpenseSort),
-        TableHeader(i18.dashboard.COLLECTIONS,
-            isSortingRequired: true,
-            isAscendingOrder:
-                sortBy != null && sortBy!.key == 'collectionAmount'
-                    ? sortBy!.isAscending
-                    : null,
-            apiKey: 'collectionAmount',
-            callBack: onExpenseSort),
-      ];
+    TableHeader(i18.common.CONNECTION_ID,
+        isSortingRequired: true,
+        isAscendingOrder:
+        sortBy != null && sortBy!.key == 'connectionNumber'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'connectionNumber ',
+        callBack: onExpenseSort),
+    TableHeader(i18.common.NAME,
+        isSortingRequired: true,
+        isAscendingOrder: sortBy != null && sortBy!.key == 'name'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'name',
+        callBack: onExpenseSort),
+    TableHeader(i18.dashboard.COLLECTIONS,
+        isSortingRequired: true,
+        isAscendingOrder:
+        sortBy != null && sortBy!.key == 'collectionAmount'
+            ? sortBy!.isAscending
+            : null,
+        apiKey: 'collectionAmount',
+        callBack: onExpenseSort),
+  ];
 
   List<TableDataRow> getExpenseData(
       int index, List<ExpensesDetailsModel> list) {
@@ -381,7 +386,7 @@ class DashBoardProvider with ChangeNotifier {
         return expenditureCountHolder['all'] ?? 0;
       case 1:
         return
-            expenditureCountHolder['paid'] ?? 0;
+          expenditureCountHolder['paid'] ?? 0;
       case 2:
         return
           expenditureCountHolder['pending'] ?? 0;
@@ -471,15 +476,16 @@ class DashBoardProvider with ChangeNotifier {
     });
   }
 
-  void onChangeOfDate(DateTime? date, BuildContext context, _overlayEntry) {
-    selectedMonth = date ?? DateTime.now();
+  void onChangeOfDate(DatePeriod? date, BuildContext context) {
+    selectedMonth = date ?? DatePeriod(DateTime.now(),DateTime.now(), DateType.MONTH);
     notifyListeners();
-    removeOverLay(_overlayEntry);
+    fetchDashboardMetricInformation(context, selectedDashboardType == DashBoardType.Expenditure ? true : false);
+    fetchUserFeedbackDetails(context);
     fetchDetails(context, limit, 1, true);
   }
 
   void onChangeOfPageLimit(PaginationResponse response, BuildContext context) {
-    fetchDetails(context, response.limit, response.offset, response.isPageChange);
+    fetchDetails(context, response.limit, response.offset);
   }
 
   fetchDetails(BuildContext context,
@@ -504,4 +510,144 @@ class DashBoardProvider with ChangeNotifier {
       return false;
     }
   }
+
+  Future<void> fetchUserFeedbackDetails(BuildContext context) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    userFeedBackInformation = null;
+
+    Map<String, dynamic> query = {
+      'tenantId' : commonProvider.userDetails?.selectedtenant?.code,
+      'fromDate' : '${selectedMonth.startDate.millisecondsSinceEpoch}',
+      'toDate' : '${selectedMonth.endDate.millisecondsSinceEpoch}'
+    };
+
+    try{
+      var response = await DashBoardRepository().getUsersFeedBackByMonth(query);
+      userFeedBackInformation = response;
+      notifyListeners();
+    } catch(e,s){
+      ErrorHandler().allExceptionsHandler(context, e,s);
+    }
+  }
+
+  Future<void> fetchDashboardMetricInformation(BuildContext context, [bool isExpenditure = false]) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    Map<String, dynamic> query = {
+      'tenantId' : commonProvider.userDetails?.selectedtenant?.code,
+      'fromDate' : '${selectedMonth.startDate.millisecondsSinceEpoch}',
+      'toDate' : '${selectedMonth.endDate.millisecondsSinceEpoch}'
+    };
+
+    try{
+      var response = await DashBoardRepository().getMetricInformation(isExpenditure, query);
+      if(response != null){
+        var metricList = <Metric>[];
+        response.forEach((key, value) {
+          metricList.add(Metric(label: value, value: 'dashboard_$key', type: 'amount'));
+        });
+        metricInformation = metricList;
+      }
+      notifyListeners();
+    } catch(e,s){
+      ErrorHandler().allExceptionsHandler(context, e,s);
+    }
+  }
+
+
+  void createPdfForExpenditure(BuildContext context) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    ExpensesDetailsWithPagination? expenseDashboardDetails;
+
+    Map<String, dynamic> query ={
+      'tenantId': commonProvider.userDetails?.selectedtenant?.code,
+      'offset': '${offset - 1}',
+      'fromDate':
+      '${selectedMonth.startDate.millisecondsSinceEpoch}',
+      'toDate':
+      '${selectedMonth.endDate.millisecondsSinceEpoch}',
+      'status': ["ACTIVE", "PAID"],
+      'isBillCount': 'true'
+    };
+
+    if(selectedTab != 'all'){
+      query['isBillPaid'] = ((selectedTab == 'ACTIVE') ? 'false' : 'true');
+    }
+
+    Loaders.showLoadingDialog(context);
+    try {
+      expenseDashboardDetails = await ExpensesRepository().expenseDashboard(query);
+      Navigator.pop(context);
+    }catch(e,s){
+      Navigator.pop(context);
+      ErrorHandler().allExceptionsHandler(context, e, s);
+      return;
+    }
+
+    if(expenseDashboardDetails == null || expenseDashboardDetails.expenseDetailList == null || expenseDashboardDetails.expenseDetailList!.isEmpty) return;
+
+   var hearList = [i18.dashboard.BILL_ID_VENDOR, i18.expense.EXPENSE_TYPE, i18.common.AMOUNT, i18.expense.BILL_DATE, i18.common.PAID_DATE];
+
+    var tableData = expenseDashboardDetails.expenseDetailList?.map<List<String>>((expense) => [
+     '${expense.challanNo} \n ${expense.vendorName}',
+     '${ApplicationLocalizations.of(context).translate(expense.expenseType ?? '')}',
+     '₹ ${expense.totalAmount ?? '-'}',
+     '${DateFormats.timeStampToDate(expense.billDate)}',
+     '${expense.paidDate != null && expense.paidDate != 0 ? DateFormats.timeStampToDate(expense.paidDate) : (ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.dashboard.PENDING))}',
+   ]).toList() ?? [];
+
+    DashboardPdfCreator(context,  hearList.map<String>((e) => '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e)}').toList(), tableData, metricInformation ?? <Metric>[], userFeedBackInformation ?? {},).pdfPreview();
+  }
+
+  void createPdfForCollection(BuildContext context) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    WaterConnections? waterConnectionsDetails;
+
+    var query = {
+      'tenantId': commonProvider.userDetails?.selectedtenant?.code,
+      'offset': '${offset - 1}',
+      'fromDate':
+      '${selectedMonth.startDate.millisecondsSinceEpoch}',
+      'toDate':
+      '${selectedMonth.endDate.millisecondsSinceEpoch}',
+      'iscollectionAmount': 'true',
+      'isPropertyCount': 'true',
+    };
+
+    if(selectedTab != 'all'){
+      query['propertyType'] = selectedTab;
+    }
+
+    Loaders.showLoadingDialog(context);
+    try {
+      waterConnectionsDetails = await SearchConnectionRepository().getconnection(query);
+
+      Navigator.pop(context);
+    }catch(e,s){
+      Navigator.pop(context);
+      ErrorHandler().allExceptionsHandler(context, e, s);
+      return;
+    }
+
+    if(waterConnectionsDetails.waterConnection == null || waterConnectionsDetails.waterConnection!.isEmpty) return;
+
+    var hearList = [i18.common.CONNECTION_ID, i18.common.NAME, i18.dashboard.COLLECTIONS];
+
+    var tableData = waterConnectionsDetails.waterConnection?.map<List<String>>((connection) => [
+      '${connection.connectionNo ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
+      '${connection.connectionHolders?.first.name ?? ''}',
+      '${connection.additionalDetails?.collectionAmount != null ? '₹ ${connection.additionalDetails?.collectionAmount}' : '-'}',
+    ]).toList() ?? [];
+
+    DashboardPdfCreator(context,  hearList.map<String>((e) => '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e)}').toList(), tableData, metricInformation ?? <Metric>[], userFeedBackInformation ?? {}).pdfPreview();
+  }
+
+
 }

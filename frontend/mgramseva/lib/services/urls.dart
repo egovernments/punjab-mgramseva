@@ -57,7 +57,15 @@ class Url {
   static const String FETCH_BILL_PAYMENTS =
       'collection-services/payments/WS/_search';
 
+  /// user feed back
   static const String POST_PAYMENT_FEEDBACK = 'ws-services/wc/_submitfeedback';
+  static const String GET_USERS_PAYMENT_FEEDBACK =
+      'ws-services/wc/_getfeedback';
+
+  /// Dashboard
+  static const String EXPENDITURE_METRIC =
+      'echallan-services/eChallan/v1/_expenseDashboard';
+  static const String REVENUE_METRIC = 'ws-services/wc/_revenueDashboard';
 }
 
 class UserUrl {

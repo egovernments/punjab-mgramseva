@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/utils/common_styles.dart';
 
 import './jsconnnector.dart' as js;
 import 'package:flutter/foundation.dart';
@@ -380,6 +381,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                       ),
                     ),
                     Container(
+                      decoration: CommonStyles.buttonBottomDecoration,
                       width: constraints.maxWidth > 760
                           ? MediaQuery.of(context).size.width / 3
                           : MediaQuery.of(context).size.width / 2.2,

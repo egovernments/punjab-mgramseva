@@ -3,8 +3,8 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/components/Dashboard/BillsTable.dart';
+import 'package:mgramseva/model/common/metric.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
-import 'package:mgramseva/model/dashboard/expense_dashboard.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/screeens/dashboard/individual_tab.dart';
@@ -16,6 +16,8 @@ import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
+import 'package:mgramseva/widgets/footer.dart';
+import 'package:mgramseva/widgets/grid_view.dart';
 import 'package:provider/provider.dart';
 
 class SearchExpenseDashboard extends StatefulWidget {
@@ -34,8 +36,8 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     ..limit = 10
     ..offset = 1
     ..sortBy = null
-    ..selectedDashboardType = widget.dashBoardType;
-    // dashBoardProvider.selectedMonth = dashBoardProvider.dateList.first;
+    ..selectedDashboardType = widget.dashBoardType
+    ..metricInformation = null;
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
@@ -44,6 +46,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     dashBoardProvider.searchController.clear();
     dashBoardProvider.fetchData();
+    dashBoardProvider.fetchDashboardMetricInformation(context, widget.dashBoardType == DashBoardType.Expenditure ? true : false);
     dashBoardProvider.selectedTab = 'all';
     if(widget.dashBoardType == DashBoardType.Expenditure) {
 
@@ -63,6 +66,10 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> with Si
     var dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     return  Column(
         children: [
+          Visibility(
+              visible: dashBoardProvider.selectedMonth.dateType == DateType.MONTH && dashBoardProvider.metricInformation != null,
+              child: GridViewBuilder(gridList:  dashBoardProvider.metricInformation ?? <Metric>[], physics: NeverScrollableScrollPhysics())
+          ),
           ListLabelText(widget.dashBoardType == DashBoardType.collections ?  i18.dashboard.SEARCH_CONSUMER_RECORDS : i18.dashboard.SEARCH_EXPENSE_BILL,
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),

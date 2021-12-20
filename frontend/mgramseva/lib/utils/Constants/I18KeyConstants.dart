@@ -44,6 +44,9 @@ class Common {
   String get MOBILE_NUMBER => 'CORE_COMMON_MOBILE_NUMBER';
   String get LOGOUT => 'CORE_COMMON_LOGOUT';
   String get EMAIL => 'CORE_COMMON_EMAIL';
+  String get NOTE => 'NOTE';
+  String get MONTH => 'MONTH';
+
   String get SAVE => 'CORE_COMMON_SAVE';
   String get SUBMIT => 'CORE_COMMON_BUTTON_SUBMIT';
   String get GENDER => 'CORE_COMMON_GENDER';
@@ -68,6 +71,7 @@ class Common {
   String get BACK => 'BACK';
   String get DEAR => 'DEAR';
   String get VIEW_ALL => 'VIEW_ALL';
+  String get YTD => 'YTD';
 
   /// File Picker
   String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED';
@@ -520,8 +524,43 @@ class _DashBoard {
   String get SEARCH_BY_BILL_OR_VENDOR => 'SEARCH_BY_BILL_OR_VENDOR';
   String get SEARCH_NAME_CONNECTION => 'SEARCH_NAME_CONNECTION';
   String get DASHBOARD => 'DASHBOARD';
+  String get REVENUE_NOTE => 'REVENUE_NOTE';
+  String get REVENUE => 'REVENUE';
+  String get REVENUE_EXPENDITURE_TREND => 'REVENUE_EXPENDITURE_TREND';
+
   String get BILL_ID_VENDOR => 'BILL_ID_VENDOR';
   String get NO_RECORDS_MSG => 'NO_RECORDS_MSG';
+  String get ANNUAL_SHARE_MSG_MOBILE => 'ANNUAL_SHARE_MSG_MOBILE';
+  String get ANNUAL_SHARE_MSG_WEB => 'ANNUAL_SHARE_MSG_WEB';
+
+  /// Revenue and Expenditure Trend
+  String get STACKED_BAR => 'STACKED_BAR';
+  String get TREND_LINE => 'TREND_LINE';
+
+  String get SURPLUS_DEFICIT => 'SURPLUS_DEFICIT';
+  String get DEMAND_ARREARS => 'DEMAND_ARREARS';
+  String get PENIDNG_COLLECTIONS => 'PENIDNG_COLLECTIONS';
+  String get ACTUAL_COLLECTIONS => 'ACTUAL_COLLECTIONS';
+  String get PENDING_EXPENDITURE => 'PENDING_EXPENDITURE';
+  String get ACTUAL_PAYMENT => 'ACTUAL_PAYMENT';
+  String get SUMMARY_REPORT => 'SUMMARY_REPORT';
+
+  String get USER_GAVE_FEEDBACK => 'USER_GAVE_FEEDBACK';
+  String get DASHBOARD_DEMAND => 'dashboard_demand';
+  String get DASHBOARD_PENDING_COLLECTION => 'dashboard_pendingCollection';
+  String get DASHBOARD_ACTUAL_COLLECTION => 'dashboard_actualCollection';
+
+  String get DASHBOARD_TOTAL_EXPENDITURE => 'dashboard_totalExpenditure';
+  String get DASHBOARD_AMOUNT_UNPAID => 'dashboard_amountUnpaid';
+  String get DASHBOARD_AMOUNT_PAID => 'dashboard_amountPaid';
+
+  String get YEAR_TOOL_TIP_MESSAGE => 'YEAR_TOOL_TIP_MESSAGE';
+  String get MONTHLY_REPORT_MESSAGE => 'MONTHLY_REPORT_MESSAGE';
+  String get EXPENDITURE_BILLS => 'EXPENDITURE_BILLS';
+  String get CONSUMER_RECORDS => 'CONSUMER_RECORDS';
+  String get EXPENDITURE_DESC => 'EXPENDITURE_DESC';
+  String get COLLECTION_DESC => 'COLLECTION_DESC';
+  String get NUMBER_OF_RECORDS => 'NUMBER_OF_RECORDS';
 }
 
 class _ExpenseWalkThroughMsg {

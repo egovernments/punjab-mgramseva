@@ -26,6 +26,7 @@ class CommonPrinter {
   }
 
   static Future<void> showMyDialog(context, value) async {
+    connected = false;
     Widget setupAlertDialoadContainer(availableBluetoothDevices, context) {
       return Container(
         height: 300.0, // Change as per your requirement
