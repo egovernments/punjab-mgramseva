@@ -1,25 +1,17 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/providers/household_register_provider.dart';
-import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/global_variables.dart';
-import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/pdf.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:provider/provider.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:universal_html/html.dart' as html;
 
 class HouseholdPdfCreator {
   final List<String> headers;
@@ -43,13 +35,18 @@ class HouseholdPdfCreator {
     final date = DateFormats.getFilteredDate(
         DateTime.now().toLocal().toString(),
         dateFormat: "dd/MM/yyyy");
+    String recordsCount =
+        '${ApplicationLocalizations.of(buildContext).translate(i18.householdRegister.NO_OF_RECORDS)}';
+    recordsCount = recordsCount.replaceAll('<n>', '${tableData.length}');
     var localizedText =
         ApplicationLocalizations.of(navigatorKey.currentContext!)
             .translate(i18.householdRegister.PDF_SUB_TEXT_BELOW_LIST);
     localizedText = localizedText.replaceFirst(
-        '<selectedTab>', householdProvider.selectedTab);
-    localizedText = localizedText.replaceFirst(
-        '<search>', householdProvider.searchController.text.toString());
+        '<selectedTab>',
+        ApplicationLocalizations.of(navigatorKey.currentContext!)
+            .translate(householdProvider.selectedTab));
+    localizedText = localizedText.replaceFirst('<search>',
+        '${householdProvider.searchController.text.trim().isEmpty ? '-' : householdProvider.searchController.text.trim()}');
     localizedText = localizedText.replaceFirst('<date>', date);
 
     var icons =
@@ -88,7 +85,7 @@ class HouseholdPdfCreator {
                         style: pw.TextStyle(font: ttf, fontSize: 12)),
                     pw.SizedBox(height: 20),
                     pw.Text(
-                        '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.householdRegister.CONSUMER_RECORDS)} (${householdProvider.selectedTab})',
+                        '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.householdRegister.CONSUMER_RECORDS)} (${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(householdProvider.selectedTab)})',
                         style: pw.TextStyle(
                             font: ttf,
                             fontSize: 18,
@@ -102,12 +99,22 @@ class HouseholdPdfCreator {
                         fontSize: 10,
                         color: PdfColor.fromHex('#474747'),
                       ),
-                    )
+                    ),
+                    pw.SizedBox(height: 10),
+                    pw.Container(
+                        alignment: pw.Alignment.centerRight,
+                        padding: pw.EdgeInsets.only(bottom: 10),
+                        child: pw.Text(
+                          recordsCount,
+                          style: pw.TextStyle(
+                              font: ttf,
+                              fontWeight: pw.FontWeight.bold,
+                              fontSize: 10),
+                        )),
                   ]),
             ),
             pw.SizedBox(height: 20),
             _buildTable(ttf),
-            PdfUtils.pdfFooter(digitLogo)
           ];
         }));
 
@@ -118,25 +125,6 @@ class HouseholdPdfCreator {
     Provider.of<CommonProvider>(buildContext, listen: false).sharePdfOnWhatsApp(
         buildContext, pdf, 'HouseholdRegister', whatsappText,
         isDownload: isDownload);
-
-    /* if (kIsWeb) {
-      final blob = html.Blob([await pdf.save()]);
-      final url = html.Url.createObjectUrlFromBlob(blob);
-      final anchor = html.document.createElement('a') as html.AnchorElement
-        ..href = url
-        ..style.display = 'none'
-        ..download = 'Household.pdf';
-      html.document.body?.children.add(anchor);
-      anchor.click();
-      html.document.body?.children.remove(anchor);
-      html.Url.revokeObjectUrl(url);
-    } else {
-      final Directory directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/Household.pdf');
-      await file.writeAsBytes(await pdf.save());
-      // Navigator.pushReplacement(buildContext,
-      //     MaterialPageRoute(builder: (_) => PdfPreview(path: file.path)));
-    }*/
   }
 
   pw.Table _buildTable(pw.Font ttf) {
@@ -147,8 +135,6 @@ class HouseholdPdfCreator {
         cellStyle: pw.TextStyle(font: ttf, fontSize: 12),
         cellAlignment: pw.Alignment.center,
         data: tableData,
-        oddRowDecoration: pw.BoxDecoration(color: PdfColor.fromHex('#EEEEEE'))
-        //headerDecoration: pw.BoxDecoration(color: PdfColor.fromRYB(0.98, 0.60, 0.01))
-        );
+        oddRowDecoration: pw.BoxDecoration(color: PdfColor.fromHex('#EEEEEE')));
   }
 }

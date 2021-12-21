@@ -72,8 +72,9 @@ class _NotificationsState extends State<Notifications> {
                                   )),
                               new Container(
                                   padding: EdgeInsets.all(4),
-                                  width:
-                                      MediaQuery.of(context).size.width / 1.5,
+                                  width: !widget.close
+                                      ? MediaQuery.of(context).size.width >720 ? MediaQuery.of(context).size.width/1.4 :  MediaQuery.of(context).size.width / 1.15
+                                      : MediaQuery.of(context).size.width / 1.4,
                                   child: Text(
                                     stringreplacer(
                                         ApplicationLocalizations.of(context)
