@@ -76,9 +76,9 @@ public class WsQueryBuilder {
 
 	public static final String PREVIOUSMONTHEXPENSE = " select sum(billdtl.totalamount) from eg_echallan challan, egbs_billdetail_v1 billdtl, egbs_bill_v1 bill  where challan.challanno= billdtl.consumercode  and billdtl.billid = bill.id and challan.isbillpaid ='true'  ";
 
-	public static final String PREVIOUSDAYCASHCOLLECTION = "select  count(*), sum(totalamountpaid) from egcl_payment where paymentmode='CASH' ";
+	public static final String PREVIOUSDAYCASHCOLLECTION = "select count(*), sum(p.totalamountpaid) from egcl_payment p join egcl_paymentdetail pd on p.id = pd.paymentid where p.paymentmode='CASH' and pd.businessservice = 'WS' ";
 
-	public static final String PREVIOUSDAYONLINECOLLECTION = "select  count(*), sum(totalamountpaid) from egcl_payment where paymentmode='ONLINE' ";
+	public static final String PREVIOUSDAYONLINECOLLECTION = "select count(*), sum(p.totalamountpaid) from egcl_payment p join egcl_paymentdetail pd on p.id = pd.paymentid where p.paymentmode='ONLINE' and pd.businessservice = 'WS' ";
 
 	public static final String NEWDEMAND = "select sum(dmdl.taxamount) FROM egbs_demand_v1 dmd INNER JOIN egbs_demanddetail_v1 dmdl ON dmd.id=dmdl.demandid AND dmd.tenantid=dmdl.tenantid WHERE dmd.businessservice='WS' and dmd.status = 'ACTIVE' ";
 

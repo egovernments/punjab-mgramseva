@@ -63,8 +63,8 @@ public class WaterRepository {
 		}else {
 			query = new StringBuilder(queryBuilder.PREVIOUSDAYONLINECOLLECTION);
 		}
-		query.append( " and transactiondate  >= ").append( startDate)  
-		.append(" and  transactiondate <= " ).append(endDate).append(" and tenantId = '").append(tenantId).append("'"); 
+		query.append( " and p.transactiondate  >= ").append( startDate)  
+		.append(" and  p.transactiondate <= " ).append(endDate).append(" and p.tenantId = '").append(tenantId).append("'"); 
 		log.info("Previous Day collection query : " + query);
 		List<Map<String, Object>> list =  jdbcTemplate.queryForList(query.toString());
 		return list;
