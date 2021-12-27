@@ -28,6 +28,7 @@ import org.egov.echallan.web.models.collection.PaymentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
@@ -109,13 +110,15 @@ public class ChallanRepository {
 			StringBuilder paidQuery = new StringBuilder(queryBuilder.bill_count);
 			paidQuery = queryBuilder.applyFilters(paidQuery, preparedStmnt, criteria);
 			paidQuery.append(" AND isbillpaid=true ");
+			System.out.println("Final Paid Query" + paidQuery);
 			List<Map<String, Object>> paidCountdata = jdbcTemplate.queryForList(paidQuery.toString(),
 					preparedStmnt.toArray());
 			List<Object> prpstmnt = new ArrayList<>();
 			StringBuilder notPaidQuery = new StringBuilder(queryBuilder.bill_count);
 			notPaidQuery = queryBuilder.applyFilters(notPaidQuery, prpstmnt, criteria);
 			notPaidQuery.append(" AND isbillpaid=false ");
-			
+			System.out.println("Final Not Paid Query" + notPaidQuery);
+
 			List<Map<String, Object>> notPaidCountdata = jdbcTemplate.queryForList(notPaidQuery.toString(),
 					preparedStmnt.toArray());
 		
@@ -270,5 +273,84 @@ public class ChallanRepository {
 		log.info("Active pending collection query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Long.class);
 	}
+	
+	public Long getTotalBill(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.TOTALBILLS);
+		query.append(" and taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("TotalBills Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getBillsPaid(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.PAIDBILLS);
+		query.append(" and taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("paid bills Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getPendingBills(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.PENDINGBILLS);
+		query.append(" and taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("pending bills Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
     
+
+	public Long getElectricityBill(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.ELECTRICITYBILLS);
+		query.append(" and challan.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and challan.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("electricity Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getOmMiscBills(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.OMMISCBILLS);
+		query.append(" and challan.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		.append(" and challan.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("O&M Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getSalary(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.SALARYBILLS);
+		query.append(" and challan.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		.append(" and challan.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("salary Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+	
+	public Long getPendingAmountTillDate(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.PENDINGEXPCOLLTILLDATE);
+		query.append(" and dmd.taxperiodto <= " + criteria.getToDate())
+		.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
+//		query.append(" and dmd.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+//				.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("Active pending collection query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+    
+	public List<Challan> getChallansForPlaneSearch(SearchCriteria criteria, Map<String, String> finalData) {
+        List<Object> preparedStmtList = new ArrayList<>();
+        String query = queryBuilder.getChallanSearchQueryForPlaneSearch(criteria, preparedStmtList);
+        List<Challan> challans =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper); 
+        return challans;
+    }
+
+
+	public List<String> fetchESIds(SearchCriteria criteria) {
+		List<Object> preparedStmtList = new ArrayList<>();
+		preparedStmtList.add(criteria.getOffset());
+		preparedStmtList.add(criteria.getLimit());
+
+		List<String> ids = jdbcTemplate.query("SELECT id from eg_echallan ORDER BY createdtime offset " +
+						" ? " +
+						"limit ? ",
+				preparedStmtList.toArray(),
+				new SingleColumnRowMapper<>(String.class));
+		return ids;
+	}
 }

@@ -136,7 +136,7 @@ public class WSCalculationConstant {
 	public static final List<String> WS_BILLING_SLAB_MASTERS = Collections
 			.unmodifiableList(Arrays.asList(WC_BILLING_SLAB_MASTER));
 
-	public static final List<String> TAX_APPLICABLE = Collections.unmodifiableList(Arrays.asList(WS_CHARGE,WS_CHARGE_ARREAR));
+	public static final List<String> TAX_APPLICABLE = Collections.unmodifiableList(Arrays.asList(WS_CHARGE));
 
 	public static final String flatRateCalculationAttribute = "Flat";
 

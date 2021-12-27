@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.egov.waterconnection.repository.builder.WsQueryBuilder;
-import org.egov.waterconnection.service.WaterService;
 import org.egov.waterconnection.util.WaterServicesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -98,7 +97,6 @@ public class WaterRepository {
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
 	}
-	
 
 
 }
