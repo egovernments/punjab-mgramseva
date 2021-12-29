@@ -1,6 +1,5 @@
 package org.egov.waterconnection.web.models;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -116,11 +115,6 @@ public class SearchCriteria {
 
 	@JsonProperty("currentDate")
 	private Long currentDate;
-	
-	@JsonProperty("textSearch")
-	private String textSearch;
-	
-	private Set<String> connectionNoSet;
 	
 	public enum SortOrder {
 	    ASC,

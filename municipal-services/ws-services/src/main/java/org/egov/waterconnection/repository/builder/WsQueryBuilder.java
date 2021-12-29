@@ -2,29 +2,22 @@ package org.egov.waterconnection.repository.builder;
 
 import static org.egov.waterconnection.constants.WCConstants.SEARCH_TYPE_CONNECTION;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.service.UserService;
-import org.egov.waterconnection.service.WaterServiceImpl;
 import org.egov.waterconnection.util.WaterServicesUtil;
-import org.egov.waterconnection.web.controller.WaterController;
 import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.Property;
 import org.egov.waterconnection.web.models.SearchCriteria;
-import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 
 @Component
 public class WsQueryBuilder {
@@ -37,9 +30,6 @@ public class WsQueryBuilder {
 
 	@Autowired
 	private UserService userService;
-	
-	@Autowired
-	WaterServiceImpl waterServiceImpl;
 
 	private static final String INNER_JOIN_STRING = "INNER JOIN";
 	private static final String LEFT_OUTER_JOIN_STRING = " LEFT OUTER JOIN ";
@@ -93,26 +83,6 @@ public class WsQueryBuilder {
 	public static final String NEWDEMAND = "select sum(dmdl.taxamount) FROM egbs_demand_v1 dmd INNER JOIN egbs_demanddetail_v1 dmdl ON dmd.id=dmdl.demandid AND dmd.tenantid=dmdl.tenantid WHERE dmd.businessservice='WS' and dmd.status = 'ACTIVE' ";
 
 	public static final String ACTUALCOLLECTION = " select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id where pyd.businessservice='WS' ";
-	
-	public static final String RESIDENTIALCOLLECTION = "select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_ws_connection wc ON wc.connectionno = bill.consumercode  where pyd.businessservice='WS' and wc.additionaldetails->>'propertyType' IN ('RESIDENTIAL') and wc.status='Active' ";
-	
-	public static final String COMMERCIALCOLLECTION = "select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_ws_connection wc ON wc.connectionno = bill.consumercode  where pyd.businessservice='WS' and wc.additionaldetails->>'propertyType' IN ('COMMERCIAL') and wc.status='Active' ";
-	
-	public static final String OTHERSCOLLECTION = "select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_ws_connection wc ON wc.connectionno = bill.consumercode  where pyd.businessservice='WS' and wc.additionaldetails->>'propertyType' not IN ('RESIDENTIAL','COMMERCIAL') and wc.status='Active' ";
-	
-	public static final String TOTALAPPLICATIONSPAID = "select count(*), ({paidCount}) as paid from eg_ws_connection where status='Active' ";
-
-	public static final String RESIDENTIALSPAID = "select count(*), ({paidCount}) as paid from eg_ws_connection where additionaldetails->>'propertyType' IN ('RESIDENTIAL') and status='Active' ";
-
-	public static final String COMMERCIALSPAID = "select count(*), ({paidCount}) as paid from eg_ws_connection where additionaldetails->>'propertyType' IN ('COMMERCIAL') and status='Active' ";
-
-	public static final String RESIDENTIALSPAIDCOUNT = "select count(*)FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_ws_connection wc ON wc.connectionno = bill.consumercode  where pyd.businessservice='WS' and wc.additionaldetails->>'propertyType' IN ('RESIDENTIAL') ";
-	
-	public static final String COMMERCIALSPAIDCOUNT = "select count(*)FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_ws_connection wc ON wc.connectionno = bill.consumercode  where pyd.businessservice='WS' and wc.additionaldetails->>'propertyType' IN ('COMMERCIAL') ";
-
-	public static final String TOTALAPPLICATIONSPAIDCOUNT = "select count(*)FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_ws_connection wc ON wc.connectionno = bill.consumercode  where pyd.businessservice='WS' ";
-
-	public static final String PENDINGCOLLECTIONTILLDATE = "SELECT SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE = 'WS' and DMD.status = 'ACTIVE' ";
 
 	public static final String ID_QUERY = "select conn.id FROM eg_ws_connection conn " + INNER_JOIN_STRING
 			+ " eg_ws_service wc ON wc.connection_id = conn.id" + LEFT_OUTER_JOIN_STRING
@@ -197,15 +167,6 @@ public class WsQueryBuilder {
 				preparedStatement.add(criteria.getPropertyId());
 			}
 		}
-		if(!StringUtils.isEmpty(criteria.getTextSearch())) {
-			WaterConnectionResponse response = waterServiceImpl.getWCListFuzzySearch(criteria, requestInfo);
-
-			if(!CollectionUtils.isEmpty(response.getWaterConnectionData())) {
-				Set<String> connectionNoSet = response.getWaterConnectionData().stream().map(data -> (String)data.get("connectionNo")).collect(Collectors.toSet());			
-				criteria.setConnectionNoSet(connectionNoSet);
-			}
-		}
-
 		query = applyFilters(query, preparedStatement, criteria);
 
 //		query.append(ORDER_BY_CLAUSE);
@@ -235,23 +196,10 @@ public class WsQueryBuilder {
 			preparedStatement.add(criteria.getOldConnectionNumber());
 		}
 
-		if (!StringUtils.isEmpty(criteria.getConnectionNumber()) || !StringUtils.isEmpty(criteria.getTextSearch())) {
+		if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
 			addClauseIfRequired(preparedStatement, query);
-			
-			if(!StringUtils.isEmpty(criteria.getConnectionNumber())) {
-				query.append(" conn.connectionno ~*  ? ");
-				preparedStatement.add(criteria.getConnectionNumber());
-			}
-			else {
-				query.append(" conn.connectionno ~*  ? ");
-				preparedStatement.add(criteria.getTextSearch());
-			}
-			
-
-			if(!CollectionUtils.isEmpty(criteria.getConnectionNoSet())) {
-				query.append(" or conn.connectionno in (").append(createQuery(criteria.getConnectionNoSet())).append(" )");
-				addToPreparedStatement(preparedStatement, criteria.getConnectionNoSet());
-			}
+			query.append(" conn.connectionno ~*  ? ");
+			preparedStatement.add(criteria.getConnectionNumber());
 		}
 
 		if (!StringUtils.isEmpty(criteria.getStatus())) {
@@ -571,79 +519,6 @@ public class WsQueryBuilder {
 		query = applyFiltersForFuzzySearch(query, preparedStatementList, criteria);
 
 		return query.toString();
-	}
-	
-	public String getSearchQueryStringForPlaneSearch(SearchCriteria criteria, List<Object> preparedStatement,
-			RequestInfo requestInfo) {
-		if (criteria.isEmpty())
-			return null;
-		StringBuilder query = new StringBuilder(WATER_SEARCH_QUERY);
-		query = applyFiltersForPlaneSearch(query, preparedStatement, criteria);
-		return addPaginationWrapperForPlaneSearch(query.toString(), preparedStatement, criteria);
-	}
-	
-	public StringBuilder applyFiltersForPlaneSearch(StringBuilder query, List<Object> preparedStatement, SearchCriteria criteria) {
-		if (!StringUtils.isEmpty(criteria.getTenantId())) {
-			addClauseIfRequired(preparedStatement, query);
-			if (criteria.getTenantId().equalsIgnoreCase(config.getStateLevelTenantId())) {
-				query.append(" conn.tenantid LIKE ? ");
-				preparedStatement.add('%' + criteria.getTenantId() + '%');
-			} else {
-				query.append(" conn.tenantid = ? ");
-				preparedStatement.add(criteria.getTenantId());
-			}
-		}
-		return query;
-	}
-	
-	private String addPaginationWrapperForPlaneSearch(String query, List<Object> preparedStmtList, SearchCriteria criteria) {
-		String string = addOrderByClauseForPlaneSearch(criteria);
-		Integer limit = config.getDefaultLimit();
-		Integer offset = config.getDefaultOffset();
-		String finalQuery = null;
-		
-		finalQuery = PAGINATION_WRAPPER.replace("{}", query);
-		
-		finalQuery = finalQuery.replace("{orderby}", string);
-		
-		finalQuery = finalQuery.replace("{holderSelectValues}",
-				"(select nullif(sum(payd.amountpaid),0) from egcl_paymentdetail payd join egcl_bill payspay on (payd.billid = payspay.id) where payd.businessservice = 'WS' and payspay.consumercode = conn.connectionno group by payspay.consumercode) as collectionamount, connectionholder.tenantid as holdertenantid, connectionholder.connectionid as holderapplicationId, userid, connectionholder.status as holderstatus, isprimaryholder, connectionholdertype, holdershippercentage, connectionholder.relationship as holderrelationship, connectionholder.createdby as holdercreatedby, connectionholder.createdtime as holdercreatedtime, connectionholder.lastmodifiedby as holderlastmodifiedby, connectionholder.lastmodifiedtime as holderlastmodifiedtime");
-		
-		finalQuery = finalQuery.replace("{pendingAmountValue}",
-				"(select sum(dd.taxamount) - sum(dd.collectionamount) as pendingamount from egbs_demand_v1 d join egbs_demanddetail_v1 dd on d.id = dd.demandid group by d.consumercode, d.status having d.status = 'ACTIVE' and d.consumercode = conn.connectionno ) as pendingamount");
-		if (criteria.getLimit() == null && criteria.getOffset() == null)
-			limit = config.getMaxLimit();
-
-		if (criteria.getLimit() != null && criteria.getLimit() <= config.getMaxLimit())
-			limit = criteria.getLimit();
-
-		if (criteria.getLimit() != null && criteria.getLimit() > config.getMaxLimit()) {
-			limit = config.getMaxLimit();
-		}
-
-		if (criteria.getOffset() != null)
-			offset = criteria.getOffset();
-
-		if (limit == -1) {
-			finalQuery = finalQuery.replace("{pagination}", "");
-		} else {
-			finalQuery = finalQuery.replace("{pagination}", " offset ?  limit ?  ");
-			preparedStmtList.add(offset);
-			preparedStmtList.add(limit + offset);
-		}
-		System.out.println("Final Query ::" + finalQuery);
-		return finalQuery;
-	}
-	
-	private String addOrderByClauseForPlaneSearch(SearchCriteria criteria) {
-		StringBuilder builder = new StringBuilder();
-		builder.append(" ORDER BY wc.appCreatedDate ");
-		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
-			builder.append(" ASC ");
-		else
-			builder.append(" DESC ");
-
-		return builder.toString();
 	}
 
 }

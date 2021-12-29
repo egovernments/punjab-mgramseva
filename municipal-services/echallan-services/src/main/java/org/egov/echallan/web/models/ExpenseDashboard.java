@@ -26,22 +26,4 @@ public class ExpenseDashboard {
 	@JsonProperty("amountPaid")
 	private String amountPaid = "0";
 
-	@JsonProperty("totalBills")
-	private String totalBills = "0";
-
-	@JsonProperty("billsPaid")
-	private String billsPaid = "0";
-
-	@JsonProperty("pendingBills")
-	private String pendingBills = "0";
-
-	@JsonProperty("electricityBill")
-	private String electricityBill = "0";
-
-	@JsonProperty("OMMisc")
-	private String OMMisc = "0";
-
-	@JsonProperty("salary")
-	private String salary = "0";
-
 }

@@ -10,7 +10,7 @@ import org.egov.waterconnection.web.models.FeedbackRequest;
 import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 
 import org.egov.waterconnection.web.models.LastMonthSummary;
-import org.egov.waterconnection.web.models.RevenueCollectionData;
+
 import org.egov.waterconnection.web.models.RevenueDashboard;
 
 import org.egov.waterconnection.web.models.SearchCriteria;
@@ -38,9 +38,6 @@ public interface WaterService {
 	RevenueDashboard getRevenueDashboardData(@Valid SearchCriteria criteria, RequestInfo requestInfo);
 
 	WaterConnectionResponse getWCListFuzzySearch(SearchCriteria criteria, RequestInfo requestInfo);
-	
-	WaterConnectionResponse planeSearch(SearchCriteria criteria, RequestInfo requestInfo);
 
-	List<RevenueCollectionData> getRevenueCollectionData(@Valid SearchCriteria criteria, RequestInfo requestInfo);
 
 }

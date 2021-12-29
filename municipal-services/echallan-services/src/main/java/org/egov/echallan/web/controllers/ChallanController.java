@@ -20,8 +20,6 @@ import org.egov.echallan.repository.rowmapper.ChallanRowMapper;
 import org.egov.echallan.service.ChallanService;
 import org.egov.echallan.service.SchedulerService;
 import org.egov.echallan.util.ResponseInfoFactory;
-import org.egov.echallan.web.models.ChallanCollectionData;
-import org.egov.echallan.web.models.ChallanCollectionDataResponse;
 import org.egov.echallan.web.models.ExpenseDashboard;
 import org.egov.echallan.web.models.ExpenseDashboardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,32 +131,6 @@ public class ChallanController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
-
-	 @RequestMapping(value = "/_plainsearch", method = RequestMethod.POST)
-	 public ResponseEntity<ChallanResponse> planeSearch(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
-	                                                       @Valid @ModelAttribute SearchCriteria criteria) {
-		 Map<String, String> finalData = new HashMap<String, String>();
-	     List<Challan> challans = challanService.planeSearch(criteria, requestInfoWrapper.getRequestInfo(), finalData);
-	     ChallanResponse response = ChallanResponse.builder().challans(challans).totalCount(mapper.getFull_count()).billData(finalData).responseInfo(
-	               responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true))
-	              .build();
-	     return new ResponseEntity<>(response, HttpStatus.OK);
-	}
-
-
-	 @PostMapping("/_chalanCollectionData")
-		public ResponseEntity<ChallanCollectionDataResponse> _expenseCollectionData(
-				@RequestBody @Valid final RequestInfoWrapper requestInfoWrapper,
-				@Valid @ModelAttribute SearchCriteria criteria) {
-			List<ChallanCollectionData> collectionData = challanService.getChallanCollectionData(criteria,
-					requestInfoWrapper.getRequestInfo());
-
-			ChallanCollectionDataResponse response = ChallanCollectionDataResponse.builder().ChallanCollectionData(collectionData)
-					.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),
-							true))
-					.build();
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		}
-
+	
 
 }

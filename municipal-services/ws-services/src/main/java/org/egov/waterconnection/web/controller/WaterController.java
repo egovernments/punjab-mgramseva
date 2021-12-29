@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.repository.WaterDaoImpl;
+
 import org.egov.waterconnection.service.SchedulerService;
 import org.egov.waterconnection.service.WaterService;
 import org.egov.waterconnection.util.ResponseInfoFactory;
@@ -14,9 +15,8 @@ import org.egov.waterconnection.web.models.FeedbackResponse;
 import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.LastMonthSummary;
 import org.egov.waterconnection.web.models.LastMonthSummaryResponse;
+
 import org.egov.waterconnection.web.models.RequestInfoWrapper;
-import org.egov.waterconnection.web.models.RevenueCollectionData;
-import org.egov.waterconnection.web.models.RevenueCollectionDataResponse;
 import org.egov.waterconnection.web.models.RevenueDashboard;
 import org.egov.waterconnection.web.models.RevenueDashboardResponse;
 import org.egov.waterconnection.web.models.SearchCriteria;
@@ -114,7 +114,7 @@ public class WaterController {
 		return new ResponseEntity<>(feedbackResponse, HttpStatus.OK);
 	}
 	@PostMapping("/_revenueDashboard")
-	public ResponseEntity<RevenueDashboardResponse> _revenueDashboard(
+	public ResponseEntity<RevenueDashboardResponse> _expenseDashboard(
 			@RequestBody @Valid final RequestInfoWrapper requestInfoWrapper,
 			@Valid @ModelAttribute SearchCriteria criteria) {
 		RevenueDashboard dashboardData = waterService.getRevenueDashboardData(criteria,
@@ -166,29 +166,4 @@ public class WaterController {
 					responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true));
 			return new ResponseEntity<>(response, HttpStatus.OK);
 	    }
-	 
-	 @RequestMapping(value = "/_plainsearch", method = RequestMethod.POST)
-		public ResponseEntity<WaterConnectionResponse> planeSearch(
-				@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
-				@Valid @ModelAttribute SearchCriteria criteria) {
-			WaterConnectionResponse response = waterService.planeSearch(criteria, requestInfoWrapper.getRequestInfo());
-			response.setResponseInfo(
-					responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true));
-	    return new ResponseEntity<>(response, HttpStatus.OK);
-		}
-  
-	 @PostMapping("/_revenueCollectionData")
-		public ResponseEntity<RevenueCollectionDataResponse> _revenueCollectionData(
-				@RequestBody @Valid final RequestInfoWrapper requestInfoWrapper,
-				@Valid @ModelAttribute SearchCriteria criteria) {
-			List<RevenueCollectionData> collectionData = waterService.getRevenueCollectionData(criteria,
-					requestInfoWrapper.getRequestInfo());
-
-			RevenueCollectionDataResponse response = RevenueCollectionDataResponse.builder().RevenueCollectionData(collectionData)
-					.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),
-							true))
-					.build();
-
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		}
 }

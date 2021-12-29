@@ -114,9 +114,9 @@ public class WSCalculationValidator {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		Date billingStrartDate = null;
 		Date billingEndDate = null;
-		Calendar startCal = Calendar.getInstance();
+		Calendar startCal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Kolkata"));
 
-		Calendar endCal = Calendar.getInstance();
+		Calendar endCal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Kolkata"));
 		try {
 			billingStrartDate = sdf.parse(meterReading.getBillingPeriod().split("-")[0].trim());
 			billingEndDate = sdf.parse(meterReading.getBillingPeriod().split("-")[1].trim());
@@ -176,9 +176,9 @@ public class WSCalculationValidator {
 			String tenantId, String billingFrequency) {
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-		Calendar startCal = Calendar.getInstance();
+		Calendar startCal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Kolkata"));
 		startCal.setTimeInMillis(startTime);
-		Calendar endCal = Calendar.getInstance();
+		Calendar endCal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Kolkata"));
 		endCal.setTimeInMillis(endTime);
 		System.out.println(formatter.format(startCal.getTime()));
 		if (billingFrequency.equalsIgnoreCase(WSCalculationConstant.Monthly_Billing_Period)) {

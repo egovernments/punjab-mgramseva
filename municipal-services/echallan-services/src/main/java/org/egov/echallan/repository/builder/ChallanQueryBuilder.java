@@ -72,19 +72,7 @@ public class ChallanQueryBuilder {
 	
 	  public static final String ACTUALEXPCOLLECTION = " SELECT coalesce(SUM(PY.TOTALAMOUNTPAID),0) FROM EGCL_PAYMENT PY INNER JOIN EGCL_PAYMENTDETAIL PYD ON PYD.PAYMENTID = PY.ID WHERE PYD.BUSINESSSERVICE LIKE '%EXPENSE%' ";
 
-	  public static final String TOTALBILLS = " select count(*) from eg_echallan where applicationstatus not in ('CANCELLED') ";
 
-	  public static final String PAIDBILLS = " select count(*) from eg_echallan where isbillpaid = 'true' and applicationstatus not in ('CANCELLED') ";
-	  
-	  public static final String PENDINGBILLS = " select count(*) from eg_echallan where isbillpaid = 'false' and applicationstatus not in ('CANCELLED') ";
-
-	  public static final String ELECTRICITYBILLS = " select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_echallan challan ON challan.challanno = bill.consumercode  where pyd.businessservice='EXPENSE.ELECTRICITY_BILL' and challan.applicationstatus not in ('CANCELLED') ";
-
-	  public static final String OMMISCBILLS = "select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_echallan challan ON challan.challanno = bill.consumercode  where pyd.businessservice='EXPENSE.OM' and challan.applicationstatus not in ('CANCELLED') ";
-	  
-	  public static final String SALARYBILLS = " select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_echallan challan ON challan.challanno = bill.consumercode  where pyd.businessservice='EXPENSE.SALARY' and challan.applicationstatus not in ('CANCELLED')";
-
-	  public static final String PENDINGEXPCOLLTILLDATE = "SELECT coalesce(SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT),0) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE LIKE '%EXPENSE%' and DMD.status='ACTIVE' ";
 
 
 		public String getChallanSearchQuery(SearchCriteria criteria, List<Object> preparedStmtList) {
@@ -290,69 +278,4 @@ public class ChallanQueryBuilder {
 		return builder.toString();
 	}
 
-	public String getChallanSearchQueryForPlaneSearch(SearchCriteria criteria, List<Object> preparedStmtList) {
-
-		StringBuilder builder = new StringBuilder(QUERY);
-		builder = applyFiltersForPlaneSearch(builder, preparedStmtList, criteria);
-		return addPaginationWrapperPlainsearch(builder.toString(), preparedStmtList, criteria);
-	}
-	
-	private String addPaginationWrapperPlainsearch(String query, List<Object> preparedStmtList,
-			SearchCriteria criteria) {
-
-		String string = addOrderByClause(criteria);
-
-		String finalQuery = paginationWrapper.replace("{}", query);
-
-		finalQuery = finalQuery.replace("{orderby}", string);
-
-		finalQuery = finalQuery.replace("{amount}",
-				" (select nullif(sum(bi.totalamount),0) from egbs_billdetail_v1 bi join egbs_bill_v1 b on bi.billid=b.id where bi.businessservice = challan.businessservice and bi.consumercode = challan.challanno and b.status IN ('ACTIVE','PAID' ) group by bi.consumercode) as totalamount, ");
-
-		if (criteria.getLimit() != null && criteria.getLimit() != 0) {
-			int limit = 0, offset = 0;
-			if (criteria.getLimit() != null && criteria.getLimit() <= config.getMaxSearchLimit())
-				limit = criteria.getLimit();
-
-			if (criteria.getLimit() != null && criteria.getLimit() > config.getMaxSearchLimit())
-				limit = config.getMaxSearchLimit();
-
-			if (criteria.getOffset() != null)
-				offset = criteria.getOffset();
-
-			finalQuery = finalQuery.replace("{pagination}", " offset ?  limit ?  ");
-			preparedStmtList.add(offset);
-			preparedStmtList.add(limit);
-
-		} else {
-			finalQuery = finalQuery.replace("{pagination}", " ");
-		}
-
-		return finalQuery;
-	}
-	
-
-
-	public StringBuilder applyFiltersForPlaneSearch(StringBuilder builder, List<Object> preparedStmtList,
-			SearchCriteria criteria) {
-
-		if (criteria.getIds() != null) {
-			List<String> ids = criteria.getIds();
-			addClauseIfRequired(preparedStmtList, builder);
-			builder.append(" challan.id IN (").append(createQuery(ids)).append(")");
-			addToPreparedStatement(preparedStmtList, ids);
-		}
-		if (criteria.getTenantId() != null) {
-			addClauseIfRequired(preparedStmtList, builder);
-			builder.append(" challan.tenantid=? ");
-			preparedStmtList.add(criteria.getTenantId());
-		}
-		if (criteria.getIsBillPaid() != null) {
-			addClauseIfRequired(preparedStmtList, builder);
-			builder.append("  challan.isBillPaid = ? ");
-			preparedStmtList.add(criteria.getIsBillPaid());
-		}
-		return builder;
-	}
-	
 }

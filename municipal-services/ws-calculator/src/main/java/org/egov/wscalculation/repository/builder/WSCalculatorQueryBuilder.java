@@ -43,7 +43,7 @@ public class WSCalculatorQueryBuilder {
 	
 	private static final String PREVIOUS_BILLING_CYCLE_CONNECTION = " select count(*) from eg_ws_connection ";
 
-	private static final String nonmeteredConnectionList = " select distinct(conn.connectionno) from eg_ws_connection conn join eg_ws_service ws on conn.id=ws.connection_id where ws.connectiontype='Non_Metered' and conn.status not IN ('Inactive') and conn.connectionno not in ( select distinct(consumercode) from egbs_demand_v1 d where d.businessservice='WS' ";
+	private static final String nonmeteredConnectionList = " select distinct(conn.connectionno) from eg_ws_connection conn join eg_ws_service ws on conn.id=ws.connection_id where ws.connectiontype='Non_Metered' and conn.connectionno not in ( select distinct(consumercode) from egbs_demand_v1 d where d.businessservice='WS' ";
 
 	public String getDistinctTenantIds() {
 		return distinctTenantIdsCriteria;
