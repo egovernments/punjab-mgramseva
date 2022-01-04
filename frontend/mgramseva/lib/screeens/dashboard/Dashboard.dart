@@ -70,7 +70,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
     var dashBoardProvider =
         Provider.of<DashBoardProvider>(context, listen: false);
     dashBoardProvider.selectedMonth =
-        CommonMethods.getFinancialYearList().first.monthList.first;
+        CommonMethods.getMonthsOfFinancialYear().first;
     dashBoardProvider.scrollController = ScrollController();
     dashBoardProvider.debounce = null;
     dashBoardProvider.userFeedBackInformation = null;
