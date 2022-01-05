@@ -415,7 +415,7 @@ public class DemandGenerationConsumer {
 				message = message.replace("{X/X}",
 						String.valueOf(connectionNos.size()) + "/" + String.valueOf(connectionNos.size()));
 
-				additionals.put("localizationCode", "NEW_BULK_DEMAND_EVENT");
+				additionals.put("localizationCode", "NEW_BULK_DEMAND_EVENT_NM");
 				HashMap<String, String> attributes = new HashMap<String, String>();
 				attributes.put("{billing cycle}", billingCycle);
 				attributes.put("{X}", String.valueOf(nmSize));
@@ -427,7 +427,7 @@ public class DemandGenerationConsumer {
 						tenantId);
 				message = messageMap.get(WSCalculationConstant.MSG_KEY);
 				message = message.replace("{Y}", String.valueOf(meteredConnectionNos.size()));
-				additionals.put("localizationCode", WSCalculationConstant.NEW_BULK_DEMAND_EVENT);
+				additionals.put("localizationCode", WSCalculationConstant.NEW_BULK_DEMAND_EVENT_M);
 				HashMap<String, String> attributes = new HashMap<String, String>();
 				attributes.put("{Y}", String.valueOf(meteredConnectionNos.size()));
 				additionals.put("attributes", attributes);
