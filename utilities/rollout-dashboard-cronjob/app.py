@@ -1,12 +1,14 @@
 from typing import BinaryIO, List
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
+from dateutil import tz
+import pytz
 from dateutil import parser
 import time
 import os
 import psycopg2
 
-def getGPWSCHeirarchy(authToken):
+def getGPWSCHeirarchy():
 
         # call the projectmodule mdms for each unique tenant which would return the array of unique villages( i.e tenantid) along with the respectie
         # zone circle division subdivision project 
@@ -16,6 +18,7 @@ def getGPWSCHeirarchy(authToken):
             
                 
             url = os.getenv('API_URL')
+            tenantid = os.getenv('TENANT_ID')
             requestData = {
                 "RequestInfo": {
                     "apiId": "mgramseva-common",
@@ -24,11 +27,10 @@ def getGPWSCHeirarchy(authToken):
                     "action": "_search",
                     "did": 1,
                     "key": "",
-                    "msgId": "",
-                    "authToken":authToken
+                    "msgId": ""
                  },
                 "MdmsCriteria": {
-                    "tenantId": "pb",
+                    "tenantId": tenantid,
                     "moduleDetails": [
                         {
                             "moduleName": "tenant",
@@ -101,7 +103,7 @@ def getConsumerCreated(tenantId):
                 cursor.close()
                 connection.close()
 
-def getRateMasters(tenantId, authToken):
+def getRateMasters(tenantId):
         # make mdms call to get the rate unique rate masters i.e billig slab . count the unique billing slabs and return the number
         print("Rate master count returned")
         try:
@@ -117,8 +119,7 @@ def getRateMasters(tenantId, authToken):
                     "action": "_search",
                     "did": 1,
                     "key": "",
-                    "msgId": "",
-                    "authToken":authToken
+                    "msgId": ""
                  },
                 "MdmsCriteria": {
                     "tenantId": tenantId,
@@ -339,7 +340,77 @@ def getTotalDemandRaised(tenantId):
                 cursor.close()
                 connection.close()
 
-def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised):
+def getRatingCount(tenantId):
+        # make db call to get the total no of ratings   
+        print("no of ratings")
+        try:
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            TOTAL_RATINGS = "select count(*) from eg_ws_feedback where tenantid = '"+tenantId+"'" 
+            
+            cursor.execute(TOTAL_RATINGS)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+            
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+            
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+def getLastRatingDate(tenantId):
+        # make db call to get the last rating date entered date in that given tenant
+        print("last rating date geiven")
+        try:
+            connection = getConnection()
+            cursor = connection.cursor()
+            LAST_RATING_DATE = "select createdtime from eg_ws_feedback where tenantid = '"+tenantId+"'" +" order by createdtime desc limit 1"
+        
+            cursor.execute(LAST_RATING_DATE)
+            result = cursor.fetchone()
+            formatedDate = datetime.fromtimestamp(result[0]/1000.0)
+            print(formatedDate)
+            return formatedDate
+        
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+def getActiveUsersCount(tenantId):
+        # make db call to get the total no of active users(EMPLOYEE)   
+        print("no of active users")
+        try:
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            NO_OF_ACTIVE_USERS = "select count(*) from eg_user u join eg_userrole_v1 ur on u.id = ur.user_id where u.active = 't' and u.type='EMPLOYEE' and ur.role_code = 'EMPLOYEE' and ur.role_tenantid = '"+tenantId+"'" 
+            
+            cursor.execute(NO_OF_ACTIVE_USERS)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+            
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+            
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+
+
+def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount):
     # create entry into new table in postgres db with the table name roll_outdashboard . enter all field into the db and additional createdtime additional column
     
     print("inserting data into db")
@@ -347,10 +418,14 @@ def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemand
         connection = getConnection()
         cursor = connection.cursor()
         
-        createdTime = int(round(time.time() * 1000))
-      
-        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section, consumer_created_count, billing_slab_count, last_demand_gen_date, collection_till_date, collection_till_date_online, last_collection_date, expense_count, last_expense_txn_date, paid_status_expense_bill_count, demands_till_date_count, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'], consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, createdTime)
+        #createdTime = int(round(time.time() * 1000)) // time in currenttimemillis format   
+        
+        tzInfo = pytz.timezone('Asia/Kolkata')
+        createdTime = datetime.now(tz=tzInfo)
+        print("createdtime -->", createdTime)
+        
+        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section, consumer_created_count, billing_slab_count, last_demand_gen_date, collection_till_date, collection_till_date_online, last_collection_date, expense_count, last_expense_txn_date, paid_status_expense_bill_count, demands_till_date_count, ratings_count, last_rating_date, active_users_count, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'], consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount, createdTime)
         cursor.execute(postgres_insert_query, record_to_insert)
        
         connection.commit()
@@ -367,10 +442,7 @@ def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemand
 
 def process():
     print("continue is the process")
-    
-    
-    authToken = accessToken()
-    
+       
     try:
         connection = getConnection()
         cursor = connection.cursor()
@@ -397,11 +469,11 @@ def process():
             cursor.close()
             connection.close()
     
-    tenants = getGPWSCHeirarchy(authToken)
+    tenants = getGPWSCHeirarchy()
     for tenant in tenants:
         print(tenant)
         consumersCreated = getConsumerCreated(tenant['tenantId'])
-        countOfRateMaster = getRateMasters(tenant['tenantId'], authToken)
+        countOfRateMaster = getRateMasters(tenant['tenantId'])
         lastDemandGenratedDate = getLastDemandDate(tenant['tenantId'])
         collectionsMade = getCollectionsMade(tenant['tenantId'])
         collectionsMadeOnline = getCollectionsMadeOnline(tenant['tenantId'])
@@ -410,7 +482,10 @@ def process():
         lastExpTrnsDate = getLastExpTransactionDate(tenant['tenantId'])
         noOfBillpaid= getNoOfBillsPaid(tenant['tenantId'])
         noOfDemandRaised= getTotalDemandRaised(tenant['tenantId'])
-        createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised)
+        noOfRatings = getRatingCount(tenant['tenantId'])
+        lastRatingDate= getLastRatingDate(tenant['tenantId'])
+        activeUsersCount= getActiveUsersCount(tenant['tenantId'])
+        createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount)
     print("End of rollout dashboard")
     return 
 
@@ -436,22 +511,7 @@ def getCurrentDate():
     currentDateInMillis = str(parser.parse(currentDate).timestamp() * 1000)
     
     return currentDateInMillis
-    
-def accessToken():
- 
-    
-    try:
-        query = {'username': os.getenv('TOKEN_USERNAME'),'password': os.getenv('TOKEN_PASSWORD'),'userType':'EMPLOYEE',"scope":"read","grant_type":"password"}
-        query['tenantId']=os.getenv('TOKEN_TENANTID')
-   
-        response = requests.post( os.getenv('TOKEN_URL')+'user/oauth/token', data=query, headers={
-        "Connection":"keep-alive","content-type":"application/x-www-form-urlencoded","Authorization": "Basic ZWdvdi11c2VyLWNsaWVudDo="})
-        
-        jsondata = response.json()
-        return jsondata.get('access_token')
-    except Exception as exception:
-            print("Exception occurred while connecting to the database")
-            print(exception)    
+     
     
 def createTable():
     
@@ -474,7 +534,10 @@ def createTable():
         last_expense_txn_date Date,
         paid_status_expense_bill_count NUMERIC(10),
         demands_till_date_count NUMERIC(10),
-        createdtime BIGINT NOT NULL
+        ratings_count NUMERIC(10),
+        last_rating_date DATE,
+        active_users_count NUMERIC(10),
+        createdtime TIMESTAMP NOT NULL
         )"""
     
     return CREATE_TABLE_QUERY
