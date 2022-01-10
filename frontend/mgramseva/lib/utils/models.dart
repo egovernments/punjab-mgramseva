@@ -93,14 +93,24 @@ class DatePeriod {
   final DateType dateType;
   final String? label;
   DatePeriod(this.startDate, this.endDate, this.dateType, [this.label]);
+
+  @override
+  bool operator ==(otherDate) {
+    return (otherDate is DatePeriod)
+        && otherDate.startDate == startDate
+        && otherDate.endDate == endDate
+        && otherDate.dateType == dateType
+        && otherDate.label == label;
+  }
 }
 
 class Legend {
   final String label;
-  final Color color;
+  final String hexColor;
 
-  Legend(this.label, this.color);
+  Legend(this.label, this.hexColor);
 }
+
 
 class CustomFile {
   final Uint8List bytes;
@@ -115,4 +125,16 @@ class YearWithMonths {
   final DatePeriod year;
   bool isExpanded = false;
   YearWithMonths(this.monthList, this.year);
+}
+
+class HexColor extends Color {
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF" + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
+  }
+
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }

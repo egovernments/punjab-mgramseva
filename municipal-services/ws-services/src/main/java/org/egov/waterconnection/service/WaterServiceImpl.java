@@ -2,10 +2,12 @@ package org.egov.waterconnection.service;
 
 import static org.egov.waterconnection.constants.WCConstants.APPROVE_CONNECTION;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.Period;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
@@ -19,7 +21,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -41,16 +45,19 @@ import org.egov.waterconnection.validator.WaterConnectionValidator;
 import org.egov.waterconnection.web.models.AuditDetails;
 import org.egov.waterconnection.web.models.BillingCycle;
 import org.egov.waterconnection.web.models.CheckList;
+import org.egov.waterconnection.web.models.Connection.StatusEnum;
 import org.egov.waterconnection.web.models.Feedback;
 import org.egov.waterconnection.web.models.FeedbackRequest;
 import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.LastMonthSummary;
 import org.egov.waterconnection.web.models.Property;
+import org.egov.waterconnection.web.models.RevenueCollectionData;
 import org.egov.waterconnection.web.models.RevenueDashboard;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
 import org.egov.waterconnection.web.models.WaterConnectionResponse;
+import org.egov.waterconnection.web.models.enums.Status;
 import org.egov.waterconnection.web.models.workflow.BusinessService;
 import org.egov.waterconnection.workflow.WorkflowIntegrator;
 import org.egov.waterconnection.workflow.WorkflowService;
@@ -301,6 +308,10 @@ public class WaterServiceImpl implements WaterService {
 //		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
 		boolean isStateUpdatable = waterServiceUtil.getStatusForUpdate(businessService, previousApplicationStatus);
 		waterDao.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
+		
+		if(waterConnectionRequest.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE)) {
+			waterConnectionRequest.getWaterConnection().setApplicationStatus("INACTIVE");
+		}
 		// setting oldApplication Flag
 		markOldApplication(waterConnectionRequest);
 		// check for edit and send edit notification
@@ -481,6 +492,30 @@ public class WaterServiceImpl implements WaterService {
 		if (null != unpaidAmount) {
 			dashboardData.setPendingCollection(unpaidAmount.toString());
 		}
+		Integer residentialCollection = waterDaoImpl.getResidentialCollectionAmount(criteria);
+		if (null != residentialCollection) {
+			dashboardData.setResidetialColllection(residentialCollection.toString());
+		}
+		Integer commeritialCollection = waterDaoImpl.getCommercialCollectionAmount(criteria);
+		if (null != commeritialCollection) {
+			dashboardData.setComercialCollection(commeritialCollection.toString());
+		}
+		Integer othersCollection = waterDaoImpl.getOthersCollectionAmount(criteria);
+		if (null != othersCollection) {
+			dashboardData.setOthersCollection(othersCollection.toString());
+		}
+		Map<String, Object> residentialsPaid = waterDaoImpl.getResidentialPaid(criteria);
+		if (null != residentialsPaid) {
+			dashboardData.setResidentialsCount(residentialsPaid);
+		}
+		Map<String, Object> comercialsPaid = waterDaoImpl.getCommercialPaid(criteria);
+		if (null != comercialsPaid) {
+			dashboardData.setComercialsCount(comercialsPaid);
+		}
+		Map<String, Object> totalApplicationsPaid = waterDaoImpl.getAllPaid(criteria);
+		if (null != totalApplicationsPaid) {
+			dashboardData.setTotalApplicationsCount(totalApplicationsPaid);
+		}
 
 		return dashboardData;
 
@@ -504,9 +539,8 @@ public class WaterServiceImpl implements WaterService {
 	}
 	
 	private void validateFuzzySearchCriteria(SearchCriteria criteria){
-
-        if(org.apache.commons.lang3.StringUtils.isBlank(criteria.getName()) && org.apache.commons.lang3.StringUtils.isBlank(criteria.getMobileNumber()))
-            throw new CustomException("EG_WC_SEARCH_ERROR"," No criteria given for the WC search");
+		if(org.apache.commons.lang3.StringUtils.isBlank(criteria.getTextSearch()) && org.apache.commons.lang3.StringUtils.isBlank(criteria.getName()) && org.apache.commons.lang3.StringUtils.isBlank(criteria.getMobileNumber()))
+          throw new CustomException("EG_WC_SEARCH_ERROR"," No criteria given for the WC search");
     }
 	
 	private List<Map<String, Object>> wsDataResponse(Object esResponse) {
@@ -520,4 +554,89 @@ public class WaterServiceImpl implements WaterService {
 
 	        return data;
 	    }
+	
+	public WaterConnectionResponse planeSearch(SearchCriteria criteria, RequestInfo requestInfo) {
+		WaterConnectionResponse waterConnection = getWaterConnectionsListForPlaneSearch(criteria, requestInfo);
+		waterConnectionValidator.validatePropertyForConnection(waterConnection.getWaterConnection());
+		enrichmentService.enrichConnectionHolderDeatils(waterConnection.getWaterConnection(), criteria, requestInfo);
+		return waterConnection;
+	}
+	
+	public WaterConnectionResponse getWaterConnectionsListForPlaneSearch(SearchCriteria criteria,
+			RequestInfo requestInfo) {
+		return waterDao.getWaterConnectionListForPlaneSearch(criteria, requestInfo);
+	}
+
+	@Override
+	public List<RevenueCollectionData> getRevenueCollectionData(@Valid SearchCriteria criteria,
+			RequestInfo requestInfo) {
+
+		long endDate = criteria.getToDate();
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+		LocalDate currentMonthDate = LocalDate.now();
+
+		Calendar currentDate = Calendar.getInstance();
+		int currentMonthNumber = currentDate.get(Calendar.MONTH);
+
+		int totalMonthsTillDate;
+		LocalDate finYearStarting;
+		if (currentMonthNumber < 3) {
+			totalMonthsTillDate = 9 + currentMonthNumber;
+			currentDate.setTimeInMillis(criteria.getFromDate());
+
+			currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
+					currentDate.get(Calendar.DAY_OF_MONTH));
+
+			finYearStarting = currentMonthDate;
+		} else {
+			totalMonthsTillDate = currentMonthNumber - 2;
+			currentDate.setTimeInMillis(criteria.getFromDate());
+			currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
+					currentDate.get(Calendar.DAY_OF_MONTH));
+
+			finYearStarting = currentMonthDate;
+		}
+		ArrayList<RevenueCollectionData> data = new ArrayList<RevenueCollectionData>();
+
+		for (int i = 0; i <= totalMonthsTillDate; i++) {
+			LocalDate monthStart = currentMonthDate.minusMonths(0).with(TemporalAdjusters.firstDayOfMonth());
+			LocalDate monthEnd = currentMonthDate.minusMonths(0).with(TemporalAdjusters.lastDayOfMonth());
+
+			LocalDateTime monthStartDateTime = LocalDateTime.of(monthStart.getYear(), monthStart.getMonth(),
+					monthStart.getDayOfMonth(), 0, 0, 0);
+			LocalDateTime monthEndDateTime = LocalDateTime.of(monthEnd.getYear(), monthEnd.getMonth(),
+					monthEnd.getDayOfMonth(), 23, 59, 59, 999000000);
+			criteria.setFromDate((Long) monthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+			criteria.setToDate((Long) monthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+
+			String tenantId = criteria.getTenantId();
+			Integer demand = waterDaoImpl.getTotalDemandAmount(criteria);
+			RevenueCollectionData collectionData = new RevenueCollectionData();
+
+			if (null != demand) {
+				collectionData.setDemand(demand.toString());
+			}
+			Integer paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
+			if (null != paidAmount) {
+				collectionData.setActualCollection(paidAmount.toString());
+			}
+			Integer unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
+			if (null != unpaidAmount) {
+				collectionData.setPendingCollection(unpaidAmount.toString());
+			}
+			Integer arrears = waterDaoImpl.getArrearsAmount(criteria);
+			if (null != arrears) {
+				collectionData.setArrears(arrears.toString());
+			}
+			collectionData.setMonth(criteria.getFromDate());
+			data.add(i, collectionData);
+			System.out.println("collectionData:: " + collectionData.toString());
+
+			currentMonthDate = currentMonthDate.plusMonths(1);
+		}
+		System.out.println("datadatadatadata" + data);
+		return data;
+
+	}
 }

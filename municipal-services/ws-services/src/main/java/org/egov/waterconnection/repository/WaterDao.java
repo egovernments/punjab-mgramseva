@@ -15,4 +15,6 @@ public interface WaterDao {
 	void updateWaterConnection(WaterConnectionRequest waterConnectionRequest, boolean isStateUpdatable);
 
 	List<String> getWCListFuzzySearch(SearchCriteria criteria);
+	
+	WaterConnectionResponse getWaterConnectionListForPlaneSearch(SearchCriteria criteria,RequestInfo requestInfo);
 }

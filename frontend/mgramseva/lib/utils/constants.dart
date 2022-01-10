@@ -20,6 +20,7 @@ class Constants {
   static const String CREATE_CONSUMER_KEY = 'create_consumer_key';
   static const String ADD_EXPENSE_KEY = 'add_expense_key';
   static const String HOME_KEY = 'home_key';
+  static const String UPDATE_STATUS_KEY = 'update_status';
 
   static List<KeyValue> GENDER = [
     KeyValue('CORE_COMMON_GENDER_MALE', 'MALE'),
@@ -129,4 +130,13 @@ class Constants {
     i18.common.NOV,
     i18.common.DEC,
   ];
+
+  /// Tabs
+  static const ALL = 'ALL';
+  static const PENDING = 'PENDING';
+  static const PAID = 'PAID';
+
+  static const List<String> CONNECTION_STATUS = ['Inactive', 'Active'];
+
+  static const String INVALID_EXCEPTION_CODE = 'InvalidAccessTokenException';
 }

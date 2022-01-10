@@ -1,12 +1,17 @@
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 
-class CustomOVerlay {
-  static showOverlay(BuildContext context, Widget widget) {
+  class CustomOVerlay {
+
+  static showOverlay(BuildContext context, Widget widget){
+
     removeOverLay();
     overlayState = Overlay.of(context);
 
-    overlayEntry = new OverlayEntry(builder: (BuildContext context) => widget);
+    overlayEntry = new OverlayEntry(
+        builder: (BuildContext context) => widget);
+
 
     if (overlayEntry != null) overlayState?.insert(overlayEntry!);
   }

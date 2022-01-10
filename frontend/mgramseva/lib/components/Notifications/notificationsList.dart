@@ -13,7 +13,8 @@ import 'package:provider/provider.dart';
 
 class NotificationsList extends StatefulWidget {
   final bool close;
-  const NotificationsList({Key? key, required this.close}) : super(key: key);
+  const NotificationsList({Key? key, required this.close})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return NotificationsListState();
@@ -25,20 +26,17 @@ class NotificationsListState extends State<NotificationsList> {
     return LayoutBuilder(builder: (context, constraints) {
       return Column(mainAxisSize: MainAxisSize.min, children: [
         events!.length > 0
-            ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                ListLabelText(ApplicationLocalizations.of(context)
-                        .translate(i18.common.NOTIFICATIONS) +
-                    " (" +
-                    events.length.toString() +
-                    ")"),
-                (events.length > 0)
-                    ? Center(
-                        child: ButtonLink(
-                            i18.common.VIEW_ALL,
-                            () => Navigator.pushNamed(
-                                context, Routes.NOTIFICATIONS)))
-                    : Text(""),
-              ])
+            ? Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ListLabelText(ApplicationLocalizations.of(context)
+                    .translate(i18.common.NOTIFICATIONS) +
+                " (" +
+                events.length.toString() +
+                ")"),
+              (events.length > 0)? Center(
+                  child: ButtonLink(i18.common.VIEW_ALL, () => Navigator.pushNamed(context, Routes.NOTIFICATIONS))) : Text(""),
+            ])
             : Text(""),
         ListView.builder(
             shrinkWrap: true,
@@ -48,16 +46,12 @@ class NotificationsListState extends State<NotificationsList> {
               var item = events[i];
               callBack() {
                 Provider.of<NotificationProvider>(context, listen: false)
-                  ..updateNotify(item, events);
+              ..updateNotify(item, events);
               }
-
               return Notifications(item, callBack, widget.close);
             }),
-        (events.length > 0)
-            ? Center(
-                child: ButtonLink(i18.common.VIEW_ALL,
-                    () => Navigator.pushNamed(context, Routes.NOTIFICATIONS)))
-            : Text(""),
+        (events.length > 0)? Center(
+            child: ButtonLink(i18.common.VIEW_ALL, () => Navigator.pushNamed(context, Routes.NOTIFICATIONS))) : Text(""),
       ]);
     });
   }

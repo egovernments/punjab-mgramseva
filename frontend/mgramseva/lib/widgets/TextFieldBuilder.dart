@@ -35,35 +35,37 @@ class BuildTextField extends StatefulWidget {
   final AutovalidateMode? autoValidation;
   final bool? isFilled;
   final Widget? suffixIcon;
+  final Key? key;
 
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
-      this.prefixText = '',
-      this.onChange,
-      this.isRequired = false,
-      this.onSubmit,
-      this.pattern = '',
-      this.message = '',
-      this.inputFormatter,
-      this.validator,
-      this.maxLength,
-      this.maxLines,
-      this.textCapitalization,
-      this.obscureText,
-      this.textInputType,
-      this.isDisabled,
-      this.readOnly,
-      this.labelSuffix,
-      this.hint,
-      this.focusNode,
-      this.inputBorder,
-      this.prefixIcon,
-      this.placeHolder,
-      this.contextkey,
-      this.isFilled,
-      this.requiredMessage,
-      this.autoValidation,
-      this.suffixIcon});
+        this.prefixText = '',
+        this.onChange,
+        this.isRequired = false,
+        this.onSubmit,
+        this.pattern = '',
+        this.message = '',
+        this.inputFormatter,
+        this.validator,
+        this.maxLength,
+        this.maxLines,
+        this.textCapitalization,
+        this.obscureText,
+        this.textInputType,
+        this.isDisabled,
+        this.readOnly,
+        this.labelSuffix,
+        this.hint,
+        this.focusNode,
+        this.inputBorder,
+        this.prefixIcon,
+        this.placeHolder,
+        this.contextkey,
+        this.isFilled,
+        this.requiredMessage,
+        this.autoValidation,
+        this.suffixIcon,
+        this.key});
 
   @override
   State<StatefulWidget> createState() => _BuildTextField();
@@ -83,8 +85,8 @@ class _BuildTextField extends State<BuildTextField> {
                     : Theme.of(context).primaryColorDark),
             enabled: widget.isDisabled != null
                 ? (widget.isDisabled == true)
-                    ? false
-                    : true
+                ? false
+                : true
                 : true,
             controller: widget.controller,
             keyboardType: widget.textInputType ?? TextInputType.text,
@@ -95,28 +97,27 @@ class _BuildTextField extends State<BuildTextField> {
             focusNode: widget.focusNode,
             autovalidateMode: widget.autoValidation,
             textCapitalization:
-                widget.textCapitalization ?? TextCapitalization.none,
+            widget.textCapitalization ?? TextCapitalization.none,
             obscureText: widget.obscureText ?? false,
             readOnly: widget.readOnly ?? false,
             validator: widget.validator != null
                 ? (val) => widget.validator!(val)
                 : (value) {
-                    if (value!.trim().isEmpty && widget.isRequired) {
-                      return ApplicationLocalizations.of(context).translate(
-                          widget.requiredMessage ??
-                              '${widget.labelText}_REQUIRED');
-                    } else if (widget.pattern != null && widget.pattern != '') {
-                      return (new RegExp(widget.pattern!).hasMatch(value))
-                          ? null
-                          : ApplicationLocalizations.of(context)
-                              .translate(widget.message);
-                    }
-                    return null;
-                  },
+              if (value!.trim().isEmpty && widget.isRequired) {
+                return ApplicationLocalizations.of(context).translate(
+                    widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
+              } else if (widget.pattern != null && widget.pattern != '') {
+                return (new RegExp(widget.pattern!).hasMatch(value))
+                    ? null
+                    : ApplicationLocalizations.of(context)
+                    .translate(widget.message);
+              }
+              return null;
+            },
             decoration: InputDecoration(
                 hintText: widget.placeHolder != null
                     ? ApplicationLocalizations.of(context)
-                        .translate((widget.placeHolder!))
+                    .translate((widget.placeHolder!))
                     : "",
                 border: widget.inputBorder,
                 enabledBorder: widget.inputBorder,
@@ -126,39 +127,39 @@ class _BuildTextField extends State<BuildTextField> {
                 fillColor: widget.isDisabled != null && widget.isDisabled!
                     ? Colors.grey
                     : Colors.white,
-                prefixIconConstraints:
-                    BoxConstraints(minWidth: 0, minHeight: 0),
+                prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
                 prefixStyle: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
-                    color: widget.isDisabled != null && widget.isDisabled!
+                    color:
+                    widget.isDisabled != null && widget.isDisabled!
                         ? Colors.grey
                         : Theme.of(context).primaryColorDark),
                 prefixIcon: widget.prefixIcon ??
                     (widget.prefixText == ''
                         ? null
                         : Padding(
-                            padding: const EdgeInsets.only(
-                                top: 10, left: 10, bottom: 10, right: 0),
-                            child: Text(
-                              widget.prefixText,
-                              style: TextStyle(
-                                  fontSize: kIsWeb ? 15 : 16,
-                                  fontWeight: FontWeight.w400,
-                                  color: widget.isDisabled != null &&
-                                          widget.isDisabled!
-                                      ? Colors.grey
-                                      : Theme.of(context).primaryColorDark),
-                            ),
-                          )),
-                suffixIcon: widget.suffixIcon),
+                      padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10, right: 0),
+                      child: Text(
+                        widget.prefixText,
+                        style: TextStyle(
+                            fontSize: kIsWeb ? 15 : 16,
+                            fontWeight: FontWeight.w400,
+                            color:
+                            widget.isDisabled != null && widget.isDisabled!
+                                ? Colors.grey
+                                : Theme.of(context).primaryColorDark),
+                      ),
+                    )),
+                suffixIcon: widget.suffixIcon
+            ),
             onChanged: widget.onChange));
 // Label Text
     Widget textLabelwidget =
-        Wrap(direction: Axis.horizontal, children: <Widget>[
+    Wrap(direction: Axis.horizontal, children: <Widget>[
       Text(
           '${ApplicationLocalizations.of(context).translate(widget.labelText)}'
-          '${widget.labelSuffix != null ? ' ${widget.labelSuffix}' : ''}',
+              '${widget.labelSuffix != null ? ' ${widget.labelSuffix}' : ''}',
           textAlign: TextAlign.left,
           style: TextStyle(
               fontWeight: FontWeight.w400,
@@ -180,7 +181,7 @@ class _BuildTextField extends State<BuildTextField> {
         return Container(
             key: widget.contextkey,
             margin:
-                const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
+            const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
             child: Row(
               children: [
                 Visibility(
@@ -207,7 +208,7 @@ class _BuildTextField extends State<BuildTextField> {
         return Container(
             key: widget.contextkey,
             margin:
-                const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
+            const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
             child: Column(
               children: [
                 Visibility(

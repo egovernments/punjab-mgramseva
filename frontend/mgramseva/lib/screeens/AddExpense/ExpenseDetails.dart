@@ -5,6 +5,7 @@ import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/AddExpense/AddExpenseWalkThrough/expenseWalkThrough.dart';
+import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/widgets/customAppbar.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
@@ -81,7 +82,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
     if (!_numberFocus.hasFocus) {
       Provider.of<ExpensesDetailsProvider>(context, listen: false)
         ..phoneNumberAutoValidation = true
-        ..callNotifyer();
+      ..callNotifyer();
     }
   }
 
@@ -91,58 +92,60 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
         Provider.of<ExpensesDetailsProvider>(context, listen: false);
     return FocusWatcher(
         child: Scaffold(
-            appBar: CustomAppBar(),
-            drawer: DrawerWrapper(
-              Drawer(child: SideBar()),
-            ),
-            body: SingleChildScrollView(
-                child: Column(children: [
-              StreamBuilder(
-                  stream: expensesDetailsProvider.streamController.stream,
-                  builder: (context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data is String) {
-                        return CommonWidgets.buildEmptyMessage(
-                            snapshot.data, context);
-                      }
-                      return _buildUserView(snapshot.data);
-                    } else if (snapshot.hasError) {
-                      return Notifiers.networkErrorPage(
-                          context,
-                          () => expensesDetailsProvider.getExpensesDetails(
-                              context, widget.expensesDetails, widget.id));
-                    } else {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
-                          return Loaders.CircularLoader();
-                        case ConnectionState.active:
-                          return Loaders.CircularLoader();
-                        default:
-                          return Container();
-                      }
-                    }
-                  }),
-              Footer()
-            ])),
-            bottomNavigationBar: Consumer<ExpensesDetailsProvider>(
-              builder: (_, expensesDetailsProvider, child) => BottomButtonBar(
-                  i18.common.SUBMIT,
-                  (isUpdate &&
-                              (expensesDetailsProvider
+         appBar: CustomAppBar(),
+         drawer: DrawerWrapper(
+          Drawer(child: SideBar()),
+        ),
+        body: SingleChildScrollView(
+            child: Column(children: [
+          StreamBuilder(
+              stream: expensesDetailsProvider.streamController.stream,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data is String) {
+                    return CommonWidgets.buildEmptyMessage(
+                        snapshot.data, context);
+                  }
+                  return _buildUserView(snapshot.data);
+                } else if (snapshot.hasError) {
+                  return Notifiers.networkErrorPage(
+                      context,
+                      () => expensesDetailsProvider.getExpensesDetails(
+                          context, widget.expensesDetails, widget.id));
+                } else {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return Loaders.CircularLoader();
+                    case ConnectionState.active:
+                      return Loaders.CircularLoader();
+                    default:
+                      return Container();
+                  }
+                }
+              }),
+          Footer()
+        ])),
+        bottomNavigationBar: Consumer<ExpensesDetailsProvider>(
+          builder: (_, expensesDetailsProvider, child) => BottomButtonBar(
+              i18.common.SUBMIT,
+              (isUpdate &&
+                          (expensesDetailsProvider
+                                  .expenditureDetails.allowEdit ??
+                              false)) ||
+                      ((isUpdate &&
+                              !(expensesDetailsProvider
                                       .expenditureDetails.allowEdit ??
+                                  false) &&
+                              (expensesDetailsProvider
+                                      .expenditureDetails.isBillCancelled ??
                                   false)) ||
-                          ((isUpdate &&
-                                  !(expensesDetailsProvider
-                                          .expenditureDetails.allowEdit ??
-                                      false) &&
-                                  (expensesDetailsProvider
-                                          .expenditureDetails.isBillCancelled ??
-                                      false)) ||
-                              !isUpdate)
-                      ? () => expensesDetailsProvider.validateExpensesDetails(
-                          context, isUpdate)
-                      : null),
-            )));
+                          !isUpdate)
+                  ? () => expensesDetailsProvider.validateExpensesDetails(
+                      context, isUpdate)
+                  : null,
+          key: Keys.expense.EXPENSE_SUBMIT,
+          ),
+        )));
   }
 
   saveInput(context) async {
@@ -217,6 +220,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[0].key,
                               controller: expenseDetails.expenseTypeController,
+                              key: Keys.expense.EXPENSE_TYPE,
                             ),
                             AutoCompleteView(
                               labelText: i18.expense.VENDOR_NAME,
@@ -238,6 +242,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               ],
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[1].key,
+                              key: Keys.expense.VENDOR_NAME,
                             ),
                             if (expensesDetailsProvider.isNewVendor())
                               BuildTextField(
@@ -248,8 +253,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 textInputType: TextInputType.number,
                                 validator: Validators.mobileNumberValidator,
                                 focusNode: _numberFocus,
-                                autoValidation: expensesDetailsProvider
-                                        .phoneNumberAutoValidation
+                                autoValidation: expensesDetailsProvider.phoneNumberAutoValidation
                                     ? AutovalidateMode.always
                                     : AutovalidateMode.disabled,
                                 maxLength: 10,
@@ -257,8 +261,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   FilteringTextInputFormatter.allow(
                                       RegExp("[0-9]"))
                                 ],
-                                onChange: expensesDetailsProvider
-                                    .onChangeOfMobileNumber,
+                                onChange: expensesDetailsProvider.onChangeOfMobileNumber,
+                                key: Keys.expense.VENDOR_MOBILE_NUMBER,
                               ),
                             BuildTextField(
                               '${i18.expense.AMOUNT}',
@@ -278,6 +282,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               validator: Validators.amountValidator,
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[2].key,
+                              key: Keys.expense.EXPENSE_AMOUNT,
                             ),
                             BasicDateField(
                               i18.expense.BILL_DATE,
@@ -303,6 +308,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   i18.expense.DATE_BILL_ENTERED_IN_RECORDS,
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[3].key,
+                              key: Keys.expense.EXPENSE_BILL_DATE,
                             ),
                             BasicDateField(
                               i18.expense.PARTY_BILL_DATE,
@@ -323,6 +329,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               isEnabled: expenseDetails.allowEdit,
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[4].key,
+                              key: Keys.expense.EXPENSE_PARTY_DATE,
                             ),
                             RadioButtonFieldBuilder(
                                 context,
@@ -410,7 +417,10 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 alignment: Alignment.centerLeft,
                                 padding: EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 18),
-                                child: Row(
+                                child: Wrap(
+                                  direction: Axis.horizontal,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  spacing: 8,
                                   children: [
                                     SizedBox(
                                       width: 20,
@@ -420,18 +430,13 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                           onChanged: expensesDetailsProvider
                                               .onChangeOfCheckBox),
                                     ),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(left : 8.0),
-                                        child: Text(
-                                            '${ApplicationLocalizations.of(context)
-                                                .translate(i18.expense
-                                                    .MARK_BILL_HAS_CANCELLED)}',
-                                            style: TextStyle(
-                                                fontSize: 19,
-                                                fontWeight: FontWeight.normal)),
-                                      ),
-                                    )
+                                    Text(
+                                        ApplicationLocalizations.of(context)
+                                            .translate(i18.expense
+                                                .MARK_BILL_HAS_CANCELLED),
+                                        style: TextStyle(
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.normal))
                                   ],
                                 ),
                               ),

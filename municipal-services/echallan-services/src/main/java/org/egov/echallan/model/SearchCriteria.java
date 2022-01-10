@@ -21,7 +21,6 @@ import lombok.Setter;
 @Builder
 public class SearchCriteria {
 
-	@NotNull
 	@JsonProperty("tenantId")
 	private String tenantId;
 

@@ -66,6 +66,12 @@ public class VendorQueryBuilder {
 	public String getVendorSearchQuery(VendorSearchCriteria criteria, List<Object> preparedStmtList) {
 		StringBuilder builder = new StringBuilder(Query);
 		if (criteria.getTenantId() != null) {
+			
+				addClauseIfRequired(preparedStmtList, builder);
+				builder.append(" vendor.status = ? ");
+				preparedStmtList.add("ACTIVE");
+			
+			
 			if (criteria.getTenantId().split("\\.").length == 1) {
 				addClauseIfRequired(preparedStmtList, builder);
 				builder.append(" vendor.tenantid like ?");

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.constants.WCConstants;
@@ -14,14 +15,15 @@ import org.egov.waterconnection.repository.ServiceRequestRepository;
 import org.egov.waterconnection.service.MeterInfoValidator;
 import org.egov.waterconnection.service.PropertyValidator;
 import org.egov.waterconnection.service.WaterFieldValidator;
-import org.egov.waterconnection.web.models.CalculationRes;
 import org.egov.waterconnection.web.models.Demand;
 import org.egov.waterconnection.web.models.DemandDetail;
+import org.egov.waterconnection.web.models.DemandRequest;
 import org.egov.waterconnection.web.models.DemandResponse;
 import org.egov.waterconnection.web.models.RequestInfoWrapper;
 import org.egov.waterconnection.web.models.ValidatorResult;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
+import org.egov.waterconnection.web.models.Connection.StatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -109,15 +111,28 @@ public class WaterConnectionValidator {
 		validateAllIds(request.getWaterConnection(), searchResult);
 		validateDuplicateDocuments(request);
 		setFieldsFromSearch(request, searchResult, reqType);
-		validateUpdateForDemand(request,searchResult);
-		
+		DemandResponse response =  validateUpdateForDemand(request,searchResult);
+		List<Demand> demands = response.getDemands();
+		List<Boolean> data = new ArrayList<Boolean>();
+		for (Demand demand : demands) {
+			if(!demand.isPaymentCompleted()) {
+				data.add(demand.isPaymentCompleted());
+			}
+		}
+		if(request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demands.size() == data.size()) {
+			for (Demand demand : demands) {
+					demand.setStatus(org.egov.waterconnection.web.models.Demand.StatusEnum.CANCELLED);
+			}
+			updateDemand(request.getRequestInfo(), demands);
+
+		}
 	}
 /**
  * GPWSC specific validation
  * @param request
  * @param searchResult
  */
-	private void validateUpdateForDemand(WaterConnectionRequest request, WaterConnection searchResult) {
+	private DemandResponse validateUpdateForDemand(WaterConnectionRequest request, WaterConnection searchResult) {
 		Map<String, String> errorMap = new HashMap<>();
 		StringBuilder url = new StringBuilder();
 		url.append(config.getBillingHost()).append(config.getDemandSearchUri());
@@ -150,6 +165,8 @@ public class WaterConnectionValidator {
 				}
 			}
 		}
+		
+		return demandResponse;
 	}
    
 	/**
@@ -195,4 +212,23 @@ public class WaterConnectionValidator {
 			request.getWaterConnection().setConnectionNo(searchResult.getConnectionNo());
 		}
 	}
+
+	  /**
+     * Updates the demand
+     * @param requestInfo The RequestInfo of the calculation Request
+     * @param demands The demands to be updated
+     * @return The list of demand updated
+     */
+    private List<Demand> updateDemand(RequestInfo requestInfo, List<Demand> demands){
+        StringBuilder url = new StringBuilder(config.getBillingHost());
+        url.append(config.getDemandUpdateEndPoint());
+        DemandRequest request = new DemandRequest(requestInfo,demands);
+        Object result = serviceRequestRepository.fetchResult(url, request);
+        try{
+            return mapper.convertValue(result,DemandResponse.class).getDemands();
+        }
+        catch(IllegalArgumentException e){
+            throw new CustomException("PARSING_ERROR","Failed to parse response of update demand");
+        }
+    }
 }

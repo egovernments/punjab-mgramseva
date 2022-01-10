@@ -51,6 +51,9 @@ class Url {
   static const String EGOV_LOCATIONS =
       'egov-location/location/v11/boundarys/_search';
 
+  ///Name Fuzzy Search for Connection search screen
+  static const String FETCH_CONNECTION_NAME = 'ws-services/wc/fuzzy/_search';
+
   /// Connection bill payment
   static const String COLLECT_PAYMENT = 'collection-services/payments/_create';
 
@@ -59,13 +62,15 @@ class Url {
 
   /// user feed back
   static const String POST_PAYMENT_FEEDBACK = 'ws-services/wc/_submitfeedback';
-  static const String GET_USERS_PAYMENT_FEEDBACK =
-      'ws-services/wc/_getfeedback';
+  static const String GET_USERS_PAYMENT_FEEDBACK = 'ws-services/wc/_getfeedback';
 
   /// Dashboard
-  static const String EXPENDITURE_METRIC =
-      'echallan-services/eChallan/v1/_expenseDashboard';
+  static const String EXPENDITURE_METRIC = 'echallan-services/eChallan/v1/_expenseDashboard';
   static const String REVENUE_METRIC = 'ws-services/wc/_revenueDashboard';
+  static const String GRAPHICAL_DASHBOARD = 'dashboard-analytics/dashboard/getChartV2';
+  static const String DASHBOARD_COLLECTION_TABLE_DATA = 'ws-services/wc/_revenueCollectionData';
+  static const String DASHBOARD_EXPENSE_TABLE_DATA = 'echallan-services/eChallan/v1/_chalanCollectionData';
+
 }
 
 class UserUrl {

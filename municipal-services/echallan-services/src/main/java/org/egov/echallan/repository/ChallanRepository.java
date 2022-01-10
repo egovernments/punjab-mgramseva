@@ -28,6 +28,7 @@ import org.egov.echallan.web.models.collection.PaymentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
@@ -53,7 +54,7 @@ public class ChallanRepository {
     private ChallanRowMapper rowMapper;
     
     private RestTemplate restTemplate;
-    
+
     @Autowired
     private CommonUtils util;
 
@@ -189,8 +190,8 @@ public class ChallanRepository {
 
 	public List<String>  getPreviousMonthExpensePayments(String tenantId, Long startDate, Long endDate) {
 		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHEXPPAYMENT);
-		query.append( " and PAYMTDTL.receiptdate  >= ").append( startDate)  
-		.append(" and  PAYMTDTL.receiptdate <= " ).append(endDate).append(" and PAYMTDTL.tenantid = '").append(tenantId).append("'"); 
+		query.append( " and PAYMTDTL.receiptdate  >= ").append( startDate)
+		.append(" and  PAYMTDTL.receiptdate <= " ).append(endDate).append(" and PAYMTDTL.tenantid = '").append(tenantId).append("'");
 		log.info("Previous month expense paid query : " + query);
 		return jdbcTemplate.queryForList(query.toString(), String.class);
 	}
@@ -198,7 +199,7 @@ public class ChallanRepository {
 	public Integer getLastsMonthExpensePayments(String tenantId, Long startDate, Long endDate) {
 		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHEXPPAYMENT);
 		query.append( " and PAYMTDTL.receiptdate  >= ").append( startDate)  
-		.append(" and  PAYMTDTL.receiptdate <= " ).append(endDate).append(" and PAYMTDTL.tenantid = '").append(tenantId).append("'"); 
+		.append(" and  PAYMTDTL.receiptdate <= " ).append(endDate).append(" and PAYMTDTL.tenantid = '").append(tenantId).append("'");
 		log.info("Previous month expense paid query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 	}
@@ -270,5 +271,84 @@ public class ChallanRepository {
 		log.info("Active pending collection query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Long.class);
 	}
-    
+
+	public Long getTotalBill(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.TOTALBILLS);
+		query.append(" and taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("TotalBills Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getBillsPaid(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.PAIDBILLS);
+		query.append(" and taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("paid bills Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getPendingBills(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.PENDINGBILLS);
+		query.append(" and taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("pending bills Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+
+	public Long getElectricityBill(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.ELECTRICITYBILLS);
+		query.append(" and challan.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and challan.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("electricity Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getOmMiscBills(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.OMMISCBILLS);
+		query.append(" and challan.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		.append(" and challan.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("O&M Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getSalary(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.SALARYBILLS);
+		query.append(" and challan.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		.append(" and challan.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("salary Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getPendingAmountTillDate(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.PENDINGEXPCOLLTILLDATE);
+		query.append(" and dmd.taxperiodto <= " + criteria.getToDate())
+		.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
+//		query.append(" and dmd.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+//				.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("Active pending collection query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public List<Challan> getChallansForPlaneSearch(SearchCriteria criteria, Map<String, String> finalData) {
+        List<Object> preparedStmtList = new ArrayList<>();
+        String query = queryBuilder.getChallanSearchQueryForPlaneSearch(criteria, preparedStmtList);
+        List<Challan> challans =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper);
+        return challans;
+    }
+
+
+	public List<String> fetchESIds(SearchCriteria criteria) {
+		List<Object> preparedStmtList = new ArrayList<>();
+		preparedStmtList.add(criteria.getOffset());
+		preparedStmtList.add(criteria.getLimit());
+
+		List<String> ids = jdbcTemplate.query("SELECT id from eg_echallan ORDER BY createdtime offset " +
+						" ? " +
+						"limit ? ",
+				preparedStmtList.toArray(),
+				new SingleColumnRowMapper<>(String.class));
+		return ids;
+	}
 }

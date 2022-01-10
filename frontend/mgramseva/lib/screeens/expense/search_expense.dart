@@ -4,6 +4,7 @@ import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
@@ -42,8 +43,7 @@ class _SearchExpenseState extends State<SearchExpense> {
 
   @override
   Widget build(BuildContext context) {
-    return FocusWatcher(
-        child: Scaffold(
+    return FocusWatcher(child:Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
@@ -68,6 +68,7 @@ class _SearchExpenseState extends State<SearchExpense> {
                       BuildTextField(
                         i18.expense.VENDOR_NAME,
                         vendorNameCtrl,
+                        key: Keys.expense.SEARCH_VENDOR_NAME,
                       ),
                       Text(
                           '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
@@ -85,6 +86,7 @@ class _SearchExpenseState extends State<SearchExpense> {
                           hint:
                               '${ApplicationLocalizations.of(context).translate(i18.common.ELECTRICITY_HINT)}',
                           controller: expenseTypeCtrl,
+                              key: Keys.expense.SEARCH_EXPENSE_TYPE,
                         ),
                       ),
                       Visibility(
@@ -105,9 +107,11 @@ class _SearchExpenseState extends State<SearchExpense> {
                                     FilteringTextInputFormatter.allow(
                                         RegExp("[A-Z0-9-]"))
                                   ],
+                                  key: Keys.expense.SEARCH_EXPENSE_BILL_ID,
                                 ),
                               ])),
                       InkWell(
+                        key: Keys.expense.SEARCH_EXPENSE_SHOW,
                         child: Padding(
                           padding: const EdgeInsets.only(
                               left: 25, top: 10, bottom: 10, right: 25),
@@ -134,7 +138,7 @@ class _SearchExpenseState extends State<SearchExpense> {
         ),
         Footer()
       ])),
-      bottomNavigationBar: BottomButtonBar(i18.common.SEARCH, onSubmit),
+      bottomNavigationBar: BottomButtonBar(i18.common.SEARCH, onSubmit, key: Keys.expense.SEARCH_EXPENSES),
     ));
   }
 
@@ -160,6 +164,8 @@ class _SearchExpenseState extends State<SearchExpense> {
 
       query.removeWhere((key, value) => value == null || value.trim().isEmpty);
 
+
+
       Provider.of<ExpensesDetailsProvider>(context, listen: false)
           .searchExpense(query, () => getCrteria(query), context);
     } else {
@@ -167,22 +173,22 @@ class _SearchExpenseState extends State<SearchExpense> {
     }
   }
 
-  String getCrteria(Map query) {
+  String getCrteria(Map query){
     var criteria = '';
 
     query.forEach((key, value) {
       switch (key) {
         case 'expenseType':
           criteria +=
-              '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)} ${ApplicationLocalizations.of(context).translate(expenseType ?? '')} \t';
+          '${ApplicationLocalizations.of(context).translate(i18.expense.EXPENSE_TYPE)} ${ApplicationLocalizations.of(context).translate(expenseType ?? '')} \t';
           break;
         case 'challanNo':
           criteria +=
-              '${ApplicationLocalizations.of(context).translate(i18.common.BILL_ID)} ${billIdCtrl.text}';
+          '${ApplicationLocalizations.of(context).translate(i18.common.BILL_ID)} ${billIdCtrl.text}';
           break;
         case 'vendorName':
           criteria +=
-              '${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)} ${vendorNameCtrl.text} \t';
+          '${ApplicationLocalizations.of(context).translate(i18.expense.VENDOR_NAME)} ${vendorNameCtrl.text} \t';
           break;
       }
     });

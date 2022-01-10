@@ -37,17 +37,17 @@ class HouseholdPdfCreator {
         dateFormat: "dd/MM/yyyy");
     String recordsCount =
         '${ApplicationLocalizations.of(buildContext).translate(i18.householdRegister.NO_OF_RECORDS)}';
-    recordsCount = recordsCount.replaceAll('<n>', '${tableData.length}');
+    recordsCount = recordsCount.replaceAll('{n}', '${tableData.length}');
     var localizedText =
         ApplicationLocalizations.of(navigatorKey.currentContext!)
             .translate(i18.householdRegister.PDF_SUB_TEXT_BELOW_LIST);
     localizedText = localizedText.replaceFirst(
-        '<selectedTab>',
+        '{selectedTab}',
         ApplicationLocalizations.of(navigatorKey.currentContext!)
             .translate(householdProvider.selectedTab));
-    localizedText = localizedText.replaceFirst('<search>',
+    localizedText = localizedText.replaceFirst('{search}',
         '${householdProvider.searchController.text.trim().isEmpty ? '-' : householdProvider.searchController.text.trim()}');
-    localizedText = localizedText.replaceFirst('<date>', date);
+    localizedText = localizedText.replaceFirst('{date}', date);
 
     var icons =
         pw.Font.ttf(await rootBundle.load('assets/icons/fonts/PdfIcons.ttf'));
@@ -120,7 +120,7 @@ class HouseholdPdfCreator {
 
     var whatsappText =
         '${ApplicationLocalizations.of(buildContext).translate(i18.householdRegister.WHATSAPP_TEXT_HOUSEHOLD)}';
-    whatsappText = whatsappText.replaceAll('<Date>', date);
+    whatsappText = whatsappText.replaceAll('{Date}', date);
 
     Provider.of<CommonProvider>(buildContext, listen: false).sharePdfOnWhatsApp(
         buildContext, pdf, 'HouseholdRegister', whatsappText,

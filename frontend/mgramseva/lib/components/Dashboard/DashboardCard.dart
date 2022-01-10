@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -14,20 +15,22 @@ import 'package:provider/provider.dart';
 
 class DashboardCard extends StatelessWidget {
   final Function() onMonthSelection;
-  DashboardCard(this.onMonthSelection);
+  final bool isFromScreenshot;
+  DashboardCard(this.onMonthSelection, {this.isFromScreenshot = false});
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Card(
-          margin: EdgeInsets.only(bottom: 2),
+          margin: EdgeInsets.only(bottom: isFromScreenshot ? 0 : 2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(0.0),
           ),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              LabelText(i18.dashboard.DASHBOARD),
+              LabelText(i18.dashboard.DASHBOARD, padding:  isFromScreenshot ? const EdgeInsets.all(5.0) : null),
               Expanded(
                 child: InkWell(
+                  key: Keys.dashboard.DASHBOARD_DATE_PICKER,
                   onTap: onMonthSelection,
                   child: Container(
                     alignment: Alignment.centerRight,
@@ -46,7 +49,13 @@ class DashboardCard extends StatelessWidget {
                                       color: Theme.of(context).primaryColor),
                             ),
                           ),
-                          Icon(Icons.arrow_drop_down)
+                          Padding(
+                            padding: EdgeInsets.only(right: isFromScreenshot ? 8.0 : 3.0),
+                            child: Visibility(
+                              visible: !isFromScreenshot,
+                              child: Icon(Icons.arrow_drop_down),
+                            ),
+                          )
                         ]),
                   ),
                 ),
@@ -66,28 +75,29 @@ class DashboardCard extends StatelessWidget {
         var localizationLabel =
             '${ApplicationLocalizations.of(context).translate(i18.dashboard.USER_GAVE_FEEDBACK)}';
         localizationLabel = localizationLabel.replaceAll(
-            '<n>', (feedBack['count'] ?? 0).toString());
+            '{n}', (feedBack['count'] ?? 0).toString());
         localizationLabel = localizationLabel
             .replaceAll(
-                '<date>',
+                '{date}',
                 DateFormats.getMonthAndYear(
                     dashBoardProvider.selectedMonth, context))
             .toString();
         return Padding(
           padding: constraints.maxWidth > 760
-              ? const EdgeInsets.all(20.0)
+              ? isFromScreenshot ? const EdgeInsets.all(5.0) : const EdgeInsets.all(20.0)
               : const EdgeInsets.all(8.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             GridView.count(
               crossAxisCount: 3,
-              childAspectRatio: constraints.maxWidth > 760 ? (1 / .3) : 1.0,
+              childAspectRatio: constraints.maxWidth > 760 ? (isFromScreenshot ? (1 / .2) : ((1 / .3))) : 1.0,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               children: List.generate(
                   feedBackDetails.keys.length,
                   (index) => GridTile(
                         child: Container(
+                          alignment: Alignment.center,
                             decoration: BoxDecoration(
                               border: index == 0
                                   ? null
@@ -131,7 +141,7 @@ class DashboardCard extends StatelessWidget {
                       )).toList(),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding:  EdgeInsets.symmetric(vertical: isFromScreenshot ? 5 : 10),
               child: Text(
                 "$localizationLabel",
                 textAlign: TextAlign.start,

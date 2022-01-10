@@ -273,13 +273,13 @@ class router {
                     '${Routes.HOUSEHOLD_DETAILS}?applicationNo=$id&mode=$mode'));
 
       case Routes.DASHBOARD:
-        var tabIndex = 0;
+        int? tabIndex;
         if (query.isNotEmpty && query.containsKey('tab')) {
           tabIndex = int.parse(query['tab'] ?? '0');
         }
         return MaterialPageRoute(
             builder: (_) => Dashboard(initialTabIndex: tabIndex),
-            settings: RouteSettings(name: '${Routes.DASHBOARD}?tab=$tabIndex'));
+            settings: RouteSettings(name: tabIndex != null ? '${Routes.DASHBOARD}?tab=$tabIndex' : '${Routes.DASHBOARD}'));
       case Routes.SEARCH_CONSUMER_RESULT:
         if (settings.arguments == null) {
           return MaterialPageRoute(

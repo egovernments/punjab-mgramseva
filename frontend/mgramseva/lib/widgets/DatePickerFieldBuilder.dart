@@ -17,6 +17,7 @@ class BasicDateField extends StatelessWidget {
   final bool? isEnabled;
   final String? requiredMessage;
   final GlobalKey? contextkey;
+  final Key? key;
   BasicDateField(this.label, this.isRequired, this.controller,
       {this.firstDate,
       this.lastDate,
@@ -24,7 +25,7 @@ class BasicDateField extends StatelessWidget {
       this.initialDate,
       this.isEnabled,
       this.requiredMessage,
-      this.contextkey});
+      this.contextkey, this.key});
 
   @override
   Widget build(BuildContext context) {

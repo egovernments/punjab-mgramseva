@@ -98,36 +98,24 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
   @override
   Widget build(BuildContext context) {
-    return FocusWatcher(
-        child: Scaffold(
-            body: BackgroundContainer(new Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.all(8.0),
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: formKey,
-                    autovalidateMode: autoValidate
-                        ? AutovalidateMode.always
-                        : AutovalidateMode.disabled,
-                    child: new Column(children: <Widget>[
-                      Align(
-                          alignment: Alignment.topLeft,
-                          child: MediaQuery.of(context).size.width > 720
-                              ? Padding(
-                                  padding: EdgeInsets.only(
-                                      left: MediaQuery.of(context).size.width /
-                                          4),
-                                  child: IconButton(
-                                      icon: Icon(
-                                        Icons.arrow_back,
-                                      ),
-                                      iconSize: 25,
-                                      color: Colors.white,
-                                      splashColor: Colors.purple,
-                                      onPressed: () => Navigator.of(context,
-                                              rootNavigator: true)
-                                          .maybePop()))
-                              : IconButton(
+    return FocusWatcher(child:Scaffold(
+        body: BackgroundContainer(new Container(
+            width: MediaQuery.of(context).size.width,
+            padding: const EdgeInsets.all(8.0),
+            child: SingleChildScrollView(
+              child: Form(
+                key: formKey,
+                autovalidateMode: autoValidate
+                    ? AutovalidateMode.always
+                    : AutovalidateMode.disabled,
+                child: new Column(children: <Widget>[
+                  Align(
+                      alignment: Alignment.topLeft,
+                      child: MediaQuery.of(context).size.width > 720
+                          ? Padding(
+                              padding: EdgeInsets.only(
+                                  left: MediaQuery.of(context).size.width / 4),
+                              child: IconButton(
                                   icon: Icon(
                                     Icons.arrow_back,
                                   ),
@@ -136,95 +124,101 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                   splashColor: Colors.purple,
                                   onPressed: () =>
                                       Navigator.of(context, rootNavigator: true)
-                                          .maybePop())),
-                      Container(
-                          padding: EdgeInsets.all(0),
-                          child: Card(
-                              child: Container(
-                                  width: MediaQuery.of(context).size.width > 720
-                                      ? MediaQuery.of(context).size.width / 3
-                                      : MediaQuery.of(context).size.width,
-                                  child: (Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Logo(),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD)}',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w700),
-                                          textAlign: TextAlign.start,
-                                        ),
-                                      ),
-                                      _buildWelcomeMsg(),
-                                      _buildTenantDetails(),
-                                      _buildOtpView(),
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 20),
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                            '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD_TO_CONTINUE)}',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 16)),
-                                      ),
-                                      BuildTextField(
-                                        i18.password.CORE_COMMON_NEW_PASSWORD,
-                                        newPassword,
-                                        isRequired: true,
-                                        obscureText: true,
-                                        maxLines: 1,
-                                        validator: (val) =>
-                                            Validators.passwordComparision(
-                                                val,
-                                                ApplicationLocalizations.of(
-                                                        context)
-                                                    .translate(i18.password
-                                                        .NEW_PASSWORD_ENTER)),
-                                        onChange: saveInput,
-                                      ),
-                                      BuildTextField(
-                                        i18.password
-                                            .CORE_COMMON_CONFIRM_NEW_PASSWORD,
-                                        confirmPassword,
-                                        isRequired: true,
-                                        obscureText: true,
-                                        maxLines: 1,
-                                        validator: (val) =>
-                                            Validators.passwordComparision(
-                                                val,
-                                                ApplicationLocalizations.of(
-                                                        context)
-                                                    .translate(i18.password
-                                                        .CONFIRM_PASSWORD_ENTER),
-                                                newPassword.text),
-                                        onChange: saveInput,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      BottomButtonBar(
-                                          ApplicationLocalizations.of(context)
-                                              .translate(
-                                                  i18.password.CHANGE_PASSWORD),
-                                          _pinEditingController.text
-                                                      .trim()
-                                                      .length !=
-                                                  pinLength
-                                              ? null
-                                              : updatePassword),
-                                      PasswordHint(password)
-                                    ],
-                                  ))))),
-                      FooterBanner()
-                    ]),
-                  ),
-                )))));
+                                          .maybePop()))
+                          : IconButton(
+                              icon: Icon(
+                                Icons.arrow_back,
+                              ),
+                              iconSize: 25,
+                              color: Colors.white,
+                              splashColor: Colors.purple,
+                              onPressed: () =>
+                                  Navigator.of(context, rootNavigator: true)
+                                      .maybePop())),
+                  Container(
+                      padding: EdgeInsets.all(0),
+                      child: Card(
+                          child: Container(
+                              width: MediaQuery.of(context).size.width > 720
+                                  ? MediaQuery.of(context).size.width / 3
+                                  : MediaQuery.of(context).size.width,
+                              child: (Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Logo(),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD)}',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700),
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ),
+                                  _buildWelcomeMsg(),
+                                  _buildTenantDetails(),
+                                  _buildOtpView(),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 20),
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                        '${ApplicationLocalizations.of(context).translate(i18.password.UPDATE_PASSWORD_TO_CONTINUE)}',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 16)),
+                                  ),
+                                  BuildTextField(
+                                    i18.password.CORE_COMMON_NEW_PASSWORD,
+                                    newPassword,
+                                    isRequired: true,
+                                    obscureText: true,
+                                    maxLines: 1,
+                                    validator: (val) =>
+                                        Validators.passwordComparision(
+                                            val,
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18.password.NEW_PASSWORD_ENTER)),
+                                    onChange: saveInput,
+                                  ),
+                                  BuildTextField(
+                                    i18.password
+                                        .CORE_COMMON_CONFIRM_NEW_PASSWORD,
+                                    confirmPassword,
+                                    isRequired: true,
+                                    obscureText: true,
+                                    maxLines: 1,
+                                    validator: (val) =>
+                                        Validators.passwordComparision(
+                                            val,
+                                            ApplicationLocalizations.of(context)
+                                                .translate(i18.password.CONFIRM_PASSWORD_ENTER),
+                                            newPassword.text),
+                                    onChange: saveInput,
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  BottomButtonBar(
+                                      ApplicationLocalizations.of(context)
+                                          .translate(
+                                              i18.password.CHANGE_PASSWORD),
+                                      _pinEditingController.text
+                                                  .trim()
+                                                  .length !=
+                                              pinLength
+                                          ? null
+                                          : updatePassword),
+                                  PasswordHint(password)
+                                ],
+                              ))))),
+                  FooterBanner()
+                ]),
+              ),
+            )))));
   }
 
   Widget _buildTenantDetails() {

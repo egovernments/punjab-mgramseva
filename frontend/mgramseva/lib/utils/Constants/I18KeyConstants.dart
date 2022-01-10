@@ -44,9 +44,6 @@ class Common {
   String get MOBILE_NUMBER => 'CORE_COMMON_MOBILE_NUMBER';
   String get LOGOUT => 'CORE_COMMON_LOGOUT';
   String get EMAIL => 'CORE_COMMON_EMAIL';
-  String get NOTE => 'NOTE';
-  String get MONTH => 'MONTH';
-
   String get SAVE => 'CORE_COMMON_SAVE';
   String get SUBMIT => 'CORE_COMMON_BUTTON_SUBMIT';
   String get GENDER => 'CORE_COMMON_GENDER';
@@ -71,7 +68,7 @@ class Common {
   String get BACK => 'BACK';
   String get DEAR => 'DEAR';
   String get VIEW_ALL => 'VIEW_ALL';
-  String get YTD => 'YTD';
+  String get ALL_NOTIFICATIONS => 'ALL_NOTIFICATIONS';
 
   /// File Picker
   String get TEMPORARY_FILES_REMOVED => 'TEMPORARY_FILES_REMOVED';
@@ -184,6 +181,16 @@ class Common {
   String get DEC => 'DEC';
 
   String get OF => 'OF';
+  String get NOTE => 'NOTE';
+  String get MONTH => 'MONTH';
+  String get YTD => 'YTD';
+
+  String get INVALID_SELECTED_INPUT => 'INVALID_SELECTED_INPUT';
+  String get NA => 'NA';
+  String get OK => 'OK';
+  String get ALERT => 'ALERT';
+  String get TOTAL => 'TOTAL';
+  String get SESSION_EXPIRED => 'SESSION_EXPIRED';
   String get RECEIPT_FOOTER => 'RECEIPT_FOOTER';
 }
 
@@ -314,6 +321,9 @@ class CreateConsumer {
   String get CONSUMER_EDIT_DETAILS_SUB_LABEL =>
       'CONSUMER_DETAILS_EDIT_SUB_LABEL';
   String get GP_NAME => 'CONSUMER_GP_NAME';
+  String get CONSUMER_AADHAR_NUMBER => 'CONSUMER_AADHAR_NUMBER';
+  String get CONSUMER_CATEGORY => 'CONSUMER_CATEGORY';
+  String get CONSUMER_SUBCATEGORY => 'CONSUMER_SUBCATEGORY';
   String get ARREARS => 'CONSUMER_ARREARS';
   String get CONSUMER_CONNECTION_ID => 'CONSUMER_CONNECTION_ID';
   String get SERVICE_TYPE => 'CONSUMER_SERVICE_TYPE';
@@ -322,6 +332,7 @@ class CreateConsumer {
   String get REGISTER_SUCCESS => 'CONSUMER_REGISTER_SUCCESS_LABEL';
   String get UPDATED_SUCCESS => 'CONSUMER_UPDATED_SUCCESS_LABEL';
   String get CONSUMER_BILLING_CYCLE => 'CONSUMER_BILLING_CYCLE';
+  String get ALL_DEMANDS_REVERSED => 'ALL_DEMANDS_REVERSED';
 }
 
 class SearchWaterConnection {
@@ -377,6 +388,8 @@ class _Validators {
   String get ENTER_METER_NUMBER => 'ENTER_METER_NUMBER';
   String get ENTER_ALPHA_NUMERIC_ONLY => 'ENTER_ALPHA_NUMERIC_ONLY';
   String get PARTIAL_AMT_OUT_OF_RANGE => 'PARTIAL_AMT_OUT_OF_RANGE';
+  String get CANNOT_BE_EMPTY => 'CANNOT_BE_EMPTY';
+  String get AMOUNT_EXCEEDS => 'AMOUNT_EXCEEDS';
 }
 
 class DemandGenerate {
@@ -431,11 +444,11 @@ class GenerateBillDetails {
   String get PREVIOUS_METER_READING => 'PREVIOUS_METER_READING';
   String get PENDING_AMOUNT => 'PENDING_AMOUNT';
   String get DAYS_AGO => 'DAYS_AGO';
+  String get DAY_AGO => 'DAY_AGO';
   String get TODAY => 'TODAY';
   String get GENERATE_NEW_BTN_LABEL => 'GENERATE_NEW_BTN_LABEL';
   String get INFO => 'INFO';
   String get INFO_TEXT => 'INFO_TEXT';
-  String get DAY_AGO => 'DAY_AGO';
 }
 
 class ConsumerReciepts {
@@ -502,7 +515,10 @@ class _ConsumerWalkThroughMsg {
   String get CONSUMER_GENDER_MSG => 'CONSUMER_GENDER_MSG';
   String get CONSUMER_FATHER_MSG => 'CONSUMER_FATHER_MSG';
   String get CONSUMER_MOBILE_MSG => 'CONSUMER_MOBILE_MSG';
+  String get CONSUMER_AADHAR_MSG => 'CONSUMER_AADHAR_MSG';
   String get CONSUMER_OLD_ID_MSG => 'CONSUMER_OLD_ID_MSG';
+  String get CONSUMER_CATRGORY_MSG => 'CONSUMER_CATRGORY_MSG';
+  String get CONSUMER_SUB_CATRGORY_MSG => 'CONSUMER_SUB_CATRGORY_MSG';
   String get CONSUMER_WARD_MSG => 'CONSUMER_WARD_MSG';
   String get CONSUMER_PROPERTY_TYPE_MSG => 'CONSUMER_PROPERTY_TYPE_MSG';
   String get CONSUMER_SERVICE_TYPE_MSG => 'CONSUMER_SERVICE_TYPE_MSG';
@@ -524,19 +540,19 @@ class _DashBoard {
   String get SEARCH_BY_BILL_OR_VENDOR => 'SEARCH_BY_BILL_OR_VENDOR';
   String get SEARCH_NAME_CONNECTION => 'SEARCH_NAME_CONNECTION';
   String get DASHBOARD => 'DASHBOARD';
-  String get REVENUE_NOTE => 'REVENUE_NOTE';
-  String get REVENUE => 'REVENUE';
   String get REVENUE_EXPENDITURE_TREND => 'REVENUE_EXPENDITURE_TREND';
 
   String get BILL_ID_VENDOR => 'BILL_ID_VENDOR';
   String get NO_RECORDS_MSG => 'NO_RECORDS_MSG';
-  String get ANNUAL_SHARE_MSG_MOBILE => 'ANNUAL_SHARE_MSG_MOBILE';
-  String get ANNUAL_SHARE_MSG_WEB => 'ANNUAL_SHARE_MSG_WEB';
 
   /// Revenue and Expenditure Trend
   String get STACKED_BAR => 'STACKED_BAR';
   String get TREND_LINE => 'TREND_LINE';
+  String get REVENUE => 'REVENUE'; //Revenue
+  String get REVENUE_NOTE =>
+      'REVENUE_NOTE'; //Click on individual cells to see details of collections and expenditure for the selected month.
 
+  /// table labels
   String get SURPLUS_DEFICIT => 'SURPLUS_DEFICIT';
   String get DEMAND_ARREARS => 'DEMAND_ARREARS';
   String get PENIDNG_COLLECTIONS => 'PENIDNG_COLLECTIONS';
@@ -546,6 +562,9 @@ class _DashBoard {
   String get SUMMARY_REPORT => 'SUMMARY_REPORT';
 
   String get USER_GAVE_FEEDBACK => 'USER_GAVE_FEEDBACK';
+  String get ANNUAL_SHARE_MSG_WEB => 'ANNUAL_SHARE_MSG_WEB';
+  String get ANNUAL_SHARE_MSG_MOBILE => 'ANNUAL_SHARE_MSG_MOBILE';
+
   String get DASHBOARD_DEMAND => 'dashboard_demand';
   String get DASHBOARD_PENDING_COLLECTION => 'dashboard_pendingCollection';
   String get DASHBOARD_ACTUAL_COLLECTION => 'dashboard_actualCollection';

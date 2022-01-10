@@ -15,66 +15,58 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class RevenueDashBoard extends StatefulWidget {
   final bool isFromScreenshot;
-  const RevenueDashBoard({Key? key, this.isFromScreenshot = false})
-      : super(key: key);
+  const RevenueDashBoard({Key? key, this.isFromScreenshot = false}) : super(key: key);
 
   @override
   _RevenueDashBoardState createState() => _RevenueDashBoardState();
 }
 
 class _RevenueDashBoardState extends State<RevenueDashBoard> {
+
   @override
   void initState() {
-    var revenueProvider = Provider.of<RevenueDashboard>(context, listen: false);
-    revenueProvider.loadRevenueDetails(context);
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
+  }
+
+  afterViewBuild(){
+    var revenueProvider = Provider.of<RevenueDashboard>(context, listen: false);
+    if(!widget.isFromScreenshot)
+      revenueProvider.loadGraphicalDashboard(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: EdgeInsets.symmetric(vertical: widget.isFromScreenshot ? 5 : 16),
       child: Column(
         children: [
-          RevenueCharts(),
+          RevenueCharts(widget.isFromScreenshot),
           _buildLoaderView(),
           Visibility(
             visible: !widget.isFromScreenshot,
-            child: Align(alignment: Alignment.centerLeft, child: _buildNote()),
+            child: Align(
+                alignment: Alignment.centerLeft,
+                child: _buildNote()),
           ),
-          Footer()
+          Footer(padding: widget.isFromScreenshot ? EdgeInsets.all(5.0) : null)
         ],
       ),
     );
   }
 
-  Widget _buildLoaderView() {
-    var revenueDashboard =
-        Provider.of<RevenueDashboard>(context, listen: false);
-    return StreamBuilder(
-        stream: revenueDashboard.revenueStreamController.stream,
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data is String) {
-              return CommonWidgets.buildEmptyMessage(snapshot.data, context);
-            }
-            return _buildTable(snapshot.data);
-          } else if (snapshot.hasError) {
-            return Notifiers.networkErrorPage(context, () => {});
-          } else {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return Loaders.CircularLoader();
-              case ConnectionState.active:
-                return Loaders.CircularLoader();
-              default:
-                return Container();
-            }
-          }
-        });
+  Widget _buildLoaderView(){
+    var revenueDashboard = Provider.of<RevenueDashboard>(context, listen: false);
+    var height = 250.0;
+    return Consumer<RevenueDashboard>(
+        builder : (_, revenue, child) =>
+        revenue.revenueDataHolder.tableLoader ? Loaders.circularLoader(height: height) :  revenue.revenueDataHolder.revenueTable == null
+            ? CommonWidgets.buildEmptyMessage(i18.dashboard.NO_RECORDS_MSG, context)
+            : _buildTable(revenue.revenueDataHolder.revenueTable!)
+    );
   }
 
-  Widget _buildNote() {
+  Widget _buildNote(){
     return Container(
       decoration: new BoxDecoration(color: Theme.of(context).highlightColor),
       width: MediaQuery.of(context).size.width,
@@ -87,24 +79,20 @@ class _RevenueDashBoardState extends State<RevenueDashBoard> {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Icon(Icons.info, color: Theme.of(context).hintColor),
-              Text(
-                  ApplicationLocalizations.of(context)
-                      .translate(i18.common.NOTE),
+              Text(ApplicationLocalizations.of(context).translate(i18.common.NOTE),
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: Theme.of(context).hintColor))
-            ],
-          ),
+            ],),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-              '${ApplicationLocalizations.of(context).translate(i18.dashboard.REVENUE_NOTE)}',
-              style: TextStyle(
-                  fontSize: 16,
+            child: Text('${ApplicationLocalizations.of(context).translate(i18.dashboard.REVENUE_NOTE)}',
+              style: TextStyle(fontSize: 16,
                   fontWeight: FontWeight.w400,
                   height: 1.5,
-                  color: Color.fromRGBO(52, 152, 219, 1)),
+                  color: Color.fromRGBO(52, 152, 219, 1)
+              ),
             ),
           )
         ],
@@ -112,24 +100,24 @@ class _RevenueDashBoardState extends State<RevenueDashBoard> {
     );
   }
 
-  Widget _buildTable(List<TableDataRow> tableData) {
-    var revenueDashboard =
-        Provider.of<RevenueDashboard>(context, listen: false);
+
+  Widget _buildTable(List<TableDataRow> tableData){
+    var revenueDashboard = Provider.of<RevenueDashboard>(context, listen: false);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: LayoutBuilder(builder: (context, constraints) {
-        var width =
-            constraints.maxWidth < 760 ? 150.0 : constraints.maxWidth / 8;
-        return BillsTable(
-          headerList: revenueDashboard.revenueHeaderList,
-          tableData: tableData,
-          leftColumnWidth: width,
-          rightColumnWidth: width * 7,
-          height: 68 + (52.0 * tableData.length),
-          scrollPhysics: NeverScrollableScrollPhysics(),
-        );
-      }),
+      padding: EdgeInsets.symmetric(vertical:  widget.isFromScreenshot ? 5 : 16),
+      child: LayoutBuilder(
+          builder : (context, constraints) {
+            var width = constraints.maxWidth < 760 ?  150.0 : constraints.maxWidth / 8;
+            return BillsTable
+              (headerList: revenueDashboard.revenueHeaderList,
+              tableData:  tableData,
+              leftColumnWidth: width,
+              rightColumnWidth:  width * 7,
+              height: 63 + (52.0 * tableData.length),
+              scrollPhysics:  NeverScrollableScrollPhysics(),
+            );
+          }),
     );
   }
 }

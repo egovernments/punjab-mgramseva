@@ -9,6 +9,7 @@ import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/widgets/customAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -41,6 +42,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
 
   afterViewBuild() {
     Provider.of<HouseHoldProvider>(context, listen: false)
+      ..isVisible = false
       ..fetchDemand(widget.waterconnection, widget.id);
   }
 
@@ -56,7 +58,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                     alignment: Alignment.centerRight,
                     child: ShortButton(
                         i18.generateBillDetails.GENERATE_NEW_BTN_LABEL,
-                        () => {
+                        widget.waterconnection?.status == Constants.CONNECTION_STATUS.first ? null : () => {
                               Navigator.pushNamed(context, Routes.BILL_GENERATE,
                                   arguments: houseHoldProvider.waterConnection)
                             }))

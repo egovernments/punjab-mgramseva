@@ -1,6 +1,8 @@
 import 'dart:async';
-
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -9,11 +11,19 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/HouseholdRegister/household_pdf.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'language.dart';
+import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:universal_html/html.dart' as html;
 
 class HouseholdRegisterProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -24,7 +34,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
   SortBy? sortBy;
   WaterConnections? waterConnectionsDetails;
   WaterConnection? waterConnection;
-  String selectedTab = 'all';
+  String selectedTab = Constants.ALL;
   Map<String, int> collectionCountHolder = {};
   Timer? debounce;
   bool isLoaderEnabled = false;
@@ -32,6 +42,28 @@ class HouseholdRegisterProvider with ChangeNotifier {
   void dispose() {
     streamController.close();
     super.dispose();
+  }
+
+  onChangeOfTab(BuildContext context, int index) async {
+    var householdProvider =
+        Provider.of<HouseholdRegisterProvider>(context, listen: false)
+          ..limit = 10
+          ..offset = 1
+          ..sortBy = SortBy('connectionNumber', false);
+
+    householdProvider
+      ..waterConnectionsDetails?.waterConnection = <WaterConnection>[]
+      ..waterConnectionsDetails?.totalCount = null;
+
+    if (index == 0) {
+      householdProvider.selectedTab = Constants.ALL;
+    } else if (index == 1) {
+      householdProvider.selectedTab = Constants.PAID;
+    } else {
+      householdProvider.selectedTab = Constants.PENDING;
+    }
+    householdProvider.fetchHouseholdDetails(
+        context, householdProvider.limit, householdProvider.offset, true);
   }
 
   Future<void> fetchHouseholdDetails(
@@ -60,13 +92,13 @@ class HouseholdRegisterProvider with ChangeNotifier {
       'tenantId': commonProvider.userDetails?.selectedtenant?.code,
       'offset': '${offset - 1}',
       'limit': '$limit',
-      'toDate':
-          '${DateTime(DateTime.now().year, DateTime.now().month).millisecondsSinceEpoch}',
+      'toDate': '${DateTime.now().millisecondsSinceEpoch}',
       'isCollectionCount': 'true',
     };
 
-    if (selectedTab != 'all') {
-      query.addAll({'isBillPaid': (selectedTab == 'PAID') ? 'true' : 'false'});
+    if (selectedTab != Constants.ALL) {
+      query.addAll(
+          {'isBillPaid': (selectedTab == Constants.PAID) ? 'true' : 'false'});
     }
 
     if (sortBy != null) {
@@ -78,7 +110,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
 
     if (searchController.text.trim().isNotEmpty) {
       query.addAll({
-        'connectionNumber': searchController.text.trim(),
+        'textSearch': searchController.text.trim(),
         // 'name' : searchController.text.trim(),
         'freeSearch': 'true',
       });
@@ -94,7 +126,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
       var response = await SearchConnectionRepository().getconnection(query);
 
       var searchResponse;
-      if (isSearch && selectedTab != 'all') {
+      if (isSearch && selectedTab != Constants.ALL) {
         query.remove('isBillPaid');
         searchResponse =
             await SearchConnectionRepository().getconnection(query);
@@ -103,17 +135,17 @@ class HouseholdRegisterProvider with ChangeNotifier {
       isLoaderEnabled = false;
 
       if (response != null) {
-        if (selectedTab == 'all') {
-          collectionCountHolder['all'] = response.totalCount ?? 0;
-          collectionCountHolder['PAID'] =
+        if (selectedTab == Constants.ALL) {
+          collectionCountHolder[Constants.ALL] = response.totalCount ?? 0;
+          collectionCountHolder[Constants.PAID] =
               response.collectionDataCount?.collectionPaid ?? 0;
-          collectionCountHolder['PENDING'] =
+          collectionCountHolder[Constants.PENDING] =
               response.collectionDataCount?.collectionPending ?? 0;
         } else if (searchResponse != null) {
-          collectionCountHolder['all'] = searchResponse.totalCount ?? 0;
-          collectionCountHolder['PAID'] =
+          collectionCountHolder[Constants.ALL] = searchResponse.totalCount ?? 0;
+          collectionCountHolder[Constants.PAID] =
               searchResponse.collectionDataCount?.collectionPaid ?? 0;
-          collectionCountHolder['PENDING'] =
+          collectionCountHolder[Constants.PENDING] =
               searchResponse.collectionDataCount?.collectionPending ?? 0;
         }
 
@@ -143,13 +175,19 @@ class HouseholdRegisterProvider with ChangeNotifier {
     }
   }
 
-  List<Tab> getCollectionsTabList(BuildContext context) {
+  List<String> getCollectionsTabList(BuildContext context) {
     var list = [i18.dashboard.ALL, i18.dashboard.PAID, i18.dashboard.PENDING];
     return List.generate(
         list.length,
-        (index) => Tab(
-            text:
-                '${ApplicationLocalizations.of(context).translate(list[index])} (${getCollectionsCount(index)})'));
+        (index) =>
+            '${ApplicationLocalizations.of(context).translate(list[index])} (${getCollectionsCount(index)})');
+  }
+
+  bool isTabSelected(int index) {
+    if (selectedTab == Constants.ALL && index == 0) return true;
+    if ((selectedTab == Constants.PENDING && index == 2) ||
+        (selectedTab == Constants.PAID && index == 1)) return true;
+    return false;
   }
 
   List<TableHeader> get collectionHeaderList => [
@@ -159,10 +197,10 @@ class HouseholdRegisterProvider with ChangeNotifier {
                 sortBy != null && sortBy!.key == 'connectionNumber'
                     ? sortBy!.isAscending
                     : null,
-            apiKey: 'connectionNumber ',
+            apiKey: 'connectionNumber',
             callBack: onSort),
         TableHeader(i18.common.NAME,
-            isSortingRequired: true,
+            isSortingRequired: false,
             isAscendingOrder: sortBy != null && sortBy!.key == 'name'
                 ? sortBy!.isAscending
                 : null,
@@ -178,7 +216,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
             callBack: onSort),
       ];
 
-  List<TableDataRow> getCollectionsData(int index, List<WaterConnection> list) {
+  List<TableDataRow> getCollectionsData(List<WaterConnection> list) {
     return list.map((e) => getCollectionRow(e)).toList();
   }
 
@@ -189,11 +227,11 @@ class HouseholdRegisterProvider with ChangeNotifier {
   int getCollectionsCount(int index) {
     switch (index) {
       case 0:
-        return collectionCountHolder['all'] ?? 0;
+        return collectionCountHolder[Constants.ALL] ?? 0;
       case 1:
-        return collectionCountHolder['PAID'] ?? 0;
+        return collectionCountHolder[Constants.PAID] ?? 0;
       case 2:
-        return collectionCountHolder['PENDING'] ?? 0;
+        return collectionCountHolder[Constants.PENDING] ?? 0;
       default:
         return 0;
     }
@@ -247,7 +285,8 @@ class HouseholdRegisterProvider with ChangeNotifier {
   }
 
   void onChangeOfPageLimit(PaginationResponse response, BuildContext context) {
-    fetchDetails(context, response.limit, response.offset, response.isPageChange);
+    fetchDetails(
+        context, response.limit, response.offset, response.isPageChange);
   }
 
   fetchDetails(BuildContext context,
@@ -267,13 +306,13 @@ class HouseholdRegisterProvider with ChangeNotifier {
     var query = {
       'tenantId': commonProvider.userDetails?.selectedtenant?.code,
       'limit': '-1',
-      'toDate':
-          '${DateTime(DateTime.now().year, DateTime.now().month).millisecondsSinceEpoch}',
+      'toDate': '${DateTime.now().millisecondsSinceEpoch}',
       'isCollectionCount': 'true',
     };
 
-    if (selectedTab != 'all') {
-      query.addAll({'isBillPaid': (selectedTab == 'PAID') ? 'true' : 'false'});
+    if (selectedTab != Constants.ALL) {
+      query.addAll(
+          {'isBillPaid': (selectedTab == Constants.PAID) ? 'true' : 'false'});
     }
 
     if (sortBy != null) {
@@ -285,7 +324,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
 
     if (searchController.text.trim().isNotEmpty) {
       query.addAll({
-        'connectionNumber': searchController.text.trim(),
+        'textSearch': searchController.text.trim(),
         // 'name' : searchController.text.trim(),
         'freeSearch': 'true',
       });

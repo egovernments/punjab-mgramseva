@@ -163,7 +163,7 @@ public class DemandService {
 			consumerCodes = calculations.stream().map(calculation -> calculation.getConnectionNo())
 					.collect(Collectors.toSet());
 
-			List<Demand> demands = searchDemand(tenantId, consumerCodes, fromDateSearch, toDateSearch, requestInfo);
+			List<Demand> demands = searchDemand(tenantId, consumerCodes, fromDateSearch, toDateSearch, requestInfo, "ACTIVE");
 			Set<String> connectionNumbersFromDemands = new HashSet<>();
 			if (!CollectionUtils.isEmpty(demands)) {
 				connectionNumbersFromDemands = demands.stream()
@@ -171,7 +171,6 @@ public class DemandService {
 								.equalsIgnoreCase(isForConnectionNo ? "waterConnection" : "waterConnection-arrears"))
 						.map(Demand::getConsumerCode).collect(Collectors.toSet());
 			}
-
 			// If demand already exists add it updateCalculations else
 			// createCalculations
 			for (Calculation calculation : calculations) {
@@ -461,9 +460,9 @@ public class DemandService {
 	 * @return Lis to demands for the given consumerCode
 	 */
 	public List<Demand> searchDemand(String tenantId, Set<String> consumerCodes, Long taxPeriodFrom, Long taxPeriodTo,
-			RequestInfo requestInfo) {
+			RequestInfo requestInfo, String status) {
 		Object result = serviceRequestRepository.fetchResult(
-				getDemandSearchURL(tenantId, consumerCodes, taxPeriodFrom, taxPeriodTo),
+				getDemandSearchURL(tenantId, consumerCodes, taxPeriodFrom, taxPeriodTo, status),
 				RequestInfoWrapper.builder().requestInfo(requestInfo).build());
 		try {
 			return mapper.convertValue(result, DemandResponse.class).getDemands();
@@ -523,7 +522,7 @@ public class DemandService {
 	 * @return demand search url
 	 */
 	public StringBuilder getDemandSearchURL(String tenantId, Set<String> consumerCodes, Long taxPeriodFrom,
-			Long taxPeriodTo) {
+			Long taxPeriodTo, String status) {
 		StringBuilder url = new StringBuilder(configs.getBillingServiceHost());
 		String businessService = taxPeriodFrom == null ? WSCalculationConstant.ONE_TIME_FEE_SERVICE_FIELD
 				: configs.getBusinessService();
@@ -546,6 +545,11 @@ public class DemandService {
 			url.append("&");
 			url.append("periodTo=");
 			url.append(taxPeriodTo.toString());
+		}
+		if(status !=null) {
+			url.append("&");
+			url.append("status=");
+			url.append(status);
 		}
 		return url;
 	}
@@ -629,7 +633,7 @@ public class DemandService {
 		for (Calculation calculation : calculations) {
 			Set<String> consumerCodes = Collections.singleton(calculation.getWaterConnection().getConnectionNo());
 			List<Demand> searchResult = searchDemand(calculation.getTenantId(), consumerCodes, fromDateSearch,
-					toDateSearch, requestInfo);
+					toDateSearch, requestInfo, "ACTIVE");
 			if (CollectionUtils.isEmpty(searchResult))
 				throw new CustomException("INVALID_DEMAND_UPDATE",
 						"No demand exists for Number: " + consumerCodes.toString());

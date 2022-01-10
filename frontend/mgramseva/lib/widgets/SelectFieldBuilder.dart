@@ -20,6 +20,7 @@ class SelectFieldBuilder extends StatelessWidget {
   final String? requiredMessage;
   final GlobalKey? contextkey;
   final TextEditingController? controller;
+  final Key? key;
 
   SelectFieldBuilder(this.labelText, this.value, this.input, this.prefixText,
       this.widget, this.options, this.isRequired,
@@ -28,7 +29,7 @@ class SelectFieldBuilder extends StatelessWidget {
       this.readOnly,
       this.requiredMessage,
       this.contextkey,
-      this.controller});
+      this.controller, this.key});
 
   var suggestionCtrl = new SuggestionsBoxController();
   @override

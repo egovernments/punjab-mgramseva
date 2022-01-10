@@ -65,7 +65,7 @@ class ToastUtils {
                                 .translate(message),
                             textAlign: TextAlign.center,
                             softWrap: true,
-                            maxLines: 2,
+                            maxLines: 4,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 18,

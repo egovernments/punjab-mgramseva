@@ -82,6 +82,9 @@ AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) {
     ..initialMeterReading = json['initialMeterReading'] is double ? json['initialMeterReading'].toInt()  : json['initialMeterReading'] as int?
     ..meterReading = json['meterReading'] as int?
     ..locality = json['locality'] as String?
+    ..category = json['category'] as String?
+    ..subCategory = json['subCategory'] as String?
+    ..aadharNumber = json['aadharNumber'] as String?
     ..propertyType = json['propertyType'] as String?
     ..street = json['street'] as String?
     ..doorNo = json['doorNo'] as String?
@@ -95,6 +98,9 @@ Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
       'initialMeterReading': instance.initialMeterReading,
       'meterReading': instance.meterReading,
       'locality': instance.locality,
+      'category': instance.category,
+      'subCategory': instance.subCategory,
+      'aadharNumber': instance.aadharNumber,
       'propertyType': instance.propertyType,
       'street': instance.street,
       'doorNo': instance.doorNo,

@@ -280,11 +280,11 @@ class CommonProvider with ChangeNotifier {
         if (mobileNumber == null) {
           anchorElement = new html.AnchorElement(
               href: "https://wa.me/send?text=" +
-                  input.toString().replaceFirst('<link>', res!));
+                  input.toString().replaceFirst('{link}', res!));
         } else {
           anchorElement = new html.AnchorElement(
               href: "https://wa.me/+91$mobileNumber?text=" +
-                  input.toString().replaceFirst('<link>', res!));
+                  input.toString().replaceFirst('{link}', res!));
         }
 
         anchorElement.target = "_blank";
@@ -294,11 +294,11 @@ class CommonProvider with ChangeNotifier {
         if (mobileNumber == null) {
           final FlutterShareMe flutterShareMe = FlutterShareMe();
           flutterShareMe.shareToWhatsApp(
-              msg: input.toString().replaceFirst('<link>', res!));
+              msg: input.toString().replaceFirst('{link}', res!));
           return;
         } else {
           link = "https://wa.me/+91$mobileNumber?text=" +
-              input.toString().replaceFirst('<link>', res!);
+              input.toString().replaceFirst('{link}', res!);
         }
         await canLaunch(link)
             ? launch(link)
@@ -332,11 +332,11 @@ class CommonProvider with ChangeNotifier {
       String link = (ApplicationLocalizations.of(navigatorKey.currentContext!)
           .translate(i18.common.SHARE_RECEIPT_LINK)
           .toString()
-          .replaceFirst('<user>', payments.paidBy!)
-          .replaceFirst('<Amount>', payments.totalAmountPaid.toString())
-          .replaceFirst('<new consumer id>',
+          .replaceFirst('{user}', payments.paidBy!)
+          .replaceFirst('{Amount}', payments.totalAmountPaid.toString())
+          .replaceFirst('{new consumer id}',
               payments.paymentDetails!.first.bill!.consumerCode.toString())
-          .replaceFirst('<Amount>',
+          .replaceFirst('{Amount}',
               (payments.totalDue! - payments.totalAmountPaid!).toString()));
       getStoreFileDetails(res!.filestoreIds!.first, mode, mobileNumber,
           navigatorKey.currentContext, link);
@@ -358,11 +358,11 @@ class CommonProvider with ChangeNotifier {
       String link = (ApplicationLocalizations.of(navigatorKey.currentContext!)
           .translate(i18.common.SHARE_BILL_LINK)
           .toString()
-          .replaceFirst('<user>', bill.payerName!.toString())
-          .replaceFirst('<cycle>',
+          .replaceFirst('{user}', bill.payerName!.toString())
+          .replaceFirst('{cycle}',
               '${DateFormats.getMonthWithDay(bill.billDetails?.first?.fromPeriod)} - ${DateFormats.getMonthWithDay(bill.billDetails?.first?.toPeriod)}')
-          .replaceFirst('<new consumer id>', bill.consumerCode!.toString())
-          .replaceFirst('<Amount>', bill.totalAmount.toString()));
+          .replaceFirst('{new consumer id}', bill.consumerCode!.toString())
+          .replaceFirst('{Amount}', bill.totalAmount.toString()));
       getStoreFileDetails(
         res!.filestoreIds!.first,
         mode,

@@ -88,6 +88,7 @@ class AutoCompleteView extends StatelessWidget {
 
   Widget _autoComplete(BuildContext context) {
     return TypeAheadFormField(
+      key: key,
       textFieldConfiguration: TextFieldConfiguration(
           inputFormatters: inputFormatter,
           keyboardType: textInputType ?? TextInputType.text,

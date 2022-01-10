@@ -22,7 +22,7 @@ class NestedDatePicker extends StatefulWidget {
       this.yearsWithMonths,
       this.selectedMonth,
       this.maximumYears = 5,
-      this.dateType = DateType.MONTH})
+      this.dateType = DateType.YEAR})
       : super(key: key);
 
   @override
@@ -46,14 +46,16 @@ class _NestedDatePickerState extends State<NestedDatePicker> {
       if (widget.selectedMonth != null) {
         DatePeriod? date;
         for (YearWithMonths yearWithMonth in yearsWithMonths) {
-          if (widget.selectedMonth == yearWithMonth.year) {
+          if ((widget.selectedMonth?.startDate.toString() == yearWithMonth.year.startDate.toString()) &&
+              (widget.selectedMonth?.endDate.toString() == yearWithMonth.year.endDate.toString())) {
             date = yearWithMonth.year;
           }
-          for (var month in yearWithMonth.monthList) {
-            if (widget.selectedMonth == month) {
-              date = month;
+          if(date == null)
+            for (var month in yearWithMonth.monthList) {
+              if (widget.selectedMonth?.endDate.toString() == month.endDate.toString()) {
+                date = month;
+              }
             }
-          }
         }
         selectedMonth = date ?? yearsWithMonths.first.year;
       } else {

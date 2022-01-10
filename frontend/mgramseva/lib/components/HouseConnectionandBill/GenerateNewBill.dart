@@ -6,6 +6,7 @@ import 'package:mgramseva/providers/demand_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
@@ -119,11 +120,20 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                                             num))
                                                     .inDays
                                                     .toString() +
-                                                " " +
+                                                " " + (DateTime.now()
+                                            .difference(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                num))
+                                            .inDays
+                                            .toString() == '1' ?
+                                        ApplicationLocalizations.of(context)
+                                            .translate(i18
+                                            .generateBillDetails
+                                            .DAY_AGO) :
                                                 ApplicationLocalizations.of(context)
                                                     .translate(i18
                                                         .generateBillDetails
-                                                        .DAYS_AGO),
+                                                        .DAYS_AGO)),
                                         style: TextStyle(
                                             color:
                                                 Theme.of(context).primaryColor),
@@ -167,7 +177,7 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                             children: <Widget>[
                                               Expanded(
                                                   child: OutlinedButton.icon(
-                                                onPressed: () =>
+                                                onPressed: widget.waterconnection?.status == Constants.CONNECTION_STATUS.first ? null : () =>
                                                     Navigator.pushNamed(context,
                                                         Routes.BILL_GENERATE,
                                                         arguments: widget
@@ -223,7 +233,7 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                               )
                             : ShortButton(
                                 i18.generateBillDetails.GENERATE_NEW_BTN_LABEL,
-                                () => {
+                            widget.waterconnection?.status == Constants.CONNECTION_STATUS.first ? null :  () => {
                                       Navigator.pushNamed(
                                           context, Routes.BILL_GENERATE,
                                           arguments: widget.waterconnection)
@@ -239,7 +249,6 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
     } else {
       return Text("");
     }
-    ;
   }
 
   void onClickOfCollectPayment(DemandList demandList, BuildContext context) {

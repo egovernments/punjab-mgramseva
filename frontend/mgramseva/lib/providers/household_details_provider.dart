@@ -20,6 +20,8 @@ class HouseHoldProvider with ChangeNotifier {
   WaterConnection? waterConnection;
   bool isfirstdemand = false;
   var streamController = StreamController.broadcast();
+  var isVisible = false;
+
   Future<void> checkMeterDemand(
       BillList data, WaterConnection waterConnection) async {
     if (data.bill!.isNotEmpty) {
@@ -118,6 +120,11 @@ class HouseHoldProvider with ChangeNotifier {
   }
 
   void callNotifyer() {
+    notifyListeners();
+  }
+
+  onTapOfShow(){
+    isVisible = !isVisible;
     notifyListeners();
   }
 }

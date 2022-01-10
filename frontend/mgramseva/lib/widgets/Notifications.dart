@@ -4,7 +4,7 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class Notifications extends StatefulWidget {
-  final event;
+  final Events? event;
   final VoidCallback? callback;
   final bool close;
   Notifications(this.event, this.callback, this.close);

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/models.dart';
 
 class Pagination extends StatefulWidget {
@@ -33,6 +34,7 @@ class _PaginationState extends State<Pagination> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: DropdownButton(
+                  key: Keys.common.PAGINATION_DROPDOWN,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black
@@ -51,6 +53,7 @@ class _PaginationState extends State<Pagination> {
   get dropDownItems {
     return [10, 20, 30, 40, 50].map((value) {
       return DropdownMenuItem(
+        key: Key('$value'),
         value: value,
         child: Text('$value'),
       );

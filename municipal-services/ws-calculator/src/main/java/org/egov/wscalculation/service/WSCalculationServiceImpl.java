@@ -105,7 +105,8 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 				request.getCalculationCriteria().get(0).getTenantId());
 
 		//TODO need to change this to WS service.
-		if(wsresults!=null && wsresults.get(0).getApplicationStatus() != null && wsresults.get(0).getApplicationStatus().equals(Status.INACTIVE.toString())) {
+		if (wsresults != null && wsresults.get(0).getStatus() != null
+				&& wsresults.get(0).getStatus().equals(org.egov.wscalculation.web.models.Connection.StatusEnum.INACTIVE)) {
 			return calculations;
 		}
 		boolean isWSUpdateSMS = false;

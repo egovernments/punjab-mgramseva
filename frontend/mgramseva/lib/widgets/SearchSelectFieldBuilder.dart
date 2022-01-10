@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -134,7 +136,8 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
       }),
       CompositedTransformTarget(
         link: this._layerLink,
-        child: TextFormField(
+        child: ForceFocusWatcher(
+          child:TextFormField(
           style: TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
@@ -145,7 +148,12 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
           onChanged: (value) => filerobjects(value),
           focusNode: this._focusNode,
           validator: (value) {
-            if (widget.options
+            if((value ?? '').trim().isEmpty && !widget.isRequired){
+              return null;
+            }else if(value!.isEmpty && widget.isRequired){
+              return ApplicationLocalizations.of(context).translate(
+                  widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
+            } else if (widget.options
                 .where((element) =>
                     ApplicationLocalizations.of(context)
                         .translate((element.child as Text).data.toString())
@@ -154,9 +162,9 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
                 .toList()
                 .isEmpty) {
               return ApplicationLocalizations.of(context).translate(
-                  widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
+                  widget.requiredMessage ?? '${i18.common.INVALID_SELECTED_INPUT}');
             }
-            if (value!.trim().isEmpty && widget.isRequired) {
+            if (value.trim().isEmpty && widget.isRequired) {
               return ApplicationLocalizations.of(context).translate(
                   widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
             }
@@ -172,7 +180,7 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
             prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
           ),
         ),
-      )
+      ))
     ]);
   }
 }

@@ -44,26 +44,26 @@ class DashboardPdfCreator {
     String billDescription = '';
     String recordsCount =
         '${ApplicationLocalizations.of(buildContext).translate(i18.dashboard.NUMBER_OF_RECORDS)}';
-    recordsCount = recordsCount.replaceAll('<n>', '${tableData.length}');
+    recordsCount = recordsCount.replaceAll('{n}', '${tableData.length}');
 
     if (dashBoardProvider.selectedDashboardType == DashBoardType.Expenditure) {
       billDescription =
           '${ApplicationLocalizations.of(buildContext).translate(i18.dashboard.EXPENDITURE_DESC)}';
-      billDescription = billDescription.replaceAll('<Pending Or Paid>',
+      billDescription = billDescription.replaceAll('{Pending Or Paid}',
           '${ApplicationLocalizations.of(buildContext).translate(dashBoardProvider.selectedTab)}');
-      billDescription = billDescription.replaceAll('<text>',
+      billDescription = billDescription.replaceAll('{text}',
           '${dashBoardProvider.searchController.text.trim().isEmpty ? '-' : dashBoardProvider.searchController.text.trim()}');
       billDescription = billDescription.replaceAll(
-          '<Time period>',
+          '{Time period}',
           DateFormats.getMonthAndYear(
               dashBoardProvider.selectedMonth, buildContext));
     } else {
       billDescription =
           '${ApplicationLocalizations.of(buildContext).translate(i18.dashboard.COLLECTION_DESC)}';
       billDescription = billDescription.replaceAll(
-          '<Residential or Commercial>',
+          '{Residential or Commercial}',
           '${ApplicationLocalizations.of(buildContext).translate(dashBoardProvider.selectedTab)}');
-      billDescription = billDescription.replaceAll('<text>',
+      billDescription = billDescription.replaceAll('{text}',
           '${dashBoardProvider.searchController.text.trim().isEmpty ? '-' : dashBoardProvider.searchController.text.trim()}');
     }
 
@@ -111,7 +111,7 @@ class DashboardPdfCreator {
     var localizedText =
         '${ApplicationLocalizations.of(buildContext).translate(i18.dashboard.MONTHLY_REPORT_MESSAGE)}';
     localizedText = localizedText.replaceAll(
-        '<Month-Year>',
+        '{Month-Year}',
         DateFormats.getMonthAndYear(
             dashBoardProvider.selectedMonth, buildContext));
 
@@ -260,10 +260,10 @@ class DashboardPdfCreator {
     var localizationLabel =
         '${ApplicationLocalizations.of(context).translate(i18.dashboard.USER_GAVE_FEEDBACK)}';
     localizationLabel = localizationLabel.replaceAll(
-        '<n>', (feedBack['count'] ?? 0).toString());
+        '{n}', (feedBack['count'] ?? 0).toString());
     localizationLabel = localizationLabel
         .replaceAll(
-            '<date>',
+            '{date}',
             DateFormats.getMonthAndYear(
                 dashBoardProvider.selectedMonth, context))
         .toString();

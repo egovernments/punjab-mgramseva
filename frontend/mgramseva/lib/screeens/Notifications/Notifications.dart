@@ -17,8 +17,8 @@ import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/widgets/pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-
 class NotificationScreen extends StatefulWidget {
+
   State<StatefulWidget> createState() {
     return _NotificationScreen();
   }
@@ -27,22 +27,22 @@ class NotificationScreen extends StatefulWidget {
 ///All Notifications Screen
 
 class _NotificationScreen extends State<NotificationScreen> {
+
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
-
-  afterViewBuild() {
-    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    var notificationProvider =
-        Provider.of<NotificationScreenProvider>(context, listen: false);
+  afterViewBuild(){
+    var commonProvider =
+    Provider.of<CommonProvider>(context, listen: false);
+    var notificationProvider = Provider.of<NotificationScreenProvider>(context, listen: false);
     try {
       Provider.of<NotificationScreenProvider>(context, listen: false)
         ..limit = 10
         ..offset = 1
-        ..getNotifications(
-            notificationProvider.offset, notificationProvider.limit);
-    } catch (e, s) {
+        ..getNotifications(notificationProvider.offset, notificationProvider.limit);
+    }
+    catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
     }
   }
@@ -50,76 +50,84 @@ class _NotificationScreen extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     var notificationProvider =
-        Provider.of<NotificationScreenProvider>(context, listen: false);
+    Provider.of<NotificationScreenProvider>(context, listen: false);
     return Scaffold(
         appBar: CustomAppBar(),
-        drawer: DrawerWrapper(
-          Drawer(child: SideBar()),
-        ),
-        body: LayoutBuilder(
-          builder: (context, constraints) => Container(
-              alignment: Alignment.center,
-              margin: constraints.maxWidth < 760
-                  ? null
-                  : EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width / 25),
-              child: FormWrapper(Stack(children: [
-                SingleChildScrollView(
-                    child: Container(
-                        child: Column(children: [
-                  HomeBack(),
-                  StreamBuilder(
+    drawer: DrawerWrapper(
+    Drawer(child: SideBar()),
+    ),
+    body: LayoutBuilder(
+        builder: (context, constraints) => Container(
+        alignment: Alignment.center,
+        margin: constraints.maxWidth < 760
+        ? null
+            : EdgeInsets.symmetric(
+        horizontal: MediaQuery.of(context).size.width / 25),
+    child: FormWrapper(
+        Stack(
+          children: [
+            SingleChildScrollView(
+                child: Container(
+                    child: Column(
+                  children: [
+                    HomeBack(),
+                    StreamBuilder(
                       stream: notificationProvider.streamController.stream,
-                      builder: (context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          return buildNotificationsView(snapshot.data);
-                        } else if (snapshot.hasError) {
-                          return Notifiers.networkErrorPage(context, () {});
-                        } else {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.waiting:
-                              return Loaders.CircularLoader();
-                            case ConnectionState.active:
-                              return Loaders.CircularLoader();
-                            default:
-                              return Container();
-                          }
-                        }
+                          builder: (context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData) {
+                      return buildNotificationsView(snapshot.data);
+                      } else if (snapshot.hasError) {
+                      return Notifiers.networkErrorPage(context, () {});
+                      } else {
+                      switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                      return Loaders.CircularLoader();
+                      case ConnectionState.active:
+                      return Loaders.CircularLoader();
+                      default:
+                      return Container();
+                      }
+                      }
                       }),
-                  Padding(
-                      padding: EdgeInsets.only(bottom: 32.0), child: Footer()),
-                ]))),
-                Align(
-                    alignment: Alignment.bottomRight,
-                    child: Consumer<NotificationScreenProvider>(
-                        builder: (_, notificationProvider, child) {
-                      var totalCount = notificationProvider.totalCount;
+                    Padding(padding: EdgeInsets.only(bottom: 32.0), child: Footer()),
+                  ]))
+            ),
+            Align(
+                alignment: Alignment.bottomRight,
+                child: Consumer<NotificationScreenProvider>(
+                    builder: (_, notificationProvider, child) {
+                      var totalCount =
+                          notificationProvider.totalCount ;
                       return Visibility(
                           visible: totalCount > 0,
                           child: Pagination(
-                              limit: notificationProvider.limit,
-                              offSet: notificationProvider.offset,
-                              callBack: (pageResponse) => notificationProvider
-                                  .onChangeOfPageLimit(pageResponse),
-                              totalCount: totalCount,
-                              isDisabled:
-                                  notificationProvider.enableNotification));
-                    })),
-              ]))),
-        ));
+                            limit: notificationProvider.limit,
+                            offSet: notificationProvider.offset,
+                            callBack: (pageResponse) => notificationProvider
+                                .onChangeOfPageLimit(pageResponse),
+                            totalCount: totalCount, isDisabled: notificationProvider.enableNotification));
+                    })
+            ),
+          ])
+
+    )),
+
+    ));
   }
 
   buildNotificationsView(List? events) {
     return LayoutBuilder(builder: (context, constraints) {
       return Column(mainAxisSize: MainAxisSize.min, children: [
         events!.length > 0
-            ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                ListLabelText(ApplicationLocalizations.of(context)
-                        .translate(i18.common.NOTIFICATIONS) +
-                    " (" +
-                    events.length.toString() +
-                    ")"),
-              ])
+            ? Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ListLabelText(ApplicationLocalizations.of(context)
+                  .translate(i18.common.ALL_NOTIFICATIONS) +
+                  " (" +
+                  events.length.toString() +
+                  ")"),
+            ])
             : Text(""),
         ListView.builder(
             shrinkWrap: true,

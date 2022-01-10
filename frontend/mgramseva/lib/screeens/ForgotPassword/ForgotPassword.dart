@@ -5,6 +5,7 @@ import 'package:mgramseva/providers/forgot_password_provider.dart';
 
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
@@ -99,6 +100,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             maxLength: 10,
             validator: Validators.mobileNumberValidator,
             textInputType: TextInputType.phone,
+            key: Keys.forgotPassword.FORGOT_PASSWORD_MOBILE_NO
           ),
         ),
         SizedBox(
@@ -107,15 +109,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         Padding(
             padding: EdgeInsets.all(15),
             child:
-                Button(i18.common.CONTINUE, () => saveInputandcall(context))),
+                Button(i18.common.CONTINUE, () => saveInputandcall(context),
+                key: Keys.forgotPassword.FORGOT_PASSWORD_CONTINUE_BTN,)),
       ],
     )));
   }
 
   @override
   Widget build(BuildContext context) {
-    return FocusWatcher(
-        child: Scaffold(body: LayoutBuilder(builder: (context, constraints) {
+    return FocusWatcher(child: Scaffold(body: LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 760) {
         return MobileView(getForgotPasswordCard());
       } else {

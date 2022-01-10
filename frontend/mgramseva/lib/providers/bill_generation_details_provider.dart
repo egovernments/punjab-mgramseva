@@ -126,9 +126,11 @@ class BillGenerationProvider with ChangeNotifier {
       billGenerateDetails.om_3Ctrl.text = previousMeterReading.toString()[2];
       billGenerateDetails.om_4Ctrl.text = previousMeterReading.toString()[3];
       billGenerateDetails.om_5Ctrl.text = previousMeterReading.toString()[4];
-      var readDate = DateTime.fromMillisecondsSinceEpoch(meterRes.meterReadings!.first.currentReadingDate) ;
+      var readDate = DateTime.fromMillisecondsSinceEpoch(
+          meterRes.meterReadings!.first.currentReadingDate);
       var reqDate = readDate.add(Duration(days: 1)).toLocal().toString();
-      prevReadingDate = DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(reqDate, dateFormat: 'dd/MM/yyyy'));
+      prevReadingDate = DateFormats.dateToTimeStamp(
+          DateFormats.getFilteredDate(reqDate, dateFormat: 'dd/MM/yyyy'));
     } else if (waterconnection.additionalDetails!.meterReading.toString() !=
         '0') {
       readingExist = false;
@@ -283,7 +285,7 @@ class BillGenerationProvider with ChangeNotifier {
               localizationText =
                   '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT)}';
               localizationText = localizationText.replaceFirst(
-                  '<number>', '(+91 - ${billList.bill!.first.mobileNumber})');
+                  '{number}', '(+91 - ${billList.bill!.first.mobileNumber})');
               Navigator.of(context).pushReplacement(
                   new MaterialPageRoute(builder: (BuildContext context) {
                 return CommonSuccess(
@@ -389,7 +391,7 @@ class BillGenerationProvider with ChangeNotifier {
     localizationText =
         '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT)}';
     localizationText = localizationText.replaceFirst(
-        '<billing cycle>',
+        '{billing cycle}',
         '${ApplicationLocalizations.of(context).translate(selectedBillCycle.toString())}' +
             ' ${selectedBillYear.financialYear!.toString().substring(2)}');
     return localizationText;

@@ -416,7 +416,7 @@ class CollectPaymentProvider with ChangeNotifier {
     localizationText =
         '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)}';
     localizationText = localizationText.replaceFirst(
-        '<Number>', '(+91 - ${fetchBill.mobileNumber})');
+        '{Number}', '(+91 - ${fetchBill.mobileNumber})');
     return localizationText;
   }
 

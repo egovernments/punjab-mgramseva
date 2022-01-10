@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
@@ -48,7 +49,7 @@ class ExpenseResults extends StatelessWidget {
                                   '${ApplicationLocalizations.of(context).translate(i18.expense.FOLLOWING_EXPENDITURE_BILL_MATCH)}',
                             ),
                             TextSpan(
-                                text: '\t${searchResult.label()}',
+                                text: ' ${searchResult.label()}',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontStyle: FontStyle.italic,
@@ -103,7 +104,7 @@ class ExpenseResults extends StatelessWidget {
                                           i18.expense.UPDATE_EXPENDITURE,
                                           () => Navigator.pushNamed(
                                               context, Routes.EXPENSE_UPDATE,
-                                              arguments: expense)),
+                                              arguments: expense, ), key: Keys.expense.UPDATE_EXPNEDITURE),
                                     ),
                                     SizedBox(
                                       height: 20,
