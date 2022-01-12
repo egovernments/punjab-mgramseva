@@ -210,7 +210,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       ..vendorId = expenditureDetails.selectedVendor?.id ??
           expenditureDetails.vendorNameCtrl.text
       ..vendorName = expenditureDetails.selectedVendor?.name ??
-          expenditureDetails.vendorNameCtrl.text;
+          expenditureDetails.vendorNameCtrl.text.trim();
 
     if (isUpdate) {
       if (expenditureDetails.isBillPaid!) {
@@ -261,7 +261,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var body = {
         "vendor": {
           "tenantId": commonProvider.userDetails?.selectedtenant?.code,
-          "name": expenditureDetails.vendorNameCtrl.text,
+          "name": expenditureDetails.vendorNameCtrl.text.trim(),
           "address": {
             "tenantId": commonProvider.userDetails?.selectedtenant?.code,
             "doorNo": null,
@@ -295,13 +295,13 @@ class ExpensesDetailsProvider with ChangeNotifier {
           },
           "owner": {
             "tenantId": commonProvider.userDetails?.selectedtenant?.code,
-            "name": expenditureDetails.vendorNameCtrl.text,
+            "name": expenditureDetails.vendorNameCtrl.text.trim(),
             "fatherOrHusbandName": "defaultName",
             "relationship": "FATHER",
             "gender": "MALE",
             "dob": 550261800000,
             "emailId": "example@gmail.com",
-            "mobileNumber": expenditureDetails.mobileNumberController.text
+            "mobileNumber": expenditureDetails.mobileNumberController.text.trim()
           },
           "vehicles": [],
           "drivers": [],

@@ -161,9 +161,9 @@ class Owners {
   Owners();
 
   setText() {
-    name = consumerNameCtrl.text;
+    name = consumerNameCtrl.text.trim();
     mobileNumber = phoneNumberCtrl.text;
-    fatherOrHusbandName = fatherOrSpouseCtrl.text;
+    fatherOrHusbandName = fatherOrSpouseCtrl.text.trim();
   }
 
   getText() {
