@@ -3,6 +3,8 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 
@@ -55,6 +57,7 @@ import 'providers/dashboard_provider.dart';
 import 'providers/revenuedashboard_provider.dart';
 import 'screeens/common/collect_payment.dart';
 import 'configure_non_web.dart' if (dart.library.html) 'configure_web.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() {
   HttpOverrides.global = new MyHttpOverrides();
@@ -70,6 +73,11 @@ void main() {
     };
 
     WidgetsFlutterBinding.ensureInitialized();
+
+    if(Firebase.apps.length == 0) {
+      await Firebase.initializeApp();
+    }
+
     await FlutterDownloader.initialize(
         debug: true // optional: set false to disable printing logs to console
         );
@@ -95,6 +103,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late Locale _locale = Locale('en', 'IN');
+  static FirebaseAnalytics analytics = FirebaseAnalytics();
+  static FirebaseAnalyticsObserver observer =
+  FirebaseAnalyticsObserver(analytics: analytics);
 
   void setLocale(Locale value) {
     setState(() {
@@ -169,7 +180,8 @@ class _MyAppState extends State<MyApp> {
                     return supportedLocales.first;
                   },
                   navigatorKey: navigatorKey,
-                  initialRoute: Routes.LANDING_PAGE,
+                navigatorObservers: <NavigatorObserver>[observer],
+                initialRoute: Routes.LANDING_PAGE,
                   onGenerateRoute: router.generateRoute,
                   theme: theme,
                   // home: SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
