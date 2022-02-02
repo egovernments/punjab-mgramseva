@@ -2,6 +2,10 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 1.0.4 - 2022-02-02
+
+- Vendor validation changes respective to mgramseva.
+
 ## 1.0.3 - 28/09/2021
 
 - Vendor properties changes respective to mgramseva.

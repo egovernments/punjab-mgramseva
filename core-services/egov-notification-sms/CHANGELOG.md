@@ -2,6 +2,9 @@
 
 All notable changes to this module will be documented in this file.
 
+## 1.1.4 - 2022-02-02
+- Updated to log4j2 version 2.17.1
+
 ## 1.1.3 - 25-11-2021
 
 - added NIC Support

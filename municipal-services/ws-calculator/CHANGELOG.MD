@@ -1,6 +1,11 @@
 # Change log
 All notable changes to this module will be documented in this file.
 
+## 1.4.2 - 2022-02-02
+
+- Calculator services to make change in the dashboard changes 
+- Fixes in demand generation validations.
+
 ## 1.4.1 - 2021-11-25
 
 - Calculator services to fix the timezone issues
