@@ -97,7 +97,9 @@ class AutoCompleteView extends StatelessWidget {
           style: TextStyle(
               color: (isEnabled ?? true)
                   ? Theme.of(context).primaryColorDark : Colors.grey, fontSize: 16),
-          decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.zero))),
+          decoration: InputDecoration(
+              errorMaxLines: 2,
+              border: OutlineInputBorder(borderRadius: BorderRadius.zero))),
       hideOnEmpty: true,
       suggestionsBoxController: suggestionsBoxController,
       suggestionsCallback: (pattern) async {

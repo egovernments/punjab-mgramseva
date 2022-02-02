@@ -76,7 +76,7 @@ class ExpenseResults extends StatelessWidget {
                                     _getDetailtext(i18.expense.EXPENSE_TYPE,
                                         expense.expenseType, context),
                                     _getDetailtext(i18.expense.AMOUNT,
-                                        '₹ ${expense.totalAmount}', context),
+                                        '₹ ${expense.totalAmount?.toInt()}', context),
                                     _getDetailtext(
                                         i18.expense.BILL_DATE,
                                         DateFormats.timeStampToDate(

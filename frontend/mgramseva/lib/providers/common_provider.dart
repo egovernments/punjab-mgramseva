@@ -24,6 +24,7 @@ import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:new_version/new_version.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
@@ -209,6 +210,18 @@ class CommonProvider with ChangeNotifier {
 
         stateResponse = window.localStorage[Constants.STATES_KEY];
       } else {
+        final newVersion = NewVersion(
+          androidId: "com.dwss.mgramseva",
+          //iOSId: "com.dwss.mgramseva",
+        );
+        final status = await newVersion.getVersionStatus();
+
+        var updateStatus = await storage.read(key: Constants.UPDATE_STATUS_KEY);
+        if(updateStatus.toString() == 'updateInitiated' && !status!.canUpdate)
+        {
+          storage.deleteAll();
+        }
+
         loginResponse = await storage.read(key: Constants.LOGIN_KEY);
         stateResponse = await storage.read(key: Constants.STATES_KEY);
       }

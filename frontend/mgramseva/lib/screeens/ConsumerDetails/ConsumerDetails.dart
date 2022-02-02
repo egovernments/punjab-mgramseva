@@ -55,6 +55,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   void initState() {
     var consumerProvider = Provider.of<ConsumerProvider>(context, listen: false)
       ..phoneNumberAutoValidation = false
+      ..selectedcycle = ''
       ..waterconnection = WaterConnection()
       ..property = Property();
 

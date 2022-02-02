@@ -65,7 +65,7 @@ class ConsumerProvider with ChangeNotifier {
       "usageCategory": "RESIDENTIAL",
       "creationReason": "CREATE",
       "noOfFloors": 1,
-      "source": "MUNICIPAL_RECORDS",
+      "source": "WS",
       "channel": "CITIZEN",
       "ownershipCategory": "INDIVIDUAL",
       "owners": [
@@ -202,7 +202,6 @@ class ConsumerProvider with ChangeNotifier {
 
       property.tenantId = commonProvider.userDetails!.selectedtenant!.code;
       property.address.city = commonProvider.userDetails!.selectedtenant!.name;
-      waterconnection.setText();
       if (waterconnection.processInstance == null) {
         var processInstance = ProcessInstance();
         processInstance.action = 'SUBMIT';
@@ -292,6 +291,7 @@ class ConsumerProvider with ChangeNotifier {
           property.address.geoLocation = GeoLocation();
           property.address.geoLocation?.latitude = null;
           property.address.geoLocation?.longitude = null;
+          property.source = 'WS';
           var result1 =
               await ConsumerRepository().updateProperty(property.toJson());
           var result2 = await ConsumerRepository()
@@ -443,7 +443,6 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   List<DropdownMenuItem<Object>> getSubCategoryList() {
-    print(languageList?.mdmsRes?.subCategory!.subcategoryList!.first.code);
     if (languageList?.mdmsRes?.subCategory != null) {
       return (languageList?.mdmsRes?.subCategory?.subcategoryList ??
               <SubCategoryType>[])
@@ -482,6 +481,7 @@ class ConsumerProvider with ChangeNotifier {
   onChangeBillingcycle(val) {
     selectedcycle = val;
     var date = val;
+    waterconnection.previousReadingDateCtrl.clear();
     waterconnection.BillingCycleCtrl.text = selectedcycle ?? '';
     waterconnection.meterInstallationDateCtrl.text = selectedcycle ?? '';
     notifyListeners();

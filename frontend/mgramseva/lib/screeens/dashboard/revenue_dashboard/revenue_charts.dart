@@ -241,20 +241,21 @@ class _RevenueChartsState extends State<RevenueCharts> {
   Widget _buildButton(String label, [int? index, Function(int)? callBack]){
     var revenueProvider = Provider.of<RevenueDashboard>(context, listen: false);
 
-    return OutlinedButton(
-      onPressed: () => callBack != null && index != null ? callBack(index) : (){},
-    style: OutlinedButton.styleFrom(
-    side: BorderSide(width: 1.0, color: (revenueProvider.selectedIndex == index) || index == null ? Theme.of(context).primaryColor : Color.fromRGBO(238, 238, 238, 1)),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
-    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 9)
-    ),
-      child: Text("${ApplicationLocalizations.of(context).translate(label)}",
-      style: TextStyle(
-        color: (revenueProvider.selectedIndex == index) || index == null ? Theme.of(context).primaryColor : Color.fromRGBO(80, 90, 95, 1),
-        fontSize: 14
-      ),
-      ),
-    );
+    return Container(height: 10,);
+    //   OutlinedButton(
+    //   onPressed: () => callBack != null && index != null ? callBack(index) : (){},
+    // style: OutlinedButton.styleFrom(
+    // side: BorderSide(width: 1.0, color: (revenueProvider.selectedIndex == index) || index == null ? Theme.of(context).primaryColor : Color.fromRGBO(238, 238, 238, 1)),
+    // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+    // padding: EdgeInsets.symmetric(horizontal: 8, vertical: 9)
+    // ),
+    //   child: Text("${ApplicationLocalizations.of(context).translate(label)}",
+    //   style: TextStyle(
+    //     color: (revenueProvider.selectedIndex == index) || index == null ? Theme.of(context).primaryColor : Color.fromRGBO(80, 90, 95, 1),
+    //     fontSize: 14
+    //   ),
+    //   ),
+    // );
   }
 }
 
@@ -307,6 +308,13 @@ class SimpleLineChart extends StatelessWidget {
      }
     });
 
+    final customYAxisTickFormatter =
+    charts.BasicNumericTickFormatterSpec((num? value) {
+      ToolTipMgr.setMaxValue(value ?? 0);
+      return '₹ ${value?.toInt()}';
+
+    });
+
     return new charts.LineChart(seriesList,
           animate: animate,
         defaultRenderer: charts.LineRendererConfig(includePoints: true, ),
@@ -353,6 +361,10 @@ class SimpleLineChart extends StatelessWidget {
               color: charts.MaterialPalette.black),
           ),
         ),
+        primaryMeasureAxis: charts.NumericAxisSpec(
+        tickFormatterSpec: customYAxisTickFormatter,
+        showAxisLine: true
+      ),
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mgramseva/model/user/user_details.dart';
 
 part 'property.g.dart';
 
@@ -64,6 +65,8 @@ class Property {
 class Address {
   @JsonKey(name: "city")
   String? city;
+  @JsonKey(name: "id")
+  String? id;
   @JsonKey(name: "locality")
   Locality? locality;
   @JsonKey(name: "street")
@@ -115,6 +118,10 @@ class Locality {
   String? code;
   @JsonKey(name: "area")
   String? area;
+  @JsonKey(name: "name")
+  String? name;
+  @JsonKey(name: "label")
+  String? label;
 
   Locality();
   factory Locality.fromJson(Map<String, dynamic> json) =>
@@ -124,10 +131,48 @@ class Locality {
 
 @JsonSerializable()
 class Owners {
-  @JsonKey(name: "altContactNumber")
-  String? altContactNumber;
+  @JsonKey(name: "id")
+  int? id;
+  @JsonKey(name: "uuid")
+  String? uuid;
+  @JsonKey(name: "userName")
+  String? userName;
+  @JsonKey(name: "password")
+  String? password;
+  @JsonKey(name: "aadhaarNumber")
+  String? aadhaarNumber;
+  @JsonKey(name: "permanentAddress")
+  String? permanentAddress;
+  @JsonKey(name: "permanentCity")
+  String? permanentCity;
+  @JsonKey(name: "permanentPinCode")
+  String? permanentPinCode;
+  @JsonKey(name: "correspondenceCity")
+  String? correspondenceCity;
+  @JsonKey(name: "correspondencePinCode")
+  String? correspondencePinCode;
   @JsonKey(name: "correspondenceAddress")
   String? correspondenceAddress;
+  @JsonKey(name: "pwdExpiryDate")
+  int? pwdExpiryDate;
+  @JsonKey(name: "accountLocked")
+  bool? accountLocked;
+  @JsonKey(name: "active")
+  bool? active;
+  @JsonKey(name: "type")
+  String? type;
+  @JsonKey(name: "tenantId")
+  String? tenantId;
+  @JsonKey(name: "altContactNumber")
+  String? altContactNumber;
+  @JsonKey(name: "ownerInfoUuid")
+  String? ownerInfoUuid;
+  @JsonKey(name: "isPrimaryOwner")
+  String? isPrimaryOwner;
+  @JsonKey(name: "ownerShipPercentage")
+  String? ownerShipPercentage;
+  @JsonKey(name: "institutionId")
+  String? institutionId;
   @JsonKey(name: "designation")
   String? designation;
   @JsonKey(name: "emailId")
@@ -140,7 +185,8 @@ class Owners {
   String? fatherOrHusbandName;
   @JsonKey(name: "name")
   String? name;
-
+  @JsonKey(name: "status")
+  String? status;
   @JsonKey(name: "gender")
   String? gender;
 
@@ -148,6 +194,9 @@ class Owners {
   String? ownerType;
   @JsonKey(name: "documents")
   List<Documents>? documents;
+
+  @JsonKey(name: "roles")
+  List<Roles>? roles;
 
   @JsonKey(ignore: true)
   var consumerNameCtrl = TextEditingController();

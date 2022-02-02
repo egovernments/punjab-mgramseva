@@ -102,8 +102,14 @@ class router {
       }
     }
 
-    FirebaseAnalytics analytics = FirebaseAnalytics();
-    analytics.logEvent(name : "$path",);
+
+    if (kIsWeb) {
+      FirebaseAnalytics analytics = FirebaseAnalytics();
+      analytics.logEvent(name: "screen_view", parameters: {
+        'firebase_screen': "$path",
+        'screen_name': "$path",
+      });
+    }
 
     if (!(path != null && RoleActionsFiltering().isEligibleRoletoRoute(path)))
       return pageNotAvailable;

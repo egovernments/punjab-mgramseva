@@ -43,7 +43,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_typeahead: ^3.2.0
-  flutter_downloader: ^1.7.0
+  flutter_downloader: ^1.7.2
   js: ^0.6.3
   path_provider: ^2.0.2
   permission_handler: ^8.1.4+2
@@ -74,6 +74,7 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
+  json_serializable: ^4.1.4
 
 flutter_icons:
   android: "launcher_icon"
@@ -82,7 +83,6 @@ flutter_icons:
 
 
 
-  json_serializable: ^4.1.4
 
 
 

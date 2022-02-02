@@ -213,13 +213,6 @@ class _LandingPageState extends State<LandingPage> {
     );
     //newVersion.showAlertIfNecessary(context: context); //Use this if you want the update alert with default settings
     final status = await newVersion.getVersionStatus();
-
-    var updateStatus = storage.read(key: Constants.UPDATE_STATUS_KEY);
-    if(updateStatus.toString() == 'updateInitiated' && !status!.canUpdate)
-    {
-      storage.deleteAll();
-    }
-
     if (status != null && status.canUpdate) {
       final uri =
       Uri.https("play.google.com", "/store/apps/details", {"id": "com.dwss.mgramseva"});
@@ -251,10 +244,14 @@ class _LandingPageState extends State<LandingPage> {
                   title: Text('UPDATE AVAILABLE'),
                   content: Text('Please update the app from ${status.localVersion} to ${status.storeVersion}'),
                   actions: [
+                    TextButton(onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+                        child: Text('Later',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColorLight
+                        ),
+                        )),
                     TextButton(onPressed: () => launchPlayStore(uri.toString()),
                         child: Text('Update')),
-                    TextButton(onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
-                        child: Text('Later'))
                   ],
                 ),
                 onWillPop: () => Future.value(true)
@@ -307,26 +304,28 @@ class _LandingPageState extends State<LandingPage> {
   Widget build(BuildContext context) {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
-    return StreamBuilder(
-        stream: commonProvider.userLoggedStreamCtrl.stream,
-        builder: (context, AsyncSnapshot snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
+    return Scaffold(
+      body: StreamBuilder(
+          stream: commonProvider.userLoggedStreamCtrl.stream,
+          builder: (context, AsyncSnapshot snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
 
-              /// While waiting for the data to load, show a loading spinner.
-              return Loaders.circularLoader();
-            default:
-              if (snapshot.hasError) {
-                return Notifiers.networkErrorPage(context, () {});
-              } else {
-                if (snapshot.data != null &&
-                    commonProvider.userDetails!.isFirstTimeLogin == true) {
-                  return Home();
+                /// While waiting for the data to load, show a loading spinner.
+                return Loaders.circularLoader();
+              default:
+                if (snapshot.hasError) {
+                  return Notifiers.networkErrorPage(context, () {});
+                } else {
+                  if (snapshot.data != null &&
+                      commonProvider.userDetails!.isFirstTimeLogin == true) {
+                    return Home();
+                  }
+                  return SelectLanguage();
                 }
-                return SelectLanguage();
-              }
-          }
-        });
+            }
+          }),
+    );
   }
 }
 
