@@ -73,8 +73,9 @@ class HouseConnectionDetailCard extends StatelessWidget {
                     waterconnection!.connectionHolders!.first.name, context),
                 _getLabeltext(
                     i18.consumer.FATHER_SPOUSE_NAME,
-                    waterconnection!
-                        .connectionHolders!.first.fatherOrHusbandName,
+                    waterconnection?.connectionHolders?.first.fatherOrHusbandName != null &&
+                        waterconnection!.connectionHolders!.first.fatherOrHusbandName!.isNotEmpty ? waterconnection!
+                        .connectionHolders!.first.fatherOrHusbandName : "NA",
                     context),
                 _getLabeltext(
                     i18.searchWaterConnection.RESULTS_PHONE_NUM,
