@@ -230,7 +230,7 @@ public class ChallanRepository {
 	
 	public Integer getPreviousMonthNewExpense(String tenantId, Long startDate, Long endDate) {
 		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHNEWEXPENSE);
-		query.append("  and demand.taxperiodto BETWEEN ").append(startDate).append(" and  ")
+		query.append("  and challan.billdate BETWEEN ").append(startDate).append(" and  ")
 				.append(endDate).append(" and CHALLAN.TENANTID = '").append(tenantId).append("'");
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 	}
@@ -242,7 +242,7 @@ public class ChallanRepository {
 		startDate.set(Calendar.MONTH,3);
 		startDate.set(Calendar.DAY_OF_MONTH, startDate.getActualMinimum(Calendar.DAY_OF_MONTH));
 		util.setTimeToBeginningOfDay(startDate);
-		query.append(" and DEMAND.taxperiodto between " + startDate.getTimeInMillis() +" and "+ endDate );
+		query.append(" and challan.billdate between " + startDate.getTimeInMillis() +" and "+ endDate );
 		query.append(" and challan.tenantId = '").append(tenantId).append("'");
 		System.out.println("Query in Challan for pending collection: " + query.toString());
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
@@ -250,7 +250,7 @@ public class ChallanRepository {
 
 	public Long getTotalExpense(@Valid SearchCriteria criteria) {
 		StringBuilder query = new StringBuilder(queryBuilder.NEWEXPDEMAND);
-		query.append(" and dmd.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		query.append(" and ch.billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
 				.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
 		return jdbcTemplate.queryForObject(query.toString(), Long.class);
 	}
@@ -266,7 +266,7 @@ public class ChallanRepository {
 
 	public Long getPendingAmount(@Valid SearchCriteria criteria) {
 		StringBuilder query = new StringBuilder(queryBuilder.PENDINGEXPCOLL);
-		query.append(" and dmd.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		query.append(" and ch.billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
 				.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
 		log.info("Active pending collection query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Long.class);
@@ -274,7 +274,7 @@ public class ChallanRepository {
 
 	public Long getTotalBill(@Valid SearchCriteria criteria) {
 		StringBuilder query = new StringBuilder(queryBuilder.TOTALBILLS);
-		query.append(" and taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		query.append(" and billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
 				.append(" and tenantId = '").append(criteria.getTenantId()).append("'");
 		log.info("TotalBills Final Query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Long.class);
@@ -282,7 +282,7 @@ public class ChallanRepository {
 
 	public Long getBillsPaid(@Valid SearchCriteria criteria) {
 		StringBuilder query = new StringBuilder(queryBuilder.PAIDBILLS);
-		query.append(" and taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		query.append(" and billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
 				.append(" and tenantId = '").append(criteria.getTenantId()).append("'");
 		log.info("paid bills Final Query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Long.class);
@@ -290,7 +290,7 @@ public class ChallanRepository {
 
 	public Long getPendingBills(@Valid SearchCriteria criteria) {
 		StringBuilder query = new StringBuilder(queryBuilder.PENDINGBILLS);
-		query.append(" and taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		query.append(" and billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
 				.append(" and tenantId = '").append(criteria.getTenantId()).append("'");
 		log.info("pending bills Final Query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Long.class);
@@ -299,7 +299,7 @@ public class ChallanRepository {
 
 	public Long getElectricityBill(@Valid SearchCriteria criteria) {
 		StringBuilder query = new StringBuilder(queryBuilder.ELECTRICITYBILLS);
-		query.append(" and challan.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		query.append(" and challan.billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
 				.append(" and challan.tenantId = '").append(criteria.getTenantId()).append("'");
 		log.info("electricity Final Query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Long.class);
@@ -307,7 +307,7 @@ public class ChallanRepository {
 
 	public Long getOmMiscBills(@Valid SearchCriteria criteria) {
 		StringBuilder query = new StringBuilder(queryBuilder.OMMISCBILLS);
-		query.append(" and challan.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		query.append(" and challan.billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
 		.append(" and challan.tenantId = '").append(criteria.getTenantId()).append("'");
 		log.info("O&M Final Query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Long.class);
@@ -315,7 +315,7 @@ public class ChallanRepository {
 
 	public Long getSalary(@Valid SearchCriteria criteria) {
 		StringBuilder query = new StringBuilder(queryBuilder.SALARYBILLS);
-		query.append(" and challan.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		query.append(" and challan.billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
 		.append(" and challan.tenantId = '").append(criteria.getTenantId()).append("'");
 		log.info("salary Final Query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Long.class);
@@ -323,7 +323,7 @@ public class ChallanRepository {
 
 	public Long getPendingAmountTillDate(@Valid SearchCriteria criteria) {
 		StringBuilder query = new StringBuilder(queryBuilder.PENDINGEXPCOLLTILLDATE);
-		query.append(" and dmd.taxperiodto <= " + criteria.getToDate())
+		query.append(" and ch.billdate <= " + criteria.getToDate())
 		.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
 //		query.append(" and dmd.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
 //				.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");

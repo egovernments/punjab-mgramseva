@@ -217,6 +217,10 @@ public class MasterDataService {
 			Calendar startDate = Calendar.getInstance();
 			Calendar endDate = Calendar.getInstance();
 			startDate.setTimeInMillis(criteria.getFrom());
+			int currentMonthNumber = startDate.get(Calendar.MONTH);
+			if (currentMonthNumber < 3) {
+				startDate.set(Calendar.YEAR, startDate.get(Calendar.YEAR) - 1);
+			}				
 			startDate.set(Calendar.MONTH,3);
 			startDate.set(Calendar.DAY_OF_MONTH, startDate.getActualMinimum(Calendar.DAY_OF_MONTH));
 			estimationService.setTimeToBeginningOfDay(startDate);

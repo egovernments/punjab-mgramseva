@@ -66,9 +66,9 @@ public class ChallanQueryBuilder {
 
 	  public static final String bill_count = " select count(*) from eg_echallan as challan INNER JOIN eg_vendor vendor on vendor.id = challan.vendor ";
 
-	  public static final String NEWEXPDEMAND = "SELECT coalesce(SUM(DMDL.TAXAMOUNT),0) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE LIKE '%EXPENSE%' and DMD.status = 'ACTIVE' ";
+	  public static final String NEWEXPDEMAND = "SELECT coalesce(SUM(DMDL.TAXAMOUNT),0) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID  INNER JOIN EG_ECHALLAN CH ON CH.CHALLANNO=DMD.CONSUMERCODE WHERE DMD.BUSINESSSERVICE LIKE '%EXPENSE%' and DMD.status = 'ACTIVE' ";
 	
-	  public static final String PENDINGEXPCOLL = "SELECT coalesce(SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT),0) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE LIKE '%EXPENSE%' and DMD.status='ACTIVE' ";
+	  public static final String PENDINGEXPCOLL = "SELECT coalesce(SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT),0) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID  INNER JOIN EG_ECHALLAN CH ON CH.CHALLANNO=DMD.CONSUMERCODE WHERE DMD.BUSINESSSERVICE LIKE '%EXPENSE%' and DMD.status='ACTIVE' ";
 	
 	  public static final String ACTUALEXPCOLLECTION = " SELECT coalesce(SUM(PY.TOTALAMOUNTPAID),0) FROM EGCL_PAYMENT PY INNER JOIN EGCL_PAYMENTDETAIL PYD ON PYD.PAYMENTID = PY.ID WHERE PYD.BUSINESSSERVICE LIKE '%EXPENSE%' ";
 
@@ -77,14 +77,14 @@ public class ChallanQueryBuilder {
 	  public static final String PAIDBILLS = " select count(*) from eg_echallan where isbillpaid = 'true' and applicationstatus not in ('CANCELLED') ";
 	  
 	  public static final String PENDINGBILLS = " select count(*) from eg_echallan where isbillpaid = 'false' and applicationstatus not in ('CANCELLED') ";
+ 
+	  public static final String ELECTRICITYBILLS = "SELECT COALESCE(SUM(DMDL.TAXAMOUNT),0) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID  INNER JOIN EG_ECHALLAN CHALLAN ON CHALLAN.CHALLANNO=DMD.CONSUMERCODE WHERE DMD.BUSINESSSERVICE IN ('EXPENSE.ELECTRICITY_BILL') AND DMD.STATUS = 'ACTIVE' AND CHALLAN.APPLICATIONSTATUS NOT IN ('CANCELLED') ";
 
-	  public static final String ELECTRICITYBILLS = " select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_echallan challan ON challan.challanno = bill.consumercode  where pyd.businessservice='EXPENSE.ELECTRICITY_BILL' and challan.applicationstatus not in ('CANCELLED') ";
-
-	  public static final String OMMISCBILLS = "select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_echallan challan ON challan.challanno = bill.consumercode  where pyd.businessservice='EXPENSE.OM' and challan.applicationstatus not in ('CANCELLED') ";
+	  public static final String OMMISCBILLS = "SELECT COALESCE(SUM(DMDL.TAXAMOUNT),0) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID  INNER JOIN EG_ECHALLAN CHALLAN ON CHALLAN.CHALLANNO=DMD.CONSUMERCODE WHERE DMD.BUSINESSSERVICE IN ('EXPENSE.OM' , 'EXPENSE.MISC') AND DMD.STATUS = 'ACTIVE' AND CHALLAN.APPLICATIONSTATUS NOT IN ('CANCELLED') ";
 	  
-	  public static final String SALARYBILLS = " select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_echallan challan ON challan.challanno = bill.consumercode  where pyd.businessservice='EXPENSE.SALARY' and challan.applicationstatus not in ('CANCELLED')";
+	  public static final String SALARYBILLS = "SELECT COALESCE(SUM(DMDL.TAXAMOUNT),0) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID  INNER JOIN EG_ECHALLAN CHALLAN ON CHALLAN.CHALLANNO=DMD.CONSUMERCODE WHERE DMD.BUSINESSSERVICE IN ('EXPENSE.SALARY') AND DMD.STATUS = 'ACTIVE' AND CHALLAN.APPLICATIONSTATUS NOT IN ('CANCELLED') ";
 
-	  public static final String PENDINGEXPCOLLTILLDATE = "SELECT coalesce(SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT),0) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE LIKE '%EXPENSE%' and DMD.status='ACTIVE' ";
+	  public static final String PENDINGEXPCOLLTILLDATE = "SELECT coalesce(SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT),0) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID INNER JOIN EG_ECHALLAN CH ON CH.CHALLANNO=DMD.CONSUMERCODE  WHERE DMD.BUSINESSSERVICE LIKE '%EXPENSE%' and DMD.status='ACTIVE' ";
 
 
 		public String getChallanSearchQuery(SearchCriteria criteria, List<Object> preparedStmtList) {
@@ -173,7 +173,7 @@ public class ChallanQueryBuilder {
 			if (criteria.getFromDate() != null && criteria.getToDate() != null) {
 				addClauseIfRequired(preparedStmtList, builder);
 				builder.append(
-						" challan.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate());
+						" challan.billdate between " + criteria.getFromDate() + " and " + criteria.getToDate());
 			}
 			if (criteria.getIsBillPaid() != null) {
 				addClauseIfRequired(preparedStmtList, builder);
