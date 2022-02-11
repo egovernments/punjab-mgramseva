@@ -535,22 +535,50 @@ public class WaterServiceImpl implements WaterService {
 		Object esResponse = elasticSearchRepository.fuzzySearchProperties(criteria, idsfromDB);
 
 		List<Map<String, Object>> data;
+
+		if (!StringUtils.isEmpty(criteria.getTextSearch())) {
+			data = waterConnectionSearch(criteria, esResponse);
+		} else {
+			data = waterConnectionFuzzySearch(criteria, esResponse);
+		}
+
+		return WaterConnectionResponse.builder().waterConnectionData(data).totalCount(data.size()).build();
+	}
+
+	private List<Map<String, Object>> waterConnectionSearch(SearchCriteria criteria, Object esResponse) {
+		List<Map<String, Object>> data;
+		try {
+			data = wsDataResponse(esResponse);
+		} catch (Exception e) {
+			throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND",
+					"Could not find user or water connection details !");
+		}
+		return data;
+	}
+
+	private List<Map<String, Object>> waterConnectionFuzzySearch(SearchCriteria criteria, Object esResponse) {
+		List<Map<String, Object>> data;
 		try {
 			data = wsDataResponse(esResponse);
 			if (data.isEmpty()) {
-				throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND", "Could not find user or property details !");
+				throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND",
+						"Could not find user or water connection details !");
 
 			}
 		} catch (Exception e) {
-			throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND", "Could not find user or property details !");
+			throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND",
+					"Could not find user or water connection details !");
 		}
-		return WaterConnectionResponse.builder().waterConnectionData(data).totalCount(data.size()).build();
+		return data;
+	}
+
+	private void validateFuzzySearchCriteria(SearchCriteria criteria) {
+		if (org.apache.commons.lang3.StringUtils.isBlank(criteria.getTextSearch())
+				&& org.apache.commons.lang3.StringUtils.isBlank(criteria.getName())
+				&& org.apache.commons.lang3.StringUtils.isBlank(criteria.getMobileNumber()))
+			throw new CustomException("EG_WC_SEARCH_ERROR", " No criteria given for the water connection search");
 	}
 	
-	private void validateFuzzySearchCriteria(SearchCriteria criteria){
-		if(org.apache.commons.lang3.StringUtils.isBlank(criteria.getTextSearch()) && org.apache.commons.lang3.StringUtils.isBlank(criteria.getName()) && org.apache.commons.lang3.StringUtils.isBlank(criteria.getMobileNumber()))
-          throw new CustomException("EG_WC_SEARCH_ERROR"," No criteria given for the WC search");
-    }
 	
 	private List<Map<String, Object>> wsDataResponse(Object esResponse) {
 
