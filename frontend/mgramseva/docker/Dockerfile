@@ -1,11 +1,11 @@
+# Docker flutter tags https://hub.docker.com/r/cirrusci/flutter/tags?page=1&name=1.16
 
-FROM dwssio/flutter-builder:v1 AS build
+FROM cirrusci/flutter:2.8.1 AS build
 ARG WORK_DIR
 WORKDIR /app
 # copy the project files
 COPY ${WORK_DIR} .
-RUN flutter channel stable
-RUN flutter upgrade
+RUN flutter doctor
 RUN flutter pub get
 RUN flutter build web
 # Create runtime image
