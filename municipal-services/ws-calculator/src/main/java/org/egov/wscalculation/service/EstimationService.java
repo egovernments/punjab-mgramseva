@@ -171,6 +171,7 @@ public class EstimationService {
 		//For metered connection calculation on graded fee slab
 		//For Non metered connection calculation on normal connection
 		BigDecimal totUOM = new BigDecimal(totalUOM);
+		log.debug("totalUOM" + totalUOM.toString());
 		if (isRangeCalculation(calculationAttribute)) {
 			if (waterConnection.getConnectionType().equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
 				for (Slab slab : billSlab.getSlabs()) {
@@ -192,8 +193,10 @@ public class EstimationService {
 //						break;
 //					}
 					BigDecimal unitsToDeduct = new BigDecimal(slab.getTo()).subtract(new BigDecimal(slab.getFrom()));
+					log.debug("unitsToDeduct" + unitsToDeduct.toString());
 					if (totUOM.compareTo(unitsToDeduct) > 0) {
 						BigDecimal runningUnit = totUOM.subtract(unitsToDeduct);
+						log.debug("runningUnit" + runningUnit.toString());
 						totUOM = runningUnit;
 					}else {
 						waterCharge = calculateTotalWaterCharge(waterCharge, billSlab, slab, unitsToDeduct);	
@@ -224,9 +227,14 @@ public class EstimationService {
 			BigDecimal unitsToDeduct) {
 		if (new BigDecimal(slab.getCharge()).compareTo(BigDecimal.ZERO) > 0) {
 			waterCharge = waterCharge.add(unitsToDeduct.multiply(new BigDecimal(slab.getCharge())));
+			log.debug("waterCharge when charge is NOT zero" + waterCharge.toString());
+
 		} else {
 			waterCharge = waterCharge.add(new BigDecimal(billSlab.getMinimumCharge()));
+			log.debug("waterCharge when charge is zero" + waterCharge.toString());
+
 		}
+		log.debug("final waterCharge returned" + waterCharge.toString());
 		return waterCharge;
 	}
 
