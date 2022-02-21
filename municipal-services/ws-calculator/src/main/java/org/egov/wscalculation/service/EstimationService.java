@@ -199,10 +199,10 @@ public class EstimationService {
 						log.debug("runningUnit" + runningUnit.toString());
 						totUOM = runningUnit;
 					}else {
-						waterCharge = calculateTotalWaterCharge(waterCharge, billSlab, slab, unitsToDeduct);	
+						waterCharge = calculateTotalWaterCharge(waterCharge, billSlab, slab, totUOM);	
 						break;
 					}
-					waterCharge = calculateTotalWaterCharge(waterCharge, billSlab, slab, unitsToDeduct);
+					waterCharge = calculateTotalWaterCharge(waterCharge, billSlab, slab, totUOM);
 
 				}
 			} else if (waterConnection.getConnectionType()
@@ -224,9 +224,9 @@ public class EstimationService {
 	}
 
 	private BigDecimal calculateTotalWaterCharge(BigDecimal waterCharge, BillingSlab billSlab, Slab slab,
-			BigDecimal unitsToDeduct) {
+			BigDecimal totUOM) {
 		if (new BigDecimal(slab.getCharge()).compareTo(BigDecimal.ZERO) > 0) {
-			waterCharge = waterCharge.add(unitsToDeduct.multiply(new BigDecimal(slab.getCharge())));
+			waterCharge = waterCharge.add(totUOM.multiply(new BigDecimal(slab.getCharge())));
 			log.debug("waterCharge when charge is NOT zero" + waterCharge.toString());
 
 		} else {
