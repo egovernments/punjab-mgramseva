@@ -248,6 +248,8 @@ class CollectPaymentProvider with ChangeNotifier {
               SizedBox(
                 height: 8,
               ),
+              getprinterlabel(i18.consumerReciepts.CONSUMER_ACTUAL_DUE_AMOUNT,
+                  ('₹' + (item.totalDue).toString())),
               getprinterlabel(i18.consumerReciepts.RECEIPT_AMOUNT_PAID,
                   ('₹' + (item.totalAmountPaid).toString())),
               getprinterlabel(
@@ -257,6 +259,8 @@ class CollectPaymentProvider with ChangeNotifier {
                           .convert('en-in', item.totalAmountPaid!.toInt())
                           .toString()) +
                       ' only')),
+              getprinterlabel(i18.consumerReciepts.CONSUMER_PENDING_AMOUNT,
+                  ('₹' + ((item.totalDue ?? 0) - (item.totalAmountPaid ?? 0)).toString())),
               SizedBox(
                 height: 8,
               ),

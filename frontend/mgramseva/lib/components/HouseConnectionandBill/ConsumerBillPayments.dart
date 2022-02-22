@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/utils/common_styles.dart';
+import 'package:mgramseva/utils/models.dart';
 
 import './jsconnnector.dart' as js;
 import 'package:flutter/foundation.dart';
@@ -214,6 +216,8 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                   SizedBox(
                     height: 8,
                   ),
+                  getprinterlabel(i18.consumerReciepts.CONSUMER_ACTUAL_DUE_AMOUNT,
+                      ('₹' + (item.totalDue).toString())),
                   getprinterlabel(i18.consumerReciepts.RECEIPT_AMOUNT_PAID,
                       ('₹' + (item.totalAmountPaid).toString())),
                   getprinterlabel(
@@ -223,6 +227,8 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                               .convert('en-in', item.totalAmountPaid!.toInt())
                               .toString()) +
                           ' only')),
+                  getprinterlabel(i18.consumerReciepts.CONSUMER_PENDING_AMOUNT,
+                      ('₹' + ((item.totalDue ?? 0) - (item.totalAmountPaid ?? 0)).toString())),
                   SizedBox(
                     height: 8,
                   ),
