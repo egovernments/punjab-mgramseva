@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' as io;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -210,16 +211,21 @@ class CommonProvider with ChangeNotifier {
 
         stateResponse = window.localStorage[Constants.STATES_KEY];
       } else {
-        final newVersion = NewVersion(
-          androidId: "com.dwss.mgramseva",
-          //iOSId: "com.dwss.mgramseva",
-        );
-        final status = await newVersion.getVersionStatus();
+        if(io.Platform.isAndroid) {
+          try {
+            final newVersion = NewVersion(
+              androidId: "com.dwss.mgramseva",
+              //iOSId: "com.dwss.mgramseva",
+            );
+            final status = await newVersion.getVersionStatus();
 
-        var updateStatus = await storage.read(key: Constants.UPDATE_STATUS_KEY);
-        if(updateStatus.toString() == 'updateInitiated' && !status!.canUpdate)
-        {
-          storage.deleteAll();
+            var updateStatus = await storage.read(
+                key: Constants.UPDATE_STATUS_KEY);
+            if (updateStatus.toString() == 'updateInitiated' &&
+                !status!.canUpdate) {
+              storage.deleteAll();
+            }
+          } catch (e) {}
         }
 
         loginResponse = await storage.read(key: Constants.LOGIN_KEY);

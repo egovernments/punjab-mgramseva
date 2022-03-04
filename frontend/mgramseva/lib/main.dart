@@ -80,7 +80,7 @@ void main() {
 
     await FlutterDownloader.initialize(
         debug: true // optional: set false to disable printing logs to console
-        );
+    );
 
     runApp(MyApp());
   }, (Object error, StackTrace stack) {
@@ -207,6 +207,7 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void checkVersion() async {
+    if(!Platform.isAndroid) return;
     final newVersion = NewVersion(
       androidId: "com.dwss.mgramseva",
       //iOSId: "com.dwss.mgramseva",
