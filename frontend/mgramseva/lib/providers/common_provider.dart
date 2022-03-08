@@ -26,6 +26,7 @@ import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:new_version/new_version.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
@@ -211,22 +212,19 @@ class CommonProvider with ChangeNotifier {
 
         stateResponse = window.localStorage[Constants.STATES_KEY];
       } else {
-        if(io.Platform.isAndroid) {
           try {
-            final newVersion = NewVersion(
-              androidId: "com.dwss.mgramseva",
-              //iOSId: "com.dwss.mgramseva",
-            );
-            final status = await newVersion.getVersionStatus();
+            PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-            var updateStatus = await storage.read(
-                key: Constants.UPDATE_STATUS_KEY);
-            if (updateStatus.toString() == 'updateInitiated' &&
-                !status!.canUpdate) {
-              storage.deleteAll();
+              if (!await storage.containsKey(key:Constants.APP_VERSION)) {
+                await storage.deleteAll();
+                storage.write(key: Constants.APP_VERSION, value: packageInfo.version);
+              } else {
+                if (await storage.read(key: Constants.APP_VERSION) != packageInfo.version) {
+                  await storage.deleteAll();
+                  storage.write(key: Constants.APP_VERSION, value: packageInfo.version);
+                }
             }
           } catch (e) {}
-        }
 
         loginResponse = await storage.read(key: Constants.LOGIN_KEY);
         stateResponse = await storage.read(key: Constants.STATES_KEY);
