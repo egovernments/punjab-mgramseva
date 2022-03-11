@@ -210,7 +210,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             property.owners!.first.gender,
                             '',
                             '',
-                            true,
+                            false,
                             Constants.GENDER,
                             (val) => consumerProvider.onChangeOfGender(
                                 val, property.owners!.first),
