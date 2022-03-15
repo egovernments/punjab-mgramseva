@@ -239,6 +239,10 @@ public class ChallanRepository {
 		StringBuilder query = new StringBuilder(queryBuilder.CUMULATIVEPENDINGEXPENSE);
 		Calendar startDate = Calendar.getInstance();
 		startDate.setTimeInMillis(endDate);
+		int currentMonthNumber = startDate.get(Calendar.MONTH);
+		if (currentMonthNumber < 3) {
+			startDate.set(Calendar.YEAR, startDate.get(Calendar.YEAR) - 1);
+		}
 		startDate.set(Calendar.MONTH,3);
 		startDate.set(Calendar.DAY_OF_MONTH, startDate.getActualMinimum(Calendar.DAY_OF_MONTH));
 		util.setTimeToBeginningOfDay(startDate);
