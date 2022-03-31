@@ -23,6 +23,7 @@ Demand _$DemandFromJson(Map<String, dynamic> json) {
         .toList()
     ..billExpiryTime = json['billExpiryTime'] as int?
     ..status = json['status'] as String?
+    ..isPaymentCompleted = json['isPaymentCompleted'] as bool?
     ..minimumAmountPayable = (json['minimumAmountPayable'] as num?)?.toDouble();
 }
 

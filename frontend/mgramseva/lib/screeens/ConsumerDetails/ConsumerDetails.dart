@@ -57,6 +57,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
       ..phoneNumberAutoValidation = false
       ..selectedcycle = ''
       ..waterconnection = WaterConnection()
+      ..isfirstdemand = false
       ..property = Property();
 
     if (widget.waterconnection != null) {

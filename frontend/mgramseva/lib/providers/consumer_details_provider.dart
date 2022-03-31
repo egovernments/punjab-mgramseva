@@ -11,6 +11,7 @@ import 'package:mgramseva/model/mdms/connection_type.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/model/mdms/sub_category_type.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
@@ -141,44 +142,75 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   Future<void> setWaterConnection(data) async {
-    isEdit = true;
-    waterconnection = data;
-    waterconnection.getText();
-    selectedcycle = DateFormats.timeStampToDate(
-                waterconnection.previousReadingDate,
-                format: 'yyyy-MM-dd')
-            .toString() +
-        " 00:00:00.000";
+    try {
+      isEdit = true;
+      waterconnection = data;
+      waterconnection.getText();
+      selectedcycle = DateFormats.timeStampToDate(
+          waterconnection.previousReadingDate,
+          format: 'yyyy-MM-dd')
+          .toString() +
+          " 00:00:00.000";
 
-    List<Demand>? demand = await ConsumerRepository().getDemandDetails({
-      "consumerCode": waterconnection.connectionNo,
-      "businessService": "WS",
-      "tenantId": waterconnection.tenantId,
-      "status": "ACTIVE"
-    });
-    if (waterconnection.connectionType == 'Metered' &&
-        waterconnection.additionalDetails?.meterReading.toString() != '0') {
-      var meterReading = waterconnection.additionalDetails?.meterReading
-          .toString()
-          .padLeft(5, '0');
-      waterconnection.om_1Ctrl.text =
-          meterReading.toString().characters.elementAt(0);
-      waterconnection.om_2Ctrl.text =
-          meterReading.toString().characters.elementAt(1);
-      waterconnection.om_3Ctrl.text =
-          meterReading.toString().characters.elementAt(2);
-      waterconnection.om_4Ctrl.text =
-          meterReading.toString().characters.elementAt(3);
-      waterconnection.om_5Ctrl.text =
-          meterReading.toString().characters.elementAt(4);
-    }
-    if (demand?.isEmpty == true) {
-      isfirstdemand = false;
-    } else if (demand?.length == 1 &&
-        demand?.first.consumerType == 'waterConnection-arrears') {
-      isfirstdemand = false;
-    } else {
-      isfirstdemand = true;
+      List<Demand>? demand = await ConsumerRepository().getDemandDetails({
+        "consumerCode": waterconnection.connectionNo,
+        "businessService": "WS",
+        "tenantId": waterconnection.tenantId,
+        "status": "ACTIVE"
+      });
+
+      var paymentDetails = await BillingServiceRepository().fetchdBillPayments({
+        "tenantId": waterconnection.tenantId,
+        "consumerCodes": waterconnection.connectionNo,
+        "businessService": "WS"
+      });
+
+      if (waterconnection.connectionType == 'Metered' &&
+          waterconnection.additionalDetails?.meterReading.toString() != '0') {
+        var meterReading = waterconnection.additionalDetails?.meterReading
+            .toString()
+            .padLeft(5, '0');
+        waterconnection.om_1Ctrl.text =
+            meterReading
+                .toString()
+                .characters
+                .elementAt(0);
+        waterconnection.om_2Ctrl.text =
+            meterReading
+                .toString()
+                .characters
+                .elementAt(1);
+        waterconnection.om_3Ctrl.text =
+            meterReading
+                .toString()
+                .characters
+                .elementAt(2);
+        waterconnection.om_4Ctrl.text =
+            meterReading
+                .toString()
+                .characters
+                .elementAt(3);
+        waterconnection.om_5Ctrl.text =
+            meterReading
+                .toString()
+                .characters
+                .elementAt(4);
+      }
+      if (demand?.isEmpty == true) {
+        isfirstdemand = false;
+      } else if (demand?.length == 1 &&
+          demand?.first.consumerType == 'waterConnection-arrears') {
+        isfirstdemand = false;
+      } else {
+        isfirstdemand = true;
+      }
+
+      if(paymentDetails.payments != null && paymentDetails.payments!.isNotEmpty){
+        isfirstdemand = true;
+      }
+      notifyListeners();
+    }catch(e,s){
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
   }
 

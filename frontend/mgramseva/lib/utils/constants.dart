@@ -9,6 +9,9 @@ class Constants {
   static const int PAGINATION_LIMIT = 75;
   static const int MAX_PDF_PAGES = 100;
 
+  /// Package Name
+  static const String PACKAGE_NAME = "com.dwss.mgramseva";
+
   static const String DIGIT_FOOTER_ENDPOINT =
       'mgramseva-dev-assets/logo/digit-footer.png';
   static const String DIGIT_FOOTER_WHITE_ENDPOINT =
@@ -20,7 +23,6 @@ class Constants {
   static const String CREATE_CONSUMER_KEY = 'create_consumer_key';
   static const String ADD_EXPENSE_KEY = 'add_expense_key';
   static const String HOME_KEY = 'home_key';
-  static const String UPDATE_STATUS_KEY = 'update_status';
   static const String APP_VERSION = 'appversion';
 
   static List<KeyValue> GENDER = [

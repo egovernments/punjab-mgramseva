@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 
 import 'package:mgramseva/providers/authentication.dart';
@@ -207,67 +208,58 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void checkVersion() async {
-    if(!Platform.isAndroid) return;
     final newVersion = NewVersion(
-      androidId: "com.dwss.mgramseva",
-      //iOSId: "com.dwss.mgramseva",
+      androidId: Constants.PACKAGE_NAME,
+      iOSId: Constants.PACKAGE_NAME,
     );
     //newVersion.showAlertIfNecessary(context: context); //Use this if you want the update alert with default settings
     final status = await newVersion.getVersionStatus();
     if (status != null && status.canUpdate) {
-      final uri =
-      Uri.https("play.google.com", "/store/apps/details", {"id": "com.dwss.mgramseva"});
-      int.parse(status.storeVersion.split('.').first) >
-          int.parse(status.localVersion.split('.').first)
-          ? showDialog(
+      late Uri uri;
+
+      if (Platform.isAndroid) {
+        uri = Uri.https("play.google.com", "/store/apps/details",
+            {"id": Constants.PACKAGE_NAME});
+      } else {
+        uri = Uri.https("apps.apple.com", "/in/app/mgramseva/id1614373649");
+      }
+
+      showDialog(
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) {
             return WillPopScope(
                 child: AlertDialog(
                   title: Text('UPDATE AVAILABLE'),
-                  content: Text('Please update the app from ${status.localVersion} to ${status.storeVersion}'),
+                  content: Text(
+                      'Please update the app from ${status.localVersion} to ${status.storeVersion}'),
                   actions: [
-                    TextButton(onPressed: () => launchPlayStore(uri.toString()),
+                    TextButton(
+                        onPressed: () => launchPlayStore(uri.toString()),
                         child: Text('Update'))
                   ],
                 ),
-                onWillPop: () => Future.value(false)
-            );
-          }
-      )
-          : showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return WillPopScope(
-                child: AlertDialog(
-                  title: Text('UPDATE AVAILABLE'),
-                  content: Text('Please update the app from ${status.localVersion} to ${status.storeVersion}'),
-                  actions: [
-                    TextButton(onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
-                        child: Text('Later',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColorLight
-                        ),
-                        )),
-                    TextButton(onPressed: () => launchPlayStore(uri.toString()),
-                        child: Text('Update')),
-                  ],
-                ),
-                onWillPop: () => Future.value(true)
-            );
-          }
-      );
+                onWillPop: ()async {
+                   if (Platform.isAndroid) {
+                       SystemNavigator.pop();
+                    } else if (Platform.isIOS) {
+                        exit(0);
+                      }
+                  return true;
+                });
+          });
     }
   }
 
   void launchPlayStore(String appLink) async {
-    storage.write(key: Constants.UPDATE_STATUS_KEY, value: 'updateInitiated');
-    if (await canLaunch(appLink)) {
-      await launch(appLink);
-    } else {
-      throw 'Could not launch appStoreLink';
+    try {
+      if (await canLaunch(appLink)) {
+        await launch(appLink);
+      } else {
+        throw 'Could not launch appStoreLink';
+      }
+    } catch(e){
+      Navigator.pop(context);
     }
   }
 
