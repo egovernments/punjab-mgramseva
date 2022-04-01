@@ -25,6 +25,7 @@ import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/dialog.dart';
 import 'package:provider/provider.dart';
@@ -359,11 +360,17 @@ class ConsumerProvider with ChangeNotifier {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
+
+      var dateTime = DateTime.now();
+      if(dateTime.month == 4){
+        dateTime = DateTime(dateTime.year, dateTime.month -1, dateTime.day);
+      }
+
       var res = await CoreRepository().getMdms(
           getConnectionTypePropertyTypeTaxPeriodMDMS(
               commonProvider.userDetails!.userRequest!.tenantId.toString(),
               (DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(
-                  new DateTime.now().toLocal().toString())))));
+                  dateTime.toLocal().toString())))));
       languageList = res;
     } catch (e) {
       print(e);
@@ -539,22 +546,32 @@ class ConsumerProvider with ChangeNotifier {
     dates = [];
     if (languageList?.mdmsRes?.taxPeriodList!.TaxPeriodList! != null &&
         dates.length == 0) {
-      var date2 = DateFormats.getFormattedDateToDateTime(
-          DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch));
+      // var date2 = DateFormats.getFormattedDateToDateTime(
+      //     DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch));
+      // var date1 = DateFormats.getFormattedDateToDateTime(
+      //     DateFormats.timeStampToDate(languageList!
+      //         .mdmsRes!.taxPeriodList!.TaxPeriodList!.first.fromDate));
+
+      late DatePeriod ytd;
+      if(DateTime.now().month >= 4) {
+        ytd = DatePeriod(DateTime(DateTime.now().year, 4) , DateTime(DateTime.now().year + 1, 4, 0, 23,59, 59, 999), DateType.YTD);
+      }else{
+        ytd = DatePeriod(DateTime( DateTime.now().year - 1, 4), DateTime.now(), DateType.YTD);
+      }
+
       var date1 = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(languageList!
-              .mdmsRes!.taxPeriodList!.TaxPeriodList!.first.fromDate));
-      var d = date2 as DateTime;
-      var now = date1 as DateTime;
-      var days = d.day - now.day;
-      var years = d.year - now.year;
-      var months = d.month - now.month;
-      if (months < 0 || (months == 0 && days < 0)) {
-        years--;
-        months += (days < 0 ? 11 : 12);
-      }
-      for (var i = 0; i < months; i++) {
-        var prevMonth = new DateTime(now.year, date1.month + i, 1);
+                      .mdmsRes!.taxPeriodList!.TaxPeriodList!.first.fromDate)) as DateTime;
+      var isCurrentYtdSelected = date1.year == ytd.startDate.year;
+
+      /// Get months based on selected billing year
+      var months = CommonMethods.getPastMonthUntilFinancialYear(date1.year);
+
+      /// if its current ytd year means removing current month
+      if(isCurrentYtdSelected) months.removeAt(0);
+
+      for (var i = 0; i < months.length; i++) {
+        var prevMonth = months[i].startDate;
         var r = {"code": prevMonth, "name": prevMonth};
         dates.add(r);
       }

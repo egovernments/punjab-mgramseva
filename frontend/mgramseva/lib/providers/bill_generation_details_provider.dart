@@ -18,11 +18,13 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/widgets/ErrorMessagePAge.dart';
@@ -463,21 +465,29 @@ class BillGenerationProvider with ChangeNotifier {
   List<DropdownMenuItem<Object>> getBillingCycle() {
     dates = [];
     if (billGenerateDetails.billYear != null && selectedBillYear != null) {
-      var date2 = DateFormats.getFormattedDateToDateTime(
-          DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch));
-      var date1 = DateFormats.getFormattedDateToDateTime(
-          DateFormats.timeStampToDate(selectedBillYear.fromDate));
-      var d = date2 as DateTime;
-      var now = date1 as DateTime;
-      var days = d.day - now.day;
-      var years = d.year - now.year;
-      var months = d.month - now.month;
-      if (months < 0 || (months == 0 && days < 0)) {
-        years--;
-        months += (days < 0 ? 11 : 12);
+      late DatePeriod ytd;
+      if(DateTime.now().month >= 4) {
+        ytd = DatePeriod(DateTime(DateTime.now().year, 4) , DateTime(DateTime.now().year + 1, 4, 0, 23,59, 59, 999), DateType.YTD);
+      }else{
+        ytd = DatePeriod(DateTime( DateTime.now().year - 1, 4), DateTime.now(), DateType.YTD);
       }
-      for (var i = 0; i < months; i++) {
-        var prevMonth = new DateTime(now.year, date1.month + i, 1);
+
+      var date1 = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(selectedBillYear.fromDate)) as DateTime;
+
+      var isCurrentYtdSelected = date1.year == ytd.startDate.year;
+
+      /// Get months based on selected billing year
+      var months = CommonMethods.getPastMonthUntilFinancialYear(date1.year);
+
+      /// if its current ytd year means removing current month
+      if(isCurrentYtdSelected) months.removeAt(0);
+
+      /// if selected year is future year means all the months will be removed
+      if(date1.year >= ytd.endDate.year) months.clear();
+
+      for (var i = 0; i < months.length; i++) {
+        var prevMonth = months[i].startDate;
         var r = {"code": prevMonth, "name": prevMonth};
         dates.add(r);
       }

@@ -47,7 +47,7 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
 
   afterViewBuild() {
     var res = widget.options
-        .where((e) => (e.value.toString() == (widget.value.toString())));
+        .where((e) => (e.value == (widget.value)));
     if (res.isNotEmpty && _focusNode.hasFocus == false) {
       widget.controller?.text = ApplicationLocalizations.of(context)
           .translate((res.first.child as Text).data.toString());
