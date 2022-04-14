@@ -221,7 +221,7 @@ public class ChallanQueryBuilder {
 
 		finalQuery = finalQuery.replace("{orderby}", string);
 
-		finalQuery = finalQuery.replace("{amount}", " (select nullif(sum(bi.totalamount),0) from egbs_billdetail_v1 bi join egbs_bill_v1 b on bi.billid=b.id where bi.businessservice = challan.businessservice and bi.consumercode = challan.challanno and b.status IN ('ACTIVE','PAID' ) group by bi.consumercode) as totalamount, ");
+		finalQuery = finalQuery.replace("{amount}", " (select nullif(sum(bi.totalamount),0) from egbs_billdetail_v1 bi join egbs_bill_v1 b on bi.billid=b.id where bi.businessservice = challan.businessservice and bi.tenantid=challan.tenantid and bi.consumercode = challan.challanno and b.status IN ('ACTIVE','PAID' ) group by bi.consumercode) as totalamount, ");
 		
         if(criteria.getLimit()!=null && criteria.getLimit()<=config.getMaxSearchLimit())
             limit = criteria.getLimit();
