@@ -1,6 +1,10 @@
 
 All notable changes to this module will be documented in this file.
 
+## 1.3.6 - 2022-04-19
+- Allowing payment for employee as well
+
+
 ## 1.3.5 - 2022-02-02
 - Updated to log4j2 version 2.17.1
 
