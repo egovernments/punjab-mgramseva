@@ -139,7 +139,8 @@ public class ChallanService {
 
 	        criteria.setTenantId(request.getChallan().getTenantId());
 	        criteria.setIds(ids);
-	        criteria.setBusinessService(request.getChallan().getBusinessService());
+	        // When the business service it self is changed 
+//	        criteria.setBusinessService(request.getChallan().getBusinessService());
 
 	        List<Challan> challans = repository.getChallans(criteria, finalData);
 	        if(challans.isEmpty())
@@ -280,25 +281,33 @@ public class ChallanService {
 		LocalDate currentMonthDate = LocalDate.now();
 
 		Calendar currentDate = Calendar.getInstance();
+		int currentYear = currentDate.get(Calendar.YEAR);
+		currentDate.setTimeInMillis(criteria.getFromDate());
+		int actualYear = currentDate.get(Calendar.YEAR);
+
 		int currentMonthNumber = currentDate.get(Calendar.MONTH);
 
 		int totalMonthsTillDate;
 		LocalDate finYearStarting;
-		if (currentMonthNumber < 3) {
-			totalMonthsTillDate = 9 + currentMonthNumber;
-			currentDate.setTimeInMillis(criteria.getFromDate());
-
+		if (currentYear != actualYear && actualYear < currentYear) {
+			totalMonthsTillDate = 11;
 			currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
 					currentDate.get(Calendar.DAY_OF_MONTH));
-
 			finYearStarting = currentMonthDate;
-		} else {
-			totalMonthsTillDate = currentMonthNumber - 2;
-			currentDate.setTimeInMillis(criteria.getFromDate());
-			currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
-					currentDate.get(Calendar.DAY_OF_MONTH));
+		}else {
+			if (currentMonthNumber < 3) {
+				totalMonthsTillDate = 9 + currentMonthNumber;
+				currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
+						currentDate.get(Calendar.DAY_OF_MONTH));
 
-			finYearStarting = currentMonthDate;
+				finYearStarting = currentMonthDate;
+			} else {
+				totalMonthsTillDate = currentMonthNumber - 2;
+				currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
+						currentDate.get(Calendar.DAY_OF_MONTH));
+
+				finYearStarting = currentMonthDate;
+			}
 		}
 		ArrayList<ChallanCollectionData> data = new ArrayList<ChallanCollectionData>();
 

@@ -30,7 +30,7 @@ public class MgramasevaAdapterPaymentConsumer {
 	@Autowired
 	MgramasevaAdapterWrapperUtil util;
 	
-	@KafkaListener(topics = { "${kafka.topics.create.payment}" })
+	@KafkaListener(topics = { "${kafka.topics.create.payment}", "${kafka.topics.legacy.payments}" })
 	public void listen(final HashMap<String, Object> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic)
 			throws Exception {
 		ObjectMapper mapper = new ObjectMapper();

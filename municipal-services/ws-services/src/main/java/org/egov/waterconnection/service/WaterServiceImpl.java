@@ -614,25 +614,32 @@ public class WaterServiceImpl implements WaterService {
 		LocalDate currentMonthDate = LocalDate.now();
 
 		Calendar currentDate = Calendar.getInstance();
+		int currentYear = currentDate.get(Calendar.YEAR);
+		currentDate.setTimeInMillis(criteria.getFromDate());
+		int actualYear = currentDate.get(Calendar.YEAR);
+
 		int currentMonthNumber = currentDate.get(Calendar.MONTH);
 
 		int totalMonthsTillDate;
 		LocalDate finYearStarting;
-		if (currentMonthNumber < 3) {
-			totalMonthsTillDate = 9 + currentMonthNumber;
-			currentDate.setTimeInMillis(criteria.getFromDate());
-
+		
+		if (currentYear != actualYear && actualYear < currentYear) {
+			totalMonthsTillDate = 11;
 			currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
 					currentDate.get(Calendar.DAY_OF_MONTH));
-
 			finYearStarting = currentMonthDate;
 		} else {
-			totalMonthsTillDate = currentMonthNumber - 2;
-			currentDate.setTimeInMillis(criteria.getFromDate());
-			currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
-					currentDate.get(Calendar.DAY_OF_MONTH));
-
-			finYearStarting = currentMonthDate;
+			if (currentMonthNumber < 3) {
+				totalMonthsTillDate = 9 + currentMonthNumber;
+				currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
+						currentDate.get(Calendar.DAY_OF_MONTH));
+				finYearStarting = currentMonthDate;
+			} else {
+				totalMonthsTillDate = currentMonthNumber - 2;
+				currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
+						currentDate.get(Calendar.DAY_OF_MONTH));
+				finYearStarting = currentMonthDate;
+			}
 		}
 		ArrayList<RevenueCollectionData> data = new ArrayList<RevenueCollectionData>();
 

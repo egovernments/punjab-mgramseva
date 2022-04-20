@@ -39,7 +39,7 @@ public class MgramsevaAdapterDemandConsumer {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 	
-	@KafkaListener(topics = { "${kafka.topics.create.demand}"})
+	@KafkaListener(topics = { "${kafka.topics.create.demand}", "${kafka.topics.save.legacy.demand}"})
 	public void listen(final HashMap<String, Object> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		DemandRequest demandRequest=null;
