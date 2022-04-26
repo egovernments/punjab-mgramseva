@@ -7,6 +7,7 @@ import org.egov.vendor.web.model.VendorSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 @Component
 public class VendorQueryBuilder {
@@ -54,10 +55,15 @@ public class VendorQueryBuilder {
 		return builder.toString();
 	}
 
-	public String getvendorCount(List<String> ownerList,List<Object> preparedStmtList) {
+	public String getvendorCount(List<String> ownerList,String tenantId, List<Object> preparedStmtList) {
 		StringBuilder builder = new StringBuilder(VENDOR_COUNT);		
 		builder.append("(").append(createQuery(ownerList)).append(")");
 		addToPreparedStatement(preparedStmtList, ownerList);
+		
+		if( !StringUtils.isEmpty(tenantId)) {
+			builder.append(" and tenantid = ?");
+			preparedStmtList.add(tenantId);
+		}
 		return builder.toString();
 
 	}
