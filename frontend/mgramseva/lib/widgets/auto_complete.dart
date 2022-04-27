@@ -101,6 +101,7 @@ class AutoCompleteView extends StatelessWidget {
               errorMaxLines: 2,
               border: OutlineInputBorder(borderRadius: BorderRadius.zero))),
       hideOnEmpty: true,
+      hideSuggestionsOnKeyboardHide: false,
       suggestionsBoxController: suggestionsBoxController,
       suggestionsCallback: (pattern) async {
         return await callBack(pattern);

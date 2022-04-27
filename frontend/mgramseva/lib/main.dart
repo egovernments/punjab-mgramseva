@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -41,12 +42,14 @@ import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
 import 'package:mgramseva/services/LocalStorage.dart';
 import 'package:mgramseva/theme.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:new_version/new_version.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -79,9 +82,13 @@ void main() {
       await Firebase.initializeApp();
     }
 
-    await FlutterDownloader.initialize(
-        debug: true // optional: set false to disable printing logs to console
-    );
+    if(!kIsWeb) {
+      await FlutterDownloader.initialize(
+          debug: true // optional: set false to disable printing logs to console
+      );
+    }
+
+    await CommonMethods.fetchPackageInfo();
 
     runApp(MyApp());
   }, (Object error, StackTrace stack) {
@@ -89,7 +96,7 @@ void main() {
     // exit(1); /// to close the app smoothly
   });
 
-  runApp(new MyApp());
+  // runApp(new MyApp());
 }
 
 _MyAppState myAppstate = '' as _MyAppState;
@@ -211,6 +218,7 @@ class _LandingPageState extends State<LandingPage> {
     final newVersion = NewVersion(
       androidId: Constants.PACKAGE_NAME,
       iOSId: Constants.PACKAGE_NAME,
+      iOSAppStoreCountry: 'in'
     );
     //newVersion.showAlertIfNecessary(context: context); //Use this if you want the update alert with default settings
     final status = await newVersion.getVersionStatus();

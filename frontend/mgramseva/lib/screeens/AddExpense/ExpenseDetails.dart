@@ -69,7 +69,6 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
       ..autoValidation = false
       ..getExpensesDetails(context, widget.expensesDetails, widget.id)
       ..getExpenses()
-      ..fetchVendors()
       ..setwalkthrough(ExpenseWalkThrough().expenseWalkThrough.map((e) {
         e.key = GlobalKey();
         return e;
@@ -247,7 +246,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   expenseProvider.expenseWalkthrougList[1].key,
                               key: Keys.expense.VENDOR_NAME,
                             ),
-                            if (expensesDetailsProvider.isNewVendor())
+                            if (expenseDetails.vendorNameCtrl.text.trim().isNotEmpty)
                               BuildTextField(
                                 '${i18.common.MOBILE_NUMBER}',
                                 expenseDetails.mobileNumberController,
@@ -260,6 +259,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                     ? AutovalidateMode.always
                                     : AutovalidateMode.disabled,
                                 maxLength: 10,
+                                isDisabled: !expensesDetailsProvider.isNewVendor(),
                                 inputFormatter: [
                                   FilteringTextInputFormatter.allow(
                                       RegExp("[0-9]"))
@@ -510,9 +510,20 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                 ])));
   }
 
-  Widget buildTile(context, vendor) => Container(
+  Widget buildTile(context, vendor) {
+    var style = TextStyle(fontSize: 18);
+    return Container(
       padding: EdgeInsets.symmetric(vertical: 6, horizontal: 5),
-      child: Text('${vendor?.name}', style: TextStyle(fontSize: 18)));
+      child:
+      Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('${vendor?.name}', style: style),
+          Text('${vendor.owner.mobileNumber}', style : style.apply(fontSizeDelta: -2))
+        ],
+      ));
+  }
 
   bool get isUpdate => widget.id != null || widget.expensesDetails != null;
 }

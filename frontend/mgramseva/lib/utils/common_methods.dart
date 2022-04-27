@@ -4,7 +4,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import 'models.dart';
@@ -108,6 +110,14 @@ class CommonMethods {
       return MediaType(fileType.first, fileType.last);
     }else{
       return MediaType('', '');
+    }
+  }
+
+  static Future<void> fetchPackageInfo() async {
+    try{
+      packageInfo = await PackageInfo.fromPlatform();
+    }catch(e,s){
+      ErrorHandler.logError(e.toString(), s);
     }
   }
 }

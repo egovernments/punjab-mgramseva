@@ -675,7 +675,7 @@ public class WaterServiceImpl implements WaterService {
 			}
 			collectionData.setMonth(criteria.getFromDate());
 			data.add(i, collectionData);
-			System.out.println("collectionData:: " + collectionData.toString());
+			System.out.println("Month:: " + criteria.getFromDate());
 
 			currentMonthDate = currentMonthDate.plusMonths(1);
 		}

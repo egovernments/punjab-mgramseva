@@ -212,22 +212,25 @@ class CommonProvider with ChangeNotifier {
 
         stateResponse = window.localStorage[Constants.STATES_KEY];
       } else {
+         var isUpdated = false;
           try {
-            PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
               if (!await storage.containsKey(key:Constants.APP_VERSION)) {
                 await storage.deleteAll();
-                storage.write(key: Constants.APP_VERSION, value: packageInfo.version);
+                isUpdated = true;
+                storage.write(key: Constants.APP_VERSION, value: packageInfo?.version);
               } else {
-                if (await storage.read(key: Constants.APP_VERSION) != packageInfo.version) {
+                if (await storage.read(key: Constants.APP_VERSION) != packageInfo?.version) {
                   await storage.deleteAll();
-                  storage.write(key: Constants.APP_VERSION, value: packageInfo.version);
+                  isUpdated = true;
+                  storage.write(key: Constants.APP_VERSION, value: packageInfo?.version);
                 }
             }
           } catch (e) {}
 
-        loginResponse = await storage.read(key: Constants.LOGIN_KEY);
-        stateResponse = await storage.read(key: Constants.STATES_KEY);
+        if(!isUpdated) {
+          loginResponse = await storage.read(key: Constants.LOGIN_KEY);
+          stateResponse = await storage.read(key: Constants.STATES_KEY);
+        }
       }
 
       if (stateResponse != null && stateResponse.trim().isNotEmpty) {
@@ -255,8 +258,26 @@ class CommonProvider with ChangeNotifier {
     dynamic loginResponse;
     dynamic stateResponse;
 
-    loginResponse = window.localStorage[Constants.LOGIN_KEY];
-    stateResponse = window.localStorage[Constants.STATES_KEY];
+    var isUpdated = false;
+    if (!window.localStorage.containsKey(Constants.APP_VERSION)) {
+      window.localStorage.clear();
+      isUpdated = true;
+      window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
+    } else {
+      if (window.localStorage[Constants.APP_VERSION] !=
+          packageInfo?.version) {
+        window.localStorage.clear();
+        isUpdated = true;
+        window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
+      }
+    }
+
+    if(!isUpdated) {
+      loginResponse = window.localStorage[Constants.LOGIN_KEY];
+      stateResponse = window.localStorage[Constants.STATES_KEY];
+    }else{
+      userDetails = null;
+    }
 
     if (stateResponse != null && stateResponse.trim().isNotEmpty) {
       languageProvider.stateInfo =

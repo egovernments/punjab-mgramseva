@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 /// By using this key, we can push pages without context
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -18,3 +19,6 @@ class APIConstants {
 /// Custom overly
 OverlayState? overlayState;
 OverlayEntry? overlayEntry;
+
+/// Gives package versions info
+PackageInfo? packageInfo;

@@ -40,6 +40,8 @@ class _NotificationScreen extends State<NotificationScreen> {
       Provider.of<NotificationScreenProvider>(context, listen: false)
         ..limit = 10
         ..offset = 1
+        ..totalCount = 0
+        ..notifications.clear()
         ..getNotifications(notificationProvider.offset, notificationProvider.limit);
     }
     catch (e, s) {
@@ -75,7 +77,7 @@ class _NotificationScreen extends State<NotificationScreen> {
                       stream: notificationProvider.streamController.stream,
                           builder: (context, AsyncSnapshot snapshot) {
                       if (snapshot.hasData) {
-                      return buildNotificationsView(snapshot.data);
+                      return buildNotificationsView(snapshot.data ?? []);
                       } else if (snapshot.hasError) {
                       return Notifiers.networkErrorPage(context, () {});
                       } else {
@@ -115,20 +117,23 @@ class _NotificationScreen extends State<NotificationScreen> {
     ));
   }
 
-  buildNotificationsView(List? events) {
+  buildNotificationsView(List events) {
     return LayoutBuilder(builder: (context, constraints) {
       return Column(mainAxisSize: MainAxisSize.min, children: [
-        events!.length > 0
-            ? Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ListLabelText(ApplicationLocalizations.of(context)
-                  .translate(i18.common.ALL_NOTIFICATIONS) +
-                  " (" +
-                  events.length.toString() +
-                  ")"),
-            ])
-            : Text(""),
+        Consumer<NotificationScreenProvider>(
+          builder: (_, notificationProvider, child) => Visibility(
+            visible: notificationProvider.totalCount > 0,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ListLabelText(ApplicationLocalizations.of(context)
+                      .translate(i18.common.ALL_NOTIFICATIONS) +
+                      " (" +
+                      notificationProvider.totalCount.toString() +
+                      ")"),
+                ]),
+          ),
+        ),
         ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),

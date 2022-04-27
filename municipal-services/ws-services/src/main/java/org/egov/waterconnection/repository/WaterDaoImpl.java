@@ -256,6 +256,7 @@ public class WaterDaoImpl implements WaterDao {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.ACTUALCOLLECTION);
 		query.append(" and py.transactionDate  >= ").append(criteria.getFromDate()).append(" and py.transactionDate <= ")
 				.append(criteria.getToDate()).append(" and py.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("Actual Collection Final Query: " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
 	}
@@ -264,7 +265,7 @@ public class WaterDaoImpl implements WaterDao {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.PENDINGCOLLECTION);
 		query.append(" and dmd.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
 				.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
-		log.info("Active pending collection query : " + query);
+		log.info("Active Pending Collection Query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
 	}
@@ -274,7 +275,7 @@ public class WaterDaoImpl implements WaterDao {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.RESIDENTIALCOLLECTION);
 		query.append(" and py.transactionDate  >= ").append(criteria.getFromDate()).append(" and py.transactionDate <= ")
 				.append(criteria.getToDate()).append(" and py.tenantId = '").append(criteria.getTenantId()).append("'");
-		System.out.println("Residential Final Query: " + query);
+		log.info("Residential Final Query: " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
 	}
@@ -284,7 +285,7 @@ public class WaterDaoImpl implements WaterDao {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.COMMERCIALCOLLECTION);
 		query.append(" and py.transactionDate  >= ").append(criteria.getFromDate()).append(" and py.transactionDate <= ")
 				.append(criteria.getToDate()).append(" and py.tenantId = '").append(criteria.getTenantId()).append("'");
-		System.out.println("Comercial Final Query: " + query);
+		log.info("Comercial Final Query: " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
 	}
@@ -294,7 +295,7 @@ public class WaterDaoImpl implements WaterDao {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.OTHERSCOLLECTION);
 		query.append(" and py.transactionDate  >= ").append(criteria.getFromDate()).append(" and py.transactionDate <= ")
 				.append(criteria.getToDate()).append(" and py.tenantId = '").append(criteria.getTenantId()).append("'");
-		System.out.println("Others Final Query: " + query);
+		log.info("Others Final Query: " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
 	}
@@ -459,9 +460,10 @@ public class WaterDaoImpl implements WaterDao {
 	
 	public Integer getArrearsAmount(@Valid SearchCriteria criteria) {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.PENDINGCOLLECTION);
-		query.append(" and dmd.taxperiodto <= " + criteria.getFromDate())
+		long prevMonthEndDate =  criteria.getFromDate()-1;
+		query.append(" and dmd.taxperiodto <= " + prevMonthEndDate)
 				.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
-		log.info("Active pending collection query : " + query);
+		log.info("Arrears Amount Final Query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
 	}

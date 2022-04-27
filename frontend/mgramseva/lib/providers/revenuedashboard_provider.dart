@@ -152,7 +152,7 @@ class RevenueDashboard with ChangeNotifier {
 
           totalDetails.surplus += surplus;
           totalDetails.demand += num.parse(collection.demand ?? '0');
-          totalDetails.arrears += num.parse(collection.arrears ?? '0');
+          if(i == res1.length - 1) totalDetails.arrears += num.parse(collection.arrears ?? '0') + num.parse(collection.pendingCollection ?? '0');
           totalDetails.pendingCollection += num.parse(collection.pendingCollection ?? '0');
           totalDetails.actualCollection += num.parse(collection.actualCollection ?? '0');
           totalDetails.totalExpenditure += num.parse(expense.totalExpenditure ?? '0');
@@ -160,6 +160,8 @@ class RevenueDashboard with ChangeNotifier {
           totalDetails.amountPaid += num.parse(expense.amountPaid ?? '0');
 
         }
+
+
 
         filteredList.add(TableDataRow([
           TableData(i18.common.TOTAL,
