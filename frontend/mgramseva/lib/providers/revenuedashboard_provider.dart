@@ -13,6 +13,7 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
+import 'package:mgramseva/model/dashboard/revenue_dashboard.dart' as expense;
 
 import 'dashboard_provider.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -128,6 +129,9 @@ class RevenueDashboard with ChangeNotifier {
       if (res1 != null && res1.isNotEmpty && res2 != null && res2.isNotEmpty) {
         var totalDetails = TotalDetails();
 
+        /// If any month is missing it will set the default values for that month
+        setDefaultTableValue(res1, res2);
+
         for(int i =0 ; i < res1.length ; i++) {
           var collection = res1[i];
           var expense = res2[i];
@@ -189,6 +193,37 @@ class RevenueDashboard with ChangeNotifier {
     }
     revenueDataHolder.tableLoader = false;
     notifyListeners();
+  }
+
+  setDefaultTableValue(List<Revenue> revenues, List<expense.Expense> expenses){
+    try{
+      for(int i = 0; i < revenues.length; i++){
+        var index = expenses.indexWhere((e) => e.month == revenues[i].month);
+        if(index == -1){
+          var expenditure = expense.Expense()
+          ..month = revenues[i].month
+          ..amountPaid = '0'
+          ..amountUnpaid = '0'
+          ..totalExpenditure = '0';
+          expenses.insert(i, expenditure);
+        }
+      }
+
+      for(int i = 0; i < expenses.length; i++){
+        var index = revenues.indexWhere((e) => e.month == expenses[i].month);
+        if(index == -1){
+          var revenue = Revenue()
+            ..month = expenses[i].month
+            ..demand = '0'
+            ..pendingCollection = '0'
+            ..actualCollection = '0'
+            ..arrears = '0';
+          revenues.insert(i, revenue);
+        }
+      }
+    }catch(e,s){
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e,s);
+    }
   }
 
   void setSelectedTab(int index) {

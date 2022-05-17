@@ -40,6 +40,7 @@ class CommonProvider with ChangeNotifier {
   List<LocalizationLabel> localizedStrings = <LocalizationLabel>[];
   var userLoggedStreamCtrl = StreamController.broadcast();
   UserDetails? userDetails;
+  static Map<String, String> downloadUrl = {};
 
   dispose() {
     userLoggedStreamCtrl.close();
@@ -331,12 +332,19 @@ class CommonProvider with ChangeNotifier {
         var link;
         if (mobileNumber == null) {
           final FlutterShareMe flutterShareMe = FlutterShareMe();
-          flutterShareMe.shareToWhatsApp(
-              msg: input.toString().replaceFirst('{link}', res!));
+         var response = await flutterShareMe.shareToWhatsApp(
+              msg: input.toString().replaceFirst('{link}', res!)) ?? '';
+          if(response.contains('PlatformException')){
+            link = "https://api.whatsapp.com/send?text=" +
+                input.toString().replaceAll(" ", "%20").replaceFirst('{link}', res);
+            await canLaunch(link)
+                ? launch(link)
+                : ErrorHandler.logError('failed to launch the url ${link}');
+          }
           return;
         } else {
           link = "https://wa.me/+91$mobileNumber?text=" +
-              input.toString().replaceFirst('{link}', res!);
+              input.toString().replaceAll(" ", "%20").replaceFirst('{link}', res!);
         }
         await canLaunch(link)
             ? launch(link)
