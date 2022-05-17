@@ -266,6 +266,9 @@ public class DemandService {
 		generateAndSetIdsForNewDemands(newDemands, auditDetail);
 
 		update(demandRequest, paymentBackUpdateAudit);
+		if(paymentBackUpdateAudit != null){
+			log.debug("Payment id after update: " + paymentBackUpdateAudit.getPaymentId());
+		}
 		String businessService = demands.get(0).getBusinessService();
 		String tenantId = demands.get(0).getTenantId();
 		
@@ -280,9 +283,11 @@ public class DemandService {
 			updateBillCriteria.setStatusToBeUpdated(BillStatus.EXPIRED);
 			billRepoV2.updateBillStatus(updateBillCriteria);
 		} else {
-			
+			log.debug("Payment id before setting billstatus to paid : " + paymentBackUpdateAudit.getPaymentId());
 			updateBillCriteria.setStatusToBeUpdated(BillStatus.PAID);
 			billRepoV2.updateBillStatus(updateBillCriteria);
+			log.debug("Payment id after updateBillStatus : " + paymentBackUpdateAudit.getPaymentId());
+
 		}
 		// producer.push(applicationProperties.getDemandIndexTopic(), demandRequest);
 		return new DemandResponse(responseInfoFactory.getResponseInfo(requestInfo, HttpStatus.CREATED), demands);
