@@ -363,9 +363,6 @@ class ExpensesDetailsProvider with ChangeNotifier {
   Future<List<dynamic>> onSearchVendorList(pattern) async {
     await Future.delayed(Duration(milliseconds: 100));
     notifyListeners();
-    if (vendorList.isEmpty) {
-      await fetchVendors();
-    }
 
     if (pattern.toString().trim().isEmpty) return <Vendor>[];
 
@@ -389,7 +386,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     var vendorName = expenditureDetails.vendorNameCtrl.text.trim();
     if (vendorName.isEmpty) {
       return true;
-    } else if(vendorList.isEmpty || expenditureDetails.selectedVendor?.id != null){
+    } else if(expenditureDetails.selectedVendor?.id != null){
       if(expenditureDetails.selectedVendor != null && (expenditureDetails.selectedVendor?.owner?.mobileNumber == null || expenditureDetails.selectedVendor!.owner!.mobileNumber.isEmpty)){
         var mobileNumber = vendorList.firstWhere((vendor) => vendor.id == expenditureDetails.vendorId, orElse: () => Vendor('', '')).owner?.mobileNumber ?? '';
         expenditureDetails.selectedVendor?.owner = Owner(mobileNumber);
