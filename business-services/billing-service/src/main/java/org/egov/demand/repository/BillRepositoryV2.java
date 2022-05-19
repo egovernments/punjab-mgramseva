@@ -84,6 +84,7 @@ public class BillRepositoryV2 {
 				ps.setString(13, bill.getStatus().toString());
 				ps.setObject(14, util.getPGObject(bill.getAdditionalDetails()));
 				ps.setString(15, bill.getConsumerCode());
+				ps.setString(16, bill.getTenantId());
 			}
 			
 			@Override
