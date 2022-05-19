@@ -25,7 +25,7 @@ public class BillQueryBuilder {
 			+ " (id, tenantid, payername, payeraddress, payeremail, isactive, iscancelled, createdby, createddate, lastmodifiedby, lastmodifieddate, mobilenumber, status, additionaldetails)"
 			+ " SELECT ?,?,?,?,?,?,?,?,?,?,?,?,?,? "
 			+ " WHERE NOT EXISTS (SELECT distinct(consumercode) FROM egbs_bill_v1 bill INNER JOIN egbs_billdetail_v1 billd ON bill.id=billd.billid "
-			+ " WHERE status = 'ACTIVE' AND consumerCode = ? AND tenantid = ?)";
+			+ " WHERE status = 'ACTIVE' AND consumerCode = ? AND bill.tenantid = ?)";
 	
 	public static final String INSERT_BILLDETAILS_QUERY = "INSERT into egbs_billdetail_v1 "
 			+"(id, tenantid, billid, demandid, fromperiod, toperiod, businessservice, billno, billdate, consumercode, consumertype, billdescription, displaymessage, "
