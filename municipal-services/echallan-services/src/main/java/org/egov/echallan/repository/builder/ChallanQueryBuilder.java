@@ -70,7 +70,7 @@ public class ChallanQueryBuilder {
 	
 	  public static final String PENDINGEXPCOLL = "SELECT coalesce(SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT),0) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID  INNER JOIN EG_ECHALLAN CH ON CH.CHALLANNO=DMD.CONSUMERCODE AND DMD.TENANTID=CH.TENANTID WHERE DMD.BUSINESSSERVICE LIKE '%EXPENSE%' and DMD.status='ACTIVE' ";
 	
-	  public static final String ACTUALEXPCOLLECTION = " SELECT coalesce(SUM(PY.TOTALAMOUNTPAID),0) FROM EGCL_PAYMENT PY INNER JOIN EGCL_PAYMENTDETAIL PYD ON PYD.PAYMENTID = PY.ID WHERE PYD.BUSINESSSERVICE LIKE '%EXPENSE%' ";
+	  public static final String ACTUALEXPCOLLECTION = " SELECT coalesce(SUM(PY.TOTALAMOUNTPAID),0) FROM EGCL_PAYMENT PY INNER JOIN EGCL_PAYMENTDETAIL PYD ON PYD.PAYMENTID = PY.ID WHERE PYD.BUSINESSSERVICE LIKE '%EXPENSE%' and py.paymentstatus not in ('CANCELLED') ";
 
 	  public static final String TOTALBILLS = " select count(*) from eg_echallan where applicationstatus not in ('CANCELLED') ";
 
@@ -140,10 +140,10 @@ public class ChallanQueryBuilder {
 			if (criteria.getFreeSearch()) {
 				if (criteria.getChallanNo() != null || criteria.getVendorName() != null) {
 					addClauseIfRequired(preparedStmtList, builder);
-					builder.append("  challan.challanno ~*  ?");
+					builder.append(" (challan.challanno ~*  ?");
 					preparedStmtList.add(criteria.getChallanNo());
 
-					builder.append(" OR vendor.name ~*  ?");
+					builder.append(" OR vendor.name ~*  ?)");
 					preparedStmtList.add(criteria.getVendorName());
 				}
 			} else {
