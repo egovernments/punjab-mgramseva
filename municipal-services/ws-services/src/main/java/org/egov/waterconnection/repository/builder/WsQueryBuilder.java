@@ -479,6 +479,13 @@ public class WsQueryBuilder {
 			builder.append(" ASC ");
 		else
 			builder.append(" DESC ");
+		
+		builder.append(" , ").append("conn.id");
+		
+		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
+			builder.append(" ASC ");
+		else
+			builder.append(" DESC ");
 
 		if (criteria.getSortBy() == SearchCriteria.SortBy.collectionAmount
 				|| criteria.getSortBy() == SearchCriteria.SortBy.collectionPendingAmount)
