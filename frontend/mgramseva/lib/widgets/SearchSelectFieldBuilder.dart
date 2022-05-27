@@ -14,13 +14,13 @@ class SearchSelectField extends StatefulWidget {
   final bool isRequired;
   final String? requiredMessage;
   final TextEditingController? controller;
-  SearchSelectField(this.labelText, this.options, this.controller, this.widget,
-      this.value, this.isEnabled, this.isRequired, this.requiredMessage);
+  const SearchSelectField(this.labelText, this.options, this.controller, this.widget,
+      this.value, this.isEnabled, this.isRequired, this.requiredMessage, {Key? key}) : super(key: key);
   @override
-  _SearchSelectFieldState createState() => _SearchSelectFieldState();
+  SearchSelectFieldState createState() => SearchSelectFieldState();
 }
 
-class _SearchSelectFieldState extends State<SearchSelectField> {
+class SearchSelectFieldState extends State<SearchSelectField> {
   final FocusNode _focusNode = FocusNode();
   bool isinit = false;
   var selectedCode;

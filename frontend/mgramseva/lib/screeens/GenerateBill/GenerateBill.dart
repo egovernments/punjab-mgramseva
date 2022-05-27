@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
+import 'package:mgramseva/widgets/focus_watcher.dart';
 import 'package:mgramseva/model/bill/bill_generation_details/bill_generation_details.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/bill_generation_details_provider.dart';
@@ -299,7 +299,7 @@ class _GenerateBillState extends State<GenerateBill> {
   Widget build(BuildContext context) {
     var billgenerateProvider =
         Provider.of<BillGenerationProvider>(context, listen: false);
-    return FocusWatcher(
+    return KeyboardFocusWatcher(
         child: Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: BaseAppBar(

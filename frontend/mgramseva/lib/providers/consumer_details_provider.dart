@@ -10,6 +10,7 @@ import 'package:mgramseva/model/mdms/category_type.dart';
 import 'package:mgramseva/model/mdms/connection_type.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/model/mdms/sub_category_type.dart';
+import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
@@ -27,9 +28,12 @@ import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/widgets/SearchSelectFieldBuilder.dart';
 import 'package:mgramseva/widgets/dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/model/connection/water_connection.dart' as addition;
+
+import '../widgets/SelectFieldBuilder.dart';
 
 class ConsumerProvider with ChangeNotifier {
   late List<ConsumerWalkWidgets> consmerWalkthrougList;
@@ -42,12 +46,15 @@ class ConsumerProvider with ChangeNotifier {
   var boundaryList = <Boundary>[];
   var categoryList = [];
   var selectedcycle;
+  TaxPeriod? billYear;
   var selectedbill;
   late Property property;
   late List dates = [];
   late bool isEdit = false;
   LanguageList? languageList;
   bool phoneNumberAutoValidation = false;
+  GlobalKey<SearchSelectFieldState>? searchPickerKey;
+
 
   setModel() async {
     waterconnection.BillingCycleCtrl.text = "";
@@ -144,6 +151,7 @@ class ConsumerProvider with ChangeNotifier {
 
   Future<void> setWaterConnection(data) async {
     try {
+      await getConnectionTypePropertyTypeTaxPeriod();
       isEdit = true;
       waterconnection = data;
       waterconnection.getText();
@@ -152,7 +160,21 @@ class ConsumerProvider with ChangeNotifier {
           format: 'yyyy-MM-dd')
           .toString() +
           " 00:00:00.000";
+      if(waterconnection.previousReadingDate != null && (languageList?.mdmsRes?.billingService?.taxPeriodList?.isNotEmpty ?? false)) {
+        var date = DateTime.fromMillisecondsSinceEpoch(
+            waterconnection.previousReadingDate!);
+        DatePeriod datePeriod;
+        if(date.month > 3)
+          datePeriod = DatePeriod(DateTime(date.year, 4), DateTime(date.year+1, 3, 31, 23,59, 59, 999), DateType.YEAR);
+        else
+          datePeriod = DatePeriod(DateTime(date.year -1, 4), DateTime(date.year, 3, 31, 23,59, 59, 999), DateType.YEAR);
 
+        billYear = languageList?.mdmsRes?.billingService?.taxPeriodList?.firstWhere((e) {
+          var date = DateTime.fromMillisecondsSinceEpoch(e.fromDate!);
+          return date.month == datePeriod.startDate.month && date.year == datePeriod.startDate.year;
+        });
+
+      }
       List<Demand>? demand = await ConsumerRepository().getDemandDetails({
         "consumerCode": waterconnection.connectionNo,
         "businessService": "WS",
@@ -544,14 +566,7 @@ class ConsumerProvider with ChangeNotifier {
   //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
   List<DropdownMenuItem<Object>> getBillingCycle() {
     dates = [];
-    if (languageList?.mdmsRes?.taxPeriodList!.TaxPeriodList! != null &&
-        dates.length == 0) {
-      // var date2 = DateFormats.getFormattedDateToDateTime(
-      //     DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch));
-      // var date1 = DateFormats.getFormattedDateToDateTime(
-      //     DateFormats.timeStampToDate(languageList!
-      //         .mdmsRes!.taxPeriodList!.TaxPeriodList!.first.fromDate));
-
+    if (billYear != null) {
       late DatePeriod ytd;
       if(DateTime.now().month >= 4) {
         ytd = DatePeriod(DateTime(DateTime.now().year, 4) , DateTime(DateTime.now().year + 1, 4, 0, 23,59, 59, 999), DateType.YTD);
@@ -560,8 +575,7 @@ class ConsumerProvider with ChangeNotifier {
       }
 
       var date1 = DateFormats.getFormattedDateToDateTime(
-          DateFormats.timeStampToDate(languageList!
-                      .mdmsRes!.taxPeriodList!.TaxPeriodList!.first.fromDate)) as DateTime;
+          DateFormats.timeStampToDate(billYear?.fromDate)) as DateTime;
       var isCurrentYtdSelected = date1.year == ytd.startDate.year;
 
       /// Get months based on selected billing year
@@ -608,5 +622,30 @@ class ConsumerProvider with ChangeNotifier {
 
   callNotifyer() {
     notifyListeners();
+  }
+
+  void onChangeOfBillYear(val) {
+    billYear = val;
+    selectedcycle = null;
+    waterconnection.previousReadingDateCtrl.clear();
+    waterconnection.BillingCycleCtrl.clear();
+    waterconnection.meterInstallationDateCtrl.clear();
+    searchPickerKey?.currentState?.Options.clear();
+    // waterconnection.billingCycleYearCtrl.text = billYear;
+    notifyListeners();
+  }
+
+  List<DropdownMenuItem<Object>> getFinancialYearList() {
+    if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
+      return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
+          <TaxPeriod>[])
+          .map((value) {
+        return DropdownMenuItem(
+          value: value,
+          child: new Text((value.financialYear!)),
+        );
+      }).toList();
+    }
+    return <DropdownMenuItem<Object>>[];
   }
 }

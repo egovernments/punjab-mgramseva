@@ -74,6 +74,9 @@ class WaterConnection {
   var BillingCycleCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
+  var billingCycleYearCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
   var meterInstallationDateCtrl = TextEditingController();
 
   @JsonKey(ignore: true)

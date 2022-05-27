@@ -6,7 +6,7 @@ import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/widgets/SearchSelectFieldBuilder.dart';
 import 'package:provider/provider.dart';
 
-class SelectFieldBuilder extends StatelessWidget {
+class SelectFieldBuilder extends StatefulWidget {
   final String labelText;
   final dynamic value;
   final String input;
@@ -21,38 +21,45 @@ class SelectFieldBuilder extends StatelessWidget {
   final GlobalKey? contextkey;
   final TextEditingController? controller;
   final Key? key;
+  final GlobalKey<SearchSelectFieldState>? suggestionKey;
 
-  SelectFieldBuilder(this.labelText, this.value, this.input, this.prefixText,
+  const SelectFieldBuilder(this.labelText, this.value, this.input, this.prefixText,
       this.widget, this.options, this.isRequired,
       {this.hint,
       this.isEnabled,
       this.readOnly,
       this.requiredMessage,
       this.contextkey,
-      this.controller, this.key});
+      this.controller,this.key, this.suggestionKey});
 
+  @override
+  State<SelectFieldBuilder> createState() => SelectFieldBuilderState();
+}
+
+class SelectFieldBuilderState extends State<SelectFieldBuilder> {
   var suggestionCtrl = new SuggestionsBoxController();
+
   @override
   Widget build(BuildContext context) {
 // Label Text
     Widget textLabelwidget =
         Wrap(direction: Axis.horizontal, children: <Widget>[
-      Text(ApplicationLocalizations.of(context).translate(labelText),
+      Text(ApplicationLocalizations.of(context).translate(widget.labelText),
           textAlign: TextAlign.left,
           style: TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
-              color: (isEnabled ?? true)
+              color: (widget.isEnabled ?? true)
                   ? Theme.of(context).primaryColorDark
                   : Colors.grey)),
       Visibility(
-        visible: isRequired,
+        visible: widget.isRequired,
         child: Text('* ',
             textAlign: TextAlign.left,
             style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 16,
-                color: (isEnabled ?? true)
+                color: (widget.isEnabled ?? true)
                     ? Theme.of(context).primaryColorDark
                     : Colors.grey)),
       ),
@@ -84,7 +91,7 @@ class SelectFieldBuilder extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
         return Container(
-          key: contextkey,
+          key: widget.contextkey,
           margin:
               const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
           child: Row(children: [
@@ -101,16 +108,16 @@ class SelectFieldBuilder extends StatelessWidget {
                     Consumer<LanguageProvider>(
                         builder: (_, consumerProvider, child) =>
                             SearchSelectField(
-                                labelText,
-                                options,
-                                controller,
-                                widget,
-                                value,
-                                isEnabled,
-                                isRequired,
-                                requiredMessage)),
+                                widget.labelText,
+                                widget.options,
+                                widget.controller,
+                                widget.widget,
+                                widget.value,
+                                widget.isEnabled,
+                                widget.isRequired,
+                                widget.requiredMessage, key : widget.suggestionKey)),
                     CommonWidgets().buildHint(
-                      hint,
+                      widget.hint,
                       context,
                     )
                   ],
@@ -119,7 +126,7 @@ class SelectFieldBuilder extends StatelessWidget {
         );
       } else {
         return Container(
-          key: contextkey,
+          key: widget.contextkey,
           margin: const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
           child: Column(children: [
             Container(
@@ -127,10 +134,10 @@ class SelectFieldBuilder extends StatelessWidget {
                 child: new Align(
                     alignment: Alignment.centerLeft, child: textLabelwidget)),
             Consumer<LanguageProvider>(builder: (_, consumerProvider, child) {
-              return SearchSelectField(labelText, options, controller, widget,
-                  value, isEnabled, isRequired, requiredMessage);
+              return SearchSelectField(widget.labelText, widget.options, widget.controller, widget.widget,
+                  widget.value, widget.isEnabled, widget.isRequired, widget.requiredMessage, key: widget.suggestionKey,);
             }),
-            CommonWidgets().buildHint(hint, context)
+            CommonWidgets().buildHint(widget.hint, context)
           ]),
         );
       }

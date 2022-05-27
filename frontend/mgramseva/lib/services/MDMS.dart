@@ -85,11 +85,8 @@ Map getConnectionTypePropertyTypeTaxPeriodMDMS(String tenantId, int datestamp) {
         {
           "moduleName": "BillingService",
           "masterDetails": [
-            {
-              "name": "TaxPeriod",
-              "filter":
-                  "[?(@.service=='WS' &&  @.fromDate <= $datestamp &&  @.toDate >= $datestamp)]"
-            }
+              {"name": "TaxHeadMaster"},
+              {"name": "TaxPeriod", "filter": "[?(@.service=='WS')]"}
           ]
         }
       ]

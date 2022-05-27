@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
+import 'package:mgramseva/widgets/focus_watcher.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -43,7 +43,7 @@ class _SearchExpenseState extends State<SearchExpense> {
 
   @override
   Widget build(BuildContext context) {
-    return FocusWatcher(child:Scaffold(
+    return KeyboardFocusWatcher(child:Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
