@@ -1,5 +1,6 @@
 package org.egov.mgramsevaifixadaptor.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -47,7 +48,13 @@ public class MgramsevaAdapterController {
 	@RequestMapping(value = "/_legacydatatransfer", method = RequestMethod.POST)
 	public ResponseEntity<DemandResponse> planeSearch(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
 			@Valid @ModelAttribute SearchCriteria criteria) {
-		List<Demand> demands = adopterService.legecyDemand(criteria, requestInfoWrapper.getRequestInfo());
+		List<Demand> demands = new ArrayList<Demand>();
+		List<String> tenantIds = requestInfoWrapper.getTenantIds();
+		if(!tenantIds.isEmpty()) {
+			for(String tenantId : tenantIds) {
+				demands = adopterService.legecyDemand(criteria, requestInfoWrapper.getRequestInfo(),tenantId);
+			}
+		}
 		DemandResponse response = new DemandResponse();
 		if (!demands.isEmpty() && demands.size() > 0) {
 			for (Demand demand : demands) {
