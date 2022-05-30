@@ -82,7 +82,7 @@ public class BillQueryBuilder {
 		}
 		addWhereClause(billQuery, preparedStatementValues, billSearchCriteria);
 		
-		if(billSearchCriteria.getReturnAllBills()) {
+		if(billSearchCriteria!=null && billSearchCriteria.getReturnAllBills()) {
 			return billQuery.toString();
 		}
 		StringBuilder maxQuery = addPagingClause(billQuery, preparedStatementValues, billSearchCriteria);
