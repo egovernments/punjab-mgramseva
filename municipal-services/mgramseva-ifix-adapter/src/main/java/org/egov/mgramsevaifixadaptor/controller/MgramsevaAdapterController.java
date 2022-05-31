@@ -53,7 +53,7 @@ public class MgramsevaAdapterController {
 		if(!tenantIds.isEmpty()) {
 			for(String tenantId : tenantIds) {
 				List<Demand> demandList = adopterService.legecyDemand(criteria, requestInfoWrapper.getRequestInfo(),tenantId);
-				demands.add(demandList);
+				demands.addAll(demandList);
 			}
 		}
 		DemandResponse response = new DemandResponse();
