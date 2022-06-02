@@ -120,11 +120,12 @@ public class WaterConnectionValidator {
 			}
 		}
 		if(request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demands.size() == data.size() || request.getWaterConnection().getArrears() == null || request.getWaterConnection().getArrears().toString() == "0") {
-			for (Demand demand : demands) {
+			if(!CollectionUtils.isEmpty(demands)){
+				for (Demand demand : demands) {
 					demand.setStatus(org.egov.waterconnection.web.models.Demand.StatusEnum.CANCELLED);
-			}
-			updateDemand(request.getRequestInfo(), demands);
-
+				}
+				updateDemand(request.getRequestInfo(), demands);
+			}	
 		}
 	}
 /**
