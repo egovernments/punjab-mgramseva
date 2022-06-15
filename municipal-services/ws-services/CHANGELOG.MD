@@ -1,6 +1,10 @@
 # Change log
 All notable changes to this module will be documented in this file.
 
+## 1.5.3 - 2022-06-15
+
+- Bug fix for consumer update.
+
 ## 1.5.2 - 2022-02-02
 
 - Fixes to revenueDashboard Service
