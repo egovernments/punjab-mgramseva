@@ -113,6 +113,7 @@ public class WaterConnectionValidator {
 		setFieldsFromSearch(request, searchResult, reqType);
 		DemandResponse response =  validateUpdateForDemand(request,searchResult);
 		List<Demand> demands = response.getDemands();
+		if(demands.size()>0) {
 		List<Boolean> data = new ArrayList<Boolean>();
 		for (Demand demand : demands) {
 			if(!demand.isPaymentCompleted()) {
@@ -131,6 +132,7 @@ public class WaterConnectionValidator {
 			}
 			updateDemand(request.getRequestInfo(), demands);
 
+		}
 		}
 	}
 /**
