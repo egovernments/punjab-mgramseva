@@ -637,6 +637,7 @@ class ConsumerProvider with ChangeNotifier {
 
   List<DropdownMenuItem<Object>> getFinancialYearList() {
     if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
+      CommonMethods.getFilteredFinancialYearList(languageList?.mdmsRes?.billingService?.taxPeriodList ?? <TaxPeriod>[]);
       return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
           <TaxPeriod>[])
           .map((value) {

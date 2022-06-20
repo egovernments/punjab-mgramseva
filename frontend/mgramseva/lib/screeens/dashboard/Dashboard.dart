@@ -98,8 +98,6 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    var dashBoardProvider =
-        Provider.of<DashBoardProvider>(context, listen: false);
 
     return WillPopScope(
       onWillPop: () async {
@@ -131,13 +129,12 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                               DateType.MONTH)
                           ? constraints.maxHeight
                           : constraints.maxHeight - 50,
-                      child: CustomScrollView(
+                      child: SingleChildScrollView(
                           controller: dashBoardProvider.scrollController,
-                          scrollBehavior: ScrollConfiguration.of(context)
-                              .copyWith(scrollbars: false),
-                          slivers: [
-                            SliverList(
-                                delegate: SliverChildListDelegate([
+                          // clipBehavior : ScrollConfiguration.of(context)
+                          //     .copyWith(scrollbars: false),
+                         child : Column (
+                              children : [
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -155,9 +152,8 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
                                     DateType.MONTH),
                                 child: _buildMainTabs(),
                               ),
-                            ])),
                             _buildViewBasedOnTheSelection(dashBoardProvider)
-                          ])),
+                          ]))),
                 ),
                 Align(
                     alignment: Alignment.bottomRight,
@@ -193,32 +189,30 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
 
   Widget _buildViewBasedOnTheSelection(DashBoardProvider dashBoardProvider) {
     return dashBoardProvider.selectedMonth.dateType != DateType.MONTH
-        ? SliverToBoxAdapter(
-            child: Column(children: [
-            RevenueDashBoard(),
-            Visibility(
-                visible: takeScreenShot,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Container(
-                      color: Color.fromRGBO(238, 238, 238, 1),
-                      width: 900,
-                      child: Screenshot(
-                          controller: screenshotController,
-                          child: Container(
-                            color: Color.fromRGBO(238, 238, 238, 1),
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: Column(children: [
-                              customRevenueAppBar(),
-                              DashboardCard(() {}, isFromScreenshot: true),
-                              RevenueDashBoard(isFromScreenshot: true),
-                            ]),
-                          ))),
-                )),
-          ]))
-        : SliverToBoxAdapter(
-            child: SearchExpenseDashboard(
-                dashBoardType: dashBoardProvider.selectedDashboardType));
+        ? Column(children: [
+        RevenueDashBoard(),
+        Visibility(
+            visible: takeScreenShot,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Container(
+                  color: Color.fromRGBO(238, 238, 238, 1),
+                  width: 900,
+                  child: Screenshot(
+                      controller: screenshotController,
+                      child: Container(
+                        color: Color.fromRGBO(238, 238, 238, 1),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Column(children: [
+                          customRevenueAppBar(),
+                          DashboardCard(() {}, isFromScreenshot: true),
+                          RevenueDashBoard(isFromScreenshot: true),
+                        ]),
+                      ))),
+            )),
+          ])
+        : SearchExpenseDashboard(
+            dashBoardType: dashBoardProvider.selectedDashboardType);
   }
 
   Widget customRevenueAppBar() {

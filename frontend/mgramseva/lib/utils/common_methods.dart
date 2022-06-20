@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -119,5 +120,14 @@ class CommonMethods {
     }catch(e,s){
       ErrorHandler.logError(e.toString(), s);
     }
+  }
+
+  /// Remove invalid financial years
+  static Future<void> getFilteredFinancialYearList(List<TaxPeriod> taxPeriodList) async {
+    taxPeriodList.removeWhere((e) {
+      var fromDate = DateTime.fromMillisecondsSinceEpoch(e.fromDate!);
+      var toDate = DateTime.fromMillisecondsSinceEpoch(e.toDate!);
+      return (fromDate.year + 1) != toDate.year;
+    });
   }
 }
