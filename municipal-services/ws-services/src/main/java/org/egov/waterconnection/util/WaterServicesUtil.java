@@ -31,12 +31,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.minidev.json.JSONObject;
 
 @Component
+@Slf4j
 public class WaterServicesUtil {
 
 	@Autowired
@@ -124,6 +126,10 @@ public class WaterServicesUtil {
 				getPropertyURL(propertyCriteria),
 				RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build());
 		List<Property> propertyList = getPropertyDetails(result);
+		
+		log.debug("Result response from property service" + result);
+		log.debug("Property list" + propertyList);
+
 		if (CollectionUtils.isEmpty(propertyList)) {
 			throw new CustomException("INCORRECT_PROPERTY_ID", "Incorrect Property Id. Water Connection cannot be created.");
 		}
