@@ -102,6 +102,8 @@ public class WaterServicesUtil {
 		PropertyCriteria propertyCriteria = new PropertyCriteria();
 		HashSet<String> propertyIds = new HashSet<>();
 		propertyIds.add(waterConnectionRequest.getWaterConnection().getPropertyId());
+		log.debug("PropertyIds at the beginning of search" + propertyIds);
+
 		propertyCriteria.setPropertyIds(propertyIds);
 		if (waterConnectionRequest.getRequestInfo().getUserInfo() != null
 				&& "EMPLOYEE".equalsIgnoreCase(waterConnectionRequest.getRequestInfo().getUserInfo().getType())) {
@@ -131,6 +133,8 @@ public class WaterServicesUtil {
 		log.debug("Property list" + propertyList);
 
 		if (CollectionUtils.isEmpty(propertyList)) {
+			log.debug("Tenantid" + propertyCriteria.getTenantId());
+			log.debug("PropertyIds" + propertyCriteria.getPropertyIds());
 			throw new CustomException("INCORRECT_PROPERTY_ID", "Incorrect Property Id. Water Connection cannot be created.");
 		}
 		return propertyList;
