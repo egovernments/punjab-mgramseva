@@ -206,6 +206,13 @@ class HouseholdRegisterProvider with ChangeNotifier {
                 : null,
             apiKey: 'name',
             callBack: onSort),
+        TableHeader(i18.consumer.FATHER_SPOUSE_NAME,
+            isSortingRequired: false,
+            isAscendingOrder: sortBy != null && sortBy!.key == 'fatherOrHusbandName'
+                ? sortBy!.isAscending
+                : null,
+            apiKey: 'fatherOrHusbandName',
+            callBack: onSort),
         TableHeader(i18.householdRegister.PENDING_COLLECTIONS,
             isSortingRequired: true,
             isAscendingOrder:
@@ -246,12 +253,15 @@ class HouseholdRegisterProvider with ChangeNotifier {
   TableDataRow getCollectionRow(WaterConnection connection) {
     String? name =
         truncateWithEllipsis(connection.connectionHolders?.first.name);
+    String? fatherName =
+    truncateWithEllipsis(connection.connectionHolders?.first.fatherOrHusbandName);
     return TableDataRow([
       TableData(
           '${connection.connectionNo?.split('/').first ?? ''}/...${connection.connectionNo?.split('/').last ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
           callBack: onClickOfCollectionNo,
           apiKey: connection.connectionNo),
       TableData('${name ?? ''}'),
+      TableData('${fatherName ?? ''}'),
       TableData(
           '${connection.additionalDetails?.collectionPendingAmount != null ? '₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}'),
     ]);
