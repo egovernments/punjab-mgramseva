@@ -125,7 +125,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
@@ -252,54 +252,57 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
     checkVersion();
   }
 
   void checkVersion() async {
-    final newVersion = NewVersion(
-      androidId: Constants.PACKAGE_NAME,
-      iOSId: Constants.PACKAGE_NAME,
-      iOSAppStoreCountry: 'in'
-    );
-    //newVersion.showAlertIfNecessary(context: context); //Use this if you want the update alert with default settings
-    final status = await newVersion.getVersionStatus();
-    if (status != null && status.canUpdate) {
-      late Uri uri;
+    try {
+      final newVersion = NewVersion(
+          androidId: Constants.PACKAGE_NAME,
+          iOSId: Constants.PACKAGE_NAME,
+          iOSAppStoreCountry: 'in'
+      );
+      //newVersion.showAlertIfNecessary(context: context); //Use this if you want the update alert with default settings
+      final status = await newVersion.getVersionStatus();
+      if (status != null && status.canUpdate) {
+        late Uri uri;
 
-      if (Platform.isAndroid) {
-        uri = Uri.https("play.google.com", "/store/apps/details",
-            {"id": Constants.PACKAGE_NAME});
-      } else {
-        uri = Uri.https("apps.apple.com", "/in/app/mgramseva/id1614373649");
-      }
+        if (Platform.isAndroid) {
+          uri = Uri.https("play.google.com", "/store/apps/details",
+              {"id": Constants.PACKAGE_NAME});
+        } else {
+          uri = Uri.https("apps.apple.com", "/in/app/mgramseva/id1614373649");
+        }
 
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return WillPopScope(
-                child: AlertDialog(
-                  title: Text('UPDATE AVAILABLE'),
-                  content: Text(
-                      'Please update the app from ${status.localVersion} to ${status.storeVersion}'),
-                  actions: [
-                    TextButton(
-                        onPressed: () => launchPlayStore(uri.toString()),
-                        child: Text('Update'))
-                  ],
-                ),
-                onWillPop: ()async {
-                   if (Platform.isAndroid) {
-                       SystemNavigator.pop();
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return WillPopScope(
+                  child: AlertDialog(
+                    title: Text('UPDATE AVAILABLE'),
+                    content: Text(
+                        'Please update the app from ${status
+                            .localVersion} to ${status.storeVersion}'),
+                    actions: [
+                      TextButton(
+                          onPressed: () => launchPlayStore(uri.toString()),
+                          child: Text('Update'))
+                    ],
+                  ),
+                  onWillPop: () async {
+                    if (Platform.isAndroid) {
+                      SystemNavigator.pop();
                     } else if (Platform.isIOS) {
-                        exit(0);
-                      }
-                  return true;
-                });
-          });
-    }
+                      exit(0);
+                    }
+                    return true;
+                  });
+            });
+      }
+    }catch(e){}
   }
 
   void launchPlayStore(String appLink) async {
