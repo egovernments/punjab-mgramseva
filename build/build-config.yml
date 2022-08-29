@@ -42,7 +42,7 @@ config:
         image-name: "egov-pg-service"
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "core-services/egov-pg-service/src/main/resources/db"
-        image-name: "egov-pg-service"
+        image-name: "egov-pg-service-db"
   - name: "builds/mGramSeva/municipal-services/ws-calculator"
     build:
       - work-dir: "municipal-services/ws-calculator"
