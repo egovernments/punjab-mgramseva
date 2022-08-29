@@ -1,14 +1,11 @@
+
 FROM egovio/flyway:4.1.2
 
-COPY ./migration/ddl /flyway/sql
-
-COPY ./migration/seed /flyway/seed
+COPY ./migration/main /flyway/sql
 
 COPY ./migration/dev /flyway/dev
 
-COPY ./migration/qa /flyway/qa
-
-COPY ./migration/test /flyway/test
+COPY ./migration/seed /flyway/seed
 
 COPY migrate.sh /usr/bin/migrate.sh
 
