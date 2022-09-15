@@ -72,7 +72,7 @@ public class UserService {
         }catch(Exception e) {
             log.error("Exception while fetching user: ", e);
         }
-
+	log.debug("userResponse get------> "+userResponse);
         return userResponse.getUser();
 
     }
@@ -116,7 +116,7 @@ public class UserService {
             log.error("Exception while creating user: ", e);
             return null;
         }
-
+	log.debug("userResponse create------> "+response);
         return response.getUser();
     }
 }
