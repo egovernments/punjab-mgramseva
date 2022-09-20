@@ -1,18 +1,14 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:mgramseva/providers/revenuedashboard_provider.dart';
-import 'package:mgramseva/screeens/dashboard/revenue_dashboard/revenue.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
-import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
-import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
+import '../../../utils/date_formats.dart';
 import 'Custom Label widget/custom_tooltip_label_render.dart';
 
 class RevenueCharts extends StatefulWidget {
@@ -179,13 +175,13 @@ class _RevenueChartsState extends State<RevenueCharts> {
     var height = 250.0;
     return Consumer<RevenueDashboard>(
       builder : (_, revenue, child) =>
-      revenue.revenueDataHolder.trendLineLoader ? Loaders.circularLoader(height: height) :  (revenue.revenueDataHolder.trendLine?.graphData == null || revenue.revenueDataHolder.trendLine!.graphData!.isEmpty)
+      revenue.revenueDataHolder.trendLineLoader ? Loaders.circularLoader(height: height) :  (revenue.revenueDataHolder.graphData == null || revenue.revenueDataHolder.graphData!.isEmpty)
           ? CommonWidgets.buildEmptyMessage(i18.dashboard.NO_RECORDS_MSG, context)
           : Column(children : [
         LayoutBuilder(
           builder: (_, constraints) => Container(
               height: height,
-            child : SimpleLineChart(revenue.revenueDataHolder.trendLine!.graphData!, constraints, animate: false)),
+            child : SimpleLineChart(revenue.revenueDataHolder.graphData!, constraints, animate: false)),
         ),
       Container(
           padding:  EdgeInsets.only(top : widget.isFromScreenshot ? 5 : 16.0),
@@ -205,14 +201,14 @@ class _RevenueChartsState extends State<RevenueCharts> {
 
   Widget getGraphView(int index){
     return _buildLineCharts();
-    switch(index){
-      case 0 :
-       return _buildStackedCharts();
-      case 1 :
-        return _buildLineCharts();
-      default :
-        return Container();
-    }
+    // switch(index){
+    //   case 0 :
+    //    return _buildStackedCharts();
+    //   case 1 :
+    //     return _buildLineCharts();
+    //   default :
+    //     return Container();
+    // }
   }
 
   Widget _buildLegend(String label, Color color){
@@ -239,7 +235,7 @@ class _RevenueChartsState extends State<RevenueCharts> {
   }
 
   Widget _buildButton(String label, [int? index, Function(int)? callBack]){
-    var revenueProvider = Provider.of<RevenueDashboard>(context, listen: false);
+    // var revenueProvider = Provider.of<RevenueDashboard>(context, listen: false);
 
     return Container(height: 10,);
     //   OutlinedButton(
@@ -298,10 +294,13 @@ class SimpleLineChart extends StatelessWidget {
     final customTickFormatter =
     charts.BasicNumericTickFormatterSpec((num? value) {
 
-     var dateList =  revenueDashboard.revenueDataHolder.trendLine?.data!.first.plots?.map((e) => e.name).toList() ?? [];
+     var dateList =  revenueDashboard.revenueDataHolder.revenueTrendLine?.map((e) => e.month).toList() ?? [];
       var index = value?.toInt() ?? 0;
      if(index < dateList.length){
-       var filteredMonth = dateList[index].toString().split('-').first;
+       var filteredMonth = DateFormats.getMonth(
+           DateFormats.getFormattedDateToDateTime(
+               DateFormats.timeStampToDate(dateList[index]))!);
+           // dateList[index].toString().split('-').first;
        return ApplicationLocalizations.of(context).translate(filteredMonth);
      }else{
        return "";
@@ -352,7 +351,7 @@ class SimpleLineChart extends StatelessWidget {
           tickProviderSpec:
           charts.BasicNumericTickProviderSpec(desiredTickCount: 1),
           tickFormatterSpec: customTickFormatter,
-            viewport: constraints.maxWidth > 760 ? null : ((revenueDashboard.revenueDataHolder.trendLine?.data?.first.plots?.length ?? 0) > 6 ? ( charts.NumericExtents(0.0, 5.0)) : null),
+            viewport: constraints.maxWidth > 760 ? null : ((revenueDashboard.revenueDataHolder.revenueTrendLine?.length ?? 0) > 6 ? ( charts.NumericExtents(0.0, 5.0)) : null),
           renderSpec: charts.SmallTickRendererSpec(
               minimumPaddingBetweenLabelsPx: 0,
               // Tick and Label styling here.

@@ -2,10 +2,12 @@ package org.egov.mgramsevaifixadaptor.consumer;
 
 import java.math.BigDecimal;
 import java.text.Bidi;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.egov.mgramsevaifixadaptor.config.PropertyConfiguration;
 import org.egov.mgramsevaifixadaptor.contract.DemandRequest;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -67,37 +70,66 @@ public class MgramsevaAdapterDemandConsumer {
 	public void listenUpdate(final HashMap<String, Object> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		DemandRequest demandRequest=null;
+
 		log.info("update demand topic");
 		try {
 			log.debug("Consuming record: " + record);
 			demandRequest = mapper.convertValue(record, DemandRequest.class);
-			log.info("demandRequest: "+demandRequest);
+			log.info("demandRequest before: "+new Gson().toJson(demandRequest));
 			String eventType=null;
 			if(demandRequest != null) {
 				Collections.sort(demandRequest.getDemands(), getCreatedTimeComparatorForDemand());
-				if(demandRequest.getDemands().get(0).getStatus().toString().equalsIgnoreCase(Constants.CANCELLED)) {
-					BigDecimal totalAmount = new BigDecimal(0.00);
-					if(demandRequest.getDemands().get(0).getDemandDetails() != null) {
-						for(DemandDetail dd : demandRequest.getDemands().get(0).getDemandDetails()) {
-							totalAmount = totalAmount.add(dd.getTaxAmount());
+				List<Demand> demandListToRemove = new ArrayList<>();
+					for(Demand demand : demandRequest.getDemands()) {
+						List<DemandDetail> demandDetails = demand.getDemandDetails();
+						if(demand.getStatus().toString().equalsIgnoreCase(Constants.CANCELLED) && demand.getIsPaymentCompleted() == false) {
+							if(demandDetails != null) {
+								BigDecimal totalAmount = BigDecimal.ZERO;
+								for(DemandDetail dd : demandDetails) {
+									totalAmount = totalAmount.add(dd.getTaxAmount()).subtract(dd.getCollectionAmount());
+								}
+								if(totalAmount.compareTo(BigDecimal.ZERO) == 0){
+									demandListToRemove.add(demand);
+								}
+								else {
+									totalAmount = totalAmount.negate();
+									log.info("totalAmount: "+totalAmount);
+
+									int demandDetailsSize = demandDetails.size();
+									if(demandDetailsSize > 1) {
+										for(int i=1; i<demandDetailsSize; i++) {
+											demand.getDemandDetails().remove(i);
+										}
+									}
+									demand.getDemandDetails().get(0).setTaxAmount(totalAmount);
+								}
+							
+							}
 						}
-						totalAmount = totalAmount.negate();
-						int demandDetailsSize = demandRequest.getDemands().get(0).getDemandDetails().size();
-						for(int i=0; i<demandDetailsSize-1; i++) {
-							demandRequest.getDemands().get(0).getDemandDetails().remove(0);
+						else if(demand.getStatus().toString().equalsIgnoreCase(Constants.ACTIVE)){
+							if(demandDetails != null) {
+								for(DemandDetail demandDetail: demandDetails) {
+									
+									Integer count =  getCountByDemandDetailsId(demandDetail.getId());
+									
+									if(count != null && count > 1) {
+										demandDetails.remove(demandDetail);
+									}
+									
+								}
+							}
+							
 						}
-						demandRequest.getDemands().get(0).getDemandDetails().get(0).setTaxAmount(totalAmount);
+						else {
+							demandListToRemove.add(demand);
+						}
 					}
-				}else {
-					int demandDetailsSize = demandRequest.getDemands().get(0).getDemandDetails().size();
-					for(int i=0; i<demandDetailsSize-1; i++) {
-						demandRequest.getDemands().get(0).getDemandDetails().remove(0);
-					}
-					Integer count =  getCountByDemandDetailsId(demandRequest.getDemands().get(0).getDemandDetails().get(0).getId());
-					if(count != null && count > 1) {
+					demandRequest.getDemands().removeAll(demandListToRemove);
+					if(demandRequest.getDemands().isEmpty()) {
 						return;
 					}
-				}
+					log.info("demandRequest after: "+new Gson().toJson(demandRequest));
+				
 			}
 			if(demandRequest.getDemands().get(0).getBusinessService().contains(Constants.EXPENSE))
 			{
@@ -105,6 +137,8 @@ public class MgramsevaAdapterDemandConsumer {
 			}else {
 				eventType=EventTypeEnum.DEMAND.toString();
 			}
+			log.info("calling ifix-reference-adapter util");
+
 			util.callIFIXAdapter(demandRequest, eventType, demandRequest.getDemands().get(0).getTenantId(),demandRequest.getRequestInfo());
 		} catch (final Exception e) {
 			log.error("Error while listening to value: " + record + " on topic: " + topic + ": " + e);
@@ -126,5 +160,5 @@ public class MgramsevaAdapterDemandConsumer {
 		System.out.println("count: "+count);
 		return count;
 	}
-	
+
 }

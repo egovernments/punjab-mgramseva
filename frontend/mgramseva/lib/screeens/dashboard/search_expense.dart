@@ -34,7 +34,7 @@ class _SearchExpenseDashboardState extends State<SearchExpenseDashboard> {
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 

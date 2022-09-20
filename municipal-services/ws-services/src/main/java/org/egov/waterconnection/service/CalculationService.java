@@ -40,7 +40,7 @@ public class CalculationService {
 	 *Estimate the fee for water application and generate the demand
 	 * 
 	 */
-	public void calculateFeeAndGenerateDemand(WaterConnectionRequest request, Property property) {
+	public void calculateFeeAndGenerateDemand(WaterConnectionRequest request, Property property,boolean isAdvanceCalculation) {
 //		if(WCConstants.APPROVE_CONNECTION_CONST.equalsIgnoreCase(request.getWaterConnection().getProcessInstance().getAction())) {
 			CalculationCriteria criteria = CalculationCriteria.builder()
 					.applicationNo(request.getWaterConnection().getApplicationNo())
@@ -50,7 +50,7 @@ public class CalculationService {
 					.to(request.getWaterConnection().getPreviousReadingDate())
 					.tenantId(property.getTenantId()).build();
 			CalculationReq calRequest = CalculationReq.builder().calculationCriteria(Arrays.asList(criteria))
-					.requestInfo(request.getRequestInfo()).isconnectionCalculation(false).build();
+					.requestInfo(request.getRequestInfo()).isconnectionCalculation(false).isAdvanceCalculation(isAdvanceCalculation).build();
 			try {
 				Object response = serviceRequestRepository.fetchResult(waterServiceUtil.getCalculatorURL(), calRequest);
 				CalculationRes calResponse = mapper.convertValue(response, CalculationRes.class);

@@ -11,6 +11,7 @@ import 'package:mgramseva/model/common/pdfservice.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/localization/localization_label.dart';
+import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/notifications_provider.dart';
@@ -72,6 +73,27 @@ class CoreRepository extends BaseService {
       languageList = LanguageList.fromJson(res);
     }
     return languageList;
+  }
+
+  Future<PaymentType> getPaymentTypeMDMS(Map body) async {
+    late PaymentType paymentType;
+    var res = await makeRequest(
+        url: Url.MDMS,
+        body: body,
+        method: RequestType.POST,
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "_search",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
+            ""));
+    if (res != null) {
+      paymentType = PaymentType.fromJson(res);
+    }
+    return paymentType;
   }
 
   Future<List<FileStore>> uploadFiles(

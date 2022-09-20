@@ -2,7 +2,6 @@ package org.egov.echallan.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -26,7 +25,6 @@ import org.egov.echallan.repository.IdGenRepository;
 import org.egov.echallan.repository.ServiceRequestRepository;
 import org.egov.echallan.util.CommonUtils;
 import org.egov.echallan.web.models.Idgen.IdResponse;
-import org.egov.echallan.web.models.collection.Bill;
 import org.egov.echallan.web.models.user.User;
 import org.egov.echallan.web.models.user.UserDetailResponse;
 import org.egov.tracer.model.CustomException;
@@ -78,6 +76,10 @@ public class EnrichmentService {
         }
 //        challan.setFilestoreid(null);
         setIdgenIds(challanRequest);
+        // If referenceId not provided in the request, then set it to same value as challanNo
+        if(challan.getReferenceId() == null || challan.getReferenceId().isEmpty()) {
+            challan.setReferenceId(challan.getChallanNo());
+        }
     }
 
     private List<String> getIdList(RequestInfo requestInfo, String tenantId, String idKey,
@@ -181,12 +183,13 @@ public class EnrichmentService {
         return searchCriteria;
     }
 
-	public void enrichUpdateRequest(ChallanRequest request) {
+	public void enrichUpdateRequest(ChallanRequest request, Challan searchChallan) {
 		 RequestInfo requestInfo = request.getRequestInfo();
 	     String uuid = requestInfo.getUserInfo().getUuid();
 	     AuditDetails auditDetails = commUtils.getAuditDetails(uuid, false);
 	     Challan challan = request.getChallan();
 	     challan.setAuditDetails(auditDetails);
+         challan.setReferenceId(searchChallan.getReferenceId());
 	     String fileStoreId = challan.getFilestoreid();
 	     if(fileStoreId!=null) {
 	    	 challanRepository.setInactiveFileStoreId(challan.getTenantId().split("\\.")[0], Collections.singletonList(fileStoreId));

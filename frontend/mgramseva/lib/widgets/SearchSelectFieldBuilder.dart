@@ -40,7 +40,7 @@ class SearchSelectFieldState extends State<SearchSelectField> {
         this._overlayEntry.remove();
       }
     });
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
     filerobjects("");
   }
@@ -129,7 +129,7 @@ class SearchSelectFieldState extends State<SearchSelectField> {
   Widget build(BuildContext context) {
     return Column(children: [
       Consumer<LanguageProvider>(builder: (_, consumerProvider, child) {
-        WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+        WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
         return SizedBox(
           height: 0,
         );

@@ -41,6 +41,7 @@ class Url {
 
   ///Fetch Demands
   static const String FETCH_DEMAND = 'billing-service/demand/_search';
+  static const String FETCH_UPDATE_DEMAND = 'ws-calculator/waterCalculator/_getPenaltyDetails';
 
   static const String FETCH_BILL = 'billing-service/bill/v2/_fetchbill';
   static const String SEARCH_BILL = 'billing-service/bill/v2/_search';

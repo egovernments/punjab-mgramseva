@@ -262,7 +262,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
     var waterConnection = waterConnectionsDetails?.waterConnection
         ?.firstWhere((element) => element.connectionNo == tableData.apiKey);
     Navigator.pushNamed(navigatorKey.currentContext!, Routes.HOUSEHOLD_DETAILS,
-        arguments: {'waterconnections': waterConnection, 'mode': 'collect'});
+        arguments: {'waterconnections': waterConnection, 'mode': 'collect', 'status': waterConnection?.status});
   }
 
   onSort(TableHeader header) {

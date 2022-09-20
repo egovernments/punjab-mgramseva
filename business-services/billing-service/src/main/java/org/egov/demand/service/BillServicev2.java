@@ -416,7 +416,6 @@ public class BillServicev2 {
 					billAmount = billAmount.add(billDetail.getAmount());
 				}
 				
-				if (billAmount.compareTo(BigDecimal.ZERO) >= 0) {
 
 					BillV2 bill = BillV2.builder()
 						.auditDetails(util.getAuditDetail(requestInfo))
@@ -435,7 +434,7 @@ public class BillServicev2 {
 						.build();
 				
 					bills.add(bill);
-				}
+				
 			}
 
 		}

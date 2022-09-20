@@ -306,7 +306,7 @@ public class DemandGenerationConsumer {
 			List<CalculationCriteria> calculationCriteriaList = new ArrayList<>();
 			calculationCriteriaList.add(calculationCriteria);
 			CalculationReq calculationReq = CalculationReq.builder().calculationCriteria(calculationCriteriaList)
-					.requestInfo(requestInfo).isconnectionCalculation(true).build();
+					.requestInfo(requestInfo).isconnectionCalculation(true).isAdvanceCalculation(false).build();
 
 			Map<String, Object> masterMap = mDataService.loadMasterData(calculationReq.getRequestInfo(),
 					calculationReq.getCalculationCriteria().get(0).getTenantId());

@@ -9,8 +9,10 @@ import 'package:mgramseva/utils/models.dart';
 class RevenueDataHolder {
 
   RevenueGraph? stackedBar;
-  RevenueGraph? trendLine;
+  List<Revenue>? revenueTrendLine;
+  List<Expense>? expenseTrendLine;
   List<TableDataRow>? revenueTable;
+  List<charts.Series<RevenueGraphModel, dynamic>>? graphData;
   var stackLoader = false;
   var trendLineLoader = false;
   var tableLoader = false;
@@ -19,7 +21,8 @@ class RevenueDataHolder {
 
   resetData(){
     stackedBar = null;
-    trendLine = null;
+    revenueTrendLine = null;
+    expenseTrendLine = null;
     revenueTable = null;
     expenseLabels.clear();
     revenueLabels.clear();

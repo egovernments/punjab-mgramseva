@@ -90,6 +90,11 @@ public class WSCalculationValidator {
 			errorMap.put("INVALID_METER_READING_LAST_READING",
 					"Current Meter Reading cannot be less than last meter reading");
 		}
+		
+		if (meterReading.getCurrentReadingDate().equals(meterReading.getLastReadingDate())) {
+			errorMap.put("INVALID_METER_READING_DATE",
+					"Current Meter Reading Date cannot be same as last meter reading date");
+		}
 
 		if (StringUtils.isEmpty(meterReading.getMeterStatus())) {
 			errorMap.put("INVALID_METER_READING_STATUS", "Meter status can not be null");

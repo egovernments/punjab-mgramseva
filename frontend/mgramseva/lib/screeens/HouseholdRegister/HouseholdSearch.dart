@@ -23,7 +23,7 @@ class _HouseholdSearchState extends State<HouseholdSearch> with SingleTickerProv
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 

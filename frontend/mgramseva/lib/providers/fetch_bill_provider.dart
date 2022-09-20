@@ -11,7 +11,8 @@ class FetchBillProvider with ChangeNotifier {
   late GlobalKey<FormState> formKey;
 
   // ignore: non_constant_identifier_names
-  Future<void> fetchBill(data) async {
+  Future<BillList> fetchBill(data, BuildContext context) async {
+    BillList billList = new BillList();
     try {
       var res = await BillingServiceRepository().fetchdBill({
         "tenantId": data.tenantId,
@@ -22,14 +23,15 @@ class FetchBillProvider with ChangeNotifier {
         if (res.bill!.isNotEmpty) {
           res.bill?.first.billDetails
               ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
+          billList = res;
           streamController.add(res);
         } else {
-          BillList billList = new BillList();
+           billList = new BillList();
           billList.bill = [];
           streamController.add(billList);
         }
       } else {
-        BillList billList = new BillList();
+         billList = new BillList();
         billList.bill = [];
         streamController.add(billList);
       }
@@ -37,6 +39,7 @@ class FetchBillProvider with ChangeNotifier {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       streamController.addError('error');
     }
+    return billList;
   }
 
   // ignore: non_constant_identifier_names

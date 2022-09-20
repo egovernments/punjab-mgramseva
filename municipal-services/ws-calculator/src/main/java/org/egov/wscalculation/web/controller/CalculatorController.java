@@ -12,6 +12,7 @@ import org.egov.wscalculation.web.models.Calculation;
 import org.egov.wscalculation.web.models.CalculationReq;
 import org.egov.wscalculation.web.models.CalculationRes;
 import org.egov.wscalculation.web.models.Demand;
+import org.egov.wscalculation.web.models.DemandPenaltyResponse;
 import org.egov.wscalculation.web.models.DemandResponse;
 import org.egov.wscalculation.web.models.GetBillCriteria;
 import org.egov.wscalculation.web.models.RequestInfoWrapper;
@@ -107,4 +108,13 @@ public class CalculatorController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
+	@PostMapping("/_getPenaltyDetails")
+	public ResponseEntity<DemandPenaltyResponse> getPenaltyDetails(@RequestBody @Valid RequestInfoWrapper requestInfoWrapper,
+			@ModelAttribute @Valid GetBillCriteria getBillCriteria) {
+		DemandPenaltyResponse demandPenaltyResponse = demandService.getPenaltyDetails(getBillCriteria, requestInfoWrapper);
+		demandPenaltyResponse = DemandPenaltyResponse.builder().demands(demandPenaltyResponse.getDemands()).
+				totalApplicablePenalty(demandPenaltyResponse.getTotalApplicablePenalty()).responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true)).build();
+		return new ResponseEntity<>(demandPenaltyResponse, HttpStatus.OK);
+	}
+	
 }

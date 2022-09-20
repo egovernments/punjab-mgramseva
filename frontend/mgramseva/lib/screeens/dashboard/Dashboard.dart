@@ -87,7 +87,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
     dashBoardProvider.debounce = null;
     dashBoardProvider.userFeedBackInformation = null;
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
   }
 
   afterViewBuild() {

@@ -124,7 +124,7 @@ public class NotificationUtil {
         message = message.replace("<amount>", amountToBePaid.toString());
         String UIHost = config.getUiAppHost();
 		String paymentPath = config.getPayLinkSMS();
-		paymentPath = paymentPath.replace("$consumercode",challan.getChallanNo());
+		paymentPath = paymentPath.replace("$consumercode",challan.getReferenceId());
 		paymentPath = paymentPath.replace("$tenantId",challan.getTenantId());
 		paymentPath = paymentPath.replace("$businessservice",challan.getBusinessService());
 		String finalPath = UIHost + paymentPath;
@@ -269,7 +269,7 @@ public class NotificationUtil {
 		builder.append("?tenantId=");
 		builder.append(challan.getTenantId());
 		builder.append("&consumerCode=");
-		builder.append(challan.getChallanNo());
+		builder.append(challan.getReferenceId());
 		builder.append("&businessService=");
 		builder.append(challan.getBusinessService());
 		return builder;

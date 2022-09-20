@@ -153,7 +153,7 @@ public class NotificationService {
     	if(payTriggerList.contains(challan.getApplicationStatus().toString())) {
            List<ActionItem> items = new ArrayList<>();
            String actionLink = config.getPayLink().replace("$mobile", mobile)
-        						.replace("$applicationNo", challan.getChallanNo())
+        						.replace("$applicationNo", challan.getReferenceId())
         						.replace("$tenantId", challan.getTenantId())
         						.replace("$businessService", challan.getBusinessService());
            actionLink = config.getUiAppHost() + actionLink;

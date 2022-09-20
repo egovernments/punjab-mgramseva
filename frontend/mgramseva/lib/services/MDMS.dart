@@ -147,6 +147,7 @@ Map getMdmsPaymentModes(String tenantId) {
         {
           "moduleName": "BillingService",
           "masterDetails": [
+            {"name": "TaxHeadMaster"},
             {"name": "BusinessService", "filter": "[?(@.code=='WS')]"}
           ]
         }

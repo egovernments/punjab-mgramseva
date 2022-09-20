@@ -41,7 +41,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
   ScreenshotController screenshotController = ScreenshotController();
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 

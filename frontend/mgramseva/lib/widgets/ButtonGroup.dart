@@ -6,7 +6,7 @@ import 'ShortButton.dart';
 
 class ButtonGroup extends StatelessWidget {
   final String label;
-  final VoidCallback callBack;
+  final VoidCallback? callBack;
   final VoidCallback callBackIcon;
   ButtonGroup(
     this.label,

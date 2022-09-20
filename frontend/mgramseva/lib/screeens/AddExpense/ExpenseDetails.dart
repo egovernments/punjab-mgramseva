@@ -53,7 +53,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     _numberFocus.addListener(_onFocusChange);
     super.initState();
   }

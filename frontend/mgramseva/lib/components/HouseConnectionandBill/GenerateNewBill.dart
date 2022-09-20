@@ -14,9 +14,12 @@ import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/household_details_provider.dart';
+
 class GenerateNewBill extends StatefulWidget {
   final WaterConnection? waterconnection;
-  GenerateNewBill(this.waterconnection);
+  final DemandList demandList;
+  GenerateNewBill(this.waterconnection, this.demandList);
   @override
   State<StatefulWidget> createState() {
     return _GenerateNewBillState();
@@ -26,13 +29,7 @@ class GenerateNewBill extends StatefulWidget {
 class _GenerateNewBillState extends State<GenerateNewBill> {
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
-  }
-
-  afterViewBuild() {
-    Provider.of<DemadDetailProvider>(context, listen: false)
-      ..fetchDemandDetails(widget.waterconnection);
   }
 
   _getLabeltext(label, value, context) {
@@ -54,26 +51,12 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
         )));
   }
 
-  buidDemandview(DemandList demandList) {
+  buidDemandview() {
+    DemandList demandList = widget.demandList;
     if (demandList.demands!.isNotEmpty) {
-      var amount = demandList.demands!
-          .map((element) {
-            var toalamount = element.demandDetails!
-                .map((e) => e.taxAmount)
-                .toList()
-                .reduce((a, b) => a! + b!);
-            var collectedAmount = element.demandDetails!
-                .map((e) => e.collectionAmount)
-                .toList()
-                .reduce((a, b) => a! + b!);
-            var amount = (toalamount! - collectedAmount!);
-            return amount;
-          })
-          .toList()
-          .reduce((a, b) => a + b);
       int? num = demandList.demands?.first.auditDetails?.createdTime;
-      var billpaymentsProvider =
-          Provider.of<DemadDetailProvider>(context, listen: false);
+      var houseHoldProvider =
+      Provider.of<HouseHoldProvider>(context, listen: false);;
       return LayoutBuilder(builder: (context, constraints) {
         return Column(
           children: [
@@ -87,7 +70,7 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        billpaymentsProvider.isfirstdemand != false
+                        houseHoldProvider.isfirstdemand != false
                             ? Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment:
@@ -155,10 +138,39 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                     .currentReading
                                     .toString(),
                             context),
-                        _getLabeltext(i18.generateBillDetails.PENDING_AMOUNT,
-                            ('₹' + amount.toString()), context),
-                        billpaymentsProvider.isfirstdemand == false &&
-                                amount > 0
+                        if(CommonProvider.getPenaltyOrAdvanceStatus(widget.waterconnection?.mdmsData, false) && !houseHoldProvider.isfirstdemand &&
+                            widget.demandList.demands?.first.demandDetails?.first.taxHeadMasterCode != 'WS_ADVANCE_CARRYFORWARD'
+                        && widget.demandList.demands?.first.demandDetails?.first.taxHeadMasterCode != 'WS_TIME_PENALTY')
+                          _getLabeltext(
+                              'WS_${widget.demandList.demands?.first.demandDetails?.first.taxHeadMasterCode}',
+                              ('₹' +  ((widget.demandList.demands?.first.demandDetails?.first.taxAmount ?? 0) - (widget.demandList.demands?.first.demandDetails?.first.collectionAmount ?? 0)).toString()),
+                              context),
+                        if(!houseHoldProvider.isfirstdemand && widget.demandList.demands?.first.demandDetails?.first.taxHeadMasterCode == 'WS_TIME_PENALTY')
+                          _getLabeltext(
+                              i18.billDetails.WS_10201,
+                              ('₹' + (CommonProvider.getPenaltyApplicable(widget.demandList.demands).penaltyApplicable).toString()),
+                              context),
+                        if(!houseHoldProvider.isfirstdemand && widget.demandList.demands?.first.demandDetails?.first.taxHeadMasterCode == 'WS_TIME_PENALTY')
+                          _getLabeltext(
+                              i18.billDetails.WS_10102,
+                              ('₹' + (CommonProvider.getArrearsAmount(widget.demandList.demands ?? [])).toString()),
+                              context),
+                        if(!houseHoldProvider.isfirstdemand &&  widget.demandList.demands?.first.demandDetails?.first.taxHeadMasterCode == '10201'
+                        && CommonProvider.getArrearsAmount(widget.demandList.demands ?? []) > 0)
+                          _getLabeltext(
+                              'WS_${widget.demandList.demands?.first.demandDetails?.last.taxHeadMasterCode}',
+                              ('₹' + ((widget.demandList.demands?.first.demandDetails?.last.taxAmount ?? 0) - (widget.demandList.demands?.first.demandDetails?.last.collectionAmount ?? 0)).toString()),
+                              context),
+                        !houseHoldProvider.isfirstdemand && getPendingAmount > 0 ?
+                        _getLabeltext(
+                            i18.billDetails.TOTAL_AMOUNT,
+                            ('₹' +
+                                CommonProvider.getTotalBillAmount(widget.demandList.demands ?? []).toString()),
+                            context)
+                : _getLabeltext( getPendingAmount >= 0 ? i18.generateBillDetails.PENDING_AMOUNT : i18.common.ADVANCE_AVAILABLE,
+                            ('₹' + (getPendingAmount >= 0 ? getPendingAmount : getPendingAmount.abs()).toString()), context),
+                        houseHoldProvider.isfirstdemand == false &&
+                            getPendingAmount > 0
                             ? new Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,24 +277,10 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
 
   @override
   Widget build(BuildContext context) {
-    var billProvider = Provider.of<DemadDetailProvider>(context, listen: false);
-    return StreamBuilder(
-        stream: billProvider.streamController.stream,
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return buidDemandview(snapshot.data);
-          } else if (snapshot.hasError) {
-            return Notifiers.networkErrorPage(context, () {});
-          } else {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return Loaders.CircularLoader();
-              case ConnectionState.active:
-                return Loaders.CircularLoader();
-              default:
-                return Container();
-            }
-          }
-        });
+    return buidDemandview();
+  }
+
+  double get getPendingAmount {
+    return widget.waterconnection!.fetchBill!.bill!.isNotEmpty ? (widget.waterconnection?.fetchBill?.bill?.first.totalAmount ?? 0) : 0;
   }
 }
