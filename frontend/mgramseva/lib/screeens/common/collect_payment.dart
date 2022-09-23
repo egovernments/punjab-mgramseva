@@ -422,8 +422,9 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
     var postUri = Uri.parse(redirectUrl);
     DateTime now = new DateTime.now();
     var dateStringPrefix = '${postUri.queryParameters['requestDateTime']}'.split('${now.year}');
-    var request = new http.MultipartRequest("POST", postUri);
-    request.headers.addAll({"access-control-allow-origin": "*"});
+    var txnUrl = Uri.parse('${postUri.queryParameters['txURL']}');
+    var request = new http.MultipartRequest("POST", txnUrl);
+    request.headers.addAll({"Access-Control-Allow-Origin": "*"});
     request.fields['checksum'] = '${postUri.queryParameters['checksum']}';
     request.fields['messageType'] = '${postUri.queryParameters['messageType']}';
     request.fields['merchantId'] = '${postUri.queryParameters['merchantId']}';
