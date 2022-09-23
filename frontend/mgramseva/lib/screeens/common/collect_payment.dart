@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart' as billDetails;
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/providers/collect_payment.dart';
+import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
@@ -19,6 +23,14 @@ import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:provider/provider.dart';
+import '../../Env/app_config.dart';
+import 'package:universal_html/html.dart' as html;
+
+import '../../providers/common_provider.dart';
+import '../../utils/common_methods.dart';
+import '../../utils/global_variables.dart';
+import 'package:http/http.dart' as http;
+
 import '../../widgets/customAppbar.dart';
 
 class ConnectionPaymentView extends StatefulWidget {
@@ -400,11 +412,41 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         Provider.of<CollectPaymentProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
       autoValidation = false;
-      consumerPaymentProvider.updatePaymentInformation(fetchBill, context);
+      payGovTest();
     } else {
       setState(() {
         autoValidation = true;
       });
+    }
+  }
+  Future <void> payGovTest() async {
+    var redirectUrl = "https://pilot.surepay.ndml.in/SurePayPayment/sp/processRequest?additionalField3=111111&orderId=PB_PG_2022_09_22_0024_41&additionalField4=WS/7382/2022-23/0281&requestDateTime=22-09-202210:06:982&additionalField5=Watersupply01&successUrl=https://mgramseva-uat.psegs.in/pg-service/transaction/v1/_redirect?originalreturnurl=/mgramseva/home?eg_pg_txnid=PB_PG_2022_09_22_0024_41&failUrl=https://mgramseva-uat.psegs.in/pg-service/transaction/v1/_redirect?originalreturnurl=/mgramseva/home?eg_pg_txnid=PB_PG_2022_09_22_0024_41&txURL=https://pilot.surepay.ndml.in/SurePayPayment/sp/processRequest&messageType=0100&merchantId=UATPWSSG0000001429&transactionAmount=50.00&customerId=4fc9da1e-7f6f-42e6-8a89-fc13ca5f13d9&checksum=330644870&additionalField1=9399998206&additionalField2=111111&serviceId=Watersupply01&currencyCode=INR";
+    var postUri = Uri.parse(redirectUrl);
+    DateTime now = new DateTime.now();
+    var dateStringPrefix = '${postUri.queryParameters['requestDateTime']}'.split('${now.year}');
+    var request = new http.MultipartRequest("POST", postUri);
+    request.fields['checksum'] = '${postUri.queryParameters['checksum']}';
+    request.fields['messageType'] = '${postUri.queryParameters['messageType']}';
+    request.fields['merchantId'] = '${postUri.queryParameters['merchantId']}';
+    request.fields['serviceId'] = '${postUri.queryParameters['serviceId']}';
+    request.fields['orderId'] = '${postUri.queryParameters['orderId']}';
+    request.fields['customerId'] = '${postUri.queryParameters['customerId']}';
+    request.fields['transactionAmount'] = '${postUri.queryParameters['transactionAmount']}';
+    request.fields['currencyCode'] = '${postUri.queryParameters['currencyCode']}';
+    request.fields['requestDateTime'] = '${dateStringPrefix[0]}${now.year} ${dateStringPrefix[1]}';
+    request.fields['successUrl'] = '${postUri.queryParameters['successUrl']}';
+    request.fields['failUrl'] = '${postUri.queryParameters['failUrl']}';
+    request.fields['additionalField1'] = '${postUri.queryParameters['additionalField1']}';
+    request.fields['additionalField2'] = '${postUri.queryParameters['additionalField2']}';
+    request.fields['additionalField3'] = '${postUri.queryParameters['additionalField3']}';
+    request.fields['additionalField4'] = '${postUri.queryParameters['additionalField4']}';
+    request.fields['additionalField5'] = '${postUri.queryParameters['additionalField5']}';
+    try {
+      await request.send();
+    }
+    catch(e){
+      print("Error");
+      print(jsonEncode(e));
     }
   }
 
