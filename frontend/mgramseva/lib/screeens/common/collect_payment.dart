@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
@@ -425,6 +423,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
     DateTime now = new DateTime.now();
     var dateStringPrefix = '${postUri.queryParameters['requestDateTime']}'.split('${now.year}');
     var request = new http.MultipartRequest("POST", postUri);
+    request.headers.addAll({"Access-Control-Allow-Origin": "*"});
     request.fields['checksum'] = '${postUri.queryParameters['checksum']}';
     request.fields['messageType'] = '${postUri.queryParameters['messageType']}';
     request.fields['merchantId'] = '${postUri.queryParameters['merchantId']}';
