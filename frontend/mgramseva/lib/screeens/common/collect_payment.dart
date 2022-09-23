@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
@@ -417,37 +418,42 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
       });
     }
   }
-  Future <void> payGovTest() async {
+  Future <http.Response> payGovTest() async {
     var redirectUrl = "https://pilot.surepay.ndml.in/SurePayPayment/sp/processRequest?additionalField3=111111&orderId=PB_PG_2022_09_22_0024_41&additionalField4=WS/7382/2022-23/0281&requestDateTime=22-09-202210:06:982&additionalField5=Watersupply01&successUrl=https://mgramseva-uat.psegs.in/pg-service/transaction/v1/_redirect?originalreturnurl=/mgramseva/home?eg_pg_txnid=PB_PG_2022_09_22_0024_41&failUrl=https://mgramseva-uat.psegs.in/pg-service/transaction/v1/_redirect?originalreturnurl=/mgramseva/home?eg_pg_txnid=PB_PG_2022_09_22_0024_41&txURL=https://pilot.surepay.ndml.in/SurePayPayment/sp/processRequest&messageType=0100&merchantId=UATPWSSG0000001429&transactionAmount=50.00&customerId=4fc9da1e-7f6f-42e6-8a89-fc13ca5f13d9&checksum=330644870&additionalField1=9399998206&additionalField2=111111&serviceId=Watersupply01&currencyCode=INR";
     var postUri = Uri.parse(redirectUrl);
     DateTime now = new DateTime.now();
     var dateStringPrefix = '${postUri.queryParameters['requestDateTime']}'.split('${now.year}');
     var txnUrl = Uri.parse('${postUri.queryParameters['txURL']}');
-    var request = new http.MultipartRequest("POST", txnUrl);
-    request.headers.addAll({"Access-Control-Allow-Origin": "*"});
-    request.fields['checksum'] = '${postUri.queryParameters['checksum']}';
-    request.fields['messageType'] = '${postUri.queryParameters['messageType']}';
-    request.fields['merchantId'] = '${postUri.queryParameters['merchantId']}';
-    request.fields['serviceId'] = '${postUri.queryParameters['serviceId']}';
-    request.fields['orderId'] = '${postUri.queryParameters['orderId']}';
-    request.fields['customerId'] = '${postUri.queryParameters['customerId']}';
-    request.fields['transactionAmount'] = '${postUri.queryParameters['transactionAmount']}';
-    request.fields['currencyCode'] = '${postUri.queryParameters['currencyCode']}';
-    request.fields['requestDateTime'] = '${dateStringPrefix[0]}${now.year} ${dateStringPrefix[1]}';
-    request.fields['successUrl'] = '${postUri.queryParameters['successUrl']}';
-    request.fields['failUrl'] = '${postUri.queryParameters['failUrl']}';
-    request.fields['additionalField1'] = '${postUri.queryParameters['additionalField1']}';
-    request.fields['additionalField2'] = '${postUri.queryParameters['additionalField2']}';
-    request.fields['additionalField3'] = '${postUri.queryParameters['additionalField3']}';
-    request.fields['additionalField4'] = '${postUri.queryParameters['additionalField4']}';
-    request.fields['additionalField5'] = '${postUri.queryParameters['additionalField5']}';
-    try {
-      await request.send();
-    }
-    catch(e){
-      print("Error");
-      print(jsonEncode(e));
-    }
+    
+    // var request = new http.MultipartRequest("POST", txnUrl);
+    // request.headers.addAll({"Access-Control-Allow-Origin": "*", "Access-Control-Request-Method": "POST"});
+    var details = {
+    'checksum' : '${postUri.queryParameters['checksum']}',
+    'messageType' : '${postUri.queryParameters['messageType']}',
+    'merchantId' : '${postUri.queryParameters['merchantId']}',
+    'serviceId': '${postUri.queryParameters['serviceId']}',
+    'orderId': '${postUri.queryParameters['orderId']}',
+    'customerId': '${postUri.queryParameters['customerId']}',
+    'transactionAmount': '${postUri.queryParameters['transactionAmount']}',
+    'currencyCode': '${postUri.queryParameters['currencyCode']}',
+    'requestDateTime': '${dateStringPrefix[0]}${now.year} ${dateStringPrefix[1]}',
+    'successUrl': '${postUri.queryParameters['successUrl']}',
+    'failUrl': '${postUri.queryParameters['failUrl']}',
+    'additionalField1' : '${postUri.queryParameters['additionalField1']}',
+    'additionalField2' : '${postUri.queryParameters['additionalField2']}',
+    'additionalField3' : '${postUri.queryParameters['additionalField3']}',
+    'additionalField4' : '${postUri.queryParameters['additionalField4']}',
+    'additionalField5' : '${postUri.queryParameters['additionalField5']}',
+  };
+      var response = await http.post(txnUrl,
+          headers: {
+            HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST"
+          },
+          body: details);
+      return response;
+
   }
 
   Text subTitle(String label, [double? size]) =>
