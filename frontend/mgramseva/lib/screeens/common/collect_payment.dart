@@ -448,8 +448,8 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
       var response = await http.post(txnUrl,
           headers: {
             HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST"
+            HttpHeaders.accessControlAllowOriginHeader: '*',
+            HttpHeaders.accessControlAllowMethodsHeader: 'POST'
           },
           body: details);
       return response;
