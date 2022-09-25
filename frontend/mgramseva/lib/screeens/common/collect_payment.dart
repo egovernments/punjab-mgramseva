@@ -179,7 +179,6 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   }
 
   Widget _buildPaymentDetails(FetchBill fetchBill, BoxConstraints constraints) {
-    print(fetchBill.paymentMethod);
     return Consumer<CollectPaymentProvider>(
       builder: (_, consumerPaymentProvider, child) => Card(
           child: Wrap(
@@ -415,7 +414,12 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         Provider.of<CollectPaymentProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
       autoValidation = false;
-      consumerPaymentProvider.createTransaction(fetchBill, context);
+      if(fetchBill.paymentMethod == 'PAYGOV') {
+        consumerPaymentProvider.createTransaction(fetchBill, context);
+      }
+      else{
+        consumerPaymentProvider.updatePaymentInformation(fetchBill, context);
+      }
     } else {
       setState(() {
         autoValidation = true;
