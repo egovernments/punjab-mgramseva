@@ -66,7 +66,8 @@ class Routes {
 
   static const String SEARCH_CONSUMER_RESULT = '/home/consumersearchresult';
 
-  static const String PAYMENT_SUCCESS = 'paymentSuccess';
+  static const String PAYMENT_SUCCESS = '/paymentSuccess';
+  static const String PAYMENT_FAILURE = '/paymentFailure';
 
   static const String SUCCESS_VIEW = '/success';
 

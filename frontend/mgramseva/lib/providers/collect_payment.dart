@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:mgramseva/providers/language.dart';
 
@@ -31,6 +32,8 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:image/image.dart' as img;
 import 'common_provider.dart';
+import 'package:http/http.dart' as http;
+
 
 class CollectPaymentProvider with ChangeNotifier {
   var paymentStreamController = StreamController.broadcast();
@@ -406,6 +409,97 @@ class CollectPaymentProvider with ChangeNotifier {
       Notifiers.getToastMessage(context, e.toString(), 'ERROR');
       ErrorHandler.logError(e.toString(), s);
     }
+  }
+
+  Future<void> createTransaction(
+      FetchBill fetchBill, BuildContext context) async {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+
+    var amount = fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key
+        ? fetchBill.customAmountCtrl.text
+        : fetchBill.totalAmount;
+    var transaction = {
+      "Transaction": {
+        "tenantId": commonProvider.userDetails?.selectedtenant?.code,
+        "txnAmount": amount,
+        "module": "WS",
+        "billId": fetchBill.id,
+        "consumerCode": fetchBill.consumerCode,
+        "productInfo": "Common Payment",
+        "gateway": fetchBill.paymentMethod,
+        "taxAndPayments": [
+          {
+            "billId": fetchBill.id,
+            "amountPaid": amount
+          }
+        ],
+        "user": {
+          "name": fetchBill.payerName,
+          "mobileNumber": fetchBill.mobileNumber,
+          "tenantId": commonProvider.userDetails?.selectedtenant?.code
+        },
+        "callbackUrl": "https://mgramseva-uat.psegs.in/mgramseva/paymentSuccess",
+        "additionalDetails": {
+          "isWhatsapp": false
+        }
+      }
+    };
+
+    try {
+
+      var transactionDetails = await ConsumerRepository().createTransaction(transaction);
+      if (transactionDetails != null && transactionDetails.transaction?.redirectUrl != null) {
+        payGovTest(transactionDetails.transaction!.redirectUrl!);
+      }
+    } on CustomException catch (e, s) {
+      Navigator.pop(context);
+      if (ErrorHandler.handleApiException(context, e, s)) {
+        Notifiers.getToastMessage(context, e.message, 'ERROR');
+      }
+    } catch (e, s) {
+      Navigator.pop(context);
+      Notifiers.getToastMessage(context, e.toString(), 'ERROR');
+      ErrorHandler.logError(e.toString(), s);
+    }
+  }
+
+  Future <http.Response> payGovTest(String redirectUrl) async {
+    // var redirectUrl = "https://pilot.surepay.ndml.in/SurePayPayment/sp/processRequest?additionalField3=111111&orderId=PB_PG_2022_09_25_0027_24&additionalField4=WS/7382/2022-23/0281&requestDateTime=25-09-202212:23:089&additionalField5=Watersupply01&successUrl=https://mgramseva-uat.psegs.in/mgramseva/paymentSuccess&failUrl=https://mgramseva-uat.psegs.in/mgramseva/paymentFailure&txURL=https://pilot.surepay.ndml.in/SurePayPayment/sp/processRequest&messageType=0100&merchantId=UATPWSSG0000001429&transactionAmount=50.00&customerId=4fc9da1e-7f6f-42e6-8a89-fc13ca5f13d9&checksum=753831033&additionalField1=9399998206&additionalField2=111111&serviceId=Watersupply01&currencyCode=INR";
+    var postUri = Uri.parse(redirectUrl);
+    DateTime now = new DateTime.now();
+    var dateStringPrefix = '${postUri.queryParameters['requestDateTime']}'.split('${now.year}');
+    var txnUrl = Uri.parse('${postUri.queryParameters['txURL']}');
+
+    // var request = new http.MultipartRequest("POST", txnUrl);
+    // request.headers.addAll({"Access-Control-Allow-Origin": "*", "Access-Control-Request-Method": "POST"});
+    var details = {
+      'checksum' : '${postUri.queryParameters['checksum']}',
+      'messageType' : '${postUri.queryParameters['messageType']}',
+      'merchantId' : '${postUri.queryParameters['merchantId']}',
+      'serviceId': '${postUri.queryParameters['serviceId']}',
+      'orderId': '${postUri.queryParameters['orderId']}',
+      'customerId': '${postUri.queryParameters['customerId']}',
+      'transactionAmount': '${postUri.queryParameters['transactionAmount']}',
+      'currencyCode': '${postUri.queryParameters['currencyCode']}',
+      'requestDateTime': '${dateStringPrefix[0]}${now.year} ${dateStringPrefix[1]}',
+      'successUrl': '${postUri.queryParameters['successUrl']}',
+      'failUrl': '${postUri.queryParameters['failUrl']}',
+      'additionalField1' : '${postUri.queryParameters['additionalField1']}',
+      'additionalField2' : '${postUri.queryParameters['additionalField2']}',
+      'additionalField3' : '${postUri.queryParameters['additionalField3']}',
+      'additionalField4' : '${postUri.queryParameters['additionalField4']}',
+      'additionalField5' : '${postUri.queryParameters['additionalField5']}',
+    };
+    var response = await http.post(txnUrl,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: details,);
+    print(response.isRedirect);
+    print(jsonDecode(response.body));
+    return response;
+
   }
 
   String getSubtitleDynamicLocalization(

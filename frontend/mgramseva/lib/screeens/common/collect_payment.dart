@@ -6,6 +6,9 @@ import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart' as billDetails;
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/providers/collect_payment.dart';
+import 'package:mgramseva/providers/consumer_details_provider.dart';
+import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/screeens/common/PaymentSuccess.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -176,6 +179,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   }
 
   Widget _buildPaymentDetails(FetchBill fetchBill, BoxConstraints constraints) {
+    print(fetchBill.paymentMethod);
     return Consumer<CollectPaymentProvider>(
       builder: (_, consumerPaymentProvider, child) => Card(
           child: Wrap(
@@ -411,7 +415,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         Provider.of<CollectPaymentProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
       autoValidation = false;
-      payGovTest();
+      consumerPaymentProvider.createTransaction(fetchBill, context);
     } else {
       setState(() {
         autoValidation = true;
@@ -419,12 +423,12 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
     }
   }
   Future <http.Response> payGovTest() async {
-    var redirectUrl = "https://pilot.surepay.ndml.in/SurePayPayment/sp/processRequest?additionalField3=111111&orderId=PB_PG_2022_09_22_0024_41&additionalField4=WS/7382/2022-23/0281&requestDateTime=22-09-202210:06:982&additionalField5=Watersupply01&successUrl=https://mgramseva-uat.psegs.in/pg-service/transaction/v1/_redirect?originalreturnurl=/mgramseva/home?eg_pg_txnid=PB_PG_2022_09_22_0024_41&failUrl=https://mgramseva-uat.psegs.in/pg-service/transaction/v1/_redirect?originalreturnurl=/mgramseva/home?eg_pg_txnid=PB_PG_2022_09_22_0024_41&txURL=https://pilot.surepay.ndml.in/SurePayPayment/sp/processRequest&messageType=0100&merchantId=UATPWSSG0000001429&transactionAmount=50.00&customerId=4fc9da1e-7f6f-42e6-8a89-fc13ca5f13d9&checksum=330644870&additionalField1=9399998206&additionalField2=111111&serviceId=Watersupply01&currencyCode=INR";
+    var redirectUrl = "https://pilot.surepay.ndml.in/SurePayPayment/sp/processRequest?additionalField3=111111&orderId=PB_PG_2022_09_25_0027_24&additionalField4=WS/7382/2022-23/0281&requestDateTime=25-09-202212:23:089&additionalField5=Watersupply01&successUrl=https://mgramseva-uat.psegs.in/mgramseva/paymentSuccess&failUrl=https://mgramseva-uat.psegs.in/mgramseva/paymentFailure&txURL=https://pilot.surepay.ndml.in/SurePayPayment/sp/processRequest&messageType=0100&merchantId=UATPWSSG0000001429&transactionAmount=50.00&customerId=4fc9da1e-7f6f-42e6-8a89-fc13ca5f13d9&checksum=753831033&additionalField1=9399998206&additionalField2=111111&serviceId=Watersupply01&currencyCode=INR";
     var postUri = Uri.parse(redirectUrl);
     DateTime now = new DateTime.now();
     var dateStringPrefix = '${postUri.queryParameters['requestDateTime']}'.split('${now.year}');
     var txnUrl = Uri.parse('${postUri.queryParameters['txURL']}');
-    
+
     // var request = new http.MultipartRequest("POST", txnUrl);
     // request.headers.addAll({"Access-Control-Allow-Origin": "*", "Access-Control-Request-Method": "POST"});
     var details = {
@@ -447,11 +451,12 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   };
       var response = await http.post(txnUrl,
           headers: {
-            HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
-            HttpHeaders.accessControlAllowOriginHeader: '*',
-            HttpHeaders.accessControlAllowMethodsHeader: 'POST'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            "Access-Control-Allow-Origin": "*",
           },
-          body: details);
+          body: details,);
+      print(response.isRedirect);
+      print(jsonDecode(response.body));
       return response;
 
   }

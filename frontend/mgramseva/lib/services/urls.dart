@@ -57,6 +57,8 @@ class Url {
   /// Connection bill payment
   static const String COLLECT_PAYMENT = 'collection-services/payments/_create';
 
+  static const String CREATE_TRANSACTION = 'pg-service/transaction/v1/_create';
+
   static const String FETCH_BILL_PAYMENTS =
       'collection-services/payments/WS/_search';
 

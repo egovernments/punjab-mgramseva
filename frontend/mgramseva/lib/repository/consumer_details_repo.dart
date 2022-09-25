@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:mgramseva/model/Transaction/transaction.dart';
 import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/common/demand.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart';
@@ -173,6 +176,35 @@ class ConsumerRepository extends BaseService {
 
     if (res != null) {
       response = BillPayments.fromJson(res);
+    }
+    return response;
+  }
+
+  Future<TransactionDetails?> createTransaction(Map body) async {
+    TransactionDetails? response;
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+
+    var res = await makeRequest(
+        url: Url.CREATE_TRANSACTION,
+        method: RequestType.POST,
+        body: body,
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
+            commonProvider.userDetails!.accessToken));
+
+    if (res != null) {
+      print(jsonEncode(res));
+      response = TransactionDetails.fromJson(res);
+      print('*************');
+      print(jsonEncode(response));
     }
     return response;
   }

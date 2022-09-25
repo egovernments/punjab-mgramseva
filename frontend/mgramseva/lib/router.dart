@@ -23,6 +23,8 @@ import 'package:mgramseva/screeens/HouseholdDetail/HouseholdDetail.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/ResetPassword/Updatepassword.dart';
 import 'package:mgramseva/screeens/Feedback/feed_back.dart';
+import 'package:mgramseva/screeens/common/PaymentFailure.dart';
+import 'package:mgramseva/screeens/common/PaymentSuccess.dart';
 import 'package:mgramseva/screeens/common/commondownload.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -361,6 +363,14 @@ class router {
             builder: (_) => ExpenseResults(
                 searchResult: settings.arguments as SearchResult),
             settings: RouteSettings(name: Routes.EXPENSE_RESULT));
+      case Routes.PAYMENT_SUCCESS:
+          return MaterialPageRoute(
+              builder: (_) => PaymentSuccess(),
+              settings: RouteSettings(name: Routes.PAYMENT_SUCCESS));
+      case Routes.PAYMENT_FAILURE:
+        return MaterialPageRoute(
+            builder: (_) => PaymentFailure(),
+            settings: RouteSettings(name: Routes.PAYMENT_FAILURE));
       case Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT:
         late Map<String, dynamic> localQuery;
         if (settings.arguments == null) {
