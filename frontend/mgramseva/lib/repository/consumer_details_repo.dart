@@ -201,10 +201,8 @@ class ConsumerRepository extends BaseService {
             commonProvider.userDetails!.accessToken));
 
     if (res != null) {
-      print(jsonEncode(res));
       response = TransactionDetails.fromJson(res);
-      print('*************');
-      print(jsonEncode(response));
+
     }
     return response;
   }

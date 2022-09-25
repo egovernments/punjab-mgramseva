@@ -496,8 +496,10 @@ class CollectPaymentProvider with ChangeNotifier {
         "Access-Control-Allow-Origin": "*",
       },
       body: details,);
+    print('isRedirect');
     print(response.isRedirect);
-    print(jsonDecode(response.body));
+    print('Response body');
+    print(response.body);
     return response;
 
   }
