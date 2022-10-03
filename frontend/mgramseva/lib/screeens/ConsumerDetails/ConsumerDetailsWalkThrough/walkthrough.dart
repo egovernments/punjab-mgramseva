@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -90,12 +91,17 @@ var json = [
     )
   },
   {
-    "name": (i18.consumerWalkThroughMsg.CONSUMER_ARREARS_MSG),
-    "widget": BuildTextField(
-      i18.consumer.ARREARS,
-      TextEditingController(),
-      isRequired: true,
-    ),
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_WALKTHROUGH_AMOUNT_TYPE_MESSAGE),
+    "widget": RadioButtonFieldBuilder(
+        navigatorKey.currentContext!,
+        "",
+        null,
+        '',
+        '',
+        false,
+        Constants.CONSUMER_PAYMENT_TYPE,
+        (val)=>{},
+        isEnabled: true),
   },
 ];
 

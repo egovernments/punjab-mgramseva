@@ -38,7 +38,8 @@ Demands _$DemandsFromJson(Map<String, dynamic> json) {
         : AuditDetails.fromJson(json['auditDetails'] as Map<String, dynamic>)
     ..billExpiryTime = json['billExpiryTime'] as int?
     ..minimumAmountPayable = (json['minimumAmountPayable'] as num?)?.toDouble()
-    ..status = json['status'] as String?;
+    ..status = json['status'] as String?
+    ..isPaymentCompleted = json['isPaymentCompleted'] as bool?;
 }
 
 Map<String, dynamic> _$DemandsToJson(Demands instance) => <String, dynamic>{
@@ -47,11 +48,11 @@ Map<String, dynamic> _$DemandsToJson(Demands instance) => <String, dynamic>{
       'consumerCode': instance.consumerCode,
       'consumerType': instance.consumerType,
       'businessService': instance.businessService,
-      'payer': instance.payer,
+      'payer': instance.payer?.toJson(),
       'taxPeriodFrom': instance.taxPeriodFrom,
       'taxPeriodTo': instance.taxPeriodTo,
-      'demandDetails': instance.demandDetails,
-      'auditDetails': instance.auditDetails,
+      'demandDetails': instance.demandDetails?.map((e) => e.toJson()).toList(),
+      'auditDetails': instance.auditDetails?.toJson(),
       'billExpiryTime': instance.billExpiryTime,
       'minimumAmountPayable': instance.minimumAmountPayable,
       'status': instance.status,
@@ -124,7 +125,7 @@ Map<String, dynamic> _$DemandDetailsToJson(DemandDetails instance) =>
       'taxHeadMasterCode': instance.taxHeadMasterCode,
       'taxAmount': instance.taxAmount,
       'collectionAmount': instance.collectionAmount,
-      'auditDetails': instance.auditDetails,
+      'auditDetails': instance.auditDetails?.toJson(),
       'tenantId': instance.tenantId,
     };
 

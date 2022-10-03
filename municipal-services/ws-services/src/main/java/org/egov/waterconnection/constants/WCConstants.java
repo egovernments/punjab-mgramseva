@@ -278,5 +278,9 @@ public class WCConstants {
 	
 	 // Fuzzy Search
     public static final String ES_DATA_PATH = "$..Data";
+    
+	public static final String PAYMENT_TYPE_ARREARS = "arrears";
+
+	public static final String PAYMENT_TYPE_ADVANCE = "advance";
 
 }

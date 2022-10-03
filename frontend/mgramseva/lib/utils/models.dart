@@ -138,3 +138,15 @@ class HexColor extends Color {
 
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }
+
+class Penalty {
+  double penalty;
+  String date;
+  bool isDueDateCrossed = false;
+  Penalty(this.penalty, this.date, this.isDueDateCrossed);
+}
+
+class PenaltyApplicable {
+  double penaltyApplicable;
+  PenaltyApplicable(this.penaltyApplicable);
+}

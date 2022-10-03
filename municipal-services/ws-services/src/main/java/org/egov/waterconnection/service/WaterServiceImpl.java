@@ -163,10 +163,24 @@ public class WaterServiceImpl implements WaterService {
 
 		enrichmentService.postStatusEnrichment(waterConnectionRequest);
 		waterDao.saveWaterConnection(waterConnectionRequest);
-		if (waterConnectionRequest.getWaterConnection().getArrears() != null
-				&& waterConnectionRequest.getWaterConnection().getArrears().intValue() > 0) {
-			calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property);
+		
+		if (null != waterConnectionRequest.getWaterConnection() && null != waterConnectionRequest.getWaterConnection().getPaymentType()
+			&& WCConstants.PAYMENT_TYPE_ARREARS.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getPaymentType())) {
+			if ((waterConnectionRequest.getWaterConnection().getArrears() != null
+					&& waterConnectionRequest.getWaterConnection().getArrears().intValue() > 0)
+					|| (waterConnectionRequest.getWaterConnection().getPenalty() != null
+							&& waterConnectionRequest.getWaterConnection().getPenalty().intValue() > 0)) {
+				calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property, false);
+			}
+
+		} else if (null != waterConnectionRequest.getWaterConnection() && null != waterConnectionRequest.getWaterConnection().getPaymentType()
+				&& WCConstants.PAYMENT_TYPE_ADVANCE.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getPaymentType())) {
+			if (waterConnectionRequest.getWaterConnection().getAdvance() != null) {
+				calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property, true);
+			}
 		}
+		
+		
 
 		return Arrays.asList(waterConnectionRequest.getWaterConnection());
 	}
@@ -239,10 +253,22 @@ public class WaterServiceImpl implements WaterService {
 		// Call workflow
 //		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
 		// call calculator service to generate the demand for one time fee
-		if (waterConnectionRequest.getWaterConnection().getArrears() != null
-				&& waterConnectionRequest.getWaterConnection().getArrears().intValue() > 0) {
-			calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property);
+		if (null != waterConnectionRequest.getWaterConnection() &&
+				null != waterConnectionRequest.getWaterConnection().getPaymentType() && 
+						WCConstants.PAYMENT_TYPE_ARREARS.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getPaymentType())) {
+			if ((waterConnectionRequest.getWaterConnection().getArrears() != null
+					&& waterConnectionRequest.getWaterConnection().getArrears().intValue() > 0)
+					|| (waterConnectionRequest.getWaterConnection().getPenalty() != null
+							&& waterConnectionRequest.getWaterConnection().getPenalty().intValue() > 0)) {
+				calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property, false);
+			}
+		} else if (null != waterConnectionRequest.getWaterConnection() && null != waterConnectionRequest.getWaterConnection().getPaymentType() && WCConstants.PAYMENT_TYPE_ADVANCE.
+				equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getPaymentType())) {
+			if (waterConnectionRequest.getWaterConnection().getAdvance() != null) {
+				calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property, true);
+			}
 		}
+		
 		// check for edit and send edit notification
 		waterDaoImpl.pushForEditNotification(waterConnectionRequest);
 		// Enrich file store Id After payment
@@ -302,10 +328,22 @@ public class WaterServiceImpl implements WaterService {
 		userService.updateUser(waterConnectionRequest, searchResult);
 		waterConnectionValidator.validateUpdate(waterConnectionRequest, searchResult, WCConstants.MODIFY_CONNECTION);
 		// call calculator service to generate the demand for one time fee
-		if (waterConnectionRequest.getWaterConnection().getArrears() != null
-				&& waterConnectionRequest.getWaterConnection().getArrears().intValue() > 0) {
-			calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property);
+		if (waterConnectionRequest.getWaterConnection().getPaymentType()!=null && waterConnectionRequest.getWaterConnection().getPaymentType()
+				.equalsIgnoreCase(WCConstants.PAYMENT_TYPE_ARREARS)) {
+			if ((waterConnectionRequest.getWaterConnection().getArrears() != null
+					&& waterConnectionRequest.getWaterConnection().getArrears().intValue() > 0)
+					|| (waterConnectionRequest.getWaterConnection().getPenalty() != null
+							&& waterConnectionRequest.getWaterConnection().getPenalty().intValue() > 0)) {
+				calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property,false);
+			}
+
+		} else if (waterConnectionRequest.getWaterConnection().getPaymentType()!=null && waterConnectionRequest.getWaterConnection().getPaymentType()
+				.equalsIgnoreCase(WCConstants.PAYMENT_TYPE_ADVANCE)) {
+			if (waterConnectionRequest.getWaterConnection().getAdvance() != null) {
+				calculationService.calculateFeeAndGenerateDemand(waterConnectionRequest, property,true);
+			}
 		}
+		
 //		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
 		boolean isStateUpdatable = waterServiceUtil.getStatusForUpdate(businessService, previousApplicationStatus);
 		waterDao.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
@@ -615,6 +653,8 @@ public class WaterServiceImpl implements WaterService {
 
 		Calendar currentDate = Calendar.getInstance();
 		int currentYear = currentDate.get(Calendar.YEAR);
+		int actualMonthnum = currentDate.get(Calendar.MONTH);
+		
 		currentDate.setTimeInMillis(criteria.getFromDate());
 		int actualYear = currentDate.get(Calendar.YEAR);
 
@@ -629,20 +669,13 @@ public class WaterServiceImpl implements WaterService {
 					currentDate.get(Calendar.DAY_OF_MONTH));
 			finYearStarting = currentMonthDate;
 		} else {
-			if (currentMonthNumber < 3) {
-				totalMonthsTillDate = 9 + currentMonthNumber;
+				totalMonthsTillDate = actualMonthnum - currentMonthNumber;
 				currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
 						currentDate.get(Calendar.DAY_OF_MONTH));
 				finYearStarting = currentMonthDate;
-			} else {
-				totalMonthsTillDate = currentMonthNumber - 2;
-				currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
-						currentDate.get(Calendar.DAY_OF_MONTH));
-				finYearStarting = currentMonthDate;
-			}
+
 		}
 		ArrayList<RevenueCollectionData> data = new ArrayList<RevenueCollectionData>();
-
 		for (int i = 0; i <= totalMonthsTillDate; i++) {
 			LocalDate monthStart = currentMonthDate.minusMonths(0).with(TemporalAdjusters.firstDayOfMonth());
 			LocalDate monthEnd = currentMonthDate.minusMonths(0).with(TemporalAdjusters.lastDayOfMonth());

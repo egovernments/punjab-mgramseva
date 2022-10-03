@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/dashboard/revenue_chart.dart';
 import 'package:mgramseva/model/dashboard/revenue_dashboard.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/dashboard.dart';
-import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/dashboard/revenue_dashboard/revenue.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
@@ -32,8 +30,9 @@ class RevenueDashboard with ChangeNotifier {
 
   void loadGraphicalDashboard(BuildContext context) {
     revenueDataHolder.resetData();
-    loadRevenueTableDetails(context);
-    loadRevenueTrendGraphDetails(context);
+    loadRevenueExpenseTrendLineTableDetails(context);
+    // loadRevenueTrendGraphDetails(context);
+    /// Enable loadRevenueTrendGraphDetails(context) if you want data from Elastic Search getChartAPI
     /// Stacked Graph not implemented due to Backend API response finalization is pending
    // loadRevenueStackedGraphDetails(context);
   }
@@ -72,24 +71,24 @@ class RevenueDashboard with ChangeNotifier {
       };
   }
 
-
-  Future<void> loadRevenueTrendGraphDetails(BuildContext context) async {
-    var dashBoardProvider = Provider.of<DashBoardProvider>(
-        navigatorKey.currentContext!, listen: false);
-    revenueDataHolder.trendLineLoader = true;
-    notifyListeners();
-    try {
-      var res = await DashBoardRepository().getGraphicalDashboard(requestQuery(true));
-      if (res != null) {
-        revenueDataHolder.trendLine = res;
-        revenueDataHolder.trendLine?.graphData = trendGraphDataBinding(res);
-      }
-    } catch (e, s) {
-      ErrorHandler().allExceptionsHandler(context, e, s);
-    }
-    revenueDataHolder.trendLineLoader = false;
-    notifyListeners();
-  }
+  /// Use loadRevenueTrendGraphDetails if you want data from Elastic Search getChartAPI
+  // Future<void> loadRevenueTrendGraphDetails(BuildContext context) async {
+  //   var dashBoardProvider = Provider.of<DashBoardProvider>(
+  //       navigatorKey.currentContext!, listen: false);
+  //   revenueDataHolder.trendLineLoader = true;
+  //   notifyListeners();
+  //   try {
+  //     var res = await DashBoardRepository().getGraphicalDashboard(requestQuery(true));
+  //     if (res != null) {
+  //       revenueDataHolder.trendLine = res;
+  //       revenueDataHolder.trendLine?.graphData = trendGraphDataBinding(res);
+  //     }
+  //   } catch (e, s) {
+  //     ErrorHandler().allExceptionsHandler(context, e, s);
+  //   }
+  //   revenueDataHolder.trendLineLoader = false;
+  //   notifyListeners();
+  // }
   /// Stacked Graph not implemented due to Backend API response finalization is pending
   // Future<void> loadRevenueStackedGraphDetails(BuildContext context) async {
   //   revenueDataHolder.stackLoader = true;
@@ -108,8 +107,9 @@ class RevenueDashboard with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  Future<void> loadRevenueTableDetails(BuildContext context) async {
+  Future<void> loadRevenueExpenseTrendLineTableDetails(BuildContext context) async {
     revenueDataHolder.tableLoader = true;
+    revenueDataHolder.trendLineLoader = true;
     notifyListeners();
     try {
       var commonProvider = Provider.of<CommonProvider>(
@@ -131,7 +131,9 @@ class RevenueDashboard with ChangeNotifier {
 
         /// If any month is missing it will set the default values for that month
         setDefaultTableValue(res1, res2);
-
+        revenueDataHolder.revenueTrendLine = res1;
+        revenueDataHolder.expenseTrendLine = res2;
+        revenueDataHolder.graphData = trendGraphDataBinding(res1, res2);
         for(int i =0 ; i < res1.length ; i++) {
           var collection = res1[i];
           var expense = res2[i];
@@ -187,10 +189,10 @@ class RevenueDashboard with ChangeNotifier {
 
       }
       revenueDataHolder.revenueTable = filteredList;
-      //revenueStreamController.add(filteredList);
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
     }
+    revenueDataHolder.trendLineLoader = false;
     revenueDataHolder.tableLoader = false;
     notifyListeners();
   }
@@ -228,9 +230,9 @@ class RevenueDashboard with ChangeNotifier {
 
   void setSelectedTab(int index) {
     /// Disabled tapping functionality
-    return;
-    selectedIndex = index;
-    notifyListeners();
+    // return;
+    // selectedIndex = index;
+    // notifyListeners();
   }
 
   List<String> getTabs(BuildContext context) {
@@ -269,21 +271,35 @@ class RevenueDashboard with ChangeNotifier {
   }
 
   List<charts.Series<RevenueGraphModel, int>>? trendGraphDataBinding(
-      RevenueGraph revenueGraph) {
-
+      List<Revenue> revenues, List<expense.Expense> expenses) {
     Map revenueData = {};
     Map expenseData = {};
-    Map filteredData = {};
     var list = <charts.Series<RevenueGraphModel, int>>[];
-    revenueGraph.data?.firstWhere((e) =>  e.headerName == "WaterService").plots?.forEach((e) {
+
+    ///TO GET TREND LINE DATA FROM REVENUE and CHALLAN COLLECTION USE BELOW LOGIC
+    revenues.forEach((e) {
       revenueData[i18.dashboard.REVENUE] ??= {};
-      revenueData[i18.dashboard.REVENUE][e.name] = e.value;
+      revenueData[i18.dashboard.REVENUE]['${DateFormats.getMonth(
+          DateFormats.getFormattedDateToDateTime(
+              DateFormats.timeStampToDate(e.month))!)}'] = int.parse(e.actualCollection.toString());
+    });
+    expenses.forEach((e) {
+      expenseData[i18.dashboard.EXPENDITURE] ??= {};
+      expenseData[i18.dashboard.EXPENDITURE]['${DateFormats.getMonth(
+          DateFormats.getFormattedDateToDateTime(
+              DateFormats.timeStampToDate(e.month))!)}'] = int.parse(e.amountPaid.toString());
     });
 
-    revenueGraph.data?.firstWhere((e) => e.headerName == "ExpenseService").plots?.forEach((e) {
-      expenseData[i18.dashboard.EXPENDITURE] ??= {};
-      expenseData[i18.dashboard.EXPENDITURE][e.name] = e.value;
-    });
+    ///TO GET DATA FROM ELASTIC SEARCH USE BELOW COMMENTED LOGIC.
+    // revenueGraph.data?.firstWhere((e) =>  e.headerName == "WaterService").plots?.forEach((e) {
+    //   revenueData[i18.dashboard.REVENUE] ??= {};
+    //   revenueData[i18.dashboard.REVENUE][e.name] = e.value;
+    // });
+
+    // revenueGraph.data?.firstWhere((e) => e.headerName == "ExpenseService").plots?.forEach((e) {
+    //   expenseData[i18.dashboard.EXPENDITURE] ??= {};
+    //   expenseData[i18.dashboard.EXPENDITURE][e.name] = e.value;
+    // });
 
     revenueData.forEach((key, value) {
       var data = <RevenueGraphModel>[];

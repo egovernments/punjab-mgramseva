@@ -287,7 +287,10 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                           "waterconnections": isNameSearch == true ? waterconnections
                                               .waterConnectionData![index] : waterconnections
                                               .waterConnection![index],
-                                          "mode": arguments['Mode']
+                                          "mode": arguments['Mode'],
+                                          "status": isNameSearch == true ? waterconnections
+                                              .waterConnectionData![index].status : waterconnections
+                                              .waterConnection![index].status
                                         })),
                             SizedBox(
                               height: 8,

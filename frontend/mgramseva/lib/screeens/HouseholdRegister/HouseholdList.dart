@@ -6,7 +6,6 @@ import 'package:mgramseva/providers/household_register_provider.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -57,7 +56,7 @@ class _HouseholdListState extends State<HouseholdList> {
 
     return LayoutBuilder(
         builder : (context, constraints) {
-          var width = constraints.maxWidth < 760 ? 145.0  : (constraints.maxWidth / 3);
+          var width = constraints.maxWidth < 760 ? 145.0  : (constraints.maxWidth / 4);
           var tableData = householdProvider.getCollectionsData(expenseList  as List<WaterConnection>);
           return tableData == null || tableData.isEmpty ?
           CommonWidgets.buildEmptyMessage(ApplicationLocalizations.of(context).translate(i18.dashboard.NO_RECORDS_MSG), context)
@@ -65,7 +64,7 @@ class _HouseholdListState extends State<HouseholdList> {
             (headerList: householdProvider.collectionHeaderList,
             tableData:  tableData,
             leftColumnWidth: width,
-            rightColumnWidth: width * 2 ,
+            rightColumnWidth: width * 3 ,
             height: 68 + (52.0 * tableData.length),
           );
         }

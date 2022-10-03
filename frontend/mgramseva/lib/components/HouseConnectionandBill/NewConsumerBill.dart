@@ -1,6 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
+import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/fetch_bill_provider.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
@@ -16,11 +18,17 @@ import 'package:mgramseva/widgets/ShortButton.dart';
 import 'package:provider/provider.dart';
 import "package:collection/collection.dart";
 
+import '../../model/demand/update_demand_list.dart';
+import '../../utils/models.dart';
+import '../../widgets/CustomDetails.dart';
+
 class NewConsumerBill extends StatefulWidget {
   final String? mode;
+  final String? status;
   final WaterConnection? waterConnection;
+  final List<Demands> demandList;
 
-  const NewConsumerBill(this.mode, this.waterConnection);
+  const NewConsumerBill(this.mode, this.status, this.waterConnection, this.demandList);
   @override
   State<StatefulWidget> createState() {
     return NewConsumerBillState();
@@ -30,16 +38,11 @@ class NewConsumerBill extends StatefulWidget {
 class NewConsumerBillState extends State<NewConsumerBill> {
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
-  afterViewBuild() {
-    Provider.of<FetchBillProvider>(context, listen: false)
-      ..fetchBill(widget.waterConnection);
-  }
 
-  _getLabeltext(label, value, context) {
+  static getLabelText(label, value, context, {subLabel = ''}) {
     return Container(
         padding: EdgeInsets.only(top: 16, bottom: 16),
         child: (Row(
@@ -48,55 +51,56 @@ class NewConsumerBillState extends State<NewConsumerBill> {
             Container(
                 padding: EdgeInsets.only(right: 16),
                 width: MediaQuery.of(context).size.width / 3,
-                child: Text(
-                  ApplicationLocalizations.of(context).translate(label),
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                )),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        ApplicationLocalizations.of(context).translate(label),
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                        textAlign: TextAlign.start,
+                      ),
+                      subLabel?.trim?.toString() != ''
+                          ? Text( subLabel,
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                      ) : Text('')
+                    ])),
             Text(value,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))
           ],
         )));
   }
 
+  static getDueDatePenalty(dueDate, BuildContext context){
+    late String localizationText;
+    localizationText = '${ApplicationLocalizations.of(context).translate(i18.billDetails.CORE_PAID_AFTER)}';
+    localizationText = localizationText.replaceFirst(
+        '{dueDate}', dueDate);
+    return localizationText;
+  }
+
   @override
   Widget build(BuildContext context) {
-    var billpaymentsProvider =
-        Provider.of<FetchBillProvider>(context, listen: false);
-    return StreamBuilder(
-        stream: billpaymentsProvider.streamController.stream,
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return buidBillview(snapshot.data);
-          } else if (snapshot.hasError) {
-            return Notifiers.networkErrorPage(context, () {});
-          } else {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return Loaders.CircularLoader();
-              case ConnectionState.active:
-                return Loaders.CircularLoader();
-              default:
-                return Container();
-            }
-          }
-        });
+    return buidBillview(widget.waterConnection?.fetchBill ?? BillList());
   }
 
   buidBillview(BillList billList) {
-    List res = [];
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    if (billList.bill!.isNotEmpty)
-      billList.bill?.first.billDetails!.forEach((element) {
-        res.add(element.amount);
-      });
+    var penalty = billList.bill!.isEmpty ? Penalty(0.0, '0', false) : CommonProvider.getPenalty(widget.waterConnection?.demands);
+    var penaltyApplicable = billList.bill!.isEmpty ? PenaltyApplicable(0.0)  : CommonProvider.getPenaltyApplicable(widget.demandList);
+    var houseHoldProvider =
+    Provider.of<HouseHoldProvider>(context, listen: false);
 
     return LayoutBuilder(builder: (context, constraints) {
       var houseHoldProvider =
           Provider.of<HouseHoldProvider>(context, listen: false);
       return billList.bill!.isEmpty
-          ? Text("")
-          : billList.bill!.first.totalAmount! > 0
-              ? houseHoldProvider.isfirstdemand == false &&
+          ?
+      Text("")
+          :
+      showBill(widget.demandList)
+              ?
+      houseHoldProvider.isfirstdemand == false &&
                       widget.mode != 'collect'
                   ? Text("")
                   : Column(
@@ -153,7 +157,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                         ),
                                       ),
                                       houseHoldProvider.isfirstdemand == true
-                                          ? _getLabeltext(
+                                          ? getLabelText(
                                               i18.generateBillDetails
                                                   .LAST_BILL_GENERATION_DATE,
                                               DateFormats.timeStampToDate(
@@ -163,39 +167,87 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                   .toString(),
                                               context)
                                           : Text(""),
-                                      _getLabeltext(
+                                      if(CommonProvider.getPenaltyOrAdvanceStatus(widget.waterConnection?.mdmsData, false) && !houseHoldProvider.isfirstdemand && widget.demandList.first.demandDetails?.first.taxHeadMasterCode == '10201')
+                                        getLabelText(
+                                            i18.billDetails.WS_10201,
+                                            ('₹' + CommonProvider.getNormalPenalty(widget.demandList).toString()),
+                                            context),
+                                     if(!houseHoldProvider.isfirstdemand && (billList.bill?.first.totalAmount ?? 0) >= 0) getLabelText(
                                           houseHoldProvider.isfirstdemand ==
                                                   true
                                               ? i18.billDetails.CURRENT_BILL
                                               : i18.billDetails.ARRERS_DUES,
                                           ('₹' +
-                                              billList.bill!.first.billDetails!
-                                                  .first.amount
+      (houseHoldProvider.isfirstdemand ?  widget.demandList.first.demandDetails!
+                                                  .first.taxAmount : CommonProvider.getArrearsAmount(widget.demandList))
                                                   .toString()),
                                           context),
-                                      houseHoldProvider.isfirstdemand == true
-                                          ? _getLabeltext(
-                                              i18.billDetails.ARRERS_DUES,
-                                              ('₹' +
-                                                  (res.reduce((previousValue,
-                                                                  element) =>
-                                                              previousValue +
-                                                              element) -
-                                                          billList
-                                                              .bill
-                                                              ?.first
-                                                              .billDetails
-                                                              ?.first
-                                                              .amount)
-                                                      .toString()),
-                                              context)
-                                          : Text(""),
-                                      _getLabeltext(
-                                          i18.billDetails.TOTAL_AMOUNT,
+                                      if(houseHoldProvider.isfirstdemand) getLabelText(
+                                          houseHoldProvider.isfirstdemand ==
+                                              true
+                                              ? i18.billDetails.CURRENT_BILL
+                                              : i18.billDetails.ARRERS_DUES,
                                           ('₹' +
-                                              (billList.bill?.first.totalAmount)
+                                              (houseHoldProvider.isfirstdemand ?  widget.demandList.first.demandDetails!.first.taxHeadMasterCode == 'WS_TIME_PENALTY'
+                                                  ? CommonProvider.getCurrentBill(widget.demandList)
+                                              : CommonProvider.checkAdvance(widget.demandList) ? (widget.demandList.first.demandDetails!.first.taxAmount ?? 0)
+                                              : ((widget.demandList.first.demandDetails!.first.taxAmount ?? 0) - (widget.demandList.first.demandDetails!.first.collectionAmount ?? 0)) : CommonProvider.getArrearsAmount(widget.demandList))
                                                   .toString()),
                                           context),
+                                      if(houseHoldProvider.isfirstdemand == true)
+                                          getLabelText(
+                                              i18.billDetails.ARRERS_DUES,
+                                              ( widget.demandList.first.demandDetails!.first.taxHeadMasterCode == 'WS_TIME_PENALTY'
+                                                    ? '₹' + CommonProvider.getArrearsAmountOncePenaltyExpires(widget.demandList).toString() : '₹' + CommonProvider.getArrearsAmount(widget.demandList).toString()),
+                                              context),
+                                      getLabelText(
+                                          !houseHoldProvider.isfirstdemand ? ((widget.waterConnection?.fetchBill?.bill?.first.totalAmount ?? 0) >= 0 ? i18.generateBillDetails.PENDING_AMOUNT : i18.common.ADVANCE_AVAILABLE) : i18.billDetails.TOTAL_AMOUNT,
+                                          ('₹' +
+                                              (!houseHoldProvider.isfirstdemand ?
+                                          (widget.waterConnection?.fetchBill?.bill?.first.totalAmount ?? 0).abs() : widget.demandList.first.demandDetails!.first.taxHeadMasterCode == 'WS_TIME_PENALTY'
+                                                  ? CommonProvider.getCurrentBill(widget.demandList) + CommonProvider.getArrearsAmountOncePenaltyExpires(widget.demandList)  : CommonProvider.getTotalBillAmount(widget.demandList)).toString()),
+                                          context),
+                                     if(CommonProvider.getPenaltyOrAdvanceStatus(widget.waterConnection?.mdmsData, true) && houseHoldProvider.isfirstdemand) getLabelText(
+                                          i18.common.CORE_ADVANCE_ADJUSTED,
+                                          ('₹' +
+                                              ((CommonProvider.getAdvanceAdjustedAmount(widget.demandList)) != '0.0'
+                                                  ? '-' + (CommonProvider.getAdvanceAdjustedAmount(widget.demandList)).toString()
+                                                  : (CommonProvider.getAdvanceAdjustedAmount(widget.demandList)).toString())),
+                                          context),
+
+                                      if(CommonProvider.getPenaltyOrAdvanceStatus(widget.waterConnection?.mdmsData, false, true) && houseHoldProvider.isfirstdemand && penalty.isDueDateCrossed) getLabelText(
+                                          i18.billDetails.CORE_PENALTY,
+                                          ('₹' +
+                                              penaltyApplicable.penaltyApplicable
+                                                  .toString()),
+                                          context),
+                                      if(CommonProvider.getPenaltyOrAdvanceStatus(widget.waterConnection?.mdmsData, true) && houseHoldProvider.isfirstdemand) getLabelText(
+                                          i18.common.CORE_NET_DUE_AMOUNT,
+                                          ('₹' +
+                                              ( CommonProvider.getNetDueAmountWithWithOutPenalty(billList.bill?.first.totalAmount ?? 0, penalty))
+                                                  .toString()),
+                                          context),
+                                      if(CommonProvider.getPenaltyOrAdvanceStatus(widget.waterConnection?.mdmsData, false, true) && houseHoldProvider.isfirstdemand )  CustomDetailsCard(
+                                          Column(
+                                            children: [
+                                              getLabelText(
+                                                  i18.billDetails.CORE_PENALTY,
+                                                  ('₹' +
+                                                      (penalty.isDueDateCrossed ? penaltyApplicable.penaltyApplicable : penalty.penalty)
+                                                          .toString()),
+                                                  context,
+                                                  subLabel: getDueDatePenalty(penalty.date, context)),
+                                              getLabelText(
+                                                  i18.billDetails.CORE_NET_DUE_AMOUNT_WITH_PENALTY,
+                                                  ('₹' +
+                                                      CommonProvider.getNetDueAmountWithWithOutPenalty(billList.bill?.first.totalAmount ?? 0, penalty, true)
+                                                          .toString()),
+                                                  context,
+                                                  subLabel: getDueDatePenalty(penalty.date, context))
+
+                                            ],
+                                          )
+                                      ),
                                       widget.mode == 'collect'
                                           ? Align(
                                               alignment: Alignment.centerLeft,
@@ -237,19 +289,31 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                                   billList.bill!
                                                                       .first,
                                                                   "Share"),
-                                                      () =>
+                                                            CommonProvider.getPenaltyOrAdvanceStatus(widget.waterConnection?.mdmsData, true)
+                                                            && CommonProvider.checkAdvance(widget.demandList)
+                                                            && ( CommonProvider.getNetDueAmountWithWithOutPenalty(billList.bill?.first.totalAmount ?? 0, penalty) == 0)
+                                                            ? null
+                                                                : () =>
                                                           onClickOfCollectPayment(
                                                               billList
-                                                                  .bill!.first,
+                                                                  .bill!,
                                                               context))
-                                                  : ShortButton(
-                                                      i18.billDetails
-                                                          .COLLECT_PAYMENT,
-                                                      () =>
-                                                          onClickOfCollectPayment(
-                                                              billList
-                                                                  .bill!.first,
-                                                              context)))
+                                                  : Visibility(
+                                                visible: (billList.bill?.first.totalAmount ?? 0) > 0,
+                                                    child: ShortButton(
+                                                        i18.billDetails
+                                                            .COLLECT_PAYMENT,
+                                                  CommonProvider.getPenaltyOrAdvanceStatus(widget.waterConnection?.mdmsData, true)
+                                                  && CommonProvider.checkAdvance(widget.demandList)
+                                                  && CommonProvider.getAdvanceAmount(widget.demandList) == 0
+                                                  && ( CommonProvider.getNetDueAmountWithWithOutPenalty(billList.bill?.first.totalAmount ?? 0, penalty) == 0)
+                                                      ? null
+                                                      : () =>
+                                                            onClickOfCollectPayment(
+                                                                billList
+                                                                    .bill!,
+                                                                context)),
+                                                  ))
                                           : houseHoldProvider.isfirstdemand ==
                                                   true
                                               ? Container(
@@ -339,15 +403,75 @@ class NewConsumerBillState extends State<NewConsumerBill> {
     });
   }
 
-  void onClickOfCollectPayment(Bill bill, BuildContext context) {
+  void onClickOfCollectPayment(List<Bill> bill, BuildContext context) {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
     Map<String, dynamic> query = {
-      'consumerCode': bill.consumerCode,
-      'businessService': bill.businessService,
-      'tenantId': commonProvider.userDetails?.selectedtenant?.code
+      'consumerCode': bill.first.consumerCode,
+      'businessService': bill.first.businessService,
+      'tenantId': commonProvider.userDetails?.selectedtenant?.code,
+      'demandList' : widget.demandList,
+      'fetchBill' : bill,
+      'status': widget.status
     };
     Navigator.pushNamed(context, Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT,
         arguments: query);
   }
+
+  bool showBill(List<Demands> demandList) {
+    var index = -1;
+    var houseHoldRegister = Provider.of<HouseHoldProvider>(context, listen: false);
+
+    demandList = demandList.where((e) =>
+    (!(e.isPaymentCompleted ?? false) && e.status != 'CANCELLED'))
+        .toList();
+
+    demandList = demandList.map((e) => Demands.fromJson(e.toJson())).toList();
+
+    demandList.forEach((e) {
+      e.demandDetails?.sort((a, b) => a
+          .auditDetails!.createdTime!
+          .compareTo(b.auditDetails!.createdTime!));
+    });
+
+    if(demandList.isEmpty){
+      return false;
+    }else if(!houseHoldRegister.isfirstdemand && widget.waterConnection?.connectionType != 'Metered'
+        && (widget.waterConnection?.fetchBill?.bill?.first.totalAmount ?? 0) == 0){
+      return false;
+    }else if(demandList.first.demandDetails?.last.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
+      return !houseHoldRegister.isfirstdemand;
+    }else if((widget.waterConnection?.fetchBill?.bill?.first.totalAmount ?? 0) > 0){
+      return true;
+    } else {
+
+      if(demandList.isEmpty) return false;
+
+      for (int i = 0; i < demandList.length; i++) {
+        index = demandList[i].demandDetails?.lastIndexWhere((e) => e
+            .taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD') ?? -1;
+
+        if (index != -1) {
+          var demandDetail = demandList[i].demandDetails?[index];
+        if(demandDetail!.collectionAmount! == demandDetail.taxAmount!){
+            if(demandList.first.demandDetails?.last.collectionAmount != 0){
+              var list = <double>[];
+              for(int j = 0; j <= i ; j++){
+                for(int k = 0; k < (demandList[j].demandDetails?.length ?? 0); k++) {
+                  if (k == index && j == i) break;
+                  list.add(demandList[j].demandDetails![k].collectionAmount ?? 0);
+                }
+              }
+              var collectedAmount = list.reduce((a, b) => a+b);
+               return collectedAmount == demandDetail.collectionAmount?.abs();
+            }
+          }else if(demandDetail.taxAmount! < demandDetail.collectionAmount!){
+          return true;
+        }
+        }
+      }
+    }
+    return false;
+  }
+
 }

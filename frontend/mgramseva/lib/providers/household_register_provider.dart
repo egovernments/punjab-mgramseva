@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -12,18 +10,11 @@ import 'package:mgramseva/screeens/HouseholdRegister/household_pdf.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
-import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'language.dart';
-import 'package:flutter/services.dart' show ByteData, rootBundle;
-import 'package:universal_html/html.dart' as html;
 
 class HouseholdRegisterProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -206,6 +197,13 @@ class HouseholdRegisterProvider with ChangeNotifier {
                 : null,
             apiKey: 'name',
             callBack: onSort),
+        TableHeader(i18.consumer.FATHER_SPOUSE_NAME,
+            isSortingRequired: false,
+            isAscendingOrder: sortBy != null && sortBy!.key == 'fatherOrHusbandName'
+                ? sortBy!.isAscending
+                : null,
+            apiKey: 'fatherOrHusbandName',
+            callBack: onSort),
         TableHeader(i18.householdRegister.PENDING_COLLECTIONS,
             isSortingRequired: true,
             isAscendingOrder:
@@ -246,12 +244,15 @@ class HouseholdRegisterProvider with ChangeNotifier {
   TableDataRow getCollectionRow(WaterConnection connection) {
     String? name =
         truncateWithEllipsis(connection.connectionHolders?.first.name);
+    String? fatherName =
+    truncateWithEllipsis(connection.connectionHolders?.first.fatherOrHusbandName);
     return TableDataRow([
       TableData(
           '${connection.connectionNo?.split('/').first ?? ''}/...${connection.connectionNo?.split('/').last ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
           callBack: onClickOfCollectionNo,
           apiKey: connection.connectionNo),
       TableData('${name ?? ''}'),
+      TableData('${fatherName ?? ''}'),
       TableData(
           '${connection.additionalDetails?.collectionPendingAmount != null ? '₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}'),
     ]);
@@ -261,7 +262,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
     var waterConnection = waterConnectionsDetails?.waterConnection
         ?.firstWhere((element) => element.connectionNo == tableData.apiKey);
     Navigator.pushNamed(navigatorKey.currentContext!, Routes.HOUSEHOLD_DETAILS,
-        arguments: {'waterconnections': waterConnection, 'mode': 'collect'});
+        arguments: {'waterconnections': waterConnection, 'mode': 'collect', 'status': waterConnection?.status});
   }
 
   onSort(TableHeader header) {
@@ -351,6 +352,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
     var headerList = [
       i18.common.CONNECTION_ID,
       i18.common.NAME,
+      i18.consumer.FATHER_SPOUSE_NAME,
       i18.householdRegister.PENDING_COLLECTIONS
     ];
 
@@ -358,6 +360,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
             ?.map<List<String>>((connection) => [
                   '${connection.connectionNo ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
                   '${connection.connectionHolders?.first.name ?? ''}',
+                  '${connection.connectionHolders?.first.fatherOrHusbandName ?? ''}',
                   '${connection.additionalDetails?.collectionPendingAmount != null ? '₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}',
                 ])
             .toList() ??

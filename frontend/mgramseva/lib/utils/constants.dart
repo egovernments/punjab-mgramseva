@@ -143,4 +143,11 @@ class Constants {
   static const List<String> CONNECTION_STATUS = ['Inactive', 'Active'];
 
   static const String INVALID_EXCEPTION_CODE = 'InvalidAccessTokenException';
+
+  static List<KeyValue> CONSUMER_PAYMENT_TYPE = [
+  KeyValue(i18.common.ARREARS, 'arrears'),
+  KeyValue(i18.common.CORE_ADVANCE, 'advance'),
+  ];
+
+
 }

@@ -114,18 +114,31 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 				request.getCalculationCriteria().get(0).getTenantId(),
 				request.getCalculationCriteria().get(0).getConnectionNo(), request.getRequestInfo());
 		
-		if (searchResult != null && searchResult.size() > 0
+		if ((searchResult != null && searchResult.size() > 0
 				&& searchResult.get(0).getConsumerType().equalsIgnoreCase("waterConnection-arrears")
 				&& !request.getIsconnectionCalculation() && wsresults != null && wsresults.size() > 0
 				&& wsresults.get(0).getPreviousReadingDate().longValue() != request.getCalculationCriteria().get(0)
-						.getWaterConnection().getPreviousReadingDate().longValue()) {
+						.getWaterConnection().getPreviousReadingDate().longValue())
+				||
+				(searchResult != null && searchResult.size() > 0
+						&& searchResult.get(0).getConsumerType().equalsIgnoreCase("waterConnection-advance")
+						&& !request.getIsconnectionCalculation() && wsresults != null && wsresults.size() > 0
+						&& wsresults.get(0).getPreviousReadingDate().longValue() != request.getCalculationCriteria().get(0)
+								.getWaterConnection().getPreviousReadingDate().longValue())) {
 			searchResult.get(0).setStatus(StatusEnum.CANCELLED);
 			isWSUpdateSMS = true;
 			demandRepository.updateDemand(request.getRequestInfo(), searchResult);
 		}
-		demandService.generateDemand(request.getRequestInfo(), calculations, masterMap,
-				request.getIsconnectionCalculation(), isWSUpdateSMS);
+		
+		
 
+		if(request.getIsAdvanceCalculation() != null && request.getIsAdvanceCalculation().booleanValue()) {
+			demandService.generateDemand(request.getRequestInfo(), calculations, masterMap,
+					request.getIsconnectionCalculation(), isWSUpdateSMS, request.getIsAdvanceCalculation());
+		}else {
+			demandService.generateDemand(request.getRequestInfo(), calculations, masterMap,
+					request.getIsconnectionCalculation(), isWSUpdateSMS, false);
+		}
 		unsetWaterConnection(calculations);
 		return calculations;
 	}
@@ -139,7 +152,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	 */
 	public List<Calculation> bulkDemandGeneration(CalculationReq request, Map<String, Object> masterMap) {
 		List<Calculation> calculations = getCalculations(request, masterMap);
-		demandService.generateDemand(request.getRequestInfo(), calculations, masterMap, true, false);
+		demandService.generateDemand(request.getRequestInfo(), calculations, masterMap, true, false, request.getIsAdvanceCalculation());
 		return calculations;
 	}
 
@@ -188,6 +201,8 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		BigDecimal exemption = BigDecimal.ZERO;
 		BigDecimal rebate = BigDecimal.ZERO;
 		BigDecimal fee = BigDecimal.ZERO;
+		BigDecimal advance = BigDecimal.ZERO;
+
 
 		for (TaxHeadEstimate estimate : estimates) {
 
@@ -200,6 +215,10 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 				waterCharge = waterCharge.add(estimate.getEstimateAmount());
 				break;
 
+			case ADVANCE_COLLECTION:
+				advance = advance.add(estimate.getEstimateAmount());
+				break; 
+				
 			case PENALTY:
 				penalty = penalty.add(estimate.getEstimateAmount());
 				break;
@@ -219,7 +238,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 				break;
 			}
 		}
-		TaxHeadEstimate decimalEstimate = payService.roundOfDecimals(taxAmt.add(penalty).add(waterCharge).add(fee),
+		TaxHeadEstimate decimalEstimate = payService.roundOfDecimals(taxAmt.add(penalty).add(waterCharge).add(fee).add(advance),
 				rebate.add(exemption), isConnectionFee);
 		if (null != decimalEstimate) {
 			decimalEstimate.setCategory(taxHeadCategoryMap.get(decimalEstimate.getTaxHeadCode()));
@@ -230,9 +249,9 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 				rebate = rebate.add(decimalEstimate.getEstimateAmount());
 		}
 
-		BigDecimal totalAmount = taxAmt.add(penalty).add(rebate).add(exemption).add(waterCharge).add(fee);
+		BigDecimal totalAmount = taxAmt.add(penalty).add(rebate).add(exemption).add(waterCharge).add(fee).add(advance);
 		return Calculation.builder().totalAmount(totalAmount).taxAmount(taxAmt).penalty(penalty).exemption(exemption)
-				.charge(waterCharge).fee(fee).waterConnection(waterConnection).rebate(rebate).tenantId(tenantId)
+				.charge(waterCharge).advance(advance).fee(fee).waterConnection(waterConnection).rebate(rebate).tenantId(tenantId)
 				.taxHeadEstimates(estimates).billingSlabIds(billingSlabIds).connectionNo(criteria.getConnectionNo()).applicationNO(criteria.getApplicationNo())
 				.build();
 	}
@@ -247,8 +266,15 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	List<Calculation> getCalculations(CalculationReq request, Map<String, Object> masterMap) {
 		List<Calculation> calculations = new ArrayList<>(request.getCalculationCriteria().size());
 		for (CalculationCriteria criteria : request.getCalculationCriteria()) {
-			Map<String, List> estimationMap = estimationService.getEstimationMap(criteria, request.getRequestInfo(),
-					masterMap,request.getIsconnectionCalculation());
+			Map<String, List> estimationMap = null;
+			if(request.getIsAdvanceCalculation() == null || (!request.getIsAdvanceCalculation().booleanValue())) {
+				estimationMap	= estimationService.getEstimationMap(criteria, request.getRequestInfo(),
+						masterMap,request.getIsconnectionCalculation(),false);
+			}else {
+				estimationMap   = estimationService.getEstimationMap(criteria, request.getRequestInfo(),
+						masterMap,request.getIsconnectionCalculation(), request.getIsAdvanceCalculation());
+			}
+			 
 			ArrayList<?> billingFrequencyMap = (ArrayList<?>) masterMap
 					.get(WSCalculationConstant.Billing_Period_Master);
 			masterDataService.enrichBillingPeriod(criteria, billingFrequencyMap, masterMap,request.getIsconnectionCalculation());
@@ -355,7 +381,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		List<Calculation> calculations = new ArrayList<>(request.getCalculationCriteria().size());
 		for (CalculationCriteria criteria : request.getCalculationCriteria()) {
 			Map<String, List> estimationMap = estimationService.getEstimationMap(criteria, request.getRequestInfo(),
-					masterMap,request.getIsconnectionCalculation());
+					masterMap,request.getIsconnectionCalculation(),false);
 			ArrayList<?> billingFrequencyMap = (ArrayList<?>) masterMap
 					.get(WSCalculationConstant.Billing_Period_Master);
 			masterDataService.enrichBillingPeriod(criteria, billingFrequencyMap, masterMap,request.getIsconnectionCalculation());

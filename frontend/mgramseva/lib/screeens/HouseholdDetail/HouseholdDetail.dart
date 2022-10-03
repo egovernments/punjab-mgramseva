@@ -3,8 +3,6 @@ import 'package:mgramseva/components/HouseConnectionandBill/ConsumerBillPayments
 import 'package:mgramseva/components/HouseConnectionandBill/GenerateNewBill.dart';
 import 'package:mgramseva/components/HouseConnectionandBill/HouseConnectionDetailCard.dart';
 import 'package:mgramseva/components/HouseConnectionandBill/NewConsumerBill.dart';
-import 'package:mgramseva/model/bill/billing.dart';
-import 'package:mgramseva/model/common/demand.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
@@ -25,9 +23,10 @@ import 'package:provider/provider.dart';
 class HouseholdDetail extends StatefulWidget {
   final String? id;
   final String? mode;
+  final String? status;
   final WaterConnection? waterconnection;
 
-  HouseholdDetail({Key? key, this.id, this.mode, this.waterconnection});
+  HouseholdDetail({Key? key, this.id, this.mode, this.status, this.waterconnection});
   @override
   State<StatefulWidget> createState() {
     return _HouseholdDetailState();
@@ -36,14 +35,14 @@ class HouseholdDetail extends StatefulWidget {
 
 class _HouseholdDetailState extends State<HouseholdDetail> {
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
   afterViewBuild() {
     Provider.of<HouseHoldProvider>(context, listen: false)
       ..isVisible = false
-      ..fetchDemand(widget.waterconnection, widget.id);
+      ..fetchDemand(widget.waterconnection, widget.waterconnection?.demands, widget.id, widget.status);
   }
 
   buildDemandView(DemandList data) {
@@ -66,14 +65,14 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
             : Text(""),
         houseHoldProvider.waterConnection!.connectionType == 'Metered' &&
                 widget.mode == 'collect'
-            ? GenerateNewBill(houseHoldProvider.waterConnection)
+            ? GenerateNewBill(houseHoldProvider.waterConnection, data)
             : Text(""),
         data.demands!.isEmpty ||
                 (houseHoldProvider.waterConnection?.connectionType ==
                         'Metered' &&
                     houseHoldProvider.isfirstdemand == false)
             ? Text("")
-            : NewConsumerBill(widget.mode, houseHoldProvider.waterConnection),
+            : NewConsumerBill(widget.mode,widget.status, houseHoldProvider.waterConnection, data.demands!),
         ConsumerBillPayments(houseHoldProvider.waterConnection)
       ],
     );
@@ -111,7 +110,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                       return Notifiers.networkErrorPage(
                           context,
                           () => houseHoldProvider
-                              .fetchDemand(widget.waterconnection));
+                              .fetchDemand(widget.waterconnection, widget.waterconnection?.demands));
                     } else {
                       switch (snapshot.connectionState) {
                         case ConnectionState.waiting:

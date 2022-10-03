@@ -79,12 +79,26 @@ public class WSCalculationConstant {
 	public static final String WS_TIME_INTEREST = "WS_TIME_INTEREST";
 
 	public static final String WS_TIME_PENALTY = "WS_TIME_PENALTY";
+	
+	public static final String PENALTY_OUTSTANDING = "outstanding";
+
+	public static final String PENALTY_CURRENT_MONTH = "currentMonth";
+
+	public static final String FIXED = "FIXED";
+
+	public static final String FLAT = "FLAT";
+
 
 	public static final String WS_WATER_CESS = "WS_WATER_CESS";
 
 	public static final String WS_CHARGE = "10101";
+	
+	public static final String ADVANCE_COLLECTION = "WS_ADVANCE_CARRYFORWARD";
+
 
 	public static final String WS_CHARGE_ARREAR = "10102";
+
+	public static final String WS_PENALTY = "10201";
 
 	/**
 	 * data fields
@@ -103,7 +117,15 @@ public class WSCalculationConstant {
 
 	public static final String RATE_FIELD_NAME = "rate";
 
-	public static final String DAYA_APPLICABLE_NAME = "applicableAfterDays";
+	public static final String DAYS_APPLICABLE_NAME = "applicableAfterDays";
+	
+	public static final String AMOUNT_FIELD_NAME = "amount";
+
+	public static final String TYPE_FIELD_NAME = "type";
+	
+	public static final String SUBTYPE_FIELD_NAME = "subType";
+
+
 
 	/*
 	 * bigdecimal values
@@ -136,7 +158,7 @@ public class WSCalculationConstant {
 	public static final List<String> WS_BILLING_SLAB_MASTERS = Collections
 			.unmodifiableList(Arrays.asList(WC_BILLING_SLAB_MASTER));
 
-	public static final List<String> TAX_APPLICABLE = Collections.unmodifiableList(Arrays.asList(WS_CHARGE,WS_CHARGE_ARREAR));
+	public static final List<String> TAX_APPLICABLE = Collections.unmodifiableList(Arrays.asList(WS_CHARGE,WS_CHARGE_ARREAR,WS_PENALTY));
 
 	public static final String flatRateCalculationAttribute = "Flat";
 

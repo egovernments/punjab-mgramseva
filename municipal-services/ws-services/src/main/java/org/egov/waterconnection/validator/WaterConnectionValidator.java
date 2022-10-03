@@ -84,7 +84,34 @@ public class WaterConnectionValidator {
 			errorMap.putAll(isMeterInfoValidated.getErrorMessage());
 		if(waterConnectionRequest.getWaterConnection().getProcessInstance().getAction().equalsIgnoreCase("PAY"))
 			errorMap.put("INVALID_ACTION","Pay action cannot be perform directly");
+		
+		if (waterConnectionRequest.getWaterConnection().getPaymentType() != null
+				&& !waterConnectionRequest.getWaterConnection().getPaymentType().isEmpty()) {
 
+			if(waterConnectionRequest.getWaterConnection().getPaymentType()
+					.equalsIgnoreCase(WCConstants.PAYMENT_TYPE_ARREARS) ||
+					waterConnectionRequest.getWaterConnection().getPaymentType()
+					.equalsIgnoreCase(WCConstants.PAYMENT_TYPE_ADVANCE)) {
+				if (waterConnectionRequest.getWaterConnection().getPaymentType()
+						.equalsIgnoreCase(WCConstants.PAYMENT_TYPE_ARREARS)
+						&& waterConnectionRequest.getWaterConnection().getAdvance() != null) {
+					errorMap.put("INVALID_PARAMETER", "Advance value is not considered when Paymenttype is arrears.");
+				}
+				if (waterConnectionRequest.getWaterConnection().getPaymentType()
+						.equalsIgnoreCase(WCConstants.PAYMENT_TYPE_ADVANCE)
+						&& (waterConnectionRequest.getWaterConnection().getArrears() != null
+								|| waterConnectionRequest.getWaterConnection().getPenalty() != null)) {
+					errorMap.put("INVALID_PARAMETER",
+							"Arrears and Penalty value is not considered when Paymenttype is Advanced.");
+				}
+			}
+			
+			else {
+				errorMap.put("INVALID_PARAMETER",
+						"Payment type not allowed");
+			}
+		}	
+		
 		if (!errorMap.isEmpty())
 			throw new CustomException(errorMap);
 	}
@@ -112,28 +139,39 @@ public class WaterConnectionValidator {
 		validateDuplicateDocuments(request);
 		setFieldsFromSearch(request, searchResult, reqType);
 		DemandResponse response =  validateUpdateForDemand(request,searchResult);
-		List<Demand> demands = response.getDemands();
-		if(demands.size()>0) {
-		List<Boolean> data = new ArrayList<Boolean>();
-		for (Demand demand : demands) {
-			if(!demand.isPaymentCompleted()) {
-				data.add(demand.isPaymentCompleted());
-			}
-		}
-		Boolean isArrear = false;
-		if(request.getWaterConnection().getArrears()!=null && request.getWaterConnection().getArrears().toString() == "0") {
-			isArrear =  true;
-		}
-		if ((request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demands.size() == data.size())
-				|| (searchResult.getArrears() != null && request.getWaterConnection().getArrears() == null
-						|| isArrear)) {
-			for (Demand demand : demands) {
-				demand.setStatus(org.egov.waterconnection.web.models.Demand.StatusEnum.CANCELLED);
-			}
-			updateDemand(request.getRequestInfo(), demands);
+		if(response != null) {
+			List<Demand> demands = response.getDemands();
+			List<Boolean> data = new ArrayList<Boolean>();
+			if(demands != null && !demands.isEmpty()) {
+				for (Demand demand : demands) {
+					if(!demand.isPaymentCompleted()) {
+						data.add(demand.isPaymentCompleted());
+					}
+				}
+				Boolean isArrear = false;
+				Boolean isAdvance = false;
+				
+				if(request.getWaterConnection().getAdvance()!=null && request.getWaterConnection().getAdvance().toString() == "0") {
+					isAdvance =  true;
+				}
+				if(request.getWaterConnection().getArrears()!=null && request.getWaterConnection().getArrears().toString() == "0") {
+					isArrear =  true;
+				}
+				if ((request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demands.size() == data.size())
+						|| (searchResult.getArrears() != null && request.getWaterConnection().getArrears() == null
+								|| isArrear)|| (request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demands.size() == data.size())
+						|| (searchResult.getAdvance() != null && request.getWaterConnection().getAdvance() == null
+						|| isAdvance)) {
+					for (Demand demand : demands) {
+						demand.setStatus(org.egov.waterconnection.web.models.Demand.StatusEnum.CANCELLED);
+					}
+					updateDemand(request.getRequestInfo(), demands);
 
-		}
-		}
+				}
+			}
+			}
+			
+		
 	}
 /**
  * GPWSC specific validation
@@ -146,6 +184,7 @@ public class WaterConnectionValidator {
 		url.append(config.getBillingHost()).append(config.getDemandSearchUri());
 		url.append("?consumerCode=").append(request.getWaterConnection().getConnectionNo());
 		url.append("&tenantId=").append(request.getWaterConnection().getTenantId());
+		url.append("&status=ACTIVE");
 		url.append("&businessService=WS");
 		DemandResponse demandResponse = null;
 		try {
@@ -160,8 +199,12 @@ public class WaterConnectionValidator {
 		if( demandResponse!= null && demandResponse.getDemands().size() >0 ) {
 			List<Demand> demands = demandResponse.getDemands().stream().filter( d-> !d.getConsumerType().equalsIgnoreCase("waterConnection-arrears")).collect(Collectors.toList());
 			List<Demand> arrearDemands = demandResponse.getDemands().stream().filter( d-> d.getConsumerType().equalsIgnoreCase("waterConnection-arrears")).collect(Collectors.toList());
-			List<DemandDetail> collect = arrearDemands.size() > 0 ? arrearDemands.get(0).getDemandDetails().stream().filter( d-> d.getCollectionAmount().intValue()>0).collect(Collectors.toList()): new ArrayList<DemandDetail>();
-			if(demands.size() > 0 || collect.size() >0 ) {
+			List<Demand> advanceDemands = demandResponse.getDemands().stream().filter( d-> d.getConsumerType().equalsIgnoreCase("waterConnection-advance")).collect(Collectors.toList());
+
+			List<DemandDetail> collectArrears = arrearDemands.size() > 0 ? arrearDemands.get(0).getDemandDetails().stream().filter( d-> d.getCollectionAmount().intValue()>0).collect(Collectors.toList()): new ArrayList<DemandDetail>();
+			List<DemandDetail> collectAdvance = advanceDemands.size() > 0 ? advanceDemands.get(0).getDemandDetails().stream().filter( d-> d.getCollectionAmount().intValue()>0).collect(Collectors.toList()): new ArrayList<DemandDetail>();
+
+			if(demands.size() > 0 || collectArrears.size() >0  || collectAdvance.size() > 0) {
 				if(!searchResult.getOldConnectionNo().equalsIgnoreCase(request.getWaterConnection().getOldConnectionNo())) {
 					errorMap.put("INVALID_UPDATE_OLD_CONNO", "Old ConnectionNo cannot be modified!!");
 				}

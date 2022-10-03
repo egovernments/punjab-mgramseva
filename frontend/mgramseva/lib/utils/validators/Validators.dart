@@ -93,12 +93,12 @@ class Validators {
     return null;
   }
 
-  static String? partialAmountValidatior(String? v, double? inputnum) {
+  static String? partialAmountValidatior(String? v, [double? inputnum]) {
     if (v!.trim().isEmpty) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.CANNOT_BE_EMPTY)}';
     } else if (!RegExp(r'^[0-9]+$').hasMatch(v)) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ENTER_NUMBERS_ONLY)}';
-    } else if (double.parse(v) > (inputnum!)) {
+    } else if (inputnum != null && double.parse(v) > (inputnum)) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.AMOUNT_EXCEEDS)}';
     }
     return null;

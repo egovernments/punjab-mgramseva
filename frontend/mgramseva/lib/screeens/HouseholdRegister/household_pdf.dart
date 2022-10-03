@@ -129,7 +129,7 @@ class HouseholdPdfCreator {
 
   pw.Table _buildTable(pw.Font ttf) {
     return pw.Table.fromTextArray(
-        cellPadding: pw.EdgeInsets.symmetric(vertical: 10),
+        cellPadding: pw.EdgeInsets.symmetric(vertical: 10, horizontal: 15),
         headers: headers,
         headerStyle: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold),
         cellStyle: pw.TextStyle(font: ttf, fontSize: 12),

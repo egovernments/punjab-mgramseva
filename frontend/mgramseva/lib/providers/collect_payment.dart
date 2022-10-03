@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
- import 'package:mgramseva/providers/formSubmit.dart';
+import 'package:mgramseva/providers/formSubmit.dart';
+import 'package:mgramseva/model/demand/update_demand_list.dart';
+import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -34,15 +36,20 @@ import 'package:number_to_words/number_to_words.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:image/image.dart' as img;
+import '../model/localization/language.dart';
 import 'common_provider.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:mgramseva/repository/billing_service_repo.dart';
+import 'package:mgramseva/model/bill/billing.dart';
+import 'package:mgramseva/model/demand/demand_list.dart';
 
 class CollectPaymentProvider with ChangeNotifier {
   var paymentStreamController = StreamController.broadcast();
 
   ScreenshotController screenshotController = ScreenshotController();
   var paymentModeList = <KeyValue>[];
+  UpdateDemandList? updateDemand;
 
   @override
   void dispose() {
@@ -51,16 +58,95 @@ class CollectPaymentProvider with ChangeNotifier {
   }
 
   Future<void> getBillDetails(
-      BuildContext context, Map<String, dynamic> query) async {
+      BuildContext context, Map<String, dynamic> query, List<Bill>? bill, List<Demands>? demandList, PaymentType? mdmsData, List<UpdateDemands>? updateDemandList ) async {
     try {
-      var paymentDetails = await ConsumerRepository().getBillDetails(query);
+
+
+      List<FetchBill>? paymentDetails;
+
+      // if(bill == null) {
+        paymentDetails = await ConsumerRepository().getBillDetails(query);
+      // }else{
+      //   paymentDetails = (bill.map((e)=> e.toJson()).toList()).map<FetchBill>((e)=> FetchBill.fromJson(e)).toList();
+      // }
+
+
+      if(demandList == null) {
+        var demand = await BillingServiceRepository().fetchdDemand({
+          "tenantId": query['tenantId'],
+          "consumerCode": query['consumerCode'],
+          "businessService": "WS",
+          // "status": "ACTIVE"
+        });
+
+        demandList = demand.demands;
+
+        if (demandList != null && demandList.length > 0) {
+          demandList.sort((a, b) =>
+              b
+                  .demandDetails!.first.auditDetails!.createdTime!
+                  .compareTo(
+                  a.demandDetails!.first.auditDetails!.createdTime!));
+        }
+      }
+
+      if (query['status'] != Constants.CONNECTION_STATUS.first){
+        if (updateDemandList == null) {
+          var demand = await BillingServiceRepository().fetchUpdateDemand({
+            "tenantId": query['tenantId'],
+            "consumerCodes": query['consumerCode'],
+            "isGetPenaltyEstimate": "true"
+          },
+              {
+                "GetBillCriteria": {
+                  "tenantId": query['tenantId'],
+                  "billId": null,
+                  "isGetPenaltyEstimate": true,
+                  "consumerCodes": [query['consumerCode']]
+                }
+              });
+          updateDemandList = demand.demands;
+          updateDemand?.totalApplicablePenalty = demand.totalApplicablePenalty;
+          updateDemandList?.forEach((e) {
+            e.totalApplicablePenalty = demand.totalApplicablePenalty;
+          });
+
+
+          if (updateDemandList != null && updateDemandList.length > 0) {
+            updateDemandList.sort((a, b) =>
+                b
+                    .demandDetails!.first.auditDetails!.createdTime!
+                    .compareTo(
+                    a.demandDetails!.first.auditDetails!.createdTime!));
+          }
+        }
+    }
+      else{}
+
       if (paymentDetails != null) {
-        paymentDetails.first.billDetails
+        if(mdmsData == null){
+          mdmsData = await CommonProvider.getMdmsBillingService();
+          paymentDetails.first.mdmsData = mdmsData;
+        }
+
+
+          paymentDetails.first.billDetails
             ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
+        demandList = demandList?.where((element) => element.status != 'CANCELLED').toList();
+        updateDemandList = updateDemandList?.where((element) => element.status != 'CANCELLED').toList();
+
         // var demandDetails = await ConsumerRepository().getDemandDetails(query);
         // if (demandDetails != null)
         // paymentDetails.first.demand = demandDetails.first;
         getPaymentModes(paymentDetails.first);
+        paymentDetails.first.customAmountCtrl.text = paymentDetails.first.totalAmount!.toInt() > 0 ? paymentDetails.first.totalAmount!.toInt().toString() : '';
+        paymentDetails.first.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount = double.parse(CommonProvider.getAdvanceAdjustedAmount(demandList ?? []));
+        paymentDetails.first.billDetails?.first.billAccountDetails?.last.arrearsAmount = CommonProvider.getArrearsAmount(demandList ?? []);
+        paymentDetails.first.billDetails?.first.billAccountDetails?.last.totalBillAmount = CommonProvider.getTotalBillAmount(demandList ?? []);
+        paymentDetails.first.demands = demandList?.first;
+        paymentDetails.first.demandList = demandList;
+        paymentDetails.first.updateDemands = updateDemandList?.first;
+        paymentDetails.first.updateDemandList = updateDemandList;
         paymentStreamController.add(paymentDetails.first);
         notifyListeners();
       }
@@ -323,9 +409,7 @@ class CollectPaymentProvider with ChangeNotifier {
       FetchBill fetchBill, BuildContext context) async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
-    var amount = fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key
-        ? fetchBill.customAmountCtrl.text
-        : fetchBill.totalAmount;
+    var amount = fetchBill.customAmountCtrl.text;
     var payment = {
       "Payment": {
         "tenantId": commonProvider.userDetails?.selectedtenant?.code,
@@ -418,9 +502,7 @@ class CollectPaymentProvider with ChangeNotifier {
       FetchBill fetchBill, BuildContext context) async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
-    var amount = fetchBill.paymentAmount == Constants.PAYMENT_AMOUNT.last.key
-        ? fetchBill.customAmountCtrl.text
-        : fetchBill.totalAmount;
+    var amount = fetchBill.customAmountCtrl.text;
     var transaction = {
       "Transaction": {
         "tenantId": commonProvider.userDetails?.selectedtenant?.code,
@@ -545,11 +627,11 @@ class CollectPaymentProvider with ChangeNotifier {
 
   onChangeOfPaymentAmountOrMethod(FetchBill fetchBill, String val,
       [isPaymentAmount = false]) {
-    if (isPaymentAmount) {
-      fetchBill.paymentAmount = val;
-    } else {
-      fetchBill.paymentMethod = val;
-    }
-    notifyListeners();
+    // if (isPaymentAmount) {
+    //   fetchBill.paymentAmount = val;
+    // } else {
+    //   fetchBill.paymentMethod = val;
+    // }
+    // notifyListeners();
   }
 }

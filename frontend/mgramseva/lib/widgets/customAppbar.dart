@@ -24,7 +24,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   Tenants? tenants;
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
@@ -53,7 +53,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           result.length > 1 &&
           commonProvider.userDetails!.selectedtenant == null) {
         WidgetsBinding.instance
-            ?.addPostFrameCallback((_) => showdialog(result));
+            .addPostFrameCallback((_) => showdialog(result));
       }
     } else {
       tenantProvider.getTenants().then((value) {
@@ -74,7 +74,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             result.length > 1 &&
             commonProvider.userDetails!.selectedtenant == null) {
           WidgetsBinding.instance
-              ?.addPostFrameCallback((_) => showdialog(result));
+              .addPostFrameCallback((_) => showdialog(result));
         }
       });
     }

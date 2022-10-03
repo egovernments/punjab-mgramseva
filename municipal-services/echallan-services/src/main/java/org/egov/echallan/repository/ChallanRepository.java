@@ -1,13 +1,14 @@
 package org.egov.echallan.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ObjectInputStream.GetField;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -17,6 +18,9 @@ import org.egov.echallan.model.Challan;
 import org.egov.echallan.model.ChallanRequest;
 import org.egov.echallan.model.ChallanResponse;
 import org.egov.echallan.model.SearchCriteria;
+import org.egov.echallan.model.biiling.service.BillDTO;
+import org.egov.echallan.model.biiling.service.BillDetailDTO;
+import org.egov.echallan.model.biiling.service.BillResponseDTO;
 import org.egov.echallan.producer.Producer;
 import org.egov.echallan.repository.builder.ChallanQueryBuilder;
 import org.egov.echallan.repository.rowmapper.ChallanRowMapper;
@@ -25,12 +29,16 @@ import org.egov.echallan.util.CommonUtils;
 import org.egov.echallan.web.models.collection.Bill;
 import org.egov.echallan.web.models.collection.PaymentDetail;
 import org.egov.echallan.web.models.collection.PaymentRequest;
+import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +50,9 @@ import static org.egov.echallan.repository.builder.ChallanQueryBuilder.*;
 @Slf4j
 @Repository
 public class ChallanRepository {
+
+	@Autowired
+	private BillingServiceRepository billingServiceRepository;
 
     private Producer producer;
     
@@ -100,11 +111,18 @@ public class ChallanRepository {
     }
     
     
-    public List<Challan> getChallans(SearchCriteria criteria, Map<String, String> finalData) {
+    public List<Challan> getChallans(SearchCriteria criteria, Map<String, String> finalData, RequestInfo requestInfo) {
         List<Object> preparedStmtList = new ArrayList<>();
         String query = queryBuilder.getChallanSearchQuery(criteria, preparedStmtList);
-        List<Challan> challans =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper); 
-        
+        List<Challan> challans =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper);
+
+		try {
+			setChallanAmount(criteria, challans, requestInfo);
+		} catch (JsonProcessingException e) {
+			log.error("Error while setting amount (billing service) to challan", e);
+			e.printStackTrace();
+		}
+
 		if (criteria.getIsBillCount()) {
 			List<Object> preparedStmnt = new ArrayList<>();
 			StringBuilder paidQuery = new StringBuilder(queryBuilder.bill_count);
@@ -128,6 +146,105 @@ public class ChallanRepository {
         return challans;
     }
 
+
+	/**
+	 * @param searchCriteria
+	 * @param challans
+	 * @param requestInfo
+	 * @throws JsonProcessingException
+	 */
+	private void setChallanAmount(@NonNull SearchCriteria searchCriteria, @NonNull List<Challan> challans,
+								  RequestInfo requestInfo) throws JsonProcessingException {
+
+		for (Challan challan : challans) {
+			if (StringUtils.isEmpty(challan.getReferenceId())) {
+				log.error("Reference Id is not updated for challan: " + challan.getId());
+				throw new CustomException("CHALLAN_REFERENCE_ID", "Reference Id is not updated for challan");
+			} else {
+				BigDecimal amount = null;
+				Optional<BillResponseDTO> billResponseOptional = billingServiceRepository
+						.searchBill(challan.getTenantId(), challan.getReferenceId(), challan.getBusinessService(),
+								requestInfo);
+
+				if (billResponseOptional.isPresent()) {
+					BillResponseDTO billResponse = billResponseOptional.get();
+
+					if (!CollectionUtils.isEmpty(billResponse.getBill())) {
+						List<BillDTO> bills = getActiveOrPaidBill(billResponse.getBill());
+
+						if (!challan.getReferenceId().equalsIgnoreCase(challan.getChallanNo())) {
+
+							amount = getAmountByAdditionalDetail(bills, challan);
+						}else {
+							Optional<BillDTO> billOptional = bills.stream()
+									.filter(billDTO -> challan.getChallanNo().equalsIgnoreCase(billDTO.getConsumerCode()))
+									.findFirst();
+
+							if (billOptional.isPresent()) {
+								Optional<BillDetailDTO> billDetailOptional = bills.stream()
+										.flatMap(billDTO -> billDTO.getBillDetails().stream())
+										.findFirst();
+
+								if (billOptional.isPresent()) {
+									amount = billDetailOptional.get().getAmount();
+								}
+							}
+						}
+					}
+				} else {
+					log.error("Unable to get bill detail for challan id: " + challan.getId());
+					throw new CustomException("CHALLAN_BILL_AMOUNT", "Unable to get bill detail for challan");
+				}
+
+				if (amount == null) {
+					log.error("CHALLAN_BILL_AMOUNT", "Unable to get amount from billing details");
+				}
+
+				challan.setTotalAmount(amount);
+			}
+		}
+	}
+
+	/**
+	 * @param bills
+	 * @param challan
+	 * @return
+	 */
+	private BigDecimal getAmountByAdditionalDetail(@NonNull List<BillDTO> bills, @NonNull Challan challan)  {
+    	BigDecimal amount = null;
+		try {
+			for (BillDTO billDTO : bills) {
+				List<BillDetailDTO> billDetailList = billDTO.getBillDetails();
+
+				for (BillDetailDTO billDetailDTO : billDetailList) {
+					JsonNode additionalDetails = new ObjectMapper()
+							.readTree(new Gson().toJson(billDetailDTO.getAdditionalDetails()));
+
+					if (additionalDetails.get("challanNo") != null &&
+							challan.getChallanNo().equalsIgnoreCase(additionalDetails.get("challanNo").asText())) {
+						return billDetailDTO.getAmount();
+					}
+				}
+			}
+		} catch (JsonProcessingException jpe) {
+			log.error("Exception occur while parsing additionalDetail json data", jpe);
+		} catch (Exception e) {
+			log.error("Exception occur while processing additionalDetail amount", e);
+		}
+
+		return amount;
+	}
+
+	/**
+	 * @param bills
+	 * @return
+	 */
+	private List<BillDTO> getActiveOrPaidBill(@NonNull List<BillDTO> bills) {
+    	return bills.stream()
+				.filter(billDTO -> (BillDTO.BillStatus.ACTIVE.equals(billDTO.getStatus())
+						|| BillDTO.BillStatus.PAID.equals(billDTO.getStatus())))
+				.collect(Collectors.toList());
+	}
 
 
 	public void updateFileStoreId(List<Challan> challans) {
