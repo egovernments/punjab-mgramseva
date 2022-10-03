@@ -93,7 +93,7 @@ class TaxAndPayments {
   String? taxAmount;
 
   @JsonKey(name: "amountPaid")
-  int? amountPaid;
+  double? amountPaid;
 
   @JsonKey(name: "billId")
   String? billId;

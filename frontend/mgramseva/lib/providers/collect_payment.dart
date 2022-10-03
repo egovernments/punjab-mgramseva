@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
+ import 'package:mgramseva/providers/formSubmit.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../components/HouseConnectionandBill/jsconnnector.dart' as js;
 import 'package:flutter/foundation.dart';
@@ -449,6 +452,16 @@ class CollectPaymentProvider with ChangeNotifier {
 
       var transactionDetails = await ConsumerRepository().createTransaction(transaction);
       if (transactionDetails != null && transactionDetails.transaction?.redirectUrl != null) {
+        // http.Response response = await payGovTest(
+        //     transactionDetails.transaction!.redirectUrl!) ;
+        // if (response.statusCode == 200) {
+        //   // launch(Uri.dataFromString(response.body,mimeType: 'text/html',).toString());
+        //   Navigator.pushReplacement(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (_) => FormSubmit(response.body)));
+        //
+        // }
         payGovTest(transactionDetails.transaction!.redirectUrl!);
       }
     } on CustomException catch (e, s) {
@@ -463,15 +476,19 @@ class CollectPaymentProvider with ChangeNotifier {
     }
   }
 
-  Future <http.Response> payGovTest(String redirectUrl) async {
-    // var redirectUrl = "https://pilot.surepay.ndml.in/SurePayPayment/sp/processRequest?additionalField3=111111&orderId=PB_PG_2022_09_25_0027_24&additionalField4=WS/7382/2022-23/0281&requestDateTime=25-09-202212:23:089&additionalField5=Watersupply01&successUrl=https://mgramseva-uat.psegs.in/mgramseva/paymentSuccess&failUrl=https://mgramseva-uat.psegs.in/mgramseva/paymentFailure&txURL=https://pilot.surepay.ndml.in/SurePayPayment/sp/processRequest&messageType=0100&merchantId=UATPWSSG0000001429&transactionAmount=50.00&customerId=4fc9da1e-7f6f-42e6-8a89-fc13ca5f13d9&checksum=753831033&additionalField1=9399998206&additionalField2=111111&serviceId=Watersupply01&currencyCode=INR";
+
+
+
+  Future <void> payGovTest(String redirectUrl) async {
     var postUri = Uri.parse(redirectUrl);
     DateTime now = new DateTime.now();
+    late http.Response response;
     var dateStringPrefix = '${postUri.queryParameters['requestDateTime']}'.split('${now.year}');
     var txnUrl = Uri.parse('${postUri.queryParameters['txURL']}');
 
     // var request = new http.MultipartRequest("POST", txnUrl);
     // request.headers.addAll({"Access-Control-Allow-Origin": "*", "Access-Control-Request-Method": "POST"});
+
     var details = {
       'checksum' : '${postUri.queryParameters['checksum']}',
       'messageType' : '${postUri.queryParameters['messageType']}',
@@ -490,17 +507,19 @@ class CollectPaymentProvider with ChangeNotifier {
       'additionalField4' : '${postUri.queryParameters['additionalField4']}',
       'additionalField5' : '${postUri.queryParameters['additionalField5']}',
     };
-    var response = await http.post(txnUrl,
+
+    var res = await http.post(txnUrl,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         "Access-Control-Allow-Origin": "*",
       },
-      body: details,);
-    print('isRedirect');
-    print(response.isRedirect);
-    print('Response body');
-    print(response.body);
-    return response;
+      body:  details,
+    );
+
+    // if (res.statusCode == 200){
+    //   response = res;
+    // }
+    // return response;
 
   }
 
