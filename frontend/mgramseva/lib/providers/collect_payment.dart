@@ -590,18 +590,18 @@ class CollectPaymentProvider with ChangeNotifier {
       'additionalField5' : '${postUri.queryParameters['additionalField5']}',
     };
 
-    var res = await http.post(txnUrl,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        "Access-Control-Allow-Origin": "*",
-      },
-      body:  details,
-    );
-
-    // if (res.statusCode == 200){
-    //   response = res;
-    // }
-    // return response;
+    try {
+      await http.post(txnUrl,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: details,
+      );
+    }
+    catch (e) {
+      print(e.toString());
+    }
 
   }
 
