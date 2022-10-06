@@ -410,6 +410,7 @@ class _Validators {
   String get PARTIAL_AMT_OUT_OF_RANGE => 'PARTIAL_AMT_OUT_OF_RANGE';
   String get CANNOT_BE_EMPTY => 'CANNOT_BE_EMPTY';
   String get AMOUNT_EXCEEDS => 'AMOUNT_EXCEEDS';
+  String get ADD_ARREAR_FOR_PENALTY => 'ADD_ARREAR_FOR_PENALTY';
 }
 
 class DemandGenerate {

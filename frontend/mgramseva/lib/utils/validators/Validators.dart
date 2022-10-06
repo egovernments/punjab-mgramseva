@@ -73,6 +73,13 @@ class Validators {
     return null;
   }
 
+  static String? arrearsPenaltyValidator(String? arrears, String? penalty) {
+    if (penalty!.trim().isNotEmpty && arrears!.trim().isEmpty) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ADD_ARREAR_FOR_PENALTY)}';
+    }
+    return null;
+  }
+
   static String? amountValidator(String? v) {
     if (v!.trim().isEmpty) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expense.AMOUNT_MENTIONED_IN_THE_BILL)}';
