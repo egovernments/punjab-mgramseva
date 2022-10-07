@@ -1,6 +1,4 @@
-import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/widgets/SearchSelectFieldBuilder.dart';
@@ -615,6 +613,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
       BuildTextField(i18.consumer.ARREARS,
         consumerProvider.waterconnection.arrearsCtrl,
         textInputType: TextInputType.number,
+        validator: (val) => Validators.arrearsPenaltyValidator(
+            val, consumerProvider.waterconnection.penaltyCtrl.text),
         inputFormatter: [
           FilteringTextInputFormatter.allow(
               RegExp("[0-9.]"))
