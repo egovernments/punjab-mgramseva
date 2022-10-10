@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/connection/property.dart';
-import 'package:mgramseva/model/localization/language.dart';
-import 'package:mgramseva/model/mdms/sub_category_type.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 
@@ -150,7 +148,7 @@ class WaterConnection {
         : null;
     penalty = penaltyCtrl.text.trim() != "" && double.parse(penaltyCtrl.text) > 0
         ? double.parse(penaltyCtrl.text).toDouble()
-        : null;
+        : 0.0;
     previousReadingDate = previousReadingDateCtrl.text != ""
         ? DateFormats.dateToTimeStamp(
             previousReadingDateCtrl.text,
