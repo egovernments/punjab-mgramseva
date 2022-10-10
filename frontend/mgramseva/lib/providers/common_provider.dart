@@ -641,7 +641,7 @@ class CommonProvider with ChangeNotifier {
     filteredDemands.forEach((billDetails) {
       billDetails.demandDetails?.forEach((billAccountDetails) {
         if(billAccountDetails.taxHeadMasterCode == '10201'){
-          penalty = ((billAccountDetails.taxAmount ?? 0) - (billAccountDetails.collectionAmount ?? 0));
+          penalty += ((billAccountDetails.taxAmount ?? 0) - (billAccountDetails.collectionAmount ?? 0));
         }
       });
     });
