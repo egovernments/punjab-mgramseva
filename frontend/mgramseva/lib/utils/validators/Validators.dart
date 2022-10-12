@@ -74,7 +74,7 @@ class Validators {
   }
 
   static String? arrearsPenaltyValidator(String? arrears, String? penalty) {
-    if (penalty!.trim().isNotEmpty && arrears!.trim().isEmpty) {
+    if (penalty!.trim().isNotEmpty && (arrears!.trim().isEmpty || int.parse(arrears.trim()) == 0)) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ADD_ARREAR_FOR_PENALTY)}';
     }
     return null;
