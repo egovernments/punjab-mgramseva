@@ -270,10 +270,13 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if(CommonProvider.getPenaltyOrAdvanceStatus(fetchBill.mdmsData, false) && !isFirstDemand && fetchBill.demandList?.first.demandDetails?.first.taxHeadMasterCode != '10201' && fetchBill.demands?.demandDetails?.any((e) => e.taxHeadMasterCode == '10201' ) == true )
+                            _buildLabelValue(i18.billDetails.WS_10201,
+                                '₹ ${CommonProvider.getNormalPenalty(fetchBill.demandList ?? [])}'),
                             _buildLabelValue(
                                 fetchBill.demands?.demandDetails?.first.taxHeadMasterCode == 'WS_TIME_PENALTY'
                                     ?  i18.billDetails.WS_10102 : 'WS_${fetchBill.demands?.demandDetails?.first.taxHeadMasterCode}',
-                                fetchBill.demandList?.first.demandDetails?.any((e) => e.taxHeadMasterCode == '10201' ) == true
+                                fetchBill.demandList?.first.demandDetails?.first.taxHeadMasterCode == '10201'
                                     ? '₹ ${CommonProvider.getNormalPenalty(fetchBill.demandList ?? [])}'
                                 : '₹ ${CommonProvider.getArrearsAmount(fetchBill.demandList ?? [])}'),
                           if( !isFirstDemand && fetchBill.demands?.demandDetails?.first.taxHeadMasterCode == 'WS_TIME_PENALTY')
