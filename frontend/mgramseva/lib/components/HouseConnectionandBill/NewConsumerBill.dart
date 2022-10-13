@@ -167,7 +167,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                   .toString(),
                                               context)
                                           : Text(""),
-                                      if(CommonProvider.getPenaltyOrAdvanceStatus(widget.waterConnection?.mdmsData, false) && !houseHoldProvider.isfirstdemand && widget.demandList.first.demandDetails?.first.taxHeadMasterCode == '10201')
+                                      if(CommonProvider.getPenaltyOrAdvanceStatus(widget.waterConnection?.mdmsData, false) && !houseHoldProvider.isfirstdemand && widget.demandList.first.demandDetails?.any((e) => e.taxHeadMasterCode == '10201' ) == true )
                                         getLabelText(
                                             i18.billDetails.WS_10201,
                                             ('₹' + CommonProvider.getNormalPenalty(widget.demandList).toString()),
