@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -614,8 +615,16 @@ public class DemandService {
 
 		// Loop through the consumerCodes and re-calculate the time base applicable
 		if (!CollectionUtils.isEmpty(res.getDemands())) {
-			List<Demand> demList = res.getDemands();
+			List<Demand> demResponse = res.getDemands();
 
+			
+			CopyOnWriteArrayList<Demand> demList = new CopyOnWriteArrayList<>(demResponse);
+
+			for(Demand demand: demList) {
+				if(WSCalculationConstant.DEMAND_CANCELLED_STATUS.equalsIgnoreCase(demand.getStatus().toString())){
+					demList.remove(demand);
+				}
+			}
 			Map<String, Demand> consumerCodeToDemandMap = res.getDemands().stream()
 					.collect(Collectors.toMap(Demand::getId, Function.identity()));
 
@@ -630,8 +639,8 @@ public class DemandService {
 				String type = (String) penaltyMaster.get(WSCalculationConstant.TYPE_FIELD_NAME);
 				String subType = (String) penaltyMaster.get(WSCalculationConstant.SUBTYPE_FIELD_NAME);
 				
-				int demandListSize = res.getDemands().size();
-				Demand latestDemand = res.getDemands().get(demandListSize -1);
+				int demandListSize = demList.size();
+				Demand latestDemand = demList.get(demandListSize - 1);
 				
 				if(isGetPenaltyEstimate && latestDemand.getDemandDetails().stream().filter(i->i.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY)).count() > 0) {
 					return res.getDemands();
@@ -682,11 +691,17 @@ public class DemandService {
 			}
 			
 			else {
-				consumerCodeToDemandMap.forEach((id, demand) -> {
-					if (demand.getStatus() != null
-							&& WSCalculationConstant.DEMAND_CANCELLED_STATUS.equalsIgnoreCase(demand.getStatus().toString()))
+				
+
+				if(consumerCodeToDemandMap.size() == 1) {
+					if (consumerCodeToDemandMap.entrySet().iterator().next().getValue().getStatus() != null
+							&& WSCalculationConstant.DEMAND_CANCELLED_STATUS.equalsIgnoreCase(consumerCodeToDemandMap.entrySet().iterator().next().getValue().getStatus().toString()))
 						throw new CustomException(WSCalculationConstant.EG_WS_INVALID_DEMAND_ERROR,
 								WSCalculationConstant.EG_WS_INVALID_DEMAND_ERROR_MSG);
+				}
+				consumerCodeToDemandMap.forEach((id, demand) -> {
+					if (demand.getStatus() != null
+							&& !WSCalculationConstant.DEMAND_CANCELLED_STATUS.equalsIgnoreCase(demand.getStatus().toString()))
 					applyTimeBasedApplicables(demand, requestInfoWrapper, timeBasedExemptionMasterMap, taxPeriods, isGetPenaltyEstimate, BigDecimal.ZERO, penaltyMaster,0);
 //					addRoundOffTaxHead(tenantId, demand.getDemandDetails());
 					demandsToBeUpdated.add(demand);

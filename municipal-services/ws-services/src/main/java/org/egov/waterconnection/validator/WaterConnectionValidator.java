@@ -1,5 +1,6 @@
 package org.egov.waterconnection.validator;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -151,10 +152,10 @@ public class WaterConnectionValidator {
 				Boolean isArrear = false;
 				Boolean isAdvance = false;
 				
-				if(request.getWaterConnection().getAdvance()!=null && request.getWaterConnection().getAdvance().toString() == "0") {
+				if(request.getWaterConnection().getAdvance()!=null && request.getWaterConnection().getAdvance().compareTo(BigDecimal.ZERO) == 0) {
 					isAdvance =  true;
 				}
-				if(request.getWaterConnection().getArrears()!=null && request.getWaterConnection().getArrears().toString() == "0") {
+				if(request.getWaterConnection().getArrears()!=null && request.getWaterConnection().getArrears().compareTo(BigDecimal.ZERO) == 0) {
 					isArrear =  true;
 				}
 				if ((request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demands.size() == data.size())
