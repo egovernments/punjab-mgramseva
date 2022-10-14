@@ -142,7 +142,7 @@ class WaterConnection {
 
     arrears = arrearsCtrl.text.trim() != "" && double.parse(arrearsCtrl.text) > 0
         ? double.parse(arrearsCtrl.text).toDouble()
-        : null;
+        : paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key ? 0.0 : null;
     advance = advanceCtrl.text.trim() != "" && double.parse(advanceCtrl.text) > 0
         ? -double.parse(advanceCtrl.text).toDouble()
         : null;
