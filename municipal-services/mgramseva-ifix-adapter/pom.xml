@@ -10,7 +10,7 @@
   </parent>
   <groupId>org.egov.io</groupId>
   <artifactId>mgramseva-ifix-adapter</artifactId>
-  <version>1.1.0-beta-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <name>Mgramseva IFIX Adapter</name>
   <description>Mgramseva Adapter</description>
   <url>http://maven.apache.org</url>

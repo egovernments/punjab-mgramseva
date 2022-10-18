@@ -1,6 +1,10 @@
 # Change log
 All notable changes to this module will be documented in this file.
 
+## 1.5.0 - 2022-10-14
+
+- bug fixes for penalty details api
+
 ## 1.5.0-beta - 2022-09-13
 
 - Penalty application after due date based on the penalty configured
