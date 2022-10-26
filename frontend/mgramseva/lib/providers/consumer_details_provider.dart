@@ -230,7 +230,7 @@ class ConsumerProvider with ChangeNotifier {
       } else if (demand?.length == 1 &&
           demand?.first.consumerType == 'waterConnection-arrears') {
         isfirstdemand = false;
-      }else if(demand?.length == 1 && demand?.first.demandDetails?.length == 1 && demand?.first.demandDetails?.first.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
+      }else if(demand?.length == 1 && demand?.first.consumerType == 'waterConnection-advance' && demand?.first.demandDetails?.first.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
         isfirstdemand = false;
       } else {
         isfirstdemand = true;

@@ -2,6 +2,10 @@
 
 All notable changes to this module will be documented in this file.
 
+## 1.2.0 - 2022-10-14
+
+- version update
+
 ## 1.2.0-beta - 2022-09-13
 
 - the referenceId of the eChallan object is mapped to consumerCode of billing-service and collection-service

@@ -1,6 +1,9 @@
 
 All notable changes to this module will be documented in this file.
 
+## 1.4.0 - 2022-10-14
+- version update
+
 ## 1.4.0-beta - 2022-09-13
 - Allowing the creation of bills for advance amount
 - Adding a new api to get the demand audit history
