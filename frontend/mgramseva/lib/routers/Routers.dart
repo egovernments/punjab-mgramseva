@@ -73,6 +73,8 @@ class Routes {
 
   static const String POST_PAYMENT_FEED_BACK = '/feedBack';
 
+  static const String COMMON_PAYMENT = '/commonPayment';
+
   static const String FEED_BACK_SUBMITTED_SUCCESSFULLY =
       '/feedBack/submittedSuccessfully';
 

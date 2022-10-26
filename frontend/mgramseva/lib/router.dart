@@ -28,6 +28,7 @@ import 'package:mgramseva/screeens/Feedback/feed_back.dart';
 import 'package:mgramseva/screeens/common/PaymentFailure.dart';
 import 'package:mgramseva/screeens/common/PaymentSuccess.dart';
 import 'package:mgramseva/screeens/common/commondownload.dart';
+import 'package:mgramseva/screeens/common/consumerCollectPayment.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/role_actions.dart';
@@ -87,6 +88,29 @@ class router {
         return MaterialPageRoute(
             builder: (_) => CommonDownload(query: localQuery),
             settings: RouteSettings(name: routePath));
+      }
+      else if (Routes.COMMON_PAYMENT == path && settings.arguments == null) {
+        late Map<String, dynamic> localQuery;
+        if (settings.arguments != null) {
+          var cloneQuery = <String, dynamic>{};
+          cloneQuery.addAll(settings.arguments as Map<String, dynamic>);
+          localQuery = cloneQuery;
+          localQuery.remove('demandList');
+          localQuery.remove('fetchBill');
+        }
+        else {
+          if (queryValidator(Routes.COMMON_PAYMENT, query)) {
+            localQuery = query;
+          } else {
+            return pageNotAvailable;
+          }
+        }
+
+        return MaterialPageRoute(
+            builder: (_) => ConsumerCollectPayment(query: localQuery,bill: (settings.arguments as Map?)?['fetchBill'] as List<Bill>?, demandList: (settings.arguments as Map?)?['demandList'] as List<Demands>?),
+            settings: RouteSettings(
+                name:
+                '${Routes.COMMON_PAYMENT}?${Uri(queryParameters: localQuery).query}'));
       }
 
       var userDetails = commonProvider.getWebLoginStatus();
@@ -391,6 +415,7 @@ class router {
           localQuery = cloneQuery;
           localQuery.remove('demandList');
           localQuery.remove('fetchBill');
+          localQuery.remove('status');
         }
         return MaterialPageRoute(
             builder: (_) => ConnectionPaymentView(query: localQuery, bill: (settings.arguments as Map?)?['fetchBill'] as List<Bill>?, demandList: (settings.arguments as Map?)?['demandList'] as List<Demands>?),
@@ -464,6 +489,13 @@ class router {
         if (query.keys.contains('mode') &&
             query.keys.contains('consumerCode') &&
             query.keys.contains('businessService')) return true;
+        return false;
+
+      case Routes.COMMON_PAYMENT:
+        if(query.keys.contains('consumerCode') &&
+            query.keys.contains('tenantId') &&
+            query.keys.contains('businessService') &&
+            query.keys.contains('status')) return true;
         return false;
       default:
         return false;

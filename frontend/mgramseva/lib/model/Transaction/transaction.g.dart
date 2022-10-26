@@ -71,7 +71,7 @@ Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
 TaxAndPayments _$TaxAndPaymentsFromJson(Map<String, dynamic> json) {
   return TaxAndPayments()
     ..taxAmount = json['taxAmount'] as String?
-    ..amountPaid = json['amountPaid'] as double?
+    ..amountPaid = json['amountPaid'] as int?
     ..billId = json['billId'] as String?;
 }
 
