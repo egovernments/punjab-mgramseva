@@ -143,7 +143,8 @@ class ConsumerRepository extends BaseService {
             APIConstants.API_DID,
             APIConstants.API_KEY,
             APIConstants.API_MESSAGE_ID,
-            commonProvider.userDetails!.accessToken));
+            commonProvider.userDetails!.accessToken,
+            {'userInfo': commonProvider.userDetails?.userRequest?.toJson()}));
 
     if (res != null) {
       demand = res['Demands']?.map<Demand>((e) => Demand.fromJson(e)).toList();
