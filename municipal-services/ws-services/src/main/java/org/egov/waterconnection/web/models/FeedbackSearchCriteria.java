@@ -2,6 +2,8 @@ package org.egov.waterconnection.web.models;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +33,12 @@ public class FeedbackSearchCriteria {
 	private Long offset;
 	
 	private Long limit;
+	
+	@JsonProperty("fromDate")
+	private Long fromDate = null;
+
+	@JsonProperty("toDate")
+	private Long toDate = null;
 	
 	
 }

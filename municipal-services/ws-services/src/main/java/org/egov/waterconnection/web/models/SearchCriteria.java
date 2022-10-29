@@ -1,5 +1,6 @@
 package org.egov.waterconnection.web.models;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -104,7 +105,23 @@ public class SearchCriteria {
 	
 	@JsonProperty("isPropertyCount")
 	private Boolean isPropertyCount = false;
-	    
+	
+	@JsonProperty("isBillPaid")
+	private Boolean isBillPaid;
+	
+	private Boolean isCollectionDataCount = false;
+	
+	@JsonProperty("isCollectionCount") 
+	private Boolean isCollectionCount = false;
+
+	@JsonProperty("currentDate")
+	private Long currentDate;
+	
+	@JsonProperty("textSearch")
+	private String textSearch;
+	
+	private Set<String> connectionNoSet;
+	
 	public enum SortOrder {
 	    ASC,
 	    DESC
@@ -112,7 +129,8 @@ public class SearchCriteria {
 	public enum SortBy {
 		connectionNumber,
 		name,
-		collectionAmount
+		collectionAmount,
+		collectionPendingAmount
 	}
 
 	public boolean isEmpty() {

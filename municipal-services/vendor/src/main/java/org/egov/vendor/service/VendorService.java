@@ -59,7 +59,9 @@ public class VendorService {
 		if (vendorRequest.getVendor().getTenantId().split("\\.").length == 1) {
 			throw new CustomException("Invalid TenantId", " Application cannot be create at StateLevel");
 		}
-
+		vendorRequest.getVendor().setName(vendorRequest.getVendor().getName().trim());
+		vendorRequest.getVendor().getOwner().setName(vendorRequest.getVendor().getOwner().getName().trim());
+		
 		vendorValidator.validateCreate(vendorRequest);
 		enrichmentService.enrichCreate(vendorRequest);
 		vendorRepository.save(vendorRequest);

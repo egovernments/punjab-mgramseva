@@ -27,6 +27,7 @@ public class MgramasevaAdapterBillConsumer {
 	public void listen(final HashMap<String, Object> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		BillRequestV2 billRequest=null;
+		log.info("create and update bill topic");
 		try {
 			log.debug("Consuming record: " + record);
 			billRequest = mapper.convertValue(record, BillRequestV2.class);

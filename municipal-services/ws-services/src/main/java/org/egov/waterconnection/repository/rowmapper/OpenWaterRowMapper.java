@@ -57,12 +57,16 @@ public class OpenWaterRowMapper implements ResultSetExtractor<List<WaterConnecti
                 additionalDetails.put(WCConstants.APP_CREATED_DATE, rs.getBigDecimal("appCreatedDate"));
                 additionalDetails.put(WCConstants.LOCALITY, rs.getString("locality"));
                 additionalDetails.put("collectionAmount", rs.getString("collectionamount"));
+                additionalDetails.put("collectionPendingAmount", rs.getString("pendingamount"));
                 currentWaterConnection.setAdditionalDetails(additionalDetails);
                 currentWaterConnection
                         .processInstance(ProcessInstance.builder().action((rs.getString("action"))).build());
                 currentWaterConnection.setPropertyId(rs.getString("property_id"));
                 currentWaterConnection.setPreviousReadingDate(rs.getLong("previousreadingdate"));
                 currentWaterConnection.setArrears(rs.getBigDecimal("arrears"));
+                currentWaterConnection.setPaymentType(rs.getString("paymentType"));
+                currentWaterConnection.setPenalty(rs.getBigDecimal("penalty"));
+                currentWaterConnection.setAdvance(rs.getBigDecimal("advance"));
                 currentWaterConnection.setConnectionExecutionDate(rs.getLong("connectionExecutionDate"));
                 currentWaterConnection.setApplicationType(rs.getString("applicationType"));
                 currentWaterConnection.setDateEffectiveFrom(rs.getLong("dateEffectiveFrom"));

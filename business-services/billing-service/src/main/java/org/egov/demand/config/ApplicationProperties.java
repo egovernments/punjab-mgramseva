@@ -75,6 +75,9 @@ public class ApplicationProperties {
 	@Value("${bs.bill.billnumber.format}")
 	private String billNumberFormat;
 	
+	@Value("${bs.bill.billnumber.name}")
+	private String billNumberName;
+	
 	@Value("${bs.bill.billnumber.format.module}")
 	private String moduleReplaceStirng;
 	

@@ -1,13 +1,18 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
+import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetails.dart';
 import 'package:mgramseva/screeens/Home/Home.dart';
+import 'package:mgramseva/screeens/HouseholdRegister/HouseholdRegister.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
 import 'package:mgramseva/screeens/ConnectionResults/SearchConnection.dart';
+import 'package:mgramseva/screeens/Notifications/Notifications.dart';
 import 'package:mgramseva/screeens/PasswordSuccess/Passwordsuccess.dart';
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
 import 'package:mgramseva/main.dart';
@@ -98,6 +103,16 @@ class router {
         path = Routes.HOME;
       }
     }
+
+
+    if (kIsWeb) {
+      FirebaseAnalytics analytics = FirebaseAnalytics();
+      analytics.logEvent(name: "screen_view", parameters: {
+        'firebase_screen': "$path",
+        'screen_name': "$path",
+      });
+    }
+
     if (!(path != null && RoleActionsFiltering().isEligibleRoletoRoute(path)))
       return pageNotAvailable;
 
@@ -245,15 +260,18 @@ class router {
       case Routes.HOUSEHOLD_DETAILS:
         String? id;
         String? mode;
+        String? status;
         if (settings.arguments != null) {
           id = ((settings.arguments as Map)['waterconnections']
                   as WaterConnection)
               .connectionNo;
           mode = (settings.arguments as Map)['mode'];
+          status = (settings.arguments as Map)['status'];
         } else {
           if (queryValidator(Routes.HOUSEHOLD_DETAILS, query)) {
             id = query['applicationNo'];
             mode = query['mode'];
+            status = query['status'];
           } else {
             return pageNotAvailable;
           }
@@ -262,22 +280,23 @@ class router {
             builder: (_) => HouseholdDetail(
                 id: id,
                 mode: mode,
+                status: status,
                 waterconnection: settings.arguments != null
                     ? (settings.arguments as Map)['waterconnections']
                         as WaterConnection
                     : null),
             settings: RouteSettings(
                 name:
-                    '${Routes.HOUSEHOLD_DETAILS}?applicationNo=$id&mode=$mode'));
+                    '${Routes.HOUSEHOLD_DETAILS}?applicationNo=$id&mode=$mode&status=$status'));
 
       case Routes.DASHBOARD:
-        var tabIndex = 0;
+        int? tabIndex;
         if (query.isNotEmpty && query.containsKey('tab')) {
           tabIndex = int.parse(query['tab'] ?? '0');
         }
         return MaterialPageRoute(
             builder: (_) => Dashboard(initialTabIndex: tabIndex),
-            settings: RouteSettings(name: '${Routes.DASHBOARD}?tab=$tabIndex'));
+            settings: RouteSettings(name: tabIndex != null ? '${Routes.DASHBOARD}?tab=$tabIndex' : '${Routes.DASHBOARD}'));
       case Routes.SEARCH_CONSUMER_RESULT:
         if (settings.arguments == null) {
           return MaterialPageRoute(
@@ -357,10 +376,14 @@ class router {
             return pageNotAvailable;
           }
         } else {
-          localQuery = settings.arguments as Map<String, dynamic>;
+          var cloneQuery = <String, dynamic>{};
+          cloneQuery.addAll(settings.arguments as Map<String, dynamic>);
+          localQuery = cloneQuery;
+          localQuery.remove('demandList');
+          localQuery.remove('fetchBill');
         }
         return MaterialPageRoute(
-            builder: (_) => ConnectionPaymentView(query: localQuery),
+            builder: (_) => ConnectionPaymentView(query: localQuery, bill: (settings.arguments as Map?)?['fetchBill'] as List<Bill>?, demandList: (settings.arguments as Map?)?['demandList'] as List<Demands>?),
             settings: RouteSettings(
                 name:
                     '${Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT}?${Uri(queryParameters: localQuery).query}'));
@@ -386,6 +409,14 @@ class router {
         return MaterialPageRoute(
             builder: (_) => GenerateBill(),
             settings: RouteSettings(name: Routes.MANUAL_BILL_GENERATE));
+      case Routes.HOUSEHOLD_REGISTER:
+        return MaterialPageRoute(
+            builder: (_) => HouseholdRegister(),
+            settings: RouteSettings(name: Routes.HOUSEHOLD_REGISTER));
+      case Routes.NOTIFICATIONS:
+        return MaterialPageRoute(
+            builder: (_) => NotificationScreen(),
+            settings: RouteSettings(name: Routes.NOTIFICATIONS));
       default:
         return MaterialPageRoute(
           builder: (_) => SelectLanguage(),

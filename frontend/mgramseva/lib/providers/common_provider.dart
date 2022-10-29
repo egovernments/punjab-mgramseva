@@ -1,9 +1,14 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:mgramseva/model/bill/bill_payments.dart';
+import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
+import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/model/user/user_details.dart';
 import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/language.dart';
@@ -12,12 +17,14 @@ import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/LocalStorage.dart';
+import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
@@ -26,11 +33,15 @@ import 'package:universal_html/html.dart' as html;
 import 'package:universal_html/html.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:pdf/widgets.dart' as pw;
+
+import '../model/demand/update_demand_list.dart';
 
 class CommonProvider with ChangeNotifier {
   List<LocalizationLabel> localizedStrings = <LocalizationLabel>[];
   var userLoggedStreamCtrl = StreamController.broadcast();
   UserDetails? userDetails;
+  static Map<String, String> downloadUrl = {};
 
   dispose() {
     userLoggedStreamCtrl.close();
@@ -203,8 +214,25 @@ class CommonProvider with ChangeNotifier {
 
         stateResponse = window.localStorage[Constants.STATES_KEY];
       } else {
-        loginResponse = await storage.read(key: Constants.LOGIN_KEY);
-        stateResponse = await storage.read(key: Constants.STATES_KEY);
+         var isUpdated = false;
+          try {
+              if (!await storage.containsKey(key:Constants.APP_VERSION)) {
+                await storage.deleteAll();
+                isUpdated = true;
+                storage.write(key: Constants.APP_VERSION, value: packageInfo?.version);
+              } else {
+                if (await storage.read(key: Constants.APP_VERSION) != packageInfo?.version) {
+                  await storage.deleteAll();
+                  isUpdated = true;
+                  storage.write(key: Constants.APP_VERSION, value: packageInfo?.version);
+                }
+            }
+          } catch (e) {}
+
+        if(!isUpdated) {
+          loginResponse = await storage.read(key: Constants.LOGIN_KEY);
+          stateResponse = await storage.read(key: Constants.STATES_KEY);
+        }
       }
 
       if (stateResponse != null && stateResponse.trim().isNotEmpty) {
@@ -232,8 +260,26 @@ class CommonProvider with ChangeNotifier {
     dynamic loginResponse;
     dynamic stateResponse;
 
-    loginResponse = window.localStorage[Constants.LOGIN_KEY];
-    stateResponse = window.localStorage[Constants.STATES_KEY];
+    var isUpdated = false;
+    if (!window.localStorage.containsKey(Constants.APP_VERSION)) {
+      window.localStorage.clear();
+      isUpdated = true;
+      window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
+    } else {
+      if (window.localStorage[Constants.APP_VERSION] !=
+          packageInfo?.version) {
+        window.localStorage.clear();
+        isUpdated = true;
+        window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
+      }
+    }
+
+    if(!isUpdated) {
+      loginResponse = window.localStorage[Constants.LOGIN_KEY];
+      stateResponse = window.localStorage[Constants.STATES_KEY];
+    }else{
+      userDetails = null;
+    }
 
     if (stateResponse != null && stateResponse.trim().isNotEmpty) {
       languageProvider.stateInfo =
@@ -267,17 +313,40 @@ class CommonProvider with ChangeNotifier {
 
   void shareonwatsapp(FileStore store, mobileNumber, input) async {
     if (store.url == null) return;
+    late html.AnchorElement anchorElement;
     try {
       var res = await CoreRepository().urlShotner(store.url as String);
       if (kIsWeb) {
-        html.AnchorElement anchorElement = new html.AnchorElement(
-            href: "https://wa.me/+91$mobileNumber?text=" +
-                input.toString().replaceFirst('<link>', res!));
+        if (mobileNumber == null) {
+          anchorElement = new html.AnchorElement(
+              href: "https://wa.me/send?text=" +
+                  input.toString().replaceFirst('{link}', res!));
+        } else {
+          anchorElement = new html.AnchorElement(
+              href: "https://wa.me/+91$mobileNumber?text=" +
+                  input.toString().replaceFirst('{link}', res!));
+        }
+
         anchorElement.target = "_blank";
         anchorElement.click();
       } else {
-        var link = "https://wa.me/+91$mobileNumber?text=" +
-            input.toString().replaceFirst('<link>', res!);
+        var link;
+        if (mobileNumber == null) {
+          final FlutterShareMe flutterShareMe = FlutterShareMe();
+         var response = await flutterShareMe.shareToWhatsApp(
+              msg: input.toString().replaceFirst('{link}', res!)) ?? '';
+          if(response.contains('PlatformException')){
+            link = "https://api.whatsapp.com/send?text=" +
+                input.toString().replaceAll(" ", "%20").replaceFirst('{link}', res);
+            await canLaunch(link)
+                ? launch(link)
+                : ErrorHandler.logError('failed to launch the url ${link}');
+          }
+          return;
+        } else {
+          link = "https://wa.me/+91$mobileNumber?text=" +
+              input.toString().replaceAll(" ", "%20").replaceFirst('{link}', res!);
+        }
         await canLaunch(link)
             ? launch(link)
             : ErrorHandler.logError('failed to launch the url ${link}');
@@ -310,11 +379,11 @@ class CommonProvider with ChangeNotifier {
       String link = (ApplicationLocalizations.of(navigatorKey.currentContext!)
           .translate(i18.common.SHARE_RECEIPT_LINK)
           .toString()
-          .replaceFirst('<user>', payments.paidBy!)
-          .replaceFirst('<Amount>', payments.totalAmountPaid.toString())
-          .replaceFirst('<new consumer id>',
+          .replaceFirst('{user}', payments.paidBy!)
+          .replaceFirst('{Amount}', payments.totalAmountPaid.toString())
+          .replaceFirst('{new consumer id}',
               payments.paymentDetails!.first.bill!.consumerCode.toString())
-          .replaceFirst('<Amount>',
+          .replaceFirst('{Amount}',
               (payments.totalDue! - payments.totalAmountPaid!).toString()));
       getStoreFileDetails(res!.filestoreIds!.first, mode, mobileNumber,
           navigatorKey.currentContext, link);
@@ -336,11 +405,11 @@ class CommonProvider with ChangeNotifier {
       String link = (ApplicationLocalizations.of(navigatorKey.currentContext!)
           .translate(i18.common.SHARE_BILL_LINK)
           .toString()
-          .replaceFirst('<user>', bill.payerName!.toString())
-          .replaceFirst('<cycle>',
+          .replaceFirst('{user}', bill.payerName!.toString())
+          .replaceFirst('{cycle}',
               '${DateFormats.getMonthWithDay(bill.billDetails?.first?.fromPeriod)} - ${DateFormats.getMonthWithDay(bill.billDetails?.first?.toPeriod)}')
-          .replaceFirst('<new consumer id>', bill.consumerCode!.toString())
-          .replaceFirst('<Amount>', bill.totalAmount.toString()));
+          .replaceFirst('{new consumer id}', bill.consumerCode!.toString())
+          .replaceFirst('{Amount}', bill.totalAmount.toString()));
       getStoreFileDetails(
         res!.filestoreIds!.first,
         mode,
@@ -374,5 +443,426 @@ class CommonProvider with ChangeNotifier {
     } catch (e) {
       return '';
     }
+  }
+
+  Future<void> sharePdfOnWhatsApp(BuildContext context, pw.Document pdf,
+      String fileName, String localizedText,
+      {bool isDownload = false}) async {
+    try {
+      if (isDownload && kIsWeb) {
+        final blob = html.Blob([await pdf.save()]);
+        final url = html.Url.createObjectUrlFromBlob(blob);
+        final anchor = html.document.createElement('a') as html.AnchorElement
+          ..href = url
+          ..style.display = 'none'
+          ..download = '$fileName.pdf';
+        html.document.body?.children.add(anchor);
+        anchor.click();
+        html.document.body?.children.remove(anchor);
+        html.Url.revokeObjectUrl(url);
+      } else {
+        /// Enable loader
+        Loaders.showLoadingDialog(context, label: '');
+
+        Uint8List data = await pdf.save();
+
+        /// Uploading file to S3 bucket
+        var file = CustomFile(data, fileName, 'pdf');
+        var response = await CoreRepository()
+            .uploadFiles(<CustomFile>[file], APIConstants.API_MODULE_NAME);
+
+        if (response.isNotEmpty) {
+          var commonProvider =
+              Provider.of<CommonProvider>(context, listen: false);
+          var res =
+              await CoreRepository().fetchFiles([response.first.fileStoreId!]);
+          if (res != null && res.isNotEmpty) {
+            if (isDownload) {
+              CoreRepository().fileDownload(context, res.first.url ?? '');
+            } else {
+              var url = res.first.url ?? '';
+              if (url.contains(',')) {
+                url = url.split(',').first;
+              }
+              response.first.url = url;
+
+              commonProvider.shareonwatsapp(
+                  response.first, null, localizedText);
+            }
+          }
+        }
+        navigatorKey.currentState?.pop();
+      }
+    } catch (e, s) {
+      navigatorKey.currentState?.pop();
+      ErrorHandler().allExceptionsHandler(context, e, s);
+    }
+  }
+
+  Future<pw.Font> getPdfFontFamily() async {
+    var language = Provider.of<LanguageProvider>(navigatorKey.currentContext!,
+        listen: false);
+
+    switch (language.selectedLanguage!.value) {
+      case 'en_IN':
+        return pw.Font.ttf(
+            await rootBundle.load('assets/fonts/Roboto/Roboto-Regular.ttf'));
+      case 'hi_IN':
+        return pw.Font.ttf(
+            await rootBundle.load('assets/fonts/Roboto/Hind-Regular.ttf'));
+      default:
+        return pw.Font.ttf(
+            await rootBundle.load('assets/fonts/Roboto/punjabi.ttf'));
+    }
+  }
+
+  // static  String getAdvanceAdjustedAmount(List<Demands> demandList) {
+  //   var amount = '0';
+  //   var index = -1;
+  //   for(int i =0; i < demandList.length; i++){
+  //     index = demandList[i].demandDetails?.lastIndexWhere((e) => e.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD') ?? -1;
+  //     if(index != -1){
+  //
+  //       if(demandList[i].demandDetails?.length == 1){
+  //
+  //       }else if(demandList[i].demandDetails?.length == 2){
+  //         amount = (demandList[i].demandDetails![index].collectionAmount ?? 0).toString();
+  //       } else if(demandList[i].demandDetails?[index].collectionAmount == demandList[i].demandDetails?[index].taxAmount){
+  //         if((demandList.first.demandDetails?.first.collectionAmount ?? 0) > 0){
+  //          amount = (-(demandList.first.demandDetails!.first.collectionAmount ?? 0)).toString();
+  //         }else {
+  //           amount = (demandList[i].demandDetails![index].collectionAmount ?? 0).toString();
+  //         }
+  //         }
+  //       else{
+  //         amount = ((demandList[i].demandDetails![index].collectionAmount ?? 0) -  (demandList[i].demandDetails![index-1].collectionAmount ?? 0)).toString();
+  //       }
+  //       break;
+  //     }
+  //   }
+  //   return amount;
+  // }
+
+  static  String getAdvanceAdjustedAmount(List<Demands> demandList) {
+    var amount = '0.0';
+    var index = -1;
+
+    if (demandList.isEmpty) return amount;
+
+    var filteredDemands = demandList.where((e) =>
+    !(e.isPaymentCompleted ?? false))
+        .toList();
+    if( filteredDemands.first.demandDetails?.first.taxHeadMasterCode == 'WS_TIME_PENALTY'
+      && CommonProvider.getPenaltyApplicable(demandList).penaltyApplicable != 0) {
+      return amount;
+    }
+
+    else {
+      for (int i = 0; i < filteredDemands.length; i++) {
+        index = demandList[i].demandDetails?.lastIndexWhere((e) =>
+        e.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD') ?? -1;
+
+        if (index != -1) {
+          var demandDetail = demandList[i].demandDetails?[index];
+          if (demandDetail!.collectionAmount!.abs() <
+              demandDetail.taxAmount!.abs()) {
+            amount = filteredDemands.first.demandDetails?.last.collectionAmount
+                ?.toString() ?? '0.0';
+          } else
+          if (demandDetail.collectionAmount! == demandDetail.taxAmount!) {
+            if (filteredDemands.first.demandDetails?.last.collectionAmount !=
+                0) {
+              var list = <double>[];
+              for (int j = 0; j <= i; j++) {
+                for (int k = 0; k <
+                    (filteredDemands[j].demandDetails?.length ?? 0); k++) {
+                  if (k == index && j == i) break;
+                  list.add(
+                      filteredDemands[j].demandDetails![k].collectionAmount ??
+                          0);
+                }
+              }
+              var collectedAmount = list.reduce((a, b) => a + b);
+              amount = double.parse("$collectedAmount") >=
+                  double.parse("${demandDetail.collectionAmount?.abs()}")
+                  ? filteredDemands.first.demandDetails?.last.collectionAmount
+                  ?.toString() ?? '0.0' : '0.0';
+            }
+          }
+        }
+      }
+    }
+    return amount;
+  }
+
+  static double getTotalBillAmount(List<Demands> demandList) {
+    if(!isFirstDemand(demandList)){
+      var amount = 0.0;
+      demandList.first.demandDetails?.forEach((demand) {
+        if(demand.taxHeadMasterCode == '10102' || demand.taxHeadMasterCode == '10201' || demand.taxHeadMasterCode == 'WS_TIME_PENALTY')
+          amount += ((demand.taxAmount ?? 0) - (demand.collectionAmount ?? 0));
+      });
+      return amount;
+    }
+    return ((CommonProvider.checkAdvance(demandList) ? (demandList.first.demandDetails?.first.taxAmount ?? 0)
+            : (demandList.first.demandDetails?.first.taxAmount ?? 0) - (demandList.first.demandDetails?.first.collectionAmount ?? 0)) + CommonProvider.getArrearsAmount(demandList));
+
+  }
+
+  static num getNetDueAmountWithWithOutPenalty(num totalAmount, Penalty penalty, [bool withPenalty = false]){
+    if(withPenalty) return totalAmount >= 0 ? (penalty.isDueDateCrossed ? totalAmount : totalAmount + penalty.penalty) :  penalty.penalty;
+    return totalAmount >= 0 ? (totalAmount) : 0.0;
+  }
+
+  static bool isFirstDemand(List<Demands> demandList){
+    var isFirstDemand = false;
+
+
+    if(demandList.isEmpty == true) {
+      isFirstDemand = false;
+    } else if (demandList.length == 1 &&
+        demandList.first.consumerType == 'waterConnection-arrears') {
+      isFirstDemand = false;
+    } else if(demandList.length == 1 && demandList.first.consumerType == 'waterConnection-advance' && demandList.first.demandDetails?.first.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
+      isFirstDemand = false;
+    }else {
+      isFirstDemand = true;
+    }
+    return isFirstDemand;
+  }
+
+  static double getNormalPenalty(List<Demands> demandList){
+    var penalty = 0.0;
+
+    var filteredDemands = demandList.where((e) =>
+    !(e.isPaymentCompleted ?? false))
+        .toList();
+
+    filteredDemands.forEach((billDetails) {
+      billDetails.demandDetails?.forEach((billAccountDetails) {
+        if(billAccountDetails.taxHeadMasterCode == '10201'){
+          penalty += ((billAccountDetails.taxAmount ?? 0) - (billAccountDetails.collectionAmount ?? 0));
+        }
+      });
+    });
+    return penalty;
+  }
+
+  static double getCurrentBill(List<Demands> demandList){
+    var currentBill = 0.0;
+    var currentBillLeft = 0.0;
+
+    var filteredDemands = demandList.where((e) =>
+    !(e.isPaymentCompleted ?? false));
+
+    filteredDemands.forEach((elem) {
+      elem.demandDetails?.forEach((demand) {
+        if(demand.taxHeadMasterCode == '10101'){
+          currentBillLeft = ((demand.taxAmount ?? 0) - (demand.collectionAmount ?? 0));
+        }
+      });
+    });
+
+    if(currentBillLeft == 0) {
+      filteredDemands.first.demandDetails?.forEach((billAccountDetails) {
+        if (billAccountDetails.taxHeadMasterCode == '10101' ) {
+          currentBill +=  ((billAccountDetails.taxAmount ?? 0) -
+              (billAccountDetails.collectionAmount ?? 0));
+        }
+      });
+    }
+    else{
+      currentBill = currentBillLeft;
+    }
+
+
+    return currentBill;
+  }
+
+  static Penalty getPenalty(List<UpdateDemands>? demandList) {
+    Penalty? penalty;
+
+    var filteredDemands = demandList?.where((e) =>
+    !(e.isPaymentCompleted ?? false)).first;
+
+      filteredDemands?.demandDetails?.forEach((billAccountDetails) {
+        if(billAccountDetails.taxHeadMasterCode == 'WS_TIME_PENALTY'){
+          var amount =  billAccountDetails.taxAmount?? 0;
+          DateTime billGenerationDate,expiryDate;
+          // DateTime.fromMillisecondsSinceEpoch(1659420829000);
+          var date = billAccountDetails.auditDetails != null ?
+          DateTime.fromMillisecondsSinceEpoch(billAccountDetails.auditDetails!.createdTime ?? 0)
+           : DateTime.fromMillisecondsSinceEpoch(filteredDemands.demandDetails?.first.auditDetails!.createdTime ?? 0);
+          billGenerationDate = expiryDate = DateTime(date.year, date.month, date.day);
+           expiryDate =  expiryDate.add(Duration(milliseconds: filteredDemands.billExpiryTime ?? 0, days: 0));
+          penalty = Penalty(amount.toDouble(), DateFormats.getFilteredDate(expiryDate.toString()), DateTime.now().isAfter(expiryDate));
+        }
+      });
+    return penalty ?? Penalty(0.0, '', false);
+  }
+
+  static PenaltyApplicable getPenaltyApplicable(List<Demands>? demandList) {
+    var res = [];
+    var filteredDemands = demandList?.where((e) =>
+    !(e.isPaymentCompleted ?? false))
+        .toList();
+
+    if(demandList?.first.demandDetails?.first.taxHeadMasterCode == 'WS_TIME_PENALTY'){
+        filteredDemands?.first.demandDetails!.forEach((e) {
+          if (e.taxHeadMasterCode == 'WS_TIME_PENALTY') {
+            res.add((e.taxAmount ?? 0) - (e.collectionAmount ?? 0));
+          }
+        });
+      }
+
+    else {
+        filteredDemands?.first.demandDetails!.forEach((e) {
+          if (e.taxHeadMasterCode == 'WS_TIME_PENALTY' ||
+              e.taxHeadMasterCode == '10201') {
+            res.add((e.taxAmount ?? 0) - (e.collectionAmount ?? 0));
+          }
+        });
+
+    }
+
+    var penaltyAmount = res.length == 0 ? 0 : ((res.reduce((previousValue,
+        element) =>
+    previousValue +
+        element)) as double).abs();
+
+
+    return PenaltyApplicable(penaltyAmount.toDouble());
+  }
+
+  static  num getAdvanceAmount(List<Demands> demandList) {
+    var amount = 0.0;
+    var index = -1;
+    for(int i =0; i < demandList.length; i++){
+      index = demandList[i].demandDetails?.lastIndexWhere((e) => e.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD') ?? -1;
+      if(index != -1){
+        amount = (demandList[i].demandDetails![index].taxAmount ?? 0) - (demandList[i].demandDetails![index].collectionAmount ?? 0);
+        break;
+      }
+    }
+    return amount;
+  }
+
+  static double getArrearsAmount(List<Demands> demandList) {
+    List res = [];
+
+    if(!isFirstDemand(demandList)){
+      var arrearsAmount = 0.0;
+      demandList.first.demandDetails?.forEach((demand) {
+        if(demand.taxHeadMasterCode == '10102') arrearsAmount += ((demand.taxAmount ?? 0) - (demand.collectionAmount ?? 0));
+      });
+      return arrearsAmount;
+    }
+
+
+    if (demandList.isNotEmpty) {
+      var filteredDemands = demandList.where((e) => (!(e.isPaymentCompleted ?? false) && e.status != 'CANCELLED'))
+          .toList();
+      for (var demand in filteredDemands) {
+        demand.demandDetails!.forEach((e) {
+          if (e.taxHeadMasterCode != 'WS_ADVANCE_CARRYFORWARD'){
+            res.add((e.taxAmount ?? 0) - (e.collectionAmount ?? 0));
+          }
+        });
+      }
+    }
+
+    var arrearsDeduction = (demandList.first.demandDetails?.first.taxHeadMasterCode != 'WS_ADVANCE_CARRYFORWARD'
+        && demandList.first.demandDetails?.first.taxHeadMasterCode != 'WS_TIME_PENALTY') ?
+    ((demandList.first.demandDetails?.first.taxAmount ?? 0) - (demandList.first.demandDetails?.first.collectionAmount ?? 0)) : 0;
+
+    return res.length == 0 ? 0 : ((res.reduce((previousValue,
+        element) =>
+    previousValue +
+        element) - arrearsDeduction) as double).abs();
+  }
+
+  static double getArrearsAmountOncePenaltyExpires(List<Demands> demandList) {
+    List res = [];
+    var arrearsDeduction = 0.0 ;
+    var penaltyDeduction = 0.0;
+
+    if(!isFirstDemand(demandList)){
+      var arrearsAmount = 0.0;
+      demandList.first.demandDetails?.forEach((demand) {
+        if(demand.taxHeadMasterCode == '10102') arrearsAmount += ((demand.taxAmount ?? 0) - (demand.collectionAmount ?? 0));
+      });
+      return arrearsAmount;
+    }
+
+
+    if (demandList.isNotEmpty  ) {
+      var filteredDemands = demandList.where((e) => (!(e.isPaymentCompleted ?? false) && e.status != 'CANCELLED')).toList();
+
+      filteredDemands.forEach((elem) {
+        elem.demandDetails?.forEach((element) {
+          if(element.taxHeadMasterCode == '10101'){
+            arrearsDeduction = ((element.taxAmount ?? 0) - (element.collectionAmount ?? 0)) ;
+          }
+        });
+      });
+
+      filteredDemands.first.demandDetails?.forEach((element) {
+          if(element.taxHeadMasterCode == 'WS_TIME_PENALTY'){
+            penaltyDeduction = ((element.taxAmount ?? 0) - (element.collectionAmount ?? 0)) ;
+          }
+        });
+
+      for (var demand in filteredDemands) {
+        demand.demandDetails!.forEach((e) {
+
+          if (e.taxHeadMasterCode != 'WS_ADVANCE_CARRYFORWARD') {
+            res.add((e.taxAmount ?? 0) - (e.collectionAmount ?? 0));
+          }
+        });
+      }
+
+    }
+
+
+
+    return res.length == 0 ? 0 : ((res.reduce((previousValue,
+        element) =>
+    previousValue +
+        element) - arrearsDeduction - penaltyDeduction) as double).abs();
+  }
+
+  static Future<PaymentType> getMdmsBillingService() async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+
+      return await CoreRepository().getPaymentTypeMDMS(getMdmsPaymentModes(
+          commonProvider.userDetails!.selectedtenant?.code.toString() ?? commonProvider.userDetails!.userRequest!.tenantId.toString()));
+    }catch(e){
+      return PaymentType();
+    }
+  }
+
+  static bool checkAdvance (List<Demands> demandList) {
+    var advance = false;
+    var index = -1;
+    for(int i =0; i < demandList.length; i++){
+      index = demandList[i].demandDetails?.lastIndexWhere((e) => e.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD') ?? -1;
+      if(index != -1){
+        advance = true;
+        break;
+      }
+    }
+    return advance;
+  }
+
+ static bool getPenaltyOrAdvanceStatus(PaymentType? languageList, [isAdvance = false, bool isTimePenalty = false]) {
+    if(languageList == null) return false;
+    var index = languageList.mdmsRes?.billingService?.taxHeadMasterList?.indexWhere((e) => e.code == (isAdvance ? 'WS_ADVANCE_CARRYFORWARD' : isTimePenalty ? 'WS_TIME_PENALTY' : '10201'));
+    if(index != null && index != -1){
+      return (languageList.mdmsRes?.billingService?.taxHeadMasterList?[index].isRequired ?? false);
+    }
+    return false;
   }
 }

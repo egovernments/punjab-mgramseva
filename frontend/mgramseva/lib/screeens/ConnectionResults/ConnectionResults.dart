@@ -25,7 +25,7 @@ class SearchConsumerResult extends StatefulWidget {
 class _SearchConsumerResultState extends State<SearchConsumerResult> {
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
@@ -33,8 +33,8 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
     Provider.of<SearchConnectionProvider>(context, listen: false)..getresults();
   }
 
-  buildconsumerView(WaterConnections waterconnsctions) {
-    return SearchConnectionDetailCard(waterconnsctions, widget.arguments);
+  buildconsumerView(WaterConnections waterConnections) {
+    return SearchConnectionDetailCard(waterConnections, widget.arguments, isNameSearch: widget.arguments['isNameSearch'],);
   }
 
   @override

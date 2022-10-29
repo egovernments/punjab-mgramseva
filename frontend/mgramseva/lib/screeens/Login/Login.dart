@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/providers/authentication.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/DesktopView.dart';
@@ -11,7 +13,6 @@ import 'package:mgramseva/widgets/HeadingText.dart';
 import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/MobileView.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/screeens/ForgotPassword/ForgotPassword.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
@@ -28,6 +29,7 @@ class _LoginState extends State<Login> {
   var autoValidation = false;
   var phoneNumberAutoValidation = false;
   FocusNode _numberFocus = new FocusNode();
+  var passwordVisible = false;
 
   @override
   void initState() {
@@ -56,7 +58,7 @@ class _LoginState extends State<Login> {
 
   saveandLogin(context) async {
     var authProvider =
-        Provider.of<AuthenticationProvider>(context, listen: false);
+    Provider.of<AuthenticationProvider>(context, listen: false);
 
     if (formKey.currentState!.validate()) {
       authProvider.validateLogin(context, userNamecontroller.text.trim(),
@@ -93,13 +95,16 @@ class _LoginState extends State<Login> {
                   maxLength: 10,
                   validator: Validators.mobileNumberValidator,
                   textInputType: TextInputType.phone,
+                  key: Keys.login.LOGIN_PHONE_NUMBER_KEY,
                 ),
                 BuildTextField(
                   i18.login.LOGIN_PASSWORD,
                   passwordcontroller,
                   isRequired: true,
-                  obscureText: true,
+                  obscureText: !passwordVisible,
+                  suffixIcon: buildPasswordVisibility(),
                   maxLines: 1,
+                  key: Keys.login.LOGIN_PASSWORD_KEY,
                 ),
                 GestureDetector(
                   onTap: () =>
@@ -112,14 +117,16 @@ class _LoginState extends State<Login> {
                           child: Text(
                             ApplicationLocalizations.of(context)
                                 .translate(i18.login.FORGOT_PASSWORD),
+                            key: Keys.forgotPassword.FORGOT_PASSWORD_BUTTON,
                             style: TextStyle(
                                 color: Theme.of(context).primaryColor),
                           ))),
                 ),
                 Padding(
-                    padding: EdgeInsets.only(top: 15, bottom: 15, left: 8, right: 8),
-                    child: Button(
-                        i18.common.CONTINUE, buttonStatus ? () => saveandLogin(context) : null)),
+                  padding: EdgeInsets.only(top: 15, bottom: 15, left: 8, right: 8),
+                  child: Button(
+                      i18.common.CONTINUE, buttonStatus ? () => saveandLogin(context) : null),
+                  key: Keys.login.LOGIN_BTN_KEY,),
                 SizedBox(
                   height: 10,
                 )
@@ -127,15 +134,32 @@ class _LoginState extends State<Login> {
             ))));
   }
 
+  Widget buildPasswordVisibility(){
+    return IconButton(
+      icon: Icon(
+        passwordVisible
+            ? Icons.visibility
+            : Icons.visibility_off,
+        color: Theme.of(context).primaryColorLight,
+      ),
+      onPressed: () {
+        setState(() {
+          passwordVisible = !passwordVisible;
+        });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
-      if (constraints.maxWidth < 760) {
-        return MobileView(getLoginCard());
-      } else {
-        return DesktopView(getLoginCard());
-      }
-    }));
+    return FocusWatcher(
+        child:Scaffold(body: LayoutBuilder(builder: (context, constraints) {
+          if (constraints.maxWidth < 760) {
+            return MobileView(getLoginCard());
+          } else {
+            return DesktopView(getLoginCard());
+          }
+        })));
   }
 
   bool get buttonStatus => userNamecontroller.text.trim().length == 10 && passwordcontroller.text.trim().length > 1;

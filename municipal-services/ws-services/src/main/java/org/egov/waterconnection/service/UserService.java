@@ -25,6 +25,7 @@ import org.egov.waterconnection.web.models.*;
 import org.egov.waterconnection.web.models.users.UserDetailResponse;
 import org.egov.waterconnection.web.models.users.UserSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -54,6 +55,24 @@ public class UserService {
 	@Autowired
 	private NotificationUtil notificationUtil;
 
+	
+	
+	@Value("${egov.user.host}")
+	private String userHost;
+
+	@Value("${egov.user.context.path}")
+	private String userContextPath;
+
+	@Value("${egov.user.create.path}")
+	private String userCreateEndpoint;
+
+	@Value("${egov.user.search.path}")
+	private String userSearchEndpoint;
+
+	@Value("${egov.user.update.path}")
+	private String userUpdateEndpoint;
+
+	
 	public HashMap<String,String> OnBoardEmployee(RequestInfoWrapper requestInfoWraper,List<OwnerInfo> usersList) {
 		HashMap<String,String> errorMap = new HashMap<String,String>();
 		if(!CollectionUtils.isEmpty(usersList)) {
@@ -467,4 +486,16 @@ public class UserService {
 			notificationUtil.sendSMS(smsRequests);
 		}
 	}
+
+	public UserDetailResponse getUserByRoleCodes(RequestInfo requestInfo, String tenantId, List<String> roleCodes) {
+
+		UserSearchRequest userSearchRequest = new UserSearchRequest();
+		userSearchRequest.setTenantId(tenantId);
+		userSearchRequest.setRequestInfo(requestInfo);
+		userSearchRequest.setActive(true);
+		userSearchRequest.setRoleCodes(roleCodes);
+		StringBuilder uri = new StringBuilder(userHost).append(userSearchEndpoint);
+		return userCall(userSearchRequest, uri);
+	}
+	
 }

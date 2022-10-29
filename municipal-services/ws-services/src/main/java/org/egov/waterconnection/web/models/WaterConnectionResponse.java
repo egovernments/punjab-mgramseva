@@ -35,6 +35,8 @@ public class WaterConnectionResponse {
 	@JsonProperty("totalCount")
 	private Integer totalCount =null;
 	
+	@JsonProperty("collectionDataCount")
+	private Map<String, Long> collectionDataCount =null;
 
 	@JsonProperty("propertyCount")
 	private Map<String, Object> propertyCount = null;
@@ -46,6 +48,10 @@ public class WaterConnectionResponse {
 	@Valid
 	private List<WaterConnection> waterConnection = null;
 
+	@JsonProperty("waterConnectionData")
+	@Valid
+	private List<Map<String, Object>> waterConnectionData = null;
+	
 	public WaterConnectionResponse responseInfo(ResponseInfo responseInfo) {
 		this.responseInfo = responseInfo;
 		return this;

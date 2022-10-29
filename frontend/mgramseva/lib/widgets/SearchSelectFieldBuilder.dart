@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -12,13 +14,13 @@ class SearchSelectField extends StatefulWidget {
   final bool isRequired;
   final String? requiredMessage;
   final TextEditingController? controller;
-  SearchSelectField(this.labelText, this.options, this.controller, this.widget,
-      this.value, this.isEnabled, this.isRequired, this.requiredMessage);
+  const SearchSelectField(this.labelText, this.options, this.controller, this.widget,
+      this.value, this.isEnabled, this.isRequired, this.requiredMessage, {Key? key}) : super(key: key);
   @override
-  _SearchSelectFieldState createState() => _SearchSelectFieldState();
+  SearchSelectFieldState createState() => SearchSelectFieldState();
 }
 
-class _SearchSelectFieldState extends State<SearchSelectField> {
+class SearchSelectFieldState extends State<SearchSelectField> {
   final FocusNode _focusNode = FocusNode();
   bool isinit = false;
   var selectedCode;
@@ -38,14 +40,14 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
         this._overlayEntry.remove();
       }
     });
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
     filerobjects("");
   }
 
   afterViewBuild() {
     var res = widget.options
-        .where((e) => (e.value.toString() == (widget.value.toString())));
+        .where((e) => (e.value == (widget.value)));
     if (res.isNotEmpty && _focusNode.hasFocus == false) {
       widget.controller?.text = ApplicationLocalizations.of(context)
           .translate((res.first.child as Text).data.toString());
@@ -127,14 +129,15 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
   Widget build(BuildContext context) {
     return Column(children: [
       Consumer<LanguageProvider>(builder: (_, consumerProvider, child) {
-        WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+        WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
         return SizedBox(
           height: 0,
         );
       }),
       CompositedTransformTarget(
         link: this._layerLink,
-        child: TextFormField(
+        child: ForceFocusWatcher(
+          child:TextFormField(
           style: TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
@@ -145,7 +148,12 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
           onChanged: (value) => filerobjects(value),
           focusNode: this._focusNode,
           validator: (value) {
-            if (widget.options
+            if((value ?? '').trim().isEmpty && !widget.isRequired){
+              return null;
+            }else if(value!.isEmpty && widget.isRequired){
+              return ApplicationLocalizations.of(context).translate(
+                  widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
+            } else if (widget.options
                 .where((element) =>
                     ApplicationLocalizations.of(context)
                         .translate((element.child as Text).data.toString())
@@ -154,9 +162,9 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
                 .toList()
                 .isEmpty) {
               return ApplicationLocalizations.of(context).translate(
-                  widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
+                  widget.requiredMessage ?? '${i18.common.INVALID_SELECTED_INPUT}');
             }
-            if (value!.trim().isEmpty && widget.isRequired) {
+            if (value.trim().isEmpty && widget.isRequired) {
               return ApplicationLocalizations.of(context).translate(
                   widget.requiredMessage ?? '${widget.labelText}_REQUIRED');
             }
@@ -172,7 +180,7 @@ class _SearchSelectFieldState extends State<SearchSelectField> {
             prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
           ),
         ),
-      )
+      ))
     ]);
   }
 }

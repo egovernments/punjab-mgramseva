@@ -72,6 +72,8 @@ Map getConnectionTypePropertyTypeTaxPeriodMDMS(String tenantId, int datestamp) {
           "moduleName": "ws-services-masters",
           "masterDetails": [
             {"name": "connectionType"},
+            {"name": "Category"},
+            {"name": "SubCategory"},
           ]
         },
         {
@@ -83,11 +85,8 @@ Map getConnectionTypePropertyTypeTaxPeriodMDMS(String tenantId, int datestamp) {
         {
           "moduleName": "BillingService",
           "masterDetails": [
-            {
-              "name": "TaxPeriod",
-              "filter":
-                  "[?(@.service=='WS' &&  @.fromDate <= $datestamp &&  @.toDate >= $datestamp)]"
-            }
+              {"name": "TaxHeadMaster"},
+              {"name": "TaxPeriod", "filter": "[?(@.service=='WS')]"}
           ]
         }
       ]
@@ -110,6 +109,7 @@ Map getTenantsMDMS(String tenantId) {
     }
   };
 }
+
 Map getServiceTypeConnectionTypePropertyTypeMDMS(String tenantId) {
   return {
     "MdmsCriteria": {
@@ -131,10 +131,7 @@ Map getServiceTypeConnectionTypePropertyTypeMDMS(String tenantId) {
           "moduleName": "BillingService",
           "masterDetails": [
             {"name": "TaxHeadMaster"},
-            {
-              "name": "TaxPeriod",
-              "filter": "[?(@.service=='WS')]"
-            }
+            {"name": "TaxPeriod", "filter": "[?(@.service=='WS')]"}
           ],
         },
       ]
@@ -142,8 +139,7 @@ Map getServiceTypeConnectionTypePropertyTypeMDMS(String tenantId) {
   };
 }
 
-
-Map getMdmsPaymentModes(String tenantId){
+Map getMdmsPaymentModes(String tenantId) {
   return {
     "MdmsCriteria": {
       "tenantId": tenantId,
@@ -151,10 +147,8 @@ Map getMdmsPaymentModes(String tenantId){
         {
           "moduleName": "BillingService",
           "masterDetails": [
-            {
-              "name": "BusinessService",
-              "filter": "[?(@.code=='WS')]"
-            }
+            {"name": "TaxHeadMaster"},
+            {"name": "BusinessService", "filter": "[?(@.code=='WS')]"}
           ]
         }
       ]

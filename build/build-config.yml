@@ -36,6 +36,13 @@ config:
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "core-services/egov-user/src/main/resources/db"
         image-name: "egov-user-db"
+  - name: "builds/mGramSeva/core-services/egov-pg-service"
+    build:
+      - work-dir: "core-services/egov-pg-service"
+        image-name: "egov-pg-service"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core-services/egov-pg-service/src/main/resources/db"
+        image-name: "egov-pg-service-db"
   - name: "builds/mGramSeva/municipal-services/ws-calculator"
     build:
       - work-dir: "municipal-services/ws-calculator"
@@ -91,4 +98,18 @@ config:
     build:
       - work-dir: "municipal-services/egov-user-event"
         image-name: "egov-user-event"
-        dockerfile: "build/maven/Dockerfile" 
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "municipal-services/egov-user-event/src/main/resources/db"
+        image-name: "egov-user-event-db"
+  - name: "builds/mGramSeva/utilities/rollout-dashboard-cronjob"
+    build:
+      - work-dir: "utilities/rollout-dashboard-cronjob"
+        image-name: "rollout-dashboard-cronjob"
+        dockerfile: "utilities/rollout-dashboard-cronjob/Dockerfile"
+  - name: "builds/mGramSeva/municipal-services/property-services"
+    build:
+      - work-dir: "municipal-services/property-services"
+        image-name: "property-services"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "municipal-services/property-services/src/main/resources/db"
+        image-name: "property-services-db"

@@ -32,6 +32,9 @@ class SuccessHandler {
   @JsonKey(name: "downloadLinkLabel")
   String? downloadLinkLabel;
 
+  @JsonKey(name: "printLabel")
+  String? printLabel;
+
   @JsonKey(name: "subHeaderFun")
   String Function()? subTextFun;
 
@@ -47,7 +50,11 @@ class SuccessHandler {
       this.whatsAppShare,
       this.downloadLink,
       this.downloadLinkLabel,
-      this.subHeaderText, this.subTextFun, this.subtitleFun, this.subHeaderFun});
+      this.printLabel,
+      this.subHeaderText,
+      this.subTextFun,
+      this.subtitleFun,
+      this.subHeaderFun});
 
   factory SuccessHandler.fromJson(Map<String, dynamic> json) =>
       _$SuccessHandlerFromJson(json);

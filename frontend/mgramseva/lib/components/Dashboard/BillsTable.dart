@@ -10,12 +10,14 @@ class BillsTable extends StatefulWidget {
   final List<TableDataRow> tableData;
   final double leftColumnWidth;
   final double rightColumnWidth;
+  final double? height;
+  final ScrollPhysics? scrollPhysics;
   BillsTable(
       {Key? key,
-      required this.headerList,
-      required this.tableData,
-      required this.leftColumnWidth,
-      required this.rightColumnWidth})
+        required this.headerList,
+        required this.tableData,
+        required this.leftColumnWidth,
+        required this.rightColumnWidth, this.height, this.scrollPhysics})
       : super(key: key);
 
   @override
@@ -26,6 +28,7 @@ class BillsTable extends StatefulWidget {
 
 class _BillsTable extends State<BillsTable> {
   final ScrollController controller = ScrollController();
+  final double columnRowFixedHeight = 52.0;
 
   @override
   void initState() {
@@ -52,6 +55,7 @@ class _BillsTable extends State<BillsTable> {
             // ),
             leftHandSideColBackgroundColor: Color(0xFFFFFFFF),
             rightHandSideColBackgroundColor: Color(0xFFFFFFFF),
+            scrollPhysics: widget.scrollPhysics,
             verticalScrollbarStyle: const ScrollbarStyle(
               isAlwaysShown: true,
               thickness: 4.0,
@@ -63,7 +67,7 @@ class _BillsTable extends State<BillsTable> {
               radius: Radius.circular(5.0),
             ),
             enablePullToRefresh: false),
-        height: MediaQuery.of(context).size.height,
+        height: widget.height ?? MediaQuery.of(context).size.height,
       );
     });
   }
@@ -97,28 +101,33 @@ class _BillsTable extends State<BillsTable> {
     return Container(
       decoration: isBorderRequired
           ? BoxDecoration(
-              border: Border(
-                  left: tableCellBorder,
-                  bottom: tableCellBorder,
-                  right: tableCellBorder))
+          border: Border(
+              left: tableCellBorder,
+              bottom: tableCellBorder,
+              right: tableCellBorder))
           : null,
       child: isAscending != null
           ? Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 5,
-              children: [
-                textWidget,
-                Icon(isAscending
-                    ? Icons.arrow_upward
-                    : Icons.arrow_downward_sharp)
-              ],
-            )
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 5,
+        children: [
+          textWidget,
+          Icon(isAscending
+              ? Icons.arrow_upward
+              : Icons.arrow_downward_sharp)
+        ],
+      )
           : textWidget,
       width: widget.leftColumnWidth,
       height: 56,
       padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
       alignment: Alignment.centerLeft,
     );
+  }
+  double columnRowIncreasedHeight(int index) {
+    return
+      (50 + widget.tableData[index].tableRow.first.label.substring(28).length.toDouble());
+    //if greater than 28 characters
   }
 
   Widget _generateFirstColumnRow(BuildContext context, int index) {
@@ -135,17 +144,17 @@ class _BillsTable extends State<BillsTable> {
             child: Container(
               decoration: BoxDecoration(
                   border: Border(
-                left: tableCellBorder,
-                bottom: tableCellBorder,
-                right: tableCellBorder,
-              )),
+                    left: tableCellBorder,
+                    bottom: tableCellBorder,
+                    right: tableCellBorder,
+                  )),
               child: Text(
                 ApplicationLocalizations.of(context)
                     .translate(widget.tableData[index].tableRow.first.label),
-                style: TextStyle(color: Theme.of(context).primaryColor),
+                style: widget.tableData[index].tableRow.first.style ?? TextStyle(color: Theme.of(context).primaryColor),
               ),
               width: widget.leftColumnWidth,
-              height: 52,
+              height: widget.tableData[index].tableRow.first.label.length > 28 ? columnRowIncreasedHeight(index) : columnRowFixedHeight,
               padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
               alignment: Alignment.centerLeft,
             ),
@@ -161,15 +170,15 @@ class _BillsTable extends State<BillsTable> {
         children: <Widget>[
           Expanded(
             child: Text(ApplicationLocalizations.of(context).translate(input),
-                style: style,
-            maxLines: 2,
+              style: style,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           )
         ],
       ),
       width: widget.leftColumnWidth,
-      height: 52,
+      height: widget.tableData[index].tableRow.first.label.length > 28 ? columnRowIncreasedHeight(index) : columnRowFixedHeight,
       padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
       alignment: Alignment.centerLeft,
     );

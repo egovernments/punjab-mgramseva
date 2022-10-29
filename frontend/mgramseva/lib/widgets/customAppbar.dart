@@ -1,10 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/tenants_provider.dart';
-import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -26,7 +24,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   Tenants? tenants;
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
@@ -55,7 +53,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           result.length > 1 &&
           commonProvider.userDetails!.selectedtenant == null) {
         WidgetsBinding.instance
-            ?.addPostFrameCallback((_) => showdialog(result));
+            .addPostFrameCallback((_) => showdialog(result));
       }
     } else {
       tenantProvider.getTenants().then((value) {
@@ -76,7 +74,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             result.length > 1 &&
             commonProvider.userDetails!.selectedtenant == null) {
           WidgetsBinding.instance
-              ?.addPostFrameCallback((_) => showdialog(result));
+              .addPostFrameCallback((_) => showdialog(result));
         }
       });
     }
@@ -86,8 +84,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+    var tenantProvider = Provider.of<TenantsProvider>(context, listen: false);
+    final r = commonProvider.userDetails!.userRequest!.roles!
+        .map((e) => e.tenantId)
+        .toSet()
+        .toList();
+    final res = tenantProvider.tenants!.tenantsList!
+        .where((element) => r.contains(element.code?.trim()))
+        .toList();
     showDialog(
-        barrierDismissible: false,
+        barrierDismissible: commonProvider.userDetails!.selectedtenant != null,
         context: context,
         builder: (BuildContext context) {
           return Stack(children: <Widget>[
@@ -101,9 +107,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 width: MediaQuery.of(context).size.width > 720
                     ? MediaQuery.of(context).size.width / 3
                     : MediaQuery.of(context).size.width,
+                height: res.length * 50 < 300 ?
+                res.length * 50 : 300,
                 color: Colors.white,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
                   children: List.generate(result.length, (index) {
                     return GestureDetector(
                         onTap: () {
@@ -186,7 +195,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             children: [
               Consumer<CommonProvider>(
                   builder: (_, commonProvider, child) =>
-                      commonProvider.userDetails!.selectedtenant == null
+                      commonProvider.userDetails?.selectedtenant == null
                           ? Text("")
                           : Column(
                               mainAxisAlignment: MainAxisAlignment.end,

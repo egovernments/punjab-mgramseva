@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mgramseva/model/demand/demand_list.dart';
+import 'package:mgramseva/model/demand/update_demand_list.dart';
+import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/utils/constants.dart';
 
+import '../mdms/payment_type.dart';
 import 'demand.dart';
 
 part 'fetch_bill.g.dart';
@@ -43,16 +47,25 @@ class FetchBill {
   bool viewDetails = false;
 
   @JsonKey(ignore: true)
-  String paymentAmount = Constants.PAYMENT_AMOUNT.first.key ;
-
-  @JsonKey(ignore: true)
   String? paymentMethod;
 
   @JsonKey(ignore: true)
   var customAmountCtrl = new TextEditingController();
 
   @JsonKey(ignore: true)
-  Demand? demand;
+  List<Demands>? demandList;
+
+  @JsonKey(ignore: true)
+  List<UpdateDemands>? updateDemandList;
+
+  @JsonKey(ignore: true)
+  Demands? demands;
+
+  @JsonKey(ignore: true)
+  UpdateDemands? updateDemands;
+
+  @JsonKey(ignore: true)
+  PaymentType? mdmsData;
 
   FetchBill();
 
@@ -124,6 +137,15 @@ class BillAccountDetails {
 
   @JsonKey(name: "adjustedAmount")
   double? adjustedAmount;
+
+  @JsonKey(name: "advanceAdjustedAmount")
+  double? advanceAdjustedAmount;
+
+  @JsonKey(ignore: true)
+  double? arrearsAmount;
+
+  @JsonKey(ignore: true)
+  double? totalBillAmount;
 
   @JsonKey(name: "taxHeadCode")
   String taxHeadCode = '';

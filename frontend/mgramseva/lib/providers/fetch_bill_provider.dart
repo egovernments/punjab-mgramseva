@@ -3,15 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
-import 'package:universal_html/html.dart';
 
 class FetchBillProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
   late GlobalKey<FormState> formKey;
 
   // ignore: non_constant_identifier_names
-  Future<void> fetchBill(data) async {
+  Future<BillList> fetchBill(data, BuildContext context) async {
+    BillList billList = new BillList();
     try {
       var res = await BillingServiceRepository().fetchdBill({
         "tenantId": data.tenantId,
@@ -22,20 +23,23 @@ class FetchBillProvider with ChangeNotifier {
         if (res.bill!.isNotEmpty) {
           res.bill?.first.billDetails
               ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
+          billList = res;
           streamController.add(res);
         } else {
-          BillList billList = new BillList();
+           billList = new BillList();
           billList.bill = [];
           streamController.add(billList);
         }
       } else {
-        BillList billList = new BillList();
+         billList = new BillList();
         billList.bill = [];
         streamController.add(billList);
       }
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
     }
+    return billList;
   }
 
   // ignore: non_constant_identifier_names
@@ -66,8 +70,9 @@ class FetchBillProvider with ChangeNotifier {
           // window.location.href = "https://www.google.com/";
         });
       });
-    } catch (e) {
-      // window.location.href = "https://www.google.com/";
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
     }
   }
 

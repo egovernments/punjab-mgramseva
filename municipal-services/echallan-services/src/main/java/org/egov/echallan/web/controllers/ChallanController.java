@@ -20,6 +20,10 @@ import org.egov.echallan.repository.rowmapper.ChallanRowMapper;
 import org.egov.echallan.service.ChallanService;
 import org.egov.echallan.service.SchedulerService;
 import org.egov.echallan.util.ResponseInfoFactory;
+import org.egov.echallan.web.models.ChallanCollectionData;
+import org.egov.echallan.web.models.ChallanCollectionDataResponse;
+import org.egov.echallan.web.models.ExpenseDashboard;
+import org.egov.echallan.web.models.ExpenseDashboardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,10 +88,6 @@ public class ChallanController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 		}
 
-	@PostMapping("/_schedulerpendingcollection")
-	public void schedulerpendingcollection(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
-		schedulerService.sendPendingCollectionEvent(requestInfoWrapper.getRequestInfo());
-	}
 
 	@PostMapping("/_schedulermonthsummary")
 	public void schedulermonthsummary(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
@@ -104,15 +104,6 @@ public class ChallanController {
 		schedulerService.sendMarkExpensebillEvent(requestInfoWrapper.getRequestInfo());
 	}
 
-	@PostMapping("/_schedulergeneratedemand")
-	public void schedulergeneratedemand(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
-		schedulerService.sendGenerateDemandEvent(requestInfoWrapper.getRequestInfo());
-	}
-	
-	@PostMapping("/_schedulerTodaysCollection")
-	public void schedulerTodaysCollection(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
-		schedulerService.sendTodaysCollection(requestInfoWrapper.getRequestInfo());
-	}
 	 
 	@PostMapping("/_lastMonthSummary")
 	public ResponseEntity<LastMonthSummaryResponse> lastMonthSummary(
@@ -128,5 +119,46 @@ public class ChallanController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
+	@PostMapping("/_expenseDashboard")
+	public ResponseEntity<ExpenseDashboardResponse> _expenseDashboard(
+			@RequestBody @Valid final RequestInfoWrapper requestInfoWrapper,
+			@Valid @ModelAttribute SearchCriteria criteria) {
+		ExpenseDashboard dashboardData = challanService.getExpenseDashboardData(criteria,
+				requestInfoWrapper.getRequestInfo());
+
+		ExpenseDashboardResponse response = ExpenseDashboardResponse.builder().ExpenseDashboard(dashboardData)
+				.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),
+						true))
+				.build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	
+
+	 @RequestMapping(value = "/_plainsearch", method = RequestMethod.POST)
+	 public ResponseEntity<ChallanResponse> planeSearch(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
+	                                                       @Valid @ModelAttribute SearchCriteria criteria) {
+		 Map<String, String> finalData = new HashMap<String, String>();
+	     List<Challan> challans = challanService.planeSearch(criteria, requestInfoWrapper.getRequestInfo(), finalData);
+	     ChallanResponse response = ChallanResponse.builder().challans(challans).totalCount(mapper.getFull_count()).billData(finalData).responseInfo(
+	               responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true))
+	              .build();
+	     return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+
+	 @PostMapping("/_chalanCollectionData")
+		public ResponseEntity<ChallanCollectionDataResponse> _expenseCollectionData(
+				@RequestBody @Valid final RequestInfoWrapper requestInfoWrapper,
+				@Valid @ModelAttribute SearchCriteria criteria) {
+			List<ChallanCollectionData> collectionData = challanService.getChallanCollectionData(criteria,
+					requestInfoWrapper.getRequestInfo());
+
+			ChallanCollectionDataResponse response = ChallanCollectionDataResponse.builder().ChallanCollectionData(collectionData)
+					.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),
+							true))
+					.build();
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
+
 
 }

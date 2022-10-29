@@ -1,7 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/connection/property.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
+
+import '../demand/update_demand_list.dart';
+import '../mdms/payment_type.dart';
 
 part 'water_connection.g.dart';
 
@@ -56,8 +62,32 @@ class WaterConnection {
   @JsonKey(name: "processInstance")
   ProcessInstance? processInstance;
 
+  @JsonKey(name: "paymentType")
+  String? paymentType;
+
+  @JsonKey(name: "penalty")
+  double? penalty;
+
+  @JsonKey(name: "advance")
+  double? advance;
+
+  @JsonKey(ignore: true)
+  BillList? fetchBill;
+
+  @JsonKey(ignore: true)
+  PaymentType? mdmsData;
+
+  @JsonKey(ignore: true)
+  List<UpdateDemands>? demands;
+
   @JsonKey(ignore: true)
   var arrearsCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var advanceCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var penaltyCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
   var meterIdCtrl = TextEditingController();
@@ -72,7 +102,18 @@ class WaterConnection {
   var BillingCycleCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
+  var billingCycleYearCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
   var meterInstallationDateCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var categoryCtrl = new TextEditingController();
+
+  @JsonKey(ignore: true)
+  var subCategoryCtrl = new TextEditingController();
+  @JsonKey(ignore: true)
+  var addharCtrl = new TextEditingController();
 
   @JsonKey(ignore: true)
   var ServiceTypeCtrl = TextEditingController();
@@ -91,9 +132,23 @@ class WaterConnection {
   setText() {
     oldConnectionNo = OldConnectionCtrl.text;
     meterId = meterIdCtrl.text != "" ? meterIdCtrl.text : null;
-    arrears = arrearsCtrl.text != ""
+
+    if(paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key){
+      advanceCtrl.clear();
+    }else{
+      penaltyCtrl.clear();
+      arrearsCtrl.clear();
+    }
+
+    arrears = arrearsCtrl.text.trim() != "" && double.parse(arrearsCtrl.text) > 0
         ? double.parse(arrearsCtrl.text).toDouble()
-        : 0.0;
+        : paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key ? 0.0 : null;
+    advance = advanceCtrl.text.trim() != "" && double.parse(advanceCtrl.text) > 0
+        ? -double.parse(advanceCtrl.text).toDouble()
+        : null;
+    penalty = penaltyCtrl.text.trim() != "" && double.parse(penaltyCtrl.text) > 0
+        ? double.parse(penaltyCtrl.text).toDouble()
+        : paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key ? 0.0 : null;
     previousReadingDate = previousReadingDateCtrl.text != ""
         ? DateFormats.dateToTimeStamp(
             previousReadingDateCtrl.text,
@@ -107,12 +162,25 @@ class WaterConnection {
         : DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(
             meterInstallationDateCtrl.text,
             dateFormat: "dd/MM/yyyy"));
+
+    if (connectionType != 'Metered') {
+      previousReadingDate = BillingCycleCtrl.text.trim() != ""
+          ? DateFormats.dateToTimeStamp(
+        BillingCycleCtrl.text.trim(),
+      )
+          : null;
+    }
   }
 
   getText() {
     OldConnectionCtrl.text = oldConnectionNo ?? "";
     meterIdCtrl.text = meterId ?? "";
-    arrearsCtrl.text = arrears.toString();
+    arrearsCtrl.text = (arrears == null ? '' : getFilteredAmount(arrears!));
+    advanceCtrl.text = (advance == null ? '' : getFilteredAmount(advance!.abs()));
+    penaltyCtrl.text = (penalty == null ? '' : getFilteredAmount(penalty!));
+    categoryCtrl.text = additionalDetails?.category ?? "";
+    subCategoryCtrl.text = additionalDetails?.subCategory ?? "";
+    addharCtrl.text = additionalDetails?.aadharNumber ?? "";
 
     previousReadingDateCtrl.text = previousReadingDate == null
         ? DateFormats.timeStampToDate(meterInstallationDate)
@@ -128,6 +196,12 @@ class WaterConnection {
       om_4Ctrl.text = additionalDetails!.initialMeterReading!.toString()[3];
       om_5Ctrl.text = additionalDetails!.initialMeterReading!.toString()[4];
     }
+  }
+
+ String getFilteredAmount(double amount) {
+     if(kIsWeb) return amount.toString();
+     var decimalAmount = (amount.toString().split('.'))[1];
+     return int.parse(decimalAmount) > 0 ? amount.toString() : amount.toString().split('.').first;
   }
 
   WaterConnection();
@@ -158,6 +232,13 @@ class AdditionalDetails {
   @JsonKey(name: "locality")
   String? locality;
 
+  @JsonKey(name: "category")
+  String? category;
+  @JsonKey(name: "subCategory")
+  String? subCategory;
+  @JsonKey(name: "aadharNumber")
+  String? aadharNumber;
+
   @JsonKey(name: "propertyType")
   String? propertyType;
 
@@ -169,6 +250,10 @@ class AdditionalDetails {
 
   @JsonKey(name: "collectionAmount")
   String? collectionAmount;
+
+  @JsonKey(name: "collectionPendingAmount")
+  String? collectionPendingAmount;
+
 
   @JsonKey(ignore: true)
   var initialMeterReadingCtrl = TextEditingController();

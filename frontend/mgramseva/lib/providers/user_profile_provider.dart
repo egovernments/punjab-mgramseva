@@ -9,6 +9,7 @@ class UserProfileProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
   var formKey = GlobalKey<FormState>();
   var autoValidation = false;
+  var profileDetails = User();
 
   dispose() {
     streamController.close();
@@ -20,6 +21,7 @@ class UserProfileProvider with ChangeNotifier {
       var userResponse = await UserProfileRepository().getProfile(body);
       if (userResponse != null) {
         streamController.add(userResponse.user?.first);
+        profileDetails = userResponse.user!.first;
       }
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
