@@ -543,16 +543,6 @@ class CollectPaymentProvider with ChangeNotifier {
           transaction);
       if (transactionDetails != null &&
           transactionDetails.transaction?.redirectUrl != null) {
-        // http.Response response = await payGovTest(
-        //     transactionDetails.transaction!.redirectUrl!) ;
-        // if (response.statusCode == 200) {
-        //   // launch(Uri.dataFromString(response.body,mimeType: 'text/html',).toString());
-        //   Navigator.pushReplacement(
-        //       context,
-        //       MaterialPageRoute(
-        //           builder: (_) => FormSubmit(response.body)));
-        //
-        // }
         var postUri = Uri.parse(transactionDetails.transaction!.redirectUrl!);
         DateTime now = new DateTime.now();
         var dateStringPrefix = '${postUri.queryParameters['requestDateTime']}'
