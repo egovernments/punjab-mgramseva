@@ -415,7 +415,10 @@ class ConsumerProvider with ChangeNotifier {
 
   Future<void> getPaymentType() async {
     try {
-      var res = await CommonProvider.getMdmsBillingService();
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+      var res = await CommonProvider.getMdmsBillingService(commonProvider.userDetails!.selectedtenant?.code.toString() ?? commonProvider.userDetails!.userRequest!.tenantId.toString());
       paymentType = res;
       notifyListeners();
     } catch (e) {

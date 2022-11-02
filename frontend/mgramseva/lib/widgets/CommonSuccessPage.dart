@@ -20,6 +20,7 @@ class CommonSuccess extends StatelessWidget {
   final VoidCallback? callBackprint;
   final bool? backButton;
   final bool isWithoutLogin;
+  final bool isConsumer;
 
   CommonSuccess(this.successHandler,
       {this.callBack,
@@ -27,7 +28,7 @@ class CommonSuccess extends StatelessWidget {
       this.callBackdownload,
       this.callBackprint,
       this.backButton,
-      this.isWithoutLogin = false});
+      this.isWithoutLogin = false, this.isConsumer = false});
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +152,7 @@ class CommonSuccess extends StatelessWidget {
                           ],
                         ),
                         Visibility(
-                          visible: !isWithoutLogin,
+                          visible: !isWithoutLogin || isConsumer,
                           child: BottomButtonBar(
                             successHandler.backButtonText,
                             callBack != null ? callBack : CommonMethods.home,

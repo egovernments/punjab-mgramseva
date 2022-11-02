@@ -831,14 +831,10 @@ class CommonProvider with ChangeNotifier {
         element) - arrearsDeduction - penaltyDeduction) as double).abs();
   }
 
-  static Future<PaymentType> getMdmsBillingService() async {
+  static Future<PaymentType> getMdmsBillingService(String tenantId) async {
     try {
-      var commonProvider = Provider.of<CommonProvider>(
-          navigatorKey.currentContext!,
-          listen: false);
-
       return await CoreRepository().getPaymentTypeMDMS(getMdmsPaymentModes(
-          commonProvider.userDetails!.selectedtenant?.code.toString() ?? commonProvider.userDetails!.userRequest!.tenantId.toString()));
+          tenantId));
     }catch(e){
       return PaymentType();
     }

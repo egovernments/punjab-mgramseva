@@ -28,26 +28,20 @@ import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
-import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
-import '../../Env/app_config.dart';
-import 'package:universal_html/html.dart' as html;
+import 'package:url_launcher/url_launcher.dart';
+
 
 import '../../providers/common_provider.dart';
 import '../../providers/language.dart';
-import '../../utils/common_methods.dart';
-import '../../utils/global_variables.dart';
-import 'package:http/http.dart' as http;
+import '../../utils/error_logging.dart';
 
 import '../../components/HouseConnectionandBill/NewConsumerBill.dart';
 import '../../model/demand/update_demand_list.dart';
-import '../../model/localization/language.dart';
-import '../../providers/common_provider.dart';
-import '../../utils/global_variables.dart';
 import '../../utils/models.dart';
+import '../../widgets/CustomCheckBox.dart';
 import '../../widgets/CustomDetails.dart';
-import '../../widgets/customAppbar.dart';
 
 class ConsumerCollectPayment extends StatefulWidget {
   final Map<String, dynamic> query;
@@ -65,8 +59,8 @@ class ConsumerCollectPayment extends StatefulWidget {
 class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
   final formKey = GlobalKey<FormState>();
   var autoValidation = false;
-  // List<StateInfo>? stateList;
-  // Languages? selectedLanguage;
+  var checkValue = false;
+
 
   @override
   void initState() {
@@ -131,23 +125,11 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
             builder: (_, consumerPaymentProvider, child) => Visibility(
                 visible: fetchBill != null,
                 child: BottomButtonBar(
+                    widget.query['isConsumer'] == 'true' ? '${ApplicationLocalizations.of(context).translate(i18.payment.PROCEED_TO_COLLECT)}' :
                     '${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}',
-                        () => showGeneralDialog(
-                      barrierLabel: "Label",
-                      barrierDismissible: false,
-                      barrierColor: Colors.black.withOpacity(0.5),
-                      context: context,
-                      pageBuilder: (context, anim1, anim2) {
-                        return Align(
-                            alignment: Alignment.center,
-                            child: ConfirmationPopUp(
-                              textString: i18.payment.CORE_AMOUNT_CONFIRMATION,
-                              subTextString: '₹ ${fetchBill?.customAmountCtrl.text}',
-                              cancelLabel: i18.common.CORE_GO_BACK,
-                              confirmLabel: i18.common.CORE_CONFIRM,
-                              onConfirm: () => paymentInfo(fetchBill!, context),
-                            ));
-                      },))),
+                    checkValue  ?
+                        () => checkAmount(fetchBill!, context)
+                        : null)),
           ),
         ));
   }
@@ -163,7 +145,6 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HomeBack(),
               LayoutBuilder(
                 builder: (_, constraints) => Column(
                   children: [
@@ -276,10 +257,21 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
                   true,
                   consumerPaymentProvider.paymentModeList,
                       (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(
-                      fetchBill, val))
+                      fetchBill, val,)),
+              if(widget.query['isConsumer'] == 'true') CustomCheckBoxWidget(
+                  checkValue,
+                  i18.payment.CORE_I_AGREE_TO_THE,
+                      () => (bool? newVal) {
+                    setState(() {
+                      checkValue = newVal!;
+                    });
+                  },
+                  linkText: i18.payment.TERMS_N_CONDITIONS,
+                  onTapLink: () => onAgreeTermsNConditions(''))
             ],
           )),
     );
+
   }
 
   Widget _buildViewDetails(FetchBill fetchBill) {
@@ -525,9 +517,6 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
       if(fetchBill.paymentMethod == 'PAYGOV') {
         consumerPaymentProvider.createTransaction(fetchBill, context);
       }
-      else{
-        consumerPaymentProvider.updatePaymentInformation(fetchBill, context);
-      }
     } else {
       setState(() {
         autoValidation = true;
@@ -550,6 +539,44 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
     }).toList();
   }
 
+  checkAmount(FetchBill fetchBill, BuildContext context) {
+    if (formKey.currentState!.validate()) {
+      autoValidation = false;
+      showGeneralDialog(
+        barrierLabel: "Label",
+        barrierDismissible: false,
+        barrierColor: Colors.black.withOpacity(0.5),
+        context: context,
+        pageBuilder: (context, anim1, anim2) {
+          return Align(
+              alignment: Alignment.center,
+              child: ConfirmationPopUp(
+                textString: i18.payment.CORE_AMOUNT_CONFIRMATION,
+                subTextString: '₹ ${fetchBill.customAmountCtrl.text}',
+                cancelLabel: i18.common.CORE_GO_BACK,
+                confirmLabel: i18.common.CORE_CONFIRM,
+                onConfirm: () => paymentInfo(fetchBill, context),
+              ));
+        },);
+    } else {
+      setState(() {
+        autoValidation = true;
+      });
+    }
+  }
+
+  void onAgreeTermsNConditions(String link) async {
+    try {
+      if (await canLaunch(link)) {
+        await launch(link);
+      } else {
+        throw 'Could not launch appStoreLink';
+      }
+    } catch(e){
+      ErrorHandler.logError('failed to launch the url ${link}');
+    }
+  }
+
   void onChangeOfLanguage(value) {
     // selectedLanguage = value;
     var languageProvider =
@@ -563,15 +590,3 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
       Text('${ApplicationLocalizations.of(context).translate(label)}',
           style: TextStyle(fontSize: size ?? 24, fontWeight: FontWeight.w700));
 }
-// To display Collect Payment screen, we need consumerCode, businessService, tenantId and status in url parameters
-// APIs need to be whitelisted:
-//    * FetchBill
-//    * Search Demand
-//    * getPenalty
-//    * MDMS call
-// 1. Create a js function similar to thermal printer  function onButtonClick()
-// 2. on clicking Proceed to Payment, Create Transaction API is called,
-// 3. Once Transaction object we get, then we will pass the redirectionUrl and
-//    extract Transaction details from redirected URl and pass as 2nd parameter
-//    to the onClick function and invoke the function
-// 4.

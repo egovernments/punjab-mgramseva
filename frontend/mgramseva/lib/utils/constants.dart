@@ -109,9 +109,18 @@ class Constants {
     KeyValue(i18.common.CUSTOM_AMOUNT, 'customAmount'),
   ];
 
-  static List<KeyValue> PAYMENT_METHOD = [
+  static List<KeyValue> CONSUMER_PAYMENT_METHOD = [
     KeyValue(i18.common.PAYGOV, 'PAYGOV'),
     KeyValue(i18.common.ONLINE, 'ONLINE'),
+    KeyValue(i18.common.CHEQUE, 'CHEQUE'),
+    KeyValue(i18.common.CASH, 'CASH'),
+    KeyValue(i18.common.DD, 'DD'),
+    KeyValue(i18.common.OFFLINE_NEFT, 'OFFLINE_NEFT'),
+    KeyValue(i18.common.OFFLINE_RTGS, 'OFFLINE_RTGS'),
+    KeyValue(i18.common.POSTAL_ORDER, 'POSTAL_ORDER'),
+  ];
+
+  static List<KeyValue> EMPLOYEE_PAYMENT_METHOD = [
     KeyValue(i18.common.CHEQUE, 'CHEQUE'),
     KeyValue(i18.common.CASH, 'CASH'),
     KeyValue(i18.common.DD, 'DD'),

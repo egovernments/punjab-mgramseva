@@ -4,11 +4,11 @@ import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
-import '../../routers/Routers.dart';
 
 class PaymentSuccess extends StatefulWidget {
+  final Map<String, dynamic> query;
 
-  PaymentSuccess({Key? key});
+  PaymentSuccess({Key? key, required this.query});
   @override
   State<StatefulWidget> createState() {
     return _PaymentSuccessState();
@@ -26,8 +26,10 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
     return CommonSuccess(SuccessHandler(
       i18.common.PAYMENT_COMPLETE,
       'ashdjhdbasjb',
-      i18.common.BACK_HOME,
-      Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT,
-    ));
+      '',
+      '',
+    ),backButton: false,
+        isWithoutLogin: true,
+    isConsumer: widget.query['isConsumer'] == 'true' ? true : false,);
   }
 }

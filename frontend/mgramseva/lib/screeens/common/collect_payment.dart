@@ -491,15 +491,10 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
 
   paymentInfo(FetchBill fetchBill, BuildContext context) {
     var consumerPaymentProvider =
-        Provider.of<CollectPaymentProvider>(context, listen: false);
+    Provider.of<CollectPaymentProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
       autoValidation = false;
-      if(fetchBill.paymentMethod == 'PAYGOV') {
-        consumerPaymentProvider.createTransaction(fetchBill, context);
-      }
-      else{
-        consumerPaymentProvider.updatePaymentInformation(fetchBill, context);
-      }
+      consumerPaymentProvider.updatePaymentInformation(fetchBill, context);
     } else {
       setState(() {
         autoValidation = true;

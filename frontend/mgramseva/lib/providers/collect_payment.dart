@@ -1,25 +1,18 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:mgramseva/providers/formSubmit.dart';
 import 'package:mgramseva/model/demand/update_demand_list.dart';
 import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/providers/language.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import '../components/HouseConnectionandBill/jsconnnector.dart' as js;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
-import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_printer.dart';
 import 'package:mgramseva/utils/constants.dart';
@@ -36,9 +29,7 @@ import 'package:number_to_words/number_to_words.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:image/image.dart' as img;
-import '../model/localization/language.dart';
 import 'common_provider.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/model/bill/billing.dart';
@@ -59,6 +50,10 @@ class CollectPaymentProvider with ChangeNotifier {
 
   Future<void> getBillDetails(
       BuildContext context, Map<String, dynamic> query, List<Bill>? bill, List<Demands>? demandList, PaymentType? mdmsData, List<UpdateDemands>? updateDemandList ) async {
+
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     try {
 
 
@@ -125,7 +120,8 @@ class CollectPaymentProvider with ChangeNotifier {
 
       if (paymentDetails != null) {
         if(mdmsData == null){
-          mdmsData = await CommonProvider.getMdmsBillingService();
+          mdmsData = query['isConsumer'] == 'true' ? await CommonProvider.getMdmsBillingService(query['tenantId']) :
+          await CommonProvider.getMdmsBillingService(commonProvider.userDetails!.selectedtenant?.code.toString() ?? commonProvider.userDetails!.userRequest!.tenantId.toString());
           paymentDetails.first.mdmsData = mdmsData;
         }
 
@@ -138,7 +134,9 @@ class CollectPaymentProvider with ChangeNotifier {
         // var demandDetails = await ConsumerRepository().getDemandDetails(query);
         // if (demandDetails != null)
         // paymentDetails.first.demand = demandDetails.first;
-        getPaymentModes(paymentDetails.first);
+        getPaymentModes(paymentDetails.first, query['isConsumer'] == 'true' ? query['tenantId'] :
+        commonProvider.userDetails!.selectedtenant?.code.toString() ?? commonProvider.userDetails!.userRequest!.tenantId.toString(),
+            query['isConsumer'] == 'true' ? true : false);
         paymentDetails.first.customAmountCtrl.text = paymentDetails.first.totalAmount!.toInt() > 0 ? paymentDetails.first.totalAmount!.toInt().toString() : '';
         paymentDetails.first.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount = double.parse(CommonProvider.getAdvanceAdjustedAmount(demandList ?? []));
         paymentDetails.first.billDetails?.first.billAccountDetails?.last.arrearsAmount = CommonProvider.getArrearsAmount(demandList ?? []);
@@ -201,7 +199,7 @@ class CollectPaymentProvider with ChangeNotifier {
 
   Future<Uint8List?> _capturePng(Payments item, FetchBill fetchBill) async {
     item.paymentDetails!.last.bill!.billDetails
-        ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!) as int);
+        ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
 
     var stateProvider = Provider.of<LanguageProvider>(
         navigatorKey.currentContext!,
@@ -383,16 +381,26 @@ class CollectPaymentProvider with ChangeNotifier {
     });
   }
 
-  Future<void> getPaymentModes(FetchBill fetchBill) async {
+  Future<void> getPaymentModes(FetchBill fetchBill, String tenantId, [bool isConsumer = false]) async {
     paymentModeList = <KeyValue>[];
-    var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
-    var res = await CoreRepository().getMdms(getMdmsPaymentModes(
-        commonProvider.userDetails!.userRequest!.tenantId.toString()));
+    var res = await CommonProvider.getMdmsBillingService(tenantId);
     if (res.mdmsRes?.billingService != null &&
-        res.mdmsRes?.billingService?.businessServiceList != null) {
-      Constants.PAYMENT_METHOD.forEach((e) {
+        res.mdmsRes?.billingService?.businessServiceList != null && !isConsumer) {
+      Constants.EMPLOYEE_PAYMENT_METHOD.forEach((e) {
+        var index = res.mdmsRes?.billingService?.businessServiceList?.first
+            .collectionModesNotAllowed!
+            .indexOf(e.key);
+        if (index == -1) {
+          paymentModeList.add(KeyValue(e.key, e.label));
+        }
+      });
+      fetchBill.paymentMethod = paymentModeList.first.key;
+      notifyListeners();
+    }
+
+    if (res.mdmsRes?.billingService != null &&
+        res.mdmsRes?.billingService?.businessServiceList != null && isConsumer) {
+      Constants.CONSUMER_PAYMENT_METHOD.forEach((e) {
         var index = res.mdmsRes?.billingService?.businessServiceList?.first
             .collectionModesNotAllowed!
             .indexOf(e.key);
@@ -531,9 +539,10 @@ class CollectPaymentProvider with ChangeNotifier {
     };
 
     try {
-
-      var transactionDetails = await ConsumerRepository().createTransaction(transaction);
-      if (transactionDetails != null && transactionDetails.transaction?.redirectUrl != null) {
+      var transactionDetails = await ConsumerRepository().createTransaction(
+          transaction);
+      if (transactionDetails != null &&
+          transactionDetails.transaction?.redirectUrl != null) {
         // http.Response response = await payGovTest(
         //     transactionDetails.transaction!.redirectUrl!) ;
         // if (response.statusCode == 200) {
@@ -544,9 +553,72 @@ class CollectPaymentProvider with ChangeNotifier {
         //           builder: (_) => FormSubmit(response.body)));
         //
         // }
-        payGovTest(transactionDetails.transaction!.redirectUrl!);
+        var postUri = Uri.parse(transactionDetails.transaction!.redirectUrl!);
+        DateTime now = new DateTime.now();
+        var dateStringPrefix = '${postUri.queryParameters['requestDateTime']}'
+            .split('${now.year}');
+
+        // late http.Response response;
+        // var txnDetails = {
+        var txnUrl = Uri.parse('${postUri.queryParameters['txURL']}');
+        var checksum = '${postUri.queryParameters['checksum']}';
+        var messageType = '${postUri.queryParameters['messageType']}';
+        var merchantId = '${postUri.queryParameters['merchantId']}';
+        var serviceId = '${postUri.queryParameters['serviceId']}';
+        var orderId = '${postUri.queryParameters['orderId']}';
+        var customerId = '${postUri.queryParameters['customerId']}';
+        var transactionAmount = '${postUri
+            .queryParameters['transactionAmount']}';
+        var currencyCode = '${postUri.queryParameters['currencyCode']}';
+        var requestDateTime = '${dateStringPrefix[0]}${now
+            .year} ${dateStringPrefix[1]}';
+        var successUrl = '${postUri.queryParameters['successUrl']}';
+        var failUrl = '${postUri.queryParameters['failUrl']}';
+        var additionalField1 = '${postUri.queryParameters['additionalField1']}';
+        var additionalField2 = '${postUri.queryParameters['additionalField2']}';
+        var additionalField3 = '${postUri.queryParameters['additionalField3']}';
+        var additionalField4 = '${postUri.queryParameters['additionalField4']}';
+        var additionalField5 = '${postUri.queryParameters['additionalField5']}';
+        // };
+//
+//       // js.onProceedToPayment(transactionDetails.transaction!.redirectUrl!, txnDetails);
+//
+        String html = """<body>
+    <form id = 'frmData' name='frmData' role='form' method='post' action= '$txnUrl' >
+    <input type="hidden" id='checksum' name='checksum' value= '$checksum' />
+    <input type="text" id='messageType' class='form-control valid' name='messageType' value='$messageType'/>
+    <input type="text" id='merchantId' class='form-control valid' name='merchantId' value='$merchantId'/>
+    <input type="text" id='serviceId' class='form-control valid' name='serviceId' value='$serviceId'/>
+    <input type="text" id='orderId' class='form-control' name='orderId' value='$orderId'/>
+    <input type="text" id='customerId' class='form-control valid' name='customerId' value='$customerId'/>
+    <input type="text" id='transactionAmount' class='form-control valid' name='transactionAmount' value='$transactionAmount'/>
+    <input type="text" id='currencyCode' class='form-control' name='currencyCode' value='$currencyCode'/>
+    <input type="text" id='requestDateTime' class='form-control hasDatePicker' name='requestDateTime' value='$requestDateTime'/>
+    <input type="text" id='successUrl' class='form-control' name='successUrl' value='$successUrl'/>
+    <input type="text" id='failUrl' class='form-control' name='failUrl' value='$failUrl'/>
+    <input type="text" id='additionalField1' class='form-control valid' name='additionalField1' value='$additionalField1'/>
+    <input type="text" id='additionalField2' class='form-control valid' name='additionalField2' value='$additionalField2'/>
+    <input type="text" id='additionalField3' class='form-control valid' name='additionalField3' value='$additionalField3'/>
+    <input type="text" id='additionalField4' class='form-control valid' name='additionalField4' value='$additionalField4'/>
+    <input type="text" id='additionalField5' class='form-control valid' name='additionalField5' value='$additionalField5'/>
+<button type='submit' id='SubmitBtn'>Submit</button>
+    </form>
+    
+    <script type="text/javascript">
+    window.onload=function(){
+          document.forms["frmData"].submit();
+    }
+</script>
+  </body>""";
+
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (_) => FormSubmit(html)));
+//         // payGovTest(transactionDetails.transaction!.redirectUrl!);
+//       }
       }
-    } on CustomException catch (e, s) {
+    }on CustomException catch (e, s) {
       Navigator.pop(context);
       if (ErrorHandler.handleApiException(context, e, s)) {
         Notifiers.getToastMessage(context, e.message, 'ERROR');
@@ -556,53 +628,6 @@ class CollectPaymentProvider with ChangeNotifier {
       Notifiers.getToastMessage(context, e.toString(), 'ERROR');
       ErrorHandler.logError(e.toString(), s);
     }
-  }
-
-
-
-
-  Future <void> payGovTest(String redirectUrl) async {
-    var postUri = Uri.parse(redirectUrl);
-    DateTime now = new DateTime.now();
-    late http.Response response;
-    var dateStringPrefix = '${postUri.queryParameters['requestDateTime']}'.split('${now.year}');
-    var txnUrl = Uri.parse('${postUri.queryParameters['txURL']}');
-
-    // var request = new http.MultipartRequest("POST", txnUrl);
-    // request.headers.addAll({"Access-Control-Allow-Origin": "*", "Access-Control-Request-Method": "POST"});
-
-    var details = {
-      'checksum' : '${postUri.queryParameters['checksum']}',
-      'messageType' : '${postUri.queryParameters['messageType']}',
-      'merchantId' : '${postUri.queryParameters['merchantId']}',
-      'serviceId': '${postUri.queryParameters['serviceId']}',
-      'orderId': '${postUri.queryParameters['orderId']}',
-      'customerId': '${postUri.queryParameters['customerId']}',
-      'transactionAmount': '${postUri.queryParameters['transactionAmount']}',
-      'currencyCode': '${postUri.queryParameters['currencyCode']}',
-      'requestDateTime': '${dateStringPrefix[0]}${now.year} ${dateStringPrefix[1]}',
-      'successUrl': '${postUri.queryParameters['successUrl']}',
-      'failUrl': '${postUri.queryParameters['failUrl']}',
-      'additionalField1' : '${postUri.queryParameters['additionalField1']}',
-      'additionalField2' : '${postUri.queryParameters['additionalField2']}',
-      'additionalField3' : '${postUri.queryParameters['additionalField3']}',
-      'additionalField4' : '${postUri.queryParameters['additionalField4']}',
-      'additionalField5' : '${postUri.queryParameters['additionalField5']}',
-    };
-
-    try {
-      await http.post(txnUrl,
-        headers: {
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: details,
-      );
-    }
-    catch (e) {
-      print(e.toString());
-    }
-
   }
 
   String getSubtitleDynamicLocalization(
@@ -627,11 +652,12 @@ class CollectPaymentProvider with ChangeNotifier {
 
   onChangeOfPaymentAmountOrMethod(FetchBill fetchBill, String val,
       [isPaymentAmount = false]) {
-    // if (isPaymentAmount) {
-    //   fetchBill.paymentAmount = val;
-    // } else {
+    if (isPaymentAmount) {
+      fetchBill.paymentMethod = val;
+    }
+    //else {
     //   fetchBill.paymentMethod = val;
     // }
-    // notifyListeners();
+    notifyListeners();
   }
 }

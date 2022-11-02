@@ -394,9 +394,24 @@ class router {
                 searchResult: settings.arguments as SearchResult),
             settings: RouteSettings(name: Routes.EXPENSE_RESULT));
       case Routes.PAYMENT_SUCCESS:
+        late Map<String, dynamic> localQuery;
+        if (settings.arguments != null) {
+          var cloneQuery = <String, dynamic>{};
+          cloneQuery.addAll(settings.arguments as Map<String, dynamic>);
+          localQuery = cloneQuery;
+          localQuery.remove('demandList');
+          localQuery.remove('fetchBill');
+        }
+        else {
+          if (queryValidator(Routes.COMMON_PAYMENT, query)) {
+            localQuery = query;
+          } else {
+            return pageNotAvailable;
+          }
+        }
           return MaterialPageRoute(
-              builder: (_) => PaymentSuccess(),
-              settings: RouteSettings(name: Routes.PAYMENT_SUCCESS));
+              builder: (_) => PaymentSuccess(query: localQuery),
+              settings: RouteSettings(name: '${Routes.PAYMENT_SUCCESS}?${Uri(queryParameters: localQuery).query}'));
       case Routes.PAYMENT_FAILURE:
         return MaterialPageRoute(
             builder: (_) => PaymentFailure(),
