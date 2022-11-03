@@ -35,6 +35,57 @@ class Transaction {
   @JsonKey(name: "consumerCode")
   String? consumerCode;
 
+  @JsonKey(ignore: true)
+  String? txnUrl;
+
+  @JsonKey(ignore: true)
+  String? checkSum;
+
+  @JsonKey(ignore: true)
+  String? messageType;
+
+  @JsonKey(ignore: true)
+  String? merchantId;
+
+  @JsonKey(ignore: true)
+  String? serviceId;
+
+  @JsonKey(ignore: true)
+  String? orderId;
+
+  @JsonKey(ignore: true)
+  String? customerId;
+
+  @JsonKey(ignore: true)
+  String? transactionAmount;
+
+  @JsonKey(ignore: true)
+  String? currencyCode;
+
+  @JsonKey(ignore: true)
+  String? requestDateTime;
+
+  @JsonKey(ignore: true)
+  String? successUrl;
+
+  @JsonKey(ignore: true)
+  String? failUrl;
+
+  @JsonKey(ignore: true)
+  String? additionalField1;
+
+  @JsonKey(ignore: true)
+  String? additionalField2;
+
+  @JsonKey(ignore: true)
+  String? additionalField3;
+
+  @JsonKey(ignore: true)
+  String? additionalField4;
+
+  @JsonKey(ignore: true)
+  String? additionalField5;
+
   @JsonKey(name: "taxAndPayments")
   List<TaxAndPayments>? demandDetails;
 

@@ -107,7 +107,6 @@ flutter:
   assets:
     - assets/png/
     - assets/icons/
-    - assets/webContent/payment.html
   # To add assets to your application, add an assets section, like this:
 
   #   - images/a_dot_ham.jpeg

@@ -56,11 +56,22 @@ class CollectPaymentProvider with ChangeNotifier {
         listen: false);
     try {
 
-
       List<FetchBill>? paymentDetails;
 
       // if(bill == null) {
+      try {
         paymentDetails = await ConsumerRepository().getBillDetails(query);
+      }
+      on CustomException catch (e, s) {
+        if (ErrorHandler.handleApiException(context, e, s)) {
+          paymentStreamController.add(e.code ?? e.message);
+          return;
+        }
+        paymentStreamController.addError('error');
+      } catch (e, s) {
+        ErrorHandler.logError(e.toString(), s);
+        paymentStreamController.addError('error');
+      }
       // }else{
       //   paymentDetails = (bill.map((e)=> e.toJson()).toList()).map<FetchBill>((e)=> FetchBill.fromJson(e)).toList();
       // }
@@ -547,50 +558,44 @@ class CollectPaymentProvider with ChangeNotifier {
         DateTime now = new DateTime.now();
         var dateStringPrefix = '${postUri.queryParameters['requestDateTime']}'
             .split('${now.year}');
-
-        // late http.Response response;
-        // var txnDetails = {
-        var txnUrl = Uri.parse('${postUri.queryParameters['txURL']}');
-        var checksum = '${postUri.queryParameters['checksum']}';
-        var messageType = '${postUri.queryParameters['messageType']}';
-        var merchantId = '${postUri.queryParameters['merchantId']}';
-        var serviceId = '${postUri.queryParameters['serviceId']}';
-        var orderId = '${postUri.queryParameters['orderId']}';
-        var customerId = '${postUri.queryParameters['customerId']}';
-        var transactionAmount = '${postUri
+        transactionDetails.transaction?.txnUrl = Uri.parse('${postUri.queryParameters['txURL']}').toString();
+        transactionDetails.transaction?.checkSum = '${postUri.queryParameters['checksum']}';
+        transactionDetails.transaction?.messageType = '${postUri.queryParameters['messageType']}';
+        transactionDetails.transaction?.merchantId = '${postUri.queryParameters['merchantId']}';
+        transactionDetails.transaction?.serviceId = '${postUri.queryParameters['serviceId']}';
+        transactionDetails.transaction?.orderId = '${postUri.queryParameters['orderId']}';
+        transactionDetails.transaction?.customerId = '${postUri.queryParameters['customerId']}';
+        transactionDetails.transaction?.transactionAmount = '${postUri
             .queryParameters['transactionAmount']}';
-        var currencyCode = '${postUri.queryParameters['currencyCode']}';
-        var requestDateTime = '${dateStringPrefix[0]}${now
+        transactionDetails.transaction?.currencyCode = '${postUri.queryParameters['currencyCode']}';
+        transactionDetails.transaction?.requestDateTime = '${dateStringPrefix[0]}${now
             .year} ${dateStringPrefix[1]}';
-        var successUrl = '${postUri.queryParameters['successUrl']}';
-        var failUrl = '${postUri.queryParameters['failUrl']}';
-        var additionalField1 = '${postUri.queryParameters['additionalField1']}';
-        var additionalField2 = '${postUri.queryParameters['additionalField2']}';
-        var additionalField3 = '${postUri.queryParameters['additionalField3']}';
-        var additionalField4 = '${postUri.queryParameters['additionalField4']}';
-        var additionalField5 = '${postUri.queryParameters['additionalField5']}';
-        // };
-//
-//       // js.onProceedToPayment(transactionDetails.transaction!.redirectUrl!, txnDetails);
-//
+        transactionDetails.transaction?.successUrl = '${postUri.queryParameters['successUrl']}';
+        transactionDetails.transaction?.failUrl = '${postUri.queryParameters['failUrl']}';
+        transactionDetails.transaction?.additionalField1 = '${postUri.queryParameters['additionalField1']}';
+        transactionDetails.transaction?.additionalField2 = '${postUri.queryParameters['additionalField2']}';
+        transactionDetails.transaction?.additionalField3 = '${postUri.queryParameters['additionalField3']}';
+        transactionDetails.transaction?.additionalField4 = '${postUri.queryParameters['additionalField4']}';
+        transactionDetails.transaction?.additionalField5 = '${postUri.queryParameters['additionalField5']}';
+
         String html = """<body>
-    <form id = 'frmData' name='frmData' role='form' method='post' action= '$txnUrl' >
-    <input type="hidden" id='checksum' name='checksum' value= '$checksum' />
-    <input type="text" id='messageType' class='form-control valid' name='messageType' value='$messageType'/>
-    <input type="text" id='merchantId' class='form-control valid' name='merchantId' value='$merchantId'/>
-    <input type="text" id='serviceId' class='form-control valid' name='serviceId' value='$serviceId'/>
-    <input type="text" id='orderId' class='form-control' name='orderId' value='$orderId'/>
-    <input type="text" id='customerId' class='form-control valid' name='customerId' value='$customerId'/>
-    <input type="text" id='transactionAmount' class='form-control valid' name='transactionAmount' value='$transactionAmount'/>
-    <input type="text" id='currencyCode' class='form-control' name='currencyCode' value='$currencyCode'/>
-    <input type="text" id='requestDateTime' class='form-control hasDatePicker' name='requestDateTime' value='$requestDateTime'/>
-    <input type="text" id='successUrl' class='form-control' name='successUrl' value='$successUrl'/>
-    <input type="text" id='failUrl' class='form-control' name='failUrl' value='$failUrl'/>
-    <input type="text" id='additionalField1' class='form-control valid' name='additionalField1' value='$additionalField1'/>
-    <input type="text" id='additionalField2' class='form-control valid' name='additionalField2' value='$additionalField2'/>
-    <input type="text" id='additionalField3' class='form-control valid' name='additionalField3' value='$additionalField3'/>
-    <input type="text" id='additionalField4' class='form-control valid' name='additionalField4' value='$additionalField4'/>
-    <input type="text" id='additionalField5' class='form-control valid' name='additionalField5' value='$additionalField5'/>
+    <form id = 'frmData' name='frmData' role='form' method='post' action= '${Uri.parse('${postUri.queryParameters['txURL']}')}' >
+    <input type="hidden" id='checksum' name='checksum' value= '${postUri.queryParameters['checksum']}' />
+    <input type="text" id='messageType' class='form-control valid' name='messageType' value='${postUri.queryParameters['messageType']}'/>
+    <input type="text" id='merchantId' class='form-control valid' name='merchantId' value='${postUri.queryParameters['merchantId']}'/>
+    <input type="text" id='serviceId' class='form-control valid' name='serviceId' value='${postUri.queryParameters['serviceId']}'/>
+    <input type="text" id='orderId' class='form-control' name='orderId' value='${postUri.queryParameters['orderId']}'/>
+    <input type="text" id='customerId' class='form-control valid' name='customerId' value='${postUri.queryParameters['customerId']}'/>
+    <input type="text" id='transactionAmount' class='form-control valid' name='transactionAmount' value='${postUri.queryParameters['transactionAmount']}'/>
+    <input type="text" id='currencyCode' class='form-control' name='currencyCode' value='${postUri.queryParameters['currencyCode']}'/>
+    <input type="text" id='requestDateTime' class='form-control hasDatePicker' name='requestDateTime' value='${transactionDetails.transaction?.requestDateTime}'/>
+    <input type="text" id='successUrl' class='form-control' name='successUrl' value='${postUri.queryParameters['successUrl']}'/>
+    <input type="text" id='failUrl' class='form-control' name='failUrl' value='${postUri.queryParameters['failUrl']}'/>
+    <input type="text" id='additionalField1' class='form-control valid' name='additionalField1' value='${postUri.queryParameters['additionalField1']}'/>
+    <input type="text" id='additionalField2' class='form-control valid' name='additionalField2' value='${postUri.queryParameters['additionalField2']}'/>
+    <input type="text" id='additionalField3' class='form-control valid' name='additionalField3' value='${postUri.queryParameters['additionalField3']}'/>
+    <input type="text" id='additionalField4' class='form-control valid' name='additionalField4' value='${postUri.queryParameters['additionalField4']}'/>
+    <input type="text" id='additionalField5' class='form-control valid' name='additionalField5' value='${postUri.queryParameters['additionalField5']}'/>
 <button type='submit' id='SubmitBtn'>Submit</button>
     </form>
     
@@ -605,8 +610,6 @@ class CollectPaymentProvider with ChangeNotifier {
             context,
             MaterialPageRoute(
                 builder: (_) => FormSubmit(html)));
-//         // payGovTest(transactionDetails.transaction!.redirectUrl!);
-//       }
       }
     }on CustomException catch (e, s) {
       Navigator.pop(context);

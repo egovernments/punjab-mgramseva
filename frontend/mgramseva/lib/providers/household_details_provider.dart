@@ -60,16 +60,23 @@ class HouseHoldProvider with ChangeNotifier {
         "tenantId": commonProvider.userDetails!.selectedtenant!.code,
         ...{'connectionNumber': id},
       });
-      if (res != null &&
-          res.waterConnection != null &&
+      if (res.waterConnection != null &&
           res.waterConnection!.isNotEmpty) {
         data = res.waterConnection!.first;
       }
     }
     waterConnection = data;
 
-    waterConnection?.fetchBill = await Provider.of<FetchBillProvider>(navigatorKey.currentContext!, listen: false)
-      .fetchBill(waterConnection, navigatorKey.currentContext!);
+    try {
+      waterConnection?.fetchBill = await Provider.of<FetchBillProvider>(
+          navigatorKey.currentContext!, listen: false)
+          .fetchBill(waterConnection, navigatorKey.currentContext!);
+    }
+    catch (e, s) {
+      streamController.addError(e.toString());
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+    }
+
 
     waterConnection?.mdmsData = await CommonProvider.getMdmsBillingService(commonProvider.userDetails!.selectedtenant?.code.toString() ?? commonProvider.userDetails!.userRequest!.tenantId.toString());
 
