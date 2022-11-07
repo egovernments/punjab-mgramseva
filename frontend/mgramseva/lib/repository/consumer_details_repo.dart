@@ -13,7 +13,7 @@ import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 
 class ConsumerRepository extends BaseService {
-  getReguestInfo(String criteria) {
+  getRequestInfo(String criteria) {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -34,7 +34,7 @@ class ConsumerRepository extends BaseService {
         url: Url.ADD_PROPERTY,
         body: {"Property": body},
         method: RequestType.POST,
-        requestInfo: getReguestInfo('_create'));
+        requestInfo: getRequestInfo('_create'));
     return res;
   }
 
@@ -44,7 +44,7 @@ class ConsumerRepository extends BaseService {
         url: Url.UPDATE_PROPERTY,
         body: {"Property": body},
         method: RequestType.POST,
-        requestInfo: getReguestInfo('_update'));
+        requestInfo: getRequestInfo('_update'));
     return res;
   }
 
@@ -54,7 +54,7 @@ class ConsumerRepository extends BaseService {
         url: Url.ADD_WC_CONNECTION,
         body: {"WaterConnection": body},
         method: RequestType.POST,
-        requestInfo: getReguestInfo('_create'));
+        requestInfo: getRequestInfo('_create'));
     return res;
   }
 
@@ -64,7 +64,7 @@ class ConsumerRepository extends BaseService {
         url: Url.UPDATE_WC_CONNECTION,
         body: {"WaterConnection": body},
         method: RequestType.POST,
-        requestInfo: getReguestInfo('_update'));
+        requestInfo: getRequestInfo('_update'));
     return res;
   }
 
@@ -80,7 +80,7 @@ class ConsumerRepository extends BaseService {
         body: body,
         queryParameters: query,
         method: RequestType.POST,
-        requestInfo: getReguestInfo('_search'));
+        requestInfo: getRequestInfo('_search'));
     return res;
   }
 
@@ -91,7 +91,7 @@ class ConsumerRepository extends BaseService {
         queryParameters: body.map((key, value) =>
             MapEntry(key, value == null ? null : value.toString())),
         method: RequestType.POST,
-        requestInfo: getReguestInfo('_search'));
+        requestInfo: getRequestInfo('_search'));
     return res;
   }
 
@@ -117,7 +117,7 @@ class ConsumerRepository extends BaseService {
             APIConstants.API_KEY,
             APIConstants.API_MESSAGE_ID,
             commonProvider.userDetails!.accessToken,
-            {'userInfo': commonProvider.userDetails?.userRequest?.toJson()}));
+            commonProvider.userDetails?.userRequest?.toJson()));
 
     if (res != null) {
       fetchBill =
