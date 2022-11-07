@@ -94,7 +94,7 @@ class BasicDateField extends StatelessWidget {
               fontSize: 16,
               color: (isEnabled ?? true)
                   ? Theme.of(context).primaryColorDark
-                  : Colors.grey)),
+                  : Theme.of(context).disabledColor)),
       Text(isRequired ? '* ' : ' ',
           textAlign: TextAlign.left,
           style: TextStyle(
@@ -102,7 +102,7 @@ class BasicDateField extends StatelessWidget {
               fontSize: 16,
               color: (isEnabled ?? true)
                   ? Theme.of(context).primaryColorDark
-                  : Colors.grey)),
+                  : Theme.of(context).disabledColor)),
     ]);
 
     return LayoutBuilder(builder: (context, constraints) {

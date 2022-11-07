@@ -34,8 +34,6 @@ import 'package:mgramseva/widgets/dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/model/connection/water_connection.dart' as addition;
 
-import '../widgets/SelectFieldBuilder.dart';
-
 class ConsumerProvider with ChangeNotifier {
   late List<ConsumerWalkWidgets> consmerWalkthrougList;
   var streamController = StreamController.broadcast();
@@ -573,7 +571,6 @@ class ConsumerProvider with ChangeNotifier {
 
   onChangeBillingcycle(val) {
     selectedcycle = val;
-    var date = val;
     waterconnection.previousReadingDateCtrl.clear();
     waterconnection.BillingCycleCtrl.text = selectedcycle ?? '';
     waterconnection.meterInstallationDateCtrl.text = selectedcycle ?? '';

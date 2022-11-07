@@ -8,10 +8,10 @@ import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 
-class DemadDetailProvider with ChangeNotifier {
+class DemandDetailProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
   late GlobalKey<FormState> formKey;
-  bool isfirstdemand = false;
+  bool isFirstDemand = false;
 
   // ignore: non_constant_identifier_names
   Future<void> fetchDemandDetails(data) async {
@@ -29,16 +29,16 @@ class DemadDetailProvider with ChangeNotifier {
               .demandDetails!.first.auditDetails!.createdTime!
               .compareTo(a.demandDetails!.first.auditDetails!.createdTime!));
           if (value.demands?.isEmpty == true) {
-            isfirstdemand = false;
+            isFirstDemand = false;
           } else if (value.demands?.length == 1 &&
               value.demands?.first.consumerType == 'waterConnection-arrears') {
-            isfirstdemand = false;
+            isFirstDemand = false;
           } else if(value.demands?.length == 1 && value.demands?.first.consumerType == 'waterConnection-advance' && value.demands?.first.demandDetails?.first.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
-            isfirstdemand = false;
+            isFirstDemand = false;
           }
           else {
             checkMeterDemand(value, data);
-            isfirstdemand = true;
+            isFirstDemand = true;
           }
           streamController.add(value);
         } else {

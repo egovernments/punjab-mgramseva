@@ -39,7 +39,4 @@ class TenantsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  getTenant() {
-    return tenants!.tenantsList!.length;
-  }
 }

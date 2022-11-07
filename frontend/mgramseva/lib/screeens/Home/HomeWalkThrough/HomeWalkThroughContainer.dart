@@ -29,7 +29,7 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
   Widget build(BuildContext context) {
     return Consumer<HomeProvider>(builder: (_, homeProvider, child) {
       RenderBox? box = homeProvider
-          .homeWalkthrougList[homeProvider.activeindex].key!.currentContext!
+          .homeWalkthroughList[homeProvider.activeIndex].key!.currentContext!
           .findRenderObject() as RenderBox?;
       Offset position = box!.localToGlobal(Offset.zero);
       return Stack(children: [
@@ -56,8 +56,8 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                   children: [
                                     Icon(
                                         homeProvider
-                                            .homeWalkthrougList[
-                                                homeProvider.activeindex]
+                                            .homeWalkthroughList[
+                                                homeProvider.activeIndex]
                                             .icon,
                                         size: 35),
                                     Container(
@@ -66,8 +66,8 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                           child: new Text(
                                         ApplicationLocalizations.of(context)
                                             .translate(homeProvider
-                                                .homeWalkthrougList[
-                                                    homeProvider.activeindex]
+                                                .homeWalkthroughList[
+                                                    homeProvider.activeIndex]
                                                 .label),
                                         style: TextStyle(
                                             fontSize: 14,
@@ -82,9 +82,9 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
       Consumer<NotificationProvider>(builder: (_, notificationProvider, child) =>
       Positioned(
             left: position.dx + 5,
-            top: notificationProvider.enableNotification == true ? box.size.height + position.dy : (homeProvider.activeindex == 6 ||
-                    homeProvider.activeindex == 7 ||
-                    homeProvider.activeindex == 8)
+            top: notificationProvider.enableNotification == true ? box.size.height + position.dy : (homeProvider.activeIndex == 6 ||
+                    homeProvider.activeIndex == 7 ||
+                    homeProvider.activeIndex == 8)
                 ? position.dy - 25
                 : box.size.height + position.dy,
             child: CustomPaint(
@@ -95,17 +95,17 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
               ),
               child: Container(
                 height: 30,
-                width: 50,
+                width: 30,
               ),
             ))),
       Consumer<NotificationProvider>(builder: (_, notificationProvider, child) =>
       Positioned(
-            left: ((homeProvider.activeindex + 1) % 3 == 0)
+            left: ((homeProvider.activeIndex + 1) % 3 == 0)
                 ? position.dx - 140
                 : position.dx,
-            top: notificationProvider.enableNotification == true ? box.size.height + position.dy + 25 : (homeProvider.activeindex == 6 ||
-                    homeProvider.activeindex == 7 ||
-                    homeProvider.activeindex == 8)
+            top: notificationProvider.enableNotification == true ? box.size.height + position.dy + 25 : (homeProvider.activeIndex == 6 ||
+                    homeProvider.activeIndex == 7 ||
+                    homeProvider.activeIndex == 8)
                 ? position.dy -
                     box.size.height -
                     (MediaQuery.of(context).size.width > 720 ? 55 : 25)
@@ -131,16 +131,16 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                           child: Text(
                             ApplicationLocalizations.of(context).translate(
                                 homeProvider
-                                    .homeWalkthrougList[
-                                        homeProvider.activeindex]
+                                    .homeWalkthroughList[
+                                        homeProvider.activeIndex]
                                     .name),
                             style: TextStyle(
                                 fontSize: 14,
                                 color: Theme.of(context).primaryColorLight),
                             textAlign: TextAlign.start,
                           )),
-                      homeProvider.activeindex ==
-                              homeProvider.homeWalkthrougList.length - 1
+                      homeProvider.activeIndex ==
+                              homeProvider.homeWalkthroughList.length - 1
                           ? Padding(
                               padding: EdgeInsets.only(
                                   top: 10, right: 20, bottom: 10),
@@ -149,7 +149,7 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                   children: [
                                     GestureDetector(
                                         onTap: () async {
-                                          homeProvider.activeindex = 0;
+                                          homeProvider.activeIndex = 0;
                                           Navigator.pop(context);
                                           Provider.of<CommonProvider>(context,
                                               listen: false)
@@ -194,7 +194,7 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                   children: [
                                     TextButton(
                                         onPressed: () async {
-                                          homeProvider.activeindex = 0;
+                                          homeProvider.activeIndex = 0;
                                           Navigator.pop(context);
                                           Provider.of<CommonProvider>(context,
                                               listen: false)
@@ -213,23 +213,23 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                                     .primaryColorLight))),
                                     GestureDetector(
                                         onTap: () async {
-                                          if (homeProvider.homeWalkthrougList
+                                          if (homeProvider.homeWalkthroughList
                                                       .length -
                                                   1 <=
                                               active) {
-                                            homeProvider.activeindex = 0;
+                                            homeProvider.activeIndex = 0;
                                             Navigator.pop(context);
                                             setState(() {
                                               active = 0;
                                             });
                                           } else {
                                             widget.onnext!(
-                                                homeProvider.activeindex);
+                                                homeProvider.activeIndex);
                                             await Scrollable.ensureVisible(
                                                 homeProvider
-                                                    .homeWalkthrougList[
+                                                    .homeWalkthroughList[
                                                         homeProvider
-                                                            .activeindex]
+                                                            .activeIndex]
                                                     .key!
                                                     .currentContext!,
                                                 duration: new Duration(

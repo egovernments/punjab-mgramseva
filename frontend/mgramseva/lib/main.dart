@@ -189,7 +189,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => DashBoardProvider()),
           ChangeNotifierProvider(create: (_) => BillPayemntsProvider()),
           ChangeNotifierProvider(create: (_) => HomeProvider()),
-          ChangeNotifierProvider(create: (_) => DemadDetailProvider()),
+          ChangeNotifierProvider(create: (_) => DemandDetailProvider()),
           ChangeNotifierProvider(create: (_) => FetchBillProvider()),
           ChangeNotifierProvider(create: (_) => NotificationProvider()),
           ChangeNotifierProvider(create: (_) => RevenueDashboard()),

@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mgramseva/model/connection/tenant_boundary.dart';
@@ -19,8 +17,6 @@ import 'package:mgramseva/screeens/AddExpense/AddExpenseWalkThrough/expenseWalkT
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
-
-import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -32,10 +28,8 @@ import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/widgets/FilePicker.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'common_provider.dart';
-import 'package:universal_html/html.dart' as html;
 
 class ExpensesDetailsProvider with ChangeNotifier {
   late List<ExpenseWalkWidgets> expenseWalkthrougList;
@@ -43,7 +37,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   var expenditureDetails = ExpensesDetailsModel();
   late GlobalKey<FormState> formKey;
   var autoValidation = false;
-  int activeindex = 0;
+  int activeIndex = 0;
   LanguageList? languageList;
   var vendorList = <Vendor>[];
   late SuggestionsBoxController suggestionsBoxController;
@@ -328,7 +322,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
         expenditureDetails.selectedVendor = Vendor(res['name'], res['id']);
         status = true;
       }
-    } on CustomException catch (e, s) {
+    } on CustomException catch (e) {
       Notifiers.getToastMessage(context, e.message, 'ERROR');
     } catch (e) {
       Notifiers.getToastMessage(context, e.toString(), 'ERROR');
@@ -351,7 +345,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
         Notifiers.getToastMessage(
             context, i18.expense.NO_EXPENSES_FOUND, 'ERROR');
       }
-    } on CustomException catch (e, s) {
+    } on CustomException catch (e) {
       Notifiers.getToastMessage(context, e.message, 'ERROR');
       Navigator.pop(context);
     } catch (e) {
@@ -539,7 +533,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   incrementindex(index, expenseKey) async {
-    activeindex = index + 1;
+    activeIndex = index + 1;
     await Scrollable.ensureVisible(expenseKey.currentContext!,
         duration: new Duration(milliseconds: 100));
   }

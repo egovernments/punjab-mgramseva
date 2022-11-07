@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:mgramseva/components/Notifications/notificationsList.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
@@ -42,7 +41,7 @@ class _HomeState extends State<Home> {
     languageProvider.getLocalizationData(context);
   }
 
-  _buildView(homeProvider, Widget Notid) {
+  _buildView(homeProvider, Widget notification) {
     return Column(children: [
       Align(
           alignment: Alignment.centerRight,
@@ -55,7 +54,7 @@ class _HomeState extends State<Home> {
               context: context,
               pageBuilder: (context, anim1, anim2) {
                 return HomeWalkThroughContainer((index) =>
-                    homeProvider.incrementindex(
+                    homeProvider.incrementIndex(
                         index, homeProvider.homeWalkthrougList[index + 1].key));
               },
               transitionBuilder: (context, anim1, anim2, child) {
@@ -69,7 +68,7 @@ class _HomeState extends State<Home> {
             walkThroughKey: Constants.HOME_KEY,
           )),
       HomeCard(),
-      Notid,
+      notification,
       Footer()
     ]);
   }
@@ -92,7 +91,7 @@ class _HomeState extends State<Home> {
                       null
                   ? Consumer<CommonProvider>(builder: (_, userProvider, child) {
                       Provider.of<HomeProvider>(context, listen: false)
-                        ..setwalkthrough(
+                        ..setWalkThrough(
                             HomeWalkThrough().homeWalkThrough.map((e) {
                           e.key = GlobalKey();
                           return e;
@@ -106,7 +105,7 @@ class _HomeState extends State<Home> {
                           return Consumer<CommonProvider>(
                               builder: (_, userProvider, child) {
                             Provider.of<HomeProvider>(context, listen: false)
-                              ..setwalkthrough(
+                              ..setWalkThrough(
                                   HomeWalkThrough().homeWalkThrough.map((e) {
                                 e.key = GlobalKey();
                                 return e;
