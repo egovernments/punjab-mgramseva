@@ -5,7 +5,7 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/widgets/ButtonLink.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/Notifications.dart';
@@ -58,10 +58,10 @@ class NotificationsListState extends State<NotificationsList> {
 
   @override
   Widget build(BuildContext context) {
-    var billpaymentsProvider =
+    var billPaymentsProvider =
         Provider.of<NotificationProvider>(context, listen: false);
     return StreamBuilder(
-        stream: billpaymentsProvider.streamController.stream,
+        stream: billPaymentsProvider.streamController.stream,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             return buildNotificationsView(snapshot.data);
@@ -70,9 +70,9 @@ class NotificationsListState extends State<NotificationsList> {
           } else {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
-                return Loaders.CircularLoader();
+                return Loaders.circularLoader();
               case ConnectionState.active:
-                return Loaders.CircularLoader();
+                return Loaders.circularLoader();
               default:
                 return Container();
             }

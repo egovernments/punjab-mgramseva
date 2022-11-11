@@ -7,7 +7,7 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -247,9 +247,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
                             } else {
                               switch (snapshot.connectionState) {
                                 case ConnectionState.waiting:
-                                  return Loaders.CircularLoader();
+                                  return Loaders.circularLoader();
                                 case ConnectionState.active:
-                                  return Loaders.CircularLoader();
+                                  return Loaders.circularLoader();
                                 default:
                                   return Container(
                                     child: Text(""),

@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,24 +7,18 @@ import 'package:mgramseva/model/common/fetch_bill.dart' as billDetails;
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/model/mdms/payment_type.dart';
-import 'package:mgramseva/providers/collect_payment.dart';
-import 'package:mgramseva/providers/consumer_details_provider.dart';
-import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/common/PaymentSuccess.dart';
-import 'package:mgramseva/services/urls.dart';
+import 'package:mgramseva/providers/collect_payment_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/ConfirmationPopUp.dart';
-import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
-import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
@@ -113,9 +105,9 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
                 } else {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return Loaders.CircularLoader();
+                      return Loaders.circularLoader();
                     case ConnectionState.active:
-                      return Loaders.CircularLoader();
+                      return Loaders.circularLoader();
                     default:
                       return Container();
                   }
@@ -278,7 +270,6 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
     var penalty = widget.query['status'] != Constants.CONNECTION_STATUS.first ? CommonProvider.getPenalty(fetchBill.updateDemandList ?? []) : Penalty(0.0, '0', false);
     var isFirstDemand = CommonProvider.isFirstDemand(fetchBill.demandList ?? []);
     List res = [];
-    num len = fetchBill.billDetails?.first.billAccountDetails?.length as num;
     if (fetchBill.billDetails!.isNotEmpty)
       fetchBill.billDetails?.forEach((element) {
         if(element.amount != 0) res.add(element.amount);
@@ -391,10 +382,6 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
   }
 
   Widget _buildWaterCharges(FetchBill bill, BoxConstraints constraints) {
-    var style = TextStyle(
-        fontSize: 14,
-        color: Color.fromRGBO(80, 90, 95, 1),
-        fontWeight: FontWeight.w400);
 
     return Container(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
@@ -573,7 +560,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
         throw 'Could not launch appStoreLink';
       }
     } catch(e){
-      ErrorHandler.logError('failed to launch the url ${link}');
+      ErrorHandler.logError('failed to launch the url $link');
     }
   }
 
