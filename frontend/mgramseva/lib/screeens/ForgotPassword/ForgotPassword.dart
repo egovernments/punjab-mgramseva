@@ -46,11 +46,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     }
   }
 
-  saveInputandcall(context) async {
+  saveInputAndCall(context) async {
     var otpProvider =
         Provider.of<ForgotPasswordProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
-      otpProvider.otpforresetpassword(context, mobileNumber.text.trim());
+      otpProvider.otpForResetPassword(context, mobileNumber.text.trim());
       //Navigator.of(context).pushNamedAndRemoveUntil(Routes.RESET_PASSWORD, (route) => false);
     } else {
       setState(() {
@@ -109,7 +109,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         Padding(
             padding: EdgeInsets.all(15),
             child:
-                Button(i18.common.CONTINUE, () => saveInputandcall(context),
+                Button(i18.common.CONTINUE, () => saveInputAndCall(context),
                 key: Keys.forgotPassword.FORGOT_PASSWORD_CONTINUE_BTN,)),
       ],
     )));

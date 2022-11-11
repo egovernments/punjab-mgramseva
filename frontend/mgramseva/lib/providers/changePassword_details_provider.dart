@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/changePasswordDetails/changePassword_details.dart';
-import 'package:mgramseva/repository/changePassword_details_repo.dart';
+import 'package:mgramseva/repository/change_password_details_repo.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class ChangePasswordProvider with ChangeNotifier {
@@ -33,7 +33,7 @@ class ChangePasswordProvider with ChangeNotifier {
     }
   }
 
-  callNotifyer() {
+  callNotifier() {
     notifyListeners();
   }
 }

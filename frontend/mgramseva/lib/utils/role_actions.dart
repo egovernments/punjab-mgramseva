@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
@@ -49,7 +48,7 @@ class RoleActionsFiltering {
     }
   }
 
-  bool isEligibleRoletoRoute(String routerLink) {
+  bool isEligibleRoleToRoute(String routerLink) {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);

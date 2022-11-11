@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/common/metric.dart';
@@ -13,7 +12,7 @@ import 'package:mgramseva/repository/dashboard.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/dashboard/dashboard_pdf.dart';
+import 'package:mgramseva/screeens/dashboard/DashboardPdfCreator.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -177,7 +176,6 @@ class DashBoardProvider with ChangeNotifier {
     if (selectedTab != 'all') {
       query['isBillPaid'] = ((selectedTab == 'pending') ? 'false' : 'true');
     }
-    ;
 
     query
         .removeWhere((key, value) => (value is String && value.trim().isEmpty));
@@ -275,7 +273,6 @@ class DashBoardProvider with ChangeNotifier {
     if (selectedTab != 'all') {
       query['propertyType'] = selectedTab;
     }
-    ;
 
     if (sortBy != null) {
       query.addAll({
@@ -548,7 +545,6 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   void onChangeOfDate(DatePeriod? date, BuildContext context) {
-    var previousDateType = selectedMonth.dateType;
     selectedMonth =
         date ?? DatePeriod(DateTime.now(), DateTime.now(), DateType.MONTH);
     notifyListeners();
@@ -760,7 +756,6 @@ class DashBoardProvider with ChangeNotifier {
     if (selectedTab != 'all') {
       query['propertyType'] = selectedTab;
     }
-    ;
 
     if (sortBy != null) {
       query.addAll({

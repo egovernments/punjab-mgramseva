@@ -6,7 +6,7 @@ import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 
-class BillPayemntsProvider with ChangeNotifier {
+class BillPaymentsProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
   late GlobalKey<FormState> formKey;
 
@@ -21,7 +21,7 @@ class BillPayemntsProvider with ChangeNotifier {
   }
 
   // ignore: non_constant_identifier_names
-  Future<void> FetchBillPaymentswithoutLogin(Map data) async {
+  Future<void> FetchBillPaymentsWithoutLogin(Map data) async {
     try {
       var input = {
         "tenantId": data['tenantId'],

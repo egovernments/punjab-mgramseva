@@ -6,7 +6,7 @@ import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/HouseholdRegister/household_pdf.dart';
+import 'package:mgramseva/screeens/HouseholdRegister/HouseholdPdfCreator.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';

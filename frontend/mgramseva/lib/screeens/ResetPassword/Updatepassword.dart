@@ -1,32 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/index.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/model/mdms/tenants.dart';
-import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/model/user/user_details.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/forgot_password_repo.dart';
 import 'package:mgramseva/repository/reset_password_repo.dart';
-import 'package:mgramseva/repository/tendants_repo.dart';
+import 'package:mgramseva/repository/tenants_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
-import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
-import 'package:mgramseva/widgets/footerBanner.dart';
+import 'package:mgramseva/widgets/FooterBanner.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:provider/provider.dart';
 
@@ -46,7 +42,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   var newPassword = new TextEditingController();
   var confirmPassword = new TextEditingController();
   final formKey = GlobalKey<FormState>();
-  bool isdisabled = true;
+  bool isDisabled = true;
   List<Tenants>? tenantsList;
   TextEditingController _pinEditingController = TextEditingController();
   var autoValidate = false;
@@ -74,7 +70,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
   void onEnd() {
     setState(() {
-      isdisabled = false;
+      isDisabled = false;
     });
   }
 
@@ -222,7 +218,6 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   }
 
   Widget _buildTenantDetails() {
-    ;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
       child: Table(
@@ -359,7 +354,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,
-            visible: isdisabled,
+            visible: isDisabled,
           ),
           Visibility(
             child: TextButton(
@@ -370,7 +365,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                       timerController = CountdownTimerController(
                           endTime: endTime, onEnd: onEnd),
                       setState(() {
-                        isdisabled = true;
+                        isDisabled = true;
                       }),
                     },
                 child: Text(ApplicationLocalizations.of(context)
@@ -378,7 +373,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,
-            visible: !isdisabled,
+            visible: !isDisabled,
           ),
         ],
       ),
@@ -402,8 +397,6 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
       try {
         Loaders.showLoadingDialog(context);
-
-        var resetResponse =
             await ResetPasswordRepository().forgotPassword(body, context);
         Navigator.pop(context);
 
@@ -425,20 +418,20 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   }
 
   sendOtp() async {
-    var languagteProvider =
+    var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     var body = {
       "otp": {
         "mobileNumber": widget.userDetails.userRequest?.userName,
         "tenantId": widget.userDetails.userRequest?.tenantId,
         "type": "passwordreset",
-        "locale": languagteProvider.selectedLanguage?.value,
+        "locale": languageProvider.selectedLanguage?.value,
         "userType": widget.userDetails.userRequest?.type
       }
     };
 
     try {
-      var otpResponse = await ForgotPasswordRepository()
+      await ForgotPasswordRepository()
           .forgotPassword(body, widget.userDetails.accessToken);
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);

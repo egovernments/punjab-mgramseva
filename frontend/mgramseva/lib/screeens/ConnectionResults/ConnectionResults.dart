@@ -3,9 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/screeens/ConnectionResults/ConnectionDetailsCard.dart';
-import 'package:mgramseva/widgets/customAppbar.dart';
+import 'package:mgramseva/widgets/CustomAppbar.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
@@ -62,9 +62,9 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
                     } else {
                       switch (snapshot.connectionState) {
                         case ConnectionState.waiting:
-                          return Loaders.CircularLoader();
+                          return Loaders.circularLoader();
                         case ConnectionState.active:
-                          return Loaders.CircularLoader();
+                          return Loaders.circularLoader();
                         default:
                           return Container();
                       }

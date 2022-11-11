@@ -10,7 +10,7 @@ import 'package:mgramseva/widgets/SuccessPage.dart';
 
 import 'DrawerWrapper.dart';
 import 'SideBar.dart';
-import 'footer.dart';
+import 'Footer.dart';
 
 class CommonSuccess extends StatelessWidget {
   final SuccessHandler successHandler;

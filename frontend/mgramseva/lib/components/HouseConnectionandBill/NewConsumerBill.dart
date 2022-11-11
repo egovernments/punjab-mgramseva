@@ -4,21 +4,15 @@ import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/providers/fetch_bill_provider.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
-import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/ButtonGroup.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
 import 'package:provider/provider.dart';
-import "package:collection/collection.dart";
-
-import '../../model/demand/update_demand_list.dart';
 import '../../utils/models.dart';
 import '../../widgets/CustomDetails.dart';
 
@@ -81,15 +75,13 @@ class NewConsumerBillState extends State<NewConsumerBill> {
 
   @override
   Widget build(BuildContext context) {
-    return buidBillview(widget.waterConnection?.fetchBill ?? BillList());
+    return buildBillView(widget.waterConnection?.fetchBill ?? BillList());
   }
 
-  buidBillview(BillList billList) {
+  buildBillView(BillList billList) {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     var penalty = billList.bill!.isEmpty ? Penalty(0.0, '0', false) : CommonProvider.getPenalty(widget.waterConnection?.demands);
     var penaltyApplicable = billList.bill!.isEmpty ? PenaltyApplicable(0.0)  : CommonProvider.getPenaltyApplicable(widget.demandList);
-    var houseHoldProvider =
-    Provider.of<HouseHoldProvider>(context, listen: false);
 
     return LayoutBuilder(builder: (context, constraints) {
       var houseHoldProvider =

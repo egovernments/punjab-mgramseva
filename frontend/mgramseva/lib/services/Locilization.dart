@@ -13,7 +13,7 @@ import 'package:universal_html/html.dart';
 // Create storage
 // final storage = new FlutterSecureStorage();
 
-Future getLocilisation(String locale) async {
+Future getLocalisation(String locale) async {
   var res = window.localStorage['localisation_' + locale.toString()];
   if (res == null) {
     final requestInfo = RequestInfo(

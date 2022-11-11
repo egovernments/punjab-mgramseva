@@ -1,15 +1,12 @@
-import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/household_register_provider.dart';
 import 'package:mgramseva/screeens/HouseholdRegister/HouseholdList.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
-import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/footer.dart';
-import 'package:mgramseva/widgets/tab_button.dart';
+import 'package:mgramseva/widgets/Footer.dart';
+import 'package:mgramseva/widgets/TabButton.dart';
 import 'package:provider/provider.dart';
 
 

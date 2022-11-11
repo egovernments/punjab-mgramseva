@@ -2,23 +2,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/widgets/SearchSelectFieldBuilder.dart';
-import 'package:mgramseva/widgets/focus_watcher.dart';
+import 'package:mgramseva/widgets/KeyboardFocusWatcher.dart';
 import 'package:mgramseva/model/connection/property.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/WalkFlowContainer.dart';
-import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/walkthrough.dart';
+import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/walkThrough.dart';
 import 'package:mgramseva/screeens/GenerateBill/widgets/MeterReading.dart';
 import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
-import 'package:mgramseva/widgets/customAppbar.dart';
+import 'package:mgramseva/widgets/CustomAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
 
 import 'package:mgramseva/widgets/DatePickerFieldBuilder.dart';
@@ -32,15 +32,15 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TableText.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/footer.dart';
+import 'package:mgramseva/widgets/Footer.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
 class ConsumerDetails extends StatefulWidget {
   final String? id;
-  final WaterConnection? waterconnection;
+  final WaterConnection? waterConnection;
 
-  const ConsumerDetails({Key? key, this.id, this.waterconnection})
+  const ConsumerDetails({Key? key, this.id, this.waterConnection})
       : super(key: key);
   State<StatefulWidget> createState() {
     return _ConsumerDetailsState();
@@ -58,27 +58,27 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
       ..phoneNumberAutoValidation = false
       ..selectedcycle = ''
       ..waterconnection = WaterConnection()
-      ..isfirstdemand = false
+      ..isFirstDemand = false
       ..searchPickerKey = GlobalKey<SearchSelectFieldState>()
       ..property = Property();
 
-    if (widget.waterconnection != null) {
+    if (widget.waterConnection != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         var commonProvider = Provider.of<CommonProvider>(
             navigatorKey.currentContext!,
             listen: false);
         consumerProvider
           ..setModel()
-          ..setWaterConnection(widget.waterconnection)
+          ..setWaterConnection(widget.waterConnection)
           ..fetchBoundary()
           ..getPaymentType()
           ..getProperty({
             "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-            "propertyIds": widget.waterconnection!.propertyId
+            "propertyIds": widget.waterConnection!.propertyId
           })
           ..autoValidation = false
           ..formKey = GlobalKey<FormState>()
-          ..setwallthrough(ConsumerWalkThrough().consumerWalkThrough.map((e) {
+          ..setWalkThrough(ConsumerWalkThrough().consumerWalkThrough.map((e) {
             e.key = GlobalKey();
             return e;
           }).toList());
@@ -95,7 +95,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
           ..getPaymentType()
           ..autoValidation = false
           ..formKey = GlobalKey<FormState>()
-          ..setwallthrough(ConsumerWalkThrough().consumerWalkThrough.map((e) {
+          ..setWalkThrough(ConsumerWalkThrough().consumerWalkThrough.map((e) {
             e.key = GlobalKey();
             return e;
           }).toList());
@@ -117,7 +117,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
     if (!_numberFocus.hasFocus) {
       Provider.of<ConsumerProvider>(context, listen: false)
         ..phoneNumberAutoValidation = true
-        ..callNotifyer();
+        ..callNotifier();
     }
   }
 
@@ -130,7 +130,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
       ..getConsumerDetails()
       ..autoValidation = false
       ..formKey = GlobalKey<FormState>()
-      ..setwallthrough(ConsumerWalkThrough().consumerWalkThrough.map((e) {
+      ..setWalkThrough(ConsumerWalkThrough().consumerWalkThrough.map((e) {
         e.key = GlobalKey();
         return e;
       }).toList());
@@ -160,7 +160,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                         context: context,
                         pageBuilder: (context, anim1, anim2) {
                           return WalkThroughContainer((index) =>
-                              consumerProvider.incrementindex(
+                              consumerProvider.incrementIndex(
                                   index,
                                   consumerProvider
                                       .consmerWalkthrougList[index + 1].key));
@@ -269,7 +269,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               contextkey:
                                   consumerProvider.consmerWalkthrougList[4].key,
                                   key: Keys.createConsumer.CONSUMER_OLD_ID_KEY,
-                                  isDisabled: consumerProvider.isfirstdemand,
+                                  isDisabled: consumerProvider.isFirstDemand,
                             ),
                           ),
                           Consumer<ConsumerProvider>(
@@ -335,7 +335,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                           property.address.localityCtrl,
                                           '',
                                           '',
-                                          consumerProvider.onChangeOflocaity,
+                                          consumerProvider.onChangeOfLocality,
                                           consumerProvider.getBoundaryList(),
                                           true,
                                           contextkey: consumerProvider
@@ -351,7 +351,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     '',
                                     '',
                                     consumerProvider.onChangeOfPropertyType,
-                                    consumerProvider.getPropertTypeList(),
+                                    consumerProvider.getPropertyTypeList(),
                                     true,
                                     contextkey: consumerProvider
                                         .consmerWalkthrougList[6].key,
@@ -379,7 +379,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                             .waterconnection.ServiceTypeCtrl,
                                         isEnabled: consumerProvider.isEdit ==
                                                 false ||
-                                            consumerProvider.isfirstdemand ==
+                                            consumerProvider.isFirstDemand ==
                                                 false,
                                         key: Keys.createConsumer.CONSUMER_SERVICE_KEY,
                                       ),
@@ -394,7 +394,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                 //Consumer Previous MeterReading Date Picker Field
                                                 consumerProvider.isEdit ==
                                                             false ||
-                                                        consumerProvider.isfirstdemand ==
+                                                        consumerProvider.isFirstDemand ==
                                                             false
                                                     ? BasicDateField(
                                                         i18.consumer
@@ -426,7 +426,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                 consumerProvider.isEdit ==
                                                             false ||
                                                         consumerProvider
-                                                                .isfirstdemand ==
+                                                                .isFirstDemand ==
                                                             false
                                                     ? MeterReading(
                                                         i18.demandGenerate
@@ -460,7 +460,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                   consumerProvider.isEdit ==
                                                               false ||
                                                           consumerProvider
-                                                                  .isfirstdemand ==
+                                                                  .isFirstDemand ==
                                                               false
                                                       ?
                                                   Wrap(
@@ -488,7 +488,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                      '',
                                                      '',
                                                        consumerProvider
-                                                           .onChangeBillingcycle,
+                                                           .onChangeBillingCycle,
                                                      consumerProvider
                                                          .getBillingCycle(),
                                                      true,
@@ -505,7 +505,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     ],
                                   )),
                           if(consumerProvider.isEdit == false ||
-                                  consumerProvider.isfirstdemand == false)
+                                  consumerProvider.isFirstDemand == false)
                             Wrap(
                               children: [
                                 RadioButtonFieldBuilder(
@@ -591,9 +591,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                       } else {
                         switch (snapshot.connectionState) {
                           case ConnectionState.waiting:
-                            return Loaders.CircularLoader();
+                            return Loaders.circularLoader();
                           case ConnectionState.active:
-                            return Loaders.CircularLoader();
+                            return Loaders.circularLoader();
                           default:
                             return Container();
                         }

@@ -9,9 +9,9 @@ import 'package:mgramseva/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class HomeWalkThroughContainer extends StatefulWidget {
-  final Function? onnext;
+  final Function? onNext;
 
-  HomeWalkThroughContainer(this.onnext);
+  HomeWalkThroughContainer(this.onNext);
   @override
   State<StatefulWidget> createState() {
     return _HomeWalkThroughContainerState();
@@ -223,7 +223,7 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                                               active = 0;
                                             });
                                           } else {
-                                            widget.onnext!(
+                                            widget.onNext!(
                                                 homeProvider.activeIndex);
                                             await Scrollable.ensureVisible(
                                                 homeProvider

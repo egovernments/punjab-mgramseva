@@ -15,7 +15,7 @@ import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/footer.dart';
+import 'package:mgramseva/widgets/Footer.dart';
 import 'package:provider/provider.dart';
 
 class ChangePassword extends StatefulWidget {
@@ -59,7 +59,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       changePasswordProvider.changePassword(data, context);
     } else {
       changePasswordProvider.autoValidation = true;
-      changePasswordProvider.callNotifyer();
+      changePasswordProvider.callNotifier();
     }
   }
 

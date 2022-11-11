@@ -26,7 +26,7 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:universal_html/html.dart' as html;
@@ -136,7 +136,7 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
-  set loginCredentails(UserDetails? loginDetails) {
+  set loginCredentials(UserDetails? loginDetails) {
     userDetails = loginDetails;
     if (kIsWeb) {
       window.localStorage[Constants.LOGIN_KEY] =
@@ -172,37 +172,37 @@ class CommonProvider with ChangeNotifier {
   }
 
   Future<String> getWalkThroughCheck(String key) async {
-    var userReposne;
+    var userResponse;
     try {
       if (kIsWeb) {
-        userReposne = window.localStorage[key];
+        userResponse = window.localStorage[key];
       } else {
-        userReposne = (await storage.read(key: key));
+        userResponse = (await storage.read(key: key));
       }
     } catch (e) {
       userLoggedStreamCtrl.add(null);
     }
-    if (userReposne == null) {
-      userReposne = 'false';
+    if (userResponse == null) {
+      userResponse = 'false';
     }
-    return userReposne;
+    return userResponse;
   }
 
   Future<UserProfile> getUserProfile() async {
-    var userReposne;
+    var userResponse;
     try {
       if (kIsWeb) {
-        userReposne = window.localStorage[Constants.USER_PROFILE_KEY];
+        userResponse = window.localStorage[Constants.USER_PROFILE_KEY];
       } else {
-        userReposne = await storage.read(key: Constants.USER_PROFILE_KEY);
+        userResponse = await storage.read(key: Constants.USER_PROFILE_KEY);
       }
     } catch (e) {
       userLoggedStreamCtrl.add(null);
     }
-    return UserProfile.fromJson(jsonDecode(userReposne));
+    return UserProfile.fromJson(jsonDecode(userResponse));
   }
 
-  Future<void> getLoginCredentails() async {
+  Future<void> getLoginCredentials() async {
     var languageProvider = Provider.of<LanguageProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -303,7 +303,7 @@ class CommonProvider with ChangeNotifier {
   void onLogout() {
     navigatorKey.currentState
         ?.pushNamedAndRemoveUntil(Routes.SELECT_LANGUAGE, (route) => false);
-    loginCredentails = null;
+    loginCredentials = null;
   }
 
   void onTapOfAttachment(FileStore store, context) async {
@@ -340,7 +340,7 @@ class CommonProvider with ChangeNotifier {
                 input.toString().replaceAll(" ", "%20").replaceFirst('{link}', res);
             await canLaunch(link)
                 ? launch(link)
-                : ErrorHandler.logError('failed to launch the url ${link}');
+                : ErrorHandler.logError('failed to launch the url $link');
           }
           return;
         } else {
@@ -349,7 +349,7 @@ class CommonProvider with ChangeNotifier {
         }
         await canLaunch(link)
             ? launch(link)
-            : ErrorHandler.logError('failed to launch the url ${link}');
+            : ErrorHandler.logError('failed to launch the url $link');
       }
     } catch (e, s) {
       ErrorHandler.logError(e.toString(), s);
@@ -833,7 +833,7 @@ class CommonProvider with ChangeNotifier {
 
   static Future<PaymentType> getMdmsBillingService(String tenantId) async {
     try {
-      return await CoreRepository().getPaymentTypeMDMS(getMdmsPaymentModes(
+      return await CoreRepository().getPaymentTypeMDMS(getMDMSPaymentModes(
           tenantId));
     }catch(e){
       return PaymentType();

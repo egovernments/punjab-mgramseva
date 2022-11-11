@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-
-import '../../routers/Routers.dart';
-import '../../widgets/ErrorMessagePAge.dart';
+import '../../widgets/ErrorPage.dart';
 
 class PaymentFailure extends StatefulWidget {
 

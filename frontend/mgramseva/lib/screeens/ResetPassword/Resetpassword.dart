@@ -16,14 +16,14 @@ import 'package:mgramseva/widgets/BottonButtonBar.dart';
 import 'package:mgramseva/widgets/Logo.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
-import 'package:mgramseva/widgets/footerBanner.dart';
+import 'package:mgramseva/widgets/FooterBanner.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:provider/provider.dart';
 
 class ResetPassword extends StatefulWidget {
-  String? id;
+  final String? id;
 
-  ResetPassword({String? this.id});
+  ResetPassword({this.id});
 
   State<StatefulWidget> createState() {
     return _ResetPasswordState();
@@ -41,7 +41,7 @@ class _ResetPasswordState extends State<ResetPassword> {
   var autoValidate = false;
   var password = "";
   var pinLength = 6;
-  bool isdisabled = true;
+  bool isDisabled = true;
 
   @override
   void initState() {
@@ -58,7 +58,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   void onEnd() {
     setState(() {
-      isdisabled = false;
+      isDisabled = false;
     });
   }
 
@@ -254,7 +254,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,
-            visible: isdisabled,
+            visible: isDisabled,
           ),
           Visibility(
             child: TextButton(
@@ -265,7 +265,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                       timerController = CountdownTimerController(
                           endTime: endTime, onEnd: onEnd),
                       setState(() {
-                        isdisabled = true;
+                        isDisabled = true;
                       }),
                     },
                 child: Text(ApplicationLocalizations.of(context)
@@ -273,7 +273,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,
-            visible: !isdisabled,
+            visible: !isDisabled,
           ),
         ],
       ),
@@ -330,7 +330,6 @@ class _ResetPasswordState extends State<ResetPassword> {
     };
 
     try {
-      var otpResponse =
           await ForgotPasswordRepository().forgotPassword(body, context);
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);

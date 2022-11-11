@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/widgets/Back.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
-import 'package:mgramseva/widgets/footerBanner.dart';
+import 'package:mgramseva/widgets/FooterBanner.dart';
 
 class MobileView extends StatelessWidget {
   final Widget widget;

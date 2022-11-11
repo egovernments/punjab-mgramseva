@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
-import 'package:mgramseva/providers/authentication.dart';
+import 'package:mgramseva/providers/authentication_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -65,7 +65,7 @@ class _LoginState extends State<Login> {
           passwordcontroller.text.trim());
     } else {
       autoValidation = true;
-      authProvider.callNotifyer();
+      authProvider.callNotifier();
     }
   }
 

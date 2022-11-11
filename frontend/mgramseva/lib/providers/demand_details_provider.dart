@@ -57,7 +57,7 @@ class DemandDetailProvider with ChangeNotifier {
       DemandList demandList, WaterConnection waterConnection) async {
     if (demandList.demands!.isNotEmpty) {
       try {
-        var res = await BillGenerateRepository().searchmetetedDemand({
+        var res = await BillGenerateRepository().searchMeteredDemand({
           "tenantId": demandList.demands!.first.tenantId,
           "connectionNos": waterConnection.connectionNo
         });

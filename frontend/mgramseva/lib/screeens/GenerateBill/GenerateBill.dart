@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/widgets/focus_watcher.dart';
+import 'package:mgramseva/widgets/KeyboardFocusWatcher.dart';
 import 'package:mgramseva/model/bill/bill_generation_details/bill_generation_details.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/bill_generation_details_provider.dart';
@@ -7,7 +7,7 @@ import 'package:mgramseva/screeens/GenerateBill/widgets/MeterReading.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/BottonButtonBar.dart';
@@ -19,7 +19,7 @@ import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:mgramseva/widgets/SelectFieldBuilder.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/footer.dart';
+import 'package:mgramseva/widgets/Footer.dart';
 import 'package:provider/provider.dart';
 
 class GenerateBill extends StatefulWidget {
@@ -297,7 +297,7 @@ class _GenerateBillState extends State<GenerateBill> {
 
   @override
   Widget build(BuildContext context) {
-    var billgenerateProvider =
+    var billGenerateProvider =
         Provider.of<BillGenerationProvider>(context, listen: false);
     return KeyboardFocusWatcher(
         child: Scaffold(
@@ -314,7 +314,7 @@ class _GenerateBillState extends State<GenerateBill> {
             child: Container(
                 child: Column(children: [
           StreamBuilder(
-              stream: billgenerateProvider.streamController.stream,
+              stream: billGenerateProvider.streamController.stream,
               builder: (context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   return buildview(snapshot.data);
@@ -323,9 +323,9 @@ class _GenerateBillState extends State<GenerateBill> {
                 } else {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return Loaders.CircularLoader();
+                      return Loaders.circularLoader();
                     case ConnectionState.active:
-                      return Loaders.CircularLoader();
+                      return Loaders.circularLoader();
                     default:
                       return Container();
                   }
@@ -335,7 +335,7 @@ class _GenerateBillState extends State<GenerateBill> {
         ]))),
         bottomNavigationBar: BottomButtonBar(
             '${widget.id == null ? i18.demandGenerate.GENERATE_DEMAND_BUTTON : i18.demandGenerate.GENERATE_BILL_BUTTON}',
-            () => {billgenerateProvider.onSubmit(context)},
+            () => {billGenerateProvider.onSubmit(context)},
         key: Keys.bulkDemand.GENERATE_BILL_BTN,)));
   }
 }

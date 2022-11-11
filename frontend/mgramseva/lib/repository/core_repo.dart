@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/model/Events/events_List.dart';
-import 'package:mgramseva/model/common/pdfservice.dart';
+import 'package:mgramseva/model/common/pdf_service.dart';
 
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
@@ -14,12 +14,10 @@ import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
-import 'package:mgramseva/providers/notifications_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
-import 'package:mgramseva/services/base_service.dart';
+import 'package:mgramseva/services/BaseService.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/common_methods.dart';
-import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -182,7 +180,7 @@ class CoreRepository extends BaseService {
         return response.body;
       }
     } catch (e, s) {
-      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
   }
 
@@ -216,7 +214,7 @@ class CoreRepository extends BaseService {
         return pdfServiceResponse;
       }
     } catch (e, s) {
-      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
   }
 
@@ -248,12 +246,11 @@ class CoreRepository extends BaseService {
         return eventsResponse;
       }
     } catch (e, s) {
-      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
   }
 
   Future<bool?> updateNotifications(events) async {
-    EventsList? eventsResponse;
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
@@ -280,7 +277,7 @@ class CoreRepository extends BaseService {
         return false;
       }
     } catch (e, s) {
-      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
   }
 
@@ -323,7 +320,7 @@ class CoreRepository extends BaseService {
       }
       return false;
     } catch (e, s) {
-      ErrorHandler().allExceptionsHandler(context, e);
+      ErrorHandler().allExceptionsHandler(context, e, s);
     }
   }
 

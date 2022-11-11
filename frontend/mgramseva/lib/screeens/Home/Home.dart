@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/components/Notifications/notificationsList.dart';
+import 'package:mgramseva/components/Notifications/NotificationsList.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/language.dart';
@@ -10,13 +10,13 @@ import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
-import 'package:mgramseva/widgets/footer.dart';
+import 'package:mgramseva/widgets/Footer.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/customAppbar.dart';
+import '../../widgets/CustomAppbar.dart';
 import 'HomeWalkThrough/HomeWalkThroughContainer.dart';
 import 'HomeWalkThrough/HomeWalkThroughList.dart';
 
@@ -120,9 +120,9 @@ class _HomeState extends State<Home> {
                         } else {
                           switch (snapshot.connectionState) {
                             case ConnectionState.waiting:
-                              return Loaders.CircularLoader();
+                              return Loaders.circularLoader();
                             case ConnectionState.active:
-                              return Loaders.CircularLoader();
+                              return Loaders.circularLoader();
                             default:
                               return Container();
                           }
@@ -162,7 +162,7 @@ class _HomeState extends State<Home> {
                   });
               }
               catch (e, s) {
-                ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+                ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
               }
             }
             return userProvider.userDetails?.selectedtenant?.code != null

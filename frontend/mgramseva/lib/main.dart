@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 
-import 'package:mgramseva/providers/authentication.dart';
+import 'package:mgramseva/providers/authentication_provider.dart';
 import 'package:mgramseva/providers/bill_generation_details_provider.dart';
 import 'package:mgramseva/providers/bill_payments_provider.dart';
 import 'package:mgramseva/providers/changePassword_details_provider.dart';
@@ -33,13 +33,12 @@ import 'package:mgramseva/providers/tenants_provider.dart';
 import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 
 import 'package:mgramseva/providers/user_profile_provider.dart';
-import 'package:mgramseva/router.dart';
+import 'package:mgramseva/Routing.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/Home/Home.dart';
 
-import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
-import 'package:mgramseva/services/LocalStorage.dart';
+import 'package:mgramseva/screeens/SelectLanguage/SelectLanguage.dart';
 import 'package:mgramseva/theme.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
@@ -47,21 +46,18 @@ import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:new_version/new_version.dart';
 import 'package:open_file/open_file.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_strategy/url_strategy.dart';
 
-import 'providers/collect_payment.dart';
+import 'providers/collect_payment_provider.dart';
 import 'providers/dashboard_provider.dart';
 import 'providers/revenuedashboard_provider.dart';
-import 'screeens/common/collect_payment.dart';
-import 'configure_non_web.dart' if (dart.library.html) 'configure_web.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 
 void main() {
@@ -187,7 +183,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => SearchConnectionProvider()),
           ChangeNotifierProvider(create: (_) => CollectPaymentProvider()),
           ChangeNotifierProvider(create: (_) => DashBoardProvider()),
-          ChangeNotifierProvider(create: (_) => BillPayemntsProvider()),
+          ChangeNotifierProvider(create: (_) => BillPaymentsProvider()),
           ChangeNotifierProvider(create: (_) => HomeProvider()),
           ChangeNotifierProvider(create: (_) => DemandDetailProvider()),
           ChangeNotifierProvider(create: (_) => FetchBillProvider()),
@@ -233,7 +229,7 @@ class _MyAppState extends State<MyApp> {
                   navigatorKey: navigatorKey,
                 navigatorObservers: <NavigatorObserver>[observer],
                 initialRoute: Routes.LANDING_PAGE,
-                  onGenerateRoute: router.generateRoute,
+                  onGenerateRoute: Routing.generateRoute,
                   theme: theme,
                   // home: SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
                 ))));
@@ -333,7 +329,7 @@ class _LandingPageState extends State<LandingPage> {
   //
   afterViewBuild() async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    commonProvider.getLoginCredentails();
+    commonProvider.getLoginCredentials();
   //
   //   await Future.delayed(Duration(seconds: 2));
   //   IsolateNameServer.registerPortWithName(
