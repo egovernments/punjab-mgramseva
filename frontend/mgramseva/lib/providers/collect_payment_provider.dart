@@ -473,7 +473,7 @@ class CollectPaymentProvider with ChangeNotifier {
                     getSubtitleDynamicLocalization(context, fetchBill),
                 subHeaderFun: () =>
                     getSubHeaderDynamicLocalization(context, paymentDetails)),
-            callBackdownload: () => commonProvider.getFileFromPDFPaymentService(
+            callBackDownload: () => commonProvider.getFileFromPDFPaymentService(
                 {
                   "Payments": [paymentDetails.payments!.first]
                 },
@@ -488,9 +488,9 @@ class CollectPaymentProvider with ChangeNotifier {
                 paymentDetails.payments!.first.mobileNumber,
                 paymentDetails.payments!.first,
                 "Download"),
-            callBackprint: () =>
+            callBackPrint: () =>
                 _capturePng(paymentDetails.payments!.first, fetchBill),
-            callBackwatsapp: () => commonProvider.getFileFromPDFPaymentService({
+            callBackWhatsApp: () => commonProvider.getFileFromPDFPaymentService({
               "Payments": [paymentDetails.payments!.first]
             }, {
               "key": paymentDetails.payments?.first.paymentDetails?.first.bill

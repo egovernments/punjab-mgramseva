@@ -16,7 +16,7 @@ class BasicDateField extends StatelessWidget {
   final TextEditingController controller;
   final bool? isEnabled;
   final String? requiredMessage;
-  final GlobalKey? contextkey;
+  final GlobalKey? contextKey;
   final Key? key;
   final String? Function(DateTime?)? validator;
   final AutovalidateMode? autoValidation;
@@ -30,7 +30,7 @@ class BasicDateField extends StatelessWidget {
       this.isEnabled,
       this.requiredMessage,
       this.autoValidation,
-      this.contextkey, this.key, this.validator, this.margin});
+      this.contextKey, this.key, this.validator, this.margin});
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +108,7 @@ class BasicDateField extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth < 760) {
         return Container(
-            key: contextkey,
+            key: contextKey,
             margin:
             margin ?? EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
             child: Column(children: [
@@ -120,7 +120,7 @@ class BasicDateField extends StatelessWidget {
             ]));
       } else {
         return Container(
-            key: contextkey,
+            key: contextKey,
             margin: margin ?? EdgeInsets.only(
                 top: 20.0, bottom: 5, right: 20, left: 20),
             child: Row(children: [

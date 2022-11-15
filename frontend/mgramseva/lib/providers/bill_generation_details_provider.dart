@@ -308,7 +308,7 @@ class BillGenerationProvider with ChangeNotifier {
                           '${billList.bill!.first.billNumber.toString()}'),
                   callBack: () =>
                       onClickOfCollectPayment(billList.bill!.first, context),
-                  callBackdownload: () => commonProvider
+                  callBackDownload: () => commonProvider
                       .getFileFromPDFBillService({
                     "Bill": [billList.bill!.first]
                   }, {
@@ -319,7 +319,7 @@ class BillGenerationProvider with ChangeNotifier {
                         commonProvider.userDetails!.selectedtenant!.code,
                   }, billList.bill!.first.mobileNumber, billList.bill!.first,
                           "Download"),
-                  callBackwatsapp: () => commonProvider
+                  callBackWhatsApp: () => commonProvider
                       .getFileFromPDFBillService({
                     "Bill": [billList.bill!.first],
                   }, {

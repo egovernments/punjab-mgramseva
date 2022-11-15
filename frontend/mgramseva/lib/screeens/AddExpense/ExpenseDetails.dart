@@ -219,7 +219,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               isEnabled: expenseDetails.allowEdit,
                               requiredMessage:
                                   i18.expense.SELECT_EXPENDITURE_CATEGORY,
-                              contextkey:
+                              contextKey:
                                   expenseProvider.expenseWalkthrougList[0].key,
                               controller: expenseDetails.expenseTypeController,
                               key: Keys.expense.EXPENSE_TYPE,
@@ -283,7 +283,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               requiredMessage:
                                   i18.expense.AMOUNT_MENTIONED_IN_THE_BILL,
                               validator: Validators.amountValidator,
-                              contextkey:
+                              contextKey:
                                   expenseProvider.expenseWalkthrougList[2].key,
                               key: Keys.expense.EXPENSE_AMOUNT,
                             ),
@@ -324,7 +324,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                       isEnabled: expenseDetails.allowEdit,
                                       requiredMessage:
                                       i18.expense.DATE_BILL_ENTERED_IN_RECORDS,
-                                      contextkey:
+                                      contextKey:
                                       expenseProvider.expenseWalkthrougList[3].key,
                                       key: Keys.expense.EXPENSE_BILL_DATE,
                                       margin: margin,
@@ -384,7 +384,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               onChangeOfDate:
                                   expensesDetailsProvider.onChangeOfDate,
                               isEnabled: expenseDetails.allowEdit,
-                              contextkey:
+                              contextKey:
                                   expenseProvider.expenseWalkthrougList[4].key,
                               key: Keys.expense.EXPENSE_PARTY_DATE,
                             ),

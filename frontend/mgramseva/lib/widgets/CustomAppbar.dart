@@ -53,7 +53,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           result.length > 1 &&
           commonProvider.userDetails!.selectedtenant == null) {
         WidgetsBinding.instance
-            .addPostFrameCallback((_) => showdialog(result));
+            .addPostFrameCallback((_) => showDialogBox(result));
       }
     } else {
       tenantProvider.getTenants().then((value) {
@@ -74,13 +74,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
             result.length > 1 &&
             commonProvider.userDetails!.selectedtenant == null) {
           WidgetsBinding.instance
-              .addPostFrameCallback((_) => showdialog(result));
+              .addPostFrameCallback((_) => showDialogBox(result));
         }
       });
     }
   }
 
-  showdialog(result) {
+  showDialogBox(result) {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -176,7 +176,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         });
   }
 
-  buildtenantsView(Tenant tenant) {
+  buildTenantsView(Tenant tenant) {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -212,7 +212,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             ],
           ),
         ),
-        onTap: () => showdialog(result));
+        onTap: () => showDialogBox(result));
   }
 
   @override
@@ -236,12 +236,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   tenantProvider.tenants != null
-                      ? buildtenantsView(tenantProvider.tenants!)
+                      ? buildTenantsView(tenantProvider.tenants!)
                       : StreamBuilder(
                           stream: tenantProvider.streamController.stream,
                           builder: (context, AsyncSnapshot snapshot) {
                             if (snapshot.hasData) {
-                              return buildtenantsView(snapshot.data);
+                              return buildTenantsView(snapshot.data);
                             } else if (snapshot.hasError) {
                               return Notifiers.networkErrorPage(context, () {});
                             } else {

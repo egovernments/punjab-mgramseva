@@ -15,18 +15,18 @@ import 'Footer.dart';
 class CommonSuccess extends StatelessWidget {
   final SuccessHandler successHandler;
   final VoidCallback? callBack;
-  final VoidCallback? callBackwatsapp;
-  final VoidCallback? callBackdownload;
-  final VoidCallback? callBackprint;
+  final VoidCallback? callBackWhatsApp;
+  final VoidCallback? callBackDownload;
+  final VoidCallback? callBackPrint;
   final bool? backButton;
   final bool isWithoutLogin;
   final bool isConsumer;
 
   CommonSuccess(this.successHandler,
       {this.callBack,
-      this.callBackwatsapp,
-      this.callBackdownload,
-      this.callBackprint,
+      this.callBackWhatsApp,
+      this.callBackDownload,
+      this.callBackPrint,
       this.backButton,
       this.isWithoutLogin = false, this.isConsumer = false});
 
@@ -100,7 +100,7 @@ class CommonSuccess extends StatelessWidget {
                                 child: Visibility(
                               visible: successHandler.downloadLink != null,
                               child: TextButton.icon(
-                                onPressed: callBackdownload,
+                                onPressed: callBackDownload,
                                 icon: Icon(Icons.download_sharp),
                                 label: Text(
                                     ApplicationLocalizations.of(context)
@@ -118,7 +118,7 @@ class CommonSuccess extends StatelessWidget {
                                 child: Visibility(
                               visible: successHandler.printLabel != null,
                               child: TextButton.icon(
-                                onPressed: callBackprint,
+                                onPressed: callBackPrint,
                                 icon: Icon(
                                   Icons.print,
                                   color: Theme.of(context).primaryColor,
@@ -138,7 +138,7 @@ class CommonSuccess extends StatelessWidget {
                                 child: Visibility(
                               visible: successHandler.whatsAppShare != null,
                               child: TextButton.icon(
-                                onPressed: callBackwatsapp,
+                                onPressed: callBackWhatsApp,
                                 icon: (Image.asset('assets/png/whats_app.png')),
                                 label: Text(
                                   ApplicationLocalizations.of(context)

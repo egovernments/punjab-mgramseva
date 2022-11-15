@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/widgets/LabelText.dart';
-import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:provider/provider.dart';
 
 class Logo extends StatelessWidget {

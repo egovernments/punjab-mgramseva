@@ -13,20 +13,20 @@ class RadioButtonFieldBuilder extends StatelessWidget {
   final List<KeyValue> options;
   final ValueChanged widget1;
   final bool? isEnabled;
-  final GlobalKey? contextkey;
+  final GlobalKey? contextKey;
   final Widget? secondaryBox;
   final String? refTextRadioBtn;
 
   RadioButtonFieldBuilder(this.context, this.labelText, this.controller,
       this.input, this.prefixText, this.isRequired, this.options, this.widget1,
-      {this.isEnabled, this.contextkey, this.secondaryBox, this.refTextRadioBtn});
+      {this.isEnabled, this.contextKey, this.secondaryBox, this.refTextRadioBtn});
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
         return Container(
-            key: contextkey,
+            key: contextKey,
             child: Row(children: [
               Visibility(
                 visible: labelText.trim().isNotEmpty,
@@ -74,7 +74,7 @@ class RadioButtonFieldBuilder extends StatelessWidget {
         return Container(
             margin:
             const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
-            key: contextkey,
+            key: contextKey,
             child: Column(children: [
               Visibility(
                 visible: labelText.trim().isNotEmpty,

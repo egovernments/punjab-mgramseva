@@ -204,7 +204,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                   RegExp("[A-Za-z ]"))
                             ],
                             isRequired: true,
-                            contextkey:
+                            contextKey:
                                 consumerProvider.consmerWalkthrougList[0].key,
                             key: Keys.createConsumer.CONSUMER_NAME_KEY,
                           ),
@@ -219,7 +219,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             Constants.GENDER,
                             (val) => consumerProvider.onChangeOfGender(
                                 val, property.owners!.first),
-                            contextkey:
+                            contextKey:
                                 consumerProvider.consmerWalkthrougList[1].key,
                           ),
 
@@ -231,7 +231,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               FilteringTextInputFormatter.allow(
                                   RegExp("[A-Za-z ]"))
                             ],
-                            contextkey:
+                            contextKey:
                                 consumerProvider.consmerWalkthrougList[2].key,
                             key: Keys.createConsumer.CONSUMER_SPOUSE_PARENT_KEY,
                           ),
@@ -254,7 +254,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             inputFormatter: [
                               FilteringTextInputFormatter.allow(RegExp("[0-9]"))
                             ],
-                            contextkey:
+                            contextKey:
                                 consumerProvider.consmerWalkthrougList[3].key,
                             key: Keys.createConsumer.CONSUMER_PHONE_NUMBER_KEY,
                           ),
@@ -266,7 +266,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               i18.consumer.OLD_CONNECTION_ID,
                               consumerProvider
                                   .waterconnection.OldConnectionCtrl,
-                              contextkey:
+                              contextKey:
                                   consumerProvider.consmerWalkthrougList[4].key,
                                   key: Keys.createConsumer.CONSUMER_OLD_ID_KEY,
                                   isDisabled: consumerProvider.isFirstDemand,
@@ -338,7 +338,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                           consumerProvider.onChangeOfLocality,
                                           consumerProvider.getBoundaryList(),
                                           true,
-                                          contextkey: consumerProvider
+                                          contextKey: consumerProvider
                                               .consmerWalkthrougList[5].key)
                                       : Container()),
 
@@ -353,7 +353,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     consumerProvider.onChangeOfPropertyType,
                                     consumerProvider.getPropertyTypeList(),
                                     true,
-                                    contextkey: consumerProvider
+                                    contextKey: consumerProvider
                                         .consmerWalkthrougList[6].key,
                                     controller: property.address.propertyCtrl,
                                 key: Keys.createConsumer.CONSUMER_PROPERTY_KEY,),
@@ -373,7 +373,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                         consumerProvider
                                             .getConnectionTypeList(),
                                         true,
-                                        contextkey: consumerProvider
+                                        contextKey: consumerProvider
                                             .consmerWalkthrougList[7].key,
                                         controller: consumerProvider
                                             .waterconnection.ServiceTypeCtrl,
@@ -517,7 +517,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     false,
                                     consumerProvider.getPaymentTypeList(),
                                     consumerProvider.onChangeOfAmountType,
-                                    contextkey: consumerProvider
+                                    contextKey: consumerProvider
                                         .consmerWalkthrougList[8].key,
                                     isEnabled: true),
                               Visibility(
