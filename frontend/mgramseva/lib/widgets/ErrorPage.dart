@@ -3,7 +3,7 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'BaseAppBar.dart';
-import 'BottonButtonBar.dart';
+import 'BottomButtonBar.dart';
 import 'HomeBack.dart';
 
 class ErrorPage extends StatelessWidget {

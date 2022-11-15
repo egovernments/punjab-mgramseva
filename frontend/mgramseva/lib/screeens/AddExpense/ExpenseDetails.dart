@@ -16,7 +16,7 @@ import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
-import 'package:mgramseva/widgets/BottonButtonBar.dart';
+import 'package:mgramseva/widgets/BottomButtonBar.dart';
 import 'package:mgramseva/widgets/DatePickerFieldBuilder.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FilePicker.dart';
@@ -242,7 +242,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 FilteringTextInputFormatter.allow(
                                     RegExp("[a-zA-Z ]"))
                               ],
-                              contextkey:
+                              contextKey:
                                   expenseProvider.expenseWalkthrougList[1].key,
                               key: Keys.expense.VENDOR_NAME,
                             ),
