@@ -207,22 +207,26 @@ public class ChallanValidator {
 		}
 		
 		Matcher matcher1 = pattern.matcher(input1);
+		if(!matcher1.find()) {
+			throw new CustomException("INVALID_NAME", "Invalid name. Only alphabets and special characters -, ',`, .\"");
+	    }	
 		Matcher matcher2 = null;
 		Matcher matcher3 = null;
 
 
 		if(input2 != null) {
 			 matcher2 = pattern.matcher(input2);
+			 if(!matcher2.find()) {
+					throw new CustomException("INVALID_NAME", "Invalid name. Only alphabets and special characters -, ',`, .\"");
+			    }	
 		}
 		
 		if(input3 != null) {
 			 matcher3 = pattern.matcher(input2);
+			 if(!matcher3.find()) {
+					throw new CustomException("INVALID_NAME", "Invalid name. Only alphabets and special characters -, ',`, .\"");
+			    }	
 		}
-
-
-	    if(!matcher1.find() || !matcher2.find() || !matcher3.find()) {
-			throw new CustomException("INVALID_NAME", "Invalid name. Only alphabets and special characters -, ',`, .\"");
-	    }	
 	 		
 			
 	}
