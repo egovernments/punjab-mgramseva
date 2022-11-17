@@ -207,8 +207,17 @@ public class ChallanValidator {
 		}
 		
 		Matcher matcher1 = pattern.matcher(input1);
-		Matcher matcher2 = pattern.matcher(input2);
-		Matcher matcher3 = pattern.matcher(input3);
+		Matcher matcher2 = null;
+		Matcher matcher3 = null;
+
+
+		if(input2 != null) {
+			 matcher2 = pattern.matcher(input2);
+		}
+		
+		if(input3 != null) {
+			 matcher3 = pattern.matcher(input2);
+		}
 
 
 	    if(!matcher1.find() || !matcher2.find() || !matcher3.find()) {
