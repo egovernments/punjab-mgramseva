@@ -87,6 +87,7 @@ public class ChallanService {
 		expenseValidator.validateFields(request, mdmsData);
 		validator.validateFields(request, mdmsData);
 		enrichmentService.enrichCreateRequest(request);
+		validator.validateUserName(request);
 	//	userService.createUser(request);
 		userService.setAccountUser(request);
 		calculationService.addCalculation(request);
@@ -157,6 +158,8 @@ public class ChallanService {
 			List<Challan> searchResult = searchChallans(request, finalData);
 			validator.validateUpdateRequest(request, searchResult);
 			expenseValidator.validateUpdateRequest(request, searchResult);
+			validator.validateUserName(request);
+
 			userService.setAccountUser(request);
 			enrichmentService.enrichUpdateRequest(request, searchResult.get(0));
 			calculationService.addCalculation(request);

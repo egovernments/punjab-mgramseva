@@ -1,11 +1,15 @@
 package org.egov.waterconnection.validator;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,6 +21,8 @@ import org.egov.waterconnection.web.models.FeedbackRequest;
 import org.egov.waterconnection.web.models.RoadCuttingInfo;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.egov.waterconnection.repository.ServiceRequestRepository;
 import org.egov.waterconnection.service.MasterDataService;
 import org.egov.waterconnection.util.WaterServicesUtil;
@@ -329,4 +335,42 @@ public class MDMSValidator {
 		if (!errorMap.isEmpty())
 			throw new CustomException(errorMap);
 	}
+
+	public void validateUserName(WaterConnectionRequest waterConnectionRequest) {
+		
+		String input1 = waterConnectionRequest.getWaterConnection().getConnectionHolders().get(0).getName();
+		String input2 = waterConnectionRequest.getWaterConnection().getConnectionHolders().get(0).getFatherOrHusbandName();
+
+		String regex1 = "^[a-zA-Z0-9 \\-'`\\.]*$";
+//	    String regex2 = "^[\\u0900-\\u097F+A-Za-z]";
+	    Pattern pattern = null;
+	    String locale = null;
+	    if(waterConnectionRequest.getRequestInfo().getMsgId().contains("|"))
+	    	locale = waterConnectionRequest.getRequestInfo().getMsgId().split("[\\|]")[1];
+
+		List<String> commonMasters = new ArrayList<>(Arrays.asList("StateInfo"));
+		Map<String, List<String>> codes = getAttributeValues("pb", WCConstants.COMMON_MASTER_MODULE, commonMasters, "$.*",
+				WCConstants.COMMON_MASTERS_JSONPATH_ROOT,waterConnectionRequest.getRequestInfo());
+		JSONObject obj = new JSONObject(codes);
+		JSONArray configArray = obj.getJSONArray("StateInfo");
+		JSONArray languages = configArray.getJSONObject(0).getJSONArray("languages");
+		for(int i=0;i<languages.length();i++){
+			if(languages.getJSONObject(i).getString("value").equalsIgnoreCase(locale)){
+				if(languages.getJSONObject(i).getBoolean("enableRegEx") == true) {
+			    	pattern = Pattern.compile(languages.getJSONObject(i).getString("regEx"));
+				}
+				else {
+			    	pattern = Pattern.compile(regex1);
+				}
+		    	break;
+			}
+		}
+		
+		Matcher matcher1 = pattern.matcher(input1);
+		Matcher matcher2 = pattern.matcher(input2);
+
+	    if(!matcher1.find() || !matcher2.find()) {
+			throw new CustomException("INVALID_NAME", "Invalid name. Only alphabets and special characters -, ',`, .\"");
+	    }	
+	 }
 }

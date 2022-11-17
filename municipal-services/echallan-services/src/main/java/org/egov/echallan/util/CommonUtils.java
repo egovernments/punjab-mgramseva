@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
@@ -16,10 +17,12 @@ import org.egov.mdms.model.MasterDetail;
 import org.egov.mdms.model.MdmsCriteria;
 import org.egov.mdms.model.MdmsCriteriaReq;
 import org.egov.mdms.model.ModuleDetail;
+import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 
 import lombok.Getter;
 
@@ -130,6 +133,33 @@ public class CommonUtils {
 	    calendar.set(Calendar.MINUTE, 0);
 	    calendar.set(Calendar.SECOND, 0);
 	    calendar.set(Calendar.MILLISECOND, 0);
+	}
+    
+    public Map<String, List<String>> getMdmsAttributeValues(String tenantId, String moduleName, List<String> names,
+			String filter, String jsonPath, RequestInfo requestInfo) {
+		StringBuilder uri = new StringBuilder(configs.getMdmsHost()).append(configs.getMdmsEndPoint());
+		MdmsCriteriaReq criteriaReq = prepareMdMsRequest(tenantId, moduleName, names, filter,
+				requestInfo);
+		try {
+
+			Object result = serviceRequestRepository.fetchResult(uri, criteriaReq);
+			return JsonPath.read(result, jsonPath);
+		} catch (Exception e) {
+			throw new CustomException(ChallanConstants.INVALID_REQUEST, ChallanConstants.INVALID_REQUEST);
+		}
+	}
+ 
+    private MdmsCriteriaReq prepareMdMsRequest(String tenantId, String moduleName, List<String> names, String filter,
+			RequestInfo requestInfo) {
+		List<MasterDetail> masterDetails = new ArrayList<>();
+		names.forEach(name -> {
+			masterDetails.add(MasterDetail.builder().name(name).filter(filter).build());
+		});
+		ModuleDetail moduleDetail = ModuleDetail.builder().moduleName(moduleName).masterDetails(masterDetails).build();
+		List<ModuleDetail> moduleDetails = new ArrayList<>();
+		moduleDetails.add(moduleDetail);
+		MdmsCriteria mdmsCriteria = MdmsCriteria.builder().tenantId(tenantId).moduleDetails(moduleDetails).build();
+		return MdmsCriteriaReq.builder().requestInfo(requestInfo).mdmsCriteria(mdmsCriteria).build();
 	}
 
  

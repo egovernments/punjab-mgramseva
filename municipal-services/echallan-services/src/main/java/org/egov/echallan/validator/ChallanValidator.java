@@ -2,9 +2,12 @@ package org.egov.echallan.validator;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +19,15 @@ import org.egov.echallan.model.Challan.StatusEnum;
 import org.egov.echallan.model.ChallanRequest;
 import org.egov.echallan.model.RequestInfoWrapper;
 import org.egov.echallan.repository.ServiceRequestRepository;
+import org.egov.echallan.util.ChallanConstants;
+import org.egov.echallan.util.CommonUtils;
+import org.egov.mdms.model.MasterDetail;
+import org.egov.mdms.model.MdmsCriteria;
+import org.egov.mdms.model.MdmsCriteriaReq;
+import org.egov.mdms.model.ModuleDetail;
 import org.egov.tracer.model.CustomException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +42,10 @@ public class ChallanValidator {
 
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
+	
+	@Autowired
+    private CommonUtils utils;
+
 
 	public void validateFields(ChallanRequest request, Object mdmsData) {
 		Challan challan = request.getChallan();
@@ -150,4 +165,48 @@ public class ChallanValidator {
 			throw new CustomException(errorMap);
 
 	}
+
+	public void validateUserName(ChallanRequest request) {
+		String input1 = request.getChallan().getVendorName();
+		String input2 = request.getChallan().getCitizen().getName();
+		String input3 = request.getChallan().getCitizen().getFatherOrHusbandName();
+
+		String regex1 = "^[a-zA-Z0-9 \\-'`\\.]*$";
+//	    String regex2 = "^[\\u0900-\\u097F+A-Za-z]";
+	    Pattern pattern = null;
+	    String locale = null;
+	    if(request.getRequestInfo().getMsgId().contains("|"))
+	    	locale = request.getRequestInfo().getMsgId().split("[\\|]")[1];
+
+		List<String> commonMasters = new ArrayList<>(Arrays.asList("StateInfo"));
+		Map<String, List<String>> codes = utils.getMdmsAttributeValues("pb", ChallanConstants.COMMON_MASTER_MODULE, commonMasters, "$.*",
+				ChallanConstants.COMMON_MASTERS_JSONPATH_ROOT,request.getRequestInfo());
+		JSONObject obj = new JSONObject(codes);
+		JSONArray configArray = obj.getJSONArray("StateInfo");
+		JSONArray languages = configArray.getJSONObject(0).getJSONArray("languages");
+		for(int i=0;i<languages.length();i++){
+			if(languages.getJSONObject(i).getString("value").equalsIgnoreCase(locale)){
+				if(languages.getJSONObject(i).getBoolean("enableRegEx") == true) {
+			    	pattern = Pattern.compile(languages.getJSONObject(i).getString("regEx"));
+				}
+				else {
+			    	pattern = Pattern.compile(regex1);
+				}
+		    	break;
+			}
+		}
+		
+		Matcher matcher1 = pattern.matcher(input1);
+		Matcher matcher2 = pattern.matcher(input2);
+		Matcher matcher3 = pattern.matcher(input3);
+
+
+	    if(!matcher1.find() || !matcher2.find() || !matcher3.find()) {
+			throw new CustomException("INVALID_NAME", "Invalid name. Only alphabets and special characters -, ',`, .\"");
+	    }	
+	 		
+			
+	}
+	
+	
 }
