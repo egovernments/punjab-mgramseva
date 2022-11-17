@@ -168,8 +168,18 @@ public class ChallanValidator {
 
 	public void validateUserName(ChallanRequest request) {
 		String input1 = request.getChallan().getVendorName();
-		String input2 = request.getChallan().getCitizen().getName();
-		String input3 = request.getChallan().getCitizen().getFatherOrHusbandName();
+		String input2 = null;
+		String input3 = null;
+		if(request.getChallan().getCitizen() != null) {
+			if(request.getChallan().getCitizen().getName() != null) {
+				 input2 = request.getChallan().getCitizen().getName();
+			}
+			
+			if(request.getChallan().getCitizen().getFatherOrHusbandName() != null) {
+				 input3 = request.getChallan().getCitizen().getFatherOrHusbandName();
+
+			}
+		}
 
 		String regex1 = "^[a-zA-Z0-9 \\-'`\\.]*$";
 //	    String regex2 = "^[\\u0900-\\u097F+A-Za-z]";
