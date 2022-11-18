@@ -11,6 +11,7 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
+import 'package:mgramseva/utils/excel_utils.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -258,6 +259,8 @@ class HouseholdRegisterProvider with ChangeNotifier {
     ]);
   }
 
+
+
   onClickOfCollectionNo(TableData tableData) {
     var waterConnection = waterConnectionsDetails?.waterConnection
         ?.firstWhere((element) => element.connectionNo == tableData.apiKey);
@@ -375,6 +378,82 @@ class HouseholdRegisterProvider with ChangeNotifier {
             tableData,
             isDownload)
         .pdfPreview();
+  }
+
+
+  void createExcelForAllConnections(BuildContext context, bool isDownload) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    WaterConnections? waterConnectionsDetails;
+
+    var query = {
+      'tenantId': commonProvider.userDetails?.selectedtenant?.code,
+      'limit': '-1',
+      'toDate': '${DateTime.now().millisecondsSinceEpoch}',
+      'isCollectionCount': 'true',
+    };
+
+    if (selectedTab != Constants.ALL) {
+      query.addAll(
+          {'isBillPaid': (selectedTab == Constants.PAID) ? 'true' : 'false'});
+    }
+
+    if (sortBy != null) {
+      query.addAll({
+        'sortOrder': sortBy!.isAscending ? 'ASC' : 'DESC',
+        'sortBy': sortBy!.key
+      });
+    }
+
+    if (searchController.text.trim().isNotEmpty) {
+      query.addAll({
+        'textSearch': searchController.text.trim(),
+        // 'name' : searchController.text.trim(),
+        'freeSearch': 'true',
+      });
+    }
+
+    query
+        .removeWhere((key, value) => (value is String && value.trim().isEmpty));
+
+    Loaders.showLoadingDialog(context);
+    try {
+      waterConnectionsDetails =
+      await SearchConnectionRepository().getconnection(query);
+
+      Navigator.pop(context);
+    } catch (e, s) {
+      Navigator.pop(context);
+      ErrorHandler().allExceptionsHandler(context, e, s);
+      return;
+    }
+
+    if (waterConnectionsDetails.waterConnection == null ||
+        waterConnectionsDetails.waterConnection!.isEmpty) return;
+
+    var headerList = [
+      i18.common.CONNECTION_ID,
+      i18.common.NAME,
+      i18.consumer.FATHER_SPOUSE_NAME,
+      i18.householdRegister.PENDING_COLLECTIONS
+    ];
+
+    var tableData = waterConnectionsDetails.waterConnection
+        ?.map<List<String>>((connection) => [
+      '${connection.connectionNo ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
+      '${connection.connectionHolders?.first.name ?? ''}',
+      '${connection.connectionHolders?.first.fatherOrHusbandName ?? ''}',
+      '${connection.additionalDetails?.collectionPendingAmount != null ? '₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}',
+    ])
+        .toList() ??
+        [];
+
+    generateExcel(headerList
+        .map<String>((e) =>
+    '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e)}')
+        .toList(), tableData);
+
   }
 
   bool removeOverLay(_overlayEntry) {

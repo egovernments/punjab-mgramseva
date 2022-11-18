@@ -160,8 +160,8 @@ class DashBoardProvider with ChangeNotifier {
       'limit': '$limit',
       'fromDate': '${selectedMonth.startDate.millisecondsSinceEpoch}',
       'toDate': '${selectedMonth.endDate.millisecondsSinceEpoch}',
-      'vendorName': searchController.text.trim(),
-      'challanNo': searchController.text.trim(),
+      'vendorName': searchController.text.trim().toString(),
+      'challanNo': searchController.text.trim().toString(),
       'freeSearch': 'true',
       'status': ["ACTIVE", "PAID"],
       'isBillCount': 'true'

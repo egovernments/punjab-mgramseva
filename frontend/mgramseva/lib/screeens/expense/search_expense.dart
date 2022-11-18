@@ -21,6 +21,9 @@ import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/language.dart';
+import '../../utils/global_variables.dart';
+
 class SearchExpense extends StatefulWidget {
   const SearchExpense({Key? key}) : super(key: key);
 
@@ -43,6 +46,9 @@ class _SearchExpenseState extends State<SearchExpense> {
 
   @override
   Widget build(BuildContext context) {
+    var languageProvider = Provider.of<LanguageProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     return KeyboardFocusWatcher(child:Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: CustomAppBar(),
@@ -69,6 +75,12 @@ class _SearchExpenseState extends State<SearchExpense> {
                         i18.expense.VENDOR_NAME,
                         vendorNameCtrl,
                         key: Keys.expense.SEARCH_VENDOR_NAME,
+                        inputFormatter: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(languageProvider.selectedLanguage!.enableRegEx
+                                  ? languageProvider.selectedLanguage!.regEx.toString().split('^').last
+                                  : "[A-Za-z ]"))
+                        ],
                       ),
                       Text(
                           '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',

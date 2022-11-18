@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/model/expensesDetails/vendor.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -75,6 +77,10 @@ class ExpensesRepository extends BaseService {
         url: Url.EXPENSE_SEARCH,
         queryParameters: query,
         body: body,
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.acceptCharsetHeader: 'utf-8'
+        },
         method: RequestType.POST,
         requestInfo: RequestInfo(
           APIConstants.API_MODULE_NAME,

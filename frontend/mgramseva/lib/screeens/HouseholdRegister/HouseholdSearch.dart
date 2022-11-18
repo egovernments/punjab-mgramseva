@@ -6,6 +6,7 @@ import 'package:mgramseva/screeens/HouseholdRegister/HouseholdList.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
+import 'package:mgramseva/utils/excel_utils.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/footer.dart';
@@ -83,7 +84,8 @@ class _HouseholdSearchState extends State<HouseholdSearch> with SingleTickerProv
                 SizedBox(height: 15,),
                 TextButton.icon(
                   onPressed: () {
-                    householdRegisterProvider.createPdfForAllConnections(context, true);
+                     householdRegisterProvider.createPdfForAllConnections(context, true);
+                    // householdRegisterProvider.createExcelForAllConnections(context, true);
                   },
                   icon: Icon(Icons.download_sharp),
                   label: Text('${ApplicationLocalizations.of(context).translate(i18.common.DOWNLOAD)} '

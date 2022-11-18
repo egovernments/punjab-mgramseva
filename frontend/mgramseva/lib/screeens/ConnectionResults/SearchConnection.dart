@@ -20,6 +20,9 @@ import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:mgramseva/widgets/footer.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/language.dart';
+import '../../utils/global_variables.dart';
+
 class SearchConsumerConnection extends StatefulWidget {
   final Map? arguments;
   SearchConsumerConnection(this.arguments);
@@ -42,6 +45,9 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
   Widget build(BuildContext context) {
     var searchConnectionProvider =
         Provider.of<SearchConnectionProvider>(context, listen: false);
+    var languageProvider = Provider.of<LanguageProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     return FocusWatcher(
         child: Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -112,7 +118,9 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                     .searchconnection.controllers[1],
                                 inputFormatter: [
                                   FilteringTextInputFormatter.allow(
-                                      RegExp("[A-Za-z ]"))
+                                      RegExp(languageProvider.selectedLanguage!.enableRegEx
+                                          ? languageProvider.selectedLanguage!.regEx.toString().split('^').last
+                                          : "[A-Za-z ]"))
                                 ],
                                 onChange: (value) => searchConnectionProvider
                                     .getdetails(value, 1),

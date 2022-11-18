@@ -67,11 +67,10 @@ class CommonProvider with ChangeNotifier {
           .map<LocalizationLabel>((e) => LocalizationLabel.fromJson(e))
           .toList();
     }
-
     try {
       var query = {
         'module':
-            'mgramseva-common,mgramseva-consumer,mgramseva-expenses,mgramseva-water-connection,mgramseva-bill,mgramseva-payments,mgramseva-dashboard,mgramseva-feedback',
+            'mgramseva-common,mgramseva-consumer,mgramseva-expenses,mgramseva-water-connection,mgramseva-bill,mgramseva-payments,mgramseva-dashboard,mgramseva-feedback, mgramseva-regex',
         'locale': languageProvider.selectedLanguage?.value ?? '',
         'tenantId': languageProvider.stateInfo!.code
       };
@@ -216,12 +215,17 @@ class CommonProvider with ChangeNotifier {
       } else {
          var isUpdated = false;
           try {
+            print('App version contains or not');
+            print(await storage.containsKey(key:Constants.APP_VERSION));
               if (!await storage.containsKey(key:Constants.APP_VERSION)) {
+                print('if');
                 await storage.deleteAll();
                 isUpdated = true;
                 storage.write(key: Constants.APP_VERSION, value: packageInfo?.version);
               } else {
+                print('else');
                 if (await storage.read(key: Constants.APP_VERSION) != packageInfo?.version) {
+                  print('delete All');
                   await storage.deleteAll();
                   isUpdated = true;
                   storage.write(key: Constants.APP_VERSION, value: packageInfo?.version);
@@ -498,6 +502,23 @@ class CommonProvider with ChangeNotifier {
       ErrorHandler().allExceptionsHandler(context, e, s);
     }
   }
+
+  ///List of English Alphabets with 0-25 KeyValue
+  static List<KeyValue> getAlphabetsWithKeyValue(){
+    List<String> alphabets = [];
+    List<KeyValue> excelColumns = [];
+
+    for(int i=65; i<=90; i++){
+      alphabets.add(String.fromCharCode(i));
+    }
+    for(int i = 0 ; i < 26 ; i ++){
+      excelColumns.add(KeyValue( alphabets[i], i));
+    }
+
+    return excelColumns;
+  }
+
+
 
   Future<pw.Font> getPdfFontFamily() async {
     var language = Provider.of<LanguageProvider>(navigatorKey.currentContext!,
