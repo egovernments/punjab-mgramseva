@@ -79,7 +79,7 @@ class ExpensesRepository extends BaseService {
         body: body,
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
-          HttpHeaders.acceptCharsetHeader: 'utf-8'
+          HttpHeaders.acceptHeader: '*/*'
         },
         method: RequestType.POST,
         requestInfo: RequestInfo(
@@ -140,6 +140,10 @@ class ExpensesRepository extends BaseService {
         url: Url.EXPENSE_SEARCH,
         queryParameters: query,
         body: body,
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.acceptHeader: '*/*'
+        },
         method: RequestType.POST,
         requestInfo: RequestInfo(
           APIConstants.API_MODULE_NAME,

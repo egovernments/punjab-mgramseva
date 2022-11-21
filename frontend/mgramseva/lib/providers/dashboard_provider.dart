@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/common/metric.dart';
@@ -160,8 +159,8 @@ class DashBoardProvider with ChangeNotifier {
       'limit': '$limit',
       'fromDate': '${selectedMonth.startDate.millisecondsSinceEpoch}',
       'toDate': '${selectedMonth.endDate.millisecondsSinceEpoch}',
-      'vendorName': searchController.text.trim().toString(),
-      'challanNo': searchController.text.trim().toString(),
+      'vendorName': searchController.text.trim(),
+      'challanNo': searchController.text.trim(),
       'freeSearch': 'true',
       'status': ["ACTIVE", "PAID"],
       'isBillCount': 'true'

@@ -215,17 +215,13 @@ class CommonProvider with ChangeNotifier {
       } else {
          var isUpdated = false;
           try {
-            print('App version contains or not');
-            print(await storage.containsKey(key:Constants.APP_VERSION));
               if (!await storage.containsKey(key:Constants.APP_VERSION)) {
                 print('if');
                 await storage.deleteAll();
                 isUpdated = true;
                 storage.write(key: Constants.APP_VERSION, value: packageInfo?.version);
               } else {
-                print('else');
                 if (await storage.read(key: Constants.APP_VERSION) != packageInfo?.version) {
-                  print('delete All');
                   await storage.deleteAll();
                   isUpdated = true;
                   storage.write(key: Constants.APP_VERSION, value: packageInfo?.version);

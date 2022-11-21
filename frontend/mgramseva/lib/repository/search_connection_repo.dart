@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
@@ -29,6 +31,10 @@ class SearchConnectionRepository extends BaseService {
     var res = await makeRequest(
         url: Url.FETCH_WC_CONNECTION,
         queryParameters: query,
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.acceptHeader: '*/*'
+        },
         method: RequestType.POST,
         body: {},
         requestInfo: requestInfo);
@@ -58,6 +64,10 @@ class SearchConnectionRepository extends BaseService {
     var res = await makeRequest(
         url: Url.FETCH_CONNECTION_NAME,
         queryParameters: query,
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.acceptHeader: '*/*'
+        },
         method: RequestType.POST,
         body: {},
         requestInfo: requestInfo);
