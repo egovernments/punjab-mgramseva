@@ -355,13 +355,15 @@ public class MDMSValidator {
 		JSONArray configArray = obj.getJSONArray("StateInfo");
 		JSONArray languages = configArray.getJSONObject(0).getJSONArray("languages");
 		for(int i=0;i<languages.length();i++){
-			if(languages.getJSONObject(i).getString("value").equalsIgnoreCase(locale)){
-				if(languages.getJSONObject(i).getBoolean("enableRegEx") == true) {
+			if(languages.getJSONObject(i).getBoolean("enableRegEx") == true) {
+				if(languages.getJSONObject(i).getString("value").equalsIgnoreCase(locale)){
 			    	pattern = Pattern.compile(languages.getJSONObject(i).getString("regEx"));
+			    	break;
 				}
-				else {
-			    	pattern = Pattern.compile(regex1);
-				}
+
+			}
+			else{
+		    	pattern = Pattern.compile(regex1);
 		    	break;
 			}
 		}
