@@ -148,16 +148,17 @@ public class VendorValidator {
 		JSONArray configArray = obj.getJSONArray("StateInfo");
 		JSONArray languages = configArray.getJSONObject(0).getJSONArray("languages");
 		for(int i=0;i<languages.length();i++){
-			if(languages.getJSONObject(i).getBoolean("enableRegEx") == true) {
-				if(languages.getJSONObject(i).getString("value").equalsIgnoreCase(locale)){
-			    	pattern = Pattern.compile(languages.getJSONObject(i).getString("regEx"));
+			JSONObject json = languages.getJSONObject(i);
+			if(json.getString("value").equalsIgnoreCase(locale)) {
+				if(json.getBoolean("enableRegEx") == true) {
+			    	pattern = Pattern.compile(json.getString("regEx"));
+			    	break;
+				}
+				else {
+			    	pattern = Pattern.compile(regex1);
 			    	break;
 				}
 
-			}
-			else{
-		    	pattern = Pattern.compile(regex1);
-		    	break;
 			}
 		}
 		
