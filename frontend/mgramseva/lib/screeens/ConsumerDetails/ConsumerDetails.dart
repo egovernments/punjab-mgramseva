@@ -329,7 +329,11 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           ),
                           BuildTextField(
                             i18.consumer.GP_NAME,
-                            property.address.gpNameCtrl,
+                            TextEditingController(text:
+                             ApplicationLocalizations.of(context)
+                                .translate( property.address.gpNameCtrl.text) +
+                            ' - ' +
+                                property.address.gpNameCityCodeCtrl.text),
                             isRequired: true,
                             readOnly: true,
                             isDisabled: true,
