@@ -633,7 +633,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
             val, consumerProvider.waterconnection.penaltyCtrl.text),
         inputFormatter: [
           FilteringTextInputFormatter.allow(
-              RegExp("[0-9.]"))
+              RegExp("[0-9]"))
         ],
         key: Keys.createConsumer.CONSUMER_ARREARS_KEY,),
     if(CommonProvider.getPenaltyOrAdvanceStatus(consumerProvider.paymentType, false))  BuildTextField(i18.common.CORE_PENALTY,
@@ -641,7 +641,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
         textInputType: TextInputType.number,
         inputFormatter: [
           FilteringTextInputFormatter.allow(
-              RegExp("[0-9.]"))
+              RegExp("[0-9]"))
         ])
     ]);
   }
@@ -652,7 +652,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
     textInputType: TextInputType.number,
     inputFormatter: [
       FilteringTextInputFormatter.allow(
-          RegExp("[0-9.]"))
+          RegExp("[0-9]"))
     ]);
   }
 }
