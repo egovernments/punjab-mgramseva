@@ -151,7 +151,7 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                                   .getdetails(value, 2),
                                           inputFormatter: [
                                             FilteringTextInputFormatter.allow(
-                                                RegExp("[a-zA-Z0-9\/]"))],
+                                                RegExp("[a-zA-Z0-9-\/]"))],
                                           hint: ApplicationLocalizations.of(
                                                   context)
                                               .translate(i18
