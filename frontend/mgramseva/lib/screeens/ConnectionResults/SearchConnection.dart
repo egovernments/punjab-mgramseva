@@ -170,7 +170,7 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                               .newConnectionCtrl,
                                           inputFormatter: [
                                         FilteringTextInputFormatter.allow(
-                                        RegExp("[a-zA-Z0-9\/]"))],
+                                        RegExp("[a-zA-Z0-9-\/]"))],
                                           isDisabled: searchConnectionProvider
                                               .searchconnection.controllers[3],
                                           onChange: (value) =>
