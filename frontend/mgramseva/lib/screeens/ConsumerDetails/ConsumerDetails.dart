@@ -275,6 +275,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               i18.consumer.OLD_CONNECTION_ID,
                               consumerProvider
                                   .waterconnection.OldConnectionCtrl,
+                                  inputFormatter: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp("[a-zA-Z0-9\/]"))],
                               contextkey:
                                   consumerProvider.consmerWalkthrougList[4].key,
                                   key: Keys.createConsumer.CONSUMER_OLD_ID_KEY,

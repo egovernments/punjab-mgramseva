@@ -149,6 +149,9 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                           onChange: (value) =>
                                               searchConnectionProvider
                                                   .getdetails(value, 2),
+                                          inputFormatter: [
+                                            FilteringTextInputFormatter.allow(
+                                                RegExp("[a-zA-Z0-9\/]"))],
                                           hint: ApplicationLocalizations.of(
                                                   context)
                                               .translate(i18
