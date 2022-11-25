@@ -119,7 +119,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
               margin: constraints.maxWidth < 760
                   ? null
                   : EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width / 25),
+                      horizontal: MediaQuery.of(context).size.width / 25),
               child: Stack(children: [
                 Consumer<DashBoardProvider>(
                   builder: (_, dashBoardProvider, child) => Container(
@@ -292,7 +292,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
 
   void onTapOfMonthPicker() {
     var dashBoardProvider =
-    Provider.of<DashBoardProvider>(context, listen: false);
+        Provider.of<DashBoardProvider>(context, listen: false);
 
     RenderBox? box = key.currentContext!.findRenderObject() as RenderBox?;
     Offset position = box!.localToGlobal(Offset.zero);
@@ -309,7 +309,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
 
   Future<void> takeScreenShotOfDashboard() async {
     var dashBoardProvider =
-    Provider.of<DashBoardProvider>(context, listen: false);
+        Provider.of<DashBoardProvider>(context, listen: false);
 
     if (dashBoardProvider.selectedMonth.dateType == DateType.MONTH) {
       if (dashBoardProvider.selectedDashboardType ==

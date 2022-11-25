@@ -337,11 +337,11 @@ class DashBoardProvider with ChangeNotifier {
         streamController.add(waterConnectionsDetails!.waterConnection!.isEmpty
             ? <WaterConnection>[]
             : waterConnectionsDetails?.waterConnection?.sublist(
-            offSet - 1,
-            ((offset + limit - 1) >
-                (waterConnectionsDetails?.totalCount ?? 0))
-                ? (waterConnectionsDetails!.totalCount!)
-                : (offset + limit) - 1));
+                offSet - 1,
+                ((offset + limit - 1) >
+                    (waterConnectionsDetails?.totalCount ?? 0))
+                    ? (waterConnectionsDetails!.totalCount!)
+                    : (offset + limit) - 1));
       }
     } catch (e, s) {
       isLoaderEnabled = false;
@@ -378,68 +378,68 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   List<TableHeader> get expenseHeaderList => [
-    TableHeader(i18.dashboard.BILL_ID_VENDOR,
-        isSortingRequired: true,
-        isAscendingOrder: sortBy != null && sortBy!.key == 'challanno'
-            ? sortBy!.isAscending
-            : null,
-        callBack: onExpenseSort,
-        apiKey: 'challanno'),
-    TableHeader(i18.expense.EXPENSE_TYPE,
-        isSortingRequired: true,
-        isAscendingOrder: sortBy != null && sortBy!.key == 'typeOfExpense'
-            ? sortBy!.isAscending
-            : null,
-        apiKey: 'typeOfExpense',
-        callBack: onExpenseSort),
-    TableHeader(i18.common.AMOUNT,
-        isSortingRequired: true,
-        isAscendingOrder: sortBy != null && sortBy!.key == 'totalAmount'
-            ? sortBy!.isAscending
-            : null,
-        apiKey: 'totalAmount',
-        callBack: onExpenseSort),
-    TableHeader(i18.expense.BILL_DATE,
-        isSortingRequired: true,
-        isAscendingOrder: sortBy != null && sortBy!.key == 'billDate'
-            ? sortBy!.isAscending
-            : null,
-        apiKey: 'billDate',
-        callBack: onExpenseSort),
-    TableHeader(i18.common.PAID_DATE,
-        isSortingRequired: true,
-        isAscendingOrder: sortBy != null && sortBy!.key == 'paidDate'
-            ? sortBy!.isAscending
-            : null,
-        apiKey: 'paidDate',
-        callBack: onExpenseSort),
-  ];
+        TableHeader(i18.dashboard.BILL_ID_VENDOR,
+            isSortingRequired: true,
+            isAscendingOrder: sortBy != null && sortBy!.key == 'challanno'
+                ? sortBy!.isAscending
+                : null,
+            callBack: onExpenseSort,
+            apiKey: 'challanno'),
+        TableHeader(i18.expense.EXPENSE_TYPE,
+            isSortingRequired: true,
+            isAscendingOrder: sortBy != null && sortBy!.key == 'typeOfExpense'
+                ? sortBy!.isAscending
+                : null,
+            apiKey: 'typeOfExpense',
+            callBack: onExpenseSort),
+        TableHeader(i18.common.AMOUNT,
+            isSortingRequired: true,
+            isAscendingOrder: sortBy != null && sortBy!.key == 'totalAmount'
+                ? sortBy!.isAscending
+                : null,
+            apiKey: 'totalAmount',
+            callBack: onExpenseSort),
+        TableHeader(i18.expense.BILL_DATE,
+            isSortingRequired: true,
+            isAscendingOrder: sortBy != null && sortBy!.key == 'billDate'
+                ? sortBy!.isAscending
+                : null,
+            apiKey: 'billDate',
+            callBack: onExpenseSort),
+        TableHeader(i18.common.PAID_DATE,
+            isSortingRequired: true,
+            isAscendingOrder: sortBy != null && sortBy!.key == 'paidDate'
+                ? sortBy!.isAscending
+                : null,
+            apiKey: 'paidDate',
+            callBack: onExpenseSort),
+      ];
 
   List<TableHeader> get collectionHeaderList => [
-    TableHeader(i18.common.CONNECTION_ID,
-        isSortingRequired: true,
-        isAscendingOrder:
-        sortBy != null && sortBy!.key == 'connectionNumber'
-            ? sortBy!.isAscending
-            : null,
-        apiKey: 'connectionNumber ',
-        callBack: onExpenseSort),
-    TableHeader(i18.common.NAME,
-        isSortingRequired: true,
-        isAscendingOrder: sortBy != null && sortBy!.key == 'name'
-            ? sortBy!.isAscending
-            : null,
-        apiKey: 'name',
-        callBack: onExpenseSort),
-    TableHeader(i18.dashboard.COLLECTIONS,
-        isSortingRequired: true,
-        isAscendingOrder:
-        sortBy != null && sortBy!.key == 'collectionAmount'
-            ? sortBy!.isAscending
-            : null,
-        apiKey: 'collectionAmount',
-        callBack: onExpenseSort),
-  ];
+        TableHeader(i18.common.CONNECTION_ID,
+            isSortingRequired: true,
+            isAscendingOrder:
+            sortBy != null && sortBy!.key == 'connectionNumber'
+                ? sortBy!.isAscending
+                : null,
+            apiKey: 'connectionNumber ',
+            callBack: onExpenseSort),
+        TableHeader(i18.common.NAME,
+            isSortingRequired: true,
+            isAscendingOrder: sortBy != null && sortBy!.key == 'name'
+                ? sortBy!.isAscending
+                : null,
+            apiKey: 'name',
+            callBack: onExpenseSort),
+        TableHeader(i18.dashboard.COLLECTIONS,
+            isSortingRequired: true,
+            isAscendingOrder:
+            sortBy != null && sortBy!.key == 'collectionAmount'
+                ? sortBy!.isAscending
+                : null,
+            apiKey: 'collectionAmount',
+            callBack: onExpenseSort),
+      ];
 
   List<TableDataRow> getExpenseData(List<ExpensesDetailsModel> list) {
     return list.map((e) => getExpenseRow(e)).toList();

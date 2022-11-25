@@ -14,22 +14,6 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:provider/provider.dart';
 
 class DashboardCard extends StatelessWidget {
-
-  var rating = [
-    {
-      "label" : "User Satisfaction",
-      "rating" : "1.5"
-    },
-    {
-      "label" : "Quality water supply",
-      "rating" : "1.5"
-    },
-    {
-      "label" : "Sufficient water supply",
-      "rating" : "1.5"
-    },
-  ];
-
   final Function() onMonthSelection;
   final bool isFromScreenshot;
   DashboardCard(this.onMonthSelection, {this.isFromScreenshot = false});
