@@ -44,6 +44,8 @@ class Demands {
   String? status;
   @JsonKey(name: "meterReadings")
   List<MeterReadings>? meterReadings;
+  @JsonKey(name: "isPaymentCompleted")
+  bool? isPaymentCompleted = false;
   Demands();
   factory Demands.fromJson(Map<String, dynamic> json) =>
       _$DemandsFromJson(json);

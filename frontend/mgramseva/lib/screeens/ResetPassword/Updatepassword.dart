@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/index.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/model/user/user_details.dart';
@@ -97,7 +98,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return FocusWatcher(child:Scaffold(
         body: BackgroundContainer(new Container(
             width: MediaQuery.of(context).size.width,
             padding: const EdgeInsets.all(8.0),
@@ -217,7 +218,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                   FooterBanner()
                 ]),
               ),
-            ))));
+            )))));
   }
 
   Widget _buildTenantDetails() {

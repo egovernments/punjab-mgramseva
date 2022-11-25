@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/repository/tendants_repo.dart';
 import 'package:mgramseva/services/MDMS.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:provider/provider.dart';
 
@@ -28,9 +29,8 @@ class TenantsProvider with ChangeNotifier {
         tenants = userResponse;
         streamController.add(userResponse);
       }
-    } catch (e) {
-      print("its an error");
-      print(e);
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       streamController.addError('error');
     }
   }

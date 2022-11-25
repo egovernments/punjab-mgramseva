@@ -11,6 +11,10 @@ WaterConnections _$WaterConnectionsFromJson(Map<String, dynamic> json) {
     ..waterConnection = (json['WaterConnection'] as List<dynamic>?)
         ?.map((e) => WaterConnection.fromJson(e as Map<String, dynamic>))
         .toList()
+    ..waterConnectionData = (json['waterConnectionData'] as List<dynamic>?)
+            ?.map((e) => WaterConnection.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        []
     ..tabData = json['propertyCount'] as Map<String, dynamic>?
     ..collectionDataCount = json['collectionDataCount'] == null
         ? null
@@ -22,6 +26,7 @@ WaterConnections _$WaterConnectionsFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$WaterConnectionsToJson(WaterConnections instance) =>
     <String, dynamic>{
       'WaterConnection': instance.waterConnection,
+      'waterConnectionData': instance.waterConnectionData,
       'propertyCount': instance.tabData,
       'collectionDataCount': instance.collectionDataCount,
       'totalCount': instance.totalCount,

@@ -52,6 +52,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.demand.amendment.model.Amendment;
 import org.egov.demand.amendment.model.AmendmentCriteria;
@@ -266,6 +268,9 @@ public class DemandService {
 		generateAndSetIdsForNewDemands(newDemands, auditDetail);
 
 		update(demandRequest, paymentBackUpdateAudit);
+		if(paymentBackUpdateAudit != null){
+			log.debug("Payment id after update: " + paymentBackUpdateAudit.getPaymentId());
+		}
 		String businessService = demands.get(0).getBusinessService();
 		String tenantId = demands.get(0).getTenantId();
 		
@@ -280,9 +285,11 @@ public class DemandService {
 			updateBillCriteria.setStatusToBeUpdated(BillStatus.EXPIRED);
 			billRepoV2.updateBillStatus(updateBillCriteria);
 		} else {
-			
+			log.debug("Payment id before setting billstatus to paid : " + paymentBackUpdateAudit.getPaymentId());
 			updateBillCriteria.setStatusToBeUpdated(BillStatus.PAID);
 			billRepoV2.updateBillStatus(updateBillCriteria);
+			log.debug("Payment id after updateBillStatus : " + paymentBackUpdateAudit.getPaymentId());
+
 		}
 		// producer.push(applicationProperties.getDemandIndexTopic(), demandRequest);
 		return new DemandResponse(responseInfoFactory.getResponseInfo(requestInfo, HttpStatus.CREATED), demands);
@@ -383,7 +390,8 @@ public class DemandService {
 			String tenantId = demand.getTenantId();
 
 			// Searching demands based on consumer code of the current demand (demand which has to be created)
-			DemandCriteria searchCriteria = DemandCriteria.builder().tenantId(tenantId).consumerCode(Collections.singleton(consumerCode)).businessService(businessService).build();
+			DemandCriteria searchCriteria = DemandCriteria.builder().tenantId(tenantId)
+					.status(Demand.StatusEnum.ACTIVE.toString()).consumerCode(Collections.singleton(consumerCode)).businessService(businessService).build();
 			List<Demand> demandsFromSearch = demandRepository.getDemands(searchCriteria);
 
 			// If no demand is found means there is no advance available. The current demand is added for creation
@@ -512,6 +520,16 @@ public class DemandService {
 		}
 
 		return updateListForConsumedAmendments;
+	}
+
+	public List<Demand> getDemandHistory(@Valid DemandCriteria demandCriteria, RequestInfo requestInfo) {
+		demandValidatorV1.validateDemandCriteria(demandCriteria, requestInfo);
+
+		List<Demand> demands = null;
+		
+		demands = demandRepository.getDemandHistory(demandCriteria);
+		return demands;
+	
 	}
 	
 }

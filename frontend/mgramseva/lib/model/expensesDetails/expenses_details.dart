@@ -123,6 +123,12 @@ class ExpensesDetailsModel {
   var billDateCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
+  var fromDateCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var toDateCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
   var paidDateCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
@@ -147,6 +153,8 @@ class ExpensesDetailsModel {
       billIssuedDate = DateFormats.dateToTimeStamp(billIssuedDateCtrl.text);
     if (paidDateCtrl.text.trim().isNotEmpty)
       paidDate = DateFormats.dateToTimeStamp(paidDateCtrl.text);
+    taxPeriodFrom = DateFormats.dateToTimeStamp(fromDateCtrl.text.trim());
+    taxPeriodTo = DateFormats.dateToTimeStamp(toDateCtrl.text.trim());
   }
 
   getText() {
@@ -156,7 +164,7 @@ class ExpensesDetailsModel {
 
     vendorNameCtrl.text = vendorName ?? '';
     expensesAmount?.first.amountCtrl.text =
-        expensesAmount?.first.amount ?? totalAmount?.toString() ?? '';
+        expensesAmount?.first.amount ?? totalAmount?.toInt().toString() ?? '';
     billDateCtrl.text = DateFormats.timeStampToDate(billDate);
     paidDateCtrl.text =
         paidDate == 0 ? '' : DateFormats.timeStampToDate(paidDate);
@@ -164,6 +172,8 @@ class ExpensesDetailsModel {
         billIssuedDate == 0 ? '' : DateFormats.timeStampToDate(billIssuedDate);
     isBillPaid ??= false;
     challanNumberCtrl.text = challanNo?.toString() ?? '';
+    fromDateCtrl.text = DateFormats.timeStampToDate(taxPeriodFrom);
+    toDateCtrl.text = DateFormats.timeStampToDate(taxPeriodTo);
 
     if (selectedVendor == null && challanNo != null) {
       selectedVendor = Vendor(vendorName ?? '', vendorId ?? '');

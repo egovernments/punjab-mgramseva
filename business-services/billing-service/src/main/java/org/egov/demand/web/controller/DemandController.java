@@ -148,4 +148,16 @@ public class DemandController {
 		return new ResponseEntity<>(resultMap, HttpStatus.OK);
 	}
     
+    @PostMapping("_history")
+	public ResponseEntity<?> history(@RequestBody RequestInfoWrapper requestInfoWrapper,
+			@ModelAttribute @Valid DemandCriteria demandCriteria) {
+
+		RequestInfo requestInfo = requestInfoWrapper.getRequestInfo();
+
+		List<Demand> demands = demandService.getDemandHistory(demandCriteria, requestInfo);
+		DemandResponse response = DemandResponse.builder().demands(demands)
+				.responseInfo(responseFactory.getResponseInfo(requestInfo, HttpStatus.OK)).build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+    
 }

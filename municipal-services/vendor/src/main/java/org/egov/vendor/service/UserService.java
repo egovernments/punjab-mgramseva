@@ -81,10 +81,16 @@ public class UserService {
 			User foundOwner = null;
 			if (userDetailResponse != null && !CollectionUtils.isEmpty(userDetailResponse.getUser())) {
 
-				validateVendorExists(userDetailResponse.getUser());
+				validateVendorExists(userDetailResponse.getUser(),vendor.getTenantId());
 
 				for (int i = 0; i < userDetailResponse.getUser().size(); i++) {
 
+
+					// in mGramSeva employee can also be vendor.
+
+//					if(userDetailResponse.getUser().get(i).getType().equalsIgnoreCase(VendorConstants.EMPLOYEE)) {
+//						throw new CustomException(VendorErrorConstants.INVALID_OWNER_EMPLOYEE, "MobileNumber for Vendor belongs to Employee!");
+//					}
 					if (isRoleAvailale(userDetailResponse.getUser().get(i), config.getVendorRole(),
 							vendor.getTenantId()) == Boolean.TRUE) {
 						foundOwner = userDetailResponse.getUser().get(i);
@@ -127,9 +133,9 @@ public class UserService {
 
 	}
 
-	private void validateVendorExists(List<User> user) {
+	private void validateVendorExists(List<User> user, String tenantId) {
 		List<String> ownerIds = user.stream().map(User::getUuid).collect(Collectors.toList());
-		int count = vendorRepository.getExistingVenodrsCount(ownerIds);
+		int count = vendorRepository.getExistingVenodrsCount(ownerIds,tenantId);
 
 		if (count > 0) {
 			throw new CustomException(VendorErrorConstants.ALREADY_VENDOR_EXIST,

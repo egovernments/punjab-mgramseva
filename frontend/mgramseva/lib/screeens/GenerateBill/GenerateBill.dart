@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/widgets/focus_watcher.dart';
 import 'package:mgramseva/model/bill/bill_generation_details/bill_generation_details.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/bill_generation_details_provider.dart';
 import 'package:mgramseva/screeens/GenerateBill/widgets/MeterReading.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
@@ -33,7 +35,7 @@ class GenerateBill extends StatefulWidget {
 class _GenerateBillState extends State<GenerateBill> {
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
@@ -263,6 +265,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                             controller: billgenerationprovider
                                                                 .billGenerateDetails
                                                                 .billingyearCtrl,
+                                                            key: Keys.bulkDemand.BULK_DEMAND_BILLING_YEAR,
                                                           )),
                                                   Consumer<
                                                           BillGenerationProvider>(
@@ -285,6 +288,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                             controller: billgenerationprovider
                                                                 .billGenerateDetails
                                                                 .billingcycleCtrl,
+                                                            key: Keys.bulkDemand.BULK_DEMAND_BILLING_CYCLE,
                                                           )),
                                                 ])),
                                   ]))))))
@@ -295,7 +299,8 @@ class _GenerateBillState extends State<GenerateBill> {
   Widget build(BuildContext context) {
     var billgenerateProvider =
         Provider.of<BillGenerationProvider>(context, listen: false);
-    return Scaffold(
+    return KeyboardFocusWatcher(
+        child: Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: BaseAppBar(
           Text(i18.common.MGRAM_SEVA),
@@ -330,6 +335,7 @@ class _GenerateBillState extends State<GenerateBill> {
         ]))),
         bottomNavigationBar: BottomButtonBar(
             '${widget.id == null ? i18.demandGenerate.GENERATE_DEMAND_BUTTON : i18.demandGenerate.GENERATE_BILL_BUTTON}',
-            () => {billgenerateProvider.onSubmit(context)}));
+            () => {billgenerateProvider.onSubmit(context)},
+        key: Keys.bulkDemand.GENERATE_BILL_BTN,)));
   }
 }

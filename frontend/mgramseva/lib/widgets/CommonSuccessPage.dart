@@ -17,6 +17,7 @@ class CommonSuccess extends StatelessWidget {
   final VoidCallback? callBack;
   final VoidCallback? callBackwatsapp;
   final VoidCallback? callBackdownload;
+  final VoidCallback? callBackprint;
   final bool? backButton;
   final bool isWithoutLogin;
 
@@ -24,7 +25,9 @@ class CommonSuccess extends StatelessWidget {
       {this.callBack,
       this.callBackwatsapp,
       this.callBackdownload,
-      this.backButton, this.isWithoutLogin = false});
+      this.callBackprint,
+      this.backButton,
+      this.isWithoutLogin = false});
 
   @override
   Widget build(BuildContext context) {
@@ -34,15 +37,18 @@ class CommonSuccess extends StatelessWidget {
         return false;
       },
       child: Scaffold(
-          appBar: isWithoutLogin ? AppBar(
-            title: Text('mGramSeva'),
-            automaticallyImplyLeading: false,
-          ) : BaseAppBar(
-            Text(i18.common.MGRAM_SEVA),
-            AppBar(),
-            <Widget>[Icon(Icons.more_vert)],
-          ),
-          drawer:  isWithoutLogin ? null : DrawerWrapper(Drawer(child: SideBar())),
+          appBar: isWithoutLogin
+              ? AppBar(
+                  title: Text('mGramSeva'),
+                  automaticallyImplyLeading: false,
+                )
+              : BaseAppBar(
+                  Text(i18.common.MGRAM_SEVA),
+                  AppBar(),
+                  <Widget>[Icon(Icons.more_vert)],
+                ),
+          drawer:
+              isWithoutLogin ? null : DrawerWrapper(Drawer(child: SideBar())),
           body: SingleChildScrollView(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -57,16 +63,22 @@ class CommonSuccess extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SuccessPage(successHandler.header,
-                            subTextHeader:  successHandler.subHeaderFun != null ? successHandler.subHeaderFun!() : successHandler.subHeader,
-                            subText: successHandler.subTextFun != null ? successHandler.subTextFun!() : successHandler.subHeaderText),
+                            subTextHeader: successHandler.subHeaderFun != null
+                                ? successHandler.subHeaderFun!()
+                                : successHandler.subHeader,
+                            subText: successHandler.subTextFun != null
+                                ? successHandler.subTextFun!()
+                                : successHandler.subHeaderText),
                         Align(
                             alignment: Alignment.centerLeft,
                             child: Container(
                               margin: const EdgeInsets.only(
                                   left: 10, bottom: 20, top: 20, right: 10),
                               child: Text(
-                                ApplicationLocalizations.of(context)
-                                    .translate(successHandler.subtitleFun != null ? successHandler.subtitleFun!() : successHandler.subtitle),
+                                ApplicationLocalizations.of(context).translate(
+                                    successHandler.subtitleFun != null
+                                        ? successHandler.subtitleFun!()
+                                        : successHandler.subtitle),
                                 style: TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w400),
                                 textAlign: TextAlign.start,
@@ -83,7 +95,8 @@ class CommonSuccess extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Visibility(
+                            Expanded(
+                                child: Visibility(
                               visible: successHandler.downloadLink != null,
                               child: TextButton.icon(
                                 onPressed: callBackdownload,
@@ -95,27 +108,52 @@ class CommonSuccess extends StatelessWidget {
                                                 null
                                             ? successHandler.downloadLinkLabel!
                                             : ''),
-                                    style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor)),
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Theme.of(context).primaryColor)),
                               ),
-                            ),
-                            Visibility(
+                            )),
+                            Expanded(
+                                child: Visibility(
+                              visible: successHandler.printLabel != null,
+                              child: TextButton.icon(
+                                onPressed: callBackprint,
+                                icon: Icon(
+                                  Icons.print,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                label: Text(
+                                    ApplicationLocalizations.of(context)
+                                        .translate(
+                                            successHandler.printLabel != null
+                                                ? successHandler.printLabel!
+                                                : ''),
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Theme.of(context).primaryColor)),
+                              ),
+                            )),
+                            Expanded(
+                                child: Visibility(
                               visible: successHandler.whatsAppShare != null,
                               child: TextButton.icon(
                                 onPressed: callBackwatsapp,
                                 icon: (Image.asset('assets/png/whats_app.png')),
                                 label: Text(
-                                      ApplicationLocalizations.of(context)
-                                          .translate(i18.common.SHARE_BILL),
-                                  style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor),),
-
+                                  ApplicationLocalizations.of(context)
+                                      .translate(i18.common.SHARE_BILL),
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Theme.of(context).primaryColor),
+                                ),
                               ),
-                            )
+                            ))
                           ],
                         ),
                         Visibility(
                           visible: !isWithoutLogin,
                           child: BottomButtonBar(
-                          successHandler.backButtonText,
+                            successHandler.backButtonText,
                             callBack != null ? callBack : CommonMethods.home,
                           ),
                         ),

@@ -6,6 +6,9 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:provider/provider.dart';
+
+import 'common_provider.dart';
 
 class UserEditProfileProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -26,9 +29,15 @@ class UserEditProfileProvider with ChangeNotifier {
         Notifiers.getToastMessage(
             context, i18.profileEdit.PROFILE_EDIT_SUCCESS, 'SUCCESS');
         streamController.add(edituserResponse);
-        new Future.delayed(const Duration(seconds: 5),
-              () => Navigator.pop(context),
-        );
+        if(edituserResponse.user?.isNotEmpty ?? false) {
+          Provider.of<CommonProvider>(context, listen: false)
+            ..userDetails?.userRequest?.name = edituserResponse.user?.first.name
+            ..userDetails?.userRequest?.emailId = edituserResponse.user?.first
+                .emailId
+          ..loginCredentails = Provider.of<CommonProvider>(context, listen: false).userDetails;
+        }
+        Navigator.pop(context);
+        Navigator.pop(context);
       }
     } catch (e, s) {
       Navigator.pop(context);

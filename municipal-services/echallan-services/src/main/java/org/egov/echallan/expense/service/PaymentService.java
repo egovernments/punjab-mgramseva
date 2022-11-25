@@ -73,6 +73,7 @@ public class PaymentService {
 
 			try {
 				response = mapper.convertValue(result, PaymentResponse.class);
+				challan.setApplicationStatus(StatusEnum.PAID);
 			} catch (IllegalArgumentException e) {
 				log.error("Error parsing payment response Challan id : " + challan.getId());
 				throw new CustomException("EXP_PAYMENT_PARSING_ERROR", "Unable to parse payment response");
@@ -87,7 +88,7 @@ public class PaymentService {
 		Challan challan = request.getChallan();
 		queryParams.add("tenantId", challan.getTenantId());
 		queryParams.add("service", challan.getBusinessService());
-		queryParams.add("consumerCode", challan.getChallanNo());
+		queryParams.add("consumerCode", challan.getReferenceId());
 
 		String uri = UriComponentsBuilder.fromHttpUrl(config.getBillingHost()).path(config.getSearchBill())
 				.queryParams(queryParams).build().toUriString();
@@ -102,7 +103,7 @@ public class PaymentService {
 					challan.getTenantId(), e);
 			throw new ServiceCallException(e.getResponseBodyAsString());
 		} catch (Exception e) {
-			log.error("Unable to fetch bill for Bill ID: {} in tenant {}", challan.getChallanNo(),
+			log.error("Unable to fetch bill for Bill Consumer Code: {} in tenant {}", challan.getReferenceId(),
 					challan.getTenantId(), e);
 			throw new CustomException("BILLING_SERVICE_ERROR", "Failed to fetch bill, unknown error occurred");
 		}
@@ -119,6 +120,7 @@ public class PaymentService {
 			StringBuilder uri = new StringBuilder(config.getPaymentContextPath())
 					.append(config.getPaymentUpdateEndpoint());
 
+			System.out.println("URL to check the payment search::" + uri);
 			Object result = serviceRequestRepository.fetchResult(uri, PaymentWorkflowRequest.builder()
 					.paymentWorkflows(Arrays.asList(paymentWorkflow)).requestInfo(request.getRequestInfo()).build());
 			try {
@@ -133,8 +135,9 @@ public class PaymentService {
 	}
 
 	public String searchPayment(ChallanRequest request) {
-		StringBuilder uri = new StringBuilder(config.getPaymentContextPath()).append(config.getPaymentSearchEndpoint())
-				.append("?consumerCodes=").append(request.getChallan().getChallanNo()).append(" &tenantId=")
+		StringBuilder uri = new StringBuilder(config.getPaymentContextPath()).append(config.getPaymentUpdateSearch())
+				.append("/" + request.getChallan().getBusinessService()).append(config.getPaymentUpdateSearchEndpoint())
+				.append("?consumerCodes=").append(request.getChallan().getReferenceId()).append(" &tenantId=")
 				.append(request.getChallan().getTenantId());
 		RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(request.getRequestInfo())
 				.build();

@@ -78,6 +78,8 @@ public class MgramasevaAdapterWrapperUtil {
 		eventRequest.setRequestHeader(requestHeader);
 		eventRequest.setEvent(eventObj);
 		try {
+			log.info("calling ifix-reference-adapter");
+
 			Object response = serviceRequestRepository.fetchResult(
 					propertyConfiguration.getAdapterHost() + propertyConfiguration.getAdapterCreateEndpoint(),
 					eventRequest);

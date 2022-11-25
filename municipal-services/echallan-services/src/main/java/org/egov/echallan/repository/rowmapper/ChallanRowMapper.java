@@ -76,7 +76,7 @@ public class ChallanRowMapper  implements ResultSetExtractor<List<Challan>> {
                 		.paidDate(rs.getLong("paidDate"))
                 		.isBillPaid(rs.getBoolean("isBillPaid"))
                 		.vendorName(rs.getString("vendorName"))
-                		.totalAmount(rs.getBigDecimal("totalamount"))
+//                		.totalAmount(rs.getBigDecimal("totalamount"))
                         .id(id)
                         .build();
                 this.setFull_count(rs.getInt("full_count"));

@@ -7,6 +7,9 @@ class WaterConnections {
   @JsonKey(name: "WaterConnection")
   List<WaterConnection>? waterConnection;
 
+  @JsonKey(name: "waterConnectionData", defaultValue: [])
+  List<WaterConnection>? waterConnectionData;
+
   @JsonKey(name: "propertyCount")
   Map<String, dynamic>? tabData;
 

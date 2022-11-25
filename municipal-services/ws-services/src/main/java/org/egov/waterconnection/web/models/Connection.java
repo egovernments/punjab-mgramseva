@@ -154,7 +154,40 @@ public class Connection {
 	@JsonProperty("arrears")
 	private BigDecimal arrears = null;
 	
+	@JsonProperty("paymentType")
+	private String paymentType = null;
+	
+	@JsonProperty("penalty")
+	private BigDecimal penalty = null;
+	
+	@JsonProperty("advance")
+	private BigDecimal advance = null;
+	
+	public String getPaymentType() {
+		return paymentType;
+	}
 
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
+	}
+
+	public BigDecimal getPenalty() {
+		return penalty;
+	}
+
+	public void setPenalty(BigDecimal penalty) {
+		this.penalty = penalty;
+	}
+
+	public BigDecimal getAdvance() {
+		return advance;
+	}
+
+	public void setAdvance(BigDecimal advance) {
+		this.advance = advance;
+	}
+	
+	
 	public Long getPreviousReadingDate() {
 		return previousReadingDate;
 	}
@@ -170,10 +203,6 @@ public class Connection {
 	public void setArrears(BigDecimal arrears) {
 		this.arrears = arrears;
 	}
-
-	
-	
-	
 
 	public Connection id(String id) {
 		this.id = id;

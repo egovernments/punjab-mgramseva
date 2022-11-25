@@ -3,6 +3,7 @@ package org.egov.echallan.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -123,6 +124,13 @@ public class CommonUtils {
 
         return Arrays.asList(moduleDtls,expenseModuleDetail);
     }
+    
+    public static void setTimeToBeginningOfDay(Calendar calendar) {
+	    calendar.set(Calendar.HOUR_OF_DAY, 0);
+	    calendar.set(Calendar.MINUTE, 0);
+	    calendar.set(Calendar.SECOND, 0);
+	    calendar.set(Calendar.MILLISECOND, 0);
+	}
 
  
 }

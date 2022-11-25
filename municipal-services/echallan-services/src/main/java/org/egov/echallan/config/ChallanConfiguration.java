@@ -212,6 +212,12 @@ public class ChallanConfiguration {
 	@Value("${egov.collection.service.search}")
 	private String paymentSearchEndpoint;
 	
+	@Value("${egov.collection.payment.update.search}")
+	private String paymentUpdateSearch;
+	
+	@Value("${egov.collection.payment.update.search.endpoint}")
+	private String paymentUpdateSearchEndpoint;
+	
 	@Value("${egov.collection.service.update}")
 	private String paymentUpdateEndpoint;
 	
@@ -253,6 +259,12 @@ public class ChallanConfiguration {
 
 	@Value("${egov.today.collection.link}")
 	private String todayCollectionLink;
-	
-	
+
+    @Value("${billing.service.host}")
+    private String billingServiceHost;
+
+    @Value("${billing.service.search.bill.endpoint}")
+    private String billingServiceSearchBillEndpoint;
+
+
 }

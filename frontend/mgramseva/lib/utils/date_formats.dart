@@ -7,7 +7,6 @@ import 'Locilization/application_localizations.dart';
 import 'models.dart';
 
 class DateFormats {
-
   static getFilteredDate(String date, {String? dateFormat}) {
     if (date == null || date.trim().isEmpty) return '';
     try {
@@ -82,38 +81,37 @@ class DateFormats {
     }
   }
 
-  static String getMonthWithDay(int? timeInMillis){
-    if(timeInMillis == null) return '';
-    try{
+  static String getMonthWithDay(int? timeInMillis) {
+    if (timeInMillis == null) return '';
+    try {
       var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
       return '${DateFormat.MMMM().format(date)} ${date.day}';
-    }catch(e){
+    } catch (e) {
       return '';
     }
   }
 
-  static String getMonthAndYear(DatePeriod date, BuildContext context){
-    try{
-      switch(date.dateType){
+  static String getMonthAndYear(DatePeriod date, BuildContext context) {
+    try {
+      switch (date.dateType) {
         case DateType.YTD:
           return '${ApplicationLocalizations.of(context).translate(i18.common.YTD)} ${date.startDate.year} - ${date.endDate.year.toString().substring(2)}';
         case DateType.MONTH:
           return '${ApplicationLocalizations.of(context).translate(Constants.MONTHS[date.startDate.month - 1])} - ${date.startDate.year}';
         case DateType.YEAR:
           return '${date.startDate.year} - ${date.endDate.year.toString().substring(2)}';
-        default :
+        default:
           return '';
       }
-
-    }catch(e){
+    } catch (e) {
       return '';
     }
   }
 
-  static String getMonth(DateTime date){
-    try{
+  static String getMonth(DateTime date) {
+    try {
       return '${DateFormat.MMM().format(date)}';
-    }catch(e){
+    } catch (e) {
       return '';
     }
   }

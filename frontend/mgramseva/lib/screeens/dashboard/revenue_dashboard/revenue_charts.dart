@@ -1,22 +1,32 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:mgramseva/providers/revenuedashboard_provider.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_widgets.dart';
+import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
-import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
+import '../../../utils/date_formats.dart';
+import 'Custom Label widget/custom_tooltip_label_render.dart';
+
 class RevenueCharts extends StatefulWidget {
-  const RevenueCharts({Key? key}) : super(key: key);
+  final bool isFromScreenshot;
+  const RevenueCharts(this.isFromScreenshot, {Key? key}) : super(key: key);
 
   @override
   _RevenueChartsState createState() => _RevenueChartsState();
 }
 
 class _RevenueChartsState extends State<RevenueCharts> {
+
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return  LayoutBuilder(
@@ -26,8 +36,8 @@ class _RevenueChartsState extends State<RevenueCharts> {
           ),
     );
   }
-  
-  
+
+
   Widget _buildMobileView() {
     return _buildChartWithCardView(
       Consumer<RevenueDashboard>(
@@ -45,8 +55,9 @@ class _RevenueChartsState extends State<RevenueCharts> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(child: _buildChartWithCardView(_buildStackedCharts(), _buildButton(revenueProvider.getTabs(context).first))),
-        SizedBox(width: 8),
+        /// Stacked Graph not implemented due to Backend API response finalization is pending
+        // Expanded(child: _buildChartWithCardView(_buildStackedCharts(), _buildButton(revenueProvider.getTabs(context).first))),
+        // SizedBox(width: 8),
         Expanded(child: _buildChartWithCardView(_buildLineCharts(true), _buildButton(revenueProvider.getTabs(context).last))),
       ],
     );
@@ -56,13 +67,13 @@ class _RevenueChartsState extends State<RevenueCharts> {
     return Card(
       margin: EdgeInsets.all(0.0),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(widget.isFromScreenshot ? 5 : 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 16),
+              padding: EdgeInsets.only(bottom: widget.isFromScreenshot ? 5 : 16),
               child: Text('${ApplicationLocalizations.of(context).translate(i18.dashboard.REVENUE_EXPENDITURE_TREND)}',
                 style: TextStyle(
                     fontSize: 18,
@@ -91,39 +102,46 @@ class _RevenueChartsState extends State<RevenueCharts> {
   }
 
   Widget _buildStackedCharts(){
-    var revenue = [
-      Legend('Residential', Color.fromRGBO(64, 106, 187, 1)),
-      Legend('Commercial', Color.fromRGBO(188, 211, 255, 1))];
+    var height = 250.0;
+    // var expense = [
+    //   Legend('Electricity', Color.fromRGBO(19, 216, 204, 1)),
+    //   Legend('Salaries', Color.fromRGBO(47, 197, 229, 1)),
+    //   Legend('Operations', Color.fromRGBO(251, 192, 45, 1)),
+    //   Legend('Others', Color.fromRGBO(244, 119, 56, 1)),
+    // ];
 
-    var expense = [
-      Legend('Electricity', Color.fromRGBO(19, 216, 204, 1)),
-      Legend('Salaries', Color.fromRGBO(47, 197, 229, 1)),
-      Legend('Operations', Color.fromRGBO(251, 192, 45, 1)),
-      Legend('Others', Color.fromRGBO(244, 119, 56, 1)),
-    ];
-
-    return Column(children : [
-      Container(
-          height: 250,
-          child : StackedBarChart.withSampleData()
-      ),
-     Container(
-       padding: const EdgeInsets.only(top: 8),
-       height: 90,
-       child: Row(
-         mainAxisAlignment: MainAxisAlignment.start,
-         crossAxisAlignment: CrossAxisAlignment.start,
-         children: [
-           _buildStackedLegends(i18.dashboard.REVENUE, revenue),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: VerticalDivider(color: Colors.grey, width: 2, thickness: 2,),
-            ),
-           Expanded(child: _buildStackedLegends(i18.dashboard.EXPENDITURE, expense))
-         ],
-       ),
-     )
-    ]);
+    return Consumer<RevenueDashboard>(
+        builder : (_, revenueProvider, child) {
+          return revenueProvider.revenueDataHolder.stackLoader ? Loaders
+              .circularLoader(height: height) : (revenueProvider.revenueDataHolder
+              .stackedBar?.graphData == null
+              ? CommonWidgets.buildEmptyMessage(i18.dashboard.NO_RECORDS_MSG, context)
+              : Column(children: [
+            Container(
+                height: height,
+                child: StackedBarChart(
+                    revenueProvider.revenueDataHolder.stackedBar!.graphData!)),
+            Container(
+              padding: const EdgeInsets.only(top: 8),
+              height: 90,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildStackedLegends(i18.dashboard.REVENUE, revenueProvider.revenueDataHolder.revenueLabels),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: VerticalDivider(
+                      color: Colors.grey, width: 2, thickness: 2,),
+                  ),
+                  Expanded(child: _buildStackedLegends(
+                      i18.dashboard.EXPENDITURE, revenueProvider.revenueDataHolder.expenseLabels))
+                ],
+              ),
+            )
+          ]));
+        }
+    );
   }
 
   Widget _buildStackedLegends(String label, List<Legend> legends){
@@ -145,7 +163,7 @@ class _RevenueChartsState extends State<RevenueCharts> {
             direction: Axis.vertical,
             spacing: 8,
             runSpacing: 10,
-            children: legends.map((e) => _buildLegend(e.label, e.color)).toList()
+            children: legends.map((e) => _buildLegend(e.label,  HexColor(e.hexColor))).toList()
           ),
         )
       ]
@@ -154,35 +172,43 @@ class _RevenueChartsState extends State<RevenueCharts> {
 
 
   Widget _buildLineCharts([bool isDeskTopView = false]){
-    return Column(children : [
-      Container(
-          height: 250,
-        child : SimpleLineChart.withSampleData()
-      ),
-    Container(
-        padding: const EdgeInsets.only(top : 16.0),
-        height: isDeskTopView ? 90 : null,
-        alignment: isDeskTopView ? Alignment.center : null,
-        child: Wrap(
-          spacing: 20,
-          children: [
-            _buildLegend(i18.dashboard.REVENUE, Color.fromRGBO(64, 106, 187, 1)),
-            _buildLegend(i18.dashboard.EXPENDITURE, Color.fromRGBO(11, 12, 12, 1)),
-          ],
+    var height = 250.0;
+    return Consumer<RevenueDashboard>(
+      builder : (_, revenue, child) =>
+      revenue.revenueDataHolder.trendLineLoader ? Loaders.circularLoader(height: height) :  (revenue.revenueDataHolder.graphData == null || revenue.revenueDataHolder.graphData!.isEmpty)
+          ? CommonWidgets.buildEmptyMessage(i18.dashboard.NO_RECORDS_MSG, context)
+          : Column(children : [
+        LayoutBuilder(
+          builder: (_, constraints) => Container(
+              height: height,
+            child : SimpleLineChart(revenue.revenueDataHolder.graphData!, constraints, animate: false)),
         ),
-    )
-    ]);
+      Container(
+          padding:  EdgeInsets.only(top : widget.isFromScreenshot ? 5 : 16.0),
+          // height: isDeskTopView ? 90 : null,
+          alignment: isDeskTopView ? Alignment.center : null,
+          child: Wrap(
+            spacing: 20,
+            children: [
+              _buildLegend(i18.dashboard.REVENUE, Color.fromRGBO(64, 106, 187, 1)),
+              _buildLegend(i18.dashboard.EXPENDITURE, Color.fromRGBO(255, 0, 0, 1)),
+            ],
+          ),
+      )
+      ])
+    );
   }
 
   Widget getGraphView(int index){
-    switch(index){
-      case 0 :
-       return _buildStackedCharts();
-      case 1 :
-        return _buildLineCharts();
-      default :
-        return Container();
-    }
+    return _buildLineCharts();
+    // switch(index){
+    //   case 0 :
+    //    return _buildStackedCharts();
+    //   case 1 :
+    //     return _buildLineCharts();
+    //   default :
+    //     return Container();
+    // }
   }
 
   Widget _buildLegend(String label, Color color){
@@ -209,22 +235,23 @@ class _RevenueChartsState extends State<RevenueCharts> {
   }
 
   Widget _buildButton(String label, [int? index, Function(int)? callBack]){
-    var revenueProvider = Provider.of<RevenueDashboard>(context, listen: false);
+    // var revenueProvider = Provider.of<RevenueDashboard>(context, listen: false);
 
-    return OutlinedButton(
-      onPressed: () => callBack != null && index != null ? callBack(index) : (){},
-    style: OutlinedButton.styleFrom(
-    side: BorderSide(width: 1.0, color: (revenueProvider.selectedIndex == index) || index == null ? Theme.of(context).primaryColor : Color.fromRGBO(238, 238, 238, 1)),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
-    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 9)
-    ),
-      child: Text("${ApplicationLocalizations.of(context).translate(label)}",
-      style: TextStyle(
-        color: (revenueProvider.selectedIndex == index) || index == null ? Theme.of(context).primaryColor : Color.fromRGBO(80, 90, 95, 1),
-        fontSize: 14
-      ),
-      ),
-    );
+    return Container(height: 10,);
+    //   OutlinedButton(
+    //   onPressed: () => callBack != null && index != null ? callBack(index) : (){},
+    // style: OutlinedButton.styleFrom(
+    // side: BorderSide(width: 1.0, color: (revenueProvider.selectedIndex == index) || index == null ? Theme.of(context).primaryColor : Color.fromRGBO(238, 238, 238, 1)),
+    // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+    // padding: EdgeInsets.symmetric(horizontal: 8, vertical: 9)
+    // ),
+    //   child: Text("${ApplicationLocalizations.of(context).translate(label)}",
+    //   style: TextStyle(
+    //     color: (revenueProvider.selectedIndex == index) || index == null ? Theme.of(context).primaryColor : Color.fromRGBO(80, 90, 95, 1),
+    //     fontSize: 14
+    //   ),
+    //   ),
+    // );
   }
 }
 
@@ -235,16 +262,6 @@ class StackedBarChart extends StatelessWidget {
   final bool? animate;
 
   StackedBarChart(this.seriesList, {this.animate});
-
-  /// Creates a stacked [BarChart] with sample data and no transition.
-  factory StackedBarChart.withSampleData() {
-    return new StackedBarChart(
-      createSampleData(),
-      // Disable animations for image tests.
-      animate: false,
-
-    );
-  }
 
 
   @override
@@ -259,167 +276,95 @@ class StackedBarChart extends StatelessWidget {
       ),
     );
   }
-
-  /// Create series list with multiple series
-  static List<charts.Series<OrdinalSales, String>> createSampleData() {
-    final desktopSalesDataA = [
-      new OrdinalSales('2014', 5),
-      new OrdinalSales('2015', 25),
-      new OrdinalSales('2016', 100),
-      new OrdinalSales('2017', 75),
-    ];
-
-    final tableSalesDataA = [
-      new OrdinalSales('2014', 25),
-      new OrdinalSales('2015', 50),
-      new OrdinalSales('2016', 10),
-      new OrdinalSales('2017', 20),
-    ];
-
-    final mobileSalesDataA = [
-      new OrdinalSales('2014', 10),
-      new OrdinalSales('2015', 15),
-      new OrdinalSales('2016', 50),
-      new OrdinalSales('2017', 45),
-    ];
-
-    final desktopSalesDataB = [
-      new OrdinalSales('2014', 5),
-      new OrdinalSales('2015', 25),
-      new OrdinalSales('2016', 100),
-      new OrdinalSales('2017', 75),
-    ];
-
-    final tableSalesDataB = [
-      new OrdinalSales('2014', 25),
-      new OrdinalSales('2015', 50),
-      new OrdinalSales('2016', 10),
-      new OrdinalSales('2017', 20),
-    ];
-
-    final mobileSalesDataB = [
-      new OrdinalSales('2014', 10),
-      new OrdinalSales('2015', 15),
-      new OrdinalSales('2016', 50),
-      new OrdinalSales('2017', 45),
-    ];
-
-    return [
-      new charts.Series<OrdinalSales, String>(
-        id: 'Desktop A',
-        seriesCategory: 'A',
-        domainFn: (OrdinalSales sales, _) => sales.year,
-        measureFn: (OrdinalSales sales, _) => sales.sales,
-        data: desktopSalesDataA,
-      ),
-      new charts.Series<OrdinalSales, String>(
-        id: 'Tablet A',
-        seriesCategory: 'A',
-        domainFn: (OrdinalSales sales, _) => sales.year,
-        measureFn: (OrdinalSales sales, _) => sales.sales,
-        data: tableSalesDataA,
-      ),
-      new charts.Series<OrdinalSales, String>(
-        id: 'Mobile A',
-        seriesCategory: 'A',
-        domainFn: (OrdinalSales sales, _) => sales.year,
-        measureFn: (OrdinalSales sales, _) => sales.sales,
-        data: mobileSalesDataA,
-      ),
-      new charts.Series<OrdinalSales, String>(
-        id: 'Desktop B',
-        seriesCategory: 'B',
-        domainFn: (OrdinalSales sales, _) => sales.year,
-        measureFn: (OrdinalSales sales, _) => sales.sales,
-        data: desktopSalesDataB,
-      ),
-      new charts.Series<OrdinalSales, String>(
-        id: 'Tablet B',
-        seriesCategory: 'B',
-        domainFn: (OrdinalSales sales, _) => sales.year,
-        measureFn: (OrdinalSales sales, _) => sales.sales,
-        data: tableSalesDataB,
-      ),
-      new charts.Series<OrdinalSales, String>(
-        id: 'Mobile B',
-        seriesCategory: 'B',
-        domainFn: (OrdinalSales sales, _) => sales.year,
-        measureFn: (OrdinalSales sales, _) => sales.sales,
-        data: mobileSalesDataB,
-      ),
-    ];
-  }
 }
 
 
 class SimpleLineChart extends StatelessWidget {
   final dynamic seriesList;
   final bool? animate;
+  final BoxConstraints constraints;
 
-  SimpleLineChart(this.seriesList, {this.animate});
-
-  /// Creates a [LineChart] with sample data and no transition.
-  factory SimpleLineChart.withSampleData() {
-    return new SimpleLineChart(
-      _createSampleData(),
-      // Disable animations for image tests.
-      animate: false,
-    );
-  }
+  SimpleLineChart(this.seriesList, this.constraints, {this.animate});
 
 
   @override
   Widget build(BuildContext context) {
-    return new charts.LineChart(seriesList, animate: animate);
-  }
+    var revenueDashboard = Provider.of<RevenueDashboard>(context, listen: false);
+    var xAxis , pointColor;
+    final customTickFormatter =
+    charts.BasicNumericTickFormatterSpec((num? value) {
 
-  /// Create one series with sample hard coded data.
-  static List<charts.Series<LinearSales, int>> _createSampleData() {
-    final data = [
-      new LinearSales(0, 5),
-      new LinearSales(1, 25),
-      new LinearSales(2, 100),
-      new LinearSales(3, 75),
-    ];
+     var dateList =  revenueDashboard.revenueDataHolder.revenueTrendLine?.map((e) => e.month).toList() ?? [];
+      var index = value?.toInt() ?? 0;
+     if(index < dateList.length){
+       var filteredMonth = DateFormats.getMonth(
+           DateFormats.getFormattedDateToDateTime(
+               DateFormats.timeStampToDate(dateList[index]))!);
+           // dateList[index].toString().split('-').first;
+       return ApplicationLocalizations.of(context).translate(filteredMonth);
+     }else{
+       return "";
+     }
+    });
 
-    final data1 = [
-      new LinearSales(0, 8),
-      new LinearSales(1, 12),
-      new LinearSales(2, 80),
-      new LinearSales(3, 70),
-    ];
+    final customYAxisTickFormatter =
+    charts.BasicNumericTickFormatterSpec((num? value) {
+      ToolTipMgr.setMaxValue(value ?? 0);
+      return '₹ ${value?.toInt()}';
 
-    return [
-      new charts.Series<LinearSales, int>(
-        id: 'Sales',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (LinearSales sales, _) => sales.year,
-        measureFn: (LinearSales sales, _) => sales.sales,
-        data: data,
+    });
+
+    return new charts.LineChart(seriesList,
+          animate: animate,
+        defaultRenderer: charts.LineRendererConfig(includePoints: true, ),
+      selectionModels: [
+        charts.SelectionModelConfig(
+            changedListener: (charts.SelectionModel model) {
+              if(model.hasAnySelection) {
+                xAxis = model.selectedSeries.first
+                    .measureFn(model.selectedDatum.first.index)
+                    .toString();
+                pointColor = model.selectedSeries.first.colorFn!(model.selectedDatum.first.index)!.hexString;
+                ToolTipMgr.setTitle({
+                  'xAxis': '$xAxis',
+                  'pointColor': '$pointColor'
+                });
+              }
+            }
+        ),
+      ],
+      behaviors: [
+        charts.SlidingViewport(),
+        charts.PanAndZoomBehavior(),
+        charts.SelectNearest(
+          eventTrigger: charts.SelectionTrigger.tap,
+        ),
+        charts.LinePointHighlighter(
+          radiusPaddingPx: 3.0,
+          showVerticalFollowLine:
+          charts.LinePointHighlighterFollowLineType.nearest,
+          showHorizontalFollowLine: charts.LinePointHighlighterFollowLineType.nearest,
+          symbolRenderer: CustomCircleSymbolRenderer(),
+        ),
+      ],
+        domainAxis: charts.NumericAxisSpec(
+          tickProviderSpec:
+          charts.BasicNumericTickProviderSpec(desiredTickCount: 1),
+          tickFormatterSpec: customTickFormatter,
+            viewport: constraints.maxWidth > 760 ? null : ((revenueDashboard.revenueDataHolder.revenueTrendLine?.length ?? 0) > 6 ? ( charts.NumericExtents(0.0, 5.0)) : null),
+          renderSpec: charts.SmallTickRendererSpec(
+              minimumPaddingBetweenLabelsPx: 0,
+              // Tick and Label styling here.
+              labelStyle: new charts.TextStyleSpec(
+              fontSize: 12, // size in Pts.
+              color: charts.MaterialPalette.black),
+          ),
+        ),
+        primaryMeasureAxis: charts.NumericAxisSpec(
+        tickFormatterSpec: customYAxisTickFormatter,
+        showAxisLine: true
       ),
-      new charts.Series<LinearSales, int>(
-        id: 'Sales',
-        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
-        domainFn: (LinearSales sales, _) => sales.year,
-        measureFn: (LinearSales sales, _) => sales.sales,
-        data: data1,
-      )
-    ];
+    );
   }
-}
 
-/// Sample linear data type.
-class LinearSales {
-  final int year;
-  final int sales;
-
-  LinearSales(this.year, this.sales);
-}
-
-/// Sample ordinal data type.
-class OrdinalSales {
-  final String year;
-  final int sales;
-
-  OrdinalSales(this.year, this.sales);
 }

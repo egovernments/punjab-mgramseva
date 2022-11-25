@@ -2,6 +2,7 @@ import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/common/pdfservice.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
+import 'package:mgramseva/model/demand/update_demand_list.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
@@ -25,7 +26,9 @@ class BillingServiceRepository extends BaseService {
         APIConstants.API_DID,
         APIConstants.API_KEY,
         APIConstants.API_MESSAGE_ID,
-        commonProvider.userDetails?.accessToken);
+        commonProvider.userDetails?.accessToken,
+        commonProvider.userDetails?.userRequest?.toJson()
+    );
   }
 
   Future<DemandList> fetchdDemand(Map<String, dynamic> queryparams) async {
@@ -46,7 +49,25 @@ class BillingServiceRepository extends BaseService {
     return demandList;
   }
 
-  Future<BillList> fetchdBill(Map<String, dynamic> queryparams) async {
+  Future<UpdateDemandList> fetchUpdateDemand(Map<String, dynamic> queryparams, dynamic body) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    late UpdateDemandList demandList;
+    var res = await makeRequest(
+        url: Url.FETCH_UPDATE_DEMAND,
+        body: {'userInfo': commonProvider.userDetails?.userRequest?.toJson(), ...body},
+        queryParameters: queryparams,
+        requestInfo: getRequestInfo('_search'),
+        method: RequestType.POST);
+    if (res != null) {
+      demandList = UpdateDemandList.fromJson({"Demands": res['Demands'], "totalApplicablePenalty" : res ['totalApplicablePenalty']});
+      (res);
+    }
+    return demandList;
+  }
+
+  Future<BillList> fetchBill(Map<String, dynamic> queryparams) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);

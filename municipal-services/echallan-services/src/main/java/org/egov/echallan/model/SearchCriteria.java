@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.SafeHtml;
 
 @Data
 @Getter
@@ -21,7 +22,6 @@ import lombok.Setter;
 @Builder
 public class SearchCriteria {
 
-	@NotNull
 	@JsonProperty("tenantId")
 	private String tenantId;
 
@@ -33,6 +33,9 @@ public class SearchCriteria {
 	
 	@JsonProperty("accountId")
 	private String accountId;
+
+	@JsonProperty("referenceId")
+	private String referenceId ;
 
 	@JsonProperty("mobileNumber")
 	private String mobileNumber;

@@ -1,14 +1,18 @@
 package org.egov.waterconnection.service;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -260,6 +264,9 @@ public class PaymentUpdateService {
 	 * @return
 	 */
 	private EventRequest getEventRequest(WaterConnectionRequest request, Property property, PaymentDetail paymentDetail) {
+		Map<String, Object> additionalDetailsMap = new HashMap<String, Object>();
+		additionalDetailsMap.put("localizationCode", WCConstants.PAYMENT_NOTIFICATION_APP);
+		
 		String localizationMessage = notificationUtil
 				.getLocalizationMessages(property.getTenantId(), request.getRequestInfo());
 		String message = notificationUtil.getMessageTemplate(WCConstants.PAYMENT_NOTIFICATION_APP, localizationMessage);
@@ -281,7 +288,7 @@ public class PaymentUpdateService {
 			});
 		}
 		Map<String, String> getReplacedMessage = workflowNotificationService.getMessageForMobileNumber(mobileNumbersAndNames, request,
-				message, property);
+				message, property, additionalDetailsMap);
 		Map<String, String> mobileNumberAndMesssage = replacePaymentInfo(getReplacedMessage, paymentDetail,null, request.getWaterConnection().getConnectionType());
 		Set<String> mobileNumbers = mobileNumberAndMesssage.keySet().stream().collect(Collectors.toSet());
 		Map<String, String> mapOfPhnoAndUUIDs = workflowNotificationService.fetchUserUUIDs(mobileNumbers, request.getRequestInfo(), property.getTenantId());
@@ -301,7 +308,7 @@ public class PaymentUpdateService {
 			events.add(Event.builder().tenantId(property.getTenantId())
 					.description(mobileNumberAndMesssage.get(mobile)).eventType(WCConstants.USREVENTS_EVENT_TYPE)
 					.name(WCConstants.USREVENTS_EVENT_NAME).postedBy(WCConstants.USREVENTS_EVENT_POSTEDBY)
-					.source(Source.WEBAPP).recepient(recepient).eventDetails(null).actions(action).build());
+					.source(Source.WEBAPP).recepient(recepient).eventDetails(null).actions(action).additionalDetails(additionalDetailsMap).build());
 		}
 		if (!CollectionUtils.isEmpty(events)) {
 			return EventRequest.builder().requestInfo(request.getRequestInfo()).events(events).build();
@@ -341,7 +348,7 @@ public class PaymentUpdateService {
 			});
 		}
 		Map<String, String> getReplacedMessage = workflowNotificationService.getMessageForMobileNumber(mobileNumbersAndNames,
-				waterConnectionRequest, message, property);
+				waterConnectionRequest, message, property, new HashMap<>());
 		Map<String, String> mobileNumberAndMessage = replacePaymentInfo(getReplacedMessage, paymentDetail,paymentId, waterConnectionRequest.getWaterConnection().getConnectionType());
 
 		List<SMSRequest> smsRequest = new ArrayList<>();
@@ -361,14 +368,20 @@ public class PaymentUpdateService {
 	 */
 	private Map<String, String> replacePaymentInfo(Map<String, String> mobileAndMessage, PaymentDetail paymentDetail,String paymentId, String connectionType) {
 		Map<String, String> messageToReturn = new HashMap<>();
+		DecimalFormat df = new DecimalFormat("0.00");
+
+		List<PaymentDetail> payments = new LinkedList<>();
+		payments.add(paymentDetail);
 		for (Map.Entry<String, String> mobAndMesg : mobileAndMessage.entrySet()) {
 			String message = mobAndMesg.getValue();
 			if (message.contains("{amountpaid}")) {
-				message = message.replace("{amountpaid}", paymentDetail.getTotalAmountPaid().toString());
+				// paymentDetail.getTotalAmountPaid().toString()
+				message = message.replace("{amountpaid}", df.format(paymentDetail.getTotalAmountPaid()));
 			}
 			
 			if (message.contains("{pendingamount}")) {
-				message = message.replace("{pendingamount}", paymentDetail.getTotalDue().subtract(paymentDetail.getTotalAmountPaid()).toString());
+				// paymentDetail.getTotalDue().subtract(paymentDetail.getTotalAmountPaid()).toString()
+				message = message.replace("{pendingamount}", df.format(paymentDetail.getTotalDue().subtract(paymentDetail.getTotalAmountPaid())));
 			}
 			if (message.contains("<Billing Period>")) {
 				int fromDateLength = (int) (Math.log10(paymentDetail.getBill().getBillDetails().get(0).getFromPeriod()) + 1);
@@ -409,10 +422,15 @@ public class PaymentUpdateService {
 				link = waterServiceUtil.getShortnerURL(link);
 				message = message.replace("{RECEIPT_LINK}",link);
 			}
-			
+			RequestInfo requestInfo = new RequestInfo();
+			HashMap<String, String> gpwscMap = notificationUtil.getLocalizationMessage(requestInfo, paymentDetail.getTenantId(), paymentDetail.getTenantId());
+
 			if (message.contains("{GPWSC}")){
 				
-				message = message.replace("{GPWSC}","GPWSC");
+				message = message.replace("{GPWSC}",(gpwscMap != null
+						&& !StringUtils.isEmpty(gpwscMap.get(NotificationUtil.MSG_KEY)))
+						? gpwscMap.get(NotificationUtil.MSG_KEY)
+						: paymentDetail.getTenantId());
 			}
 			
 			if (message.contains("{SURVEY_LINK}")){

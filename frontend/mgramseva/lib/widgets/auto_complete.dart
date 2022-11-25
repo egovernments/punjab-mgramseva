@@ -88,6 +88,7 @@ class AutoCompleteView extends StatelessWidget {
 
   Widget _autoComplete(BuildContext context) {
     return TypeAheadFormField(
+      key: key,
       textFieldConfiguration: TextFieldConfiguration(
           inputFormatters: inputFormatter,
           keyboardType: textInputType ?? TextInputType.text,
@@ -96,8 +97,11 @@ class AutoCompleteView extends StatelessWidget {
           style: TextStyle(
               color: (isEnabled ?? true)
                   ? Theme.of(context).primaryColorDark : Colors.grey, fontSize: 16),
-          decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.zero))),
+          decoration: InputDecoration(
+              errorMaxLines: 2,
+              border: OutlineInputBorder(borderRadius: BorderRadius.zero))),
       hideOnEmpty: true,
+      hideSuggestionsOnKeyboardHide: true,
       suggestionsBoxController: suggestionsBoxController,
       suggestionsCallback: (pattern) async {
         return await callBack(pattern);

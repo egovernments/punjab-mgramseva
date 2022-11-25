@@ -8,25 +8,32 @@ part of 'revenue_dashboard.dart';
 
 Revenue _$RevenueFromJson(Map<String, dynamic> json) {
   return Revenue()
-    ..month = json['month'] as String?
-    ..surplus = (json['surplus'] as num?)?.toDouble()
-    ..demand = (json['demand'] as num?)?.toDouble()
-    ..arrears = (json['arrears'] as num?)?.toDouble()
-    ..pendingCollections = (json['pendingCollections'] as num?)?.toDouble()
-    ..actualCollections = (json['actualCollections'] as num?)?.toDouble()
-    ..expenditure = (json['expenditure'] as num?)?.toDouble()
-    ..pendingExpenditure = (json['pendingExpenditure'] as num?)?.toDouble()
-    ..actualPayment = (json['actualPayment'] as num?)?.toDouble();
+    ..month = json['month'] as int?
+    ..demand = json['demand'] as String?
+    ..pendingCollection = json['pendingCollection'] as String?
+    ..arrears = json['arrears'] as String?
+    ..actualCollection = json['actualCollection'] as String?;
 }
 
 Map<String, dynamic> _$RevenueToJson(Revenue instance) => <String, dynamic>{
-  'month': instance.month,
-  'surplus': instance.surplus,
-  'demand': instance.demand,
-  'arrears': instance.arrears,
-  'pendingCollections': instance.pendingCollections,
-  'actualCollections': instance.actualCollections,
-  'expenditure': instance.expenditure,
-  'pendingExpenditure': instance.pendingExpenditure,
-  'actualPayment': instance.actualPayment,
-};
+      'month': instance.month,
+      'demand': instance.demand,
+      'pendingCollection': instance.pendingCollection,
+      'arrears': instance.arrears,
+      'actualCollection': instance.actualCollection,
+    };
+
+Expense _$ExpenseFromJson(Map<String, dynamic> json) {
+  return Expense()
+    ..month = json['month'] as int?
+    ..totalExpenditure = json['totalExpenditure'] as String?
+    ..amountUnpaid = json['amountUnpaid'] as String?
+    ..amountPaid = json['amountPaid'] as String?;
+}
+
+Map<String, dynamic> _$ExpenseToJson(Expense instance) => <String, dynamic>{
+      'month': instance.month,
+      'totalExpenditure': instance.totalExpenditure,
+      'amountUnpaid': instance.amountUnpaid,
+      'amountPaid': instance.amountPaid,
+    };

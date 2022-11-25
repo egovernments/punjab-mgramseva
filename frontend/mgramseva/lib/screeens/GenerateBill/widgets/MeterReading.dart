@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class MeterReading extends StatelessWidget {
@@ -87,6 +88,7 @@ class MeterReadingDigitTextFieldBox extends StatelessWidget {
       height: 60,
       child: AspectRatio(
         aspectRatio: 0.9,
+        child: ForceFocusWatcher(
         child: TextFormField(
           controller: controller,
           autofocus: true,
@@ -119,7 +121,7 @@ class MeterReadingDigitTextFieldBox extends StatelessWidget {
             hintText: "",
             // hintStyle: MyStyles.hintTextStyle,
           ),
-        ),
+        )),
       ),
     );
   }

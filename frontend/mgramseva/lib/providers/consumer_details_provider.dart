@@ -6,9 +6,14 @@ import 'package:mgramseva/model/connection/tenant_boundary.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/model/localization/language.dart';
+import 'package:mgramseva/model/mdms/category_type.dart';
 import 'package:mgramseva/model/mdms/connection_type.dart';
+import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
+import 'package:mgramseva/model/mdms/sub_category_type.dart';
+import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
@@ -22,9 +27,14 @@ import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/widgets/SearchSelectFieldBuilder.dart';
+import 'package:mgramseva/widgets/dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:mgramseva/model/connection/water_connection.dart' as addition;
+
+import '../widgets/SelectFieldBuilder.dart';
 
 class ConsumerProvider with ChangeNotifier {
   late List<ConsumerWalkWidgets> consmerWalkthrougList;
@@ -35,13 +45,18 @@ class ConsumerProvider with ChangeNotifier {
   int activeindex = 0;
   late WaterConnection waterconnection;
   var boundaryList = <Boundary>[];
+  var categoryList = [];
   var selectedcycle;
+  TaxPeriod? billYear;
   var selectedbill;
   late Property property;
   late List dates = [];
   late bool isEdit = false;
   LanguageList? languageList;
+  PaymentType? paymentType;
   bool phoneNumberAutoValidation = false;
+  GlobalKey<SearchSelectFieldState>? searchPickerKey;
+
 
   setModel() async {
     waterconnection.BillingCycleCtrl.text = "";
@@ -61,7 +76,7 @@ class ConsumerProvider with ChangeNotifier {
       "usageCategory": "RESIDENTIAL",
       "creationReason": "CREATE",
       "noOfFloors": 1,
-      "source": "MUNICIPAL_RECORDS",
+      "source": "WS",
       "channel": "CITIZEN",
       "ownershipCategory": "INDIVIDUAL",
       "owners": [
@@ -69,6 +84,10 @@ class ConsumerProvider with ChangeNotifier {
       ],
       "address": Address().toJson()
     });
+    if (boundaryList.length == 1) {
+      property.address.localityCtrl = boundaryList.first;
+      onChangeOflocaity(property.address.localityCtrl);
+    }
     if (commonProvider.userDetails?.selectedtenant?.code != null) {
       property.address.gpNameCtrl
           .text = ApplicationLocalizations.of(navigatorKey.currentContext!)
@@ -83,12 +102,31 @@ class ConsumerProvider with ChangeNotifier {
     super.dispose();
   }
 
-  void onChangeOfCheckBox(bool? value) {
+  void onChangeOfCheckBox(bool? value, BuildContext context) {
+   if(value ?? false) showInActiveAlert(context);
     if (value == true)
-      waterconnection.status = 'Inactive';
+      waterconnection.status = Constants.CONNECTION_STATUS.first;
     else
-      waterconnection.status = 'Active';
+      waterconnection.status = Constants.CONNECTION_STATUS[1];
     notifyListeners();
+  }
+
+  showInActiveAlert(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomDialog(
+            title: i18.common.ALERT,
+              content: i18.consumer.ALL_DEMANDS_REVERSED,
+            actions: [
+              {
+                'label' : i18.common.OK,
+                'callBack' : () => Navigator.pop(context)
+              }
+            ],
+          );
+        },
+      );
   }
 
   Future<void> getWaterConnection(id) async {
@@ -114,44 +152,96 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   Future<void> setWaterConnection(data) async {
-    isEdit = true;
-    waterconnection = data;
-    waterconnection.getText();
-    selectedcycle = DateFormats.timeStampToDate(
-                waterconnection.meterInstallationDate,
-                format: 'yyyy-MM-dd')
-            .toString() +
-        " 00:00:00.000";
+    try {
+      await getConnectionTypePropertyTypeTaxPeriod();
+      await getPaymentType();
+      isEdit = true;
+      waterconnection = data;
+      waterconnection.getText();
+      selectedcycle = DateFormats.timeStampToDate(
+          waterconnection.previousReadingDate,
+          format: 'yyyy-MM-dd')
+          .toString() +
+          " 00:00:00.000";
+      if(waterconnection.previousReadingDate != null && (languageList?.mdmsRes?.billingService?.taxPeriodList?.isNotEmpty ?? false)) {
+        var date = DateTime.fromMillisecondsSinceEpoch(
+            waterconnection.previousReadingDate!);
+        DatePeriod datePeriod;
+        if(date.month > 3)
+          datePeriod = DatePeriod(DateTime(date.year, 4), DateTime(date.year+1, 3, 31, 23,59, 59, 999), DateType.YEAR);
+        else
+          datePeriod = DatePeriod(DateTime(date.year -1, 4), DateTime(date.year, 3, 31, 23,59, 59, 999), DateType.YEAR);
 
-    List<Demand>? demand = await ConsumerRepository().getDemandDetails({
-      "consumerCode": waterconnection.connectionNo,
-      "businessService": "WS",
-      "tenantId": waterconnection.tenantId,
-      "status": "ACTIVE"
-    });
-    if (waterconnection.connectionType == 'Metered' &&
-        waterconnection.additionalDetails?.meterReading.toString() != '0') {
-      var meterReading = waterconnection.additionalDetails?.meterReading
-          .toString()
-          .padLeft(5, '0');
-      waterconnection.om_1Ctrl.text =
-          meterReading.toString().characters.elementAt(0);
-      waterconnection.om_2Ctrl.text =
-          meterReading.toString().characters.elementAt(1);
-      waterconnection.om_3Ctrl.text =
-          meterReading.toString().characters.elementAt(2);
-      waterconnection.om_4Ctrl.text =
-          meterReading.toString().characters.elementAt(3);
-      waterconnection.om_5Ctrl.text =
-          meterReading.toString().characters.elementAt(4);
-    }
-    if (demand?.isEmpty == true) {
-      isfirstdemand = false;
-    } else if (demand?.length == 1 &&
-        demand?.first.consumerType == 'waterConnection-arrears') {
-      isfirstdemand = false;
-    } else {
-      isfirstdemand = true;
+        billYear = languageList?.mdmsRes?.billingService?.taxPeriodList?.firstWhere((e) {
+          var date = DateTime.fromMillisecondsSinceEpoch(e.fromDate!);
+          return date.month == datePeriod.startDate.month && date.year == datePeriod.startDate.year;
+        });
+
+      }
+      List<Demand>? demand = await ConsumerRepository().getDemandDetails({
+        "consumerCode": waterconnection.connectionNo,
+        "businessService": "WS",
+        "tenantId": waterconnection.tenantId,
+        // "status": "ACTIVE"
+      });
+
+      var paymentDetails = await BillingServiceRepository().fetchdBillPayments({
+        "tenantId": waterconnection.tenantId,
+        "consumerCodes": waterconnection.connectionNo,
+        "businessService": "WS"
+      });
+
+      if (waterconnection.connectionType == 'Metered' &&
+          waterconnection.additionalDetails?.meterReading.toString() != '0') {
+        var meterReading = waterconnection.additionalDetails?.meterReading
+            .toString()
+            .padLeft(5, '0');
+        waterconnection.om_1Ctrl.text =
+            meterReading
+                .toString()
+                .characters
+                .elementAt(0);
+        waterconnection.om_2Ctrl.text =
+            meterReading
+                .toString()
+                .characters
+                .elementAt(1);
+        waterconnection.om_3Ctrl.text =
+            meterReading
+                .toString()
+                .characters
+                .elementAt(2);
+        waterconnection.om_4Ctrl.text =
+            meterReading
+                .toString()
+                .characters
+                .elementAt(3);
+        waterconnection.om_5Ctrl.text =
+            meterReading
+                .toString()
+                .characters
+                .elementAt(4);
+      }
+
+      demand = demand?.where((element) => element.status != 'CANCELLED').toList();
+
+      if (demand?.isEmpty == true) {
+        isfirstdemand = false;
+      } else if (demand?.length == 1 &&
+          demand?.first.consumerType == 'waterConnection-arrears') {
+        isfirstdemand = false;
+      }else if(demand?.length == 1 && demand?.first.consumerType == 'waterConnection-advance' && demand?.first.demandDetails?.first.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
+        isfirstdemand = false;
+      } else {
+        isfirstdemand = true;
+      }
+
+      if(paymentDetails.payments != null && paymentDetails.payments!.isNotEmpty){
+        isfirstdemand = true;
+      }
+      notifyListeners();
+    }catch(e,s){
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
   }
 
@@ -175,7 +265,6 @@ class ConsumerProvider with ChangeNotifier {
 
       property.tenantId = commonProvider.userDetails!.selectedtenant!.code;
       property.address.city = commonProvider.userDetails!.selectedtenant!.name;
-      waterconnection.setText();
       if (waterconnection.processInstance == null) {
         var processInstance = ProcessInstance();
         processInstance.action = 'SUBMIT';
@@ -217,12 +306,21 @@ class ConsumerProvider with ChangeNotifier {
           "initialMeterReading": waterconnection.previousReading,
           "propertyType": property.propertyType,
           "meterReading": waterconnection.previousReading,
+          "category": waterconnection.categoryCtrl.text.trim().isEmpty ? null : waterconnection.additionalDetails?.category,
+          "subCategory": waterconnection.subCategoryCtrl.text.trim().isEmpty ? null : waterconnection.additionalDetails?.subCategory,
+          "aadharNumber": waterconnection.addharCtrl.text.trim().isEmpty ? null : waterconnection.addharCtrl.text.trim()
         });
       } else {
         waterconnection.additionalDetails!.locality =
             property.address.locality!.code;
         waterconnection.additionalDetails!.initialMeterReading =
             waterconnection.previousReading;
+        waterconnection.additionalDetails!.category =
+            waterconnection.categoryCtrl.text.trim().isEmpty ? null : waterconnection.additionalDetails?.category;
+        waterconnection.additionalDetails!.subCategory =
+            waterconnection.subCategoryCtrl.text.trim().isEmpty ? null :  waterconnection.additionalDetails?.subCategory;
+        waterconnection.additionalDetails!.aadharNumber =
+            waterconnection.addharCtrl.text.trim().isEmpty ? null : waterconnection.addharCtrl.text.trim();
         waterconnection.additionalDetails!.street = property.address.street;
         waterconnection.additionalDetails!.doorNo = property.address.doorNo;
         waterconnection.additionalDetails!.meterReading =
@@ -247,6 +345,8 @@ class ConsumerProvider with ChangeNotifier {
             streamController.add(property);
             Notifiers.getToastMessage(
                 context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
+            selectedcycle = '';
+            waterconnection.connectionType = '';
             Navigator.pop(context);
           }
         } else {
@@ -254,6 +354,13 @@ class ConsumerProvider with ChangeNotifier {
           property.address.geoLocation = GeoLocation();
           property.address.geoLocation?.latitude = null;
           property.address.geoLocation?.longitude = null;
+          property.source = 'WS';
+          if(waterconnection.status == 'Inactive'){
+            waterconnection.paymentType = null;
+            waterconnection.penalty = null;
+            waterconnection.arrears = null;
+            waterconnection.advance = null;
+          }
           var result1 =
               await ConsumerRepository().updateProperty(property.toJson());
           var result2 = await ConsumerRepository()
@@ -289,12 +396,28 @@ class ConsumerProvider with ChangeNotifier {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
+
+      var dateTime = DateTime.now();
+      if(dateTime.month == 4){
+        dateTime = DateTime(dateTime.year, dateTime.month -1, dateTime.day);
+      }
+
       var res = await CoreRepository().getMdms(
           getConnectionTypePropertyTypeTaxPeriodMDMS(
               commonProvider.userDetails!.userRequest!.tenantId.toString(),
               (DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(
-                  new DateTime.now().toLocal().toString())))));
+                  dateTime.toLocal().toString())))));
       languageList = res;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> getPaymentType() async {
+    try {
+      var res = await CommonProvider.getMdmsBillingService();
+      paymentType = res;
+      notifyListeners();
     } catch (e) {
       print(e);
     }
@@ -362,6 +485,18 @@ class ConsumerProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void onChangeOfCategory(val) {
+    waterconnection.additionalDetails ??= addition.AdditionalDetails();
+    waterconnection.additionalDetails?.category = val;
+    notifyListeners();
+  }
+
+  void onChangeOfSubCategory(val) {
+    waterconnection.additionalDetails ??= addition.AdditionalDetails();
+    waterconnection.additionalDetails?.subCategory = val;
+    notifyListeners();
+  }
+
   onChangeOfPropertyType(val) {
     property.propertyType = val;
     notifyListeners();
@@ -373,6 +508,33 @@ class ConsumerProvider with ChangeNotifier {
         return DropdownMenuItem(
           value: value,
           child: new Text(value.code!),
+        );
+      }).toList();
+    }
+    return <DropdownMenuItem<Object>>[];
+  }
+
+  List<DropdownMenuItem<Object>> getCategoryList() {
+    if (languageList?.mdmsRes?.category != null) {
+      return (languageList?.mdmsRes?.category?.categoryList ?? <CategoryType>[])
+          .map((value) {
+        return DropdownMenuItem(
+          value: value.code,
+          child: new Text((value.code!)),
+        );
+      }).toList();
+    }
+    return <DropdownMenuItem<Object>>[];
+  }
+
+  List<DropdownMenuItem<Object>> getSubCategoryList() {
+    if (languageList?.mdmsRes?.subCategory != null) {
+      return (languageList?.mdmsRes?.subCategory?.subcategoryList ??
+              <SubCategoryType>[])
+          .map((value) {
+        return DropdownMenuItem(
+          value: value.code,
+          child: new Text((value.code!)),
         );
       }).toList();
     }
@@ -397,6 +559,11 @@ class ConsumerProvider with ChangeNotifier {
     waterconnection.connectionType = val;
     waterconnection.meterIdCtrl.clear();
     waterconnection.previousReadingDateCtrl.clear();
+    billYear = null;
+    selectedcycle = null;
+    waterconnection.BillingCycleCtrl.clear();
+    waterconnection.meterInstallationDateCtrl.clear();
+    searchPickerKey?.currentState?.Options.clear();
 
     notifyListeners();
   }
@@ -404,8 +571,9 @@ class ConsumerProvider with ChangeNotifier {
   onChangeBillingcycle(val) {
     selectedcycle = val;
     var date = val;
-    waterconnection.BillingCycleCtrl.text = selectedcycle;
-    waterconnection.meterInstallationDateCtrl.text = selectedcycle;
+    waterconnection.previousReadingDateCtrl.clear();
+    waterconnection.BillingCycleCtrl.text = selectedcycle ?? '';
+    waterconnection.meterInstallationDateCtrl.text = selectedcycle ?? '';
     notifyListeners();
   }
 
@@ -427,24 +595,26 @@ class ConsumerProvider with ChangeNotifier {
   //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
   List<DropdownMenuItem<Object>> getBillingCycle() {
     dates = [];
-    if (languageList?.mdmsRes?.taxPeriodList!.TaxPeriodList! != null &&
-        dates.length == 0) {
-      var date2 = DateFormats.getFormattedDateToDateTime(
-          DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch));
-      var date1 = DateFormats.getFormattedDateToDateTime(
-          DateFormats.timeStampToDate(languageList!
-              .mdmsRes!.taxPeriodList!.TaxPeriodList!.first.fromDate));
-      var d = date2 as DateTime;
-      var now = date1 as DateTime;
-      var days = d.day - now.day;
-      var years = d.year - now.year;
-      var months = d.month - now.month;
-      if (months < 0 || (months == 0 && days < 0)) {
-        years--;
-        months += (days < 0 ? 11 : 12);
+    if (billYear != null) {
+      late DatePeriod ytd;
+      if(DateTime.now().month >= 4) {
+        ytd = DatePeriod(DateTime(DateTime.now().year, 4) , DateTime(DateTime.now().year + 1, 4, 0, 23,59, 59, 999), DateType.YTD);
+      }else{
+        ytd = DatePeriod(DateTime( DateTime.now().year - 1, 4), DateTime.now(), DateType.YTD);
       }
-      for (var i = 0; i < months; i++) {
-        var prevMonth = new DateTime(now.year, date1.month + i, 1);
+
+      var date1 = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(billYear?.fromDate)) as DateTime;
+      var isCurrentYtdSelected = date1.year == ytd.startDate.year;
+
+      /// Get months based on selected billing year
+      var months = CommonMethods.getPastMonthUntilFinancialYear(date1.year);
+
+      /// if its current ytd year means removing current month
+      if(isCurrentYtdSelected) months.removeAt(0);
+
+      for (var i = 0; i < months.length; i++) {
+        var prevMonth = months[i].startDate;
         var r = {"code": prevMonth, "name": prevMonth};
         dates.add(r);
       }
@@ -481,5 +651,49 @@ class ConsumerProvider with ChangeNotifier {
 
   callNotifyer() {
     notifyListeners();
+  }
+
+  void onChangeOfBillYear(val) {
+    billYear = val;
+    selectedcycle = null;
+    waterconnection.previousReadingDateCtrl.clear();
+    waterconnection.BillingCycleCtrl.clear();
+    waterconnection.meterInstallationDateCtrl.clear();
+    searchPickerKey?.currentState?.Options.clear();
+    // waterconnection.billingCycleYearCtrl.text = billYear;
+    notifyListeners();
+  }
+
+  List<DropdownMenuItem<Object>> getFinancialYearList() {
+    if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
+      CommonMethods.getFilteredFinancialYearList(languageList?.mdmsRes?.billingService?.taxPeriodList ?? <TaxPeriod>[]);
+      return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
+          <TaxPeriod>[])
+          .map((value) {
+        return DropdownMenuItem(
+          value: value,
+          child: new Text((value.financialYear!)),
+        );
+      }).toList();
+    }
+    return <DropdownMenuItem<Object>>[];
+  }
+
+  void onChangeOfAmountType(value){
+    waterconnection.paymentType = value;
+
+    if(!isEdit) {
+      waterconnection.penaltyCtrl.clear();
+      waterconnection.advanceCtrl.clear();
+      waterconnection.arrearsCtrl.clear();
+    }else{
+      
+    }
+    notifyListeners();
+  }
+
+  List<KeyValue> getPaymentTypeList() {
+    if(CommonProvider.getPenaltyOrAdvanceStatus(paymentType, true)) return Constants.CONSUMER_PAYMENT_TYPE;
+    return [Constants.CONSUMER_PAYMENT_TYPE.first];
   }
 }

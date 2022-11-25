@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -72,8 +73,9 @@ class HouseConnectionDetailCard extends StatelessWidget {
                     waterconnection!.connectionHolders!.first.name, context),
                 _getLabeltext(
                     i18.consumer.FATHER_SPOUSE_NAME,
-                    waterconnection!
-                        .connectionHolders!.first.fatherOrHusbandName,
+                    waterconnection?.connectionHolders?.first.fatherOrHusbandName != null &&
+                        waterconnection!.connectionHolders!.first.fatherOrHusbandName!.isNotEmpty ? waterconnection!
+                        .connectionHolders!.first.fatherOrHusbandName : "NA",
                     context),
                 _getLabeltext(
                     i18.searchWaterConnection.RESULTS_PHONE_NUM,
@@ -116,6 +118,49 @@ class HouseConnectionDetailCard extends StatelessWidget {
                         waterconnection!.meterId,
                         context,
                       ),
+                _getLabeltext(
+                  i18.common.STATUS,
+                  waterconnection!.status,
+                  context,
+                ),
+                Consumer<HouseHoldProvider>(
+                    builder: (_, provider, child) =>
+                        Wrap(
+                          children: [
+                            Visibility(
+                              visible: provider.isVisible,
+                              child: Wrap(
+                                children: [
+                                  _getLabeltext(
+                                      i18.consumer.CONSUMER_CATEGORY, waterconnection?.additionalDetails?.category ?? i18.common.NA,
+                                      context,
+                                      ),
+                                  _getLabeltext(
+                                      i18.consumer.CONSUMER_SUBCATEGORY,  waterconnection?.additionalDetails?.subCategory ?? i18.common.NA,
+                                      context,
+                                      )
+                                ],
+                              ),
+                            ),
+                            InkWell(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                       bottom: 10, right: 25),
+                                  child: new Row(
+                                    children: [
+                                      new Text(
+                                        '\n${ApplicationLocalizations.of(context).translate(!provider.isVisible ? i18.common.SHOW_MORE : i18.common.SHOW_LESS)}',
+                                        style: new TextStyle(
+                                            color: Colors.deepOrangeAccent),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                onTap: provider.onTapOfShow
+                            )
+                          ],
+                        )
+                )
               ],
             )));
   }

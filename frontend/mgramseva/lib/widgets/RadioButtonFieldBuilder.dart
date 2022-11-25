@@ -28,27 +28,30 @@ class RadioButtonFieldBuilder extends StatelessWidget {
         return Container(
             key: contextkey,
             child: Row(children: [
-              new Container(
-                  width: MediaQuery.of(context).size.width / 3,
-                  padding: EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
-                  child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Row(children: <Widget>[
-                        Text(
-                            ApplicationLocalizations.of(context)
-                                .translate(labelText),
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                            color: Theme.of(context).primaryColorDark)),
-                        Text(isRequired ? '*' : '',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                            color: Theme.of(context).primaryColorDark)),
-                      ]))),
+              Visibility(
+                visible: labelText.trim().isNotEmpty,
+                child: new Container(
+                    width: MediaQuery.of(context).size.width / 3,
+                    padding: EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(children: <Widget>[
+                          Text(
+                              ApplicationLocalizations.of(context)
+                                  .translate(labelText),
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                              color: Theme.of(context).primaryColorDark)),
+                          Text(isRequired ? '*' : '',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                              color: Theme.of(context).primaryColorDark)),
+                        ]))),
+              ),
               Container(
                   width: MediaQuery.of(context).size.width / 2.5,
                   padding: EdgeInsets.only(bottom: 3, top: 18),
@@ -73,25 +76,28 @@ class RadioButtonFieldBuilder extends StatelessWidget {
             const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
             key: contextkey,
             child: Column(children: [
-              new Container(
-                  padding: EdgeInsets.only(top: 18, bottom: 3),
-                  child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Row(children: <Widget>[
-                        Text(
-                        ApplicationLocalizations.of(context)
-                            .translate(labelText),
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400, fontSize: 16,
-                            color: Theme.of(context).primaryColorDark),
-                      ),
-                        Text(isRequired ? '*' : '',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                            color: Theme.of(context).primaryColorDark)),]))),
+              Visibility(
+                visible: labelText.trim().isNotEmpty,
+                child: new Container(
+                    padding: EdgeInsets.only(top: 18, bottom: 3),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(children: <Widget>[
+                          Text(
+                          ApplicationLocalizations.of(context)
+                              .translate(labelText),
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400, fontSize: 16,
+                              color: Theme.of(context).primaryColorDark),
+                        ),
+                          Text(isRequired ? '*' : '',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                              color: Theme.of(context).primaryColorDark)),]))),
+              ),
               Column(
                   children: options.map(
                 (data) {

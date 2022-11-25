@@ -18,11 +18,13 @@ import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:mgramseva/widgets/ErrorMessagePAge.dart';
@@ -126,9 +128,11 @@ class BillGenerationProvider with ChangeNotifier {
       billGenerateDetails.om_3Ctrl.text = previousMeterReading.toString()[2];
       billGenerateDetails.om_4Ctrl.text = previousMeterReading.toString()[3];
       billGenerateDetails.om_5Ctrl.text = previousMeterReading.toString()[4];
-      var readDate = DateTime.fromMillisecondsSinceEpoch(meterRes.meterReadings!.first.currentReadingDate) ;
+      var readDate = DateTime.fromMillisecondsSinceEpoch(
+          meterRes.meterReadings!.first.currentReadingDate);
       var reqDate = readDate.add(Duration(days: 1)).toLocal().toString();
-      prevReadingDate = DateFormats.dateToTimeStamp(DateFormats.getFilteredDate(reqDate, dateFormat: 'dd/MM/yyyy'));
+      prevReadingDate = DateFormats.dateToTimeStamp(
+          DateFormats.getFilteredDate(reqDate, dateFormat: 'dd/MM/yyyy'));
     } else if (waterconnection.additionalDetails!.meterReading.toString() !=
         '0') {
       readingExist = false;
@@ -215,8 +219,9 @@ class BillGenerationProvider with ChangeNotifier {
               commonProvider.userDetails!.userRequest!.tenantId.toString()));
       languageList = res;
       streamController.add(billGenerateDetails);
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
     }
   }
 
@@ -271,7 +276,7 @@ class BillGenerationProvider with ChangeNotifier {
             };
             var billResponse1 =
                 await BillGenerateRepository().calculateMeterConnection(res1);
-            var fetchResponse = await BillingServiceRepository().fetchdBill({
+            var fetchResponse = await BillingServiceRepository().fetchBill({
               "tenantId": commonProvider.userDetails!.selectedtenant!.code,
               "consumerCode": waterconnection.connectionNo.toString(),
               "businessService": "WS"
@@ -282,7 +287,7 @@ class BillGenerationProvider with ChangeNotifier {
               localizationText =
                   '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT)}';
               localizationText = localizationText.replaceFirst(
-                  '<number>', '(+91 - ${billList.bill!.first.mobileNumber})');
+                  '{number}', '(+91 - ${billList.bill!.first.mobileNumber})');
               Navigator.of(context).pushReplacement(
                   new MaterialPageRoute(builder: (BuildContext context) {
                 return CommonSuccess(
@@ -388,7 +393,7 @@ class BillGenerationProvider with ChangeNotifier {
     localizationText =
         '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT)}';
     localizationText = localizationText.replaceFirst(
-        '<billing cycle>',
+        '{billing cycle}',
         '${ApplicationLocalizations.of(context).translate(selectedBillCycle.toString())}' +
             ' ${selectedBillYear.financialYear!.toString().substring(2)}');
     return localizationText;
@@ -431,6 +436,7 @@ class BillGenerationProvider with ChangeNotifier {
 
   List<DropdownMenuItem<Object>> getFinancialYearList() {
     if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
+      CommonMethods.getFilteredFinancialYearList(languageList?.mdmsRes?.billingService?.taxPeriodList ?? <TaxPeriod>[]);
       return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
               <TaxPeriod>[])
           .map((value) {
@@ -460,21 +466,29 @@ class BillGenerationProvider with ChangeNotifier {
   List<DropdownMenuItem<Object>> getBillingCycle() {
     dates = [];
     if (billGenerateDetails.billYear != null && selectedBillYear != null) {
-      var date2 = DateFormats.getFormattedDateToDateTime(
-          DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch));
-      var date1 = DateFormats.getFormattedDateToDateTime(
-          DateFormats.timeStampToDate(selectedBillYear.fromDate));
-      var d = date2 as DateTime;
-      var now = date1 as DateTime;
-      var days = d.day - now.day;
-      var years = d.year - now.year;
-      var months = d.month - now.month;
-      if (months < 0 || (months == 0 && days < 0)) {
-        years--;
-        months += (days < 0 ? 11 : 12);
+      late DatePeriod ytd;
+      if(DateTime.now().month >= 4) {
+        ytd = DatePeriod(DateTime(DateTime.now().year, 4) , DateTime(DateTime.now().year + 1, 4, 0, 23,59, 59, 999), DateType.YTD);
+      }else{
+        ytd = DatePeriod(DateTime( DateTime.now().year - 1, 4), DateTime.now(), DateType.YTD);
       }
-      for (var i = 0; i < months; i++) {
-        var prevMonth = new DateTime(now.year, date1.month + i, 1);
+
+      var date1 = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(selectedBillYear.fromDate)) as DateTime;
+
+      var isCurrentYtdSelected = date1.year == ytd.startDate.year;
+
+      /// Get months based on selected billing year
+      var months = CommonMethods.getPastMonthUntilFinancialYear(date1.year);
+
+      /// if its current ytd year means removing current month
+      if(isCurrentYtdSelected) months.removeAt(0);
+
+      /// if selected year is future year means all the months will be removed
+      if(date1.year >= ytd.endDate.year) months.clear();
+
+      for (var i = 0; i < months.length; i++) {
+        var prevMonth = months[i].startDate;
         var r = {"code": prevMonth, "name": prevMonth};
         dates.add(r);
       }

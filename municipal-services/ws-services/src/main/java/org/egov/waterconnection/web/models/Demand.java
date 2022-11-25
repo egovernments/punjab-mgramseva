@@ -94,6 +94,9 @@ public class Demand {
 
 	@JsonProperty("billExpiryTime")
 	private Long billExpiryTime;
+	
+	@JsonProperty("isPaymentCompleted")
+	private boolean isPaymentCompleted;
 
 	@JsonProperty("additionalDetails")
 	private Object additionalDetails;

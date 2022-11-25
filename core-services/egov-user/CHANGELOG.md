@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 1.2.7 - 2022-02-02
+- Updated to log4j2 version 2.17.1
+
 ## 1.2.6 - 2021-09-23
 - Added search based on role
 - Changes in default password

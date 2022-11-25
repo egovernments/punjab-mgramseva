@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:universal_html/html.dart';
 
 const _baseUrl = "baseUrl";
@@ -25,7 +26,7 @@ dynamic get apiBaseUrl {
 }
 
 Map<String, dynamic> devConstants = {
-  _baseUrl: window.location.origin + "/",
+  _baseUrl: kIsWeb ? (window.location.origin ?? '') + "/" : const String.fromEnvironment('BASE_URL'),
 };
 
 Map<String, dynamic> stageConstants = {

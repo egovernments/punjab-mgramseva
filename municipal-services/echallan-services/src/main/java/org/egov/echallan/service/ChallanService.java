@@ -1,18 +1,19 @@
 package org.egov.echallan.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import javax.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
+import org.egov.echallan.config.ChallanConfiguration;
 import org.egov.echallan.expense.service.PaymentService;
 import org.egov.echallan.expense.validator.ExpenseValidator;
 import org.egov.echallan.model.Challan;
@@ -20,13 +21,18 @@ import org.egov.echallan.model.Challan.StatusEnum;
 import org.egov.echallan.model.ChallanRequest;
 import org.egov.echallan.model.LastMonthSummary;
 import org.egov.echallan.model.SearchCriteria;
+import org.egov.echallan.model.biiling.service.BillResponseDTO;
+import org.egov.echallan.repository.BillingServiceRepository;
 import org.egov.echallan.repository.ChallanRepository;
 import org.egov.echallan.util.CommonUtils;
 import org.egov.echallan.validator.ChallanValidator;
+import org.egov.echallan.web.models.ChallanCollectionData;
+import org.egov.echallan.web.models.ExpenseDashboard;
 import org.egov.echallan.web.models.user.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 
 @Service
@@ -34,6 +40,9 @@ public class ChallanService {
 
     @Autowired
     private EnrichmentService enrichmentService;
+
+    @Autowired
+	private BillingServiceRepository billingServiceRepository;
 
     private UserService userService;
     
@@ -48,12 +57,14 @@ public class ChallanService {
     private CommonUtils utils;
     
     private PaymentService paymentService;
+    
+    private ChallanConfiguration config;
 
     
 	@Autowired
 	public ChallanService(EnrichmentService enrichmentService, UserService userService, ChallanRepository repository,
 			CalculationService calculationService, ChallanValidator validator, CommonUtils utils,
-			ExpenseValidator expenseValidator, PaymentService paymentService) {
+			ExpenseValidator expenseValidator, PaymentService paymentService, ChallanConfiguration config) {
 		this.enrichmentService = enrichmentService;
 		this.userService = userService;
 		this.repository = repository;
@@ -62,6 +73,7 @@ public class ChallanService {
 		this.utils = utils;
 		this.expenseValidator = expenseValidator;
 		this.paymentService = paymentService;
+		this.config= config;
 	}
     
 	/**
@@ -103,7 +115,7 @@ public class ChallanService {
 	            return Collections.emptyList();
 	        }
 	        enrichmentService.enrichSearchCriteriaWithOwnerids(criteria,userDetailResponse);
-	        challans = repository.getChallans(criteria, finalData);
+	        challans = repository.getChallans(criteria, finalData, requestInfo);
 	        if(CollectionUtils.isEmpty(challans)){
 	            return Collections.emptyList();
 	        }
@@ -114,7 +126,7 @@ public class ChallanService {
 	    }
 	 
 	 public List<Challan> getChallansWithOwnerInfo(SearchCriteria criteria,RequestInfo requestInfo, Map<String, String> finalData){
-		 List<Challan> challans = repository.getChallans(criteria, finalData);
+		 List<Challan> challans = repository.getChallans(criteria, finalData, requestInfo);
 	        if(challans.isEmpty())
 	            return Collections.emptyList();
 	        challans = enrichmentService.enrichChallanSearch(challans,criteria,requestInfo);
@@ -128,9 +140,10 @@ public class ChallanService {
 
 	        criteria.setTenantId(request.getChallan().getTenantId());
 	        criteria.setIds(ids);
-	        criteria.setBusinessService(request.getChallan().getBusinessService());
+	        // When the business service it self is changed 
+//	        criteria.setBusinessService(request.getChallan().getBusinessService());
 
-	        List<Challan> challans = repository.getChallans(criteria, finalData);
+	        List<Challan> challans = repository.getChallans(criteria, finalData, request.getRequestInfo());
 	        if(challans.isEmpty())
 	            return Collections.emptyList();
 	        challans = enrichmentService.enrichChallanSearch(challans,criteria,request.getRequestInfo());
@@ -145,7 +158,7 @@ public class ChallanService {
 			validator.validateUpdateRequest(request, searchResult);
 			expenseValidator.validateUpdateRequest(request, searchResult);
 			userService.setAccountUser(request);
-			enrichmentService.enrichUpdateRequest(request);
+			enrichmentService.enrichUpdateRequest(request, searchResult.get(0));
 			calculationService.addCalculation(request);
 			if (request.getChallan().getApplicationStatus() == StatusEnum.PAID && searchResult.get(0).getApplicationStatus() == StatusEnum.ACTIVE)
 				paymentService.createPayment(request);
@@ -171,13 +184,13 @@ public class ChallanService {
 		LocalDateTime previousMonthStartDateTime = LocalDateTime.of(prviousMonthStart.getYear(),
 				prviousMonthStart.getMonth(), prviousMonthStart.getDayOfMonth(), 0, 0, 0);
 		LocalDateTime previousMonthEndDateTime = LocalDateTime.of(prviousMonthEnd.getYear(), prviousMonthEnd.getMonth(),
-				prviousMonthEnd.getDayOfMonth(), 23, 59, 59);
+				prviousMonthEnd.getDayOfMonth(), 23, 59, 59, 999000000);
 
 		// actual payments
-		Integer previousMonthExpensePayments = repository.getPreviousMonthExpensePayments(tenantId,
+		Integer previousMonthExpensePayments = repository.getLastsMonthExpensePayments(tenantId,
 				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
 				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
-		if (null != previousMonthExpensePayments)
+		if (previousMonthExpensePayments!=null)
 			lastMonthSummary.setPreviousMonthCollection(previousMonthExpensePayments.toString());
 
 		// new expenditure
@@ -188,28 +201,10 @@ public class ChallanService {
 			lastMonthSummary.setPreviousMonthNewExpense(previousMonthNewExpense.toString());
 
 		// pending expenes to be paid
-		Integer cumulativePendingExpense = repository.getCumulativePendingExpense(tenantId);
+		Integer cumulativePendingExpense = repository.getCumulativePendingExpense(tenantId,
+				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
 		if (null != cumulativePendingExpense )
 			lastMonthSummary.setCumulativePendingExpense(cumulativePendingExpense.toString());
-
-		//pending ws collectioni
-		Integer cumulativePendingCollection = repository.getTotalPendingCollection(tenantId);
-		if (null != cumulativePendingExpense )
-			lastMonthSummary.setCumulativePendingCollection(cumulativePendingCollection.toString());
-
-		// ws demands in period
-		Integer newDemand = repository.getNewDemand(tenantId,
-				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
-				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
-		if (null != newDemand )
-			lastMonthSummary.setNewDemand(newDemand.toString());
-
-		// actuall ws collection
-		Integer actualCollection = repository.getActualCollection(tenantId,
-				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
-				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
-		if (null != actualCollection )
-			lastMonthSummary.setActualCollection(actualCollection.toString());
 
 		lastMonthSummary.setPreviousMonthYear(getMonthYear());
 		
@@ -230,10 +225,143 @@ public class ChallanService {
 					+ (Integer.toString(YearMonth.now().getYear()).substring(2, monthYear.length() - 1));
 
 		}
-		localDateTime.minusMonths(1);
-		StringBuilder monthYearBuilder = new StringBuilder(localDateTime.getMonth().toString()).append(" ").append(monthYear);
+		StringBuilder monthYearBuilder = new StringBuilder(localDateTime.minusMonths(1).getMonth().toString()).append(" ").append(monthYear);
 
 		return monthYearBuilder.toString() ;
 	}
+
+	public ExpenseDashboard getExpenseDashboardData(@Valid SearchCriteria criteria, RequestInfo requestInfo) {
+		ExpenseDashboard dashboardData = new ExpenseDashboard();
+		String tenantId = criteria.getTenantId();
+		Long totalExpenses = repository.getTotalExpense(criteria);
+		if (null != totalExpenses) {
+			dashboardData.setTotalExpenditure(totalExpenses.toString());
+		}
+		Long paidAmount = repository.getPaidAmountDetails(criteria);
+		if (null != paidAmount) {
+			dashboardData.setAmountPaid(paidAmount.toString());
+		}
+		Long amountUnpaid = repository.getPendingAmount(criteria);
+		if (null != amountUnpaid) {
+			dashboardData.setAmountUnpaid(amountUnpaid.toString());
+		}
+		Long totalBills = repository.getTotalBill(criteria);
+		if (null != totalBills) {
+			dashboardData.setTotalBills(totalBills.toString());
+		}
+		Long billsPaid = repository.getBillsPaid(criteria);
+		if (null != billsPaid) {
+			dashboardData.setBillsPaid(billsPaid.toString());
+		}
+		Long pendingBills = repository.getPendingBills(criteria);
+		if (null != pendingBills) {
+			dashboardData.setPendingBills(pendingBills.toString());
+		}
+		Long electricityBill = repository.getElectricityBill(criteria);
+		if (null != electricityBill) {
+			dashboardData.setElectricityBill(electricityBill.toString());
+		}
+		Long omMisc = repository.getOmMiscBills(criteria);
+		if (null != omMisc) {
+			dashboardData.setOMMisc(omMisc.toString());
+		}
+		Long salary = repository.getSalary(criteria);
+		if (null != salary) {
+			dashboardData.setSalary(salary.toString());
+		}
+		
+		return dashboardData;
+	}
+
+	public List<ChallanCollectionData> getChallanCollectionData(@Valid SearchCriteria criteria,
+			RequestInfo requestInfo) {
+
+		long endDate = criteria.getToDate();
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+		LocalDate currentMonthDate = LocalDate.now();
+
+		Calendar currentDate = Calendar.getInstance();
+		int currentYear = currentDate.get(Calendar.YEAR);
+		int actualMonthnum = currentDate.get(Calendar.MONTH);
+
+		currentDate.setTimeInMillis(criteria.getFromDate());
+		int actualYear = currentDate.get(Calendar.YEAR);
+
+		int currentMonthNumber = currentDate.get(Calendar.MONTH);
+
+		int totalMonthsTillDate;
+		LocalDate finYearStarting;
+		if (currentYear != actualYear && actualYear < currentYear) {
+			totalMonthsTillDate = 11;
+			currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
+					currentDate.get(Calendar.DAY_OF_MONTH));
+			finYearStarting = currentMonthDate;
+		}else {
+			totalMonthsTillDate = actualMonthnum - currentMonthNumber;
+			currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
+					currentDate.get(Calendar.DAY_OF_MONTH));
+			finYearStarting = currentMonthDate;
+		}
+		ArrayList<ChallanCollectionData> data = new ArrayList<ChallanCollectionData>();
+
+		for (int i = 0; i <= totalMonthsTillDate; i++) {
+			LocalDate monthStart = currentMonthDate.minusMonths(0).with(TemporalAdjusters.firstDayOfMonth());
+			LocalDate monthEnd = currentMonthDate.minusMonths(0).with(TemporalAdjusters.lastDayOfMonth());
+
+			LocalDateTime monthStartDateTime = LocalDateTime.of(monthStart.getYear(), monthStart.getMonth(),
+					monthStart.getDayOfMonth(), 0, 0, 0);
+			LocalDateTime monthEndDateTime = LocalDateTime.of(monthEnd.getYear(), monthEnd.getMonth(),
+					monthEnd.getDayOfMonth(), 23, 59, 59, 999000000);
+			criteria.setFromDate((Long) monthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+			criteria.setToDate((Long) monthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+
+			String tenantId = criteria.getTenantId();
+			ChallanCollectionData challanData = new ChallanCollectionData();
+
+			Long totalExpenses = repository.getTotalExpense(criteria);
+			if (null != totalExpenses) {
+				challanData.setTotalExpenditure(totalExpenses.toString());
+			}
+			Long paidAmount = repository.getPaidAmountDetails(criteria);
+			if (null != paidAmount) {
+				challanData.setAmountPaid(paidAmount.toString());
+			}
+			Long amountUnpaid = repository.getPendingAmount(criteria);
+			if (null != amountUnpaid) {
+				challanData.setAmountUnpaid(amountUnpaid.toString());
+			}
+			challanData.setMonth(criteria.getFromDate());
+			data.add(i, challanData);
+			System.out.println("collectionData:: " + challanData.toString());
+
+			currentMonthDate = currentMonthDate.plusMonths(1);
+		}
+		return data;
+	}
+	
+	public List<Challan> planeSearch(SearchCriteria criteria, RequestInfo requestInfo, Map<String, String> finalData){
+        List<Challan> challans;
+        
+        List<Challan> challanList = getchallanPlainSearch(criteria, requestInfo, finalData);
+
+//        challans = getChallansWithOwnerInfoForPlaneSearch(criteria,requestInfo, finalData);
+       return challanList;
+    }
+	
+	 private List<Challan> getchallanPlainSearch(SearchCriteria criteria, RequestInfo requestInfo,  Map<String, String> finalData) {
+		 if (criteria.getLimit() != null && criteria.getLimit() > config.getMaxSearchLimit())
+				criteria.setLimit(config.getMaxSearchLimit());
+			List<Challan> listFSM = repository.getChallansForPlaneSearch(criteria, finalData);
+			return listFSM;
+	}
+
+	public List<Challan> getChallansWithOwnerInfoForPlaneSearch(SearchCriteria criteria,RequestInfo requestInfo, Map<String, String> finalData){
+		 List<Challan> challans = repository.getChallansForPlaneSearch(criteria, finalData);
+	        if(challans.isEmpty())
+	            return Collections.emptyList();
+	        challans = enrichmentService.enrichChallanSearch(challans,criteria,requestInfo);
+	        return challans;
+	    }
 	
 }
