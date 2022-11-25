@@ -283,50 +283,6 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
     );
   }
 
-
-  Widget _buildViewBasedOnTheSelection(DashBoardProvider dashBoardProvider) {
-    return dashBoardProvider.selectedMonth.dateType != DateType.MONTH ? SliverToBoxAdapter(
-        child: Column(
-            children: [
-              RevenueDashBoard(),
-              Visibility(
-                  visible:  takeScreenShot,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                        color : Color.fromRGBO(238, 238, 238, 1),
-                        width: 900,
-                        child: Screenshot(
-                            controller: screenshotController,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              child: Column(children : [
-                                CustomAppBar(),
-                                DashboardCard((){}),
-                                RevenueDashBoard(isFromScreenshot: true),
-                              ]
-                              ),
-                            ))),
-                  )),
-            ]
-        )
-    ) :
-    SliverFillRemaining(
-        hasScrollBody: true,
-        fillOverscroll: true,
-        child: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: _tabController,
-          children: [
-            SearchExpenseDashboard(
-                dashBoardType: DashBoardType.collections),
-            SearchExpenseDashboard(
-                dashBoardType: DashBoardType.Expenditure)
-          ],
-        )
-    );
-  }
-
   Widget get _buildShare => TextButton.icon(
       key: Keys.common.SHARE,
       onPressed: takeScreenShotOfDashboard,
@@ -353,7 +309,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
 
   Future<void> takeScreenShotOfDashboard() async {
     var dashBoardProvider =
-        Provider.of<DashBoardProvider>(context, listen: false);
+    Provider.of<DashBoardProvider>(context, listen: false);
 
     if (dashBoardProvider.selectedMonth.dateType == DateType.MONTH) {
       if (dashBoardProvider.selectedDashboardType ==
@@ -447,95 +403,4 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
     CustomOVerlay.removeOverLay();
     Navigator.pop(context);
   }
-
-  Future<void> takeScreenShotOfDashboard() async {
-    var dashBoardProvider =
-    Provider.of<DashBoardProvider>(context, listen: false);
-
-    if(dashBoardProvider.selectedMonth.dateType == DateType.MONTH) return;
-
-    final FlutterShareMe flutterShareMe = FlutterShareMe();
-    var fileName = 'annualdashboard';
-
-    Loaders.showLoadingDialog(context, label : '');
-    setState(() {
-      takeScreenShot = true;
-    });
-
-    await Future.delayed(Duration(milliseconds: 100));
-    screenshotController
-        .capture(
-        delay: Duration(seconds: 1))
-        .then((capturedImage) async {
-
-          if(capturedImage == null) return;
-
-          try {
-            setState(() {
-              takeScreenShot = false;
-            });
-
-            if (kIsWeb) {
-              var file = CustomFile(capturedImage, fileName, 'png');
-              var response = await CoreRepository().uploadFiles(
-                  <CustomFile>[file], APIConstants.API_MODULE_NAME);
-
-              if(response.isNotEmpty){
-               var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-               var res = await CoreRepository().fetchFiles([response.first.fileStoreId!]);
-               if(res != null && res.isNotEmpty) {
-                 var url = res.first.url ?? '';
-                 if (url.contains(',')) {
-                   url = url.split(',').first;
-                 }
-                 response.first.url = url;
-
-                 /// Message which will be share on what's app via web
-                 var localizedText = '${ApplicationLocalizations.of(context).translate(i18.dashboard.ANNUAL_SHARE_MSG_WEB)}';
-                 localizedText = localizedText.replaceFirst('{year-year}', '${DateFormats.getMonthAndYear(dashBoardProvider.selectedMonth, context)}');
-                 localizedText = localizedText.replaceFirst('{link}', '<link>');
-                 commonProvider.shareonwatsapp(
-                     response.first, null,
-                     localizedText);
-               }
-              }
-            } else {
-              final Directory? directory = await getExternalStorageDirectory();
-              final file = await File('${directory?.path}/$fileName.png')
-                  .writeAsBytes(capturedImage);
-
-              /// Message which will be share on what's app via mobile
-              var localizedText = '${ApplicationLocalizations.of(context).translate(i18.dashboard.ANNUAL_SHARE_MSG_MOBILE)}';
-              localizedText = localizedText.replaceFirst('{year-year}', '${DateFormats.getMonthAndYear(dashBoardProvider.selectedMonth, context)}');
-
-              var response = await flutterShareMe.shareToWhatsApp(
-                  imagePath: file.path,
-                  fileType: FileType.image, msg: localizedText);
-              if(response != null && response.contains('PlatformException'))
-                ErrorHandler().allExceptionsHandler(context, response );
-            }
-            Navigator.pop(context);
-          }catch(e,s){
-            Navigator.pop(context);
-            ErrorHandler().allExceptionsHandler(context, e, s);
-          }
-    }).catchError((onError,s) {
-      setState(() {
-        takeScreenShot = false;
-      });
-      ErrorHandler().allExceptionsHandler(context, onError,s);
-    });
-  }
-
 }
-
-var a = [
-  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
-  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
-  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
-  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
-  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
-  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
-  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
-  Metric(label: '700', value: 'Total Expenditure', type: 'amount'),
-];
