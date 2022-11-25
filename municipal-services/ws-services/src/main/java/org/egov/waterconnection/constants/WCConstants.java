@@ -134,6 +134,10 @@ public class WCConstants {
 	public static final String PROPERTY_OWNERTYPE = "OwnerType";
 
 	public static final String PROPERTY_MASTER_MODULE = "PropertyTax";
+	
+	public static final String COMMON_MASTER_MODULE = "common-masters";
+	
+	public static final String COMMON_MASTERS_JSONPATH_ROOT = "$.MdmsRes.common-masters";
 
 	public static final List<String> FIELDS_TO_CHECK = Collections.unmodifiableList(Arrays.asList("rainWaterHarvesting",
 			"waterSource", "meterId", "meterInstallationDate", "proposedPipeSize", "proposedTaps", "pipeSize",
