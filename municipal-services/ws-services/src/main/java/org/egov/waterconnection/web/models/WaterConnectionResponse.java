@@ -48,6 +48,10 @@ public class WaterConnectionResponse {
 	@Valid
 	private List<WaterConnection> waterConnection = null;
 
+	@JsonProperty("waterConnectionData")
+	@Valid
+	private List<Map<String, Object>> waterConnectionData = null;
+	
 	public WaterConnectionResponse responseInfo(ResponseInfo responseInfo) {
 		this.responseInfo = responseInfo;
 		return this;

@@ -23,9 +23,9 @@ MeterReadings _$MeterReadingsFromJson(Map<String, dynamic> json) {
     ..id = json['id'] as String?
     ..billingPeriod = json['billingPeriod'] as String?
     ..meterStatus = json['meterStatus'] as String?
-    ..lastReading = (json['lastReading'] as num?)?.toDouble()
+    ..lastReading = (json['lastReading'] as num?)?.toInt()
     ..lastReadingDate = json['lastReadingDate'] as int?
-    ..currentReading = (json['currentReading'] as num?)?.toDouble()
+    ..currentReading = (json['currentReading'] as num?)?.toInt()
     ..currentReadingDate = json['currentReadingDate'] as int?
     ..connectionNo = json['connectionNo'] as String?
     ..consumption = json['consumption'] as String?

@@ -73,6 +73,9 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 				currentWaterConnection.setRoadType(rs.getString("roadtype"));
                 currentWaterConnection.setPreviousReadingDate(rs.getLong("previousreadingdate"));
                 currentWaterConnection.setArrears(rs.getBigDecimal("arrears"));
+                currentWaterConnection.setPaymentType(rs.getString("paymentType"));
+                currentWaterConnection.setPenalty(rs.getBigDecimal("penalty"));
+                currentWaterConnection.setAdvance(rs.getBigDecimal("advance"));
 				PGobject pgObj = (PGobject) rs.getObject("additionaldetails");
 				this.setFull_count(rs.getInt("full_count"));
 				ObjectNode additionalDetails = null;

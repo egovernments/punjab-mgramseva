@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 
 import 'package:mgramseva/model/userProfile/user_profile.dart';
 import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
@@ -31,7 +33,7 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
 
@@ -45,7 +47,6 @@ class _EditProfileState extends State<EditProfile> {
 
   saveInputandedit(context, profileDetails, User profile) async {
     var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
-
     if (userProvider.formKey.currentState!.validate()) {
       var editProfileProvider =
           Provider.of<UserEditProfileProvider>(context, listen: false);
@@ -78,6 +79,7 @@ class _EditProfileState extends State<EditProfile> {
                     inputFormatter: [
                       FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]"))
                     ],
+                    key: Keys.editProfile.EDIT_PROFILE_NAME_KEY,
                   ),
                   BuildTextField(
                     i18.common.PHONE_NUMBER,
@@ -115,11 +117,7 @@ class _EditProfileState extends State<EditProfile> {
                         .translate(i18.profileEdit.INVALID_EMAIL_FORMAT),
                     pattern:
                         r'^$|^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
-                  ),
-                  BottomButtonBar(
-                    i18.common.SAVE,
-                    () => saveInputandedit(
-                        context, profileDetails.getText(), profileDetails),
+                    key: Keys.editProfile.EDIT_PROFILE_E_MAIL_KEY,
                   ),
                   SizedBox(
                     height: 20,
@@ -137,7 +135,7 @@ class _EditProfileState extends State<EditProfile> {
   Widget build(BuildContext context) {
     var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
 
-    return Scaffold(
+    return FocusWatcher(child: Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: BaseAppBar(
         Text(i18.common.MGRAM_SEVA),
@@ -175,7 +173,13 @@ class _EditProfileState extends State<EditProfile> {
               Footer()
             ])),
       ),
-    );
+      bottomNavigationBar: BottomButtonBar(
+        i18.common.SAVE,
+            () => saveInputandedit(
+            context, userProvider.profileDetails.getText(), userProvider.profileDetails),
+        key: Keys.editProfile.EDIT_PROFILE_SAVE_BTN_KEY,
+      ),
+    ));
   }
 
   Map get query {

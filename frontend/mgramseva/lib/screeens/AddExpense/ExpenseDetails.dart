@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mgramseva/widgets/focus_watcher.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/AddExpense/AddExpenseWalkThrough/expenseWalkThrough.dart';
+import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/widgets/customAppbar.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
@@ -50,7 +53,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     _numberFocus.addListener(_onFocusChange);
     super.initState();
   }
@@ -58,13 +61,14 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   afterViewBuild() {
     Provider.of<ExpensesDetailsProvider>(context, listen: false)
       ..phoneNumberAutoValidation = false
+      ..dateAutoValidation = false
       ..formKey = GlobalKey<FormState>()
+      ..filePickerKey = GlobalKey<FilePickerDemoState>()
       ..suggestionsBoxController = SuggestionsBoxController()
       ..expenditureDetails = ExpensesDetailsModel()
       ..autoValidation = false
       ..getExpensesDetails(context, widget.expensesDetails, widget.id)
       ..getExpenses()
-      ..fetchVendors()
       ..setwalkthrough(ExpenseWalkThrough().expenseWalkThrough.map((e) {
         e.key = GlobalKey();
         return e;
@@ -88,9 +92,10 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   Widget build(BuildContext context) {
     var expensesDetailsProvider =
         Provider.of<ExpensesDetailsProvider>(context, listen: false);
-    return Scaffold(
-        appBar: CustomAppBar(),
-        drawer: DrawerWrapper(
+    return KeyboardFocusWatcher(
+        child: Scaffold(
+         appBar: CustomAppBar(),
+         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),
         body: SingleChildScrollView(
@@ -139,8 +144,10 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                           !isUpdate)
                   ? () => expensesDetailsProvider.validateExpensesDetails(
                       context, isUpdate)
-                  : null),
-        ));
+                  : null,
+          key: Keys.expense.EXPENSE_SUBMIT,
+          ),
+        )));
   }
 
   saveInput(context) async {
@@ -215,6 +222,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[0].key,
                               controller: expenseDetails.expenseTypeController,
+                              key: Keys.expense.EXPENSE_TYPE,
                             ),
                             AutoCompleteView(
                               labelText: i18.expense.VENDOR_NAME,
@@ -236,8 +244,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               ],
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[1].key,
+                              key: Keys.expense.VENDOR_NAME,
                             ),
-                            if (expensesDetailsProvider.isNewVendor())
+                            if (expenseDetails.vendorNameCtrl.text.trim().isNotEmpty)
                               BuildTextField(
                                 '${i18.common.MOBILE_NUMBER}',
                                 expenseDetails.mobileNumberController,
@@ -250,11 +259,13 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                     ? AutovalidateMode.always
                                     : AutovalidateMode.disabled,
                                 maxLength: 10,
+                                isDisabled: !expensesDetailsProvider.isNewVendor(),
                                 inputFormatter: [
                                   FilteringTextInputFormatter.allow(
                                       RegExp("[0-9]"))
                                 ],
                                 onChange: expensesDetailsProvider.onChangeOfMobileNumber,
+                                key: Keys.expense.VENDOR_MOBILE_NUMBER,
                               ),
                             BuildTextField(
                               '${i18.expense.AMOUNT}',
@@ -274,31 +285,87 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               validator: Validators.amountValidator,
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[2].key,
+                              key: Keys.expense.EXPENSE_AMOUNT,
                             ),
-                            BasicDateField(
-                              i18.expense.BILL_DATE,
-                              true,
-                              expenseDetails.billDateCtrl,
-                              firstDate: expenseDetails.billIssuedDateCtrl.text
-                                      .trim()
-                                      .isEmpty
-                                  ? null
-                                  : DateFormats.getFormattedDateToDateTime(
-                                      expenseDetails.billIssuedDateCtrl.text
-                                          .trim(),
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                               var margin = constraints.maxWidth > 760 ? EdgeInsets.only(
+                                    top: 20.0, bottom: 5, right: 10, left: 10) : null;
+                                return Container(
+                                padding: constraints.maxWidth > 760 ? EdgeInsets.only(bottom: 12) : EdgeInsets.all(8),
+                                margin:  EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Color.fromRGBO(238, 238, 238, 0.4),
+                                  border: Border.all(color: Colors.grey, width: 0.6),
+                                  borderRadius: BorderRadius.all(Radius.circular(10),
+                                  )
+                                ),
+                                child: Wrap(
+                                  children: [
+                                    BasicDateField(
+                                      i18.expense.BILL_DATE,
+                                      true,
+                                      expenseDetails.billDateCtrl,
+                                      firstDate: expenseDetails.billIssuedDateCtrl.text
+                                          .trim()
+                                          .isEmpty
+                                          ? null
+                                          : DateFormats.getFormattedDateToDateTime(
+                                        expenseDetails.billIssuedDateCtrl.text
+                                            .trim(),
+                                      ),
+                                      initialDate:
+                                      DateFormats.getFormattedDateToDateTime(
+                                        expenseDetails.billDateCtrl.text.trim(),
+                                      ),
+                                      lastDate: DateTime.now(),
+                                      onChangeOfDate:
+                                      expensesDetailsProvider.onChangeOfBillDate,
+                                      isEnabled: expenseDetails.allowEdit,
+                                      requiredMessage:
+                                      i18.expense.DATE_BILL_ENTERED_IN_RECORDS,
+                                      contextkey:
+                                      expenseProvider.expenseWalkthrougList[3].key,
+                                      key: Keys.expense.EXPENSE_BILL_DATE,
+                                      margin: margin,
                                     ),
-                              initialDate:
-                                  DateFormats.getFormattedDateToDateTime(
-                                expenseDetails.billDateCtrl.text.trim(),
-                              ),
-                              lastDate: DateTime.now(),
-                              onChangeOfDate:
-                                  expensesDetailsProvider.onChangeOfDate,
-                              isEnabled: expenseDetails.allowEdit,
-                              requiredMessage:
-                                  i18.expense.DATE_BILL_ENTERED_IN_RECORDS,
-                              contextkey:
-                                  expenseProvider.expenseWalkthrougList[3].key,
+                                    BasicDateField(
+                                      i18.expense.EXPENSE_START_DATE,
+                                      true,
+                                      expenseDetails.fromDateCtrl,
+                                      onChangeOfDate:
+                                      expensesDetailsProvider.onChangeOfStartEndDate,
+                                      lastDate: DateFormats.getFormattedDateToDateTime(
+                                        expenseDetails.billDateCtrl.text.trim(),
+                                      ) ?? DateTime.now(),
+                                      isEnabled: expenseDetails.allowEdit,
+                                      validator: (val) => expensesDetailsProvider.fromToDateValidator(val, true),
+                                      autoValidation: expenseProvider.dateAutoValidation ? AutovalidateMode.always
+                                          : AutovalidateMode.disabled,
+                                      margin: margin,
+                                    ),
+                                    BasicDateField(
+                                      i18.expense.EXPENSE_END_DATE,
+                                      true,
+                                      expenseDetails.toDateCtrl,
+                                      initialDate: DateFormats.getFormattedDateToDateTime(
+                                        expenseDetails.billDateCtrl.text.trim(),
+                                      ),
+                                      lastDate: DateFormats.getFormattedDateToDateTime(
+                                        expenseDetails.billDateCtrl.text.trim(),
+                                      ) ?? DateTime.now(),
+                                      onChangeOfDate:
+                                      expensesDetailsProvider.onChangeOfStartEndDate,
+                                      isEnabled: expenseDetails.allowEdit,
+                                      validator: expensesDetailsProvider.fromToDateValidator,
+                                      autoValidation: expenseProvider.dateAutoValidation ? AutovalidateMode.always
+                                          : AutovalidateMode.disabled,
+                                      margin: margin,
+                                    )
+                                  ],
+                                ),
+                              );
+                              }
                             ),
                             BasicDateField(
                               i18.expense.PARTY_BILL_DATE,
@@ -319,6 +386,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               isEnabled: expenseDetails.allowEdit,
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[4].key,
+                              key: Keys.expense.EXPENSE_PARTY_DATE,
                             ),
                             RadioButtonFieldBuilder(
                                 context,
@@ -395,6 +463,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               ),
                             if (expenseDetails.allowEdit ?? true)
                               FilePickerDemo(
+                                key: expensesDetailsProvider.filePickerKey,
                                 callBack:
                                     expensesDetailsProvider.fileStoreIdCallBack,
                                 extensions: ['jpg', 'pdf', 'png'],
@@ -441,9 +510,20 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                 ])));
   }
 
-  Widget buildTile(context, vendor) => Container(
+  Widget buildTile(context, vendor) {
+    var style = TextStyle(fontSize: 18);
+    return Container(
       padding: EdgeInsets.symmetric(vertical: 6, horizontal: 5),
-      child: Text('${vendor?.name}', style: TextStyle(fontSize: 18)));
+      child:
+      Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('${vendor?.name}', style: style),
+          Text('${vendor.owner.mobileNumber}', style : style.apply(fontSizeDelta: -2))
+        ],
+      ));
+  }
 
   bool get isUpdate => widget.id != null || widget.expensesDetails != null;
 }

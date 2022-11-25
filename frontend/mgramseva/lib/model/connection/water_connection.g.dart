@@ -39,7 +39,10 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) {
     ..processInstance = json['processInstance'] == null
         ? null
         : ProcessInstance.fromJson(
-            json['processInstance'] as Map<String, dynamic>);
+            json['processInstance'] as Map<String, dynamic>)
+    ..paymentType = json['paymentType'] as String?
+    ..penalty = (json['penalty'] as num?)?.toDouble()
+    ..advance = (json['advance'] as num?)?.toDouble();
 }
 
 Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
@@ -66,6 +69,9 @@ Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
       'connectionHolders': instance.connectionHolders,
       'additionalDetails': instance.additionalDetails,
       'processInstance': instance.processInstance,
+      'paymentType': instance.paymentType,
+      'penalty': instance.penalty,
+      'advance': instance.advance,
     };
 
 ProcessInstance _$ProcessInstanceFromJson(Map<String, dynamic> json) {
@@ -82,6 +88,9 @@ AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) {
     ..initialMeterReading = json['initialMeterReading'] is double ? json['initialMeterReading'].toInt()  : json['initialMeterReading'] as int?
     ..meterReading = json['meterReading'] as int?
     ..locality = json['locality'] as String?
+    ..category = json['category'] as String?
+    ..subCategory = json['subCategory'] as String?
+    ..aadharNumber = json['aadharNumber'] as String?
     ..propertyType = json['propertyType'] as String?
     ..street = json['street'] as String?
     ..doorNo = json['doorNo'] as String?
@@ -95,6 +104,9 @@ Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
       'initialMeterReading': instance.initialMeterReading,
       'meterReading': instance.meterReading,
       'locality': instance.locality,
+      'category': instance.category,
+      'subCategory': instance.subCategory,
+      'aadharNumber': instance.aadharNumber,
       'propertyType': instance.propertyType,
       'street': instance.street,
       'doorNo': instance.doorNo,

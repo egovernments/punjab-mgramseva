@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/index.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/forgot_password_repo.dart';
 import 'package:mgramseva/repository/reset_password_repo.dart';
@@ -73,7 +74,8 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return FocusWatcher(
+        child: Scaffold(
         body: BackgroundContainer(new Container(
             width: MediaQuery.of(context).size.width,
             padding: const EdgeInsets.all(8.0),
@@ -191,7 +193,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                   FooterBanner()
                 ]),
               ),
-            ))));
+            )))));
   }
 
   Widget _buildOtpView() {

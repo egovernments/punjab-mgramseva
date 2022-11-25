@@ -2,12 +2,17 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import 'models.dart';
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
 
 class CommonMethods {
 
@@ -19,7 +24,48 @@ class CommonMethods {
     return url.substring(0, url.indexOf('?')).split('/').last;
   }
 
-  static List<DatePeriod> getPastMonthUntilFinancialYear(){
+  static List<DatePeriod> getPastMonthUntilFinancialYear(int year, {DateType? dateType}){
+    var monthList = <DateTime>[];
+    if(DateTime.now().year == year && DateTime.now().month >= 4){
+      for(int i = 4; i <= DateTime.now().month; i++){
+        monthList.add(DateTime(DateTime.now().year, i));
+      }
+    }else {
+      var yearDetails = DateTime(year);
+      for(int i = 4; i <= 12; i++){
+        monthList.add(DateTime(yearDetails.year, i));
+      }
+      for(int i = 1; i <= (dateType == DateType.YTD ? DateTime.now().month : 3); i++){
+        monthList.add(DateTime(yearDetails.year + 1, i));
+      }
+    }
+    return monthList.map((e) => DatePeriod(DateTime(e.year, e.month, 1), DateTime(e.year, e.month + 1, 0, 23,59, 59, 999), DateType.MONTH)).toList().reversed.toList();
+  }
+
+  static List<YearWithMonths> getFinancialYearList([int count = 5]){
+    var yearWithMonths = <YearWithMonths>[];
+
+    if(DateTime.now().month >= 4) {
+      var year = DatePeriod(DateTime(DateTime.now().year, 4) , DateTime(DateTime.now().year + 1, 4, 0, 23,59, 59, 999), DateType.YTD);
+      var monthList = getPastMonthUntilFinancialYear(DateTime.now().year);
+      yearWithMonths.add(YearWithMonths(monthList, year));
+    }else{
+      var year = DatePeriod(DateTime( DateTime.now().year - 1, 4), DateTime.now(), DateType.YTD);
+      var monthList = getPastMonthUntilFinancialYear(year.startDate.year, dateType : DateType.YTD);
+      yearWithMonths.add(YearWithMonths(monthList, year));
+    }
+
+    for(int i =0; i < count-1; i++){
+      var currentDate = DateTime.now();
+      dynamic year = currentDate.month < 4 ? DateTime(currentDate.year - (i+1)) : DateTime(currentDate.year - i);
+      year = DatePeriod(DateTime(year.year - 1, 4), DateTime(year.year, 4, 0, 23,59, 59, 999), DateType.YEAR);
+      var monthList = getPastMonthUntilFinancialYear(year.startDate.year);
+      yearWithMonths.add(YearWithMonths(monthList, year));
+    }
+    return yearWithMonths;
+  }
+
+  static List<DatePeriod> getMonthsOfFinancialYear(){
     var monthList = <DateTime>[];
     if(DateTime.now().month >= 4){
       for(int i = 4; i <= DateTime.now().month; i++){
@@ -33,23 +79,7 @@ class CommonMethods {
         monthList.add(DateTime(DateTime.now().year, i));
       }
     }
-    return monthList.map((e) => DatePeriod(DateTime(e.year, e.month, 1), DateTime(e.year, e.month + 1, 0), DateType.MONTH)).toList().reversed.toList();
-  }
-
-  static List<DatePeriod> getFinancialYearList([int count = 5]){
-    var monthList = <DatePeriod>[];
-
-    if(DateTime.now().month >= 4) {
-      monthList.add(DatePeriod(DateTime(DateTime.now().year, 4) , DateTime(DateTime.now().year + 1), DateType.YTD));
-    }else{
-      monthList.add(DatePeriod(DateTime( DateTime.now().year - 1, 1), DateTime.now(), DateType.YTD));
-    }
-
-    for(int i =0; i < count-1; i++){
-      var year = DateTime(DateTime.now().year - i);
-      monthList.add(DatePeriod(DateTime(year.year - 1, 4), DateTime(year.year, 3), DateType.YEAR));
-    }
-    return monthList;
+    return monthList.map((e) => DatePeriod(DateTime(e.year, e.month, 1), DateTime(e.year, e.month + 1, 0, 23,59, 59, 999), DateType.MONTH)).toList().reversed.toList();
   }
 
   String truncateWithEllipsis(int cutoff, String myString) {
@@ -71,5 +101,33 @@ class CommonMethods {
     var commonProvider = Provider.of<CommonProvider>(navigatorKey.currentContext!, listen: false);
 
     return '${commonProvider.userDetails?.userRequest?.id}${Random().nextInt(3)}';
+  }
+
+  MediaType getMediaType(String? path) {
+    if(path == null) return MediaType('', '');
+    String? mimeStr = lookupMimeType(path);
+    var fileType = mimeStr?.split('/');
+    if(fileType != null && fileType.length > 0) {
+      return MediaType(fileType.first, fileType.last);
+    }else{
+      return MediaType('', '');
+    }
+  }
+
+  static Future<void> fetchPackageInfo() async {
+    try{
+      packageInfo = await PackageInfo.fromPlatform();
+    }catch(e,s){
+      ErrorHandler.logError(e.toString(), s);
+    }
+  }
+
+  /// Remove invalid financial years
+  static Future<void> getFilteredFinancialYearList(List<TaxPeriod> taxPeriodList) async {
+    taxPeriodList.removeWhere((e) {
+      var fromDate = DateTime.fromMillisecondsSinceEpoch(e.fromDate!);
+      var toDate = DateTime.fromMillisecondsSinceEpoch(e.toDate!);
+      return (fromDate.year + 1) != toDate.year;
+    });
   }
 }

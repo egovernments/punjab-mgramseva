@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
+import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
-import 'package:universal_html/html.dart';
 
 class BillPayemntsProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -48,8 +48,9 @@ class BillPayemntsProvider with ChangeNotifier {
           // window.location.href = "https://www.google.com/";
         });
       });
-    } catch (e) {
-      // window.location.href = "https://www.google.com/";
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
     }
   }
 

@@ -1,7 +1,9 @@
 import 'package:mgramseva/model/mdms/business_service.dart';
+import 'package:mgramseva/model/mdms/category_type.dart';
 import 'package:mgramseva/model/mdms/connection_type.dart';
 import 'package:mgramseva/model/mdms/expense_type.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
+import 'package:mgramseva/model/mdms/sub_category_type.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 
 class LanguageList {
@@ -32,6 +34,8 @@ class MdmsRes {
   Expense? expense;
   PropertyTax? propertyTax;
   Connection? connection;
+  Category? category;
+  SubCategory? subCategory;
   TaxPeriodListModel? taxPeriodList;
 
   MdmsRes({this.commonMasters});
@@ -50,6 +54,13 @@ class MdmsRes {
         : null;
     connection = json['ws-services-masters'] != null
         ? new Connection.fromJson(json['ws-services-masters'])
+        : null;
+    category = json['ws-services-masters'] != null
+        ? new Category.fromJson(json['ws-services-masters'])
+        : null;
+
+    subCategory = json['ws-services-masters'] != null
+        ? new SubCategory.fromJson(json['ws-services-masters'])
         : null;
     taxPeriodList = json['BillingService'] != null
         ? new TaxPeriodListModel.fromJson(json['BillingService'])
@@ -98,6 +109,7 @@ class StateInfo {
   bool? hasLocalisation;
   bool? enableWhatsApp;
   String? selectedCode;
+  String? stateLogoURL;
   DefaultUrl? defaultUrl;
   List<Languages>? languages;
   // List<LocalizationModules>? localizationModules;
@@ -109,6 +121,7 @@ class StateInfo {
     this.bannerUrl,
     this.logoUrl,
     this.selectedCode,
+    this.stateLogoURL,
     this.logoUrlWhite,
     this.hasLocalisation,
     this.enableWhatsApp,
@@ -122,6 +135,7 @@ class StateInfo {
     code = json['code'];
     qrCodeURL = json['qrCodeURL'];
     bannerUrl = json['bannerUrl'];
+    stateLogoURL = json['stateLogoURL'];
     logoUrl = json['logoUrl'];
     selectedCode = json['selectedCode'];
     logoUrlWhite = json['logoUrlWhite'];
@@ -151,6 +165,7 @@ class StateInfo {
     data['qrCodeURL'] = this.qrCodeURL;
     data['bannerUrl'] = this.bannerUrl;
     data['logoUrl'] = this.logoUrl;
+    data['stateLogoURL'] = this.stateLogoURL;
     data['selectedCode'] = this.selectedCode;
     data['logoUrlWhite'] = this.logoUrlWhite;
     data['hasLocalisation'] = this.hasLocalisation;

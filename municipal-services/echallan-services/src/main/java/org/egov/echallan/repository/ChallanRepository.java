@@ -1,12 +1,16 @@
 package org.egov.echallan.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ObjectInputStream.GetField;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
@@ -14,18 +18,27 @@ import org.egov.echallan.model.Challan;
 import org.egov.echallan.model.ChallanRequest;
 import org.egov.echallan.model.ChallanResponse;
 import org.egov.echallan.model.SearchCriteria;
+import org.egov.echallan.model.biiling.service.BillDTO;
+import org.egov.echallan.model.biiling.service.BillDetailDTO;
+import org.egov.echallan.model.biiling.service.BillResponseDTO;
 import org.egov.echallan.producer.Producer;
 import org.egov.echallan.repository.builder.ChallanQueryBuilder;
 import org.egov.echallan.repository.rowmapper.ChallanRowMapper;
 import org.egov.echallan.service.ChallanService;
+import org.egov.echallan.util.CommonUtils;
 import org.egov.echallan.web.models.collection.Bill;
 import org.egov.echallan.web.models.collection.PaymentDetail;
 import org.egov.echallan.web.models.collection.PaymentRequest;
+import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +51,9 @@ import static org.egov.echallan.repository.builder.ChallanQueryBuilder.*;
 @Repository
 public class ChallanRepository {
 
+	@Autowired
+	private BillingServiceRepository billingServiceRepository;
+
     private Producer producer;
     
     private ChallanConfiguration config;
@@ -49,6 +65,9 @@ public class ChallanRepository {
     private ChallanRowMapper rowMapper;
     
     private RestTemplate restTemplate;
+
+    @Autowired
+    private CommonUtils util;
 
     @Value("${egov.filestore.host}")
     private String fileStoreHost;
@@ -92,11 +111,18 @@ public class ChallanRepository {
     }
     
     
-    public List<Challan> getChallans(SearchCriteria criteria, Map<String, String> finalData) {
+    public List<Challan> getChallans(SearchCriteria criteria, Map<String, String> finalData, RequestInfo requestInfo) {
         List<Object> preparedStmtList = new ArrayList<>();
         String query = queryBuilder.getChallanSearchQuery(criteria, preparedStmtList);
-        List<Challan> challans =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper); 
-        
+        List<Challan> challans =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper);
+
+		try {
+			setChallanAmount(criteria, challans, requestInfo);
+		} catch (JsonProcessingException e) {
+			log.error("Error while setting amount (billing service) to challan", e);
+			e.printStackTrace();
+		}
+
 		if (criteria.getIsBillCount()) {
 			List<Object> preparedStmnt = new ArrayList<>();
 			StringBuilder paidQuery = new StringBuilder(queryBuilder.bill_count);
@@ -120,6 +146,105 @@ public class ChallanRepository {
         return challans;
     }
 
+
+	/**
+	 * @param searchCriteria
+	 * @param challans
+	 * @param requestInfo
+	 * @throws JsonProcessingException
+	 */
+	private void setChallanAmount(@NonNull SearchCriteria searchCriteria, @NonNull List<Challan> challans,
+								  RequestInfo requestInfo) throws JsonProcessingException {
+
+		for (Challan challan : challans) {
+			if (StringUtils.isEmpty(challan.getReferenceId())) {
+				log.error("Reference Id is not updated for challan: " + challan.getId());
+				throw new CustomException("CHALLAN_REFERENCE_ID", "Reference Id is not updated for challan");
+			} else {
+				BigDecimal amount = null;
+				Optional<BillResponseDTO> billResponseOptional = billingServiceRepository
+						.searchBill(challan.getTenantId(), challan.getReferenceId(), challan.getBusinessService(),
+								requestInfo);
+
+				if (billResponseOptional.isPresent()) {
+					BillResponseDTO billResponse = billResponseOptional.get();
+
+					if (!CollectionUtils.isEmpty(billResponse.getBill())) {
+						List<BillDTO> bills = getActiveOrPaidBill(billResponse.getBill());
+
+						if (!challan.getReferenceId().equalsIgnoreCase(challan.getChallanNo())) {
+
+							amount = getAmountByAdditionalDetail(bills, challan);
+						}else {
+							Optional<BillDTO> billOptional = bills.stream()
+									.filter(billDTO -> challan.getChallanNo().equalsIgnoreCase(billDTO.getConsumerCode()))
+									.findFirst();
+
+							if (billOptional.isPresent()) {
+								Optional<BillDetailDTO> billDetailOptional = bills.stream()
+										.flatMap(billDTO -> billDTO.getBillDetails().stream())
+										.findFirst();
+
+								if (billOptional.isPresent()) {
+									amount = billDetailOptional.get().getAmount();
+								}
+							}
+						}
+					}
+				} else {
+					log.error("Unable to get bill detail for challan id: " + challan.getId());
+					throw new CustomException("CHALLAN_BILL_AMOUNT", "Unable to get bill detail for challan");
+				}
+
+				if (amount == null) {
+					log.error("CHALLAN_BILL_AMOUNT", "Unable to get amount from billing details");
+				}
+
+				challan.setTotalAmount(amount);
+			}
+		}
+	}
+
+	/**
+	 * @param bills
+	 * @param challan
+	 * @return
+	 */
+	private BigDecimal getAmountByAdditionalDetail(@NonNull List<BillDTO> bills, @NonNull Challan challan)  {
+    	BigDecimal amount = null;
+		try {
+			for (BillDTO billDTO : bills) {
+				List<BillDetailDTO> billDetailList = billDTO.getBillDetails();
+
+				for (BillDetailDTO billDetailDTO : billDetailList) {
+					JsonNode additionalDetails = new ObjectMapper()
+							.readTree(new Gson().toJson(billDetailDTO.getAdditionalDetails()));
+
+					if (additionalDetails.get("challanNo") != null &&
+							challan.getChallanNo().equalsIgnoreCase(additionalDetails.get("challanNo").asText())) {
+						return billDetailDTO.getAmount();
+					}
+				}
+			}
+		} catch (JsonProcessingException jpe) {
+			log.error("Exception occur while parsing additionalDetail json data", jpe);
+		} catch (Exception e) {
+			log.error("Exception occur while processing additionalDetail amount", e);
+		}
+
+		return amount;
+	}
+
+	/**
+	 * @param bills
+	 * @return
+	 */
+	private List<BillDTO> getActiveOrPaidBill(@NonNull List<BillDTO> bills) {
+    	return bills.stream()
+				.filter(billDTO -> (BillDTO.BillStatus.ACTIVE.equals(billDTO.getStatus())
+						|| BillDTO.BillStatus.PAID.equals(billDTO.getStatus())))
+				.collect(Collectors.toList());
+	}
 
 
 	public void updateFileStoreId(List<Challan> challans) {
@@ -180,16 +305,18 @@ public class ChallanRepository {
 		return jdbcTemplate.queryForList(query.toString(), String.class);
 	}
 
-
-
-	public Integer getPreviousMonthExpensePayments(String tenantId, Long startDate, Long endDate) {
+	public List<String>  getPreviousMonthExpensePayments(String tenantId, Long startDate, Long endDate) {
 		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHEXPPAYMENT);
-		
-		//previous month start date startDate
-		// previous month end date endDate
-		
+		query.append( " and PAYMTDTL.receiptdate  >= ").append( startDate)
+		.append(" and  PAYMTDTL.receiptdate <= " ).append(endDate).append(" and PAYMTDTL.tenantid = '").append(tenantId).append("'");
+		log.info("Previous month expense paid query : " + query);
+		return jdbcTemplate.queryForList(query.toString(), String.class);
+	}
+
+	public Integer getLastsMonthExpensePayments(String tenantId, Long startDate, Long endDate) {
+		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHEXPPAYMENT);
 		query.append( " and PAYMTDTL.receiptdate  >= ").append( startDate)  
-		.append(" and  PAYMTDTL.receiptdate <= " ).append(endDate); 
+		.append(" and  PAYMTDTL.receiptdate <= " ).append(endDate).append(" and PAYMTDTL.tenantid = '").append(tenantId).append("'");
 		log.info("Previous month expense paid query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 	}
@@ -199,24 +326,10 @@ public class ChallanRepository {
 		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHEXPENSE);
 
 		query.append(" and challan.paiddate  >= ").append(startDate).append(" and  challan.paiddate <= ")
-				.append(endDate);
+				.append(endDate).append(" and challan.tenantid = '").append(tenantId).append("'");
 		log.info("Previous month expense query : " + query);
 		return jdbcTemplate.queryForList(query.toString(), String.class);
 	}
-
-
-
-	public List<String> getPendingCollection(String tenantId, String startDate, String endDate) {
-		StringBuilder query = new StringBuilder(queryBuilder.PENDINGCOLLECTION);
-		query.append(" and demand.tenantid = '").append(tenantId).append("'")
-		.append( " and taxperiodfrom  >= ").append( startDate)  
-		.append(" and  taxperiodto <= " ).append(endDate);
-		log.info("Active pending collection query : " + query);
-		return jdbcTemplate.queryForList(query.toString(), String.class);
-		
-	}
-
-
 
 	public List<Map<String, Object>> getTodayCollection(String tenantId, String startDate, String endDate, String mode) {
 		StringBuilder query = new StringBuilder();
@@ -234,39 +347,129 @@ public class ChallanRepository {
 	
 	public Integer getPreviousMonthNewExpense(String tenantId, Long startDate, Long endDate) {
 		StringBuilder query = new StringBuilder(queryBuilder.PREVIOUSMONTHNEWEXPENSE);
-		query.append("  WHERE  CHALLAN.BILLISSUEDDATE BETWEEN ").append(startDate).append(" and  ")
+		query.append("  and challan.billdate BETWEEN ").append(startDate).append(" and  ")
 				.append(endDate).append(" and CHALLAN.TENANTID = '").append(tenantId).append("'");
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 	}
 
-	public Integer getCumulativePendingExpense(String tenantId) {
+	public Integer getCumulativePendingExpense(String tenantId, Long endDate) {
 		StringBuilder query = new StringBuilder(queryBuilder.CUMULATIVEPENDINGEXPENSE);
+		Calendar startDate = Calendar.getInstance();
+		startDate.setTimeInMillis(endDate);
+		int currentMonthNumber = startDate.get(Calendar.MONTH);
+		if (currentMonthNumber < 3) {
+			startDate.set(Calendar.YEAR, startDate.get(Calendar.YEAR) - 1);
+		}
+		startDate.set(Calendar.MONTH,3);
+		startDate.set(Calendar.DAY_OF_MONTH, startDate.getActualMinimum(Calendar.DAY_OF_MONTH));
+		util.setTimeToBeginningOfDay(startDate);
+		query.append(" and challan.billdate between " + startDate.getTimeInMillis() +" and "+ endDate );
 		query.append(" and challan.tenantId = '").append(tenantId).append("'");
+		System.out.println("Query in Challan for pending collection: " + query.toString());
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 	}
 
-	public Integer getTotalPendingCollection(String tenantId) {
-		StringBuilder query = new StringBuilder(queryBuilder.PENDINGCOLLECTION);
-		query.append(" and CONN.tenantid = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
+	public Long getTotalExpense(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.NEWEXPDEMAND);
+		query.append(" and ch.billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getPaidAmountDetails(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.ACTUALEXPCOLLECTION);
+		query.append(" and py.transactionDate  >= ").append(criteria.getFromDate())
+				.append(" and py.transactionDate <= ").append(criteria.getToDate()).append(" and py.tenantId = '")
+				.append(criteria.getTenantId()).append("'");
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
 
 	}
 
-	public Integer getNewDemand(String tenantId, Long startDate, Long endDate) {
-		StringBuilder query = new StringBuilder(queryBuilder.NEWDEMAND);
-		query.append(" and dmd.taxPeriodFrom  >= ").append(startDate).append(" and dmd.taxPeriodTo <= ").append(endDate)
-				.append(" and dmd.tenantId = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
-
+	public Long getPendingAmount(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.PENDINGEXPCOLL);
+		query.append(" and ch.billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("Active pending collection query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
 	}
 
-	public Integer getActualCollection(String tenantId, Long startDate, Long endDate) {
-		StringBuilder query = new StringBuilder(queryBuilder.ACTUALCOLLECTION);
-		query.append(" and py.transactionDate  >= ").append(startDate).append(" and py.transactionDate <= ")
-				.append(endDate).append(" and py.tenantId = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
-
+	public Long getTotalBill(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.TOTALBILLS);
+		query.append(" and billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("TotalBills Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
 	}
-	
-    
+
+	public Long getBillsPaid(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.PAIDBILLS);
+		query.append(" and billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("paid bills Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getPendingBills(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.PENDINGBILLS);
+		query.append(" and billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("pending bills Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+
+	public Long getElectricityBill(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.ELECTRICITYBILLS);
+		query.append(" and challan.billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
+				.append(" and challan.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("electricity Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getOmMiscBills(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.OMMISCBILLS);
+		query.append(" and challan.billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		.append(" and challan.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("O&M Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getSalary(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.SALARYBILLS);
+		query.append(" and challan.billdate between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		.append(" and challan.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("salary Final Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public Long getPendingAmountTillDate(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(queryBuilder.PENDINGEXPCOLLTILLDATE);
+		query.append(" and ch.billdate <= " + criteria.getToDate())
+		.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
+//		query.append(" and dmd.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+//				.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("Active pending collection query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Long.class);
+	}
+
+	public List<Challan> getChallansForPlaneSearch(SearchCriteria criteria, Map<String, String> finalData) {
+        List<Object> preparedStmtList = new ArrayList<>();
+        String query = queryBuilder.getChallanSearchQueryForPlaneSearch(criteria, preparedStmtList);
+        List<Challan> challans =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper);
+        return challans;
+    }
+
+
+	public List<String> fetchESIds(SearchCriteria criteria) {
+		List<Object> preparedStmtList = new ArrayList<>();
+		preparedStmtList.add(criteria.getOffset());
+		preparedStmtList.add(criteria.getLimit());
+
+		List<String> ids = jdbcTemplate.query("SELECT id from eg_echallan ORDER BY createdtime offset " +
+						" ? " +
+						"limit ? ",
+				preparedStmtList.toArray(),
+				new SingleColumnRowMapper<>(String.class));
+		return ids;
+	}
 }

@@ -73,6 +73,13 @@ class Validators {
     return null;
   }
 
+  static String? arrearsPenaltyValidator(String? arrears, String? penalty) {
+    if ((penalty!.trim().isNotEmpty && int.parse(penalty.trim().toString()) != 0) && (arrears!.trim().isEmpty || int.parse(arrears.trim().toString()) == 0)) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ADD_ARREAR_FOR_PENALTY)}';
+    }
+    return null;
+  }
+
   static String? amountValidator(String? v) {
     if (v!.trim().isEmpty) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expense.AMOUNT_MENTIONED_IN_THE_BILL)}';
@@ -93,12 +100,12 @@ class Validators {
     return null;
   }
 
-  static String? partialAmountValidatior(String? v, double? inputnum) {
+  static String? partialAmountValidatior(String? v, [double? inputnum]) {
     if (v!.trim().isEmpty) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.CANNOT_BE_EMPTY)}';
     } else if (!RegExp(r'^[0-9]+$').hasMatch(v)) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ENTER_NUMBERS_ONLY)}';
-    } else if (double.parse(v) > (inputnum!)) {
+    } else if (inputnum != null && double.parse(v) > (inputnum)) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.AMOUNT_EXCEEDS)}';
     }
     return null;

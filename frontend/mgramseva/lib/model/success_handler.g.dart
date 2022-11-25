@@ -15,6 +15,7 @@ SuccessHandler _$SuccessHandlerFromJson(Map<String, dynamic> json) {
     subHeader: json['subHeader'] as String?,
     whatsAppShare: json['whatsAppShare'] as String?,
     downloadLink: json['downloadLink'] as String?,
+    printLabel: json['printLabel'] as String?,
     downloadLinkLabel: json['downloadLinkLabel'] as String?,
     subHeaderText: json['subHeaderText'] as String?,
   );
@@ -30,5 +31,6 @@ Map<String, dynamic> _$SuccessHandlerToJson(SuccessHandler instance) =>
       'routeParentPath': instance.routeParentPath,
       'whatsAppShare': instance.whatsAppShare,
       'downloadLink': instance.downloadLink,
+      'printLabel': instance.printLabel,
       'downloadLinkLabel': instance.downloadLinkLabel,
     };

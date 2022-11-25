@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
 import 'package:mgramseva/widgets/Button.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
@@ -98,7 +99,8 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                   Padding(
                       padding: EdgeInsets.all(15),
                       child: Button(i18.common.CONTINUE,
-                          () => Navigator.pushNamed(context, Routes.LOGIN))),
+                          () => Navigator.pushNamed(context, Routes.LOGIN),
+                          key: Keys.language.LANGUAGE_PAGE_CONTINUE_BTN)),
                   SizedBox(
                     height: 10,
                   )

@@ -42,6 +42,9 @@ class Demand {
   @JsonKey(name: "minimumAmountPayable")
   double? minimumAmountPayable;
 
+  @JsonKey(name: "isPaymentCompleted")
+  bool? isPaymentCompleted;
+
   Demand();
 
   factory Demand.fromJson(Map<String, dynamic> json) =>

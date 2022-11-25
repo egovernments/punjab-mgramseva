@@ -11,6 +11,7 @@ import 'package:mgramseva/model/common/pdfservice.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/localization/localization_label.dart';
+import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/notifications_provider.dart';
@@ -74,6 +75,27 @@ class CoreRepository extends BaseService {
     return languageList;
   }
 
+  Future<PaymentType> getPaymentTypeMDMS(Map body) async {
+    late PaymentType paymentType;
+    var res = await makeRequest(
+        url: Url.MDMS,
+        body: body,
+        method: RequestType.POST,
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "_search",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
+            ""));
+    if (res != null) {
+      paymentType = PaymentType.fromJson(res);
+    }
+    return paymentType;
+  }
+
   Future<List<FileStore>> uploadFiles(
       List<dynamic>? _paths, String moduleName) async {
     Map? respStr;
@@ -87,22 +109,27 @@ class CoreRepository extends BaseService {
       if (_paths is List<PlatformFile>) {
         for (var i = 0; i < _paths.length; i++) {
           var path = _paths[i];
+          var fileName = '${path.name}.${path.extension?.toLowerCase()}';
           http.MultipartFile multipartFile = http.MultipartFile.fromBytes(
               'file', path.bytes!,
-              filename: '${path.name}.${path.extension?.toLowerCase()}');
+              contentType: CommonMethods().getMediaType(fileName),
+              filename: fileName);
           request.files.add(multipartFile);
         }
       } else if (_paths is List<File>) {
         _paths.forEach((file) async {
           request.files.add(await http.MultipartFile.fromPath('file', file.path,
+              contentType: CommonMethods().getMediaType(file.path),
               filename: '${file.path.split('/').last}'));
         });
       }else if(_paths is List<CustomFile>){
         for (var i = 0; i < _paths.length; i++) {
           var path = _paths[i];
+          var fileName = '${path.name}.${path.extension.toLowerCase()}';
           http.MultipartFile multipartFile = http.MultipartFile.fromBytes(
               'file', path.bytes,
-              filename: '${path.name}.${path.extension.toLowerCase()}');
+              contentType: CommonMethods().getMediaType(fileName),
+              filename: fileName);
           request.files.add(multipartFile);
         }
       }
@@ -281,14 +308,17 @@ class CoreRepository extends BaseService {
       if (!status.isGranted) {
         await Permission.storage.request();
       }
+
       final response = await FlutterDownloader.enqueue(
         url: url,
         savedDir: downloadPath,
         fileName: '$fileName',
         showNotification: true,
         openFileFromNotification: true,
+        saveInPublicStorage: true
       );
       if (response != null) {
+        CommonProvider.downloadUrl[response] = '$downloadPath/$fileName';
         return true;
       }
       return false;

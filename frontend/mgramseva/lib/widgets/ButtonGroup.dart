@@ -6,7 +6,7 @@ import 'ShortButton.dart';
 
 class ButtonGroup extends StatelessWidget {
   final String label;
-  final VoidCallback callBack;
+  final VoidCallback? callBack;
   final VoidCallback callBackIcon;
   ButtonGroup(
     this.label,
@@ -51,7 +51,7 @@ class ButtonGroup extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           child: Text(
                               ApplicationLocalizations.of(context)
-                                  .translate(i18.common.SHARE_BILL),
+                                  .translate(i18.common.SHARE_BILL_PDF),
                               style: Theme.of(context).textTheme.subtitle2)),
                       )),
                       Expanded(child: ShortButton(label, callBack))

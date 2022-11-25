@@ -62,6 +62,7 @@ import org.egov.userevent.model.RecepientEvent;
 import org.egov.userevent.model.enums.Status;
 import org.egov.userevent.producer.UserEventsProducer;
 import org.egov.userevent.repository.UserEventRepository;
+import org.egov.userevent.repository.rowmappers.UserEventRowMapper;
 import org.egov.userevent.utils.ResponseInfoFactory;
 import org.egov.userevent.utils.UserEventsConstants;
 import org.egov.userevent.utils.UserEventsUtils;
@@ -104,6 +105,9 @@ public class UserEventsService {
 	@Autowired
 	private LocalizationService localizationService;
 
+	@Autowired
+	private UserEventRowMapper rowMapper;
+	
 	/**
 	 * Service method to create events Enriches the request and produces it on the
 	 * queue for persister to pick.
@@ -238,7 +242,7 @@ public class UserEventsService {
 			events = repository.fetchEvents(criteria);
 		}
 		return EventResponse.builder().responseInfo(responseInfo.createResponseInfoFromRequestInfo(requestInfo, true))
-				.events(events).build();
+				.events(events).totalCount(rowMapper.getFull_count()).build();
 	}
 
 	/**

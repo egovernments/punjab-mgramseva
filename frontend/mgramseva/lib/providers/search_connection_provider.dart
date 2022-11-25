@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/search_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -15,7 +13,7 @@ import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
 
 class SearchConnectionProvider with ChangeNotifier {
-  late WaterConnections waterConnections;
+  WaterConnections? waterConnections;
   final formKey = GlobalKey<FormState>();
   var autoValidation = false;
   var streamController = StreamController.broadcast();
@@ -50,7 +48,7 @@ class SearchConnectionProvider with ChangeNotifier {
     return streamController.add(waterConnections);
   }
 
-  void validatesearchConnectionDetails(context, arguments) async {
+  void validatesearchConnectionDetails(context, arguments, isNameSearch) async {
     FocusScope.of(context).unfocus();
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
@@ -62,7 +60,10 @@ class SearchConnectionProvider with ChangeNotifier {
         Loaders.showLoadingDialog(context);
         var inputJson = searchconnection.toJson();
         inputJson.removeWhere((key, value) => key == null || value == "");
-        var connectionresults = SearchConnectionRepository().getconnection({
+        var connectionresults = isNameSearch == true ? SearchConnectionRepository().getConnectionName({
+          "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+          ...inputJson
+        }) : SearchConnectionRepository().getconnection({
           "tenantId": commonProvider.userDetails!.selectedtenant!.code,
           ...inputJson
         });
@@ -73,12 +74,12 @@ class SearchConnectionProvider with ChangeNotifier {
           connectionresults.then(
               (value) => {
                     Navigator.pop(context),
-                    if (value.waterConnection!.length > 0)
+                    if (value.waterConnectionData!.length > 0 || value.waterConnection!.length > 0)
                       {
                         waterConnections = value,
                         Navigator.pushNamed(
                             context, Routes.SEARCH_CONSUMER_RESULT,
-                            arguments: {...inputJson, ...arguments})
+                            arguments: {...inputJson, ...arguments, "isNameSearch" : isNameSearch })
                       }
                     else
                       {
