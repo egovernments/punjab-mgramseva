@@ -36,6 +36,8 @@ import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/language.dart';
+
 class ConsumerDetails extends StatefulWidget {
   final String? id;
   final WaterConnection? waterconnection;
@@ -137,6 +139,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   }
 
   Widget buildconsumerView(Property property) {
+    var languageProvider = Provider.of<LanguageProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     return Column(
       children: [
         FormWrapper(
@@ -188,7 +193,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           SubLabelText(consumerProvider.isEdit
                               ? i18.consumer.CONSUMER_EDIT_DETAILS_SUB_LABEL
                               : i18.consumer.CONSUMER_DETAILS_SUB_LABEL),
-                          //Conniction ID displayed based in Edit Mode
+                          //Connection ID displayed based in Edit Mode
                           consumerProvider.isEdit
                               ? BuildTableText(
                                   i18.consumer.CONSUMER_CONNECTION_ID,
@@ -201,7 +206,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             property.owners!.first.consumerNameCtrl,
                             inputFormatter: [
                               FilteringTextInputFormatter.allow(
-                                  RegExp("[A-Za-z ]"))
+                                  RegExp(languageProvider.selectedLanguage!.enableRegEx
+                                      ? languageProvider.selectedLanguage!.regEx.toString().split('^').last
+                                      : "[A-Za-z ]"))
                             ],
                             isRequired: true,
                             contextkey:
@@ -229,7 +236,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             isRequired: true,
                             inputFormatter: [
                               FilteringTextInputFormatter.allow(
-                                  RegExp("[A-Za-z ]"))
+                                  RegExp(languageProvider.selectedLanguage!.enableRegEx
+                                      ? languageProvider.selectedLanguage!.regEx.toString().split('^').last
+                                      : "[A-Za-z ]"))
                             ],
                             contextkey:
                                 consumerProvider.consmerWalkthrougList[2].key,
@@ -266,6 +275,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               i18.consumer.OLD_CONNECTION_ID,
                               consumerProvider
                                   .waterconnection.OldConnectionCtrl,
+                                  inputFormatter: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp("[a-zA-Z0-9-\/]"))],
                               contextkey:
                                   consumerProvider.consmerWalkthrougList[4].key,
                                   key: Keys.createConsumer.CONSUMER_OLD_ID_KEY,
@@ -320,7 +332,11 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           ),
                           BuildTextField(
                             i18.consumer.GP_NAME,
-                            property.address.gpNameCtrl,
+                            TextEditingController(text:
+                             ApplicationLocalizations.of(context)
+                                .translate( property.address.gpNameCtrl.text) +
+                            ' - ' +
+                                property.address.gpNameCityCodeCtrl.text),
                             isRequired: true,
                             readOnly: true,
                             isDisabled: true,
@@ -617,7 +633,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
             val, consumerProvider.waterconnection.penaltyCtrl.text),
         inputFormatter: [
           FilteringTextInputFormatter.allow(
-              RegExp("[0-9.]"))
+              RegExp("[0-9]"))
         ],
         key: Keys.createConsumer.CONSUMER_ARREARS_KEY,),
     if(CommonProvider.getPenaltyOrAdvanceStatus(consumerProvider.paymentType, false))  BuildTextField(i18.common.CORE_PENALTY,
@@ -625,7 +641,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
         textInputType: TextInputType.number,
         inputFormatter: [
           FilteringTextInputFormatter.allow(
-              RegExp("[0-9.]"))
+              RegExp("[0-9]"))
         ])
     ]);
   }
@@ -636,7 +652,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
     textInputType: TextInputType.number,
     inputFormatter: [
       FilteringTextInputFormatter.allow(
-          RegExp("[0-9.]"))
+          RegExp("[0-9]"))
     ]);
   }
 }

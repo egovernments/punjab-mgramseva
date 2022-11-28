@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
@@ -375,7 +374,6 @@ class HouseholdRegisterProvider with ChangeNotifier {
             isDownload)
         .pdfPreview();
   }
-
   bool removeOverLay(_overlayEntry) {
     try {
       if (_overlayEntry == null) return false;

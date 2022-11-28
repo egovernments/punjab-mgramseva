@@ -88,12 +88,11 @@ class ConsumerProvider with ChangeNotifier {
       property.address.localityCtrl = boundaryList.first;
       onChangeOflocaity(property.address.localityCtrl);
     }
-    if (commonProvider.userDetails?.selectedtenant?.code != null) {
+    if (commonProvider.userDetails?.selectedtenant?.code != null ) {
       property.address.gpNameCtrl
-          .text = ApplicationLocalizations.of(navigatorKey.currentContext!)
-              .translate(commonProvider.userDetails!.selectedtenant!.code!) +
-          ' - ' +
-          commonProvider.userDetails?.selectedtenant?.city?.code!;
+          .text = commonProvider.userDetails!.selectedtenant!.code!;
+      property.address.gpNameCityCodeCtrl
+          .text = commonProvider.userDetails!.selectedtenant!.city!.code!;
     }
   }
 
@@ -439,10 +438,9 @@ class ConsumerProvider with ChangeNotifier {
       onChangeOflocaity(property.address.localityCtrl);
 
       property.address.gpNameCtrl
-          .text = ApplicationLocalizations.of(navigatorKey.currentContext!)
-              .translate(commonProvider.userDetails!.selectedtenant!.code!) +
-          ' - ' +
-          commonProvider.userDetails!.selectedtenant!.city!.code!;
+          .text = commonProvider.userDetails!.selectedtenant!.code!;
+      property.address.gpNameCityCodeCtrl
+          .text = commonProvider.userDetails!.selectedtenant!.city!.code!;
       streamController.add(property);
       notifyListeners();
     } catch (e) {

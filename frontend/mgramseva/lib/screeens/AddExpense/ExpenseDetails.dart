@@ -35,6 +35,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
+import '../../providers/language.dart';
+import '../../utils/global_variables.dart';
 import 'AddExpenseWalkThrough/WalkThroughContainer.dart';
 
 class ExpenseDetails extends StatefulWidget {
@@ -155,6 +157,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   }
 
   Widget _buildUserView(ExpensesDetailsModel expenseDetails) {
+    var languageProvider = Provider.of<LanguageProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     return FormWrapper(Consumer<ExpensesDetailsProvider>(
         builder: (_, expenseProvider, child) => Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -240,7 +245,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   i18.expense.MENTION_NAME_OF_VENDOR,
                               inputFormatter: [
                                 FilteringTextInputFormatter.allow(
-                                    RegExp("[a-zA-Z ]"))
+                                    RegExp(languageProvider.selectedLanguage!.enableRegEx
+                                        ? languageProvider.selectedLanguage!.regEx.toString().split('^').last
+                                        : "[A-Za-z ]"))
                               ],
                               contextkey:
                                   expenseProvider.expenseWalkthrougList[1].key,

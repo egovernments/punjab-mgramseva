@@ -222,8 +222,13 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                                 ', '
                                             : ""
                                         : "") +
-                                    waterconnections.waterConnectionData![index]
-                                        .additionalDetails!.locality! +
+                                    (waterconnections.waterConnectionData![index]
+                                        .additionalDetails!.locality!.isNotEmpty
+                                        || waterconnections.waterConnectionData![index]
+                                            .additionalDetails!.locality != null
+                                       ? ApplicationLocalizations.of(context)
+                                        .translate(waterconnections.waterConnectionData![index]
+                                        .additionalDetails!.locality.toString()) : "" ) +
                                     ', ' +
                                     ApplicationLocalizations.of(context)
                                         .translate(commonProvider.userDetails!.selectedtenant!.code!)) :
@@ -257,8 +262,16 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                     ', '
                                     : ""
                                     : "") +
-                                waterconnections.waterConnection![index]
-                                    .additionalDetails!.locality! +
+                                    (waterconnections
+                                        .waterConnection![index]
+                                        .additionalDetails!.locality!.isNotEmpty
+                                        || waterconnections
+                                            .waterConnection![index]
+                                            .additionalDetails!.locality != null
+                                        ? ApplicationLocalizations.of(context)
+                                        .translate(waterconnections
+                                        .waterConnection![index]
+                                        .additionalDetails!.locality.toString()) : "" ) +
                                 ', ' +
                                 ApplicationLocalizations.of(context)
                                     .translate(commonProvider.userDetails!.selectedtenant!.code!)),

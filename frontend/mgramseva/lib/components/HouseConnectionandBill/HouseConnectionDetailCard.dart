@@ -102,7 +102,11 @@ class HouseConnectionDetailCard extends StatelessWidget {
                                   ', '
                               : ""
                           : "") +
-                      waterconnection!.additionalDetails!.locality!
+
+                      (waterconnection!.additionalDetails!.locality!.isNotEmpty
+                      ? ApplicationLocalizations.of(context)
+                      .translate(waterconnection!.additionalDetails!.locality.toString())
+                      : "")
                   + ', ' + ApplicationLocalizations.of(context)
                       .translate(commonProvider.userDetails!.selectedtenant!.code!),
                   context,
@@ -120,7 +124,9 @@ class HouseConnectionDetailCard extends StatelessWidget {
                       ),
                 _getLabeltext(
                   i18.common.STATUS,
-                  waterconnection!.status,
+                    waterconnection!.status == "Active"
+                    ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.STATUS_ACTIVE)
+                    : ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.STATUS_INACTIVE),
                   context,
                 ),
                 Consumer<HouseHoldProvider>(

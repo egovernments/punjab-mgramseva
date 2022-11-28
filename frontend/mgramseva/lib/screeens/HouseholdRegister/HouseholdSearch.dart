@@ -83,7 +83,7 @@ class _HouseholdSearchState extends State<HouseholdSearch> with SingleTickerProv
                 SizedBox(height: 15,),
                 TextButton.icon(
                   onPressed: () {
-                    householdRegisterProvider.createPdfForAllConnections(context, true);
+                     householdRegisterProvider.createPdfForAllConnections(context, true);
                   },
                   icon: Icon(Icons.download_sharp),
                   label: Text('${ApplicationLocalizations.of(context).translate(i18.common.DOWNLOAD)} '
