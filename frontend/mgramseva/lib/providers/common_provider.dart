@@ -70,7 +70,7 @@ class CommonProvider with ChangeNotifier {
     try {
       var query = {
         'module':
-            'mgramseva-common,mgramseva-consumer,mgramseva-expenses,mgramseva-water-connection,mgramseva-bill,mgramseva-payments,mgramseva-dashboard,mgramseva-feedback, mgramseva-regex',
+            'mgramseva-common,mgramseva-consumer,mgramseva-expenses,mgramseva-water-connection,mgramseva-bill,mgramseva-payments,mgramseva-dashboard,mgramseva-feedback',
         'locale': languageProvider.selectedLanguage?.value ?? '',
         'tenantId': languageProvider.stateInfo!.code
       };
@@ -216,7 +216,6 @@ class CommonProvider with ChangeNotifier {
          var isUpdated = false;
           try {
               if (!await storage.containsKey(key:Constants.APP_VERSION)) {
-                print('if');
                 await storage.deleteAll();
                 isUpdated = true;
                 storage.write(key: Constants.APP_VERSION, value: packageInfo?.version);

@@ -243,10 +243,6 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               isEnabled: expenseDetails.allowEdit,
                               requiredMessage:
                                   i18.expense.MENTION_NAME_OF_VENDOR,
-                              // inputFormatter: [
-                              //   FilteringTextInputFormatter.allow(
-                              //       RegExp(ApplicationLocalizations.of(context).translate(i18.regex.REG_EXPRESSION)))
-                              // ],
                               inputFormatter: [
                                 FilteringTextInputFormatter.allow(
                                     RegExp(languageProvider.selectedLanguage!.enableRegEx

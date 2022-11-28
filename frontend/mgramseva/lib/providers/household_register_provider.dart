@@ -259,8 +259,6 @@ class HouseholdRegisterProvider with ChangeNotifier {
     ]);
   }
 
-
-
   onClickOfCollectionNo(TableData tableData) {
     var waterConnection = waterConnectionsDetails?.waterConnection
         ?.firstWhere((element) => element.connectionNo == tableData.apiKey);
