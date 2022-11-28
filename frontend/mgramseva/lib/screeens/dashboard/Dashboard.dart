@@ -403,4 +403,101 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
     CustomOVerlay.removeOverLay();
     Navigator.pop(context);
   }
+
+  Future<void> takeScreenShotOfDashboard() async {
+    var dashBoardProvider =
+        Provider.of<DashBoardProvider>(context, listen: false);
+
+    if (dashBoardProvider.selectedMonth.dateType == DateType.MONTH) {
+      if (dashBoardProvider.selectedDashboardType ==
+          DashBoardType.Expenditure) {
+        dashBoardProvider.createPdfForExpenditure(context);
+      } else {
+        dashBoardProvider.createPdfForCollection(context);
+      }
+      return;
+    }
+    ;
+
+    final FlutterShareMe flutterShareMe = FlutterShareMe();
+    var fileName = 'annualdashboard';
+
+    Loaders.showLoadingDialog(context, label: '');
+    setState(() {
+      takeScreenShot = true;
+    });
+
+    await Future.delayed(Duration(milliseconds: 100));
+    screenshotController
+        .capture(delay: Duration(seconds: 1))
+        .then((capturedImage) async {
+      if (capturedImage == null) return;
+
+      try {
+        setState(() {
+          takeScreenShot = false;
+        });
+
+        if (kIsWeb) {
+          var file = CustomFile(capturedImage, fileName, 'png');
+          var response = await CoreRepository()
+              .uploadFiles(<CustomFile>[file], APIConstants.API_MODULE_NAME);
+
+          if (response.isNotEmpty) {
+            var commonProvider =
+                Provider.of<CommonProvider>(context, listen: false);
+            var res = await CoreRepository()
+                .fetchFiles([response.first.fileStoreId!]);
+            if (res != null && res.isNotEmpty) {
+              var url = res.first.url ?? '';
+              if (url.contains(',')) {
+                url = url.split(',').first;
+              }
+              response.first.url = url;
+
+              /// Message which will be share on what's app via web
+              var localizedText =
+                  '${ApplicationLocalizations.of(context).translate(i18.dashboard.ANNUAL_SHARE_MSG_WEB)}';
+              localizedText = localizedText.replaceFirst('{year-year}',
+                  '${DateFormats.getMonthAndYear(dashBoardProvider.selectedMonth, context)}');
+              localizedText = localizedText.replaceFirst('{link}', '{link}');
+              commonProvider.shareonwatsapp(
+                  response.first, null, localizedText);
+            }
+          }
+        } else {
+          final Directory? directory = await getExternalStorageDirectory();
+          final file = await File('${directory?.path}/$fileName.png')
+              .writeAsBytes(capturedImage);
+
+          /// Message which will be share on what's app via mobile
+          var localizedText =
+              '${ApplicationLocalizations.of(context).translate(i18.dashboard.ANNUAL_SHARE_MSG_MOBILE)}';
+          localizedText = localizedText.replaceFirst('{year-year}',
+              '${DateFormats.getMonthAndYear(dashBoardProvider.selectedMonth, context)}');
+
+          var response = await flutterShareMe.shareToWhatsApp(
+              imagePath: file.path,
+              fileType: FileType.image,
+              msg: localizedText);
+          if (response != null && response.contains('PlatformException'))
+            ErrorHandler().allExceptionsHandler(context, response);
+        }
+        Navigator.pop(context);
+      } catch (e, s) {
+        Navigator.pop(context);
+        ErrorHandler().allExceptionsHandler(context, e, s);
+      }
+    }).catchError((onError, s) {
+      setState(() {
+        takeScreenShot = false;
+      });
+      ErrorHandler().allExceptionsHandler(context, onError, s);
+    });
+  }
+
+  void onClickOfBackButton() {
+    CustomOVerlay.removeOverLay();
+    Navigator.pop(context);
+  }
 }

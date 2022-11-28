@@ -234,7 +234,6 @@ class HouseholdRegisterProvider with ChangeNotifier {
         return 0;
     }
   }
-  
   String? truncateWithEllipsis(String? myString) {
     return (myString!.length <= 20)
         ? myString

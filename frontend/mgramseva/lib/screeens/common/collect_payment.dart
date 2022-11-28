@@ -33,7 +33,6 @@ import '../../providers/common_provider.dart';
 import '../../utils/global_variables.dart';
 import '../../utils/models.dart';
 import '../../widgets/CustomDetails.dart';
-
 import '../../widgets/customAppbar.dart';
 
 class ConnectionPaymentView extends StatefulWidget {
