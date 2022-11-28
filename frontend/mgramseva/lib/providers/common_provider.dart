@@ -67,6 +67,7 @@ class CommonProvider with ChangeNotifier {
           .map<LocalizationLabel>((e) => LocalizationLabel.fromJson(e))
           .toList();
     }
+
     try {
       var query = {
         'module':
@@ -497,23 +498,6 @@ class CommonProvider with ChangeNotifier {
       ErrorHandler().allExceptionsHandler(context, e, s);
     }
   }
-
-  ///List of English Alphabets with 0-25 KeyValue
-  static List<KeyValue> getAlphabetsWithKeyValue(){
-    List<String> alphabets = [];
-    List<KeyValue> excelColumns = [];
-
-    for(int i=65; i<=90; i++){
-      alphabets.add(String.fromCharCode(i));
-    }
-    for(int i = 0 ; i < 26 ; i ++){
-      excelColumns.add(KeyValue( alphabets[i], i));
-    }
-
-    return excelColumns;
-  }
-
-
 
   Future<pw.Font> getPdfFontFamily() async {
     var language = Provider.of<LanguageProvider>(navigatorKey.currentContext!,
