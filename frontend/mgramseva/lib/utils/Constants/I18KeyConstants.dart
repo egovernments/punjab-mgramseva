@@ -380,6 +380,8 @@ class SearchWaterConnection {
   String get RESULTS_ADDRESS => 'SEARCH_CONNECTION_ADDRESS';
   String get CONNECTION_FOUND_ONE => 'CONNECTION_FOUND_ONE';
   String get METER_NUMBER => 'CONSUMER_METER_NUMBER';
+  String get STATUS_ACTIVE => 'STATUS_ACTIVE';
+  String get STATUS_INACTIVE => 'STATUS_INACTIVE';
 }
 
 class ProfileEdit {
