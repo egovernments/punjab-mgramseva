@@ -59,30 +59,6 @@ class LanguageSelectMobileView extends StatelessWidget {
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          for (Languages language in stateInfo.languages ?? [])
-                            Row(
-                              children: [
-                                stateInfo.languages!.first == language
-                                    ? Container(
-                                        padding: EdgeInsets.only(
-                                            left: 15, right: 15),
-                                        margin: EdgeInsets.all(5),
-                                        child: Text('${language.label}'))
-                                    : Container(
-                                        padding: EdgeInsets.only(
-                                            left: 15, right: 15),
-                                        decoration: BoxDecoration(
-                                            border: Border(
-                                                left: BorderSide(width: 1.0))),
-                                        child: Text('${language.label}')),
-                              ],
-                            )
-                        ])),
-                Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           for (var language in stateInfo.languages ?? [])
