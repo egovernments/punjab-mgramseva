@@ -63,7 +63,7 @@ class LanguageSelectMobileView extends StatelessWidget {
                         children: [
                           for (var language in stateInfo.languages ?? [])
                             LanguageCard(
-                                language, stateInfo.languages ?? [], 105, 10, 0)
+                                language, stateInfo.languages ?? [], 85, 10, 10)
                         ])),
                 Padding(
                     padding: EdgeInsets.all(15),
