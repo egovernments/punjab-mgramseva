@@ -276,7 +276,7 @@ class BillGenerationProvider with ChangeNotifier {
             };
             var billResponse1 =
                 await BillGenerateRepository().calculateMeterConnection(res1);
-            var fetchResponse = await BillingServiceRepository().fetchdBill({
+            var fetchResponse = await BillingServiceRepository().fetchBill({
               "tenantId": commonProvider.userDetails!.selectedtenant!.code,
               "consumerCode": waterconnection.connectionNo.toString(),
               "businessService": "WS"
@@ -411,7 +411,7 @@ class BillGenerationProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
-          child: new Text(value.name!),
+          child: new Text(value.code!),
         );
       }).toList();
     }

@@ -27,7 +27,7 @@ class BillingServiceRepository extends BaseService {
         APIConstants.API_KEY,
         APIConstants.API_MESSAGE_ID,
         commonProvider.userDetails?.accessToken,
-        {'userInfo': commonProvider.userDetails?.userRequest?.toJson()}
+        commonProvider.userDetails?.userRequest?.toJson()
     );
   }
 
@@ -67,7 +67,7 @@ class BillingServiceRepository extends BaseService {
     return demandList;
   }
 
-  Future<BillList> fetchdBill(Map<String, dynamic> queryparams) async {
+  Future<BillList> fetchBill(Map<String, dynamic> queryparams) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);

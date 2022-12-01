@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.egov.mgramsevaifixadaptor.config.PropertyConfiguration;
 import org.egov.mgramsevaifixadaptor.contract.DemandRequest;
@@ -80,8 +81,11 @@ public class MgramsevaAdapterDemandConsumer {
 			if(demandRequest != null) {
 				Collections.sort(demandRequest.getDemands(), getCreatedTimeComparatorForDemand());
 				List<Demand> demandListToRemove = new ArrayList<>();
+
 					for(Demand demand : demandRequest.getDemands()) {
+
 						List<DemandDetail> demandDetails = demand.getDemandDetails();
+
 						if(demand.getStatus().toString().equalsIgnoreCase(Constants.CANCELLED) && demand.getIsPaymentCompleted() == false) {
 							if(demandDetails != null) {
 								BigDecimal totalAmount = BigDecimal.ZERO;
@@ -106,8 +110,29 @@ public class MgramsevaAdapterDemandConsumer {
 							
 							}
 						}
-						else if(demand.getStatus().toString().equalsIgnoreCase(Constants.ACTIVE)){
-							if(demandDetails != null) {
+						else if(Constants.ACTIVE.equalsIgnoreCase(demand.getStatus().toString()) && demandDetails != null && !demandDetails.isEmpty()){
+							if(demand.getConsumerType().toString().equalsIgnoreCase("waterConnection-arrears")) {
+								List<DemandDetail> demDetailResponse = demand.getDemandDetails();
+
+								CopyOnWriteArrayList<DemandDetail> demDetailList = new CopyOnWriteArrayList<>(demDetailResponse);
+								
+								int demandDetailsSize = demandDetails.size();
+
+								for(int i=0; i<demandDetailsSize; i++) {
+									
+									Integer count =  getCountByDemandDetailsId(demandDetails.get(i).getId());
+
+									if(count != null && count > 1) {
+										demDetailList.remove(demandDetails.get(i));
+
+									}
+									
+								}
+								demand.getDemandDetails().removeAll(demandDetails);
+								demand.setDemandDetails(demDetailList);
+
+							}
+							else{
 								for(DemandDetail demandDetail: demandDetails) {
 									
 									Integer count =  getCountByDemandDetailsId(demandDetail.getId());
@@ -123,6 +148,7 @@ public class MgramsevaAdapterDemandConsumer {
 						else {
 							demandListToRemove.add(demand);
 						}
+
 					}
 					demandRequest.getDemands().removeAll(demandListToRemove);
 					if(demandRequest.getDemands().isEmpty()) {

@@ -90,10 +90,9 @@ class ConsumerProvider with ChangeNotifier {
     }
     if (commonProvider.userDetails?.selectedtenant?.code != null) {
       property.address.gpNameCtrl
-          .text = ApplicationLocalizations.of(navigatorKey.currentContext!)
-              .translate(commonProvider.userDetails!.selectedtenant!.code!) +
-          ' - ' +
-          commonProvider.userDetails?.selectedtenant?.city?.code!;
+          .text = commonProvider.userDetails!.selectedtenant!.code!;
+      property.address.gpNameCityCodeCtrl
+          .text = commonProvider.userDetails!.selectedtenant!.city!.code!;
     }
   }
 
@@ -230,7 +229,7 @@ class ConsumerProvider with ChangeNotifier {
       } else if (demand?.length == 1 &&
           demand?.first.consumerType == 'waterConnection-arrears') {
         isfirstdemand = false;
-      }else if(demand?.length == 1 && demand?.first.demandDetails?.length == 1 && demand?.first.demandDetails?.first.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
+      }else if(demand?.length == 1 && demand?.first.consumerType == 'waterConnection-advance' && demand?.first.demandDetails?.first.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
         isfirstdemand = false;
       } else {
         isfirstdemand = true;
@@ -439,10 +438,9 @@ class ConsumerProvider with ChangeNotifier {
       onChangeOflocaity(property.address.localityCtrl);
 
       property.address.gpNameCtrl
-          .text = ApplicationLocalizations.of(navigatorKey.currentContext!)
-              .translate(commonProvider.userDetails!.selectedtenant!.code!) +
-          ' - ' +
-          commonProvider.userDetails!.selectedtenant!.city!.code!;
+          .text = commonProvider.userDetails!.selectedtenant!.code!;
+      property.address.gpNameCityCodeCtrl
+          .text = commonProvider.userDetails!.selectedtenant!.city!.code!;
       streamController.add(property);
       notifyListeners();
     } catch (e) {

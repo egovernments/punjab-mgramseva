@@ -628,6 +628,7 @@ public class DemandService {
 			if(demList.isEmpty()) {
 				return res.getDemands();
 			}
+			
 			Map<String, Demand> consumerCodeToDemandMap = res.getDemands().stream()
 					.collect(Collectors.toMap(Demand::getId, Function.identity()));
 

@@ -130,7 +130,7 @@ class HouseHoldProvider with ChangeNotifier {
           } else if (value.demands?.length == 1 &&
               value.demands?.first.consumerType == 'waterConnection-arrears') {
             isfirstdemand = false;
-          } else if(value.demands?.length == 1 && value.demands?.first.demandDetails?.length == 1 && value.demands?.first.demandDetails?.first.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
+          } else if(value.demands?.length == 1 && value.demands?.first.consumerType == 'waterConnection-advance' && value.demands?.first.demandDetails?.first.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
             isfirstdemand = false;
           }else {
             isfirstdemand = true;

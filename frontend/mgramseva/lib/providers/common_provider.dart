@@ -623,7 +623,7 @@ class CommonProvider with ChangeNotifier {
     } else if (demandList.length == 1 &&
         demandList.first.consumerType == 'waterConnection-arrears') {
       isFirstDemand = false;
-    } else if(demandList.length == 1 && demandList.first.demandDetails?.length == 1 && demandList.first.demandDetails?.first.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
+    } else if(demandList.length == 1 && demandList.first.consumerType == 'waterConnection-advance' && demandList.first.demandDetails?.first.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
       isFirstDemand = false;
     }else {
       isFirstDemand = true;
