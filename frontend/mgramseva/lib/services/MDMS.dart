@@ -19,7 +19,8 @@ initRequestBody(tenantId) {
             {"name": "Department"},
             {"name": "Designation"},
             {"name": "StateInfo"},
-            {"name": "wfSlaConfig"}
+            {"name": "wfSlaConfig"},
+            {"name": "AppVersion"}
           ],
         },
         {

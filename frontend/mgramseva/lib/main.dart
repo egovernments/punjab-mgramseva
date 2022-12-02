@@ -267,8 +267,8 @@ class _LandingPageState extends State<LandingPage> {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     commonProvider.getLoginCredentails();
     await commonProvider.getAppVersionDetails();
-    WidgetsBinding.instance.addPostFrameCallback((_) => CommonMethods()
-        .checkVersion(context, commonProvider.appVersion!.latestAppVersion));
+    CommonMethods()
+        .checkVersion(context, commonProvider.appVersion!.latestAppVersion);
 
     //
     //   await Future.delayed(Duration(seconds: 2));

@@ -260,9 +260,7 @@ class CommonProvider with ChangeNotifier {
     try {
       var localizationList =
           await CoreRepository().getMdms(initRequestBody({"tenantId": "pb"}));
-      if (localizationList != null) {
-        appVersion = localizationList.mdmsRes!.commonMasters!.appVersion!.first;
-      }
+      appVersion = localizationList.mdmsRes!.commonMasters!.appVersion!.first;
     } catch (e) {
       print(e.toString());
     }
