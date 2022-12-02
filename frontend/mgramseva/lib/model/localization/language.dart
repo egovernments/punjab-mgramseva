@@ -78,14 +78,20 @@ class MdmsRes {
 
 class CommonMasters {
   List<StateInfo>? stateInfo;
-
-  CommonMasters({this.stateInfo});
+  List<AppVersion>? appVersion;
+  CommonMasters({this.stateInfo, this.appVersion});
 
   CommonMasters.fromJson(Map<String, dynamic> json) {
     if (json['StateInfo'] != null) {
       stateInfo = <StateInfo>[];
       json['StateInfo'].forEach((v) {
         stateInfo?.add(new StateInfo.fromJson(v));
+      });
+    }
+    if (json['AppVersion'] != null) {
+      appVersion = <AppVersion>[];
+      json['AppVersion'].forEach((v) {
+        appVersion?.add(new AppVersion.fromJson(v));
       });
     }
   }
@@ -95,6 +101,29 @@ class CommonMasters {
     if (this.stateInfo != null) {
       data['StateInfo'] = this.stateInfo?.map((v) => v.toJson()).toList();
     }
+    if (this.appVersion != null) {
+      data['AppVersion'] = this.appVersion?.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class AppVersion {
+  String? latestAppVersion;
+  // List<LocalizationModules>? localizationModules;
+
+  AppVersion({
+    this.latestAppVersion,
+  });
+
+  AppVersion.fromJson(Map<String, dynamic> json) {
+    latestAppVersion = json['latestAppVersion'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['latestAppVersion'] = this.latestAppVersion;
+
     return data;
   }
 }
