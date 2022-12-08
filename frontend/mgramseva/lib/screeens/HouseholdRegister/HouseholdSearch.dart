@@ -9,15 +9,13 @@ import 'package:mgramseva/widgets/Footer.dart';
 import 'package:mgramseva/widgets/TabButton.dart';
 import 'package:provider/provider.dart';
 
-
 class HouseholdSearch extends StatefulWidget {
-
   @override
   _HouseholdSearchState createState() => _HouseholdSearchState();
 }
 
-class _HouseholdSearchState extends State<HouseholdSearch> with SingleTickerProviderStateMixin {
-
+class _HouseholdSearchState extends State<HouseholdSearch>
+    with SingleTickerProviderStateMixin {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
@@ -26,7 +24,7 @@ class _HouseholdSearchState extends State<HouseholdSearch> with SingleTickerProv
 
   afterViewBuild() {
     var householdRegisterProvider =
-    Provider.of<HouseholdRegisterProvider>(context, listen: false);
+        Provider.of<HouseholdRegisterProvider>(context, listen: false);
     householdRegisterProvider.searchController.text = "";
     householdRegisterProvider.onChangeOfTab(context, 0);
   }
@@ -77,7 +75,6 @@ class _HouseholdSearchState extends State<HouseholdSearch> with SingleTickerProv
                         children: List.generate(tabList.length, (index) => Padding(padding: EdgeInsets.only(top: 16.0, right: 8.0, bottom: 16.0), child: TabButton(tabList[index], isSelected: householdRegisterProvider.isTabSelected(index), onPressed: () => householdRegisterProvider.onChangeOfTab(context, index))))           ),
                   ),
                 ),
-                SizedBox(height: 15,),
                 TextButton.icon(
                   onPressed: () {
                     householdRegisterProvider.createPdfForAllConnections(context, true);

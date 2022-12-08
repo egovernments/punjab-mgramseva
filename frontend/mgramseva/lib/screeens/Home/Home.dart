@@ -16,7 +16,8 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/Footer.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/CustomAppbar.dart';
+
+import '../../widgets/customAppbar.dart';
 import 'HomeWalkThrough/HomeWalkThroughContainer.dart';
 import 'HomeWalkThrough/HomeWalkThroughList.dart';
 
@@ -138,7 +139,7 @@ class _HomeState extends State<Home> {
       homeProvider,
       Container(
           margin: constraint.maxWidth < 720
-              ? EdgeInsets.all(0)
+              ? EdgeInsets.all(8)
               : EdgeInsets.only(left: 75, right: 75),
           child: Consumer<CommonProvider>(builder: (_, userProvider, child) {
             if (userProvider.userDetails?.selectedtenant?.code != null) {
