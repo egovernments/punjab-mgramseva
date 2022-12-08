@@ -519,6 +519,18 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
+  static List<KeyValue> getAlphabetsWithKeyValue() {
+    List<String> alphabets = [];
+    List<KeyValue> excelColumns = [];
+    for (int i = 65; i <= 90; i++) {
+      alphabets.add(String.fromCharCode(i));
+    }
+    for (int i = 0; i < 26; i++) {
+      excelColumns.add(KeyValue(alphabets[i], i));
+    }
+    return excelColumns;
+  }
+
   Future<pw.Font> getPdfFontFamily() async {
     var language = Provider.of<LanguageProvider>(navigatorKey.currentContext!,
         listen: false);

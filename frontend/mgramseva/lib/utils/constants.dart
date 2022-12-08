@@ -154,9 +154,12 @@ class Constants {
   static const String INVALID_EXCEPTION_CODE = 'InvalidAccessTokenException';
 
   static List<KeyValue> CONSUMER_PAYMENT_TYPE = [
-  KeyValue(i18.common.ARREARS, 'arrears'),
-  KeyValue(i18.common.CORE_ADVANCE, 'advance'),
+    KeyValue(i18.common.ARREARS, 'arrears'),
+    KeyValue(i18.common.CORE_ADVANCE, 'advance'),
   ];
 
-
+  static List<String> DOWNLOAD_OPTIONS = [
+    i18.householdRegister.PDF,
+    i18.householdRegister.EXCEL
+  ];
 }
