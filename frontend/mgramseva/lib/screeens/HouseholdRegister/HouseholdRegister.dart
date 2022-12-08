@@ -10,11 +10,11 @@ import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
-import 'package:mgramseva/widgets/SideBar.dart';
-import 'package:mgramseva/widgets/pagination.dart';
-import 'package:provider/provider.dart';
-import '../../widgets/CustomAppbar.dart';
 import 'package:mgramseva/widgets/Pagination.dart';
+import 'package:mgramseva/widgets/SideBar.dart';
+import 'package:provider/provider.dart';
+
+import '../../widgets/CustomAppbar.dart';
 import 'HouseholdSearch.dart';
 
 class HouseholdRegister extends StatefulWidget {
