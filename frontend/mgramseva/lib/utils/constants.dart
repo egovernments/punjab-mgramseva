@@ -121,6 +121,7 @@ class Constants {
   ];
 
   static List<KeyValue> EMPLOYEE_PAYMENT_METHOD = [
+    KeyValue(i18.common.PAYGOV, 'PAYGOV'),
     KeyValue(i18.common.CHEQUE, 'CHEQUE'),
     KeyValue(i18.common.CASH, 'CASH'),
     KeyValue(i18.common.DD, 'DD'),

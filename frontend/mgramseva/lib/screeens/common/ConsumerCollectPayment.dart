@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
@@ -24,13 +23,11 @@ import 'package:mgramseva/widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
+import '../../components/HouseConnectionandBill/NewConsumerBill.dart';
+import '../../model/demand/update_demand_list.dart';
 import '../../providers/common_provider.dart';
 import '../../providers/language.dart';
 import '../../utils/error_logging.dart';
-
-import '../../components/HouseConnectionandBill/NewConsumerBill.dart';
-import '../../model/demand/update_demand_list.dart';
 import '../../utils/models.dart';
 import '../../widgets/CustomCheckBox.dart';
 import '../../widgets/CustomDetails.dart';
@@ -41,11 +38,18 @@ class ConsumerCollectPayment extends StatefulWidget {
   final List<Demands>? demandList;
   final PaymentType? paymentType;
   final List<UpdateDemands>? updateDemandList;
-  const ConsumerCollectPayment({Key? key, required this.query, this.bill, this.demandList, this.paymentType, this.updateDemandList})
+  const ConsumerCollectPayment(
+      {Key? key,
+      required this.query,
+      this.bill,
+      this.demandList,
+      this.paymentType,
+      this.updateDemandList})
       : super(key: key);
 
   @override
-  _ConsumerCollectPaymentViewState createState() => _ConsumerCollectPaymentViewState();
+  _ConsumerCollectPaymentViewState createState() =>
+      _ConsumerCollectPaymentViewState();
 }
 
 class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
@@ -53,77 +57,80 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
   var autoValidation = false;
   var checkValue = false;
 
-
   @override
   void initState() {
     var consumerPaymentProvider =
-    Provider.of<CollectPaymentProvider>(context, listen: false);
+        Provider.of<CollectPaymentProvider>(context, listen: false);
     var languageProvider =
-    Provider.of<LanguageProvider>(context, listen: false);
-    languageProvider
-        .getLocalizationData(context);
-    consumerPaymentProvider.getBillDetails(context, widget.query, widget.bill, widget.demandList, widget.paymentType, widget.updateDemandList);
+        Provider.of<LanguageProvider>(context, listen: false);
+    languageProvider.getLocalizationData(context);
+    consumerPaymentProvider.getBillDetails(context, widget.query, widget.bill,
+        widget.demandList, widget.paymentType, widget.updateDemandList);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     var consumerPaymentProvider =
-    Provider.of<CollectPaymentProvider>(context, listen: false);
+        Provider.of<CollectPaymentProvider>(context, listen: false);
     var languageProvider =
-    Provider.of<LanguageProvider>(context, listen: false);
+        Provider.of<LanguageProvider>(context, listen: false);
     FetchBill? fetchBill;
     return FocusWatcher(
         child: Scaffold(
-          // drawer: DrawerWrapper(
-          //   Drawer(child: CommonSideBar()),
-          // ),
-          appBar: AppBar(
-            titleSpacing: 0,
-            title: Image(
-                width: 130,
-                image: NetworkImage(
-                  languageProvider.stateInfo!.logoUrlWhite!,
-                )),
-            automaticallyImplyLeading: true,
-            actions: [_buildDropDown()],
-          ),
-          body: StreamBuilder(
-              stream: consumerPaymentProvider.paymentStreamController.stream,
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.data is String) {
-                    return CommonWidgets.buildEmptyMessage(snapshot.data, context);
-                  }
-                  fetchBill = snapshot.data;
-                  return _buildView(snapshot.data);
-                } else if (snapshot.hasError) {
-                  return Notifiers.networkErrorPage(
+      // drawer: DrawerWrapper(
+      //   Drawer(child: CommonSideBar()),
+      // ),
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: Image(
+            width: 130,
+            image: NetworkImage(
+              languageProvider.stateInfo!.logoUrlWhite!,
+            )),
+        automaticallyImplyLeading: true,
+        actions: [_buildDropDown()],
+      ),
+      body: StreamBuilder(
+          stream: consumerPaymentProvider.paymentStreamController.stream,
+          builder: (context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+              if (snapshot.data is String) {
+                return CommonWidgets.buildEmptyMessage(snapshot.data, context);
+              }
+              fetchBill = snapshot.data;
+              return _buildView(snapshot.data);
+            } else if (snapshot.hasError) {
+              return Notifiers.networkErrorPage(
+                  context,
+                  () => consumerPaymentProvider.getBillDetails(
                       context,
-                          () => consumerPaymentProvider.getBillDetails(
-                          context, widget.query, widget.bill, widget.demandList, widget.paymentType, widget.updateDemandList));
-                } else {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return Loaders.circularLoader();
-                    case ConnectionState.active:
-                      return Loaders.circularLoader();
-                    default:
-                      return Container();
-                  }
-                }
-              }),
-          bottomNavigationBar: Consumer<CollectPaymentProvider>(
-            builder: (_, consumerPaymentProvider, child) => Visibility(
-                visible: fetchBill != null,
-                child: BottomButtonBar(
-                    widget.query['isConsumer'] == 'true' ? '${ApplicationLocalizations.of(context).translate(i18.payment.PROCEED_TO_COLLECT)}' :
-                    '${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}',
-                    checkValue  ?
-                        () => checkAmount(fetchBill!, context)
-                        : null)),
-          ),
-        ));
+                      widget.query,
+                      widget.bill,
+                      widget.demandList,
+                      widget.paymentType,
+                      widget.updateDemandList));
+            } else {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return Loaders.circularLoader();
+                case ConnectionState.active:
+                  return Loaders.circularLoader();
+                default:
+                  return Container();
+              }
+            }
+          }),
+      bottomNavigationBar: Consumer<CollectPaymentProvider>(
+        builder: (_, consumerPaymentProvider, child) => Visibility(
+            visible: fetchBill != null,
+            child: BottomButtonBar(
+                widget.query['isConsumer'] == 'true'
+                    ? '${ApplicationLocalizations.of(context).translate(i18.payment.PROCEED_TO_COLLECT)}'
+                    : '${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}',
+                checkValue ? () => checkAmount(fetchBill!, context) : null)),
+      ),
+    ));
   }
 
   Widget _buildView(FetchBill fetchBill) {
@@ -152,7 +159,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
 
   Widget _buildDropDown() {
     var languageProvider =
-    Provider.of<LanguageProvider>(context, listen: false);
+        Provider.of<LanguageProvider>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: DropdownButton(
@@ -181,20 +188,22 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child:
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Consumer<CollectPaymentProvider>(
               builder: (_, consumerPaymentProvider, child) => Visibility(
                   visible: fetchBill.viewDetails,
                   child: _buildViewDetails(fetchBill)),
             ),
-            _buildLabelValue(i18.common.TOTAL_DUE_AMOUNT,
-                '₹ ${(fetchBill.totalAmount ?? 0) >= 0 ? fetchBill.totalAmount : 0}', FontWeight.w700),
+            _buildLabelValue(
+                i18.common.TOTAL_DUE_AMOUNT,
+                '₹ ${(fetchBill.totalAmount ?? 0) >= 0 ? fetchBill.totalAmount : 0}',
+                FontWeight.w700),
             Consumer<CollectPaymentProvider>(
               builder: (_, consumerPaymentProvider, child) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: InkWell(
                   onTap: () => Provider.of<CollectPaymentProvider>(context,
-                      listen: false)
+                          listen: false)
                       .onClickOfViewOrHideDetails(fetchBill, context),
                   child: Text(
                     fetchBill.viewDetails
@@ -218,61 +227,63 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
     return Consumer<CollectPaymentProvider>(
       builder: (_, consumerPaymentProvider, child) => Card(
           child: Wrap(
-            children: [
-              ForceFocusWatcher(
-                  child:
-                  BuildTextField(
-                    i18.common.PAYMENT_AMOUNT,
-                    fetchBill.customAmountCtrl,
-                    textInputType: TextInputType.number,
-                    inputFormatter: [
-                      FilteringTextInputFormatter.allow(RegExp("[0-9]"))
-                    ],
-                    validator:
-                    Validators.partialAmountValidatior,
-                    prefixText: '₹ ',
-                  )),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('${ApplicationLocalizations.of(context).translate(i18.payment.CORE_CHANGE_THE_AMOUNT)}',
-                  style: TextStyle(
-                      color: Colors.blueAccent
-                  ),
-                ),
-              ),
-              RadioButtonFieldBuilder(
-                  context,
-                  i18.common.PAYMENT_METHOD,
-                  fetchBill.paymentMethod,
-                  '',
-                  '',
-                  true,
-                  consumerPaymentProvider.paymentModeList,
-                      (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(
-                      fetchBill, val,)),
-              if(widget.query['isConsumer'] == 'true') CustomCheckBoxWidget(
-                  checkValue,
-                  i18.payment.CORE_I_AGREE_TO_THE,
-                      () => (bool? newVal) {
-                    setState(() {
-                      checkValue = newVal!;
-                    });
-                  },
-                  linkText: i18.payment.TERMS_N_CONDITIONS,
-                  onTapLink: () => onAgreeTermsNConditions(''))
+        children: [
+          ForceFocusWatcher(
+              child: BuildTextField(
+            i18.common.PAYMENT_AMOUNT,
+            fetchBill.customAmountCtrl,
+            textInputType: TextInputType.number,
+            inputFormatter: [
+              FilteringTextInputFormatter.allow(RegExp("[0-9]"))
             ],
+            validator: Validators.partialAmountValidatior,
+            prefixText: '₹ ',
           )),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              '${ApplicationLocalizations.of(context).translate(i18.payment.CORE_CHANGE_THE_AMOUNT)}',
+              style: TextStyle(color: Colors.blueAccent),
+            ),
+          ),
+          RadioButtonFieldBuilder(
+              context,
+              i18.common.PAYMENT_METHOD,
+              fetchBill.paymentMethod,
+              '',
+              '',
+              true,
+              consumerPaymentProvider.paymentModeList,
+              (val) => consumerPaymentProvider.onChangeOfPaymentAmountOrMethod(
+                    fetchBill,
+                    val,
+                  )),
+          if (widget.query['isConsumer'] == 'true')
+            CustomCheckBoxWidget(
+                checkValue,
+                i18.payment.CORE_I_AGREE_TO_THE,
+                () => (bool? newVal) {
+                      setState(() {
+                        checkValue = newVal!;
+                      });
+                    },
+                linkText: i18.payment.TERMS_N_CONDITIONS,
+                onTapLink: () => onAgreeTermsNConditions(''))
+        ],
+      )),
     );
-
   }
 
   Widget _buildViewDetails(FetchBill fetchBill) {
-    var penalty = widget.query['status'] != Constants.CONNECTION_STATUS.first ? CommonProvider.getPenalty(fetchBill.updateDemandList ?? []) : Penalty(0.0, '0', false);
-    var isFirstDemand = CommonProvider.isFirstDemand(fetchBill.demandList ?? []);
+    var penalty = widget.query['status'] != Constants.CONNECTION_STATUS.first
+        ? CommonProvider.getPenalty(fetchBill.updateDemandList ?? [])
+        : Penalty(0.0, '0', false);
+    var isFirstDemand =
+        CommonProvider.isFirstDemand(fetchBill.demandList ?? []);
     List res = [];
     if (fetchBill.billDetails!.isNotEmpty)
       fetchBill.billDetails?.forEach((element) {
-        if(element.amount != 0) res.add(element.amount);
+        if (element.amount != 0) res.add(element.amount);
       });
     return LayoutBuilder(
       builder: (_, constraints) => Column(
@@ -281,7 +292,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
           Padding(
             padding: const EdgeInsets.only(top: 20, bottom: 10),
             child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               subTitle(i18.payment.BILL_DETAILS),
               _buildLabelValue(i18.common.BILL_ID, '${fetchBill.billNumber}'),
               _buildLabelValue(i18.payment.BILL_PERIOD,
@@ -295,84 +306,148 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
               children: [
                 !isFirstDemand
                     ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildLabelValue(
-                          fetchBill.demands?.demandDetails?.first.taxHeadMasterCode == 'WS_TIME_PENALTY'
-                              ?  i18.billDetails.WS_10102 : 'WS_${fetchBill.demands?.demandDetails?.first.taxHeadMasterCode}',
-                          fetchBill.demandList?.first.demandDetails?.first.taxHeadMasterCode == '10201'
-                              ? '₹ ${CommonProvider.getNormalPenalty(fetchBill.demandList ?? [])}'
-                              : '₹ ${CommonProvider.getArrearsAmount(fetchBill.demandList ?? [])}'),
-                      if( !isFirstDemand && fetchBill.demands?.demandDetails?.first.taxHeadMasterCode == 'WS_TIME_PENALTY')
-                        _buildLabelValue(
-                            i18.billDetails.WS_10201,
-                            '₹ ${CommonProvider.getPenaltyApplicable(fetchBill.demandList ?? []).penaltyApplicable}'),
-                      if(fetchBill.demandList?.first.demandDetails?.first.taxHeadMasterCode == '10201' && fetchBill.demandList?.first.demandDetails?.last.taxHeadMasterCode == '10102')
-                        _buildLabelValue('WS_${fetchBill.demands?.demandDetails?.last.taxHeadMasterCode}',
-                            '₹ ${((fetchBill.demands?.demandDetails?.last.taxAmount ?? 0) - (fetchBill.demands?.demandDetails?.last.collectionAmount ?? 0)  ).toString()}')
-                    ])
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                            _buildLabelValue(
+                                fetchBill.demands?.demandDetails?.first
+                                            .taxHeadMasterCode ==
+                                        'WS_TIME_PENALTY'
+                                    ? i18.billDetails.WS_10102
+                                    : 'WS_${fetchBill.demands?.demandDetails?.first.taxHeadMasterCode}',
+                                fetchBill.demandList?.first.demandDetails?.first
+                                            .taxHeadMasterCode ==
+                                        '10201'
+                                    ? '₹ ${CommonProvider.getNormalPenalty(fetchBill.demandList ?? [])}'
+                                    : '₹ ${CommonProvider.getArrearsAmount(fetchBill.demandList ?? [])}'),
+                            if (!isFirstDemand &&
+                                fetchBill.demands?.demandDetails?.first
+                                        .taxHeadMasterCode ==
+                                    'WS_TIME_PENALTY')
+                              _buildLabelValue(i18.billDetails.WS_10201,
+                                  '₹ ${CommonProvider.getPenaltyApplicable(fetchBill.demandList ?? []).penaltyApplicable}'),
+                            if (fetchBill.demandList?.first.demandDetails?.first
+                                        .taxHeadMasterCode ==
+                                    '10201' &&
+                                fetchBill.demandList?.first.demandDetails?.last
+                                        .taxHeadMasterCode ==
+                                    '10102')
+                              _buildLabelValue(
+                                  'WS_${fetchBill.demands?.demandDetails?.last.taxHeadMasterCode}',
+                                  '₹ ${((fetchBill.demands?.demandDetails?.last.taxAmount ?? 0) - (fetchBill.demands?.demandDetails?.last.collectionAmount ?? 0)).toString()}')
+                          ])
                     : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildLabelValue(
-                          fetchBill.demands?.demandDetails?.first.taxHeadMasterCode == 'WS_TIME_PENALTY'
-                              ?  i18.billDetails.CURRENT_BILL : 'WS_${fetchBill.demands?.demandDetails?.first.taxHeadMasterCode}',
-                          fetchBill.demands?.demandDetails?.first.taxHeadMasterCode == 'WS_TIME_PENALTY'
-                              ? '₹' +  CommonProvider.getCurrentBill(fetchBill.demandList ?? []).toString()
-                              : CommonProvider.checkAdvance(fetchBill.demandList ?? []) ? '₹ ${((fetchBill.demands?.demandDetails?.first.taxAmount ?? 0))}'
-                              : '₹ ${((fetchBill.demands?.demandDetails?.first.taxAmount ?? 0) - (fetchBill.demands?.demandDetails?.first.collectionAmount ?? 0))}'),
-                      (fetchBill.billDetails?.first.billAccountDetails?.last.arrearsAmount ?? 0) >
-                          0
-                          ? _buildLabelValue(i18.billDetails.ARRERS_DUES,
-                          fetchBill.demands?.demandDetails?.first.taxHeadMasterCode == 'WS_TIME_PENALTY'
-                              ?  '₹' + CommonProvider.getArrearsAmountOncePenaltyExpires(fetchBill.demandList ?? []).toString()
-                              :'₹ ${fetchBill.billDetails?.first.billAccountDetails?.last.arrearsAmount.toString()}')
-                          : SizedBox(
-                        height: 0,
-                      )
-                    ]),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                            _buildLabelValue(
+                                fetchBill.demands?.demandDetails?.first
+                                            .taxHeadMasterCode ==
+                                        'WS_TIME_PENALTY'
+                                    ? i18.billDetails.CURRENT_BILL
+                                    : 'WS_${fetchBill.demands?.demandDetails?.first.taxHeadMasterCode}',
+                                fetchBill.demands?.demandDetails?.first
+                                            .taxHeadMasterCode ==
+                                        'WS_TIME_PENALTY'
+                                    ? '₹' +
+                                        CommonProvider.getCurrentBill(
+                                                fetchBill.demandList ?? [])
+                                            .toString()
+                                    : CommonProvider.checkAdvance(
+                                            fetchBill.demandList ?? [])
+                                        ? '₹ ${((fetchBill.demands?.demandDetails?.first.taxAmount ?? 0))}'
+                                        : '₹ ${((fetchBill.demands?.demandDetails?.first.taxAmount ?? 0) - (fetchBill.demands?.demandDetails?.first.collectionAmount ?? 0))}'),
+                            (fetchBill.billDetails?.first.billAccountDetails
+                                            ?.last.arrearsAmount ??
+                                        0) >
+                                    0
+                                ? _buildLabelValue(
+                                    i18.billDetails.ARRERS_DUES,
+                                    fetchBill.demands?.demandDetails?.first
+                                                .taxHeadMasterCode ==
+                                            'WS_TIME_PENALTY'
+                                        ? '₹' +
+                                            CommonProvider
+                                                    .getArrearsAmountOncePenaltyExpires(
+                                                        fetchBill.demandList ??
+                                                            [])
+                                                .toString()
+                                        : '₹ ${fetchBill.billDetails?.first.billAccountDetails?.last.arrearsAmount.toString()}')
+                                : SizedBox(
+                                    height: 0,
+                                  )
+                          ]),
                 // }),
                 if (fetchBill.billDetails != null && res.length > 1)
                   _buildWaterCharges(fetchBill, constraints),
                 _buildLabelValue(
                     i18.common.CORE_TOTAL_BILL_AMOUNT,
-
-                    isFirstDemand && fetchBill.demands?.demandDetails?.first.taxHeadMasterCode == 'WS_TIME_PENALTY'
-                        ? '₹' + (CommonProvider.getCurrentBill(fetchBill.demandList ?? []) + CommonProvider.getArrearsAmountOncePenaltyExpires(fetchBill.demandList ?? [])).toString()
+                    isFirstDemand &&
+                            fetchBill.demands?.demandDetails?.first
+                                    .taxHeadMasterCode ==
+                                'WS_TIME_PENALTY'
+                        ? '₹' +
+                            (CommonProvider.getCurrentBill(
+                                        fetchBill.demandList ?? []) +
+                                    CommonProvider
+                                        .getArrearsAmountOncePenaltyExpires(
+                                            fetchBill.demandList ?? []))
+                                .toString()
                         : '₹ ${fetchBill.billDetails?.first.billAccountDetails?.last.totalBillAmount}'),
-                if(CommonProvider.getPenaltyOrAdvanceStatus(fetchBill.mdmsData, true)) _buildLabelValue(
-                    i18.common.CORE_ADVANCE_ADJUSTED,
-                    '₹ ' + (fetchBill.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount != 0.0
-                        ? '-${(fetchBill.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount) }'
-                        : '${(fetchBill.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount) }')),
-                if(CommonProvider.getPenaltyOrAdvanceStatus(fetchBill.mdmsData, false, true) && isFirstDemand && penalty.isDueDateCrossed)
-                  _buildLabelValue(i18.billDetails.CORE_PENALTY,
-                      '₹' + (CommonProvider.getPenaltyApplicable(fetchBill.demandList).penaltyApplicable).toString()),
-                if(CommonProvider.getPenaltyOrAdvanceStatus(fetchBill.mdmsData, true)) _buildLabelValue(
-                    i18.common.CORE_NET_AMOUNT_DUE,
-                    '₹ ${CommonProvider.getNetDueAmountWithWithOutPenalty(fetchBill.totalAmount ?? 0, penalty)}'),
-                if(CommonProvider.getPenaltyOrAdvanceStatus(fetchBill.mdmsData, false, true) && isFirstDemand)  CustomDetailsCard(
-                    Column(
-                      children: [
-                        NewConsumerBillState.getLabelText(
-                            i18.billDetails.CORE_PENALTY,
-                            ('₹' +
-                                (penalty.isDueDateCrossed ? CommonProvider.getPenaltyApplicable(fetchBill.demandList).penaltyApplicable : penalty.penalty)
-                                    .toString()),
-                            context,
-                            subLabel: NewConsumerBillState.getDueDatePenalty(penalty.date, context)),
-                        NewConsumerBillState.getLabelText(
-                            i18.billDetails.CORE_NET_DUE_AMOUNT_WITH_PENALTY,
-                            ('₹' +
-                                (CommonProvider.getNetDueAmountWithWithOutPenalty(fetchBill.totalAmount ?? 0, penalty, true)
-                                    .toString())
-                                    .toString()),
-                            context,
-                            subLabel: NewConsumerBillState.getDueDatePenalty(penalty.date, context))
-
-                      ],
-                    )
-                )
+                if (CommonProvider.getPenaltyOrAdvanceStatus(
+                    fetchBill.mdmsData, true))
+                  _buildLabelValue(
+                      i18.common.CORE_ADVANCE_ADJUSTED,
+                      '₹ ' +
+                          (fetchBill.billDetails?.first.billAccountDetails?.last
+                                      .advanceAdjustedAmount !=
+                                  0.0
+                              ? '-${(fetchBill.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount)}'
+                              : '${(fetchBill.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount)}')),
+                if (CommonProvider.getPenaltyOrAdvanceStatus(
+                        fetchBill.mdmsData, false, true) &&
+                    isFirstDemand &&
+                    penalty.isDueDateCrossed)
+                  _buildLabelValue(
+                      i18.billDetails.CORE_PENALTY,
+                      '₹' +
+                          (CommonProvider.getPenaltyApplicable(
+                                      fetchBill.demandList)
+                                  .penaltyApplicable)
+                              .toString()),
+                if (CommonProvider.getPenaltyOrAdvanceStatus(
+                    fetchBill.mdmsData, true))
+                  _buildLabelValue(i18.common.CORE_NET_AMOUNT_DUE,
+                      '₹ ${CommonProvider.getNetDueAmountWithWithOutPenalty(fetchBill.totalAmount ?? 0, penalty)}'),
+                if (CommonProvider.getPenaltyOrAdvanceStatus(
+                        fetchBill.mdmsData, false, true) &&
+                    isFirstDemand)
+                  CustomDetailsCard(Column(
+                    children: [
+                      NewConsumerBillState.getLabelText(
+                          i18.billDetails.CORE_PENALTY,
+                          ('₹' +
+                              (penalty.isDueDateCrossed
+                                      ? CommonProvider.getPenaltyApplicable(
+                                              fetchBill.demandList)
+                                          .penaltyApplicable
+                                      : penalty.penalty)
+                                  .toString()),
+                          context,
+                          subLabel: NewConsumerBillState.getDueDatePenalty(
+                              penalty.date, context)),
+                      NewConsumerBillState.getLabelText(
+                          i18.billDetails.CORE_NET_DUE_AMOUNT_WITH_PENALTY,
+                          ('₹' +
+                              (CommonProvider.getNetDueAmountWithWithOutPenalty(
+                                          fetchBill.totalAmount ?? 0,
+                                          penalty,
+                                          true)
+                                      .toString())
+                                  .toString()),
+                          context,
+                          subLabel: NewConsumerBillState.getDueDatePenalty(
+                              penalty.date, context))
+                    ],
+                  ))
               ],
             ),
           )
@@ -382,56 +457,62 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
   }
 
   Widget _buildWaterCharges(FetchBill bill, BoxConstraints constraints) {
-
     return Container(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
         margin: EdgeInsets.symmetric(vertical: 5),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(4)),
         child: constraints.maxWidth > 760
             ? Column(
-            children: List.generate(bill.billDetails?.length ?? 0, (index) {
-              if(bill.billDetails?[index].billAccountDetails?.first.taxHeadCode == 'WS_ADVANCE_CARRYFORWARD') return Container();
-              if (index != 0) {
-                return Row(
-                  children: [
-                    Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        padding: EdgeInsets.only(top: 18, bottom: 3),
-                        child: new Align(
-                            alignment: Alignment.centerLeft,
-                            child: _buildDemandDetails(
-                                bill, bill.billDetails![index]))),
-                    Container(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        padding: EdgeInsets.only(top: 18, bottom: 3),
-                        child: Text('₹ ${bill.billDetails![index].amount}')),
-                  ],
-                );
-              } else {
-                return SizedBox(
-                  height: 0,
-                );
-              }
-            }))
+                children: List.generate(bill.billDetails?.length ?? 0, (index) {
+                if (bill.billDetails?[index].billAccountDetails?.first
+                        .taxHeadCode ==
+                    'WS_ADVANCE_CARRYFORWARD') return Container();
+                if (index != 0) {
+                  return Row(
+                    children: [
+                      Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          padding: EdgeInsets.only(top: 18, bottom: 3),
+                          child: new Align(
+                              alignment: Alignment.centerLeft,
+                              child: _buildDemandDetails(
+                                  bill, bill.billDetails![index]))),
+                      Container(
+                          width: MediaQuery.of(context).size.width / 2.5,
+                          padding: EdgeInsets.only(top: 18, bottom: 3),
+                          child: Text('₹ ${bill.billDetails![index].amount}')),
+                    ],
+                  );
+                } else {
+                  return SizedBox(
+                    height: 0,
+                  );
+                }
+              }))
             : Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: List.generate(bill.billDetails?.length ?? 0, (index) {
-              if (index == 0 || bill.billDetails?[index].billAccountDetails?.first.taxHeadCode == 'WS_ADVANCE_CARRYFORWARD') {
-                return TableRow(children: [
-                  TableCell(child: Text("")),
-                  TableCell(child: Text(""))
-                ]);
-              } else {
-                return TableRow(children: [
-                  TableCell(
-                      child: _buildDemandDetails(
-                          bill, bill.billDetails![index])),
-                  TableCell(
-                      child: Text('₹ ${bill.billDetails![index].amount}',
-                        textAlign: TextAlign.center,))
-                ]);
-              }
-            }).toList()));
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                children: List.generate(bill.billDetails?.length ?? 0, (index) {
+                  if (index == 0 ||
+                      bill.billDetails?[index].billAccountDetails?.first
+                              .taxHeadCode ==
+                          'WS_ADVANCE_CARRYFORWARD') {
+                    return TableRow(children: [
+                      TableCell(child: Text("")),
+                      TableCell(child: Text(""))
+                    ]);
+                  } else {
+                    return TableRow(children: [
+                      TableCell(
+                          child: _buildDemandDetails(
+                              bill, bill.billDetails![index])),
+                      TableCell(
+                          child: Text(
+                        '₹ ${bill.billDetails![index].amount}',
+                        textAlign: TextAlign.center,
+                      ))
+                    ]);
+                  }
+                }).toList()));
   }
 
   Widget _buildDemandDetails(
@@ -464,45 +545,47 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
     return LayoutBuilder(
         builder: (_, constraints) => constraints.maxWidth > 760
             ? Row(
-          children: [
-            Container(
-                width: MediaQuery.of(context).size.width / 3,
-                padding: EdgeInsets.only(top: 18, bottom: 3),
-                child: new Align(
-                    alignment: Alignment.centerLeft,
-                    child: subTitle('$label', 16))),
-            Container(
-                width: MediaQuery.of(context).size.width / 2.5,
-                padding: EdgeInsets.only(top: 18, bottom: 3, left: 24),
-                child: Text('$value',
-                    style: TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w400))),
-          ],
-        )
+                children: [
+                  Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      padding: EdgeInsets.only(top: 18, bottom: 3),
+                      child: new Align(
+                          alignment: Alignment.centerLeft,
+                          child: subTitle('$label', 16))),
+                  Container(
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      padding: EdgeInsets.only(top: 18, bottom: 3, left: 24),
+                      child: Text('$value',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w400))),
+                ],
+              )
             : Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: [
-              TableRow(children: [
-                TableCell(
-                    child: Container(
-                        alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        child: subTitle('$label', 16))),
-                TableCell(
-                    child: Text('$value',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w400)))
-              ])
-            ]));
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                children: [
+                    TableRow(children: [
+                      TableCell(
+                          child: Container(
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: subTitle('$label', 16))),
+                      TableCell(
+                          child: Text('$value',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w400)))
+                    ])
+                  ]));
   }
 
   paymentInfo(FetchBill fetchBill, BuildContext context) {
     var consumerPaymentProvider =
-    Provider.of<CollectPaymentProvider>(context, listen: false);
+        Provider.of<CollectPaymentProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
       autoValidation = false;
-      if(fetchBill.paymentMethod == 'PAYGOV') {
-        consumerPaymentProvider.createTransaction(fetchBill, context);
+      print(fetchBill.paymentMethod);
+      if (fetchBill.paymentMethod == 'PAYGOV') {
+        consumerPaymentProvider.createTransaction(
+            fetchBill, widget.query['tenantId'], context);
       }
     } else {
       setState(() {
@@ -510,6 +593,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
       });
     }
   }
+
   callNotifyer() async {
     await Future.delayed(Duration(seconds: 1));
     setState(() {});
@@ -517,7 +601,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
 
   get dropDownItems {
     var languageProvider =
-    Provider.of<LanguageProvider>(context, listen: false);
+        Provider.of<LanguageProvider>(context, listen: false);
     return languageProvider.stateInfo!.languages!.map((value) {
       return DropdownMenuItem(
         value: value,
@@ -544,7 +628,8 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
                 confirmLabel: i18.common.CORE_CONFIRM,
                 onConfirm: () => paymentInfo(fetchBill, context),
               ));
-        },);
+        },
+      );
     } else {
       setState(() {
         autoValidation = true;
@@ -559,7 +644,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
       } else {
         throw 'Could not launch appStoreLink';
       }
-    } catch(e){
+    } catch (e) {
       ErrorHandler.logError('failed to launch the url $link');
     }
   }
@@ -567,7 +652,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
   void onChangeOfLanguage(value) {
     // selectedLanguage = value;
     var languageProvider =
-    Provider.of<LanguageProvider>(context, listen: false);
+        Provider.of<LanguageProvider>(context, listen: false);
 
     languageProvider.onSelectionOfLanguage(
         value!, languageProvider.stateInfo!.languages ?? []);

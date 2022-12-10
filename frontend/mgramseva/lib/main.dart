@@ -31,6 +31,7 @@ import 'package:mgramseva/providers/notifications_provider.dart';
 import 'package:mgramseva/providers/reset_password_provider.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/providers/tenants_provider.dart';
+import 'package:mgramseva/providers/transaction_update_provider.dart';
 import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
@@ -188,6 +189,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => RevenueDashboard()),
           ChangeNotifierProvider(create: (_) => HouseholdRegisterProvider()),
           ChangeNotifierProvider(create: (_) => NotificationScreenProvider()),
+          ChangeNotifierProvider(create: (_) => TransactionUpdateProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => GestureDetector(
@@ -267,8 +269,9 @@ class _LandingPageState extends State<LandingPage> {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     commonProvider.getLoginCredentials();
     await commonProvider.getAppVersionDetails();
-    CommonMethods()
-        .checkVersion(context, commonProvider.appVersion!.latestAppVersion);
+    if (!kIsWeb)
+      CommonMethods()
+          .checkVersion(context, commonProvider.appVersion!.latestAppVersion);
 
     //
     //   await Future.delayed(Duration(seconds: 2));
