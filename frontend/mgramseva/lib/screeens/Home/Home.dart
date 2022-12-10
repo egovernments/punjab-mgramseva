@@ -17,7 +17,7 @@ import 'package:mgramseva/widgets/Footer.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
-import '../../widgets/customAppbar.dart';
+import '../../widgets/CustomAppbar.dart';
 import 'HomeWalkThrough/HomeWalkThroughContainer.dart';
 import 'HomeWalkThrough/HomeWalkThroughList.dart';
 
