@@ -6,7 +6,6 @@ WORKDIR /app
 # copy the project files
 COPY ${WORK_DIR} .
 RUN flutter doctor
-RUN flutter clean
 RUN flutter pub get
 RUN flutter build web
 # Create runtime image
