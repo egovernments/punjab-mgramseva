@@ -11,7 +11,6 @@ import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/model/demand/update_demand_list.dart';
 import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/model/success_handler.dart';
-import 'package:mgramseva/providers/formSubmit.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
@@ -590,36 +589,24 @@ class CollectPaymentProvider with ChangeNotifier {
         transactionDetails.transaction?.failUrl =
             '${postUri.queryParameters['failUrl']}';
 
-        String html = """<body>
-    <form id = 'frmData' name='frmData' role='form' method='post' action= '${Uri.parse('${postUri.queryParameters['txURL']}')}' >
-    <input type="hidden" id='checksum' name='checksum' value= '${postUri.queryParameters['checksum']}' />
-    <input type="text" id='messageType' class='form-control valid' name='messageType' value='${postUri.queryParameters['messageType']}'/>
-    <input type="text" id='merchantId' class='form-control valid' name='merchantId' value='${postUri.queryParameters['merchantId']}'/>
-    <input type="text" id='serviceId' class='form-control valid' name='serviceId' value='${postUri.queryParameters['serviceId']}'/>
-    <input type="text" id='orderId' class='form-control' name='orderId' value='${postUri.queryParameters['orderId']}'/>
-    <input type="text" id='customerId' class='form-control valid' name='customerId' value='${postUri.queryParameters['customerId']}'/>
-    <input type="text" id='transactionAmount' class='form-control valid' name='transactionAmount' value='${postUri.queryParameters['transactionAmount']}'/>
-    <input type="text" id='currencyCode' class='form-control' name='currencyCode' value='${postUri.queryParameters['currencyCode']}'/>
-    <input type="text" id='requestDateTime' class='form-control hasDatePicker' name='requestDateTime' value='${transactionDetails.transaction?.requestDateTime}'/>
-    <input type="text" id='successUrl' class='form-control' name='successUrl' value='${postUri.queryParameters['successUrl']}'/>
-    <input type="text" id='failUrl' class='form-control' name='failUrl' value='${postUri.queryParameters['failUrl']}'/>
-    <input type="text" id='additionalField1' class='form-control valid' name='additionalField1' value='${postUri.queryParameters['additionalField1']}'/>
-    <input type="text" id='additionalField2' class='form-control valid' name='additionalField2' value='${postUri.queryParameters['additionalField2']}'/>
-    <input type="text" id='additionalField3' class='form-control valid' name='additionalField3' value='${postUri.queryParameters['additionalField3']}'/>
-    <input type="text" id='additionalField4' class='form-control valid' name='additionalField4' value='${postUri.queryParameters['additionalField4']}'/>
-    <input type="text" id='additionalField5' class='form-control valid' name='additionalField5' value='${postUri.queryParameters['additionalField5']}'/>
-<button type='submit' id='SubmitBtn'>Submit</button>
-    </form>
-    
-    <script type="text/javascript">
-    window.onload=function(){
-          document.forms["frmData"].submit();
-    }
-</script>
-  </body>""";
-
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => FormSubmit(html)));
+        js.onCollectPayment(
+            '${Uri.parse('${postUri.queryParameters['txURL']}')}',
+            '${postUri.queryParameters['checksum']}',
+            '${postUri.queryParameters['messageType']}',
+            '${postUri.queryParameters['merchantId']}',
+            '${postUri.queryParameters['serviceId']}',
+            '${postUri.queryParameters['orderId']}',
+            '${postUri.queryParameters['customerId']}',
+            '${postUri.queryParameters['transactionAmount']}',
+            '${postUri.queryParameters['currencyCode']}',
+            '${transactionDetails.transaction?.requestDateTime}',
+            '${postUri.queryParameters['successUrl']}',
+            '${postUri.queryParameters['failUrl']}',
+            '${postUri.queryParameters['additionalField1']}',
+            '${postUri.queryParameters['additionalField2']}',
+            '${postUri.queryParameters['additionalField3']}',
+            '${postUri.queryParameters['additionalField4']}',
+            '${postUri.queryParameters['additionalField5']}');
       }
     } on CustomException catch (e, s) {
       Navigator.pop(context);
