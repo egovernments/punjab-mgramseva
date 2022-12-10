@@ -59,14 +59,18 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
+    super.initState();
+  }
+
+  afterViewBuild() async {
     var consumerPaymentProvider =
         Provider.of<CollectPaymentProvider>(context, listen: false);
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
-    languageProvider.getLocalizationData(context);
+    await languageProvider.getLocalizationData(context);
     consumerPaymentProvider.getBillDetails(context, widget.query, widget.bill,
         widget.demandList, widget.paymentType, widget.updateDemandList);
-    super.initState();
   }
 
   @override
