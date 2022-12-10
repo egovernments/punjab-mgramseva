@@ -534,6 +534,7 @@ class _Payment {
   String get PROCEED_TO_COLLECT => 'PROCEED_TO_COLLECT';
   String get TRANSACTION_ID => 'TRANSACTION_ID';
   String get WHATSAPP_TEXT_SHARE_RECEIPT => 'WHATSAPP_TEXT_SHARE_RECEIPT';
+  String get PAYMENT_FAILED => 'PAYMENT_FAILED';
 }
 
 class _HomeWalkThroughMsg {

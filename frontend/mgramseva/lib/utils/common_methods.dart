@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -143,8 +142,6 @@ class CommonMethods {
   static Future<void> fetchPackageInfo() async {
     try {
       packageInfo = await PackageInfo.fromPlatform();
-      // await fetchAppVersion(Url.MDMS, getAppVersion('pb'));
-      print(apiBaseUrl);
     } catch (e, s) {
       ErrorHandler.logError(e.toString(), s);
     }

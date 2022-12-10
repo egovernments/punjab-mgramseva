@@ -25,6 +25,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../components/HouseConnectionandBill/NewConsumerBill.dart';
 import '../../model/demand/update_demand_list.dart';
+import '../../model/localization/language.dart';
 import '../../providers/common_provider.dart';
 import '../../providers/language.dart';
 import '../../utils/error_logging.dart';
@@ -56,6 +57,8 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
   final formKey = GlobalKey<FormState>();
   var autoValidation = false;
   var checkValue = false;
+  List<StateInfo>? stateList;
+  Languages? selectedLanguage;
 
   @override
   void initState() {
@@ -68,9 +71,16 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
         Provider.of<CollectPaymentProvider>(context, listen: false);
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
-    await languageProvider.getLocalizationData(context);
-    consumerPaymentProvider.getBillDetails(context, widget.query, widget.bill,
-        widget.demandList, widget.paymentType, widget.updateDemandList);
+    await languageProvider
+        .getLocalizationData(context)
+        .then((value) => callNotifyer());
+    await consumerPaymentProvider.getBillDetails(
+        context,
+        widget.query,
+        widget.bill,
+        widget.demandList,
+        widget.paymentType,
+        widget.updateDemandList);
   }
 
   @override
@@ -87,35 +97,62 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
       // ),
       appBar: AppBar(
         titleSpacing: 0,
-        title: Image(
-            width: 130,
-            image: NetworkImage(
-              languageProvider.stateInfo!.logoUrlWhite!,
-            )),
+        title: Text('mGramSeva'),
         automaticallyImplyLeading: true,
         actions: [_buildDropDown()],
       ),
       body: StreamBuilder(
-          stream: consumerPaymentProvider.paymentStreamController.stream,
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData) {
-              if (snapshot.data is String) {
-                return CommonWidgets.buildEmptyMessage(snapshot.data, context);
+          stream: languageProvider.streamController.stream,
+          builder: (context, AsyncSnapshot languageSnapshot) {
+            if (languageSnapshot.hasData) {
+              var stateData = languageSnapshot.data as List<StateInfo>;
+              stateList = stateData;
+              var index = stateData.first.languages
+                  ?.indexWhere((element) => element.isSelected);
+              if (index != null && index != -1) {
+                selectedLanguage = stateData.first.languages?[index];
+              } else {
+                selectedLanguage = stateData.first.languages?.first;
               }
-              fetchBill = snapshot.data;
-              return _buildView(snapshot.data);
-            } else if (snapshot.hasError) {
+
+              return StreamBuilder(
+                  stream:
+                      consumerPaymentProvider.paymentStreamController.stream,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data is String) {
+                        return CommonWidgets.buildEmptyMessage(
+                            snapshot.data, context);
+                      }
+
+                      fetchBill = snapshot.data;
+                      return _buildView(snapshot.data);
+                    } else if (snapshot.hasError) {
+                      return Notifiers.networkErrorPage(
+                          context,
+                          () => consumerPaymentProvider.getBillDetails(
+                              context,
+                              widget.query,
+                              widget.bill,
+                              widget.demandList,
+                              widget.paymentType,
+                              widget.updateDemandList));
+                    } else {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return Loaders.circularLoader();
+                        case ConnectionState.active:
+                          return Loaders.circularLoader();
+                        default:
+                          return Container();
+                      }
+                    }
+                  });
+            } else if (languageSnapshot.hasError) {
               return Notifiers.networkErrorPage(
-                  context,
-                  () => consumerPaymentProvider.getBillDetails(
-                      context,
-                      widget.query,
-                      widget.bill,
-                      widget.demandList,
-                      widget.paymentType,
-                      widget.updateDemandList));
+                  context, () => languageProvider.getLocalizationData(context));
             } else {
-              switch (snapshot.connectionState) {
+              switch (languageSnapshot.connectionState) {
                 case ConnectionState.waiting:
                   return Loaders.circularLoader();
                 case ConnectionState.active:
@@ -162,12 +199,13 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
   }
 
   Widget _buildDropDown() {
-    var languageProvider =
-        Provider.of<LanguageProvider>(context, listen: false);
+    print(selectedLanguage);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: DropdownButton(
-          value: languageProvider.selectedLanguage,
+          value: selectedLanguage != null
+              ? selectedLanguage
+              : Languages(label: 'ENGLISH', value: 'en_IN', isSelected: true),
           style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 16),
           items: dropDownItems,
           onChanged: onChangeOfLanguage),
@@ -599,14 +637,12 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
   }
 
   callNotifyer() async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 2));
     setState(() {});
   }
 
   get dropDownItems {
-    var languageProvider =
-        Provider.of<LanguageProvider>(context, listen: false);
-    return languageProvider.stateInfo!.languages!.map((value) {
+    return stateList?.first.languages!.map((value) {
       return DropdownMenuItem(
         value: value,
         child: Text('${value.label}'),
@@ -654,12 +690,11 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
   }
 
   void onChangeOfLanguage(value) {
-    // selectedLanguage = value;
+    selectedLanguage = value;
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
-
     languageProvider.onSelectionOfLanguage(
-        value!, languageProvider.stateInfo!.languages ?? []);
+        value!, stateList?.first.languages ?? []);
   }
 
   Text subTitle(String label, [double? size]) =>
