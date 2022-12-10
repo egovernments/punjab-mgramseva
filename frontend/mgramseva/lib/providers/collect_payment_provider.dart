@@ -584,10 +584,9 @@ class CollectPaymentProvider with ChangeNotifier {
             .split('${now.year}');
         transactionDetails.transaction?.requestDateTime =
             '${dateStringPrefix[0]}${now.year} ${dateStringPrefix[1]}';
-        transactionDetails.transaction?.successUrl =
-            '${postUri.queryParameters['successUrl']}';
-        transactionDetails.transaction?.failUrl =
-            '${postUri.queryParameters['failUrl']}';
+        var successUrl =
+            'https://mgramseva-uat.psegs.in/mgramseva/paymentSuccess?billId=${fetchBill.id}&tenantId=pb.amritsar&consumerCode=${fetchBill.consumerCode}&txnId=${transactionDetails.transaction?.txnId}&paidBy=${fetchBill.payerName}&txnAmt=${amount}&mobileNumber=${fetchBill.mobileNumber}';
+        var failUrl = 'https://mgramseva-uat.psegs.in/mgramseva/paymentFailure';
 
         js.onCollectPayment(
             '${Uri.parse('${postUri.queryParameters['txURL']}')}',
@@ -600,8 +599,8 @@ class CollectPaymentProvider with ChangeNotifier {
             '${postUri.queryParameters['transactionAmount']}',
             '${postUri.queryParameters['currencyCode']}',
             '${transactionDetails.transaction?.requestDateTime}',
-            '${postUri.queryParameters['successUrl']}',
-            '${postUri.queryParameters['failUrl']}',
+            successUrl,
+            failUrl,
             '${postUri.queryParameters['additionalField1']}',
             '${postUri.queryParameters['additionalField2']}',
             '${postUri.queryParameters['additionalField3']}',
