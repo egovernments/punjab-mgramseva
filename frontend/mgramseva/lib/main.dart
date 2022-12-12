@@ -267,8 +267,9 @@ class _LandingPageState extends State<LandingPage> {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     commonProvider.getLoginCredentails();
     await commonProvider.getAppVersionDetails();
-    CommonMethods()
-        .checkVersion(context, commonProvider.appVersion!.latestAppVersion);
+    if (!kIsWeb)
+      CommonMethods()
+          .checkVersion(context, commonProvider.appVersion!.latestAppVersion);
 
     //
     //   await Future.delayed(Duration(seconds: 2));
