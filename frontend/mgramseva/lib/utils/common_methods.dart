@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -136,6 +137,18 @@ class CommonMethods {
     } else {
       return MediaType('', '');
     }
+  }
+
+  static List<KeyValue> getAlphabetsWithKeyValue() {
+    List<String> alphabets = [];
+    List<KeyValue> excelColumns = [];
+    for (int i = 65; i <= 90; i++) {
+      alphabets.add(String.fromCharCode(i));
+    }
+    for (int i = 0; i < 26; i++) {
+      excelColumns.add(KeyValue(alphabets[i], i));
+    }
+    return excelColumns;
   }
 
   static Future<void> fetchPackageInfo() async {

@@ -78,7 +78,9 @@ void main() {
 
     await CommonMethods.fetchPackageInfo();
 
-    runApp(MyApp());
+    runApp(
+      MyApp(),
+    );
   }, (Object error, StackTrace stack) {
     ErrorHandler.logError(error.toString(), stack);
     // exit(1); /// to close the app smoothly
@@ -265,35 +267,16 @@ class _LandingPageState extends State<LandingPage> {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     commonProvider.getLoginCredentails();
     await commonProvider.getAppVersionDetails();
-    CommonMethods()
-        .checkVersion(context, commonProvider.appVersion!.latestAppVersion);
-    //
-    //   await Future.delayed(Duration(seconds: 2));
-    //   IsolateNameServer.registerPortWithName(
-    //       _port.sendPort, 'downloader_send_port');
-    //   _port.listen((dynamic data) {
-    //     String id = data[0];
-    //     DownloadTaskStatus status = data[1];
-    //     int progress = data[2];
-    //     if(status == DownloadTaskStatus.complete){
-    //       OpenFile.open(Provider.of<CommonProvider>(context, listen: false).downloadUrl);
-    //       // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //       //   content: Text('Yay! Successfully downloaded!'),
-    //       //   action:
-    //       //     SnackBarAction(label: 'Open', onPressed: (){
-    //       //       print(Provider.of<CommonProvider>(context, listen: false).downloadUrl);
-    //       //     })
-    //       // ));
-    //     }
-    //     setState(() {});
-    //   });
-    //   FlutterDownloader.registerCallback(downloadCallback);
+    if (!kIsWeb)
+      CommonMethods()
+          .checkVersion(context, commonProvider.appVersion!.latestAppVersion);
   }
 
   @override
   Widget build(BuildContext context) {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-
+    var languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
     return Scaffold(
       body: StreamBuilder(
           stream: commonProvider.userLoggedStreamCtrl.stream,
