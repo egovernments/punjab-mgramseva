@@ -522,7 +522,7 @@ class Routing {
       case Routes.PAYMENT_SUCCESS:
         if (query.keys.contains('billId') &&
             query.keys.contains('tenantId') &&
-            query.keys.contains('txnId') &&
+            query.keys.contains('eg_pg_txnid') &&
             query.keys.contains('paidBy') &&
             query.keys.contains('txnAmt') &&
             query.keys.contains('consumerCode') &&

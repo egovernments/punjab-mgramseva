@@ -124,7 +124,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
         '',
         Routes.PAYMENT_SUCCESS,
         subHeader:
-            '${ApplicationLocalizations.of(context).translate(i18.payment.TRANSACTION_ID)} \n ${widget.query['txnId']}',
+            '${ApplicationLocalizations.of(context).translate(i18.payment.TRANSACTION_ID)} \n ${widget.query['eg_pg_txnid']}',
         downloadLink: i18.common.RECEIPT_DOWNLOAD,
         whatsAppShare: i18.common.SHARE_RECEIPTS,
         downloadLinkLabel: i18.common.RECEIPT_DOWNLOAD,

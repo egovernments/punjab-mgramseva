@@ -23,7 +23,7 @@ class TransactionUpdateProvider with ChangeNotifier {
   Future<void> loadPaymentSuccessPage(Map query, BuildContext context) async {
     try {
       var transactionResponse = await TransactionRepository()
-          .updateTransaction({"transactionId": query['txnId']});
+          .updateTransaction({"transactionId": query['eg_pg_txnid']});
       // var paymentsResponse = await TransactionRepository().createPayment(body);
       if (transactionResponse != null) {
         transactionController.add(transactionResponse);
@@ -39,7 +39,7 @@ class TransactionUpdateProvider with ChangeNotifier {
       BuildContext context, Map data, bool isWhatsAppShare) async {
     String input =
         '${ApplicationLocalizations.of(context).translate(i18.payment.WHATSAPP_TEXT_SHARE_RECEIPT)}';
-    input = input.replaceAll('{transaction}', data['txnId']);
+    input = input.replaceAll('{transaction}', data['eg_pg_txnid']);
     try {
       var payment = {
         "Payment": {

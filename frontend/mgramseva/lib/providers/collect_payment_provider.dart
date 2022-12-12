@@ -582,10 +582,13 @@ class CollectPaymentProvider with ChangeNotifier {
         DateTime now = new DateTime.now();
         var dateStringPrefix = '${postUri.queryParameters['requestDateTime']}'
             .split('${now.year}');
-        transactionDetails.transaction?.requestDateTime =
+        var requestedDate =
             '${dateStringPrefix[0]}${now.year} ${dateStringPrefix[1]}';
-        var successUrl = '${postUri.queryParameters['checksum']}';
-        var failUrl = 'https://mgramseva-uat.psegs.in/mgramseva/paymentFailure';
+        var successUrl = '${postUri.queryParameters['successUrl']}' +
+            '&billId=${fetchBill.id}&tenantId=${tenantId}&consumerCode=${fetchBill.consumerCode}&paidBy=${fetchBill.payerName}&txnAmt=${amount}&mobileNumber=${fetchBill.mobileNumber}';
+        var failUrl = '${postUri.queryParameters['failUrl']}'
+                .split('originalreturnurl=/mgramseva')[0] +
+            'paymentFailure/eg_pg_txnid=${transactionDetails.transaction!.txnId}';
 
         js.onCollectPayment(
             '${Uri.parse('${postUri.queryParameters['txURL']}')}',
@@ -597,9 +600,9 @@ class CollectPaymentProvider with ChangeNotifier {
             '${postUri.queryParameters['customerId']}',
             '${postUri.queryParameters['transactionAmount']}',
             '${postUri.queryParameters['currencyCode']}',
-            '${transactionDetails.transaction?.requestDateTime}',
-            '${postUri.queryParameters['successUrl']}',
-            '${postUri.queryParameters['failUrl']}',
+            requestedDate,
+            successUrl,
+            failUrl,
             '${postUri.queryParameters['additionalField1']}',
             '${postUri.queryParameters['additionalField2']}',
             '${postUri.queryParameters['additionalField3']}',
