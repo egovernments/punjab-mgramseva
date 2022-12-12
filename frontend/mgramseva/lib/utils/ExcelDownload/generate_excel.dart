@@ -42,5 +42,5 @@ Future<void> generateExcel(
   workbook.dispose();
 
   //Save and launch the file.
-  await saveAndLaunchFile(bytes, 'Invoice.xlsx');
+  await saveAndLaunchFile(bytes, 'HouseholdRegister.xlsx');
 }
