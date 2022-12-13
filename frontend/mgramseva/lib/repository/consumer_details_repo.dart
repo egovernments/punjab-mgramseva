@@ -3,8 +3,8 @@ import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/common/demand.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/BaseService.dart';
+import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -102,20 +102,11 @@ class ConsumerRepository extends BaseService {
     var body = {'userInfo': commonProvider.userDetails?.userRequest?.toJson()};
 
     var res = await makeRequest(
-        url: Url.FETCH_BILL,
-        method: RequestType.POST,
-        queryParameters: query,
-        body: body,
-        requestInfo: RequestInfo(
-            APIConstants.API_MODULE_NAME,
-            APIConstants.API_VERSION,
-            APIConstants.API_TS,
-            "",
-            APIConstants.API_DID,
-            APIConstants.API_KEY,
-            APIConstants.API_MESSAGE_ID,
-            commonProvider.userDetails!.accessToken,
-            commonProvider.userDetails?.userRequest?.toJson()));
+      url: Url.FETCH_BILL,
+      method: RequestType.POST,
+      queryParameters: query,
+      body: {'RequestInfo': {}},
+    );
 
     if (res != null) {
       fetchBill =
@@ -198,11 +189,10 @@ class ConsumerRepository extends BaseService {
             APIConstants.API_DID,
             APIConstants.API_KEY,
             APIConstants.API_MESSAGE_ID,
-            commonProvider.userDetails!.accessToken));
+            null));
 
     if (res != null) {
       response = TransactionDetails.fromJson(res);
-
     }
     return response;
   }

@@ -111,19 +111,13 @@ class Constants {
 
   static List<KeyValue> CONSUMER_PAYMENT_METHOD = [
     KeyValue(i18.common.PAYGOV, 'PAYGOV'),
-    KeyValue(i18.common.ONLINE, 'ONLINE'),
-    KeyValue(i18.common.CHEQUE, 'CHEQUE'),
-    KeyValue(i18.common.CASH, 'CASH'),
-    KeyValue(i18.common.DD, 'DD'),
     KeyValue(i18.common.OFFLINE_NEFT, 'OFFLINE_NEFT'),
     KeyValue(i18.common.OFFLINE_RTGS, 'OFFLINE_RTGS'),
     KeyValue(i18.common.POSTAL_ORDER, 'POSTAL_ORDER'),
   ];
 
   static List<KeyValue> EMPLOYEE_PAYMENT_METHOD = [
-    KeyValue(i18.common.CHEQUE, 'CHEQUE'),
     KeyValue(i18.common.CASH, 'CASH'),
-    KeyValue(i18.common.DD, 'DD'),
     KeyValue(i18.common.OFFLINE_NEFT, 'OFFLINE_NEFT'),
     KeyValue(i18.common.OFFLINE_RTGS, 'OFFLINE_RTGS'),
     KeyValue(i18.common.POSTAL_ORDER, 'POSTAL_ORDER'),
@@ -154,9 +148,12 @@ class Constants {
   static const String INVALID_EXCEPTION_CODE = 'InvalidAccessTokenException';
 
   static List<KeyValue> CONSUMER_PAYMENT_TYPE = [
-  KeyValue(i18.common.ARREARS, 'arrears'),
-  KeyValue(i18.common.CORE_ADVANCE, 'advance'),
+    KeyValue(i18.common.ARREARS, 'arrears'),
+    KeyValue(i18.common.CORE_ADVANCE, 'advance'),
   ];
 
-
+  static List<String> DOWNLOAD_OPTIONS = [
+    i18.householdRegister.PDF,
+    i18.householdRegister.EXCEL
+  ];
 }

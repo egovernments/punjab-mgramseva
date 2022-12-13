@@ -1,41 +1,41 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/main.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetails.dart';
-import 'package:mgramseva/screeens/Home/Home.dart';
-import 'package:mgramseva/screeens/HouseholdRegister/HouseholdRegister.dart';
-import 'package:mgramseva/screeens/Login/Login.dart';
-import 'package:mgramseva/screeens/ConnectionResults/SearchConnection.dart';
-import 'package:mgramseva/screeens/Notifications/NotificationScreen.dart';
-import 'package:mgramseva/screeens/PasswordSuccess/Passwordsuccess.dart';
-import 'package:mgramseva/screeens/SelectLanguage/SelectLanguage.dart';
-import 'package:mgramseva/main.dart';
+import 'package:mgramseva/screeens/AddExpense/ExpenseDetails.dart';
 import 'package:mgramseva/screeens/ChangePassword/Changepassword.dart';
 import 'package:mgramseva/screeens/ConnectionResults/ConnectionResults.dart';
-import 'package:mgramseva/screeens/Profile/EditProfile.dart';
-import 'package:mgramseva/screeens/AddExpense/ExpenseDetails.dart';
+import 'package:mgramseva/screeens/ConnectionResults/SearchConnection.dart';
+import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetails.dart';
+import 'package:mgramseva/screeens/Feedback/FeedBack.dart';
 import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
+import 'package:mgramseva/screeens/Home/Home.dart';
 import 'package:mgramseva/screeens/HouseholdDetail/HouseholdDetail.dart';
+import 'package:mgramseva/screeens/HouseholdRegister/HouseholdRegister.dart';
+import 'package:mgramseva/screeens/Login/Login.dart';
+import 'package:mgramseva/screeens/Notifications/NotificationScreen.dart';
+import 'package:mgramseva/screeens/PasswordSuccess/Passwordsuccess.dart';
+import 'package:mgramseva/screeens/Profile/EditProfile.dart';
 import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/ResetPassword/Updatepassword.dart';
-import 'package:mgramseva/screeens/Feedback/FeedBack.dart';
+import 'package:mgramseva/screeens/SelectLanguage/SelectLanguage.dart';
+import 'package:mgramseva/screeens/common/ConsumerCollectPayment.dart';
 import 'package:mgramseva/screeens/common/PaymentFailure.dart';
 import 'package:mgramseva/screeens/common/PaymentSuccess.dart';
 import 'package:mgramseva/screeens/common/commondownload.dart';
-import 'package:mgramseva/screeens/common/ConsumerCollectPayment.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/role_actions.dart';
 import 'package:mgramseva/widgets/PageNotAvailable.dart';
 import 'package:provider/provider.dart';
-import 'model/success_handler.dart';
 
+import 'model/success_handler.dart';
 import 'model/user/user_details.dart';
 import 'screeens/ForgotPassword/ForgotPassword.dart';
 import 'screeens/common/CollectPayment.dart';
@@ -88,8 +88,7 @@ class Routing {
         return MaterialPageRoute(
             builder: (_) => CommonDownload(query: localQuery),
             settings: RouteSettings(name: routePath));
-      }
-      else if (Routes.COMMON_PAYMENT == path && settings.arguments == null) {
+      } else if (Routes.COMMON_PAYMENT == path && settings.arguments == null) {
         late Map<String, dynamic> localQuery;
         if (settings.arguments != null) {
           var cloneQuery = <String, dynamic>{};
@@ -97,8 +96,7 @@ class Routing {
           localQuery = cloneQuery;
           localQuery.remove('demandList');
           localQuery.remove('fetchBill');
-        }
-        else {
+        } else {
           if (queryValidator(Routes.COMMON_PAYMENT, query)) {
             localQuery = query;
           } else {
@@ -107,10 +105,36 @@ class Routing {
         }
 
         return MaterialPageRoute(
-            builder: (_) => ConsumerCollectPayment(query: localQuery,bill: (settings.arguments as Map?)?['fetchBill'] as List<Bill>?, demandList: (settings.arguments as Map?)?['demandList'] as List<Demands>?),
+            builder: (_) => ConsumerCollectPayment(
+                query: localQuery,
+                bill: (settings.arguments as Map?)?['fetchBill'] as List<Bill>?,
+                demandList: (settings.arguments as Map?)?['demandList']
+                    as List<Demands>?),
             settings: RouteSettings(
                 name:
-                '${Routes.COMMON_PAYMENT}?${Uri(queryParameters: localQuery).query}'));
+                    '${Routes.COMMON_PAYMENT}?${Uri(queryParameters: localQuery).query}'));
+      } else if (Routes.PAYMENT_SUCCESS == path && settings.arguments == null) {
+        late Map<String, dynamic> localQuery;
+        if (settings.arguments != null) {
+          var cloneQuery = <String, dynamic>{};
+          cloneQuery.addAll(settings.arguments as Map<String, dynamic>);
+          localQuery = cloneQuery;
+        } else {
+          if (queryValidator(Routes.PAYMENT_SUCCESS, query)) {
+            localQuery = query;
+          } else {
+            return pageNotAvailable;
+          }
+        }
+        return MaterialPageRoute(
+            builder: (_) => PaymentSuccess(query: localQuery),
+            settings: RouteSettings(
+                name:
+                    '${Routes.PAYMENT_SUCCESS}?${Uri(queryParameters: localQuery).query}'));
+      } else if (Routes.PAYMENT_FAILURE == path && settings.arguments == null) {
+        return MaterialPageRoute(
+            builder: (_) => PaymentFailure(),
+            settings: RouteSettings(name: Routes.PAYMENT_FAILURE));
       }
 
       var userDetails = commonProvider.getWebLoginStatus();
@@ -129,7 +153,6 @@ class Routing {
         path = Routes.HOME;
       }
     }
-
 
     if (kIsWeb) {
       FirebaseAnalytics analytics = FirebaseAnalytics();
@@ -322,7 +345,10 @@ class Routing {
         }
         return MaterialPageRoute(
             builder: (_) => Dashboard(initialTabIndex: tabIndex),
-            settings: RouteSettings(name: tabIndex != null ? '${Routes.DASHBOARD}?tab=$tabIndex' : '${Routes.DASHBOARD}'));
+            settings: RouteSettings(
+                name: tabIndex != null
+                    ? '${Routes.DASHBOARD}?tab=$tabIndex'
+                    : '${Routes.DASHBOARD}'));
       case Routes.SEARCH_CONSUMER_RESULT:
         if (settings.arguments == null) {
           return MaterialPageRoute(
@@ -393,29 +419,6 @@ class Routing {
             builder: (_) => ExpenseResults(
                 searchResult: settings.arguments as SearchResult),
             settings: RouteSettings(name: Routes.EXPENSE_RESULT));
-      case Routes.PAYMENT_SUCCESS:
-        late Map<String, dynamic> localQuery;
-        if (settings.arguments != null) {
-          var cloneQuery = <String, dynamic>{};
-          cloneQuery.addAll(settings.arguments as Map<String, dynamic>);
-          localQuery = cloneQuery;
-          localQuery.remove('demandList');
-          localQuery.remove('fetchBill');
-        }
-        else {
-          if (queryValidator(Routes.COMMON_PAYMENT, query)) {
-            localQuery = query;
-          } else {
-            return pageNotAvailable;
-          }
-        }
-          return MaterialPageRoute(
-              builder: (_) => PaymentSuccess(query: localQuery),
-              settings: RouteSettings(name: '${Routes.PAYMENT_SUCCESS}?${Uri(queryParameters: localQuery).query}'));
-      case Routes.PAYMENT_FAILURE:
-        return MaterialPageRoute(
-            builder: (_) => PaymentFailure(),
-            settings: RouteSettings(name: Routes.PAYMENT_FAILURE));
       case Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT:
         late Map<String, dynamic> localQuery;
         if (settings.arguments == null) {
@@ -433,7 +436,11 @@ class Routing {
           localQuery.remove('status');
         }
         return MaterialPageRoute(
-            builder: (_) => ConnectionPaymentView(query: localQuery, bill: (settings.arguments as Map?)?['fetchBill'] as List<Bill>?, demandList: (settings.arguments as Map?)?['demandList'] as List<Demands>?),
+            builder: (_) => ConnectionPaymentView(
+                query: localQuery,
+                bill: (settings.arguments as Map?)?['fetchBill'] as List<Bill>?,
+                demandList: (settings.arguments as Map?)?['demandList']
+                    as List<Demands>?),
             settings: RouteSettings(
                 name:
                     '${Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT}?${Uri(queryParameters: localQuery).query}'));
@@ -507,10 +514,19 @@ class Routing {
         return false;
 
       case Routes.COMMON_PAYMENT:
-        if(query.keys.contains('consumerCode') &&
+        if (query.keys.contains('consumerCode') &&
             query.keys.contains('tenantId') &&
             query.keys.contains('businessService') &&
-            query.keys.contains('status')) return true;
+            query.keys.contains('mobileNumber')) return true;
+        return false;
+      case Routes.PAYMENT_SUCCESS:
+        if (query.keys.contains('billId') &&
+            query.keys.contains('tenantId') &&
+            query.keys.contains('eg_pg_txnid') &&
+            query.keys.contains('paidBy') &&
+            query.keys.contains('txnAmt') &&
+            query.keys.contains('consumerCode') &&
+            query.keys.contains('mobileNumber')) return true;
         return false;
       default:
         return false;

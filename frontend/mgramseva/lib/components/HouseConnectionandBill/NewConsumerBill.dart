@@ -13,6 +13,11 @@ import 'package:mgramseva/widgets/ButtonGroup.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
 import 'package:provider/provider.dart';
+
+import '../../utils/models.dart';
+import '../../widgets/CustomDetails.dart';
+
+import '../../model/demand/update_demand_list.dart';
 import '../../utils/models.dart';
 import '../../widgets/CustomDetails.dart';
 
@@ -38,7 +43,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
 
   static getLabelText(label, value, context, {subLabel = ''}) {
     return Container(
-        padding: EdgeInsets.only(top: 16, bottom: 16),
+        padding: EdgeInsets.only(top: 8, bottom: 8),
         child: (Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -56,11 +61,13 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                       ),
                       subLabel?.trim?.toString() != ''
                           ? Text( subLabel,
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400,
+                            color: Theme.of(context).primaryColorLight),
                       ) : Text('')
                     ])),
             Text(value,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400))
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+            textAlign: TextAlign.center,)
           ],
         )));
   }
