@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/Transaction/transaction.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/providers/transaction_update_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -13,6 +14,7 @@ import '../../utils/Locilization/application_localizations.dart';
 import '../../utils/common_widgets.dart';
 import '../../utils/loaders.dart';
 import '../../utils/notifiers.dart';
+import '../../widgets/NoLoginFailurePage.dart';
 
 class PaymentSuccess extends StatefulWidget {
   final Map<String, dynamic> query;
@@ -52,6 +54,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
         Provider.of<TransactionUpdateProvider>(context, listen: false);
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
+    TransactionDetails? transactionDetails;
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -80,7 +83,8 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
                         return CommonWidgets.buildEmptyMessage(
                             snapshot.data, context);
                       }
-                      return _buildPaymentSuccessPage(context);
+                      transactionDetails = snapshot.data;
+                      return _buildPaymentSuccessPage(snapshot.data, context);
                     } else if (snapshot.hasError) {
                       return Notifiers.networkErrorPage(
                           context,
@@ -114,31 +118,40 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
     );
   }
 
-  Widget _buildPaymentSuccessPage(BuildContext context) {
+  Widget _buildPaymentSuccessPage(
+      TransactionDetails transactionDetails, BuildContext context) {
     var transactionProvider =
         Provider.of<TransactionUpdateProvider>(context, listen: false);
-    return NoLoginSuccess(
-      SuccessHandler(
-        i18.common.PAYMENT_COMPLETE,
-        '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${widget.query['mobileNumber']})',
-        '',
-        Routes.PAYMENT_SUCCESS,
-        subHeader:
-            '${ApplicationLocalizations.of(context).translate(i18.payment.TRANSACTION_ID)} \n ${widget.query['eg_pg_txnid']}',
-        downloadLink: i18.common.RECEIPT_DOWNLOAD,
-        whatsAppShare: i18.common.SHARE_RECEIPTS,
-        downloadLinkLabel: i18.common.RECEIPT_DOWNLOAD,
-        subtitleFun: () => getSubtitleDynamicLocalization(
-            context, widget.query['mobileNumber']),
-      ),
-      callBackDownload: () => transactionProvider
-          .downloadOrShareReceiptWithoutLogin(context, widget.query, false),
-      callBackWhatsApp: () => transactionProvider
-          .downloadOrShareReceiptWithoutLogin(context, widget.query, false),
-      backButton: false,
-      isWithoutLogin: true,
-      isConsumer: widget.query['isConsumer'] == 'true' ? true : false,
-    );
+    return transactionDetails.transaction?.txnStatus != "FAILURE"
+        ? NoLoginSuccess(
+            SuccessHandler(
+              i18.common.PAYMENT_COMPLETE,
+              '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${transactionDetails.transaction?.user?.mobileNumber})',
+              '',
+              Routes.PAYMENT_SUCCESS,
+              subHeader:
+                  '${ApplicationLocalizations.of(context).translate(i18.payment.TRANSACTION_ID)} \n ${widget.query['eg_pg_txnid']}',
+              downloadLink: i18.common.RECEIPT_DOWNLOAD,
+              whatsAppShare: i18.common.SHARE_RECEIPTS,
+              downloadLinkLabel: i18.common.RECEIPT_DOWNLOAD,
+              subtitleFun: () => getSubtitleDynamicLocalization(
+                  context,
+                  transactionDetails.transaction!.user!.mobileNumber
+                          .toString() ??
+                      ''),
+            ),
+            callBackDownload: () =>
+                transactionProvider.downloadOrShareReceiptWithoutLogin(
+                    context, widget.query, false),
+            callBackWhatsApp: () =>
+                transactionProvider.downloadOrShareReceiptWithoutLogin(
+                    context, widget.query, false),
+            backButton: false,
+            isWithoutLogin: true,
+            isConsumer: true,
+          )
+        : NoLoginFailurePage(i18.payment.PAYMENT_FAILED);
+    ;
   }
 
   Widget _buildDropDown() {

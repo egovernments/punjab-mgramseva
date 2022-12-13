@@ -584,11 +584,8 @@ class CollectPaymentProvider with ChangeNotifier {
             .split('${now.year}');
         var requestedDate =
             '${dateStringPrefix[0]}${now.year} ${dateStringPrefix[1]}';
-        var successUrl = '${postUri.queryParameters['successUrl']}' +
-            '&billId=${fetchBill.id}&tenantId=${tenantId}&consumerCode=${fetchBill.consumerCode}&paidBy=${fetchBill.payerName}&txnAmt=${amount}&mobileNumber=${fetchBill.mobileNumber}';
-        var failUrl = '${postUri.queryParameters['failUrl']}'
-                .split('originalreturnurl=/mgramseva')[0] +
-            'paymentFailure/eg_pg_txnid=${transactionDetails.transaction!.txnId}';
+        var successUrl = '${postUri.queryParameters['successUrl']}';
+        var failUrl = '${postUri.queryParameters['failUrl']}';
 
         js.onCollectPayment(
             '${Uri.parse('${postUri.queryParameters['txURL']}')}',

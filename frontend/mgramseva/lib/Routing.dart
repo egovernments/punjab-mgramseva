@@ -520,13 +520,7 @@ class Routing {
             query.keys.contains('mobileNumber')) return true;
         return false;
       case Routes.PAYMENT_SUCCESS:
-        if (query.keys.contains('billId') &&
-            query.keys.contains('tenantId') &&
-            query.keys.contains('eg_pg_txnid') &&
-            query.keys.contains('paidBy') &&
-            query.keys.contains('txnAmt') &&
-            query.keys.contains('consumerCode') &&
-            query.keys.contains('mobileNumber')) return true;
+        if (query.keys.contains('eg_pg_txnid')) return true;
         return false;
       default:
         return false;
