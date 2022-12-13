@@ -11,7 +11,6 @@ import '../../model/localization/language.dart';
 import '../../providers/language.dart';
 import '../../routers/Routers.dart';
 import '../../utils/Locilization/application_localizations.dart';
-import '../../utils/common_widgets.dart';
 import '../../utils/loaders.dart';
 import '../../utils/notifiers.dart';
 import '../../widgets/NoLoginFailurePage.dart';
@@ -79,10 +78,6 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
                   stream: transactionProvider.transactionController.stream,
                   builder: (context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
-                      if (snapshot.data is String) {
-                        return CommonWidgets.buildEmptyMessage(
-                            snapshot.data, context);
-                      }
                       transactionDetails = snapshot.data;
                       return _buildPaymentSuccessPage(snapshot.data, context);
                     } else if (snapshot.hasError) {

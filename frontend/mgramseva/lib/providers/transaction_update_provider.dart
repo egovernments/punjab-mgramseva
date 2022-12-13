@@ -26,8 +26,9 @@ class TransactionUpdateProvider with ChangeNotifier {
           .updateTransaction({"transactionId": query['eg_pg_txnid']});
       // var paymentsResponse = await TransactionRepository().createPayment(body);
       if (transactionResponse != null) {
-        transactionController.add(transactionResponse);
         transactionDetails = transactionResponse;
+        transactionController.add(transactionResponse);
+        notifyListeners();
       }
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
