@@ -28,6 +28,7 @@ class PaymentSuccess extends StatefulWidget {
 class _PaymentSuccessState extends State<PaymentSuccess> {
   List<StateInfo>? stateList;
   Languages? selectedLanguage;
+  TransactionDetails? transactionDetails;
 
   @override
   void initState() {
@@ -40,11 +41,12 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
         Provider.of<TransactionUpdateProvider>(context, listen: false);
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
+    await transactionUpdateProvider.loadPaymentSuccessPage(
+        widget.query, context);
+    transactionDetails = transactionUpdateProvider.transactionDetails;
     await languageProvider
         .getLocalizationData(context)
         .then((value) => callNotifyer());
-    await transactionUpdateProvider.loadPaymentSuccessPage(
-        widget.query, context);
   }
 
   @override
@@ -53,7 +55,6 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
         Provider.of<TransactionUpdateProvider>(context, listen: false);
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
-    TransactionDetails? transactionDetails;
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -74,28 +75,12 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
               } else {
                 selectedLanguage = stateData.first.languages?.first;
               }
-              return StreamBuilder(
-                  stream: transactionProvider.transactionController.stream,
-                  builder: (context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
-                      transactionDetails = snapshot.data;
-                      return _buildPaymentSuccessPage(snapshot.data, context);
-                    } else if (snapshot.hasError) {
-                      return Notifiers.networkErrorPage(
-                          context,
-                          () => transactionProvider.loadPaymentSuccessPage(
-                              widget.query, context));
-                    } else {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
-                          return Loaders.circularLoader();
-                        case ConnectionState.active:
-                          return Loaders.circularLoader();
-                        default:
-                          return Container();
-                      }
-                    }
-                  });
+              if (transactionDetails != null &&
+                  transactionDetails!.transaction != null)
+                return _buildPaymentSuccessPage(transactionDetails!, context);
+              else
+                return NoLoginFailurePage(i18.payment.PAYMENT_FAILED);
+              ;
             } else if (languageSnapshot.hasError) {
               return Notifiers.networkErrorPage(
                   context, () => languageProvider.getLocalizationData(context));
@@ -114,14 +99,14 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
   }
 
   Widget _buildPaymentSuccessPage(
-      TransactionDetails transactionDetails, BuildContext context) {
+      TransactionDetails transactionObject, BuildContext context) {
     var transactionProvider =
         Provider.of<TransactionUpdateProvider>(context, listen: false);
-    return transactionDetails.transaction?.txnStatus != "FAILURE"
+    return transactionObject.transaction?.txnStatus != "FAILURE"
         ? NoLoginSuccess(
             SuccessHandler(
               i18.common.PAYMENT_COMPLETE,
-              '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${transactionDetails.transaction?.user?.mobileNumber})',
+              '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${transactionDetails!.transaction?.user?.mobileNumber})',
               '',
               Routes.PAYMENT_SUCCESS,
               subHeader:
@@ -131,7 +116,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
               downloadLinkLabel: i18.common.RECEIPT_DOWNLOAD,
               subtitleFun: () => getSubtitleDynamicLocalization(
                   context,
-                  transactionDetails.transaction!.user!.mobileNumber
+                  transactionDetails!.transaction!.user!.mobileNumber
                           .toString() ??
                       ''),
             ),
