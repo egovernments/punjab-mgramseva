@@ -14,16 +14,8 @@ class TransactionRepository extends BaseService {
     var res = await makeRequest(
         url: Url.UPDATE_TRANSACTION,
         method: RequestType.POST,
-        queryParameters: queryparams,
-        requestInfo: RequestInfo(
-            APIConstants.API_MODULE_NAME,
-            APIConstants.API_VERSION,
-            APIConstants.API_TS,
-            "",
-            APIConstants.API_DID,
-            APIConstants.API_KEY,
-            APIConstants.API_MESSAGE_ID,
-            null));
+        body: {"RequestInfo": {}},
+        queryParameters: queryparams);
 
     if (res != null) {
       response = TransactionDetails.fromJson(res);
