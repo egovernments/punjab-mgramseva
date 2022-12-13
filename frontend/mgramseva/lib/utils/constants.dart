@@ -24,6 +24,7 @@ class Constants {
   static const String ADD_EXPENSE_KEY = 'add_expense_key';
   static const String HOME_KEY = 'home_key';
   static const String APP_VERSION = 'appversion';
+  static const String BUILD_NUMBER = 'buildNumber';
 
   static List<KeyValue> GENDER = [
     KeyValue('CORE_COMMON_GENDER_MALE', 'MALE'),
