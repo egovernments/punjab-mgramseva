@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
@@ -61,7 +59,8 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   void initState() {
     var consumerPaymentProvider =
         Provider.of<CollectPaymentProvider>(context, listen: false);
-    consumerPaymentProvider.getBillDetails(context, widget.query, widget.bill, widget.demandList, widget.paymentType, widget.updateDemandList);
+    consumerPaymentProvider.getBillDetails(context, widget.query, widget.bill,
+        widget.demandList, widget.paymentType, widget.updateDemandList);
     super.initState();
   }
 
@@ -112,11 +111,11 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
     FetchBill? fetchBill;
     return FocusWatcher(
         child: Scaffold(
-          drawer: DrawerWrapper(
-            Drawer(child: SideBar()),
-          ),
-          appBar: CustomAppBar(),
-          body: StreamBuilder(
+      drawer: DrawerWrapper(
+        Drawer(child: SideBar()),
+      ),
+      appBar: CustomAppBar(),
+      body: StreamBuilder(
           stream: consumerPaymentProvider.paymentStreamController.stream,
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
@@ -129,7 +128,12 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               return Notifiers.networkErrorPage(
                   context,
                   () => consumerPaymentProvider.getBillDetails(
-                      context, widget.query, widget.bill, widget.demandList, widget.paymentType, widget.updateDemandList));
+                      context,
+                      widget.query,
+                      widget.bill,
+                      widget.demandList,
+                      widget.paymentType,
+                      widget.updateDemandList));
             } else {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
@@ -147,21 +151,23 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             child: BottomButtonBar(
                 '${ApplicationLocalizations.of(context).translate(i18.common.COLLECT_PAYMENT)}',
                 () => showGeneralDialog(
-                    barrierLabel: "Label",
-                    barrierDismissible: false,
-                    barrierColor: Colors.black.withOpacity(0.5),
-                    context: context,
-                    pageBuilder: (context, anim1, anim2) {
-                      return Align(
-                          alignment: Alignment.center,
-                          child: ConfirmationPopUp(
-                            textString: i18.payment.CORE_AMOUNT_CONFIRMATION,
-                            subTextString: '₹ ${fetchBill?.customAmountCtrl.text}',
-                            cancelLabel: i18.common.CORE_GO_BACK,
-                            confirmLabel: i18.common.CORE_CONFIRM,
-                            onConfirm: () => paymentInfo(fetchBill!, context),
-                          ));
-                    },))),
+                      barrierLabel: "Label",
+                      barrierDismissible: false,
+                      barrierColor: Colors.black.withOpacity(0.5),
+                      context: context,
+                      pageBuilder: (context, anim1, anim2) {
+                        return Align(
+                            alignment: Alignment.center,
+                            child: ConfirmationPopUp(
+                              textString: i18.payment.CORE_AMOUNT_CONFIRMATION,
+                              subTextString:
+                                  '₹ ${fetchBill?.customAmountCtrl.text}',
+                              cancelLabel: i18.common.CORE_GO_BACK,
+                              confirmLabel: i18.common.CORE_CONFIRM,
+                              onConfirm: () => paymentInfo(fetchBill!, context),
+                            ));
+                      },
+                    ))),
       ),
     ));
   }
@@ -215,8 +221,10 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                   visible: fetchBill.viewDetails,
                   child: _buildViewDetails(fetchBill)),
             ),
-            _buildLabelValue(i18.common.TOTAL_DUE_AMOUNT,
-                '₹ ${(fetchBill.totalAmount ?? 0) >= 0 ? fetchBill.totalAmount : 0}', FontWeight.w700),
+            _buildLabelValue(
+                i18.common.TOTAL_DUE_AMOUNT,
+                '₹ ${(fetchBill.totalAmount ?? 0) >= 0 ? fetchBill.totalAmount : 0}',
+                FontWeight.w700),
             Consumer<CollectPaymentProvider>(
               builder: (_, consumerPaymentProvider, child) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
@@ -248,24 +256,21 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
           child: Wrap(
         children: [
           ForceFocusWatcher(
-              child:
-              BuildTextField(
-                i18.common.PAYMENT_AMOUNT,
-                 fetchBill.customAmountCtrl,
-                textInputType: TextInputType.number,
-                inputFormatter: [
-                  FilteringTextInputFormatter.allow(RegExp("[0-9]"))
-                ],
-                validator:
-                    Validators.partialAmountValidatior,
-                prefixText: '₹ ',
-              )),
+              child: BuildTextField(
+            i18.common.PAYMENT_AMOUNT,
+            fetchBill.customAmountCtrl,
+            textInputType: TextInputType.number,
+            inputFormatter: [
+              FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+            ],
+            validator: Validators.partialAmountValidatior,
+            prefixText: '₹ ',
+          )),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('${ApplicationLocalizations.of(context).translate(i18.payment.CORE_CHANGE_THE_AMOUNT)}',
-            style: TextStyle(
-              color: Colors.blueAccent
-            ),
+            child: Text(
+              '${ApplicationLocalizations.of(context).translate(i18.payment.CORE_CHANGE_THE_AMOUNT)}',
+              style: TextStyle(color: Colors.blueAccent),
             ),
           ),
           RadioButtonFieldBuilder(
@@ -284,13 +289,16 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   }
 
   Widget _buildViewDetails(FetchBill fetchBill) {
-    var penalty = widget.query['status'] != Constants.CONNECTION_STATUS.first ? CommonProvider.getPenalty(fetchBill.updateDemandList ?? []) : Penalty(0.0, '0', false);
-    var isFirstDemand = CommonProvider.isFirstDemand(fetchBill.demandList ?? []);
+    var penalty = widget.query['status'] != Constants.CONNECTION_STATUS.first
+        ? CommonProvider.getPenalty(fetchBill.updateDemandList ?? [])
+        : Penalty(0.0, '0', false);
+    var isFirstDemand =
+        CommonProvider.isFirstDemand(fetchBill.demandList ?? []);
     List res = [];
     num len = fetchBill.billDetails?.first.billAccountDetails?.length as num;
     if (fetchBill.billDetails!.isNotEmpty)
       fetchBill.billDetails?.forEach((element) {
-        if(element.amount != 0) res.add(element.amount);
+        if (element.amount != 0) res.add(element.amount);
       });
     return LayoutBuilder(
       builder: (_, constraints) => Column(
@@ -414,12 +422,13 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                     fetchBill.mdmsData, true))
                   _buildLabelValue(
                       i18.common.CORE_ADVANCE_ADJUSTED,
-                      '₹ ' +
-                          (fetchBill.billDetails?.first.billAccountDetails?.last
-                                      .advanceAdjustedAmount !=
-                                  0.0
-                              ? '-${(fetchBill.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount)}'
-                              : '${(fetchBill.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount)}')),
+                      (fetchBill.billDetails?.first.billAccountDetails?.last
+                                  .advanceAdjustedAmount !=
+                              0.0
+                          ? '- ₹ ' +
+                              '${(fetchBill.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount)}'
+                          : '- ₹ ' +
+                              '${(fetchBill.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount)}')),
                 if (CommonProvider.getPenaltyOrAdvanceStatus(
                         fetchBill.mdmsData, false, true) &&
                     isFirstDemand &&

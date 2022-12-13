@@ -15,7 +15,7 @@ ThemeData get theme => ThemeData(
       centerTitle: false,
     ),
     textTheme: TextTheme(
-      headline1: TextStyle(fontWeight: FontWeight.w700, fontSize: 32, fontFamily: 'Roboto Condensed', fontStyle: FontStyle.normal, color: Color.fromRGBO(11, 12, 12, 1)),
+      headline1: TextStyle(fontWeight: FontWeight.w700, fontSize: 32, fontStyle: FontStyle.normal, color: Color.fromRGBO(11, 12, 12, 1)),
       headline2: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
       button: TextStyle(fontWeight: FontWeight.w500, fontSize: 19, color: Colors.white), // Elevated Button(Orange)
       subtitle1: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
