@@ -18,6 +18,7 @@ Future<void> generateExcel(
 
   // //Set data in the worksheet.
   sheet.getRangeByName('A1:D1').columnWidth = 32.5;
+  sheet.getRangeByName('A1:D1').cellStyle.hAlign = HAlignType.center;
 
   for (int i = 0; i < headers.length; i++) {
     sheet
@@ -31,6 +32,16 @@ Future<void> generateExcel(
           .getRangeByName(
               '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
           .setText(tableData[i - 2][j]);
+      sheet
+          .getRangeByName(
+              '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
+          .cellStyle
+          .hAlign = HAlignType.center;
+      sheet
+          .getRangeByName(
+              '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
+          .cellStyle
+          .vAlign = VAlignType.center;
     }
   }
 
