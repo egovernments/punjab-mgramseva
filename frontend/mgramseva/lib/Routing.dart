@@ -118,7 +118,6 @@ class Routing {
           var cloneQuery = <String, dynamic>{};
           cloneQuery.addAll(settings.arguments as Map<String, dynamic>);
           localQuery = cloneQuery;
-          localQuery.remove('msg');
         } else {
           if (queryValidator(Routes.PAYMENT_SUCCESS, query)) {
             localQuery = query;
@@ -131,7 +130,7 @@ class Routing {
             builder: (_) => PaymentSuccess(query: localQuery),
             settings: RouteSettings(
                 name:
-                    '${Routes.PAYMENT_SUCCESS}?${Uri(queryParameters: localQuery.remove('msg')).query}'));
+                    '${Routes.PAYMENT_SUCCESS}?${Uri(queryParameters: localQuery).query}'));
       }
 
       var userDetails = commonProvider.getWebLoginStatus();
