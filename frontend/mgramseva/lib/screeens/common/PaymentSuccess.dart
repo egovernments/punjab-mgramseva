@@ -40,8 +40,10 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
         Provider.of<TransactionUpdateProvider>(context, listen: false);
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
-    await transactionUpdateProvider.loadPaymentSuccessPage(
-        widget.query, context);
+    !transactionUpdateProvider.isPaymentSuccess
+        ? await transactionUpdateProvider.loadPaymentSuccessPage(
+            widget.query, context)
+        : null;
 
     await languageProvider
         .getLocalizationData(context)

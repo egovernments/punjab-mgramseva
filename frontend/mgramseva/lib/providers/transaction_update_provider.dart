@@ -14,6 +14,7 @@ import 'common_provider.dart';
 class TransactionUpdateProvider with ChangeNotifier {
   var transactionController = StreamController.broadcast();
   TransactionDetails? transactionDetails;
+  var isPaymentSuccess = false;
 
   dispose() {
     transactionController.close();
@@ -27,6 +28,7 @@ class TransactionUpdateProvider with ChangeNotifier {
       if (transactionResponse != null &&
           transactionResponse.transaction != null) {
         transactionDetails = transactionResponse;
+        isPaymentSuccess = true;
       }
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
