@@ -122,16 +122,16 @@ class Routing {
         } else {
           if (queryValidator(Routes.PAYMENT_SUCCESS, query)) {
             localQuery = query;
-            localQuery.remove('msg');
           } else {
             return pageNotAvailable;
           }
         }
+        print(localQuery);
         return MaterialPageRoute(
             builder: (_) => PaymentSuccess(query: localQuery),
             settings: RouteSettings(
                 name:
-                    '${Routes.PAYMENT_SUCCESS}?${Uri(queryParameters: localQuery).query}'));
+                    '${Routes.PAYMENT_SUCCESS}?${Uri(queryParameters: localQuery.remove('msg')).query}'));
       }
 
       var userDetails = commonProvider.getWebLoginStatus();
