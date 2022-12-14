@@ -20,7 +20,7 @@ class TransactionUpdateProvider with ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> loadPaymentSuccessPage(Map query, BuildContext context) async {
+  loadPaymentSuccessPage(Map query, BuildContext context) async {
     try {
       var transactionResponse = await TransactionRepository()
           .updateTransaction({"transactionId": query['eg_pg_txnid']});
