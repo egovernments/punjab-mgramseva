@@ -46,9 +46,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
         .getLocalizationData(context)
         .then((value) => callNotifyer());
 
-    setState(() {
-      transactionDetails = transactionUpdateProvider.transactionDetails;
-    });
+    transactionDetails = transactionUpdateProvider.transactionDetails;
   }
 
   @override

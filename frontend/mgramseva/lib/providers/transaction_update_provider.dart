@@ -24,12 +24,12 @@ class TransactionUpdateProvider with ChangeNotifier {
     try {
       var transactionResponse = await TransactionRepository()
           .updateTransaction({"transactionId": query['eg_pg_txnid']});
-      if (transactionResponse != null) {
+      if (transactionResponse != null &&
+          transactionResponse.transaction != null) {
         transactionDetails = transactionResponse;
       }
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
-      transactionController.addError('error');
     }
   }
 
