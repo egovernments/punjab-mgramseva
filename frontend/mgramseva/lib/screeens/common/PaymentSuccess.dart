@@ -45,9 +45,9 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
             widget.query, context)
         : null;
 
-    await languageProvider
-        .getLocalizationData(context)
-        .then((value) => callNotifyer());
+    // await languageProvider
+    //     .getLocalizationData(context)
+    //     .then((value) => callNotifyer());
 
     transactionDetails = transactionUpdateProvider.transactionDetails;
   }
@@ -103,12 +103,6 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
             isConsumer: true,
           )
         : NoLoginFailurePage(i18.payment.PAYMENT_FAILED);
-    ;
-  }
-
-  callNotifyer() async {
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {});
   }
 
   String getSubtitleDynamicLocalization(
