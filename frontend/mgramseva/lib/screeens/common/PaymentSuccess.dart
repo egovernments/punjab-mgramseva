@@ -30,6 +30,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
 
   @override
   void initState() {
+    print('initState');
     WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
