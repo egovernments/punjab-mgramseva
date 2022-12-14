@@ -26,7 +26,6 @@ import 'package:mgramseva/screeens/ResetPassword/Resetpassword.dart';
 import 'package:mgramseva/screeens/ResetPassword/Updatepassword.dart';
 import 'package:mgramseva/screeens/SelectLanguage/SelectLanguage.dart';
 import 'package:mgramseva/screeens/common/ConsumerCollectPayment.dart';
-import 'package:mgramseva/screeens/common/PaymentFailure.dart';
 import 'package:mgramseva/screeens/common/PaymentSuccess.dart';
 import 'package:mgramseva/screeens/common/commondownload.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -131,10 +130,6 @@ class Routing {
             settings: RouteSettings(
                 name:
                     '${Routes.PAYMENT_SUCCESS}?${Uri(queryParameters: localQuery).query}'));
-      } else if (Routes.PAYMENT_FAILURE == path && settings.arguments == null) {
-        return MaterialPageRoute(
-            builder: (_) => PaymentFailure(),
-            settings: RouteSettings(name: Routes.PAYMENT_FAILURE));
       }
 
       var userDetails = commonProvider.getWebLoginStatus();

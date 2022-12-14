@@ -12,14 +12,15 @@ import '../utils/global_variables.dart';
 import 'common_provider.dart';
 
 class TransactionUpdateProvider with ChangeNotifier {
-  var transactionController = StreamController.broadcast();
+  // var transactionController = StreamController.broadcast();
   TransactionDetails? transactionDetails;
   var isPaymentSuccess = false;
+  Timer? _timer;
 
-  dispose() {
-    transactionController.close();
-    super.dispose();
-  }
+  // dispose() {
+  //   transactionController.close();
+  //   super.dispose();
+  // }
 
   loadPaymentSuccessPage(Map query, BuildContext context) async {
     try {
@@ -27,8 +28,8 @@ class TransactionUpdateProvider with ChangeNotifier {
           .updateTransaction({"transactionId": query['eg_pg_txnid']});
       if (transactionResponse != null &&
           transactionResponse.transaction != null) {
-        transactionDetails = transactionResponse;
         isPaymentSuccess = true;
+        transactionDetails = transactionResponse;
       }
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
@@ -76,7 +77,6 @@ class TransactionUpdateProvider with ChangeNotifier {
       });
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
-      transactionController.addError('error');
     }
   }
 
