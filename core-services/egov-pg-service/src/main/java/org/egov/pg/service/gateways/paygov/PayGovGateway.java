@@ -393,7 +393,7 @@ public class PayGovGateway implements Gateway {
             // create request
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
             String requestmsg =SEPERATOR+ PAYGOV_MERCHENT_ID +SEPERATOR+currentStatus.getTxnId();
-//            params.add("requestMsg", requestmsg);
+            params.add("requestMsg", requestmsg);
             HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
             log.debug("Auth Info : "+ authStr);
             log.debug("requestmsg : "+ requestmsg);
