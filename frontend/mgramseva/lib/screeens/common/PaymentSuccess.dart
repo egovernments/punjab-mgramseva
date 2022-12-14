@@ -35,7 +35,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
     var transactionUpdateProvider =
         Provider.of<TransactionUpdateProvider>(context, listen: false);
     !transactionUpdateProvider.isPaymentSuccess
-        ? await transactionUpdateProvider.loadPaymentSuccessPage(
+        ? await transactionUpdateProvider.updateTransaction(
             widget.query, context)
         : null;
 

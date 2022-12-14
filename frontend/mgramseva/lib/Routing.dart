@@ -118,9 +118,11 @@ class Routing {
           var cloneQuery = <String, dynamic>{};
           cloneQuery.addAll(settings.arguments as Map<String, dynamic>);
           localQuery = cloneQuery;
+          localQuery.remove('msg');
         } else {
           if (queryValidator(Routes.PAYMENT_SUCCESS, query)) {
             localQuery = query;
+            localQuery.remove('msg');
           } else {
             return pageNotAvailable;
           }
