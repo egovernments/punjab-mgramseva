@@ -43,7 +43,9 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
     await languageProvider
         .getLocalizationData(context)
         .then((value) => callNotifyer());
-    await transactionUpdateProvider.updateTransaction(widget.query, context);
+    await transactionUpdateProvider
+        .updateTransaction(widget.query, context)
+        .then((value) => callNotifyer());
   }
 
   @override
