@@ -188,7 +188,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
     localizationText =
         '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)}';
     localizationText =
-        localizationText.replaceFirst('{Number}', '(+91 - ${mobileNumber})');
+        localizationText.replaceFirst('{Number}', '(+91 - $mobileNumber)');
     return localizationText;
   }
 }
