@@ -28,13 +28,10 @@ class TransactionUpdateProvider with ChangeNotifier {
           .updateTransaction({"transactionId": query['eg_pg_txnid']});
       if (transactionDetails != null &&
           transactionDetails.transaction != null) {
-        print('not null');
         isPaymentSuccess = true;
         transactionController.add(transactionDetails);
         notifyListeners();
       }
-      print('Transction: ');
-      print(transactionDetails);
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
       transactionController.addError('error');
@@ -44,7 +41,7 @@ class TransactionUpdateProvider with ChangeNotifier {
   Future<void> downloadOrShareReceiptWithoutLogin(BuildContext context,
       UpdateTransactionDetails transactionObj, bool isWhatsAppShare) async {
     String input =
-        '${ApplicationLocalizations.of(context).translate(i18.payment.WHATSAPP_TEXT_SHARE_RECEIPT)}';
+        '${ApplicationLocalizations.of(context).translate(i18.common.SHARE_RECEIPT_LINK)}';
     input = input.replaceAll(
         '{transaction}', transactionObj.transaction!.first.txnId.toString());
     try {
@@ -66,7 +63,7 @@ class TransactionUpdateProvider with ChangeNotifier {
             .fetchdfilestordIDNoAuth(body, params)
             .then((value) async {
           var output = await BillingServiceRepository().fetchFiles(
-              value!.filestoreIds!,
+              value!.filestoreIds!.sublist(0, 0),
               transactionObj.transaction!.first.tenantId.toString());
           isWhatsAppShare
               ? CommonProvider().shareonwatsapp(output!.first,

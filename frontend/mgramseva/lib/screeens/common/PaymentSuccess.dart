@@ -79,12 +79,9 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
                   stream: transactionProvider.transactionController.stream,
                   builder: (context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
-                      print('hasData');
-                      print(snapshot.data);
                       transactionDetails = snapshot.data;
                       return _buildPaymentSuccessPage(snapshot.data, context);
                     } else if (snapshot.hasError) {
-                      print('hasError');
                       return Notifiers.networkErrorPage(
                           context,
                           () => transactionProvider.updateTransaction(
