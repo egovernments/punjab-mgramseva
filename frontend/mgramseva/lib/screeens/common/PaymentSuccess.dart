@@ -141,7 +141,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
                     context, transactionObject, false),
             callBackWhatsApp: () =>
                 transactionProvider.downloadOrShareReceiptWithoutLogin(
-                    context, transactionObject, false),
+                    context, transactionObject, true),
             backButton: false,
             isWithoutLogin: true,
             isConsumer: true,
