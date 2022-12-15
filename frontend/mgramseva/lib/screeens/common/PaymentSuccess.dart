@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/Transaction/transaction.dart';
+import 'package:mgramseva/model/Transaction/update_transaction.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/providers/transaction_update_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
@@ -54,7 +54,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
         Provider.of<TransactionUpdateProvider>(context, listen: false);
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
-    TransactionDetails? transactionDetails;
+    UpdateTransactionDetails? transactionDetails;
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -118,14 +118,14 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
   }
 
   Widget _buildPaymentSuccessPage(
-      TransactionDetails transactionObject, BuildContext context) {
+      UpdateTransactionDetails transactionObject, BuildContext context) {
     var transactionProvider =
         Provider.of<TransactionUpdateProvider>(context, listen: false);
-    return transactionObject.transaction?.txnStatus != "FAILURE"
+    return transactionObject.transaction?.first.txnStatus != "FAILURE"
         ? NoLoginSuccess(
             SuccessHandler(
               i18.common.PAYMENT_COMPLETE,
-              '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${transactionObject.transaction?.user?.mobileNumber})',
+              '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${transactionObject.transaction?.first.user?.mobileNumber})',
               '',
               Routes.PAYMENT_SUCCESS,
               subHeader:
@@ -135,7 +135,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
               downloadLinkLabel: i18.common.RECEIPT_DOWNLOAD,
               subtitleFun: () => getSubtitleDynamicLocalization(
                   context,
-                  transactionObject.transaction!.user!.mobileNumber
+                  transactionObject.transaction!.first.user!.mobileNumber
                           .toString() ??
                       ''),
             ),

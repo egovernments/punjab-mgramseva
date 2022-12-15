@@ -1,6 +1,6 @@
+import 'package:mgramseva/model/Transaction/update_transaction.dart';
 import 'package:mgramseva/services/urls.dart';
 
-import '../model/Transaction/transaction.dart';
 import '../model/bill/bill_payments.dart';
 import '../services/BaseService.dart';
 import '../services/RequestInfo.dart';
@@ -8,9 +8,9 @@ import '../utils/global_variables.dart';
 import '../utils/models.dart';
 
 class TransactionRepository extends BaseService {
-  Future<TransactionDetails?> updateTransaction(
+  Future<UpdateTransactionDetails?> updateTransaction(
       Map<String, dynamic> queryparams) async {
-    TransactionDetails? response;
+    UpdateTransactionDetails? response;
     var res = await makeRequest(
         url: Url.UPDATE_TRANSACTION,
         method: RequestType.POST,
@@ -18,7 +18,7 @@ class TransactionRepository extends BaseService {
         queryParameters: queryparams);
 
     if (res != null) {
-      response = TransactionDetails.fromJson(res);
+      response = UpdateTransactionDetails.fromJson(res);
     }
     return response;
   }
