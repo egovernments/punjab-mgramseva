@@ -40,9 +40,9 @@ class TransactionUpdateProvider with ChangeNotifier {
 
   Future<void> downloadOrShareReceiptWithoutLogin(BuildContext context,
       UpdateTransactionDetails transactionObj, bool isWhatsAppShare) async {
-    String input =
+    String whatsappText =
         '${ApplicationLocalizations.of(context).translate(i18.common.SHARE_RECEIPT_LINK)}';
-    input = input.replaceAll(
+    whatsappText = whatsappText.replaceAll(
         '{transaction}', transactionObj.transaction!.first.txnId.toString());
     try {
       var input = {
@@ -68,8 +68,10 @@ class TransactionUpdateProvider with ChangeNotifier {
               value!.filestoreIds!.sublist(0, 1),
               transactionObj.transaction!.first.tenantId.toString());
           isWhatsAppShare
-              ? CommonProvider().shareonwatsapp(output!.first,
-                  transactionObj.transaction!.first.user!.mobileNumber, input)
+              ? CommonProvider().shareonwatsapp(
+                  output!.first,
+                  transactionObj.transaction!.first.user!.mobileNumber,
+                  whatsappText)
               : CommonProvider().onTapOfAttachment(
                   output!.first, navigatorKey.currentContext);
         });
