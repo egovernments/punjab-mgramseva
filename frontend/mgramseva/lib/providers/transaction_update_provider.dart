@@ -18,14 +18,14 @@ class TransactionUpdateProvider with ChangeNotifier {
 
   Future<void> updateTransaction(Map query, BuildContext context) async {
     try {
-      var transactionResponse = await TransactionRepository()
-          .updateTransaction({"transactionId": query['eg_pg_txnid']});
-      if (transactionResponse != null &&
-          transactionResponse.transaction != null) {
-        isPaymentSuccess = true;
-        transactionDetails = transactionResponse;
-        transactionController.add(transactionResponse);
-      }
+      await TransactionRepository().updateTransaction(
+          {"transactionId": query['eg_pg_txnid']}).then((value) {
+        if (value != null && value.transaction != null) {
+          isPaymentSuccess = true;
+          transactionDetails = value;
+          transactionController.add(value);
+        }
+      });
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
       transactionController.addError('error');
