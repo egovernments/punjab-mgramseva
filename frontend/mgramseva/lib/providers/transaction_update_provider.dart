@@ -63,7 +63,7 @@ class TransactionUpdateProvider with ChangeNotifier {
             .fetchdfilestordIDNoAuth(body, params)
             .then((value) async {
           var output = await BillingServiceRepository().fetchFiles(
-              value!.filestoreIds!.sublist(0, 0),
+              value!.filestoreIds!.sublist(0, 1),
               transactionObj.transaction!.first.tenantId.toString());
           isWhatsAppShare
               ? CommonProvider().shareonwatsapp(output!.first,
