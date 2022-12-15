@@ -58,7 +58,9 @@ class TransactionUpdateProvider with ChangeNotifier {
           "key": "ws-receipt",
           "tenantId": transactionObj.transaction!.first.tenantId
         };
-        var body = {"Payments": res.payments};
+        var body = {
+          "Payments": [res.payments!.first]
+        };
         await BillingServiceRepository()
             .fetchdfilestordIDNoAuth(body, params)
             .then((value) async {
