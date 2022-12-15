@@ -52,6 +52,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
         Provider.of<TransactionUpdateProvider>(context, listen: false);
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
+    TransactionDetails? transactionDetails;
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -76,8 +77,12 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
                   stream: transactionProvider.transactionController.stream,
                   builder: (context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
+                      print('hasData');
+                      print(snapshot.data);
+                      transactionDetails = snapshot.data;
                       return _buildPaymentSuccessPage(snapshot.data, context);
                     } else if (snapshot.hasError) {
+                      print('hasError');
                       return Notifiers.networkErrorPage(
                           context,
                           () => transactionProvider.updateTransaction(
@@ -118,7 +123,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
         ? NoLoginSuccess(
             SuccessHandler(
               i18.common.PAYMENT_COMPLETE,
-              '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${transactionObject!.transaction?.user?.mobileNumber})',
+              '${ApplicationLocalizations.of(context).translate(i18.payment.RECEIPT_REFERENCE_WITH_MOBILE_NUMBER)} (+91 ${transactionObject.transaction?.user?.mobileNumber})',
               '',
               Routes.PAYMENT_SUCCESS,
               subHeader:
