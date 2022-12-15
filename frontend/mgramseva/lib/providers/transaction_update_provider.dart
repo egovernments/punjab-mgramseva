@@ -13,7 +13,6 @@ import 'common_provider.dart';
 
 class TransactionUpdateProvider with ChangeNotifier {
   var transactionController = StreamController.broadcast();
-  TransactionDetails? transactionDetails;
   var isPaymentSuccess = false;
 
   @override
@@ -23,18 +22,19 @@ class TransactionUpdateProvider with ChangeNotifier {
   }
 
   Future<void> updateTransaction(Map query, BuildContext context) async {
+    TransactionDetails? transactionDetails;
     try {
-      var transactionResponse = await TransactionRepository()
+      transactionDetails = await TransactionRepository()
           .updateTransaction({"transactionId": query['eg_pg_txnid']});
-      if (transactionResponse != null &&
-          transactionResponse.transaction != null) {
+      if (transactionDetails != null &&
+          transactionDetails.transaction != null) {
+        print('not null');
         isPaymentSuccess = true;
-        transactionDetails = transactionResponse;
-        transactionController.add(transactionResponse);
+        transactionController.add(transactionDetails);
         notifyListeners();
       }
       print('Transction: ');
-      print(transactionResponse);
+      print(transactionDetails);
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
       transactionController.addError('error');
