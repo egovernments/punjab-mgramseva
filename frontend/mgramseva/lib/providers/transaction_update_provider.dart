@@ -16,16 +16,25 @@ class TransactionUpdateProvider with ChangeNotifier {
   TransactionDetails? transactionDetails;
   var isPaymentSuccess = false;
 
+  @override
+  void dispose() {
+    transactionController.close();
+    super.dispose();
+  }
+
   Future<void> updateTransaction(Map query, BuildContext context) async {
     try {
-      await TransactionRepository().updateTransaction(
-          {"transactionId": query['eg_pg_txnid']}).then((value) {
-        if (value != null && value.transaction != null) {
-          isPaymentSuccess = true;
-          transactionDetails = value;
-          transactionController.add(value);
-        }
-      });
+      var transactionResponse = await TransactionRepository()
+          .updateTransaction({"transactionId": query['eg_pg_txnid']});
+      if (transactionResponse != null &&
+          transactionResponse.transaction != null) {
+        isPaymentSuccess = true;
+        transactionDetails = transactionResponse;
+        transactionController.add(transactionResponse);
+        notifyListeners();
+      }
+      print('Transction: ');
+      print(transactionResponse);
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
       transactionController.addError('error');
