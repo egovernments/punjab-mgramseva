@@ -75,6 +75,7 @@ public class RedirectController {
             StringBuilder redirectURL = new StringBuilder();
             redirectURL.append(citizenRedirectDomain).append(returnURL);
             formData.remove(returnUrlKey);
+            formData.remove("msg");
             httpHeaders.setLocation(UriComponentsBuilder.fromHttpUrl(redirectURL.toString())
                     .queryParams(formData).build().encode().toUri());
         } else {
