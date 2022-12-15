@@ -157,7 +157,9 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: DropdownButton(
-          value: selectedLanguage,
+          value: selectedLanguage != null
+              ? selectedLanguage
+              : Languages(label: 'ENGLISH', value: 'en_IN', isSelected: true),
           style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 16),
           items: dropDownItems,
           onChanged: onChangeOfLanguage),
