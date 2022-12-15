@@ -125,7 +125,6 @@ class Routing {
             return pageNotAvailable;
           }
         }
-        print(localQuery);
         return MaterialPageRoute(
             builder: (_) => PaymentSuccess(query: localQuery),
             settings: RouteSettings(

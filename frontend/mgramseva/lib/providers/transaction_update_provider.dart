@@ -12,17 +12,11 @@ import '../utils/global_variables.dart';
 import 'common_provider.dart';
 
 class TransactionUpdateProvider with ChangeNotifier {
-  // var transactionController = StreamController.broadcast();
+  var transactionController = StreamController.broadcast();
   TransactionDetails? transactionDetails;
   var isPaymentSuccess = false;
-  Timer? _timer;
 
-  // dispose() {
-  //   transactionController.close();
-  //   super.dispose();
-  // }
-
-  updateTransaction(Map query, BuildContext context) async {
+  Future<void> updateTransaction(Map query, BuildContext context) async {
     try {
       var transactionResponse = await TransactionRepository()
           .updateTransaction({"transactionId": query['eg_pg_txnid']});
@@ -30,53 +24,51 @@ class TransactionUpdateProvider with ChangeNotifier {
           transactionResponse.transaction != null) {
         isPaymentSuccess = true;
         transactionDetails = transactionResponse;
+        transactionController.add(transactionResponse);
       }
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
+      transactionController.addError('error');
     }
   }
 
-  Future<void> downloadOrShareReceiptWithoutLogin(
-      BuildContext context, Map data, bool isWhatsAppShare) async {
+  Future<void> downloadOrShareReceiptWithoutLogin(BuildContext context,
+      TransactionDetails transactionObj, bool isWhatsAppShare) async {
     String input =
         '${ApplicationLocalizations.of(context).translate(i18.payment.WHATSAPP_TEXT_SHARE_RECEIPT)}';
-    input = input.replaceAll('{transaction}', data['eg_pg_txnid']);
+    input = input.replaceAll(
+        '{transaction}', transactionObj.transaction!.txnId.toString());
     try {
-      var payment = {
-        "Payment": {
-          "tenantId": data['tenantId'],
-          "paymentMode": 'PAYGOV',
-          "paidBy": data['paidBy'],
-          "mobileNumber": data['mobileNumber'],
-          "totalAmountPaid": data['txnAmt'],
-          "paymentDetails": [
-            {
-              "businessService": 'WS',
-              "billId": data['billId'],
-              "totalAmountPaid": data['txnAmt'],
-            }
-          ]
-        }
+      var input = {
+        "tenantId": transactionObj.transaction!.tenantId,
+        "consumerCode": transactionObj.transaction!.consumerCode,
+        "businessService": "WS",
       };
 
-      await TransactionRepository().createPayment(payment).then((res) async {
-        var params = {"key": "ws-receipt", "tenantId": data['tenantId']};
-        var body = {"Payments": res!.payments};
+      await BillingServiceRepository()
+          .fetchdBillPaymentsNoAuth(input)
+          .then((res) async {
+        var params = {
+          "key": "ws-receipt",
+          "tenantId": transactionObj.transaction!.tenantId
+        };
+        var body = {"Payments": res.payments};
         await BillingServiceRepository()
             .fetchdfilestordIDNoAuth(body, params)
             .then((value) async {
-          var output = await BillingServiceRepository()
-              .fetchFiles(value!.filestoreIds!, data['tenantId']);
+          var output = await BillingServiceRepository().fetchFiles(
+              value!.filestoreIds!,
+              transactionObj.transaction!.tenantId.toString());
           isWhatsAppShare
-              ? CommonProvider()
-                  .shareonwatsapp(output!.first, data['mobileNumber'], input)
+              ? CommonProvider().shareonwatsapp(output!.first,
+                  transactionObj.transaction!.user!.mobileNumber, input)
               : CommonProvider().onTapOfAttachment(
                   output!.first, navigatorKey.currentContext);
-          // window.location.href = "https://www.google.com/";
         });
       });
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      transactionController.addError('error');
     }
   }
 

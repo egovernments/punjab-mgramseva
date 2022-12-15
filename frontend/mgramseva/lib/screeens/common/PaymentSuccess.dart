@@ -7,9 +7,12 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/widgets/NoLoginSuccesPage.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/localization/language.dart';
 import '../../providers/language.dart';
 import '../../routers/Routers.dart';
 import '../../utils/Locilization/application_localizations.dart';
+import '../../utils/loaders.dart';
+import '../../utils/notifiers.dart';
 import '../../widgets/NoLoginFailurePage.dart';
 
 class PaymentSuccess extends StatefulWidget {
@@ -23,10 +26,11 @@ class PaymentSuccess extends StatefulWidget {
 }
 
 class _PaymentSuccessState extends State<PaymentSuccess> {
+  List<StateInfo>? stateList;
+  Languages? selectedLanguage;
+
   @override
   void initState() {
-    print(widget.query);
-    print('initState');
     WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
@@ -34,14 +38,12 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
   afterViewBuild() async {
     var transactionUpdateProvider =
         Provider.of<TransactionUpdateProvider>(context, listen: false);
-    !transactionUpdateProvider.isPaymentSuccess
-        ? await transactionUpdateProvider.updateTransaction(
-            widget.query, context)
-        : null;
-
-    // await languageProvider
-    //     .getLocalizationData(context)
-    //     .then((value) => callNotifyer());
+    var languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
+    await languageProvider
+        .getLocalizationData(context)
+        .then((value) => callNotifyer());
+    await transactionUpdateProvider.updateTransaction(widget.query, context);
   }
 
   @override
@@ -51,16 +53,61 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     return Scaffold(
-        appBar: AppBar(
-          titleSpacing: 0,
-          title: Text('mGramSeva'),
-          automaticallyImplyLeading: true,
-        ),
-        body: transactionProvider.transactionDetails != null &&
-                transactionProvider.transactionDetails!.transaction != null
-            ? _buildPaymentSuccessPage(
-                transactionProvider.transactionDetails!, context)
-            : NoLoginFailurePage(i18.payment.PAYMENT_FAILED));
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: Text('mGramSeva'),
+        automaticallyImplyLeading: true,
+        actions: [_buildDropDown()],
+      ),
+      body: StreamBuilder(
+          stream: languageProvider.streamController.stream,
+          builder: (context, AsyncSnapshot languageSnapshot) {
+            if (languageSnapshot.hasData) {
+              var stateData = languageSnapshot.data as List<StateInfo>;
+              stateList = stateData;
+              var index = stateData.first.languages
+                  ?.indexWhere((element) => element.isSelected);
+              if (index != null && index != -1) {
+                selectedLanguage = stateData.first.languages?[index];
+              } else {
+                selectedLanguage = stateData.first.languages?.first;
+              }
+              return StreamBuilder(
+                  stream: transactionProvider.transactionController.stream,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return _buildPaymentSuccessPage(snapshot.data, context);
+                    } else if (snapshot.hasError) {
+                      return Notifiers.networkErrorPage(
+                          context,
+                          () => transactionProvider.updateTransaction(
+                              widget.query, context));
+                    } else {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return Loaders.circularLoader();
+                        case ConnectionState.active:
+                          return Loaders.circularLoader();
+                        default:
+                          return Container();
+                      }
+                    }
+                  });
+            } else if (languageSnapshot.hasError) {
+              return Notifiers.networkErrorPage(
+                  context, () => languageProvider.getLocalizationData(context));
+            } else {
+              switch (languageSnapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return Loaders.circularLoader();
+                case ConnectionState.active:
+                  return Loaders.circularLoader();
+                default:
+                  return Container();
+              }
+            }
+          }),
+    );
   }
 
   Widget _buildPaymentSuccessPage(
@@ -87,10 +134,10 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
             ),
             callBackDownload: () =>
                 transactionProvider.downloadOrShareReceiptWithoutLogin(
-                    context, widget.query, false),
+                    context, transactionObject, false),
             callBackWhatsApp: () =>
                 transactionProvider.downloadOrShareReceiptWithoutLogin(
-                    context, widget.query, false),
+                    context, transactionObject, false),
             backButton: false,
             isWithoutLogin: true,
             isConsumer: true,
@@ -100,7 +147,34 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
 
   callNotifyer() async {
     await Future.delayed(Duration(seconds: 2));
-    setState(() {});
+  }
+
+  Widget _buildDropDown() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: DropdownButton(
+          value: selectedLanguage,
+          style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 16),
+          items: dropDownItems,
+          onChanged: onChangeOfLanguage),
+    );
+  }
+
+  get dropDownItems {
+    return stateList?.first.languages!.map((value) {
+      return DropdownMenuItem(
+        value: value,
+        child: Text('${value.label}'),
+      );
+    }).toList();
+  }
+
+  void onChangeOfLanguage(value) {
+    selectedLanguage = value;
+    var languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
+    languageProvider.onSelectionOfLanguage(
+        value!, stateList?.first.languages ?? []);
   }
 
   String getSubtitleDynamicLocalization(
