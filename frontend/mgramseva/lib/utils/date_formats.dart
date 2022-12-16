@@ -4,6 +4,7 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/constants.dart';
 
 import 'Locilization/application_localizations.dart';
+import 'global_variables.dart';
 import 'models.dart';
 
 class DateFormats {
@@ -85,7 +86,7 @@ class DateFormats {
     if (timeInMillis == null) return '';
     try {
       var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
-      return '${DateFormat.MMMM().format(date)} ${date.day}';
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(DateFormat.MMM().format(date))} ${date.day}';
     } catch (e) {
       return '';
     }

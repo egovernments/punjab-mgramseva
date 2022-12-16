@@ -266,8 +266,6 @@ class DashBoardProvider with ChangeNotifier {
       'tenantId': commonProvider.userDetails?.selectedtenant?.code,
       'offset': '${offset - 1}',
       'limit': '$limit',
-      'fromDate': '${selectedMonth.startDate.millisecondsSinceEpoch}',
-      'toDate': '${selectedMonth.endDate.millisecondsSinceEpoch}',
       'iscollectionAmount': 'true',
       'isPropertyCount': 'true',
     };
@@ -554,7 +552,7 @@ class DashBoardProvider with ChangeNotifier {
     notifyListeners();
 
     fetchUserFeedbackDetails(context);
-    if (selectedMonth.dateType == DateType.MONTH ) {
+    if (selectedMonth.dateType == DateType.MONTH) {
       fetchDashboardMetricInformation(context,
           selectedDashboardType == DashBoardType.Expenditure ? true : false);
       fetchDetails(context, limit, 1, true);
