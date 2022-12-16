@@ -396,13 +396,13 @@ public class DemandGenerationConsumer {
 				int nmSize = connectionNos.size() - failedConnectionNos.size();
 				message = message.replace("{X}", String.valueOf(nmSize)); // this should be x- failed
 																			// connections count
-				message = message.replace("{X/X+Y}", String.valueOf(connectionNos.size()) + "/" + String.valueOf(size));
+				message = message.replace("{X/X+Y}", String.valueOf(nmSize) + "/" + String.valueOf(size));
 				message = message.replace("{Y}", String.valueOf(meteredConnectionNos.size()));
 				additionals.put("localizationCode", WSCalculationConstant.NEW_BULK_DEMAND_EVENT);
 				HashMap<String, String> attributes = new HashMap<String, String>();
 				attributes.put("{billing cycle}", billingCycle);
 				attributes.put("{X}", String.valueOf(nmSize));
-				attributes.put("{X/X+Y}", String.valueOf(connectionNos.size()) + "/" + String.valueOf(size));
+				attributes.put("{X/X+Y}", String.valueOf(nmSize) + "/" + String.valueOf(size));
 				attributes.put("{Y}", String.valueOf(meteredConnectionNos.size()));
 				additionals.put("attributes", attributes);
 			} else if (connectionNos.size() > 0 && meteredConnectionNos.isEmpty()) {
@@ -413,14 +413,14 @@ public class DemandGenerationConsumer {
 				message = message.replace("{billing cycle}", billingCycle);
 				message = message.replace("{X}", String.valueOf(nmSize));
 				message = message.replace("{X/X}",
-						String.valueOf(connectionNos.size()) + "/" + String.valueOf(connectionNos.size()));
+						String.valueOf(nmSize) + "/" + String.valueOf(connectionNos.size()));
 
 				additionals.put("localizationCode", "NEW_BULK_DEMAND_EVENT_NM");
 				HashMap<String, String> attributes = new HashMap<String, String>();
 				attributes.put("{billing cycle}", billingCycle);
 				attributes.put("{X}", String.valueOf(nmSize));
 				attributes.put("{X/X}",
-						String.valueOf(connectionNos.size()) + "/" + String.valueOf(connectionNos.size()));
+						String.valueOf(nmSize) + "/" + String.valueOf(connectionNos.size()));
 				additionals.put("attributes", attributes);
 			} else if (connectionNos.isEmpty() && meteredConnectionNos.size() > 0) {
 				messageMap = util.getLocalizationMessage(requestInfo, WSCalculationConstant.NEW_BULK_DEMAND_EVENT_M,

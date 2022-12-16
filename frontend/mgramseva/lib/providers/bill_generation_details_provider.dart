@@ -411,7 +411,7 @@ class BillGenerationProvider with ChangeNotifier {
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
-          child: new Text(value.name!),
+          child: new Text(value.code!),
         );
       }).toList();
     }
