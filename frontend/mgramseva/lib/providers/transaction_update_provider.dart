@@ -41,9 +41,16 @@ class TransactionUpdateProvider with ChangeNotifier {
   Future<void> downloadOrShareReceiptWithoutLogin(BuildContext context,
       UpdateTransactionDetails transactionObj, bool isWhatsAppShare) async {
     String whatsappText =
-        '${ApplicationLocalizations.of(context).translate(i18.common.SHARE_RECEIPT_LINK)}';
+        '${ApplicationLocalizations.of(context).translate(i18.payment.SHARE_TRANSACTION_RECEIPT)}';
     whatsappText = whatsappText.replaceAll(
-        '{transaction}', transactionObj.transaction!.first.txnId.toString());
+        '{user}', transactionObj.transaction!.first.user!.name.toString());
+    whatsappText = whatsappText.replaceAll(
+        '{Amount}', transactionObj.transaction!.first.txnAmount.toString());
+    whatsappText = whatsappText.replaceAll('{new consumer id}',
+        transactionObj.transaction!.first.consumerCode.toString());
+    whatsappText = whatsappText.replaceAll(
+        '{transactionId}', transactionObj.transaction!.first.txnId.toString());
+
     try {
       var input = {
         "tenantId": transactionObj.transaction!.first.tenantId,
