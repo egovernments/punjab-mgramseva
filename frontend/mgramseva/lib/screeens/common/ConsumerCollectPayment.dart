@@ -164,7 +164,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
           }),
       bottomNavigationBar: Consumer<CollectPaymentProvider>(
         builder: (_, consumerPaymentProvider, child) => Visibility(
-            visible: fetchBill != null,
+            visible: fetchBill != null || fetchBill!.totalAmount != 0,
             child: BottomButtonBar(
                 widget.query['isConsumer'] == 'true'
                     ? '${ApplicationLocalizations.of(context).translate(i18.payment.PROCEED_TO_COLLECT)}'
