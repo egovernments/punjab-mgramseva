@@ -683,9 +683,6 @@ public class DemandService {
 									oldPenalty = oldPenalty.add(demandDetail.getTaxAmount()).subtract(demandDetail.getCollectionAmount());
 									waterChargeApplicable = waterChargeApplicable.add(oldPenalty);
 								}
-								if(demandDetail.getTaxAmount().compareTo(demandDetail.getCollectionAmount())==0) {
-									demandListSize = demandListSize - 1;
-								}
 							}
 						}
 					}
