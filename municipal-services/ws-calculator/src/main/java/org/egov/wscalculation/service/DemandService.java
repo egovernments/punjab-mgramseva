@@ -678,16 +678,13 @@ public class DemandService {
 							for(DemandDetail demandDetail : demand.getDemandDetails()) {
 								if (WSCalculationConstant.TAX_APPLICABLE.contains(demandDetail.getTaxHeadMasterCode())) {
 									waterChargeApplicable = waterChargeApplicable.add(demandDetail.getTaxAmount()).subtract(demandDetail.getCollectionAmount());
-									if(detail.getTaxAmount().compareTo(detail.getCollectionAmount())==0) {
-										demandListSize = demandListSize - 1;
-									}
 								}
 								if (demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY)) {
 									oldPenalty = oldPenalty.add(demandDetail.getTaxAmount()).subtract(demandDetail.getCollectionAmount());
 									waterChargeApplicable = waterChargeApplicable.add(oldPenalty);
-									if(detail.getTaxAmount().compareTo(detail.getCollectionAmount())==0) {
-										demandListSize = demandListSize - 1;
-									}
+								}
+								if(demandDetail.getTaxAmount().compareTo(demandDetail.getCollectionAmount())==0) {
+									demandListSize = demandListSize - 1;
 								}
 							}
 						}
@@ -902,6 +899,10 @@ public class DemandService {
 //				if (detail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_INTEREST)) {
 //					oldInterest = oldInterest.add(detail.getTaxAmount());
 //				}
+				
+				if(detail.getTaxAmount().compareTo(detail.getCollectionAmount())==0) {
+						demandListSize = demandListSize - 1;
+					}
 			}
 			waterChargeApplicable = waterChargeApplicable.add(previousDemandTaxAmounts);
 			DemandDetailAndCollection latestPenaltyDemandDetail, latestInterestDemandDetail;
