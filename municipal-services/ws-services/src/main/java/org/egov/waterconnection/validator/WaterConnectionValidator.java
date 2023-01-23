@@ -142,12 +142,14 @@ public class WaterConnectionValidator {
 		DemandResponse response =  validateUpdateForDemand(request,searchResult);
 		if(response != null) {
 			List<Demand> demands = response.getDemands();
+			CopyOnWriteArrayList<Demand> demList = new CopyOnWriteArrayList<>(response.getDemands());
+			List<Demand> demandList = new ArrayList<>(demList);
+
 			List<Boolean> data = new ArrayList<Boolean>();
 			if(demands != null && !demands.isEmpty()) {
-				for (Demand demand : demands) {
-					if(!demand.isPaymentCompleted()) {
-						data.add(demand.isPaymentCompleted());
-					}
+				for (Demand demand : demandList) {
+					if(demand.isPaymentCompleted()) {
+						demandList.remove(demand);					}
 				}
 				Boolean isArrear = false;
 				Boolean isAdvance = false;
@@ -158,15 +160,15 @@ public class WaterConnectionValidator {
 				if(request.getWaterConnection().getArrears()!=null && request.getWaterConnection().getArrears().compareTo(BigDecimal.ZERO) == 0) {
 					isArrear =  true;
 				}
-				if ((request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demands.size() == data.size())
+				if ((request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demandList.size() > 0)
 						|| (searchResult.getArrears() != null && request.getWaterConnection().getArrears() == null
-								|| isArrear)|| (request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demands.size() == data.size())
+								|| isArrear)|| (request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demandList.size() > 0)
 						|| (searchResult.getAdvance() != null && request.getWaterConnection().getAdvance() == null
 						|| isAdvance)) {
-					for (Demand demand : demands) {
+					for (Demand demand : demandList) {
 						demand.setStatus(org.egov.waterconnection.web.models.Demand.StatusEnum.CANCELLED);
 					}
-					updateDemand(request.getRequestInfo(), demands);
+					updateDemand(request.getRequestInfo(), demandList);
 
 				}
 			}
