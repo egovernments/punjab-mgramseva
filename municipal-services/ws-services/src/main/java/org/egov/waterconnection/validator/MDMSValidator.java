@@ -349,7 +349,7 @@ public class MDMSValidator {
 	    	locale = waterConnectionRequest.getRequestInfo().getMsgId().split("[\\|]")[1];
 
 		List<String> commonMasters = new ArrayList<>(Arrays.asList("StateInfo"));
-		Map<String, List<String>> codes = getAttributeValues(waterConnectionRequest.getWaterConnection().getTenantId().split(".")[0], WCConstants.COMMON_MASTER_MODULE, commonMasters, "$.*",
+		Map<String, List<String>> codes = getAttributeValues(waterConnectionRequest.getWaterConnection().getTenantId().substring(0, 2), WCConstants.COMMON_MASTER_MODULE, commonMasters, "$.*",
 				WCConstants.COMMON_MASTERS_JSONPATH_ROOT,waterConnectionRequest.getRequestInfo());
 		JSONObject obj = new JSONObject(codes);
 		JSONArray configArray = obj.getJSONArray("StateInfo");
