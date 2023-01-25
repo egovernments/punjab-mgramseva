@@ -1002,7 +1002,7 @@ public class DemandService {
 		LocalDate fromDate = LocalDate.parse(bulkDemand.getBillingPeriod().split("-")[0].trim(), formatter);
 		LocalDate toDate = LocalDate.parse(bulkDemand.getBillingPeriod().split("-")[1].trim(), formatter);
 		if(fromDate.isAfter(LocalDate.now())) {
-			throw new CustomException("INVALID_BILLING_PERIOD",
+			throw new CustomException("INVALID_BILLING_CYCLE",
 					"Cannot generate demands for future months");
 		}
 			
