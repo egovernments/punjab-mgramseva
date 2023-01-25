@@ -36,8 +36,8 @@ class LanguageProvider with ChangeNotifier {
         stateInfos.add(new StateInfo.fromJson(res.toJson()));
         streamController.add(stateInfos);
       } else {
-        var localizationList =
-            await CoreRepository().getMdms(initRequestBody({"tenantId": "br"}));
+        var localizationList = await CoreRepository()
+            .getMdms(initRequestBody({"tenantId": Constants.TENANT_ID}));
         stateInfo = localizationList.mdmsRes?.commonMasters?.stateInfo?.first;
         if (stateInfo != null) {
           stateInfo?.languages?.first.isSelected = true;
