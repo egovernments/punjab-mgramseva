@@ -143,11 +143,11 @@ public class WaterConnectionValidator {
 		DemandResponse response =  validateUpdateForDemand(request,searchResult);
 		if(response != null) {
 			List<Demand> demands = response.getDemands();
-			CopyOnWriteArrayList<Demand> demList = new CopyOnWriteArrayList<>(response.getDemands());
+			CopyOnWriteArrayList<Demand> demList = new CopyOnWriteArrayList<>(demands);
 			List<Demand> demandList = new ArrayList<>(demList);
 
 			List<Boolean> data = new ArrayList<Boolean>();
-			if(demands != null && !demands.isEmpty()) {
+			if(demandList != null && !demandList.isEmpty()) {
 				for (Demand demand : demandList) {
 					if(demand.isPaymentCompleted()) {
 						demandList.remove(demand);					}
