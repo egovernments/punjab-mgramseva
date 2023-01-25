@@ -644,6 +644,8 @@ public class DemandService {
 				String subType = (String) penaltyMaster.get(WSCalculationConstant.SUBTYPE_FIELD_NAME);
 				
 				int demandListSize = demList.size();
+				int demandDetailListSize = 0;
+
 				Demand latestDemand = demList.get(demandListSize - 1);
 				
 				if(isGetPenaltyEstimate && latestDemand.getDemandDetails().stream().filter(i->i.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY)).count() > 0) {
@@ -654,15 +656,23 @@ public class DemandService {
 					throw new CustomException(WSCalculationConstant.EG_WS_INVALID_DEMAND_ERROR,
 							WSCalculationConstant.EG_WS_INVALID_DEMAND_ERROR_MSG);
 				if(type.equalsIgnoreCase("Flat") && subType.equalsIgnoreCase(WSCalculationConstant.PENALTY_OUTSTANDING)) {
-					
-					applyTimeBasedApplicables(latestDemand, requestInfoWrapper, timeBasedExemptionMasterMap, taxPeriods, isGetPenaltyEstimate,BigDecimal.ZERO,penaltyMaster,demandListSize);
+					List<Demand> demandLst = new ArrayList<>(demList);
+
+					for(Demand demand : demandLst) {
+						for(DemandDetail demandDetail : demand.getDemandDetails()) {
+							if(demandDetail.getTaxAmount().compareTo(demandDetail.getCollectionAmount()) != 0) {
+								demandDetailListSize = demandDetailListSize + 1;						}
+						}
+						
+					}
+					applyTimeBasedApplicables(latestDemand, requestInfoWrapper, timeBasedExemptionMasterMap, taxPeriods, isGetPenaltyEstimate,BigDecimal.ZERO,penaltyMaster,demandDetailListSize);
 					demandsToBeUpdated.add(latestDemand);
 
 				}
 				if((type.equalsIgnoreCase("Flat") && subType.equalsIgnoreCase(WSCalculationConstant.PENALTY_CURRENT_MONTH))
 						|| (type.equalsIgnoreCase("Fixed") && subType.equalsIgnoreCase(WSCalculationConstant.PENALTY_CURRENT_MONTH))) {
 					if(latestDemand.getDemandDetails().stream().filter(i->i.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_CHARGE)).count() > 0){
-						applyTimeBasedApplicables(latestDemand, requestInfoWrapper, timeBasedExemptionMasterMap, taxPeriods, isGetPenaltyEstimate,BigDecimal.ZERO,penaltyMaster,demandListSize);
+						applyTimeBasedApplicables(latestDemand, requestInfoWrapper, timeBasedExemptionMasterMap, taxPeriods, isGetPenaltyEstimate,BigDecimal.ZERO,penaltyMaster,demandDetailListSize);
 						demandsToBeUpdated.add(latestDemand);
 					}
 				}
@@ -687,7 +697,7 @@ public class DemandService {
 						}
 					}
 					
-					applyTimeBasedApplicables(latestDemand, requestInfoWrapper, timeBasedExemptionMasterMap, taxPeriods, isGetPenaltyEstimate,waterChargeApplicable,penaltyMaster,demandListSize);
+					applyTimeBasedApplicables(latestDemand, requestInfoWrapper, timeBasedExemptionMasterMap, taxPeriods, isGetPenaltyEstimate,waterChargeApplicable,penaltyMaster,demandDetailListSize);
 					demandsToBeUpdated.add(latestDemand);
 					
 				}

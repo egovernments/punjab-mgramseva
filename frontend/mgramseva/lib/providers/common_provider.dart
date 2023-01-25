@@ -319,8 +319,8 @@ class CommonProvider with ChangeNotifier {
 
   Future<void> getAppVersionDetails() async {
     try {
-      var localizationList =
-          await CoreRepository().getMdms(initRequestBody({"tenantId": "br"}));
+      var localizationList = await CoreRepository()
+          .getMdms(initRequestBody({"tenantId": Constants.TENANT_ID}));
       appVersion = localizationList.mdmsRes!.commonMasters!.appVersion!.first;
     } catch (e) {
       print(e.toString());
@@ -696,6 +696,14 @@ class CommonProvider with ChangeNotifier {
       });
     });
     return penalty;
+  }
+
+  List<String>? uniqueRolesList() {
+    return userDetails?.userRequest?.roles
+        ?.where((e) => e.tenantId == userDetails?.selectedtenant?.code)
+        .map((role) => role.code.toString())
+        .toSet()
+        .toList();
   }
 
   static double getCurrentBill(List<Demands> demandList) {

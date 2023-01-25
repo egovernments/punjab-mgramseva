@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/Events/events_List.dart';
-
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -59,10 +58,7 @@ class NotificationScreenProvider with ChangeNotifier {
       var notifications2 = await CoreRepository().fetchNotifications({
         "tenantId": commonProvider.userDetails?.selectedtenant?.code!,
         "eventType": "SYSTEMGENERATED",
-        "roles": commonProvider.userDetails?.userRequest?.roles!
-            .map((e) => e.code.toString())
-            .join(',')
-            .toString(),
+        "roles": commonProvider.uniqueRolesList()?.join(',').toString(),
         "status": "READ,ACTIVE",
         "offset": '${offset - 1}',
         "limit": '$limit'
