@@ -170,7 +170,6 @@ public class WaterConnectionValidator {
 						demand.setStatus(org.egov.waterconnection.web.models.Demand.StatusEnum.CANCELLED);
 					}
 					updateDemand(request.getRequestInfo(), demandList);
-
 				}
 			}
 			}
