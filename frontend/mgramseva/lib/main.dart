@@ -8,7 +8,6 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mgramseva/Env/app_config.dart';
@@ -37,7 +36,6 @@ import 'package:mgramseva/router.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/Home/Home.dart';
 import 'package:mgramseva/screeens/SelectLanguage/languageSelection.dart';
-import 'package:mgramseva/services/LocalStorage.dart';
 import 'package:mgramseva/theme.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
@@ -45,9 +43,8 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifyers.dart';
-import 'package:open_file_safe/open_file_safe.dart';
+import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'providers/collect_payment.dart';
@@ -250,7 +247,6 @@ class _LandingPageState extends State<LandingPage> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
-    checkVersion();
   }
 
   // @override

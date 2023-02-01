@@ -194,5 +194,3 @@ showDownloadList(List<String> result, BuildContext context) {
         ]);
       });
 }
-
-}

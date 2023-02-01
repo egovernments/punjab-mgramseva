@@ -73,21 +73,3 @@ class _HouseholdListState extends State<HouseholdList> {
     });
   }
 }
-
-    return LayoutBuilder(
-        builder : (context, constraints) {
-          var width = constraints.maxWidth < 760 ? 145.0  : (constraints.maxWidth / 4);
-          var tableData = householdProvider.getCollectionsData(expenseList  as List<WaterConnection>);
-          return tableData == null || tableData.isEmpty ?
-          CommonWidgets.buildEmptyMessage(ApplicationLocalizations.of(context).translate(i18.dashboard.NO_RECORDS_MSG), context)
-              : BillsTable
-            (headerList: householdProvider.collectionHeaderList,
-            tableData:  tableData,
-            leftColumnWidth: width,
-            rightColumnWidth: width * 3 ,
-            height: 68 + (52.0 * tableData.length),
-          );
-        }
-    );
-  }
-}
