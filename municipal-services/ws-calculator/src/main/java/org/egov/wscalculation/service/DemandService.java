@@ -352,7 +352,7 @@ public class DemandService {
 	private void sendSMSNotification(RequestInfo requestInfo, List<SMSRequest> smsRequests, String billCycle,
 			String consumerCode, List<DemandDetail> demandDetails) {
 		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN"),
-				"pb");
+				requestInfo.getUserInfo().getTenantId().substring(0,2));
 		for (OwnerInfo ownerInfo : userDetailResponse.getUser()) {
 			String localizationMessage = util.getLocalizationMessages(ownerInfo.getTenantId(), requestInfo);
 			String messageString = util.getMessageTemplate(WSCalculationConstant.mGram_Consumer_NewBill,

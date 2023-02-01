@@ -142,7 +142,7 @@ public class VendorValidator {
 	    	locale = vendorRequest.getRequestInfo().getMsgId().split("[\\|]")[1];
 
 		List<String> commonMasters = new ArrayList<>(Arrays.asList("StateInfo"));
-		Map<String, List<String>> codes = vendorUtil.getMdmsAttributeValues("pb", VendorConstants.COMMON_MASTER_MODULE, commonMasters, "$.*",
+		Map<String, List<String>> codes = vendorUtil.getMdmsAttributeValues(vendorRequest.getVendor().getTenantId().substring(0,2), VendorConstants.COMMON_MASTER_MODULE, commonMasters, "$.*",
 				VendorConstants.COMMON_MASTERS_JSONPATH_ROOT,vendorRequest.getRequestInfo());
 		JSONObject obj = new JSONObject(codes);
 		JSONArray configArray = obj.getJSONArray("StateInfo");
@@ -197,7 +197,7 @@ public class VendorValidator {
 	    	locale = vendorRequest.getRequestInfo().getMsgId().split("[\\|]")[1];
 
 		List<String> commonMasters = new ArrayList<>(Arrays.asList("StateInfo"));
-		Map<String, List<String>> codes = vendorUtil.getMdmsAttributeValues("pb", VendorConstants.COMMON_MASTER_MODULE, commonMasters, "$.*",
+		Map<String, List<String>> codes = vendorUtil.getMdmsAttributeValues(vendorRequest.getVendor().getTenantId().substring(0,2), VendorConstants.COMMON_MASTER_MODULE, commonMasters, "$.*",
 				VendorConstants.COMMON_MASTERS_JSONPATH_ROOT,vendorRequest.getRequestInfo());
 		JSONObject obj = new JSONObject(codes);
 		JSONArray configArray = obj.getJSONArray("StateInfo");

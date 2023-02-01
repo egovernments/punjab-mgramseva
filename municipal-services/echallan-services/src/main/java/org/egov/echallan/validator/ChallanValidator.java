@@ -188,7 +188,7 @@ public class ChallanValidator {
 	    	locale = request.getRequestInfo().getMsgId().split("[\\|]")[1];
 
 		List<String> commonMasters = new ArrayList<>(Arrays.asList("StateInfo"));
-		Map<String, List<String>> codes = utils.getMdmsAttributeValues("pb", ChallanConstants.COMMON_MASTER_MODULE, commonMasters, "$.*",
+		Map<String, List<String>> codes = utils.getMdmsAttributeValues(request.getChallan().getTenantId().substring(0,2), ChallanConstants.COMMON_MASTER_MODULE, commonMasters, "$.*",
 				ChallanConstants.COMMON_MASTERS_JSONPATH_ROOT,request.getRequestInfo());
 		JSONObject obj = new JSONObject(codes);
 		JSONArray configArray = obj.getJSONArray("StateInfo");

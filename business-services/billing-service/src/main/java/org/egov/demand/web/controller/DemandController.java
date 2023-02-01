@@ -144,7 +144,7 @@ public class DemandController {
 	public ResponseEntity<?> migrate(@RequestBody @Valid RequestInfoWrapper wrapper,
 			@RequestParam(required=false) Integer batchStart, @RequestParam(required=true) Integer batchSizeInput) {
 
-		Map<String, String> resultMap = migrationService.migrateToV1(batchStart, batchSizeInput);
+		Map<String, String> resultMap = migrationService.migrateToV1(batchStart, batchSizeInput, wrapper.getRequestInfo().getUserInfo().getTenantId().substring(0,2));
 		return new ResponseEntity<>(resultMap, HttpStatus.OK);
 	}
     
