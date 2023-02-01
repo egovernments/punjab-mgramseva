@@ -1,4 +1,6 @@
 import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
@@ -7,6 +9,7 @@ import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/HouseholdRegister/household_pdf.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/ExcelDownload/generate_excel.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -198,9 +201,10 @@ class HouseholdRegisterProvider with ChangeNotifier {
             callBack: onSort),
         TableHeader(i18.consumer.FATHER_SPOUSE_NAME,
             isSortingRequired: false,
-            isAscendingOrder: sortBy != null && sortBy!.key == 'fatherOrHusbandName'
-                ? sortBy!.isAscending
-                : null,
+            isAscendingOrder:
+                sortBy != null && sortBy!.key == 'fatherOrHusbandName'
+                    ? sortBy!.isAscending
+                    : null,
             apiKey: 'fatherOrHusbandName',
             callBack: onSort),
         TableHeader(i18.householdRegister.PENDING_COLLECTIONS,
@@ -233,6 +237,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
         return 0;
     }
   }
+
   String? truncateWithEllipsis(String? myString) {
     return (myString!.length <= 20)
         ? myString
@@ -242,8 +247,8 @@ class HouseholdRegisterProvider with ChangeNotifier {
   TableDataRow getCollectionRow(WaterConnection connection) {
     String? name =
         truncateWithEllipsis(connection.connectionHolders?.first.name);
-    String? fatherName =
-    truncateWithEllipsis(connection.connectionHolders?.first.fatherOrHusbandName);
+    String? fatherName = truncateWithEllipsis(
+        connection.connectionHolders?.first.fatherOrHusbandName);
     return TableDataRow([
       TableData(
           '${connection.connectionNo?.split('/').first ?? ''}/...${connection.connectionNo?.split('/').last ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
@@ -252,7 +257,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
       TableData('${name ?? ''}'),
       TableData('${fatherName ?? ''}'),
       TableData(
-          '${connection.additionalDetails?.collectionPendingAmount != null ? '₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}'),
+          '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '- ₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '').abs()}' : ' ₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}'),
     ]);
   }
 
@@ -260,7 +265,11 @@ class HouseholdRegisterProvider with ChangeNotifier {
     var waterConnection = waterConnectionsDetails?.waterConnection
         ?.firstWhere((element) => element.connectionNo == tableData.apiKey);
     Navigator.pushNamed(navigatorKey.currentContext!, Routes.HOUSEHOLD_DETAILS,
-        arguments: {'waterconnections': waterConnection, 'mode': 'collect', 'status': waterConnection?.status});
+        arguments: {
+          'waterconnections': waterConnection,
+          'mode': 'collect',
+          'status': waterConnection?.status
+        });
   }
 
   onSort(TableHeader header) {
@@ -296,7 +305,8 @@ class HouseholdRegisterProvider with ChangeNotifier {
         context, localLimit ?? limit, localOffSet ?? 1, isSearch);
   }
 
-  void createPdfForAllConnections(BuildContext context, bool isDownload) async {
+  void createExcelOrPdfForAllConnections(BuildContext context, bool isDownload,
+      {bool isExcelDownload = false}) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -359,21 +369,30 @@ class HouseholdRegisterProvider with ChangeNotifier {
                   '${connection.connectionNo ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
                   '${connection.connectionHolders?.first.name ?? ''}',
                   '${connection.connectionHolders?.first.fatherOrHusbandName ?? ''}',
-                  '${connection.additionalDetails?.collectionPendingAmount != null ? '₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}',
+                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '- ₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '').abs()}' : ' ₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}'
                 ])
             .toList() ??
         [];
 
-    HouseholdPdfCreator(
-            context,
+    isExcelDownload
+        ? generateExcel(
             headerList
                 .map<String>((e) =>
                     '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e)}')
                 .toList(),
-            tableData,
-            isDownload)
-        .pdfPreview();
+            tableData)
+        : await HouseholdPdfCreator(
+                context,
+                headerList
+                    .map<String>((e) =>
+                        '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e)}')
+                    .toList(),
+                tableData,
+                isDownload)
+            .pdfPreview();
+    Navigator.pop(context);
   }
+
   bool removeOverLay(_overlayEntry) {
     try {
       if (_overlayEntry == null) return false;

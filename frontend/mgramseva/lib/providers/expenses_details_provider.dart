@@ -312,10 +312,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
           "owner": {
             "tenantId": commonProvider.userDetails?.selectedtenant?.code,
             "name": expenditureDetails.vendorNameCtrl.text.trim(),
-            "fatherOrHusbandName": languageProvider.selectedLanguage!.enableRegEx
-                ? ApplicationLocalizations.of(context)
-                .translate(i18.expense.DEFAULT_NAME)
-                : "defaultName",
+            "fatherOrHusbandName": "defaultName",
             "relationship": "FATHER",
             "gender": "MALE",
             "dob": 550261800000,

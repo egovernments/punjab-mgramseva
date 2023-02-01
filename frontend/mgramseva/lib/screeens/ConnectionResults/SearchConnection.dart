@@ -45,9 +45,6 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
   Widget build(BuildContext context) {
     var searchConnectionProvider =
         Provider.of<SearchConnectionProvider>(context, listen: false);
-    var languageProvider = Provider.of<LanguageProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
     return FocusWatcher(
         child: Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,

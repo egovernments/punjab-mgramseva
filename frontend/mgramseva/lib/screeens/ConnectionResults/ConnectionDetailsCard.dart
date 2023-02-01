@@ -226,7 +226,7 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                         .additionalDetails!.locality!.isNotEmpty
                                         || waterconnections.waterConnectionData![index]
                                             .additionalDetails!.locality != null
-                                       ? ApplicationLocalizations.of(context)
+                                        ? ApplicationLocalizations.of(context)
                                         .translate(waterconnections.waterConnectionData![index]
                                         .additionalDetails!.locality.toString()) : "" ) +
                                     ', ' +

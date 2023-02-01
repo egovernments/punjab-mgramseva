@@ -135,32 +135,5 @@ public class CommonUtils {
 	    calendar.set(Calendar.MILLISECOND, 0);
 	}
 
-    public Map<String, List<String>> getMdmsAttributeValues(String tenantId, String moduleName, List<String> names,
-			String filter, String jsonPath, RequestInfo requestInfo) {
-		StringBuilder uri = new StringBuilder(configs.getMdmsHost()).append(configs.getMdmsEndPoint());
-		MdmsCriteriaReq criteriaReq = prepareMdMsRequest(tenantId, moduleName, names, filter,
-				requestInfo);
-		try {
-
-			Object result = serviceRequestRepository.fetchResult(uri, criteriaReq);
-			return JsonPath.read(result, jsonPath);
-		} catch (Exception e) {
-			throw new CustomException(ChallanConstants.INVALID_REQUEST, ChallanConstants.INVALID_REQUEST);
-		}
-	}
- 
-    private MdmsCriteriaReq prepareMdMsRequest(String tenantId, String moduleName, List<String> names, String filter,
-			RequestInfo requestInfo) {
-		List<MasterDetail> masterDetails = new ArrayList<>();
-		names.forEach(name -> {
-			masterDetails.add(MasterDetail.builder().name(name).filter(filter).build());
-		});
-		ModuleDetail moduleDetail = ModuleDetail.builder().moduleName(moduleName).masterDetails(masterDetails).build();
-		List<ModuleDetail> moduleDetails = new ArrayList<>();
-		moduleDetails.add(moduleDetail);
-		MdmsCriteria mdmsCriteria = MdmsCriteria.builder().tenantId(tenantId).moduleDetails(moduleDetails).build();
-		return MdmsCriteriaReq.builder().requestInfo(requestInfo).mdmsCriteria(mdmsCriteria).build();
-	}
-
  
 }

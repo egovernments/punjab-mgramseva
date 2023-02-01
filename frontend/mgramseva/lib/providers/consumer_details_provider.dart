@@ -88,7 +88,7 @@ class ConsumerProvider with ChangeNotifier {
       property.address.localityCtrl = boundaryList.first;
       onChangeOflocaity(property.address.localityCtrl);
     }
-    if (commonProvider.userDetails?.selectedtenant?.code != null ) {
+    if (commonProvider.userDetails?.selectedtenant?.code != null) {
       property.address.gpNameCtrl
           .text = commonProvider.userDetails!.selectedtenant!.code!;
       property.address.gpNameCityCodeCtrl
