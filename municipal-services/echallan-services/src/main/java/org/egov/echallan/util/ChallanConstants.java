@@ -63,6 +63,12 @@ public class ChallanConstants {
     public static final String EXPENSE_ELECTRICITY_BILL = "EXPENSE.ELECTRICITY_BILL";
     public static final String RETURN_ALL_BILL_PARAMETER = "returnAllBills";
 
+    public static final String COMMON_MASTERS_JSONPATH_ROOT = "$.MdmsRes.common-masters";
+
+	public static final String COMMON_MASTER_MODULE = "common-masters";
+
+	public static final String INVALID_REQUEST = "Invalid Mdms Request";
+
     public ChallanConstants() {}
 
 }

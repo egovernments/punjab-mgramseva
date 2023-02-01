@@ -30,13 +30,13 @@ public class VendorConstants {
 	public static final String COULD_NOT_CREATE_VEHICLE = "COULD_NOT_CREATE_VEHICLE";
 
 	public static final String CITIZEN = "CITIZEN";	
-
+	
 	public static final String COMMON_MASTERS_JSONPATH_ROOT = "$.MdmsRes.common-masters";
 
 	public static final String COMMON_MASTER_MODULE = "common-masters";
 
 	public static final String INVALID_REQUEST = "Invalid Mdms Request";
-	
+
 	
 	
 }

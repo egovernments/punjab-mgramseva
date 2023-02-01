@@ -21,6 +21,10 @@ import org.egov.echallan.model.RequestInfoWrapper;
 import org.egov.echallan.repository.ServiceRequestRepository;
 import org.egov.echallan.util.ChallanConstants;
 import org.egov.echallan.util.CommonUtils;
+import org.egov.mdms.model.MasterDetail;
+import org.egov.mdms.model.MdmsCriteria;
+import org.egov.mdms.model.MdmsCriteriaReq;
+import org.egov.mdms.model.ModuleDetail;
 import org.egov.tracer.model.CustomException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,7 +42,7 @@ public class ChallanValidator {
 
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
-	
+
 	@Autowired
     private CommonUtils utils;
 
@@ -169,7 +173,7 @@ public class ChallanValidator {
 			if(request.getChallan().getCitizen().getName() != null) {
 				 input2 = request.getChallan().getCitizen().getName();
 			}
-			
+
 			if(request.getChallan().getCitizen().getFatherOrHusbandName() != null) {
 				 input3 = request.getChallan().getCitizen().getFatherOrHusbandName();
 
@@ -190,7 +194,7 @@ public class ChallanValidator {
 		JSONArray configArray = obj.getJSONArray("StateInfo");
 		JSONArray languages = configArray.getJSONObject(0).getJSONArray("languages");
 		for(int i=0;i<languages.length();i++){
-			
+
 			JSONObject json = languages.getJSONObject(i);
 			if(json.getString("value").equalsIgnoreCase(locale)) {
 				if(json.getBoolean("enableRegEx") == true) {
@@ -204,11 +208,11 @@ public class ChallanValidator {
 
 			}
 		}
-		
+
 		Matcher matcher1 = pattern.matcher(input1);
 		if(!matcher1.find()) {
 			throw new CustomException("INVALID_NAME", "Invalid name. Only alphabets and special characters -, ',`, .\"");
-	    }	
+	    }
 		Matcher matcher2 = null;
 		Matcher matcher3 = null;
 
@@ -217,16 +221,18 @@ public class ChallanValidator {
 			 matcher2 = pattern.matcher(input2);
 			 if(!matcher2.find()) {
 					throw new CustomException("INVALID_NAME", "Invalid name. Only alphabets and special characters -, ',`, .\"");
-			    }	
+			    }
 		}
-		
+
 		if(input3 != null) {
 			 matcher3 = pattern.matcher(input2);
 			 if(!matcher3.find()) {
 					throw new CustomException("INVALID_NAME", "Invalid name. Only alphabets and special characters -, ',`, .\"");
-			    }	
+			    }
 		}
-	 		
-			
+
+
 	}
+
+
 }
