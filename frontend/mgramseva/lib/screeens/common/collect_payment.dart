@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
@@ -24,7 +22,6 @@ import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
-import '../../widgets/TextFieldBuilder.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/HouseConnectionandBill/NewConsumerBill.dart';
@@ -32,6 +29,7 @@ import '../../model/demand/update_demand_list.dart';
 import '../../providers/common_provider.dart';
 import '../../utils/models.dart';
 import '../../widgets/CustomDetails.dart';
+import '../../widgets/TextFieldBuilder.dart';
 import '../../widgets/customAppbar.dart';
 
 class ConnectionPaymentView extends StatefulWidget {
@@ -429,7 +427,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
                               0.0
                           ? '- ₹ ' +
                               '${(fetchBill.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount)}'
-                          : '- ₹ ' +
+                          : '₹ ' +
                               '${(fetchBill.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount)}')),
                 if (CommonProvider.getPenaltyOrAdvanceStatus(
                         fetchBill.mdmsData, false, true) &&

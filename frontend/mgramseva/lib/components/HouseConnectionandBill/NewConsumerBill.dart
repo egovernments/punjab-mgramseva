@@ -17,10 +17,6 @@ import 'package:provider/provider.dart';
 import '../../utils/models.dart';
 import '../../widgets/CustomDetails.dart';
 
-import '../../model/demand/update_demand_list.dart';
-import '../../utils/models.dart';
-import '../../widgets/CustomDetails.dart';
-
 class NewConsumerBill extends StatefulWidget {
   final String? mode;
   final String? status;
@@ -210,9 +206,9 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                           context),
                                      if(CommonProvider.getPenaltyOrAdvanceStatus(widget.waterConnection?.mdmsData, true) && houseHoldProvider.isfirstdemand) getLabelText(
                                           i18.common.CORE_ADVANCE_ADJUSTED,
-                                          (((CommonProvider.getAdvanceAdjustedAmount(widget.demandList)) != '0.0'
-                                                  ? '- ' + '₹' + (CommonProvider.getAdvanceAdjustedAmount(widget.demandList)).toString()
-                                                  : '- ' + '₹' +(CommonProvider.getAdvanceAdjustedAmount(widget.demandList)).toString())),
+                                          ((double.parse(CommonProvider.getAdvanceAdjustedAmount(widget.demandList)).abs() != 0.0
+                                                  ? '- ₹' + (CommonProvider.getAdvanceAdjustedAmount(widget.demandList)).toString()
+                                                  :  '₹' +(CommonProvider.getAdvanceAdjustedAmount(widget.demandList)).toString())),
                                           context),
 
                                       if(CommonProvider.getPenaltyOrAdvanceStatus(widget.waterConnection?.mdmsData, false, true) && houseHoldProvider.isfirstdemand && penalty.isDueDateCrossed) getLabelText(

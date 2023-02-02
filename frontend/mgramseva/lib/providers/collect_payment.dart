@@ -1,42 +1,41 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'package:mgramseva/model/demand/update_demand_list.dart';
-import 'package:mgramseva/model/mdms/payment_type.dart';
-import 'package:mgramseva/providers/language.dart';
 
-import '../components/HouseConnectionandBill/jsconnnector.dart' as js;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mgramseva/Env/app_config.dart';
+import 'package:image/image.dart' as img;
 import 'package:mgramseva/model/bill/bill_payments.dart';
+import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart';
+import 'package:mgramseva/model/demand/demand_list.dart';
+import 'package:mgramseva/model/demand/update_demand_list.dart';
+import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
+import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/services/MDMS.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/common_printer.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/print_bluetooth.dart';
 import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:number_to_words/number_to_words.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:image/image.dart' as img;
-import '../model/localization/language.dart';
+
+import '../components/HouseConnectionandBill/jsconnnector.dart' as js;
 import 'common_provider.dart';
-import 'package:mgramseva/repository/billing_service_repo.dart';
-import 'package:mgramseva/model/bill/billing.dart';
-import 'package:mgramseva/model/demand/demand_list.dart';
 
 class CollectPaymentProvider with ChangeNotifier {
   var paymentStreamController = StreamController.broadcast();
@@ -52,20 +51,22 @@ class CollectPaymentProvider with ChangeNotifier {
   }
 
   Future<void> getBillDetails(
-      BuildContext context, Map<String, dynamic> query, List<Bill>? bill, List<Demands>? demandList, PaymentType? mdmsData, List<UpdateDemands>? updateDemandList ) async {
+      BuildContext context,
+      Map<String, dynamic> query,
+      List<Bill>? bill,
+      List<Demands>? demandList,
+      PaymentType? mdmsData,
+      List<UpdateDemands>? updateDemandList) async {
     try {
-
-
       List<FetchBill>? paymentDetails;
 
       // if(bill == null) {
-        paymentDetails = await ConsumerRepository().getBillDetails(query);
+      paymentDetails = await ConsumerRepository().getBillDetails(query);
       // }else{
       //   paymentDetails = (bill.map((e)=> e.toJson()).toList()).map<FetchBill>((e)=> FetchBill.fromJson(e)).toList();
       // }
 
-
-      if(demandList == null) {
+      if (demandList == null) {
         var demand = await BillingServiceRepository().fetchdDemand({
           "tenantId": query['tenantId'],
           "consumerCode": query['consumerCode'],
@@ -76,67 +77,72 @@ class CollectPaymentProvider with ChangeNotifier {
         demandList = demand.demands;
 
         if (demandList != null && demandList.length > 0) {
-          demandList.sort((a, b) =>
-              b
-                  .demandDetails!.first.auditDetails!.createdTime!
-                  .compareTo(
-                  a.demandDetails!.first.auditDetails!.createdTime!));
+          demandList.sort((a, b) => b
+              .demandDetails!.first.auditDetails!.createdTime!
+              .compareTo(a.demandDetails!.first.auditDetails!.createdTime!));
         }
       }
 
-      if (query['status'] != Constants.CONNECTION_STATUS.first){
+      if (query['status'] != Constants.CONNECTION_STATUS.first) {
         if (updateDemandList == null) {
           var demand = await BillingServiceRepository().fetchUpdateDemand({
             "tenantId": query['tenantId'],
             "consumerCodes": query['consumerCode'],
             "isGetPenaltyEstimate": "true"
-          },
-              {
-                "GetBillCriteria": {
-                  "tenantId": query['tenantId'],
-                  "billId": null,
-                  "isGetPenaltyEstimate": true,
-                  "consumerCodes": [query['consumerCode']]
-                }
-              });
+          }, {
+            "GetBillCriteria": {
+              "tenantId": query['tenantId'],
+              "billId": null,
+              "isGetPenaltyEstimate": true,
+              "consumerCodes": [query['consumerCode']]
+            }
+          });
           updateDemandList = demand.demands;
           updateDemand?.totalApplicablePenalty = demand.totalApplicablePenalty;
           updateDemandList?.forEach((e) {
             e.totalApplicablePenalty = demand.totalApplicablePenalty;
           });
 
-
           if (updateDemandList != null && updateDemandList.length > 0) {
-            updateDemandList.sort((a, b) =>
-                b
-                    .demandDetails!.first.auditDetails!.createdTime!
-                    .compareTo(
-                    a.demandDetails!.first.auditDetails!.createdTime!));
+            updateDemandList.sort((a, b) => b
+                .demandDetails!.first.auditDetails!.createdTime!
+                .compareTo(a.demandDetails!.first.auditDetails!.createdTime!));
           }
         }
-    }
-      else{}
+      } else {}
 
       if (paymentDetails != null) {
-        if(mdmsData == null){
+        if (mdmsData == null) {
           mdmsData = await CommonProvider.getMdmsBillingService();
           paymentDetails.first.mdmsData = mdmsData;
         }
 
-
-          paymentDetails.first.billDetails
+        paymentDetails.first.billDetails
             ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
-        demandList = demandList?.where((element) => element.status != 'CANCELLED').toList();
-        updateDemandList = updateDemandList?.where((element) => element.status != 'CANCELLED').toList();
+        demandList = demandList
+            ?.where((element) => element.status != 'CANCELLED')
+            .toList();
+        updateDemandList = updateDemandList
+            ?.where((element) => element.status != 'CANCELLED')
+            .toList();
 
         // var demandDetails = await ConsumerRepository().getDemandDetails(query);
         // if (demandDetails != null)
         // paymentDetails.first.demand = demandDetails.first;
         getPaymentModes(paymentDetails.first);
-        paymentDetails.first.customAmountCtrl.text = paymentDetails.first.totalAmount!.toInt() > 0 ? paymentDetails.first.totalAmount!.toInt().toString() : '';
-        paymentDetails.first.billDetails?.first.billAccountDetails?.last.advanceAdjustedAmount = double.parse(CommonProvider.getAdvanceAdjustedAmount(demandList ?? []));
-        paymentDetails.first.billDetails?.first.billAccountDetails?.last.arrearsAmount = CommonProvider.getArrearsAmount(demandList ?? []);
-        paymentDetails.first.billDetails?.first.billAccountDetails?.last.totalBillAmount = CommonProvider.getTotalBillAmount(demandList ?? []);
+        paymentDetails.first.customAmountCtrl.text =
+            paymentDetails.first.totalAmount!.toInt() > 0
+                ? paymentDetails.first.totalAmount!.toInt().toString()
+                : '';
+        paymentDetails.first.billDetails?.first.billAccountDetails?.last
+                .advanceAdjustedAmount =
+            double.parse(
+                CommonProvider.getAdvanceAdjustedAmount(demandList ?? []));
+        paymentDetails.first.billDetails?.first.billAccountDetails?.last
+            .arrearsAmount = CommonProvider.getArrearsAmount(demandList ?? []);
+        paymentDetails.first.billDetails?.first.billAccountDetails?.last
+                .totalBillAmount =
+            CommonProvider.getTotalBillAmount(demandList ?? []);
         paymentDetails.first.demands = demandList?.first;
         paymentDetails.first.demandList = demandList;
         paymentDetails.first.updateDemands = updateDemandList?.first;
@@ -211,170 +217,175 @@ class CollectPaymentProvider with ChangeNotifier {
 
     screenshotController
         .captureFromWidget(
-      Container(
-          width: kIsWeb ? 375 : 150,
-          margin: EdgeInsets.zero,
-          padding: EdgeInsets.zero,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+          Container(
+              width: kIsWeb ? 375 : 150,
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.zero,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  kIsWeb
-                      ? SizedBox(
-                    width: 70,
-                    height: 70,
-                  )
-                      : Image(
-                      width: 40,
-                      height: 40,
-                      image: NetworkImage(stateProvider
-                          .stateInfo!.stateLogoURL
-                          .toString())),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      kIsWeb
+                          ? SizedBox(
+                              width: 70,
+                              height: 70,
+                            )
+                          : Image(
+                              width: 40,
+                              height: 40,
+                              image: NetworkImage(stateProvider
+                                  .stateInfo!.stateLogoURL
+                                  .toString())),
+                      Container(
+                        width: kIsWeb ? 290 : 90,
+                        margin: EdgeInsets.all(5),
+                        child: Text(
+                          ApplicationLocalizations.of(
+                                  navigatorKey.currentContext!)
+                              .translate(i18.consumerReciepts
+                                  .GRAM_PANCHAYAT_WATER_SUPPLY_AND_SANITATION),
+                          textScaleFactor: kIsWeb ? 3 : 1,
+                          maxLines: 3,
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 10,
+                              height: 1,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic),
+                          textAlign: TextAlign.left,
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
                   Container(
-                    width: kIsWeb ? 290 : 90,
-                    margin: EdgeInsets.all(5),
-                    child: Text(
-                      ApplicationLocalizations.of(
-                          navigatorKey.currentContext!)
-                          .translate(i18.consumerReciepts
-                          .GRAM_PANCHAYAT_WATER_SUPPLY_AND_SANITATION),
-                      textScaleFactor: kIsWeb ? 3 : 1,
-                      maxLines: 3,
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 10,
-                          height: 1,
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.italic),
-                      textAlign: TextAlign.left,
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Container(
-                  width: kIsWeb ? 375 : 90,
-                  margin: EdgeInsets.all(5),
-                  child: Text(
-                      ApplicationLocalizations.of(
-                          navigatorKey.currentContext!)
-                          .translate(i18.consumerReciepts.WATER_RECEIPT),
-                      textScaleFactor: kIsWeb ? 3 : 1,
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 10,
-                        height: 1,
-                        fontWeight: FontWeight.bold,
-                      ))),
-              SizedBox(
-                height: 8,
-              ),
-              getprinterlabel(
-                  i18.consumerReciepts.RECEIPT_GPWSC_NAME,
-                  ApplicationLocalizations.of(navigatorKey.currentContext!)
-                      .translate(commonProvider
-                      .userDetails!.selectedtenant!.code!)),
-              getprinterlabel(i18.consumerReciepts.RECEIPT_CONSUMER_NO,
-                  '${fetchBill.consumerCode}'),
-              getprinterlabel(
-                i18.consumerReciepts.RECEIPT_CONSUMER_NAME,
-                '${item.paidBy}',
-              ),
-              getprinterlabel(
-                  i18.consumerReciepts.RECEIPT_CONSUMER_MOBILE_NO,
-                  item.mobileNumber),
-              getprinterlabel(
-                  i18.consumerReciepts.RECEIPT_CONSUMER_ADDRESS,
-                  ApplicationLocalizations.of(navigatorKey.currentContext!)
-                      .translate(houseHoldProvider.waterConnection!.additionalDetails!
-                      .doorNo
-                      .toString()) +
-                      " " +
-                      ApplicationLocalizations.of(navigatorKey.currentContext!)
-                          .translate('${houseHoldProvider.waterConnection?.additionalDetails?.street
-                          .toString()}') +
-                      " " +
-                      ApplicationLocalizations.of(navigatorKey.currentContext!)
-                          .translate('${houseHoldProvider
-                          .waterConnection?.additionalDetails?.locality
-                          .toString()}') +
-                      " " +
+                      width: kIsWeb ? 375 : 90,
+                      margin: EdgeInsets.all(5),
+                      child: Text(
+                          ApplicationLocalizations.of(
+                                  navigatorKey.currentContext!)
+                              .translate(i18.consumerReciepts.WATER_RECEIPT),
+                          textScaleFactor: kIsWeb ? 3 : 1,
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 10,
+                            height: 1,
+                            fontWeight: FontWeight.bold,
+                          ))),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  getprinterlabel(
+                      i18.consumerReciepts.RECEIPT_GPWSC_NAME,
                       ApplicationLocalizations.of(navigatorKey.currentContext!)
                           .translate(commonProvider
-                          .userDetails!.selectedtenant!.code!)),
-              SizedBox(
-                height: 10,
-              ),
-              getprinterlabel(i18.consumer.SERVICE_TYPE,
-                  '${houseHoldProvider.waterConnection!.connectionType
-                  .toString()}'),
-              getprinterlabel(i18.consumerReciepts.CONSUMER_RECEIPT_NO,
-                  item.paymentDetails!.first.receiptNumber),
-              getprinterlabel(
-                  i18.consumerReciepts.RECEIPT_ISSUE_DATE,
-                  DateFormats.timeStampToDate(item.transactionDate,
-                      format: "dd/MM/yyyy")
-                      .toString()),
-              getprinterlabel(
-                  i18.consumerReciepts.RECEIPT_BILL_PERIOD,
-                  DateFormats.timeStampToDate(
-                      item.paymentDetails?.last.bill!.billDetails!.first
-                          .fromPeriod,
-                      format: "dd/MM/yyyy") +
-                      '-' +
-                      DateFormats.timeStampToDate(
-                          item.paymentDetails?.last.bill?.billDetails!
-                              .first.toPeriod,
-                          format: "dd/MM/yyyy")
+                              .userDetails!.selectedtenant!.code!)),
+                  getprinterlabel(i18.consumerReciepts.RECEIPT_CONSUMER_NO,
+                      '${fetchBill.consumerCode}'),
+                  getprinterlabel(
+                    i18.consumerReciepts.RECEIPT_CONSUMER_NAME,
+                    '${item.paidBy}',
+                  ),
+                  getprinterlabel(
+                      i18.consumerReciepts.RECEIPT_CONSUMER_MOBILE_NO,
+                      item.mobileNumber),
+                  getprinterlabel(
+                      i18.consumerReciepts.RECEIPT_CONSUMER_ADDRESS,
+                      ApplicationLocalizations.of(navigatorKey.currentContext!)
+                              .translate(houseHoldProvider
+                                  .waterConnection!.additionalDetails!.doorNo
+                                  .toString()) +
+                          " " +
+                          ApplicationLocalizations.of(
+                                  navigatorKey.currentContext!)
+                              .translate(
+                                  '${houseHoldProvider.waterConnection?.additionalDetails?.street.toString()}') +
+                          " " +
+                          ApplicationLocalizations.of(
+                                  navigatorKey.currentContext!)
+                              .translate(
+                                  '${houseHoldProvider.waterConnection?.additionalDetails?.locality.toString()}') +
+                          " " +
+                          ApplicationLocalizations.of(
+                                  navigatorKey.currentContext!)
+                              .translate(commonProvider
+                                  .userDetails!.selectedtenant!.code!)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  getprinterlabel(i18.consumer.SERVICE_TYPE,
+                      '${houseHoldProvider.waterConnection!.connectionType.toString()}'),
+                  getprinterlabel(i18.consumerReciepts.CONSUMER_RECEIPT_NO,
+                      item.paymentDetails!.first.receiptNumber),
+                  getprinterlabel(
+                      i18.consumerReciepts.RECEIPT_ISSUE_DATE,
+                      DateFormats.timeStampToDate(item.transactionDate,
+                              format: "dd/MM/yyyy")
                           .toString()),
-              SizedBox(
-                height: 8,
-              ),
-              getprinterlabel(i18.consumerReciepts.CONSUMER_ACTUAL_DUE_AMOUNT,
-                  ('₹' + (item.totalDue).toString())),
-              getprinterlabel(i18.consumerReciepts.RECEIPT_AMOUNT_PAID,
-                  ('₹' + (item.totalAmountPaid).toString())),
-              getprinterlabel(
-                  i18.consumerReciepts.RECEIPT_AMOUNT_IN_WORDS,
-                  ('Rupees ' +
-                      (NumberToWord()
-                          .convert('en-in', item.totalAmountPaid!.toInt())
-                          .toString()) +
-                      ' only')),
-              getprinterlabel(i18.consumerReciepts.CONSUMER_PENDING_AMOUNT,
-                  ('₹' + ((item.totalDue ?? 0) - (item.totalAmountPaid ?? 0)).toString())),
-              SizedBox(
-                height: 8,
-              ),
-              Text('- - *** - -',
-                  textScaleFactor: kIsWeb ? 3 : 1,
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                      color: Colors.red,
-                      fontSize: kIsWeb ? 5 : 6,
-                      fontWeight: FontWeight.bold)),
-              Text(
-                  "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.RECEIPT_FOOTER)}",
-                  textScaleFactor: kIsWeb ? 3 : 1,
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                      color: Colors.red,
-                      fontSize: kIsWeb ? 5 : 6,
-                      fontWeight: FontWeight.bold)),
-            ],
-          )),
-    )
+                  getprinterlabel(
+                      i18.consumerReciepts.RECEIPT_BILL_PERIOD,
+                      DateFormats.timeStampToDate(
+                              item.paymentDetails?.last.bill!.billDetails!.first
+                                  .fromPeriod,
+                              format: "dd/MM/yyyy") +
+                          '-' +
+                          DateFormats.timeStampToDate(
+                                  item.paymentDetails?.last.bill?.billDetails!
+                                      .first.toPeriod,
+                                  format: "dd/MM/yyyy")
+                              .toString()),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  getprinterlabel(
+                      i18.consumerReciepts.CONSUMER_ACTUAL_DUE_AMOUNT,
+                      ('₹' + (item.totalDue).toString())),
+                  getprinterlabel(i18.consumerReciepts.RECEIPT_AMOUNT_PAID,
+                      ('₹' + (item.totalAmountPaid).toString())),
+                  getprinterlabel(
+                      i18.consumerReciepts.RECEIPT_AMOUNT_IN_WORDS,
+                      ('Rupees ' +
+                          (NumberToWord()
+                              .convert('en-in', item.totalAmountPaid!.toInt())
+                              .toString()) +
+                          ' only')),
+                  getprinterlabel(
+                      i18.consumerReciepts.CONSUMER_PENDING_AMOUNT,
+                      ('₹' +
+                          ((item.totalDue ?? 0) - (item.totalAmountPaid ?? 0))
+                              .toString())),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Text('- - *** - -',
+                      textScaleFactor: kIsWeb ? 3 : 1,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontSize: kIsWeb ? 5 : 6,
+                          fontWeight: FontWeight.bold)),
+                  Text(
+                      "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.RECEIPT_FOOTER)}",
+                      textScaleFactor: kIsWeb ? 3 : 1,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontSize: kIsWeb ? 5 : 6,
+                          fontWeight: FontWeight.bold)),
+                ],
+              )),
+        )
         .then((value) => {
-      kIsWeb
-          ? js.onButtonClick(
-          value, stateProvider.stateInfo!.stateLogoURL.toString())
-          : CommonPrinter.printTicket(
-          img.decodeImage(value), navigatorKey.currentContext!)
-    });
+              kIsWeb
+                  ? js.onButtonClick(
+                      value, stateProvider.stateInfo!.stateLogoURL.toString())
+                  : PrintBluetooth.printTicket(
+                      img.decodeImage(value), navigatorKey.currentContext!)
+            });
   }
 
   Future<void> getPaymentModes(FetchBill fetchBill) async {
