@@ -595,7 +595,7 @@ packages:
       name: json_annotation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.1"
+    version: "4.1.0"
   json_serializable:
     dependency: "direct dev"
     description:
@@ -645,6 +645,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  nearby_connections:
+    dependency: "direct main"
+    description:
+      name: nearby_connections
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.2.0"
   nested:
     dependency: transitive
     description:
@@ -841,6 +848,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.0"
+  print_bluetooth_thermal:
+    dependency: "direct main"
+    description:
+      name: print_bluetooth_thermal
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.5"
   printing:
     dependency: "direct main"
     description:
