@@ -481,8 +481,16 @@ class BillGenerationProvider with ChangeNotifier {
       /// Get months based on selected billing year
       var months = CommonMethods.getPastMonthUntilFinancialYear(date1.year);
 
-      /// if its current ytd year means removing current month
-      if(isCurrentYtdSelected) months.removeAt(0);
+      /// if its current ytd year means removing till current month
+      if (isCurrentYtdSelected) {
+        if (DateTime.now().month == 1) {
+          months.removeRange(0, 3);
+        } else if (DateTime.now().month == 2) {
+          months.removeRange(0, 2);
+        } else if (DateTime.now().month == 3) {
+          months.removeRange(0, 1);
+        }
+      }
 
       /// if selected year is future year means all the months will be removed
       if(date1.year >= ytd.endDate.year) months.clear();
