@@ -608,8 +608,16 @@ class ConsumerProvider with ChangeNotifier {
       /// Get months based on selected billing year
       var months = CommonMethods.getPastMonthUntilFinancialYear(date1.year);
 
-      /// if its current ytd year means removing current month
-      if(isCurrentYtdSelected) months.removeAt(0);
+      /// if its current ytd year means removing till current month
+      if (isCurrentYtdSelected) {
+        if (DateTime.now().month == 1) {
+          months.removeRange(0, 3);
+        } else if (DateTime.now().month == 2) {
+          months.removeRange(0, 2);
+        } else if (DateTime.now().month == 3) {
+          months.removeRange(0, 1);
+        }
+      }
 
       for (var i = 0; i < months.length; i++) {
         var prevMonth = months[i].startDate;
