@@ -1,7 +1,10 @@
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+
+import 'Locilization/application_localizations.dart';
 
 class PrintBluetooth {
   static bool connected = false;
@@ -14,7 +17,6 @@ class PrintBluetooth {
       final result =
           await PrintBluetoothThermal.connect(macPrinterAddress: mac);
 
-      print("state conneected $result");
       if (result) {
         connected = true;
         PrintBluetooth.printTicket(value, context);
@@ -42,7 +44,8 @@ class PrintBluetooth {
                 setConnect(select, value, context);
               },
               title: Text('${availableBluetoothDevices[index].name}'),
-              subtitle: Text("Click to connect"),
+              subtitle: Text(ApplicationLocalizations.of(context)
+                  .translate(i18.consumerReciepts.CLICK_TO_CONNECT)),
             );
           },
         ),
@@ -56,12 +59,14 @@ class PrintBluetooth {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Connect to Device'),
+          title: Text(ApplicationLocalizations.of(context)
+              .translate(i18.consumerReciepts.CONNECT_TO_DEVICE)),
           content:
               setupAlertDialogContainer(availableBluetoothDevices, context),
           actions: <Widget>[
             TextButton(
-              child: const Text('Close'),
+              child: Text(ApplicationLocalizations.of(context)
+                  .translate(i18.consumerReciepts.CLOSE)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -73,7 +78,6 @@ class PrintBluetooth {
   }
 
   static Future<void> printTicket(value, context) async {
-    print(double.parse('-0.0').abs());
     bool? isPermissionGranted =
         await PrintBluetoothThermal.isPermissionBluetoothGranted;
     print(isPermissionGranted);
@@ -84,10 +88,10 @@ class PrintBluetooth {
     if (isConnected) {
       List<int> bytes = await getTicket(value);
       final result = await PrintBluetoothThermal.writeBytes(bytes);
-      print("Print $result");
     } else {
       PrintBluetooth.showMyDialog(context, value);
-      print("connection not established");
+      print(ApplicationLocalizations.of(context)
+          .translate(i18.consumerReciepts.CONNECTION_NOT_ESTABLISHED));
     }
   }
 
