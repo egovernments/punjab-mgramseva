@@ -97,6 +97,7 @@ class DashBoardProvider with ChangeNotifier {
 
       fetchExpenseDashBoardDetails(context, limit, offset, true);
     } else {
+      sortBy = SortBy('connectionNumber', false);
       waterConnectionsDetails?.waterConnection = <WaterConnection>[];
       waterConnectionsDetails?.totalCount = null;
 
@@ -336,7 +337,7 @@ class DashBoardProvider with ChangeNotifier {
             : waterConnectionsDetails?.waterConnection?.sublist(
                 offSet - 1,
                 ((offset + limit - 1) >
-                    (waterConnectionsDetails?.totalCount ?? 0))
+                        (waterConnectionsDetails?.totalCount ?? 0))
                     ? (waterConnectionsDetails!.totalCount!)
                     : (offset + limit) - 1));
       }
@@ -416,10 +417,10 @@ class DashBoardProvider with ChangeNotifier {
         TableHeader(i18.common.CONNECTION_ID,
             isSortingRequired: true,
             isAscendingOrder:
-            sortBy != null && sortBy!.key == 'connectionNumber'
-                ? sortBy!.isAscending
-                : null,
-            apiKey: 'connectionNumber ',
+                sortBy != null && sortBy!.key == 'connectionNumber'
+                    ? sortBy!.isAscending
+                    : null,
+            apiKey: 'connectionNumber',
             callBack: onExpenseSort),
         TableHeader(i18.common.NAME,
             isSortingRequired: true,
@@ -431,9 +432,9 @@ class DashBoardProvider with ChangeNotifier {
         TableHeader(i18.dashboard.COLLECTIONS,
             isSortingRequired: true,
             isAscendingOrder:
-            sortBy != null && sortBy!.key == 'collectionAmount'
-                ? sortBy!.isAscending
-                : null,
+                sortBy != null && sortBy!.key == 'collectionAmount'
+                    ? sortBy!.isAscending
+                    : null,
             apiKey: 'collectionAmount',
             callBack: onExpenseSort),
       ];

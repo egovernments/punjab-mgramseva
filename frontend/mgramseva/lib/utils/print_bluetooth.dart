@@ -73,7 +73,6 @@ class PrintBluetooth {
   }
 
   static Future<void> printTicket(value, context) async {
-    print(double.parse('-0.0').abs());
     bool? isPermissionGranted =
         await PrintBluetoothThermal.isPermissionBluetoothGranted;
     print(isPermissionGranted);
