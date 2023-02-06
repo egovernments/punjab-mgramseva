@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:open_file_safe/open_file_safe.dart' as open_file;
+import 'package:open_file/open_file.dart' as open_file;
 import 'package:path_provider/path_provider.dart' as path_provider;
 // ignore: depend_on_referenced_packages
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';

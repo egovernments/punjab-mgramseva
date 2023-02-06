@@ -97,6 +97,7 @@ class DashBoardProvider with ChangeNotifier {
 
       fetchExpenseDashBoardDetails(context, limit, offset, true);
     } else {
+      sortBy = SortBy('connectionNumber', false);
       waterConnectionsDetails?.waterConnection = <WaterConnection>[];
       waterConnectionsDetails?.totalCount = null;
 
@@ -419,7 +420,7 @@ class DashBoardProvider with ChangeNotifier {
                 sortBy != null && sortBy!.key == 'connectionNumber'
                     ? sortBy!.isAscending
                     : null,
-            apiKey: 'connectionNumber ',
+            apiKey: 'connectionNumber',
             callBack: onExpenseSort),
         TableHeader(i18.common.NAME,
             isSortingRequired: true,
