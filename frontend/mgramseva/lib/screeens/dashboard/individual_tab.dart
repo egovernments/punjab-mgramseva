@@ -86,6 +86,7 @@ class _IndividualTabState extends State<IndividualTab> {
               rightColumnWidth: expenseList is List<ExpensesDetailsModel>
                   ? width * 4
                   : width * 2,
+              scrollPhysics: NeverScrollableScrollPhysics(),
             );
     });
   }
