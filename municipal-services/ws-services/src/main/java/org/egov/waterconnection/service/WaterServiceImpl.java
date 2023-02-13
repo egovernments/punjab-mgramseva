@@ -150,7 +150,7 @@ public class WaterServiceImpl implements WaterService {
 		mDMSValidator.validateMISFields(waterConnectionRequest);
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, reqType);
 		List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
-		if(waterConnection == null) {
+		if(waterConnection != null && waterConnection.size() > 0) {
 			throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
 					"Duplicate Old connection number");
 		}
