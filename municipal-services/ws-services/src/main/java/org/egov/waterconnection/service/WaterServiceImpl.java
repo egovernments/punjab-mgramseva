@@ -149,6 +149,11 @@ public class WaterServiceImpl implements WaterService {
 		}
 		mDMSValidator.validateMISFields(waterConnectionRequest);
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, reqType);
+		List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
+		if(waterConnection == null) {
+			throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
+					"Duplicate Old connection number");
+		}
 		Property property = validateProperty.getOrValidateProperty(waterConnectionRequest);
 		validateProperty.validatePropertyFields(property, waterConnectionRequest.getRequestInfo());
 		mDMSValidator.validateMasterForCreateRequest(waterConnectionRequest);
@@ -306,6 +311,13 @@ public class WaterServiceImpl implements WaterService {
 	private List<WaterConnection> getAllWaterApplications(WaterConnectionRequest waterConnectionRequest) {
 		SearchCriteria criteria = SearchCriteria.builder()
 				.connectionNumber(waterConnectionRequest.getWaterConnection().getConnectionNo()).build();
+		WaterConnectionResponse waterConnection = search(criteria, waterConnectionRequest.getRequestInfo());
+		return waterConnection.getWaterConnection();
+	}
+	
+	private List<WaterConnection> getWaterConnectionForOldConnectionNo(WaterConnectionRequest waterConnectionRequest) {
+		SearchCriteria criteria = SearchCriteria.builder().tenantId(waterConnectionRequest.getWaterConnection().getTenantId())
+				.connectionNumber(waterConnectionRequest.getWaterConnection().getOldConnectionNo()).build();
 		WaterConnectionResponse waterConnection = search(criteria, waterConnectionRequest.getRequestInfo());
 		return waterConnection.getWaterConnection();
 	}
