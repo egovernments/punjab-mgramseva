@@ -264,10 +264,21 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               i18.consumer.OLD_CONNECTION_ID,
                               consumerProvider
                                   .waterconnection.OldConnectionCtrl,
+                              isRequired: true,
+                              textInputType: TextInputType.number,
                               contextkey:
                                   consumerProvider.consmerWalkthrougList[4].key,
                               key: Keys.createConsumer.CONSUMER_OLD_ID_KEY,
-                              isDisabled: consumerProvider.isfirstdemand,
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[0-9]"))
+                              ],
+                              isDisabled: consumerProvider.isEdit &&
+                                  consumerProvider
+                                      .waterconnection.oldConnectionNo
+                                      .toString()
+                                      .trim()
+                                      .isNotEmpty,
                             ),
                           ),
                           Consumer<ConsumerProvider>(
