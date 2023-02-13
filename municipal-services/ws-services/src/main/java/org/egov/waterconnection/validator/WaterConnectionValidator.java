@@ -82,7 +82,7 @@ public class WaterConnectionValidator {
 			errorMap.put("PREVIOUS_METER_READIN_INVALID","Previous Meter reading date cannot be null");
 		}
 		if(waterConnectionRequest.getWaterConnection().getOldConnectionNo() == null || waterConnectionRequest.getWaterConnection().getOldConnectionNo() == "") {
-			errorMap.put("INVALID_OLD_CONNECTION_NO","Old connection number cannot be null");
+			errorMap.put("INVALID_OLD_CONNECTION_NO","Old connection number cannot be empty");
 		}
 		ValidatorResult isMeterInfoValidated = meterInfoValidator.validate(waterConnectionRequest, reqType);
 		if (!isMeterInfoValidated.isStatus())
