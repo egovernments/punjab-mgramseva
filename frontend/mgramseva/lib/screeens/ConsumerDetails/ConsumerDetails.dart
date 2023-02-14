@@ -273,12 +273,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                 FilteringTextInputFormatter.allow(
                                     RegExp("[0-9]"))
                               ],
-                              isDisabled: consumerProvider.isEdit &&
-                                  consumerProvider
-                                      .waterconnection.oldConnectionNo
-                                      .toString()
-                                      .trim()
-                                      .isNotEmpty,
+                              isDisabled: false,
                             ),
                           ),
                           Consumer<ConsumerProvider>(
