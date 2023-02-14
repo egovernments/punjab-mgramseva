@@ -121,7 +121,7 @@ class User {
   @JsonKey(name: "lastModifiedDate")
   String? lastModifiedDate;
 
-  @JsonKey(name: "dob")
+  @JsonKey(name: "dob", defaultValue: null)
   String? dob;
 
   @JsonKey(name: "pwdExpiryDate")
@@ -142,6 +142,7 @@ class User {
     name = nameCtrl.text;
     mobileNumber = phoneNumberCtrl.text;
     emailId = emailIdCtrl.text;
+    dob = null;
   }
 
   setText() {
