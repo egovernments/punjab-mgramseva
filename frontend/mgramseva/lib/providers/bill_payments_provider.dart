@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -16,8 +17,18 @@ class BillPayemntsProvider with ChangeNotifier {
       "tenantId": data.tenantId,
       "consumerCodes": data.connectionNo.toString(),
       "businessService": "WS"
+    }).then((value) {
+      value.payments = value.payments
+          ?.where((element) => element.paymentStatus != 'CANCELLED')
+          .toList();
+      if (value.payments != null && value.payments!.isNotEmpty) {
+        streamController.add(value);
+      } else {
+        BillPayments paymentList = new BillPayments();
+        paymentList.payments = [];
+        streamController.add(paymentList);
+      }
     });
-    streamController.add(res);
   }
 
   // ignore: non_constant_identifier_names
