@@ -265,7 +265,6 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               consumerProvider
                                   .waterconnection.OldConnectionCtrl,
                               isRequired: true,
-                              textInputType: TextInputType.number,
                               contextkey:
                                   consumerProvider.consmerWalkthrougList[4].key,
                               key: Keys.createConsumer.CONSUMER_OLD_ID_KEY,
