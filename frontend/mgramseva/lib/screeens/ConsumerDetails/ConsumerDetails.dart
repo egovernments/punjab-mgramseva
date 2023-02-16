@@ -270,7 +270,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               key: Keys.createConsumer.CONSUMER_OLD_ID_KEY,
                               inputFormatter: [
                                 FilteringTextInputFormatter.allow(
-                                    RegExp("[a-zA-Z0-9/\\-\\s]"))
+                                    RegExp("[a-zA-Z0-9/\\-]"))
                               ],
                               isDisabled: false,
                             ),
