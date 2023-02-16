@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -578,7 +576,7 @@ class CommonProvider with ChangeNotifier {
   // }
 
   static String getAdvanceAdjustedAmount(List<Demands> demandList) {
-    var amount = '0.0';
+    var amount = '0';
     var index = -1;
 
     if (demandList.isEmpty) return amount;
@@ -623,8 +621,8 @@ class CommonProvider with ChangeNotifier {
                       double.parse("${demandDetail.collectionAmount?.abs()}")
                   ? filteredDemands.first.demandDetails?.last.collectionAmount
                           ?.toString() ??
-                      '0.0'
-                  : '0.0';
+                      '0'
+                  : '0';
             }
           }
         }
