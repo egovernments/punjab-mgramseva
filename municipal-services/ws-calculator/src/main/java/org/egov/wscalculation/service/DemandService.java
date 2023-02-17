@@ -634,8 +634,12 @@ public class DemandService {
 
 			String tenantId = getBillCriteria.getTenantId();
 
-			List<TaxPeriod> taxPeriods = mstrDataService.getTaxPeriodList(requestInfoWrapper.getRequestInfo(), tenantId,
-					WSCalculationConstant.SERVICE_FIELD_VALUE_WS);
+			List<TaxPeriod> taxPeriods = null;
+			if(tenantId != "pb.testing") {
+				taxPeriods = mstrDataService.getTaxPeriodList(requestInfoWrapper.getRequestInfo(), tenantId,
+						WSCalculationConstant.SERVICE_FIELD_VALUE_WS);
+			}
+		
 			
 			Map<String, Object> penaltyMaster = mstrDataService.getApplicableMaster(estimationService.getAssessmentYear(), timeBasedExemptionMasterMap.get(WSCalculationConstant.WC_PENANLTY_MASTER));
 			

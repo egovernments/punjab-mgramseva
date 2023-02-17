@@ -72,7 +72,11 @@ public class MasterDataService {
 	public Map<String, Object> getMasterMap(RequestInfo requestInfo, String tenantId, String serviceFieldValue) {
 		Map<String, Object> masterMap = new HashMap<>();
 		List<TaxPeriod> taxPeriods = getTaxPeriodList(requestInfo, tenantId, serviceFieldValue);
-		List<TaxHeadMaster> taxHeadMasters = getTaxHeadMasterMap(requestInfo, tenantId, serviceFieldValue);
+		List<TaxHeadMaster> taxHeadMasters = null;
+		if(tenantId != "pb.testing") {
+			taxHeadMasters = getTaxHeadMasterMap(requestInfo, tenantId, serviceFieldValue);
+
+		}
 		Map<String, Map<String, Object>> financialYearMaster = getFinancialYear(requestInfo, tenantId);
 		masterMap.put(WSCalculationConstant.TAXPERIOD_MASTER_KEY, taxPeriods);
 		masterMap.put(WSCalculationConstant.TAXHEADMASTER_MASTER_KEY, taxHeadMasters);
