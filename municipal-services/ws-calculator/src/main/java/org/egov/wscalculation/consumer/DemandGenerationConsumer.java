@@ -330,9 +330,9 @@ public class DemandGenerationConsumer {
 			 * + connectionNo ); continue; }
 			 */
 			try {
-				if(tenantId != "pb.testing") {
-					generateDemandInBatch(calculationReq, masterMap, billingCycle, isSendMessage);
-				}
+					if(tenantId != "pb.testing") {
+						generateDemandInBatch(calculationReq, masterMap, billingCycle, isSendMessage);
+					}
 
 			} catch (Exception e) {
 				System.out.println("Got the exception while genating the demands:" + connectionNo);
