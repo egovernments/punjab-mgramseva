@@ -153,12 +153,13 @@ public class WaterConnectionValidator {
 				allDemands = new CopyOnWriteArrayList<>(demands);
 			}
 			 
-			if(demList != null && !demList.isEmpty()) {
+			if(allDemands != null && !allDemands.isEmpty()) {
 				for (Demand demand : allDemands) {
 					if(demand.isPaymentCompleted()) {
 						demList.remove(demand);
 					}
 				}
+			}
 				Boolean isArrear = false;
 				Boolean isAdvance = false;
 				
@@ -179,7 +180,6 @@ public class WaterConnectionValidator {
 					updateDemand(request.getRequestInfo(), demList);
 					
 				}
-			}
 			}
 			
 		
