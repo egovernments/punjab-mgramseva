@@ -331,7 +331,8 @@ public class WaterServiceImpl implements WaterService {
 	private List<WaterConnection> updateWaterConnectionForModifyFlow(WaterConnectionRequest waterConnectionRequest) {
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, WCConstants.MODIFY_CONNECTION);
 		List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
-		if(waterConnection != null && waterConnection.size() > 0) {
+		if(waterConnection != null && waterConnection.size() > 0 && !waterConnectionRequest.getWaterConnection().getConnectionNo()
+				.equalsIgnoreCase(waterConnection.get(0).getConnectionNo())) {
 			throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
 					"Duplicate Old connection number");
 		}
