@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -162,7 +161,8 @@ class CommonMethods {
   void checkVersion(BuildContext context, String? latestAppVersion) async {
     try {
       if (latestAppVersion != null && !kIsWeb) {
-        if (packageInfo?.version != latestAppVersion) {
+        if (int.parse(packageInfo!.version.split('.').join("").toString()) <
+            int.parse(latestAppVersion.split('.').join("").toString())) {
           late Uri uri;
 
           if (Platform.isAndroid) {
