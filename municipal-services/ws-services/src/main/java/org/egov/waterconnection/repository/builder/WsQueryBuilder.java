@@ -197,7 +197,7 @@ public class WsQueryBuilder {
 				preparedStatement.add(criteria.getPropertyId());
 			}
 		}
-		if(!StringUtils.isEmpty(criteria.getTextSearch())) {
+		if(!StringUtils.isEmpty(criteria.getTextSearch()) && !StringUtils.isEmpty(criteria.getTenantId())) {
 			WaterConnectionResponse response = waterServiceImpl.getWCListFuzzySearch(criteria, requestInfo);
 
 			if(!CollectionUtils.isEmpty(response.getWaterConnectionData())) {
