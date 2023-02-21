@@ -286,4 +286,7 @@ public class WSConfiguration {
     @Value("${egov.ws.fuzzy.searh.is.wildcard}")
     private Boolean isSearchWildcardBased;
     
+    @Value("${egov.ws.search.tenantId.fuziness}")
+    private String tenantFuziness;
+    
 }

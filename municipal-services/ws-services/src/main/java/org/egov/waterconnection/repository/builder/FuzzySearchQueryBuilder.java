@@ -92,6 +92,10 @@ public class FuzzySearchQueryBuilder {
             	fuzzyClauses.add(getInnerNode(criteria.getTextSearch(),"Data.connectionHolders.name" , config.getNameFuziness()));
             }
             
+            if(StringUtils.isNotBlank(criteria.getTenantId())) {
+            	fuzzyClauses.add(getInnerNode(criteria.getTenantId(),"Data.tenantId" , config.getTenantFuziness()));
+            }
+            
             JsonNode mustNode = mapper.convertValue(new HashMap<String, List<JsonNode>>(){{put("must",fuzzyClauses);}}, JsonNode.class);
 
             insideMatch.put("bool",mustNode);
