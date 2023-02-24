@@ -637,13 +637,12 @@ public class DemandService {
 			List<TaxPeriod> taxPeriods = mstrDataService.getTaxPeriodList(requestInfoWrapper.getRequestInfo(), tenantId,
 					WSCalculationConstant.SERVICE_FIELD_VALUE_WS);
 			
-			Map<String, Object> penaltyMaster = null;
 			if(timeBasedExemptionMasterMap == null) {
 				mstrDataService.setWaterConnectionMasterValues(requestInfo, getBillCriteria.getTenantId().substring(0,2), billingSlabMaster,
 						timeBasedExemptionMasterMap);
 			}
 			
-			penaltyMaster = mstrDataService.getApplicableMaster(estimationService.getAssessmentYear(), timeBasedExemptionMasterMap.get(WSCalculationConstant.WC_PENANLTY_MASTER));
+			Map<String, Object> penaltyMaster = mstrDataService.getApplicableMaster(estimationService.getAssessmentYear(), timeBasedExemptionMasterMap.get(WSCalculationConstant.WC_PENANLTY_MASTER));
 	
 	
 			if(null != penaltyMaster) {
