@@ -74,7 +74,18 @@ class HouseHoldProvider with ChangeNotifier {
               listen: false)
           .fetchBill(waterConnection, navigatorKey.currentContext!);
 
-      waterConnection?.mdmsData = await CommonProvider.getMdmsBillingService();
+      var mdms = await CommonProvider.getMdmsBillingService(
+          commonProvider.userDetails!.selectedtenant?.code.toString() ??
+              commonProvider.userDetails!.userRequest!.tenantId.toString());
+      if (mdms.mdmsRes?.billingService?.taxHeadMasterList != null &&
+          mdms.mdmsRes!.billingService!.taxHeadMasterList!.isNotEmpty) {
+        waterConnection?.mdmsData = mdms;
+      } else {
+        var mdmsData = await CommonProvider.getMdmsBillingService(
+            commonProvider.userDetails!.selectedtenant?.code.toString() ??
+                commonProvider.userDetails!.userRequest!.tenantId.toString());
+        waterConnection?.mdmsData = mdmsData;
+      }
 
       if (status != Constants.CONNECTION_STATUS.first) {
         if (demandList == null) {
