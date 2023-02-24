@@ -637,7 +637,7 @@ public class DemandService {
 			List<TaxPeriod> taxPeriods = mstrDataService.getTaxPeriodList(requestInfoWrapper.getRequestInfo(), tenantId,
 					WSCalculationConstant.SERVICE_FIELD_VALUE_WS);
 			
-			if(timeBasedExemptionMasterMap == null) {
+			if(timeBasedExemptionMasterMap.get(WSCalculationConstant.WC_PENANLTY_MASTER) == null) {
 				mstrDataService.setWaterConnectionMasterValues(requestInfo, getBillCriteria.getTenantId().substring(0,2), billingSlabMaster,
 						timeBasedExemptionMasterMap);
 			}
