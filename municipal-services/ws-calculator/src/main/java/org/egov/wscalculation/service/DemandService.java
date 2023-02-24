@@ -598,7 +598,7 @@ public class DemandService {
 		Map<String, JSONArray> timeBasedExemptionMasterMap = new HashMap<>();
 		mstrDataService.setWaterConnectionMasterValues(requestInfo, getBillCriteria.getTenantId(), billingSlabMaster,
 				timeBasedExemptionMasterMap);
-
+		if()
 		if (CollectionUtils.isEmpty(getBillCriteria.getConsumerCodes()))
 			getBillCriteria.setConsumerCodes(Collections.singletonList(getBillCriteria.getConnectionNumber()));
 
@@ -637,8 +637,15 @@ public class DemandService {
 			List<TaxPeriod> taxPeriods = mstrDataService.getTaxPeriodList(requestInfoWrapper.getRequestInfo(), tenantId,
 					WSCalculationConstant.SERVICE_FIELD_VALUE_WS);
 			
-			Map<String, Object> penaltyMaster = mstrDataService.getApplicableMaster(estimationService.getAssessmentYear(), timeBasedExemptionMasterMap.get(WSCalculationConstant.WC_PENANLTY_MASTER));
+			Map<String, Object> penaltyMaster = null;
+			if(timeBasedExemptionMasterMap == null) {
+				mstrDataService.setWaterConnectionMasterValues(requestInfo, getBillCriteria.getTenantId().substring(0,2), billingSlabMaster,
+						timeBasedExemptionMasterMap);
+			}
 			
+			penaltyMaster = mstrDataService.getApplicableMaster(estimationService.getAssessmentYear(), timeBasedExemptionMasterMap.get(WSCalculationConstant.WC_PENANLTY_MASTER));
+	
+	
 			if(null != penaltyMaster) {
 				String type = (String) penaltyMaster.get(WSCalculationConstant.TYPE_FIELD_NAME);
 				String subType = (String) penaltyMaster.get(WSCalculationConstant.SUBTYPE_FIELD_NAME);
