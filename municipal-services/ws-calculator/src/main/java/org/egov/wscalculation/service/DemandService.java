@@ -598,7 +598,7 @@ public class DemandService {
 		Map<String, JSONArray> timeBasedExemptionMasterMap = new HashMap<>();
 		mstrDataService.setWaterConnectionMasterValues(requestInfo, getBillCriteria.getTenantId(), billingSlabMaster,
 				timeBasedExemptionMasterMap);
-		if()
+		
 		if (CollectionUtils.isEmpty(getBillCriteria.getConsumerCodes()))
 			getBillCriteria.setConsumerCodes(Collections.singletonList(getBillCriteria.getConnectionNumber()));
 
