@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/constants.dart';
@@ -88,19 +86,18 @@ class RoleActionsFiltering {
 
   List<String> getRolesBasedOnModule(String route) {
     switch (route) {
-
       // GP Admin
       case Routes.HOUSEHOLD:
         return ['COLLECTION_OPERATOR', 'SUPERUSER'];
 
       case Routes.CONSUMER_UPDATE:
-        return ['GP_ADMIN', 'SUPERUSER'];
+        return ['GP_ADMIN', 'SUPERUSER', 'COLLECTION_OPERATOR'];
 
       case Routes.CONSUMER_SEARCH_UPDATE:
-        return ['GP_ADMIN', 'SUPERUSER'];
+        return ['GP_ADMIN', 'SUPERUSER', 'COLLECTION_OPERATOR'];
 
       case Routes.CONSUMER_CREATE:
-        return ['GP_ADMIN', 'SUPERUSER'];
+        return ['GP_ADMIN', 'SUPERUSER', 'COLLECTION_OPERATOR'];
 
       case Routes.HOUSEHOLD_DETAILS:
         return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR', 'SUPERUSER'];
@@ -123,10 +120,6 @@ class RoleActionsFiltering {
         return ['EXPENSE_PROCESSING', 'SUPERUSER'];
       case Routes.EXPENSE_UPDATE:
         return ['EXPENSE_PROCESSING', 'SUPERUSER'];
-
-      case Routes.HOUSEHOLD_DETAILS:
-        return ['BULK_DEMAND_PROCESSING', 'SUPERUSER'];
-
       case Routes.HOUSEHOLDRECEIPTS:
         return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR', 'SUPERUSER'];
 

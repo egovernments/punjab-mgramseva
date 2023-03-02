@@ -907,15 +907,14 @@ class CommonProvider with ChangeNotifier {
             .abs();
   }
 
-  static Future<PaymentType> getMdmsBillingService() async {
+  static Future<PaymentType> getMdmsBillingService(String tenantId) async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
 
-      return await CoreRepository().getPaymentTypeMDMS(getMdmsPaymentModes(
-          commonProvider.userDetails!.selectedtenant?.code.toString() ??
-              commonProvider.userDetails!.userRequest!.tenantId.toString()));
+      return await CoreRepository()
+          .getPaymentTypeMDMS(getMdmsPaymentModes(tenantId));
     } catch (e) {
       return PaymentType();
     }

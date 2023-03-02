@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -112,9 +111,21 @@ class CollectPaymentProvider with ChangeNotifier {
       } else {}
 
       if (paymentDetails != null) {
+        var commonProvider = Provider.of<CommonProvider>(
+            navigatorKey.currentContext!,
+            listen: false);
         if (mdmsData == null) {
-          mdmsData = await CommonProvider.getMdmsBillingService();
-          paymentDetails.first.mdmsData = mdmsData;
+          mdmsData = await CommonProvider.getMdmsBillingService(
+              commonProvider.userDetails!.selectedtenant?.code.toString() ??
+                  commonProvider.userDetails!.userRequest!.tenantId.toString());
+          if (mdmsData.mdmsRes?.billingService?.taxHeadMasterList != null &&
+              mdmsData.mdmsRes!.billingService!.taxHeadMasterList!.isNotEmpty) {
+            paymentDetails.first.mdmsData = mdmsData;
+          } else {
+            mdmsData = await CommonProvider.getMdmsBillingService(
+                commonProvider.userDetails!.userRequest!.tenantId.toString());
+            paymentDetails.first.mdmsData = mdmsData;
+          }
         }
 
         paymentDetails.first.billDetails
@@ -394,7 +405,7 @@ class CollectPaymentProvider with ChangeNotifier {
         navigatorKey.currentContext!,
         listen: false);
     var res = await CoreRepository().getMdms(getMdmsPaymentModes(
-        commonProvider.userDetails!.userRequest!.tenantId.toString()));
+        commonProvider.userDetails!.selectedtenant!.code.toString()));
     if (res.mdmsRes?.billingService != null &&
         res.mdmsRes?.billingService?.businessServiceList != null) {
       Constants.PAYMENT_METHOD.forEach((e) {
@@ -406,8 +417,20 @@ class CollectPaymentProvider with ChangeNotifier {
         }
       });
       fetchBill.paymentMethod = paymentModeList.first.key;
-      notifyListeners();
+    } else {
+      var mdms = await CoreRepository().getMdms(getMdmsPaymentModes(
+          commonProvider.userDetails!.userRequest!.tenantId.toString()));
+      Constants.PAYMENT_METHOD.forEach((e) {
+        var index = mdms.mdmsRes?.billingService?.businessServiceList?.first
+            .collectionModesNotAllowed!
+            .indexOf(e.key);
+        if (index == -1) {
+          paymentModeList.add(KeyValue(e.key, e.label));
+        }
+      });
+      fetchBill.paymentMethod = paymentModeList.first.key;
     }
+    notifyListeners();
   }
 
   Future<void> updatePaymentInformation(
