@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +15,9 @@ import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/common_printer.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/date_formats.dart';
@@ -27,6 +26,7 @@ import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifiers.dart';
+import 'package:mgramseva/utils/print_bluetooth.dart';
 import 'package:mgramseva/widgets/CommonSuccessPage.dart';
 import 'package:number_to_words/number_to_words.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +34,7 @@ import 'package:screenshot/screenshot.dart';
 
 import '../components/HouseConnectionandBill/jsconnnector.dart' as js;
 import '../model/localization/language.dart';
+import '../repository/core_repo.dart';
 import 'common_provider.dart';
 
 class CollectPaymentProvider with ChangeNotifier {
@@ -410,43 +411,73 @@ class CollectPaymentProvider with ChangeNotifier {
               kIsWeb
                   ? js.onButtonClick(
                       value, stateProvider.stateInfo!.stateLogoURL.toString())
-                  : CommonPrinter.printTicket(
+                  : PrintBluetooth.printTicket(
                       img.decodeImage(value), navigatorKey.currentContext!)
             });
   }
 
   Future<void> getPaymentModes(FetchBill fetchBill, String tenantId,
       [bool isConsumer = false]) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     paymentModeList = <KeyValue>[];
     var res = await CommonProvider.getMdmsBillingService(tenantId);
-    if (res.mdmsRes?.billingService != null &&
-        res.mdmsRes?.billingService?.businessServiceList != null &&
-        !isConsumer) {
-      Constants.EMPLOYEE_PAYMENT_METHOD.forEach((e) {
-        var index = res.mdmsRes?.billingService?.businessServiceList?.first
-            .collectionModesNotAllowed!
-            .indexOf(e.key);
-        if (index == -1) {
-          paymentModeList.add(KeyValue(e.key, e.label));
-        }
-      });
-      fetchBill.paymentMethod = paymentModeList.first.key;
-      notifyListeners();
-    }
-
-    if (res.mdmsRes?.billingService != null &&
-        res.mdmsRes?.billingService?.businessServiceList != null &&
-        isConsumer) {
-      Constants.CONSUMER_PAYMENT_METHOD.forEach((e) {
-        var index = res.mdmsRes?.billingService?.businessServiceList?.first
-            .collectionModesNotAllowed!
-            .indexOf(e.key);
-        if (index == -1) {
-          paymentModeList.add(KeyValue(e.key, e.label));
-        }
-      });
-      fetchBill.paymentMethod = paymentModeList.first.key;
-      notifyListeners();
+    if (!isConsumer) {
+      if (res.mdmsRes?.billingService != null &&
+          res.mdmsRes?.billingService?.businessServiceList != null) {
+        Constants.EMPLOYEE_PAYMENT_METHOD.forEach((e) {
+          var index = res.mdmsRes?.billingService?.businessServiceList?.first
+              .collectionModesNotAllowed!
+              .indexOf(e.key);
+          if (index == -1) {
+            paymentModeList.add(KeyValue(e.key, e.label));
+          }
+        });
+        fetchBill.paymentMethod = paymentModeList.first.key;
+        notifyListeners();
+      } else {
+        var mdms = await CoreRepository().getMdms(getMDMSPaymentModes(
+            commonProvider.userDetails!.userRequest!.tenantId.toString()));
+        Constants.EMPLOYEE_PAYMENT_METHOD.forEach((e) {
+          var index = mdms.mdmsRes?.billingService?.businessServiceList?.first
+              .collectionModesNotAllowed!
+              .indexOf(e.key);
+          if (index == -1) {
+            paymentModeList.add(KeyValue(e.key, e.label));
+          }
+        });
+        fetchBill.paymentMethod = paymentModeList.first.key;
+        notifyListeners();
+      }
+    } else {
+      if (res.mdmsRes?.billingService != null &&
+          res.mdmsRes?.billingService?.businessServiceList != null &&
+          isConsumer) {
+        Constants.CONSUMER_PAYMENT_METHOD.forEach((e) {
+          var index = res.mdmsRes?.billingService?.businessServiceList?.first
+              .collectionModesNotAllowed!
+              .indexOf(e.key);
+          if (index == -1) {
+            paymentModeList.add(KeyValue(e.key, e.label));
+          }
+        });
+        fetchBill.paymentMethod = paymentModeList.first.key;
+        notifyListeners();
+      } else {
+        var mdms = await CoreRepository().getMdms(getMDMSPaymentModes(
+            commonProvider.userDetails!.userRequest!.tenantId.toString()));
+        Constants.CONSUMER_PAYMENT_METHOD.forEach((e) {
+          var index = mdms.mdmsRes?.billingService?.businessServiceList?.first
+              .collectionModesNotAllowed!
+              .indexOf(e.key);
+          if (index == -1) {
+            paymentModeList.add(KeyValue(e.key, e.label));
+          }
+        });
+        fetchBill.paymentMethod = paymentModeList.first.key;
+        notifyListeners();
+      }
     }
   }
 
