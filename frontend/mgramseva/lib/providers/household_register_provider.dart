@@ -257,7 +257,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
       TableData('${name ?? ''}'),
       TableData('${fatherName ?? ''}'),
       TableData(
-          '${connection.additionalDetails?.collectionPendingAmount != null ? '₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}'),
+          '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '- ₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '').abs()}' : ' ₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}'),
     ]);
   }
 
@@ -369,7 +369,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
                   '${connection.connectionNo ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
                   '${connection.connectionHolders?.first.name ?? ''}',
                   '${connection.connectionHolders?.first.fatherOrHusbandName ?? ''}',
-                  '${connection.additionalDetails?.collectionPendingAmount != null ? '₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}',
+                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '- ₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '').abs()}' : ' ₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}'
                 ])
             .toList() ??
         [];
@@ -381,7 +381,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
                     '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e)}')
                 .toList(),
             tableData)
-        : HouseholdPdfCreator(
+        : await HouseholdPdfCreator(
                 context,
                 headerList
                     .map<String>((e) =>
@@ -390,6 +390,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
                 tableData,
                 isDownload)
             .pdfPreview();
+    Navigator.pop(context);
   }
 
   bool removeOverLay(_overlayEntry) {

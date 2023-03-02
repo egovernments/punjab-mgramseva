@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -217,18 +215,25 @@ class CommonProvider with ChangeNotifier {
       } else {
         var isUpdated = false;
         try {
-          if (!await storage.containsKey(key: Constants.APP_VERSION)) {
+          if (!await storage.containsKey(key: Constants.APP_VERSION) ||
+              !await storage.containsKey(key: Constants.BUILD_NUMBER)) {
             await storage.deleteAll();
             isUpdated = true;
             storage.write(
                 key: Constants.APP_VERSION, value: packageInfo?.version);
+            storage.write(
+                key: Constants.BUILD_NUMBER, value: packageInfo?.buildNumber);
           } else {
             if (await storage.read(key: Constants.APP_VERSION) !=
-                packageInfo?.version) {
+                    packageInfo?.version ||
+                await storage.read(key: Constants.BUILD_NUMBER) !=
+                    packageInfo?.buildNumber) {
               await storage.deleteAll();
               isUpdated = true;
               storage.write(
                   key: Constants.APP_VERSION, value: packageInfo?.version);
+              storage.write(
+                  key: Constants.BUILD_NUMBER, value: packageInfo?.buildNumber);
             }
           }
         } catch (e) {}
@@ -275,15 +280,22 @@ class CommonProvider with ChangeNotifier {
     dynamic stateResponse;
 
     var isUpdated = false;
-    if (!window.localStorage.containsKey(Constants.APP_VERSION)) {
+    if (!window.localStorage.containsKey(Constants.APP_VERSION) ||
+        !window.localStorage.containsKey(Constants.BUILD_NUMBER)) {
       window.localStorage.clear();
       isUpdated = true;
       window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
+      window.localStorage[Constants.BUILD_NUMBER] =
+          packageInfo?.buildNumber ?? '';
     } else {
-      if (window.localStorage[Constants.APP_VERSION] != packageInfo?.version) {
+      if (window.localStorage[Constants.APP_VERSION] != packageInfo?.version ||
+          window.localStorage[Constants.BUILD_NUMBER] !=
+              packageInfo?.buildNumber) {
         window.localStorage.clear();
         isUpdated = true;
         window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
+        window.localStorage[Constants.BUILD_NUMBER] =
+            packageInfo?.buildNumber ?? '';
       }
     }
 
@@ -576,7 +588,7 @@ class CommonProvider with ChangeNotifier {
   // }
 
   static String getAdvanceAdjustedAmount(List<Demands> demandList) {
-    var amount = '0.0';
+    var amount = '0';
     var index = -1;
 
     if (demandList.isEmpty) return amount;
@@ -621,8 +633,8 @@ class CommonProvider with ChangeNotifier {
                       double.parse("${demandDetail.collectionAmount?.abs()}")
                   ? filteredDemands.first.demandDetails?.last.collectionAmount
                           ?.toString() ??
-                      '0.0'
-                  : '0.0';
+                      '0'
+                  : '0';
             }
           }
         }
@@ -694,6 +706,14 @@ class CommonProvider with ChangeNotifier {
       });
     });
     return penalty;
+  }
+
+  List<String>? uniqueRolesList() {
+    return userDetails?.userRequest?.roles
+        ?.where((e) => e.tenantId == userDetails?.selectedtenant?.code)
+        .map((role) => role.code.toString())
+        .toSet()
+        .toList();
   }
 
   static double getCurrentBill(List<Demands> demandList) {
@@ -901,6 +921,10 @@ class CommonProvider with ChangeNotifier {
 
   static Future<PaymentType> getMdmsBillingService(String tenantId) async {
     try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+
       return await CoreRepository()
           .getPaymentTypeMDMS(getMDMSPaymentModes(tenantId));
     } catch (e) {

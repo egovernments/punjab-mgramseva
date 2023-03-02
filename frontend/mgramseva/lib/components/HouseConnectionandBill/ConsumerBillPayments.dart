@@ -1,26 +1,25 @@
-import 'dart:typed_data';
-import 'package:mgramseva/providers/language.dart';
-import 'package:mgramseva/utils/common_styles.dart';
-
-import './jsconnnector.dart' as js;
 import 'package:flutter/foundation.dart';
-import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
 import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/bill_payments_provider.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/common_printer.dart';
+import 'package:mgramseva/utils/common_styles.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifiers.dart';
+import 'package:mgramseva/utils/print_bluetooth.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
+import 'package:number_to_words/number_to_words.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:number_to_words/number_to_words.dart';
+
+import './jsconnnector.dart' as js;
+import '../../utils/notifiers.dart';
 
 class ConsumerBillPayments extends StatefulWidget {
   final WaterConnection? waterConnection;
@@ -212,7 +211,8 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                   SizedBox(
                     height: 8,
                   ),
-                  getPrinterLabel(i18.consumerReciepts.CONSUMER_ACTUAL_DUE_AMOUNT,
+                  getPrinterLabel(
+                      i18.consumerReciepts.CONSUMER_ACTUAL_DUE_AMOUNT,
                       ('₹' + (item.totalDue).toString())),
                   getPrinterLabel(i18.consumerReciepts.RECEIPT_AMOUNT_PAID,
                       ('₹' + (item.totalAmountPaid).toString())),
@@ -223,8 +223,11 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                               .convert('en-in', item.totalAmountPaid!.toInt())
                               .toString()) +
                           ' only')),
-                  getPrinterLabel(i18.consumerReciepts.CONSUMER_PENDING_AMOUNT,
-                      ('₹' + ((item.totalDue ?? 0) - (item.totalAmountPaid ?? 0)).toString())),
+                  getPrinterLabel(
+                      i18.consumerReciepts.CONSUMER_PENDING_AMOUNT,
+                      ('₹' +
+                          ((item.totalDue ?? 0) - (item.totalAmountPaid ?? 0))
+                              .toString())),
                   SizedBox(
                     height: 8,
                   ),
@@ -250,7 +253,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
               kIsWeb
                   ? js.onButtonClick(
                       value, stateProvider.stateInfo!.stateLogoURL.toString())
-                  : CommonPrinter.printTicket(
+                  : PrintBluetooth.printTicket(
                       img.decodeImage(value), navigatorKey.currentContext!)
             });
   }
@@ -342,7 +345,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                 context),
                           ])),
                   Padding(
-                    padding: const EdgeInsets.only(bottom : 8.0),
+                    padding: const EdgeInsets.only(bottom: 8.0),
                     child: Row(children: [
                       Container(
                         padding: EdgeInsets.only(left: 8),
@@ -358,15 +361,15 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                     'Metered'
                                 ? "ws-receipt"
                                 : "ws-receipt-nm",
-                            "tenantId":
-                                commonProvider.userDetails!.selectedtenant!.code,
+                            "tenantId": commonProvider
+                                .userDetails!.selectedtenant!.code,
                           }, item.mobileNumber, item, "Share"),
                           style: ButtonStyle(
                             alignment: Alignment.center,
                             padding: MaterialStateProperty.all(
                                 EdgeInsets.symmetric(vertical: 8)),
-                            shape:
-                                MaterialStateProperty.all(RoundedRectangleBorder(
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
                               side: BorderSide(
                                   width: 2,
                                   color: Theme.of(context).primaryColor),
@@ -395,7 +398,8 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                             icon: Icon(Icons.print),
                             label: Text(
                                 ApplicationLocalizations.of(context).translate(
-                                    i18.consumerReciepts.CONSUMER_RECEIPT_PRINT),
+                                    i18.consumerReciepts
+                                        .CONSUMER_RECEIPT_PRINT),
                                 style: Theme.of(context)
                                     .textTheme
                                     .subtitle1!

@@ -50,83 +50,87 @@ class HouseHoldProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchDemand(data,List<UpdateDemands>? demandList, [String? id, String? status]) async {
+  Future<void> fetchDemand(data, List<UpdateDemands>? demandList,
+      [String? id, String? status]) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-
-    if (data == null) {
-      var res = await SearchConnectionRepository().getconnection({
-        "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-        ...{'connectionNumber': id},
-      });
-      if (res.waterConnection != null &&
-          res.waterConnection!.isNotEmpty) {
-        data = res.waterConnection!.first;
-      }
-    }
-    waterConnection = data;
-
     try {
-      waterConnection?.fetchBill = await Provider.of<FetchBillProvider>(
-          navigatorKey.currentContext!, listen: false)
-          .fetchBill(waterConnection, navigatorKey.currentContext!);
-    }
-    catch (e, s) {
-      streamController.addError(e.toString());
-      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
-    }
-
-
-    waterConnection?.mdmsData = await CommonProvider.getMdmsBillingService(commonProvider.userDetails!.selectedtenant?.code.toString() ?? commonProvider.userDetails!.userRequest!.tenantId.toString());
-
-    if(status != Constants.CONNECTION_STATUS.first) {
-      if (demandList == null) {
-        var demand = await BillingServiceRepository().fetchUpdateDemand({
-          "tenantId": data.tenantId,
-          "consumerCodes": data.connectionNo.toString(),
-          "isGetPenaltyEstimate": "true"
-        },
-            {
-              "GetBillCriteria": {
-                "tenantId": data.tenantId,
-                "billId": null,
-                "isGetPenaltyEstimate": true,
-                "consumerCodes": [data.connectionNo.toString()]
-              }
-            });
-
-        demandList = demand.demands;
-        updateDemandList?.totalApplicablePenalty =
-            demand.totalApplicablePenalty;
-        demandList?.forEach((e) {
-          e.totalApplicablePenalty = demand.totalApplicablePenalty;
+      if (data == null) {
+        var res = await SearchConnectionRepository().getconnection({
+          "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+          ...{'connectionNumber': id},
         });
-
-
-        if (demandList != null && demandList.length > 0) {
-          demandList.sort((a, b) =>
-              b
-                  .demandDetails!.first.auditDetails!.createdTime!
-                  .compareTo(
-                  a.demandDetails!.first.auditDetails!.createdTime!));
+        if (res != null &&
+            res.waterConnection != null &&
+            res.waterConnection!.isNotEmpty) {
+          data = res.waterConnection!.first;
         }
       }
-      demandList = demandList?.where((element) => element.status != 'CANCELLED')
-          .toList();
-      waterConnection?.demands = demandList;
-      updateDemandList?.demands = demandList;
-    }
-    else{}
+      waterConnection = data;
 
-    try {
+      waterConnection?.fetchBill = await Provider.of<FetchBillProvider>(
+              navigatorKey.currentContext!,
+              listen: false)
+          .fetchBill(waterConnection, navigatorKey.currentContext!);
+
+      var mdms = await CommonProvider.getMdmsBillingService(
+          commonProvider.userDetails!.selectedtenant?.code.toString() ??
+              commonProvider.userDetails!.userRequest!.tenantId.toString());
+      if (mdms.mdmsRes?.billingService?.taxHeadMasterList != null &&
+          mdms.mdmsRes!.billingService!.taxHeadMasterList!.isNotEmpty) {
+        waterConnection?.mdmsData = mdms;
+      } else {
+        var mdmsData = await CommonProvider.getMdmsBillingService(
+            commonProvider.userDetails!.selectedtenant?.code.toString() ??
+                commonProvider.userDetails!.userRequest!.tenantId.toString());
+        waterConnection?.mdmsData = mdmsData;
+      }
+
+      if (status != Constants.CONNECTION_STATUS.first) {
+        if (demandList == null) {
+          var demand = await BillingServiceRepository().fetchUpdateDemand({
+            "tenantId": data.tenantId,
+            "consumerCodes": data.connectionNo.toString(),
+            "isGetPenaltyEstimate": "true"
+          }, {
+            "GetBillCriteria": {
+              "tenantId": data.tenantId,
+              "billId": null,
+              "isGetPenaltyEstimate": true,
+              "consumerCodes": [data.connectionNo.toString()]
+            }
+          });
+
+          demandList = demand.demands;
+          updateDemandList?.totalApplicablePenalty =
+              demand.totalApplicablePenalty;
+          demandList?.forEach((e) {
+            e.totalApplicablePenalty = demand.totalApplicablePenalty;
+          });
+
+          if (demandList != null && demandList.length > 0) {
+            demandList.sort((a, b) => b
+                .demandDetails!.first.auditDetails!.createdTime!
+                .compareTo(a.demandDetails!.first.auditDetails!.createdTime!));
+          }
+        }
+        demandList = demandList
+            ?.where((element) => element.status != 'CANCELLED')
+            .toList();
+        waterConnection?.demands = demandList;
+        updateDemandList?.demands = demandList;
+      } else {}
+
       await BillingServiceRepository().fetchdDemand({
         "tenantId": data.tenantId,
         "consumerCode": data.connectionNo.toString(),
         "businessService": "WS",
         // "status": "ACTIVE"
       }).then((value) {
-     value.demands = value.demands?.where((element) => element.status != 'CANCELLED').toList();
+        value.demands = value.demands
+            ?.where((element) => element.status != 'CANCELLED')
+            .toList();
 
         if (value.demands!.length > 0) {
           value.demands!.sort((a, b) => b
@@ -137,9 +141,12 @@ class HouseHoldProvider with ChangeNotifier {
           } else if (value.demands?.length == 1 &&
               value.demands?.first.consumerType == 'waterConnection-arrears') {
             isfirstdemand = false;
-          } else if(value.demands?.length == 1 && value.demands?.first.consumerType == 'waterConnection-advance' && value.demands?.first.demandDetails?.first.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
+          } else if (value.demands?.length == 1 &&
+              value.demands?.first.consumerType == 'waterConnection-advance' &&
+              value.demands?.first.demandDetails?.first.taxHeadMasterCode ==
+                  'WS_ADVANCE_CARRYFORWARD') {
             isfirstdemand = false;
-          }else {
+          } else {
             isfirstdemand = true;
           }
           streamController.add(value);
@@ -166,7 +173,7 @@ class HouseHoldProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  onTapOfShow(){
+  onTapOfShow() {
     isVisible = !isVisible;
     notifyListeners();
   }

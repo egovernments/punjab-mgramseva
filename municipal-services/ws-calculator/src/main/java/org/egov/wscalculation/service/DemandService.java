@@ -598,7 +598,7 @@ public class DemandService {
 		Map<String, JSONArray> timeBasedExemptionMasterMap = new HashMap<>();
 		mstrDataService.setWaterConnectionMasterValues(requestInfo, getBillCriteria.getTenantId(), billingSlabMaster,
 				timeBasedExemptionMasterMap);
-
+		
 		if (CollectionUtils.isEmpty(getBillCriteria.getConsumerCodes()))
 			getBillCriteria.setConsumerCodes(Collections.singletonList(getBillCriteria.getConnectionNumber()));
 
@@ -637,13 +637,21 @@ public class DemandService {
 			List<TaxPeriod> taxPeriods = mstrDataService.getTaxPeriodList(requestInfoWrapper.getRequestInfo(), tenantId,
 					WSCalculationConstant.SERVICE_FIELD_VALUE_WS);
 			
-			Map<String, Object> penaltyMaster = mstrDataService.getApplicableMaster(estimationService.getAssessmentYear(), timeBasedExemptionMasterMap.get(WSCalculationConstant.WC_PENANLTY_MASTER));
+			if(timeBasedExemptionMasterMap.get(WSCalculationConstant.WC_PENANLTY_MASTER) == null) {
+				mstrDataService.setWaterConnectionMasterValues(requestInfo, getBillCriteria.getTenantId().substring(0,2), billingSlabMaster,
+						timeBasedExemptionMasterMap);
+			}
 			
+			Map<String, Object> penaltyMaster = mstrDataService.getApplicableMaster(estimationService.getAssessmentYear(), timeBasedExemptionMasterMap.get(WSCalculationConstant.WC_PENANLTY_MASTER));
+	
+	
 			if(null != penaltyMaster) {
 				String type = (String) penaltyMaster.get(WSCalculationConstant.TYPE_FIELD_NAME);
 				String subType = (String) penaltyMaster.get(WSCalculationConstant.SUBTYPE_FIELD_NAME);
 				
 				int demandListSize = demList.size();
+				int demandDetailListSize = 0;
+
 				Demand latestDemand = demList.get(demandListSize - 1);
 				
 				if(isGetPenaltyEstimate && latestDemand.getDemandDetails().stream().filter(i->i.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY)).count() > 0) {
@@ -654,15 +662,23 @@ public class DemandService {
 					throw new CustomException(WSCalculationConstant.EG_WS_INVALID_DEMAND_ERROR,
 							WSCalculationConstant.EG_WS_INVALID_DEMAND_ERROR_MSG);
 				if(type.equalsIgnoreCase("Flat") && subType.equalsIgnoreCase(WSCalculationConstant.PENALTY_OUTSTANDING)) {
-					
-					applyTimeBasedApplicables(latestDemand, requestInfoWrapper, timeBasedExemptionMasterMap, taxPeriods, isGetPenaltyEstimate,BigDecimal.ZERO,penaltyMaster,demandListSize);
+					List<Demand> demandLst = new ArrayList<>(demList);
+
+					for(Demand demand : demandLst) {
+						for(DemandDetail demandDetail : demand.getDemandDetails()) {
+							if(demandDetail.getTaxAmount().compareTo(demandDetail.getCollectionAmount()) != 0) {
+								demandDetailListSize = demandDetailListSize + 1;						}
+						}
+						
+					}
+					applyTimeBasedApplicables(latestDemand, requestInfoWrapper, timeBasedExemptionMasterMap, taxPeriods, isGetPenaltyEstimate,BigDecimal.ZERO,penaltyMaster,demandDetailListSize);
 					demandsToBeUpdated.add(latestDemand);
 
 				}
 				if((type.equalsIgnoreCase("Flat") && subType.equalsIgnoreCase(WSCalculationConstant.PENALTY_CURRENT_MONTH))
 						|| (type.equalsIgnoreCase("Fixed") && subType.equalsIgnoreCase(WSCalculationConstant.PENALTY_CURRENT_MONTH))) {
 					if(latestDemand.getDemandDetails().stream().filter(i->i.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_CHARGE)).count() > 0){
-						applyTimeBasedApplicables(latestDemand, requestInfoWrapper, timeBasedExemptionMasterMap, taxPeriods, isGetPenaltyEstimate,BigDecimal.ZERO,penaltyMaster,demandListSize);
+						applyTimeBasedApplicables(latestDemand, requestInfoWrapper, timeBasedExemptionMasterMap, taxPeriods, isGetPenaltyEstimate,BigDecimal.ZERO,penaltyMaster,demandDetailListSize);
 						demandsToBeUpdated.add(latestDemand);
 					}
 				}
@@ -687,7 +703,7 @@ public class DemandService {
 						}
 					}
 					
-					applyTimeBasedApplicables(latestDemand, requestInfoWrapper, timeBasedExemptionMasterMap, taxPeriods, isGetPenaltyEstimate,waterChargeApplicable,penaltyMaster,demandListSize);
+					applyTimeBasedApplicables(latestDemand, requestInfoWrapper, timeBasedExemptionMasterMap, taxPeriods, isGetPenaltyEstimate,waterChargeApplicable,penaltyMaster,demandDetailListSize);
 					demandsToBeUpdated.add(latestDemand);
 					
 				}
@@ -991,7 +1007,11 @@ public class DemandService {
 
 		LocalDate fromDate = LocalDate.parse(bulkDemand.getBillingPeriod().split("-")[0].trim(), formatter);
 		LocalDate toDate = LocalDate.parse(bulkDemand.getBillingPeriod().split("-")[1].trim(), formatter);
-		
+		if(fromDate.isAfter(LocalDate.now().minusMonths(1))) {
+			throw new CustomException("INVALID_BILLING_CYCLE",
+					"Cannot generate demands for future months");
+		}
+			
 		Long dayStartTime = LocalDateTime.of(fromDate.getYear(), fromDate.getMonth(), fromDate.getDayOfMonth(), 0, 0, 0)
 				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 		Long dayEndTime = LocalDateTime.of(toDate.getYear(), toDate.getMonth(), toDate.getDayOfMonth(), 23, 59, 59, 999000000)

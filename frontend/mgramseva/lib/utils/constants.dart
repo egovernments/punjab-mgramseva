@@ -8,6 +8,7 @@ import 'package:mgramseva/utils/models.dart';
 class Constants {
   static const int PAGINATION_LIMIT = 75;
   static const int MAX_PDF_PAGES = 100;
+  static const String HOME_NOTIFICATIONS_LIMIT = "50";
 
   /// Package Name
   static const String PACKAGE_NAME = "com.dwss.mgramseva";
@@ -24,6 +25,7 @@ class Constants {
   static const String ADD_EXPENSE_KEY = 'add_expense_key';
   static const String HOME_KEY = 'home_key';
   static const String APP_VERSION = 'appversion';
+  static const String BUILD_NUMBER = 'buildNumber';
 
   static List<KeyValue> GENDER = [
     KeyValue('CORE_COMMON_GENDER_MALE', 'MALE'),

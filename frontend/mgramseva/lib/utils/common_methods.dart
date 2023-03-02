@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -139,6 +138,18 @@ class CommonMethods {
     }
   }
 
+  static List<KeyValue> getAlphabetsWithKeyValue() {
+    List<String> alphabets = [];
+    List<KeyValue> excelColumns = [];
+    for (int i = 65; i <= 90; i++) {
+      alphabets.add(String.fromCharCode(i));
+    }
+    for (int i = 0; i < 26; i++) {
+      excelColumns.add(KeyValue(alphabets[i], i));
+    }
+    return excelColumns;
+  }
+
   static Future<void> fetchPackageInfo() async {
     try {
       packageInfo = await PackageInfo.fromPlatform();
@@ -150,7 +161,8 @@ class CommonMethods {
   void checkVersion(BuildContext context, String? latestAppVersion) async {
     try {
       if (latestAppVersion != null && !kIsWeb) {
-        if (packageInfo?.version != latestAppVersion) {
+        if (int.parse(packageInfo!.version.split('.').join("").toString()) <
+            int.parse(latestAppVersion.split('.').join("").toString())) {
           late Uri uri;
 
           if (Platform.isAndroid) {

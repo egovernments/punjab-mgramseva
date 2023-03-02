@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/components/HouseholdRegister/HouseholdCard.dart';
@@ -10,11 +8,11 @@ import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
-import 'package:mgramseva/widgets/Pagination.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:provider/provider.dart';
 
-import '../../widgets/CustomAppbar.dart';
+import '../../widgets/Pagination.dart';
+import '../../widgets/customAppbar.dart';
 import 'HouseholdSearch.dart';
 
 class HouseholdRegister extends StatefulWidget {
