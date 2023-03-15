@@ -114,6 +114,15 @@ public class WsQueryBuilder {
 
 	public static final String PENDINGCOLLECTIONTILLDATE = "SELECT SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE = 'WS' and DMD.status = 'ACTIVE' ";
 
+	public static final String ADVANCEADJUSTED = "SELECT SUM(DMDL.COLLECTIONAMOUNT) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE = 'WS' and DMD.status = 'ACTIVE' AND DMDL.TAXHEADCODE='WS_ADVANCE_CARRYFORWARD'";
+
+	public static final String PENDINGPENALTY = "SELECT SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE = 'WS' and DMD.status = 'ACTIVE' AND DMDL.TAXHEADCODE='WS_TIME_PENALTY'";
+
+	public static final String ADVANCECOLLECTION = "select sum(py.totalamountpaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON py.id = pyd.paymentid INNER JOIN egbs_billdetail_v1 bdl ON pyd.billid=bdl.billid INNER JOIN egbs_demanddetail_v1 ddl on  bdl.demandid = ddl.demandid where ddl.taxheadcode='WS_ADVANCE_CARRYFORWARD' and pyd.businessservice='WS'";
+
+	public static final String PENALTYCOLLECTION = "select sum(py.totalamountpaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON py.id = pyd.paymentid INNER JOIN egbs_billdetail_v1 bdl ON pyd.billid=bdl.billid INNER JOIN egbs_demanddetail_v1 ddl on  bdl.demandid = ddl.demandid where ddl.taxheadcode='WS_TIME_PENALTY' and pyd.businessservice='WS'";
+
+	
 	public static final String ID_QUERY = "select conn.id FROM eg_ws_connection conn " + INNER_JOIN_STRING
 			+ " eg_ws_service wc ON wc.connection_id = conn.id" + LEFT_OUTER_JOIN_STRING
 			+ "eg_ws_applicationdocument document ON document.wsid = conn.id" + LEFT_OUTER_JOIN_STRING

@@ -44,5 +44,17 @@ public class RevenueDashboard {
 
 	@JsonProperty("comercialsCount")
 	private Map<String, Object> comercialsCount;
+	
+	@JsonProperty("advanceAdjusted")
+	private String advanceAdjusted = "0";
+	
+	@JsonProperty("pendingPenalty")
+	private String pendingPenalty = "0";
+	
+	@JsonProperty("advanceCollection")
+	private String advanceCollection = "0";
+	
+	@JsonProperty("penaltyCollection")
+	private String penaltyCollection = "0";
 
 }
