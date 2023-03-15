@@ -584,15 +584,15 @@ public class WaterServiceImpl implements WaterService {
 			dashboardData.setAdvanceAdjusted(advanceAdjusted.toString());
 		}
 		Integer pendingPenalty = waterDaoImpl.getTotalPendingPenaltyAmount(criteria);
-		if (null != advanceAdjusted) {
+		if (null != pendingPenalty) {
 			dashboardData.setPendingPenalty(pendingPenalty.toString());
 		}
 		Integer advanceCollection = waterDaoImpl.getAdvanceCollectionAmount(criteria);
-		if (null != paidAmount) {
+		if (null != advanceCollection) {
 			dashboardData.setAdvanceCollection(advanceCollection.toString());
 		}
 		Integer penaltyCollection = waterDaoImpl.getPenaltyCollectionAmount(criteria);
-		if (null != paidAmount) {
+		if (null != penaltyCollection) {
 			dashboardData.setPenaltyCollection(penaltyCollection.toString());
 		}
 
