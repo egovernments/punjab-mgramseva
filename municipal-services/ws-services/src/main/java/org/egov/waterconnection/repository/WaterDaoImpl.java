@@ -499,7 +499,6 @@ public class WaterDaoImpl implements WaterDao {
 				.append(criteria.getToDate()).append(" and py.tenantId = '").append(criteria.getTenantId()).append("'");
 		log.info("Penalty Collection Final Query: " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
-
 	}
 	
 
