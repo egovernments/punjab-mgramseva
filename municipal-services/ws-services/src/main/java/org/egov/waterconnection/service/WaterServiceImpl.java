@@ -746,6 +746,23 @@ public class WaterServiceImpl implements WaterService {
 			if (null != arrears) {
 				collectionData.setArrears(arrears.toString());
 			}
+			Integer advanceAdjusted = waterDaoImpl.getTotalAdvanceAdjustedAmount(criteria);
+			if (null != advanceAdjusted) {
+				collectionData.setAdvanceAdjusted(advanceAdjusted.toString());
+			}
+			Integer pendingPenalty = waterDaoImpl.getTotalPendingPenaltyAmount(criteria);
+			if (null != pendingPenalty) {
+				collectionData.setPendingPenalty(pendingPenalty.toString());
+			}
+			Integer advanceCollection = waterDaoImpl.getAdvanceCollectionAmount(criteria);
+			if (null != advanceCollection) {
+				collectionData.setAdvanceCollection(advanceCollection.toString());
+			}
+			Integer penaltyCollection = waterDaoImpl.getPenaltyCollectionAmount(criteria);
+			if (null != penaltyCollection) {
+				collectionData.setPenaltyCollection(penaltyCollection.toString());
+			}
+
 			collectionData.setMonth(criteria.getFromDate());
 			data.add(i, collectionData);
 			System.out.println("Month:: " + criteria.getFromDate());
