@@ -172,7 +172,7 @@ public class WaterConnectionValidator {
 				if ((request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demList != null && demList.size() > 0)
 						|| (searchResult.getArrears() != null && request.getWaterConnection().getArrears() == null && demList != null && demList.size() > 0
 								|| (isArrear && demList != null && demList.size() > 0))|| (request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demList != null && demList.size() > 0)
-						|| (searchResult.getAdvance() != null && request.getWaterConnection().getAdvance() == null && demList.size() > 0
+						|| (searchResult.getAdvance() != null && request.getWaterConnection().getAdvance() == null && demList != null && demList.size() > 0
 						|| isAdvance)) {
 					for (Demand demand : demList) {
 						demand.setStatus(org.egov.waterconnection.web.models.Demand.StatusEnum.CANCELLED);
