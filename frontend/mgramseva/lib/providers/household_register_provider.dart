@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
@@ -11,7 +10,9 @@ import 'package:mgramseva/screeens/HouseholdRegister/household_pdf.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/ExcelDownload/generate_excel.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/color_codes.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
@@ -193,7 +194,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
             apiKey: 'connectionNumber',
             callBack: onSort),
         TableHeader(i18.common.NAME,
-            isSortingRequired: false,
+            isSortingRequired: true,
             isAscendingOrder: sortBy != null && sortBy!.key == 'name'
                 ? sortBy!.isAscending
                 : null,
@@ -214,6 +215,23 @@ class HouseholdRegisterProvider with ChangeNotifier {
                     ? sortBy!.isAscending
                     : null,
             apiKey: 'collectionPendingAmount',
+            callBack: onSort),
+        TableHeader(i18.common.CORE_ADVANCE,
+            isSortingRequired: true,
+            isAscendingOrder:
+                sortBy != null && sortBy!.key == 'collectionPendingAmount'
+                    ? sortBy!.isAscending
+                    : null,
+            apiKey: 'collectionPendingAmount',
+            callBack: onSort),
+        TableHeader(i18.householdRegister.ACTIVE_INACTIVE, apiKey: 'status'),
+        TableHeader(i18.householdRegister.LAST_BILL_GEN_DATE,
+            isSortingRequired: true,
+            apiKey: 'lastDemandGeneratedDate',
+            isAscendingOrder:
+                sortBy != null && sortBy!.key == 'lastDemandGeneratedDate'
+                    ? sortBy!.isAscending
+                    : null,
             callBack: onSort),
       ];
 
@@ -257,7 +275,18 @@ class HouseholdRegisterProvider with ChangeNotifier {
       TableData('${name ?? ''}'),
       TableData('${fatherName ?? ''}'),
       TableData(
-          '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '- ₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '').abs()}' : ' ₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}'),
+          '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : ' ₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}'),
+      TableData(
+          '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '- ₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '').abs()}' : '-' : '-'}'),
+      TableData(
+          '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
+          style: TextStyle(
+              color: connection.status.toString() ==
+                      Constants.CONNECTION_STATUS.last
+                  ? ColorCodes.ACTIVE_COL
+                  : ColorCodes.INACTIVE_COL)),
+      TableData(
+          '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}')
     ]);
   }
 

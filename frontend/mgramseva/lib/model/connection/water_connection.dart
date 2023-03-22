@@ -133,22 +133,29 @@ class WaterConnection {
     oldConnectionNo = OldConnectionCtrl.text;
     meterId = meterIdCtrl.text != "" ? meterIdCtrl.text : null;
 
-    if(paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key){
+    if (paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key) {
       advanceCtrl.clear();
-    }else{
+    } else {
       penaltyCtrl.clear();
       arrearsCtrl.clear();
     }
 
-    arrears = arrearsCtrl.text.trim() != "" && double.parse(arrearsCtrl.text) > 0
-        ? double.parse(arrearsCtrl.text).toDouble()
-        : paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key ? 0.0 : null;
-    advance = advanceCtrl.text.trim() != "" && double.parse(advanceCtrl.text) > 0
-        ? -double.parse(advanceCtrl.text).toDouble()
-        : null;
-    penalty = penaltyCtrl.text.trim() != "" && double.parse(penaltyCtrl.text) > 0
-        ? double.parse(penaltyCtrl.text).toDouble()
-        : paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key ? 0.0 : null;
+    arrears =
+        arrearsCtrl.text.trim() != "" && double.parse(arrearsCtrl.text) > 0
+            ? double.parse(arrearsCtrl.text).toDouble()
+            : paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key
+                ? 0.0
+                : null;
+    advance =
+        advanceCtrl.text.trim() != "" && double.parse(advanceCtrl.text) > 0
+            ? -double.parse(advanceCtrl.text).toDouble()
+            : null;
+    penalty =
+        penaltyCtrl.text.trim() != "" && double.parse(penaltyCtrl.text) > 0
+            ? double.parse(penaltyCtrl.text).toDouble()
+            : paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key
+                ? 0.0
+                : null;
     previousReadingDate = previousReadingDateCtrl.text != ""
         ? DateFormats.dateToTimeStamp(
             previousReadingDateCtrl.text,
@@ -166,8 +173,8 @@ class WaterConnection {
     if (connectionType != 'Metered') {
       previousReadingDate = BillingCycleCtrl.text.trim() != ""
           ? DateFormats.dateToTimeStamp(
-        BillingCycleCtrl.text.trim(),
-      )
+              BillingCycleCtrl.text.trim(),
+            )
           : null;
     }
   }
@@ -176,7 +183,8 @@ class WaterConnection {
     OldConnectionCtrl.text = oldConnectionNo ?? "";
     meterIdCtrl.text = meterId ?? "";
     arrearsCtrl.text = (arrears == null ? '' : getFilteredAmount(arrears!));
-    advanceCtrl.text = (advance == null ? '' : getFilteredAmount(advance!.abs()));
+    advanceCtrl.text =
+        (advance == null ? '' : getFilteredAmount(advance!.abs()));
     penaltyCtrl.text = (penalty == null ? '' : getFilteredAmount(penalty!));
     categoryCtrl.text = additionalDetails?.category ?? "";
     subCategoryCtrl.text = additionalDetails?.subCategory ?? "";
@@ -198,10 +206,12 @@ class WaterConnection {
     }
   }
 
- String getFilteredAmount(double amount) {
-     if(kIsWeb) return amount.toString();
-     var decimalAmount = (amount.toString().split('.'))[1];
-     return int.parse(decimalAmount) > 0 ? amount.toString() : amount.toString().split('.').first;
+  String getFilteredAmount(double amount) {
+    if (kIsWeb) return amount.toString();
+    var decimalAmount = (amount.toString().split('.'))[1];
+    return int.parse(decimalAmount) > 0
+        ? amount.toString()
+        : amount.toString().split('.').first;
   }
 
   WaterConnection();
@@ -245,6 +255,9 @@ class AdditionalDetails {
   @JsonKey(name: "street")
   String? street;
 
+  @JsonKey(name: "lastDemandGeneratedDate")
+  String? lastDemandGeneratedDate;
+
   @JsonKey(name: "doorNo")
   String? doorNo;
 
@@ -253,7 +266,6 @@ class AdditionalDetails {
 
   @JsonKey(name: "collectionPendingAmount")
   String? collectionPendingAmount;
-
 
   @JsonKey(ignore: true)
   var initialMeterReadingCtrl = TextEditingController();

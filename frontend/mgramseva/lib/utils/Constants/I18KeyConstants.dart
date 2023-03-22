@@ -663,4 +663,6 @@ class HouseholdRegistry {
   String get NO_OF_RECORDS => 'NO_OF_RECORDS';
   String get PDF => 'PDF';
   String get EXCEL => 'EXCEL';
+  String get LAST_BILL_GEN_DATE => 'LAST_BILL_GEN_DATE';
+  String get ACTIVE_INACTIVE => 'ACTIVE_INACTIVE';
 }
