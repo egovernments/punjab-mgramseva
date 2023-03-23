@@ -632,8 +632,10 @@ public class WsQueryBuilder {
 		
 		finalQuery = finalQuery.replace("{pendingAmountValue}",
 				"(select sum(dd.taxamount) - sum(dd.collectionamount) as pendingamount from egbs_demand_v1 d join egbs_demanddetail_v1 dd on d.id = dd.demandid group by d.consumercode, d.status having d.status = 'ACTIVE' and d.consumercode = conn.connectionno ) as pendingamount");
+		
 		finalQuery = finalQuery.replace("{lastDemandDate}",
 				"(select d.taxperiodto as taxperiodto from egbs_demand_v1 d where d.consumercode = conn.connectionno) as taxperiodto");
+		
 		if (criteria.getLimit() == null && criteria.getOffset() == null)
 			limit = config.getMaxLimit();
 
