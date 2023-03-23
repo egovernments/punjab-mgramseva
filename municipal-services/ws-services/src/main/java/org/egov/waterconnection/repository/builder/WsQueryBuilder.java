@@ -483,6 +483,9 @@ public class WsQueryBuilder {
 
 		else if (criteria.getSortBy() == SearchCriteria.SortBy.collectionPendingAmount)
 			builder.append(" ORDER BY pendingamount ");
+		
+		else if (criteria.getSortBy() == SearchCriteria.SortBy.lastDemandGeneratedDate)
+			builder.append(" ORDER BY lastDemandGeneratedDate ");
 
 		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
 			builder.append(" ASC ");
