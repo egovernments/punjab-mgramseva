@@ -57,7 +57,7 @@ public class WsQueryBuilder {
 			+ " conn.locality, conn.isoldapplication, conn.roadtype, document.id as doc_Id, document.documenttype, document.filestoreid, document.active as doc_active, plumber.id as plumber_id,"
 			+ " plumber.name as plumber_name, plumber.licenseno, roadcuttingInfo.id as roadcutting_id, roadcuttingInfo.roadtype as roadcutting_roadtype, roadcuttingInfo.roadcuttingarea as roadcutting_roadcuttingarea, roadcuttingInfo.roadcuttingarea as roadcutting_roadcuttingarea,"
 			+ " roadcuttingInfo.active as roadcutting_active, plumber.mobilenumber as plumber_mobileNumber, plumber.gender as plumber_gender, plumber.fatherorhusbandname, plumber.correspondenceaddress,"
-			+ " plumber.relationship, " + "{holderSelectValues}, " + "{pendingAmountValue}"
+			+ " plumber.relationship, " + "{holderSelectValues}, " + "{pendingAmountValue}" + "{lastDemandDate}"
 			+ " FROM eg_ws_connection conn " + INNER_JOIN_STRING + " eg_ws_service wc ON wc.connection_id = conn.id"
 			+ LEFT_OUTER_JOIN_STRING + "eg_ws_applicationdocument document ON document.wsid = conn.id"
 			+ LEFT_OUTER_JOIN_STRING + "eg_ws_plumberinfo plumber ON plumber.wsid = conn.id" + LEFT_OUTER_JOIN_STRING
@@ -442,6 +442,8 @@ public class WsQueryBuilder {
 		}
 		finalQuery = finalQuery.replace("{pendingAmountValue}",
 				"(select sum(dd.taxamount) - sum(dd.collectionamount) as pendingamount from egbs_demand_v1 d join egbs_demanddetail_v1 dd on d.id = dd.demandid group by d.consumercode, d.status having d.status = 'ACTIVE' and d.consumercode = conn.connectionno ) as pendingamount");
+		finalQuery = finalQuery.replace("{lastDemandDate}",
+				"(select d.taxperiodto as taxperiodto from egbs_demand_v1 d where d.consumercode = conn.connectionno) as taxperiodto");
 		if (criteria.getLimit() == null && criteria.getOffset() == null)
 			limit = config.getMaxLimit();
 
@@ -630,6 +632,8 @@ public class WsQueryBuilder {
 		
 		finalQuery = finalQuery.replace("{pendingAmountValue}",
 				"(select sum(dd.taxamount) - sum(dd.collectionamount) as pendingamount from egbs_demand_v1 d join egbs_demanddetail_v1 dd on d.id = dd.demandid group by d.consumercode, d.status having d.status = 'ACTIVE' and d.consumercode = conn.connectionno ) as pendingamount");
+		finalQuery = finalQuery.replace("{lastDemandDate}",
+				"(select d.taxperiodto as taxperiodto from egbs_demand_v1 d where d.consumercode = conn.connectionno) as taxperiodto");
 		if (criteria.getLimit() == null && criteria.getOffset() == null)
 			limit = config.getMaxLimit();
 
