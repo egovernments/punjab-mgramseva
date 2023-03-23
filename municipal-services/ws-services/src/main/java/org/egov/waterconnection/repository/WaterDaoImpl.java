@@ -100,7 +100,7 @@ public class WaterDaoImpl implements WaterDao {
 			StringBuilder collectionDataCountQuery = new StringBuilder(wsQueryBuilder.COLLECTION_DATA_COUNT);
 			criteria.setIsCollectionDataCount(Boolean.TRUE);
 			collectionDataCountQuery = wsQueryBuilder.applyFilters(collectionDataCountQuery, preparedStmntforCollectionDataCount, criteria);
-			collectionDataCountQuery.append(" ORDER BY wc.appCreatedDate  DESC");
+			collectionDataCountQuery.append(" ORDER BY wc.lastDemandGeneratedDate  DESC");
 		    countData = jdbcTemplate.queryForList(collectionDataCountQuery.toString(), preparedStmntforCollectionDataCount.toArray());
 		    if(criteria.getIsBillPaid() != null)
 		    	flag = criteria.getIsBillPaid();
