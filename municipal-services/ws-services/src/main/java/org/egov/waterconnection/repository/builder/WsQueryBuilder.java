@@ -487,7 +487,7 @@ public class WsQueryBuilder {
 			builder.append(" ORDER BY pendingamount ");
 		
 		else if (criteria.getSortBy() == SearchCriteria.SortBy.lastDemandGeneratedDate)
-			builder.append(" ORDER BY lastDemandGeneratedDate ");
+			builder.append(" ORDER BY taxperiodto ");
 
 		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
 			builder.append(" ASC ");
