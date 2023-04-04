@@ -684,7 +684,8 @@ public class DemandService {
 				}
 				
 				
-				if(type.equalsIgnoreCase("Fixed") && subType.equalsIgnoreCase(WSCalculationConstant.PENALTY_OUTSTANDING)) {
+				if(type.equalsIgnoreCase("Fixed") && (subType.equalsIgnoreCase(WSCalculationConstant.PENALTY_OUTSTANDING)
+						|| subType.equalsIgnoreCase(WSCalculationConstant.OUTSTANDING))) {
 					List<Demand> demandList = new ArrayList<>(demList);
 					BigDecimal waterChargeApplicable = BigDecimal.ZERO;
 					BigDecimal oldPenalty = BigDecimal.ZERO;
@@ -695,10 +696,13 @@ public class DemandService {
 								if (WSCalculationConstant.TAX_APPLICABLE.contains(demandDetail.getTaxHeadMasterCode())) {
 									waterChargeApplicable = waterChargeApplicable.add(demandDetail.getTaxAmount()).subtract(demandDetail.getCollectionAmount());
 								}
-								if (demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY)) {
-									oldPenalty = oldPenalty.add(demandDetail.getTaxAmount()).subtract(demandDetail.getCollectionAmount());
-									waterChargeApplicable = waterChargeApplicable.add(oldPenalty);
+								if(subType.equalsIgnoreCase(WSCalculationConstant.PENALTY_OUTSTANDING)) {
+									if (demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY)) {
+										oldPenalty = oldPenalty.add(demandDetail.getTaxAmount()).subtract(demandDetail.getCollectionAmount());
+										waterChargeApplicable = waterChargeApplicable.add(oldPenalty);
+									}
 								}
+								
 							}
 						}
 					}
