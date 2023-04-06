@@ -15,12 +15,13 @@ import 'package:pdf/widgets.dart' as pw;
 
 class HouseholdPdfCreator {
   final List<String> headers;
+  final Map<int, pw.FixedColumnWidth> headerWidthList;
   final List<List<String>> tableData;
   BuildContext buildContext;
   final bool isDownload;
 
   HouseholdPdfCreator(
-      this.buildContext, this.headers, this.tableData, this.isDownload);
+      this.buildContext, this.headers, this.headerWidthList, this.tableData, this.isDownload);
 
   pdfPreview() async {
     var householdProvider = Provider.of<HouseholdRegisterProvider>(
@@ -55,6 +56,7 @@ class HouseholdPdfCreator {
     pdf.addPage(pw.MultiPage(
         maxPages: Constants.MAX_PDF_PAGES,
         pageFormat: PdfPageFormat.a4,
+        orientation: pw.PageOrientation.portrait,
         footer: (_) => PdfUtils.pdfFooter(digitLogo),
         build: (pw.Context context) {
           return [
@@ -129,10 +131,12 @@ class HouseholdPdfCreator {
 
   pw.Table _buildTable(pw.Font ttf) {
     return pw.Table.fromTextArray(
-        cellPadding: pw.EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        cellPadding: pw.EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         headers: headers,
         headerStyle: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold),
         cellStyle: pw.TextStyle(font: ttf, fontSize: 12),
+        defaultColumnWidth: pw.FixedColumnWidth(20),
+        columnWidths: headerWidthList,
         cellAlignment: pw.Alignment.center,
         data: tableData,
         oddRowDecoration: pw.BoxDecoration(color: PdfColor.fromHex('#EEEEEE')));

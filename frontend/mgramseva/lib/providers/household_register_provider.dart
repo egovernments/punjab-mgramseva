@@ -18,6 +18,7 @@ import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class HouseholdRegisterProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -390,15 +391,30 @@ class HouseholdRegisterProvider with ChangeNotifier {
       i18.common.CONNECTION_ID,
       i18.common.NAME,
       i18.consumer.FATHER_SPOUSE_NAME,
-      i18.householdRegister.PENDING_COLLECTIONS
+      i18.householdRegister.PENDING_COLLECTIONS,
+      i18.common.CORE_ADVANCE,
+      i18.householdRegister.ACTIVE_INACTIVE,
+      i18.householdRegister.LAST_BILL_GEN_DATE
     ];
+    Map<int, pw.FixedColumnWidth> headerWidthList = {
+      0:pw.FixedColumnWidth(30),
+      1:pw.FixedColumnWidth(20),
+      2:pw.FixedColumnWidth(20),
+      3:pw.FixedColumnWidth(20),
+      4:pw.FixedColumnWidth(20),
+      5:pw.FixedColumnWidth(15),
+      6:pw.FixedColumnWidth(20),
+    };
 
     var tableData = waterConnectionsDetails.waterConnection
             ?.map<List<String>>((connection) => [
                   '${connection.connectionNo ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
                   '${connection.connectionHolders?.first.name ?? ''}',
                   '${connection.connectionHolders?.first.fatherOrHusbandName ?? ''}',
-                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '- ₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '').abs()}' : ' ₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}'
+                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : ' ₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}',
+                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '- ₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '').abs()}' : '0' : '0'}',
+                  '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
+                  '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}'
                 ])
             .toList() ??
         [];
@@ -416,6 +432,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
                     .map<String>((e) =>
                         '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e)}')
                     .toList(),
+                headerWidthList,
                 tableData,
                 isDownload)
             .pdfPreview();
