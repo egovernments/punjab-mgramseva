@@ -17,7 +17,7 @@ import 'package:mgramseva/widgets/Footer.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
-import '../../widgets/customAppbar.dart';
+import '../../widgets/CustomAppbar.dart';
 import 'HomeWalkThrough/HomeWalkThroughContainer.dart';
 import 'HomeWalkThrough/HomeWalkThroughList.dart';
 
@@ -159,7 +159,7 @@ class _HomeState extends State<Home> {
                         commonProvider.uniqueRolesList()?.join(',').toString(),
                     "limit": Constants.HOME_NOTIFICATIONS_LIMIT
                   });
-              } catch (e, s) {
+              } catch (e) {
                 ErrorHandler()
                     .allExceptionsHandler(navigatorKey.currentContext!, e);
               }

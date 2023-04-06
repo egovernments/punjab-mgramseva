@@ -246,7 +246,7 @@ public class WSCalculatorQueryBuilder {
 			preparedStmtList.add(tenantId);
 		}
 		if(!CollectionUtils.isEmpty(preparedStmtList))
-			builder.append("and status not IN ('CANCELLED') and tenantid<>'pb.testing'");
+			builder.append("and status not IN ('CANCELLED')");
 		
 		System.out.println("Final query ::" + builder.toString());
 		return builder.toString();

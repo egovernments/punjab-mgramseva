@@ -11,8 +11,8 @@ import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/CustomAppbar.dart';
 import '../../widgets/Pagination.dart';
-import '../../widgets/customAppbar.dart';
 import 'HouseholdSearch.dart';
 
 class HouseholdRegister extends StatefulWidget {
