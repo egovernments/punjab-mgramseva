@@ -338,30 +338,17 @@ public class DemandService {
 		String actionLinkPayment = config.getNotificationUrl()
 				+ config.getBillPaymentSMSLink().replace("$mobileNumber", owner.getMobileNumber())
 				.replace("$consumerCode", waterConnectionRequest.getWaterConnection().getConnectionNo())
-				.replace("$tenantId", property.getTenantId()
-						.replace("$businessService", businessService));
-
-		/*if (waterConnectionRequest.getWaterConnection().getConnectionType()
-				.equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
-			actionLinkPayment = actionLinkPayment.replace("$key", "ws-bill");
-		} else {
-			actionLinkPayment = actionLinkPayment.replace("$key", "ws-bill-nm");
-		}*/
+				.replace("$tenantId", property.getTenantId())
+				.replace("$businessService", businessService);
 
 		String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 
 		System.out.println("Localization message::" + messageString);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
 			log.info("Demand Object" + demands.toString());
-			BigDecimal totalAmount = fetchTotalBillAmount(demands, requestInfo);
-			//List<String> billNumber = fetchBill(demands, requestInfo);
-			//log.info("Bill Number :: " + billNumber.toString());
-
-			/*if (billNumber.size() > 0) {
-				actionLinkPayment = actionLinkPayment.replace("$billNumber", billNumber.get(0));
-			}*/
 			messageString = messageString.replace("{ownername}", owner.getName());
-			messageString = messageString.replace("{billamount}", totalAmount.toString());
+			messageString = messageString.replace("{billamount}", demandDetails.stream()
+					.map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add).toString());
 			messageString = messageString.replace("{connectionno}", consumerCode);
 			messageString = messageString.replace("{PAY_LINK}", getShortenedUrl(actionLinkPayment));
 
@@ -388,16 +375,15 @@ public class DemandService {
 		} else {
 			actionLink = actionLink.replace("$key", "ws-bill-nm");
 		}
-
 		String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 
-		System.out.println("Localization message::" + messageString);
+		System.out.println("Localization message get bill::" + messageString);
+		System.out.println("isForConnectionNO:" + isForConnectionNO);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
-			log.info("Demand Object" + demands.toString());
+			log.info("Demand Object get bill" + demands.toString());
 
 			List<String> billNumber = fetchBill(demands, requestInfo);
-			log.info("Bill Number :: " + billNumber.toString());
-
+			log.info("bill number get bill size :" + billNumber.size());
 			if (billNumber.size() > 0) {
 				actionLink = actionLink.replace("$billNumber", billNumber.get(0));
 			}
@@ -408,7 +394,7 @@ public class DemandService {
 					.map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add).toString());
 			messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionLink));
 
-			System.out.println("Demand genaration Message1::" + messageString);
+			System.out.println("Demand genaration Message get bill::" + messageString);
 
 			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
 					.category(Category.TRANSACTION).build();
@@ -424,8 +410,8 @@ public class DemandService {
 		String actionLinkPayment = config.getNotificationUrl()
 				+ config.getBillPaymentSMSLink().replace("$mobileNumber", owner.getMobileNumber())
 				.replace("$consumerCode", waterConnectionRequest.getWaterConnection().getConnectionNo())
-				.replace("$tenantId", property.getTenantId()
-						.replace("$businessService", businessService));
+				.replace("$tenantId", property.getTenantId())
+				.replace("$businessService", businessService);
 		String actionBillLink = config.getNotificationUrl()
 				+ config.getBillDownloadSMSLink().replace("$mobile", owner.getMobileNumber())
 				.replace("$consumerCode", waterConnectionRequest.getWaterConnection().getConnectionNo())
@@ -440,23 +426,23 @@ public class DemandService {
 
 		String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 
-		System.out.println("Localization message::" + messageString);
+		System.out.println("Localization message get payment and bill::" + messageString);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
-			log.info("Demand Object" + demands.toString());
-			BigDecimal totalAmount = fetchTotalBillAmount(demands, requestInfo);
+			log.info("Demand Object get payment and bill" + demands.toString());
 			List<String> billNumber = fetchBill(demands, requestInfo);
-			log.info("Bill Number :: " + billNumber.toString());
+			log.info("Bill Number get payment and bill:: " + billNumber.toString());
 
 			if (billNumber.size() > 0) {
 				actionBillLink = actionLinkPayment.replace("$billNumber", billNumber.get(0));
 			}
 			messageString = messageString.replace("{ownername}", owner.getName());
-			messageString = messageString.replace("{billamount}", totalAmount.toString());
+			messageString = messageString.replace("{billamount}", demandDetails.stream()
+					.map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add).toString());
 			messageString = messageString.replace("{consumerno}", consumerCode);
 			messageString = messageString.replace("{PAY_LINK}", getShortenedUrl(actionLinkPayment));
 			messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionBillLink));
 
-			System.out.println("payment genaration Message1::" + messageString);
+			System.out.println("Denmand and Payment genaration Message::" + messageString);
 
 			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
 					.category(Category.TRANSACTION).build();
