@@ -26,13 +26,13 @@ import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TableText.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/customAppbar.dart';
 import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/notifiers.dart';
 import '../../widgets/BottomButtonBar.dart';
+import '../../widgets/CustomAppbar.dart';
 import '../../widgets/KeyboardFocusWatcher.dart';
 
 class ConsumerDetails extends StatefulWidget {

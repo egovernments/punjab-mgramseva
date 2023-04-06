@@ -28,9 +28,9 @@ import '../../components/HouseConnectionandBill/NewConsumerBill.dart';
 import '../../model/demand/update_demand_list.dart';
 import '../../providers/common_provider.dart';
 import '../../utils/models.dart';
+import '../../widgets/CustomAppbar.dart';
 import '../../widgets/CustomDetails.dart';
 import '../../widgets/TextFieldBuilder.dart';
-import '../../widgets/customAppbar.dart';
 
 class ConnectionPaymentView extends StatefulWidget {
   final Map<String, dynamic> query;
