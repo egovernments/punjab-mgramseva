@@ -281,7 +281,7 @@ public class WSCalculationConstant {
 	public static final String WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE = "WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE";
 
 	public static final String mGram_Consumer_NewBill = "mGram.Consumer.NewBill";
-	
+
 	public static final String mGram_Consumer_NewDemand = "mGram.GP.MonthlyDemandGenerated";
 
 	public static final String NEW_BULK_DEMAND_EVENT = "NEW_BULK_DEMAND_EVENT";
@@ -300,9 +300,15 @@ public class WSCalculationConstant {
 	public static final String MONTHLY_DEMAND_FAILED = "MONTHLY_DEMAND_FAILED";
 
 	public static final String GENERATE_DEMAND_EVENT = "GENERATE_DEMAND_EN_REMINDER";
-	
+
+	public static final String mGram_Consumer_Bill = "mGram.Consumer.NewBill";
+
+	public static final String mGram_Consumer_Payment = "mGram.Consumer.PayOnline.N";
+
+	public static final String mGram_Consumer_Bill_Payment_combine = "mGram.consumer.billAndPayment.N";
 
 
 
-	
+
+
 }
