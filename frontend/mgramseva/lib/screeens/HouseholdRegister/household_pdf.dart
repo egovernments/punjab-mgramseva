@@ -15,13 +15,13 @@ import 'package:pdf/widgets.dart' as pw;
 
 class HouseholdPdfCreator {
   final List<String> headers;
-  final Map<int, pw.FixedColumnWidth> headerWidthList;
+  final Map<int, pw.FixedColumnWidth>? headerWidthList;
   final List<List<String>> tableData;
   BuildContext buildContext;
   final bool isDownload;
 
   HouseholdPdfCreator(
-      this.buildContext, this.headers, this.headerWidthList, this.tableData, this.isDownload);
+      this.buildContext, this.headers,this.tableData, this.isDownload, { this.headerWidthList});
 
   pdfPreview() async {
     var householdProvider = Provider.of<HouseholdRegisterProvider>(
@@ -136,7 +136,7 @@ class HouseholdPdfCreator {
         headerStyle: pw.TextStyle(font: ttf, fontWeight: pw.FontWeight.bold),
         cellStyle: pw.TextStyle(font: ttf, fontSize: 12),
         defaultColumnWidth: pw.FixedColumnWidth(20),
-        columnWidths: headerWidthList,
+        columnWidths: headerWidthList ?? {},
         cellAlignment: pw.Alignment.center,
         data: tableData,
         oddRowDecoration: pw.BoxDecoration(color: PdfColor.fromHex('#EEEEEE')));

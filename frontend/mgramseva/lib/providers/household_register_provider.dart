@@ -432,7 +432,6 @@ class HouseholdRegisterProvider with ChangeNotifier {
                     .map<String>((e) =>
                         '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e)}')
                     .toList(),
-                    {},
                 tableData,
                 isDownload)
             .pdfPreview();
