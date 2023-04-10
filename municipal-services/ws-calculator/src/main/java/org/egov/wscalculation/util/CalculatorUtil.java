@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.mdms.model.MasterDetail;
@@ -37,6 +38,7 @@ import lombok.Getter;
 
 @Component
 @Getter
+@Slf4j
 public class CalculatorUtil {
 
 	@Autowired
@@ -377,6 +379,7 @@ public class CalculatorUtil {
 		if (res == null) {
 			throw new CustomException("MDMS_ERROR_FOR_BILLING_FREQUENCY", "ERROR IN FETCHING THE ALLOWED PAYMENT FOR TENANTID " + tenantId);
 		}
+		log.info("Response", res);
 		List<Map<String, Object>> jsonOutput = JsonPath.read(res, WSCalculationConstant.JSONPATH_ROOT_FOR_Allowed_PAyment);
 		return jsonOutput.get(0);
 	}

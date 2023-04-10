@@ -1363,7 +1363,7 @@ public class DemandService {
 		List<MasterDetail> masterDetails = new ArrayList<>();
 		MasterDetail masterDetail =new MasterDetail("BusinessService",WSCalculationConstant.FILTER_PAYMENT_METHOD_SEARCH);
 		masterDetails.add(masterDetail);
-		ModuleDetail moduleDetail = ModuleDetail.builder().moduleName("BusinessService").masterDetails(masterDetails).build();
+		ModuleDetail moduleDetail = ModuleDetail.builder().moduleName("BillingService").masterDetails(masterDetails).build();
 		List<ModuleDetail> moduleDetails = new ArrayList<>();
 		moduleDetails.add(moduleDetail);
         MdmsCriteria mdmsCriteria = MdmsCriteria.builder().tenantId(tenantId)
