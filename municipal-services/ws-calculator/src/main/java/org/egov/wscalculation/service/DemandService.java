@@ -467,6 +467,7 @@ public class DemandService {
 				Object result = serviceRequestRepository.fetchResult(
 						calculatorUtils.getFetchBillURL(demand.getTenantId(), demand.getConsumerCode()),
 						RequestInfoWrapper.builder().requestInfo(requestInfo).build());
+				log.debug("response from fetch bill total bill: " + mapper.writeValueAsString(result));
 				List<Map<String, Object>> jsonOutput = JsonPath.read(result, "$.Bill");
 				totalAmount=new BigDecimal(jsonOutput.get(0).get("totalAmount").toString());
 				//totalAmount = new BigDecimal(JsonPath.read(result, "$.Bill[0].totalAmount").toString());
@@ -1248,6 +1249,7 @@ public class DemandService {
 				Object result = serviceRequestRepository.fetchResult(
 						calculatorUtils.getFetchBillURL(demand.getTenantId(), demand.getConsumerCode()),
 						RequestInfoWrapper.builder().requestInfo(requestInfo).build());
+				log.debug("response from fetch bill: " + mapper.writeValueAsString(result));
 				billNumber = JsonPath.read(result, "$.Bill.*.billNumber");
 				log.info("Bill Response :: " + result);
 
