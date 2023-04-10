@@ -395,6 +395,7 @@ public class DemandService {
 			if (billNumber.size() > 0) {
 				actionLink = actionLink.replace("$billNumber", billNumber.get(0));
 			}
+			fetchTotalBillAmount(demands,waterConnectionRequest.getRequestInfo());
 			messageString = messageString.replace("{ownername}", owner.getName());
 			messageString = messageString.replace("{Period}", billCycle);
 			messageString = messageString.replace("{consumerno}", consumerCode);
@@ -437,15 +438,16 @@ public class DemandService {
 		System.out.println("Localization message get payment and bill::" + messageString);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
 			log.info("Demand Object get payment and bill" + demands.toString());
-			log.info("requestInfo get Bill and Payment::",requestInfo);
+			log.info("requestInfo get Bill and Payment::" +requestInfo);
 			List<String> billNumber = fetchBill(demands, requestInfo);
 			log.info("Bill Number get payment and bill:: " + billNumber.toString());
-
 			if (billNumber.size() > 0) {
 				actionBillLink = actionBillLink.replace("$billNumber", billNumber.get(0));
 			}
 			messageString = messageString.replace("{ownername}", owner.getName());
-			messageString = messageString.replace("{billmaount}", fetchTotalBillAmount(demands,waterConnectionRequest.getRequestInfo()).toString());
+			//messageString = messageString.replace("{billmaount}", fetchTotalBillAmount(demands,waterConnectionRequest.getRequestInfo()).toString());
+			messageString = messageString.replace("{billmaount}", demandDetails.stream()
+					.map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add).toString());
 			messageString = messageString.replace("{consumerno}", consumerCode);
 			messageString = messageString.replace("{PAY_LINK}", getShortenedUrl(actionLinkPayment));
 			messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionBillLink));
@@ -469,9 +471,11 @@ public class DemandService {
 						RequestInfoWrapper.builder().requestInfo(requestInfo).build());
 				log.debug("response from fetch bill total bill: " + mapper.writeValueAsString(result));
 				List<Map<String, Object>> jsonOutput = JsonPath.read(result, "$.Bill");
+				log.info("Bill Response totalAMount fetch:: " + result);
+                log.info(mapper.writeValueAsString(jsonOutput));
 				totalAmount=new BigDecimal(jsonOutput.get(0).get("totalAmount").toString());
 				//totalAmount = new BigDecimal(JsonPath.read(result, "$.Bill[0].totalAmount").toString());
-				log.info("Bill Response :: " + result);
+				log.info("Bill Response totalAMount:: " + result);
 
 				HashMap<String, Object> billResponse = new HashMap<>();
 

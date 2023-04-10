@@ -380,7 +380,17 @@ public class CalculatorUtil {
 			throw new CustomException("MDMS_ERROR_FOR_BILLING_FREQUENCY", "ERROR IN FETCHING THE ALLOWED PAYMENT FOR TENANTID " + tenantId);
 		}
 		log.info("Response", res);
+		Map<String, Object> mdmsres = JsonPath.read(res, WSCalculationConstant.JSONPATH_ROOT_FOR_mdmsRes);
+		if(mdmsres.isEmpty()) {
+			String stateLevelTenantId = tenantId.split("\\.")[0];
+			mdmsCriteriaReq.getMdmsCriteria().setTenantId(stateLevelTenantId);
+			res = serviceRequestRepository.fetchResult(getMdmsSearchUrl(), mdmsCriteriaReq);
+		}
+
 		List<Map<String, Object>> jsonOutput = JsonPath.read(res, WSCalculationConstant.JSONPATH_ROOT_FOR_Allowed_PAyment);
 		return jsonOutput.get(0);
+
+
+
 	}
 }
