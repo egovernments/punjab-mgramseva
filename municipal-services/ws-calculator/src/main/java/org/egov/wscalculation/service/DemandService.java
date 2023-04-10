@@ -372,7 +372,6 @@ public class DemandService {
 	private void sendDownloadBillSMSNotification(RequestInfo requestInfo, String tenantId, User owner, WaterConnectionRequest waterConnectionRequest, Property property, List<DemandDetail> demandDetails, String consumerCode, List<Demand> demands, Boolean isForConnectionNO, String businessService, String billCycle) {
 		HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo,
 				WSCalculationConstant.mGram_Consumer_NewBill, tenantId);
-
 		String actionLink = config.getNotificationUrl()
 				+ config.getBillDownloadSMSLink().replace("$mobile", owner.getMobileNumber())
 				.replace("$consumerCode", waterConnectionRequest.getWaterConnection().getConnectionNo())
@@ -390,8 +389,8 @@ public class DemandService {
 		System.out.println("isForConnectionNO:" + isForConnectionNO);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
 			log.info("Demand Object get bill" + demands.toString());
-
-			List<String> billNumber = fetchBill(demands, requestInfo);
+			log.info("requestInfo get Bill",requestInfo);
+			List<String> billNumber = fetchBill(demands, waterConnectionRequest.getRequestInfo());
 			log.info("bill number get bill size :" + billNumber.size());
 			if (billNumber.size() > 0) {
 				actionLink = actionLink.replace("$billNumber", billNumber.get(0));
@@ -438,6 +437,7 @@ public class DemandService {
 		System.out.println("Localization message get payment and bill::" + messageString);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
 			log.info("Demand Object get payment and bill" + demands.toString());
+			log.info("requestInfo get Bill and Payment::",requestInfo);
 			List<String> billNumber = fetchBill(demands, requestInfo);
 			log.info("Bill Number get payment and bill:: " + billNumber.toString());
 
@@ -1242,6 +1242,8 @@ public class DemandService {
 		List<String> billNumber = new ArrayList<>();
 		for (Demand demand : demandResponse) {
 			try {
+				log.info("Demand tenantId::",demand.getTenantId());
+				log.info("Demand consumer Code::",demand.getConsumerCode());
 				Object result = serviceRequestRepository.fetchResult(
 						calculatorUtils.getFetchBillURL(demand.getTenantId(), demand.getConsumerCode()),
 						RequestInfoWrapper.builder().requestInfo(requestInfo).build());
