@@ -283,10 +283,6 @@ public class DemandService {
 
 				log.info("Demand Object in create demand ::" + demands.toString());
 
-				List<String> billNumber = fetchBill(demands, requestInfo);
-				log.info("Bill Number recived 1:: " + billNumber.toString());
-				log.info("Bill Number recived 2:: " + billNumber.get(0));
-
 		
 			if (!isWSUpdateSMS) {
 
@@ -1363,6 +1359,7 @@ public class DemandService {
 	}
 	public boolean isOnlinePaymentAllowed(RequestInfo requestInfo, String tenantId)
 	{
+		log.info("inside online payment allowed method");
 		List<MasterDetail> masterDetails = new ArrayList<>();
 		MasterDetail masterDetail =new MasterDetail("BusinessService",WSCalculationConstant.FILTER_PAYMENT_METHOD_SEARCH);
 		masterDetails.add(masterDetail);
