@@ -389,7 +389,7 @@ public class DemandService {
 		System.out.println("isForConnectionNO:" + isForConnectionNO);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
 			log.info("Demand Object get bill" + demands.toString());
-			log.info("requestInfo get Bill",requestInfo);
+			log.info("requestInfo get Bill" + requestInfo);
 			List<String> billNumber = fetchBill(demands, waterConnectionRequest.getRequestInfo());
 			log.info("bill number get bill size :" + billNumber.size());
 			if (billNumber.size() > 0) {
@@ -1242,8 +1242,8 @@ public class DemandService {
 		List<String> billNumber = new ArrayList<>();
 		for (Demand demand : demandResponse) {
 			try {
-				log.info("Demand tenantId::",demand.getTenantId());
-				log.info("Demand consumer Code::",demand.getConsumerCode());
+				log.info("Demand tenantId::" +demand.getTenantId());
+				log.info("Demand consumer Code::" +demand.getConsumerCode());
 				Object result = serviceRequestRepository.fetchResult(
 						calculatorUtils.getFetchBillURL(demand.getTenantId(), demand.getConsumerCode()),
 						RequestInfoWrapper.builder().requestInfo(requestInfo).build());
