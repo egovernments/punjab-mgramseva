@@ -33,6 +33,10 @@ import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
+import org.egov.mdms.model.MasterDetail;
+import org.egov.mdms.model.MdmsCriteria;
+import org.egov.mdms.model.MdmsCriteriaReq;
+import org.egov.mdms.model.ModuleDetail;
 import org.egov.tracer.model.CustomException;
 import org.egov.wscalculation.config.WSCalculationConfiguration;
 import org.egov.wscalculation.constants.WSCalculationConstant;
@@ -276,6 +280,13 @@ public class DemandService {
 						.businessService(businessService).status(StatusEnum.valueOf("ACTIVE")).billExpiryTime(expiryDate)
 						.build());
 			}
+
+				log.info("Demand Object in create demand ::" + demands.toString());
+
+				List<String> billNumber = fetchBill(demands, requestInfo);
+				log.info("Bill Number recived 1:: " + billNumber.toString());
+				log.info("Bill Number recived 2:: " + billNumber.get(0));
+
 		
 			if (!isWSUpdateSMS) {
 
@@ -320,9 +331,11 @@ public class DemandService {
 					producer.push(config.getSmsNotifTopic(), sms);
 
 				}*/
-				sendPaymentSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle);
+				if(isOnlinePaymentAllowed(requestInfo,tenantId)) {
+					sendPaymentSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle);
+					sendPaymentAndBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle);
+				}
 				sendDownloadBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle);
-                sendPaymentAndBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle);
 			}
 		}
 		log.info("Demand Object" + demands.toString());
@@ -433,7 +446,7 @@ public class DemandService {
 			log.info("Bill Number get payment and bill:: " + billNumber.toString());
 
 			if (billNumber.size() > 0) {
-				actionBillLink = actionLinkPayment.replace("$billNumber", billNumber.get(0));
+				actionBillLink = actionBillLink.replace("$billNumber", billNumber.get(0));
 			}
 			messageString = messageString.replace("{ownername}", owner.getName());
 			messageString = messageString.replace("{billamount}", demandDetails.stream()
@@ -1347,6 +1360,28 @@ public class DemandService {
 		}
 		DemandPenaltyResponse response = DemandPenaltyResponse.builder().totalApplicablePenalty(totalApplicablePenalty).demands(demands).build();
 		return response;
+	}
+	public boolean isOnlinePaymentAllowed(RequestInfo requestInfo, String tenantId)
+	{
+		List<MasterDetail> masterDetails = new ArrayList<>();
+		MasterDetail masterDetail =new MasterDetail("BusinessService",WSCalculationConstant.FILTER_PAYMENT_METHOD_SEARCH);
+		masterDetails.add(masterDetail);
+		ModuleDetail moduleDetail = ModuleDetail.builder().moduleName("BusinessService").masterDetails(masterDetails).build();
+		List<ModuleDetail> moduleDetails = new ArrayList<>();
+		moduleDetails.add(moduleDetail);
+        MdmsCriteria mdmsCriteria = MdmsCriteria.builder().tenantId(tenantId)
+				.moduleDetails(moduleDetails)
+				.build();
+		log.info("mdmscrtiteria:::"+mdmsCriteria.getTenantId());
+		log.info("mdmscrtiteria::::::"+mdmsCriteria.getModuleDetails().get(0).getModuleName());
+		log.info("mdmscrtiteria:::::::::"+mdmsCriteria.getModuleDetails().get(0));
+		Map<String, Object> paymentMasterData = calculatorUtils.getAllowedPaymentForTenantId(tenantId,mdmsCriteria,requestInfo);
+		List<String> paymentModesNotAllowed = (List<String>) paymentMasterData.get(WSCalculationConstant.Payment_Modes_Not_Allowed);
+		log.info("size::" +paymentModesNotAllowed.size());
+		if(paymentModesNotAllowed.contains("ONLINE"))
+			return false;
+		else
+			return true;
 	}
 
 }

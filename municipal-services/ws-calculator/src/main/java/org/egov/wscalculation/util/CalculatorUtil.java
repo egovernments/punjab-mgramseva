@@ -370,4 +370,14 @@ public class CalculatorUtil {
 		url.append("businessIds=").append(businessIds);
 		return url.toString();
 	}
+
+	public Map<String, Object> getAllowedPaymentForTenantId(String tenantId, MdmsCriteria mdmsCriteria, RequestInfo requestInfo) {
+		MdmsCriteriaReq mdmsCriteriaReq = MdmsCriteriaReq.builder().mdmsCriteria(mdmsCriteria).requestInfo(requestInfo).build();
+		Object res = serviceRequestRepository.fetchResult(getMdmsSearchUrl(), mdmsCriteriaReq);
+		if (res == null) {
+			throw new CustomException("MDMS_ERROR_FOR_BILLING_FREQUENCY", "ERROR IN FETCHING THE ALLOWED PAYMENT FOR TENANTID " + tenantId);
+		}
+		List<Map<String, Object>> jsonOutput = JsonPath.read(res, WSCalculationConstant.JSONPATH_ROOT_FOR_Allowed_PAyment);
+		return jsonOutput.get(0);
+	}
 }
