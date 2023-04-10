@@ -445,8 +445,7 @@ public class DemandService {
 				actionBillLink = actionBillLink.replace("$billNumber", billNumber.get(0));
 			}
 			messageString = messageString.replace("{ownername}", owner.getName());
-			messageString = messageString.replace("{billamount}", demandDetails.stream()
-					.map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add).toString());
+			messageString = messageString.replace("{billamount}", fetchTotalBillAmount(demands,waterConnectionRequest.getRequestInfo()).toString());
 			messageString = messageString.replace("{consumerno}", consumerCode);
 			messageString = messageString.replace("{PAY_LINK}", getShortenedUrl(actionLinkPayment));
 			messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionBillLink));
