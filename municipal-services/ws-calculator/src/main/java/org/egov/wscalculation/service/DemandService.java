@@ -223,6 +223,7 @@ public class DemandService {
 
 		String billCycle = "";
 		String consumerCode = null;
+		List<Demand> demandRes = null;
 		for (Calculation calculation : calculations) {
 			WaterConnection connection = calculation.getWaterConnection();
 			if (connection == null) {
@@ -263,10 +264,10 @@ public class DemandService {
 			if (firstDate.isEqual(lastDate) && lastDateTime.contains("-04-01")) {
 				toDate = toDate + 60000;
 			}
-			
+
 			billCycle = firstDate.format(dateTimeFormatter) + " - " + lastDate.format(dateTimeFormatter);
 			addRoundOffTaxHead(calculation.getTenantId(), demandDetails);
-			
+
 			if(isAdvance) {
 				demands.add(Demand.builder().consumerCode(consumerCode).demandDetails(demandDetails).payer(owner)
 						.minimumAmountPayable(minimumPayableAmount).tenantId(tenantId).taxPeriodFrom(fromDate)
@@ -280,7 +281,7 @@ public class DemandService {
 						.businessService(businessService).status(StatusEnum.valueOf("ACTIVE")).billExpiryTime(expiryDate)
 						.build());
 			}
-
+			demandRes = demandRepository.saveDemand(requestInfo, demands);
 			List<String> billNumbers = fetchBill(demands, waterConnectionRequest.getRequestInfo());
 
 
@@ -335,7 +336,7 @@ public class DemandService {
 			}
 		}
 		log.info("Demand Object" + demands.toString());
-		List<Demand> demandRes = demandRepository.saveDemand(requestInfo, demands);
+
 
 		return demandRes;
 	}
