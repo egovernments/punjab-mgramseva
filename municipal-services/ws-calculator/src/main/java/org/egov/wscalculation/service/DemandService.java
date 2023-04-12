@@ -284,10 +284,11 @@ public class DemandService {
 			}
 			demandRes = demandRepository.saveDemand(requestInfo, demands);
 			finalDemandRes.addAll(demandRes);
-			List<String> billNumbers = fetchBill(demands, waterConnectionRequest.getRequestInfo());
+
 
 
 			if (!isWSUpdateSMS) {
+				List<String> billNumbers = fetchBill(demands, waterConnectionRequest.getRequestInfo());
 				if(isOnlinePaymentAllowed(requestInfo,tenantId)) {
 					sendPaymentSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers);
 					sendPaymentAndBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers);
@@ -1207,15 +1208,10 @@ public class DemandService {
 		List<String> billNumber = new ArrayList<>();
 		for (Demand demand : demandResponse) {
 			try {
-				log.info("Demand tenantId::" +demand.getTenantId());
-				log.info("Demand consumer Code::" +demand.getConsumerCode());
 				Object result = serviceRequestRepository.fetchResult(
 						calculatorUtils.getFetchBillURL(demand.getTenantId(), demand.getConsumerCode()),
 						RequestInfoWrapper.builder().requestInfo(requestInfo).build());
-				log.debug("response from fetch bill: " + mapper.writeValueAsString(result));
 				billNumber = JsonPath.read(result, "$.Bill.*.billNumber");
-				log.info("Bill Response :: " + result);
-
 				HashMap<String, Object> billResponse = new HashMap<>();
 
 				billResponse.put("requestInfo", requestInfo);
