@@ -381,7 +381,9 @@ public class CalculatorUtil {
 		}
 		log.info("Response", res);
 		Map<String, Object> mdmsres = JsonPath.read(res, WSCalculationConstant.JSONPATH_ROOT_FOR_mdmsRes);
-		if(mdmsres.isEmpty()) {
+		Map<String, Object> mdmsBillingServiceres = JsonPath.read(res,WSCalculationConstant.JSONPATH_ROOT_FOR_billingService);
+		if(mdmsres.isEmpty() || mdmsBillingServiceres.isEmpty()) {
+			log.info("Inside No MDMS response found for tenantId::::" +tenantId);
 			String stateLevelTenantId = tenantId.split("\\.")[0];
 			mdmsCriteriaReq.getMdmsCriteria().setTenantId(stateLevelTenantId);
 			res = serviceRequestRepository.fetchResult(getMdmsSearchUrl(), mdmsCriteriaReq);

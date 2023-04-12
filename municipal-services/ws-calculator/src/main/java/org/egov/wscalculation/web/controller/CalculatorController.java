@@ -116,5 +116,11 @@ public class CalculatorController {
 				totalApplicablePenalty(demandPenaltyResponse.getTotalApplicablePenalty()).responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true)).build();
 		return new ResponseEntity<>(demandPenaltyResponse, HttpStatus.OK);
 	}
-	
+
+	@PostMapping("/_isOnlinePaymentavailable")
+	public ResponseEntity<Boolean> isOnlinePaymentavailable(@RequestBody @Valid RequestInfoWrapper requestInfoWrapper,
+																   @RequestBody @Valid String tenantId) {
+		Boolean onlinePaymentAllowed = demandService.isOnlinePaymentAllowed(requestInfoWrapper.getRequestInfo(),tenantId);
+		return new ResponseEntity<>(onlinePaymentAllowed, HttpStatus.OK);
+	}
 }

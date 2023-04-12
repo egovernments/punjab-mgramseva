@@ -179,6 +179,7 @@ public class WSCalculationConstant {
 
 	public static final String JSONPATH_ROOT_FOR_mdmsRes = "$.MdmsRes";
 
+	public static final String JSONPATH_ROOT_FOR_billingService = "$.MdmsRes.BillingService";
 	public static final String JSONPATH_ROOT_FOR_Allowed_PAyment = "$.MdmsRes.BillingService.BusinessService";
 
 	public static final String Quaterly_Billing_Period = "quarterly";
