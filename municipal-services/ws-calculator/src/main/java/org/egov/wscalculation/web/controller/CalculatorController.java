@@ -117,10 +117,4 @@ public class CalculatorController {
 		return new ResponseEntity<>(demandPenaltyResponse, HttpStatus.OK);
 	}
 
-	@PostMapping("/_isOnlinePaymentavailable")
-	public ResponseEntity<Boolean> isOnlinePaymentavailable(@RequestBody @Valid RequestInfoWrapper requestInfoWrapper,
-																   @RequestBody @Valid String tenantId) {
-		Boolean onlinePaymentAllowed = demandService.isOnlinePaymentAllowed(requestInfoWrapper.getRequestInfo(),tenantId);
-		return new ResponseEntity<>(onlinePaymentAllowed, HttpStatus.OK);
-	}
 }
