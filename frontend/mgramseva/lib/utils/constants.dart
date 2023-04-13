@@ -93,6 +93,11 @@ class Constants {
         (i18.homeWalkThroughMSg.GPWSC_DASHBOARD_MSG),
         HomeIcons.dashboard,
         Routes.DASHBOARD, {}),
+    HomeItem(
+        "CORE_GPWSC_DETAILS_AND_RATE_INFO",
+        (i18.dashboard.CORE_GPWSC_DETAILS_AND_RATE_INFO),
+        HomeIcons.dashboard,
+        Routes.GPWSC_DETAILS_AND_RATE_INFO, {}),
   ];
 
   static List<KeyValue> SERVICECATEGORY = [
