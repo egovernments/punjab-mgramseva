@@ -386,7 +386,17 @@ class HouseholdRegisterProvider with ChangeNotifier {
     if (waterConnectionsDetails.waterConnection == null ||
         waterConnectionsDetails.waterConnection!.isEmpty) return;
 
-    var headerList = [
+    var excelHeaderList = [
+      i18.common.CONNECTION_ID,
+      i18.consumer.OLD_CONNECTION_ID,
+      i18.common.NAME,
+      i18.consumer.FATHER_SPOUSE_NAME,
+      i18.householdRegister.PENDING_COLLECTIONS,
+      i18.common.CORE_ADVANCE,
+      i18.householdRegister.ACTIVE_INACTIVE,
+      i18.householdRegister.LAST_BILL_GEN_DATE
+    ];
+    var pdfHeaderList = [
       i18.common.CONNECTION_ID,
       i18.common.NAME,
       i18.consumer.FATHER_SPOUSE_NAME,
@@ -396,9 +406,22 @@ class HouseholdRegisterProvider with ChangeNotifier {
       i18.householdRegister.LAST_BILL_GEN_DATE
     ];
 
-    var tableData = waterConnectionsDetails.waterConnection
+    var pdfTableData = waterConnectionsDetails.waterConnection
             ?.map<List<String>>((connection) => [
                   '${connection.connectionNo ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
+                  '${connection.connectionHolders?.first.name ?? ''}',
+                  '${connection.connectionHolders?.first.fatherOrHusbandName ?? ''}',
+                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : ' ₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}',
+                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '- ₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '').abs()}' : '0' : '0'}',
+                  '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
+                  '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}'
+                ])
+            .toList() ??
+        [];
+    var excelTableData = waterConnectionsDetails.waterConnection
+            ?.map<List<String>>((connection) => [
+                  '${connection.connectionNo ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
+                  '${connection.oldConnectionNo ?? ''}',
                   '${connection.connectionHolders?.first.name ?? ''}',
                   '${connection.connectionHolders?.first.fatherOrHusbandName ?? ''}',
                   '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : ' ₹ ${connection.additionalDetails?.collectionPendingAmount}' : '-'}',
@@ -411,18 +434,18 @@ class HouseholdRegisterProvider with ChangeNotifier {
 
     isExcelDownload
         ? generateExcel(
-            headerList
+            excelHeaderList
                 .map<String>((e) =>
                     '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e)}')
                 .toList(),
-            tableData)
+            excelTableData)
         : await HouseholdPdfCreator(
                 context,
-                headerList
+                pdfHeaderList
                     .map<String>((e) =>
                         '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e)}')
                     .toList(),
-                tableData,
+                pdfTableData,
                 isDownload)
             .pdfPreview();
     Navigator.pop(context);
