@@ -313,7 +313,7 @@ public class WSCalculationConstant {
 
 	public static final String mGram_Consumer_Bill = "mGram.Consumer.NewBill";
 
-	public static final String mGram_Consumer_Payment = "mGram.Consumer.PayOnline.N";
+	public static final String mGram_Consumer_Payment = "mGram.consumer.payment.message";
 
 	public static final String mGram_Consumer_Bill_Payment_combine = "mGram.consumer.billAndPayment.N";
 
