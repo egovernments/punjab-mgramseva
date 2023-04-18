@@ -67,6 +67,7 @@ import org.egov.demand.model.Demand;
 import org.egov.demand.model.DemandApportionRequest;
 import org.egov.demand.model.DemandCriteria;
 import org.egov.demand.model.DemandDetail;
+import org.egov.demand.model.DemandHistory;
 import org.egov.demand.model.PaymentBackUpdateAudit;
 import org.egov.demand.model.UpdateBillCriteria;
 import org.egov.demand.repository.AmendmentRepository;
@@ -522,13 +523,21 @@ public class DemandService {
 		return updateListForConsumedAmendments;
 	}
 
-	public List<Demand> getDemandHistory(@Valid DemandCriteria demandCriteria, RequestInfo requestInfo) {
+	public DemandHistory getDemandHistory(@Valid DemandCriteria demandCriteria, RequestInfo requestInfo) {
 		demandValidatorV1.validateDemandCriteria(demandCriteria, requestInfo);
 
 		List<Demand> demands = null;
-		
+		List<Demand> demandList = getDemands(demandCriteria, requestInfo);
 		demands = demandRepository.getDemandHistory(demandCriteria);
-		return demands;
+		demandList.stream().filter(i->(!i.getIsPaymentCompleted()));
+		BigDecimal waterCharge = demandList.get(demandList.size() - 1).getDemandDetails().get(0).getTaxAmount();
+		BigDecimal advanceAdjustedAmount = demandList.get(demandList.size() - 1).getDemandDetails().get(0).getCollectionAmount();
+
+		DemandHistory demandHistory = new DemandHistory();
+		demandHistory.setDemandList(demands);
+		demandHistory.setWaterCharge(waterCharge);
+		demandHistory.setAdvanceAdjustedAmount(advanceAdjustedAmount);
+		return demandHistory;
 	
 	}
 	
