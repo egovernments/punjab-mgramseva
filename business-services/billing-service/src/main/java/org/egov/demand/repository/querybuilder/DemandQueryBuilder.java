@@ -92,7 +92,7 @@ public class DemandQueryBuilder {
 			+ "dmdl.createdtime AS dlcreatedtime,dmdl.lastModifiedtime AS dllastModifiedtime,"
 			+ "dmdl.tenantid AS dltenantid,dmdl.additionaldetails as detailadditionaldetails " + "FROM egbs_demand_v1 dmd "
 			+ "INNER JOIN egbs_demanddetail_v1 dmdl ON dmd.id=dmdl.demandid " + "AND dmd.tenantid=dmdl.tenantid "
-			+ "INNER JOIN egbs_demanddetail_v1_audit dmdlau ON dmdl.id=dmdlau.demanddetailid AND dmdl.tenantid=dmdlau.tenantid WHERE ";
+			+ "INNER JOIN egbs_demanddetail_v1_audit dmdlau ON dmdl.id=dmdlau.demanddetailid AND dmdl.tenantid=dmdlau.tenantid WHERE dmdl.taxHeadMasterCode ='WS_ADVANCE_CARRYFORWARD' AND ";
 
 	public static final String BASE_DEMAND_DETAIL_QUERY = "SELECT "
 			+ "demanddetail.id AS dlid,demanddetail.demandid AS dldemandid,demanddetail.taxheadcode AS dltaxheadcode,"
