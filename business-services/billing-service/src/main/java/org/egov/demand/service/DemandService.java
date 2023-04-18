@@ -528,6 +528,12 @@ public class DemandService {
 		List<Demand> demands = null;
 		
 		demands = demandRepository.getDemandHistory(demandCriteria);
+		for(Demand demand : demands) {
+			if(demand.getConsumerType().equalsIgnoreCase("waterConnection-arrears")) {
+				demand.getDemandDetails().removeIf(i->(!i.getTaxHeadMasterCode().
+						equalsIgnoreCase("WS_ADVANCE_CARRYFORWARD")));
+			}
+		}
 		return demands;
 	
 	}
