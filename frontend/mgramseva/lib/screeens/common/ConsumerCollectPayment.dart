@@ -98,7 +98,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
       appBar: AppBar(
         titleSpacing: 0,
         title: Text('mGramSeva'),
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
         actions: [_buildDropDown()],
       ),
       body: StreamBuilder(
