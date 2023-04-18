@@ -69,6 +69,12 @@ public class DemandHistoryResponse {
 	@JsonProperty("CollectedReceipt")
 	private List<CollectedReceipt> collectedReceipts;
 	
+	@JsonProperty("AdvanceAdjustedAmount")
+	private BigDecimal advanceAdjustedAmount;
+
+	@JsonProperty("WaterCharge")
+	private BigDecimal waterCharge;
+	
 	public DemandHistoryResponse(ResponseInfo responseInfo,List<Demand> demands){
 		this.responseInfo=responseInfo;
 		this.demands=demands;

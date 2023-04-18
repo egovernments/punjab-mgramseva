@@ -158,7 +158,8 @@ public class DemandController {
 
 		DemandHistory demands = demandService.getDemandHistory(demandCriteria, requestInfo);
 		DemandHistoryResponse response = DemandHistoryResponse.builder().demands(demands.getDemandList())
-				.responseInfo(responseFactory.getResponseInfo(requestInfo, HttpStatus.OK)).build();
+				.advanceAdjustedAmount(demands.getAdvanceAdjustedAmount()).waterCharge(demands.getWaterCharge()).
+				responseInfo(responseFactory.getResponseInfo(requestInfo, HttpStatus.OK)).build();
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
     
