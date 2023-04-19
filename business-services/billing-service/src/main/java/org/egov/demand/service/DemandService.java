@@ -535,8 +535,7 @@ public class DemandService {
 		BigDecimal waterCharge = demandList.get(demandList.size() - 1).getDemandDetails().get(0).getTaxAmount();
 		for(Demand dem : demandList) {
 			for(DemandDetail ddl : dem.getDemandDetails()){
-				if(ddl.getTaxHeadMasterCode().equalsIgnoreCase("WS_ADVANCE_CARRYFORWARD")
-						&& ddl.getTaxAmount().compareTo(ddl.getCollectionAmount()) != 0){
+				if(ddl.getTaxHeadMasterCode().equalsIgnoreCase("WS_ADVANCE_CARRYFORWARD")){
 					   advanceAdjustedAmount = demandList.get(demandList.size() - 1).getDemandDetails().get(0).getCollectionAmount();
 					}
 				}
