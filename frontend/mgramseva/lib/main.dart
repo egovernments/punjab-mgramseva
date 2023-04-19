@@ -24,6 +24,7 @@ import 'package:mgramseva/providers/forgot_password_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/providers/household_register_provider.dart';
+import 'package:mgramseva/providers/ifix_hierarchy_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/notification_screen_provider.dart';
 import 'package:mgramseva/providers/notifications_provider.dart';
@@ -188,6 +189,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => RevenueDashboard()),
           ChangeNotifierProvider(create: (_) => HouseholdRegisterProvider()),
           ChangeNotifierProvider(create: (_) => NotificationScreenProvider()),
+          ChangeNotifierProvider(create: (_) => IfixHierarchyProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => GestureDetector(

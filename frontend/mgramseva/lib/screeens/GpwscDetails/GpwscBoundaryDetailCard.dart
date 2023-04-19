@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/ifix_hierarchy_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:provider/provider.dart';
 
 import '../../utils/Locilization/application_localizations.dart';
 import '../../widgets/LabelText.dart';
@@ -36,23 +39,66 @@ class GpwscBoundaryDetailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      return GpwscCard(
-            children: [
-              LabelText(i18.dashboard.GPWSC_DETAILS),
-              Padding(
-                padding: constraints.maxWidth > 760 ? const EdgeInsets.all(20.0) : const EdgeInsets.all(8.0),
-                child: Column(
+      return Consumer<IfixHierarchyProvider>(
+          key: key,
+          builder: (_, departmentProvider, child) {
+            return Consumer<CommonProvider>(
+              builder: (_, commonProvider, child) {
+                return GpwscCard(
                   children: [
-                    _getLabeltext("${ApplicationLocalizations.of(context).translate(i18.common.VILLAGE_CODE)}", "VL-7487478", context),
-                    _getLabeltext("${ApplicationLocalizations.of(context).translate(i18.common.VILLAGE_NAME)}", "Lodhipur", context),
-                    _getLabeltext("${ApplicationLocalizations.of(context).translate(i18.common.SECTION_CODE)}", "Agampur-S560", context),
-                    _getLabeltext("${ApplicationLocalizations.of(context).translate(i18.common.SUB_DIVISION_CODE)}", "DIV1038SD10131", context),
-                    _getLabeltext("${ApplicationLocalizations.of(context).translate(i18.common.PROJECT_SCHEME_CODE)}", "7374", context)
+                    LabelText(i18.dashboard.GPWSC_DETAILS),
+                    Padding(
+                      padding: constraints.maxWidth > 760
+                          ? const EdgeInsets.all(20.0)
+                          : const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          _getLabeltext(
+                              "${ApplicationLocalizations.of(context).translate(i18.common.VILLAGE_CODE)}",
+                              commonProvider.userDetails!.selectedtenant?.city?.code,
+                              context),
+                          _getLabeltext(
+                              "${ApplicationLocalizations.of(context).translate(i18.common.VILLAGE_NAME)}",
+                              commonProvider.userDetails!.selectedtenant?.code,
+                              context),
+                          _getLabeltext(
+                              "${ApplicationLocalizations.of(context).translate(i18.common.SECTION_CODE)}",
+                              departmentProvider.hierarchy.containsKey("5")
+                                  ? '${departmentProvider.hierarchy["5"]!["code"]}-${departmentProvider.hierarchy["5"]!["name"]}'
+                                  : '',
+                              context),
+                          _getLabeltext(
+                              "${ApplicationLocalizations.of(context).translate(i18.common.SUB_DIVISION_CODE)}",
+                              departmentProvider.hierarchy.containsKey("4")
+                                  ? '${departmentProvider.hierarchy["4"]!['code']}-${departmentProvider.hierarchy["5"]!["name"]}'
+                                  : '',
+                              context),
+                          _getLabeltext(
+                              "${ApplicationLocalizations.of(context).translate(i18.common.DIVISION_CODE)}",
+                              departmentProvider.hierarchy.containsKey("3")
+                                  ? '${departmentProvider.hierarchy["3"]!['code']}-${departmentProvider.hierarchy["3"]!["name"]}'
+                                  : '',
+                              context),
+                          _getLabeltext(
+                              "${ApplicationLocalizations.of(context).translate(i18.common.PROJECT_SCHEME_CODE)}",
+                              commonProvider.userDetails!.selectedtenant?.city?.code,
+                              context),
+                          _getLabeltext(
+                              "${ApplicationLocalizations.of(context).translate(i18.common.REGION_NAME)}",
+                              '${commonProvider.userDetails!.selectedtenant?.city?.regionName}',
+                              context),
+                          _getLabeltext(
+                              "${ApplicationLocalizations.of(context).translate(i18.common.DISTRICT_CODE)}",
+                              '${commonProvider.userDetails!.selectedtenant?.city?.districtCode}-${commonProvider.userDetails!.selectedtenant?.city?.districtName}',
+                              context)
+                        ],
+                      ),
+                    )
                   ],
-                ),
-              )
-            ],
-      );
+                );
+              },
+            );
+          });
     });
   }
 }

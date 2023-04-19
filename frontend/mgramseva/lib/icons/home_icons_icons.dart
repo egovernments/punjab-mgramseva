@@ -30,4 +30,5 @@ class HomeIcons {
   static const IconData printreciept = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData updateconsumer = IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData updateexpenses = IconData(0xe808, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData gpwscdetails = IconData(0xe814, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

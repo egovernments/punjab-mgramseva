@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../../providers/dashboard_provider.dart';
+import '../../providers/ifix_hierarchy_provider.dart';
+import '../../utils/global_variables.dart';
 import '../../widgets/DrawerWrapper.dart';
 import '../../widgets/HomeBack.dart';
 import '../../widgets/SideBar.dart';
@@ -38,6 +40,8 @@ class _GpwscDetails extends State<GpwscDetails>
   @override
   void initState() {
     super.initState();
+    var departmentProvider = Provider.of<IfixHierarchyProvider>(navigatorKey.currentContext!, listen: false);
+    departmentProvider.getDepartments();
     WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
   }
 
