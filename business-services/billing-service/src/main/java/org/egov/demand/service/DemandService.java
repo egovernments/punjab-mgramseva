@@ -529,14 +529,14 @@ public class DemandService {
 		List<Demand> demands = null;
 		List<Demand> demandList = getDemands(demandCriteria, requestInfo);
 		demands = demandRepository.getDemandHistory(demandCriteria);
-		demandList.stream().filter(i->(!i.getIsPaymentCompleted()));
+		List<Demand> demList = demandList.stream().filter(i->(!i.getIsPaymentCompleted().booleanValue())).collect(Collectors.toList());
 		
 		BigDecimal advanceAdjustedAmount = BigDecimal.ZERO;
-		BigDecimal waterCharge = demandList.get(demandList.size() - 1).getDemandDetails().get(0).getTaxAmount();
-		for(Demand dem : demandList) {
+		BigDecimal waterCharge = demList.get(demList.size() - 1).getDemandDetails().get(0).getTaxAmount();
+		for(Demand dem : demList) {
 			for(DemandDetail ddl : dem.getDemandDetails()){
 				if(ddl.getTaxHeadMasterCode().equalsIgnoreCase("WS_ADVANCE_CARRYFORWARD")){
-					   advanceAdjustedAmount = demandList.get(demandList.size() - 1).getDemandDetails().get(0).getCollectionAmount();
+					   advanceAdjustedAmount = demList.get(demList.size() - 1).getDemandDetails().get(0).getCollectionAmount();
 					}
 				}
 		}
