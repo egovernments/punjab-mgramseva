@@ -210,6 +210,8 @@ class Common {
   String get VILLAGE_NAME => 'VILLAGE_NAME';
   String get SECTION_CODE => 'SECTION_CODE';
   String get SUB_DIVISION_CODE => 'SUB_DIVISION_CODE';
+  String get DIVISION_CODE => 'DIVISION_CODE';
+  String get DISTRICT_CODE => 'DISTRICT_CODE';
   String get PROJECT_SCHEME_CODE => 'PROJECT_SCHEME_CODE';
 
   String get CHARGE_HEAD => 'CHARGE_HEAD';
@@ -217,6 +219,8 @@ class Common {
   String get BILLING_SLAB => 'BILLING_SLAB';
   String get SERVICE_TYPE => 'SERVICE_TYPE';
   String get RATE_PERCENTAGE => 'RATE_PERCENTAGE';
+
+  String get REGION_NAME => 'REGION_NAME';
 }
 
 class Password {

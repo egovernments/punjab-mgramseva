@@ -96,7 +96,7 @@ class Constants {
     HomeItem(
         "CORE_GPWSC_DETAILS_AND_RATE_INFO",
         (i18.dashboard.CORE_GPWSC_DETAILS_AND_RATE_INFO),
-        HomeIcons.dashboard,
+        HomeIcons.gpwscdetails,
         Routes.GPWSC_DETAILS_AND_RATE_INFO, {}),
   ];
 
