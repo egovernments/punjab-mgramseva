@@ -922,13 +922,13 @@ public class DemandService {
 			billDate =billDate + 1296000000l;
 			LocalDate billDateLocal = Instant.ofEpochMilli(billDate).atZone(ZoneId.systemDefault()).toLocalDate();
 			String paymentDueDate = billDateLocal.format(dateTimeFormatter);
-			if(isOnlinePaymentAllowed(requestInfo,tenantId)) {
+			/*if(isOnlinePaymentAllowed(requestInfo,tenantId)) {
 				if(fetchTotalBillAmount(demands,requestInfo).signum()> 0) {
 					sendPaymentSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,calculation.getConnectionNo(),demands,true,businessService,billCycle,billNumbers,paymentDueDate);
 					//sendPaymentAndBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,true,businessService,billCycle,billNumbers,paymentDueDate);
 				}
-			}
-			sendDownloadBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,calculation.getConnectionNo(),demands,true,businessService,billCycle,billNumbers,paymentDueDate);
+			}*/
+			//sendDownloadBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,calculation.getConnectionNo(),demands,true,businessService,billCycle,billNumbers,paymentDueDate);
 
 //			Commenting to avoid sending message as new bill while updating
 			
