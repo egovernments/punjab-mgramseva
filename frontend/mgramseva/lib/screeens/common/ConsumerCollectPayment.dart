@@ -162,7 +162,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
               }
             }
           }),
-      bottomNavigationBar: Consumer<CollectPaymentProvider>(
+      bottomNavigationBar: fetchBill==null?SizedBox():Consumer<CollectPaymentProvider>(
         builder: (_, consumerPaymentProvider, child) => Visibility(
             visible: fetchBill != null || fetchBill!.totalAmount != 0,
             child: BottomButtonBar(

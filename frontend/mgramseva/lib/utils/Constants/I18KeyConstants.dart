@@ -294,6 +294,9 @@ class Expense {
   /// Unable to Search the Expenses
   String get NO_FIELDS_FILLED => 'NO_FIELDS_FILLED';
 
+  /// Bill List is empty
+  String get NO_BILL_FOUND => 'NO_BILL_FOUND';
+
   ///Modified expenditure successfully
   String get MODIFIED_EXPENDITURE_SUCCESSFULLY =>
       'MODIFIED_EXPENDITURE_SUCCESSFULLY';
