@@ -127,55 +127,59 @@ class CollectPaymentProvider with ChangeNotifier {
       } else {}
 
       if (paymentDetails != null) {
-        if (mdmsData == null) {
-          mdmsData = query['isConsumer'] == 'true'
-              ? await CommonProvider.getMdmsBillingService(query['tenantId'])
-              : await CommonProvider.getMdmsBillingService(commonProvider
-                      .userDetails!.selectedtenant?.code
-                      .toString() ??
-                  commonProvider.userDetails!.userRequest!.tenantId.toString());
-          paymentDetails.first.mdmsData = mdmsData;
+        if(paymentDetails.isEmpty){
+          paymentStreamController.add(i18.expense.NO_BILL_FOUND);
+        }else{
+          if (mdmsData == null) {
+            mdmsData = query['isConsumer'] == 'true'
+                ? await CommonProvider.getMdmsBillingService(query['tenantId'])
+                : await CommonProvider.getMdmsBillingService(commonProvider
+                .userDetails!.selectedtenant?.code
+                .toString() ??
+                commonProvider.userDetails!.userRequest!.tenantId.toString());
+            paymentDetails.first.mdmsData = mdmsData;
+          }
+
+          paymentDetails.first.billDetails
+              ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
+          demandList = demandList
+              ?.where((element) => element.status != 'CANCELLED')
+              .toList();
+          updateDemandList = updateDemandList
+              ?.where((element) => element.status != 'CANCELLED')
+              .toList();
+
+          // var demandDetails = await ConsumerRepository().getDemandDetails(query);
+          // if (demandDetails != null)
+          // paymentDetails.first.demand = demandDetails.first;
+          getPaymentModes(
+              paymentDetails.first,
+              query['isConsumer'] == 'true'
+                  ? query['tenantId']
+                  : commonProvider.userDetails!.selectedtenant?.code.toString() ??
+                  commonProvider.userDetails!.userRequest!.tenantId
+                      .toString(),
+              query['isConsumer'] == 'true' ? true : false);
+
+          paymentDetails.first.customAmountCtrl.text =
+          paymentDetails.first.totalAmount!.toInt() > 0
+              ? paymentDetails.first.totalAmount!.toInt().toString()
+              : '';
+          paymentDetails.first.billDetails?.first.billAccountDetails?.last
+              .advanceAdjustedAmount =
+              double.parse(
+                  CommonProvider.getAdvanceAdjustedAmount(demandList ?? []));
+          paymentDetails.first.billDetails?.first.billAccountDetails?.last
+              .arrearsAmount = CommonProvider.getArrearsAmount(demandList ?? []);
+          paymentDetails.first.billDetails?.first.billAccountDetails?.last
+              .totalBillAmount =
+              CommonProvider.getTotalBillAmount(demandList ?? []);
+          paymentDetails.first.demands = demandList?.first;
+          paymentDetails.first.demandList = demandList;
+          paymentDetails.first.updateDemands = updateDemandList?.first;
+          paymentDetails.first.updateDemandList = updateDemandList;
+          paymentStreamController.add(paymentDetails.first);
         }
-
-        paymentDetails.first.billDetails
-            ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
-        demandList = demandList
-            ?.where((element) => element.status != 'CANCELLED')
-            .toList();
-        updateDemandList = updateDemandList
-            ?.where((element) => element.status != 'CANCELLED')
-            .toList();
-
-        // var demandDetails = await ConsumerRepository().getDemandDetails(query);
-        // if (demandDetails != null)
-        // paymentDetails.first.demand = demandDetails.first;
-        getPaymentModes(
-            paymentDetails.first,
-            query['isConsumer'] == 'true'
-                ? query['tenantId']
-                : commonProvider.userDetails!.selectedtenant?.code.toString() ??
-                    commonProvider.userDetails!.userRequest!.tenantId
-                        .toString(),
-            query['isConsumer'] == 'true' ? true : false);
-
-        paymentDetails.first.customAmountCtrl.text =
-            paymentDetails.first.totalAmount!.toInt() > 0
-                ? paymentDetails.first.totalAmount!.toInt().toString()
-                : '';
-        paymentDetails.first.billDetails?.first.billAccountDetails?.last
-                .advanceAdjustedAmount =
-            double.parse(
-                CommonProvider.getAdvanceAdjustedAmount(demandList ?? []));
-        paymentDetails.first.billDetails?.first.billAccountDetails?.last
-            .arrearsAmount = CommonProvider.getArrearsAmount(demandList ?? []);
-        paymentDetails.first.billDetails?.first.billAccountDetails?.last
-                .totalBillAmount =
-            CommonProvider.getTotalBillAmount(demandList ?? []);
-        paymentDetails.first.demands = demandList?.first;
-        paymentDetails.first.demandList = demandList;
-        paymentDetails.first.updateDemands = updateDemandList?.first;
-        paymentDetails.first.updateDemandList = updateDemandList;
-        paymentStreamController.add(paymentDetails.first);
         notifyListeners();
       }
     } on CustomException catch (e, s) {
