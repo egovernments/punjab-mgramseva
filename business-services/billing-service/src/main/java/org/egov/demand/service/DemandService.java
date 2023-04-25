@@ -530,7 +530,6 @@ public class DemandService {
 		List<Demand> demandList = getDemands(demandCriteria, requestInfo);
 		demands = demandRepository.getDemandHistory(demandCriteria);
 		List<Demand> demList = demandList.stream().filter(i->(!i.getIsPaymentCompleted().booleanValue())).collect(Collectors.toList());
-		List<Demand> paymentCompletedDemandList = demandList.stream().filter(i->(i.getIsPaymentCompleted().booleanValue())).collect(Collectors.toList());
 		
 		BigDecimal advanceAdjustedAmount = BigDecimal.ZERO;
 		BigDecimal waterCharge = demList.get(demList.size() - 1).getDemandDetails().get(0).getTaxAmount();
@@ -541,7 +540,7 @@ public class DemandService {
 					}
 				}
 		}
-		if(paymentCompletedDemandList.size()>0) {
+		if(demList.size() == 1) {
 		 waterCharge = demList.get(demList.size() - 1).getDemandDetails().get(0).getTaxAmount().
 				 subtract(demList.get(demList.size() - 1).getDemandDetails().get(0).getCollectionAmount());
 		}
