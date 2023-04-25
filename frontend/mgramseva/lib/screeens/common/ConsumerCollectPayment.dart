@@ -96,7 +96,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
       //   Drawer(child: CommonSideBar()),
       // ),
       appBar: AppBar(
-        titleSpacing: 0,
+        titleSpacing: 15,
         title: Text('mGramSeva'),
         automaticallyImplyLeading: false,
         actions: [_buildDropDown()],
@@ -121,6 +121,34 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
                   builder: (context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data is String) {
+                        if(snapshot.data == i18.expense.NO_BILL_FOUND||snapshot.data == i18.searchWaterConnection.STATUS_INACTIVE){
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CommonWidgets.buildEmptyMessage(snapshot.data, context),
+                              SizedBox(height: 10,),
+                              ElevatedButton(
+                                onPressed: ()=>{
+                                  SystemNavigator.pop()
+                                },
+                                style: ButtonStyle(
+                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(5.0)
+                                        )
+                                    )
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8.0,right: 8.0),
+                                  child: Text(
+                                    '${ApplicationLocalizations.of(context).translate(i18.consumerReciepts.CLOSE)}',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              )
+                            ],
+                          );
+                        }
                         return CommonWidgets.buildEmptyMessage(
                             snapshot.data, context);
                       }
