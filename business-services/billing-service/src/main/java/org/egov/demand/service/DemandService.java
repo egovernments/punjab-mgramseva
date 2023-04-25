@@ -540,7 +540,10 @@ public class DemandService {
 					}
 				}
 		}
-			
+		if(advanceAdjustedAmount.compareTo(BigDecimal.ZERO) == 0) {
+		 waterCharge = demList.get(demList.size() - 1).getDemandDetails().get(0).getTaxAmount().
+				 subtract(demList.get(demList.size() - 1).getDemandDetails().get(0).getCollectionAmount());
+		}
 
 		DemandHistory demandHistory = new DemandHistory();
 		demandHistory.setDemandList(demands);
