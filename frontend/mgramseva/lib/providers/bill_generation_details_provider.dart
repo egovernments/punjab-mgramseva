@@ -472,34 +472,11 @@ class BillGenerationProvider with ChangeNotifier {
 
       var toDate = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(selectedBillYear.toDate)) as DateTime;
-      // if(DateTime.now().month > 4) {
-      //   ytd = DatePeriod(DateTime(selectedBillYear.fromDate) , DateTime(selectedBillYear.toDate), DateType.YTD);
-      // }else{
-      //   ytd = DatePeriod(DateTime( selectedBillYear.fromDate.year - 1, 4), DateTime.now(), DateType.YTD);
-      // }
+
       ytd = DatePeriod(fromDate,toDate,DateType.YTD);
-
-
-
-      // var isCurrentYtdSelected = date1.year == ytd.startDate.year;
 
       /// Get months based on selected billing year
       var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd);
-
-      // /// if its current ytd year means removing till current month
-      // if (isCurrentYtdSelected) {
-      //   switch (DateTime.now().month) {
-      //     case 1:
-      //       months.removeRange(0, 3);
-      //       break;
-      //     case 2:
-      //       months.removeRange(0, 2);
-      //       break;
-      //     case 3:
-      //       months.removeRange(0, 1);
-      //       break;
-      //   }
-      // }
 
       /// if selected year is future year means all the months will be removed
       if(fromDate.year > DateTime.now().year) months.clear();

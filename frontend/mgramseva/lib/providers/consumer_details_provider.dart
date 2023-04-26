@@ -615,26 +615,8 @@ class ConsumerProvider with ChangeNotifier {
           DateFormats.timeStampToDate(billYear?.toDate)) as DateTime;
       ytd = DatePeriod(fromDate,toDate,DateType.YTD);
 
-      var date1 = DateTime(DateTime.now().year);
-      // var isCurrentYtdSelected = date1.year == ytd.startDate.year;
-
       /// Get months based on selected billing year
       var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd);
-
-      // /// if its current ytd year means removing till current month
-      // if (isCurrentYtdSelected) {
-      //   switch (DateTime.now().month) {
-      //     case 1:
-      //       months.removeRange(0, 3);
-      //       break;
-      //     case 2:
-      //       months.removeRange(0, 2);
-      //       break;
-      //     case 3:
-      //       months.removeRange(0, 1);
-      //       break;
-      //   }
-      // }
 
        /// if selected year is future year means all the months will be removed
        if(fromDate.year > DateTime.now().year) months.clear();
