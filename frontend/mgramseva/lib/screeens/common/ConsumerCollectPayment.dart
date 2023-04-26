@@ -124,7 +124,9 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
                       if (snapshot.data is String) {
                         if (snapshot.data == i18.expense.NO_BILL_FOUND ||
                             snapshot.data ==
-                                i18.searchWaterConnection.STATUS_INACTIVE) {
+                                i18.searchWaterConnection.STATUS_INACTIVE ||
+                            !consumerPaymentProvider.paymentModeList.contains(
+                                KeyValue(i18.common.PAYGOV, 'PAYGOV'))) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -196,7 +198,9 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
           }),
       bottomNavigationBar: Consumer<CollectPaymentProvider>(
         builder: (_, consumerPaymentProvider, child) => Visibility(
-            visible: fetchBill != null || fetchBill?.totalAmount != 0,
+            visible: (fetchBill != null || fetchBill?.totalAmount != 0) &&
+                consumerPaymentProvider.paymentModeList
+                    .contains(KeyValue(i18.common.PAYGOV, 'PAYGOV')),
             child: BottomButtonBar(
                 widget.query['isConsumer'] == 'true'
                     ? '${ApplicationLocalizations.of(context).translate(i18.payment.PROCEED_TO_COLLECT)}'

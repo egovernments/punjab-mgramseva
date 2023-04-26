@@ -296,6 +296,7 @@ class Expense {
 
   /// Bill List is empty
   String get NO_BILL_FOUND => 'NO_BILL_FOUND';
+  String get ONLINE_NOT_AVAILABLE => 'ONLINE_NOT_AVAILABLE';
 
   ///Modified expenditure successfully
   String get MODIFIED_EXPENDITURE_SUCCESSFULLY =>

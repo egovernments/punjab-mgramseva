@@ -486,6 +486,9 @@ class CollectPaymentProvider with ChangeNotifier {
         notifyListeners();
       }
     }
+    if (!paymentModeList.contains(KeyValue(i18.common.PAYGOV, 'PAYGOV'))) {
+      paymentStreamController.add(i18.expense.ONLINE_NOT_AVAILABLE);
+    }
   }
 
   Future<void> updatePaymentInformation(
