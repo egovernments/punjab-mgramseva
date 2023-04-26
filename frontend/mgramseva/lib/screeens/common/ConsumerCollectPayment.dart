@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
@@ -28,6 +31,7 @@ import '../../model/demand/update_demand_list.dart';
 import '../../model/localization/language.dart';
 import '../../providers/common_provider.dart';
 import '../../providers/language.dart';
+import '../../routers/Routers.dart';
 import '../../utils/error_logging.dart';
 import '../../utils/models.dart';
 import '../../widgets/CustomCheckBox.dart';
@@ -123,10 +127,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
                     if (snapshot.hasData) {
                       if (snapshot.data is String) {
                         if (snapshot.data == i18.expense.NO_BILL_FOUND ||
-                            snapshot.data ==
-                                i18.searchWaterConnection.STATUS_INACTIVE ||
-                            !consumerPaymentProvider.paymentModeList.contains(
-                                KeyValue(i18.common.PAYGOV, 'PAYGOV'))) {
+                            snapshot.data == i18.expense.ONLINE_NOT_AVAILABLE) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -136,7 +137,16 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
                                 height: 10,
                               ),
                               ElevatedButton(
-                                onPressed: () => {SystemNavigator.pop()},
+                                onPressed: () {
+                                  if (kIsWeb) {
+                                    Navigator.pushNamed(
+                                        context, Routes.LANDING_PAGE);
+                                  } else if (Platform.isAndroid) {
+                                    SystemNavigator.pop();
+                                  } else if (Platform.isIOS) {
+                                    exit(0);
+                                  }
+                                },
                                 style: ButtonStyle(
                                     shape: MaterialStateProperty.all<
                                             RoundedRectangleBorder>(
@@ -199,8 +209,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
       bottomNavigationBar: Consumer<CollectPaymentProvider>(
         builder: (_, consumerPaymentProvider, child) => Visibility(
             visible: (fetchBill != null || fetchBill?.totalAmount != 0) &&
-                consumerPaymentProvider.paymentModeList
-                    .contains(KeyValue(i18.common.PAYGOV, 'PAYGOV')),
+                fetchBill?.isOnline != false,
             child: BottomButtonBar(
                 widget.query['isConsumer'] == 'true'
                     ? '${ApplicationLocalizations.of(context).translate(i18.payment.PROCEED_TO_COLLECT)}'
@@ -235,7 +244,6 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
   }
 
   Widget _buildDropDown() {
-    print(selectedLanguage);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: DropdownButton(
@@ -660,7 +668,6 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
         Provider.of<CollectPaymentProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
       autoValidation = false;
-      print(fetchBill.paymentMethod);
       if (fetchBill.paymentMethod == 'PAYGOV') {
         consumerPaymentProvider.createTransaction(
             fetchBill, widget.query['tenantId'], context);

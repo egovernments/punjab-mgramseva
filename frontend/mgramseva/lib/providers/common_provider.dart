@@ -723,7 +723,6 @@ class CommonProvider with ChangeNotifier {
     var filteredDemands =
         demandList.where((e) => !(e.isPaymentCompleted ?? false));
 
-    print(filteredDemands);
     filteredDemands.forEach((elem) {
       elem.demandDetails?.forEach((demand) {
         if (demand.taxHeadMasterCode == '10101') {
@@ -824,7 +823,6 @@ class CommonProvider with ChangeNotifier {
   }
 
   static double getArrearsAmount(List<Demands> demandList) {
-    print('getArrearsAmount');
     List res = [];
 
     if (!isFirstDemand(demandList)) {

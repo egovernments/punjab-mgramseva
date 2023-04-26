@@ -469,6 +469,14 @@ class CollectPaymentProvider with ChangeNotifier {
             paymentModeList.add(KeyValue(e.key, e.label));
           }
         });
+        if (res.mdmsRes!.billingService!.paymentServiceList!.first
+            .collectionModesNotAllowed!
+            .contains(i18.common.ONLINE)) {
+          fetchBill.isOnline = false;
+          paymentStreamController.add(i18.expense.ONLINE_NOT_AVAILABLE);
+        } else {
+          fetchBill.isOnline = true;
+        }
         fetchBill.paymentMethod = paymentModeList.first.key;
         notifyListeners();
       } else {
@@ -482,12 +490,17 @@ class CollectPaymentProvider with ChangeNotifier {
             paymentModeList.add(KeyValue(e.key, e.label));
           }
         });
+        if (mdms.mdmsRes!.billingService!.paymentServiceList!.first
+            .collectionModesNotAllowed!
+            .contains(i18.common.ONLINE)) {
+          fetchBill.isOnline = false;
+          paymentStreamController.add(i18.expense.ONLINE_NOT_AVAILABLE);
+        } else {
+          fetchBill.isOnline = true;
+        }
         fetchBill.paymentMethod = paymentModeList.first.key;
         notifyListeners();
       }
-    }
-    if (!paymentModeList.contains(KeyValue(i18.common.PAYGOV, 'PAYGOV'))) {
-      paymentStreamController.add(i18.expense.ONLINE_NOT_AVAILABLE);
     }
   }
 
@@ -518,12 +531,9 @@ class CollectPaymentProvider with ChangeNotifier {
 
       var paymentDetails = await ConsumerRepository().collectPayment(payment);
       if (paymentDetails != null && paymentDetails.payments!.length > 0) {
-        print(paymentDetails.payments);
         Navigator.pop(context);
         Navigator.of(context).pushReplacement(
             new MaterialPageRoute(builder: (BuildContext context) {
-          print(paymentDetails.payments!.first.paymentDetails?.first.bill
-              ?.waterConnection?.connectionNo);
           return CommonSuccess(
             SuccessHandler(
                 i18.common.PAYMENT_COMPLETE,
