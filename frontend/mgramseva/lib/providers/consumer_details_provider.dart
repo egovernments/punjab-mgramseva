@@ -637,7 +637,7 @@ class ConsumerProvider with ChangeNotifier {
       // }
 
        /// if selected year is future year means all the months will be removed
-       if(fromDate.year >= DateTime.now().year) months.clear();
+       if(fromDate.year > DateTime.now().year) months.clear();
 
       for (var i = 0; i < months.length; i++) {
         var prevMonth = months[i].startDate;
