@@ -110,7 +110,8 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
               var index = stateData.first.languages
                   ?.indexWhere((element) => element.isSelected);
               if (index != null && index != -1) {
-                selectedLanguage = stateData.first.languages?[index];
+                selectedLanguage = stateData.first.languages?[index] ??
+                    stateData.first.languages?.first;
               } else {
                 selectedLanguage = stateData.first.languages?.first;
               }
@@ -121,25 +122,28 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
                   builder: (context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data is String) {
-                        if(snapshot.data == i18.expense.NO_BILL_FOUND||snapshot.data == i18.searchWaterConnection.STATUS_INACTIVE){
+                        if (snapshot.data == i18.expense.NO_BILL_FOUND ||
+                            snapshot.data ==
+                                i18.searchWaterConnection.STATUS_INACTIVE) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              CommonWidgets.buildEmptyMessage(snapshot.data, context),
-                              SizedBox(height: 10,),
+                              CommonWidgets.buildEmptyMessage(
+                                  snapshot.data, context),
+                              SizedBox(
+                                height: 10,
+                              ),
                               ElevatedButton(
-                                onPressed: ()=>{
-                                  SystemNavigator.pop()
-                                },
+                                onPressed: () => {SystemNavigator.pop()},
                                 style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(5.0)
-                                        )
-                                    )
-                                ),
+                                            borderRadius:
+                                                BorderRadius.circular(5.0)))),
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 8.0,right: 8.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 8.0, right: 8.0),
                                   child: Text(
                                     '${ApplicationLocalizations.of(context).translate(i18.consumerReciepts.CLOSE)}',
                                     style: TextStyle(color: Colors.white),
@@ -190,9 +194,9 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
               }
             }
           }),
-      bottomNavigationBar: fetchBill==null?SizedBox():Consumer<CollectPaymentProvider>(
+      bottomNavigationBar: Consumer<CollectPaymentProvider>(
         builder: (_, consumerPaymentProvider, child) => Visibility(
-            visible: fetchBill != null || fetchBill!.totalAmount != 0,
+            visible: fetchBill != null || fetchBill?.totalAmount != 0,
             child: BottomButtonBar(
                 widget.query['isConsumer'] == 'true'
                     ? '${ApplicationLocalizations.of(context).translate(i18.payment.PROCEED_TO_COLLECT)}'

@@ -1,13 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:http/http.dart' as http;
-import 'package:mgramseva/Env/app_config.dart';
-import 'package:mgramseva/services/RequestInfo.dart';
-import 'package:mgramseva/services/urls.dart';
-import 'package:mgramseva/utils/global_variables.dart';
-
 initRequestBody(tenantId) {
   return {
     "MdmsCriteria": {
@@ -173,3 +163,18 @@ Map getMDMSPaymentModes(String tenantId) {
   };
 }
 
+Map getPaymentModeList(String tenantId) {
+  return {
+    "MdmsCriteria": {
+      "tenantId": tenantId,
+      "moduleDetails": [
+        {
+          "moduleName": "BillingService",
+          "masterDetails": [
+            {"name": "PaymentService", "filter": "[?(@.code=='WS')]"}
+          ]
+        }
+      ]
+    }
+  };
+}

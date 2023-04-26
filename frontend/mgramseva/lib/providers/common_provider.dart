@@ -723,6 +723,7 @@ class CommonProvider with ChangeNotifier {
     var filteredDemands =
         demandList.where((e) => !(e.isPaymentCompleted ?? false));
 
+    print(filteredDemands);
     filteredDemands.forEach((elem) {
       elem.demandDetails?.forEach((demand) {
         if (demand.taxHeadMasterCode == '10101') {
@@ -823,6 +824,7 @@ class CommonProvider with ChangeNotifier {
   }
 
   static double getArrearsAmount(List<Demands> demandList) {
+    print('getArrearsAmount');
     List res = [];
 
     if (!isFirstDemand(demandList)) {
@@ -927,6 +929,19 @@ class CommonProvider with ChangeNotifier {
 
       return await CoreRepository()
           .getPaymentTypeMDMS(getMDMSPaymentModes(tenantId));
+    } catch (e) {
+      return PaymentType();
+    }
+  }
+
+  static Future<PaymentType> getMdmsPaymentList(String tenantId) async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+
+      return await CoreRepository()
+          .getPaymentTypeMDMS(getPaymentModeList(tenantId));
     } catch (e) {
       return PaymentType();
     }

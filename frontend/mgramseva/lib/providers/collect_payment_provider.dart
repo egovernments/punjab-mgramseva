@@ -127,16 +127,17 @@ class CollectPaymentProvider with ChangeNotifier {
       } else {}
 
       if (paymentDetails != null) {
-        if(paymentDetails.isEmpty){
+        if (paymentDetails.isEmpty) {
           paymentStreamController.add(i18.expense.NO_BILL_FOUND);
-        }else{
+        } else {
           if (mdmsData == null) {
             mdmsData = query['isConsumer'] == 'true'
                 ? await CommonProvider.getMdmsBillingService(query['tenantId'])
                 : await CommonProvider.getMdmsBillingService(commonProvider
-                .userDetails!.selectedtenant?.code
-                .toString() ??
-                commonProvider.userDetails!.userRequest!.tenantId.toString());
+                        .userDetails!.selectedtenant?.code
+                        .toString() ??
+                    commonProvider.userDetails!.userRequest!.tenantId
+                        .toString());
             paymentDetails.first.mdmsData = mdmsData;
           }
 
@@ -156,23 +157,25 @@ class CollectPaymentProvider with ChangeNotifier {
               paymentDetails.first,
               query['isConsumer'] == 'true'
                   ? query['tenantId']
-                  : commonProvider.userDetails!.selectedtenant?.code.toString() ??
-                  commonProvider.userDetails!.userRequest!.tenantId
-                      .toString(),
+                  : commonProvider.userDetails!.selectedtenant?.code
+                          .toString() ??
+                      commonProvider.userDetails!.userRequest!.tenantId
+                          .toString(),
               query['isConsumer'] == 'true' ? true : false);
 
           paymentDetails.first.customAmountCtrl.text =
-          paymentDetails.first.totalAmount!.toInt() > 0
-              ? paymentDetails.first.totalAmount!.toInt().toString()
-              : '';
+              paymentDetails.first.totalAmount!.toInt() > 0
+                  ? paymentDetails.first.totalAmount!.toInt().toString()
+                  : '';
           paymentDetails.first.billDetails?.first.billAccountDetails?.last
-              .advanceAdjustedAmount =
+                  .advanceAdjustedAmount =
               double.parse(
                   CommonProvider.getAdvanceAdjustedAmount(demandList ?? []));
           paymentDetails.first.billDetails?.first.billAccountDetails?.last
-              .arrearsAmount = CommonProvider.getArrearsAmount(demandList ?? []);
+                  .arrearsAmount =
+              CommonProvider.getArrearsAmount(demandList ?? []);
           paymentDetails.first.billDetails?.first.billAccountDetails?.last
-              .totalBillAmount =
+                  .totalBillAmount =
               CommonProvider.getTotalBillAmount(demandList ?? []);
           paymentDetails.first.demands = demandList?.first;
           paymentDetails.first.demandList = demandList;
@@ -426,12 +429,12 @@ class CollectPaymentProvider with ChangeNotifier {
         navigatorKey.currentContext!,
         listen: false);
     paymentModeList = <KeyValue>[];
-    var res = await CommonProvider.getMdmsBillingService(tenantId);
+    var res = await CommonProvider.getMdmsPaymentList(tenantId);
     if (!isConsumer) {
       if (res.mdmsRes?.billingService != null &&
-          res.mdmsRes?.billingService?.businessServiceList != null) {
+          res.mdmsRes?.billingService?.paymentServiceList != null) {
         Constants.EMPLOYEE_PAYMENT_METHOD.forEach((e) {
-          var index = res.mdmsRes?.billingService?.businessServiceList?.first
+          var index = res.mdmsRes?.billingService?.paymentServiceList?.first
               .collectionModesNotAllowed!
               .indexOf(e.key);
           if (index == -1) {
@@ -441,10 +444,10 @@ class CollectPaymentProvider with ChangeNotifier {
         fetchBill.paymentMethod = paymentModeList.first.key;
         notifyListeners();
       } else {
-        var mdms = await CoreRepository().getMdms(getMDMSPaymentModes(
+        var mdms = await CoreRepository().getMdms(getPaymentModeList(
             commonProvider.userDetails!.userRequest!.tenantId.toString()));
         Constants.EMPLOYEE_PAYMENT_METHOD.forEach((e) {
-          var index = mdms.mdmsRes?.billingService?.businessServiceList?.first
+          var index = mdms.mdmsRes?.billingService?.paymentServiceList?.first
               .collectionModesNotAllowed!
               .indexOf(e.key);
           if (index == -1) {
@@ -456,10 +459,10 @@ class CollectPaymentProvider with ChangeNotifier {
       }
     } else {
       if (res.mdmsRes?.billingService != null &&
-          res.mdmsRes?.billingService?.businessServiceList != null &&
+          res.mdmsRes?.billingService?.paymentServiceList != null &&
           isConsumer) {
         Constants.CONSUMER_PAYMENT_METHOD.forEach((e) {
-          var index = res.mdmsRes?.billingService?.businessServiceList?.first
+          var index = res.mdmsRes?.billingService?.paymentServiceList?.first
               .collectionModesNotAllowed!
               .indexOf(e.key);
           if (index == -1) {
@@ -469,10 +472,10 @@ class CollectPaymentProvider with ChangeNotifier {
         fetchBill.paymentMethod = paymentModeList.first.key;
         notifyListeners();
       } else {
-        var mdms = await CoreRepository().getMdms(getMDMSPaymentModes(
+        var mdms = await CoreRepository().getMdms(getPaymentModeList(
             commonProvider.userDetails!.userRequest!.tenantId.toString()));
         Constants.CONSUMER_PAYMENT_METHOD.forEach((e) {
-          var index = mdms.mdmsRes?.billingService?.businessServiceList?.first
+          var index = mdms.mdmsRes?.billingService?.paymentServiceList?.first
               .collectionModesNotAllowed!
               .indexOf(e.key);
           if (index == -1) {
