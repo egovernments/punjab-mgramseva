@@ -46,9 +46,14 @@ public class PgDetailRepository {
     	 
 
         try {
+            log.info("URI TO GET DETAIL OF pgDetail api:::::::" + uri );
         	PgDetailResponse response = restTemplate.postForObject(uri, pgDetailRequest, PgDetailResponse.class);
-            if( response.getPgDetail().size() == 1 )
+            log.info("response for pg-details get API ::::::" + response);
+            if( response.getPgDetail().size() == 1 ) {
+                log.info("response for pg-details get API ::::::" +response.getPgDetail().get(0).toString());
                 return response.getPgDetail().get(0);
+            }
+
             else {
                 log.error("Expected to fetch payment gateway detail for tenant " +
                         "{}, instead found {}", tenantId, response.getPgDetail().size());
