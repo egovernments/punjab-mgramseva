@@ -52,6 +52,40 @@ class CommonMethods {
         .toList();
   }
 
+  static List<DatePeriod> getPastMonthUntilFinancialYTD(DatePeriod ytd) {
+    var monthList = <DateTime>[];
+    if (DateTime.now().year == ytd.startDate.year) {
+      for (int i = ytd.startDate.month; i < DateTime.now().month; i++) {
+        monthList.add(DateTime(DateTime.now().year, i));
+      }
+    } else if(DateTime.now().year == ytd.endDate.year){
+      for (int i = ytd.startDate.month; i <= 12; i++) {
+        monthList.add(DateTime(ytd.startDate.year, i));
+      }
+      for (int i = 1;
+          i <= (DateTime.now().month <= ytd.endDate.month ? DateTime.now().month : ytd.endDate.month);
+          i++) {
+        monthList.add(DateTime(ytd.endDate.year, i));
+      }
+    }else{
+      for (int i = ytd.startDate.month; i <= 12; i++) {
+        monthList.add(DateTime(ytd.startDate.year, i));
+      }
+      for (int i = 1;
+      i <= ytd.endDate.month;
+      i++) {
+        monthList.add(DateTime(ytd.endDate.year , i));
+      }
+    }
+    var list = monthList
+        .map((e) => DatePeriod(DateTime(e.year, e.month, 1),
+            DateTime(e.year, e.month + 1, 0, 23, 59, 59, 999), DateType.MONTH))
+        .toList()
+        .reversed
+        .toList();
+    return list;
+  }
+
   static List<YearWithMonths> getFinancialYearList([int count = 5]) {
     var yearWithMonths = <YearWithMonths>[];
 
