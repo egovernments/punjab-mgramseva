@@ -94,13 +94,12 @@ class CommonMethods {
           DateTime(DateTime.now().year, 4),
           DateTime(DateTime.now().year + 1, 4, 0, 23, 59, 59, 999),
           DateType.YTD);
-      var monthList = getPastMonthUntilFinancialYear(DateTime.now().year);
+      var monthList = getPastMonthUntilFinancialYTD(year);
       yearWithMonths.add(YearWithMonths(monthList, year));
     } else {
       var year = DatePeriod(
           DateTime(DateTime.now().year - 1, 4), DateTime.now(), DateType.YTD);
-      var monthList = getPastMonthUntilFinancialYear(year.startDate.year,
-          dateType: DateType.YTD);
+      var monthList = getPastMonthUntilFinancialYTD(year);
       yearWithMonths.add(YearWithMonths(monthList, year));
     }
 
@@ -111,7 +110,7 @@ class CommonMethods {
           : DateTime(currentDate.year - i);
       year = DatePeriod(DateTime(year.year - 1, 4),
           DateTime(year.year, 4, 0, 23, 59, 59, 999), DateType.YEAR);
-      var monthList = getPastMonthUntilFinancialYear(year.startDate.year);
+      var monthList = getPastMonthUntilFinancialYTD(year);
       yearWithMonths.add(YearWithMonths(monthList, year));
     }
     return yearWithMonths;
