@@ -67,7 +67,8 @@ class _HouseholdListState extends State<HouseholdList> {
               headerList: householdProvider.collectionHeaderList,
               tableData: tableData,
               leftColumnWidth: width,
-              rightColumnWidth: width * 3,
+              rightColumnWidth:
+                  width * (householdProvider.collectionHeaderList.length - 1),
               height: 58 + (52.0 * tableData.length + 1),
               scrollPhysics: NeverScrollableScrollPhysics(),
             );

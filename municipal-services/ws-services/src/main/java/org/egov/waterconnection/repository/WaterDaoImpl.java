@@ -100,7 +100,7 @@ public class WaterDaoImpl implements WaterDao {
 			StringBuilder collectionDataCountQuery = new StringBuilder(wsQueryBuilder.COLLECTION_DATA_COUNT);
 			criteria.setIsCollectionDataCount(Boolean.TRUE);
 			collectionDataCountQuery = wsQueryBuilder.applyFilters(collectionDataCountQuery, preparedStmntforCollectionDataCount, criteria);
-			collectionDataCountQuery.append(" ORDER BY wc.appCreatedDate  DESC");
+//			collectionDataCountQuery.append(" ORDER BY wc.appCreatedDate  DESC");
 		    countData = jdbcTemplate.queryForList(collectionDataCountQuery.toString(), preparedStmntforCollectionDataCount.toArray());
 		    if(criteria.getIsBillPaid() != null)
 		    	flag = criteria.getIsBillPaid();
@@ -466,6 +466,39 @@ public class WaterDaoImpl implements WaterDao {
 		log.info("Arrears Amount Final Query : " + query);
 		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 
+	}
+
+	public Integer getTotalAdvanceAdjustedAmount(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(wsQueryBuilder.ADVANCEADJUSTED);
+		query.append(" and dmd.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("Active Advance Adjusted Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
+	}
+
+	public Integer getTotalPendingPenaltyAmount(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(wsQueryBuilder.PENDINGPENALTY);
+		query.append(" and dmd.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("Pending Penalty Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
+	}
+
+	public Integer getAdvanceCollectionAmount(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(wsQueryBuilder.ADVANCECOLLECTION);
+		query.append(" and dmd.taxperiodto between " + criteria.getFromDate() + " and " + criteria.getToDate())
+		.append(" and dmd.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("Advance Collection Query : " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
+	}
+
+
+	public Integer getPenaltyCollectionAmount(@Valid SearchCriteria criteria) {
+		StringBuilder query = new StringBuilder(wsQueryBuilder.PENALTYCOLLECTION);
+		query.append(" and py.transactionDate  >= ").append(criteria.getFromDate()).append(" and py.transactionDate <= ")
+				.append(criteria.getToDate()).append(" and py.tenantId = '").append(criteria.getTenantId()).append("'");
+		log.info("Penalty Collection Final Query: " + query);
+		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
 	}
 	
 
