@@ -228,11 +228,14 @@ public class PayGovGateway implements Gateway {
              * if(transaction.getModule().length() < 6) { moduleCode= transaction.getModule() +
              * moduleCode.substring(transaction.getModule().length()-1); }else { moduleCode =transaction.getModule(); }
              */
-            if (transaction.getModule().equals("WS")) {
+           /* if (transaction.getModule().equals("WS")) {
                 moduleCode = "Watersupply01";
             } else {
                 moduleCode = transaction.getModule().concat("001").toUpperCase();
-            }
+            }*/
+
+            String tenantId = transaction.getTenantId().split("\\.")[1];
+            moduleCode = "WS".concat(tenantId);
         }
         return moduleCode;
     }
