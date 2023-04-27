@@ -173,7 +173,7 @@ public class NICGateway implements Gateway {
          }
          queryMap.put(ADDITIONAL_FIELD1_KEY, userDetail.toString());  
          queryMap.put(ADDITIONAL_FIELD2_KEY, ADDITIONAL_FIELD_VALUE); //Not in use 
-         queryMap.put(ADDITIONAL_FIELD3_KEY, ADDITIONAL_FIELD_VALUE); //Not in use 
+         queryMap.put(ADDITIONAL_FIELD3_KEY, ((transaction.getTenantId()==null)?ADDITIONAL_FIELD_VALUE : transaction.getTenantId())); //Not in use
          queryMap.put(ADDITIONAL_FIELD4_KEY, transaction.getConsumerCode());   
          queryMap.put(ADDITIONAL_FIELD5_KEY, moduleCode);  
          
