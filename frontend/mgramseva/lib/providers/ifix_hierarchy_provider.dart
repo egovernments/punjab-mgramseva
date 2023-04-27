@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/mdms/department.dart';
+import 'package:mgramseva/repository/core_repo.dart';
+import 'package:mgramseva/repository/water_services_calculation.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +14,7 @@ import 'common_provider.dart';
 class IfixHierarchyProvider with ChangeNotifier {
   Department? departments;
   Map<String,Map<String,String>> hierarchy={};
+  WCBillingSlabs? wcBillingSlabs;
   var streamController = StreamController.broadcast();
 
   dispose() {
@@ -40,6 +43,20 @@ class IfixHierarchyProvider with ChangeNotifier {
     }
   }
 
+  Future<void> getBillingSlabs() async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+      var mdmsRates = await CoreRepository().getRateFromMdms(
+          commonProvider.userDetails!.selectedtenant!.code!);
+      wcBillingSlabs = mdmsRates;
+      callNotifier();
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
+    }
+  }
   void callNotifier() {
     notifyListeners();
   }

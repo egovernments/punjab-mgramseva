@@ -42,6 +42,7 @@ class _GpwscDetails extends State<GpwscDetails>
     super.initState();
     var departmentProvider = Provider.of<IfixHierarchyProvider>(navigatorKey.currentContext!, listen: false);
     departmentProvider.getDepartments();
+    departmentProvider.getBillingSlabs();
     WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
   }
 
