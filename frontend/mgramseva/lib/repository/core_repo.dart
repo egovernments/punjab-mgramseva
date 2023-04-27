@@ -15,6 +15,7 @@ import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/notifications_provider.dart';
+import 'package:mgramseva/repository/water_services_calculation.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
@@ -74,7 +75,41 @@ class CoreRepository extends BaseService {
     }
     return languageList;
   }
-
+  Future<WCBillingSlabs?> getRateFromMdms(String tenantId) async {
+    var body = {
+      "MdmsCriteria": {
+        "tenantId": tenantId,
+        "moduleDetails": [
+          {
+            "moduleName": "ws-services-calculation",
+            "masterDetails": [
+              {
+                "name": "WCBillingSlab"
+              }
+            ]
+          }
+        ]
+      }
+    };
+    late LanguageList languageList;
+    var res = await makeRequest(
+        url: Url.MDMS,
+        body: body,
+        method: RequestType.POST,
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "_search",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
+            ""));
+    if (res != null) {
+      languageList = LanguageList.fromJson(res);
+    }
+    return languageList.mdmsRes?.wcBillingSlabList;
+  }
   Future<PaymentType> getPaymentTypeMDMS(Map body) async {
     late PaymentType paymentType;
     var res = await makeRequest(
