@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:provider/provider.dart';
 import '../../providers/ifix_hierarchy_provider.dart';
+import '../../repository/water_services_calculation.dart';
 import '../../utils/Locilization/application_localizations.dart';
+import '../../utils/common_widgets.dart';
+import '../../utils/loaders.dart';
+import '../../utils/notifyers.dart';
 import '../../widgets/LabelText.dart';
 import 'GpwscCard.dart';
 
@@ -31,7 +35,9 @@ class GpwscRateCard extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
+    WCBillingSlabs? wcBillingSlabs;
     return LayoutBuilder(builder: (context, constraints) {
+      var ifixProvider = Provider.of<IfixHierarchyProvider>(context, listen: false);
       return GpwscCard(
         children: [
           constraints.maxWidth < 760?Column(
@@ -40,29 +46,52 @@ class GpwscRateCard extends StatelessWidget {
           ):Row(
             children: getTableTitle(context,constraints,rateType),
           ),
-          Consumer<IfixHierarchyProvider>(
-              key: key,
-              builder: (_, departmentProvider, child) {
-                return _getRateCard(
-                    rateType, departmentProvider, context, constraints);
+          StreamBuilder(
+              stream: ifixProvider.streamControllerRate.stream,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data is String) {
+                    return CommonWidgets.buildEmptyMessage(snapshot.data, context);
+                  }
+                  wcBillingSlabs = snapshot.data;
+                  return Consumer<IfixHierarchyProvider>(
+                      key: key,
+                      builder: (_, departmentProvider, child) {
+                        return _getRateCard(
+                            rateType, wcBillingSlabs!, context, constraints);
+                      });
+                } else if (snapshot.hasError) {
+                  return Notifiers.networkErrorPage(context, () => {});
+                } else {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return Loaders.CircularLoader();
+                    case ConnectionState.active:
+                      return Loaders.CircularLoader();
+                    default:
+                      return Container();
+                  }
+                }
               })
         ],
       );
     });
   }
 
-  Widget _getRateCard(String type, IfixHierarchyProvider ifixHierarchyProvider,
+  Widget _getRateCard(String type, WCBillingSlabs wcBillingSlabs,
       context, BoxConstraints constraints) {
     List<DataRow> getMeteredRows(){
       List<DataRow> rows = [];
-      ifixHierarchyProvider.wcBillingSlabs!.wCBillingSlabs?.where((element) => element.connectionType?.compareTo("Metered")==0).forEach((e) =>{
+      wcBillingSlabs.wCBillingSlabs?.where((element) => element.connectionType?.compareTo("Metered")==0).forEach((e) =>{
         e.slabs?.forEach((slabs) =>
             rows.add(DataRow(cells: [
               DataCell(Text("${ApplicationLocalizations.of(context)
                   .translate(i18.common.WATER_CHARGES)}-10101")),
-              DataCell(Text("${e.calculationAttribute}")),
+              DataCell(Text("${ApplicationLocalizations.of(context)
+                  .translate("${e.calculationAttribute}")}")),
               DataCell(Text("${slabs.from}-${slabs.to}")),
-              DataCell(Text("${e.buildingType}")),
+              DataCell(Text("${ApplicationLocalizations.of(context)
+                  .translate("${e.buildingType}")}")),
               DataCell(Text("${slabs.charge}"))
             ])))
       });
@@ -149,12 +178,14 @@ class GpwscRateCard extends StatelessWidget {
                     TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                   )),
             ],
-            rows: ifixHierarchyProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType?.compareTo("Metered")!=0)
+            rows: wcBillingSlabs.wCBillingSlabs!.where((element) => element.connectionType?.compareTo("Metered")!=0)
                 .map((slab) => DataRow(cells: [
               DataCell(Text("${ApplicationLocalizations.of(context)
                 .translate(i18.common.WATER_CHARGES)}-10101")),
-              DataCell(Text("${slab.calculationAttribute}")),
-              DataCell(Text("${slab.buildingType}")),
+              DataCell(Text("${ApplicationLocalizations.of(context)
+                  .translate("${slab.calculationAttribute}")}")),
+              DataCell(Text("${ApplicationLocalizations.of(context)
+                  .translate("${slab.buildingType}")}")),
               DataCell(Text("${slab.minimumCharge}"))
             ]))
                 .toList()),

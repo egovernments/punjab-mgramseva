@@ -8,18 +8,16 @@ part of 'wc_billing_slab.dart';
 
 WCBillingSlab _$WCBillingSlabFromJson(Map<String, dynamic> json) =>
     WCBillingSlab()
-      ..id = json['id'] as String?
       ..buildingType = json['buildingType'] as String?
       ..connectionType = json['connectionType'] as String?
       ..calculationAttribute = json['calculationAttribute'] as String?
-      ..minimumCharge = json['minimumCharge'] as String?
+      ..minimumCharge = json['minimumCharge'] as double?
       ..slabs = (json['slabs'] as List<dynamic>?)
           ?.map((e) => Slabs.fromJson(e as Map<String, dynamic>))
           .toList();
 
 Map<String, dynamic> _$WCBillingSlabToJson(WCBillingSlab instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'buildingType': instance.buildingType,
       'connectionType': instance.connectionType,
       'calculationAttribute': instance.calculationAttribute,
@@ -28,10 +26,10 @@ Map<String, dynamic> _$WCBillingSlabToJson(WCBillingSlab instance) =>
     };
 
 Slabs _$SlabsFromJson(Map<String, dynamic> json) => Slabs()
-  ..from = json['from'] as String?
-  ..to = json['to'] as String?
-  ..charge = json['charge'] as String?
-  ..meterCharge = json['meterCharge'] as String?;
+  ..from = json['from'] as int?
+  ..to = json['to'] as int?
+  ..charge = json['charge'] as double?
+  ..meterCharge = json['meterCharge'] as double?;
 
 Map<String, dynamic> _$SlabsToJson(Slabs instance) => <String, dynamic>{
       'from': instance.from,
