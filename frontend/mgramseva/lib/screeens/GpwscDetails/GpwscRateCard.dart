@@ -64,85 +64,91 @@ class GpwscRateCard extends StatelessWidget {
         padding: constraints.maxWidth > 760
             ? const EdgeInsets.all(20.0)
             : const EdgeInsets.all(8.0),
-        child: DataTable(
-            border: TableBorder.all(
-                width: 0.5, borderRadius: BorderRadius.all(Radius.circular(5))),
-            columns: [
-              DataColumn(
-                  label: Text(
-                    "${ApplicationLocalizations.of(context).translate(i18.common.CHARGE_HEAD)}",
-                    style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                  )),
-              DataColumn(
-                  label: Text(
-                    "${ApplicationLocalizations.of(context).translate(i18.common.CALC_TYPE)}",
-                    style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                  )),
-              DataColumn(
-                  label: Text(
-                    "${ApplicationLocalizations.of(context).translate(i18.common.BILLING_SLAB)}",
-                    style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                  )),
-              DataColumn(
-                  label: Text(
-                    "${ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_TYPE)}",
-                    style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                  )),
-              DataColumn(
-                  label: Text(
-                    "${ApplicationLocalizations.of(context).translate(i18.common.RATE_PERCENTAGE)}",
-                    style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                  )),
-            ],
-            rows: getMeteredRows()),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+              border: TableBorder.all(
+                  width: 0.5, borderRadius: BorderRadius.all(Radius.circular(5))),
+              columns: [
+                DataColumn(
+                    label: Text(
+                      "${ApplicationLocalizations.of(context).translate(i18.common.CHARGE_HEAD)}",
+                      style:
+                      TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    )),
+                DataColumn(
+                    label: Text(
+                      "${ApplicationLocalizations.of(context).translate(i18.common.CALC_TYPE)}",
+                      style:
+                      TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    )),
+                DataColumn(
+                    label: Text(
+                      "${ApplicationLocalizations.of(context).translate(i18.common.BILLING_SLAB)}",
+                      style:
+                      TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    )),
+                DataColumn(
+                    label: Text(
+                      "${ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_TYPE)}",
+                      style:
+                      TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    )),
+                DataColumn(
+                    label: Text(
+                      "${ApplicationLocalizations.of(context).translate(i18.common.RATE_PERCENTAGE)}",
+                      style:
+                      TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    )),
+              ],
+              rows: getMeteredRows()),
+        ),
       );
     }
     return Padding(
       padding: constraints.maxWidth > 760
           ? const EdgeInsets.all(20.0)
           : const EdgeInsets.all(8.0),
-      child: DataTable(
-          border: TableBorder.all(
-              width: 0.5, borderRadius: BorderRadius.all(Radius.circular(5))),
-          columns: [
-            DataColumn(
-                label: Text(
-              "${ApplicationLocalizations.of(context).translate(i18.common.CHARGE_HEAD)}",
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            )),
-            DataColumn(
-                label: Text(
-              "${ApplicationLocalizations.of(context).translate(i18.common.CALC_TYPE)}",
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            )),
-            DataColumn(
-                label: Text(
-              "${ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_TYPE)}",
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            )),
-            DataColumn(
-                label: Text(
-              "${ApplicationLocalizations.of(context).translate(i18.common.RATE_PERCENTAGE)}",
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            )),
-          ],
-          rows: ifixHierarchyProvider.wcBillingSlabs!.wCBillingSlabs.where((element) => element.connectionType?.compareTo("Metered")!=0)
-              .map((slab) => DataRow(cells: [
-            DataCell(Text("Water Charges-10101")),
-            DataCell(Text("${slab.calculationAttribute}")),
-            DataCell(Text("${slab.buildingType}")),
-            DataCell(Text("${slab.minimumCharge}"))
-          ]))
-              .toList()),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: DataTable(
+            border: TableBorder.all(
+                width: 0.5, borderRadius: BorderRadius.all(Radius.circular(5))),
+            columns: [
+              DataColumn(
+                  label: Text(
+                "${ApplicationLocalizations.of(context).translate(i18.common.CHARGE_HEAD)}",
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              )),
+              DataColumn(
+                  label: Text(
+                "${ApplicationLocalizations.of(context).translate(i18.common.CALC_TYPE)}",
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              )),
+              DataColumn(
+                  label: Text(
+                "${ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_TYPE)}",
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              )),
+              DataColumn(
+                  label: Text(
+                "${ApplicationLocalizations.of(context).translate(i18.common.RATE_PERCENTAGE)}",
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              )),
+            ],
+            rows: ifixHierarchyProvider.wcBillingSlabs!.wCBillingSlabs.where((element) => element.connectionType?.compareTo("Metered")!=0)
+                .map((slab) => DataRow(cells: [
+              DataCell(Text("Water Charges-10101")),
+              DataCell(Text("${slab.calculationAttribute}")),
+              DataCell(Text("${slab.buildingType}")),
+              DataCell(Text("${slab.minimumCharge}"))
+            ]))
+                .toList()),
+      ),
     );
   }
 }
