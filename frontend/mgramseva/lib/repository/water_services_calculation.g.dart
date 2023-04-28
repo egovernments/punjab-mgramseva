@@ -8,8 +8,8 @@ part of 'water_services_calculation.dart';
 
 WCBillingSlabs _$WCBillingSlabsFromJson(Map<String, dynamic> json) =>
     WCBillingSlabs()
-      ..wCBillingSlabs = json['WCBillingSlab']==null?[]:(json['WCBillingSlab'] as List<dynamic>)
-          .map((e) => WCBillingSlab.fromJson(e as Map<String, dynamic>))
+      ..wCBillingSlabs = (json['WCBillingSlab'] as List<dynamic>?)
+          ?.map((e) => WCBillingSlab.fromJson(e as Map<String, dynamic>))
           .toList();
 
 Map<String, dynamic> _$WCBillingSlabsToJson(WCBillingSlabs instance) =>

@@ -1,13 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../model/mdms/WCBillingSlab.dart';
+import '../model/mdms/wc_billing_slab.dart';
 
 part 'water_services_calculation.g.dart';
 
 @JsonSerializable()
 class WCBillingSlabs {
   @JsonKey(name: "WCBillingSlab")
-  late List<WCBillingSlab> wCBillingSlabs;
+  List<WCBillingSlab>? wCBillingSlabs;
 
   WCBillingSlabs();
 
