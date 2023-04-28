@@ -16,6 +16,7 @@ class IfixHierarchyProvider with ChangeNotifier {
   Map<String,Map<String,String>> hierarchy={};
   WCBillingSlabs? wcBillingSlabs;
   var streamController = StreamController.broadcast();
+  var streamControllerRate = StreamController.broadcast();
 
   dispose() {
     streamController.close();
@@ -51,6 +52,7 @@ class IfixHierarchyProvider with ChangeNotifier {
       var mdmsRates = await CoreRepository().getRateFromMdms(
           commonProvider.userDetails!.selectedtenant!.code!);
       wcBillingSlabs = mdmsRates;
+      streamControllerRate.add(wcBillingSlabs);
       callNotifier();
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);

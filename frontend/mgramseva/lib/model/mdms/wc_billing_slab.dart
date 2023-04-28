@@ -4,8 +4,6 @@ part 'wc_billing_slab.g.dart';
 
 @JsonSerializable()
 class WCBillingSlab {
-  @JsonKey(name: "id")
-  String? id;
 
   @JsonKey(name: "buildingType")
   String? buildingType;
@@ -17,7 +15,7 @@ class WCBillingSlab {
   String? calculationAttribute;
 
   @JsonKey(name: "minimumCharge")
-  String? minimumCharge;
+  double? minimumCharge;
 
   @JsonKey(name: "slabs")
   List<Slabs>? slabs;
@@ -33,16 +31,16 @@ class WCBillingSlab {
 @JsonSerializable()
 class Slabs {
   @JsonKey(name: "from")
-  String? from;
+  int? from;
 
   @JsonKey(name: "to")
-  String? to;
+  int? to;
 
   @JsonKey(name: "charge")
-  String? charge;
+  double? charge;
 
   @JsonKey(name: "meterCharge")
-  String? meterCharge;
+  double? meterCharge;
 
   Slabs();
 
