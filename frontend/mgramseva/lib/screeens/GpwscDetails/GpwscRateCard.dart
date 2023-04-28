@@ -15,22 +15,30 @@ class GpwscRateCard extends StatelessWidget {
   Color getColor(Set<MaterialState> states) {
     return Colors.grey.shade200;
   }
-
+  List<Widget> getTableTitle(context,constraints,String rateType){
+    return [
+      LabelText(
+          "${ApplicationLocalizations.of(context).translate(i18.dashboard.GPWSC_RATE_INFO)}"),
+      Padding(
+        padding: (constraints.maxWidth > 760 ? const EdgeInsets.all(15.0) : const EdgeInsets.all(8.0)),
+        child: Text(
+          "(${ApplicationLocalizations.of(context).translate(rateType)})",
+          style: Theme.of(context).textTheme.titleLarge,
+          textAlign: TextAlign.left,
+        ),
+      ),
+    ];
+  }
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return GpwscCard(
         children: [
-          Row(
-            children: [
-              LabelText(
-                  "${ApplicationLocalizations.of(context).translate(i18.dashboard.GPWSC_RATE_INFO)}"),
-              Text(
-                "(${ApplicationLocalizations.of(context).translate(rateType)})",
-                style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.left,
-              ),
-            ],
+          constraints.maxWidth < 760?Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: getTableTitle(context,constraints,rateType),
+          ):Row(
+            children: getTableTitle(context,constraints,rateType),
           ),
           Consumer<IfixHierarchyProvider>(
               key: key,
