@@ -53,20 +53,24 @@ class GpwscRateCard extends StatelessWidget {
 
   Widget _getRateCard(String type, IfixHierarchyProvider ifixHierarchyProvider,
       context, BoxConstraints constraints) {
-    List<DataRow> getMeteredRows(){
+    List<DataRow> getMeteredRows() {
       List<DataRow> rows = [];
-      ifixHierarchyProvider.wcBillingSlabs!.wCBillingSlabs.where((element) => element.connectionType?.compareTo("Metered")==0).forEach((e) =>{
-        e.slabs?.forEach((slabs) =>
-           rows.add(DataRow(cells: [
-             DataCell(Text("Water Charges-10101")),
-             DataCell(Text("${e.calculationAttribute}")),
-             DataCell(Text("${slabs.from}-${slabs.to}")),
-             DataCell(Text("${e.buildingType}")),
-             DataCell(Text("${slabs.charge}"))
-           ])))
-      });
+      ifixHierarchyProvider.wcBillingSlabs!.wCBillingSlabs
+          ?.where(
+              (element) => element.connectionType?.compareTo("Metered") == 0)
+          .forEach((e) => {
+                e.slabs?.forEach((slabs) => rows.add(DataRow(cells: [
+                      DataCell(Text(ApplicationLocalizations.of(context)
+                          .translate(i18.billDetails.WATER_CHARGES_10101))),
+                      DataCell(Text("${e.calculationAttribute}")),
+                      DataCell(Text("${slabs.from}-${slabs.to}")),
+                      DataCell(Text("${e.buildingType}")),
+                      DataCell(Text("${slabs.charge}"))
+                    ])))
+              });
       return rows;
     }
+
     if (type.compareTo("Metered") == 0) {
       return Padding(
         padding: constraints.maxWidth > 760

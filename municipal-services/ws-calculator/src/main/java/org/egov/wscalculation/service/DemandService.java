@@ -1203,7 +1203,9 @@ public class DemandService {
 					}
 			}
 		}
-		DemandPenaltyResponse response = DemandPenaltyResponse.builder().totalApplicablePenalty(totalApplicablePenalty).demands(demands).build();
+		demands.stream().filter(i->i.getStatus().equals(Demand.StatusEnum.ACTIVE));
+		DemandPenaltyResponse response = DemandPenaltyResponse.builder().totalApplicablePenalty(totalApplicablePenalty).
+				demands(demands).build();
 		return response;
 	}
 

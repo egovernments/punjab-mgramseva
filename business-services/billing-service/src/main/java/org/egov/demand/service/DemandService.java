@@ -540,8 +540,12 @@ public class DemandService {
 					}
 				}
 		}
-			
+		if(demandList.size() == 1) {
+		 waterCharge = demList.get(demList.size() - 1).getDemandDetails().get(0).getTaxAmount().
+				 subtract(demList.get(demList.size() - 1).getDemandDetails().get(0).getCollectionAmount());
+		}
 
+		demands.stream().filter(i->i.getStatus().equals(Demand.StatusEnum.ACTIVE));
 		DemandHistory demandHistory = new DemandHistory();
 		demandHistory.setDemandList(demands);
 		demandHistory.setWaterCharge(waterCharge);
