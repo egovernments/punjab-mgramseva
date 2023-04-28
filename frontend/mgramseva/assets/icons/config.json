@@ -131,6 +131,20 @@
       "search": [
         "updateexpenses"
       ]
+    },
+    {
+      "uid": "7575e60d98fe96288614b8e6bbb34c8e",
+      "css": "gpwscdetails",
+      "code": 59412,
+      "src": "custom_icons",
+      "selected": true,
+      "svg": {
+        "path": "M888.9 0H111.1C50 0 0 50 0 111.1V888.9C0 950 50 1000 111.1 1000H888.9C950 1000 1000 950 1000 888.9V111.1C1000 50 950 0 888.9 0ZM611.1 777.8H222.2V666.7H611.1V777.8ZM777.8 555.6H222.2V444.4H777.8V555.6ZM777.8 333.3H222.2V222.2H777.8V333.3Z",
+        "width": 1000
+      },
+      "search": [
+        "gpwscdetails"
+      ]
     }
   ]
 }

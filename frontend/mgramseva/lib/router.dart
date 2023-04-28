@@ -8,6 +8,7 @@ import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetails.dart';
+import 'package:mgramseva/screeens/GpwscDetails/GpwscDetails.dart';
 import 'package:mgramseva/screeens/Home/Home.dart';
 import 'package:mgramseva/screeens/HouseholdRegister/HouseholdRegister.dart';
 import 'package:mgramseva/screeens/Login/Login.dart';
@@ -297,6 +298,12 @@ class router {
         return MaterialPageRoute(
             builder: (_) => Dashboard(initialTabIndex: tabIndex),
             settings: RouteSettings(name: tabIndex != null ? '${Routes.DASHBOARD}?tab=$tabIndex' : '${Routes.DASHBOARD}'));
+
+      case Routes.GPWSC_DETAILS_AND_RATE_INFO:
+        return MaterialPageRoute(
+            builder: (_) => GpwscDetails(),
+            settings: RouteSettings(name: Routes.GPWSC_DETAILS_AND_RATE_INFO));
+
       case Routes.SEARCH_CONSUMER_RESULT:
         if (settings.arguments == null) {
           return MaterialPageRoute(
