@@ -87,9 +87,11 @@ class GpwscRateCard extends StatelessWidget {
             rows.add(DataRow(cells: [
               DataCell(Text("${ApplicationLocalizations.of(context)
                   .translate(i18.common.WATER_CHARGES)}-10101")),
-              DataCell(Text("${e.calculationAttribute}")),
+              DataCell(Text("${ApplicationLocalizations.of(context)
+                  .translate("${e.calculationAttribute}")}")),
               DataCell(Text("${slabs.from}-${slabs.to}")),
-              DataCell(Text("${e.buildingType}")),
+              DataCell(Text("${ApplicationLocalizations.of(context)
+                  .translate("${e.buildingType}")}")),
               DataCell(Text("${slabs.charge}"))
             ])))
       });
@@ -180,8 +182,10 @@ class GpwscRateCard extends StatelessWidget {
                 .map((slab) => DataRow(cells: [
               DataCell(Text("${ApplicationLocalizations.of(context)
                 .translate(i18.common.WATER_CHARGES)}-10101")),
-              DataCell(Text("${slab.calculationAttribute}")),
-              DataCell(Text("${slab.buildingType}")),
+              DataCell(Text("${ApplicationLocalizations.of(context)
+                  .translate("${slab.calculationAttribute}")}")),
+              DataCell(Text("${ApplicationLocalizations.of(context)
+                  .translate("${slab.buildingType}")}")),
               DataCell(Text("${slab.minimumCharge}"))
             ]))
                 .toList()),
