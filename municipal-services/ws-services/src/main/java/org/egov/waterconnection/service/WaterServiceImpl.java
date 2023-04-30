@@ -2,6 +2,7 @@ package org.egov.waterconnection.service;
 
 import static org.egov.waterconnection.constants.WCConstants.APPROVE_CONNECTION;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -543,15 +544,15 @@ public class WaterServiceImpl implements WaterService {
 	public RevenueDashboard getRevenueDashboardData(@Valid SearchCriteria criteria, RequestInfo requestInfo) {
 		RevenueDashboard dashboardData = new RevenueDashboard();
 		String tenantId = criteria.getTenantId();
-		Integer demand = waterDaoImpl.getTotalDemandAmount(criteria);
+		BigDecimal demand = waterDaoImpl.getTotalDemandAmount(criteria);
 		if (null != demand) {
 			dashboardData.setDemand(demand.toString());
 		}
-		Integer paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
+		BigDecimal paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
 		if (null != paidAmount) {
 			dashboardData.setActualCollection(paidAmount.toString());
 		}
-		Integer unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
+		BigDecimal unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
 		if (null != unpaidAmount) {
 			dashboardData.setPendingCollection(unpaidAmount.toString());
 		}
@@ -579,19 +580,19 @@ public class WaterServiceImpl implements WaterService {
 		if (null != totalApplicationsPaid) {
 			dashboardData.setTotalApplicationsCount(totalApplicationsPaid);
 		}
-		Integer advanceAdjusted = waterDaoImpl.getTotalAdvanceAdjustedAmount(criteria);
+		BigDecimal advanceAdjusted = waterDaoImpl.getTotalAdvanceAdjustedAmount(criteria);
 		if (null != advanceAdjusted) {
 			dashboardData.setAdvanceAdjusted(advanceAdjusted.toString());
 		}
-		Integer pendingPenalty = waterDaoImpl.getTotalPendingPenaltyAmount(criteria);
+		BigDecimal pendingPenalty = waterDaoImpl.getTotalPendingPenaltyAmount(criteria);
 		if (null != pendingPenalty) {
 			dashboardData.setPendingPenalty(pendingPenalty.toString());
 		}
-		Integer advanceCollection = waterDaoImpl.getAdvanceCollectionAmount(criteria);
+		BigDecimal advanceCollection = waterDaoImpl.getAdvanceCollectionAmount(criteria);
 		if (null != advanceCollection) {
 			dashboardData.setAdvanceCollection(advanceCollection.toString());
 		}
-		Integer penaltyCollection = waterDaoImpl.getPenaltyCollectionAmount(criteria);
+		BigDecimal penaltyCollection = waterDaoImpl.getPenaltyCollectionAmount(criteria);
 		if (null != penaltyCollection) {
 			dashboardData.setPenaltyCollection(penaltyCollection.toString());
 		}
@@ -728,37 +729,37 @@ public class WaterServiceImpl implements WaterService {
 			criteria.setToDate((Long) monthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 
 			String tenantId = criteria.getTenantId();
-			Integer demand = waterDaoImpl.getTotalDemandAmount(criteria);
+			BigDecimal demand = waterDaoImpl.getTotalDemandAmount(criteria);
 			RevenueCollectionData collectionData = new RevenueCollectionData();
 
 			if (null != demand) {
 				collectionData.setDemand(demand.toString());
 			}
-			Integer paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
+			BigDecimal paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
 			if (null != paidAmount) {
 				collectionData.setActualCollection(paidAmount.toString());
 			}
-			Integer unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
+			BigDecimal unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
 			if (null != unpaidAmount) {
 				collectionData.setPendingCollection(unpaidAmount.toString());
 			}
-			Integer arrears = waterDaoImpl.getArrearsAmount(criteria);
+			BigDecimal arrears = waterDaoImpl.getArrearsAmount(criteria);
 			if (null != arrears) {
 				collectionData.setArrears(arrears.toString());
 			}
-			Integer advanceAdjusted = waterDaoImpl.getTotalAdvanceAdjustedAmount(criteria);
+			BigDecimal advanceAdjusted = waterDaoImpl.getTotalAdvanceAdjustedAmount(criteria);
 			if (null != advanceAdjusted) {
 				collectionData.setAdvanceAdjusted(advanceAdjusted.toString());
 			}
-			Integer pendingPenalty = waterDaoImpl.getTotalPendingPenaltyAmount(criteria);
+			BigDecimal pendingPenalty = waterDaoImpl.getTotalPendingPenaltyAmount(criteria);
 			if (null != pendingPenalty) {
 				collectionData.setPendingPenalty(pendingPenalty.toString());
 			}
-			Integer advanceCollection = waterDaoImpl.getAdvanceCollectionAmount(criteria);
+			BigDecimal advanceCollection = waterDaoImpl.getAdvanceCollectionAmount(criteria);
 			if (null != advanceCollection) {
 				collectionData.setAdvanceCollection(advanceCollection.toString());
 			}
-			Integer penaltyCollection = waterDaoImpl.getPenaltyCollectionAmount(criteria);
+			BigDecimal penaltyCollection = waterDaoImpl.getPenaltyCollectionAmount(criteria);
 			if (null != penaltyCollection) {
 				collectionData.setPenaltyCollection(penaltyCollection.toString());
 			}
