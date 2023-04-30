@@ -6,6 +6,8 @@ import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/model/mdms/sub_category_type.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 
+import '../../repository/water_services_calculation.dart';
+
 class LanguageList {
   dynamic? responseInfo;
   MdmsRes? mdmsRes;
@@ -37,6 +39,7 @@ class MdmsRes {
   Category? category;
   SubCategory? subCategory;
   TaxPeriodListModel? taxPeriodList;
+  WCBillingSlabs? wcBillingSlabList;
 
   MdmsRes({this.commonMasters});
 
@@ -64,6 +67,9 @@ class MdmsRes {
         : null;
     taxPeriodList = json['BillingService'] != null
         ? new TaxPeriodListModel.fromJson(json['BillingService'])
+        : null;
+    wcBillingSlabList = json['ws-services-calculation'] != null
+        ? new WCBillingSlabs.fromJson(json['ws-services-calculation'])
         : null;
   }
 
