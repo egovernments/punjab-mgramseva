@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/Transaction/update_transaction.dart';
 import 'package:mgramseva/model/success_handler.dart';
@@ -59,7 +58,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
       appBar: AppBar(
         titleSpacing: 0,
         title: Text('mGramSeva'),
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
         actions: [_buildDropDown()],
       ),
       body: StreamBuilder(
