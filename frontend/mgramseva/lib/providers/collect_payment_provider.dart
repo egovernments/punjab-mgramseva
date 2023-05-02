@@ -127,7 +127,7 @@ class CollectPaymentProvider with ChangeNotifier {
       } else {}
 
       if (paymentDetails != null) {
-        if (paymentDetails.isEmpty) {
+        if (paymentDetails.isEmpty || paymentDetails.first.totalAmount! <= 0) {
           paymentStreamController.add(i18.expense.NO_BILL_FOUND);
         } else {
           if (mdmsData == null) {
