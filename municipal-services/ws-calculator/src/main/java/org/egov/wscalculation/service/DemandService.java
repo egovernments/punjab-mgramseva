@@ -363,19 +363,19 @@ public class DemandService {
 			log.info("bill number get bill size :" + billNumbers.size());
 			if (billNumbers.size() > 0) {
 				actionLink = actionLink.replace("$billNumber", billNumbers.get(0));
+				messageString = messageString.replace("{ownername}", owner.getName());
+				messageString = messageString.replace("{Period}", billCycle);
+				messageString = messageString.replace("{consumerno}", consumerCode);
+				messageString = messageString.replace("{billamount}", demandDetails.stream()
+						.map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add).toString());
+				messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionLink));
+
+				System.out.println("Demand genaration Message get bill::" + messageString);
+
+				SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
+						.category(Category.TRANSACTION).build();
+				producer.push(config.getSmsNotifTopic(), sms);
 			}
-			messageString = messageString.replace("{ownername}", owner.getName());
-			messageString = messageString.replace("{Period}", billCycle);
-			messageString = messageString.replace("{consumerno}", consumerCode);
-			messageString = messageString.replace("{billamount}", demandDetails.stream()
-					.map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add).toString());
-			messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionLink));
-
-			System.out.println("Demand genaration Message get bill::" + messageString);
-
-			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
-					.category(Category.TRANSACTION).build();
-			producer.push(config.getSmsNotifTopic(), sms);
 
 		}
 	}
