@@ -55,7 +55,7 @@ class GpwscBoundaryDetailCard extends StatelessWidget {
                         children: [
                           _getLabeltext(
                               "${ApplicationLocalizations.of(context).translate(i18.common.VILLAGE_CODE)}",
-                              commonProvider.userDetails!.selectedtenant?.city?.code,
+                              commonProvider.userDetails!.selectedtenant?.code?.split('.').last,
                               context),
                           _getLabeltext(
                               "${ApplicationLocalizations.of(context).translate(i18.common.VILLAGE_NAME)}",
