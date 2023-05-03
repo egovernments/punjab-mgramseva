@@ -63,7 +63,7 @@ class CommonMethods {
         monthList.add(DateTime(ytd.startDate.year, i));
       }
       for (int i = 1;
-          i <= (DateTime.now().month <= ytd.endDate.month ? DateTime.now().month : ytd.endDate.month);
+          i < (DateTime.now().month <= ytd.endDate.month ? DateTime.now().month : ytd.endDate.month);
           i++) {
         monthList.add(DateTime(ytd.endDate.year, i));
       }
@@ -72,7 +72,7 @@ class CommonMethods {
         monthList.add(DateTime(ytd.startDate.year, i));
       }
       for (int i = 1;
-      i <= ytd.endDate.month;
+      i < ytd.endDate.month;
       i++) {
         monthList.add(DateTime(ytd.endDate.year , i));
       }
