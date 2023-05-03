@@ -61,6 +61,9 @@ class CommonMethods {
   static List<DatePeriod> getPastMonthUntilFinancialYTD(DatePeriod ytd) {
     var monthList = <DateTime>[];
     final currentTime = DateTime.now();
+    if(currentTime.year < ytd.startDate.year){
+      return <DatePeriod>[];
+    }
     if (currentTime.year == ytd.startDate.year) {
       //when current year is same as start year of financial year
       for (int i = ytd.startDate.month; i < currentTime.month; i++) {
