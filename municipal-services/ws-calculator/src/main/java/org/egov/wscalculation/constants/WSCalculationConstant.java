@@ -81,7 +81,7 @@ public class WSCalculationConstant {
 	public static final String WS_TIME_PENALTY = "WS_TIME_PENALTY";
 	
 	public static final String PENALTY_OUTSTANDING = "outstanding";
-	
+
 	public static final String OUTSTANDING = "outstandingWithoutPenalty";
 
 
@@ -303,9 +303,21 @@ public class WSCalculationConstant {
 	public static final String MONTHLY_DEMAND_FAILED = "MONTHLY_DEMAND_FAILED";
 
 	public static final String GENERATE_DEMAND_EVENT = "GENERATE_DEMAND_EN_REMINDER";
-	
 
+	public static final String JSONPATH_ROOT_FOR_mdmsRes = "$.MdmsRes";
 
+	public static final String JSONPATH_ROOT_FOR_billingService = "$.MdmsRes.BillingService";
 
+	public static final String JSONPATH_ROOT_FOR_Allowed_PAyment = "$.MdmsRes.BillingService.PaymentService";
+
+	public static final String Payment_Modes_Not_Allowed = "collectionModesNotAllowed";
+
+	public static final String  FILTER_PAYMENT_METHOD_SEARCH = "[?(@.code=='WS')]";
+
+	public static final String mGram_Consumer_Bill = "mGram.Consumer.NewBill";
+
+	public static final String mGram_Consumer_Payment = "mGram.consumer.payment.message";
+
+	public static final String mGram_Consumer_Bill_Payment_combine = "mGram.consumer.billAndPayment.N";
 	
 }

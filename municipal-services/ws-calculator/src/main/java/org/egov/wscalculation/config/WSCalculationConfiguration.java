@@ -231,6 +231,9 @@ public class WSCalculationConfiguration {
 
 	@Value("${egov.bilk.demand.failed.link}")
 	private String bulkDemandFailedLink;
+
+	@Value("${egov.sms.bill.payment.link}")
+	private String billPaymentSMSLink;
 	
 
 	
