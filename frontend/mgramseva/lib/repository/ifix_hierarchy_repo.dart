@@ -24,8 +24,6 @@ class IfixHierarchyRepo extends BaseService {
         "getAncestry": getAncestry
       },
       'requestHeader': {
-        "ts": 1627193067,
-        "version": "2.0.0",
         "msgId": "Unknown",
         "signature": "NON"
       }
