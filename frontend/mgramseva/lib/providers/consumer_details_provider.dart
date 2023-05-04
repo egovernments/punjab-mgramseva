@@ -608,38 +608,20 @@ class ConsumerProvider with ChangeNotifier {
   List<DropdownMenuItem<Object>> getBillingCycle() {
     dates = [];
     if (billYear != null) {
-      late DatePeriod ytd;
-      if (DateTime.now().month >= 4) {
-        ytd = DatePeriod(
-            DateTime(DateTime.now().year, 4),
-            DateTime(DateTime.now().year + 1, 4, 0, 23, 59, 59, 999),
-            DateType.YTD);
-      } else {
-        ytd = DatePeriod(
-            DateTime(DateTime.now().year - 1, 4), DateTime.now(), DateType.YTD);
-      }
-
-      var date1 = DateFormats.getFormattedDateToDateTime(
+      DatePeriod ytd;
+      var fromDate = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(billYear?.fromDate)) as DateTime;
-      var isCurrentYtdSelected = date1.year == ytd.startDate.year;
+
+      var toDate = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(billYear?.toDate)) as DateTime;
+
+      ytd = DatePeriod(fromDate,toDate,DateType.YTD);
 
       /// Get months based on selected billing year
-      var months = CommonMethods.getPastMonthUntilFinancialYear(date1.year);
+      var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd);
 
-      /// if its current ytd year means removing till current month
-      if (isCurrentYtdSelected) {
-        switch (DateTime.now().month) {
-          case 1:
-            months.removeRange(0, 3);
-            break;
-          case 2:
-            months.removeRange(0, 2);
-            break;
-          case 3:
-            months.removeRange(0, 1);
-            break;
-        }
-      }
+      /// if selected year is future year means all the months will be removed
+      if(fromDate.year > ytd.endDate.year) months.clear();
 
       for (var i = 0; i < months.length; i++) {
         var prevMonth = months[i].startDate;
