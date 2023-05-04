@@ -2,6 +2,8 @@ package org.egov.waterconnection.service;
 
 import static org.egov.waterconnection.constants.WCConstants.APPROVE_CONNECTION;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -543,17 +545,17 @@ public class WaterServiceImpl implements WaterService {
 	public RevenueDashboard getRevenueDashboardData(@Valid SearchCriteria criteria, RequestInfo requestInfo) {
 		RevenueDashboard dashboardData = new RevenueDashboard();
 		String tenantId = criteria.getTenantId();
-		Integer demand = waterDaoImpl.getTotalDemandAmount(criteria);
+		BigDecimal demand = waterDaoImpl.getTotalDemandAmount(criteria);
 		if (null != demand) {
-			dashboardData.setDemand(demand.toString());
+			dashboardData.setDemand(demand.setScale(0, RoundingMode.HALF_UP).toString());
 		}
-		Integer paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
+		BigDecimal paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
 		if (null != paidAmount) {
-			dashboardData.setActualCollection(paidAmount.toString());
+			dashboardData.setActualCollection(paidAmount.setScale(0, RoundingMode.HALF_UP).toString());
 		}
-		Integer unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
+		BigDecimal unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
 		if (null != unpaidAmount) {
-			dashboardData.setPendingCollection(unpaidAmount.toString());
+			dashboardData.setPendingCollection(unpaidAmount.setScale(0, RoundingMode.HALF_UP).toString());
 		}
 		Integer residentialCollection = waterDaoImpl.getResidentialCollectionAmount(criteria);
 		if (null != residentialCollection) {
@@ -578,6 +580,22 @@ public class WaterServiceImpl implements WaterService {
 		Map<String, Object> totalApplicationsPaid = waterDaoImpl.getAllPaid(criteria);
 		if (null != totalApplicationsPaid) {
 			dashboardData.setTotalApplicationsCount(totalApplicationsPaid);
+		}
+		BigDecimal advanceAdjusted = waterDaoImpl.getTotalAdvanceAdjustedAmount(criteria);
+		if (null != advanceAdjusted) {
+			dashboardData.setAdvanceAdjusted(advanceAdjusted.setScale(0, RoundingMode.HALF_UP).toString());
+		}
+		BigDecimal pendingPenalty = waterDaoImpl.getTotalPendingPenaltyAmount(criteria);
+		if (null != pendingPenalty) {
+			dashboardData.setPendingPenalty(pendingPenalty.setScale(0, RoundingMode.HALF_UP).toString());
+		}
+		BigDecimal advanceCollection = waterDaoImpl.getAdvanceCollectionAmount(criteria);
+		if (null != advanceCollection) {
+			dashboardData.setAdvanceCollection(advanceCollection.setScale(0, RoundingMode.HALF_UP).toString());
+		}
+		BigDecimal penaltyCollection = waterDaoImpl.getPenaltyCollectionAmount(criteria);
+		if (null != penaltyCollection) {
+			dashboardData.setPenaltyCollection(penaltyCollection.setScale(0, RoundingMode.HALF_UP).toString());
 		}
 
 		return dashboardData;
@@ -712,24 +730,41 @@ public class WaterServiceImpl implements WaterService {
 			criteria.setToDate((Long) monthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 
 			String tenantId = criteria.getTenantId();
-			Integer demand = waterDaoImpl.getTotalDemandAmount(criteria);
+			BigDecimal demand = waterDaoImpl.getTotalDemandAmount(criteria);
 			RevenueCollectionData collectionData = new RevenueCollectionData();
 
 			if (null != demand) {
-				collectionData.setDemand(demand.toString());
+				collectionData.setDemand(demand.setScale(0, RoundingMode.HALF_UP).toString());
 			}
-			Integer paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
+			BigDecimal paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
 			if (null != paidAmount) {
-				collectionData.setActualCollection(paidAmount.toString());
+				collectionData.setActualCollection(paidAmount.setScale(0, RoundingMode.HALF_UP).toString());
 			}
-			Integer unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
+			BigDecimal unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
 			if (null != unpaidAmount) {
-				collectionData.setPendingCollection(unpaidAmount.toString());
+				collectionData.setPendingCollection(unpaidAmount.setScale(0, RoundingMode.HALF_UP).toString());
 			}
-			Integer arrears = waterDaoImpl.getArrearsAmount(criteria);
+			BigDecimal arrears = waterDaoImpl.getArrearsAmount(criteria);
 			if (null != arrears) {
-				collectionData.setArrears(arrears.toString());
+				collectionData.setArrears(arrears.setScale(0, RoundingMode.HALF_UP).toString());
 			}
+			BigDecimal advanceAdjusted = waterDaoImpl.getTotalAdvanceAdjustedAmount(criteria);
+			if (null != advanceAdjusted) {
+				collectionData.setAdvanceAdjusted(advanceAdjusted.setScale(0, RoundingMode.HALF_UP).toString());
+			}
+			BigDecimal pendingPenalty = waterDaoImpl.getTotalPendingPenaltyAmount(criteria);
+			if (null != pendingPenalty) {
+				collectionData.setPendingPenalty(pendingPenalty.setScale(0, RoundingMode.HALF_UP).toString());
+			}
+			BigDecimal advanceCollection = waterDaoImpl.getAdvanceCollectionAmount(criteria);
+			if (null != advanceCollection) {
+				collectionData.setAdvanceCollection(advanceCollection.setScale(0, RoundingMode.HALF_UP).toString());
+			}
+			BigDecimal penaltyCollection = waterDaoImpl.getPenaltyCollectionAmount(criteria);
+			if (null != penaltyCollection) {
+				collectionData.setPenaltyCollection(penaltyCollection.setScale(0, RoundingMode.HALF_UP).toString());
+			}
+
 			collectionData.setMonth(criteria.getFromDate());
 			data.add(i, collectionData);
 			System.out.println("Month:: " + criteria.getFromDate());

@@ -81,6 +81,9 @@ public class WSCalculationConstant {
 	public static final String WS_TIME_PENALTY = "WS_TIME_PENALTY";
 	
 	public static final String PENALTY_OUTSTANDING = "outstanding";
+	
+	public static final String OUTSTANDING = "outstandingWithoutPenalty";
+
 
 	public static final String PENALTY_CURRENT_MONTH = "currentMonth";
 

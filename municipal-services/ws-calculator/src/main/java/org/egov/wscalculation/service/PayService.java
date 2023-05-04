@@ -155,7 +155,8 @@ public class PayService {
 		BigDecimal applicablePenalty = BigDecimal.ZERO;
 		if(WSCalculationConstant.FIXED.equalsIgnoreCase(type) && rate != null) {
 			if(WSCalculationConstant.PENALTY_CURRENT_MONTH.equalsIgnoreCase(subType)
-					|| WSCalculationConstant.PENALTY_OUTSTANDING.equalsIgnoreCase(subType)) {
+					|| WSCalculationConstant.PENALTY_OUTSTANDING.equalsIgnoreCase(subType)
+					|| WSCalculationConstant.OUTSTANDING.equalsIgnoreCase(subType)) {
 				applicablePenalty = waterCharge.multiply(rate.divide(WSCalculationConstant.HUNDRED));
 
 			}
