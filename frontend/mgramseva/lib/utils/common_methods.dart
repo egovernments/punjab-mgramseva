@@ -52,18 +52,36 @@ class CommonMethods {
         .toList();
   }
 
+  /*
+  * @author Rahul Dev Garg
+  * rahul.dev@egovernments.org
+  *
+  * */
+
   static List<DatePeriod> getPastMonthUntilFinancialYTD(DatePeriod ytd) {
     var monthList = <DateTime>[];
-    if (DateTime.now().year == ytd.startDate.year) {
-      for (int i = ytd.startDate.month; i < DateTime.now().month; i++) {
-        monthList.add(DateTime(DateTime.now().year, i));
+    final currentTime = DateTime.now();
+    if(currentTime.year < ytd.startDate.year){
+      return <DatePeriod>[];
+    }
+    if (currentTime.year == ytd.startDate.year) {
+      //when current year is same as start year of financial year
+      for (int i = ytd.startDate.month; i < currentTime.month; i++) {
+        monthList.add(DateTime(currentTime.year, i));
       }
-    } else if(DateTime.now().year == ytd.endDate.year){
+    } else if(currentTime.year == ytd.endDate.year){
+      //when current year is same as end year of financial year
       for (int i = ytd.startDate.month; i <= 12; i++) {
         monthList.add(DateTime(ytd.startDate.year, i));
       }
       for (int i = 1;
-          i <= (DateTime.now().month <= ytd.endDate.month ? DateTime.now().month : ytd.endDate.month);
+          i <= (currentTime.month <= ytd.endDate.month ? currentTime.month-1: ytd.endDate.month);
+          /*
+          * if current month is less than or equal to end month of financial year
+          * we are using months less than current month and if it is more than
+          * end month of financial year we are using till end month of financial
+          * year
+          */
           i++) {
         monthList.add(DateTime(ytd.endDate.year, i));
       }
