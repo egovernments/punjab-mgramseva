@@ -408,9 +408,54 @@ def getActiveUsersCount(tenantId):
             if connection:
                 cursor.close()
                 connection.close()
+           
+def getTotalAdvanceCreated(tenantId):
+        # query the postgresql db to get the total count of total advance in the given tenant till date  
+        print("advance sum returned")
+        try:                          
+            connection = getConnection()
+            cursor = connection.cursor()
+             
+            ADVANCE_COUNT_QUERY = "select sum(taxamount) from egbs_demanddetail_v1 where status = 'Active' and taxheadcode='WS_ADVANCE_CARRYFORWARD' and tenantid = '"+tenantId+"'"
+            cursor.execute(ADVANCE_COUNT_QUERY)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+         
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+                
+def getTotalPenaltyCreated(tenantId):
+        # query the postgresql db to get the total count of total penalty in the given tenant till date  
+        print("penalty sum returned")
+        try:                          
+            connection = getConnection()
+            cursor = connection.cursor()
+             
+            PENALTY_COUNT_QUERY = "select sum(taxamount) from egbs_demanddetail_v1 where status = 'Active' and taxheadcode='WS_TIME_PENALTY' and tenantid = '"+tenantId+"'"
+            cursor.execute(PENALTY_COUNT_QUERY)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+         
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
 
 
-def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount):
+def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance,totalPenalty):
     # create entry into new table in postgres db with the table name roll_outdashboard . enter all field into the db and additional createdtime additional column
     
     print("inserting data into db")
@@ -424,8 +469,8 @@ def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemand
         createdTime = datetime.now(tz=tzInfo)
         print("createdtime -->", createdTime)
         
-        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section, consumer_created_count, billing_slab_count, last_demand_gen_date, collection_till_date, collection_till_date_online, last_collection_date, expense_count, last_expense_txn_date, paid_status_expense_bill_count, demands_till_date_count, ratings_count, last_rating_date, active_users_count, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'], consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount, createdTime)
+        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section, consumer_created_count, billing_slab_count, last_demand_gen_date, collection_till_date, collection_till_date_online, last_collection_date, expense_count, last_expense_txn_date, paid_status_expense_bill_count, demands_till_date_count, ratings_count, last_rating_date, active_users_count,toal_advance,total_penalty, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'], consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty, createdTime)
         cursor.execute(postgres_insert_query, record_to_insert)
        
         connection.commit()
@@ -485,7 +530,9 @@ def process():
         noOfRatings = getRatingCount(tenant['tenantId'])
         lastRatingDate= getLastRatingDate(tenant['tenantId'])
         activeUsersCount= getActiveUsersCount(tenant['tenantId'])
-        createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount)
+        totalAdvance= getTotalAdvanceCreated(tenant['tenantId'])
+        totalPenalty= getTotalPenaltyCreated(tenant['tenantId'])
+        createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty)
     print("End of rollout dashboard")
     return 
 
@@ -537,6 +584,8 @@ def createTable():
         ratings_count NUMERIC(10),
         last_rating_date DATE,
         active_users_count NUMERIC(10),
+        total_advance NUMERIC(10),
+        total_penalty NUMERIC(10),
         createdtime TIMESTAMP NOT NULL
         )"""
     
