@@ -53,6 +53,7 @@ class Routes {
       '$HOUSEHOLD_DETAILS_COLLECT_PAYMENT/success';
 
   static const String DASHBOARD = '/home/dashboard';
+  static const String GPWSC_DETAILS_AND_RATE_INFO = '/home/villagedetails';
 
   static const String BILL_GENERATE = '/home/householddetails/billgenerate';
 

@@ -130,7 +130,8 @@ public class SearchCriteria {
 		connectionNumber,
 		name,
 		collectionAmount,
-		collectionPendingAmount
+		collectionPendingAmount,
+		lastDemandGeneratedDate
 	}
 
 	public boolean isEmpty() {

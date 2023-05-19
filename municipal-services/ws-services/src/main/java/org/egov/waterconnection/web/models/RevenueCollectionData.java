@@ -31,4 +31,16 @@ public class RevenueCollectionData {
 
 	@JsonProperty("actualCollection")
 	private String actualCollection = "0";
+	
+	@JsonProperty("advanceAdjusted")
+	private String advanceAdjusted = "0";
+	
+	@JsonProperty("pendingPenalty")
+	private String pendingPenalty = "0";
+	
+	@JsonProperty("advanceCollection")
+	private String advanceCollection = "0";
+	
+	@JsonProperty("penaltyCollection")
+	private String penaltyCollection = "0";
 }
