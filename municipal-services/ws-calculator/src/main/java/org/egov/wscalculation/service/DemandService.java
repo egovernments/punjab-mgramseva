@@ -811,7 +811,8 @@ public class DemandService {
 				}
 				
 				
-				if(type.equalsIgnoreCase("Fixed") && subType.equalsIgnoreCase(WSCalculationConstant.PENALTY_OUTSTANDING)) {
+				if(type.equalsIgnoreCase("Fixed") && (subType.equalsIgnoreCase(WSCalculationConstant.PENALTY_OUTSTANDING)
+						|| subType.equalsIgnoreCase(WSCalculationConstant.OUTSTANDING))) {
 					List<Demand> demandList = new ArrayList<>(demList);
 					BigDecimal waterChargeApplicable = BigDecimal.ZERO;
 					BigDecimal oldPenalty = BigDecimal.ZERO;
@@ -822,10 +823,13 @@ public class DemandService {
 								if (WSCalculationConstant.TAX_APPLICABLE.contains(demandDetail.getTaxHeadMasterCode())) {
 									waterChargeApplicable = waterChargeApplicable.add(demandDetail.getTaxAmount()).subtract(demandDetail.getCollectionAmount());
 								}
-								if (demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY)) {
-									oldPenalty = oldPenalty.add(demandDetail.getTaxAmount()).subtract(demandDetail.getCollectionAmount());
-									waterChargeApplicable = waterChargeApplicable.add(oldPenalty);
+								if(subType.equalsIgnoreCase(WSCalculationConstant.PENALTY_OUTSTANDING)) {
+									if (demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY)) {
+										oldPenalty = oldPenalty.add(demandDetail.getTaxAmount()).subtract(demandDetail.getCollectionAmount());
+										waterChargeApplicable = waterChargeApplicable.add(oldPenalty);
+									}
 								}
+								
 							}
 						}
 					}
@@ -858,9 +862,12 @@ public class DemandService {
 		
 			// Call demand update in bulk to update the interest or penalty
 			if(!isGetPenaltyEstimate) {
-				DemandRequest request = DemandRequest.builder().demands(demandsToBeUpdated).requestInfo(requestInfo).build();
-				repository.fetchResult(utils.getUpdateDemandUrl(), request);
-				return res.getDemands();
+				if(demandsToBeUpdated.size() > 0) {
+					DemandRequest request = DemandRequest.builder().demands(demandsToBeUpdated).requestInfo(requestInfo).build();
+					repository.fetchResult(utils.getUpdateDemandUrl(), request);
+					return res.getDemands();
+				}
+				
 			}
 		}
 		return demandResponse;
@@ -1359,7 +1366,9 @@ public class DemandService {
 					}
 			}
 		}
-		DemandPenaltyResponse response = DemandPenaltyResponse.builder().totalApplicablePenalty(totalApplicablePenalty).demands(demands).build();
+		demands.stream().filter(i->i.getStatus().equals(Demand.StatusEnum.ACTIVE));
+		DemandPenaltyResponse response = DemandPenaltyResponse.builder().totalApplicablePenalty(totalApplicablePenalty).
+				demands(demands).build();
 		return response;
 	}
 	public boolean isOnlinePaymentAllowed(RequestInfo requestInfo, String tenantId)

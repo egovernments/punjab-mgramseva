@@ -48,9 +48,11 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.demand.config.ApplicationProperties;
 import org.egov.demand.model.Demand;
 import org.egov.demand.model.DemandCriteria;
+import org.egov.demand.model.DemandHistory;
 import org.egov.demand.producer.Producer;
 import org.egov.demand.service.DemandService;
 import org.egov.demand.util.migration.DemandMigration;
+import org.egov.demand.web.contract.DemandHistoryResponse;
 import org.egov.demand.web.contract.DemandRequest;
 import org.egov.demand.web.contract.DemandResponse;
 import org.egov.demand.web.contract.RequestInfoWrapper;
@@ -154,9 +156,10 @@ public class DemandController {
 
 		RequestInfo requestInfo = requestInfoWrapper.getRequestInfo();
 
-		List<Demand> demands = demandService.getDemandHistory(demandCriteria, requestInfo);
-		DemandResponse response = DemandResponse.builder().demands(demands)
-				.responseInfo(responseFactory.getResponseInfo(requestInfo, HttpStatus.OK)).build();
+		DemandHistory demands = demandService.getDemandHistory(demandCriteria, requestInfo);
+		DemandHistoryResponse response = DemandHistoryResponse.builder().demands(demands.getDemandList())
+				.advanceAdjustedAmount(demands.getAdvanceAdjustedAmount()).waterCharge(demands.getWaterCharge()).
+				responseInfo(responseFactory.getResponseInfo(requestInfo, HttpStatus.OK)).build();
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
     
