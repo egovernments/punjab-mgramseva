@@ -416,7 +416,7 @@ def getTotalAdvanceCreated(tenantId):
             connection = getConnection()
             cursor = connection.cursor()
              
-            ADVANCE_COUNT_QUERY = "select sum(taxamount) from egbs_demanddetail_v1 where status = 'Active' and taxheadcode='WS_ADVANCE_CARRYFORWARD' and tenantid = '"+tenantId+"'"
+            ADVANCE_COUNT_QUERY = "select sum(dd.taxamount) from egbs_demanddetail_v1 dd inner join egbs_demand_v1 d on dd.demandid = d.id where d.status = 'ACTIVE' and dd.taxheadcode='WS_ADVANCE_CARRYFORWARD' and dd.tenantid = '"+tenantId+"'"
             cursor.execute(ADVANCE_COUNT_QUERY)
             result = cursor.fetchone()
             print(result[0])
@@ -439,7 +439,7 @@ def getTotalPenaltyCreated(tenantId):
             connection = getConnection()
             cursor = connection.cursor()
              
-            PENALTY_COUNT_QUERY = "select sum(taxamount) from egbs_demanddetail_v1 where status = 'Active' and taxheadcode='WS_TIME_PENALTY' and tenantid = '"+tenantId+"'"
+            PENALTY_COUNT_QUERY = "select sum(dd.taxamount) from egbs_demanddetail_v1 dd inner join egbs_demand_v1 d on dd.demandid = d.id where d.status = 'ACTIVE' and dd.taxheadcode='WS_TIME_PENALTY' and dd.tenantid = '"+tenantId+"'"
             cursor.execute(PENALTY_COUNT_QUERY)
             result = cursor.fetchone()
             print(result[0])
