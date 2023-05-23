@@ -608,18 +608,20 @@ class ConsumerProvider with ChangeNotifier {
   List<DropdownMenuItem<Object>> getBillingCycle() {
     dates = [];
     if (billYear != null) {
-       DatePeriod ytd;
+      DatePeriod ytd;
       var fromDate = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(billYear?.fromDate)) as DateTime;
+
       var toDate = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(billYear?.toDate)) as DateTime;
+
       ytd = DatePeriod(fromDate,toDate,DateType.YTD);
 
       /// Get months based on selected billing year
       var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd);
 
-       /// if selected year is future year means all the months will be removed
-       if(fromDate.year > DateTime.now().year) months.clear();
+      /// if selected year is future year means all the months will be removed
+      if(fromDate.year > ytd.endDate.year) months.clear();
 
       for (var i = 0; i < months.length; i++) {
         var prevMonth = months[i].startDate;

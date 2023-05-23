@@ -51,8 +51,7 @@ class CommonMethods {
         .reversed
         .toList();
   }
-
-  /*
+/*
   * @author Rahul Dev Garg
   * rahul.dev@egovernments.org
   *
@@ -75,14 +74,14 @@ class CommonMethods {
         monthList.add(DateTime(ytd.startDate.year, i));
       }
       for (int i = 1;
-          i <= (currentTime.month <= ytd.endDate.month ? currentTime.month-1: ytd.endDate.month);
-          /*
+      i <= (currentTime.month <= ytd.endDate.month ? currentTime.month-1: ytd.endDate.month);
+      /*
           * if current month is less than or equal to end month of financial year
           * we are using months less than current month and if it is more than
           * end month of financial year we are using till end month of financial
           * year
           */
-          i++) {
+      i++) {
         monthList.add(DateTime(ytd.endDate.year, i));
       }
     }else{
@@ -97,13 +96,12 @@ class CommonMethods {
     }
     var list = monthList
         .map((e) => DatePeriod(DateTime(e.year, e.month, 1),
-            DateTime(e.year, e.month + 1, 0, 23, 59, 59, 999), DateType.MONTH))
+        DateTime(e.year, e.month + 1, 0, 23, 59, 59, 999), DateType.MONTH))
         .toList()
         .reversed
         .toList();
     return list;
   }
-
   static List<YearWithMonths> getFinancialYearList([int count = 5]) {
     var yearWithMonths = <YearWithMonths>[];
 
