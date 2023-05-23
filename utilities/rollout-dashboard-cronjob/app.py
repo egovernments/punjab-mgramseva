@@ -416,7 +416,7 @@ def getTotalAdvanceCreated(tenantId):
             connection = getConnection()
             cursor = connection.cursor()
              
-            ADVANCE_COUNT_QUERY = "select sum(taxamount) from egbs_demanddetail_v1 where status = 'Active' and taxheadcode='WS_ADVANCE_CARRYFORWARD' and tenantid = '"+tenantId+"'"
+            ADVANCE_COUNT_QUERY = "select sum(dd.taxamount) from egbs_demanddetail_v1 dd inner join egbs_demand_v1 d on dd.demandid = d.id where d.status = 'ACTIVE' and dd.taxheadcode='WS_ADVANCE_CARRYFORWARD' and dd.tenantid = '"+tenantId+"'"
             cursor.execute(ADVANCE_COUNT_QUERY)
             result = cursor.fetchone()
             print(result[0])
@@ -439,7 +439,7 @@ def getTotalPenaltyCreated(tenantId):
             connection = getConnection()
             cursor = connection.cursor()
              
-            PENALTY_COUNT_QUERY = "select sum(taxamount) from egbs_demanddetail_v1 where status = 'Active' and taxheadcode='WS_TIME_PENALTY' and tenantid = '"+tenantId+"'"
+            PENALTY_COUNT_QUERY = "select sum(dd.taxamount) from egbs_demanddetail_v1 dd inner join egbs_demand_v1 d on dd.demandid = d.id where d.status = 'ACTIVE' and dd.taxheadcode='WS_TIME_PENALTY' and dd.tenantid = '"+tenantId+"'"
             cursor.execute(PENALTY_COUNT_QUERY)
             result = cursor.fetchone()
             print(result[0])
@@ -469,7 +469,7 @@ def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemand
         createdTime = datetime.now(tz=tzInfo)
         print("createdtime -->", createdTime)
         
-        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section, consumer_created_count, billing_slab_count, last_demand_gen_date, collection_till_date, collection_till_date_online, last_collection_date, expense_count, last_expense_txn_date, paid_status_expense_bill_count, demands_till_date_count, ratings_count, last_rating_date, active_users_count,toal_advance,total_penalty, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section, consumer_created_count, billing_slab_count, last_demand_gen_date, collection_till_date, collection_till_date_online, last_collection_date, expense_count, last_expense_txn_date, paid_status_expense_bill_count, demands_till_date_count, ratings_count, last_rating_date, active_users_count,total_advance,total_penalty, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'], consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty, createdTime)
         cursor.execute(postgres_insert_query, record_to_insert)
        
