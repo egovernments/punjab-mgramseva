@@ -132,8 +132,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
               subtitleFun: () => getSubtitleDynamicLocalization(
                   context,
                   transactionObject.transaction!.first.user!.mobileNumber
-                          .toString() ??
-                      ''),
+                      .toString()),
             ),
             callBackDownload: () =>
                 transactionProvider.downloadOrShareReceiptWithoutLogin(
