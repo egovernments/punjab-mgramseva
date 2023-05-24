@@ -85,12 +85,13 @@ class GpwscBoundaryDetailCard extends StatelessWidget {
                               context),
                          _getLabeltext(
                                 "${ApplicationLocalizations.of(context).translate(i18.common.REGION_NAME)}",
-                                commonProvider.userDetails!.selectedtenant?.city?.regionName != null ? '${commonProvider.userDetails!.selectedtenant?.city?.regionName}' : 'NA',
+                                commonProvider.userDetails!.selectedtenant?.city?.regionName != null && (commonProvider.userDetails!.selectedtenant?.city?.regionName ?? '').isNotEmpty ? '${commonProvider.userDetails!.selectedtenant?.city?.regionName}' : 'NA',
                                 context),
                         _getLabeltext(
-                               "${ApplicationLocalizations.of(context).translate(i18.common.DISTRICT_CODE)}",
-                               '${commonProvider.userDetails!.selectedtenant?.city?.districtCode ?? 'NA'}-${commonProvider.userDetails!.selectedtenant?.city?.districtName ?? 'NA'}',
-                               context)
+                                  "${ApplicationLocalizations.of(context).translate(i18.common.DISTRICT_CODE)}",
+                                   commonProvider.userDetails!.selectedtenant?.city?.districtCode == null && commonProvider.userDetails!.selectedtenant?.city?.districtName == null ? 'NA' 
+                                   : '${commonProvider.userDetails!.selectedtenant?.city?.districtCode ?? 'NA'}-${commonProvider.userDetails!.selectedtenant?.city?.districtName ?? 'NA'}',
+                                    context)
                         ],
                       ),
                     )
