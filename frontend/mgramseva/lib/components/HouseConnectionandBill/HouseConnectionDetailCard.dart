@@ -1,17 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/global_variables.dart';
 import 'package:provider/provider.dart';
 
 class HouseConnectionDetailCard extends StatelessWidget {
   final WaterConnection? waterconnection;
   HouseConnectionDetailCard({this.waterconnection});
-  _getLabeltext(label, value, context) {
+  _getLabelText(label, value, context) {
     return (Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -69,25 +67,25 @@ class HouseConnectionDetailCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                _getLabeltext(i18.searchWaterConnection.RESULTS_CONSUMER_NAME,
+                _getLabelText(i18.searchWaterConnection.RESULTS_CONSUMER_NAME,
                     waterconnection!.connectionHolders!.first.name, context),
-                _getLabeltext(
+                _getLabelText(
                     i18.consumer.FATHER_SPOUSE_NAME,
                     waterconnection?.connectionHolders?.first.fatherOrHusbandName != null &&
                         waterconnection!.connectionHolders!.first.fatherOrHusbandName!.isNotEmpty ? waterconnection!
                         .connectionHolders!.first.fatherOrHusbandName : "NA",
                     context),
-                _getLabeltext(
+                _getLabelText(
                     i18.searchWaterConnection.RESULTS_PHONE_NUM,
                     waterconnection!.connectionHolders!.first.mobileNumber,
                     context),
-                _getLabeltext(
+                _getLabelText(
                     i18.searchWaterConnection.OLD_CONNECTION_ID,
                     waterconnection!.oldConnectionNo != ""
                         ? waterconnection!.oldConnectionNo
                         : "NA",
                     context),
-                _getLabeltext(
+                _getLabelText(
                   ApplicationLocalizations.of(context)
                       .translate(i18.searchWaterConnection.RESULTS_ADDRESS),
                   (waterconnection!.additionalDetails!.doorNo != null
@@ -109,18 +107,18 @@ class HouseConnectionDetailCard extends StatelessWidget {
                       .translate(commonProvider.userDetails!.selectedtenant!.code!),
                   context,
                 ),
-                _getLabeltext(i18.searchWaterConnection.PROPERTY_TYPE,
+                _getLabelText(i18.searchWaterConnection.PROPERTY_TYPE,
                     waterconnection!.additionalDetails!.propertyType, context),
-                _getLabeltext(i18.consumer.SERVICE_TYPE,
+                _getLabelText(i18.consumer.SERVICE_TYPE,
                     waterconnection!.connectionType, context),
                 waterconnection!.meterId == null
                     ? Text("")
-                    : _getLabeltext(
+                    : _getLabelText(
                         i18.searchWaterConnection.METER_NUMBER,
                         waterconnection!.meterId,
                         context,
                       ),
-                _getLabeltext(
+                _getLabelText(
                   i18.common.STATUS,
                   waterconnection!.status == "Active"
                       ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.STATUS_ACTIVE)
@@ -135,11 +133,11 @@ class HouseConnectionDetailCard extends StatelessWidget {
                               visible: provider.isVisible,
                               child: Wrap(
                                 children: [
-                                  _getLabeltext(
+                                  _getLabelText(
                                       i18.consumer.CONSUMER_CATEGORY, waterconnection?.additionalDetails?.category ?? i18.common.NA,
                                       context,
                                       ),
-                                  _getLabeltext(
+                                  _getLabelText(
                                       i18.consumer.CONSUMER_SUBCATEGORY,  waterconnection?.additionalDetails?.subCategory ?? i18.common.NA,
                                       context,
                                       )

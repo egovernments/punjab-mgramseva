@@ -1,14 +1,9 @@
 import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
-import 'package:mgramseva/components/Dashboard/BillsTable.dart';
 import 'package:mgramseva/components/Dashboard/DashboardCard.dart';
-import 'package:mgramseva/model/common/metric.dart';
-import 'package:mgramseva/model/file/file_store.dart';
+
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/providers/language.dart';
@@ -17,32 +12,24 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/common_methods.dart';
-import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
-import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
-import 'package:mgramseva/widgets/GridCard.dart';
-import 'package:mgramseva/widgets/BaseAppBar.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
-import 'package:mgramseva/widgets/LabelText.dart';
-import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
-import 'package:mgramseva/widgets/custom_overlay/show_overlay.dart';
-import 'package:mgramseva/widgets/grid_view.dart';
+import 'package:mgramseva/widgets/custom_overlay/CustomOverlay.dart';
 import 'package:mgramseva/components/Dashboard/nested_date_picker.dart';
-import 'package:mgramseva/widgets/tab_button.dart';
+import 'package:mgramseva/widgets/TabButton.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
-import '../../widgets/customAppbar.dart';
-import 'revenue_dashboard/revenue_dashboard.dart';
-import 'search_expense.dart';
-import 'package:mgramseva/widgets/pagination.dart';
-import 'package:universal_html/html.dart' as html;
+import '../../widgets/CustomAppbar.dart';
+import 'RevenueExpenseDashboard/RevenueDashboard.dart';
+import 'SearchExpense.dart';
+import 'package:mgramseva/widgets/Pagination.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
 
 class Dashboard extends StatefulWidget {
@@ -101,11 +88,11 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
 
     return WillPopScope(
       onWillPop: () async {
-        if (CustomOVerlay.removeOverLay()) return false;
+        if (CustomOverlay.removeOverLay()) return false;
         return true;
       },
       child: GestureDetector(
-        onTap: () => CustomOVerlay.removeOverLay(),
+        onTap: () => CustomOverlay.removeOverLay(),
         child: FocusWatcher(
             child: Scaffold(
           appBar: CustomAppBar(),
@@ -297,7 +284,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
     RenderBox? box = key.currentContext!.findRenderObject() as RenderBox?;
     Offset position = box!.localToGlobal(Offset.zero);
 
-    CustomOVerlay.showOverlay(
+    CustomOverlay.showOverlay(
         context,
         NestedDatePicker(
             onSelectionOfDate: (date) =>
@@ -320,7 +307,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
       }
       return;
     }
-    ;
+
 
     final FlutterShareMe flutterShareMe = FlutterShareMe();
     var fileName = 'annualdashboard';
@@ -400,7 +387,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
   }
 
   void onClickOfBackButton() {
-    CustomOVerlay.removeOverLay();
+    CustomOverlay.removeOverLay();
     Navigator.pop(context);
   }
 }

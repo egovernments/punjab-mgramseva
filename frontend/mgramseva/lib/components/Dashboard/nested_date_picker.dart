@@ -4,7 +4,7 @@ import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:mgramseva/widgets/custom_overlay/show_overlay.dart';
+import 'package:mgramseva/widgets/custom_overlay/CustomOverlay.dart';
 
 class NestedDatePicker extends StatefulWidget {
   final ValueChanged<DatePeriod?> onSelectionOfDate;
@@ -229,10 +229,10 @@ class _NestedDatePickerState extends State<NestedDatePicker> {
     );
   }
 
-  void onSelectionOfDate(datePeriod) {
+  void onSelectionOfDate(datePeriod) {    ///Type should be DatePeriod
     if (datePeriod?.dateType != DateType.MONTH)
       yearsWithMonths.forEach((e) => e.isExpanded = false);
-    CustomOVerlay.removeOverLay();
+    CustomOverlay.removeOverLay();
     widget.onSelectionOfDate(datePeriod);
   }
 

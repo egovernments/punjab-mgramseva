@@ -18,7 +18,7 @@ class SelectFieldBuilder extends StatefulWidget {
   final bool? readOnly;
   final bool? isEnabled;
   final String? requiredMessage;
-  final GlobalKey? contextkey;
+  final GlobalKey? contextKey;
   final TextEditingController? controller;
   final Key? key;
   final GlobalKey<SearchSelectFieldState>? suggestionKey;
@@ -29,7 +29,7 @@ class SelectFieldBuilder extends StatefulWidget {
       this.isEnabled,
       this.readOnly,
       this.requiredMessage,
-      this.contextkey,
+      this.contextKey,
       this.controller,this.key, this.suggestionKey});
 
   @override
@@ -42,7 +42,7 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
   @override
   Widget build(BuildContext context) {
 // Label Text
-    Widget textLabelwidget =
+    Widget textLabelWidget =
         Wrap(direction: Axis.horizontal, children: <Widget>[
       Text(ApplicationLocalizations.of(context).translate(widget.labelText),
           textAlign: TextAlign.left,
@@ -91,7 +91,7 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
         return Container(
-          key: widget.contextkey,
+          key: widget.contextKey,
           margin:
               const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
           child: Row(children: [
@@ -99,7 +99,7 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
                 alignment: Alignment.centerLeft,
                 width: MediaQuery.of(context).size.width / 3,
                 padding: EdgeInsets.only(top: 18, bottom: 3),
-                child: textLabelwidget),
+                child: textLabelWidget),
             Container(
                 width: MediaQuery.of(context).size.width / 2.5,
                 padding: EdgeInsets.only(top: 18, bottom: 3),
@@ -126,13 +126,13 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
         );
       } else {
         return Container(
-          key: widget.contextkey,
+          key: widget.contextKey,
           margin: const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
           child: Column(children: [
             Container(
                 padding: EdgeInsets.only(top: 18, bottom: 3),
                 child: new Align(
-                    alignment: Alignment.centerLeft, child: textLabelwidget)),
+                    alignment: Alignment.centerLeft, child: textLabelWidget)),
             Consumer<LanguageProvider>(builder: (_, consumerProvider, child) {
               return SearchSelectField(widget.labelText, widget.options, widget.controller, widget.widget,
                   widget.value, widget.isEnabled, widget.isRequired, widget.requiredMessage, key: widget.suggestionKey,);

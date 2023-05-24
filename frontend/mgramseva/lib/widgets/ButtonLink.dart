@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/common_styles.dart';
 
 class ButtonLink extends StatelessWidget {
   final String label;
-  final Function()? widgetfunction;
-  ButtonLink(this.label, this.widgetfunction);
+  final Function()? widgetFunction;
+  ButtonLink(this.label, this.widgetFunction);
 
   @override
   Widget build(BuildContext context) {
     return new GestureDetector(
-      onTap: widgetfunction,
+      onTap: widgetFunction,
       child: Padding(
           padding: const EdgeInsets.only(
               left: 8, top: 10, bottom: 10, right: 25),

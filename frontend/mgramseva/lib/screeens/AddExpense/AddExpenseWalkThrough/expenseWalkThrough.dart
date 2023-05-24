@@ -5,7 +5,7 @@ import 'package:mgramseva/widgets/DatePickerFieldBuilder.dart';
 import 'package:mgramseva/widgets/FilePicker.dart';
 import 'package:mgramseva/widgets/SelectFieldBuilder.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/auto_complete.dart';
+import 'package:mgramseva/widgets/AutoCompleteView.dart';
 
 var expensesDetailsProvider = ExpensesDetailsProvider();
 

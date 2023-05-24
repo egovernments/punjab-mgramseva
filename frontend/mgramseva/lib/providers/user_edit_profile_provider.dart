@@ -4,7 +4,7 @@ import 'package:mgramseva/repository/user_edit_profile_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +34,7 @@ class UserEditProfileProvider with ChangeNotifier {
             ..userDetails?.userRequest?.name = edituserResponse.user?.first.name
             ..userDetails?.userRequest?.emailId = edituserResponse.user?.first
                 .emailId
-          ..loginCredentails = Provider.of<CommonProvider>(context, listen: false).userDetails;
+          ..loginCredentials = Provider.of<CommonProvider>(context, listen: false).userDetails;
         }
         Navigator.pop(context);
         Navigator.pop(context);

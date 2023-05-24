@@ -8,9 +8,9 @@ import 'package:mgramseva/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class ExpenseWalkThroughContainer extends StatefulWidget {
-  final Function? onnext;
+  final Function? onNext;
 
-  ExpenseWalkThroughContainer(this.onnext);
+  ExpenseWalkThroughContainer(this.onNext);
   @override
   State<StatefulWidget> createState() {
     return _ExpenseWalkThroughContainerState();
@@ -30,7 +30,7 @@ class _ExpenseWalkThroughContainerState
     return Consumer<ExpensesDetailsProvider>(
         builder: (_, expenseProvider, child) {
       RenderBox? box = expenseProvider
-          .expenseWalkthrougList[expenseProvider.activeindex]
+          .expenseWalkthrougList[expenseProvider.activeIndex]
           .key!
           .currentContext!
           .findRenderObject() as RenderBox?;
@@ -48,13 +48,13 @@ class _ExpenseWalkThroughContainerState
                           children: [
                             expenseProvider
                                 .expenseWalkthrougList[
-                                    expenseProvider.activeindex]
+                                    expenseProvider.activeIndex]
                                 .widget,
                           ],
                         ))))),
         Positioned(
             right: box.size.width / 3,
-            top: expenseProvider.activeindex ==
+            top: expenseProvider.activeIndex ==
                     (expenseProvider.expenseWalkthrougList.length - 1)
                 ? position.dy - 25
                 : box.size.height + position.dy + 20,
@@ -71,7 +71,7 @@ class _ExpenseWalkThroughContainerState
             )),
         Positioned(
             right: position.dx,
-            top: expenseProvider.activeindex ==
+            top: expenseProvider.activeIndex ==
                     (expenseProvider.expenseWalkthrougList.length - 1)
                 ? position.dy -
                     box.size.height -
@@ -97,14 +97,14 @@ class _ExpenseWalkThroughContainerState
                             ApplicationLocalizations.of(context).translate(
                                 expenseProvider
                                     .expenseWalkthrougList[
-                                        expenseProvider.activeindex]
+                                        expenseProvider.activeIndex]
                                     .name),
                             style: TextStyle(
                                 fontSize: 14,
                                 color: Theme.of(context).primaryColorLight),
                             textAlign: TextAlign.start,
                           )),
-                      expenseProvider.activeindex ==
+                      expenseProvider.activeIndex ==
                               expenseProvider.expenseWalkthrougList.length - 1
                           ? Padding(
                               padding: EdgeInsets.only(
@@ -114,7 +114,7 @@ class _ExpenseWalkThroughContainerState
                                   children: [
                                     GestureDetector(
                                         onTap: () async {
-                                          expenseProvider.activeindex = 0;
+                                          expenseProvider.activeIndex = 0;
                                           Navigator.pop(context);
                                           Provider.of<CommonProvider>(context,
                                               listen: false)
@@ -159,7 +159,7 @@ class _ExpenseWalkThroughContainerState
                                   children: [
                                     TextButton(
                                         onPressed: () async {
-                                          expenseProvider.activeindex = 0;
+                                          expenseProvider.activeIndex = 0;
                                           Navigator.pop(context);
                                           Provider.of<CommonProvider>(context,
                                               listen: false)
@@ -184,19 +184,19 @@ class _ExpenseWalkThroughContainerState
                                                       .length -
                                                   1 <=
                                               active) {
-                                            expenseProvider.activeindex = 0;
+                                            expenseProvider.activeIndex = 0;
                                             Navigator.pop(context);
                                             setState(() {
                                               active = 0;
                                             });
                                           } else {
-                                            widget.onnext!(
-                                                expenseProvider.activeindex);
+                                            widget.onNext!(
+                                                expenseProvider.activeIndex);
                                             await Scrollable.ensureVisible(
                                                 expenseProvider
                                                     .expenseWalkthrougList[
                                                         expenseProvider
-                                                            .activeindex]
+                                                            .activeIndex]
                                                     .key!
                                                     .currentContext!,
                                                 duration: new Duration(

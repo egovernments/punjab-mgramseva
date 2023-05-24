@@ -2,21 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/changePasswordDetails/changePassword_details.dart';
-import 'package:mgramseva/model/success_handler.dart';
-import 'package:mgramseva/repository/changePassword_details_repo.dart';
-import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/custom_exception.dart';
+import 'package:mgramseva/repository/change_password_details_repo.dart';
 import 'package:mgramseva/utils/error_logging.dart';
-import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/models.dart';
-import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/widgets/CommonSuccessPage.dart';
-import 'package:mgramseva/utils/custom_exception.dart';
-import 'package:mgramseva/utils/global_variables.dart';
-import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class ChangePasswordProvider with ChangeNotifier {
@@ -44,7 +33,7 @@ class ChangePasswordProvider with ChangeNotifier {
     }
   }
 
-  callNotifyer() {
+  callNotifier() {
     notifyListeners();
   }
 }

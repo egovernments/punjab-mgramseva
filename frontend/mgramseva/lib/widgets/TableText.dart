@@ -3,11 +3,11 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 
 class BuildTableText extends StatelessWidget {
   final labelText;
-  final labelvalue;
-  BuildTableText(this.labelText, this.labelvalue);
+  final labelValue;
+  BuildTableText(this.labelText, this.labelValue);
   @override
   Widget build(BuildContext context) {
-    var textLabelwidget = Text(
+    var textLabelWidget = Text(
         '${ApplicationLocalizations.of(context).translate(labelText)}',
         textAlign: TextAlign.left,
         style: TextStyle(
@@ -22,7 +22,7 @@ class BuildTableText extends StatelessWidget {
                   width: MediaQuery.of(context).size.width / 3,
                   padding: EdgeInsets.only(top: 18, bottom: 3),
                   child: new Align(
-                      alignment: Alignment.centerLeft, child: textLabelwidget)),
+                      alignment: Alignment.centerLeft, child: textLabelWidget)),
               Container(
                   width: MediaQuery.of(context).size.width / 2.2,
                   padding: EdgeInsets.only(top: 18, bottom: 3),
@@ -30,7 +30,7 @@ class BuildTableText extends StatelessWidget {
                     children: [
                       new Align(
                           alignment: Alignment.centerLeft,
-                          child: Text(labelvalue,
+                          child: Text(labelValue,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,

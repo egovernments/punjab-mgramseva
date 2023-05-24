@@ -16,8 +16,8 @@ class CommonDownloadState extends State<CommonDownload> {
   @override
   void initState() {
     if (widget.query['mode'] == 'download-receipt') {
-      Provider.of<BillPayemntsProvider>(context, listen: false)
-        ..FetchBillPaymentswithoutLogin(widget.query);
+      Provider.of<BillPaymentsProvider>(context, listen: false)
+        ..FetchBillPaymentsWithoutLogin(widget.query);
     } else if (widget.query['mode'] == 'pay') {
       Provider.of<FetchBillProvider>(context, listen: false)
         ..FetchBillwithoutLogin(widget.query);
