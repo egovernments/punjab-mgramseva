@@ -735,9 +735,12 @@ public class DemandService {
 		
 			// Call demand update in bulk to update the interest or penalty
 			if(!isGetPenaltyEstimate) {
-				DemandRequest request = DemandRequest.builder().demands(demandsToBeUpdated).requestInfo(requestInfo).build();
-				repository.fetchResult(utils.getUpdateDemandUrl(), request);
-				return res.getDemands();
+				if(demandsToBeUpdated.size() > 0) {
+					DemandRequest request = DemandRequest.builder().demands(demandsToBeUpdated).requestInfo(requestInfo).build();
+					repository.fetchResult(utils.getUpdateDemandUrl(), request);
+					return res.getDemands();
+				}
+				
 			}
 		}
 		return demandResponse;

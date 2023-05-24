@@ -206,6 +206,22 @@ class Common {
   String get CORE_CONFIRM => 'CORE_CONFIRM';
   String get CORE_ADVANCE_RUPEE => 'CORE_ADVANCE_RUPEE';
   String get ADVANCE_AVAILABLE => 'ADVANCE_AVAILABLE';
+
+  String get VILLAGE_CODE => 'VILLAGE_CODE';
+  String get VILLAGE_NAME => 'VILLAGE_NAME';
+  String get SECTION_CODE => 'SECTION_CODE';
+  String get SUB_DIVISION_CODE => 'SUB_DIVISION_CODE';
+  String get DIVISION_CODE => 'DIVISION_CODE';
+  String get DISTRICT_CODE => 'DISTRICT_CODE';
+  String get PROJECT_SCHEME_CODE => 'PROJECT_SCHEME_CODE';
+
+  String get CHARGE_HEAD => 'CHARGE_HEAD';
+  String get CALC_TYPE => 'CALC_TYPE';
+  String get BILLING_SLAB => 'BILLING_SLAB';
+  String get SERVICE_TYPE => 'SERVICE_TYPE';
+  String get RATE_PERCENTAGE => 'RATE_PERCENTAGE';
+
+  String get REGION_NAME => 'REGION_NAME';
 }
 
 class Password {
@@ -472,6 +488,7 @@ class BillDetails {
       'CORE_NET_DUE_AMOUNT_WITH_PENALTY';
   String get WS_10201 => 'WS_10201';
   String get WS_10102 => 'WS_10102';
+  String get WATER_CHARGES_10101 => 'WATER_CHARGES_10101';
   String get CORE_PENALTY_APPLICABLE => 'CORE_PENALTY_APPLICABLE';
 }
 
@@ -635,6 +652,11 @@ class _DashBoard {
   String get EXPENDITURE_DESC => 'EXPENDITURE_DESC';
   String get COLLECTION_DESC => 'COLLECTION_DESC';
   String get NUMBER_OF_RECORDS => 'NUMBER_OF_RECORDS';
+
+  String get CORE_GPWSC_DETAILS_AND_RATE_INFO =>
+      'CORE_GPWSC_DETAILS_AND_RATE_INFO';
+  String get GPWSC_DETAILS => 'GPWSC_DETAILS';
+  String get GPWSC_RATE_INFO => 'GPWSC_RATE_INFO';
 }
 
 class _ExpenseWalkThroughMsg {

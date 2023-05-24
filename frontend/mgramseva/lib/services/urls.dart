@@ -80,6 +80,10 @@ class Url {
       'ws-services/wc/_revenueCollectionData';
   static const String DASHBOARD_EXPENSE_TABLE_DATA =
       'echallan-services/eChallan/v1/_chalanCollectionData';
+
+  /// GPWSC Details
+  static const String IFIX_DEPARTMENT_ENTITY =
+      'ifix-department-entity/departmentEntity/v1/_search';
 }
 
 class UserUrl {

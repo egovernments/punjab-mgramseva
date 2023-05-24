@@ -15,6 +15,7 @@ import 'package:mgramseva/screeens/ConnectionResults/SearchConnection.dart';
 import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetails.dart';
 import 'package:mgramseva/screeens/Feedback/FeedBack.dart';
 import 'package:mgramseva/screeens/GenerateBill/GenerateBill.dart';
+import 'package:mgramseva/screeens/GpwscDetails/GpwscDetails.dart';
 import 'package:mgramseva/screeens/Home/Home.dart';
 import 'package:mgramseva/screeens/HouseholdDetail/HouseholdDetail.dart';
 import 'package:mgramseva/screeens/HouseholdRegister/HouseholdRegister.dart';
@@ -344,6 +345,11 @@ class Routing {
                 name: tabIndex != null
                     ? '${Routes.DASHBOARD}?tab=$tabIndex'
                     : '${Routes.DASHBOARD}'));
+      case Routes.GPWSC_DETAILS_AND_RATE_INFO:
+        return MaterialPageRoute(
+            builder: (_) => GpwscDetails(),
+            settings: RouteSettings(name: Routes.GPWSC_DETAILS_AND_RATE_INFO));
+
       case Routes.SEARCH_CONSUMER_RESULT:
         if (settings.arguments == null) {
           return MaterialPageRoute(
