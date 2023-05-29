@@ -31,7 +31,7 @@ class BuildTextField extends StatefulWidget {
   final InputBorder? inputBorder;
   final Widget? prefixIcon;
   final String? placeHolder;
-  final GlobalKey? contextkey;
+  final GlobalKey? contextKey;
   final AutovalidateMode? autoValidation;
   final bool? isFilled;
   final Widget? suffixIcon;
@@ -60,7 +60,7 @@ class BuildTextField extends StatefulWidget {
         this.inputBorder,
         this.prefixIcon,
         this.placeHolder,
-        this.contextkey,
+        this.contextKey,
         this.isFilled,
         this.requiredMessage,
         this.autoValidation,
@@ -75,7 +75,7 @@ class _BuildTextField extends State<BuildTextField> {
   @override
   Widget build(BuildContext context) {
     // TextForm
-    Widget textFormwidget = ForceFocusWatcher(
+    Widget textFormWidget = ForceFocusWatcher(
         child: TextFormField(
             style: TextStyle(
                 fontWeight: FontWeight.w400,
@@ -179,7 +179,7 @@ class _BuildTextField extends State<BuildTextField> {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
         return Container(
-            key: widget.contextkey,
+            key: widget.contextKey,
             margin:
             const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20),
             child: Row(
@@ -198,7 +198,7 @@ class _BuildTextField extends State<BuildTextField> {
                     padding: EdgeInsets.only(top: 18, bottom: 3),
                     child: Column(
                       children: [
-                        textFormwidget,
+                        textFormWidget,
                         CommonWidgets().buildHint(widget.hint, context)
                       ],
                     )),
@@ -206,7 +206,7 @@ class _BuildTextField extends State<BuildTextField> {
             ));
       } else {
         return Container(
-            key: widget.contextkey,
+            key: widget.contextKey,
             margin:
             const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
             child: Column(
@@ -219,7 +219,7 @@ class _BuildTextField extends State<BuildTextField> {
                           alignment: Alignment.centerLeft,
                           child: textLabelwidget)),
                 ),
-                textFormwidget,
+                textFormWidget,
                 CommonWidgets().buildHint(widget.hint, context)
               ],
             ));

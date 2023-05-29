@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -17,7 +16,7 @@ class MeterReading extends StatelessWidget {
       this.controller4, this.controller5,
       {this.isRequired, this.isDisabled});
 
-  _getConatiner(constraints, context) {
+  _getContainer(constraints, context) {
     return [
       Container(
           width: constraints.maxWidth > 760
@@ -68,8 +67,8 @@ class MeterReading extends StatelessWidget {
                   top: 5.0, bottom: 5, right: 20, left: 20) : const EdgeInsets.only(
                   top: 5.0, bottom: 5, right: 8, left: 8),
               child: constraints.maxWidth > 760
-                  ? Row(children: _getConatiner(constraints, context))
-                  : Column(children: _getConatiner(constraints, context)));
+                  ? Row(children: _getContainer(constraints, context))
+                  : Column(children: _getContainer(constraints, context)));
         }));
   }
 }

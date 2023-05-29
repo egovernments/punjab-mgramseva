@@ -65,32 +65,33 @@ class GpwscBoundaryDetailCard extends StatelessWidget {
                               "${ApplicationLocalizations.of(context).translate(i18.common.SECTION_CODE)}",
                               departmentProvider.hierarchy.containsKey("5")
                                   ? '${departmentProvider.hierarchy["5"]!["code"]}-${departmentProvider.hierarchy["5"]!["name"]}'
-                                  : '',
+                                  : 'NA',
                               context),
                           _getLabeltext(
                               "${ApplicationLocalizations.of(context).translate(i18.common.SUB_DIVISION_CODE)}",
                               departmentProvider.hierarchy.containsKey("4")
                                   ? '${departmentProvider.hierarchy["4"]!['code']}-${departmentProvider.hierarchy["5"]!["name"]}'
-                                  : '',
+                                  : 'NA',
                               context),
                           _getLabeltext(
                               "${ApplicationLocalizations.of(context).translate(i18.common.DIVISION_CODE)}",
                               departmentProvider.hierarchy.containsKey("3")
                                   ? '${departmentProvider.hierarchy["3"]!['code']}-${departmentProvider.hierarchy["3"]!["name"]}'
-                                  : '',
+                                  : 'NA',
                               context),
                           _getLabeltext(
                               "${ApplicationLocalizations.of(context).translate(i18.common.PROJECT_SCHEME_CODE)}",
                               commonProvider.userDetails!.selectedtenant?.city?.code,
                               context),
-                          _getLabeltext(
-                              "${ApplicationLocalizations.of(context).translate(i18.common.REGION_NAME)}",
-                              '${commonProvider.userDetails!.selectedtenant?.city?.regionName}',
-                              context),
-                          _getLabeltext(
-                              "${ApplicationLocalizations.of(context).translate(i18.common.DISTRICT_CODE)}",
-                              '${commonProvider.userDetails!.selectedtenant?.city?.districtCode}-${commonProvider.userDetails!.selectedtenant?.city?.districtName}',
-                              context)
+                         _getLabeltext(
+                                "${ApplicationLocalizations.of(context).translate(i18.common.REGION_NAME)}",
+                                commonProvider.userDetails!.selectedtenant?.city?.regionName != null && (commonProvider.userDetails!.selectedtenant?.city?.regionName ?? '').isNotEmpty ? '${commonProvider.userDetails!.selectedtenant?.city?.regionName}' : 'NA',
+                                context),
+                        _getLabeltext(
+                                  "${ApplicationLocalizations.of(context).translate(i18.common.DISTRICT_CODE)}",
+                                   commonProvider.userDetails!.selectedtenant?.city?.districtCode == null && commonProvider.userDetails!.selectedtenant?.city?.districtName == null ? 'NA' 
+                                   : '${commonProvider.userDetails!.selectedtenant?.city?.districtCode ?? 'NA'}-${commonProvider.userDetails!.selectedtenant?.city?.districtName ?? 'NA'}',
+                                    context)
                         ],
                       ),
                     )

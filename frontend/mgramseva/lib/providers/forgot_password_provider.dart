@@ -7,7 +7,7 @@ import 'package:mgramseva/utils/loaders.dart';
 import 'package:provider/provider.dart';
 
 class ForgotPasswordProvider with ChangeNotifier {
-  otpforresetpassword(BuildContext context, String mobileNumber) async {
+  otpForResetPassword(BuildContext context, String mobileNumber) async {
     /// Unfocus the text field
     FocusScope.of(context).unfocus();
 
@@ -40,7 +40,7 @@ class ForgotPasswordProvider with ChangeNotifier {
     }
   }
 
-  void callNotifyer() {
+  void callNotifier() {
     notifyListeners();
   }
 }

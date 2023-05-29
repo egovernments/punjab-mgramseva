@@ -8,7 +8,7 @@ import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/widgets/LanguageCard.dart';
-import 'package:mgramseva/widgets/footer.dart';
+import 'package:mgramseva/widgets/Footer.dart';
 import 'package:provider/provider.dart';
 
 class SideBar extends StatelessWidget {

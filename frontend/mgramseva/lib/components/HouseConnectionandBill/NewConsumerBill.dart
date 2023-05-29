@@ -78,15 +78,13 @@ class NewConsumerBillState extends State<NewConsumerBill> {
 
   @override
   Widget build(BuildContext context) {
-    return buidBillview(widget.waterConnection?.fetchBill ?? BillList());
+    return buildBillView(widget.waterConnection?.fetchBill ?? BillList());
   }
 
-  buidBillview(BillList billList) {
+  buildBillView(BillList billList) {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     var penalty = billList.bill!.isEmpty ? Penalty(0.0, '0', false) : CommonProvider.getPenalty(widget.waterConnection?.demands);
     var penaltyApplicable = billList.bill!.isEmpty ? PenaltyApplicable(0.0)  : CommonProvider.getPenaltyApplicable(widget.demandList);
-    var houseHoldProvider =
-    Provider.of<HouseHoldProvider>(context, listen: false);
 
     return LayoutBuilder(builder: (context, constraints) {
       var houseHoldProvider =

@@ -135,6 +135,7 @@ class Common {
   String get OFFLINE_NEFT => 'OFFLINE_NEFT';
   String get OFFLINE_RTGS => 'OFFLINE_RTGS';
   String get POSTAL_ORDER => 'OFFLINE_RTGS';
+  String get PAYGOV => 'PAYGOV';
 
   String get FULL_AMOUNT => 'FULL_AMOUNT';
   String get CUSTOM_AMOUNT => 'CUSTOM_AMOUNT';
@@ -308,6 +309,10 @@ class Expense {
 
   /// Unable to Search the Expenses
   String get NO_FIELDS_FILLED => 'NO_FIELDS_FILLED';
+
+  /// Bill List is empty
+  String get NO_BILL_FOUND => 'NO_BILL_FOUND';
+  String get ONLINE_NOT_AVAILABLE => 'ONLINE_NOT_AVAILABLE';
 
   ///Modified expenditure successfully
   String get MODIFIED_EXPENDITURE_SUCCESSFULLY =>
@@ -549,6 +554,13 @@ class _Payment {
   String get BILL_DETAILS => 'BILL_DETAILS';
   String get CORE_CHANGE_THE_AMOUNT => 'CORE_CHANGE_THE_AMOUNT';
   String get CORE_AMOUNT_CONFIRMATION => 'CORE_AMOUNT_CONFIRMATION';
+  String get CORE_I_AGREE_TO_THE => 'CORE_I_AGREE_TO_THE';
+  String get TERMS_N_CONDITIONS => 'TERMS_N_CONDITIONS';
+  String get PROCEED_TO_COLLECT => 'PROCEED_TO_COLLECT';
+  String get TRANSACTION_ID => 'TRANSACTION_ID';
+  String get WHATSAPP_TEXT_SHARE_RECEIPT => 'WHATSAPP_TEXT_SHARE_RECEIPT';
+  String get PAYMENT_FAILED => 'PAYMENT_FAILED';
+  String get SHARE_TRANSACTION_RECEIPT => 'SHARE_TRANSACTION_RECEIPT';
 }
 
 class _HomeWalkThroughMsg {

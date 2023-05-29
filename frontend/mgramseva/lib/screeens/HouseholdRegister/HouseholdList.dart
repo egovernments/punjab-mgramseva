@@ -6,7 +6,7 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:provider/provider.dart';
 
 class HouseholdList extends StatefulWidget {
@@ -39,9 +39,9 @@ class _HouseholdListState extends State<HouseholdList> {
           } else {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
-                return Loaders.CircularLoader();
+                return Loaders.circularLoader();
               case ConnectionState.active:
-                return Loaders.CircularLoader();
+                return Loaders.circularLoader();
               default:
                 return Container();
             }

@@ -14,7 +14,7 @@ class Notifications extends StatefulWidget {
   }
 }
 
-stringreplacer(String? input, Map? pattern) {
+stringReplacer(String? input, Map? pattern) {
   var output = input;
   pattern?.keys.forEach((element) {
     output = output!.replaceFirst(element, pattern[element]);
@@ -40,15 +40,13 @@ class _NotificationsState extends State<Notifications> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
-                  onTap: () {
-                    widget.event!.actions != null &&
-                            widget.event!.actions?.actionUrls?.first
-                                    .actionUrl !=
-                                ""
-                        ? Navigator.pushNamed(context,
-                            widget.event!.actions!.actionUrls!.first.actionUrl!)
-                        : null;
-                  },
+                  onTap: widget.event!.actions != null &&
+                      widget.event!.actions?.actionUrls?.first
+                          .actionUrl !=
+                          "" ? () {
+                    Navigator.pushNamed(context,
+                            widget.event!.actions!.actionUrls!.first.actionUrl!);
+                  } : null,
                   child: Container(
                       child: Padding(
                           padding: EdgeInsets.all(8),
@@ -76,7 +74,7 @@ class _NotificationsState extends State<Notifications> {
                                       ? MediaQuery.of(context).size.width >720 ? MediaQuery.of(context).size.width/1.4 :  MediaQuery.of(context).size.width / 1.15
                                       : MediaQuery.of(context).size.width / 1.4,
                                   child: Text(
-                                    stringreplacer(
+                                    stringReplacer(
                                         ApplicationLocalizations.of(context)
                                             .translate(widget
                                                         .event

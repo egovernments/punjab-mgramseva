@@ -12,16 +12,16 @@ import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
-import 'package:mgramseva/widgets/BottonButtonBar.dart';
+import 'package:mgramseva/widgets/BottomButtonBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/footer.dart';
+import 'package:mgramseva/widgets/Footer.dart';
 import 'package:provider/provider.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 
 class EditProfile extends StatefulWidget {
@@ -162,9 +162,9 @@ class _EditProfileState extends State<EditProfile> {
                     } else {
                       switch (snapshot.connectionState) {
                         case ConnectionState.waiting:
-                          return Loaders.CircularLoader();
+                          return Loaders.circularLoader();
                         case ConnectionState.active:
-                          return Loaders.CircularLoader();
+                          return Loaders.circularLoader();
                         default:
                           return Container();
                       }

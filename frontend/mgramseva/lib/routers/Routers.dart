@@ -67,11 +67,14 @@ class Routes {
 
   static const String SEARCH_CONSUMER_RESULT = '/home/consumersearchresult';
 
-  static const String PAYMENT_SUCCESS = 'paymentSuccess';
+  static const String PAYMENT_SUCCESS = '/paymentSuccess';
+  static const String PAYMENT_FAILURE = '/paymentFailure';
 
   static const String SUCCESS_VIEW = '/success';
 
   static const String POST_PAYMENT_FEED_BACK = '/feedBack';
+
+  static const String COMMON_PAYMENT = '/commonPayment';
 
   static const String FEED_BACK_SUBMITTED_SUCCESSFULLY =
       '/feedBack/submittedSuccessfully';

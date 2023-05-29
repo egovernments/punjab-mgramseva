@@ -8,25 +8,25 @@ import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/routers/Routers.dart';
 import 'package:mgramseva/utils/constants.dart';
-import 'package:mgramseva/widgets/customAppbar.dart';
+import 'package:mgramseva/widgets/CustomAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/ShortButton.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
-import 'package:mgramseva/widgets/footer.dart';
+import 'package:mgramseva/widgets/Footer.dart';
 import 'package:provider/provider.dart';
 
 class HouseholdDetail extends StatefulWidget {
   final String? id;
   final String? mode;
   final String? status;
-  final WaterConnection? waterconnection;
+  final WaterConnection? waterConnection;
 
-  HouseholdDetail({Key? key, this.id, this.mode, this.status, this.waterconnection});
+  HouseholdDetail({Key? key, this.id, this.mode, this.status, this.waterConnection});
   @override
   State<StatefulWidget> createState() {
     return _HouseholdDetailState();
@@ -42,7 +42,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   afterViewBuild() {
     Provider.of<HouseHoldProvider>(context, listen: false)
       ..isVisible = false
-      ..fetchDemand(widget.waterconnection, widget.waterconnection?.demands, widget.id, widget.status);
+      ..fetchDemand(widget.waterConnection, widget.waterConnection?.demands, widget.id, widget.status);
   }
 
   buildDemandView(DemandList data) {
@@ -57,7 +57,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                     alignment: Alignment.centerRight,
                     child: ShortButton(
                         i18.generateBillDetails.GENERATE_NEW_BTN_LABEL,
-                        widget.waterconnection?.status == Constants.CONNECTION_STATUS.first ? null : () => {
+                        widget.waterConnection?.status == Constants.CONNECTION_STATUS.first ? null : () => {
                               Navigator.pushNamed(context, Routes.BILL_GENERATE,
                                   arguments: houseHoldProvider.waterConnection)
                             }))
@@ -110,13 +110,13 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                       return Notifiers.networkErrorPage(
                           context,
                           () => houseHoldProvider
-                              .fetchDemand(widget.waterconnection, widget.waterconnection?.demands));
+                              .fetchDemand(widget.waterConnection, widget.waterConnection?.demands));
                     } else {
                       switch (snapshot.connectionState) {
                         case ConnectionState.waiting:
-                          return Loaders.CircularLoader();
+                          return Loaders.circularLoader();
                         case ConnectionState.active:
-                          return Loaders.CircularLoader();
+                          return Loaders.circularLoader();
                         default:
                           return Container();
                       }

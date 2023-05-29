@@ -4,12 +4,13 @@ import 'package:mgramseva/model/mdms/tax_period.dart';
 
 part 'business_service.g.dart';
 
-
 @JsonSerializable()
 class BillingService {
-
   @JsonKey(name: "BusinessService")
   List<BusinessService>? businessServiceList;
+
+  @JsonKey(name: "PaymentService")
+  List<PaymentService>? paymentServiceList;
 
   @JsonKey(name: "TaxHeadMaster")
   List<TaxHeadMaster>? taxHeadMasterList;
@@ -26,8 +27,41 @@ class BillingService {
 }
 
 @JsonSerializable()
-class BusinessService {
+class PaymentService {
+  @JsonKey(name: "businessService")
+  String? businessService;
 
+  @JsonKey(name: "code")
+  String? code;
+
+  @JsonKey(name: "collectionModesNotAllowed")
+  List<String>? collectionModesNotAllowed;
+
+  @JsonKey(name: "partPaymentAllowed")
+  bool? partPaymentAllowed;
+
+  @JsonKey(name: "isAdvanceAllowed")
+  bool? isAdvanceAllowed;
+
+  @JsonKey(name: "isVoucherCreationEnabled")
+  bool? isVoucherCreationEnabled;
+
+  @JsonKey(name: "isActive")
+  bool? isActive;
+
+  @JsonKey(name: "type")
+  String? type;
+
+  PaymentService();
+
+  factory PaymentService.fromJson(Map<String, dynamic> json) =>
+      _$PaymentServiceFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PaymentServiceToJson(this);
+}
+
+@JsonSerializable()
+class BusinessService {
   @JsonKey(name: "businessService")
   String? businessService;
 
@@ -59,5 +93,3 @@ class BusinessService {
 
   Map<String, dynamic> toJson() => _$BusinessServiceToJson(this);
 }
-
-
