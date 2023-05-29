@@ -28,7 +28,7 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
   Widget build(BuildContext context) {
     return Consumer<ConsumerProvider>(builder: (_, consumerProvider, child) {
       RenderBox? box = consumerProvider
-          .consmerWalkthrougList[consumerProvider.activeindex]
+          .consmerWalkthrougList[consumerProvider.activeIndex]
           .key!
           .currentContext!
           .findRenderObject() as RenderBox?;
@@ -46,13 +46,13 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                           children: [
                             consumerProvider
                                 .consmerWalkthrougList[
-                                    consumerProvider.activeindex]
+                                    consumerProvider.activeIndex]
                                 .widget,
                           ],
                         ))))),
         Positioned(
             right: box.size.width / 3,
-            top: consumerProvider.activeindex ==
+            top: consumerProvider.activeIndex ==
                     (consumerProvider.consmerWalkthrougList.length - 1)
                 ? position.dy - 25
                 : box.size.height + position.dy + 20,
@@ -69,7 +69,7 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
             )),
         Positioned(
             right: position.dx,
-            top: consumerProvider.activeindex ==
+            top: consumerProvider.activeIndex ==
                     (consumerProvider.consmerWalkthrougList.length - 1)
                 ? position.dy -
                     box.size.height -
@@ -95,14 +95,14 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                             ApplicationLocalizations.of(context).translate(
                                 consumerProvider
                                     .consmerWalkthrougList[
-                                        consumerProvider.activeindex]
+                                        consumerProvider.activeIndex]
                                     .name),
                             style: TextStyle(
                                 fontSize: 14,
                                 color: Theme.of(context).primaryColorLight),
                             textAlign: TextAlign.start,
                           )),
-                      consumerProvider.activeindex ==
+                      consumerProvider.activeIndex ==
                               consumerProvider.consmerWalkthrougList.length - 1
                           ? Padding(
                               padding: EdgeInsets.only(
@@ -112,7 +112,7 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                                   children: [
                                     GestureDetector(
                                         onTap: () async {
-                                          consumerProvider.activeindex = 0;
+                                          consumerProvider.activeIndex = 0;
                                           Navigator.pop(context);
                                           Provider.of<CommonProvider>(context,
                                               listen: false)
@@ -157,7 +157,7 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                                   children: [
                                     TextButton(
                                         onPressed: () async {
-                                          consumerProvider.activeindex = 0;
+                                          consumerProvider.activeIndex = 0;
                                           Navigator.pop(context);
                                           Provider.of<CommonProvider>(context,
                                               listen: false)
@@ -181,19 +181,19 @@ class _WalkhroughContainerState extends State<WalkThroughContainer> {
                                                       .length -
                                                   1 <=
                                               active) {
-                                            consumerProvider.activeindex = 0;
+                                            consumerProvider.activeIndex = 0;
                                             Navigator.pop(context);
                                             setState(() {
                                               active = 0;
                                             });
                                           } else {
                                             widget.onnext!(
-                                                consumerProvider.activeindex);
+                                                consumerProvider.activeIndex);
                                             await Scrollable.ensureVisible(
                                                 consumerProvider
                                                     .consmerWalkthrougList[
                                                         consumerProvider
-                                                            .activeindex]
+                                                            .activeIndex]
                                                     .key!
                                                     .currentContext!,
                                                 duration: new Duration(

@@ -19,7 +19,7 @@ import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
-import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/walkthrough.dart';
+import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/walkThrough.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
@@ -30,18 +30,18 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
+import 'package:mgramseva/widgets/CustomDialog.dart';
 import 'package:mgramseva/widgets/SearchSelectFieldBuilder.dart';
-import 'package:mgramseva/widgets/dialog.dart';
 import 'package:provider/provider.dart';
 
 class ConsumerProvider with ChangeNotifier {
   late List<ConsumerWalkWidgets> consmerWalkthrougList;
   var streamController = StreamController.broadcast();
   late GlobalKey<FormState> formKey;
-  var isfirstdemand = false;
+  var isFirstDemand = false;
   var autoValidation = false;
-  int activeindex = 0;
+  int activeIndex = 0;
   late WaterConnection waterconnection;
   var boundaryList = <Boundary>[];
   var categoryList = [];
@@ -84,7 +84,7 @@ class ConsumerProvider with ChangeNotifier {
     });
     if (boundaryList.length == 1) {
       property.address.localityCtrl = boundaryList.first;
-      onChangeOflocaity(property.address.localityCtrl);
+      onChangeOfLocality(property.address.localityCtrl);
     }
     if (commonProvider.userDetails?.selectedtenant?.code != null) {
       property.address.gpNameCtrl.text =
@@ -211,22 +211,22 @@ class ConsumerProvider with ChangeNotifier {
           demand?.where((element) => element.status != 'CANCELLED').toList();
 
       if (demand?.isEmpty == true) {
-        isfirstdemand = false;
+        isFirstDemand = false;
       } else if (demand?.length == 1 &&
           demand?.first.consumerType == 'waterConnection-arrears') {
-        isfirstdemand = false;
+        isFirstDemand = false;
       } else if (demand?.length == 1 &&
           demand?.first.consumerType == 'waterConnection-advance' &&
           demand?.first.demandDetails?.first.taxHeadMasterCode ==
               'WS_ADVANCE_CARRYFORWARD') {
-        isfirstdemand = false;
+        isFirstDemand = false;
       } else {
-        isfirstdemand = true;
+        isFirstDemand = true;
       }
 
       if (paymentDetails.payments != null &&
           paymentDetails.payments!.isNotEmpty) {
-        isfirstdemand = true;
+        isFirstDemand = true;
       }
       notifyListeners();
     } catch (e, s) {
@@ -449,7 +449,7 @@ class ConsumerProvider with ChangeNotifier {
 
       property.address.localityCtrl = boundaryList.firstWhere(
           (element) => element.code == property.address.locality!.code);
-      onChangeOflocaity(property.address.localityCtrl);
+      onChangeOfLocality(property.address.localityCtrl);
 
       property.address.gpNameCtrl.text =
           commonProvider.userDetails!.selectedtenant!.code!;
@@ -478,7 +478,7 @@ class ConsumerProvider with ChangeNotifier {
           TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!);
       if (boundaryList.length == 1) {
         property.address.localityCtrl = boundaryList.first;
-        onChangeOflocaity(property.address.localityCtrl);
+        onChangeOfLocality(property.address.localityCtrl);
       }
       // notifyListeners();
     } catch (e) {
@@ -486,11 +486,11 @@ class ConsumerProvider with ChangeNotifier {
     }
   }
 
-  void setwallthrough(value) {
+  void setWalkThrough(value) {
     consmerWalkthrougList = value;
   }
 
-  void onChangeOflocaity(val) {
+  void onChangeOfLocality(val) {
     property.address.locality ??= Locality();
     property.address.locality?.code = val.code;
     property.address.locality?.area = val.area;
@@ -553,7 +553,7 @@ class ConsumerProvider with ChangeNotifier {
     return <DropdownMenuItem<Object>>[];
   }
 
-  List<DropdownMenuItem<Object>> getPropertTypeList() {
+  List<DropdownMenuItem<Object>> getPropertyTypeList() {
     if (languageList?.mdmsRes?.propertyTax?.PropertyTypeList != null) {
       return (languageList?.mdmsRes?.propertyTax?.PropertyTypeList ??
               <PropertyType>[])
@@ -580,9 +580,8 @@ class ConsumerProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  onChangeBillingcycle(val) {
+  onChangeBillingCycle(val) {
     selectedcycle = val;
-    var date = val;
     waterconnection.previousReadingDateCtrl.clear();
     waterconnection.BillingCycleCtrl.text = selectedcycle ?? '';
     waterconnection.meterInstallationDateCtrl.text = selectedcycle ?? '';
@@ -645,21 +644,21 @@ class ConsumerProvider with ChangeNotifier {
     return <DropdownMenuItem<Object>>[];
   }
 
-  incrementindex(index, consumerGenderKey) async {
+  incrementIndex(index, consumerGenderKey) async {
     if (boundaryList.length > 1) {
-      activeindex = index + 1;
+      activeIndex = index + 1;
     } else {
-      if (activeindex == 4) {
-        activeindex = index + 2;
+      if (activeIndex == 4) {
+        activeIndex = index + 2;
       } else {
-        activeindex = index + 1;
+        activeIndex = index + 1;
       }
     }
     await Scrollable.ensureVisible(consumerGenderKey.currentContext!,
         duration: new Duration(milliseconds: 100));
   }
 
-  callNotifyer() {
+  callNotifier() {
     notifyListeners();
   }
 

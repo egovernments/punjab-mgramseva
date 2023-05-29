@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mgramseva/Env/app_config.dart';
 import 'package:mgramseva/model/Events/events_List.dart';
-import 'package:mgramseva/model/common/pdfservice.dart';
+import 'package:mgramseva/model/common/pdf_service.dart';
 
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
@@ -17,10 +17,9 @@ import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/notifications_provider.dart';
 import 'package:mgramseva/repository/water_services_calculation.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
-import 'package:mgramseva/services/base_service.dart';
+import 'package:mgramseva/services/BaseService.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/common_methods.dart';
-import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -75,6 +74,7 @@ class CoreRepository extends BaseService {
     }
     return languageList;
   }
+
   Future<WCBillingSlabs?> getRateFromMdms(String tenantId) async {
     var body = {
       "MdmsCriteria": {
@@ -83,9 +83,7 @@ class CoreRepository extends BaseService {
           {
             "moduleName": "ws-services-calculation",
             "masterDetails": [
-              {
-                "name": "WCBillingSlab"
-              }
+              {"name": "WCBillingSlab"}
             ]
           }
         ]
@@ -110,6 +108,7 @@ class CoreRepository extends BaseService {
     }
     return languageList.mdmsRes?.wcBillingSlabList;
   }
+
   Future<PaymentType> getPaymentTypeMDMS(Map body) async {
     late PaymentType paymentType;
     var res = await makeRequest(
@@ -157,7 +156,7 @@ class CoreRepository extends BaseService {
               contentType: CommonMethods().getMediaType(file.path),
               filename: '${file.path.split('/').last}'));
         });
-      }else if(_paths is List<CustomFile>){
+      } else if (_paths is List<CustomFile>) {
         for (var i = 0; i < _paths.length; i++) {
           var path = _paths[i];
           var fileName = '${path.name}.${path.extension.toLowerCase()}';
@@ -217,7 +216,7 @@ class CoreRepository extends BaseService {
         return response.body;
       }
     } catch (e, s) {
-      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
   }
 
@@ -251,7 +250,7 @@ class CoreRepository extends BaseService {
         return pdfServiceResponse;
       }
     } catch (e, s) {
-      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
   }
 
@@ -283,12 +282,11 @@ class CoreRepository extends BaseService {
         return eventsResponse;
       }
     } catch (e, s) {
-      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
   }
 
   Future<bool?> updateNotifications(events) async {
-    EventsList? eventsResponse;
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
@@ -310,12 +308,11 @@ class CoreRepository extends BaseService {
 
       if (res != null) {
         return true;
-      }
-      else {
+      } else {
         return false;
       }
     } catch (e, s) {
-      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
   }
 
@@ -345,20 +342,19 @@ class CoreRepository extends BaseService {
       }
 
       final response = await FlutterDownloader.enqueue(
-        url: url,
-        savedDir: downloadPath,
-        fileName: '$fileName',
-        showNotification: true,
-        openFileFromNotification: true,
-        saveInPublicStorage: true
-      );
+          url: url,
+          savedDir: downloadPath,
+          fileName: '$fileName',
+          showNotification: true,
+          openFileFromNotification: true,
+          saveInPublicStorage: true);
       if (response != null) {
         CommonProvider.downloadUrl[response] = '$downloadPath/$fileName';
         return true;
       }
       return false;
     } catch (e, s) {
-      ErrorHandler().allExceptionsHandler(context, e);
+      ErrorHandler().allExceptionsHandler(context, e, s);
     }
   }
 

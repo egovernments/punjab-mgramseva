@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/widgets/BackgroundContainer.dart';
-import 'package:mgramseva/widgets/footer.dart';
+import 'package:mgramseva/widgets/Footer.dart';
 
 class LoggedInDesktopView extends StatelessWidget {
   final Widget widget;

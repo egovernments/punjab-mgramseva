@@ -31,7 +31,7 @@ class _HomeCard extends State<HomeCard> {
             onTap: () => Navigator.pushNamed(context, item.link,
                 arguments: item.arguments),
             child: new Card(
-                key: homeProvider.homeWalkthrougList
+                key: homeProvider.homeWalkthroughList
                     .where((element) => element.label == item.label)
                     .first
                     .key,

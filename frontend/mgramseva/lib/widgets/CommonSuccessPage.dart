@@ -4,30 +4,31 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
-import 'package:mgramseva/widgets/BottonButtonBar.dart';
+import 'package:mgramseva/widgets/BottomButtonBar.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/SuccessPage.dart';
 
 import 'DrawerWrapper.dart';
 import 'SideBar.dart';
-import 'footer.dart';
+import 'Footer.dart';
 
 class CommonSuccess extends StatelessWidget {
   final SuccessHandler successHandler;
   final VoidCallback? callBack;
-  final VoidCallback? callBackwatsapp;
-  final VoidCallback? callBackdownload;
-  final VoidCallback? callBackprint;
+  final VoidCallback? callBackWhatsApp;
+  final VoidCallback? callBackDownload;
+  final VoidCallback? callBackPrint;
   final bool? backButton;
   final bool isWithoutLogin;
+  final bool isConsumer;
 
   CommonSuccess(this.successHandler,
       {this.callBack,
-      this.callBackwatsapp,
-      this.callBackdownload,
-      this.callBackprint,
+      this.callBackWhatsApp,
+      this.callBackDownload,
+      this.callBackPrint,
       this.backButton,
-      this.isWithoutLogin = false});
+      this.isWithoutLogin = false, this.isConsumer = false});
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +100,7 @@ class CommonSuccess extends StatelessWidget {
                                 child: Visibility(
                               visible: successHandler.downloadLink != null,
                               child: TextButton.icon(
-                                onPressed: callBackdownload,
+                                onPressed: callBackDownload,
                                 icon: Icon(Icons.download_sharp),
                                 label: Text(
                                     ApplicationLocalizations.of(context)
@@ -117,7 +118,7 @@ class CommonSuccess extends StatelessWidget {
                                 child: Visibility(
                               visible: successHandler.printLabel != null,
                               child: TextButton.icon(
-                                onPressed: callBackprint,
+                                onPressed: callBackPrint,
                                 icon: Icon(
                                   Icons.print,
                                   color: Theme.of(context).primaryColor,
@@ -137,7 +138,7 @@ class CommonSuccess extends StatelessWidget {
                                 child: Visibility(
                               visible: successHandler.whatsAppShare != null,
                               child: TextButton.icon(
-                                onPressed: callBackwatsapp,
+                                onPressed: callBackWhatsApp,
                                 icon: (Image.asset('assets/png/whats_app.png')),
                                 label: Text(
                                   ApplicationLocalizations.of(context)
@@ -151,7 +152,7 @@ class CommonSuccess extends StatelessWidget {
                           ],
                         ),
                         Visibility(
-                          visible: !isWithoutLogin,
+                          visible: !isWithoutLogin || isConsumer,
                           child: BottomButtonBar(
                             successHandler.backButtonText,
                             callBack != null ? callBack : CommonMethods.home,

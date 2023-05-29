@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/language.dart';
 
-// import 'package:mgramseva/screeens/Consumer.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' hide Text;
 
@@ -12,12 +11,12 @@ class LanguageCard extends StatelessWidget {
   // final String value;
   final Languages language;
   final List<Languages> languages;
-  final double widthprect;
-  final double cpadding;
-  final double cmargin;
+  final double widthRect;
+  final double cPadding;
+  final double cMargin;
 
-  LanguageCard(this.language, this.languages, this.widthprect, this.cpadding,
-      this.cmargin);
+  LanguageCard(this.language, this.languages, this.widthRect, this.cPadding,
+      this.cMargin);
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +32,9 @@ class LanguageCard extends StatelessWidget {
           languageProvider.onSelectionOfLanguage(language, languages);
         },
         child: Container(
-            margin: new EdgeInsets.all(cmargin),
-            width: widthprect,
-            padding: new EdgeInsets.all(cpadding),
+            margin: new EdgeInsets.all(cMargin),
+            width: widthRect,
+            padding: new EdgeInsets.all(cPadding),
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
                 color: language.isSelected

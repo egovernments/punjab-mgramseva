@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/mdms/tenants.dart';
-import 'package:mgramseva/repository/tendants_repo.dart';
+import 'package:mgramseva/repository/tenants_repo.dart';
 import 'package:mgramseva/services/MDMS.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -39,7 +39,4 @@ class TenantsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  getTenant() {
-    return tenants!.tenantsList!.length;
-  }
 }

@@ -22,7 +22,7 @@ class SearchSelectField extends StatefulWidget {
 
 class SearchSelectFieldState extends State<SearchSelectField> {
   final FocusNode _focusNode = FocusNode();
-  bool isinit = false;
+  bool isInit = false;
   var selectedCode;
   // ignore: non_constant_identifier_names
   List<DropdownMenuItem<Object>> Options = [];
@@ -57,7 +57,7 @@ class SearchSelectFieldState extends State<SearchSelectField> {
   filerobjects(val) {
     if (val != "") {
       setState(() {
-        isinit = true;
+        isInit = true;
         Options = widget.options
             .where((element) => (element.child as Text)
                 .data
@@ -88,7 +88,7 @@ class SearchSelectFieldState extends State<SearchSelectField> {
               child: Material(
                 elevation: 4.0,
                 child: Container(
-                  height: Options.length == 0 && isinit == false
+                  height: Options.length == 0 && isInit == false
                       ? (widget.options.length * 50 < 150
                           ? widget.options.length * 50
                           : 150)
@@ -97,7 +97,7 @@ class SearchSelectFieldState extends State<SearchSelectField> {
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     children: <Widget>[
-                      for (var item in Options.length == 0 && isinit == false
+                      for (var item in Options.length == 0 && isInit == false
                           ? widget.options
                           : Options)
                         Ink(

@@ -41,7 +41,8 @@ class Url {
 
   ///Fetch Demands
   static const String FETCH_DEMAND = 'billing-service/demand/_search';
-  static const String FETCH_UPDATE_DEMAND = 'ws-calculator/waterCalculator/_getPenaltyDetails';
+  static const String FETCH_UPDATE_DEMAND =
+      'ws-calculator/waterCalculator/_getPenaltyDetails';
 
   static const String FETCH_BILL = 'billing-service/bill/v2/_fetchbill';
   static const String SEARCH_BILL = 'billing-service/bill/v2/_search';
@@ -58,23 +59,31 @@ class Url {
   /// Connection bill payment
   static const String COLLECT_PAYMENT = 'collection-services/payments/_create';
 
+  static const String CREATE_TRANSACTION = 'pg-service/transaction/v1/_create';
+  static const String UPDATE_TRANSACTION = 'pg-service/transaction/v1/_update';
+
   static const String FETCH_BILL_PAYMENTS =
       'collection-services/payments/WS/_search';
 
   /// user feed back
   static const String POST_PAYMENT_FEEDBACK = 'ws-services/wc/_submitfeedback';
-  static const String GET_USERS_PAYMENT_FEEDBACK = 'ws-services/wc/_getfeedback';
+  static const String GET_USERS_PAYMENT_FEEDBACK =
+      'ws-services/wc/_getfeedback';
 
   /// Dashboard
-  static const String EXPENDITURE_METRIC = 'echallan-services/eChallan/v1/_expenseDashboard';
+  static const String EXPENDITURE_METRIC =
+      'echallan-services/eChallan/v1/_expenseDashboard';
   static const String REVENUE_METRIC = 'ws-services/wc/_revenueDashboard';
-  static const String GRAPHICAL_DASHBOARD = 'dashboard-analytics/dashboard/getChartV2';
-  static const String DASHBOARD_COLLECTION_TABLE_DATA = 'ws-services/wc/_revenueCollectionData';
-  static const String DASHBOARD_EXPENSE_TABLE_DATA = 'echallan-services/eChallan/v1/_chalanCollectionData';
+  static const String GRAPHICAL_DASHBOARD =
+      'dashboard-analytics/dashboard/getChartV2';
+  static const String DASHBOARD_COLLECTION_TABLE_DATA =
+      'ws-services/wc/_revenueCollectionData';
+  static const String DASHBOARD_EXPENSE_TABLE_DATA =
+      'echallan-services/eChallan/v1/_chalanCollectionData';
 
   /// GPWSC Details
-  static const String IFIX_DEPARTMENT_ENTITY = 'ifix-department-entity/departmentEntity/v1/_search';
-
+  static const String IFIX_DEPARTMENT_ENTITY =
+      'ifix-department-entity/departmentEntity/v1/_search';
 }
 
 class UserUrl {

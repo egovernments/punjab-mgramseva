@@ -2,21 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mgramseva/widgets/focus_watcher.dart';
+import 'package:mgramseva/widgets/KeyboardFocusWatcher.dart';
 import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/AddExpense/AddExpenseWalkThrough/expenseWalkThrough.dart';
 import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
-import 'package:mgramseva/widgets/customAppbar.dart';
+import 'package:mgramseva/widgets/CustomAppbar.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
-import 'package:mgramseva/widgets/BottonButtonBar.dart';
+import 'package:mgramseva/widgets/BottomButtonBar.dart';
 import 'package:mgramseva/widgets/DatePickerFieldBuilder.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FilePicker.dart';
@@ -28,8 +28,8 @@ import 'package:mgramseva/widgets/SelectFieldBuilder.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/auto_complete.dart';
-import 'package:mgramseva/widgets/footer.dart';
+import 'package:mgramseva/widgets/AutoCompleteView.dart';
+import 'package:mgramseva/widgets/Footer.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -117,9 +117,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                 } else {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return Loaders.CircularLoader();
+                      return Loaders.circularLoader();
                     case ConnectionState.active:
-                      return Loaders.CircularLoader();
+                      return Loaders.circularLoader();
                     default:
                       return Container();
                   }
@@ -219,7 +219,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               isEnabled: expenseDetails.allowEdit,
                               requiredMessage:
                                   i18.expense.SELECT_EXPENDITURE_CATEGORY,
-                              contextkey:
+                              contextKey:
                                   expenseProvider.expenseWalkthrougList[0].key,
                               controller: expenseDetails.expenseTypeController,
                               key: Keys.expense.EXPENSE_TYPE,
@@ -242,7 +242,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 FilteringTextInputFormatter.allow(
                                     RegExp("[a-zA-Z ]"))
                               ],
-                              contextkey:
+                              contextKey:
                                   expenseProvider.expenseWalkthrougList[1].key,
                               key: Keys.expense.VENDOR_NAME,
                             ),
@@ -283,7 +283,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               requiredMessage:
                                   i18.expense.AMOUNT_MENTIONED_IN_THE_BILL,
                               validator: Validators.amountValidator,
-                              contextkey:
+                              contextKey:
                                   expenseProvider.expenseWalkthrougList[2].key,
                               key: Keys.expense.EXPENSE_AMOUNT,
                             ),
@@ -324,7 +324,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                       isEnabled: expenseDetails.allowEdit,
                                       requiredMessage:
                                       i18.expense.DATE_BILL_ENTERED_IN_RECORDS,
-                                      contextkey:
+                                      contextKey:
                                       expenseProvider.expenseWalkthrougList[3].key,
                                       key: Keys.expense.EXPENSE_BILL_DATE,
                                       margin: margin,
@@ -384,7 +384,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               onChangeOfDate:
                                   expensesDetailsProvider.onChangeOfDate,
                               isEnabled: expenseDetails.allowEdit,
-                              contextkey:
+                              contextKey:
                                   expenseProvider.expenseWalkthrougList[4].key,
                               key: Keys.expense.EXPENSE_PARTY_DATE,
                             ),
@@ -467,7 +467,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 callBack:
                                     expensesDetailsProvider.fileStoreIdCallBack,
                                 extensions: ['jpg', 'pdf', 'png'],
-                                contextkey: expenseProvider
+                                contextKey: expenseProvider
                                     .expenseWalkthrougList[5].key,
                               ),
                             if (isUpdate)

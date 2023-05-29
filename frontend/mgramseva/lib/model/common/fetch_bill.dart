@@ -2,17 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/model/demand/update_demand_list.dart';
-import 'package:mgramseva/model/localization/language.dart';
-import 'package:mgramseva/utils/constants.dart';
 
 import '../mdms/payment_type.dart';
-import 'demand.dart';
 
 part 'fetch_bill.g.dart';
 
 @JsonSerializable()
 class FetchBill {
-
   @JsonKey(name: "id")
   String? id;
 
@@ -49,6 +45,9 @@ class FetchBill {
   @JsonKey(ignore: true)
   String? paymentMethod;
 
+  @JsonKey(ignore: true, defaultValue: true)
+  bool? isOnline;
+
   @JsonKey(ignore: true)
   var customAmountCtrl = new TextEditingController();
 
@@ -75,10 +74,8 @@ class FetchBill {
   Map<String, dynamic> toJson() => _$FetchBillToJson(this);
 }
 
-
 @JsonSerializable()
 class BillDetails {
-
   @JsonKey(name: "id")
   String? id;
 
@@ -116,7 +113,6 @@ class BillDetails {
 
 @JsonSerializable()
 class BillAccountDetails {
-
   @JsonKey(name: "id")
   String? id;
 

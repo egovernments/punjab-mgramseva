@@ -8,14 +8,14 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/utils/validators/Validators.dart';
 import 'package:mgramseva/widgets/BaseAppBar.dart';
-import 'package:mgramseva/widgets/BottonButtonBar.dart';
+import 'package:mgramseva/widgets/BottomButtonBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
 import 'package:mgramseva/widgets/PasswordHint.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/footer.dart';
+import 'package:mgramseva/widgets/Footer.dart';
 import 'package:provider/provider.dart';
 
 class ChangePassword extends StatefulWidget {
@@ -59,7 +59,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       changePasswordProvider.changePassword(data, context);
     } else {
       changePasswordProvider.autoValidation = true;
-      changePasswordProvider.callNotifyer();
+      changePasswordProvider.callNotifier();
     }
   }
 
