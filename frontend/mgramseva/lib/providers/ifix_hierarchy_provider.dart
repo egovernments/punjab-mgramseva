@@ -13,7 +13,7 @@ import 'common_provider.dart';
 
 class IfixHierarchyProvider with ChangeNotifier {
   Department? departments;
-  Map<String,Map<String,String>> hierarchy={};
+  Map<String, Map<String, String>> hierarchy = {};
   WCBillingSlabs? wcBillingSlabs;
   var streamController = StreamController.broadcast();
   var streamControllerRate = StreamController.broadcast();
@@ -32,7 +32,7 @@ class IfixHierarchyProvider with ChangeNotifier {
           commonProvider.userDetails!.selectedtenant!.city!.code!, true);
       departments = userResponse;
       hierarchy.clear();
-      if(departments!=null){
+      if (departments != null) {
         parseDepartments(departments!);
       }
       streamController.add(userResponse);
@@ -49,8 +49,8 @@ class IfixHierarchyProvider with ChangeNotifier {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
-      var mdmsRates = await CoreRepository().getRateFromMdms(
-          commonProvider.userDetails!.selectedtenant!.code!);
+      var mdmsRates = await CoreRepository()
+          .getRateFromMdms(commonProvider.userDetails!.selectedtenant!.code!);
       wcBillingSlabs = mdmsRates;
       streamControllerRate.add(wcBillingSlabs);
       callNotifier();
@@ -59,19 +59,21 @@ class IfixHierarchyProvider with ChangeNotifier {
       streamController.addError('error');
     }
   }
+
   void callNotifier() {
     notifyListeners();
   }
+
   void parseDepartments(Department department) {
-    final Map<String,String> departmentData = {
-      'departmentId': department.departmentId,
-      'code': department.code,
-      'name': department.name,
+    final Map<String, String> departmentData = {
+      'departmentId': department.departmentId ?? '',
+      'code': department.code ?? '',
+      'name': department.name ?? '',
       'hierarchyLevel': department.hierarchyLevel.toString(),
     };
     hierarchy.addAll({department.hierarchyLevel.toString(): departmentData});
     callNotifier();
-    for (final child in department.children) {
+    for (final child in department.children ?? []) {
       parseDepartments(child);
     }
   }

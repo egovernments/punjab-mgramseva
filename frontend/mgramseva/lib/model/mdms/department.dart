@@ -1,46 +1,28 @@
-import 'dart:math';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'department.g.dart';
+
+@JsonSerializable()
 class Department {
-  final String id;
-  final String tenantId;
-  final String departmentId;
-  final String code;
-  final String name;
-  final int hierarchyLevel;
-  late final List<Department> children;
+  @JsonKey(name: "id")
+  String? id;
+  @JsonKey(name: "tenantId")
+  String? tenantId;
+  @JsonKey(name: "code")
+  String? code;
+  @JsonKey(name: "name")
+  String? name;
+  @JsonKey(name: "departmentId")
+  String? departmentId;
+  @JsonKey(name: "children")
+  List<Department>? children;
+  @JsonKey(name: "hierarchyLevel")
+  int? hierarchyLevel;
 
-  Department({
-    required this.id,
-    required this.tenantId,
-    required this.departmentId,
-    required this.code,
-    required this.name,
-    required this.hierarchyLevel,
-    List<Department>? children,
-  }) : children = children ?? [];
+  Department();
 
-  factory Department.fromJson(Map<String, dynamic> json) {
-    final childrenJson = json['children'] as List<dynamic>;
-    return Department(
-      id: json['id']??'',
-      tenantId: json['tenantId']??'',
-      departmentId: json['departmentId']??'',
-      code: json['code']??'',
-      name: json['name']??'',
-      hierarchyLevel: json['hierarchyLevel'] ?? Random().nextInt(500)+50,
-      children: childrenJson.map((childJson) => Department.fromJson(childJson)).toList(),
-    );
-  }
+  factory Department.fromJson(Map<String, dynamic> json) =>
+      _$DepartmentFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'tenantId': tenantId,
-      'departmentId': departmentId,
-      'code': code,
-      'name': name,
-      'hierarchyLevel': hierarchyLevel,
-      'children': List<Map<String, dynamic>>.from(children.map((child) => child.toJson())),
-    };
-  }
+  Map<String, dynamic> toJson() => _$DepartmentToJson(this);
 }
