@@ -15,8 +15,16 @@ class IfixHierarchyRepo extends BaseService {
         navigatorKey.currentContext!,
         listen: false);
     late Department? departments;
-    final requestInfo = RequestInfo('mGramSeva', .01, "", "search", "", "", "",
-        token ?? commonProvider.userDetails!.accessToken);
+    final requestInfo = RequestInfo(
+        APIConstants.API_MODULE_NAME,
+        APIConstants.API_VERSION,
+        APIConstants.API_TS,
+        '_get',
+        APIConstants.API_DID,
+        APIConstants.API_KEY,
+        APIConstants.API_MESSAGE_ID,
+        commonProvider.userDetails?.accessToken,
+        commonProvider.userDetails?.userRequest?.toJson());
     var body = {
       "criteria": {
         "code": code,

@@ -347,7 +347,7 @@ class Routing {
                     : '${Routes.DASHBOARD}'));
       case Routes.GPWSC_DETAILS_AND_RATE_INFO:
         return MaterialPageRoute(
-            builder: (_) => GpwscDetails(),
+            builder: (_) => GPWSCDetails(),
             settings: RouteSettings(name: Routes.GPWSC_DETAILS_AND_RATE_INFO));
 
       case Routes.SEARCH_CONSUMER_RESULT:

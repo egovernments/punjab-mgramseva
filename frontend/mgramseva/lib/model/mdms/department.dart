@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mgramseva/model/mdms/project.dart';
 
 part 'department.g.dart';
 
@@ -18,7 +19,8 @@ class Department {
   List<Department>? children;
   @JsonKey(name: "hierarchyLevel")
   int? hierarchyLevel;
-
+  @JsonKey(includeIfNull: false, includeToJson: false, includeFromJson: false)
+  Project? updateDemands;
   Department();
 
   factory Department.fromJson(Map<String, dynamic> json) =>

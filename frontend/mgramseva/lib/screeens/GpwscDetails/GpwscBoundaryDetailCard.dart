@@ -9,10 +9,8 @@ import '../../utils/Locilization/application_localizations.dart';
 import '../../widgets/LabelText.dart';
 import 'GpwscCard.dart';
 
-class GpwscBoundaryDetailCard extends StatelessWidget {
-  const GpwscBoundaryDetailCard({
-    Key? key
-  }) : super(key: key);
+class GPWSCBoundaryDetailCard extends StatelessWidget {
+  const GPWSCBoundaryDetailCard({Key? key}) : super(key: key);
   _getLabeltext(label, value, context) {
     return (Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,6 +34,7 @@ class GpwscBoundaryDetailCard extends StatelessWidget {
                           fontSize: 16, fontWeight: FontWeight.w400))))
         ]));
   }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -44,7 +43,7 @@ class GpwscBoundaryDetailCard extends StatelessWidget {
           builder: (_, departmentProvider, child) {
             return Consumer<CommonProvider>(
               builder: (_, commonProvider, child) {
-                return GpwscCard(
+                return GPWSCCard(
                   children: [
                     LabelText(i18.dashboard.GPWSC_DETAILS),
                     Padding(
@@ -55,7 +54,9 @@ class GpwscBoundaryDetailCard extends StatelessWidget {
                         children: [
                           _getLabeltext(
                               "${ApplicationLocalizations.of(context).translate(i18.common.VILLAGE_CODE)}",
-                              commonProvider.userDetails!.selectedtenant?.code?.split('.').last,
+                              commonProvider.userDetails!.selectedtenant?.code
+                                  ?.split('.')
+                                  .last,
                               context),
                           _getLabeltext(
                               "${ApplicationLocalizations.of(context).translate(i18.common.VILLAGE_NAME)}",
@@ -81,17 +82,35 @@ class GpwscBoundaryDetailCard extends StatelessWidget {
                               context),
                           _getLabeltext(
                               "${ApplicationLocalizations.of(context).translate(i18.common.PROJECT_SCHEME_CODE)}",
-                              commonProvider.userDetails!.selectedtenant?.city?.code,
+                              commonProvider
+                                  .userDetails!.selectedtenant?.city?.code,
                               context),
-                         _getLabeltext(
-                                "${ApplicationLocalizations.of(context).translate(i18.common.REGION_NAME)}",
-                                commonProvider.userDetails!.selectedtenant?.city?.regionName != null && (commonProvider.userDetails!.selectedtenant?.city?.regionName ?? '').isNotEmpty ? '${commonProvider.userDetails!.selectedtenant?.city?.regionName}' : 'NA',
-                                context),
-                        _getLabeltext(
-                                  "${ApplicationLocalizations.of(context).translate(i18.common.DISTRICT_CODE)}",
-                                   commonProvider.userDetails!.selectedtenant?.city?.districtCode == null && commonProvider.userDetails!.selectedtenant?.city?.districtName == null ? 'NA' 
-                                   : '${commonProvider.userDetails!.selectedtenant?.city?.districtCode ?? 'NA'}-${commonProvider.userDetails!.selectedtenant?.city?.districtName ?? 'NA'}',
-                                    context)
+                          _getLabeltext(
+                              "${ApplicationLocalizations.of(context).translate(i18.common.REGION_NAME)}",
+                              commonProvider.userDetails!.selectedtenant?.city
+                                              ?.regionName !=
+                                          null &&
+                                      (commonProvider
+                                                  .userDetails!
+                                                  .selectedtenant
+                                                  ?.city
+                                                  ?.regionName ??
+                                              '')
+                                          .isNotEmpty
+                                  ? '${commonProvider.userDetails!.selectedtenant?.city?.regionName}'
+                                  : 'NA',
+                              context),
+                          _getLabeltext(
+                              "${ApplicationLocalizations.of(context).translate(i18.common.DISTRICT_CODE)}",
+                              commonProvider.userDetails!.selectedtenant?.city
+                                              ?.districtCode ==
+                                          null &&
+                                      commonProvider.userDetails!.selectedtenant
+                                              ?.city?.districtName ==
+                                          null
+                                  ? 'NA'
+                                  : '${commonProvider.userDetails!.selectedtenant?.city?.districtCode ?? 'NA'}-${commonProvider.userDetails!.selectedtenant?.city?.districtName ?? 'NA'}',
+                              context)
                         ],
                       ),
                     )

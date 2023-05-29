@@ -15,8 +15,8 @@ import '../../widgets/SideBar.dart';
 import '../../widgets/footer.dart';
 import 'GpwscBoundaryDetailCard.dart';
 
-class GpwscDetails extends StatefulWidget {
-  const GpwscDetails({Key? key}) : super(key: key);
+class GPWSCDetails extends StatefulWidget {
+  const GPWSCDetails({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -24,7 +24,7 @@ class GpwscDetails extends StatefulWidget {
   }
 }
 
-class _GpwscDetails extends State<GpwscDetails>
+class _GpwscDetails extends State<GPWSCDetails>
     with SingleTickerProviderStateMixin {
   GlobalKey key = GlobalKey();
   ScreenshotController screenshotController = ScreenshotController();
@@ -94,15 +94,15 @@ class _GpwscDetails extends State<GpwscDetails>
                         controller: scrollController,
                         child: Column(
                           children: [
-                            GpwscBoundaryDetailCard(),
+                            GPWSCBoundaryDetailCard(),
                             SizedBox(
                               height: 10,
                             ),
-                            GpwscRateCard(rateType: "Non_Metered"),
+                            GPWSCRateCard(rateType: "Non_Metered"),
                             SizedBox(
                               height: 10,
                             ),
-                            GpwscRateCard(rateType: "Metered"),
+                            GPWSCRateCard(rateType: "Metered"),
                             Footer()
                           ],
                         ),

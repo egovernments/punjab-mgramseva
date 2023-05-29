@@ -11,10 +11,10 @@ import '../../utils/notifiers.dart';
 import '../../widgets/LabelText.dart';
 import 'GpwscCard.dart';
 
-class GpwscRateCard extends StatelessWidget {
+class GPWSCRateCard extends StatelessWidget {
   final String rateType;
 
-  const GpwscRateCard({Key? key, required this.rateType}) : super(key: key);
+  const GPWSCRateCard({Key? key, required this.rateType}) : super(key: key);
 
   Color getColor(Set<MaterialState> states) {
     return Colors.grey.shade200;
@@ -43,7 +43,7 @@ class GpwscRateCard extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       var ifixProvider =
           Provider.of<IfixHierarchyProvider>(context, listen: false);
-      return GpwscCard(
+      return GPWSCCard(
         children: [
           constraints.maxWidth < 760
               ? Column(
@@ -190,7 +190,7 @@ class GpwscRateCard extends StatelessWidget {
                     TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               )),
             ],
-            rows: wcBillingSlabs.wCBillingSlabs!
+            rows: (wcBillingSlabs.wCBillingSlabs ?? [])
                 .where((element) =>
                     element.connectionType?.compareTo("Metered") != 0)
                 .map((slab) => DataRow(cells: [
