@@ -1375,7 +1375,7 @@ public class DemandService {
 	{
 		log.info("inside online payment allowed method");
 		List<MasterDetail> masterDetails = new ArrayList<>();
-		MasterDetail masterDetail =new MasterDetail("PaymentService",WSCalculationConstant.FILTER_PAYMENT_METHOD_SEARCH);
+		MasterDetail masterDetail =new MasterDetail("BusinessService",WSCalculationConstant.FILTER_PAYMENT_METHOD_SEARCH);
 		masterDetails.add(masterDetail);
 		ModuleDetail moduleDetail = ModuleDetail.builder().moduleName("BillingService").masterDetails(masterDetails).build();
 		List<ModuleDetail> moduleDetails = new ArrayList<>();
