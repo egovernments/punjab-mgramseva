@@ -1,6 +1,10 @@
 package org.egov.waterconnection.validator;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -89,7 +93,11 @@ public class WaterConnectionValidator {
 			errorMap.putAll(isMeterInfoValidated.getErrorMessage());
 		if(waterConnectionRequest.getWaterConnection().getProcessInstance().getAction().equalsIgnoreCase("PAY"))
 			errorMap.put("INVALID_ACTION","Pay action cannot be perform directly");
-		
+
+		LocalDate date =Instant.ofEpochMilli(previousMetereReading).atZone(ZoneId.systemDefault()).toLocalDate();
+		if(date.isAfter(LocalDate.now().minusMonths(1))) {
+			errorMap.put("INVALID_BILLING_CYCLE","Cannot generate demands for future months");
+		}
 		if (waterConnectionRequest.getWaterConnection().getPaymentType() != null
 				&& !waterConnectionRequest.getWaterConnection().getPaymentType().isEmpty()) {
 
