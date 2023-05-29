@@ -65,19 +65,19 @@ class GpwscBoundaryDetailCard extends StatelessWidget {
                               "${ApplicationLocalizations.of(context).translate(i18.common.SECTION_CODE)}",
                               departmentProvider.hierarchy.containsKey("5")
                                   ? '${departmentProvider.hierarchy["5"]!["code"]}-${departmentProvider.hierarchy["5"]!["name"]}'
-                                  : '',
+                                  : 'NA',
                               context),
                           _getLabeltext(
                               "${ApplicationLocalizations.of(context).translate(i18.common.SUB_DIVISION_CODE)}",
                               departmentProvider.hierarchy.containsKey("4")
                                   ? '${departmentProvider.hierarchy["4"]!['code']}-${departmentProvider.hierarchy["5"]!["name"]}'
-                                  : '',
+                                  : 'NA',
                               context),
                           _getLabeltext(
                               "${ApplicationLocalizations.of(context).translate(i18.common.DIVISION_CODE)}",
                               departmentProvider.hierarchy.containsKey("3")
                                   ? '${departmentProvider.hierarchy["3"]!['code']}-${departmentProvider.hierarchy["3"]!["name"]}'
-                                  : '',
+                                  : 'NA',
                               context),
                           _getLabeltext(
                               "${ApplicationLocalizations.of(context).translate(i18.common.PROJECT_SCHEME_CODE)}",
