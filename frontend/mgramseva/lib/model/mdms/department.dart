@@ -4,6 +4,21 @@ import 'package:mgramseva/model/mdms/project.dart';
 part 'department.g.dart';
 
 @JsonSerializable()
+class GPWSCRateModel {
+  @JsonKey(name: "departmentEntity")
+  List<Department>? departmentEntity;
+  @JsonKey(name: "project")
+  List<Project>? project;
+
+  GPWSCRateModel();
+
+  factory GPWSCRateModel.fromJson(Map<String, dynamic> json) =>
+      _$GPWSCRateModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GPWSCRateModelToJson(this);
+}
+
+@JsonSerializable()
 class Department {
   @JsonKey(name: "id")
   String? id;

@@ -15,7 +15,7 @@ class IfixHierarchyRepo extends BaseService {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    late Department? departments;
+    Department? departments;
     final requestInfo = RequestInfo(
         APIConstants.API_MODULE_NAME,
         APIConstants.API_VERSION,
@@ -49,11 +49,12 @@ class IfixHierarchyRepo extends BaseService {
     }
     return departments;
   }
+
   Future<Project?> fetchProject(String departmentEntityId) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    late Project? project;
+    Project? project;
     final requestInfo = RequestInfo(
         APIConstants.API_MODULE_NAME,
         APIConstants.API_VERSION,
@@ -67,7 +68,8 @@ class IfixHierarchyRepo extends BaseService {
     var body = {
       "criteria": {
         "departmentEntityId": departmentEntityId,
-        "tenantId":commonProvider.userDetails!.userRequest!.tenantId.toString(),
+        "tenantId":
+            commonProvider.userDetails!.userRequest!.tenantId.toString(),
       },
       'requestHeader': {"msgId": "Unknown", "signature": "NON"}
     };
@@ -76,14 +78,19 @@ class IfixHierarchyRepo extends BaseService {
         body: body,
         requestInfo: requestInfo,
         method: RequestType.POST);
+    print('res');
     if (res != null && res['project'] != null) {
+      print('res not null');
       try {
+        print(res);
         project = Project.fromJson(res['project'][0]);
-         // print(project);
+        print(project);
+        print('project');
       } catch (e) {
         project = null;
       }
     }
+    print('else');
     return project;
   }
 }

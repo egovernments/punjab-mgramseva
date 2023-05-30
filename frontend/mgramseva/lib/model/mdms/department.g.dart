@@ -6,6 +6,21 @@ part of 'department.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+GPWSCRateModel _$GPWSCRateModelFromJson(Map<String, dynamic> json) =>
+    GPWSCRateModel()
+      ..departmentEntity = (json['departmentEntity'] as List<dynamic>?)
+          ?.map((e) => Department.fromJson(e as Map<String, dynamic>))
+          .toList()
+      ..project = (json['project'] as List<dynamic>?)
+          ?.map((e) => Project.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+Map<String, dynamic> _$GPWSCRateModelToJson(GPWSCRateModel instance) =>
+    <String, dynamic>{
+      'departmentEntity': instance.departmentEntity,
+      'project': instance.project,
+    };
+
 Department _$DepartmentFromJson(Map<String, dynamic> json) => Department()
   ..id = json['id'] as String?
   ..tenantId = json['tenantId'] as String?
