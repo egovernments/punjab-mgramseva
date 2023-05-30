@@ -653,6 +653,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
           consumerProvider.paymentType, false))
         BuildTextField(i18.common.CORE_PENALTY,
             consumerProvider.waterconnection.penaltyCtrl,
+            validator: (val) =>
+                Validators.penaltyAndAdvanceValidator(val, true),
             textInputType: TextInputType.number,
             inputFormatter: [
               FilteringTextInputFormatter.allow(RegExp("[0-9]"))
@@ -663,6 +665,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   Widget _buildAdvance(ConsumerProvider consumerProvider) {
     return BuildTextField(i18.common.CORE_ADVANCE_RUPEE,
         consumerProvider.waterconnection.advanceCtrl,
+        validator: (val) => Validators.penaltyAndAdvanceValidator(val, true),
         textInputType: TextInputType.number,
         inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))]);
   }
