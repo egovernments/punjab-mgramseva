@@ -94,11 +94,4 @@ class Loaders {
         });
   }
 
-  static CircularLoader({Color? color}) {
-    return Container(
-      color: color,
-      alignment: Alignment.center,
-      child: CircularProgressIndicator(),
-    );
-  }
 }

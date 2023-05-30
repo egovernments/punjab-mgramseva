@@ -6,10 +6,10 @@ import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/model/connection/search_connection.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
-import 'package:mgramseva/widgets/customAppbar.dart';
+import 'package:mgramseva/widgets/CustomAppbar.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/widgets/BottonButtonBar.dart';
+import 'package:mgramseva/widgets/BottomButtonBar.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
 import 'package:mgramseva/widgets/FormWrapper.dart';
 import 'package:mgramseva/widgets/HomeBack.dart';
@@ -17,7 +17,7 @@ import 'package:mgramseva/widgets/LabelText.dart';
 import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/SubLabel.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/footer.dart';
+import 'package:mgramseva/widgets/Footer.dart';
 import 'package:provider/provider.dart';
 
 class SearchConsumerConnection extends StatefulWidget {

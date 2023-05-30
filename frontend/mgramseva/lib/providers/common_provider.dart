@@ -26,7 +26,6 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
-import 'package:mgramseva/utils/notifyers.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
@@ -34,6 +33,7 @@ import 'package:universal_html/html.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../model/demand/update_demand_list.dart';
+import '../utils/notifiers.dart';
 
 class CommonProvider with ChangeNotifier {
   List<LocalizationLabel> localizedStrings = <LocalizationLabel>[];
@@ -135,7 +135,7 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
-  set loginCredentails(UserDetails? loginDetails) {
+  set loginCredentials(UserDetails? loginDetails) {
     userDetails = loginDetails;
     if (kIsWeb) {
       window.localStorage[Constants.LOGIN_KEY] =
@@ -171,37 +171,37 @@ class CommonProvider with ChangeNotifier {
   }
 
   Future<String> getWalkThroughCheck(String key) async {
-    var userReposne;
+    var userResponse;
     try {
       if (kIsWeb) {
-        userReposne = window.localStorage[key];
+        userResponse = window.localStorage[key];
       } else {
-        userReposne = (await storage.read(key: key));
+        userResponse = (await storage.read(key: key));
       }
     } catch (e) {
       userLoggedStreamCtrl.add(null);
     }
-    if (userReposne == null) {
-      userReposne = 'false';
+    if (userResponse == null) {
+      userResponse = 'false';
     }
-    return userReposne;
+    return userResponse;
   }
 
   Future<UserProfile> getUserProfile() async {
-    var userReposne;
+    var userResponse;
     try {
       if (kIsWeb) {
-        userReposne = window.localStorage[Constants.USER_PROFILE_KEY];
+        userResponse = window.localStorage[Constants.USER_PROFILE_KEY];
       } else {
-        userReposne = await storage.read(key: Constants.USER_PROFILE_KEY);
+        userResponse = await storage.read(key: Constants.USER_PROFILE_KEY);
       }
     } catch (e) {
       userLoggedStreamCtrl.add(null);
     }
-    return UserProfile.fromJson(jsonDecode(userReposne));
+    return UserProfile.fromJson(jsonDecode(userResponse));
   }
 
-  Future<void> getLoginCredentails() async {
+  Future<void> getLoginCredentials() async {
     var languageProvider = Provider.of<LanguageProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -261,6 +261,16 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
+  Future<void> getAppVersionDetails() async {
+    try {
+      var localizationList =
+          await CoreRepository().getMdms(initRequestBody({"tenantId": "pb"}));
+      appVersion = localizationList.mdmsRes!.commonMasters!.appVersion!.first;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   UserDetails? getWebLoginStatus() {
     var languageProvider = Provider.of<LanguageProvider>(
         navigatorKey.currentContext!,
@@ -315,20 +325,10 @@ class CommonProvider with ChangeNotifier {
     return userDetails;
   }
 
-  Future<void> getAppVersionDetails() async {
-    try {
-      var localizationList =
-          await CoreRepository().getMdms(initRequestBody({"tenantId": "pb"}));
-      appVersion = localizationList.mdmsRes!.commonMasters!.appVersion!.first;
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
   void onLogout() {
     navigatorKey.currentState
         ?.pushNamedAndRemoveUntil(Routes.SELECT_LANGUAGE, (route) => false);
-    loginCredentails = null;
+    loginCredentials = null;
   }
 
   void onTapOfAttachment(FileStore store, context) async {
@@ -369,7 +369,7 @@ class CommonProvider with ChangeNotifier {
                     .replaceFirst('{link}', res);
             await canLaunch(link)
                 ? launch(link)
-                : ErrorHandler.logError('failed to launch the url ${link}');
+                : ErrorHandler.logError('failed to launch the url $link');
           }
           return;
         } else {
@@ -381,7 +381,7 @@ class CommonProvider with ChangeNotifier {
         }
         await canLaunch(link)
             ? launch(link)
-            : ErrorHandler.logError('failed to launch the url ${link}');
+            : ErrorHandler.logError('failed to launch the url $link');
       }
     } catch (e, s) {
       ErrorHandler.logError(e.toString(), s);
@@ -529,6 +529,18 @@ class CommonProvider with ChangeNotifier {
       navigatorKey.currentState?.pop();
       ErrorHandler().allExceptionsHandler(context, e, s);
     }
+  }
+
+  static List<KeyValue> getAlphabetsWithKeyValue() {
+    List<String> alphabets = [];
+    List<KeyValue> excelColumns = [];
+    for (int i = 65; i <= 90; i++) {
+      alphabets.add(String.fromCharCode(i));
+    }
+    for (int i = 0; i < 26; i++) {
+      excelColumns.add(KeyValue(alphabets[i], i));
+    }
+    return excelColumns;
   }
 
   Future<pw.Font> getPdfFontFamily() async {
@@ -914,7 +926,20 @@ class CommonProvider with ChangeNotifier {
           listen: false);
 
       return await CoreRepository()
-          .getPaymentTypeMDMS(getMdmsPaymentModes(tenantId));
+          .getPaymentTypeMDMS(getMDMSPaymentModes(tenantId));
+    } catch (e) {
+      return PaymentType();
+    }
+  }
+
+  static Future<PaymentType> getMdmsPaymentList(String tenantId) async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+
+      return await CoreRepository()
+          .getPaymentTypeMDMS(getPaymentModeList(tenantId));
     } catch (e) {
       return PaymentType();
     }

@@ -11,16 +11,16 @@ import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/global_variables.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:path/path.dart' as path;
 
 class FilePickerDemo extends StatefulWidget {
   final Function(List<FileStore>?) callBack;
   final String? moduleName;
   final List<String>? extensions;
-  final GlobalKey? contextkey;
+  final GlobalKey? contextKey;
 
-  const FilePickerDemo({Key? key, required this.callBack, this.moduleName, this.extensions, this.contextkey}) : super(key: key);
+  const FilePickerDemo({Key? key, required this.callBack, this.moduleName, this.extensions, this.contextKey}) : super(key: key);
   @override
   FilePickerDemoState createState() => FilePickerDemoState();
 }
@@ -217,7 +217,7 @@ class FilePickerDemoState extends State<FilePickerDemo> {
               padding: const EdgeInsets.only(left: 8.0, right: 8.0),
               child: SingleChildScrollView(
                 child: Container(
-                  key: widget.contextkey,
+                  key: widget.contextKey,
                   margin: constraints.maxWidth > 760 ? const EdgeInsets.only(
                       top: 5.0, bottom: 5, right: 10, left: 10) : const EdgeInsets.only(
                       top: 5.0, bottom: 5, right: 0, left: 0),

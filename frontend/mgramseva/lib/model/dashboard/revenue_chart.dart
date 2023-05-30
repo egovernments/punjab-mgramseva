@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:mgramseva/screeens/dashboard/revenue_dashboard/revenue.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+
+import '../../screeens/dashboard/RevenueExpenseDashboard/revenue.dart';
 
 part 'revenue_chart.g.dart';
 

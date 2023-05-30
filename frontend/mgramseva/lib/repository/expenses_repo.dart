@@ -2,7 +2,7 @@ import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/model/expensesDetails/vendor.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
-import 'package:mgramseva/services/base_service.dart';
+import 'package:mgramseva/services/BaseService.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';

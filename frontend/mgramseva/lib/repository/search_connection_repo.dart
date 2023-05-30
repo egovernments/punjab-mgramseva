@@ -1,7 +1,7 @@
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/services/RequestInfo.dart';
-import 'package:mgramseva/services/base_service.dart';
+import 'package:mgramseva/services/BaseService.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -14,7 +14,6 @@ class SearchConnectionRepository extends BaseService {
         navigatorKey.currentContext!,
         listen: false);
 
-    var body = {commonProvider.userDetails?.userRequest?.toJson()};
     final requestInfo = RequestInfo(
       APIConstants.API_MODULE_NAME,
       APIConstants.API_VERSION,

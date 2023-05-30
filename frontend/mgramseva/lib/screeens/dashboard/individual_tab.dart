@@ -7,8 +7,9 @@ import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/Locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
+
+import '../../utils/notifiers.dart';
 
 class IndividualTab extends StatefulWidget {
   const IndividualTab({Key? key}) : super(key: key);
@@ -40,9 +41,9 @@ class _IndividualTabState extends State<IndividualTab> {
           } else {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
-                return Loaders.CircularLoader();
+                return Loaders.circularLoader();
               case ConnectionState.active:
-                return Loaders.CircularLoader();
+                return Loaders.circularLoader();
               default:
                 return Container();
             }

@@ -1,6 +1,3 @@
-import 'dart:typed_data';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
@@ -15,7 +12,6 @@ import 'package:mgramseva/utils/common_styles.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
 import 'package:mgramseva/utils/print_bluetooth.dart';
 import 'package:mgramseva/widgets/ListLabelText.dart';
 import 'package:number_to_words/number_to_words.dart';
@@ -23,10 +19,11 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import './jsconnnector.dart' as js;
+import '../../utils/notifiers.dart';
 
 class ConsumerBillPayments extends StatefulWidget {
-  final WaterConnection? waterconnection;
-  ConsumerBillPayments(this.waterconnection);
+  final WaterConnection? waterConnection;
+  ConsumerBillPayments(this.waterConnection);
   @override
   State<StatefulWidget> createState() {
     return ConsumerBillPaymentsState();
@@ -43,7 +40,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
     super.initState();
   }
 
-  getprinterlabel(key, value) {
+  getPrinterLabel(key, value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,35 +150,35 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                   SizedBox(
                     height: 8,
                   ),
-                  getprinterlabel(
+                  getPrinterLabel(
                       i18.consumerReciepts.RECEIPT_GPWSC_NAME,
                       ApplicationLocalizations.of(navigatorKey.currentContext!)
                           .translate(commonProvider
                               .userDetails!.selectedtenant!.code!)),
-                  getprinterlabel(i18.consumerReciepts.RECEIPT_CONSUMER_NO,
-                      widget.waterconnection!.connectionNo),
-                  getprinterlabel(
+                  getPrinterLabel(i18.consumerReciepts.RECEIPT_CONSUMER_NO,
+                      widget.waterConnection!.connectionNo),
+                  getPrinterLabel(
                     i18.consumerReciepts.RECEIPT_CONSUMER_NAME,
-                    widget.waterconnection!.connectionHolders!.first.name,
+                    widget.waterConnection!.connectionHolders!.first.name,
                   ),
-                  getprinterlabel(
+                  getPrinterLabel(
                       i18.consumerReciepts.RECEIPT_CONSUMER_MOBILE_NO,
                       item.mobileNumber),
-                  getprinterlabel(
+                  getPrinterLabel(
                       i18.consumerReciepts.RECEIPT_CONSUMER_ADDRESS,
                       ApplicationLocalizations.of(navigatorKey.currentContext!)
-                              .translate(widget.waterconnection!.additionalDetails!
+                              .translate(widget.waterConnection!.additionalDetails!
                                   .doorNo
                                   .toString()) +
                           " " +
                           ApplicationLocalizations.of(navigatorKey.currentContext!)
-                              .translate(widget.waterconnection!.additionalDetails!
+                              .translate(widget.waterConnection!.additionalDetails!
                                   .street
                                   .toString()) +
                           " " +
                           ApplicationLocalizations.of(navigatorKey.currentContext!)
                               .translate(widget
-                                  .waterconnection!.additionalDetails!.locality
+                                  .waterConnection!.additionalDetails!.locality
                                   .toString()) +
                           " " +
                           ApplicationLocalizations.of(navigatorKey.currentContext!)
@@ -190,16 +187,16 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                   SizedBox(
                     height: 10,
                   ),
-                  getprinterlabel(i18.consumer.SERVICE_TYPE,
-                      widget.waterconnection?.connectionType),
-                  getprinterlabel(i18.consumerReciepts.CONSUMER_RECEIPT_NO,
+                  getPrinterLabel(i18.consumer.SERVICE_TYPE,
+                      widget.waterConnection?.connectionType),
+                  getPrinterLabel(i18.consumerReciepts.CONSUMER_RECEIPT_NO,
                       item.paymentDetails!.first.receiptNumber),
-                  getprinterlabel(
+                  getPrinterLabel(
                       i18.consumerReciepts.RECEIPT_ISSUE_DATE,
                       DateFormats.timeStampToDate(item.transactionDate,
                               format: "dd/MM/yyyy")
                           .toString()),
-                  getprinterlabel(
+                  getPrinterLabel(
                       i18.consumerReciepts.RECEIPT_BILL_PERIOD,
                       DateFormats.timeStampToDate(
                               item.paymentDetails?.last.bill!.billDetails!.first
@@ -214,19 +211,19 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                   SizedBox(
                     height: 8,
                   ),
-                  getprinterlabel(
+                  getPrinterLabel(
                       i18.consumerReciepts.CONSUMER_ACTUAL_DUE_AMOUNT,
                       ('₹' + (item.totalDue).toString())),
-                  getprinterlabel(i18.consumerReciepts.RECEIPT_AMOUNT_PAID,
+                  getPrinterLabel(i18.consumerReciepts.RECEIPT_AMOUNT_PAID,
                       ('₹' + (item.totalAmountPaid).toString())),
-                  getprinterlabel(
+                  getPrinterLabel(
                       i18.consumerReciepts.RECEIPT_AMOUNT_IN_WORDS,
                       ('Rupees ' +
                           (NumberToWord()
                               .convert('en-in', item.totalAmountPaid!.toInt())
                               .toString()) +
                           ' only')),
-                  getprinterlabel(
+                  getPrinterLabel(
                       i18.consumerReciepts.CONSUMER_PENDING_AMOUNT,
                       ('₹' +
                           ((item.totalDue ?? 0) - (item.totalAmountPaid ?? 0))
@@ -262,8 +259,8 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
   }
 
   afterViewBuild() {
-    Provider.of<BillPayemntsProvider>(context, listen: false)
-      ..FetchBillPayments(widget.waterconnection);
+    Provider.of<BillPaymentsProvider>(context, listen: false)
+      ..FetchBillPayments(widget.waterConnection);
   }
 
   _getLabeltext(label, value, context) {
@@ -315,7 +312,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                   "Payments": [item]
                                 }, {
                                   "key":
-                                      widget.waterconnection?.connectionType ==
+                                      widget.waterConnection?.connectionType ==
                                               'Metered'
                                           ? "ws-receipt"
                                           : "ws-receipt-nm",
@@ -360,7 +357,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                               commonProvider.getFileFromPDFPaymentService({
                             "Payments": [item]
                           }, {
-                            "key": widget.waterconnection?.connectionType ==
+                            "key": widget.waterConnection?.connectionType ==
                                     'Metered'
                                 ? "ws-receipt"
                                 : "ws-receipt-nm",
@@ -419,7 +416,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
   @override
   Widget build(BuildContext context) {
     var billpaymentsProvider =
-        Provider.of<BillPayemntsProvider>(context, listen: false);
+        Provider.of<BillPaymentsProvider>(context, listen: false);
     return StreamBuilder(
         stream: billpaymentsProvider.streamController.stream,
         builder: (context, AsyncSnapshot snapshot) {
@@ -430,9 +427,9 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
           } else {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
-                return Loaders.CircularLoader();
+                return Loaders.circularLoader();
               case ConnectionState.active:
-                return Loaders.CircularLoader();
+                return Loaders.circularLoader();
               default:
                 return Container();
             }

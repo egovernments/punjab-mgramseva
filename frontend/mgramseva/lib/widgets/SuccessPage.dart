@@ -22,7 +22,7 @@ class SuccessPage extends StatelessWidget {
               child: Text(ApplicationLocalizations.of(context).translate(label),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).backgroundColor,
                     fontSize: 32,
                     fontFamily: 'Roboto Condensed',
                     fontWeight: FontWeight.w700
@@ -33,7 +33,7 @@ class SuccessPage extends StatelessWidget {
             ),
             Icon(
               Icons.check_circle,
-              color: Colors.white,
+              color: Theme.of(context).backgroundColor,
               size: 32,
             ),
             SizedBox(
@@ -45,7 +45,7 @@ class SuccessPage extends StatelessWidget {
               child: Text(ApplicationLocalizations.of(context).translate(subTextHeader ?? ''),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).backgroundColor,
                     fontSize: 18,
                     fontWeight: FontWeight.w700
                   )),
@@ -56,7 +56,7 @@ class SuccessPage extends StatelessWidget {
               child: Text(ApplicationLocalizations.of(context).translate(subText ?? ''),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).backgroundColor,
                     fontSize: 24,
                     fontWeight: FontWeight.w700
                   )),

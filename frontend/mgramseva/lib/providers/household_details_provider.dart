@@ -28,7 +28,7 @@ class HouseHoldProvider with ChangeNotifier {
       BillList data, WaterConnection waterConnection) async {
     if (data.bill!.isNotEmpty) {
       try {
-        var res = await BillGenerateRepository().searchmetetedDemand({
+        var res = await BillGenerateRepository().searchMeteredDemand({
           "tenantId": data.bill!.first.tenantId,
           "connectionNos": data.bill!.first.consumerCode
         });

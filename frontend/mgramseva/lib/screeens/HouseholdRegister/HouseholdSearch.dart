@@ -4,8 +4,8 @@ import 'package:mgramseva/screeens/HouseholdRegister/HouseholdList.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
 import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/footer.dart';
-import 'package:mgramseva/widgets/tab_button.dart';
+import 'package:mgramseva/widgets/Footer.dart';
+import 'package:mgramseva/widgets/TabButton.dart';
 import 'package:provider/provider.dart';
 
 class HouseholdSearch extends StatefulWidget {
