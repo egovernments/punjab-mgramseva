@@ -263,7 +263,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             inputFormatter: [
               FilteringTextInputFormatter.allow(RegExp("[0-9]"))
             ],
-            validator: Validators.partialAmountValidatior,
+            validator: (val) => Validators.partialAmountValidatior(val, 10000),
             prefixText: '₹ ',
           )),
           Padding(
@@ -483,7 +483,6 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   }
 
   Widget _buildWaterCharges(FetchBill bill, BoxConstraints constraints) {
-
     return Container(
         padding: EdgeInsets.symmetric(
             vertical: 8, horizontal: constraints.maxWidth > 760 ? 20 : 0),
@@ -607,7 +606,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
 
   paymentInfo(FetchBill fetchBill, BuildContext context) {
     var consumerPaymentProvider =
-    Provider.of<CollectPaymentProvider>(context, listen: false);
+        Provider.of<CollectPaymentProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
       autoValidation = false;
       consumerPaymentProvider.updatePaymentInformation(fetchBill, context);
