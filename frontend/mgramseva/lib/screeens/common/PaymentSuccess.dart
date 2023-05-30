@@ -59,7 +59,6 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
         titleSpacing: 0,
         title: Text('mGramSeva'),
         automaticallyImplyLeading: false,
-        actions: [_buildDropDown()],
       ),
       body: StreamBuilder(
           stream: languageProvider.streamController.stream,

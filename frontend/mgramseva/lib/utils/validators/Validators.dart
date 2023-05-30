@@ -51,7 +51,10 @@ class Validators {
   }
 
   static String? maxCharactersValidator(String? v, int input, String? key) {
-    if (v.toString().trim().isNotEmpty && v.toString().trim().length > input) {
+    if (key == i18.consumer.OLD_CONNECTION_ID && v.toString().isEmpty) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.consumer.CONSUMER_OLD_CONNECTION_ID_REQUIRED)}';
+    } else if (v.toString().trim().isNotEmpty &&
+        v.toString().trim().length > input) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(key == i18.consumer.DOOR_NO ? i18.validators.HOUSE_NUMBER_VALIDATION : key == i18.consumer.OLD_CONNECTION_ID ? i18.validators.OLD_CONNECTION_VALIDATION : i18.validators.STREET_VALIDATION)}';
     }
     return null;
