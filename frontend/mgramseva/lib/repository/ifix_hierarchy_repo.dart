@@ -78,19 +78,13 @@ class IfixHierarchyRepo extends BaseService {
         body: body,
         requestInfo: requestInfo,
         method: RequestType.POST);
-    print('res');
     if (res != null && res['project'] != null) {
-      print('res not null');
       try {
-        print(res);
         project = Project.fromJson(res['project'][0]);
-        print(project);
-        print('project');
       } catch (e) {
         project = null;
       }
     }
-    print('else');
     return project;
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/mdms/department.dart';
+import 'package:mgramseva/model/mdms/project.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/water_services_calculation.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -13,6 +14,7 @@ import 'common_provider.dart';
 
 class IfixHierarchyProvider with ChangeNotifier {
   Department? departments;
+  GPWSCRateModel? gpwscRateModel;
   Map<String, Map<String, String>> hierarchy = {};
   WCBillingSlabs? wcBillingSlabs;
   var streamController = StreamController.broadcast();
@@ -30,19 +32,18 @@ class IfixHierarchyProvider with ChangeNotifier {
           listen: false);
       var userResponse = await IfixHierarchyRepo().fetchDepartments(
           commonProvider.userDetails!.selectedtenant!.city!.code!, true);
-      departments = userResponse;
-      print('department ');
+      departments = userResponse ?? Department();
       var projectDetails = await IfixHierarchyRepo().fetchProject(
         departments?.id ?? '',
       );
-      print('projectD');
-      print(projectDetails);
-      departments?.project = projectDetails;
+      departments?.project = projectDetails ?? Project();
       hierarchy.clear();
-      if (departments != null && projectDetails != null) {
-        parseDepartments(departments!);
+      if (userResponse != null && projectDetails != null) {
+        parseDepartments(departments ?? Department());
+        streamController.add(departments);
+        callNotifier();
       }
-      streamController.add(userResponse);
+      streamController.add(departments);
       callNotifier();
     } catch (e, s) {
       hierarchy.clear();
