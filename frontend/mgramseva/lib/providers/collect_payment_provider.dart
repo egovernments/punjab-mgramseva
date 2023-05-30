@@ -434,9 +434,9 @@ class CollectPaymentProvider with ChangeNotifier {
     var res = await CommonProvider.getMdmsPaymentList(tenantId);
     if (!isConsumer) {
       if (res.mdmsRes?.billingService != null &&
-          res.mdmsRes?.billingService?.paymentServiceList != null) {
+          res.mdmsRes?.billingService?.businessServiceList != null) {
         Constants.EMPLOYEE_PAYMENT_METHOD.forEach((e) {
-          var index = res.mdmsRes?.billingService?.paymentServiceList?.first
+          var index = res.mdmsRes?.billingService?.businessServiceList?.first
               .collectionModesNotAllowed!
               .indexOf(e.key);
           if (index == -1) {
