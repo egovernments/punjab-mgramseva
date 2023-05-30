@@ -171,7 +171,7 @@ Map getPaymentModeList(String tenantId) {
         {
           "moduleName": "BillingService",
           "masterDetails": [
-            {"name": "PaymentService", "filter": "[?(@.code=='WS')]"}
+            {"name": "BusinessService", "filter": "[?(@.code=='WS')]"}
           ]
         }
       ]
