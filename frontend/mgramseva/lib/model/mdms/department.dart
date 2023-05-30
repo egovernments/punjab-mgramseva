@@ -19,8 +19,8 @@ class Department {
   List<Department>? children;
   @JsonKey(name: "hierarchyLevel")
   int? hierarchyLevel;
-  @JsonKey(includeIfNull: false, includeToJson: false, includeFromJson: false)
-  Project? updateDemands;
+  @JsonKey(ignore: true)
+  Project? project;
   Department();
 
   factory Department.fromJson(Map<String, dynamic> json) =>

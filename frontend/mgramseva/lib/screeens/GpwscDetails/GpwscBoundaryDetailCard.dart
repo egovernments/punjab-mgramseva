@@ -82,8 +82,7 @@ class GPWSCBoundaryDetailCard extends StatelessWidget {
                               context),
                           _getLabeltext(
                               "${ApplicationLocalizations.of(context).translate(i18.common.PROJECT_SCHEME_CODE)}",
-                              commonProvider
-                                  .userDetails!.selectedtenant?.city?.code,
+                              departmentProvider.departments?.project?.code ?? '',
                               context),
                           _getLabeltext(
                               "${ApplicationLocalizations.of(context).translate(i18.common.REGION_NAME)}",

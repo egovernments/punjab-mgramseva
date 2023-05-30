@@ -84,7 +84,10 @@ class Url {
   /// GPWSC Details
   static const String IFIX_DEPARTMENT_ENTITY =
       'ifix-department-entity/departmentEntity/v1/_search';
+  static const String ADAPTER_MASTER_DATA_PROJECT_SEARCH=
+      'adapter-master-data/project/v1/_search';
 }
+
 
 class UserUrl {
   static const String RESET_PASSWORD = 'user/password/nologin/_update';
