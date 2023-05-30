@@ -389,7 +389,7 @@ public class CalculatorUtil {
 			res = serviceRequestRepository.fetchResult(getMdmsSearchUrl(), mdmsCriteriaReq);
 		}
 
-		List<Map<String, Object>> jsonOutput = JsonPath.read(res, WSCalculationConstant.JSONPATH_ROOT_FOR_Allowed_PAyment);
+		List<Map<String, Object>> jsonOutput = JsonPath.read(res, WSCalculationConstant.JSON_PATH_ROOT_FOR_Allowed_PAyment);
 		return jsonOutput.get(0);
 
 
