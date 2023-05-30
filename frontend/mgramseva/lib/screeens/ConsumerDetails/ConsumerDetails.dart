@@ -265,6 +265,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               i18.consumer.OLD_CONNECTION_ID,
                               consumerProvider
                                   .waterconnection.OldConnectionCtrl,
+                              validator: (val) =>
+                                  Validators.maxCharactersValidator(
+                                      val, 20, i18.consumer.OLD_CONNECTION_ID),
                               isRequired: true,
                               contextKey:
                                   consumerProvider.consmerWalkthrougList[4].key,
@@ -317,12 +320,18 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           BuildTextField(
                             i18.consumer.DOOR_NO,
                             property.address.doorNumberCtrl,
+                            validator: (val) =>
+                                Validators.maxCharactersValidator(
+                                    val, 128, i18.consumer.DOOR_NO),
                           ),
 
                           //Consumer Street Field
                           BuildTextField(
                             i18.consumer.STREET_NUM_NAME,
                             property.address.streetNameOrNumberCtrl,
+                            validator: (val) =>
+                                Validators.maxCharactersValidator(
+                                    val, 128, i18.consumer.STREET_NUM_NAME),
                           ),
                           BuildTextField(
                             i18.consumer.GP_NAME,

@@ -50,6 +50,13 @@ class Validators {
     return null;
   }
 
+  static String? maxCharactersValidator(String? v, int input, String? key) {
+    if (v.toString().trim().isNotEmpty && v.toString().trim().length > input) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(key == i18.consumer.DOOR_NO ? i18.validators.HOUSE_NUMBER_VALIDATION : key == i18.consumer.OLD_CONNECTION_ID ? i18.validators.OLD_CONNECTION_VALIDATION : i18.validators.STREET_VALIDATION)}';
+    }
+    return null;
+  }
+
   static String? passwordComparision(String? val, String label,
       [String? val1]) {
     if (val!.trim().isEmpty) {

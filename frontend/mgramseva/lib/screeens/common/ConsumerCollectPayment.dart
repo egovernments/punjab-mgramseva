@@ -208,7 +208,8 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
           }),
       bottomNavigationBar: Consumer<CollectPaymentProvider>(
         builder: (_, consumerPaymentProvider, child) => Visibility(
-            visible: (fetchBill != null || fetchBill?.totalAmount != 0) &&
+            visible: (fetchBill != null ||
+                    (fetchBill?.totalAmount?.toDouble() ?? 0) > 0) &&
                 fetchBill?.isOnline != false,
             child: BottomButtonBar(
                 widget.query['isConsumer'] == 'true'
@@ -322,7 +323,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
             inputFormatter: [
               FilteringTextInputFormatter.allow(RegExp("[0-9]"))
             ],
-            validator: Validators.partialAmountValidatior,
+            validator: (val) => Validators.partialAmountValidatior(val, 10000),
             prefixText: '₹ ',
           )),
           Padding(
