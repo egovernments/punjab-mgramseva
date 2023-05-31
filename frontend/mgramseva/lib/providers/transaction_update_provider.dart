@@ -62,7 +62,7 @@ class TransactionUpdateProvider with ChangeNotifier {
           .fetchdBillPaymentsNoAuth(input)
           .then((res) async {
         var params = {
-          "key": "ws-receipt",
+          "key": "ws-receipt-nm",
           "tenantId": transactionObj.transaction!.first.tenantId
         };
         var body = {
