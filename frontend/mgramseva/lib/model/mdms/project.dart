@@ -1,3 +1,9 @@
+/*
+  * @author Saloni
+  * saloni.bajaj@egovernments.org
+  *
+  * */
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'project.g.dart';

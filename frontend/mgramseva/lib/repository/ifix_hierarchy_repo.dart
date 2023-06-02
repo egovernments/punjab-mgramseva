@@ -49,7 +49,11 @@ class IfixHierarchyRepo extends BaseService {
     }
     return departments;
   }
-
+/*
+  * @author Saloni
+  * saloni.bajaj@egovernments.org
+  *
+  * */
   Future<Project?> fetchProject(String departmentEntityId) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
