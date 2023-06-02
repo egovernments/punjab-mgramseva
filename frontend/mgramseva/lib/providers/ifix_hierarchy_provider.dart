@@ -33,9 +33,9 @@ class IfixHierarchyProvider with ChangeNotifier {
       var userResponse = await IfixHierarchyRepo().fetchDepartments(
           commonProvider.userDetails!.selectedtenant!.city!.code!, true);
       departments = userResponse ?? Department();
-      var projectDetails = await IfixHierarchyRepo().fetchProject(
+      var projectDetails = departments?.id!= null ? await IfixHierarchyRepo().fetchProject(
         departments?.id ?? '',
-      );
+      ): null;
       departments?.project = projectDetails ?? Project();
       hierarchy.clear();
       if (userResponse != null && projectDetails != null) {
@@ -43,6 +43,7 @@ class IfixHierarchyProvider with ChangeNotifier {
         streamController.add(departments);
         callNotifier();
       }
+      parseDepartments(departments?? Department());
       streamController.add(departments);
       callNotifier();
     } catch (e, s) {
