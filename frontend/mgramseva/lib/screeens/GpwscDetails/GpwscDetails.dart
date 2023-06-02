@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/screeens/GpwscDetails/GpwscRateCard.dart';
 import 'package:provider/provider.dart';
 
@@ -47,55 +46,54 @@ class _GpwscDetails extends State<GPWSCDetails>
 
   @override
   Widget build(BuildContext context) {
-    return FocusWatcher(
-        child: Scaffold(
+    return Scaffold(
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
-        Drawer(child: SideBar()),
+    Drawer(child: SideBar()),
       ),
       backgroundColor: Color.fromRGBO(238, 238, 238, 1),
       body: LayoutBuilder(
-        builder: (context, constraints) => Container(
-          alignment: Alignment.center,
-          margin: constraints.maxWidth < 760
-              ? null
-              : EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width / 25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    builder: (context, constraints) => Container(
+      alignment: Alignment.center,
+      margin: constraints.maxWidth < 760
+          ? null
+          : EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width / 25),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  HomeBack(),
-                ],
-              ),
-              Container(
-                color: Color.fromRGBO(238, 238, 238, 1),
-                padding: EdgeInsets.only(left: 8, right: 8),
-                height: constraints.maxHeight - 50,
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  child: Column(
-                    children: [
-                      GPWSCBoundaryDetailCard(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      GPWSCRateCard(rateType: "Non_Metered"),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      GPWSCRateCard(rateType: "Metered"),
-                      Footer()
-                    ],
-                  ),
-                ),
-              ),
+              HomeBack(),
             ],
           ),
-        ),
+          Container(
+            color: Color.fromRGBO(238, 238, 238, 1),
+            padding: EdgeInsets.only(left: 8, right: 8),
+            height: constraints.maxHeight - 50,
+            child: SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                children: [
+                  GPWSCBoundaryDetailCard(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  GPWSCRateCard(rateType: "Non_Metered"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  GPWSCRateCard(rateType: "Metered"),
+                  Footer()
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
-    ));
+    ),
+      ),
+    );
   }
 }
