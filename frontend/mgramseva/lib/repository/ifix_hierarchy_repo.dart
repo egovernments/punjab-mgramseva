@@ -1,3 +1,4 @@
+import 'package:mgramseva/model/mdms/project.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:provider/provider.dart';
 
@@ -14,9 +15,17 @@ class IfixHierarchyRepo extends BaseService {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    late Department? departments;
-    final requestInfo = RequestInfo('mGramSeva', .01, "", "search", "", "", "",
-        token ?? commonProvider.userDetails!.accessToken);
+    Department? departments;
+    final requestInfo = RequestInfo(
+        APIConstants.API_MODULE_NAME,
+        APIConstants.API_VERSION,
+        APIConstants.API_TS,
+        '_get',
+        APIConstants.API_DID,
+        APIConstants.API_KEY,
+        APIConstants.API_MESSAGE_ID,
+        commonProvider.userDetails?.accessToken,
+        commonProvider.userDetails?.userRequest?.toJson());
     var body = {
       "criteria": {
         "code": code,
@@ -39,5 +48,47 @@ class IfixHierarchyRepo extends BaseService {
       }
     }
     return departments;
+  }
+/*
+  * @author Saloni
+  * saloni.bajaj@egovernments.org
+  *
+  * */
+  Future<Project?> fetchProject(String departmentEntityId) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    Project? project;
+    final requestInfo = RequestInfo(
+        APIConstants.API_MODULE_NAME,
+        APIConstants.API_VERSION,
+        APIConstants.API_TS,
+        '_get',
+        APIConstants.API_DID,
+        APIConstants.API_KEY,
+        APIConstants.API_MESSAGE_ID,
+        commonProvider.userDetails?.accessToken,
+        commonProvider.userDetails?.userRequest?.toJson());
+    var body = {
+      "criteria": {
+        "departmentEntityId": departmentEntityId,
+        "tenantId":
+            commonProvider.userDetails!.userRequest!.tenantId.toString(),
+      },
+      'requestHeader': {"msgId": "Unknown", "signature": "NON"}
+    };
+    var res = await makeRequest(
+        url: Url.ADAPTER_MASTER_DATA_PROJECT_SEARCH,
+        body: body,
+        requestInfo: requestInfo,
+        method: RequestType.POST);
+    if (res != null && res['project'] != null) {
+      try {
+        project = Project.fromJson(res['project'][0]);
+      } catch (e) {
+        project = null;
+      }
+    }
+    return project;
   }
 }

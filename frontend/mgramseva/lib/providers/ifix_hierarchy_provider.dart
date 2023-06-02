@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/mdms/department.dart';
+import 'package:mgramseva/model/mdms/project.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/water_services_calculation.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -13,7 +14,8 @@ import 'common_provider.dart';
 
 class IfixHierarchyProvider with ChangeNotifier {
   Department? departments;
-  Map<String,Map<String,String>> hierarchy={};
+  GPWSCRateModel? gpwscRateModel;
+  Map<String, Map<String, String>> hierarchy = {};
   WCBillingSlabs? wcBillingSlabs;
   var streamController = StreamController.broadcast();
   var streamControllerRate = StreamController.broadcast();
@@ -30,12 +32,19 @@ class IfixHierarchyProvider with ChangeNotifier {
           listen: false);
       var userResponse = await IfixHierarchyRepo().fetchDepartments(
           commonProvider.userDetails!.selectedtenant!.city!.code!, true);
-      departments = userResponse;
+      departments = userResponse ?? Department();
+      var projectDetails = departments?.id!= null ? await IfixHierarchyRepo().fetchProject(
+        departments?.id ?? '',
+      ): null;
+      departments?.project = projectDetails ?? Project();
       hierarchy.clear();
-      if(departments!=null){
-        parseDepartments(departments!);
+      if (userResponse != null && projectDetails != null) {
+        parseDepartments(departments ?? Department());
+        streamController.add(departments);
+        callNotifier();
       }
-      streamController.add(userResponse);
+      parseDepartments(departments?? Department());
+      streamController.add(departments);
       callNotifier();
     } catch (e, s) {
       hierarchy.clear();
@@ -49,8 +58,8 @@ class IfixHierarchyProvider with ChangeNotifier {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
-      var mdmsRates = await CoreRepository().getRateFromMdms(
-          commonProvider.userDetails!.selectedtenant!.code!);
+      var mdmsRates = await CoreRepository()
+          .getRateFromMdms(commonProvider.userDetails!.selectedtenant!.code!);
       wcBillingSlabs = mdmsRates;
       streamControllerRate.add(wcBillingSlabs);
       callNotifier();
@@ -59,19 +68,21 @@ class IfixHierarchyProvider with ChangeNotifier {
       streamController.addError('error');
     }
   }
+
   void callNotifier() {
     notifyListeners();
   }
+
   void parseDepartments(Department department) {
-    final Map<String,String> departmentData = {
-      'departmentId': department.departmentId,
-      'code': department.code,
-      'name': department.name,
+    final Map<String, String> departmentData = {
+      'departmentId': department.departmentId ?? '',
+      'code': department.code ?? '',
+      'name': department.name ?? '',
       'hierarchyLevel': department.hierarchyLevel.toString(),
     };
     hierarchy.addAll({department.hierarchyLevel.toString(): departmentData});
     callNotifier();
-    for (final child in department.children) {
+    for (final child in department.children ?? []) {
       parseDepartments(child);
     }
   }

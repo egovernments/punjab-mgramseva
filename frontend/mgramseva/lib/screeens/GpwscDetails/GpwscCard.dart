@@ -1,11 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class GpwscCard extends StatelessWidget {
+class GPWSCCard extends StatelessWidget {
   final List<Widget> children;
-  const GpwscCard({
-    Key? key,required this.children
-  }) : super(key: key);
+  const GPWSCCard({Key? key, required this.children}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
