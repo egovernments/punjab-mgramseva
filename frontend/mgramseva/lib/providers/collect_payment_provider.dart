@@ -601,7 +601,7 @@ class CollectPaymentProvider with ChangeNotifier {
   }
 
   Future<void> createTransaction(
-      FetchBill fetchBill, String tenantId, BuildContext context) async {
+      FetchBill fetchBill, String tenantId, BuildContext context,Map query) async {
     var amount = fetchBill.customAmountCtrl.text;
     var transaction = {
       "Transaction": {
@@ -622,7 +622,7 @@ class CollectPaymentProvider with ChangeNotifier {
         },
         "callbackUrl":
             "https://mgramseva-uat.psegs.in/mgramseva/paymentSuccess",
-        "additionalDetails": {"isWhatsapp": false}
+        "additionalDetails": {"isWhatsapp": false,"connectionType":query["connectionType"]}
       }
     };
 

@@ -671,7 +671,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
       autoValidation = false;
       if (fetchBill.paymentMethod == 'PAYGOV') {
         consumerPaymentProvider.createTransaction(
-            fetchBill, widget.query['tenantId'], context);
+            fetchBill, widget.query['tenantId'], context,widget.query);
       }
     } else {
       setState(() {
