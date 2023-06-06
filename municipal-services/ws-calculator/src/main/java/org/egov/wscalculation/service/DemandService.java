@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
@@ -313,12 +314,18 @@ public class DemandService {
 	private void sendPaymentSMSNotification(RequestInfo requestInfo, String tenantId, User owner, WaterConnectionRequest waterConnectionRequest, Property property, List<DemandDetail> demandDetails, String consumerCode, List<Demand> demands, Boolean isForConnectionNO, String businessService, String billCycle, List<String> billNumbers, String paymentDueDate ) {
 		HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo,
 				WSCalculationConstant.mGram_Consumer_Payment, tenantId);
-
+		String connectionType = null;
+        if(ObjectUtils.isEmpty(waterConnectionRequest.getWaterConnection().getMeterId()) || waterConnectionRequest.getWaterConnection().getMeterId() ==  null)
+			connectionType = "non-metered";
+		else
+			connectionType = "metered";
 		String actionLinkPayment = config.getNotificationUrl()
 				+ config.getBillPaymentSMSLink().replace("$mobileNumber", owner.getMobileNumber())
 				.replace("$consumerCode", waterConnectionRequest.getWaterConnection().getConnectionNo())
 				.replace("$tenantId", property.getTenantId())
-				.replace("$businessService", businessService);
+				.replace("$businessService", businessService)
+				.replace("$connectionType", connectionType);
+		log.info("Payment Link ::: " + actionLinkPayment);
 
 		String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 		BigDecimal totalAmount = fetchTotalBillAmount(demands,requestInfo);
