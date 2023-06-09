@@ -406,7 +406,8 @@ class NewConsumerBillState extends State<NewConsumerBill> {
       'tenantId': commonProvider.userDetails?.selectedtenant?.code,
       'demandList' : widget.demandList,
       'fetchBill' : bill,
-      'status': widget.status
+      'status': widget.status,
+      'connectionType':widget.waterConnection?.connectionType
     };
     Navigator.pushNamed(context, Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT,
         arguments: query);

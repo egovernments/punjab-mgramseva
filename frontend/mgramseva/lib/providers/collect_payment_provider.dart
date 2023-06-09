@@ -507,7 +507,7 @@ class CollectPaymentProvider with ChangeNotifier {
   }
 
   Future<void> updatePaymentInformation(
-      FetchBill fetchBill, BuildContext context) async {
+      FetchBill fetchBill, Map query,BuildContext context) async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
     var amount = fetchBill.customAmountCtrl.text;
@@ -557,8 +557,7 @@ class CollectPaymentProvider with ChangeNotifier {
                   "Payments": [paymentDetails.payments!.first]
                 },
                 {
-                  "key": paymentDetails.payments?.first.paymentDetails?.first
-                              .bill?.waterConnection?.connectionType ==
+                  "key": query['connectionType'] ==
                           'Metered'
                       ? "ws-receipt"
                       : "ws-receipt-nm",
@@ -574,8 +573,7 @@ class CollectPaymentProvider with ChangeNotifier {
                   "Payments": [paymentDetails.payments!.first]
                 },
                 {
-                  "key": paymentDetails.payments?.first.paymentDetails?.first
-                              .bill?.waterConnection?.connectionType ==
+                  "key": query['connectionType'] ==
                           'Metered'
                       ? "ws-receipt"
                       : "ws-receipt-nm",

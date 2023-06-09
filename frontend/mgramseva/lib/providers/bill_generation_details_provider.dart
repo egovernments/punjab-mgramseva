@@ -203,7 +203,8 @@ class BillGenerationProvider with ChangeNotifier {
     Map<String, dynamic> query = {
       'consumerCode': bill.consumerCode,
       'businessService': bill.businessService,
-      'tenantId': commonProvider.userDetails?.selectedtenant?.code
+      'tenantId': commonProvider.userDetails?.selectedtenant?.code,
+      'connectionType':waterconnection.connectionType
     };
     Navigator.pushNamed(context, Routes.HOUSEHOLD_DETAILS_COLLECT_PAYMENT,
         arguments: query);
