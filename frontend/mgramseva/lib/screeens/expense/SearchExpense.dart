@@ -88,50 +88,25 @@ class _SearchExpenseState extends State<SearchExpense> {
                               key: Keys.expense.SEARCH_EXPENSE_TYPE,
                         ),
                       ),
-                      Visibility(
-                          visible: isVisible,
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                    '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
-                                    textAlign: TextAlign.center),
-                                BuildTextField(
-                                  i18.common.BILL_ID,
-                                  billIdCtrl,
-                                  hint: i18.common.BILL_HINT,
-                                  textCapitalization:
-                                      TextCapitalization.characters,
-                                  inputFormatter: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp("[A-Z0-9-]"))
-                                  ],
-                                  key: Keys.expense.SEARCH_EXPENSE_BILL_ID,
-                                ),
-                              ])),
-                      InkWell(
-                        key: Keys.expense.SEARCH_EXPENSE_SHOW,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 25, top: 10, bottom: 10, right: 25),
-                          child: new Row(
-                            children: [
-                              new Text(
-                                isVisible
-                                    ? "\n${ApplicationLocalizations.of(context).translate(i18.common.SHOW_LESS)}"
-                                    : "\n${ApplicationLocalizations.of(context).translate(i18.common.SHOW_MORE)}",
-                                style: new TextStyle(
-                                    color: Colors.deepOrangeAccent),
-                              )
-                            ],
-                          ),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            isVisible = !isVisible;
-                          });
-                        },
-                      ),
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                                '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
+                                textAlign: TextAlign.center),
+                            BuildTextField(
+                              i18.common.BILL_ID,
+                              billIdCtrl,
+                              hint: i18.common.BILL_HINT,
+                              textCapitalization:
+                                  TextCapitalization.characters,
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[A-Z0-9-]"))
+                              ],
+                              key: Keys.expense.SEARCH_EXPENSE_BILL_ID,
+                            ),
+                          ]),
                     ]))
               ]),
         ),
