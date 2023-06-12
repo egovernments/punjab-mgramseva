@@ -166,6 +166,12 @@ public class WaterConnectionValidator {
 					if(demand.isPaymentCompleted()) {
 						demList.remove(demand);
 					}
+					Integer totalTax = demand.getDemandDetails().stream().mapToInt(i->i.getTaxAmount().intValue()).sum();
+					Integer totalCollection = demand.getDemandDetails().stream().mapToInt(i->i.getCollectionAmount().intValue()).sum();
+					if(totalTax.compareTo(totalCollection) == 0) {
+						demList.remove(demand);
+					}
+					
 				}
 			}
 				Boolean isArrear = false;
