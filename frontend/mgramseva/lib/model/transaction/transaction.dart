@@ -129,6 +129,8 @@ class Transaction {
   @JsonKey(name: "bankTransactionNo")
   String? bankTransactionNo;
 
+  @JsonKey(name: "additionalDetails")
+  TransactionAdditionalDetails? additionalDetails;
   Transaction();
 
   factory Transaction.fromJson(Map<String, dynamic> json) =>
@@ -157,4 +159,17 @@ class TaxAndPayments {
       _$TaxAndPaymentsFromJson(json);
 
   Map<String, dynamic> toJson() => _$TaxAndPaymentsToJson(this);
+}
+@JsonSerializable()
+class TransactionAdditionalDetails {
+
+  @JsonKey(name: "connectionType")
+  String? connectionType;
+
+  TransactionAdditionalDetails();
+
+  factory TransactionAdditionalDetails.fromJson(Map<String, dynamic> json) =>
+      _$TransactionAdditionalDetailsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TransactionAdditionalDetailsToJson(this);
 }

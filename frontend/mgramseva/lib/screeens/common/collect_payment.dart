@@ -609,7 +609,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         Provider.of<CollectPaymentProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
       autoValidation = false;
-      consumerPaymentProvider.updatePaymentInformation(fetchBill, context);
+      consumerPaymentProvider.updatePaymentInformation(fetchBill, widget.query,context);
     } else {
       setState(() {
         autoValidation = true;
