@@ -434,9 +434,9 @@ class CollectPaymentProvider with ChangeNotifier {
     var res = await CommonProvider.getMdmsPaymentList(tenantId);
     if (!isConsumer) {
       if (res.mdmsRes?.billingService != null &&
-          res.mdmsRes?.billingService?.paymentServiceList != null) {
+          res.mdmsRes?.billingService?.businessServiceList != null) {
         Constants.EMPLOYEE_PAYMENT_METHOD.forEach((e) {
-          var index = res.mdmsRes?.billingService?.paymentServiceList?.first
+          var index = res.mdmsRes?.billingService?.businessServiceList?.first
               .collectionModesNotAllowed!
               .indexOf(e.key);
           if (index == -1) {
@@ -449,7 +449,7 @@ class CollectPaymentProvider with ChangeNotifier {
         var mdms = await CoreRepository().getMdms(getPaymentModeList(
             commonProvider.userDetails!.userRequest!.tenantId.toString()));
         Constants.EMPLOYEE_PAYMENT_METHOD.forEach((e) {
-          var index = mdms.mdmsRes?.billingService?.paymentServiceList?.first
+          var index = mdms.mdmsRes?.billingService?.businessServiceList?.first
               .collectionModesNotAllowed!
               .indexOf(e.key);
           if (index == -1) {
@@ -461,17 +461,17 @@ class CollectPaymentProvider with ChangeNotifier {
       }
     } else {
       if (res.mdmsRes?.billingService != null &&
-          res.mdmsRes?.billingService?.paymentServiceList != null &&
+          res.mdmsRes?.billingService?.businessServiceList != null &&
           isConsumer) {
         Constants.CONSUMER_PAYMENT_METHOD.forEach((e) {
-          var index = res.mdmsRes?.billingService?.paymentServiceList?.first
+          var index = res.mdmsRes?.billingService?.businessServiceList?.first
               .collectionModesNotAllowed!
               .indexOf(e.key);
           if (index == -1) {
             paymentModeList.add(KeyValue(e.key, e.label));
           }
         });
-        if (res.mdmsRes!.billingService!.paymentServiceList!.first
+        if (res.mdmsRes!.billingService!.businessServiceList!.first
             .collectionModesNotAllowed!
             .contains(i18.common.ONLINE)) {
           fetchBill.isOnline = false;
@@ -485,14 +485,14 @@ class CollectPaymentProvider with ChangeNotifier {
         var mdms = await CoreRepository().getMdms(getPaymentModeList(
             commonProvider.userDetails!.userRequest!.tenantId.toString()));
         Constants.CONSUMER_PAYMENT_METHOD.forEach((e) {
-          var index = mdms.mdmsRes?.billingService?.paymentServiceList?.first
+          var index = mdms.mdmsRes?.billingService?.businessServiceList?.first
               .collectionModesNotAllowed!
               .indexOf(e.key);
           if (index == -1) {
             paymentModeList.add(KeyValue(e.key, e.label));
           }
         });
-        if (mdms.mdmsRes!.billingService!.paymentServiceList!.first
+        if (mdms.mdmsRes!.billingService!.businessServiceList!.first
             .collectionModesNotAllowed!
             .contains(i18.common.ONLINE)) {
           fetchBill.isOnline = false;
@@ -507,7 +507,7 @@ class CollectPaymentProvider with ChangeNotifier {
   }
 
   Future<void> updatePaymentInformation(
-      FetchBill fetchBill, BuildContext context) async {
+      FetchBill fetchBill, Map query,BuildContext context) async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
     var amount = fetchBill.customAmountCtrl.text;
@@ -557,8 +557,7 @@ class CollectPaymentProvider with ChangeNotifier {
                   "Payments": [paymentDetails.payments!.first]
                 },
                 {
-                  "key": paymentDetails.payments?.first.paymentDetails?.first
-                              .bill?.waterConnection?.connectionType ==
+                  "key": query['connectionType'] ==
                           'Metered'
                       ? "ws-receipt"
                       : "ws-receipt-nm",
@@ -574,8 +573,7 @@ class CollectPaymentProvider with ChangeNotifier {
                   "Payments": [paymentDetails.payments!.first]
                 },
                 {
-                  "key": paymentDetails.payments?.first.paymentDetails?.first
-                              .bill?.waterConnection?.connectionType ==
+                  "key": query['connectionType'] ==
                           'Metered'
                       ? "ws-receipt"
                       : "ws-receipt-nm",
@@ -601,7 +599,7 @@ class CollectPaymentProvider with ChangeNotifier {
   }
 
   Future<void> createTransaction(
-      FetchBill fetchBill, String tenantId, BuildContext context) async {
+      FetchBill fetchBill, String tenantId, BuildContext context,Map query) async {
     var amount = fetchBill.customAmountCtrl.text;
     var transaction = {
       "Transaction": {
@@ -622,7 +620,7 @@ class CollectPaymentProvider with ChangeNotifier {
         },
         "callbackUrl":
             "https://mgramseva-uat.psegs.in/mgramseva/paymentSuccess",
-        "additionalDetails": {"isWhatsapp": false}
+        "additionalDetails": {"isWhatsapp": false,"connectionType":query["connectionType"]}
       }
     };
 

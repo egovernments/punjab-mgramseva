@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 import 'package:mgramseva/widgets/NoLoginFailurePage.dart';
@@ -43,7 +42,6 @@ class _PaymentFailureState extends State<PaymentFailure> {
         appBar: AppBar(
           title: Text('mGramSeva'),
           automaticallyImplyLeading: false,
-          actions: [_buildDropDown()],
         ),
         body: StreamBuilder(
             stream: languageProvider.streamController.stream,

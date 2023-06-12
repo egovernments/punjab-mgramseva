@@ -265,6 +265,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               i18.consumer.OLD_CONNECTION_ID,
                               consumerProvider
                                   .waterconnection.OldConnectionCtrl,
+                              validator: (val) =>
+                                  Validators.maxCharactersValidator(
+                                      val, 20, i18.consumer.OLD_CONNECTION_ID),
                               isRequired: true,
                               contextKey:
                                   consumerProvider.consmerWalkthrougList[4].key,
@@ -317,12 +320,18 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           BuildTextField(
                             i18.consumer.DOOR_NO,
                             property.address.doorNumberCtrl,
+                            validator: (val) =>
+                                Validators.maxCharactersValidator(
+                                    val, 128, i18.consumer.DOOR_NO),
                           ),
 
                           //Consumer Street Field
                           BuildTextField(
                             i18.consumer.STREET_NUM_NAME,
                             property.address.streetNameOrNumberCtrl,
+                            validator: (val) =>
+                                Validators.maxCharactersValidator(
+                                    val, 128, i18.consumer.STREET_NUM_NAME),
                           ),
                           BuildTextField(
                             i18.consumer.GP_NAME,
@@ -653,6 +662,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
           consumerProvider.paymentType, false))
         BuildTextField(i18.common.CORE_PENALTY,
             consumerProvider.waterconnection.penaltyCtrl,
+            validator: (val) =>
+                Validators.penaltyAndAdvanceValidator(val, true),
             textInputType: TextInputType.number,
             inputFormatter: [
               FilteringTextInputFormatter.allow(RegExp("[0-9]"))
@@ -663,6 +674,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   Widget _buildAdvance(ConsumerProvider consumerProvider) {
     return BuildTextField(i18.common.CORE_ADVANCE_RUPEE,
         consumerProvider.waterconnection.advanceCtrl,
+        validator: (val) => Validators.penaltyAndAdvanceValidator(val, true),
         textInputType: TextInputType.number,
         inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))]);
   }

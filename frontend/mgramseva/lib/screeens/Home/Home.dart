@@ -12,8 +12,8 @@ import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/widgets/DrawerWrapper.dart';
-import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/Footer.dart';
+import 'package:mgramseva/widgets/SideBar.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
@@ -55,8 +55,8 @@ class _HomeState extends State<Home> {
               context: context,
               pageBuilder: (context, anim1, anim2) {
                 return HomeWalkThroughContainer((index) =>
-                    homeProvider.incrementIndex(
-                        index, homeProvider.homeWalkthrougList[index + 1].key));
+                    homeProvider.incrementIndex(index,
+                        homeProvider.homeWalkthroughList[index + 1].key));
               },
               transitionBuilder: (context, anim1, anim2, child) {
                 return SlideTransition(

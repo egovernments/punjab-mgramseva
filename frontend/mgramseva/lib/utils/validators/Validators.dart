@@ -50,6 +50,16 @@ class Validators {
     return null;
   }
 
+  static String? maxCharactersValidator(String? v, int input, String? key) {
+    if (key == i18.consumer.OLD_CONNECTION_ID && v.toString().isEmpty) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.consumer.CONSUMER_OLD_CONNECTION_ID_REQUIRED)}';
+    } else if (v.toString().trim().isNotEmpty &&
+        v.toString().trim().length > input) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(key == i18.consumer.DOOR_NO ? i18.validators.HOUSE_NUMBER_VALIDATION : key == i18.consumer.OLD_CONNECTION_ID ? i18.validators.OLD_CONNECTION_VALIDATION : i18.validators.STREET_VALIDATION)}';
+    }
+    return null;
+  }
+
   static String? passwordComparision(String? val, String label,
       [String? val1]) {
     if (val!.trim().isEmpty) {
@@ -74,8 +84,24 @@ class Validators {
   }
 
   static String? arrearsPenaltyValidator(String? arrears, String? penalty) {
-    if ((penalty!.trim().isNotEmpty && int.parse(penalty.trim().toString()) != 0) && (arrears!.trim().isEmpty || int.parse(arrears.trim().toString()) == 0)) {
+    if ((penalty.toString().trim().isNotEmpty &&
+            int.parse(penalty.toString().trim()) != 0) &&
+        (arrears.toString().trim().isEmpty ||
+            int.parse(arrears.toString().trim().toString()) == 0)) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ADD_ARREAR_FOR_PENALTY)}';
+    } else if (arrears.toString().trim().isNotEmpty &&
+        int.parse(arrears.toString().trim()) > 10000) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ARREAR_VALIDATION)}';
+    }
+    return null;
+  }
+
+  static String? penaltyAndAdvanceValidator(String? amount,
+      [bool isPenalty = false]) {
+    if (amount.toString().trim().isNotEmpty &&
+        int.parse(amount.toString().trim()) != 0 &&
+        int.parse(amount.toString().trim()) > 10000) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(isPenalty ? i18.validators.PENALTY_VALIDATION : i18.validators.ADVANCE_VALIDATION)}';
     }
     return null;
   }
