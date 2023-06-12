@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'Locilization/application_localizations.dart';
+import 'locilization/application_localizations.dart';
 import 'common_styles.dart';
 
 class CommonWidgets {

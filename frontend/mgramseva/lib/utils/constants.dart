@@ -1,7 +1,7 @@
 import 'package:mgramseva/icons/home_icons_icons.dart';
 import 'package:mgramseva/icons/home_icons_modified_icons.dart';
-import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/routers/routers.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/models.dart';
 
 // ignore: non_constant_identifier_names

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/userProfile/user_profile.dart';
+import 'package:mgramseva/model/user_profile/user_profile.dart';
 import 'package:mgramseva/repository/user_profile_repo.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 

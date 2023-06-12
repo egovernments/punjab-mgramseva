@@ -19,10 +19,10 @@ import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
-import 'package:mgramseva/screeens/ConsumerDetails/ConsumerDetailsWalkThrough/walkThrough.dart';
-import 'package:mgramseva/services/MDMS.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/screeens/consumer_details/consumer_details_walk_through/walk_through.dart';
+import 'package:mgramseva/services/mdms.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
+import 'package:mgramseva/utils/locilization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
@@ -31,8 +31,8 @@ import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifiers.dart';
-import 'package:mgramseva/widgets/CustomDialog.dart';
-import 'package:mgramseva/widgets/SearchSelectFieldBuilder.dart';
+import 'package:mgramseva/widgets/custom_dialog.dart';
+import 'package:mgramseva/widgets/search_select_field_builder.dart';
 import 'package:provider/provider.dart';
 
 class ConsumerProvider with ChangeNotifier {
