@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/language.dart';
-import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
-import 'package:mgramseva/widgets/BackgroundContainer.dart';
-import 'package:mgramseva/widgets/Button.dart';
-import 'package:mgramseva/widgets/LanguageCard.dart';
-import 'package:mgramseva/widgets/footerBanner.dart';
+import 'package:mgramseva/routers/routers.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
+import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
+import 'package:mgramseva/widgets/background_container.dart';
+import 'package:mgramseva/widgets/button.dart';
+import 'package:mgramseva/widgets/language_card.dart';
+import 'package:mgramseva/widgets/footer_banner.dart';
 import 'package:provider/provider.dart';
 
 class LanguageSelectMobileView extends StatelessWidget {
