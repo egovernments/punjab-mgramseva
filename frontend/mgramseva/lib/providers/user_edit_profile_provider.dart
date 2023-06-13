@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:mgramseva/model/userProfile/user_profile.dart';
+import 'package:mgramseva/model/user_profile/user_profile.dart';
 import 'package:mgramseva/repository/user_edit_profile_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifiers.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:provider/provider.dart';
 
 import 'common_provider.dart';

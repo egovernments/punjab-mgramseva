@@ -1,9 +1,9 @@
-import 'package:mgramseva/model/Transaction/update_transaction.dart';
+import 'package:mgramseva/model/transaction/update_transaction.dart';
 import 'package:mgramseva/services/urls.dart';
 
 import '../model/bill/bill_payments.dart';
-import '../services/BaseService.dart';
-import '../services/RequestInfo.dart';
+import '../services/base_service.dart';
+import '../services/request_info.dart';
 import '../utils/global_variables.dart';
 import '../utils/models.dart';
 

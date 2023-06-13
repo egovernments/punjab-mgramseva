@@ -1,10 +1,10 @@
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
-import 'Locilization/application_localizations.dart';
+import 'localization/application_localizations.dart';
 
 class PrintBluetooth {
   static bool connected = false;

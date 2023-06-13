@@ -1,10 +1,10 @@
-import 'package:mgramseva/model/Transaction/transaction.dart';
+import 'package:mgramseva/model/transaction/transaction.dart';
 import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/common/demand.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/services/BaseService.dart';
-import 'package:mgramseva/services/RequestInfo.dart';
+import 'package:mgramseva/services/base_service.dart';
+import 'package:mgramseva/services/request_info.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
