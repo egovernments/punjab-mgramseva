@@ -1,7 +1,7 @@
 import 'package:mgramseva/model/user/user_details.dart';
-import 'package:mgramseva/model/userProfile/user_profile.dart';
-import 'package:mgramseva/services/RequestInfo.dart';
-import 'package:mgramseva/services/BaseService.dart';
+import 'package:mgramseva/model/user_profile/user_profile.dart';
+import 'package:mgramseva/services/request_info.dart';
+import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';

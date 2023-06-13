@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/notifiers.dart';
 import 'package:provider/provider.dart';

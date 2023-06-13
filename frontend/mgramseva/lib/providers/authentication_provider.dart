@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';

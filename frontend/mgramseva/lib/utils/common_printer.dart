@@ -1,9 +1,9 @@
 import 'package:bluetooth_thermal_printer/bluetooth_thermal_printer.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 
-import 'Locilization/application_localizations.dart';
+import 'localization/application_localizations.dart';
 import 'global_variables.dart';
 
 class CommonPrinter {

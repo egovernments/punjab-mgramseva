@@ -1,6 +1,6 @@
 
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';

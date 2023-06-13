@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/Transaction/update_transaction.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/model/transaction/update_transaction.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 
 import '../repository/billing_service_repo.dart';
 import '../repository/transaction_repo.dart';
-import '../utils/Locilization/application_localizations.dart';
+import '../utils/localization/application_localizations.dart';
 import '../utils/global_variables.dart';
 import 'common_provider.dart';
 

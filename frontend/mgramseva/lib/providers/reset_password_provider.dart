@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/repository/reset_password_repo.dart';
-import 'package:mgramseva/routers/Routers.dart';
+import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';

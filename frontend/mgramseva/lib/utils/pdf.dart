@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/Env/app_config.dart';
+import 'package:mgramseva/env/app_config.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/utils/constants.dart';
@@ -8,7 +8,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 
-import 'Locilization/application_localizations.dart';
+import 'localization/application_localizations.dart';
 import 'global_variables.dart';
 
 class PdfUtils {
