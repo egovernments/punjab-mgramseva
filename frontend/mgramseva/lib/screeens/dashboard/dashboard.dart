@@ -9,7 +9,7 @@ import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/date_formats.dart';

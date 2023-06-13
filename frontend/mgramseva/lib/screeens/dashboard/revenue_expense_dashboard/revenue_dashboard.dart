@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/components/dashboard/bills_table.dart';
 import 'package:mgramseva/providers/revenue_dashboard_provider.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';

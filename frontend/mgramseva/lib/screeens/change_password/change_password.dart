@@ -4,7 +4,7 @@ import 'package:mgramseva/model/change_password_details/change_password_details.
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/change_password_details_provider.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
 import 'package:mgramseva/utils/validators/validators.dart';
 import 'package:mgramseva/widgets/bases_app_bar.dart';

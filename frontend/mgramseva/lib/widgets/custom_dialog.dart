@@ -1,7 +1,7 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 
 class CustomDialog extends StatelessWidget {
   final String title;

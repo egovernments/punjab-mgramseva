@@ -6,7 +6,7 @@ import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/routers.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifiers.dart';

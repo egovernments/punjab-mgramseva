@@ -15,7 +15,7 @@ import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/dashboard/dashboard_pdf_creator.dart';
 import 'package:mgramseva/services/mdms.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';

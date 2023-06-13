@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/widgets/toast/toast_animation.dart';
 
 import 'package:flutter/material.dart';

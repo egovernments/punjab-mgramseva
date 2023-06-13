@@ -7,7 +7,7 @@ import 'package:mgramseva/utils/error_logging.dart';
 
 import '../repository/billing_service_repo.dart';
 import '../repository/transaction_repo.dart';
-import '../utils/locilization/application_localizations.dart';
+import '../utils/localization/application_localizations.dart';
 import '../utils/global_variables.dart';
 import 'common_provider.dart';
 

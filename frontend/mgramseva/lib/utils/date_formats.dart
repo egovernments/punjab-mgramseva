@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/constants.dart';
 
-import 'locilization/application_localizations.dart';
+import 'localization/application_localizations.dart';
 import 'global_variables.dart';
 import 'models.dart';
 

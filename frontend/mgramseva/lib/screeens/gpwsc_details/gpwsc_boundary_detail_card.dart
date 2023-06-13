@@ -6,7 +6,7 @@ import 'package:mgramseva/providers/ifix_hierarchy_provider.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:provider/provider.dart';
 
-import '../../utils/locilization/application_localizations.dart';
+import '../../utils/localization/application_localizations.dart';
 import '../../utils/common_widgets.dart';
 import '../../utils/loaders.dart';
 import '../../utils/notifiers.dart';

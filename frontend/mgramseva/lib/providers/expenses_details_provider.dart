@@ -15,7 +15,7 @@ import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/add_expense/add_expense_walk_through/expense_walk_through.dart';
 import 'package:mgramseva/services/mdms.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/date_formats.dart';

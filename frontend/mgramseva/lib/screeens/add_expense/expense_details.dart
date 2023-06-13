@@ -8,7 +8,7 @@ import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/screeens/add_expense/add_expense_walk_through/expense_walk_through.dart';
 import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
 import 'package:mgramseva/widgets/custom_app_bar.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/constants.dart';

@@ -12,7 +12,7 @@ import 'package:mgramseva/repository/tenants_repo.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/services/mdms.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/loaders.dart';

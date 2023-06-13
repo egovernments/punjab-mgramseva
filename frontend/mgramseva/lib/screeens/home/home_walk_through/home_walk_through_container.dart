@@ -4,7 +4,7 @@ import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/notifications_provider.dart';
 import 'package:mgramseva/screeens/consumer_details//pointer.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:provider/provider.dart';
 
