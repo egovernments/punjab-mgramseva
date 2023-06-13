@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/ifix_hierarchy_provider.dart';
 import '../../repository/water_services_calculation.dart';
-import '../../utils/locilization/application_localizations.dart';
+import '../../utils/localization/application_localizations.dart';
 import '../../utils/common_widgets.dart';
 import '../../utils/loaders.dart';
 import '../../utils/notifiers.dart';

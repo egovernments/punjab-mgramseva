@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/models.dart';
 
 class RadioButtonFieldBuilder extends StatelessWidget {

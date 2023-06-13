@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import '../utils/locilization/application_localizations.dart';
+import '../utils/localization/application_localizations.dart';
 
 class CustomCheckBoxWidget extends StatelessWidget {
   final bool value;

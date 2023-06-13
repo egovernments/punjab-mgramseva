@@ -11,7 +11,7 @@ import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/providers/collect_payment_provider.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';

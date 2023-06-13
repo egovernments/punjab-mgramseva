@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import '../../model/localization/language.dart';
 import '../../providers/language.dart';
 import '../../routers/routers.dart';
-import '../../utils/locilization/application_localizations.dart';
+import '../../utils/localization/application_localizations.dart';
 import '../../utils/loaders.dart';
 import '../../utils/notifiers.dart';
 import '../../widgets/no_login_failure_page.dart';

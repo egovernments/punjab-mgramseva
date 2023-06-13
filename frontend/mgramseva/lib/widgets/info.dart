@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 
 class Info extends StatelessWidget {

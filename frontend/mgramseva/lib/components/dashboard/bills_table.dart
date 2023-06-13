@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/scroll_parent.dart';
 

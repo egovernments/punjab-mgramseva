@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mgramseva/main.dart' as app;
-import 'package:mgramseva/screeens/generate_bill//widgets/meter_reading.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/screeens/generate_bill/widgets/meter_reading.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/widgets/short_button.dart';

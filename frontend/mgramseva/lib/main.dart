@@ -39,7 +39,7 @@ import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/home/home.dart';
 import 'package:mgramseva/screeens/select_language/select_language.dart';
 import 'package:mgramseva/theme.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';

@@ -12,7 +12,7 @@ import 'package:mgramseva/screeens/add_expense/expense_details.dart';
 import 'package:mgramseva/screeens/change_password/change_password.dart';
 import 'package:mgramseva/screeens/connection_results/connection_results.dart';
 import 'package:mgramseva/screeens/connection_results/search_connection.dart';
-import 'package:mgramseva/screeens/consumer_details//consumer_details.dart';
+import 'package:mgramseva/screeens/consumer_details/consumer_details.dart';
 import 'package:mgramseva/screeens/feedback/feed_back.dart';
 import 'package:mgramseva/screeens/generate_bill/generate_bill.dart';
 import 'package:mgramseva/screeens/gpwsc_details/gpwsc_details.dart';

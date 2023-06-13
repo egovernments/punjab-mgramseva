@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mgramseva/widgets/keyboard_focus_watcher.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
 import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/widgets/bottom_button_bar.dart';

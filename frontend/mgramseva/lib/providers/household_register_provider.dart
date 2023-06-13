@@ -9,7 +9,7 @@ import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/household_register/household_pdf_creator.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/excel_download/generate_excel.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/color_codes.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';

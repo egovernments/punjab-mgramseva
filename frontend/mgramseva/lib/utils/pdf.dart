@@ -8,7 +8,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 
-import 'locilization/application_localizations.dart';
+import 'localization/application_localizations.dart';
 import 'global_variables.dart';
 
 class PdfUtils {

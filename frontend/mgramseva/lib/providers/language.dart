@@ -6,7 +6,7 @@ import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/services/local_storage.dart';
 import 'package:mgramseva/services/mdms.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';

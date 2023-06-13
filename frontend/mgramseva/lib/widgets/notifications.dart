@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/events/events_List.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 
 class Notifications extends StatefulWidget {
   final Events? event;

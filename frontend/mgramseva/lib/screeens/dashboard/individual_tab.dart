@@ -4,7 +4,7 @@ import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/expenses_details/expenses_details.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:provider/provider.dart';

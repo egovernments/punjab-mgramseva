@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/expenses_details/expenses_details.dart';
 import 'package:mgramseva/routers/routers.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/models.dart';

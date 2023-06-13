@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/widgets/bases_app_bar.dart';
 import 'package:mgramseva/widgets/bottom_button_bar.dart';
