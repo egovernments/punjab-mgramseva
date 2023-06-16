@@ -1,5 +1,5 @@
-import 'package:mgramseva/model/forgotPassword/forgot_password.dart';
-import 'package:mgramseva/services/RequestInfo.dart';
+import 'package:mgramseva/model/forgot_password/forgot_password.dart';
+import 'package:mgramseva/services/request_info.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/global_variables.dart';

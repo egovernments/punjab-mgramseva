@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mgramseva/widgets/focus_watcher.dart';
+import 'package:mgramseva/widgets/keyboard_focus_watcher.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/expenses_details_provider.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
-import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/widgets/BaseAppBar.dart';
-import 'package:mgramseva/widgets/BottonButtonBar.dart';
-import 'package:mgramseva/widgets/DrawerWrapper.dart';
-import 'package:mgramseva/widgets/FormWrapper.dart';
-import 'package:mgramseva/widgets/HomeBack.dart';
-import 'package:mgramseva/widgets/LabelText.dart';
-import 'package:mgramseva/widgets/SelectFieldBuilder.dart';
-import 'package:mgramseva/widgets/SideBar.dart';
-import 'package:mgramseva/widgets/SubLabel.dart';
-import 'package:mgramseva/widgets/TextFieldBuilder.dart';
-import 'package:mgramseva/widgets/customAppbar.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
+import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
+import 'package:mgramseva/utils/notifiers.dart';
+import 'package:mgramseva/widgets/bottom_button_bar.dart';
+import 'package:mgramseva/widgets/drawer_wrapper.dart';
+import 'package:mgramseva/widgets/form_wrapper.dart';
+import 'package:mgramseva/widgets/home_back.dart';
+import 'package:mgramseva/widgets/label_text.dart';
+import 'package:mgramseva/widgets/select_field_builder.dart';
+import 'package:mgramseva/widgets/side_bar.dart';
+import 'package:mgramseva/widgets/sub_label.dart';
+import 'package:mgramseva/widgets/text_field_builder.dart';
+import 'package:mgramseva/widgets/custom_app_bar.dart';
 import 'package:mgramseva/widgets/footer.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:provider/provider.dart';
 
 class SearchExpense extends StatefulWidget {
@@ -89,50 +88,25 @@ class _SearchExpenseState extends State<SearchExpense> {
                               key: Keys.expense.SEARCH_EXPENSE_TYPE,
                         ),
                       ),
-                      Visibility(
-                          visible: isVisible,
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                    '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
-                                    textAlign: TextAlign.center),
-                                BuildTextField(
-                                  i18.common.BILL_ID,
-                                  billIdCtrl,
-                                  hint: i18.common.BILL_HINT,
-                                  textCapitalization:
-                                      TextCapitalization.characters,
-                                  inputFormatter: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp("[A-Z0-9-]"))
-                                  ],
-                                  key: Keys.expense.SEARCH_EXPENSE_BILL_ID,
-                                ),
-                              ])),
-                      InkWell(
-                        key: Keys.expense.SEARCH_EXPENSE_SHOW,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 25, top: 10, bottom: 10, right: 25),
-                          child: new Row(
-                            children: [
-                              new Text(
-                                isVisible
-                                    ? "\n${ApplicationLocalizations.of(context).translate(i18.common.SHOW_LESS)}"
-                                    : "\n${ApplicationLocalizations.of(context).translate(i18.common.SHOW_MORE)}",
-                                style: new TextStyle(
-                                    color: Colors.deepOrangeAccent),
-                              )
-                            ],
-                          ),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            isVisible = !isVisible;
-                          });
-                        },
-                      ),
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                                '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
+                                textAlign: TextAlign.center),
+                            BuildTextField(
+                              i18.common.BILL_ID,
+                              billIdCtrl,
+                              hint: i18.common.BILL_HINT,
+                              textCapitalization:
+                                  TextCapitalization.characters,
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[A-Z0-9-]"))
+                              ],
+                              key: Keys.expense.SEARCH_EXPENSE_BILL_ID,
+                            ),
+                          ]),
                     ]))
               ]),
         ),

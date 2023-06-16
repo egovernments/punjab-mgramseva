@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:math';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mgramseva/model/connection/tenant_boundary.dart';
-import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
-import 'package:mgramseva/model/expensesDetails/vendor.dart';
+import 'package:mgramseva/model/expenses_details/expenses_details.dart';
+import 'package:mgramseva/model/expenses_details/vendor.dart';
 import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/expense_type.dart';
@@ -14,28 +12,24 @@ import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
-import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/AddExpense/AddExpenseWalkThrough/expenseWalkThrough.dart';
-import 'package:mgramseva/services/MDMS.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/routers/routers.dart';
+import 'package:mgramseva/screeens/add_expense/add_expense_walk_through/expense_walk_through.dart';
+import 'package:mgramseva/services/mdms.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
-
-import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
-import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/widgets/CommonSuccessPage.dart';
-import 'package:mgramseva/widgets/FilePicker.dart';
+import 'package:mgramseva/utils/notifiers.dart';
+import 'package:mgramseva/widgets/common_success_page.dart';
+import 'package:mgramseva/widgets/file_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 
 import 'common_provider.dart';
-import 'package:universal_html/html.dart' as html;
 
 class ExpensesDetailsProvider with ChangeNotifier {
   late List<ExpenseWalkWidgets> expenseWalkthrougList;
@@ -43,7 +37,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   var expenditureDetails = ExpensesDetailsModel();
   late GlobalKey<FormState> formKey;
   var autoValidation = false;
-  int activeindex = 0;
+  int activeIndex = 0;
   LanguageList? languageList;
   var vendorList = <Vendor>[];
   late SuggestionsBoxController suggestionsBoxController;
@@ -328,7 +322,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
         expenditureDetails.selectedVendor = Vendor(res['name'], res['id']);
         status = true;
       }
-    } on CustomException catch (e, s) {
+    } on CustomException catch (e) {
       Notifiers.getToastMessage(context, e.message, 'ERROR');
     } catch (e) {
       Notifiers.getToastMessage(context, e.toString(), 'ERROR');
@@ -351,7 +345,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
         Notifiers.getToastMessage(
             context, i18.expense.NO_EXPENSES_FOUND, 'ERROR');
       }
-    } on CustomException catch (e, s) {
+    } on CustomException catch (e) {
       Notifiers.getToastMessage(context, e.message, 'ERROR');
       Navigator.pop(context);
     } catch (e) {
@@ -539,7 +533,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   incrementindex(index, expenseKey) async {
-    activeindex = index + 1;
+    activeIndex = index + 1;
     await Scrollable.ensureVisible(expenseKey.currentContext!,
         duration: new Duration(milliseconds: 100));
   }

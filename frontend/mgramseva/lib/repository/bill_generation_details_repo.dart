@@ -1,7 +1,7 @@
 import 'package:mgramseva/model/bill/bill_generation_details/bill_generation_details.dart';
 import 'package:mgramseva/model/bill/meter_demand_details.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/services/RequestInfo.dart';
+import 'package:mgramseva/services/request_info.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -36,18 +36,6 @@ class BillGenerateRepository extends BaseService {
     return billGenerationDetails;
   }
   Future<BillGenerationDetails> bulkDemand(Map body) async {
-    var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
-    final requestInfo = RequestInfo(
-        APIConstants.API_MODULE_NAME,
-        APIConstants.API_VERSION,
-        APIConstants.API_TS,
-        "create",
-        APIConstants.API_DID,
-        APIConstants.API_KEY,
-        APIConstants.API_MESSAGE_ID,
-        commonProvider.userDetails!.accessToken);
     late BillGenerationDetails billGenDetails;
     var res = await makeRequest(
         url: Url.BULK_DEMAND,
@@ -59,18 +47,17 @@ class BillGenerateRepository extends BaseService {
     }
     return billGenDetails;
   }
-  Future<MeterDemand> searchmetetedDemand(
-      Map<String, dynamic> queryparams) async {
+  Future<MeterDemand> searchMeteredDemand(
+      Map<String, dynamic> queryParams) async {
     late MeterDemand meterDemand;
     var res = await makeRequest(
         url: Url.SEARCH_METER_CONNECTION_DEMAND,
         body: {},
-        queryParameters: queryparams,
+        queryParameters: queryParams,
         requestInfo: getRequestInfo(),
         method: RequestType.POST);
     if (res != null) {
       meterDemand = MeterDemand.fromJson(res);
-      (res);
       meterDemand.meterReadings!.sort((a, b) => b.currentReading!.compareTo(a.currentReading!));
     }
     return meterDemand;

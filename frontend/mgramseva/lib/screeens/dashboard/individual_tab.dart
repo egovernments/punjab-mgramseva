@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/components/Dashboard/BillsTable.dart';
+import 'package:mgramseva/components/dashboard/bills_table.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
-import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
+import 'package:mgramseva/model/expenses_details/expenses_details.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
 import 'package:provider/provider.dart';
+
+import '../../utils/notifiers.dart';
 
 class IndividualTab extends StatefulWidget {
   const IndividualTab({Key? key}) : super(key: key);
@@ -40,9 +41,9 @@ class _IndividualTabState extends State<IndividualTab> {
           } else {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
-                return Loaders.CircularLoader();
+                return Loaders.circularLoader();
               case ConnectionState.active:
-                return Loaders.CircularLoader();
+                return Loaders.circularLoader();
               default:
                 return Container();
             }

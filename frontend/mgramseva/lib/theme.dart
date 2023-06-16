@@ -8,6 +8,7 @@ ThemeData get theme => ThemeData(
     hintColor: createMaterialColor(Color(0XFF3498DB)),
     primaryColorDark: Color.fromRGBO(11, 12, 12, 1),
     primaryColorLight: Color.fromRGBO(80, 90, 95, 1),
+    disabledColor: Colors.grey,
     // accentColor:  Color(0xff0B4B66),
 
     appBarTheme: AppBarTheme(

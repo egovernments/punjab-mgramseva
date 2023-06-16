@@ -1,24 +1,15 @@
-
-
-import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
-import 'package:mgramseva/components/Dashboard/BillsTable.dart';
 import 'package:mgramseva/model/common/metric.dart';
-import 'package:mgramseva/model/connection/water_connection.dart';
-import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
 import 'package:mgramseva/providers/dashboard_provider.dart';
-import 'package:mgramseva/screeens/dashboard/individual_tab.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
-import 'package:mgramseva/utils/common_widgets.dart';
-import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/screeens/dashboard/IndividualTab.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
+import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
+
 import 'package:mgramseva/utils/models.dart';
-import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/widgets/ListLabelText.dart';
-import 'package:mgramseva/widgets/TextFieldBuilder.dart';
+import 'package:mgramseva/widgets/list_label_text.dart';
+import 'package:mgramseva/widgets/text_field_builder.dart';
 import 'package:mgramseva/widgets/footer.dart';
-import 'package:mgramseva/widgets/grid_view.dart';
+import 'package:mgramseva/widgets/grid_view_builder.dart';
 import 'package:mgramseva/widgets/tab_button.dart';
 import 'package:provider/provider.dart';
 

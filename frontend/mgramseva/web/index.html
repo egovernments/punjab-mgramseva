@@ -29,6 +29,9 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <style>
+  #payGovHiddenForm {
+    display: none;
+  }
   .loading {
     display: flex;
     justify-content: center;
@@ -292,8 +295,68 @@
     };
 
   </script>
+  <script>
 
+    function getValueForKey(key, arr) {
+    for (var i = 0; i < arr.length; i++){
+        if(arr[i]["key"]==key){
+            return arr[i]["value"]
+        }
+      }
+    }
 
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+     }
+
+    async function onCollectPayment(txURL,
+     checksum, 
+     messageType, 
+     merchantId, 
+     serviceId,
+     orderId,
+     customerId,
+     transactionAmount,
+     currencyCode,
+     requestDateTime,
+     successUrl,
+     failUrl,
+     additionalField1,
+     additionalField2,
+     additionalField3,
+     additionalField4,
+     additionalField5){
+        var x = document.getElementById("payGovHiddenForm");
+      if (x.style.display === "none") {
+      console.log("block");
+        x.style.display = "block";
+      } else {
+      console.log("none");
+        x.style.display = "none";
+      }
+      document.getElementById("frmData").action = txURL;
+      document.getElementById("frmData").target = '_top' ;
+       document.getElementById("checksum").value = checksum;
+       document.getElementById("messageType").value = messageType;
+      document.getElementById("merchantId").value = merchantId;
+      document.getElementById("serviceId").value = serviceId ;
+      document.getElementById("orderId").value = orderId ;
+      document.getElementById("customerId").value = customerId ;
+      document.getElementById("transactionAmount").value = transactionAmount;
+      document.getElementById("currencyCode").value = currencyCode;
+      document.getElementById("requestDateTime").value = requestDateTime;
+      document.getElementById("successUrl").value = successUrl;
+      document.getElementById("failUrl").value = failUrl;
+      document.getElementById("additionalField1").value = additionalField1;
+      document.getElementById("additionalField2").value = additionalField2 ;
+      document.getElementById("additionalField3").value = additionalField3;
+      document.getElementById("additionalField4").value = additionalField4;
+      document.getElementById("additionalField5").value = additionalField5;
+      await sleep(2000);
+      document.forms["frmData"].submit();
+
+    }
+  </script>
   <script></script>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
@@ -386,6 +449,27 @@
   <div class="loading">
     <div class="loader"></div>
   </div>
+<div id="payGovHiddenForm">
+  <form id = 'frmData' name='frmData' role='form' method='post'>
+    <input type="hidden" id='checksum' name='checksum' />
+    <input type="text" id='messageType' class='form-control valid' name='messageType'/>
+    <input type="text" id='merchantId' class='form-control valid' name='merchantId' />
+    <input type="text" id='serviceId' class='form-control valid' name='serviceId' />
+    <input type="text" id='orderId' class='form-control' name='orderId' />
+    <input type="text" id='customerId' class='form-control valid' name='customerId'/>
+    <input type="text" id='transactionAmount' class='form-control valid' name='transactionAmount'/>
+    <input type="text" id='currencyCode' class='form-control' name='currencyCode'/>
+    <input type="text" id='requestDateTime' class='form-control hasDatePicker' name='requestDateTime'/>
+    <input type="text" id='successUrl' class='form-control' name='successUrl'/>
+    <input type="text" id='failUrl' class='form-control' name='failUrl' />
+    <input type="text" id='additionalField1' class='form-control valid' name='additionalField1'/>
+    <input type="text" id='additionalField2' class='form-control valid' name='additionalField2'/>
+    <input type="text" id='additionalField3' class='form-control valid' name='additionalField3'/>
+    <input type="text" id='additionalField4' class='form-control valid' name='additionalField4'/>
+    <input type="text" id='additionalField5' class='form-control valid' name='additionalField5'/>
+    <button type='submit' id='SubmitBtn'>Submit</button>
+  </form>
+</div>
 </body>
 
 </html>

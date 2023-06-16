@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/repository/reset_password_repo.dart';
-import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:provider/provider.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 import 'common_provider.dart';
 
@@ -31,7 +29,6 @@ class ResetPasswordProvider with ChangeNotifier {
         "type": commonProvider.userDetails!.userRequest!.type
       };
 
-      var resetResponse =
           await ResetPasswordRepository().forgotPassword(body, context);
       Navigator.pushNamedAndRemoveUntil(
           context, Routes.LOGIN, (route) => false);

@@ -1,6 +1,6 @@
-import 'package:mgramseva/model/resetPassword/reset_password.dart';
+import 'package:mgramseva/model/reset_password/reset_password.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/services/RequestInfo.dart';
+import 'package:mgramseva/services/request_info.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/global_variables.dart';

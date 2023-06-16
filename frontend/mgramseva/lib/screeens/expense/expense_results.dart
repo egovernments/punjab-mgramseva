@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
-import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
+import 'package:mgramseva/model/expenses_details/expenses_details.dart';
+import 'package:mgramseva/routers/routers.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
+import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/models.dart';
-import 'package:mgramseva/widgets/BaseAppBar.dart';
-import 'package:mgramseva/widgets/DrawerWrapper.dart';
-import 'package:mgramseva/widgets/HomeBack.dart';
-import 'package:mgramseva/widgets/LabelText.dart';
-import 'package:mgramseva/widgets/ShortButton.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:mgramseva/widgets/SideBar.dart';
-import 'package:mgramseva/widgets/customAppbar.dart';
+import 'package:mgramseva/widgets/drawer_wrapper.dart';
+import 'package:mgramseva/widgets/home_back.dart';
+import 'package:mgramseva/widgets/label_text.dart';
+import 'package:mgramseva/widgets/short_button.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
+import 'package:mgramseva/widgets/side_bar.dart';
+import 'package:mgramseva/widgets/custom_app_bar.dart';
 
 class ExpenseResults extends StatelessWidget {
   final SearchResult searchResult;

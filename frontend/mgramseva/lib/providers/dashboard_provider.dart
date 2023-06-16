@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/model/common/metric.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
-import 'package:mgramseva/model/expensesDetails/expenses_details.dart';
+import 'package:mgramseva/model/expenses_details/expenses_details.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/dashboard.dart';
 import 'package:mgramseva/repository/expenses_repo.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
-import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/screeens/dashboard/dashboard_pdf.dart';
-import 'package:mgramseva/services/MDMS.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/routers/routers.dart';
+import 'package:mgramseva/screeens/dashboard/dashboard_pdf_creator.dart';
+import 'package:mgramseva/services/mdms.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -23,7 +23,7 @@ import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 
-import 'revenuedashboard_provider.dart';
+import 'revenue_dashboard_provider.dart';
 
 class DashBoardProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
@@ -177,7 +177,6 @@ class DashBoardProvider with ChangeNotifier {
     if (selectedTab != 'all') {
       query['isBillPaid'] = ((selectedTab == 'pending') ? 'false' : 'true');
     }
-    ;
 
     query
         .removeWhere((key, value) => (value is String && value.trim().isEmpty));
@@ -273,7 +272,6 @@ class DashBoardProvider with ChangeNotifier {
     if (selectedTab != 'all') {
       query['propertyType'] = selectedTab;
     }
-    ;
 
     if (sortBy != null) {
       query.addAll({
@@ -546,7 +544,6 @@ class DashBoardProvider with ChangeNotifier {
   }
 
   void onChangeOfDate(DatePeriod? date, BuildContext context) {
-    var previousDateType = selectedMonth.dateType;
     selectedMonth =
         date ?? DatePeriod(DateTime.now(), DateTime.now(), DateType.MONTH);
     notifyListeners();
@@ -758,7 +755,6 @@ class DashBoardProvider with ChangeNotifier {
     if (selectedTab != 'all') {
       query['propertyType'] = selectedTab;
     }
-    ;
 
     if (sortBy != null) {
       query.addAll({

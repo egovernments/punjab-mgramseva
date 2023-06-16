@@ -6,31 +6,31 @@ import 'package:mgramseva/model/common/fetch_bill.dart' as billDetails;
 import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/model/mdms/payment_type.dart';
-import 'package:mgramseva/providers/collect_payment.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/providers/collect_payment_provider.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
-import 'package:mgramseva/utils/validators/Validators.dart';
-import 'package:mgramseva/widgets/BottonButtonBar.dart';
-import 'package:mgramseva/widgets/ConfirmationPopUp.dart';
-import 'package:mgramseva/widgets/DrawerWrapper.dart';
-import 'package:mgramseva/widgets/FormWrapper.dart';
-import 'package:mgramseva/widgets/HomeBack.dart';
-import 'package:mgramseva/widgets/RadioButtonFieldBuilder.dart';
-import 'package:mgramseva/widgets/SideBar.dart';
+import 'package:mgramseva/utils/notifiers.dart';
+import 'package:mgramseva/utils/validators/validators.dart';
+import 'package:mgramseva/widgets/bottom_button_bar.dart';
+import 'package:mgramseva/widgets/confirmation_pop_up.dart';
+import 'package:mgramseva/widgets/drawer_wrapper.dart';
+import 'package:mgramseva/widgets/form_wrapper.dart';
+import 'package:mgramseva/widgets/home_back.dart';
+import 'package:mgramseva/widgets/radio_button_field_builder.dart';
+import 'package:mgramseva/widgets/side_bar.dart';
 import 'package:provider/provider.dart';
 
-import '../../components/HouseConnectionandBill/NewConsumerBill.dart';
+import '../../components/house_connection_and_bill/new_consumer_bill.dart';
 import '../../model/demand/update_demand_list.dart';
 import '../../providers/common_provider.dart';
 import '../../utils/models.dart';
-import '../../widgets/CustomDetails.dart';
-import '../../widgets/TextFieldBuilder.dart';
-import '../../widgets/customAppbar.dart';
+import '../../widgets/custom_app_bar.dart';
+import '../../widgets/custom_details.dart';
+import '../../widgets/text_field_builder.dart';
 
 class ConnectionPaymentView extends StatefulWidget {
   final Map<String, dynamic> query;
@@ -137,9 +137,9 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             } else {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
-                  return Loaders.CircularLoader();
+                  return Loaders.circularLoader();
                 case ConnectionState.active:
-                  return Loaders.CircularLoader();
+                  return Loaders.circularLoader();
                 default:
                   return Container();
               }
@@ -263,7 +263,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
             inputFormatter: [
               FilteringTextInputFormatter.allow(RegExp("[0-9]"))
             ],
-            validator: Validators.partialAmountValidatior,
+            validator: (val) => Validators.partialAmountValidatior(val, 10000),
             prefixText: '₹ ',
           )),
           Padding(
@@ -295,7 +295,6 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
     var isFirstDemand =
         CommonProvider.isFirstDemand(fetchBill.demandList ?? []);
     List res = [];
-    num len = fetchBill.billDetails?.first.billAccountDetails?.length as num;
     if (fetchBill.billDetails!.isNotEmpty)
       fetchBill.billDetails?.forEach((element) {
         if (element.amount != 0) res.add(element.amount);
@@ -484,11 +483,6 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   }
 
   Widget _buildWaterCharges(FetchBill bill, BoxConstraints constraints) {
-    var style = TextStyle(
-        fontSize: 14,
-        color: Color.fromRGBO(80, 90, 95, 1),
-        fontWeight: FontWeight.w400);
-
     return Container(
         padding: EdgeInsets.symmetric(
             vertical: 8, horizontal: constraints.maxWidth > 760 ? 20 : 0),
@@ -615,7 +609,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         Provider.of<CollectPaymentProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
       autoValidation = false;
-      consumerPaymentProvider.updatePaymentInformation(fetchBill, context);
+      consumerPaymentProvider.updatePaymentInformation(fetchBill, widget.query,context);
     } else {
       setState(() {
         autoValidation = true;

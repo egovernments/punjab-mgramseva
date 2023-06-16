@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/Events/events_List.dart';
+import 'package:mgramseva/model/events/events_List.dart';
 
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/utils/error_logging.dart';

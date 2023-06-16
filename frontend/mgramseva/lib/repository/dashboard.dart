@@ -2,7 +2,7 @@
 import 'package:mgramseva/model/dashboard/revenue_dashboard.dart';
 import 'package:mgramseva/model/dashboard/revenue_chart.dart';
 import 'package:mgramseva/providers/common_provider.dart';
-import 'package:mgramseva/services/RequestInfo.dart';
+import 'package:mgramseva/services/request_info.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/global_variables.dart';

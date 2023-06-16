@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 
 
 class TabButton extends StatelessWidget {

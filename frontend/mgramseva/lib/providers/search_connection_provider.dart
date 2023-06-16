@@ -4,12 +4,12 @@ import 'package:mgramseva/model/connection/search_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
-import 'package:mgramseva/routers/Routers.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
+import 'package:mgramseva/routers/routers.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifyers.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:provider/provider.dart';
 
 class SearchConnectionProvider with ChangeNotifier {

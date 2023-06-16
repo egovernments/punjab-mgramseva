@@ -1,14 +1,15 @@
-import 'dart:convert';
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/cupertino.dart';
-import 'package:mgramseva/Env/app_config.dart';
-import 'package:mgramseva/services/RequestInfo.dart';
+import 'package:http/http.dart' as http;
+import 'package:mgramseva/env/app_config.dart';
+import 'package:mgramseva/services/request_info.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/models.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
 
 class BaseService {
   Future<dynamic> makeRequest<T>(
@@ -97,37 +98,41 @@ dynamic _response(http.Response response) {
       data?['Errors']?[0]?['description'] ??
       data?['error_description'] ??
       data?['error']?['fields']?[0]?['code'] ??
-      data?['error']?['fields']?[0]?['message'] ?? '';
+      data?['error']?['fields']?[0]?['message'] ??
+      '';
 
   var errorList = data?['Errors'] ?? [];
-      
+
   switch (response.statusCode) {
     case 200:
       return data;
     case 201:
       return data;
+    case 202:
+      return data;
     case 400:
-      throw getException(errorMessage, errorList , response.statusCode, ExceptionType.FETCHDATA);
+      throw getException(errorMessage, errorList, response.statusCode,
+          ExceptionType.FETCHDATA);
     case 401:
     case 403:
       throw CustomException(
           errorMessage, response.statusCode, ExceptionType.UNAUTHORIZED);
     case 500:
-      throw getException(errorMessage, errorList , response.statusCode, ExceptionType.INVALIDINPUT);
+      throw getException(errorMessage, errorList, response.statusCode,
+          ExceptionType.INVALIDINPUT);
     default:
       throw CustomException(
           errorMessage, response.statusCode, ExceptionType.OTHER);
   }
 }
 
-CustomException getException(String errorMsg,List<dynamic> errorList, int statusCode, ExceptionType exceptionType) {
-  for(var error in errorList){
-    if((error['message'] ?? '').contains(Constants.INVALID_EXCEPTION_CODE)) {
+CustomException getException(String errorMsg, List<dynamic> errorList,
+    int statusCode, ExceptionType exceptionType) {
+  for (var error in errorList) {
+    if ((error['message'] ?? '').contains(Constants.INVALID_EXCEPTION_CODE)) {
       throw CustomException(
           i18.common.SESSION_EXPIRED, statusCode, ExceptionType.UNAUTHORIZED);
     }
   }
-    throw CustomException(
-        errorMsg, statusCode, exceptionType); 
-
+  throw CustomException(errorMsg, statusCode, exceptionType);
 }
