@@ -307,5 +307,4 @@ public class WaterConnectionValidator {
             throw new CustomException("PARSING_ERROR","Failed to parse response of update demand");
         }
     }
-
 }
