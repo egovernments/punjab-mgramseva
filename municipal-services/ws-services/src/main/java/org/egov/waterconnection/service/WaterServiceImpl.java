@@ -773,6 +773,5 @@ public class WaterServiceImpl implements WaterService {
 		}
 		System.out.println("datadatadatadata" + data);
 		return data;
-
 	}
 }
