@@ -43,6 +43,7 @@ import org.egov.waterconnection.web.models.users.User;
 import org.egov.waterconnection.web.models.users.UserDetailResponse;
 import org.egov.waterconnection.web.models.users.UserSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -70,6 +71,7 @@ public class EnrichmentService {
 	private ObjectMapper mapper;
 	
 	@Autowired
+	@Lazy
 	private WaterDaoImpl waterDao;
 	
 	@Autowired
