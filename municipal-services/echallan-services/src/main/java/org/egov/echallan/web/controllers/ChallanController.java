@@ -160,5 +160,16 @@ public class ChallanController {
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}
 
+	@PostMapping("/_updateCreateNoPayment")
+	public ResponseEntity<ChallanResponse> updateCreateoPayment(@Valid @RequestBody ChallanRequest challanRequest) {
+		Map<String, String> finalData = new HashMap<String, String>();
+		Challan challan = challanService.updateCreateNoPayment(challanRequest, finalData);
+		ResponseInfo resInfo = responseInfoFactory.createResponseInfoFromRequestInfo(challanRequest.getRequestInfo(), true);
+		ChallanResponse response = ChallanResponse.builder().challans(Arrays.asList(challan))
+				.responseInfo(resInfo)
+				.build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
 
 }
