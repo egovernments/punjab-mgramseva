@@ -72,9 +72,7 @@ class GPWSCBoundaryDetailCard extends StatelessWidget {
                                   _getLabeltext(
                                       "${ApplicationLocalizations.of(context).translate(i18.common.VILLAGE_CODE)}",
                                       commonProvider
-                                          .userDetails!.selectedtenant?.code
-                                          ?.split('.')
-                                          .last,
+                                          .userDetails!.selectedtenant?.city?.code,
                                       context),
                                   _getLabeltext(
                                       "${ApplicationLocalizations.of(context).translate(i18.common.VILLAGE_NAME)}",
@@ -134,7 +132,14 @@ class GPWSCBoundaryDetailCard extends StatelessWidget {
                                                   null
                                           ? 'NA'
                                           : '${commonProvider.userDetails!.selectedtenant?.city?.districtCode ?? 'NA'}-${commonProvider.userDetails!.selectedtenant?.city?.districtName ?? 'NA'}',
-                                      context)
+                                      context),
+                                  _getLabeltext(
+                                      "${ApplicationLocalizations.of(context).translate(i18.common.TENANT_ID)}",
+                                      commonProvider
+                                          .userDetails!.selectedtenant?.code
+                                          ?.split('.')
+                                          .last,
+                                      context),
                                 ],
                               ),
                             )
