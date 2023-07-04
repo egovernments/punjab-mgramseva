@@ -208,6 +208,7 @@ class Common {
   String get ADVANCE_AVAILABLE => 'ADVANCE_AVAILABLE';
 
   String get VILLAGE_CODE => 'VILLAGE_CODE';
+  String get TENANT_ID => 'TENANT_ID';
   String get VILLAGE_NAME => 'VILLAGE_NAME';
   String get SECTION_CODE => 'SECTION_CODE';
   String get SUB_DIVISION_CODE => 'SUB_DIVISION_CODE';
