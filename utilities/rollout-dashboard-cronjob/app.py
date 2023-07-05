@@ -31,7 +31,7 @@ def getGPWSCHeirarchy():
                  },
                 "criteria": {
  			"tenantId": "pb",
-        		"getAncestry": true
+        		"getAncestry": True
                 }
             }
             
