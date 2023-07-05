@@ -19,18 +19,18 @@ def getGPWSCHeirarchy():
                 
             url = 'https://mgramseva-qa.egov.org.in/'
             requestData = {
-                "requestHeader": {
-                     "ts": 1627193067,
-        	     "version": "2.0.0",
-                     "msgId": "Unknown",
-                     "signature": "NON",
-                     "userInfo": {
-                     "uuid": "admin"
-                        }
-                 },
-                "criteria": {
- 			"tenantId": "pb",
-        		"getAncestry": True
+            "requestHeader": {
+                "ts": 1627193067,
+                "version": "2.0.0",
+                "msgId": "Unknown",
+                "signature": "NON",
+                "userInfo": {
+                    "uuid": "admin"
+                }
+            },
+            "criteria": {
+                "tenantId": "pb",
+                "getAncestry": True
                 }
             }
             
@@ -38,7 +38,7 @@ def getGPWSCHeirarchy():
             
             responseData = response.json()
             departmentHierarchyList = responseData.get('departmentEntity')
-	    print(departmentHierarchyList)
+            print(departmentHierarchyList)
             dataList = []
             
             for data in departmentHierarchyList:
