@@ -38,9 +38,9 @@ def getGPWSCHeirarchy():
             
             responseData = response.json()
             departmentHierarchyList = responseData.get('departmentEntity')
-
+	    print(departmentHierarchyList)
             dataList = []
-           
+            
             for data in departmentHierarchyList:
                 zone = data['children'][0].get('name')
                 circle = data['children'][0]['children'][0].get('name')
