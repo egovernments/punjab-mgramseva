@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Pattern;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -27,6 +29,7 @@ public class VendorSearchCriteria {
 	@JsonProperty("tenantId")
 	private String tenantId;
 
+	@Pattern(regexp = "^[6-9][0-9]{9}$", message = "Invalid mobile number")
 	@JsonProperty("mobileNumber")
 	private String mobileNumber;
 	
