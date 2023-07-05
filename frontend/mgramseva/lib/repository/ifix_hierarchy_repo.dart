@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../model/mdms/department.dart';
 import '../providers/common_provider.dart';
-import '../services/BaseService.dart';
-import '../services/RequestInfo.dart';
+import '../services/base_service.dart';
+import '../services/request_info.dart';
 import '../utils/global_variables.dart';
 import '../utils/models.dart';
 

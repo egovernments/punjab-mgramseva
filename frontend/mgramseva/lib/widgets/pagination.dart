@@ -1,9 +1,9 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:mgramseva/utils/Constants/I18KeyConstants.dart';
-import 'package:mgramseva/utils/Locilization/application_localizations.dart';
-import 'package:mgramseva/utils/TestingKeys/testing_keys.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
+import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
 import 'package:mgramseva/utils/models.dart';
 
 class Pagination extends StatefulWidget {

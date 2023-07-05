@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/Env/app_config.dart';
+import 'package:mgramseva/env/app_config.dart';
 import 'package:mgramseva/utils/constants.dart';
 
 class Footer extends StatelessWidget {
