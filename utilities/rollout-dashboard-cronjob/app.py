@@ -17,7 +17,7 @@ def getGPWSCHeirarchy():
         try:
             
                 
-            url = 'https://mgramseva-qa.egov.org.in/'
+            url = os.getenv('API_URL')
             requestData = {
                 "requestHeader": {
                      "ts": 1627193067,
@@ -37,17 +37,18 @@ def getGPWSCHeirarchy():
             response = requests.post(url+'ifix-department-entity/departmentEntity/v1/_search', json=requestData)
             
             responseData = response.json()
-            departmentHierarchyList = responseData['departmentEntity']
+            departmentHierarchyList = responseData.get('departmentEntity')
+
             dataList = []
            
             for data in departmentHierarchyList:
-                zone = data['children']['name']
-                circle = data['children']['children']['name']
-                division = data['children']['children']['children']['name']
-                subdivision = data['children']['children']['children']['children']['name']
-                section = data['children']['children']['children']['children']['children']['name']
-                tenantName = data['children']['children']['children']['children']['children']['children']['name']
-                tenantCode = data['children']['children']['children']['children']['children']['children']['code']
+                zone = data['children'][0].get('name')
+                circle = data['children'][0]['children'][0].get('name')
+                division = data['children'][0]['children'][0]['children'][0].get('name')
+                subdivision = data['children'][0]['children'][0]['children'][0]['children'][0].get('name')
+                section = data['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('name')
+                tenantName = data['children'][0]['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('name')
+                tenantCode = data['children'][0]['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('code')
                 tenantId = tenantName.replace(" ", "").lower()
                 formatedTenantId = "pb."+tenantId;
                 obj1 = {
