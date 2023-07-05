@@ -17,8 +17,7 @@ def getGPWSCHeirarchy():
         try:
             
                 
-            url = os.getenv('API_URL')
-            print(url)
+            url = 'https://mgramseva-qa.egov.org.in/'
             requestData = {
             "requestHeader": {
                 "ts": 1627193067,
