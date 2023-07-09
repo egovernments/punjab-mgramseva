@@ -235,5 +235,8 @@ public class WSCalculationConfiguration {
 	@Value("${egov.sms.bill.payment.link}")
 	private String billPaymentSMSLink;
 
+	@Value("${egov.pspcl.vendor.number}")
+	private String pspclVendorNumber;
+
 	
 }

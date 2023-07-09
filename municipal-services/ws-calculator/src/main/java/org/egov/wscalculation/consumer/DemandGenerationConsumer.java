@@ -477,11 +477,12 @@ public class DemandGenerationConsumer {
 				msg = msg.replace("{LINK}", msgLink);
 
 				System.out.println("Demand GP USER SMS1::" + msg);
+				if(!map.getKey().equals(config.getPspclVendorNumber())) {
+					SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(msg)
+							.category(Category.TRANSACTION).build();
+					producer.push(config.getSmsNotifTopic(), smsRequest);
+				}
 
-				SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(msg)
-						.category(Category.TRANSACTION).build();
-
-				producer.push(config.getSmsNotifTopic(), smsRequest);
 			});
 		}
 	}
