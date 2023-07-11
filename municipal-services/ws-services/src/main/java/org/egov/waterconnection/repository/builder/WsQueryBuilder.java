@@ -240,7 +240,7 @@ public class WsQueryBuilder {
 		}
 		if (!StringUtils.isEmpty(criteria.getOldConnectionNumber())) {
 			addClauseIfRequired(preparedStatement, query);
-			query.append(" conn.oldconnectionno = ? ");
+			query.append(" conn.oldconnectionno ~* ? ");
 			preparedStatement.add(criteria.getOldConnectionNumber());
 		}
 
