@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -473,6 +474,9 @@ public class UserService {
         /* encrypted value is stored in DB*/
         user.setDefaultPwdChgd(Boolean.TRUE);
         user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
+        if(!ObjectUtils.isEmpty(user.getAccountLocked()) && user.getAccountLocked().equals(Boolean.TRUE)) {
+            user.setAccountLocked(Boolean.FALSE);
+        }
 
         userRepository.update(user, user);
     }
