@@ -170,7 +170,7 @@ public class ChallanRepository {
 					BillResponseDTO billResponse = billResponseOptional.get();
 
 					if (!CollectionUtils.isEmpty(billResponse.getBill())) {
-						List<BillDTO> bills = billResponse.getBill();
+						List<BillDTO> bills = getActiveOrPaidBill(billResponse.getBill());
 
 						if (!challan.getReferenceId().equalsIgnoreCase(challan.getChallanNo())) {
 
