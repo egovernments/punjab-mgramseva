@@ -215,16 +215,13 @@ public class ChallanRepository {
 		try {
 			for (BillDTO billDTO : bills) {
 				List<BillDetailDTO> billDetailList = billDTO.getBillDetails();
-				log.info("bill details DTO " + billDetailList);
-
 
 				for (BillDetailDTO billDetailDTO : billDetailList) {
 					JsonNode additionalDetails = new ObjectMapper()
 							.readTree(new Gson().toJson(billDetailDTO.getAdditionalDetails()));
-					log.info("bill Details aditional details"+additionalDetails.get("challanNo") );
+
 					if (additionalDetails.get("challanNo") != null &&
 							challan.getChallanNo().equalsIgnoreCase(additionalDetails.get("challanNo").asText())) {
-						log.info("amount:"+ billDetailDTO.getAmount());
 						return billDetailDTO.getAmount();
 					}
 				}
