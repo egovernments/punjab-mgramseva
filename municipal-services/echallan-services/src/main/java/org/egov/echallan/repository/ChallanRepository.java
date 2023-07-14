@@ -243,7 +243,7 @@ public class ChallanRepository {
 	private List<BillDTO> getActiveOrPaidOrCancelledBill(@NonNull List<BillDTO> bills) {
     	return bills.stream()
 				.filter(billDTO -> (BillDTO.BillStatus.ACTIVE.equals(billDTO.getStatus())
-						|| BillDTO.BillStatus.PAID.equals(billDTO.getStatus()) || BillDTO.BillStatus.PAID.equals(billDTO.getStatus())))
+						|| BillDTO.BillStatus.PAID.equals(billDTO.getStatus()) || BillDTO.BillStatus.CANCELLED.equals(billDTO.getStatus())))
 				.collect(Collectors.toList());
 	}
 
