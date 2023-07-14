@@ -171,7 +171,9 @@ public class ChallanRepository {
 
 					if (!CollectionUtils.isEmpty(billResponse.getBill())) {
 						List<BillDTO> bills = getActiveOrPaidBill(billResponse.getBill());
-
+						if(CollectionUtils.isEmpty(bills)) {
+							bills.add(getLatestBill(billResponse.getBill()));
+						}
 						if (!challan.getReferenceId().equalsIgnoreCase(challan.getChallanNo())) {
 
 							amount = getAmountByAdditionalDetail(bills, challan);
@@ -246,6 +248,12 @@ public class ChallanRepository {
 				.collect(Collectors.toList());
 	}
 
+	private BillDTO getLatestBill(@NonNull List<BillDTO> bills) {
+		log.info("bills" + bills);
+		Optional<BillDTO> latestBillDTO = bills.stream()
+				.max(Comparator.comparingLong(bill -> bill.getAuditDetails().getCreatedTime()));
+		return latestBillDTO.get();
+	}
 
 	public void updateFileStoreId(List<Challan> challans) {
 		List<Object[]> rows = new ArrayList<>();
