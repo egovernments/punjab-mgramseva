@@ -44,8 +44,8 @@ public class NotificationConsumer {
 	@Value("${kafka.topics.notification.sms.key}")
 	private String smsTopickey;
 
-	@Value("${sms.bill.enable}")
-	private boolean isSmsForBillEnabled;
+	@Value("${sms.bill.notification.enable}")
+	private boolean isSmsForBillNotificationEnabled;
 	
     @Autowired
     private ObjectMapper objectMapper;
@@ -115,7 +115,7 @@ public class NotificationConsumer {
 				request.put("mobileNumber", phNo);
 				request.put("message", message);
 				log.info("Msg sent to user : " + message);
-				if(isSmsForBillEnabled) {
+				if(isSmsForBillNotificationEnabled) {
 					producer.send(smsTopic, smsTopickey, request);
 				}
 			} else {
