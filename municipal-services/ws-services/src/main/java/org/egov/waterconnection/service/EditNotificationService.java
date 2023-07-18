@@ -76,7 +76,9 @@ public class EditNotificationService {
 			if (config.getIsSMSEnabled() != null && config.getIsSMSEnabled()) {
 				List<SMSRequest> smsRequests = getSmsRequest(request, property);
 				if (!CollectionUtils.isEmpty(smsRequests)) {
-					notificationUtil.sendSMS(smsRequests);
+					if(config.isSMSForEditWaterConnectionEnabled()) {
+						notificationUtil.sendSMS(smsRequests);
+					}
 				}
 			}
 		} catch (Exception ex) {
