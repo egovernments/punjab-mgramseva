@@ -241,11 +241,11 @@ public class WSCalculationConfiguration {
 	@Value("${sms.demand.enabled}")
 	private  boolean isSmsForDemandEnable;
 
-	@Value("${sms.payment.enabled}")
-	private  boolean isSmsForPaymentEnable;
+	@Value("${sms.payment.link.enabled}")
+	private  boolean isSmsForPaymentLinkEnable;
 
-	@Value("${sms.bill.enabled}")
-	private boolean isSmsForBillEnabled;
+	@Value("${sms.bill.download.enabled}")
+	private boolean isSmsForBillDownloadEnabled;
 
 
 

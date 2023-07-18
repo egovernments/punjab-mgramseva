@@ -343,7 +343,7 @@ public class DemandService {
 
 			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
 					.category(Category.TRANSACTION).build();
-			if(config.isSmsForPaymentEnable()) {
+			if(config.isSmsForPaymentLinkEnable()) {
 				producer.push(config.getSmsNotifTopic(), sms);
 			}
 		}
@@ -383,7 +383,7 @@ public class DemandService {
 
 				SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
 						.category(Category.TRANSACTION).build();
-				if(config.isSmsForBillEnabled()) {
+				if(config.isSmsForBillDownloadEnabled()) {
 					producer.push(config.getSmsNotifTopic(), sms);
 				}
 			}
@@ -433,7 +433,7 @@ public class DemandService {
 
 			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
 					.category(Category.TRANSACTION).build();
-			if(config.isSmsForBillEnabled() && config.isSmsForBillEnabled()) {
+			if(config.isSmsForBillDownloadEnabled() && config.isSmsForPaymentLinkEnable()) {
 				producer.push(config.getSmsNotifTopic(), sms);
 			}
 
