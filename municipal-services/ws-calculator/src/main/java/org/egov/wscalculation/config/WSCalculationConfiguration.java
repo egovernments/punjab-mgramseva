@@ -238,5 +238,16 @@ public class WSCalculationConfiguration {
 	@Value("${egov.pspcl.vendor.number}")
 	private String pspclVendorNumber;
 
+	@Value("${sms.demand.enabled}")
+	private  boolean isSmsForDemandEnable;
+
+	@Value("${sms.payment.enabled}")
+	private  boolean isSmsForPaymentEnable;
+
+	@Value("${sms.bill.enabled}")
+	private boolean isSmsForBillEnabled;
+
+
+
 	
 }
