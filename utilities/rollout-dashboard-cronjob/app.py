@@ -43,18 +43,22 @@ def getGPWSCHeirarchy():
             
             for data in departmentHierarchyList:
                 if (len(data['children']) > 0):
-                    zone = data['children'][0].get('name')
-                    if (len(data['children'][0]['children']) > 0):
-                        circle = data['children'][0]['children'][0].get('name')
-                        if (len(data['children'][0]['children'][0]['children']) > 0):
-                            division = data['children'][0]['children'][0]['children'][0].get('name')
-                            if (len(data['children'][0]['children'][0]['children'][0]['children']) > 0):
-                                subdivision = data['children'][0]['children'][0]['children'][0]['children'][0].get('name')
-                                if (len(data['children'][0]['children'][0]['children'][0]['children'][0]['children']) > 0):
-                                    section = data['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('name')
-                                    if (len(data['children'][0]['children'][0]['children'][0]['children'][0]['children'][0]['children']) > 0):
-                                        tenantName = data['children'][0]['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('name')
-                                        tenantCode = data['children'][0]['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('code')
+                    if(data.get('hierarchyLevel') == 0):
+                        child = data['children'][0]
+                    else:
+                        child = data
+                    zone = child.get('name')
+                    if (len(child['children']) > 0):
+                        circle = child['children'][0].get('name')
+                        if (len(child['children'][0]['children']) > 0):
+                            division = child['children'][0]['children'][0].get('name')
+                            if (len(child['children'][0]['children'][0]['children']) > 0):
+                                subdivision = child['children'][0]['children'][0]['children'][0].get('name')
+                                if (len(child['children'][0]['children'][0]['children'][0]['children']) > 0):
+                                    section = child['children'][0]['children'][0]['children'][0]['children'][0].get('name')
+                                    if (len(child['children'][0]['children'][0]['children'][0]['children'][0]['children']) > 0):
+                                        tenantName = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('name')
+                                        tenantCode = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('code')
                                         tenantId = tenantName.replace(" ", "").lower()
                                         formatedTenantId = "pb." + tenantId
                                         obj1 = {"tenantId": formatedTenantId,"zone": zone,"circle": circle,"division": division,"subdivision": 							subdivision,"section": section, "projectcode": tenantCode}
