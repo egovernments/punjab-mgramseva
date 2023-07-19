@@ -39,7 +39,6 @@ def getGPWSCHeirarchy():
             
             responseData = response.json()
             departmentHierarchyList = responseData.get('departmentEntity')
-            print(departmentHierarchyList)
             dataList = []
             
             for data in departmentHierarchyList:
@@ -61,6 +60,7 @@ def getGPWSCHeirarchy():
                                         obj1 = {"tenantId": formatedTenantId,"zone": zone,"circle": circle,"division": division,"subdivision": 							subdivision,"section": section, "projectcode": tenantCode}
                                         dataList.append(obj1)
             print("heirarchy collected")
+            print(dataList)
             #return [{"tenantId":"pb.lodhipur", "projectcode":"1234","zone":"zone1","circle":"Circle1","division":"Dvisiion1","subdivision":"SD1", "section":"sec1"}]
             return dataList
         except Exception as exception:
