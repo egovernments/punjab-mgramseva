@@ -17,64 +17,54 @@ def getGPWSCHeirarchy():
         try:
             
                 
-            url = os.getenv('API_URL')
-            tenantid = os.getenv('TENANT_ID')
+            url = 'http://ifix-department-entity-service.mgramseva:8080/'
+            print(url)
             requestData = {
-                "RequestInfo": {
-                    "apiId": "mgramseva-common",
-                    "ver": 0.01,
-                    "ts": "",
-                    "action": "_search",
-                    "did": 1,
-                    "key": "",
-                    "msgId": ""
-                 },
-                "MdmsCriteria": {
-                    "tenantId": tenantid,
-                    "moduleDetails": [
-                        {
-                            "moduleName": "tenant",
-                            "masterDetails": [
-                                {
-                                    "name": "projectmodule"
-                                }
-                            ]
-                        }
-                    ]
+            "requestHeader": {
+                "ts": 1627193067,
+                "version": "2.0.0",
+                "msgId": "Unknown",
+                "signature": "NON",
+                "userInfo": {
+                    "uuid": "admin"
+                }
+            },
+            "criteria": {
+                "tenantId": "pb",
+                "getAncestry": True
                 }
             }
             
-            response = requests.post(url+'egov-mdms-service/v1/_search', json=requestData)
+            response = requests.post(url+'ifix-department-entity/departmentEntity/v1/_search', json=requestData)
             
             responseData = response.json()
-            projectModuleList = responseData['MdmsRes']['tenant']['projectmodule']
+            departmentHierarchyList = responseData.get('departmentEntity')
             dataList = []
-           
-            for zoneData in projectModuleList:
-                circle = zoneData['circle']
-                for circleData in circle:
-                    division = circleData['division']
-                    for divisionData in division:
-                        subDivision = divisionData['subdivision']
-                        for subdivisionData in subDivision:
-                            section = subdivisionData['section']
-                            for sectionData in section:
-                                project = sectionData['project']
-                                for projectData in project:
-                                    tenantId = projectData['name'].replace(" ", "").lower()
-                                    formatedTenantId= "pb."+tenantId;
-                                    obj1 = {
-                                                "tenantId":formatedTenantId,
-                                                "zone":zoneData['name'],
-                                                "circle":circleData['name'],
-                                                "division":divisionData['name'],
-                                                "subdivision":subdivisionData['name'],
-                                                "section":sectionData['name'],
-                                                "projectcode":projectData['code']
-                                           }
-                                    
-                                    dataList.append(obj1)
+            
+            for data in departmentHierarchyList:
+                if (len(data['children']) > 0):
+                    if(data.get('hierarchyLevel') == 0):
+                        child = data['children'][0]
+                    else:
+                        child = data
+                    zone = child.get('name')
+                    if (len(child['children']) > 0):
+                        circle = child['children'][0].get('name')
+                        if (len(child['children'][0]['children']) > 0):
+                            division = child['children'][0]['children'][0].get('name')
+                            if (len(child['children'][0]['children'][0]['children']) > 0):
+                                subdivision = child['children'][0]['children'][0]['children'][0].get('name')
+                                if (len(child['children'][0]['children'][0]['children'][0]['children']) > 0):
+                                    section = child['children'][0]['children'][0]['children'][0]['children'][0].get('name')
+                                    if (len(child['children'][0]['children'][0]['children'][0]['children'][0]['children']) > 0):
+                                        tenantName = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('name')
+                                        tenantCode = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('code')
+                                        tenantId = tenantName.replace(" ", "").lower()
+                                        formatedTenantId = "pb." + tenantId
+                                        obj1 = {"tenantId": formatedTenantId,"zone": zone,"circle": circle,"division": division,"subdivision": 							subdivision,"section": section, "projectcode": tenantCode}
+                                        dataList.append(obj1)
             print("heirarchy collected")
+            print(dataList)
             #return [{"tenantId":"pb.lodhipur", "projectcode":"1234","zone":"zone1","circle":"Circle1","division":"Dvisiion1","subdivision":"SD1", "section":"sec1"}]
             return dataList
         except Exception as exception:
