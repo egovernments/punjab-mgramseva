@@ -144,7 +144,8 @@ class HouseHoldProvider with ChangeNotifier {
           } else if (value.demands?.length == 1 &&
               value.demands?.first.consumerType == 'waterConnection-advance' &&
               value.demands?.first.demandDetails?.first.taxHeadMasterCode ==
-                  'WS_ADVANCE_CARRYFORWARD') {
+                  'WS_ADVANCE_CARRYFORWARD' &&
+              ((waterConnection?.fetchBill?.bill ?? []).length == 0)) {
             isfirstdemand = false;
           } else {
             isfirstdemand = true;

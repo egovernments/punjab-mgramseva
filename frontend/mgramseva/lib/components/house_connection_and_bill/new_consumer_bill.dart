@@ -7,8 +7,8 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/date_formats.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/widgets/button_group.dart';
 import 'package:mgramseva/widgets/list_label_text.dart';
 import 'package:mgramseva/widgets/short_button.dart';
@@ -432,14 +432,11 @@ class NewConsumerBillState extends State<NewConsumerBill> {
     if(demandList.isEmpty){
       return false;
     }else if(!houseHoldRegister.isfirstdemand && widget.waterConnection?.connectionType != 'Metered'
-        && (widget.waterConnection?.fetchBill?.bill?.first.totalAmount ?? 0) == 0){
+        && (widget.waterConnection?.fetchBill?.bill?.length) == 0){
       return false;
-    }else if(demandList.first.demandDetails?.last.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD'){
-      return !houseHoldRegister.isfirstdemand;
-    }else if((widget.waterConnection?.fetchBill?.bill?.first.totalAmount ?? 0) > 0){
+    }else if((widget.waterConnection?.fetchBill?.bill?.length ?? 0) > 0){
       return true;
     } else {
-
       if(demandList.isEmpty) return false;
 
       for (int i = 0; i < demandList.length; i++) {
