@@ -434,7 +434,8 @@ class NewConsumerBillState extends State<NewConsumerBill> {
     }else if(!houseHoldRegister.isfirstdemand && widget.waterConnection?.connectionType != 'Metered'
         && (widget.waterConnection?.fetchBill?.bill?.length) == 0){
       return false;
-    }else if((widget.waterConnection?.fetchBill?.bill?.length ?? 0) > 0){
+    }
+    else if((widget.waterConnection?.fetchBill?.bill?.length ?? 0) > 0 && ((widget.waterConnection?.fetchBill?.bill?.first.totalAmount ?? 0).toInt() > 0)){
       return true;
     } else {
       if(demandList.isEmpty) return false;
