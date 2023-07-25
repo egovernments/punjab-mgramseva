@@ -17,7 +17,7 @@ def getGPWSCHeirarchy():
         try:
             
                 
-            url = 'http://ifix-department-entity-service.mgramseva:8080/'
+            url = os.getenv('IFIX_URL')
             print(url)
             requestData = {
             "requestHeader": {
