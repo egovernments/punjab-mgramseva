@@ -20,10 +20,10 @@ class Project {
   String? name;
   @JsonKey(name: "expenditureId")
   String? expenditureId;
-  @JsonKey(name: "departmentEntityIds",includeIfNull: false)
-  List<dynamic>? departmentEntityIds;
-  @JsonKey(name: "locationIds",includeIfNull: false)
-  List<dynamic>? locationIds;
+  @JsonKey(name: "departmentEntityIds")
+  List<DepartmentEntityIds>? departmentEntityIds;
+  @JsonKey(name: "locationIds")
+  String? locationIds;
 
   Project();
 
@@ -46,4 +46,19 @@ class ProjectRequest {
       _$ProjectRequestFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProjectRequestToJson(this);
+}
+
+@JsonSerializable()
+class DepartmentEntityIds {
+  @JsonKey(name: "departmentEntityId")
+  String? departmentEntityId;
+  @JsonKey(name: "status")
+  bool? status;
+
+  DepartmentEntityIds();
+
+  factory DepartmentEntityIds.fromJson(Map<String, dynamic> json) =>
+      _$DepartmentEntityIdsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DepartmentEntityIdsToJson(this);
 }

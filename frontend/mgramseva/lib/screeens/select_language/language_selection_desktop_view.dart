@@ -87,6 +87,7 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                     height: 10,
                   )
                 ]))))),
+        SizedBox(height: 140),
         FooterBanner()
       ],
     ));
