@@ -438,6 +438,7 @@ class BillGenerationProvider with ChangeNotifier {
   List<DropdownMenuItem<Object>> getFinancialYearList() {
     if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
       CommonMethods.getFilteredFinancialYearList(languageList?.mdmsRes?.billingService?.taxPeriodList ?? <TaxPeriod>[]);
+      languageList?.mdmsRes?.billingService?.taxPeriodList!.sort((a,b)=>a.fromDate!.compareTo(b.fromDate!));
       return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
               <TaxPeriod>[])
           .map((value) {
@@ -445,7 +446,7 @@ class BillGenerationProvider with ChangeNotifier {
           value: value,
           child: new Text((value.financialYear!)),
         );
-      }).toList();
+      }).toList().reversed.toList();
     }
     return <DropdownMenuItem<Object>>[];
   }
