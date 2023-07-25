@@ -34,7 +34,7 @@ class Department {
   List<Department>? children;
   @JsonKey(name: "hierarchyLevel")
   int? hierarchyLevel;
-  @JsonKey(name:"project", includeFromJson: false,includeToJson: true)
+  @JsonKey(ignore: true)
   Project? project;
   Department();
 
