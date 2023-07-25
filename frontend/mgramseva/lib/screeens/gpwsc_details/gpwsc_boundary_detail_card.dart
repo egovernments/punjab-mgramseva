@@ -146,7 +146,12 @@ class GPWSCBoundaryDetailCard extends StatelessWidget {
                           ],
                         );
                       } else if (snapshot.hasError) {
-                        return Notifiers.networkErrorPage(context, () => {});
+                        return Column(
+                          children: [
+                            LabelText('${snapshot.error}'),
+                          Notifiers.networkErrorPage(context, () => {})
+                          ],
+                        );
                       } else {
                         switch (snapshot.connectionState) {
                           case ConnectionState.waiting:

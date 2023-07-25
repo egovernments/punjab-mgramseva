@@ -32,24 +32,27 @@ class IfixHierarchyProvider with ChangeNotifier {
           listen: false);
       var userResponse = await IfixHierarchyRepo().fetchDepartments(
           commonProvider.userDetails!.selectedtenant!.city!.code!, true);
-      departments = userResponse ?? Department();
-      var projectDetails = departments?.id!= null ? await IfixHierarchyRepo().fetchProject(
-        departments?.id ?? '',
-      ): null;
-      departments?.project = projectDetails ?? Project();
       hierarchy.clear();
-      if (userResponse != null && projectDetails != null) {
+      if (userResponse != null) {
+        departments = userResponse;
         parseDepartments(departments ?? Department());
+        String departmentID = hierarchy
+            .containsKey("6")
+            ? '${hierarchy["6"]!["id"]}'
+            : 'NA';
+        var projectDetails = await IfixHierarchyRepo().fetchProject(departmentID);
+        departments?.project = projectDetails ?? Project();
         streamController.add(departments);
         callNotifier();
+      }else{
+        streamController.addError('Department and Project are not configured');
       }
-      parseDepartments(departments?? Department());
-      streamController.add(departments);
       callNotifier();
     } catch (e, s) {
       hierarchy.clear();
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       streamController.addError('error');
+      callNotifier();
     }
   }
 
@@ -78,6 +81,7 @@ class IfixHierarchyProvider with ChangeNotifier {
       'departmentId': department.departmentId ?? '',
       'code': department.code ?? '',
       'name': department.name ?? '',
+      'id': department.id ?? '',
       'hierarchyLevel': department.hierarchyLevel.toString(),
     };
     hierarchy.addAll({department.hierarchyLevel.toString(): departmentData});
