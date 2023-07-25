@@ -116,5 +116,5 @@ public class CalculatorController {
 				totalApplicablePenalty(demandPenaltyResponse.getTotalApplicablePenalty()).responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true)).build();
 		return new ResponseEntity<>(demandPenaltyResponse, HttpStatus.OK);
 	}
-	
+
 }

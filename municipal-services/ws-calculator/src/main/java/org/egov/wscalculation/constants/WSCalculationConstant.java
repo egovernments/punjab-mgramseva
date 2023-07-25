@@ -179,11 +179,21 @@ public class WSCalculationConstant {
 
 	public static final String JSONPATH_ROOT_FOR_BilingPeriod = "$.MdmsRes.ws-services-masters.billingPeriod";
 
+
+	public static final String JSONPATH_ROOT_FOR_mdmsRes = "$.MdmsRes";
+
+	public static final String JSONPATH_ROOT_FOR_billingService = "$.MdmsRes.BillingService";
+	public static final String JSONPATH_ROOT_FOR_Allowed_PAyment = "$.MdmsRes.BillingService.PaymentService";
+
+	public static final String JSON_PATH_ROOT_FOR_Allowed_PAyment = "$.MdmsRes.BillingService.BusinessService";
+
 	public static final String Quaterly_Billing_Period = "quarterly";
 
 	public static final String Monthly_Billing_Period = "monthly";
 
 	public static final String Billing_Cycle_String = "billingCycle";
+
+	public static final String Payment_Modes_Not_Allowed = "collectionModesNotAllowed";
 
 	public static final String Demand_End_Date_String = "demandEndDateMillis";
 
@@ -211,7 +221,9 @@ public class WSCalculationConstant {
 	public static final String WATER_CONNECTION_BILL_GENERATION_APP_MESSAGE = "WATER_CONNECTION_BILL_GENERATION_APP_MESSAGE";
 	
 	public static final String  USREVENTS_EVENT_TYPE = "SYSTEMGENERATED";
-	
+
+	public static final String  FILTER_PAYMENT_METHOD_SEARCH = "[?(@.code=='WS')]";
+
 	public static final String  USREVENTS_EVENT_NAME = "WATER BILL GENERATION";
 	
 	public static final String  MONTHLY_DEMAND_GENERATED = "MONTHLY_DEMAND_GENERATED";
@@ -284,7 +296,7 @@ public class WSCalculationConstant {
 	public static final String WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE = "WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE";
 
 	public static final String mGram_Consumer_NewBill = "mGram.Consumer.NewBill";
-	
+
 	public static final String mGram_Consumer_NewDemand = "mGram.GP.MonthlyDemandGenerated";
 
 	public static final String NEW_BULK_DEMAND_EVENT = "NEW_BULK_DEMAND_EVENT";
@@ -303,9 +315,15 @@ public class WSCalculationConstant {
 	public static final String MONTHLY_DEMAND_FAILED = "MONTHLY_DEMAND_FAILED";
 
 	public static final String GENERATE_DEMAND_EVENT = "GENERATE_DEMAND_EN_REMINDER";
-	
+
+	public static final String mGram_Consumer_Bill = "mGram.Consumer.NewBill";
+
+	public static final String mGram_Consumer_Payment = "mGram.consumer.payment.message";
+
+	public static final String mGram_Consumer_Bill_Payment_combine = "mGram.consumer.billAndPayment.N";
 
 
 
-	
+
+
 }
