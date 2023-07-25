@@ -149,7 +149,6 @@ class GPWSCBoundaryDetailCard extends StatelessWidget {
                         return Column(
                           children: [
                             LabelText('${snapshot.error}'),
-                          Notifiers.networkErrorPage(context, () => {})
                           ],
                         );
                       } else {
