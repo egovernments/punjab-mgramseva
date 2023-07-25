@@ -39,11 +39,13 @@ class IfixHierarchyProvider with ChangeNotifier {
         String departmentID = hierarchy
             .containsKey("6")
             ? '${hierarchy["6"]!["id"]}'
-            : '';
+            : 'NA';
         var projectDetails = await IfixHierarchyRepo().fetchProject(departmentID);
         departments?.project = projectDetails ?? Project();
         streamController.add(departments);
         callNotifier();
+      }else{
+        streamController.addError('Department and Project are not configured');
       }
       callNotifier();
     } catch (e, s) {
