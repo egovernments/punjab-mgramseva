@@ -17,7 +17,7 @@ def getGPWSCHeirarchy():
         try:
             
                 
-            url = os.getenv('API_URL')
+            url = os.getenv('IFIX_URL')
             print(url)
             requestData = {
             "requestHeader": {
