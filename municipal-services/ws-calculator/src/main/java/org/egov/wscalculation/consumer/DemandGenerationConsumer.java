@@ -480,7 +480,9 @@ public class DemandGenerationConsumer {
 				if(!map.getKey().equals(config.getPspclVendorNumber())) {
 					SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(msg)
 							.category(Category.TRANSACTION).build();
-					producer.push(config.getSmsNotifTopic(), smsRequest);
+					if(config.isSmsForDemandEnable()) {
+						producer.push(config.getSmsNotifTopic(), smsRequest);
+					}
 				}
 
 			});

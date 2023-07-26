@@ -343,7 +343,9 @@ public class DemandService {
 
 			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
 					.category(Category.TRANSACTION).build();
-			producer.push(config.getSmsNotifTopic(), sms);
+			if(config.isSmsForPaymentLinkEnable()) {
+				producer.push(config.getSmsNotifTopic(), sms);
+			}
 		}
 	}
 	private void sendDownloadBillSMSNotification(RequestInfo requestInfo, String tenantId, User owner, WaterConnectionRequest waterConnectionRequest, Property property, List<DemandDetail> demandDetails, String consumerCode, List<Demand> demands, Boolean isForConnectionNO, String businessService, String billCycle,List<String> billNumbers, String paymentDueDate) {
@@ -381,7 +383,9 @@ public class DemandService {
 
 				SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
 						.category(Category.TRANSACTION).build();
-				producer.push(config.getSmsNotifTopic(), sms);
+				if(config.isSmsForBillDownloadEnabled()) {
+					producer.push(config.getSmsNotifTopic(), sms);
+				}
 			}
 
 		}
@@ -429,8 +433,9 @@ public class DemandService {
 
 			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
 					.category(Category.TRANSACTION).build();
-			producer.push(config.getSmsNotifTopic(), sms);
-
+			if(config.isSmsForBillDownloadEnabled() && config.isSmsForPaymentLinkEnable()) {
+				producer.push(config.getSmsNotifTopic(), sms);
+			}
 		}
 	}
 
