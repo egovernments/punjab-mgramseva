@@ -108,7 +108,9 @@ public class WorkflowNotificationService {
 			if (config.getIsSMSEnabled() != null && config.getIsSMSEnabled()) {
 					List<SMSRequest> smsRequests = getSmsRequest(request, topic, property, applicationStatus);
 					if (!CollectionUtils.isEmpty(smsRequests)) {
-						notificationUtil.sendSMS(smsRequests);
+						if(config.isSMSForWorkflowEnabled()) {
+							notificationUtil.sendSMS(smsRequests);
+						}
 					}
 			}
 

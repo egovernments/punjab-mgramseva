@@ -678,6 +678,7 @@ class ConsumerProvider with ChangeNotifier {
       CommonMethods.getFilteredFinancialYearList(
           languageList?.mdmsRes?.billingService?.taxPeriodList ??
               <TaxPeriod>[]);
+      languageList?.mdmsRes?.billingService?.taxPeriodList!.sort((a,b)=>a.fromDate!.compareTo(b.fromDate!));
       return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
               <TaxPeriod>[])
           .map((value) {
@@ -685,7 +686,7 @@ class ConsumerProvider with ChangeNotifier {
           value: value,
           child: new Text((value.financialYear!)),
         );
-      }).toList();
+      }).toList().reversed.toList();
     }
     return <DropdownMenuItem<Object>>[];
   }
