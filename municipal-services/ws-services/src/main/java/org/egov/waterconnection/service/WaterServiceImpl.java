@@ -80,7 +80,6 @@ import com.jayway.jsonpath.JsonPath;
 public class WaterServiceImpl implements WaterService {
 
 	@Autowired
-	@Lazy
 	private WaterDao waterDao;
 
 	@Autowired
