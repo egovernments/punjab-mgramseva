@@ -266,5 +266,15 @@ public class ChallanConfiguration {
     @Value("${billing.service.search.bill.endpoint}")
     private String billingServiceSearchBillEndpoint;
 
+    @Value("${sms.expenditure.enabled}")
+    private boolean isSmsForExpenditureEnabled;
+
+    @Value("${sms.expenditure.mark.bill.enabled}")
+    private boolean isSmsForMarkBillEnabled;
+
+    @Value("${sms.monthy.summary.enabled}")
+    private boolean isSmsForMonthlySummaryEnabled;
+
+
 
 }
