@@ -356,7 +356,9 @@ public class SchedulerService {
 		additionalDetailsMap.put("localizationCode", MARK_PAID_BILL_EVENT);
 		List<Event> events = new ArrayList<>();
 		List<String> activeExpenseCount = repository.getActiveExpenses(tenantId);
-		if (null != activeExpenseCount && activeExpenseCount.size() > 0) {
+		if (null != activeExpenseCount && activeExpenseCount.size() > 0 && activeExpenseCount.get(0)!=null
+				&& activeExpenseCount.get(0).equals("0")) {
+			log.info("Active expense bill Count"+activeExpenseCount.get(0));
 			HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, MARK_PAID_BILL_EVENT, tenantId);
 			events.add(Event.builder().tenantId(tenantId)
 					.description(formatMarkExpenseMessage(tenantId, messageMap.get(NotificationUtil.MSG_KEY), additionalDetailsMap))

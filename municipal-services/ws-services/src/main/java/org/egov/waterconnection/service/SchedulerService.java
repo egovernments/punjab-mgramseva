@@ -237,7 +237,7 @@ public class SchedulerService {
 		System.out.println("Final message is :" + message);
 		
 		additionalDetailsMap.put("attributes", attributes);
-		
+
 		
 		return message;
 	}
@@ -303,17 +303,21 @@ public class SchedulerService {
 		
 		HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, PENDING_COLLECTION_EVENT,
 				tenantId);
-		events.add(Event.builder().tenantId(tenantId)
-				.description(
-						formatPendingCollectionMessage(requestInfo, tenantId, messageMap.get(NotificationUtil.MSG_KEY), additionalDetailsMap ))
-				.eventType(USREVENTS_EVENT_TYPE).name(PENDING_COLLECTION_USEREVENT).postedBy(USREVENTS_EVENT_POSTEDBY)
-				.recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP)
-				.recepient(getRecepient(requestInfo, tenantId)).eventDetails(null).actions(action).additionalDetails(additionalDetailsMap).build());
-
-		if (!CollectionUtils.isEmpty(events)) {
-			return EventRequest.builder().requestInfo(requestInfo).events(events).build();
-		} else {
-			return null;
+		Map<String, Object> financialYear = getFinancialYear(requestInfo, tenantId);
+		List<String> pendingCollection = repository.getPendingCollection(tenantId,
+				financialYear.get("startingDate").toString(), financialYear.get("endingDate").toString());
+		if(null != pendingCollection && pendingCollection.size() > 0 && pendingCollection.get(0) !=null ) {
+			events.add(Event.builder().tenantId(tenantId)
+					.description(
+							formatPendingCollectionMessage(requestInfo, tenantId, messageMap.get(NotificationUtil.MSG_KEY), additionalDetailsMap))
+					.eventType(USREVENTS_EVENT_TYPE).name(PENDING_COLLECTION_USEREVENT).postedBy(USREVENTS_EVENT_POSTEDBY)
+					.recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP)
+					.recepient(getRecepient(requestInfo, tenantId)).eventDetails(null).actions(action).additionalDetails(additionalDetailsMap).build());
+		}
+			if (!CollectionUtils.isEmpty(events)) {
+				return EventRequest.builder().requestInfo(requestInfo).events(events).build();
+			} else {
+				return null;
 		}
 
 	}
