@@ -231,6 +231,7 @@ public class DemandGenerationConsumer {
 		requestInfo = mapper.convertValue(demandData.get("requestInfo"), RequestInfo.class);
 		requestInfo.getUserInfo().setTenantId(tenantId);
 		Map<String, Object> billingMasterData = calculatorUtils.loadBillingFrequencyMasterData(requestInfo, tenantId);
+		log.info("CALL FROM egov.wscal.bulk.demand.schedular.topic TOPIC");
 		
 		generateDemandForULB(billingMasterData, requestInfo, tenantId, isSendMessage);
 	}
@@ -457,6 +458,8 @@ public class DemandGenerationConsumer {
 			UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
 					Arrays.asList("COLLECTION_OPERATOR"), tenantId);
 			Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+			log.info("USer response :"+ userDetailResponse.getUser());
+			log.info("User response size :" +userDetailResponse.getUser().size());
 
 			String msgLink = config.getNotificationUrl() + config.getGpUserDemandLink();
 
@@ -466,6 +469,10 @@ public class DemandGenerationConsumer {
 				} else {
 					mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
 				}
+			log.info("mobileNumberIdMap :" + mobileNumberIdMap);
+			for (String MobileNumber:mobileNumberIdMap.keySet()) {
+				log.info("Mobile Number:"+ MobileNumber);
+			}
 			mobileNumberIdMap.entrySet().stream().forEach(map -> {
 				String msg = demandMessage.get(WSCalculationConstant.MSG_KEY);
 				msg = msg.replace("{ownername}", map.getValue());
@@ -536,6 +543,7 @@ public class DemandGenerationConsumer {
 		String billingPeriod = bulkDemand.getBillingPeriod();
 		if (StringUtils.isEmpty(billingPeriod))
 			throw new CustomException("BILLING_PERIOD_PARSING_ISSUE", "Billing Period can not be empty!!");
+		log.info("CALL FROM egov.generate.bulk.demand.manually.topic TOPIC ");
 
 		generateDemandAndSendnotification(bulkDemand.getRequestInfo(), bulkDemand.getTenantId(), billingPeriod, billingMasterData,
 				isSendMessage, isManual);
