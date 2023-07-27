@@ -40,8 +40,11 @@ public class DemandNotificationService {
 		if (config.getIsSMSEnabled() != null && config.getIsSMSEnabled()) {
 			List<SMSRequest> smsRequests = new LinkedList<>();
 			enrichSMSRequest(notificationObj, smsRequests, topic);
-			if (!CollectionUtils.isEmpty(smsRequests))
-				util.sendSMS(smsRequests);
+			if (!CollectionUtils.isEmpty(smsRequests)) {
+				if(config.isSmsForDemandEnable()) {
+					util.sendSMS(smsRequests);
+				}
+			}
 		}
 		if (config.getIsEmailEnabled() != null && config.getIsEmailEnabled()) {
 			List<EmailRequest> emailRequests = new LinkedList<>();

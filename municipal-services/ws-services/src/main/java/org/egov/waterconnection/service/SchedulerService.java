@@ -168,7 +168,10 @@ public class SchedulerService {
 								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
 										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
 										.users(new String[] { uuidUsername }).build();
-								producer.push(config.getSmsNotifTopic(), smsRequest);
+								if(config.isSMSForPendingCollectionEnabled()) {
+									producer.push(config.getSmsNotifTopic(), smsRequest);
+								}
+
 							}
 						});
 					}
@@ -466,7 +469,9 @@ public class SchedulerService {
 										SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
 												.message(msg).templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
 												.users(new String[] { uuidUsername }).build();
-										producer.push(config.getSmsNotifTopic(), smsRequest);
+										if(config.isSMSForTodaysCollectionEnabled()) {
+											producer.push(config.getSmsNotifTopic(), smsRequest);
+										}
 									});
 								}
 							});
