@@ -303,5 +303,8 @@ public class WSConfiguration {
 
 	@Value("${sms.workflow.enabled}")
 	private boolean isSMSForWorkflowEnabled;
+
+	@Value("${sms.feedback.notification.enabled}")
+	private boolean isSMSForFeedbackNotificationEnabled;
     
 }
