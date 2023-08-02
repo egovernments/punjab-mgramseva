@@ -147,7 +147,7 @@ public class PaymentUpdateService {
 					Property property = validateProperty.getOrValidateProperty(waterConnectionRequest);
 
 					wfIntegrator.callWorkFlow(waterConnectionRequest, property);
-					enrichmentService.enrichFileStoreIds(waterConnectionRequest);
+					repo.enrichFileStoreIds(waterConnectionRequest);
 					repo.updateWaterConnection(waterConnectionRequest, false);
 				}
 			}
