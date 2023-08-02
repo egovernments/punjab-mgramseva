@@ -173,7 +173,18 @@ public class WaterDaoImpl implements WaterDao {
 	 * @param waterConnectionRequest
 	 */
 	public void enrichFileStoreIds(WaterConnectionRequest waterConnectionRequest) {
-		waterConnectionProducer.push(wsConfiguration.getFileStoreIdsTopic(), waterConnectionRequest);
+		try {
+			log.info("ACTION "+waterConnectionRequest.getWaterConnection().getProcessInstance().getAction());
+			log.info("ApplicationStatus "+waterConnectionRequest.getWaterConnection().getApplicationStatus());
+			if (waterConnectionRequest.getWaterConnection().getApplicationStatus()
+					.equalsIgnoreCase(WCConstants.PENDING_APPROVAL_FOR_CONNECTION_CODE)
+					|| waterConnectionRequest.getWaterConnection().getProcessInstance().getAction()
+					.equalsIgnoreCase(WCConstants.ACTION_PAY)) {
+				waterConnectionProducer.push(wsConfiguration.getFileStoreIdsTopic(), waterConnectionRequest);
+			}
+		} catch (Exception ex) {
+			log.debug(ex.toString());
+		}
 	}
 	
 	/**

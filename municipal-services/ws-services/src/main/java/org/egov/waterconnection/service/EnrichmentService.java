@@ -69,8 +69,8 @@ public class EnrichmentService {
 	@Autowired
 	private ObjectMapper mapper;
 	
-	@Autowired
-	private WaterDaoImpl waterDao;
+	/*@Autowired
+	private WaterDaoImpl waterDao;*/
 	
 	@Autowired
 	private UserService userService;
@@ -264,7 +264,7 @@ public class EnrichmentService {
 	 * Enrich fileStoreIds
 	 * 
 	 * @param waterConnectionRequest WaterConnectionRequest Object
-	 */
+	 *
 	public void enrichFileStoreIds(WaterConnectionRequest waterConnectionRequest) {
 		try {
 			log.info("ACTION "+waterConnectionRequest.getWaterConnection().getProcessInstance().getAction());
@@ -279,7 +279,7 @@ public class EnrichmentService {
 			log.debug(ex.toString());
 		}
 	}
-	
+	*/
 	/**
 	 * Sets status for create request
 	 * 
