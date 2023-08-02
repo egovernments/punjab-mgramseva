@@ -69,14 +69,11 @@ public class EnrichmentService {
 	@Autowired
 	private ObjectMapper mapper;
 	
-	@Autowired
-	private WaterDaoImpl waterDao;
+	/*@Autowired
+	private WaterDaoImpl waterDao;*/
 	
 	@Autowired
 	private UserService userService;
-
-	@Autowired
-	private WaterServiceImpl waterService;
 
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
@@ -248,36 +245,7 @@ public class EnrichmentService {
 		}
 	}
 
-	/**
-	 * Create meter reading for meter connection
-	 *
-	 * @param waterConnectionrequest
-	 */
-	public void postForMeterReading(WaterConnectionRequest waterConnectionrequest, int reqType) {
-		if (!StringUtils.isEmpty(waterConnectionrequest.getWaterConnection().getConnectionType())
-				&& WCConstants.METERED_CONNECTION
-				.equalsIgnoreCase(waterConnectionrequest.getWaterConnection().getConnectionType())) {
-			if (reqType == WCConstants.UPDATE_APPLICATION && WCConstants.ACTIVATE_CONNECTION
-					.equalsIgnoreCase(waterConnectionrequest.getWaterConnection().getProcessInstance().getAction())) {
-				waterDao.postForMeterReading(waterConnectionrequest);
-			} else if (WCConstants.MODIFY_CONNECTION == reqType && WCConstants.APPROVE_CONNECTION.
-					equals(waterConnectionrequest.getWaterConnection().getProcessInstance().getAction())) {
-				SearchCriteria criteria = SearchCriteria.builder()
-						.tenantId(waterConnectionrequest.getWaterConnection().getTenantId())
-						.connectionNumber(waterConnectionrequest.getWaterConnection().getConnectionNo()).build();
-				List<WaterConnection> connections;
-				WaterConnectionResponse waterConnection = waterService.search(criteria, waterConnectionrequest.getRequestInfo());
-				connections = waterConnection.getWaterConnection();
-				if (!CollectionUtils.isEmpty(connections)) {
-					WaterConnection connection = connections.get(connections.size() - 1);
-					if (!connection.getConnectionType().equals(WCConstants.METERED_CONNECTION)) {
-						waterDao.postForMeterReading(waterConnectionrequest);
-					}
-				}
-			}
-		}
-	}
-    
+
     
     /**
      * Enrich water connection request and set water connection no
@@ -296,7 +264,7 @@ public class EnrichmentService {
 	 * Enrich fileStoreIds
 	 * 
 	 * @param waterConnectionRequest WaterConnectionRequest Object
-	 */
+	 *
 	public void enrichFileStoreIds(WaterConnectionRequest waterConnectionRequest) {
 		try {
 			log.info("ACTION "+waterConnectionRequest.getWaterConnection().getProcessInstance().getAction());
@@ -311,7 +279,7 @@ public class EnrichmentService {
 			log.debug(ex.toString());
 		}
 	}
-	
+	*/
 	/**
 	 * Sets status for create request
 	 * 

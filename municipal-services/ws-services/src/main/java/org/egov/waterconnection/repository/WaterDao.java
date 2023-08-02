@@ -17,4 +17,6 @@ public interface WaterDao {
 	List<String> getWCListFuzzySearch(SearchCriteria criteria);
 	
 	WaterConnectionResponse getWaterConnectionListForPlaneSearch(SearchCriteria criteria,RequestInfo requestInfo);
+
+	void enrichFileStoreIds(WaterConnectionRequest waterConnectionRequest);
 }
