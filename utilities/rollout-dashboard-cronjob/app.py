@@ -15,8 +15,44 @@ def getGPWSCHeirarchy():
         # https://realpython.com/python-requests/ helps on how make ajax calls. url put it in app.properties and read through configs
         
         try:
-            
-                
+            mdms_url = os.getenv('API_URL')
+            state_tenantid = os.getenv('TENANT_ID')
+            mdms_requestData = {
+                "RequestInfo": {
+                    "apiId": "mgramseva-common",
+                    "ver": 0.01,
+                    "ts": "",
+                    "action": "_search",
+                    "did": 1,
+                    "key": "",
+                    "msgId": ""
+                },
+                "MdmsCriteria": {
+                    "tenantId": tenantid,
+                    "moduleDetails": [
+                        {
+                            "moduleName": "tenant",
+                            "masterDetails": [
+                                {
+                                    "name": "tenants"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+
+            mdms_response = requests.post(mdms_url + 'egov-mdms-service/v1/_search', json=mdms_requestData)
+
+            mdms_responseData = mdms_response.json()
+            tenantList = mdms_responseData['MdmsRes']['tenant']['tenants']
+            teanant_data_Map = {}
+            for tenant in tenantList:
+                if tenant.get('code') == state_tenantid or tenant.get('code') == (state_tenantid + '.testing'):
+                    continue
+                if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
+                    teanant_data_Map[tenant.get('city').get('code')] = tenant.get('code')
+
             url = os.getenv('IFIX_URL')
             print(url)
             requestData = {
@@ -59,10 +95,11 @@ def getGPWSCHeirarchy():
                                     if (len(child['children'][0]['children'][0]['children'][0]['children'][0]['children']) > 0):
                                         tenantName = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('name')
                                         tenantCode = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('code')
-                                        tenantId = tenantName.replace(" ", "").lower()
-                                        formatedTenantId = "pb." + tenantId
-                                        obj1 = {"tenantId": formatedTenantId,"zone": zone,"circle": circle,"division": division,"subdivision": 							subdivision,"section": section, "projectcode": tenantCode}
-                                        dataList.append(obj1)
+                                        # tenantId = tenantName.replace(" ", "").lower()
+                                        if teanant_data_Map.get(tenantCode) is not None:
+                                            formatedTenantId = teanant_data_Map.get(tenantCode)
+                                            obj1 = {"tenantId": formatedTenantId,"zone": zone,"circle": circle,"division": division,"subdivision": 							subdivision,"section": section, "projectcode": tenantCode}
+                                            dataList.append(obj1)
             print("heirarchy collected")
             print(dataList)
             #return [{"tenantId":"pb.lodhipur", "projectcode":"1234","zone":"zone1","circle":"Circle1","division":"Dvisiion1","subdivision":"SD1", "section":"sec1"}]
