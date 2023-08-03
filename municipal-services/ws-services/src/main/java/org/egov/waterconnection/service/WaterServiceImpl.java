@@ -605,7 +605,12 @@ public class WaterServiceImpl implements WaterService {
 	@Override
 	public WaterConnectionResponse getWCListFuzzySearch(SearchCriteria criteria, RequestInfo requestInfo) {
 
-		criteria.setName(criteria.getName().trim());
+		if(criteria!=null && criteria.getTextSearch()!=null){
+			criteria.setTextSearch(criteria.getTextSearch().trim());
+		}
+		if(criteria!=null && criteria.getName()!=null){
+			criteria.setName(criteria.getName().trim());
+		}
 
 		List<String> idsfromDB = waterDao.getWCListFuzzySearch(criteria);
 
