@@ -113,7 +113,7 @@ def getGPWSCHeirarchy():
                                         tenantName = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('name')
                                         tenantCode = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('code')
                                         # tenantId = tenantName.replace(" ", "").lower()
-                                        formatedTenantId = dataMap.get(tenantCode)
+                                        formatedTenantId = dataMap.get(tenantCode).get("tenantId")
                                         obj1 = {"tenantId": formatedTenantId,"zone": zone,"circle": circle,"division": division,"subdivision": 							subdivision,"section": section, "projectcode": tenantCode}
                                         dataList.append(obj1)
             print("heirarchy collected")
