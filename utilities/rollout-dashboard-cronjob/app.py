@@ -15,8 +15,61 @@ def getGPWSCHeirarchy():
         # https://realpython.com/python-requests/ helps on how make ajax calls. url put it in app.properties and read through configs
         
         try:
-            
-                
+            mdms_url = os.getenv('API_URL')
+            tenantid = os.getenv('TENANT_ID')
+            mdms_requestData = {
+                "RequestInfo": {
+                    "apiId": "mgramseva-common",
+                    "ver": 0.01,
+                    "ts": "",
+                    "action": "_search",
+                    "did": 1,
+                    "key": "",
+                    "msgId": ""
+                },
+                "MdmsCriteria": {
+                    "tenantId": tenantid,
+                    "moduleDetails": [
+                        {
+                            "moduleName": "tenant",
+                            "masterDetails": [
+                                {
+                                    "name": "projectmodule"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+
+            mdms_response = requests.post(mdms_url + 'egov-mdms-service/v1/_search', json=mdms_requestData)
+
+            mdms_responseData = mdms_response.json()
+            projectModuleList = mdms_responseData['MdmsRes']['tenant']['projectmodule']
+            dataMap = {}
+            for zoneData in projectModuleList:
+                circle = zoneData['circle']
+                for circleData in circle:
+                    division = circleData['division']
+                    for divisionData in division:
+                        subDivision = divisionData['subdivision']
+                        for subdivisionData in subDivision:
+                            section = subdivisionData['section']
+                            for sectionData in section:
+                                project = sectionData['project']
+                                for projectData in project:
+                                    tenantId = projectData['name'].replace(" ", "").lower()
+                                    formatedTenantId = "pb." + tenantId
+                                    obj1 = {
+                                        "tenantId": formatedTenantId,
+                                        "zone": zoneData['name'],
+                                        "circle": circleData['name'],
+                                        "division": divisionData['name'],
+                                        "subdivision": subdivisionData['name'],
+                                        "section": sectionData['name'],
+                                        "projectcode": projectData['code']
+                                    }
+                                    dataMap[obj1.get("projectcode")]=obj1
             url = os.getenv('IFIX_URL')
             print(url)
             requestData = {
@@ -59,8 +112,8 @@ def getGPWSCHeirarchy():
                                     if (len(child['children'][0]['children'][0]['children'][0]['children'][0]['children']) > 0):
                                         tenantName = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('name')
                                         tenantCode = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('code')
-                                        tenantId = tenantName.replace(" ", "").lower()
-                                        formatedTenantId = "pb." + tenantId
+                                        # tenantId = tenantName.replace(" ", "").lower()
+                                        formatedTenantId = dataMap.get(tenantCode)
                                         obj1 = {"tenantId": formatedTenantId,"zone": zone,"circle": circle,"division": division,"subdivision": 							subdivision,"section": section, "projectcode": tenantCode}
                                         dataList.append(obj1)
             print("heirarchy collected")
