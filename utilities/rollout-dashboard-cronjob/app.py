@@ -14,102 +14,105 @@ def getGPWSCHeirarchy():
         # zone circle division subdivision project 
         # https://realpython.com/python-requests/ helps on how make ajax calls. url put it in app.properties and read through configs
         
-        try:
-            mdms_url = os.getenv('API_URL')
-            state_tenantid = os.getenv('TENANT_ID')
-            mdms_requestData = {
-                "RequestInfo": {
-                    "apiId": "mgramseva-common",
-                    "ver": 0.01,
-                    "ts": "",
-                    "action": "_search",
-                    "did": 1,
-                    "key": "",
-                    "msgId": ""
-                },
-                "MdmsCriteria": {
-                    "tenantId": state_tenantid,
-                    "moduleDetails": [
-                        {
-                            "moduleName": "tenant",
-                            "masterDetails": [
-                                {
-                                    "name": "tenants"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }
-            mdms_response = requests.post(mdms_url + 'egov-mdms-service/v1/_search', json=mdms_requestData)
-
-            mdms_responseData = mdms_response.json()
-            tenantList = mdms_responseData['MdmsRes']['tenant']['tenants']
-            print(len(tenantList))
-            teanant_data_Map = {}
-            for tenant in tenantList:
-                if tenant.get('code') == state_tenantid or tenant.get('code') == (state_tenantid + '.testing'):
-                    continue
-                if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
-                    teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
-            print(teanant_data_Map)
-                
-            url = os.getenv('IFIX_URL')
-            print(url)
-            requestData = {
-                "requestHeader": {
-                    "ts": 1627193067,
-                    "version": "2.0.0",
-                    "msgId": "Unknown",
-                    "signature": "NON",
-                    "userInfo": {
-                       "uuid": "admin"
+    try:
+        mdms_url = 'https://mgramseva-qa.egov.org.in/'
+        state_tenantid = 'pb'
+        mdms_requestData = {
+            "RequestInfo": {
+                "apiId": "mgramseva-common",
+                "ver": 0.01,
+                "ts": "",
+                "action": "_search",
+                "did": 1,
+                "key": "",
+                "msgId": ""
+            },
+            "MdmsCriteria": {
+                "tenantId": state_tenantid,
+                "moduleDetails": [
+                    {
+                        "moduleName": "tenant",
+                        "masterDetails": [
+                            {
+                                "name": "tenants"
+                            }
+                        ]
                     }
-                },
-                "criteria": {
-                     "tenantId": "pb",
-                     "getAncestry": True
-                 }
+                ]
             }
-            
-            response = requests.post(url+'ifix-department-entity/departmentEntity/v1/_search', json=requestData)
-            
-            responseData = response.json()
-            departmentHierarchyList = responseData.get('departmentEntity')
-            dataList = []
-            for data in departmentHierarchyList:
-                if (len(data['children']) > 0):
-                    if(data.get('hierarchyLevel') == 0):
-                        child = data['children'][0]
-                    else:
-                        child = data
-                    zone = child.get('name')
-                    if (len(child['children']) > 0):
-                        circle = child['children'][0].get('name')
-                        if (len(child['children'][0]['children']) > 0):
-                            division = child['children'][0]['children'][0].get('name')
-                            if (len(child['children'][0]['children'][0]['children']) > 0):
-                                subdivision = child['children'][0]['children'][0]['children'][0].get('name')
-                                if (len(child['children'][0]['children'][0]['children'][0]['children']) > 0):
-                                    section = child['children'][0]['children'][0]['children'][0]['children'][0].get('name')
-                                    if (len(child['children'][0]['children'][0]['children'][0]['children'][0]['children']) > 0):
-                                        tenantName = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('name')
-                                        tenantCode = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('code')
-                                        # tenantId = tenantName.replace(" ", "").lower()
-                                        if teanant_data_Map.get(tenantCode) is not None:
-                                            formatedTenantId = teanant_data_Map.get(tenantCode)
-                                            print(formatedTenantId)
-                                            obj1 = {"tenantId": formatedTenantId, "zone": zone, "circle": circle,
-                                                    "division": division, "subdivision": subdivision,
-                                                    "section": section, "projectcode": tenantCode}
-                                            dataList.append(obj1)
-            print("heirarchy collected")
-            print(dataList)
-            #return [{"tenantId":"pb.lodhipur", "projectcode":"1234","zone":"zone1","circle":"Circle1","division":"Dvisiion1","subdivision":"SD1", "section":"sec1"}]
-            return dataList
-        except Exception as exception:
-            print("Exception occurred while connecting to the database")
-            print(exception)
+        }
+
+        mdms_response = requests.post(mdms_url + 'egov-mdms-service/v1/_search', json=mdms_requestData,verify=False)
+
+        mdms_responseData = mdms_response.json()
+        tenantList = mdms_responseData['MdmsRes']['tenant']['tenants']
+        print(len(tenantList))
+        teanant_data_Map = {}
+        for tenant in tenantList:
+            if tenant.get('code') == state_tenantid or tenant.get('code') == (state_tenantid + '.testing'):
+                continue
+            if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
+                teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
+
+        url = 'https://mgramseva-qa.egov.org.in/'
+        print(url)
+        requestData = {
+            "requestHeader": {
+                "ts": 1627193067,
+                "version": "2.0.0",
+                "msgId": "Unknown",
+                "signature": "NON",
+                "userInfo": {
+                    "uuid": "admin"
+                }
+            },
+            "criteria": {
+                "tenantId": "pb",
+                "getAncestry": True
+            }
+        }
+
+        response = requests.post(url + 'ifix-department-entity/departmentEntity/v1/_search', json=requestData, verify=False)
+
+        responseData = response.json()
+        departmentHierarchyList = responseData.get('departmentEntity')
+        dataList = []
+
+        for data in departmentHierarchyList:
+            if (len(data['children']) > 0):
+                if (data.get('hierarchyLevel') == 0):
+                    child = data['children'][0]
+                else:
+                    child = data
+                zone = child.get('name')
+                if (len(child['children']) > 0):
+                    circle = child['children'][0].get('name')
+                    if (len(child['children'][0]['children']) > 0):
+                        division = child['children'][0]['children'][0].get('name')
+                        if (len(child['children'][0]['children'][0]['children']) > 0):
+                            subdivision = child['children'][0]['children'][0]['children'][0].get('name')
+                            if (len(child['children'][0]['children'][0]['children'][0]['children']) > 0):
+                                section = child['children'][0]['children'][0]['children'][0]['children'][0].get('name')
+                                if (len(child['children'][0]['children'][0]['children'][0]['children'][0]['children']) > 0):
+                                    tenantName = \
+                                    child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get(
+                                        'name')
+                                    tenantCode = \
+                                    child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get(
+                                        'code')
+                                    # tenantId = tenantName.replace(" ", "").lower()
+                                    if teanant_data_Map.get(tenantCode) is not None:
+                                        formatedTenantId = teanant_data_Map.get(tenantCode)
+                                        print(formatedTenantId)
+                                        obj1 = {"tenantId": formatedTenantId, "zone": zone, "circle": circle,
+                                                "division": division, "subdivision": subdivision,
+                                                "section": section, "projectcode": tenantCode}
+                                        dataList.append(obj1)
+        print("heirarchy collected")
+        return (dataList)
+    except Exception as exception:
+                print("Exception occurred while connecting to the database")
+                print(exception)
 
 def getConsumerCreated(tenantId):
         # query the postgresql db to get the total count of total connection in the given tenant till date  
