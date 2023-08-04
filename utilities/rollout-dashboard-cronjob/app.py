@@ -57,19 +57,19 @@ def getGPWSCHeirarchy():
             url = os.getenv('IFIX_URL')
             print(url)
             requestData = {
-            "requestHeader": {
-                "ts": 1627193067,
-                "version": "2.0.0",
-                "msgId": "Unknown",
-                "signature": "NON",
-                "userInfo": {
-                    "uuid": "admin"
-                }
-            },
-            "criteria": {
-                "tenantId": "pb",
-                "getAncestry": True
-                }
+                "requestHeader": {
+                    "ts": 1627193067,
+                    "version": "2.0.0",
+                    "msgId": "Unknown",
+                    "signature": "NON",
+                    "userInfo": {
+                       "uuid": "admin"
+                    }
+                },
+                "criteria": {
+                     "tenantId": "pb",
+                     "getAncestry": True
+                 }
             }
             
             response = requests.post(url+'ifix-department-entity/departmentEntity/v1/_search', json=requestData)
