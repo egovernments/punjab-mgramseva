@@ -15,8 +15,8 @@ def getGPWSCHeirarchy():
         # https://realpython.com/python-requests/ helps on how make ajax calls. url put it in app.properties and read through configs
         
     try:
-        mdms_url = 'https://mgramseva-qa.egov.org.in/'
-        state_tenantid = 'pb'
+        mdms_url = os.getenv('API_URL')
+        state_tenantid = os.getenv('TENANT_ID')
         mdms_requestData = {
             "RequestInfo": {
                 "apiId": "mgramseva-common",
@@ -54,7 +54,7 @@ def getGPWSCHeirarchy():
             if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
                 teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
 
-        url = 'https://mgramseva-qa.egov.org.in/'
+        url = os.getenv('IFIX_URL')
         print(url)
         requestData = {
             "requestHeader": {
