@@ -42,16 +42,18 @@ def getGPWSCHeirarchy():
                 }
             }
 
-            mdms_response = requests.post(mdms_url + 'egov-mdms-service/v1/_search', json=mdms_requestData)
+           mdms_response = requests.post(mdms_url + 'egov-mdms-service/v1/_search', json=mdms_requestData)
 
-            mdms_responseData = mdms_response.json()
-            tenantList = mdms_responseData['MdmsRes']['tenant']['tenants']
-            teanant_data_Map = {}
-            for tenant in tenantList:
+           mdms_responseData = mdms_response.json()
+           tenantList = mdms_responseData['MdmsRes']['tenant']['tenants']
+           print(len(tenantList))
+           teanant_data_Map = {}
+           for tenant in tenantList:
                 if tenant.get('code') == state_tenantid or tenant.get('code') == (state_tenantid + '.testing'):
                     continue
                 if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
-                    teanant_data_Map.update({tenant.get('city').get('code'):tenant.get('code')})
+                    teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
+            print(teanant_data_Map)
                 
             url = os.getenv('IFIX_URL')
             print(url)
@@ -76,7 +78,6 @@ def getGPWSCHeirarchy():
             responseData = response.json()
             departmentHierarchyList = responseData.get('departmentEntity')
             dataList = []
-            print(teanant_data_Map)
             for data in departmentHierarchyList:
                 if (len(data['children']) > 0):
                     if(data.get('hierarchyLevel') == 0):
