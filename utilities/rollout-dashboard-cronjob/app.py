@@ -41,14 +41,13 @@ def getGPWSCHeirarchy():
                     ]
                 }
             }
+            mdms_response = requests.post(mdms_url + 'egov-mdms-service/v1/_search', json=mdms_requestData)
 
-           mdms_response = requests.post(mdms_url + 'egov-mdms-service/v1/_search', json=mdms_requestData)
-
-           mdms_responseData = mdms_response.json()
-           tenantList = mdms_responseData['MdmsRes']['tenant']['tenants']
-           print(len(tenantList))
-           teanant_data_Map = {}
-           for tenant in tenantList:
+            mdms_responseData = mdms_response.json()
+            tenantList = mdms_responseData['MdmsRes']['tenant']['tenants']
+            print(len(tenantList))
+            teanant_data_Map = {}
+            for tenant in tenantList:
                 if tenant.get('code') == state_tenantid or tenant.get('code') == (state_tenantid + '.testing'):
                     continue
                 if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
