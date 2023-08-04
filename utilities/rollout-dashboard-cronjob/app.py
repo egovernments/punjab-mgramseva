@@ -76,7 +76,7 @@ def getGPWSCHeirarchy():
             responseData = response.json()
             departmentHierarchyList = responseData.get('departmentEntity')
             dataList = []
-            
+            print(teanant_data_Map)
             for data in departmentHierarchyList:
                 if (len(data['children']) > 0):
                     if(data.get('hierarchyLevel') == 0):
