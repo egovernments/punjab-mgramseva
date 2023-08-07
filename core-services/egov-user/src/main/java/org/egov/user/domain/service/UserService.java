@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -651,4 +652,25 @@ public class UserService {
     }
 
 
+    public List<User> searchUsersByTenants(UserSearchCriteria searchCriteria, RequestInfo requestInfo) {
+        log.info("INSIDE USER SEARCH BY TENANT");
+        //searchCriteria.validate(isInterServiceCall);
+        if(ObjectUtils.isEmpty(searchCriteria.getTenantId())) {
+            return null;
+        }
+
+        //searchCriteria.setTenantId(getStateLevelTenantForCitizen(searchCriteria.getTenantId(), searchCriteria.getType()));
+        /* encrypt here / encrypted searchcriteria will be used for search*/
+
+
+        searchCriteria = encryptionDecryptionUtil.encryptObject(searchCriteria, "UserSearchCriteria", UserSearchCriteria.class);
+        List<org.egov.user.domain.model.User> list = userRepository.findUserByTenant(searchCriteria);
+
+        /* decrypt here / final reponse decrypted*/
+
+        list = encryptionDecryptionUtil.decryptObject(list, "UserList", User.class, requestInfo);
+
+        setFileStoreUrlsByFileStoreIds(list);
+        return list;
+    }
 }
