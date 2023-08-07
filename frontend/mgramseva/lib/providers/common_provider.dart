@@ -669,7 +669,7 @@ class CommonProvider with ChangeNotifier {
               ? totalAmount
               : totalAmount + penalty.penalty)
           : penalty.penalty;
-    return totalAmount >= 0 ? (totalAmount) : 0.0;
+    return totalAmount >= 0 ? (totalAmount) : totalAmount;
   }
 
   static bool isFirstDemand(List<Demands> demandList) {
