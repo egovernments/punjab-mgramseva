@@ -24,7 +24,9 @@ import org.egov.waterconnection.repository.builder.WsQueryBuilder;
 import org.egov.waterconnection.repository.rowmapper.BillingCycleRowMapper;
 import org.egov.waterconnection.repository.rowmapper.FeedbackRowMapper;
 import org.egov.waterconnection.repository.rowmapper.OpenWaterRowMapper;
+import org.egov.waterconnection.repository.rowmapper.ReportRowMapper;
 import org.egov.waterconnection.repository.rowmapper.WaterRowMapper;
+import org.egov.waterconnection.web.models.BillReportData;
 import org.egov.waterconnection.web.models.BillingCycle;
 import org.egov.waterconnection.web.models.Feedback;
 import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
@@ -59,6 +61,9 @@ public class WaterDaoImpl implements WaterDao {
 
 	@Autowired
 	private OpenWaterRowMapper openWaterRowMapper;
+	
+	@Autowired
+	private ReportRowMapper reportRowMapper;
 	
 	@Autowired
 	private WSConfiguration wsConfiguration;
@@ -499,6 +504,17 @@ public class WaterDaoImpl implements WaterDao {
 				.append(criteria.getToDate()).append(" and py.tenantId = '").append(criteria.getTenantId()).append("'");
 		log.info("Penalty Collection Final Query: " + query);
 		return jdbcTemplate.queryForObject(query.toString(), BigDecimal.class);
+	}
+
+	public List<BillReportData> getBillReportData(@Valid Long demandDate) {
+		StringBuilder query = new StringBuilder(wsQueryBuilder.BILL_REPORT_QUERY);
+		query.append("where dem.taxperiodfrom =" + demandDate);
+		List<BillReportData> billReportList = new ArrayList<>();
+		List<Object> preparedStatement = new ArrayList<>();
+
+		billReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), reportRowMapper);
+		return billReportList;
+			
 	}
 	
 

@@ -12,6 +12,7 @@ import java.time.Month;
 import java.time.Period;
 import java.time.YearMonth;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +46,8 @@ import org.egov.waterconnection.validator.MDMSValidator;
 import org.egov.waterconnection.validator.ValidateProperty;
 import org.egov.waterconnection.validator.WaterConnectionValidator;
 import org.egov.waterconnection.web.models.AuditDetails;
+import org.egov.waterconnection.web.models.BillReportData;
+import org.egov.waterconnection.web.models.BillReportResponse;
 import org.egov.waterconnection.web.models.BillingCycle;
 import org.egov.waterconnection.web.models.CheckList;
 import org.egov.waterconnection.web.models.Connection.StatusEnum;
@@ -775,5 +778,16 @@ public class WaterServiceImpl implements WaterService {
 		}
 		System.out.println("datadatadatadata" + data);
 		return data;
+	}
+
+	@Override
+	public List<BillReportData> billReport(@Valid String demandDate, RequestInfo requestInfo) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+		LocalDate demDate = LocalDate.parse(demandDate, formatter);
+
+		Long demDateTime = LocalDateTime.of(demDate.getYear(), demDate.getMonth(), demDate.getDayOfMonth(), 0, 0, 0)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		List<BillReportData> billReportData = waterDaoImpl.getBillReportData(demDateTime);
+		return billReportData;
 	}
 }
