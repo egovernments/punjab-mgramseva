@@ -494,12 +494,12 @@ def getTotalConsumersCreatedForLastSevenDays(tenantId):
         try:                          
             connection = getConnection()
             cursor = connection.cursor()
-
+            
             now = datetime.now()
-	    lastSevenDays = (now - timedelta(days=7)).replace(hour=0,minute=0,second=0, microsecond=0)
+            lastSevenDays = (now - timedelta(days=7)).replace(hour=0,minute=0,second=0, microsecond=0)
             epochnow = now.strftime('%s') + '000'
             epochlast7days = lastSevenDays.strftime('%s') + '000'
-
+            
             CONSUMER_COUNT_QUERY_7_DAYS = "select count(*) from eg_ws_connection where createdtime between epochlast7days and epochnow and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_7_DAYS)
             result = cursor.fetchone()
@@ -521,12 +521,12 @@ def getTotalConsumersCreatedForLastFifteenDays(tenantId):
         try:                          
             connection = getConnection()
             cursor = connection.cursor()
-
+            
             now = datetime.now()
-	    lastFifteenDays = (now - timedelta(days=15)).replace(hour=0,minute=0,second=0, microsecond=0)
+            lastFifteenDays = (now - timedelta(days=15)).replace(hour=0,minute=0,second=0, microsecond=0)
             epochnow = now.strftime('%s') + '000'
             epochlast15days = lastFifteenDays.strftime('%s') + '000'
-
+            
             CONSUMER_COUNT_QUERY_15_DAYS = "select count(*) from eg_ws_connection where createdtime between epochlast15days and epochnow and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_15_DAYS)
             result = cursor.fetchone()
@@ -548,12 +548,12 @@ def getTotalConsumersCreatedForLastOneMonth(tenantId):
         try:                          
             connection = getConnection()
             cursor = connection.cursor()
-
+            
             now = datetime.now()
-	    lastonemonth = (now - relativedelta(months=1)).replace(hour=0,minute=0,second=0, microsecond=0)
+            lastonemonth = (now - relativedelta(months=1)).replace(hour=0,minute=0,second=0, microsecond=0)
             epochnow = now.strftime('%s') + '000'
             epochlastonemonth = lastonemonth.strftime('%s') + '000'
-
+            
             CONSUMER_COUNT_QUERY_1_MONTH = "select count(*) from eg_ws_connection where createdtime between epochlastonemonth and epochnow and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_1_MONTH)
             result = cursor.fetchone()
@@ -575,14 +575,14 @@ def getTotalConsumersCreatedForLastQuarterOne(tenantId):
         try:                          
             connection = getConnection()
             cursor = connection.cursor()
-	    
-	    year = datetime.now().year
+            
+            year = datetime.now().year
             start_date = datetime(year, 4, 1)
             end_date = datetime(year, 6, 30)
-	    end = datetime.combine(end_date,time.max)
-	    epochnow = start_date.strftime('%s') + '000'
+            end = datetime.combine(end_date,time.max)
+            epochnow = start_date.strftime('%s') + '000'
             lastepoch = end.strftime('%s') + '000'
-
+            
             CONSUMER_COUNT_QUERY_QUARTER_1 = "select count(*) from eg_ws_connection where createdtime between lastepoch and epochnow and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_1)
             result = cursor.fetchone()
@@ -604,14 +604,14 @@ def getTotalConsumersCreatedForLastQuarterTwo(tenantId):
         try:                          
             connection = getConnection()
             cursor = connection.cursor()
-
+            
             year = datetime.now().year
             start_date = datetime(year, 7, 1)
             end_date = datetime(year, 9, 30)
-	    end = datetime.combine(end_date,time.max)
-	    epochnow = start_date.strftime('%s') + '000'
+            end = datetime.combine(end_date,time.max)
+            epochnow = start_date.strftime('%s') + '000'
             lastepoch = end.strftime('%s') + '000'
-
+            
             CONSUMER_COUNT_QUERY_QUARTER_2 = "select count(*) from eg_ws_connection where createdtime between lastepoch and epochnow and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_2)
             result = cursor.fetchone()
@@ -634,14 +634,14 @@ def getTotalConsumersCreatedForLastQuarterThree(tenantId):
         try:                          
             connection = getConnection()
             cursor = connection.cursor()
-
+            
             year = datetime.now().year
             start_date = datetime(year, 10, 1)
             end_date = datetime(year, 12, 31)
-	    end = datetime.combine(end_date,time.max)
-	    epochnow = start_date.strftime('%s') + '000'
+            end = datetime.combine(end_date,time.max)
+            epochnow = start_date.strftime('%s') + '000'
             lastepoch = end.strftime('%s') + '000'
-
+            
             CONSUMER_COUNT_QUERY_QUARTER_3 = "select count(*) from eg_ws_connection where createdtime between lastepoch and epochnow and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_3)
             result = cursor.fetchone()
@@ -664,14 +664,14 @@ def getTotalConsumersCreatedForLastQuarterFour(tenantId):
         try:                          
             connection = getConnection()
             cursor = connection.cursor()
-
+            
             year = datetime.now().year
             start_date = datetime(year, 1, 1)
             end_date = datetime(year, 3, 31)
-	    end = datetime.combine(end_date,time.max)
-	    epochnow = start_date.strftime('%s') + '000'
+            end = datetime.combine(end_date,time.max)
+            epochnow = start_date.strftime('%s') + '000'
             lastepoch = end.strftime('%s') + '000'
-
+            
             CONSUMER_COUNT_QUERY_QUARTER_4 = "select count(*) from eg_ws_connection where createdtime between lastepoch and epochnow and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_4)
             result = cursor.fetchone()
@@ -693,7 +693,7 @@ def getTotalConsumersCount(tenantId):
         try:                          
             connection = getConnection()
             cursor = connection.cursor()
-
+            
             CONSUMER_TOTAL_COUNT_QUERY = "select count(*) from eg_ws_connection where tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_TOTAL_COUNT_QUERY)
             result = cursor.fetchone()
