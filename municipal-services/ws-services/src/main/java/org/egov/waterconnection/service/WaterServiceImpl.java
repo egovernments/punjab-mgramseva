@@ -781,13 +781,13 @@ public class WaterServiceImpl implements WaterService {
 	}
 
 	@Override
-	public List<BillReportData> billReport(@Valid String demandDate, RequestInfo requestInfo) {
+	public List<BillReportData> billReport(@Valid String demandDate, String tenantId, RequestInfo requestInfo) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
 		LocalDate demDate = LocalDate.parse(demandDate, formatter);
 
 		Long demDateTime = LocalDateTime.of(demDate.getYear(), demDate.getMonth(), demDate.getDayOfMonth(), 0, 0, 0)
 				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		List<BillReportData> billReportData = waterDaoImpl.getBillReportData(demDateTime);
+		List<BillReportData> billReportData = waterDaoImpl.getBillReportData(demDateTime,tenantId);
 		return billReportData;
 	}
 }

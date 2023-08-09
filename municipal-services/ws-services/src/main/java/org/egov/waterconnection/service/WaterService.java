@@ -45,6 +45,6 @@ public interface WaterService {
 
 	List<RevenueCollectionData> getRevenueCollectionData(@Valid SearchCriteria criteria, RequestInfo requestInfo);
 
-	List<BillReportData> billReport(@Valid String demandDate, RequestInfo requestInfo);
+	List<BillReportData> billReport(@Valid String demandDate, @Valid String tenantId, RequestInfo requestInfo);
 
 }
