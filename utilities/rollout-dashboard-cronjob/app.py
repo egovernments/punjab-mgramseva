@@ -16,7 +16,7 @@ def getGPWSCHeirarchy():
         
     try:
         mdms_url = os.getenv('API_URL')
-        state_tenantid = 'pb'
+        state_tenantid = os.getenv('TENANT_ID')
         mdms_requestData = {
             "RequestInfo": {
                 "apiId": "mgramseva-common",
@@ -54,7 +54,7 @@ def getGPWSCHeirarchy():
             if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
                 teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
 
-        url = os.getenv('IFIX_URL')
+        url = 'https://mgramseva-dwss.punjab.gov.in/'
         print(url)
         requestData = {
             "requestHeader": {
