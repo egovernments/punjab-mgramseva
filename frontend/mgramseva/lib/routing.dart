@@ -23,6 +23,7 @@ import 'package:mgramseva/screeens/login/login.dart';
 import 'package:mgramseva/screeens/notifications/notification_screen.dart';
 import 'package:mgramseva/screeens/password_success/password_success.dart';
 import 'package:mgramseva/screeens/profile/edit_profile.dart';
+import 'package:mgramseva/screeens/reports/reports.dart';
 import 'package:mgramseva/screeens/reset_password/reset_password.dart';
 import 'package:mgramseva/screeens/reset_password/update_password.dart';
 import 'package:mgramseva/screeens/select_language/select_language.dart';
@@ -349,6 +350,11 @@ class Routing {
         return MaterialPageRoute(
             builder: (_) => GPWSCDetails(),
             settings: RouteSettings(name: Routes.GPWSC_DETAILS_AND_RATE_INFO));
+
+      case Routes.REPORTS:
+        return MaterialPageRoute(
+            builder: (_) => Reports(),
+            settings: RouteSettings(name: Routes.REPORTS));
 
       case Routes.SEARCH_CONSUMER_RESULT:
         if (settings.arguments == null) {

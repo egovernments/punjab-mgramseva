@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:mgramseva/icons/home_icons_icons.dart';
 import 'package:mgramseva/icons/home_icons_modified_icons.dart';
 import 'package:mgramseva/routers/routers.dart';
@@ -98,6 +99,11 @@ class Constants {
         (i18.dashboard.CORE_GPWSC_DETAILS_AND_RATE_INFO),
         HomeIcons.gpwscdetails,
         Routes.GPWSC_DETAILS_AND_RATE_INFO, {}),
+    HomeItem(
+        "CORE_REPORTS",
+        (i18.dashboard.CORE_REPORTS),
+        Icons.add_chart_rounded,
+        Routes.REPORTS, {}),
   ];
 
   static List<KeyValue> SERVICECATEGORY = [

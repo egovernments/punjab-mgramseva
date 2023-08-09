@@ -135,6 +135,8 @@ class RoleActionsFiltering {
 
       case Routes.DASHBOARD:
         return ['SUPERUSER', 'DASHBOARD_VIEWER'];
+      case Routes.REPORTS:
+        return ['SUPERUSER', 'DASHBOARD_VIEWER', 'GP_ADMIN'];
       default:
         return [];
     }
