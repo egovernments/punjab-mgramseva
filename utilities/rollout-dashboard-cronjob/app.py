@@ -54,7 +54,7 @@ def getGPWSCHeirarchy():
             if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
                 teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
 
-        url = os.getenv('IFIX_URL')
+        url = os.getenv('IFIX_DEP_ENTITY_URL')
         print(url)
         requestData = {
             "requestHeader": {
