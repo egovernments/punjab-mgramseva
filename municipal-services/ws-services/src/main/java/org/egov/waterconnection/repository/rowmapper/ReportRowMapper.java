@@ -62,7 +62,9 @@ public class ReportRowMapper implements ResultSetExtractor<List<BillReportData>>
 				billReportData.setTotalBillGenerated(rs.getString("billAmount"));
 				billReportDataList.add(billReportData);
 		}
-		enrichConnectionHolderDetails(billReportDataList);
+		if(!billReportDataList.isEmpty()){
+			enrichConnectionHolderDetails(billReportDataList);
+		}
 		return billReportDataList;
 	}
 
