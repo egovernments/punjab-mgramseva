@@ -510,7 +510,7 @@ public class WaterDaoImpl implements WaterDao {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.BILL_REPORT_QUERY);
 		query.append("where dem.taxperiodfrom =" + demandDate);
 		if(!tenantId.isEmpty()){
-			query.append("and conn.tenantId ="+tenantId);
+			query.append(" and conn.tenantId ="+tenantId);
 		}
 		List<BillReportData> billReportList = new ArrayList<>();
 		List<Object> preparedStatement = new ArrayList<>();

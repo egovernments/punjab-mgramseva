@@ -198,7 +198,7 @@ public class WaterController {
 	 
 	 @RequestMapping(value = "/_billReport", method = RequestMethod.POST)
 		public ResponseEntity<BillReportResponse> billReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
-				@RequestParam(value = "demandDate", required = true) String demandDate,@RequestParam(value = "tenantId",required = false) String tenantId) {
+				@RequestParam(value = "demandDate", required = true) String demandDate,@RequestParam(value = "tenantId",required = true) String tenantId) {
 		 List<BillReportData> billReport = waterService.billReport(demandDate,tenantId,
 					requestInfoWrapper.getRequestInfo());
 
