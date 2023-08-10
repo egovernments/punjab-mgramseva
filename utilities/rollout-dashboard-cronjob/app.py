@@ -527,7 +527,7 @@ def getTotalConsumersCreatedForLastFifteenDays(tenantId):
             epochnow = now.strftime('%s') + '000'
             epochlast15days = lastFifteenDays.strftime('%s') + '000'
             
-            CONSUMER_COUNT_QUERY_15_DAYS = "select count(*) from eg_ws_connection where createdtime between epochlast15days and epochnow and tenantid = '"+tenantId+"'"
+            CONSUMER_COUNT_QUERY_15_DAYS = "select count(*) from eg_ws_connection where createdtime between '"+epochlast15days+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_15_DAYS)
             result = cursor.fetchone()
             print(result[0])
@@ -554,7 +554,7 @@ def getTotalConsumersCreatedForLastOneMonth(tenantId):
             epochnow = now.strftime('%s') + '000'
             epochlastonemonth = lastonemonth.strftime('%s') + '000'
             
-            CONSUMER_COUNT_QUERY_1_MONTH = "select count(*) from eg_ws_connection where createdtime between epochlastonemonth and epochnow and tenantid = '"+tenantId+"'"
+            CONSUMER_COUNT_QUERY_1_MONTH = "select count(*) from eg_ws_connection where createdtime between '"+epochlastonemonth+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_1_MONTH)
             result = cursor.fetchone()
             print(result[0])
@@ -583,7 +583,7 @@ def getTotalConsumersCreatedForLastQuarterOne(tenantId):
             epochnow = start_date.strftime('%s') + '000'
             lastepoch = end.strftime('%s') + '000'
             
-            CONSUMER_COUNT_QUERY_QUARTER_1 = "select count(*) from eg_ws_connection where createdtime between lastepoch and epochnow and tenantid = '"+tenantId+"'"
+            CONSUMER_COUNT_QUERY_QUARTER_1 = "select count(*) from eg_ws_connection where createdtime between '"+lastepoch+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_1)
             result = cursor.fetchone()
             print(result[0])
@@ -612,7 +612,7 @@ def getTotalConsumersCreatedForLastQuarterTwo(tenantId):
             epochnow = start_date.strftime('%s') + '000'
             lastepoch = end.strftime('%s') + '000'
             
-            CONSUMER_COUNT_QUERY_QUARTER_2 = "select count(*) from eg_ws_connection where createdtime between lastepoch and epochnow and tenantid = '"+tenantId+"'"
+            CONSUMER_COUNT_QUERY_QUARTER_2 = "select count(*) from eg_ws_connection where createdtime between '"+lastepoch+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_2)
             result = cursor.fetchone()
             print(result[0])
@@ -642,7 +642,7 @@ def getTotalConsumersCreatedForLastQuarterThree(tenantId):
             epochnow = start_date.strftime('%s') + '000'
             lastepoch = end.strftime('%s') + '000'
             
-            CONSUMER_COUNT_QUERY_QUARTER_3 = "select count(*) from eg_ws_connection where createdtime between lastepoch and epochnow and tenantid = '"+tenantId+"'"
+            CONSUMER_COUNT_QUERY_QUARTER_3 = "select count(*) from eg_ws_connection where createdtime between '"+lastepoch+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_3)
             result = cursor.fetchone()
             print(result[0])
@@ -672,7 +672,7 @@ def getTotalConsumersCreatedForLastQuarterFour(tenantId):
             epochnow = start_date.strftime('%s') + '000'
             lastepoch = end.strftime('%s') + '000'
             
-            CONSUMER_COUNT_QUERY_QUARTER_4 = "select count(*) from eg_ws_connection where createdtime between lastepoch and epochnow and tenantid = '"+tenantId+"'"
+            CONSUMER_COUNT_QUERY_QUARTER_4 = "select count(*) from eg_ws_connection where createdtime between '"+lastepoch+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_4)
             result = cursor.fetchone()
             print(result[0])
