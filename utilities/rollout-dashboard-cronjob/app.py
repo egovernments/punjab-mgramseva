@@ -500,7 +500,7 @@ def getTotalConsumersCreatedForLastSevenDays(tenantId):
             epochnow = now.strftime('%s') + '000'
             epochlast7days = lastSevenDays.strftime('%s') + '000'
             
-            CONSUMER_COUNT_QUERY_7_DAYS = "select count(*) from eg_ws_connection where createdtime between epochlast7days and epochnow and tenantid = '"+tenantId+"'"
+            CONSUMER_COUNT_QUERY_7_DAYS = "select count(*) from eg_ws_connection where createdtime between "+ epochlast7days " and " + epochnow " and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_7_DAYS)
             result = cursor.fetchone()
             print(result[0])
