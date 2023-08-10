@@ -5,7 +5,6 @@ from dateutil.relativedelta import relativedelta
 from dateutil import tz
 import pytz
 from dateutil import parser
-import time
 import os
 import psycopg2
 
