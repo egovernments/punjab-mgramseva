@@ -583,6 +583,7 @@ def getTotalConsumersCreatedForLastQuarterOne(tenantId):
             lastepoch = end.strftime('%s') + '000'
             
             CONSUMER_COUNT_QUERY_QUARTER_1 = "select count(*) from eg_ws_connection where createdtime between '"+lastepoch+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
+            print(CONSUMER_COUNT_QUERY_QUARTER_1)
             cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_1)
             result = cursor.fetchone()
             print(result[0])
@@ -612,6 +613,7 @@ def getTotalConsumersCreatedForLastQuarterTwo(tenantId):
             lastepoch = end.strftime('%s') + '000'
             
             CONSUMER_COUNT_QUERY_QUARTER_2 = "select count(*) from eg_ws_connection where createdtime between '"+lastepoch+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
+            print(CONSUMER_COUNT_QUERY_QUARTER_2)
             cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_2)
             result = cursor.fetchone()
             print(result[0])
@@ -642,6 +644,7 @@ def getTotalConsumersCreatedForLastQuarterThree(tenantId):
             lastepoch = end.strftime('%s') + '000'
             
             CONSUMER_COUNT_QUERY_QUARTER_3 = "select count(*) from eg_ws_connection where createdtime between '"+lastepoch+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
+            print(CONSUMER_COUNT_QUERY_QUARTER_3)
             cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_3)
             result = cursor.fetchone()
             print(result[0])
@@ -672,6 +675,7 @@ def getTotalConsumersCreatedForLastQuarterFour(tenantId):
             lastepoch = end.strftime('%s') + '000'
             
             CONSUMER_COUNT_QUERY_QUARTER_4 = "select count(*) from eg_ws_connection where createdtime between '"+lastepoch+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
+            print(CONSUMER_COUNT_QUERY_QUARTER_4)
             cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_4)
             result = cursor.fetchone()
             print(result[0])
