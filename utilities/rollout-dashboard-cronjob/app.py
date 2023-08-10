@@ -709,8 +709,7 @@ def getTotalConsumersCount(tenantId):
                 connection.close()
                 
                 
-def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance,totalPenalty,
-,consumerCountlastSevenDays,consumerCountlastFifteenDays,consumerCountlastOneMonth,consumerCountquarterOne,
+def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance,totalPenalty,consumerCountlastSevenDays,consumerCountlastFifteenDays,consumerCountlastOneMonth,consumerCountquarterOne,
         consumerCountquarterTwo,consumerCountquarterThree,consumerCountquarterFour,totalConsumerCount):
     # create entry into new table in postgres db with the table name roll_outdashboard . enter all field into the db and additional createdtime additional column
     
