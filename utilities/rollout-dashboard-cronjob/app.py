@@ -725,8 +725,8 @@ def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemand
         createdTime = datetime.now(tz=tzInfo)
         print("createdtime -->", createdTime)
         
-        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section, consumer_created_count, billing_slab_count, last_demand_gen_date, collection_till_date, collection_till_date_online, last_collection_date, expense_count, last_expense_txn_date, paid_status_expense_bill_count, demands_till_date_count, ratings_count, last_rating_date, active_users_count,total_advance,total_penalty, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'], consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty, createdTime)
+        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section, consumer_created_count,billing_slab_count, last_demand_gen_date, collection_till_date, collection_till_date_online, last_collection_date, expense_count,last_expense_txn_date,paid_status_expense_bill_count, demands_till_date_count,ratings_count,last_rating_date,active_users_count,total_advance,total_penalty,consumer_count_last_seven_days,consumer_count_last_fifteen_days,consumer_count_last_one_month,consumer_count_quarter_one,consumer_count_quarter_two,consumer_count_quarter_three,consumer_count_quarter_four,total_consumer_count, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'], consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty,consumerCountlastSevenDays,consumerCountlastFifteenDays,consumerCountlastOneMonth,consumerCountquarterOne,consumerCountquarterTwo,consumerCountquarterThree,consumerCountquarterFour,totalConsumerCount, createdTime)
         cursor.execute(postgres_insert_query, record_to_insert)
        
         connection.commit()
@@ -788,7 +788,16 @@ def process():
         activeUsersCount= getActiveUsersCount(tenant['tenantId'])
         totalAdvance= getTotalAdvanceCreated(tenant['tenantId'])
         totalPenalty= getTotalPenaltyCreated(tenant['tenantId'])
-        createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty)
+        consumerCountlastSevenDays= getTotalConsumersCreatedForLastSevenDays(tenant['tenantId'])
+        consumerCountlastFifteenDays= getTotalConsumersCreatedForLastFifteenDays(tenant['tenantId'])
+        consumerCountlastOneMonth= getTotalConsumersCreatedForLastOneMonth(tenant['tenantId'])
+        consumerCountquarterOne= getTotalConsumersCreatedForLastQuarterOne(tenant['tenantId'])
+        consumerCountquarterTwo= getTotalConsumersCreatedForLastQuarterTwo(tenant['tenantId'])
+        consumerCountquarterThree= getTotalConsumersCreatedForLastQuarterThree(tenant['tenantId'])
+        consumerCountquarterFour= getTotalConsumersCreatedForLastQuarterFour(tenant['tenantId'])
+        totalConsumerCount= getTotalConsumersCount(tenant['tenantId'])
+        createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty,consumerCountlastSevenDays,consumerCountlastFifteenDays,consumerCountlastOneMonth,consumerCountquarterOne,
+        consumerCountquarterTwo,consumerCountquarterThree,consumerCountquarterFour,totalConsumerCount)
     print("End of rollout dashboard")
     return 
 
@@ -842,6 +851,14 @@ def createTable():
         active_users_count NUMERIC(10),
         total_advance NUMERIC(10),
         total_penalty NUMERIC(10),
+        consumer_count_last_seven_days NUMERIC(10),
+        consumer_count_last_fifteen_days NUMERIC(10),
+        consumer_count_last_one_month NUMERIC(10),
+        consumer_count_quarter_one NUMERIC(10),
+        consumer_count_quarter_two NUMERIC(10),
+        consumer_count_quarter_three NUMERIC(10),
+        consumer_count_quarter_four NUMERIC(10),
+        total_consumer_count NUMERIC(10),
         createdtime TIMESTAMP NOT NULL
         )"""
     
