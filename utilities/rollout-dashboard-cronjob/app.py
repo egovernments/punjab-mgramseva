@@ -1,10 +1,10 @@
 from typing import BinaryIO, List
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timezone,time,timedelta
+from dateutil.relativedelta import relativedelta
 from dateutil import tz
 import pytz
 from dateutil import parser
-import time
 import os
 import psycopg2
 
@@ -14,12 +14,49 @@ def getGPWSCHeirarchy():
         # zone circle division subdivision project 
         # https://realpython.com/python-requests/ helps on how make ajax calls. url put it in app.properties and read through configs
         
-        try:
-            
-                
-            url = os.getenv('IFIX_URL')
-            print(url)
-            requestData = {
+    try:
+        mdms_url = os.getenv('API_URL')
+        state_tenantid = os.getenv('TENANT_ID')
+        mdms_requestData = {
+            "RequestInfo": {
+                "apiId": "mgramseva-common",
+                "ver": 0.01,
+                "ts": "",
+                "action": "_search",
+                "did": 1,
+                "key": "",
+                "msgId": ""
+            },
+            "MdmsCriteria": {
+                "tenantId": state_tenantid,
+                "moduleDetails": [
+                    {
+                        "moduleName": "tenant",
+                        "masterDetails": [
+                            {
+                                "name": "tenants"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
+        mdms_response = requests.post(mdms_url + 'egov-mdms-service/v1/_search', json=mdms_requestData,verify=False)
+
+        mdms_responseData = mdms_response.json()
+        tenantList = mdms_responseData['MdmsRes']['tenant']['tenants']
+        print(len(tenantList))
+        teanant_data_Map = {}
+        for tenant in tenantList:
+            if tenant.get('code') == state_tenantid or tenant.get('code') == (state_tenantid + '.testing'):
+                continue
+            if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
+                teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
+
+        url = os.getenv('IFIX_DEP_ENTITY_URL')
+        print(url)
+        requestData = {
             "requestHeader": {
                 "ts": 1627193067,
                 "version": "2.0.0",
@@ -32,44 +69,50 @@ def getGPWSCHeirarchy():
             "criteria": {
                 "tenantId": "pb",
                 "getAncestry": True
-                }
             }
-            
-            response = requests.post(url+'ifix-department-entity/departmentEntity/v1/_search', json=requestData)
-            
-            responseData = response.json()
-            departmentHierarchyList = responseData.get('departmentEntity')
-            dataList = []
-            
-            for data in departmentHierarchyList:
-                if (len(data['children']) > 0):
-                    if(data.get('hierarchyLevel') == 0):
-                        child = data['children'][0]
-                    else:
-                        child = data
-                    zone = child.get('name')
-                    if (len(child['children']) > 0):
-                        circle = child['children'][0].get('name')
-                        if (len(child['children'][0]['children']) > 0):
-                            division = child['children'][0]['children'][0].get('name')
-                            if (len(child['children'][0]['children'][0]['children']) > 0):
-                                subdivision = child['children'][0]['children'][0]['children'][0].get('name')
-                                if (len(child['children'][0]['children'][0]['children'][0]['children']) > 0):
-                                    section = child['children'][0]['children'][0]['children'][0]['children'][0].get('name')
-                                    if (len(child['children'][0]['children'][0]['children'][0]['children'][0]['children']) > 0):
-                                        tenantName = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('name')
-                                        tenantCode = child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get('code')
-                                        tenantId = tenantName.replace(" ", "").lower()
-                                        formatedTenantId = "pb." + tenantId
-                                        obj1 = {"tenantId": formatedTenantId,"zone": zone,"circle": circle,"division": division,"subdivision": 							subdivision,"section": section, "projectcode": tenantCode}
+        }
+
+        response = requests.post(url + 'ifix-department-entity/departmentEntity/v1/_search', json=requestData, verify=False)
+
+        responseData = response.json()
+        departmentHierarchyList = responseData.get('departmentEntity')
+        dataList = []
+
+        for data in departmentHierarchyList:
+            if (len(data['children']) > 0):
+                if (data.get('hierarchyLevel') == 0):
+                    child = data['children'][0]
+                else:
+                    child = data
+                zone = child.get('name')
+                if (len(child['children']) > 0):
+                    circle = child['children'][0].get('name')
+                    if (len(child['children'][0]['children']) > 0):
+                        division = child['children'][0]['children'][0].get('name')
+                        if (len(child['children'][0]['children'][0]['children']) > 0):
+                            subdivision = child['children'][0]['children'][0]['children'][0].get('name')
+                            if (len(child['children'][0]['children'][0]['children'][0]['children']) > 0):
+                                section = child['children'][0]['children'][0]['children'][0]['children'][0].get('name')
+                                if (len(child['children'][0]['children'][0]['children'][0]['children'][0]['children']) > 0):
+                                    tenantName = \
+                                    child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get(
+                                        'name')
+                                    tenantCode = \
+                                    child['children'][0]['children'][0]['children'][0]['children'][0]['children'][0].get(
+                                        'code')
+                                    # tenantId = tenantName.replace(" ", "").lower()
+                                    if teanant_data_Map.get(tenantCode) is not None:
+                                        formatedTenantId = teanant_data_Map.get(tenantCode)
+                                        print(formatedTenantId)
+                                        obj1 = {"tenantId": formatedTenantId, "zone": zone, "circle": circle,
+                                                "division": division, "subdivision": subdivision,
+                                                "section": section, "projectcode": tenantCode}
                                         dataList.append(obj1)
-            print("heirarchy collected")
-            print(dataList)
-            #return [{"tenantId":"pb.lodhipur", "projectcode":"1234","zone":"zone1","circle":"Circle1","division":"Dvisiion1","subdivision":"SD1", "section":"sec1"}]
-            return dataList
-        except Exception as exception:
-            print("Exception occurred while connecting to the database")
-            print(exception)
+        print("heirarchy collected")
+        return (dataList)
+    except Exception as exception:
+                print("Exception occurred while connecting to the database")
+                print(exception)
 
 def getConsumerCreated(tenantId):
         # query the postgresql db to get the total count of total connection in the given tenant till date  
@@ -443,9 +486,235 @@ def getTotalPenaltyCreated(tenantId):
             if connection:
                 cursor.close()
                 connection.close()
-
-
-def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance,totalPenalty):
+                
+def getTotalConsumersCreatedForLastSevenDays(tenantId):
+        # query the postgresql db to get the total count of total consumers created for last 7 days  
+        print("consumer count returned")
+        try:                          
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            now = datetime.now()
+            lastSevenDays = (now - timedelta(days=7)).replace(hour=0,minute=0,second=0, microsecond=0)
+            epochnow = now.strftime('%s') + '000'
+            epochlast7days = lastSevenDays.strftime('%s') + '000'
+            
+            CONSUMER_COUNT_QUERY_7_DAYS = "select count(*) from eg_ws_connection where createdtime between '"+epochlast7days+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
+            cursor.execute(CONSUMER_COUNT_QUERY_7_DAYS)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+         
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+def getTotalConsumersCreatedForLastFifteenDays(tenantId):
+        # query the postgresql db to get the total count of total consumers created for last 15 days  
+        print("consumer count returned")
+        try:                          
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            now = datetime.now()
+            lastFifteenDays = (now - timedelta(days=15)).replace(hour=0,minute=0,second=0, microsecond=0)
+            epochnow = now.strftime('%s') + '000'
+            epochlast15days = lastFifteenDays.strftime('%s') + '000'
+            
+            CONSUMER_COUNT_QUERY_15_DAYS = "select count(*) from eg_ws_connection where createdtime between '"+epochlast15days+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
+            cursor.execute(CONSUMER_COUNT_QUERY_15_DAYS)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+         
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+def getTotalConsumersCreatedForLastOneMonth(tenantId):
+        # query the postgresql db to get the total count of total consumers created for last one month  
+        print("consumer count returned")
+        try:                          
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            now = datetime.now()
+            lastonemonth = (now - relativedelta(months=1)).replace(hour=0,minute=0,second=0, microsecond=0)
+            epochnow = now.strftime('%s') + '000'
+            epochlastonemonth = lastonemonth.strftime('%s') + '000'
+            
+            CONSUMER_COUNT_QUERY_1_MONTH = "select count(*) from eg_ws_connection where createdtime between '"+epochlastonemonth+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
+            cursor.execute(CONSUMER_COUNT_QUERY_1_MONTH)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+         
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+def getTotalConsumersCreatedForLastQuarterOne(tenantId):
+        # query the postgresql db to get the total count of total consumers created for last quarter 1  
+        print("consumer count returned")
+        try:                          
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            year = datetime.now().year
+            start_date = datetime(year, 4, 1)
+            end_date = datetime(year, 6, 30)
+            end = datetime.combine(end_date,time.max)
+            epochnow = start_date.strftime('%s') + '000'
+            lastepoch = end.strftime('%s') + '000'
+            
+            CONSUMER_COUNT_QUERY_QUARTER_1 = "select count(*) from eg_ws_connection where createdtime between '"+epochnow+"'"+" and '"+lastepoch+"'"+" and tenantid = '"+tenantId+"'"
+            print(CONSUMER_COUNT_QUERY_QUARTER_1)
+            cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_1)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+         
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+def getTotalConsumersCreatedForLastQuarterTwo(tenantId):
+        # query the postgresql db to get the total count of total consumers created for last quarter 2  
+        print("consumer count returned")
+        try:                          
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            year = datetime.now().year
+            start_date = datetime(year, 7, 1)
+            end_date = datetime(year, 9, 30)
+            end = datetime.combine(end_date,time.max)
+            epochnow = start_date.strftime('%s') + '000'
+            lastepoch = end.strftime('%s') + '000'
+            
+            CONSUMER_COUNT_QUERY_QUARTER_2 = "select count(*) from eg_ws_connection where createdtime between '"+epochnow+"'"+" and '"+lastepoch+"'"+" and tenantid = '"+tenantId+"'"
+            print(CONSUMER_COUNT_QUERY_QUARTER_2)
+            cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_2)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+         
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+                
+def getTotalConsumersCreatedForLastQuarterThree(tenantId):
+        # query the postgresql db to get the total count of total consumers created for last quarter 3  
+        print("consumer count returned")
+        try:                          
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            year = datetime.now().year
+            start_date = datetime(year, 10, 1)
+            end_date = datetime(year, 12, 31)
+            end = datetime.combine(end_date,time.max)
+            epochnow = start_date.strftime('%s') + '000'
+            lastepoch = end.strftime('%s') + '000'
+            
+            CONSUMER_COUNT_QUERY_QUARTER_3 = "select count(*) from eg_ws_connection where createdtime between '"+epochnow+"'"+" and '"+lastepoch+"'"+" and tenantid = '"+tenantId+"'"
+            print(CONSUMER_COUNT_QUERY_QUARTER_3)
+            cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_3)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+         
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+                
+def getTotalConsumersCreatedForLastQuarterFour(tenantId):
+        # query the postgresql db to get the total count of total consumers created for last quarter 4  
+        print("consumer count returned")
+        try:                          
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            year = datetime.now().year
+            start_date = datetime(year, 1, 1)
+            end_date = datetime(year, 3, 31)
+            end = datetime.combine(end_date,time.max)
+            epochnow = start_date.strftime('%s') + '000'
+            lastepoch = end.strftime('%s') + '000'
+            
+            CONSUMER_COUNT_QUERY_QUARTER_4 = "select count(*) from eg_ws_connection where createdtime between '"+epochnow+"'"+" and '"+lastepoch+"'"+" and tenantid = '"+tenantId+"'"
+            print(CONSUMER_COUNT_QUERY_QUARTER_4)
+            cursor.execute(CONSUMER_COUNT_QUERY_QUARTER_4)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+         
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+def getTotalConsumersCount(tenantId):
+        # query the postgresql db to get the total count of total consumers created  
+        print("consumer count returned")
+        try:                          
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            CONSUMER_TOTAL_COUNT_QUERY = "select count(*) from eg_ws_connection where tenantid = '"+tenantId+"'"
+            cursor.execute(CONSUMER_TOTAL_COUNT_QUERY)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+         
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+                
+def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance,totalPenalty,consumerCountlastSevenDays,consumerCountlastFifteenDays,consumerCountlastOneMonth,consumerCountquarterOne,
+        consumerCountquarterTwo,consumerCountquarterThree,consumerCountquarterFour,totalConsumerCount):
     # create entry into new table in postgres db with the table name roll_outdashboard . enter all field into the db and additional createdtime additional column
     
     print("inserting data into db")
@@ -459,8 +728,8 @@ def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemand
         createdTime = datetime.now(tz=tzInfo)
         print("createdtime -->", createdTime)
         
-        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section, consumer_created_count, billing_slab_count, last_demand_gen_date, collection_till_date, collection_till_date_online, last_collection_date, expense_count, last_expense_txn_date, paid_status_expense_bill_count, demands_till_date_count, ratings_count, last_rating_date, active_users_count,total_advance,total_penalty, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'], consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty, createdTime)
+        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section, consumer_created_count,billing_slab_count, last_demand_gen_date, collection_till_date, collection_till_date_online, last_collection_date, expense_count,last_expense_txn_date,paid_status_expense_bill_count, demands_till_date_count,ratings_count,last_rating_date,active_users_count,total_advance,total_penalty,consumer_count_last_seven_days,consumer_count_last_fifteen_days,consumer_count_last_one_month,consumer_count_quarter_one,consumer_count_quarter_two,consumer_count_quarter_three,consumer_count_quarter_four,total_consumer_count, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'], consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty,consumerCountlastSevenDays,consumerCountlastFifteenDays,consumerCountlastOneMonth,consumerCountquarterOne,consumerCountquarterTwo,consumerCountquarterThree,consumerCountquarterFour,totalConsumerCount, createdTime)
         cursor.execute(postgres_insert_query, record_to_insert)
        
         connection.commit()
@@ -522,7 +791,16 @@ def process():
         activeUsersCount= getActiveUsersCount(tenant['tenantId'])
         totalAdvance= getTotalAdvanceCreated(tenant['tenantId'])
         totalPenalty= getTotalPenaltyCreated(tenant['tenantId'])
-        createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty)
+        consumerCountlastSevenDays= getTotalConsumersCreatedForLastSevenDays(tenant['tenantId'])
+        consumerCountlastFifteenDays= getTotalConsumersCreatedForLastFifteenDays(tenant['tenantId'])
+        consumerCountlastOneMonth= getTotalConsumersCreatedForLastOneMonth(tenant['tenantId'])
+        consumerCountquarterOne= getTotalConsumersCreatedForLastQuarterOne(tenant['tenantId'])
+        consumerCountquarterTwo= getTotalConsumersCreatedForLastQuarterTwo(tenant['tenantId'])
+        consumerCountquarterThree= getTotalConsumersCreatedForLastQuarterThree(tenant['tenantId'])
+        consumerCountquarterFour= getTotalConsumersCreatedForLastQuarterFour(tenant['tenantId'])
+        totalConsumerCount= getTotalConsumersCount(tenant['tenantId'])
+        createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty,consumerCountlastSevenDays,consumerCountlastFifteenDays,consumerCountlastOneMonth,consumerCountquarterOne,
+        consumerCountquarterTwo,consumerCountquarterThree,consumerCountquarterFour,totalConsumerCount)
     print("End of rollout dashboard")
     return 
 
@@ -576,6 +854,14 @@ def createTable():
         active_users_count NUMERIC(10),
         total_advance NUMERIC(10),
         total_penalty NUMERIC(10),
+        consumer_count_last_seven_days NUMERIC(10),
+        consumer_count_last_fifteen_days NUMERIC(10),
+        consumer_count_last_one_month NUMERIC(10),
+        consumer_count_quarter_one NUMERIC(10),
+        consumer_count_quarter_two NUMERIC(10),
+        consumer_count_quarter_three NUMERIC(10),
+        consumer_count_quarter_four NUMERIC(10),
+        total_consumer_count NUMERIC(10),
         createdtime TIMESTAMP NOT NULL
         )"""
     
