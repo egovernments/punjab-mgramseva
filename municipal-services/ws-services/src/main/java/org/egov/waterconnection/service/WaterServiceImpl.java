@@ -78,9 +78,9 @@ import com.jayway.jsonpath.JsonPath;
 @Component
 public class WaterServiceImpl implements WaterService {
 
-	@Autowired
+	/*@Autowired
 	private WaterDao waterDao;
-
+*/
 	@Autowired
 	private WaterConnectionValidator waterConnectionValidator;
 
@@ -169,7 +169,7 @@ public class WaterServiceImpl implements WaterService {
 		System.out.println("calling save user   ");
 
 		enrichmentService.postStatusEnrichment(waterConnectionRequest);
-		waterDao.saveWaterConnection(waterConnectionRequest);
+		waterDaoImpl.saveWaterConnection(waterConnectionRequest);
 		
 		if (null != waterConnectionRequest.getWaterConnection() && null != waterConnectionRequest.getWaterConnection().getPaymentType()
 			&& WCConstants.PAYMENT_TYPE_ARREARS.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getPaymentType())) {
@@ -224,7 +224,7 @@ public class WaterServiceImpl implements WaterService {
 	 * @return List of matching water connection
 	 */
 	public WaterConnectionResponse getWaterConnectionsList(SearchCriteria criteria, RequestInfo requestInfo) {
-		return waterDao.getWaterConnectionList(criteria, requestInfo);
+		return waterDaoImpl.getWaterConnectionList(criteria, requestInfo);
 	}
 
 	/**
@@ -285,11 +285,11 @@ public class WaterServiceImpl implements WaterService {
 		// check for edit and send edit notification
 		waterDaoImpl.pushForEditNotification(waterConnectionRequest);
 		// Enrich file store Id After payment
-		waterDao.enrichFileStoreIds(waterConnectionRequest);
+		waterDaoImpl.enrichFileStoreIds(waterConnectionRequest);
 		userService.createUser(waterConnectionRequest);
 		enrichmentService.postStatusEnrichment(waterConnectionRequest);
 		boolean isStateUpdatable = waterServiceUtil.getStatusForUpdate(businessService, previousApplicationStatus);
-		waterDao.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
+		waterDaoImpl.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
 		postForMeterReading(waterConnectionRequest, WCConstants.UPDATE_APPLICATION);
 		return Arrays.asList(waterConnectionRequest.getWaterConnection());
 	}
@@ -372,7 +372,7 @@ public class WaterServiceImpl implements WaterService {
 		
 //		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
 		boolean isStateUpdatable = waterServiceUtil.getStatusForUpdate(businessService, previousApplicationStatus);
-		waterDao.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
+		waterDaoImpl.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
 		
 		if(waterConnectionRequest.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE)) {
 			waterConnectionRequest.getWaterConnection().setApplicationStatus("INACTIVE");
@@ -398,7 +398,7 @@ public class WaterServiceImpl implements WaterService {
 					WaterConnectionRequest previousWaterConnectionRequest = WaterConnectionRequest.builder()
 							.requestInfo(waterConnectionRequest.getRequestInfo()).waterConnection(waterConnection)
 							.build();
-					waterDao.updateWaterConnection(previousWaterConnectionRequest, Boolean.TRUE);
+					waterDaoImpl.updateWaterConnection(previousWaterConnectionRequest, Boolean.TRUE);
 				}
 			}
 		}
@@ -612,7 +612,7 @@ public class WaterServiceImpl implements WaterService {
 			criteria.setName(criteria.getName().trim());
 		}
 
-		List<String> idsfromDB = waterDao.getWCListFuzzySearch(criteria);
+		List<String> idsfromDB = waterDaoImpl.getWCListFuzzySearch(criteria);
 
 		if (CollectionUtils.isEmpty(idsfromDB))
 			WaterConnectionResponse.builder().waterConnection(new LinkedList<>());
@@ -688,7 +688,7 @@ public class WaterServiceImpl implements WaterService {
 	
 	public WaterConnectionResponse getWaterConnectionsListForPlaneSearch(SearchCriteria criteria,
 			RequestInfo requestInfo) {
-		return waterDao.getWaterConnectionListForPlaneSearch(criteria, requestInfo);
+		return waterDaoImpl.getWaterConnectionListForPlaneSearch(criteria, requestInfo);
 	}
 
 	@Override
