@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 
 import '../model/localization/language.dart';
 import '../model/mdms/tax_period.dart';
+import '../model/reports/bill_report_data.dart';
 import '../repository/core_repo.dart';
+import '../repository/reports_repo.dart';
 import '../utils/common_methods.dart';
 import '../utils/constants.dart';
 import '../utils/date_formats.dart';
@@ -25,6 +27,7 @@ class ReportsProvider with ChangeNotifier {
   var selectedBillCycle;
   var billingyearCtrl = TextEditingController();
   var billingcycleCtrl = TextEditingController();
+  List<BillReportData>? billreports;
 
   dispose() {
     streamController.close();
@@ -36,6 +39,10 @@ class ReportsProvider with ChangeNotifier {
   }
   void onChangeOfBillYear(val) {
     selectedBillYear = val;
+    billingcycleCtrl.clear();
+    billingcycleCtrl.notifyListeners();
+    selectedBillCycle=null;
+    selectedBillPeriod=null;
     notifyListeners();
   }
 
@@ -123,5 +130,33 @@ class ReportsProvider with ChangeNotifier {
       }).toList();
     }
     return <DropdownMenuItem<Object>>[];
+  }
+
+  Future<void> getBillReport() async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+      Map<String,dynamic> params={
+        'tenantId':commonProvider.userDetails!.selectedtenant!.code,
+        'demandDate':selectedBillPeriod?.split('-')[0]
+      };
+      var response = await ReportsRepo().fetchBillReport(
+          params);
+      if (response != null) {
+        billreports = response;
+        print(billreports.toString());
+        streamController.add(response);
+        callNotifier();
+      }else{
+        throw Exception('API Error');
+      }
+      callNotifier();
+    } catch (e, s) {
+      billreports = [];
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
+      callNotifier();
+    }
   }
 }
