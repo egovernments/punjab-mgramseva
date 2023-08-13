@@ -178,3 +178,20 @@ Map getPaymentModeList(String tenantId) {
     }
   };
 }
+
+Map getTenantFinancialYearList(String tenantId) {
+  return {
+    "MdmsCriteria": {
+      "tenantId": tenantId,
+      "moduleDetails": [
+        {
+          "moduleName": "BillingService",
+          "masterDetails": [
+            {"name": "TaxHeadMaster"},
+            {"name": "TaxPeriod", "filter": "[?(@.service=='WS')]"}
+          ],
+        },
+      ]
+    }
+  };
+}
