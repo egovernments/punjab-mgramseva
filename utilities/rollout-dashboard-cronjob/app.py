@@ -115,7 +115,6 @@ def getGPWSCHeirarchy():
                 print(exception)
                 
                 
-demand_generated_connection = 0
 def getConsumerCreated(tenantId):
         # query the postgresql db to get the total count of total connection in the given tenant till date  
         print("consumer created count returned")
@@ -189,13 +188,11 @@ def getLastDemandDate(tenantId):
             cursor = connection.cursor()
             
             
-            LAST_DEMAND_DATE = "select max(to_timestamp(taxperiodto/1000)::date) as demand_generated_date,conn.tenantid,count(distinct dmd.consumercode) as 			demand_generated_connection from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE' left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.tenantid = '"+tenantId+"'"+" group by conn.tenantid order by conn.tenantid"
+            LAST_DEMAND_DATE = "select max(to_timestamp(taxperiodto/1000)::date) from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE'                                                                                                                                            left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.tenantid ="+tenantId+"'"
             cursor.execute(LAST_DEMAND_DATE)
-            result = cursor.fetchall()
-            formatedDate = datetime.fromtimestamp(result[0]/1000.0)
-            demand_generated_connection = result[2]
+            result = cursor.fetchone()
             
-            return formatedDate
+            return result[0]
             
         except Exception as exception:
             print("Exception occurred while connecting to the database")
@@ -353,8 +350,26 @@ def getNoOfBillsPaid(tenantId):
                 
 def getTotalDemandRaised(tenantId):
         # make db call to get the total no of demand raised till date for ws   
-        print("lat collection date returned")
-        return demand_generated_connection
+        print("last demand date returned")
+        try:
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            
+            LAST_DEMAND_COUNT = "select count(distinct dmd.consumercode) from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE'                                                                                                                                            left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.tenantid ="+tenantId+"'"
+            cursor.execute(LAST_DEMAND_COUNT)
+            result = cursor.fetchone()
+            
+            return result[0]
+            
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception) 
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
        
 
 def getRatingCount(tenantId):
@@ -532,12 +547,14 @@ def getTotalConsumersCreatedForLastOneMonth(tenantId):
             connection = getConnection()
             cursor = connection.cursor()
             
-            now = datetime.now()
-            lastonemonth = (now - relativedelta(months=1)).replace(hour=0,minute=0,second=0, microsecond=0)
-            epochnow = now.strftime('%s') + '000'
-            epochlastonemonth = lastonemonth.strftime('%s') + '000'
+            lastonemonth = (datetime.now() - relativedelta(months=1)).month
+            start_date = datetime(today, lastonemonth, 1)
+            end_date = datetime(today, lastonemonth + 1, 1) + timedelta(days=-1)
+            enddate = end_date.combine(end_date,time.max)
+            epochnow = start_date.strftime('%s') + '000'
+            epochlastonemonth = enddate.strftime('%s') + '000'
             
-            CONSUMER_COUNT_QUERY_1_MONTH = "select count(*) from eg_ws_connection where status = 'Active' and createdtime between '"+epochlastonemonth+"'"+" and '"+epochnow+"'"+" and tenantid = '"+tenantId+"'"
+            CONSUMER_COUNT_QUERY_1_MONTH = "select count(*) from eg_ws_connection where status = 'Active' and createdtime between '"+epochnow+"'"+" and '"+epochlastonemonth+"'"+" and tenantid = '"+tenantId+"'"
             cursor.execute(CONSUMER_COUNT_QUERY_1_MONTH)
             result = cursor.fetchone()
             print(result[0])
