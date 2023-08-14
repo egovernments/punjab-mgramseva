@@ -114,28 +114,6 @@ def getGPWSCHeirarchy():
                 print("Exception occurred while connecting to the database")
                 print(exception)
                 
-                
-def getConsumerCreated(tenantId):
-        # query the postgresql db to get the total count of total connection in the given tenant till date  
-        print("consumer created count returned")
-        try:                          
-            connection = getConnection()
-            cursor = connection.cursor()
-             
-            CONSUMER_CREATED_COUNT_QUERY = "select count(*) from eg_ws_connection where status = 'Active' and tenantid = '"+tenantId+"'"
-            cursor.execute(CONSUMER_CREATED_COUNT_QUERY)
-            result = cursor.fetchone()
-            print(result[0])
-            return result[0]
-         
-        except Exception as exception:
-            print("Exception occurred while connecting to the database")
-            print(exception)
-        
-        finally:
-            if connection:
-                cursor.close()
-                connection.close()
 
 def getRateMasters(tenantId):
         # make mdms call to get the rate unique rate masters i.e billig slab . count the unique billing slabs and return the number
@@ -179,29 +157,6 @@ def getRateMasters(tenantId):
         except Exception as exception:
             print("Exception occurred while connecting to the database")
             print(exception)
-  
-def getLastDemandDate(tenantId):
-    # make db call to get the last demand generated date for the given tenant
-        print("last demand date returned")
-        try:
-            connection = getConnection()
-            cursor = connection.cursor()
-            
-            
-            LAST_DEMAND_DATE = "select max(to_timestamp(taxperiodto/1000)::date) from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE'                                                                                                                                            left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.tenantid = '"+tenantId+"'"
-            cursor.execute(LAST_DEMAND_DATE)
-            result = cursor.fetchone()
-            
-            return result[0]
-            
-        except Exception as exception:
-            print("Exception occurred while connecting to the database")
-            print(exception) 
-        
-        finally:
-            if connection:
-                cursor.close()
-                connection.close()
         
 def getCollectionsMade(tenantId):
         # make db call with query to get the collections made in the current date in the given tenant
@@ -343,29 +298,6 @@ def getNoOfBillsPaid(tenantId):
             print("Exception occurred while connecting to the database")
             print(exception)
             
-        finally:
-            if connection:
-                cursor.close()
-                connection.close()
-                
-def getTotalDemandRaised(tenantId):
-        # make db call to get the total no of demand raised till date for ws   
-        print("last demand date returned")
-        try:
-            connection = getConnection()
-            cursor = connection.cursor()
-            
-            
-            LAST_DEMAND_COUNT = "select count(distinct dmd.consumercode) from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE'                                                                                                                                            left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.tenantid = '"+tenantId+"'"
-            cursor.execute(LAST_DEMAND_COUNT)
-            result = cursor.fetchone()
-            
-            return result[0]
-            
-        except Exception as exception:
-            print("Exception occurred while connecting to the database")
-            print(exception) 
-        
         finally:
             if connection:
                 cursor.close()
@@ -690,7 +622,54 @@ def getTotalConsumersCreatedForLastQuarterFour(tenantId):
             if connection:
                 cursor.close()
                 connection.close()
+
+def getLastDemandDate(tenantId):
+    # make db call to get the last demand generated date for the given tenant
+        print("last demand date returned")
+        try:
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            
+            LAST_DEMAND_DATE = "select max(to_timestamp(taxperiodto/1000)::date) from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE'                                                                                                                                            left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.tenantid = '"+tenantId+"'"
+            cursor.execute(LAST_DEMAND_DATE)
+            result = cursor.fetchone()
+            
+            return result[0]
+            
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception) 
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
                 
+def getTotalDemandRaised(tenantId):
+        # make db call to get the total no of demand raised till date for ws   
+        print("last demand date returned")
+        try:
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            
+            LAST_DEMAND_COUNT = "select count(distinct dmd.consumercode) from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE'                                                                                                                                            left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.tenantid = '"+tenantId+"'"
+            cursor.execute(LAST_DEMAND_COUNT)
+            result = cursor.fetchone()
+            
+            return result[0]
+            
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception) 
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+                          
 def getTotalConsumersCount(tenantId):
         # query the postgresql db to get the total count of total consumers created  
         print("consumer count returned")
@@ -714,8 +693,8 @@ def getTotalConsumersCount(tenantId):
                 connection.close()
                 
                 
-def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance,totalPenalty,consumerCountlastSevenDays,consumerCountlastFifteenDays,consumerCountlastOneMonth,consumerCountquarterOne,
-        consumerCountquarterTwo,consumerCountquarterThree,consumerCountquarterFour,totalConsumerCount):
+def createEntryForRollout(tenant, consumersCreated,countOfRateMaster,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance,totalPenalty,consumerCountlastSevenDays,consumerCountlastFifteenDays,consumerCountlastOneMonth,consumerCountquarterOne,
+        consumerCountquarterTwo,consumerCountquarterThree,consumerCountquarterFour,lastDemandGenratedDate,noOfDemandRaised,totalConsumerCount):
     # create entry into new table in postgres db with the table name roll_outdashboard . enter all field into the db and additional createdtime additional column
     
     print("inserting data into db")
@@ -729,8 +708,8 @@ def createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemand
         createdTime = datetime.now(tz=tzInfo)
         print("createdtime -->", createdTime)
         
-        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section, consumer_created_count,billing_slab_count, last_demand_gen_date, collection_till_date, collection_till_date_online, last_collection_date, expense_count,last_expense_txn_date,paid_status_expense_bill_count, demands_till_date_count,ratings_count,last_rating_date,active_users_count,total_advance,total_penalty,consumer_count_last_seven_days,consumer_count_last_fifteen_days,consumer_count_last_one_month,consumer_count_quarter_one,consumer_count_quarter_two,consumer_count_quarter_three,consumer_count_quarter_four,total_consumer_count, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'], consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty,consumerCountlastSevenDays,consumerCountlastFifteenDays,consumerCountlastOneMonth,consumerCountquarterOne,consumerCountquarterTwo,consumerCountquarterThree,consumerCountquarterFour,totalConsumerCount, createdTime)
+        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section,billing_slab_count, collection_till_date, collection_till_date_online, last_collection_date, expense_count,last_expense_txn_date,paid_status_expense_bill_count,ratings_count,last_rating_date,active_users_count,total_advance,total_penalty,consumer_count_last_seven_days,consumer_count_last_fifteen_days,consumer_count_last_one_month,consumer_count_quarter_one,consumer_count_quarter_two,consumer_count_quarter_three,consumer_count_quarter_four,last_demand_gen_date,last_demand_gen_count,total_consumer_count, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'],countOfRateMaster,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty,consumerCountlastSevenDays,consumerCountlastFifteenDays,consumerCountlastOneMonth,consumerCountquarterOne,consumerCountquarterTwo,consumerCountquarterThree,consumerCountquarterFour,lastDemandGenratedDate,noOfDemandRaised,totalConsumerCount, createdTime)
         cursor.execute(postgres_insert_query, record_to_insert)
        
         connection.commit()
@@ -777,7 +756,6 @@ def process():
     tenants = getGPWSCHeirarchy()
     for tenant in tenants:
         print(tenant)
-        consumersCreated = getConsumerCreated(tenant['tenantId'])
         countOfRateMaster = getRateMasters(tenant['tenantId'])
         lastDemandGenratedDate = getLastDemandDate(tenant['tenantId'])
         collectionsMade = getCollectionsMade(tenant['tenantId'])
@@ -800,8 +778,8 @@ def process():
         consumerCountquarterThree= getTotalConsumersCreatedForLastQuarterThree(tenant['tenantId'])
         consumerCountquarterFour= getTotalConsumersCreatedForLastQuarterFour(tenant['tenantId'])
         totalConsumerCount= getTotalConsumersCount(tenant['tenantId'])
-        createEntryForRollout(tenant, consumersCreated,countOfRateMaster, lastDemandGenratedDate,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfDemandRaised, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty,consumerCountlastSevenDays,consumerCountlastFifteenDays,consumerCountlastOneMonth,consumerCountquarterOne,
-        consumerCountquarterTwo,consumerCountquarterThree,consumerCountquarterFour,totalConsumerCount)
+        createEntryForRollout(tenant,countOfRateMaster,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty,consumerCountlastSevenDays,consumerCountlastFifteenDays,consumerCountlastOneMonth,consumerCountquarterOne,
+        consumerCountquarterTwo,consumerCountquarterThree,consumerCountquarterFour,lastDemandGenratedDate,noOfDemandRaised,totalConsumerCount)
     print("End of rollout dashboard")
     return 
 
@@ -840,16 +818,13 @@ def createTable():
         division varchar(250),
         subdivision varchar(250),
         section varchar(250),
-        consumer_created_count NUMERIC(10),
         billing_slab_count NUMERIC(10),
-        last_demand_gen_date DATE,
         collection_till_date NUMERIC(12, 2),
         collection_till_date_online NUMERIC(12,2),
         last_collection_date DATE,
         expense_count BIGINT,
         last_expense_txn_date Date,
         paid_status_expense_bill_count NUMERIC(10),
-        demands_till_date_count NUMERIC(10),
         ratings_count NUMERIC(10),
         last_rating_date DATE,
         active_users_count NUMERIC(10),
@@ -862,6 +837,8 @@ def createTable():
         consumer_count_quarter_two NUMERIC(10),
         consumer_count_quarter_three NUMERIC(10),
         consumer_count_quarter_four NUMERIC(10),
+        last_demand_gen_date DATE,
+        last_demand_gen_count NUMERIC(10),
         total_consumer_count NUMERIC(10),
         createdtime TIMESTAMP NOT NULL
         )"""
