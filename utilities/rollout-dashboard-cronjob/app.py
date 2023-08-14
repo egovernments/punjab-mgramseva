@@ -546,7 +546,7 @@ def getTotalConsumersCreatedForLastOneMonth(tenantId):
         try:                          
             connection = getConnection()
             cursor = connection.cursor()
-            
+            today = datetime.now().year
             lastonemonth = (datetime.now() - relativedelta(months=1)).month
             start_date = datetime(today, lastonemonth, 1)
             end_date = datetime(today, lastonemonth + 1, 1) + timedelta(days=-1)
