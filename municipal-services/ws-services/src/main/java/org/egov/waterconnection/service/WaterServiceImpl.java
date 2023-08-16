@@ -37,7 +37,6 @@ import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.producer.WaterConnectionProducer;
 import org.egov.waterconnection.repository.ElasticSearchRepository;
 import org.egov.waterconnection.repository.WaterDao;
-import org.egov.waterconnection.repository.WaterDaoImpl;
 import org.egov.waterconnection.repository.WaterRepository;
 import org.egov.waterconnection.util.WaterServicesUtil;
 import org.egov.waterconnection.validator.ActionValidator;
@@ -110,8 +109,6 @@ public class WaterServiceImpl implements WaterService {
 	@Autowired
 	private CalculationService calculationService;
 
-	//@Autowired
-	//private WaterDaoImpl waterDaoImpl;
 
 	@Autowired
 	private UserService userService;
