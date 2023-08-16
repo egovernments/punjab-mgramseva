@@ -717,7 +717,7 @@ class DashBoardProvider with ChangeNotifier {
                   '${expense.challanNo} \n${expense.vendorName}',
                   '${ApplicationLocalizations.of(context).translate(expense.expenseType ?? '')}',
                   expense.totalAmount != null
-                      ? '₹ ${expense.totalAmount}'
+                      ? '${expense.totalAmount}'
                       : '-',
                   '${DateFormats.timeStampToDate(expense.billDate)}',
                   '${expense.paidDate != null && expense.paidDate != 0 ? DateFormats.timeStampToDate(expense.paidDate) : (ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.dashboard.PENDING))}',
