@@ -37,7 +37,6 @@ import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.producer.WaterConnectionProducer;
 import org.egov.waterconnection.repository.ElasticSearchRepository;
 import org.egov.waterconnection.repository.WaterDao;
-import org.egov.waterconnection.repository.WaterDaoImpl;
 import org.egov.waterconnection.repository.WaterRepository;
 import org.egov.waterconnection.util.WaterServicesUtil;
 import org.egov.waterconnection.validator.ActionValidator;
@@ -78,9 +77,8 @@ import com.jayway.jsonpath.JsonPath;
 @Component
 public class WaterServiceImpl implements WaterService {
 
-	/*@Autowired
+
 	private WaterDao waterDao;
-*/
 	@Autowired
 	private WaterConnectionValidator waterConnectionValidator;
 
@@ -111,8 +109,6 @@ public class WaterServiceImpl implements WaterService {
 	@Autowired
 	private CalculationService calculationService;
 
-	@Autowired
-	private WaterDaoImpl waterDaoImpl;
 
 	@Autowired
 	private UserService userService;
@@ -169,7 +165,7 @@ public class WaterServiceImpl implements WaterService {
 		System.out.println("calling save user   ");
 
 		enrichmentService.postStatusEnrichment(waterConnectionRequest);
-		waterDaoImpl.saveWaterConnection(waterConnectionRequest);
+		waterDao.saveWaterConnection(waterConnectionRequest);
 		
 		if (null != waterConnectionRequest.getWaterConnection() && null != waterConnectionRequest.getWaterConnection().getPaymentType()
 			&& WCConstants.PAYMENT_TYPE_ARREARS.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getPaymentType())) {
@@ -224,7 +220,7 @@ public class WaterServiceImpl implements WaterService {
 	 * @return List of matching water connection
 	 */
 	public WaterConnectionResponse getWaterConnectionsList(SearchCriteria criteria, RequestInfo requestInfo) {
-		return waterDaoImpl.getWaterConnectionList(criteria, requestInfo);
+		return waterDao.getWaterConnectionList(criteria, requestInfo);
 	}
 
 	/**
@@ -283,13 +279,13 @@ public class WaterServiceImpl implements WaterService {
 		}
 		
 		// check for edit and send edit notification
-		waterDaoImpl.pushForEditNotification(waterConnectionRequest);
+		waterDao.pushForEditNotification(waterConnectionRequest);
 		// Enrich file store Id After payment
-		waterDaoImpl.enrichFileStoreIds(waterConnectionRequest);
+		waterDao.enrichFileStoreIds(waterConnectionRequest);
 		userService.createUser(waterConnectionRequest);
 		enrichmentService.postStatusEnrichment(waterConnectionRequest);
 		boolean isStateUpdatable = waterServiceUtil.getStatusForUpdate(businessService, previousApplicationStatus);
-		waterDaoImpl.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
+		waterDao.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
 		postForMeterReading(waterConnectionRequest, WCConstants.UPDATE_APPLICATION);
 		return Arrays.asList(waterConnectionRequest.getWaterConnection());
 	}
@@ -372,7 +368,7 @@ public class WaterServiceImpl implements WaterService {
 		
 //		wfIntegrator.callWorkFlow(waterConnectionRequest, property);
 		boolean isStateUpdatable = waterServiceUtil.getStatusForUpdate(businessService, previousApplicationStatus);
-		waterDaoImpl.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
+		waterDao.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
 		
 		if(waterConnectionRequest.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE)) {
 			waterConnectionRequest.getWaterConnection().setApplicationStatus("INACTIVE");
@@ -380,7 +376,7 @@ public class WaterServiceImpl implements WaterService {
 		// setting oldApplication Flag
 		markOldApplication(waterConnectionRequest);
 		// check for edit and send edit notification
-		waterDaoImpl.pushForEditNotification(waterConnectionRequest);
+		waterDao.pushForEditNotification(waterConnectionRequest);
 		postForMeterReading(waterConnectionRequest, WCConstants.MODIFY_CONNECTION);
 		return Arrays.asList(waterConnectionRequest.getWaterConnection());
 	}
@@ -398,7 +394,7 @@ public class WaterServiceImpl implements WaterService {
 					WaterConnectionRequest previousWaterConnectionRequest = WaterConnectionRequest.builder()
 							.requestInfo(waterConnectionRequest.getRequestInfo()).waterConnection(waterConnection)
 							.build();
-					waterDaoImpl.updateWaterConnection(previousWaterConnectionRequest, Boolean.TRUE);
+					waterDao.updateWaterConnection(previousWaterConnectionRequest, Boolean.TRUE);
 				}
 			}
 		}
@@ -408,7 +404,7 @@ public class WaterServiceImpl implements WaterService {
 	public void submitFeedback(FeedbackRequest feedbackrequest) {
 		// TODO Auto-generated method stub
 		mDMSValidator.validateQuestion(feedbackrequest);
-		BillingCycle billingCycle = waterDaoImpl.getBillingCycle(feedbackrequest.getFeedback().getPaymentId());
+		BillingCycle billingCycle = waterDao.getBillingCycle(feedbackrequest.getFeedback().getPaymentId());
 		Date fromdate = new Date(billingCycle.getFromperiod());
 		Date toDate = new Date(billingCycle.getToperiod());
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -432,7 +428,7 @@ public class WaterServiceImpl implements WaterService {
 	public Object getFeedback(FeedbackSearchCriteria feedbackSearchCriteria)
 			throws JsonMappingException, JsonProcessingException {
 		// TODO Auto-generated method stub
-		List<Feedback> feedbackList = waterDaoImpl.getFeebback(feedbackSearchCriteria);
+		List<Feedback> feedbackList = waterDao.getFeebback(feedbackSearchCriteria);
 
 		Object data = getFeedBackRatingsAvarage(feedbackList);
 		return data;
@@ -545,55 +541,55 @@ public class WaterServiceImpl implements WaterService {
 	public RevenueDashboard getRevenueDashboardData(@Valid SearchCriteria criteria, RequestInfo requestInfo) {
 		RevenueDashboard dashboardData = new RevenueDashboard();
 		String tenantId = criteria.getTenantId();
-		BigDecimal demand = waterDaoImpl.getTotalDemandAmount(criteria);
+		BigDecimal demand = waterDao.getTotalDemandAmount(criteria);
 		if (null != demand) {
 			dashboardData.setDemand(demand.setScale(0, RoundingMode.HALF_UP).toString());
 		}
-		BigDecimal paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
+		BigDecimal paidAmount = waterDao.getActualCollectionAmount(criteria);
 		if (null != paidAmount) {
 			dashboardData.setActualCollection(paidAmount.setScale(0, RoundingMode.HALF_UP).toString());
 		}
-		BigDecimal unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
+		BigDecimal unpaidAmount = waterDao.getPendingCollectionAmount(criteria);
 		if (null != unpaidAmount) {
 			dashboardData.setPendingCollection(unpaidAmount.setScale(0, RoundingMode.HALF_UP).toString());
 		}
-		Integer residentialCollection = waterDaoImpl.getResidentialCollectionAmount(criteria);
+		Integer residentialCollection = waterDao.getResidentialCollectionAmount(criteria);
 		if (null != residentialCollection) {
 			dashboardData.setResidetialColllection(residentialCollection.toString());
 		}
-		Integer commeritialCollection = waterDaoImpl.getCommercialCollectionAmount(criteria);
+		Integer commeritialCollection = waterDao.getCommercialCollectionAmount(criteria);
 		if (null != commeritialCollection) {
 			dashboardData.setComercialCollection(commeritialCollection.toString());
 		}
-		Integer othersCollection = waterDaoImpl.getOthersCollectionAmount(criteria);
+		Integer othersCollection = waterDao.getOthersCollectionAmount(criteria);
 		if (null != othersCollection) {
 			dashboardData.setOthersCollection(othersCollection.toString());
 		}
-		Map<String, Object> residentialsPaid = waterDaoImpl.getResidentialPaid(criteria);
+		Map<String, Object> residentialsPaid = waterDao.getResidentialPaid(criteria);
 		if (null != residentialsPaid) {
 			dashboardData.setResidentialsCount(residentialsPaid);
 		}
-		Map<String, Object> comercialsPaid = waterDaoImpl.getCommercialPaid(criteria);
+		Map<String, Object> comercialsPaid = waterDao.getCommercialPaid(criteria);
 		if (null != comercialsPaid) {
 			dashboardData.setComercialsCount(comercialsPaid);
 		}
-		Map<String, Object> totalApplicationsPaid = waterDaoImpl.getAllPaid(criteria);
+		Map<String, Object> totalApplicationsPaid = waterDao.getAllPaid(criteria);
 		if (null != totalApplicationsPaid) {
 			dashboardData.setTotalApplicationsCount(totalApplicationsPaid);
 		}
-		BigDecimal advanceAdjusted = waterDaoImpl.getTotalAdvanceAdjustedAmount(criteria);
+		BigDecimal advanceAdjusted = waterDao.getTotalAdvanceAdjustedAmount(criteria);
 		if (null != advanceAdjusted) {
 			dashboardData.setAdvanceAdjusted(advanceAdjusted.setScale(0, RoundingMode.HALF_UP).toString());
 		}
-		BigDecimal pendingPenalty = waterDaoImpl.getTotalPendingPenaltyAmount(criteria);
+		BigDecimal pendingPenalty = waterDao.getTotalPendingPenaltyAmount(criteria);
 		if (null != pendingPenalty) {
 			dashboardData.setPendingPenalty(pendingPenalty.setScale(0, RoundingMode.HALF_UP).toString());
 		}
-		BigDecimal advanceCollection = waterDaoImpl.getAdvanceCollectionAmount(criteria);
+		BigDecimal advanceCollection = waterDao.getAdvanceCollectionAmount(criteria);
 		if (null != advanceCollection) {
 			dashboardData.setAdvanceCollection(advanceCollection.setScale(0, RoundingMode.HALF_UP).toString());
 		}
-		BigDecimal penaltyCollection = waterDaoImpl.getPenaltyCollectionAmount(criteria);
+		BigDecimal penaltyCollection = waterDao.getPenaltyCollectionAmount(criteria);
 		if (null != penaltyCollection) {
 			dashboardData.setPenaltyCollection(penaltyCollection.setScale(0, RoundingMode.HALF_UP).toString());
 		}
@@ -612,7 +608,7 @@ public class WaterServiceImpl implements WaterService {
 			criteria.setName(criteria.getName().trim());
 		}
 
-		List<String> idsfromDB = waterDaoImpl.getWCListFuzzySearch(criteria);
+		List<String> idsfromDB = waterDao.getWCListFuzzySearch(criteria);
 
 		if (CollectionUtils.isEmpty(idsfromDB))
 			WaterConnectionResponse.builder().waterConnection(new LinkedList<>());
@@ -688,7 +684,7 @@ public class WaterServiceImpl implements WaterService {
 	
 	public WaterConnectionResponse getWaterConnectionsListForPlaneSearch(SearchCriteria criteria,
 			RequestInfo requestInfo) {
-		return waterDaoImpl.getWaterConnectionListForPlaneSearch(criteria, requestInfo);
+		return waterDao.getWaterConnectionListForPlaneSearch(criteria, requestInfo);
 	}
 
 	@Override
@@ -737,37 +733,37 @@ public class WaterServiceImpl implements WaterService {
 			criteria.setToDate((Long) monthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 
 			String tenantId = criteria.getTenantId();
-			BigDecimal demand = waterDaoImpl.getTotalDemandAmount(criteria);
+			BigDecimal demand = waterDao.getTotalDemandAmount(criteria);
 			RevenueCollectionData collectionData = new RevenueCollectionData();
 
 			if (null != demand) {
 				collectionData.setDemand(demand.setScale(0, RoundingMode.HALF_UP).toString());
 			}
-			BigDecimal paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
+			BigDecimal paidAmount = waterDao.getActualCollectionAmount(criteria);
 			if (null != paidAmount) {
 				collectionData.setActualCollection(paidAmount.setScale(0, RoundingMode.HALF_UP).toString());
 			}
-			BigDecimal unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
+			BigDecimal unpaidAmount = waterDao.getPendingCollectionAmount(criteria);
 			if (null != unpaidAmount) {
 				collectionData.setPendingCollection(unpaidAmount.setScale(0, RoundingMode.HALF_UP).toString());
 			}
-			BigDecimal arrears = waterDaoImpl.getArrearsAmount(criteria);
+			BigDecimal arrears = waterDao.getArrearsAmount(criteria);
 			if (null != arrears) {
 				collectionData.setArrears(arrears.setScale(0, RoundingMode.HALF_UP).toString());
 			}
-			BigDecimal advanceAdjusted = waterDaoImpl.getTotalAdvanceAdjustedAmount(criteria);
+			BigDecimal advanceAdjusted = waterDao.getTotalAdvanceAdjustedAmount(criteria);
 			if (null != advanceAdjusted) {
 				collectionData.setAdvanceAdjusted(advanceAdjusted.setScale(0, RoundingMode.HALF_UP).toString());
 			}
-			BigDecimal pendingPenalty = waterDaoImpl.getTotalPendingPenaltyAmount(criteria);
+			BigDecimal pendingPenalty = waterDao.getTotalPendingPenaltyAmount(criteria);
 			if (null != pendingPenalty) {
 				collectionData.setPendingPenalty(pendingPenalty.setScale(0, RoundingMode.HALF_UP).toString());
 			}
-			BigDecimal advanceCollection = waterDaoImpl.getAdvanceCollectionAmount(criteria);
+			BigDecimal advanceCollection = waterDao.getAdvanceCollectionAmount(criteria);
 			if (null != advanceCollection) {
 				collectionData.setAdvanceCollection(advanceCollection.setScale(0, RoundingMode.HALF_UP).toString());
 			}
-			BigDecimal penaltyCollection = waterDaoImpl.getPenaltyCollectionAmount(criteria);
+			BigDecimal penaltyCollection = waterDao.getPenaltyCollectionAmount(criteria);
 			if (null != penaltyCollection) {
 				collectionData.setPenaltyCollection(penaltyCollection.setScale(0, RoundingMode.HALF_UP).toString());
 			}
@@ -793,7 +789,7 @@ public class WaterServiceImpl implements WaterService {
 				.equalsIgnoreCase(waterConnectionrequest.getWaterConnection().getConnectionType())) {
 			if (reqType == WCConstants.UPDATE_APPLICATION && WCConstants.ACTIVATE_CONNECTION
 					.equalsIgnoreCase(waterConnectionrequest.getWaterConnection().getProcessInstance().getAction())) {
-				waterDaoImpl.postForMeterReading(waterConnectionrequest);
+				waterDao.postForMeterReading(waterConnectionrequest);
 			} else if (WCConstants.MODIFY_CONNECTION == reqType && WCConstants.APPROVE_CONNECTION.
 					equals(waterConnectionrequest.getWaterConnection().getProcessInstance().getAction())) {
 				SearchCriteria criteria = SearchCriteria.builder()
@@ -805,7 +801,7 @@ public class WaterServiceImpl implements WaterService {
 				if (!CollectionUtils.isEmpty(connections)) {
 					WaterConnection connection = connections.get(connections.size() - 1);
 					if (!connection.getConnectionType().equals(WCConstants.METERED_CONNECTION)) {
-						waterDaoImpl.postForMeterReading(waterConnectionrequest);
+						waterDao.postForMeterReading(waterConnectionrequest);
 					}
 				}
 			}
