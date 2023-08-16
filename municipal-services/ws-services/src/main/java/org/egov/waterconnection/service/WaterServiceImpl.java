@@ -78,6 +78,7 @@ import com.jayway.jsonpath.JsonPath;
 public class WaterServiceImpl implements WaterService {
 
 
+	@Autowired
 	private WaterDao waterDao;
 	@Autowired
 	private WaterConnectionValidator waterConnectionValidator;
