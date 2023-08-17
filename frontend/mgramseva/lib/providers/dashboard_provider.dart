@@ -472,7 +472,7 @@ class DashBoardProvider with ChangeNotifier {
       TableData('${expense.challanNo} \n${expense.vendorName}',
           callBack: onClickOfChallanNo, apiKey: expense.challanNo),
       TableData('${expense.expenseType}'),
-      TableData('₹ ${expense.totalAmount ?? '-'}'),
+      TableData('${expense.totalAmount ?? '-'}'),
       TableData('${DateFormats.timeStampToDate(expense.billDate)}'),
       TableData(
           '${expense.paidDate != null && expense.paidDate != 0 ? DateFormats.timeStampToDate(expense.paidDate) : (ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.dashboard.PENDING))}',
@@ -717,7 +717,7 @@ class DashBoardProvider with ChangeNotifier {
                   '${expense.challanNo} \n${expense.vendorName}',
                   '${ApplicationLocalizations.of(context).translate(expense.expenseType ?? '')}',
                   expense.totalAmount != null
-                      ? '₹ ${expense.totalAmount}'
+                      ? '${expense.totalAmount}'
                       : '-',
                   '${DateFormats.timeStampToDate(expense.billDate)}',
                   '${expense.paidDate != null && expense.paidDate != 0 ? DateFormats.timeStampToDate(expense.paidDate) : (ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.dashboard.PENDING))}',
