@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.egov.waterconnection.constants.WCConstants;
-import org.egov.waterconnection.repository.WaterDaoImpl;
 import org.egov.waterconnection.service.SchedulerService;
 import org.egov.waterconnection.service.WaterService;
 import org.egov.waterconnection.util.ResponseInfoFactory;
@@ -53,8 +52,6 @@ public class WaterController {
 	@Autowired
 	private final ResponseInfoFactory responseInfoFactory;
 
-	@Autowired
-	private WaterDaoImpl waterDaoImpl;
 	
 	@Autowired
 	private SchedulerService schedulerService;
