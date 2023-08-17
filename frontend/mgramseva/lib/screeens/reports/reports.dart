@@ -130,11 +130,6 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                         color: Colors.black,
                       ),
                       BillReport(),
-                      BillReport(),
-                      BillReport(),
-                      BillReport(),
-                      BillReport(),
-                      BillReport(),
                       Align(alignment: Alignment.bottomCenter, child: Footer())
                     ],
                   ),

@@ -28,6 +28,7 @@ class ReportsRepo extends BaseService{
 
     var res = await makeRequest(
         url: Url.BILL_REPORT,
+        baseUrl: 'http://localhost:8989/',
         queryParameters: params,
         requestInfo: requestInfo,
         method: RequestType.POST);

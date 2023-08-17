@@ -6,9 +6,11 @@ import '../../utils/localization/application_localizations.dart';
 
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 
+import '../../utils/notifiers.dart';
 import '../../utils/testing_keys/testing_keys.dart';
 import '../../widgets/button.dart';
 import '../../widgets/select_field_builder.dart';
+import 'generic_report_table.dart';
 
 class BillReport extends StatefulWidget {
   const BillReport({Key? key}) : super(key: key);
@@ -58,7 +60,13 @@ class _BillReport extends State<BillReport>
                           child: Button(
                             "View",
                             () {
-                              reportProvider.getBillReport();
+                              if(reportProvider.selectedBillPeriod==null){
+                                Notifiers.getToastMessage(context, 'Select Billing Cycle', 'ERROR');
+                              }else{
+                                reportProvider.getBillReport();
+                                Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) { return GenericReportTable(); }));
+                              }
+
                             },
                             key: Keys.billReport.BILL_REPORT_VIEW_BUTTON,
                           ),

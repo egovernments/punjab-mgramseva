@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +10,7 @@ import '../repository/core_repo.dart';
 import '../repository/reports_repo.dart';
 import '../utils/common_methods.dart';
 import '../utils/constants.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import '../utils/date_formats.dart';
 import '../utils/error_logging.dart';
 import '../utils/global_variables.dart';
@@ -33,7 +33,34 @@ class ReportsProvider with ChangeNotifier {
     streamController.close();
     super.dispose();
   }
+  List<TableHeader> get collectionHeaderList => [
+    TableHeader(i18.common.CONNECTION_ID),
+    TableHeader(i18.common.NAME),
+    TableHeader(i18.consumer.OLD_CONNECTION_ID,
+      isSortingRequired: false,),
+    TableHeader('consumerCreatedOnDate'),
+    TableHeader('previousArrear'),
+    TableHeader('totalBillGenerated'),
+    TableHeader('demandAmount'),
+  ];
 
+  List<TableDataRow> getCollectionsData(List<BillReportData> list) {
+    return list.map((e) => getCollectionRow(e)).toList();
+  }
+  TableDataRow getCollectionRow(BillReportData data) {
+    String? name =
+    CommonMethods.truncateWithEllipsis(20,data.consumerName!);
+    return TableDataRow([
+      TableData(
+          '${data.connectionNo?.split('/').first ?? ''}/...${data.connectionNo?.split('/').last ?? ''}',),
+      TableData('${name ?? ''}'),
+      TableData('${data.oldConnectionNo ?? ''}'),
+      TableData('${DateFormats.timeStampToDate(int.parse(data.consumerCreatedOnDate!))}'),
+      TableData('${data.previousArrear ?? ''}'),
+      TableData('${data.totalBillGenerated ?? ''}'),
+      TableData('${data.demandAmount ?? ''}'),
+    ]);
+  }
   void callNotifier() {
     notifyListeners();
   }
@@ -137,6 +164,9 @@ class ReportsProvider with ChangeNotifier {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
+      if(selectedBillPeriod==null){
+        throw Exception('Select Billing Cycle');
+      }
       Map<String,dynamic> params={
         'tenantId':commonProvider.userDetails!.selectedtenant!.code,
         'demandDate':selectedBillPeriod?.split('-')[0]
