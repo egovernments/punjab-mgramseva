@@ -3,9 +3,10 @@ import 'package:mgramseva/utils/localization/application_localizations.dart';
 
 class SuccessPage extends StatelessWidget {
   final label;
+  final String? amount;
   final String? subText;
   final String? subTextHeader;
-  SuccessPage(this.label, {this.subText, this.subTextHeader});
+  SuccessPage(this.label, {this.amount, this.subText, this.subTextHeader});
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +32,24 @@ class SuccessPage extends StatelessWidget {
             SizedBox(
               height: 20,
             ),
-            Icon(
-              Icons.check_circle,
-              color: Theme.of(context).backgroundColor,
-              size: 32,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('₹${amount}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Theme.of(context).backgroundColor,
+                        fontSize: 32,
+                        fontFamily: 'Roboto Condensed',
+                        fontWeight: FontWeight.w700
+                    )),
+                SizedBox(width: 8,),
+                Icon(
+                  Icons.check_circle,
+                  color: Theme.of(context).backgroundColor,
+                  size: 32,
+                ),
+              ],
             ),
             SizedBox(
               height: 20,
