@@ -560,7 +560,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
           Padding(
               padding: EdgeInsets.only(right: 8),
               child: Text(
-                  '${DateFormats.getMonthWithDay(billdemandDetails?.fromPeriod)}-${DateFormats.getMonthWithDay(billdemandDetails?.toPeriod)}',
+                  '${DateFormats.timeStampToDate(billdemandDetails?.fromPeriod)}-${DateFormats.timeStampToDate(billdemandDetails?.toPeriod)}',
                   style: style)),
         ],
       ),
