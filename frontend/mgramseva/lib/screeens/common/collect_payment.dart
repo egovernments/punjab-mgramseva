@@ -310,7 +310,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
               subTitle(i18.payment.BILL_DETAILS),
               _buildLabelValue(i18.common.BILL_ID, '${fetchBill.billNumber}'),
               _buildLabelValue(i18.payment.BILL_PERIOD,
-                  '${DateFormats.getMonthWithDay(fetchBill.billDetails?.first.fromPeriod)} - ${DateFormats.getMonthWithDay(fetchBill.billDetails?.first.toPeriod)}'),
+                  '${DateFormats.timeStampToDate(fetchBill.billDetails?.first.fromPeriod)} - ${DateFormats.timeStampToDate(fetchBill.billDetails?.first.toPeriod)}'),
             ]),
           ),
           Padding(
@@ -560,7 +560,7 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
           Padding(
               padding: EdgeInsets.only(right: 8),
               child: Text(
-                  '${DateFormats.getMonthWithDay(billdemandDetails?.fromPeriod)}-${DateFormats.getMonthWithDay(billdemandDetails?.toPeriod)}',
+                  '${DateFormats.timeStampToDate(billdemandDetails?.fromPeriod)}-${DateFormats.timeStampToDate(billdemandDetails?.toPeriod)}',
                   style: style)),
         ],
       ),

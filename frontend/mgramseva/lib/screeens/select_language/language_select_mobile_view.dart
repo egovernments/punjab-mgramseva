@@ -26,45 +26,65 @@ class LanguageSelectMobileView extends StatelessWidget {
               child: Card(
                   child: (Column(children: [
                 Container(
+                    width:MediaQuery.of(context).size.width*0.9,
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image(
-                            width: 150,
-                            image: NetworkImage(
-                              stateInfo.logoUrl ?? '',
-                            )),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image(
+                                width: 150,
+                                fit: BoxFit.fill,
+                                image: NetworkImage(
+                                  stateInfo.logoUrl ?? '',
+                                )),
+                          ),
+                          Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Text(
+                                " | ",
+                                style: TextStyle(
+                                    fontSize: 19,
+                                    color: Color.fromRGBO(0, 0, 0, 1)),
+                              )),
+                        ],
                       ),
-                      Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                          child: Text(
-                            " | ",
-                            style: TextStyle(
-                                fontSize: 19,
-                                color: Color.fromRGBO(0, 0, 0, 1)),
-                          )),
-                      Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            ApplicationLocalizations.of(context)
-                                .translate(stateInfo.code!),
-                            style: TextStyle(
-                                fontSize: 19,
-                                color: Color.fromRGBO(0, 0, 0, 1),
-                                fontWeight: FontWeight.w400),
-                          )),
+                      Container(
+                        width: 55,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          textDirection: TextDirection.rtl,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.only(left: 0.0),
+                                child: Text(
+                                  ApplicationLocalizations.of(context)
+                                      .translate(stateInfo.code!),
+                                  style: TextStyle(
+                                      fontSize: 19,
+                                      color: Color.fromRGBO(0, 0, 0, 1),
+                                      fontWeight: FontWeight.w400),
+                                )),
+                          ],
+                        ),
+                      ),
                     ])),
                 Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          for (var language in stateInfo.languages ?? [])
-                            LanguageCard(
-                                language, stateInfo.languages ?? [], 85, 10, 10)
-                        ])),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            for (var language in stateInfo.languages ?? [])
+                              LanguageCard(
+                                  language, stateInfo.languages ?? [], MediaQuery.of(context).size.width*0.22, 10, 10)
+                          ]),
+                    )),
                 Padding(
                     padding: EdgeInsets.all(15),
                     child: Consumer<LanguageProvider>(

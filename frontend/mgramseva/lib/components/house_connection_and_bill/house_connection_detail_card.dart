@@ -49,7 +49,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                          width: MediaQuery.of(context).size.width / 3.3,
+                          width: MediaQuery.of(context).size.width / 3,
                           child: Text(
                             "${ApplicationLocalizations.of(context).translate(
                               i18.consumer.CONSUMER_CONNECTION_ID,
@@ -58,7 +58,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
                                 fontSize: 17, fontWeight: FontWeight.w700),
                           )),
                       Container(
-                          alignment: Alignment.topCenter,
+                          padding: EdgeInsets.only(left: 8),
                           child: Text(
                             waterconnection!.connectionNo!,
                             style: TextStyle(
