@@ -15,7 +15,7 @@ class Button extends StatelessWidget {
           decoration: CommonStyles.buttonBottomDecoration,
           child: new ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 30),
+                  minimumSize: Size(double.infinity, 50),
                   primary: widgetFunction == null ? Color.fromRGBO(244, 119, 56, 0.7) : null
                 // padding: EdgeInsets.all(15),
               ),

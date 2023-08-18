@@ -41,14 +41,16 @@ class LanguageCard extends StatelessWidget {
                     ? Theme.of(context).primaryColor
                     : Colors.white),
             child: Center(
-                child: Text(
+                child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
               '${language.label}',
               style: new TextStyle(
-                  fontWeight: FontWeight.w400,
-                  color: language.isSelected
-                      ? Colors.white
-                      : Theme.of(context).primaryColorDark),
-            ))),
+                    fontWeight: FontWeight.w400,
+                    color: language.isSelected
+                        ? Colors.white
+                        : Theme.of(context).primaryColorDark),
+            )))),
       ),
     );
   }
