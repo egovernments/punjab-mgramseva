@@ -8,6 +8,9 @@ import 'package:mgramseva/widgets/background_container.dart';
 import 'package:mgramseva/widgets/button.dart';
 import 'package:mgramseva/widgets/language_card.dart';
 import 'package:mgramseva/widgets/footer_banner.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/language.dart';
 
 class LanguageSelectionDesktopView extends StatelessWidget {
   final StateInfo stateInfo;
@@ -26,67 +29,78 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                 width: 500,
                 padding: EdgeInsets.all(16),
                 child: Card(
-                    child: (Column(children: [
-                  Padding(
-                      padding:
-                          const EdgeInsets.only(left: 15.0, right: 15, top: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                    child: (Column(
+                        mainAxisAlignment:MainAxisAlignment.center,
                         children: [
-                          Image(
-                              width: 150,
-                              image: NetworkImage(
-                                stateInfo.logoUrl!,
-                              )),
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Container(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  " | ",
-                                  style: TextStyle(
-                                      fontSize: 19,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color.fromRGBO(0, 0, 0, 1)),
-                                  textAlign: TextAlign.left,
+                      Container(
+                          width:MediaQuery.of(context).size.width*0.9,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Image(
+                                          width: 150,
+                                          fit: BoxFit.fill,
+                                          image: NetworkImage(
+                                            stateInfo.logoUrl ?? '',
+                                          )),
+                                    ),
+                                    Padding(
+                                        padding: const EdgeInsets.only(right: 8.0),
+                                        child: Text(
+                                          " | ",
+                                          style: TextStyle(
+                                              fontSize: 19,
+                                              color: Color.fromRGBO(0, 0, 0, 1)),
+                                        )),
+                                  ],
                                 ),
-                              ))),
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Container(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  ApplicationLocalizations.of(context)
-                                      .translate(stateInfo.code!),
-                                  style: TextStyle(
-                                      fontSize: 19,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color.fromRGBO(0, 0, 0, 1)),
-                                  textAlign: TextAlign.left,
+                                Container(
+                                  width: 55,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    textDirection: TextDirection.rtl,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                          padding: const EdgeInsets.only(left: 0.0),
+                                          child: Text(
+                                            ApplicationLocalizations.of(context)
+                                                .translate(stateInfo.code!),
+                                            style: TextStyle(
+                                                fontSize: 19,
+                                                color: Color.fromRGBO(0, 0, 0, 1),
+                                                fontWeight: FontWeight.w400),
+                                          )),
+                                    ],
+                                  ),
                                 ),
-                              )))
-                        ],
-                      )),
-                  Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            for (var language in stateInfo.languages ?? [])
-                              LanguageCard(language, stateInfo.languages ?? [],
-                                  120, 10, 10)
-                          ])),
-                  Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Button(i18.common.CONTINUE,
-                          () => Navigator.pushNamed(context, Routes.LOGIN),
-                          key: Keys.language.LANGUAGE_PAGE_CONTINUE_BTN)),
-                  SizedBox(
-                    height: 10,
-                  )
-                ]))))),
+                              ])),
+                      Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  for (var language in stateInfo.languages ?? [])
+                                    LanguageCard(
+                                        language, stateInfo.languages ?? [], 120, 10, 10)
+                                ]),
+                          )),
+                      Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Button(
+                              i18.common.CONTINUE,
+                                  () => Navigator.pushNamed(context, Routes.LOGIN),
+                              key: Keys.language.LANGUAGE_PAGE_CONTINUE_BTN,
+                            ),
+                          )
+                    ]))))),
         SizedBox(height: 140),
         FooterBanner()
       ],

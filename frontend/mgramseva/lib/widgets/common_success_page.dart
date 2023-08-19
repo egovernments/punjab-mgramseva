@@ -21,9 +21,11 @@ class CommonSuccess extends StatelessWidget {
   final bool? backButton;
   final bool isWithoutLogin;
   final bool isConsumer;
+  final String? amount;
 
   CommonSuccess(this.successHandler,
       {this.callBack,
+      this.amount,
       this.callBackWhatsApp,
       this.callBackDownload,
       this.callBackPrint,
@@ -67,6 +69,7 @@ class CommonSuccess extends StatelessWidget {
                             subTextHeader: successHandler.subHeaderFun != null
                                 ? successHandler.subHeaderFun!()
                                 : successHandler.subHeader,
+                            amount: amount,
                             subText: successHandler.subTextFun != null
                                 ? successHandler.subTextFun!()
                                 : successHandler.subHeaderText),

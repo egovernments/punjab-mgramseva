@@ -17,9 +17,11 @@ class NoLoginSuccess extends StatelessWidget {
   final bool? backButton;
   final bool isWithoutLogin;
   final bool isConsumer;
+  final String? amount;
 
   NoLoginSuccess(this.successHandler,
       {this.callBack,
+      this.amount,
       this.callBackWhatsApp,
       this.callBackDownload,
       this.callBackPrint,
@@ -46,6 +48,7 @@ class NoLoginSuccess extends StatelessWidget {
                       subTextHeader: successHandler.subHeaderFun != null
                           ? successHandler.subHeaderFun!()
                           : successHandler.subHeader,
+                      amount: amount,
                       subText: successHandler.subTextFun != null
                           ? successHandler.subTextFun!()
                           : successHandler.subHeaderText),

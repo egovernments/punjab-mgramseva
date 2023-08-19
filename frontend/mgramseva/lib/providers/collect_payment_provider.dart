@@ -583,6 +583,7 @@ class CollectPaymentProvider with ChangeNotifier {
                 paymentDetails.payments!.first,
                 "Share"),
             backButton: true,
+            amount: '${paymentDetails.payments!.first.totalAmountPaid}',
           );
         }));
       }
