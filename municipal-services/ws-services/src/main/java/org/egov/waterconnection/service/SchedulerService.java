@@ -313,7 +313,7 @@ public class SchedulerService {
 			log.info("PENDING COLLECTION SIZE:" + pendingCollection.size());
 			log.info("PENDING COLLECTION:" + pendingCollection.get(0));
 		}
-		if(null != pendingCollection && pendingCollection.size() > 0 && pendingCollection.get(0) !=null && Integer.parseInt(pendingCollection.get(0)) > 0 ) {
+		if(null != pendingCollection && pendingCollection.size() > 0 && pendingCollection.get(0) !=null && Double.parseDouble(pendingCollection.get(0)) > 0 ) {
 			events.add(Event.builder().tenantId(tenantId)
 					.description(
 							formatPendingCollectionMessage(requestInfo, tenantId, messageMap.get(NotificationUtil.MSG_KEY), additionalDetailsMap))
