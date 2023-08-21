@@ -309,6 +309,10 @@ public class SchedulerService {
 		Map<String, Object> financialYear = getFinancialYear(requestInfo, tenantId);
 		List<String> pendingCollection = repository.getPendingCollection(tenantId,
 				financialYear.get("startingDate").toString(), financialYear.get("endingDate").toString());
+		if(pendingCollection!=null && pendingCollection.size() > 0 ) {
+			log.info("PENDING COLLECTION SIZE:" + pendingCollection.size());
+			log.info("PENDING COLLECTION:" + pendingCollection.get(0));
+		}
 		if(null != pendingCollection && pendingCollection.size() > 0 && pendingCollection.get(0) !=null && Integer.parseInt(pendingCollection.get(0)) > 0 ) {
 			events.add(Event.builder().tenantId(tenantId)
 					.description(
