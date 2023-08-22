@@ -350,9 +350,9 @@ def getTotalAmountExpenseBills(tenantId,startdate,enddate):
             connection = getConnection()
             cursor = connection.cursor()
             if startdate != None and enddate != None:
-                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and challan.typeofexpense<>'ELECTRICITY_BILL' and challan.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and challan.typeofexpense<>'ELECTRICITY_BILL' and challan.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and dem.tenantid = '"+tenantId+"'"
             else:
-                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and challan.typeofexpense<>'ELECTRICITY_BILL' and tenantid = '"+tenantId+"'"
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and challan.typeofexpense<>'ELECTRICITY_BILL' and dem.tenantid = '"+tenantId+"'"
             
             cursor.execute(TOTAL_EXPENSES_BILL_MARKED_PAID)
             result = cursor.fetchone()
@@ -375,9 +375,9 @@ def getTotalAmountElectricityBills(tenantId,startdate,enddate):
             connection = getConnection()
             cursor = connection.cursor()
             if startdate != None and enddate != None:
-                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and challan.typeofexpense='ELECTRICITY_BILL' and challan.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and challan.typeofexpense='ELECTRICITY_BILL' and challan.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and dem.tenantid = '"+tenantId+"'"
             else:
-                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and challan.typeofexpense='ELECTRICITY_BILL' and tenantid = '"+tenantId+"'"
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and challan.typeofexpense='ELECTRICITY_BILL' and dem.tenantid = '"+tenantId+"'"
             
             cursor.execute(TOTAL_EXPENSES_BILL_MARKED_PAID)
             result = cursor.fetchone()
@@ -399,9 +399,9 @@ def getTotalAmountPaidBills(tenantId,startdate,enddate):
             connection = getConnection()
             cursor = connection.cursor()
             if startdate != None and enddate != None:
-                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where challan.applicationstatus='PAID' and challan.typeofexpense<>'ELECTRICITY_BILL' and challan.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where challan.applicationstatus='PAID' and challan.typeofexpense<>'ELECTRICITY_BILL' and challan.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and dem.tenantid = '"+tenantId+"'"
             else:
-                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where challan.applicationstatus='PAID' and challan.typeofexpense<>'ELECTRICITY_BILL' and tenantid = '"+tenantId+"'"
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where challan.applicationstatus='PAID' and challan.typeofexpense<>'ELECTRICITY_BILL' and dem.tenantid = '"+tenantId+"'"
             
             cursor.execute(TOTAL_EXPENSES_BILL_MARKED_PAID)
             result = cursor.fetchone()
@@ -610,9 +610,9 @@ def getTotalDemandAmount(tenantId,startdate,enddate):
             connection = getConnection()
             cursor = connection.cursor()
             if startdate != None and enddate != None:
-                TOTAL_DEMAND_AMOUNT = "select sum(dd.taxamount) from egbs_demand_v1 dem inner join egbs_demanddetail_v1 on dem.id=dd.demandid where dem.status='ACTIVE' and dem.businessservice='WS' and dd.taxheadcode<>'WS_ADVANCE_CARRYFORWARD' and dem.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and dem.tenantid = '"+tenantId+"'"
+                TOTAL_DEMAND_AMOUNT = "select sum(dd.taxamount) from egbs_demand_v1 dem inner join egbs_demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and dem.businessservice='WS' and dd.taxheadcode<>'WS_ADVANCE_CARRYFORWARD' and dem.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and dem.tenantid = '"+tenantId+"'"
             else:
-                TOTAL_DEMAND_AMOUNT = "select sum(dd.taxamount) from egbs_demand_v1 dem inner join egbs_demanddetail_v1 on dem.id=dd.demandid where dem.status='ACTIVE' and dem.businessservice='WS' and dd.taxheadcode<>'WS_ADVANCE_CARRYFORWARD' and dem.tenantid = '"+tenantId+"'"
+                TOTAL_DEMAND_AMOUNT = "select sum(dd.taxamount) from egbs_demand_v1 dem inner join egbs_demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and dem.businessservice='WS' and dd.taxheadcode<>'WS_ADVANCE_CARRYFORWARD' and dem.tenantid = '"+tenantId+"'"
             
             cursor.execute(TOTAL_DEMAND_AMOUNT)
             result = cursor.fetchone()
