@@ -247,9 +247,36 @@ def getExpenseBillEntered(tenantId,startdate,enddate):
             connection = getConnection()
             cursor = connection.cursor()
             if startdate != None and enddate != None:
-                TOTAL_NO_EXPENSES_TILL_DATE = "select count(*) from eg_echallan where createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
+                TOTAL_NO_EXPENSES_TILL_DATE = "select count(*) from eg_echallan where typeofexpense<>'ELECTRICITY_BILL' and applicationstatus='ACTIVE' and createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
             else:
-                TOTAL_NO_EXPENSES_TILL_DATE = "select count(*) from eg_echallan where tenantid = '"+tenantId+"'"
+                TOTAL_NO_EXPENSES_TILL_DATE = "select count(*) from eg_echallan where typeofexpense<>'ELECTRICITY_BILL' and applicationstatus='ACTIVE' and tenantid = '"+tenantId+"'"
+            
+            cursor.execute(TOTAL_NO_EXPENSES_TILL_DATE)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+        
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+def getElectricityExpenseBillEntered(tenantId,startdate,enddate):
+        # make db call to get the total no of expenses entered  in the give tenant on the current date
+        #total till date not current date
+
+        print("expense bill entered returned")
+        try:
+            connection = getConnection()
+            cursor = connection.cursor()
+            if startdate != None and enddate != None:
+                TOTAL_NO_EXPENSES_TILL_DATE = "select count(*) from eg_echallan where typeofexpense='ELECTRICITY_BILL' and applicationstatus='ACTIVE' and createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
+            else:
+                TOTAL_NO_EXPENSES_TILL_DATE = "select count(*) from eg_echallan where typeofexpense='ELECTRICITY_BILL' and applicationstatus='ACTIVE' and tenantid = '"+tenantId+"'"
             
             cursor.execute(TOTAL_NO_EXPENSES_TILL_DATE)
             result = cursor.fetchone()
@@ -272,9 +299,9 @@ def getLastExpTransactionDate(tenantId,startdate,enddate):
             connection = getConnection()
             cursor = connection.cursor()
             if startdate != None and enddate != None:
-                LAT_EXP_BILL_DATE = "select createdtime from eg_echallan where createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
+                LAT_EXP_BILL_DATE = "select createdtime from eg_echallan where applicationstatus='ACTIVE' and createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"+" order by createdtime desc limit 1"
             else:
-                LAT_EXP_BILL_DATE = "select createdtime from eg_echallan where tenantid = '"+tenantId+"'" +" order by createdtime desc limit 1"
+                LAT_EXP_BILL_DATE = "select createdtime from eg_echallan where applicationstatus='ACTIVE' and tenantid = '"+tenantId+"'" +" order by createdtime desc limit 1"
         
             cursor.execute(LAT_EXP_BILL_DATE)
             result = cursor.fetchone()
@@ -299,9 +326,82 @@ def getNoOfBillsPaid(tenantId,startdate,enddate):
             connection = getConnection()
             cursor = connection.cursor()
             if startdate != None and enddate != None:
-                TOTAL_EXPENSES_BILL_MARKED_PAID = "select count(*) from eg_echallan where applicationstatus = 'PAID' and createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select count(*) from eg_echallan where typeofexpense<>'ELECTRICITY_BILL' and applicationstatus = 'PAID' and createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
             else:
-                TOTAL_EXPENSES_BILL_MARKED_PAID = "select count(*) from eg_echallan where tenantid = '"+tenantId+"'"+" and applicationstatus = 'PAID' "
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select count(*) from eg_echallan where typeofexpense<>'ELECTRICITY_BILL' and tenantid = '"+tenantId+"'"+" and applicationstatus = 'PAID' "
+            
+            cursor.execute(TOTAL_EXPENSES_BILL_MARKED_PAID)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+            
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+def getTotalAmountExpenseBills(tenantId,startdate,enddate):
+        # make db call to get total no of expenses bills marked as paid till current date.
+        print("No of bill paid")
+        try:
+            connection = getConnection()
+            cursor = connection.cursor()
+            if startdate != None and enddate != None:
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and challan.typeofexpense<>'ELECTRICITY_BILL' and challan.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
+            else:
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and challan.typeofexpense<>'ELECTRICITY_BILL' and tenantid = '"+tenantId+"'"
+            
+            cursor.execute(TOTAL_EXPENSES_BILL_MARKED_PAID)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+            
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+                
+def getTotalAmountElectricityBills(tenantId,startdate,enddate):
+        # make db call to get total no of expenses bills marked as paid till current date.
+        print("No of bill paid")
+        try:
+            connection = getConnection()
+            cursor = connection.cursor()
+            if startdate != None and enddate != None:
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and challan.typeofexpense='ELECTRICITY_BILL' and challan.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
+            else:
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where dem.status='ACTIVE' and challan.typeofexpense='ELECTRICITY_BILL' and tenantid = '"+tenantId+"'"
+            
+            cursor.execute(TOTAL_EXPENSES_BILL_MARKED_PAID)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+            
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+def getTotalAmountPaidBills(tenantId,startdate,enddate):
+        # make db call to get total no of expenses bills marked as paid till current date.
+        print("No of bill paid")
+        try:
+            connection = getConnection()
+            cursor = connection.cursor()
+            if startdate != None and enddate != None:
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where challan.applicationstatus='PAID' and challan.typeofexpense<>'ELECTRICITY_BILL' and challan.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
+            else:
+                TOTAL_EXPENSES_BILL_MARKED_PAID = "select sum(dd.taxamount) from eg_echallan challan inner join egbs_Demand_v1 dem on dem.consumercode=challan.referenceid inner join egbs_Demanddetail_v1 dd on dem.id=dd.demandid where challan.applicationstatus='PAID' and challan.typeofexpense<>'ELECTRICITY_BILL' and tenantid = '"+tenantId+"'"
             
             cursor.execute(TOTAL_EXPENSES_BILL_MARKED_PAID)
             result = cursor.fetchone()
@@ -486,11 +586,35 @@ def getTotalDemandRaised(tenantId,startdate,enddate):
             connection = getConnection()
             cursor = connection.cursor()
             if startdate != None and enddate != None:
-                LAST_DEMAND_COUNT = "select count(distinct dmd.consumercode) from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE'                                                                                                                                            left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and dtl.id is not null and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
+                LAST_DEMAND_COUNT = "select count(distinct dmd.consumercode) from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE'                                                                                                                                            left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and dtl.id is not null and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and dmd.tenantid = '"+tenantId+"'"
             else:
                 LAST_DEMAND_COUNT = "select count(distinct dmd.consumercode) from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE'                                                                                                                                            left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and dtl.id is not null and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.tenantid = '"+tenantId+"'"
             
             cursor.execute(LAST_DEMAND_COUNT)
+            result = cursor.fetchone()
+            
+            return result[0]
+            
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception) 
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
+def getTotalDemandAmount(tenantId,startdate,enddate):
+        print("demand amount returned")
+        try:
+            connection = getConnection()
+            cursor = connection.cursor()
+            if startdate != None and enddate != None:
+                TOTAL_DEMAND_AMOUNT = "select sum(dd.taxamount) from egbs_demand_v1 dem inner join egbs_demanddetail_v1 on dem.id=dd.demandid where dem.status='ACTIVE' and dem.businessservice='WS' and dd.taxheadcode<>'WS_ADVANCE_CARRYFORWARD' and dem.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and dem.tenantid = '"+tenantId+"'"
+            else:
+                TOTAL_DEMAND_AMOUNT = "select sum(dd.taxamount) from egbs_demand_v1 dem inner join egbs_demanddetail_v1 on dem.id=dd.demandid where dem.status='ACTIVE' and dem.businessservice='WS' and dd.taxheadcode<>'WS_ADVANCE_CARRYFORWARD' and dem.tenantid = '"+tenantId+"'"
+            
+            cursor.execute(TOTAL_DEMAND_AMOUNT)
             result = cursor.fetchone()
             
             return result[0]
@@ -563,7 +687,7 @@ def getdaterange(i):
     return epochnow,lastepoch
         
                               
-def createEntryForRollout(tenant,countOfRateMaster,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance,totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised):
+def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills):
     # create entry into new table in postgres db with the table name roll_outdashboard . enter all field into the db and additional createdtime additional column
     
     print("inserting data into db")
@@ -577,8 +701,8 @@ def createEntryForRollout(tenant,countOfRateMaster,collectionsMade,collectionsMa
         createdTime = datetime.now(tz=tzInfo)
         print("createdtime -->", createdTime)
         
-        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section,billing_slab_count, collection_till_date, collection_till_date_online, last_collection_date, expense_count,last_expense_txn_date,paid_status_expense_bill_count,ratings_count,last_rating_date,active_users_count,total_advance,total_penalty,consumer_count,last_demand_gen_date,last_demand_gen_count, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'],countOfRateMaster,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised, createdTime)
+        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section,active_users_count,total_advance,total_penalty,consumer_count, last_demand_gen_date, last_demand_gen_count,total_demand_amount,collection_till_date,last_collection_date,expense_count,count_of_electricity_expense_bills,no_of_paid_expense_bills,last_expense_txn_date,total_amount_of_expense_bills,total_amount_of_electricity_bills,total_amount_of_paid_expense_bills, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'],tenant,activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills, createdTime)
         cursor.execute(postgres_insert_query, record_to_insert)
        
         connection.commit()
@@ -636,15 +760,20 @@ def process():
         daterange = ['7days','15days','lastmonth','q1','q2','q3','q4','tilldate']
         for i,date in enumerate(daterange):
             startdate,enddate= getdaterange(date)
-            expenseBillTillDate = getExpenseBillEntered(tenant['tenantId'],startdate,enddate)
+            expenseCount = getExpenseBillEntered(tenant['tenantId'],startdate,enddate)
+            countOfElectricityExpenseBills=getElectricityExpenseBillEntered(tenant['tenantId'],startdate,enddate)
             lastExpTrnsDate = getLastExpTransactionDate(tenant['tenantId'],startdate,enddate)
-            noOfBillpaid= getNoOfBillsPaid(tenant['tenantId'],startdate,enddate)
+            noOfPaidExpenseBills= getNoOfBillsPaid(tenant['tenantId'],startdate,enddate)
             lastDemandGenratedDate = getLastDemandDate(tenant['tenantId'],startdate,enddate)
             noOfDemandRaised= getTotalDemandRaised(tenant['tenantId'],startdate,enddate)
             lastCollectionDate = getLastCollectionDate(tenant['tenantId'],startdate,enddate)
             collectionsMade = getCollectionsMade(tenant['tenantId'],startdate,enddate)
             consumerCount= getConsumersCount(tenant['tenantId'],startdate,enddate)
-            createEntryForRollout(tenant,countOfRateMaster,collectionsMade,collectionsMadeOnline,lastCollectionDate, expenseBillTillDate, lastExpTrnsDate, noOfBillpaid, noOfRatings, lastRatingDate, activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised)
+            totaldemAmount = getTotalDemandAmount(tenant['tenantId'],startdate,enddate)
+            totalAmountOfExpenseBills = getTotalAmountExpenseBills(tenant['tenantId'],startdate,enddate)
+	    totalAmountOfElectricityBills = getTotalAmountElectricityBills(tenant['tenantId'],startdate,enddate)
+            totalAmountOfPaidExpenseBills = getTotalAmountPaidBills(tenant['tenantId'],startdate,enddate)
+            createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills)
         
     print("End of rollout dashboard")
     return 
@@ -672,7 +801,7 @@ def getCurrentDate():
     
     return currentDateInMillis
      
-    
+createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills)    
 def createTable():
     
     CREATE_TABLE_QUERY = """create table roll_out_dashboard(
@@ -684,21 +813,22 @@ def createTable():
         division varchar(250),
         subdivision varchar(250),
         section varchar(250),
-        billing_slab_count NUMERIC(10),
-        collection_till_date NUMERIC(12, 2),
-        collection_till_date_online NUMERIC(12,2),
-        last_collection_date DATE,
-        expense_count BIGINT,
-        last_expense_txn_date Date,
-        paid_status_expense_bill_count NUMERIC(10),
-        ratings_count NUMERIC(10),
-        last_rating_date DATE,
         active_users_count NUMERIC(10),
         total_advance NUMERIC(10),
         total_penalty NUMERIC(10),
         consumer_count NUMERIC(10),
         last_demand_gen_date DATE,
         last_demand_gen_count NUMERIC(10),
+        total_demand_amount NUMERIC(10),
+        collection_till_date NUMERIC(12, 2),
+        last_collection_date DATE,
+        expense_count BIGINT,
+        count_of_electricity_expense_bills BIGINT,
+        no_of_paid_expense_bills NUMERIC(10),
+        last_expense_txn_date Date,
+        total_amount_of_expense_bills NUMERIC(10),
+        total_amount_of_electricity_bills NUMERIC(10),
+        total_amount_of_paid_expense_bills NUMERIC(10),
         createdtime TIMESTAMP NOT NULL
         )"""
     
