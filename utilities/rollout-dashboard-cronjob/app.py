@@ -626,10 +626,6 @@ def process():
         print(tenant)
         countOfRateMaster = getRateMasters(tenant['tenantId'])
         collectionsMadeOnline = getCollectionsMadeOnline(tenant['tenantId'])
-
-        expenseBillTillDate = getExpenseBillEntered(tenant['tenantId'])
-        lastExpTrnsDate = getLastExpTransactionDate(tenant['tenantId'])
-        noOfBillpaid= getNoOfBillsPaid(tenant['tenantId'])
         noOfRatings = getRatingCount(tenant['tenantId'])
         lastRatingDate= getLastRatingDate(tenant['tenantId'])
         activeUsersCount= getActiveUsersCount(tenant['tenantId'])
@@ -639,6 +635,9 @@ def process():
         daterange = ['7days','15days','lastmonth','q1','q2','q3','q4','tilldate']
         for i in len(daterange):
             startdate,enddate= getdaterange(i)
+            expenseBillTillDate = getExpenseBillEntered(tenant['tenantId'],startdate,enddate)
+            lastExpTrnsDate = getLastExpTransactionDate(tenant['tenantId'],startdate,enddate)
+            noOfBillpaid= getNoOfBillsPaid(tenant['tenantId'],startdate,enddate)
             lastDemandGenratedDate = getLastDemandDate(tenant['tenantId'],startdate,enddate)
             noOfDemandRaised= getTotalDemandRaised(tenant['tenantId'],startdate,enddate)
             lastCollectionDate = getLastCollectionDate(tenant['tenantId'],startdate,enddate)
