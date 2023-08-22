@@ -486,9 +486,9 @@ def getTotalDemandRaised(tenantId,startdate,enddate):
             connection = getConnection()
             cursor = connection.cursor()
             if startdate != None and enddate != None:
-                LAST_DEMAND_COUNT = "select count(distinct dmd.consumercode) from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE'                                                                                                                                            left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
+                LAST_DEMAND_COUNT = "select count(distinct dmd.consumercode) from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE'                                                                                                                                            left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and dtl.id is not null and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
             else:
-                LAST_DEMAND_COUNT = "select count(distinct dmd.consumercode) from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE'                                                                                                                                            left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.tenantid = '"+tenantId+"'"
+                LAST_DEMAND_COUNT = "select count(distinct dmd.consumercode) from eg_ws_connection conn left outer join egbs_demand_v1 dmd on dmd.consumercode=conn.connectionno and dmd.status='ACTIVE'                                                                                                                                            left outer join egbs_demanddetail_v1 dtl on dtl.demandid=dmd.id and taxheadcode='10101' where conn.status='Active'and businessservice='WS' and dtl.id is not null and (EXTRACT(epoch FROM (to_timestamp(taxperiodto/1000))-to_timestamp(taxperiodfrom/1000)))::int/86400<=31 and dmd.tenantid = '"+tenantId+"'"
             
             cursor.execute(LAST_DEMAND_COUNT)
             result = cursor.fetchone()
@@ -633,7 +633,7 @@ def process():
         totalPenalty= getTotalPenaltyCreated(tenant['tenantId'])
         
         daterange = ['7days','15days','lastmonth','q1','q2','q3','q4','tilldate']
-        for i in len(daterange):
+        for i in range(len(daterange)):
             startdate,enddate= getdaterange(i)
             expenseBillTillDate = getExpenseBillEntered(tenant['tenantId'],startdate,enddate)
             lastExpTrnsDate = getLastExpTransactionDate(tenant['tenantId'],startdate,enddate)
