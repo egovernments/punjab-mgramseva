@@ -506,6 +506,8 @@ def getTotalDemandRaised(tenantId,startdate,enddate):
                 
                 
 def getdaterange(i):
+    print(i)
+    epochnow = None,lastepoch = None
     if i == '7days':
         now = datetime.now()
         lastSevenDays = (now - timedelta(days=7)).replace(hour=0,minute=0,second=0, microsecond=0)
