@@ -506,8 +506,7 @@ def getTotalDemandRaised(tenantId,startdate,enddate):
                 
                 
 def getdaterange(i):
-    print(i)
-    epochnow = None,lastepoch = None
+    epochnow = None;lastepoch = None
     if i == '7days':
         now = datetime.now()
         lastSevenDays = (now - timedelta(days=7)).replace(hour=0,minute=0,second=0, microsecond=0)
@@ -635,8 +634,8 @@ def process():
         totalPenalty= getTotalPenaltyCreated(tenant['tenantId'])
         
         daterange = ['7days','15days','lastmonth','q1','q2','q3','q4','tilldate']
-        for i in range(len(daterange)):
-            startdate,enddate= getdaterange(i)
+        for i,date in enumerate(daterange):
+            startdate,enddate= getdaterange(date)
             expenseBillTillDate = getExpenseBillEntered(tenant['tenantId'],startdate,enddate)
             lastExpTrnsDate = getLastExpTransactionDate(tenant['tenantId'],startdate,enddate)
             noOfBillpaid= getNoOfBillsPaid(tenant['tenantId'],startdate,enddate)
