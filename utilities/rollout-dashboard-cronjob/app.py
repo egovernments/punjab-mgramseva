@@ -800,8 +800,7 @@ def getCurrentDate():
     currentDateInMillis = str(parser.parse(currentDate).timestamp() * 1000)
     
     return currentDateInMillis
-     
-createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills)    
+       
 def createTable():
     
     CREATE_TABLE_QUERY = """create table roll_out_dashboard(
