@@ -35,7 +35,7 @@ class SuccessPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('₹${amount}',
+                amount==null?SizedBox():Text('₹${amount}',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Theme.of(context).backgroundColor,
