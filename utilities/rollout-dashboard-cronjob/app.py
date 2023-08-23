@@ -711,7 +711,7 @@ def getdaterange(i):
     return epochnow,lastepoch
         
                               
-def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills):
+def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date):
     # create entry into new table in postgres db with the table name roll_outdashboard . enter all field into the db and additional createdtime additional column
     
     print("inserting data into db")
@@ -725,8 +725,8 @@ def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,con
         createdTime = datetime.now(tz=tzInfo)
         print("createdtime -->", createdTime)
         
-        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section,active_users_count,total_advance,total_penalty,consumer_count, last_demand_gen_date, last_demand_gen_count,total_demand_amount,collection_till_date,last_collection_date,expense_count,count_of_electricity_expense_bills,no_of_paid_expense_bills,last_expense_txn_date,total_amount_of_expense_bills,total_amount_of_electricity_bills,total_amount_of_paid_expense_bills,createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'],activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills, createdTime)
+        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section,active_users_count,total_advance,total_penalty,consumer_count, last_demand_gen_date, last_demand_gen_count,total_demand_amount,collection_till_date,last_collection_date,expense_count,count_of_electricity_expense_bills,no_of_paid_expense_bills,last_expense_txn_date,total_amount_of_expense_bills,total_amount_of_electricity_bills,total_amount_of_paid_expense_bills,date_range,createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'],activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date, createdTime)
         cursor.execute(postgres_insert_query, record_to_insert)
        
         connection.commit()
@@ -797,7 +797,7 @@ def process():
             totalAmountOfExpenseBills = getTotalAmountExpenseBills(tenant['tenantId'],startdate,enddate)
             totalAmountOfElectricityBills = getTotalAmountElectricityBills(tenant['tenantId'],startdate,enddate)
             totalAmountOfPaidExpenseBills = getTotalAmountPaidBills(tenant['tenantId'],startdate,enddate)
-            createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills)
+            createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date)
         
     print("End of rollout dashboard")
     return 
@@ -847,11 +847,12 @@ def createTable():
         last_collection_date DATE,
         expense_count BIGINT,
         count_of_electricity_expense_bills BIGINT,
-        no_of_paid_expense_bills NUMERIC(10),
+        no_of_paid_expense_bills NUMERIC(12, 2),
         last_expense_txn_date Date,
-        total_amount_of_expense_bills NUMERIC(10),
-        total_amount_of_electricity_bills NUMERIC(10),
-        total_amount_of_paid_expense_bills NUMERIC(10),
+        total_amount_of_expense_bills NUMERIC(12, 2),
+        total_amount_of_electricity_bills NUMERIC(12, 2),
+        total_amount_of_paid_expense_bills NUMERIC(12, 2),
+        date_range varchar(250),
         createdtime TIMESTAMP NOT NULL
         )"""
     
