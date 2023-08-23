@@ -54,7 +54,7 @@ def getGPWSCHeirarchy():
             if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
                 teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
 
-        url = 'https://mgramseva-dwss.punjab.gov.in/'
+        url = 'https://mgramseva-uat.psegs.in/'
         print(url)
         requestData = {
             "requestHeader": {
