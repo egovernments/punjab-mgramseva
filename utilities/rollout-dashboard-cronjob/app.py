@@ -847,11 +847,11 @@ def createTable():
         last_collection_date DATE,
         expense_count BIGINT,
         count_of_electricity_expense_bills BIGINT,
-        no_of_paid_expense_bills NUMERIC(12, 2),
+        no_of_paid_expense_bills BIGINT,
         last_expense_txn_date Date,
-        total_amount_of_expense_bills NUMERIC(12, 2),
-        total_amount_of_electricity_bills NUMERIC(12, 2),
-        total_amount_of_paid_expense_bills NUMERIC(12, 2),
+        total_amount_of_expense_bills BIGINT,
+        total_amount_of_electricity_bills BIGINT,
+        total_amount_of_paid_expense_bills BIGINT,
         date_range varchar(250),
         createdtime TIMESTAMP NOT NULL
         )"""
