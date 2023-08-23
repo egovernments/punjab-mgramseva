@@ -628,31 +628,38 @@ def getTotalDemandAmount(tenantId,startdate,enddate):
                 cursor.close()
                 connection.close()
                 
-                
+daterange = ['Last seven days','Last 15 days','1-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','Quarter-1','FY to date','Previous 1st FY (22-23)','Previous 2nd FY (21-22)','Previous 3rd FY (20-21)']                
 def getdaterange(i):
     epochnow = None;lastepoch = None
-    if i == '7days':
+    if i == 'Last seven days':
         now = datetime.now()
         lastSevenDays = (now - timedelta(days=7)).replace(hour=0,minute=0,second=0, microsecond=0)
         lastepoch = now.strftime('%s') + '000'
         epochnow = lastSevenDays.strftime('%s') + '000'
     
-    if i == '15days':
+    if i == 'Last 15 days':
         now = datetime.now()
         lastFifteenDays = (now - timedelta(days=15)).replace(hour=0,minute=0,second=0, microsecond=0)
         lastepoch = now.strftime('%s') + '000'
         epochnow = lastFifteenDays.strftime('%s') + '000'
         
-    if i == 'lastmonth':
+    if i == '1-Till date':
+        today = datetime.now().year
+        lastonemonth = (datetime.now() - relativedelta(months=1)).month
+        start_date = datetime(today, lastonemonth, 1)
+        epochnow = start_date.strftime('%s') + '000'
+        lastepoch = datetime.now().strftime('%s') + '000'
+        
+    if i == 'Previous Month':
         today = datetime.now().year
         lastonemonth = (datetime.now() - relativedelta(months=1)).month
         start_date = datetime(today, lastonemonth, 1)
         end_date = datetime(today, lastonemonth + 1, 1) + timedelta(days=-1)
-        enddate = end_date.combine(end_date,time.max)
+        enddate = end_date.combine(end_date, time.max)
         epochnow = start_date.strftime('%s') + '000'
         lastepoch = enddate.strftime('%s') + '000'
         
-    if i == 'q1':
+    if i == 'Quarter-1':
         year = datetime.now().year
         start_date = datetime(year, 4, 1)
         end_date = datetime(year, 6, 30)
@@ -660,7 +667,7 @@ def getdaterange(i):
         epochnow = start_date.strftime('%s') + '000'
         lastepoch = end.strftime('%s') + '000'
         
-    if i == 'q2':
+    if i == 'Quarter-2':
         year = datetime.now().year
         start_date = datetime(year, 7, 1)
         end_date = datetime(year, 9, 30)
@@ -668,7 +675,7 @@ def getdaterange(i):
         epochnow = start_date.strftime('%s') + '000'
         lastepoch = end.strftime('%s') + '000'
         
-    if i == 'q3':
+    if i == 'Quarter-3':
         year = datetime.now().year
         start_date = datetime(year, 10, 1)
         end_date = datetime(year, 12, 31)
@@ -676,13 +683,31 @@ def getdaterange(i):
         epochnow = start_date.strftime('%s') + '000'
         lastepoch = end.strftime('%s') + '000'
         
-    if i == 'q4':
-        year = datetime.now().year
-        start_date = datetime(year, 1, 1)
-        end_date = datetime(year, 3, 31)
-        end = datetime.combine(end_date,time.max)
+    if i == 'Previous 1st FY (22-23)':
+        today = datetime.now().year
+        lastyear = today-1
+        start_date = datetime(lastyear, 4, 1)
+        end_date = datetime(today, 4, 1) + timedelta(days=-1)
+        enddate = end_date.combine(end_date, time.max)
         epochnow = start_date.strftime('%s') + '000'
-        lastepoch = end.strftime('%s') + '000'
+        lastepoch = enddate.strftime('%s') + '000'
+        
+    if i == 'Previous 2nd FY (21-22)':
+        today = datetime.now().year
+        start_date = datetime(today-2, 4, 1)
+        end_date = datetime(today-1, 4, 1) + timedelta(days=-1)
+        enddate = end_date.combine(end_date, time.max)
+        epochnow = start_date.strftime('%s') + '000'
+        lastepoch = enddate.strftime('%s') + '000'
+        
+        
+    if i == 'Previous 3rd FY (20-21)':
+        today = datetime.now().year
+        start_date = datetime(today-3, 4, 1)
+        end_date = datetime(today-2, 4, 1) + timedelta(days=-1)
+        enddate = end_date.combine(end_date, time.max)
+        epochnow = start_date.strftime('%s') + '000'
+        lastepoch = enddate.strftime('%s') + '000'
         
     return epochnow,lastepoch
         
@@ -701,8 +726,8 @@ def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,con
         createdTime = datetime.now(tz=tzInfo)
         print("createdtime -->", createdTime)
         
-        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section,active_users_count,total_advance,total_penalty,consumer_count, last_demand_gen_date, last_demand_gen_count,total_demand_amount,collection_till_date,last_collection_date,expense_count,count_of_electricity_expense_bills,no_of_paid_expense_bills,last_expense_txn_date,total_amount_of_expense_bills,total_amount_of_electricity_bills,total_amount_of_paid_expense_bills, createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'],activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills, createdTime)
+        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section,active_users_count,total_advance,total_penalty,consumer_count, last_demand_gen_date, last_demand_gen_count,total_demand_amount,collection_till_date,last_collection_date,expense_count,count_of_electricity_expense_bills,no_of_paid_expense_bills,last_expense_txn_date,total_amount_of_expense_bills,total_amount_of_electricity_bills,total_amount_of_paid_expense_bills,date_range,createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'],activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date, createdTime)
         cursor.execute(postgres_insert_query, record_to_insert)
        
         connection.commit()
@@ -757,7 +782,7 @@ def process():
         totalAdvance= getTotalAdvanceCreated(tenant['tenantId'])
         totalPenalty= getTotalPenaltyCreated(tenant['tenantId'])
         
-        daterange = ['7days','15days','lastmonth','q1','q2','q3','q4','tilldate']
+        daterange = ['Last seven days','Last 15 days','1-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','FY to date','Previous 1st FY (22-23)','Previous 2nd FY (21-22)','Previous 3rd FY (20-21)']
         for i,date in enumerate(daterange):
             startdate,enddate= getdaterange(date)
             expenseCount = getExpenseBillEntered(tenant['tenantId'],startdate,enddate)
@@ -773,7 +798,7 @@ def process():
             totalAmountOfExpenseBills = getTotalAmountExpenseBills(tenant['tenantId'],startdate,enddate)
             totalAmountOfElectricityBills = getTotalAmountElectricityBills(tenant['tenantId'],startdate,enddate)
             totalAmountOfPaidExpenseBills = getTotalAmountPaidBills(tenant['tenantId'],startdate,enddate)
-            createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills)
+            createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date)
         
     print("End of rollout dashboard")
     return 
@@ -828,6 +853,7 @@ def createTable():
         total_amount_of_expense_bills NUMERIC(10),
         total_amount_of_electricity_bills NUMERIC(10),
         total_amount_of_paid_expense_bills NUMERIC(10),
+        date_range varchar(250),
         createdtime TIMESTAMP NOT NULL
         )"""
     
