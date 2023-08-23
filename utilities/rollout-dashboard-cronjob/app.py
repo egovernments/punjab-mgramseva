@@ -627,8 +627,7 @@ def getTotalDemandAmount(tenantId,startdate,enddate):
             if connection:
                 cursor.close()
                 connection.close()
-                
-daterange = ['Last seven days','Last 15 days','1-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','Quarter-1','FY to date','Previous 1st FY (22-23)','Previous 2nd FY (21-22)','Previous 3rd FY (20-21)']                
+                              
 def getdaterange(i):
     epochnow = None;lastepoch = None
     if i == 'Last seven days':
