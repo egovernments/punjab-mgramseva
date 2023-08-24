@@ -486,7 +486,7 @@ def getActiveUsersCount(tenantId):
                 cursor.close()
                 connection.close()
            
-def getTotalAdvanceCreated(tenantId):
+def getTotalAdvanceCreated(tenantId,,startdate,enddate):
         # query the postgresql db to get the total count of total advance in the given tenant till date  
         print("advance sum returned")
         try:                          
@@ -513,7 +513,7 @@ def getTotalAdvanceCreated(tenantId):
                 connection.close()
                 
                 
-def getTotalPenaltyCreated(tenantId):
+def getTotalPenaltyCreated(tenantId,startdate,enddate):
         # query the postgresql db to get the total count of total penalty in the given tenant till date  
         print("penalty sum returned")
         try:                          
@@ -780,11 +780,10 @@ def process():
     
     tenants = getGPWSCHeirarchy()
     for tenant in tenants:
-    
+        activeUsersCount= getActiveUsersCount(tenant['tenantId'])
         daterange = ['Last seven days','Last 15 days','1-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','FY to date','Previous 1st FY (22-23)','Previous 2nd FY (21-22)','Previous 3rd FY (20-21)']
         for i,date in enumerate(daterange):
             startdate,enddate= getdaterange(date)
-            activeUsersCount= getActiveUsersCount(tenant['tenantId'],startdate,enddate)
             totalAdvance= getTotalAdvanceCreated(tenant['tenantId'],startdate,enddate)
             totalPenalty= getTotalPenaltyCreated(tenant['tenantId'],startdate,enddate)
             expenseCount = getExpenseBillEntered(tenant['tenantId'],startdate,enddate)
