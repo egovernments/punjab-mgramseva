@@ -492,8 +492,12 @@ def getTotalAdvanceCreated(tenantId):
         try:                          
             connection = getConnection()
             cursor = connection.cursor()
-             
-            ADVANCE_COUNT_QUERY = "select sum(dd.taxamount) from egbs_demanddetail_v1 dd inner join egbs_demand_v1 d on dd.demandid = d.id where d.status = 'ACTIVE' and dd.taxheadcode='WS_ADVANCE_CARRYFORWARD' and dd.tenantid = '"+tenantId+"'"
+            
+            if startdate != None and enddate != None:
+                ADVANCE_COUNT_QUERY = "select sum(dd.taxamount) from egbs_demanddetail_v1 dd inner join egbs_demand_v1 d on dd.demandid = d.id where d.status = 'ACTIVE' and dd.taxheadcode='WS_ADVANCE_CARRYFORWARD' and d.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and d.tenantid = '"+tenantId+"'"
+            else:
+                ADVANCE_COUNT_QUERY = "select sum(dd.taxamount) from egbs_demanddetail_v1 dd inner join egbs_demand_v1 d on dd.demandid = d.id where d.status = 'ACTIVE' and dd.taxheadcode='WS_ADVANCE_CARRYFORWARD' and d.tenantid = '"+tenantId+"'"
+
             cursor.execute(ADVANCE_COUNT_QUERY)
             result = cursor.fetchone()
             print(result[0])
@@ -515,8 +519,12 @@ def getTotalPenaltyCreated(tenantId):
         try:                          
             connection = getConnection()
             cursor = connection.cursor()
-             
-            PENALTY_COUNT_QUERY = "select sum(dd.taxamount) from egbs_demanddetail_v1 dd inner join egbs_demand_v1 d on dd.demandid = d.id where d.status = 'ACTIVE' and dd.taxheadcode='WS_TIME_PENALTY' and dd.tenantid = '"+tenantId+"'"
+            
+            if startdate != None and enddate != None:
+                PENALTY_COUNT_QUERY = "select sum(dd.taxamount) from egbs_demanddetail_v1 dd inner join egbs_demand_v1 d on dd.demandid = d.id where d.status = 'ACTIVE' and dd.taxheadcode='WS_TIME_PENALTY' and d.createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and d.tenantid = '"+tenantId+"'"
+            else:
+                PENALTY_COUNT_QUERY = "select sum(dd.taxamount) from egbs_demanddetail_v1 dd inner join egbs_demand_v1 d on dd.demandid = d.id where d.status = 'ACTIVE' and dd.taxheadcode='WS_TIME_PENALTY' and d.tenantid = '"+tenantId+"'"
+           
             cursor.execute(PENALTY_COUNT_QUERY)
             result = cursor.fetchone()
             print(result[0])
@@ -772,18 +780,13 @@ def process():
     
     tenants = getGPWSCHeirarchy()
     for tenant in tenants:
-        print(tenant)
-        countOfRateMaster = getRateMasters(tenant['tenantId'])
-        collectionsMadeOnline = getCollectionsMadeOnline(tenant['tenantId'])
-        noOfRatings = getRatingCount(tenant['tenantId'])
-        lastRatingDate= getLastRatingDate(tenant['tenantId'])
-        activeUsersCount= getActiveUsersCount(tenant['tenantId'])
-        totalAdvance= getTotalAdvanceCreated(tenant['tenantId'])
-        totalPenalty= getTotalPenaltyCreated(tenant['tenantId'])
-        
+    
         daterange = ['Last seven days','Last 15 days','1-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','FY to date','Previous 1st FY (22-23)','Previous 2nd FY (21-22)','Previous 3rd FY (20-21)']
         for i,date in enumerate(daterange):
             startdate,enddate= getdaterange(date)
+            activeUsersCount= getActiveUsersCount(tenant['tenantId'],startdate,enddate)
+            totalAdvance= getTotalAdvanceCreated(tenant['tenantId'],startdate,enddate)
+            totalPenalty= getTotalPenaltyCreated(tenant['tenantId'],startdate,enddate)
             expenseCount = getExpenseBillEntered(tenant['tenantId'],startdate,enddate)
             countOfElectricityExpenseBills=getElectricityExpenseBillEntered(tenant['tenantId'],startdate,enddate)
             lastExpTrnsDate = getLastExpTransactionDate(tenant['tenantId'],startdate,enddate)
