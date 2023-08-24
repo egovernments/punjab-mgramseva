@@ -486,7 +486,7 @@ def getActiveUsersCount(tenantId):
                 cursor.close()
                 connection.close()
            
-def getTotalAdvanceCreated(tenantId,,startdate,enddate):
+def getTotalAdvanceCreated(tenantId,startdate,enddate):
         # query the postgresql db to get the total count of total advance in the given tenant till date  
         print("advance sum returned")
         try:                          
