@@ -19,7 +19,7 @@ Command:
 - Clone the repository [https://github.com/egovernments/punjab-mgramseva](https://github.com/egovernments/punjab-mgramseva)
 - $ cd /punjab-mgramseva/frontend/mgramseva
 - $ flutter pub get
-- Change the url in the lib/Env/app_config.dart to the desired instance url
+- Change the url in the lib/env/app_config.dart to the desired instance url
 
 ## About Flutter
 For help getting started with Flutter, view our
