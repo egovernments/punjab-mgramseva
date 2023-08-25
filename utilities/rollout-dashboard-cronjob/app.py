@@ -563,6 +563,30 @@ def getConsumersCount(tenantId,startdate,enddate):
                 cursor.close()
                 connection.close()
                 
+def getTotalConsumerCount(tenantId,startdate,enddate):
+        print("consumer count returned")
+        try:                          
+            connection = getConnection()
+            cursor = connection.cursor()
+            
+            if startdate != None and enddate != None:
+                CONSUMER_COUNT = "select count(*) from eg_ws_connection where createdtime between '"+startdate+"'"+" and '"+enddate+"'"+" and tenantid = '"+tenantId+"'"
+            else:
+                CONSUMER_COUNT = "select count(*) from eg_ws_connection where tenantid = '"+tenantId+"'"
+            cursor.execute(CONSUMER_COUNT)
+            result = cursor.fetchone()
+            print(result[0])
+            return result[0]
+         
+        except Exception as exception:
+            print("Exception occurred while connecting to the database")
+            print(exception)
+        
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                
 def getLastDemandDate(tenantId,startdate,enddate):
         print("last demand date returned")
         try:
@@ -650,10 +674,10 @@ def getdaterange(i):
         lastepoch = now.strftime('%s') + '000'
         epochnow = lastFifteenDays.strftime('%s') + '000'
         
-    if i == '1-Till date':
+    if i == 'currentMonth-Till date':
         today = datetime.now().year
-        lastonemonth = (datetime.now() - relativedelta(months=1)).month
-        start_date = datetime(today, lastonemonth, 1)
+        currentMonth = datetime.now().month
+        start_date = datetime(today, currentMonth, 1)
         epochnow = start_date.strftime('%s') + '000'
         lastepoch = datetime.now().strftime('%s') + '000'
         
@@ -689,7 +713,13 @@ def getdaterange(i):
         end = datetime.combine(end_date,time.max)
         epochnow = start_date.strftime('%s') + '000'
         lastepoch = end.strftime('%s') + '000'
-        
+    
+    if i == 'FY to date':
+        today = datetime.now().year
+        start_date = datetime(today, 4, 1)
+        epochnow = start_date.strftime('%s') + '000'
+        lastepoch = datetime.now().strftime('%s') + '000'
+            
     if i == 'Previous 1st FY (22-23)':
         today = datetime.now().year
         lastyear = today-1
@@ -719,7 +749,7 @@ def getdaterange(i):
     return epochnow,lastepoch
         
                               
-def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date):
+def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,totalConsumerCount,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date):
     # create entry into new table in postgres db with the table name roll_outdashboard . enter all field into the db and additional createdtime additional column
     
     print("inserting data into db")
@@ -733,8 +763,8 @@ def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,con
         createdTime = datetime.now(tz=tzInfo)
         print("createdtime -->", createdTime)
         
-        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section,active_users_count,total_advance,total_penalty,consumer_count, last_demand_gen_date, last_demand_gen_count,total_demand_amount,collection_till_date,last_collection_date,expense_count,count_of_electricity_expense_bills,no_of_paid_expense_bills,last_expense_txn_date,total_amount_of_expense_bills,total_amount_of_electricity_bills,total_amount_of_paid_expense_bills,date_range,createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'],activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date, createdTime)
+        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section,active_users_count,total_advance,total_penalty,total_connections,active_connections, last_demand_gen_date, demand_generated_consumer_count,total_demand_amount,collection_till_date,last_collection_date,expense_count,count_of_electricity_expense_bills,no_of_paid_expense_bills,last_expense_txn_date,total_amount_of_expense_bills,total_amount_of_electricity_bills,total_amount_of_paid_expense_bills,date_range,createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'],activeUsersCount,totalAdvance, totalPenalty,totalConsumerCount,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date, createdTime)
         cursor.execute(postgres_insert_query, record_to_insert)
        
         connection.commit()
@@ -781,7 +811,7 @@ def process():
     tenants = getGPWSCHeirarchy()
     for tenant in tenants:
         activeUsersCount= getActiveUsersCount(tenant['tenantId'])
-        daterange = ['Last seven days','Last 15 days','1-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','FY to date','Previous 1st FY (22-23)','Previous 2nd FY (21-22)','Previous 3rd FY (20-21)']
+        daterange = ['Last seven days','Last 15 days','currentMonth-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','Consolidated (As on date)','FY to date','Previous 1st FY (22-23)','Previous 2nd FY (21-22)','Previous 3rd FY (20-21)']
         for i,date in enumerate(daterange):
             startdate,enddate= getdaterange(date)
             totalAdvance= getTotalAdvanceCreated(tenant['tenantId'],startdate,enddate)
@@ -794,12 +824,13 @@ def process():
             noOfDemandRaised= getTotalDemandRaised(tenant['tenantId'],startdate,enddate)
             lastCollectionDate = getLastCollectionDate(tenant['tenantId'],startdate,enddate)
             collectionsMade = getCollectionsMade(tenant['tenantId'],startdate,enddate)
+            totalConsumerCount= getTotalConsumerCount(tenant['tenantId'],startdate,enddate)
             consumerCount= getConsumersCount(tenant['tenantId'],startdate,enddate)
             totaldemAmount = getTotalDemandAmount(tenant['tenantId'],startdate,enddate)
             totalAmountOfExpenseBills = getTotalAmountExpenseBills(tenant['tenantId'],startdate,enddate)
             totalAmountOfElectricityBills = getTotalAmountElectricityBills(tenant['tenantId'],startdate,enddate)
             totalAmountOfPaidExpenseBills = getTotalAmountPaidBills(tenant['tenantId'],startdate,enddate)
-            createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date)
+            createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,totalConsumerCount,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date)
         
     print("End of rollout dashboard")
     return 
@@ -841,9 +872,10 @@ def createTable():
         active_users_count NUMERIC(10),
         total_advance NUMERIC(10),
         total_penalty NUMERIC(10),
-        consumer_count NUMERIC(10),
+        total_connections NUMERIC(10),
+        active_connections NUMERIC(10),
         last_demand_gen_date DATE,
-        last_demand_gen_count NUMERIC(10),
+        demand_generated_consumer_count NUMERIC(10),
         total_demand_amount NUMERIC(10),
         collection_till_date NUMERIC(12, 2),
         last_collection_date DATE,
