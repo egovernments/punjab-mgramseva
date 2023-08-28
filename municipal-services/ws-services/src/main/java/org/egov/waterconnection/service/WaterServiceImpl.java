@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.Period;
 import java.time.YearMonth;
@@ -50,6 +51,7 @@ import org.egov.waterconnection.web.models.BillReportData;
 import org.egov.waterconnection.web.models.BillReportResponse;
 import org.egov.waterconnection.web.models.BillingCycle;
 import org.egov.waterconnection.web.models.CheckList;
+import org.egov.waterconnection.web.models.CollectionReportData;
 import org.egov.waterconnection.web.models.Connection.StatusEnum;
 import org.egov.waterconnection.web.models.Feedback;
 import org.egov.waterconnection.web.models.FeedbackRequest;
@@ -781,13 +783,29 @@ public class WaterServiceImpl implements WaterService {
 	}
 
 	@Override
-	public List<BillReportData> billReport(@Valid String demandDate, String tenantId, RequestInfo requestInfo) {
+	public List<BillReportData> billReport(@Valid String demandStartDate,@Valid String demandEndDate, String tenantId, RequestInfo requestInfo) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-		LocalDate demDate = LocalDate.parse(demandDate, formatter);
+		LocalDate demStartDate = LocalDate.parse(demandStartDate, formatter);
+		LocalDate demEndDate = LocalDate.parse(demandEndDate, formatter);
 
-		Long demDateTime = LocalDateTime.of(demDate.getYear(), demDate.getMonth(), demDate.getDayOfMonth(), 0, 0, 0)
+		Long demStartDateTime = LocalDateTime.of(demStartDate.getYear(), demStartDate.getMonth(), demStartDate.getDayOfMonth(), 0, 0, 0)
 				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		List<BillReportData> billReportData = waterDaoImpl.getBillReportData(demDateTime,tenantId);
+		Long demEndDateTime = LocalDateTime.of(demEndDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		List<BillReportData> billReportData = waterDaoImpl.getBillReportData(demStartDateTime,demEndDateTime,tenantId);
 		return billReportData;
+	}
+
+	@Override
+	public List<CollectionReportData> collectionReport(String paymentStartDate, String paymentEndDate, String tenantId,
+			RequestInfo requestInfo) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+		LocalDate payStartDate = LocalDate.parse(paymentStartDate, formatter);
+		LocalDate payEndDate = LocalDate.parse(paymentEndDate, formatter);
+
+		Long payStartDateTime = LocalDateTime.of(payStartDate.getYear(), payStartDate.getMonth(), payStartDate.getDayOfMonth(), 0, 0, 0)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long payEndDateTime = LocalDateTime.of(payEndDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		List<CollectionReportData> collectionReportData = waterDaoImpl.getCollectionReportData(payStartDateTime,payEndDateTime,tenantId);
+		return collectionReportData;
 	}
 }

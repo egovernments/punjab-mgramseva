@@ -48,24 +48,45 @@ public class ReportRowMapper implements ResultSetExtractor<List<BillReportData>>
 	public List<BillReportData> extractData(ResultSet rs) throws SQLException, DataAccessException {
 		List<BillReportData> billReportDataList = new ArrayList<>();
 		BillReportData billReportData = new BillReportData();
+	    Map<String, BillReportData> reportData = new HashMap<>();
 		while (rs.next()) {
-				billReportData = new BillReportData();
-				
-				billReportData.setTenantName(rs.getString("tenantId"));
-				billReportData.setConnectionNo(rs.getString("connectionNo"));
-				billReportData.setOldConnectionNo(rs.getString("oldConnectionNo"));
-				billReportData.setUserId(rs.getString("uuid"));
-				
-				billReportData.setConsumerCreatedOnDate(rs.getString("connCreatedDate"));
-				billReportData.setPreviousArrear(rs.getString("previousArrear"));
-				billReportData.setDemandAmount(rs.getBigDecimal("demandAmount"));
-				billReportData.setTotalBillGenerated(rs.getString("billAmount"));
-				billReportDataList.add(billReportData);
+			    if(reportData.get(rs.getString("connectionNo")) != null) {
+			    	setDemandTypeValue(rs, billReportData, reportData);
+			    }
+			    else {
+			    	billReportData = new BillReportData();
+					
+					billReportData.setTenantName(rs.getString("tenantId"));
+					billReportData.setConnectionNo(rs.getString("connectionNo"));
+					billReportData.setOldConnectionNo(rs.getString("oldConnectionNo"));
+					billReportData.setUserId(rs.getString("uuid"));
+					billReportData.setConsumerCreatedOnDate(rs.getString("connCreatedDate"));
+					
+					setDemandTypeValue(rs, billReportData, reportData);
+
+			    }
+			    
 		}
+		List<BillReportData> listOfValues = reportData.values().stream().collect( Collectors.toCollection(ArrayList::new));
+		billReportDataList.addAll(listOfValues);
 		if(!billReportDataList.isEmpty()){
 			enrichConnectionHolderDetails(billReportDataList);
 		}
 		return billReportDataList;
+	}
+
+	private void setDemandTypeValue(ResultSet rs, BillReportData billReportData, Map<String, BillReportData> reportData)
+			throws SQLException {
+		if(rs.getString("demandType").equalsIgnoreCase("10101")) {
+			billReportData.setDemandAmount(rs.getBigDecimal("demandAmount"));
+		}
+		if(rs.getString("demandType").equalsIgnoreCase("WS_TIME_PENALTY")) {
+			billReportData.setPenalty(rs.getBigDecimal("demandAmount"));
+		}
+		if(rs.getString("demandType").equalsIgnoreCase("WS_ADVANCE_CARRYFORWARD")) {
+			billReportData.setAdvance(rs.getBigDecimal("demandAmount"));
+		}
+		reportData.put(rs.getString("connectionNo"), billReportData);
 	}
 
 	private void enrichConnectionHolderDetails(List<BillReportData> billReportDataList) {

@@ -1,6 +1,7 @@
 package org.egov.waterconnection.web.models;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,7 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BillReportData {
+public class CollectionReportData {
 	
 	@JsonProperty("tenantName")
 	private String tenantName = null;
@@ -29,19 +30,13 @@ public class BillReportData {
 
 	@JsonProperty("oldConnectionNo")
 	private String oldConnectionNo = null;
-
-	@JsonProperty("consumerCreatedOnDate")
-	private String consumerCreatedOnDate = null;
-	
-	@JsonProperty("penalty")
-	private BigDecimal penalty = null;
-	
-	@JsonProperty("advance")
-	private BigDecimal advance = null;
-	
-	@JsonProperty("demandAmount")
-	private BigDecimal demandAmount =null;
 	
 	@JsonProperty("userId")
 	private String userId = null;
+	
+	@JsonProperty("paymentMode")
+	private String paymentMode = null;
+	
+	@JsonProperty("paymentAmount")
+	private List<BigDecimal> paymentAmount = null;
 }
