@@ -233,10 +233,10 @@ public class PayGovGateway implements Gateway {
             } else {
                 moduleCode = transaction.getModule().concat("001").toUpperCase();
             }*/
-            //moduleCode ="DWSS08";
-            String tenantId = transaction.getTenantId().split("\\.")[1];
+            moduleCode ="DWSS08";
+           // String tenantId = transaction.getTenantId().split("\\.")[1];
             //moduleCode ="DWSS08"
-            moduleCode = "WS".concat(tenantId);
+            //moduleCode = "WS".concat(tenantId);
 
         }
         return moduleCode;
