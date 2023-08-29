@@ -42,7 +42,7 @@ config:
         image-name: "egov-pg-service"
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "core-services/egov-pg-service/src/main/resources/db"
-        image-name: "egov-pg-service-db"        
+        image-name: "egov-pg-service-db"
   - name: "builds/mGramSeva/municipal-services/ws-calculator"
     build:
       - work-dir: "municipal-services/ws-calculator"
@@ -71,29 +71,34 @@ config:
     build:
       - work-dir: "business-services/billing-service"
         image-name: "billing-service"
-        dockerfile: "build/maven/Dockerfile"  
+        dockerfile: "build/maven/Dockerfile"
       - work-dir: "business-services/billing-service/src/main/resources/db"
-        image-name: "billing-service-db"        
+        image-name: "billing-service-db"
   - name: "builds/mGramSeva/frontend/frontend-mgramseva"
     build:
       - work-dir: "frontend/mgramseva"
         image-name: "frontend-mgramseva"
         dockerfile: "frontend/mgramseva/docker/Dockerfile"
+  - name: "builds/mGramSeva/frontend/mgramseva-digit-ui"
+    build:
+      - work-dir: "frontend/micro-ui"
+        image-name: "mgramseva-digit-ui"
+        dockerfile: "frontend/micro-ui/web/docker/Dockerfile"
   - name: "builds/mGramSeva/core-services/user-otp"
     build:
       - work-dir: "core-services/user-otp"
         image-name: "user-otp"
-        dockerfile: "build/maven/Dockerfile"        
+        dockerfile: "build/maven/Dockerfile"
   - name: "builds/mGramSeva/core-services/egov-notification-sms"
     build:
       - work-dir: "core-services/egov-notification-sms"
         image-name: "egov-notification-sms"
-        dockerfile: "build/maven/Dockerfile"  
+        dockerfile: "build/maven/Dockerfile"
   - name: "builds/mGramSeva/utilities/mdms-read-cronjob"
     build:
       - work-dir: "utilities/mdms-read-cronjob"
         image-name: "api-cronjob"
-        dockerfile: "utilities/mdms-read-cronjob/Dockerfile"  
+        dockerfile: "utilities/mdms-read-cronjob/Dockerfile"
   - name: "builds/mGramSeva/municipal-services/egov-user-event"
     build:
       - work-dir: "municipal-services/egov-user-event"
