@@ -140,7 +140,7 @@ class RevenueDashboard with ChangeNotifier {
           var surplus = int.parse(collection.pendingCollection ?? '0') - int.parse(expense.amountUnpaid ?? '0');
           filteredList.add(
               TableDataRow([
-                TableData('${DateFormats.getMonth(
+                TableData('${DateFormats.getMonthAndYearFromDateTime(
                     DateFormats.getFormattedDateToDateTime(
                         DateFormats.timeStampToDate(collection.month))!)}',
                     callBack: onTapOfMonth,
