@@ -26,6 +26,7 @@ import 'package:mgramseva/widgets/tab_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
+import '../../routers/routers.dart';
 import '../../widgets/custom_app_bar.dart';
 import 'revenue_expense_dashboard/revenue_dashboard.dart';
 import 'search_expense.dart';
@@ -388,6 +389,10 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
 
   void onClickOfBackButton() {
     CustomOverlay.removeOverLay();
-    Navigator.pop(context);
+    var dashBoardProvider =
+    Provider.of<DashBoardProvider>(context, listen: false);
+    if(dashBoardProvider.selectedMonth.dateType != DateType.MONTH) Navigator.pop(context);
+    else{
+      Navigator.popAndPushNamed(context,Routes.DASHBOARD);}
   }
 }
