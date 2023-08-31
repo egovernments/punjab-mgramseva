@@ -118,7 +118,7 @@ config:
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "municipal-services/property-services/src/main/resources/db"
         image-name: "property-services-db"
-  - name: "builds/mGramSeva/business-services/billing-service"
+  - name: "builds/mGramSeva/business-services/egov-apportion-service"
     build:
       - work-dir: "business-services/egov-apportion-service"
         image-name: "egov-apportion-service"
