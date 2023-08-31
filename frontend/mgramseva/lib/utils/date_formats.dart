@@ -116,4 +116,12 @@ class DateFormats {
       return '';
     }
   }
+
+  static String getMonthAndYearFromDateTime(DateTime date) {
+    try {
+      return '${DateFormat.MMM().format(date)}-${DateFormat.y().format(date)}';
+    } catch (e) {
+      return '';
+    }
+  }
 }

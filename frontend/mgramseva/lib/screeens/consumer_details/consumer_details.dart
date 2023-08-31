@@ -205,7 +205,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             isRequired: true,
                             validator: (val) =>
                                 Validators.maxCharactersValidator(
-                                    val, 100, i18.consumer.CONSUMER_NAME),
+                                    val, 50, i18.consumer.CONSUMER_NAME),
                             contextKey:
                                 consumerProvider.consmerWalkthrougList[0].key,
                             key: Keys.createConsumer.CONSUMER_NAME_KEY,
@@ -231,7 +231,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             isRequired: true,
                             validator: (val) =>
                                 Validators.maxCharactersValidator(
-                                    val, 100, i18.consumer.FATHER_SPOUSE_NAME),
+                                    val, 50, i18.consumer.FATHER_SPOUSE_NAME),
                             inputFormatter: [
                               FilteringTextInputFormatter.allow(
                                   RegExp("[A-Za-z ]"))
