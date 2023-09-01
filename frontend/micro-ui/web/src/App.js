@@ -10,7 +10,11 @@ import {
   PTLinks,
   PTComponents,
 } from "@egovernments/digit-ui-module-pt";
-import { MCollectModule, MCollectLinks, initMCollectComponents } from "@egovernments/digit-ui-module-mcollect";
+import {
+  MCollectModule,
+  MCollectLinks,
+  initMCollectComponents,
+} from "@egovernments/digit-ui-module-mcollect";
 import { initDSSComponents } from "@egovernments/digit-ui-module-dss";
 import {
   PaymentModule,
@@ -28,7 +32,10 @@ import {
   TLLinks,
   initTLComponents,
 } from "@egovernments/digit-ui-module-tl";
-import { initReceiptsComponents, ReceiptsModule } from "@egovernments/digit-ui-module-receipts";
+import {
+  initReceiptsComponents,
+  ReceiptsModule,
+} from "@egovernments/digit-ui-module-receipts";
 import { initOBPSComponents } from "@egovernments/digit-ui-module-obps";
 import { initNOCComponents } from "@egovernments/digit-ui-module-noc";
 import { initEngagementComponents } from "@egovernments/digit-ui-module-engagement";
@@ -60,36 +67,36 @@ const enabledModules = [
   "Reports",
   "Bills",
   "SW",
-  "BillAmendment"
+  "BillAmendment",
 ];
 window.Digit.ComponentRegistryService.setupRegistry({
   ...paymentConfigs,
-  PTModule,
-  PTLinks,
+  // PTModule,
+  // PTLinks,
   PaymentModule,
   PaymentLinks,
-  ...PTComponents,
-  MCollectLinks,
-  MCollectModule,
+  // ...PTComponents,
+  // MCollectLinks,
+  // MCollectModule,
   HRMSModule,
-  TLModule,
-  TLLinks,
+  // TLModule,
+  // TLLinks,
   // ReceiptsModule
 });
 
 initPGRComponents();
-initFSMComponents();
+// initFSMComponents();
 initDSSComponents();
-initMCollectComponents();
-initHRMSComponents();
-initTLComponents();
+// initMCollectComponents();
+// initHRMSComponents();
+// initTLComponents();
 // initReceiptsComponents();
-initOBPSComponents();
-initNOCComponents();
-initEngagementComponents();
-initWSComponents();
-initCommonPTComponents();
-initBillsComponents();
+// initOBPSComponents();
+// initNOCComponents();
+// initEngagementComponents();
+// initWSComponents();
+// initCommonPTComponents();
+// initBillsComponents();
 // initReportsComponents();
 initCustomisationComponents();
 
