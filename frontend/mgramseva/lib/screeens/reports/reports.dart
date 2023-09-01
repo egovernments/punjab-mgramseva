@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/screeens/reports/view_table.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/reports_provider.dart';
@@ -13,6 +14,8 @@ import '../../widgets/home_back.dart';
 import '../../widgets/select_field_builder.dart';
 import '../../widgets/side_bar.dart';
 import 'bill_report.dart';
+import 'collection_report.dart';
+import 'generic_report_table.dart';
 
 class Reports extends StatefulWidget {
   const Reports({Key? key}) : super(key: key);
@@ -26,6 +29,7 @@ class Reports extends StatefulWidget {
 class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
   var takeScreenShot = false;
+  bool viewTable = false;
 
   @override
   void dispose() {
@@ -43,6 +47,25 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
         navigatorKey.currentContext!,
         listen: false);
     reportsProvider.getFinancialYearList();
+  }
+
+  showTable(bool status) {
+    setState(() {
+      viewTable = status;
+    });
+  }
+
+  backButtonCallback() {
+    var reportProvider = Provider.of<ReportsProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    if (viewTable == true) {
+      viewTable = false;
+      reportProvider.clearBuildTableData();
+    } else if(viewTable == false) {
+      reportProvider.clearBuildTableData();
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -64,77 +87,87 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              HomeBack(),
               Container(
-                color: Color.fromRGBO(238, 238, 238, 1),
-                margin: constraints.maxWidth < 760
-                    ? null
-                    : EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width / 95),
-                height: constraints.maxHeight - 50,
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  child: Column(
-                    children: [
-                      Text(
-                          ApplicationLocalizations.of(context)
-                              .translate(i18.dashboard.CORE_REPORTS),
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Container(
-                        child: Column(
+                      color: Color.fromRGBO(238, 238, 238, 1),
+                      margin: constraints.maxWidth < 760
+                          ? null
+                          : EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width / 95),
+                      height: constraints.maxHeight - 50,
+                      child: SingleChildScrollView(
+                        controller: scrollController,
+                        child: viewTable
+                            ? ViewTable(showTable)
+                            : Column(
                           children: [
+                            HomeBack(),
+                            Text(
+                                ApplicationLocalizations.of(context)
+                                    .translate(i18.dashboard.CORE_REPORTS),
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w700)),
+                            SizedBox(
+                              height: 30,
+                            ),
                             Consumer<ReportsProvider>(
                                 builder: (_, reportProvider, child) =>
-                                    SelectFieldBuilder(
-                                      i18.demandGenerate.BILLING_YEAR_LABEL,
-                                      reportProvider.selectedBillYear,
-                                      '',
-                                      '',
-                                      reportProvider.onChangeOfBillYear,
-                                      reportProvider
-                                          .getFinancialYearListDropdown(
-                                              reportProvider.languageList),
-                                      true,
-                                      controller:
-                                          reportProvider.billingyearCtrl,
-                                      key: Keys
-                                          .billReport.BILL_REPORT_BILLING_YEAR,
+                                    Container(
+                                      child: Column(
+                                        children: [
+                                          SelectFieldBuilder(
+                                            i18.demandGenerate
+                                                .BILLING_YEAR_LABEL,
+                                            reportProvider.selectedBillYear,
+                                            '',
+                                            '',
+                                            reportProvider.onChangeOfBillYear,
+                                            reportProvider
+                                                .getFinancialYearListDropdown(
+                                                    reportProvider
+                                                        .languageList),
+                                            true,
+                                            controller:
+                                                reportProvider.billingyearCtrl,
+                                            key: Keys.billReport
+                                                .BILL_REPORT_BILLING_YEAR,
+                                          ),
+                                          SelectFieldBuilder(
+                                            i18.demandGenerate
+                                                .BILLING_CYCLE_LABEL,
+                                            reportProvider.selectedBillCycle,
+                                            '',
+                                            '',
+                                            reportProvider.onChangeOfBillCycle,
+                                            reportProvider
+                                                .getBillingCycleDropdown(
+                                                    reportProvider
+                                                        .selectedBillYear),
+                                            true,
+                                            controller:
+                                                reportProvider.billingcycleCtrl,
+                                            key: Keys.billReport
+                                                .BILL_REPORT_BILLING_CYCLE,
+                                          ),
+                                        ],
+                                      ),
                                     )),
-                            Consumer<ReportsProvider>(
-                                builder: (_, reportProvider, child) =>
-                                    SelectFieldBuilder(
-                                      i18.demandGenerate.BILLING_CYCLE_LABEL,
-                                      reportProvider.selectedBillCycle,
-                                      '',
-                                      '',
-                                      reportProvider.onChangeOfBillCycle,
-                                      reportProvider.getBillingCycleDropdown(
-                                          reportProvider.selectedBillYear),
-                                      true,
-                                      controller:
-                                          reportProvider.billingcycleCtrl,
-                                      key: Keys
-                                          .billReport.BILL_REPORT_BILLING_CYCLE,
-                                    )),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Container(
+                              height: 1,
+                              color: Colors.black,
+                            ),
+                            BillReport(onViewClick:showTable),
+                            CollectionReport(onViewClick:showTable),
+                            Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Footer())
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Container(
-                        height: 1,
-                        color: Colors.black,
-                      ),
-                      BillReport(),
-                      Align(alignment: Alignment.bottomCenter, child: Footer())
-                    ],
-                  ),
-                ),
-              ),
+                    ),
             ],
           ),
         ),

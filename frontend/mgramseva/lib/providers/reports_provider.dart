@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../model/common/BillsTableData.dart';
 import '../model/localization/language.dart';
 import '../model/mdms/tax_period.dart';
 import '../model/reports/bill_report_data.dart';
+import '../model/reports/collection_report_data.dart';
 import '../repository/core_repo.dart';
 import '../repository/reports_repo.dart';
 import '../utils/common_methods.dart';
@@ -13,6 +15,7 @@ import '../utils/constants.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import '../utils/date_formats.dart';
 import '../utils/error_logging.dart';
+import '../utils/excel_download/generate_excel.dart';
 import '../utils/global_variables.dart';
 import '../utils/localization/application_localizations.dart';
 import '../utils/models.dart';
@@ -27,38 +30,64 @@ class ReportsProvider with ChangeNotifier {
   var selectedBillCycle;
   var billingyearCtrl = TextEditingController();
   var billingcycleCtrl = TextEditingController();
-  List<BillReportData>? billreports;
+  List<BillReportData>? demandreports;
+  List<CollectionReportData>? collectionreports;
+  late BillsTableData genericTableData;
 
   dispose() {
     streamController.close();
     super.dispose();
   }
-  List<TableHeader> get collectionHeaderList => [
+  List<TableHeader> get demandHeaderList => [
     TableHeader(i18.common.CONNECTION_ID),
-    TableHeader(i18.common.NAME),
     TableHeader(i18.consumer.OLD_CONNECTION_ID,
       isSortingRequired: false,),
-    TableHeader('consumerCreatedOnDate'),
-    TableHeader('previousArrear'),
-    TableHeader('totalBillGenerated'),
-    TableHeader('demandAmount'),
+    TableHeader(i18.common.NAME),
+    TableHeader('Consumer Created On Date'),
+    TableHeader(i18.billDetails.CORE_PENALTY),
+    TableHeader(i18.common.CORE_ADVANCE),
+    TableHeader(i18.billDetails.TOTAL_AMOUNT),
+  ];
+  List<TableHeader> get collectionHeaderList => [
+    TableHeader(i18.common.CONNECTION_ID),
+    TableHeader(i18.consumer.OLD_CONNECTION_ID,
+      isSortingRequired: false,),
+    TableHeader(i18.common.NAME),
+    TableHeader('Payment Mode'),
+    TableHeader(i18.billDetails.TOTAL_AMOUNT),
   ];
 
-  List<TableDataRow> getCollectionsData(List<BillReportData> list) {
-    return list.map((e) => getCollectionRow(e)).toList();
+  List<TableDataRow> getDemandsData(List<BillReportData> list,{isExcel = false}) {
+    return list.map((e) => getDemandRow(e,isExcel: isExcel)).toList();
   }
-  TableDataRow getCollectionRow(BillReportData data) {
+  TableDataRow getDemandRow(BillReportData data,{bool isExcel = false}) {
     String? name =
     CommonMethods.truncateWithEllipsis(20,data.consumerName!);
     return TableDataRow([
       TableData(
-          '${data.connectionNo?.split('/').first ?? ''}/...${data.connectionNo?.split('/').last ?? ''}',),
-      TableData('${name ?? ''}'),
-      TableData('${data.oldConnectionNo ?? ''}'),
-      TableData('${DateFormats.timeStampToDate(int.parse(data.consumerCreatedOnDate!))}'),
-      TableData('${data.previousArrear ?? ''}'),
-      TableData('${data.totalBillGenerated ?? ''}'),
-      TableData('${data.demandAmount ?? ''}'),
+        isExcel?'${data.connectionNo ?? '-'}':'${data.connectionNo?.split('/').first ?? ''}/...${data.connectionNo?.split('/').last ?? ''}',),
+      TableData('${data.oldConnectionNo ?? '-'}'),
+      TableData('${name ?? '-'}'),
+      TableData('${DateFormats.timeStampToDate(int.parse(data.consumerCreatedOnDate??'0'))}'),
+      TableData('${data.penalty ?? '0'}'),
+      TableData('${data.advance ?? '0'}'),
+      TableData('${data.demandAmount ?? '0'}'),
+    ]);
+  }
+
+  List<TableDataRow> getCollectionData(List<CollectionReportData> list,{bool isExcel = false}) {
+    return list.map((e) => getCollectionRow(e,isExcel: isExcel)).toList();
+  }
+  TableDataRow getCollectionRow(CollectionReportData data,{bool isExcel = false}) {
+    String? name =
+    CommonMethods.truncateWithEllipsis(20,data.consumerName!);
+    return TableDataRow([
+      TableData(
+          isExcel?'${data.connectionNo ?? '-'}':'${data.connectionNo?.split('/').first ?? ''}/...${data.connectionNo?.split('/').last ?? ''}',),
+      TableData('${data.oldConnectionNo ?? '-'}'),
+      TableData('${name?? '-'}'),
+      TableData('${data.paymentMode ?? '-'}'),
+      TableData('${data.paymentAmount==null?null:data.paymentAmount!.isNotEmpty?data.paymentAmount?.first:null ?? '0'}'),
     ]);
   }
   void callNotifier() {
@@ -159,7 +188,7 @@ class ReportsProvider with ChangeNotifier {
     return <DropdownMenuItem<Object>>[];
   }
 
-  Future<void> getBillReport() async {
+  Future<void> getDemandReport([bool download = false]) async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
@@ -169,24 +198,84 @@ class ReportsProvider with ChangeNotifier {
       }
       Map<String,dynamic> params={
         'tenantId':commonProvider.userDetails!.selectedtenant!.code,
-        'demandDate':selectedBillPeriod?.split('-')[0]
+        'demandStartDate':selectedBillPeriod?.split('-')[0],
+        'demandEndDate':selectedBillPeriod?.split('-')[1]
       };
       var response = await ReportsRepo().fetchBillReport(
           params);
       if (response != null) {
-        billreports = response;
-        print(billreports.toString());
+        demandreports = response;
+        if(download){
+          generateExcel(
+              demandHeaderList
+                  .map<String>((e) =>
+              '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
+                  .toList(),
+              getDemandsData(demandreports!,isExcel: true).map<List<String>>((e) => e.tableRow.map((e) => e.label).toList()).toList()??[],
+              title: 'DemandReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(2)}_$selectedBillPeriod');
+        }else{
+          genericTableData = BillsTableData(demandHeaderList,getDemandsData(demandreports!));
+        }
         streamController.add(response);
         callNotifier();
       }else{
+        streamController.add('error');
         throw Exception('API Error');
       }
       callNotifier();
     } catch (e, s) {
-      billreports = [];
+      demandreports = [];
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       streamController.addError('error');
       callNotifier();
     }
+  }
+
+  Future<void> getCollectionReport([bool download = false]) async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+      if(selectedBillPeriod==null){
+        throw Exception('Select Billing Cycle');
+      }
+      Map<String,dynamic> params={
+        'tenantId':commonProvider.userDetails!.selectedtenant!.code,
+        'paymentStartDate':selectedBillPeriod?.split('-')[0],
+        'paymentEndDate':selectedBillPeriod?.split('-')[1]
+      };
+      var response = await ReportsRepo().fetchCollectionReport(
+          params);
+      if (response != null) {
+        collectionreports = response;
+        if(download){
+          generateExcel(
+              collectionHeaderList
+                  .map<String>((e) =>
+              '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
+                  .toList(),
+              getCollectionData(collectionreports!,isExcel: true).map<List<String>>((e) => e.tableRow.map((e) => e.label).toList()).toList()??[],
+          title: 'CollectionReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(2)}_$selectedBillPeriod');
+        }else{
+          genericTableData = BillsTableData(collectionHeaderList,getCollectionData(collectionreports!));
+        }
+        streamController.add(response);
+        callNotifier();
+      }else{
+        streamController.add('error');
+        throw Exception('API Error');
+      }
+      callNotifier();
+    } catch (e, s) {
+      collectionreports = [];
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
+      callNotifier();
+    }
+  }
+
+  void clearBuildTableData() {
+    genericTableData = BillsTableData([],[]);
+    callNotifier();
   }
 }

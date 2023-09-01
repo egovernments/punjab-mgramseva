@@ -89,6 +89,8 @@ class Url {
   ///Reports
   static const String BILL_REPORT=
       'ws-services/wc/_billReport';
+  static const String COLLECTION_REPORT=
+      'ws-services/wc/_collectionReport';
 }
 
 

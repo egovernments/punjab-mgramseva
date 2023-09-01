@@ -14,10 +14,10 @@ class BillReportData {
   String? oldConnectionNo;
   @JsonKey(name: "consumerCreatedOnDate")
   String? consumerCreatedOnDate;
-  @JsonKey(name: "previousArrear")
-  String? previousArrear;
-  @JsonKey(name: "totalBillGenerated")
-  String? totalBillGenerated;
+  @JsonKey(name: "penalty")
+  double? penalty;
+  @JsonKey(name: "advance")
+  double? advance;
   @JsonKey(name: "demandAmount")
   double? demandAmount;
   @JsonKey(name: "userId")
@@ -25,7 +25,7 @@ class BillReportData {
 
   @override
   String toString() {
-    return 'BillReportData{tenantName: $tenantName, consumerName: $consumerName, connectionNo: $connectionNo, oldConnectionNo: $oldConnectionNo, consumerCreatedOnDate: $consumerCreatedOnDate, previousArrear: $previousArrear, totalBillGenerated: $totalBillGenerated, demandAmount: $demandAmount, userId: $userId}';
+    return 'BillReportData{tenantName: $tenantName, consumerName: $consumerName, connectionNo: $connectionNo, oldConnectionNo: $oldConnectionNo, consumerCreatedOnDate: $consumerCreatedOnDate, advance: $advance, penalty: $penalty, demandAmount: $demandAmount, userId: $userId}';
   }
 
   BillReportData();

@@ -133,6 +133,8 @@ class BillReportKeys {
   const BillReportKeys();
   Key get BILL_REPORT_VIEW_BUTTON => Key("bill_report_view_button");
   Key get BILL_REPORT_DOWNLOAD_BUTTON => Key("bill_report_download_button");
+  Key get COLLECTION_REPORT_VIEW_BUTTON => Key("collection_report_view_button");
+  Key get COLLECTION_REPORT_DOWNLOAD_BUTTON => Key("collection_report_download_button");
   Key get BILL_REPORT_BILLING_YEAR => Key("bill_report_billing_year");
   Key get BILL_REPORT_BILLING_CYCLE => Key("bill_report_billing_cycle");
 }

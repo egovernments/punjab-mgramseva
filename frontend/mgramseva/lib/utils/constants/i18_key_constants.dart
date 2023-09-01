@@ -667,6 +667,7 @@ class _DashBoard {
   String get GPWSC_DETAILS => 'GPWSC_DETAILS';
   String get CORE_REPORTS => 'CORE_REPORTS';
   String get BILL_REPORT => 'BILL_REPORT';
+  String get COLLECTION_REPORT => 'COLLECTION_REPORT';
   String get GPWSC_RATE_INFO => 'GPWSC_RATE_INFO';
 }
 

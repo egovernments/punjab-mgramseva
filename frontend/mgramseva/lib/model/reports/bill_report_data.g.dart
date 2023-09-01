@@ -13,8 +13,8 @@ BillReportData _$BillReportDataFromJson(Map<String, dynamic> json) =>
       ..connectionNo = json['connectionNo'] as String?
       ..oldConnectionNo = json['oldConnectionNo'] as String?
       ..consumerCreatedOnDate = json['consumerCreatedOnDate'] as String?
-      ..previousArrear = json['previousArrear'] as String?
-      ..totalBillGenerated = json['totalBillGenerated'] as String?
+      ..penalty = (json['penalty'] as num?)?.toDouble()
+      ..advance = (json['advance'] as num?)?.toDouble()
       ..demandAmount = (json['demandAmount'] as num?)?.toDouble()
       ..userId = json['userId'] as String?;
 
@@ -25,8 +25,8 @@ Map<String, dynamic> _$BillReportDataToJson(BillReportData instance) =>
       'connectionNo': instance.connectionNo,
       'oldConnectionNo': instance.oldConnectionNo,
       'consumerCreatedOnDate': instance.consumerCreatedOnDate,
-      'previousArrear': instance.previousArrear,
-      'totalBillGenerated': instance.totalBillGenerated,
+      'penalty': instance.penalty,
+      'advance': instance.advance,
       'demandAmount': instance.demandAmount,
       'userId': instance.userId,
     };

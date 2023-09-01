@@ -3,6 +3,7 @@ import 'package:mgramseva/services/base_service.dart';
 import 'package:provider/provider.dart';
 
 import '../model/reports/bill_report_data.dart';
+import '../model/reports/collection_report_data.dart';
 import '../providers/common_provider.dart';
 import '../services/request_info.dart';
 import '../utils/global_variables.dart';
@@ -28,7 +29,6 @@ class ReportsRepo extends BaseService{
 
     var res = await makeRequest(
         url: Url.BILL_REPORT,
-        baseUrl: 'http://localhost:8989/',
         queryParameters: params,
         requestInfo: requestInfo,
         method: RequestType.POST);
@@ -39,6 +39,43 @@ class ReportsRepo extends BaseService{
           billreports?.add(BillReportData.fromJson(val));
         });
       } catch (e) {
+        print(e);
+        billreports = null;
+      }
+    }
+    return billreports;
+  }
+
+  Future<List<CollectionReportData>?> fetchCollectionReport(Map<String,dynamic> params,
+      [String? token]) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    List<CollectionReportData>? billreports;
+    final requestInfo = RequestInfo(
+        APIConstants.API_MODULE_NAME,
+        APIConstants.API_VERSION,
+        APIConstants.API_TS,
+        '_get',
+        APIConstants.API_DID,
+        APIConstants.API_KEY,
+        APIConstants.API_MESSAGE_ID,
+        commonProvider.userDetails?.accessToken,
+        commonProvider.userDetails?.userRequest?.toJson());
+
+    var res = await makeRequest(
+        url: Url.COLLECTION_REPORT,
+        queryParameters: params,
+        requestInfo: requestInfo,
+        method: RequestType.POST);
+    if (res != null && res['CollectionReportData'] != null) {
+      try {
+        billreports = [];
+        res['CollectionReportData'].forEach((val){
+          billreports?.add(CollectionReportData.fromJson(val));
+        });
+      } catch (e) {
+        print(e);
         billreports = null;
       }
     }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/common/BillsTableData.dart';
 import '../../providers/reports_provider.dart';
 import '../../utils/localization/application_localizations.dart';
 
@@ -9,11 +10,11 @@ import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import '../../utils/notifiers.dart';
 import '../../utils/testing_keys/testing_keys.dart';
 import '../../widgets/button.dart';
-import '../../widgets/select_field_builder.dart';
 import 'generic_report_table.dart';
 
 class BillReport extends StatefulWidget {
-  const BillReport({Key? key}) : super(key: key);
+  final Function onViewClick;
+  BillReport({Key? key, required this.onViewClick}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -55,30 +56,33 @@ class _BillReport extends State<BillReport>
                     ),
                     Row(
                       children: [
-                        Container(
-                          width: 50,
-                          child: Button(
-                            "View",
-                            () {
-                              if(reportProvider.selectedBillPeriod==null){
-                                Notifiers.getToastMessage(context, 'Select Billing Cycle', 'ERROR');
-                              }else{
-                                reportProvider.getBillReport();
-                                Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) { return GenericReportTable(); }));
-                              }
-
-                            },
-                            key: Keys.billReport.BILL_REPORT_VIEW_BUTTON,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
+                        // Container(
+                        //   width: 50,
+                        //   child: Button(
+                        //     "View",
+                        //     () {
+                        //       if(reportProvider.selectedBillPeriod==null){
+                        //         Notifiers.getToastMessage(context, 'Select Billing Cycle', 'ERROR');
+                        //       }else{
+                        //         widget.onViewClick(true);
+                        //         reportProvider.getDemandReport();
+                        //         // Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) { return GenericReportTable(BillsTableData(reportProvider.demandHeaderList,reportProvider.getDemandsData(reportProvider.demandreports!))); }));
+                        //       }
+                        //
+                        //     },
+                        //     key: Keys.billReport.BILL_REPORT_VIEW_BUTTON,
+                        //   ),
+                        // ),
+                        // SizedBox(
+                        //   width: 10,
+                        // ),
                         Container(
                           width: 100,
                           child: Button(
                             "Download",
-                            () {},
+                            () {
+                              reportProvider.getDemandReport(true);
+                            },
                             key: Keys.billReport.BILL_REPORT_DOWNLOAD_BUTTON,
                           ),
                         ),
