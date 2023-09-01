@@ -89,52 +89,53 @@ class RoleActionsFiltering {
     switch (route) {
       // GP Admin
       case Routes.HOUSEHOLD:
-        return ['COLLECTION_OPERATOR', 'SUPERUSER'];
+        return ['COLLECTION_OPERATOR', 'SUPERUSER','DIV_ADMIN'];
 
       case Routes.CONSUMER_UPDATE:
-        return ['GP_ADMIN', 'SUPERUSER', 'COLLECTION_OPERATOR'];
+        return ['GP_ADMIN', 'SUPERUSER', 'COLLECTION_OPERATOR','DIV_ADMIN'];
 
       case Routes.CONSUMER_SEARCH_UPDATE:
-        return ['GP_ADMIN', 'SUPERUSER', 'COLLECTION_OPERATOR'];
+        return ['GP_ADMIN', 'SUPERUSER', 'COLLECTION_OPERATOR','DIV_ADMIN'];
 
       case Routes.CONSUMER_CREATE:
-        return ['GP_ADMIN', 'SUPERUSER', 'COLLECTION_OPERATOR'];
+        return ['GP_ADMIN', 'SUPERUSER', 'COLLECTION_OPERATOR','DIV_ADMIN'];
 
       case Routes.HOUSEHOLD_DETAILS:
-        return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR', 'SUPERUSER'];
+        return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR', 'SUPERUSER','DIV_ADMIN'];
 
       case Routes.SEARCH_CONSUMER_RESULT:
         return [
           'GP_ADMIN',
           'BULK_DEMAND_PROCESSING',
           'COLLECTION_OPERATOR',
-          'SUPERUSER'
+          'SUPERUSER',
+          'DIV_ADMIN'
         ];
 
       case Routes.HOUSEHOLD_REGISTER:
-        return ['COLLECTION_OPERATOR', 'SUPERUSER'];
+        return ['COLLECTION_OPERATOR', 'SUPERUSER','DIV_ADMIN'];
 
       // Expense Processing
       case Routes.EXPENSE_SEARCH:
-        return ['EXPENSE_PROCESSING', 'SUPERUSER'];
+        return ['EXPENSE_PROCESSING', 'SUPERUSER','DIV_ADMIN'];
       case Routes.EXPENSES_ADD:
-        return ['EXPENSE_PROCESSING', 'SUPERUSER'];
+        return ['EXPENSE_PROCESSING', 'SUPERUSER','DIV_ADMIN'];
       case Routes.EXPENSE_UPDATE:
-        return ['EXPENSE_PROCESSING', 'SUPERUSER'];
+        return ['EXPENSE_PROCESSING', 'SUPERUSER','DIV_ADMIN'];
       case Routes.HOUSEHOLDRECEIPTS:
-        return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR', 'SUPERUSER'];
+        return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR', 'SUPERUSER','DIV_ADMIN'];
 
       case Routes.MANUAL_BILL_GENERATE:
-        return ['BULK_DEMAND_PROCESSING', 'SUPERUSER'];
+        return ['BULK_DEMAND_PROCESSING', 'SUPERUSER','DIV_ADMIN'];
 
       // Collection Operator
       case Routes.CONSUMER_SEARCH:
-        return ['COLLECTION_OPERATOR', 'SUPERUSER'];
+        return ['COLLECTION_OPERATOR', 'SUPERUSER','DIV_ADMIN'];
       case Routes.BILL_GENERATE:
-        return ['COLLECTION_OPERATOR', 'SUPERUSER'];
+        return ['COLLECTION_OPERATOR', 'SUPERUSER','DIV_ADMIN'];
 
       case Routes.DASHBOARD:
-        return ['SUPERUSER', 'DASHBOARD_VIEWER'];
+        return ['SUPERUSER', 'DASHBOARD_VIEWER','DIV_ADMIN'];
       default:
         return [];
     }
