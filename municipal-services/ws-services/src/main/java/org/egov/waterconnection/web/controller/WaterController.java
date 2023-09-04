@@ -8,6 +8,10 @@ import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.service.SchedulerService;
 import org.egov.waterconnection.service.WaterService;
 import org.egov.waterconnection.util.ResponseInfoFactory;
+import org.egov.waterconnection.web.models.BillReportData;
+import org.egov.waterconnection.web.models.BillReportResponse;
+import org.egov.waterconnection.web.models.CollectionReportData;
+import org.egov.waterconnection.web.models.CollectionReportResponse;
 import org.egov.waterconnection.web.models.FeedbackRequest;
 import org.egov.waterconnection.web.models.FeedbackResponse;
 import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
@@ -30,11 +34,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.swagger.models.parameters.QueryParameter;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -186,6 +192,32 @@ public class WaterController {
 							true))
 					.build();
 
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
+	 
+	 @RequestMapping(value = "/_billReport", method = RequestMethod.POST)
+		public ResponseEntity<BillReportResponse> billReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
+				@RequestParam(value = "demandStartDate", required = true) String demandStartDate,@RequestParam(value = "demandEndDate", required = true) String demandEndDate,@RequestParam(value = "tenantId",required = true) String tenantId) {
+		 List<BillReportData> billReport = waterService.billReport(demandStartDate,demandEndDate,tenantId,
+					requestInfoWrapper.getRequestInfo());
+
+			BillReportResponse response =  BillReportResponse.builder().BillReportData(billReport)
+					.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),
+							true))
+					.build();
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
+	 
+	 @RequestMapping(value = "/_collectionReport", method = RequestMethod.POST)
+		public ResponseEntity<CollectionReportResponse> collectionReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
+				@RequestParam(value = "paymentStartDate", required = true) String paymentStartDate,@RequestParam(value = "paymentEndDate", required = true) String paymentEndDate,@RequestParam(value = "tenantId",required = true) String tenantId) {
+		 List<CollectionReportData> collectionReport = waterService.collectionReport(paymentStartDate,paymentEndDate,tenantId,
+					requestInfoWrapper.getRequestInfo());
+
+			CollectionReportResponse response =  CollectionReportResponse.builder().CollectionReportData(collectionReport)
+					.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),
+							true))
+					.build();
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}
 }

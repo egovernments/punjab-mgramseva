@@ -22,10 +22,14 @@ import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.producer.WaterConnectionProducer;
 import org.egov.waterconnection.repository.builder.WsQueryBuilder;
 import org.egov.waterconnection.repository.rowmapper.BillingCycleRowMapper;
+import org.egov.waterconnection.repository.rowmapper.CollectionRowMapper;
 import org.egov.waterconnection.repository.rowmapper.FeedbackRowMapper;
 import org.egov.waterconnection.repository.rowmapper.OpenWaterRowMapper;
+import org.egov.waterconnection.repository.rowmapper.ReportRowMapper;
 import org.egov.waterconnection.repository.rowmapper.WaterRowMapper;
+import org.egov.waterconnection.web.models.BillReportData;
 import org.egov.waterconnection.web.models.BillingCycle;
+import org.egov.waterconnection.web.models.CollectionReportData;
 import org.egov.waterconnection.web.models.Feedback;
 import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.SearchCriteria;
@@ -59,6 +63,12 @@ public class WaterDaoImpl implements WaterDao {
 
 	@Autowired
 	private OpenWaterRowMapper openWaterRowMapper;
+	
+	@Autowired
+	private ReportRowMapper reportRowMapper;
+	
+	@Autowired
+	private CollectionRowMapper collectionReportRowMapper;
 	
 	@Autowired
 	private WSConfiguration wsConfiguration;
@@ -510,6 +520,41 @@ public class WaterDaoImpl implements WaterDao {
 				.append(criteria.getToDate()).append(" and py.tenantId = '").append(criteria.getTenantId()).append("'");
 		log.info("Penalty Collection Final Query: " + query);
 		return jdbcTemplate.queryForObject(query.toString(), BigDecimal.class);
+	}
+
+	public List<BillReportData> getBillReportData(@Valid Long demandStartDate,@Valid Long demandEndDate, @Valid String tenantId) {
+		StringBuilder query = new StringBuilder(wsQueryBuilder.BILL_REPORT_QUERY);
+		query.append("where dem.taxperiodfrom =" + demandStartDate);
+		query.append(" and dem.taxperiodto =" + demandEndDate);
+
+		if(!tenantId.isEmpty()){
+			query.append(" and conn.tenantId ='"+tenantId+"'"); 
+		}
+		query.append(" group by conn.connectionno,conn.tenantId,dd.taxheadcode,conn.oldConnectionno,conn.createdTime,dd.taxamount,connectionholder.userid order by conn.connectionno,dd.taxheadcode");
+
+		List<BillReportData> billReportList = new ArrayList<>();
+		List<Object> preparedStatement = new ArrayList<>();
+
+		billReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), reportRowMapper);
+		return billReportList;
+			
+	}
+
+	public List<CollectionReportData> getCollectionReportData(Long payStartDateTime, Long payEndDateTime,
+			String tenantId) {
+		StringBuilder query = new StringBuilder(wsQueryBuilder.COLLECTION_REPORT_QUERY);
+		query.append(" and pay.transactiondate between "+ payStartDateTime +"and " + payEndDateTime);
+
+		if(!tenantId.isEmpty()){
+			query.append(" and conn.tenantId ='"+tenantId+"'"); 
+		}
+		query.append(" group by conn.connectionno,conn.tenantId,conn.oldConnectionno,connectionholder.userid,pd.amountpaid,pay.paymentmode");
+
+		List<CollectionReportData> collectionReportList = new ArrayList<>();
+		List<Object> preparedStatement = new ArrayList<>();
+
+		collectionReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), collectionReportRowMapper);
+		return collectionReportList;
 	}
 	
 

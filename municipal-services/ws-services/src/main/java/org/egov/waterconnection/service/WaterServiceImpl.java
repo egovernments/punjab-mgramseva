@@ -8,10 +8,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.Period;
 import java.time.YearMonth;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,8 +47,11 @@ import org.egov.waterconnection.validator.MDMSValidator;
 import org.egov.waterconnection.validator.ValidateProperty;
 import org.egov.waterconnection.validator.WaterConnectionValidator;
 import org.egov.waterconnection.web.models.AuditDetails;
+import org.egov.waterconnection.web.models.BillReportData;
+import org.egov.waterconnection.web.models.BillReportResponse;
 import org.egov.waterconnection.web.models.BillingCycle;
 import org.egov.waterconnection.web.models.CheckList;
+import org.egov.waterconnection.web.models.CollectionReportData;
 import org.egov.waterconnection.web.models.Connection.StatusEnum;
 import org.egov.waterconnection.web.models.Feedback;
 import org.egov.waterconnection.web.models.FeedbackRequest;
@@ -64,7 +69,6 @@ import org.egov.waterconnection.web.models.workflow.BusinessService;
 import org.egov.waterconnection.workflow.WorkflowIntegrator;
 import org.egov.waterconnection.workflow.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -118,6 +122,8 @@ public class WaterServiceImpl implements WaterService {
 	@Autowired
 	private CalculationService calculationService;
 
+	@Autowired
+	private WaterDaoImpl waterDaoImpl;
 
 	@Autowired
 	private UserService userService;
@@ -815,5 +821,32 @@ public class WaterServiceImpl implements WaterService {
 				}
 			}
 		}
+	}
+
+	@Override
+	public List<BillReportData> billReport(@Valid String demandStartDate,@Valid String demandEndDate, String tenantId, RequestInfo requestInfo) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+		LocalDate demStartDate = LocalDate.parse(demandStartDate, formatter);
+		LocalDate demEndDate = LocalDate.parse(demandEndDate, formatter);
+
+		Long demStartDateTime = LocalDateTime.of(demStartDate.getYear(), demStartDate.getMonth(), demStartDate.getDayOfMonth(), 0, 0, 0)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long demEndDateTime = LocalDateTime.of(demEndDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		List<BillReportData> billReportData = waterDaoImpl.getBillReportData(demStartDateTime,demEndDateTime,tenantId);
+		return billReportData;
+	}
+
+	@Override
+	public List<CollectionReportData> collectionReport(String paymentStartDate, String paymentEndDate, String tenantId,
+													   RequestInfo requestInfo) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+		LocalDate payStartDate = LocalDate.parse(paymentStartDate, formatter);
+		LocalDate payEndDate = LocalDate.parse(paymentEndDate, formatter);
+
+		Long payStartDateTime = LocalDateTime.of(payStartDate.getYear(), payStartDate.getMonth(), payStartDate.getDayOfMonth(), 0, 0, 0)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long payEndDateTime = LocalDateTime.of(payEndDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		List<CollectionReportData> collectionReportData = waterDaoImpl.getCollectionReportData(payStartDateTime,payEndDateTime,tenantId);
+		return collectionReportData;
 	}
 }

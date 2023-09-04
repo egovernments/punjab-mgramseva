@@ -79,7 +79,7 @@ public class ChallanValidator {
 		}
 
 		if (!validFinancialYear)
-			errorMap.put("Invalid TaxPeriod", "Tax period details are invalid");
+			errorMap.put("Invalid TaxPeriod", "Tax period details must be part of the same financial year");
 
 		/*
 		 * List<String> localityCodes = getLocalityCodes(challan.getTenantId(),
