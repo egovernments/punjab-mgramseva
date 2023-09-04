@@ -5,8 +5,10 @@ import * as locale from "./locale";
 import * as obps from "./obps";
 import * as pt from "./pt";
 import * as privacy from "./privacy";
-import PDFUtil, { downloadReceipt, downloadPDFFromLink, downloadBill, getFileUrl } from "./pdf";
+import PDFUtil, { downloadReceipt ,downloadPDFFromLink,downloadBill ,getFileUrl} from "./pdf";
 import getFileTypeFromFileStoreURL from "./fileType";
+import preProcessMDMSConfig from "./preProcessMDMSConfig";
+import preProcessMDMSConfigInboxSearch from "./preProcessMDMSConfigInboxSearch";
 
 const GetParamFromUrl = (key, fallback, search) => {
   if (typeof window !== "undefined") {
@@ -81,6 +83,12 @@ const getPattern = (type) => {
       return /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*.:;“”‘’]{1,50}$/i;
     case "OldLicenceNo":
       return /^[a-zA-Z0-9-/]{0,64}$/;
+    case "bankAccountNo":
+      return /^\d{9,18}$/;
+    case "IFSC":
+      return /^[A-Z]{4}0[A-Z0-9]{6}$/;
+    case "ApplicationNo":
+      return /^[a-zA-z0-9\s\\/\-]$/i;
   }
 };
 
@@ -94,9 +102,26 @@ const getStaticMapUrl = (latitude, longitude) => {
 };
 
 const detectDsoRoute = (pathname) => {
-  const employeePages = ["search", "inbox", "dso-dashboard", "dso-application-details", "user", "Audit"];
+  const employeePages = ["search", "inbox", "dso-dashboard", "dso-application-details", "user"];
 
   return employeePages.some((url) => pathname.split("/").includes(url));
+};
+
+
+/* to check the employee (loggedin user ) has given role  */
+const didEmployeeHasRole = (role = "") => {
+  const tenantId = Digit.ULBService.getCurrentTenantId();
+  const userInfo = Digit.UserService.getUser();
+  const rolearray = userInfo?.info?.roles.filter((item) => {
+    if (item.code === role && item.tenantId === tenantId) return true;
+  });
+  return rolearray?.length > 0;
+};
+
+
+/* to check the employee (loggedin user ) has given roles  */
+const didEmployeeHasAtleastOneRole = (roles = []) => {
+  return roles.some((role) => didEmployeeHasRole(role));
 };
 
 const routeSubscription = (pathname) => {
@@ -109,21 +134,13 @@ const routeSubscription = (pathname) => {
   }
 };
 
-const didEmployeeHasRole = (role) => {
-  const tenantId = Digit.ULBService.getCurrentTenantId();
-  const userInfo = Digit.UserService.getUser();
-  const rolearray = userInfo?.info?.roles.filter((item) => {
-    if (item.code == role && item.tenantId === tenantId) return true;
-  });
-  return rolearray?.length;
-};
 
 const pgrAccess = () => {
   const userInfo = Digit.UserService.getUser();
-  const userRoles = userInfo && userInfo?.info?.roles?.length > 0 && userInfo?.info?.roles?.map((roleData) => roleData?.code);
+  const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
   const pgrRoles = ["PGR_LME", "PGR-ADMIN", "CSR", "CEMP", "FEMP", "DGRO", "ULB Operator", "GRO", "GO", "RO", "GA"];
 
-  const PGR_ACCESS = userRoles && userRoles?.length > 0 && userRoles?.filter((role) => pgrRoles.includes(role));
+  const PGR_ACCESS = userRoles?.filter((role) => pgrRoles.includes(role));
 
   return PGR_ACCESS?.length > 0;
 };
@@ -153,7 +170,9 @@ const NOCAccess = () => {
   const userInfo = Digit.UserService.getUser();
   const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
 
-  const NOC_ROLES = ["FIRE_NOC_APPROVER"];
+  const NOC_ROLES = [
+    "FIRE_NOC_APPROVER"
+  ]
 
   const NOC_ACCESS = userRoles?.filter((role) => NOC_ROLES?.includes(role));
 
@@ -247,7 +266,7 @@ const hrmsAccess = () => {
 const wsAccess = () => {
   const userInfo = Digit.UserService.getUser();
   const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
-  const waterRoles = ["WS_CEMP", "WS_APPROVER", "WS_FIELD_INSPECTOR", "WS_DOC_VERIFIER", "WS_CLERK"];
+  const waterRoles = ["WS_CEMP", "WS_APPROVER", "WS_FIELD_INSPECTOR", "WS_DOC_VERIFIER","WS_CLERK"];
 
   const WS_ACCESS = userRoles?.filter((role) => waterRoles?.includes(role));
 
@@ -257,14 +276,30 @@ const wsAccess = () => {
 const swAccess = () => {
   const userInfo = Digit.UserService.getUser();
   const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
-  const sewerageRoles = ["SW_CEMP", "SW_APPROVER", "SW_FIELD_INSPECTOR", "SW_DOC_VERIFIER", "SW_CLERK"];
+  const sewerageRoles = ["SW_CEMP", "SW_APPROVER", "SW_FIELD_INSPECTOR", "SW_DOC_VERIFIER","SW_CLERK"];
 
   const SW_ACCESS = userRoles?.filter((role) => sewerageRoles?.includes(role));
 
   return SW_ACCESS?.length > 0;
 };
 
+/* to get the MDMS config module name */
+const getConfigModuleName = () => {
+  return window?.globalConfigs?.getConfig("UICONFIG_MODULENAME") || "commonUiConfig";
+};
+
+
+/*  
+Digit.Utils.createFunction()
+get function from a string */
+const createFunction = (functionAsString) => {
+  return Function("return " + functionAsString)();
+};
+
+
+
 export default {
+  createFunction,
   pdf: PDFUtil,
   downloadReceipt,
   downloadBill,
@@ -291,6 +326,7 @@ export default {
   mCollectAccess,
   receiptsAccess,
   didEmployeeHasRole,
+  didEmployeeHasAtleastOneRole,
   hrmsAccess,
   getPattern,
   hrmsRoles,
@@ -298,6 +334,8 @@ export default {
   tlAccess,
   wsAccess,
   swAccess,
-
-  ...privacy,
+  getConfigModuleName,
+  preProcessMDMSConfig,
+  preProcessMDMSConfigInboxSearch,
+  ...privacy
 };

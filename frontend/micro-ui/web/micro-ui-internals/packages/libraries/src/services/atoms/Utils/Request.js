@@ -17,19 +17,19 @@ Axios.interceptors.response.use(
           localStorage.clear();
           sessionStorage.clear();
           window.location.href =
-            (isEmployee ? "/mgramseva-digit-ui/employee/user/login" : "/digit-ui/citizen/login") +
+          (isEmployee ? `/${window?.contextPath}/employee/user/login` : `/${window?.contextPath}/citizen/login`) +
             `?from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
         } else if (
           error?.message?.toLowerCase()?.includes("internal server error") ||
           error?.message?.toLowerCase()?.includes("some error occured")
         ) {
           window.location.href =
-            (isEmployee ? "/mgramseva-digit-ui/employee/user/error" : "/digit-ui/citizen/error") +
-            `?type=maintenance&from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+          (isEmployee ? `/${window?.contextPath}/employee/user/error` : `/${window?.contextPath}/citizen/error`) +
+                      `?type=maintenance&from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
         } else if (error.message.includes("ZuulRuntimeException")) {
           window.location.href =
-            (isEmployee ? "/mgramseva-digit-ui/employee/user/error" : "/digit-ui/citizen/error") +
-            `?type=notfound&from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+          (isEmployee ? `/${window?.contextPath}/employee/user/error` : `/${window?.contextPath}/citizen/error`) +
+                      `?type=notfound&from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
         }
       }
     }
@@ -67,10 +67,10 @@ export const Request = async ({
   multipartFormData = false,
   multipartData = {},
   reqTimestamp = false,
-  plainAccessRequest = null,
 }) => {
+  const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
-    const ts = new Date().getTime();
+   
     data.RequestInfo = {
       apiId: "Rainmaker",
     };
@@ -86,9 +86,6 @@ export const Request = async ({
     if (noRequestInfo) {
       delete data.RequestInfo;
     }
-    if (reqTimestamp) {
-      data.RequestInfo = { ...data.RequestInfo, ts: Number(ts) };
-    }
 
     /* 
     Feature :: Privacy
@@ -96,12 +93,8 @@ export const Request = async ({
     Desc :: To send additional field in HTTP Requests inside RequestInfo Object as plainAccessRequest
     */
     const privacy = Digit.Utils.getPrivacyObject();
-    if (privacy && !url.includes("/edcr/rest/dcr/") && !noRequestInfo) {
+    if (privacy && !url.includes("/edcr/rest/dcr/")) {
       data.RequestInfo = { ...data.RequestInfo, plainAccessRequest: { ...privacy } };
-    }
-
-    if (plainAccessRequest) {
-      data.RequestInfo = { ...data.RequestInfo, plainAccessRequest };
     }
   }
 
@@ -123,6 +116,9 @@ export const Request = async ({
     }
   } else if (setTimeParam) {
     params._ = Date.now();
+  }
+  if (reqTimestamp) {
+    data.RequestInfo = { ...data.RequestInfo, ts: Number(ts) };
   }
 
   let _url = url
@@ -190,6 +186,7 @@ export const ServiceRequest = async ({
   useCache = false,
   params = {},
   auth,
+  reqTimestamp,
   userService,
 }) => {
   const preHookName = `${serviceName}Pre`;
@@ -197,13 +194,12 @@ export const ServiceRequest = async ({
 
   let reqParams = params;
   let reqData = data;
-  console.log(reqData, "reqData");
   if (window[preHookName] && typeof window[preHookName] === "function") {
     let preHookRes = await window[preHookName]({ params, data });
     reqParams = preHookRes.params;
     reqData = preHookRes.data;
   }
-  const resData = await Request({ method, url, data: reqData, headers, useCache, params: reqParams, auth, userService });
+  const resData = await Request({ method, url, data: reqData, headers, useCache, params: reqParams, auth, userService,reqTimestamp });
 
   if (window[postHookName] && typeof window[postHookName] === "function") {
     return await window[postHookName](resData);
