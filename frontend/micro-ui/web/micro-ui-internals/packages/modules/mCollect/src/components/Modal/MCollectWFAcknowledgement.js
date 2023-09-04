@@ -9,7 +9,7 @@ const MCollectWFAcknowledgement = () => {
   const location = useLocation();
   const [params, setParams] = useState({});
   useEffect(() => {
- setParams(func.getQueryStringParams(location.search)); // result: '?query=abc'
+    setParams(func.getQueryStringParams(location.search)); // result: '?query=abc'
   }, [location]);
   const { t } = useTranslation();
   function proceedToPayment() {}
@@ -26,7 +26,7 @@ const MCollectWFAcknowledgement = () => {
           alignItems: "baseline",
         }}
       >
-        <Link to={`/digit-ui/employee`} style={{ marginRight: "1rem" }}>
+        <Link to={`/mgramseva-digit-ui/employee`} style={{ marginRight: "1rem" }}>
           <LinkButton label={t("CORE_COMMON_GO_TO_HOME")} />
         </Link>
         <SubmitBar label={t("UC_BUTTON_PAY")} onClick={proceedToPayment} />

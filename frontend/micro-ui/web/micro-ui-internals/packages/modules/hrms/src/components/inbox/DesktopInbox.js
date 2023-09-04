@@ -11,7 +11,11 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
   const tenantIds = Digit.SessionStorage.get("HRMS_TENANTS");
   const GetCell = (value) => <span className="cell-text">{t(value)}</span>;
   const GetSlaCell = (value) => {
-    return value == "INACTIVE" ? <span className="sla-cell-error">{ t(value )|| ""}</span> : <span className="sla-cell-success">{ t(value) || ""}</span>;
+    return value == "INACTIVE" ? (
+      <span className="sla-cell-error">{t(value) || ""}</span>
+    ) : (
+      <span className="sla-cell-success">{t(value) || ""}</span>
+    );
   };
   const data = props?.data?.Employees;
 
@@ -25,7 +29,7 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
         Cell: ({ row }) => {
           return (
             <span className="link">
-              <Link to={`/digit-ui/employee/hrms/details/${row.original.tenantId}/${row.original.code}`}>{row.original.code}</Link>
+              <Link to={`/mgramseva-digit-ui/employee/hrms/details/${row.original.tenantId}/${row.original.code}`}>{row.original.code}</Link>
             </span>
           );
         },
@@ -44,7 +48,7 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
             <div className="tooltip">
               {" "}
               {GetCell(`${row.original?.user?.roles.length}`)}
-              <span className="tooltiptext" style={{whiteSpace: "nowrap"}}>
+              <span className="tooltiptext" style={{ whiteSpace: "nowrap" }}>
                 {row.original?.user?.roles.map((ele, index) => (
                   <span>
                     {`${index + 1}. ` + t(`ACCESSCONTROL_ROLES_ROLES_${ele.code}`)} <br />{" "}
@@ -147,7 +151,7 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
             allLinks={[
               {
                 text: "HR_COMMON_CREATE_EMPLOYEE_HEADER",
-                link: "/digit-ui/employee/hrms/create",
+                link: "/mgramseva-digit-ui/employee/hrms/create",
                 businessService: "hrms",
                 roles: ["HRMS_ADMIN"],
               },

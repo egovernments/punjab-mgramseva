@@ -119,7 +119,9 @@ const Response = (props) => {
         closeToast();
       }, 5000);
     } else {
-      history.push(`/digit-ui/employee/payment/collect/FSM.TRIP_CHARGES/${state?.applicationData?.applicationNo || Data?.fsm?.[0].applicationNo}`);
+      history.push(
+        `/mgramseva-digit-ui/employee/payment/collect/FSM.TRIP_CHARGES/${state?.applicationData?.applicationNo || Data?.fsm?.[0].applicationNo}`
+      );
     }
   };
 
@@ -179,9 +181,9 @@ const Response = (props) => {
   useEffect(() => {
     switch (selectedAction) {
       case "GO_TO_HOME":
-        return isCitizen ? history.push("/digit-ui/citizen") : history.push("/digit-ui/employee");
+        return isCitizen ? history.push("/digit-ui/citizen") : history.push("/mgramseva-digit-ui/employee");
       case "ASSIGN_TO_DSO":
-        return history.push(`/digit-ui/employee/fsm/application-details/${getApplicationNo}`);
+        return history.push(`/mgramseva-digit-ui/employee/fsm/application-details/${getApplicationNo}`);
       case "PAY":
         return handleResponse();
     }

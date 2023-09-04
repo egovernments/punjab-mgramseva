@@ -2,15 +2,14 @@ import { Header, MultiLink, Toast } from "@egovernments/digit-ui-react-component
 import React, { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ApplicationDetailsTemplate from "../../../../templates/ApplicationDetails";
-import  getPDFData  from "../../utils/getWsAckDataForBillAmendPdf";
+import getPDFData from "../../utils/getWsAckDataForBillAmendPdf";
 
 const ApplicationDetailsBillAmendment = () => {
   const { applicationNumber } = Digit.Hooks.useQueryParams();
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const { t } = useTranslation();
   let serviceType = "WATER";
-  if(applicationNumber.includes("SW"))
-  serviceType = "SEWERAGE"
+  if (applicationNumber.includes("SW")) serviceType = "SEWERAGE";
   const [showToast, setShowToast] = useState(false);
   const { isLoading, isError, data: applicationDetails, error } = Digit.Hooks.ws.useWSApplicationDetailsBillAmendment(
     t,
@@ -18,28 +17,27 @@ const ApplicationDetailsBillAmendment = () => {
     applicationNumber,
     serviceType
   );
-  
+
   const workflowDetails = Digit.Hooks.useWorkflowDetails({
     tenantId,
     id: applicationNumber,
     moduleCode: applicationDetails?.processInstancesDetails?.[0]?.businessService,
-    config:{enabled:applicationDetails?.processInstancesDetails?.[0]?.businessService?true:false}
+    config: { enabled: applicationDetails?.processInstancesDetails?.[0]?.businessService ? true : false },
   });
-  
- 
+
   workflowDetails?.data?.actionState?.nextActions?.forEach((action) => {
     if (action?.action === "RE-SUBMIT") {
-      let pathName = `/digit-ui/employee/ws/bill-amendment?connectionNumber=${applicationDetails?.applicationData?.connectionNo}&tenantId=${tenantId}&isEdit=true`;
+      let pathName = `/mgramseva-digit-ui/employee/ws/bill-amendment?connectionNumber=${applicationDetails?.applicationData?.connectionNo}&tenantId=${tenantId}&isEdit=true`;
       action.redirectionUrll = {
         action: "RE-SUBMIT-APPLICATION",
         pathname: pathName,
         state: {
           applicationDetails: applicationDetails,
-          action: "RE-SUBMIT-APPLICATION"
+          action: "RE-SUBMIT-APPLICATION",
         },
       };
     }
-  })
+  });
   const {
     isLoading: updatingApplication,
     isError: updateApplicationError,
@@ -63,13 +61,13 @@ const ApplicationDetailsBillAmendment = () => {
 
   async function getCouponPDF({ tenantId, Amendments }) {
     const stateId = Digit.ULBService.getStateId();
-    const response = await Digit.PaymentService.generatePdf(stateId, { Amendments:[Amendments] }, "bill-amendment-credit-note");
+    const response = await Digit.PaymentService.generatePdf(stateId, { Amendments: [Amendments] }, "bill-amendment-credit-note");
     const fileStore = await Digit.PaymentService.printReciept(stateId, { fileStoreIds: response.filestoreIds[0] });
     window.open(fileStore[response?.filestoreIds[0]], "_blank");
   }
 
-  const getAckPdf = async (amendment,tenantId,t,tableData,app) => {
-    const PDFdata = getPDFData(amendment,tenantId,t,tableData,app);
+  const getAckPdf = async (amendment, tenantId, t, tableData, app) => {
+    const PDFdata = getPDFData(amendment, tenantId, t, tableData, app);
     PDFdata.then((ress) => Digit.Utils.pdf.generateBillAmendPDF(ress));
   };
   const dowloadOptions =
@@ -81,18 +79,18 @@ const ApplicationDetailsBillAmendment = () => {
           //   onClick: () => getCouponPDF({ tenantId, Amendments: applicationDetails?.amendment }),
           // },
           {
-          order: 1,
-          label: t("WS_ACK_PDF"),
-            onClick: () => getAckPdf(applicationDetails?.amendment, tenantId, t, applicationDetails?.applicationDetails,applicationDetails),
+            order: 1,
+            label: t("WS_ACK_PDF"),
+            onClick: () => getAckPdf(applicationDetails?.amendment, tenantId, t, applicationDetails?.applicationDetails, applicationDetails),
           },
         ]
       : [
-        {
-          order: 1,
-          label: t("WS_ACK_PDF"),
-          onClick: () => getAckPdf(applicationDetails?.amendment, tenantId, t, applicationDetails?.applicationDetails,applicationDetails ),
-        },
-      ];
+          {
+            order: 1,
+            label: t("WS_ACK_PDF"),
+            onClick: () => getAckPdf(applicationDetails?.amendment, tenantId, t, applicationDetails?.applicationDetails, applicationDetails),
+          },
+        ];
 
   return (
     <Fragment>
@@ -121,7 +119,7 @@ const ApplicationDetailsBillAmendment = () => {
           moduleCode="WS"
           showToast={showToast}
           setShowToast={setShowToast}
-          closeToast={()=>setShowToast(null)}
+          closeToast={() => setShowToast(null)}
           timelineStatusPrefix={`WF_${applicationDetails?.processInstancesDetails?.[0]?.businessService?.toUpperCase()}_`}
         />
       </div>

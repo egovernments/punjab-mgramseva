@@ -75,7 +75,7 @@ const MobileSearchWater = ({ Controller, register, control, t, reset, previousPa
             <span className="link">
               <Link
                 to={{
-                  pathname: `/digit-ui/employee/payment/collect/${data?.["service"] == "WATER" ? "WS" : "SW"}/${encodeURIComponent(
+                  pathname: `/mgramseva-digit-ui/employee/payment/collect/${data?.["service"] == "WATER" ? "WS" : "SW"}/${encodeURIComponent(
                     data?.["connectionNo"]
                   )}/${data?.["tenantId"]}?tenantId=${data?.["tenantId"]}&ISWSCON`,
                 }}
@@ -88,15 +88,14 @@ const MobileSearchWater = ({ Controller, register, control, t, reset, previousPa
     }
   };
   const GetStatusLinkCell = (value) => {
-
     //let service = "WATER";
     return (
       <div>
         <span className="link">
           <Link
-            to={`/digit-ui/employee/ws/connection-details?applicationNumber=${value?.connectionNo}&tenantId=${
-              value?.tenantId
-            }&service=${value?.service}&connectionType=${value?.connectionType}&due=${value?.due || 0}`}
+            to={`/mgramseva-digit-ui/employee/ws/connection-details?applicationNumber=${value?.connectionNo}&tenantId=${value?.tenantId}&service=${
+              value?.service
+            }&connectionType=${value?.connectionType}&due=${value?.due || 0}`}
           >
             {value?.connectionNo || "NA"}
           </Link>
@@ -116,7 +115,8 @@ const MobileSearchWater = ({ Controller, register, control, t, reset, previousPa
       [t("WS_COMMON_TABLE_COL_STATUS_LABEL")]: t(`WS_${data?.status?.toUpperCase()}`),
       [t("WS_COMMON_TABLE_COL_AMT_DUE_LABEL")]: data?.due || t(`${"WS_NA"}`),
       [t("WS_COMMON_TABLE_COL_ADDRESS")]: data?.address || t(`${"WS_NA"}`),
-      [t("WS_COMMON_TABLE_COL_DUE_DATE_LABEL")]: data?.status?.toUpperCase() === "INACTIVE" ? t(`${"WS_NA"}`) : data?.dueDate ? convertEpochToDate(data?.dueDate) : t(`${"WS_NA"}`),
+      [t("WS_COMMON_TABLE_COL_DUE_DATE_LABEL")]:
+        data?.status?.toUpperCase() === "INACTIVE" ? t(`${"WS_NA"}`) : data?.dueDate ? convertEpochToDate(data?.dueDate) : t(`${"WS_NA"}`),
       [t("WS_COMMON_TABLE_COL_ACTION_LABEL")]: data?.due ? getActionItems(data?.status, data) : t(`${"WS_NA"}`),
     }));
   }, [data]);

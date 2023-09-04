@@ -7,7 +7,6 @@ import ApplicationTable from "./inbox/ApplicationTable";
 import InboxLinks from "./inbox/InboxLink";
 import SearchApplication from "./inbox/search";
 
-
 const DesktopInbox = ({ tableConfig, filterComponent, columns, ...props }) => {
   const { data } = props;
   const { t } = useTranslation();
@@ -116,7 +115,7 @@ const DesktopInbox = ({ tableConfig, filterComponent, columns, ...props }) => {
               <span className="link">
                 <Link
                   to={{
-                    pathname: `/digit-ui/employee/payment/collect/${row.original?.["businessService"]}/${row.original?.["challanNo"]}/tenantId=${row.original?.["tenantId"]}?workflow=mcollect`,
+                    pathname: `/mgramseva-digit-ui/employee/payment/collect/${row.original?.["businessService"]}/${row.original?.["challanNo"]}/tenantId=${row.original?.["tenantId"]}?workflow=mcollect`,
                   }}
                 >
                   {t(`UC_${action}`)}
@@ -188,7 +187,7 @@ const DesktopInbox = ({ tableConfig, filterComponent, columns, ...props }) => {
   }
 
   return (
-    <div className="inbox-container" style={{overflow: "auto"}}>
+    <div className="inbox-container" style={{ overflow: "auto" }}>
       {!props.isSearch && (
         <div className="filters-container">
           <InboxLinks parentRoute={props.parentRoute} businessService={props.businessService} />

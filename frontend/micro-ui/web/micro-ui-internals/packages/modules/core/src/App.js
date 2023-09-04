@@ -28,11 +28,11 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData }) 
     if (!pathname?.includes("dss")) {
       Digit.SessionStorage.del("DSS_FILTERS");
     }
-    if (pathname?.toString() === "/digit-ui/employee") {
+    if (pathname?.toString() === "/mgramseva-digit-ui/employee") {
       Digit.SessionStorage.del("SEARCH_APPLICATION_DETAIL");
       Digit.SessionStorage.del("WS_EDIT_APPLICATION_DETAILS");
     }
-    if (pathname?.toString() === "/digit-ui/citizen" || pathname?.toString() === "/digit-ui/employee") {
+    if (pathname?.toString() === "/digit-ui/citizen" || pathname?.toString() === "/mgramseva-digit-ui/employee") {
       Digit.SessionStorage.del("WS_DISCONNECTION");
     }
   }, [pathname]);
@@ -65,14 +65,14 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData }) 
   };
   return (
     <Switch>
-      <Route path="/digit-ui/employee">
+      <Route path="/mgramseva-digit-ui/employee">
         <EmployeeApp {...commonProps} />
       </Route>
-      <Route path="/digit-ui/citizen">
+      <Route path="/mgramseva-digit-ui/citizen">
         <CitizenApp {...commonProps} />
       </Route>
       <Route>
-        <Redirect to="/digit-ui/citizen" />
+        <Redirect to="/mgramseva-digit-ui/citizen" />
       </Route>
     </Switch>
   );

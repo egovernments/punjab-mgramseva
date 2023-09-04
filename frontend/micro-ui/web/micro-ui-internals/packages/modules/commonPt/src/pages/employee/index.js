@@ -15,10 +15,10 @@ const EmployeeApp = ({ path, url, userType }) => {
   const mobileView = innerWidth <= 640;
 
   const breadcrumbObj = {
-    ["/digit-ui/employee/pt/inbox"]: "ES_TITLE_INBOX",
-    ["/digit-ui/employee/pt/new-application"]: "ES_TITLE_NEW_PROPERTY_APPLICATION",
-    ["/digit-ui/employee/pt/search"]: "ES_COMMON_SEARCH",
-    ["/digit-ui/employee/pt/application-search"]: "ES_COMMON_APPLICATION_SEARCH",
+    ["/mgramseva-digit-ui/employee/pt/inbox"]: "ES_TITLE_INBOX",
+    ["/mgramseva-digit-ui/employee/pt/new-application"]: "ES_TITLE_NEW_PROPERTY_APPLICATION",
+    ["/mgramseva-digit-ui/employee/pt/search"]: "ES_COMMON_SEARCH",
+    ["/mgramseva-digit-ui/employee/pt/application-search"]: "ES_COMMON_APPLICATION_SEARCH",
   };
 
   const getBreadCrumb = () => {
@@ -49,19 +49,22 @@ const EmployeeApp = ({ path, url, userType }) => {
 
   const crumbs = [
     {
-      path: "/digit-ui/employee",
+      path: "/mgramseva-digit-ui/employee",
       content: t("ES_COMMON_HOME"),
       show: true,
     },
     {
-      path: { pathname: urlpropertyId ? `${redirectUrl}?propertyId=${urlpropertyId}&tenantId=${urltenantId}` : redirectUrl, state: { ...location.state } },
+      path: {
+        pathname: urlpropertyId ? `${redirectUrl}?propertyId=${urlpropertyId}&tenantId=${urltenantId}` : redirectUrl,
+        state: { ...location.state },
+      },
       content: redirectUrl ? getRedirectBreadCrumb(redirectUrl) : (fromScreen && t(fromScreen)) || "NONE",
       show: (redirectUrl || fromScreen) && true,
       isBack: fromScreen && true,
       isredirected: true,
     },
     {
-      path: "/digit-ui/employee/dss/drilldown",
+      path: "/mgramseva-digit-ui/employee/dss/drilldown",
       content: getBreadCrumb(),
       show: true,
     },
@@ -74,7 +77,7 @@ const EmployeeApp = ({ path, url, userType }) => {
       <React.Fragment>
         <div className="ground-container">
           {/* <p className="breadcrumb" style={{ marginLeft: mobileView ? "2vw" : "12px" }}>
-            <Link to="/digit-ui/employee" style={{ cursor: "pointer", color: "#666" }}>
+            <Link to="/mgramseva-digit-ui/employee" style={{ cursor: "pointer", color: "#666" }}>
               {t("ES_COMMON_HOME")}
             </Link>{" "}
             / <span>{getBreadCrumb()}</span>

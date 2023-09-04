@@ -11,7 +11,6 @@ const MCollectAcknowledgement = () => {
   const { isEdit } = Digit.Hooks.useQueryParams();
   useEffect(() => {
     setParams(func.getQueryStringParams(location.search)); // result: '?query=abc'
-
   }, [location]);
   const { t } = useTranslation();
 
@@ -41,7 +40,7 @@ const MCollectAcknowledgement = () => {
             </div>
           ) : null}
           <ActionBar style={{ display: "flex", justifyContent: "flex-end", alignItems: "baseline" }}>
-            <Link to={`/digit-ui/employee`} style={{ marginRight: "1rem" }}>
+            <Link to={`/mgramseva-digit-ui/employee`} style={{ marginRight: "1rem" }}>
               <SubmitBar label={t("CORE_COMMON_GO_TO_HOME")} />
             </Link>
           </ActionBar>
@@ -65,13 +64,13 @@ const MCollectAcknowledgement = () => {
             </div>
           ) : null}
           <ActionBar style={{ display: "flex", justifyContent: "flex-end", alignItems: "baseline" }}>
-            <Link to={`/digit-ui/employee`} style={{ marginRight: "1rem" }}>
+            <Link to={`/mgramseva-digit-ui/employee`} style={{ marginRight: "1rem" }}>
               <LinkButton style={{ color: "#FF8C00" }} label={t("CORE_COMMON_GO_TO_HOME")} />
             </Link>
 
             <Link
               to={{
-                pathname: `/digit-ui/employee/payment/collect/${params?.serviceCategory}/${params?.challanNumber}/tenantId=${params?.tenantId}?workflow=mcollect`,
+                pathname: `/mgramseva-digit-ui/employee/payment/collect/${params?.serviceCategory}/${params?.challanNumber}/tenantId=${params?.tenantId}?workflow=mcollect`,
               }}
             >
               <SubmitBar label={t("UC_BUTTON_PAY")} />

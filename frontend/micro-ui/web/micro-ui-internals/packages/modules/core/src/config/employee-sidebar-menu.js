@@ -20,11 +20,11 @@ const EmployeeSideBarMenu = (t, HRMS, FSM, PT, mCollect, DSS, RECEIPTS, TL, NOC,
     links: [
       {
         label: t("HR_HOME_SEARCH_RESULTS_HEADING"),
-        link: `/digit-ui/employee/hrms/inbox`,
+        link: `/mgramseva-digit-ui/employee/hrms/inbox`,
       },
       {
         label: t("HR_COMMON_CREATE_EMPLOYEE_HEADER"),
-        link: `/digit-ui/employee/hrms/create`,
+        link: `/mgramseva-digit-ui/employee/hrms/create`,
       },
     ],
   },
@@ -34,7 +34,7 @@ const EmployeeSideBarMenu = (t, HRMS, FSM, PT, mCollect, DSS, RECEIPTS, TL, NOC,
     links: [
       {
         label: t("ES_COMMON_INBOX"),
-        link: `/digit-ui/employee/fsm/inbox`,
+        link: `/mgramseva-digit-ui/employee/fsm/inbox`,
       },
     ],
   },
@@ -46,11 +46,11 @@ const EmployeeSideBarMenu = (t, HRMS, FSM, PT, mCollect, DSS, RECEIPTS, TL, NOC,
     links: [
       {
         label: t("UC_SEARCH_CHALLAN_LABEL"),
-        link: `/digit-ui/employee/mcollect/inbox`,
+        link: `/mgramseva-digit-ui/employee/mcollect/inbox`,
       },
       {
         label: t("UC_GENERATE_NEW_CHALLAN"),
-        link: `/digit-ui/employee/mcollect/new-application`,
+        link: `/mgramseva-digit-ui/employee/mcollect/new-application`,
       },
     ],
   },
@@ -65,11 +65,11 @@ const EmployeeSideBarMenu = (t, HRMS, FSM, PT, mCollect, DSS, RECEIPTS, TL, NOC,
     links: [
       {
         label: t("ES_TITLE_INBOX"),
-        link: `/digit-ui/employee/engagement/messages/inbox`,
+        link: `/mgramseva-digit-ui/employee/engagement/messages/inbox`,
       },
       {
         label: t("NEW_PUBLIC_MESSAGE_BUTTON_LABEL"),
-        link: `/digit-ui/employee/engagement/messages/create`,
+        link: `/mgramseva-digit-ui/employee/engagement/messages/create`,
       },
     ],
   },
@@ -79,11 +79,11 @@ const EmployeeSideBarMenu = (t, HRMS, FSM, PT, mCollect, DSS, RECEIPTS, TL, NOC,
     links: [
       {
         label: t("ES_TITLE_INBOX"),
-        link: `/digit-ui/employee/engagement/surveys/inbox`,
+        link: `/mgramseva-digit-ui/employee/engagement/surveys/inbox`,
       },
       {
         label: t("CS_COMMON_NEW_SURVEY"),
-        link: `/digit-ui/employee/engagement/surveys/create`,
+        link: `/mgramseva-digit-ui/employee/engagement/surveys/create`,
       },
     ],
   },
@@ -93,11 +93,11 @@ const EmployeeSideBarMenu = (t, HRMS, FSM, PT, mCollect, DSS, RECEIPTS, TL, NOC,
     links: [
       {
         label: t("ES_TITLE_INBOX"),
-        link: `/digit-ui/employee/engagement/event/inbox`,
+        link: `/mgramseva-digit-ui/employee/engagement/event/inbox`,
       },
       {
         label: t("ES_TITLE_NEW_EVENTS"),
-        link: `/digit-ui/employee/engagement/event/new-event`,
+        link: `/mgramseva-digit-ui/employee/engagement/event/new-event`,
       },
     ],
   },
@@ -107,11 +107,11 @@ const EmployeeSideBarMenu = (t, HRMS, FSM, PT, mCollect, DSS, RECEIPTS, TL, NOC,
     links: [
       {
         label: t("ES_TITLE_INBOX"),
-        link: `/digit-ui/employee/engagement/documents/inbox`,
+        link: `/mgramseva-digit-ui/employee/engagement/documents/inbox`,
       },
       {
         label: t("NEW_DOCUMENT_TEXT"),
-        link: `/digit-ui/employee/engagement/documents/new-doc`,
+        link: `/mgramseva-digit-ui/employee/engagement/documents/new-doc`,
       },
     ],
   },
@@ -122,7 +122,7 @@ const EmployeeSideBarMenu = (t, HRMS, FSM, PT, mCollect, DSS, RECEIPTS, TL, NOC,
     links: [
       {
         label: t("CR_SEARCH_COMMON_HEADER"),
-        link: `/digit-ui/employee/receipts/inbox`,
+        link: `/mgramseva-digit-ui/employee/receipts/inbox`,
       },
     ],
   },
@@ -138,11 +138,11 @@ const EmployeeSideBarMenu = (t, HRMS, FSM, PT, mCollect, DSS, RECEIPTS, TL, NOC,
     links: [
       {
         label: t("ES_COMMON_INBOX"),
-        link: `/digit-ui/employee/noc/inbox`,
+        link: `/mgramseva-digit-ui/employee/noc/inbox`,
       },
       {
         label: t("ES_COMMON_SEARCH"),
-        link: `/digit-ui/employee/noc/search`,
+        link: `/mgramseva-digit-ui/employee/noc/search`,
       },
     ],
   },
@@ -153,7 +153,7 @@ const EmployeeSideBarMenu = (t, HRMS, FSM, PT, mCollect, DSS, RECEIPTS, TL, NOC,
     links: [
       {
         label: t("ES_COMMON_INBOX"),
-        link: "/digit-ui/employee/fsm/fstp-inbox",
+        link: "/mgramseva-digit-ui/employee/fsm/fstp-inbox",
       },
     ],
   },

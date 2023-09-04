@@ -8,12 +8,11 @@ export const PrivateRoute = ({ component: Component, roles, ...rest }) => {
       render={(props) => {
         const user = Digit.UserService.getUser();
         const userType = Digit.UserService.getType();
-        function getLoginRedirectionLink (){
-          if(userType === "employee"){
-            return "/digit-ui/employee/user/language-selection"
-          }
-          else{
-            return "/digit-ui/citizen/login"
+        function getLoginRedirectionLink() {
+          if (userType === "employee") {
+            return "/mgramseva-digit-ui/employee/user/language-selection";
+          } else {
+            return "/digit-ui/citizen/login";
           }
         }
         if (!user || !user.access_token) {

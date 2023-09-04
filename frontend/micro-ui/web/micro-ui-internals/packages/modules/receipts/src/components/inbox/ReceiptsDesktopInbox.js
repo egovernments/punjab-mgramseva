@@ -12,10 +12,14 @@ const ReceiptsDesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
   const GetCell = (value) => <span className="cell-text">{t(value)}</span>;
   const GetDateCell = (value) => {
     const date = new Date(value);
-    return <span className="cell-text">{date?.toLocaleDateString()}</span>
+    return <span className="cell-text">{date?.toLocaleDateString()}</span>;
   };
-  const GetSlaCell = (value, t, prefix = '') => {
-    return value == "CANCELLED" ? <span className="sla-cell-error">{t(`${prefix}${value}`) || ""}</span> : <span className="sla-cell-success">{t(`${prefix}${value}`) || ""}</span>;
+  const GetSlaCell = (value, t, prefix = "") => {
+    return value == "CANCELLED" ? (
+      <span className="sla-cell-error">{t(`${prefix}${value}`) || ""}</span>
+    ) : (
+      <span className="sla-cell-success">{t(`${prefix}${value}`) || ""}</span>
+    );
   };
   const data = props?.data?.Payments;
   const [FilterComponent, setComp] = useState(() => Digit.ComponentRegistryService?.getComponent(filterComponent));
@@ -27,7 +31,13 @@ const ReceiptsDesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
         Cell: ({ row }) => {
           return (
             <span className="link">
-              <Link to={`/digit-ui/employee/receipts/details/${row.original?.paymentDetails[0]?.businessService}/${encodeURIComponent(row.original?.paymentDetails[0]?.receiptNumber)}`}>{row.original?.paymentDetails[0]?.receiptNumber}</Link>
+              <Link
+                to={`/mgramseva-digit-ui/employee/receipts/details/${row.original?.paymentDetails[0]?.businessService}/${encodeURIComponent(
+                  row.original?.paymentDetails[0]?.receiptNumber
+                )}`}
+              >
+                {row.original?.paymentDetails[0]?.receiptNumber}
+              </Link>
             </span>
           );
         },
@@ -64,10 +74,9 @@ const ReceiptsDesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
         Header: t("CR_COMMON_TABLE_COL_STATUS"),
         disableSortBy: true,
         Cell: ({ row }) => {
-          return GetSlaCell(`${row.original?.paymentStatus}`, t, 'RC_');
+          return GetSlaCell(`${row.original?.paymentStatus}`, t, "RC_");
         },
       },
-
     ];
   }, []);
 
@@ -126,16 +135,16 @@ const ReceiptsDesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
             allLinks={[
               {
                 text: "CR_COMMON_DASHBOARD_HEADER",
-                link: "/digit-ui/employee/receipts/inprogress",
+                link: "/mgramseva-digit-ui/employee/receipts/inprogress",
                 businessService: "receipts",
                 roles: ["CR_PT"],
               },
               {
                 text: "CR_COMMON_REPORTS_HEADER",
-                link: "/digit-ui/employee/receipts/inprogress",
+                link: "/mgramseva-digit-ui/employee/receipts/inprogress",
                 businessService: "receipts",
                 roles: ["CR_PT"],
-              }
+              },
             ]}
             headerText={t("ACTION_TEST_RECEIPTS")}
             businessService={props.businessService}

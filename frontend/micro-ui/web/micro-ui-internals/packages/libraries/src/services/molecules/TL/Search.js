@@ -69,13 +69,18 @@ export const TLSearch = {
       asSectionHeader: false,
       values: [
         { title: "TL_LOCALIZATION_APPLICATION_NO", value: response?.applicationNumber ? `${response?.applicationNumber}` : "NA" },
-        { title: "TL_APPLICATION_CHALLAN_LABEL", value: response?.tradeLicenseDetail?.channel ? `TL_CHANNEL_${response?.tradeLicenseDetail?.channel}` : "NA" },
-      ]
-    }
+        {
+          title: "TL_APPLICATION_CHALLAN_LABEL",
+          value: response?.tradeLicenseDetail?.channel ? `TL_CHANNEL_${response?.tradeLicenseDetail?.channel}` : "NA",
+        },
+      ],
+    };
 
-    if(response?.licenseNumber && applicationNoAndChannel?.values.filter((ob) => ob?.title === "TL_LOCALIZATION_LICENSE_NO")?.length <= 0)
-    {
-      applicationNoAndChannel?.values.push({ title: "TL_LOCALIZATION_LICENSE_NO", value: response?.licenseNumber ? `${response?.licenseNumber}` : "NA" })
+    if (response?.licenseNumber && applicationNoAndChannel?.values.filter((ob) => ob?.title === "TL_LOCALIZATION_LICENSE_NO")?.length <= 0) {
+      applicationNoAndChannel?.values.push({
+        title: "TL_LOCALIZATION_LICENSE_NO",
+        value: response?.licenseNumber ? `${response?.licenseNumber}` : "NA",
+      });
     }
 
     const tradedetails = {
@@ -94,14 +99,17 @@ export const TLSearch = {
         {
           title: "TL_NEW_TRADE_DETAILS_STRUCT_SUB_TYPE_LABEL",
           value: response?.tradeLicenseDetail?.structureType
-            ? `COMMON_MASTERS_STRUCTURETYPE_${stringReplaceAll(response?.tradeLicenseDetail?.structureType,".","_")}`
+            ? `COMMON_MASTERS_STRUCTURETYPE_${stringReplaceAll(response?.tradeLicenseDetail?.structureType, ".", "_")}`
             : "NA",
         },
         {
           title: "TL_NEW_TRADE_DETAILS_TRADE_COMM_DATE_LABEL",
           value: response?.commencementDate ? convertEpochToDate(response?.commencementDate) : "NA",
         },
-        { title: "TL_NEW_GST_NUMBER_LABEL", value: response?.tradeLicenseDetail?.additionalDetail?.gstNo || response?.tradeLicenseDetail?.additionalDetail?.tradeGstNo || "NA" },
+        {
+          title: "TL_NEW_GST_NUMBER_LABEL",
+          value: response?.tradeLicenseDetail?.additionalDetail?.gstNo || response?.tradeLicenseDetail?.additionalDetail?.tradeGstNo || "NA",
+        },
         { title: "TL_NEW_OPERATIONAL_SQ_FT_AREA_LABEL", value: response?.tradeLicenseDetail?.operationalArea || "NA" },
         { title: "TL_NEW_NUMBER_OF_EMPLOYEES_LABEL", value: response?.tradeLicenseDetail?.noOfEmployees || "NA" },
       ],
@@ -161,7 +169,7 @@ export const TLSearch = {
         { title: "PROPERTY_ADDRESS", value: propertyAddress || "NA" },
         {
           title: "TL_VIEW_PROPERTY_DETAIL",
-          to: `/digit-ui/employee/commonpt/view-property?propertyId=${propertyDetails?.Properties?.[0]?.propertyId}&tenantId=${propertyDetails?.Properties?.[0]?.tenantId}&from=TL_APPLICATION_DETAILS_LABEL`,
+          to: `/mgramseva-digit-ui/employee/commonpt/view-property?propertyId=${propertyDetails?.Properties?.[0]?.propertyId}&tenantId=${propertyDetails?.Properties?.[0]?.tenantId}&from=TL_APPLICATION_DETAILS_LABEL`,
           value: "",
           isLink: true,
         },

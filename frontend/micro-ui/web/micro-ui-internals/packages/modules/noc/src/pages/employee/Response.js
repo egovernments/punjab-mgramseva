@@ -11,8 +11,8 @@ const Response = (props) => {
   const nocData = state?.data?.Noc?.[0];
 
   const onSubmit = () => {
-    history.push(`/digit-ui/employee`);
-  }
+    history.push(`/mgramseva-digit-ui/employee`);
+  };
 
   return (
     <div>
@@ -23,14 +23,15 @@ const Response = (props) => {
           info={nocData?.applicationStatus == "REJECTED" ? "" : t(`NOC_${stringReplaceAll(nocData?.nocType, ".", "_")}_APPROVAL_NUMBER`)}
           successful={nocData?.applicationStatus == "REJECTED" ? false : true}
           style={{ padding: "10px" }}
-          headerStyles={{fontSize: "32px", wordBreak: "break-word"}}
+          headerStyles={{ fontSize: "32px", wordBreak: "break-word" }}
         />
-        { nocData?.applicationStatus !== "REJECTED" ? <CardText>{t(`NOC_${stringReplaceAll(nocData?.nocType, ".", "_")}_${stringReplaceAll(nocData?.applicationStatus, ".", "_")}_SUB_HEADER`)}</CardText> : null}
+        {nocData?.applicationStatus !== "REJECTED" ? (
+          <CardText>
+            {t(`NOC_${stringReplaceAll(nocData?.nocType, ".", "_")}_${stringReplaceAll(nocData?.applicationStatus, ".", "_")}_SUB_HEADER`)}
+          </CardText>
+        ) : null}
         <ActionBar style={{ display: "flex", justifyContent: "flex-end", alignItems: "baseline" }}>
-          <SubmitBar
-            label={t("CORE_COMMON_GO_TO_HOME")}
-            onSubmit={onSubmit}
-          />
+          <SubmitBar label={t("CORE_COMMON_GO_TO_HOME")} onSubmit={onSubmit} />
         </ActionBar>
       </Card>
     </div>

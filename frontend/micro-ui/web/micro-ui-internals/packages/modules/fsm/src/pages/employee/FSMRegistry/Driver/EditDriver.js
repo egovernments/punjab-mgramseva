@@ -102,7 +102,7 @@ const EditDriver = ({ parentUrl, heading }) => {
         queryClient.invalidateQueries("FSM_DRIVER_SEARCH");
         setTimeout(() => {
           closeToast();
-          history.push(`/digit-ui/employee/fsm/registry/driver-details/${dsoId}`);
+          history.push(`/mgramseva-digit-ui/employee/fsm/registry/driver-details/${dsoId}`);
         }, 5000);
       },
     });

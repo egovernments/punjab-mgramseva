@@ -102,7 +102,7 @@ export const ApplicationCard = ({
       <DetailsCard
         data={data}
         serviceRequestIdKey={serviceRequestIdKey}
-        linkPrefix={linkPrefix ? linkPrefix : DSO ? "/digit-ui/employee/fsm/application-details/" : "/digit-ui/employee/fsm/"}
+        linkPrefix={linkPrefix ? linkPrefix : DSO ? "/mgramseva-digit-ui/employee/fsm/application-details/" : "/mgramseva-digit-ui/employee/fsm/"}
       />
     );
   }
@@ -119,7 +119,7 @@ export const ApplicationCard = ({
             }}
           />
         )}
-        {!isSearch && onFilterChange && ((!DSO && !isFstpOperator && searchParams) || (mergedRoleDetails?.statuses?.length > 0)) && (
+        {!isSearch && onFilterChange && ((!DSO && !isFstpOperator && searchParams) || mergedRoleDetails?.statuses?.length > 0) && (
           <FilterAction
             text="FILTER"
             handleActionClick={() => {
@@ -128,13 +128,15 @@ export const ApplicationCard = ({
             }}
           />
         )}
-        {!isSearch && <FilterAction
-          text="SORT"
-          handleActionClick={() => {
-            setType("SORT");
-            setPopup(true);
-          }}
-        />}
+        {!isSearch && (
+          <FilterAction
+            text="SORT"
+            handleActionClick={() => {
+              setType("SORT");
+              setPopup(true);
+            }}
+          />
+        )}
       </div>
       {result}
       {popup && (
@@ -155,9 +157,7 @@ export const ApplicationCard = ({
             </div>
           )}
           {type === "SORT" && (
-            <div className="popup-module">
-              {<SortBy type="mobile" sortParams={sortParams} onClose={handlePopupClose} onSort={onSort} />}
-            </div>
+            <div className="popup-module">{<SortBy type="mobile" sortParams={sortParams} onClose={handlePopupClose} onSort={onSort} />}</div>
           )}
           {type === "SEARCH" && (
             <div className="popup-module">

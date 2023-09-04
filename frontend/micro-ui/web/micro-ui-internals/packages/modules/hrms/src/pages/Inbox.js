@@ -114,7 +114,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
           searchParams={searchParams}
           sortParams={sortParams}
           totalRecords={totalRecords}
-          linkPrefix={'/digit-ui/employee/hrms/details/'}
+          linkPrefix={"/mgramseva-digit-ui/employee/hrms/details/"}
           filterComponent={filterComponent}
         />
         // <div></div>

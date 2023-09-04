@@ -75,7 +75,10 @@ const EditForm = ({ tenantId, applicationData, channelMenu, vehicleMenu, sanitat
           setSubmitValve(true);
         } else setSubmitValve(false);
       }
-      if (formData?.tripData?.amountPerTrip !== 0 && (formData?.advancepaymentPreference?.advanceAmount > formData?.tripData?.amount || formData?.advancepaymentPreference?.advanceAmount < min)) {
+      if (
+        formData?.tripData?.amountPerTrip !== 0 &&
+        (formData?.advancepaymentPreference?.advanceAmount > formData?.tripData?.amount || formData?.advancepaymentPreference?.advanceAmount < min)
+      ) {
         setSubmitValve(false);
       }
       if (applicationData?.advanceAmount > 0 && formData?.advancepaymentPreference?.advanceAmount <= 0) {
@@ -163,7 +166,7 @@ const EditForm = ({ tenantId, applicationData, channelMenu, vehicleMenu, sanitat
     Digit.SessionStorage.set("city_property", null);
     Digit.SessionStorage.set("selected_localities", null);
     Digit.SessionStorage.set("locality_property", null);
-    history.replace("/digit-ui/employee/fsm/response", {
+    history.replace("/mgramseva-digit-ui/employee/fsm/response", {
       applicationData: formData,
       key: "update",
       action: applicationData?.applicationStatus === "CREATED" ? "SUBMIT" : "SCHEDULE",

@@ -1,7 +1,4 @@
-import {
-  ActionBar, Card, CardLabel, CardSectionHeader, CardText, Header, Loader,
-  SubmitBar
-} from "@egovernments/digit-ui-react-components";
+import { ActionBar, Card, CardLabel, CardSectionHeader, CardText, Header, Loader, SubmitBar } from "@egovernments/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
@@ -15,7 +12,7 @@ const RequiredDoc = () => {
   const [docs, setDocs] = useState([]);
   const { isLoading, data: Documentsob } = Digit.Hooks.pt.usePropertyMDMS(stateId, "PropertyTax", ["MutationDocuments"]);
   const OnSubmit = () => {
-    history.push(`/digit-ui/employee/pt/property-mutate/${id}`);
+    history.push(`/mgramseva-digit-ui/employee/pt/property-mutate/${id}`);
   };
 
   useEffect(() => {

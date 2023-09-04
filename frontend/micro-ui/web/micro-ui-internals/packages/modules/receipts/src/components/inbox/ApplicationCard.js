@@ -17,9 +17,8 @@ export const ApplicationCard = ({
   sortParams,
   linkPrefix,
   removeParam,
-  defaultSearchParams
+  defaultSearchParams,
 }) => {
-
   const [type, setType] = useState(isSearch ? "SEARCH" : "");
   const [popup, setPopup] = useState(isSearch ? true : false);
   const [params, setParams] = useState(searchParams);
@@ -56,7 +55,6 @@ export const ApplicationCard = ({
     return <Loader />;
   }
 
-
   let result;
   if (!data || data?.length === 0) {
     result = (
@@ -75,7 +73,7 @@ export const ApplicationCard = ({
       <DetailsCard
         data={data}
         serviceRequestIdKey={serviceRequestIdKey}
-        linkPrefix={linkPrefix ? linkPrefix : DSO ? "/digit-ui/employee/fsm/application-details/" : "/digit-ui/employee/fsm/"}
+        linkPrefix={linkPrefix ? linkPrefix : DSO ? "/mgramseva-digit-ui/employee/fsm/application-details/" : "/mgramseva-digit-ui/employee/fsm/"}
       />
     );
   }

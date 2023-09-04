@@ -35,60 +35,67 @@ const BillAmendmentCard = () => {
   };
 
   const formInitBilAmendmentValueSW = {
-    filterForm: {...filterFormDefaultBillAmendmentValues,businessService:["SW.AMENDMENT"], moduleName: "bsSw-service"},
+    filterForm: { ...filterFormDefaultBillAmendmentValues, businessService: ["SW.AMENDMENT"], moduleName: "bsSw-service" },
     searchForm: searchFormDefaultValues,
     tableForm: tableOrderFormDefaultValues,
   };
 
-
-  const { isLoading: isBillAMDInboxLoading, data : billData } = Digit.Hooks.useBillAmendmentInbox({
+  const { isLoading: isBillAMDInboxLoading, data: billData } = Digit.Hooks.useBillAmendmentInbox({
     tenantId,
     filters: { ...formInitBilAmendmentValue },
   });
-  const { isLoading: isSWBillAMDInboxLoading, data : swbillData } = Digit.Hooks.useBillAmendmentInbox({
+  const { isLoading: isSWBillAMDInboxLoading, data: swbillData } = Digit.Hooks.useBillAmendmentInbox({
     tenantId,
     filters: { ...formInitBilAmendmentValueSW },
   });
 
-
   useEffect(() => {
     if (!isBillAMDInboxLoading || !isSWBillAMDInboxLoading) {
-      const billCount = billData?.totalCount && swbillData?.totalCount ? billData?.totalCount + swbillData?.totalCount : (billData?.totalCount?billData?.totalCount:(swbillData?.totalCount?swbillData?.totalCount:0));
+      const billCount =
+        billData?.totalCount && swbillData?.totalCount
+          ? billData?.totalCount + swbillData?.totalCount
+          : billData?.totalCount
+          ? billData?.totalCount
+          : swbillData?.totalCount
+          ? swbillData?.totalCount
+          : 0;
       setTotalCount(billCount);
     }
-  }, [billData,swbillData]);
+  }, [billData, swbillData]);
 
-
-  const propsForModuleCard = useMemo(() => ({
-    Icon: <WSICon />,
-    moduleName: t("WS_BILL_AMENDMENT_BUTTON"),
-    kpis: [
-      {
-        count: isBillAMDInboxLoading ? "-" : totalCount,
-        label: t("TOTAL_WS"),
-        link: `/digit-ui/employee/ws/water/bill-amendment/inbox`,
-      },
-      {
-        count: isBillAMDInboxLoading ? "-" : billData?.slaCount,
-        label: t("TOTAL_NEARING_SLA"),
-        link: `/digit-ui/employee/ws/water/bill-amendment/inbox`,
-      }
-    ],
-    links: [
-      {
-        count: isBillAMDInboxLoading ? "-" : billData?.totalCount,
-        label: t("WS_WATER_INBOX"),
-        link: `/digit-ui/employee/ws/water/bill-amendment/inbox`,
-        roles: ["WS_CEMP", "WS_APPROVER", "WS_FIELD_INSPECTOR", "WS_DOC_VERIFIER", "WS_CLERK"],
-      },
-      {
-        count: isBillAMDInboxLoading ? "-" : swbillData?.totalCount,
-        label: t("SW_WATER_INBOX"),
-        link: `/digit-ui/employee/ws/sewerage/bill-amendment/inbox`,
-        roles: ["WS_CEMP", "WS_APPROVER", "WS_FIELD_INSPECTOR", "WS_DOC_VERIFIER", "WS_CLERK"],
-      }
-    ],
-  }), [isBillAMDInboxLoading, billData, totalCount]);
+  const propsForModuleCard = useMemo(
+    () => ({
+      Icon: <WSICon />,
+      moduleName: t("WS_BILL_AMENDMENT_BUTTON"),
+      kpis: [
+        {
+          count: isBillAMDInboxLoading ? "-" : totalCount,
+          label: t("TOTAL_WS"),
+          link: `/mgramseva-digit-ui/employee/ws/water/bill-amendment/inbox`,
+        },
+        {
+          count: isBillAMDInboxLoading ? "-" : billData?.slaCount,
+          label: t("TOTAL_NEARING_SLA"),
+          link: `/mgramseva-digit-ui/employee/ws/water/bill-amendment/inbox`,
+        },
+      ],
+      links: [
+        {
+          count: isBillAMDInboxLoading ? "-" : billData?.totalCount,
+          label: t("WS_WATER_INBOX"),
+          link: `/mgramseva-digit-ui/employee/ws/water/bill-amendment/inbox`,
+          roles: ["WS_CEMP", "WS_APPROVER", "WS_FIELD_INSPECTOR", "WS_DOC_VERIFIER", "WS_CLERK"],
+        },
+        {
+          count: isBillAMDInboxLoading ? "-" : swbillData?.totalCount,
+          label: t("SW_WATER_INBOX"),
+          link: `/mgramseva-digit-ui/employee/ws/sewerage/bill-amendment/inbox`,
+          roles: ["WS_CEMP", "WS_APPROVER", "WS_FIELD_INSPECTOR", "WS_DOC_VERIFIER", "WS_CLERK"],
+        },
+      ],
+    }),
+    [isBillAMDInboxLoading, billData, totalCount]
+  );
 
   return <EmployeeModuleCard {...propsForModuleCard} />;
 };

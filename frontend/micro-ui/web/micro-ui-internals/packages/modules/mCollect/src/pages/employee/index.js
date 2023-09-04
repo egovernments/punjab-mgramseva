@@ -47,20 +47,21 @@ const EmployeeApp = ({ path, url, userType }) => {
 
   const searchMW = [{ combineTaxDueInSearchData }];
 
-  const EmployeeChallan = Digit?.ComponentRegistryService?.getComponent('MCollectEmployeeChallan');
-  const MCollectAcknowledgement = Digit?.ComponentRegistryService?.getComponent('MCollectAcknowledgement');
-  const EditChallan = Digit?.ComponentRegistryService?.getComponent('MCollectEditChallan');
-  const NewChallan = Digit?.ComponentRegistryService?.getComponent('MCollectNewChallan');
+  const EmployeeChallan = Digit?.ComponentRegistryService?.getComponent("MCollectEmployeeChallan");
+  const MCollectAcknowledgement = Digit?.ComponentRegistryService?.getComponent("MCollectAcknowledgement");
+  const EditChallan = Digit?.ComponentRegistryService?.getComponent("MCollectEditChallan");
+  const NewChallan = Digit?.ComponentRegistryService?.getComponent("MCollectNewChallan");
 
   return (
     <Switch>
       <React.Fragment>
         <div className="ground-container" /* style={{ padding: "10px 0px 0px 30px" }} */>
-          <p className="breadcrumb employee-main-application-details"  style={{ marginLeft: mobileView ? "2vw" : "revert" }}>
-            <Link to="/digit-ui/employee" style={{ cursor: "pointer", color: "#666" }}>
+          <p className="breadcrumb employee-main-application-details" style={{ marginLeft: mobileView ? "2vw" : "revert" }}>
+            <Link to="/mgramseva-digit-ui/employee" style={{ cursor: "pointer", color: "#666" }}>
               {t("ES_COMMON_HOME")}
             </Link>{" "}
-            / <span>{location.pathname === "/digit-ui/employee/mcollect/inbox" ? t("UC_SEARCH_HEADER") : t("UC_COMMON_HEADER_SEARCH")}</span>
+            /{" "}
+            <span>{location.pathname === "/mgramseva-digit-ui/employee/mcollect/inbox" ? t("UC_SEARCH_HEADER") : t("UC_COMMON_HEADER_SEARCH")}</span>
           </p>
           <PrivateRoute exact path={`${path}/`} component={() => <MCollectLinks matchPath={path} userType={userType} />} />
           <PrivateRoute
@@ -75,8 +76,9 @@ const EmployeeApp = ({ path, url, userType }) => {
               />
             )}
           />
-{/*           <PrivateRoute path={`${path}/new-application`} component={() => <CreateChallen />} />
- */}          <PrivateRoute path={`${path}/new-application`} component={() => <NewChallan parentUrl={url} />} />
+          {/*           <PrivateRoute path={`${path}/new-application`} component={() => <CreateChallen />} />
+           */}{" "}
+          <PrivateRoute path={`${path}/new-application`} component={() => <NewChallan parentUrl={url} />} />
           <PrivateRoute
             path={`${path}/search`}
             component={() => (

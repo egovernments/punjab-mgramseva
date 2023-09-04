@@ -8,14 +8,22 @@ import { Link } from "react-router-dom";
 import { convertEpochToDateDMY } from "../../utils";
 // import { getActionButton } from "../../utils";
 
-const DesktopInbox = ({ tableConfig, filterComponent,columns, isLoading, setSearchFieldsBackToOriginalState, setSetSearchFieldsBackToOriginalState, ...props }) => {
+const DesktopInbox = ({
+  tableConfig,
+  filterComponent,
+  columns,
+  isLoading,
+  setSearchFieldsBackToOriginalState,
+  setSetSearchFieldsBackToOriginalState,
+  ...props
+}) => {
   const { data } = props;
   const { t } = useTranslation();
   const [FilterComponent, setComp] = useState(() => Digit.ComponentRegistryService?.getComponent(filterComponent));
   const GetCell = (value) => <span className="cell-text">{value}</span>;
 
   const GetSlaCell = (value) => {
-    if(value === "CS_NA") return t(value)
+    if (value === "CS_NA") return t(value);
     if (isNaN(value)) return <span className="sla-cell-success">0</span>;
     return value < 0 ? <span className="sla-cell-error">{value}</span> : <span className="sla-cell-success">{value}</span>;
   };
@@ -36,24 +44,27 @@ const DesktopInbox = ({ tableConfig, filterComponent,columns, isLoading, setSear
         return (
           <div>
             <span className="link">
-            <Link to={"/digit-ui/employee/tl/application-details/" + row.original["applicationId"]}>{row.original["applicationId"]}</Link>
+              <Link to={"/mgramseva-digit-ui/employee/tl/application-details/" + row.original["applicationId"]}>{row.original["applicationId"]}</Link>
             </span>
           </div>
         );
-      }
-    },{
+      },
+    },
+    {
       Header: t("TL_COMMON_TABLE_COL_APP_DATE"),
       accessor: "applicationDate",
       Cell: ({ row }) => {
         const date = convertEpochToDateDMY(row.original.date);
-        return GetCell(date)
-      }
-    },{
+        return GetCell(date);
+      },
+    },
+    {
       Header: t("TL_COMMON_TABLE_COL_APP_TYPE"),
       Cell: ({ row }) => {
-        return GetCell(t(row.original["businessService"]?`CS_COMMON_INBOX_${row.original["businessService"]?.toUpperCase()}`:"NA"));
+        return GetCell(t(row.original["businessService"] ? `CS_COMMON_INBOX_${row.original["businessService"]?.toUpperCase()}` : "NA"));
       },
-    },{
+    },
+    {
       Header: t("WF_INBOX_HEADER_LOCALITY"),
       Cell: ({ row }) => {
         return GetCell(t(Digit.Utils.locale.getRevenueLocalityCode(row.original["locality"], row.original["tenantId"])));
@@ -62,20 +73,23 @@ const DesktopInbox = ({ tableConfig, filterComponent,columns, isLoading, setSear
     {
       Header: t("WF_INBOX_HEADER_STATUS"),
       Cell: ({ row }) => {
-        return GetCell(t(row.original["businessService"]?`WF_${row.original["businessService"]?.toUpperCase()}_${row.original?.["status"]}`:`NA`));
+        return GetCell(
+          t(row.original["businessService"] ? `WF_${row.original["businessService"]?.toUpperCase()}_${row.original?.["status"]}` : `NA`)
+        );
       },
     },
     {
       Header: t("WF_INBOX_HEADER_CURRENT_OWNER"),
       Cell: ({ row }) => {
         return GetCell(t(`${row.original?.owner}`));
-      }
-    },{
-    Header: t("WF_INBOX_HEADER_SLA_DAYS_REMAINING"),
-    Cell: ({ row }) => {
-      return GetSlaCell(row.original["sla"])
+      },
     },
-  }
+    {
+      Header: t("WF_INBOX_HEADER_SLA_DAYS_REMAINING"),
+      Cell: ({ row }) => {
+        return GetSlaCell(row.original["sla"]);
+      },
+    },
   ];
 
   let result;
@@ -125,42 +139,47 @@ const DesktopInbox = ({ tableConfig, filterComponent,columns, isLoading, setSear
     <div className="inbox-container">
       {!props.isSearch && (
         <div className="filters-container">
-          <InboxLinks parentRoute={props.parentRoute}
+          <InboxLinks
+            parentRoute={props.parentRoute}
             allLinks={[
               {
                 text: "TL_NEW_APPLICATION",
-                link: "/digit-ui/employee/tl/new-application",
+                link: "/mgramseva-digit-ui/employee/tl/new-application",
                 businessService: "TL",
                 roles: ["TL_CEMP"],
               },
               {
                 text: "TL_SEARCH_APPLICATIONS",
-                link: "/digit-ui/employee/tl/search/application",
+                link: "/mgramseva-digit-ui/employee/tl/search/application",
                 businessService: "TL",
-                roles: ["TL_FIELD_INSPECTOR","TL_APPROVER", "TL_DOC_VERIFIER","TL_CEMP"],
+                roles: ["TL_FIELD_INSPECTOR", "TL_APPROVER", "TL_DOC_VERIFIER", "TL_CEMP"],
               },
               {
                 text: "TL_SEARCH_LICENSE",
-                link: "/digit-ui/employee/tl/search/license",
+                link: "/mgramseva-digit-ui/employee/tl/search/license",
                 businessService: "TL",
-                roles: ["TL_APPROVER", "TL_DOC_VERIFIER","TL_FIELD_INSPECTOR"],
+                roles: ["TL_APPROVER", "TL_DOC_VERIFIER", "TL_FIELD_INSPECTOR"],
               },
               {
                 text: "TL_RENEWAL_HEADER",
-                link: "/digit-ui/employee/tl/search/license",
+                link: "/mgramseva-digit-ui/employee/tl/search/license",
                 businessService: "TL",
                 roles: ["TL_CEMP"],
               },
               {
                 text: "ACTION_TEST_DASHBOARD",
-                link: "/digit-ui/employee/dss/dashboard/tradelicence",
+                link: "/mgramseva-digit-ui/employee/dss/dashboard/tradelicence",
                 businessService: "TL",
                 roles: ["STADMIN"],
               },
             ]}
-            headerText={t("ACTION_TEST_TRADELICENSE")} businessService={props.businessService} />
+            headerText={t("ACTION_TEST_TRADELICENSE")}
+            businessService={props.businessService}
+          />
           <div>
-            {isLoading ? <Loader /> : 
+            {isLoading ? (
+              <Loader />
+            ) : (
               <FilterComponent
                 defaultSearchParams={props.defaultSearchParams}
                 statuses={data?.statuses}
@@ -168,7 +187,7 @@ const DesktopInbox = ({ tableConfig, filterComponent,columns, isLoading, setSear
                 searchParams={props.searchParams}
                 type="desktop"
               />
-            }
+            )}
           </div>
         </div>
       )}
@@ -180,7 +199,7 @@ const DesktopInbox = ({ tableConfig, filterComponent,columns, isLoading, setSear
           searchFields={props.searchFields}
           isInboxPage={!props?.isSearch}
           searchParams={props.searchParams}
-          {...{setSearchFieldsBackToOriginalState, setSetSearchFieldsBackToOriginalState}}
+          {...{ setSearchFieldsBackToOriginalState, setSetSearchFieldsBackToOriginalState }}
         />
         <div className="result" style={{ marginLeft: !props?.isSearch ? "24px" : "", flex: 1 }}>
           {result}

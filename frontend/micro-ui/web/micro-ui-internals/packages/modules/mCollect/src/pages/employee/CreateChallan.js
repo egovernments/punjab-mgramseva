@@ -32,7 +32,12 @@ const CreateChallen = ({ ChallanData }) => {
   const cities = Digit.Hooks.mcollect.usemcollectTenants();
   const stateCode = window?.globalConfigs?.getConfig("STATE_LEVEL_TENANT_ID");
   const data = Digit.Hooks.mcollect.useCommonMDMS(stateCode, "common-masters", ["HierarchyType"]);
-  const type = data &&  data.data &&  data.data[`common-masters`] && data.data[`common-masters`]["HierarchyType"] && data.data[`common-masters`]["HierarchyType"][0];
+  const type =
+    data &&
+    data.data &&
+    data.data[`common-masters`] &&
+    data.data[`common-masters`]["HierarchyType"] &&
+    data.data[`common-masters`]["HierarchyType"][0];
   const getCities = () => cities?.filter((e) => e.code === Digit.ULBService.getCurrentTenantId()) || [];
   const { t } = useTranslation();
   const { data: fetchedLocalities } = Digit.Hooks.useBoundaryLocalities(
@@ -44,7 +49,6 @@ const CreateChallen = ({ ChallanData }) => {
     t
   );
 
-
   const getPattern = (type) => {
     switch (type) {
       case "name":
@@ -52,17 +56,16 @@ const CreateChallen = ({ ChallanData }) => {
       case "mobileNumber":
         return /^[6789][0-9]{9}$/i;
       case "doorNo":
-          return /^[^\$\"'<>?~`!@$%^={}\[\]*:;“”‘’]{1,50}$/i;
+        return /^[^\$\"'<>?~`!@$%^={}\[\]*:;“”‘’]{1,50}$/i;
       case "buildingName":
       case "street":
-          return /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*.:;“”‘’]{1,64}$/i;
+        return /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*.:;“”‘’]{1,64}$/i;
       case "pincode":
-          return /^[1-9][0-9]{5}$/i;
+        return /^[1-9][0-9]{5}$/i;
       default:
-        return /^(0|[1-9][0-9]*)$/i; 
+        return /^(0|[1-9][0-9]*)$/i;
     }
-  }
-
+  };
 
   const handlePincode = (event) => {
     const { value } = event.target;
@@ -136,8 +139,13 @@ const CreateChallen = ({ ChallanData }) => {
   const [canSubmits, setSubmitsValve] = useState(true);
   const [totalFormData, setTotalFormData] = useState({});
 
-  const { register, handleSubmit, setError, formState: { errors }, clearErrors } = useForm();
-
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+    clearErrors,
+  } = useForm();
 
   if (isEdit == true && fetchBillData && ChallanData[0] && JSON.parse(sessionStorage.getItem("isHookRecall"))) {
     defaultval = {
@@ -151,9 +159,7 @@ const CreateChallen = ({ ChallanData }) => {
       comments: ChallanData[0].description,
     };
     if (fetchBillData.Bill[0].billDetails[0].billAccountDetails.length > 0) {
-      fetchBillData.Bill[0].billDetails[0].billAccountDetails.map(
-        (ele) => (defaultval[`${ele.taxHeadCode.replaceAll(".", "_")}`] = `${ele.amount}`)
-      );
+      fetchBillData.Bill[0].billDetails[0].billAccountDetails.map((ele) => (defaultval[`${ele.taxHeadCode.replaceAll(".", "_")}`] = `${ele.amount}`));
     }
   }
 
@@ -220,7 +226,7 @@ const CreateChallen = ({ ChallanData }) => {
   }, [selectedCategory]);
 
   useEffect(() => {
-    let selectedCatBusinesService = selectedCategoryType?stringReplaceAll(selectedCategoryType?.businessService.split(".")[1]," ","_"):"";
+    let selectedCatBusinesService = selectedCategoryType ? stringReplaceAll(selectedCategoryType?.businessService.split(".")[1], " ", "_") : "";
     setTaxHeadMasterFields(
       TaxHeadMaster.filter((ele) => {
         let temp = selectedCategory.code.replace("BILLINGSERVICE_BUSINESSSERVICE_", "");
@@ -228,7 +234,7 @@ const CreateChallen = ({ ChallanData }) => {
           selectedCategoryType &&
           selectedCategoryType.code.split(temp + "_")[1] &&
           (ele.service == temp + "." + humanize(selectedCategoryType.code.split(temp + "_")[1].toLowerCase()) ||
-          ele.service == temp + "." + selectedCatBusinesService)
+            ele.service == temp + "." + selectedCatBusinesService)
         );
       })
     );
@@ -242,7 +248,7 @@ const CreateChallen = ({ ChallanData }) => {
     Digit.MDMSService.getPaymentRules(tenantId, "[?(@.type=='Adhoc')]").then((value) => {
       setAPIcategories(
         func.setServiceCategory(value.MdmsRes.BillingService.BusinessService).map((ele) => {
-          ele.code = "BILLINGSERVICE_BUSINESSSERVICE_" +stringReplaceAll(ele.code.toUpperCase()," ","_");
+          ele.code = "BILLINGSERVICE_BUSINESSSERVICE_" + stringReplaceAll(ele.code.toUpperCase(), " ", "_");
           return ele;
         })
       );
@@ -252,27 +258,40 @@ const CreateChallen = ({ ChallanData }) => {
 
   useEffect(() => {
     // if((ChallanData?.length > 0 && isEdit) || isEdit) {
-      const configDetails = setconfig();
-      const isMandatoryArray = [];
-      let flag = true;
-      configDetails?.map(data => {
-        data?.body?.map(details => {
-          if(details.isMandatory && details.type == "text") isMandatoryArray.push(details.name);
-        })
+    const configDetails = setconfig();
+    const isMandatoryArray = [];
+    let flag = true;
+    configDetails?.map((data) => {
+      data?.body?.map((details) => {
+        if (details.isMandatory && details.type == "text") isMandatoryArray.push(details.name);
       });
-      if(isEdit && !Object.keys(errors).length) {
-        setSubmitsValve(false)
-      } else if (!isEdit) {
-        isMandatoryArray?.map(data => {
-          if(flag && totalFormData[data] && totalFormData[data] != "" && selectedCategory && selectedCategoryType && fromDate != "" && toDate != "" && selectedLocality != null && !Object.keys(errors).length) { setSubmitsValve(false); }
-          else { setSubmitsValve(true); flag = false;}
-        })
-      } else {
-        setSubmitsValve(true)
-      }
+    });
+    if (isEdit && !Object.keys(errors).length) {
+      setSubmitsValve(false);
+    } else if (!isEdit) {
+      isMandatoryArray?.map((data) => {
+        if (
+          flag &&
+          totalFormData[data] &&
+          totalFormData[data] != "" &&
+          selectedCategory &&
+          selectedCategoryType &&
+          fromDate != "" &&
+          toDate != "" &&
+          selectedLocality != null &&
+          !Object.keys(errors).length
+        ) {
+          setSubmitsValve(false);
+        } else {
+          setSubmitsValve(true);
+          flag = false;
+        }
+      });
+    } else {
+      setSubmitsValve(true);
+    }
     // }
   }, [totalFormData, selectedCategory, selectedCategoryType, selectedLocality, fromDate, toDate]);
-
 
   useEffect(() => {
     if (selectedCategory && selectedCategoryType && fromDate != "" && toDate != "" && selectedLocality != null) {
@@ -302,21 +321,21 @@ const CreateChallen = ({ ChallanData }) => {
   const handleData = (event) => {
     sessionStorage.setItem("isHookRecall", false);
     // if((ChallanData?.length > 0 && isEdit) || isEdit) {
-      const { value, name } = event.target;
-      setTotalFormData({ ...totalFormData, [event.target.name]: event.target.value });
-      if (!value || getPattern(name).test(value)) {
-        clearErrors(name, {
-              type: "manual",
-              message: "Dont Forget Your Username Should Be Cool!",
-            });
-      } else {
-        setError(name, {
-          type: "manual12",
-          message: "Dont Forget Your Username Should Be Cool!",
-        });
-      }
+    const { value, name } = event.target;
+    setTotalFormData({ ...totalFormData, [event.target.name]: event.target.value });
+    if (!value || getPattern(name).test(value)) {
+      clearErrors(name, {
+        type: "manual",
+        message: "Dont Forget Your Username Should Be Cool!",
+      });
+    } else {
+      setError(name, {
+        type: "manual12",
+        message: "Dont Forget Your Username Should Be Cool!",
+      });
+    }
     // }
-  }
+  };
 
   const onSubmit = (data) => {
     TaxHeadMasterFields.map((ele) => {
@@ -331,7 +350,7 @@ const CreateChallen = ({ ChallanData }) => {
           mobileNumber: data.mobileNumber,
         },
         //businessService: selectedCategoryType ? temp + "." + humanized(selectedCategoryType.code, temp) : "",
-        businessService:selectedCategoryType?(temp + "." + stringReplaceAll(selectedCategoryType?.businessService.split(".")[1]," ","_")) : "",
+        businessService: selectedCategoryType ? temp + "." + stringReplaceAll(selectedCategoryType?.businessService.split(".")[1], " ", "_") : "",
         consumerType: temp,
         description: data.comments,
         taxPeriodFrom: Date.parse(fromDate),
@@ -383,7 +402,7 @@ const CreateChallen = ({ ChallanData }) => {
             Digit.MCollectService.generateBill(challan.challanNo, tenantId, challan.businessService, "challan").then((response) => {
               if (response.Bill && response.Bill.length > 0) {
                 history.push(
-                  `/digit-ui/employee/mcollect/acknowledgement?purpose=challan&status=success&tenantId=${tenantId}&billNumber=${
+                  `/mgramseva-digit-ui/employee/mcollect/acknowledgement?purpose=challan&status=success&tenantId=${tenantId}&billNumber=${
                     response.Bill[0].billNumber
                   }&serviceCategory=${response.Bill[0].businessService}&challanNumber=${response.Bill[0].consumerCode}&isEdit=${true}`,
                   { from: url }
@@ -401,7 +420,7 @@ const CreateChallen = ({ ChallanData }) => {
             Digit.MCollectService.generateBill(challan.challanNo, tenantId, challan.businessService, "challan").then((response) => {
               if (response.Bill && response.Bill.length > 0) {
                 history.push(
-                  `/digit-ui/employee/mcollect/acknowledgement?purpose=challan&status=success&tenantId=${tenantId}&billNumber=${response.Bill[0].billNumber}&serviceCategory=${response.Bill[0].businessService}&challanNumber=${response.Bill[0].consumerCode}`,
+                  `/mgramseva-digit-ui/employee/mcollect/acknowledgement?purpose=challan&status=success&tenantId=${tenantId}&billNumber=${response.Bill[0].billNumber}&serviceCategory=${response.Bill[0].businessService}&challanNumber=${response.Bill[0].consumerCode}`,
                   { from: url }
                 );
               }
@@ -457,7 +476,7 @@ const CreateChallen = ({ ChallanData }) => {
               name: "doorNo",
               disable: isEdit,
               error: t("UC_COMMON_FIELD_ERROR"),
-              onChange: handleData
+              onChange: handleData,
             },
           },
           {
@@ -469,7 +488,7 @@ const CreateChallen = ({ ChallanData }) => {
               disable: isEdit,
             },
             error: t("UC_COMMON_FIELD_ERROR"),
-            onChange: handleData
+            onChange: handleData,
           },
           {
             label: t("UC_SRT_NAME_LABEL"),
@@ -480,7 +499,7 @@ const CreateChallen = ({ ChallanData }) => {
               disable: isEdit,
             },
             error: t("UC_COMMON_FIELD_ERROR"),
-            onChange: handleData
+            onChange: handleData,
           },
           {
             label: t("UC_PINCODE_LABEL"),

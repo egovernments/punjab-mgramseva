@@ -8,17 +8,19 @@ import { newConfig as newConfigTL } from "../../../config/config";
 
 const ReNewApplication = (props) => {
   const applicationData = cloneDeep(props?.location?.state?.applicationData) || {};
-  const loc=useLocation();
-  const propertyId =new URLSearchParams(loc.search).get("propertyId")|| loc?.state?.applicationDetails
-                      .find((details)=>details?.title === "PT_DETAILS")?.values
-                      .find((value)=> value?.title === "TL_PROPERTY_ID")?.value;
+  const loc = useLocation();
+  const propertyId =
+    new URLSearchParams(loc.search).get("propertyId") ||
+    loc?.state?.applicationDetails.find((details) => details?.title === "PT_DETAILS")?.values.find((value) => value?.title === "TL_PROPERTY_ID")
+      ?.value;
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const { t } = useTranslation();
   const [canSubmit, setSubmitValve] = useState(false);
   let { data: newConfig, isLoading } = Digit.Hooks.tl.useMDMS.getFormConfig(tenantId?.split?.(".")?.[0], {});
-  const { 
-    data: propertyDetails
-  } = Digit.Hooks.pt.usePropertySearch({ filters: { propertyIds: propertyId }, tenantId: tenantId }, { filters: { propertyIds: propertyId  }, tenantId: tenantId });
+  const { data: propertyDetails } = Digit.Hooks.pt.usePropertySearch(
+    { filters: { propertyIds: propertyId }, tenantId: tenantId },
+    { filters: { propertyIds: propertyId }, tenantId: tenantId }
+  );
 
   const history = useHistory();
   // delete
@@ -26,7 +28,8 @@ const ReNewApplication = (props) => {
   const [mutationHappened, setMutationHappened, clear] = Digit.Hooks.useSessionStorage("EMPLOYEE_MUTATION_HAPPENED", false);
   const [successData, setsuccessData, clearSuccessData] = Digit.Hooks.useSessionStorage("EMPLOYEE_MUTATION_SUCCESS_DATA", {});
   const isEmpNewApplication = window.location.href.includes("/employee/tl/new-application");
-  const isEmpRenewLicense = window.location.href.includes("/employee/tl/renew-application-details")  || window.location.href.includes("/employee/tl/edit-application-details"); 
+  const isEmpRenewLicense =
+    window.location.href.includes("/employee/tl/renew-application-details") || window.location.href.includes("/employee/tl/edit-application-details");
 
   const [showToast, setShowToast] = useState(null);
   const [error, setError] = useState(null);
@@ -56,7 +59,7 @@ const ReNewApplication = (props) => {
         code: applicationData?.tradeLicenseDetail?.structureType,
       },
       commencementDate: convertEpochToDate(applicationData?.commencementDate),
-      gstNo: applicationData?.tradeLicenseDetail?.additionalDetail?.gstNo ||  applicationData?.tradeLicenseDetail?.additionalDetail?.tradeGstNo || "",
+      gstNo: applicationData?.tradeLicenseDetail?.additionalDetail?.gstNo || applicationData?.tradeLicenseDetail?.additionalDetail?.tradeGstNo || "",
       operationalArea: applicationData?.tradeLicenseDetail?.operationalArea || "",
       noOfEmployees: applicationData?.tradeLicenseDetail?.noOfEmployees || "",
       key: Date.now(),
@@ -99,17 +102,26 @@ const ReNewApplication = (props) => {
       data.key = Date.now() + (index + 1) * 20;
     });
   }
-  if(applicationData?.tradeLicenseDetail){
-  applicationData.tradeLicenseDetail["address"]=applicationData?.tradeLicenseDetail?.address||{};
-  applicationData.tradeLicenseDetail.address.locality = {
-    ...applicationData?.tradeLicenseDetail?.address?.locality,
-    ...{ i18nkey: applicationData?.tradeLicenseDetail?.address?.locality?.name },
-  };
+  if (applicationData?.tradeLicenseDetail) {
+    applicationData.tradeLicenseDetail["address"] = applicationData?.tradeLicenseDetail?.address || {};
+    applicationData.tradeLicenseDetail.address.locality = {
+      ...applicationData?.tradeLicenseDetail?.address?.locality,
+      ...{ i18nkey: applicationData?.tradeLicenseDetail?.address?.locality?.name },
+    };
   }
   const ownershipCategory = {
     code: applicationData?.tradeLicenseDetail?.subOwnerShipCategory,
-    i18nKey: `COMMON_MASTERS_OWNERSHIPCATEGORY_INDIVIDUAL_${applicationData?.tradeLicenseDetail?.subOwnerShipCategory?.includes("INSTITUTIONAL") ? (applicationData?.tradeLicenseDetail?.subOwnerShipCategory?.includes("GOVERNMENT") ?"OTHERGOVERNMENTINSTITUITION":"OTHERSPRIVATEINSTITUITION"):applicationData?.tradeLicenseDetail?.subOwnerShipCategory?.split(".")[1]}`,
-    isSameAsPropertyOwner: applicationData?.tradeLicenseDetail?.additionalDetail?.isSameAsPropertyOwner === "null" ? null : applicationData?.tradeLicenseDetail?.additionalDetail?.isSameAsPropertyOwner,
+    i18nKey: `COMMON_MASTERS_OWNERSHIPCATEGORY_INDIVIDUAL_${
+      applicationData?.tradeLicenseDetail?.subOwnerShipCategory?.includes("INSTITUTIONAL")
+        ? applicationData?.tradeLicenseDetail?.subOwnerShipCategory?.includes("GOVERNMENT")
+          ? "OTHERGOVERNMENTINSTITUITION"
+          : "OTHERSPRIVATEINSTITUITION"
+        : applicationData?.tradeLicenseDetail?.subOwnerShipCategory?.split(".")[1]
+    }`,
+    isSameAsPropertyOwner:
+      applicationData?.tradeLicenseDetail?.additionalDetail?.isSameAsPropertyOwner === "null"
+        ? null
+        : applicationData?.tradeLicenseDetail?.additionalDetail?.isSameAsPropertyOwner,
   };
 
   if (applicationData?.tradeLicenseDetail?.owners?.length > 0) {
@@ -124,27 +136,27 @@ const ReNewApplication = (props) => {
     });
   }
 
-  let clonedData = cloneDeep(props?.location?.state?.applicationData)||{};
+  let clonedData = cloneDeep(props?.location?.state?.applicationData) || {};
   clonedData.checkForRenewal = false;
 
   const getOwners = (application) => {
-    if(application?.tradeLicenseDetail?.subOwnerShipCategory?.includes("INSTITUTIONAL"))
-    {
+    if (application?.tradeLicenseDetail?.subOwnerShipCategory?.includes("INSTITUTIONAL")) {
       let owner = [];
-      owner.push({...application?.tradeLicenseDetail?.owners[0],
-        instituionName:application?.tradeLicenseDetail?.institution?.instituionName,
-        name:application?.tradeLicenseDetail?.institution?.name,
-        altContactNumber:application?.tradeLicenseDetail?.institution?.contactNo,
-        designation:application?.tradeLicenseDetail?.institution?.designation,
-        subOwnerShipCategory:{
+      owner.push({
+        ...application?.tradeLicenseDetail?.owners[0],
+        instituionName: application?.tradeLicenseDetail?.institution?.instituionName,
+        name: application?.tradeLicenseDetail?.institution?.name,
+        altContactNumber: application?.tradeLicenseDetail?.institution?.contactNo,
+        designation: application?.tradeLicenseDetail?.institution?.designation,
+        subOwnerShipCategory: {
           code: applicationData?.tradeLicenseDetail?.subOwnerShipCategory,
           i18nKey: `COMMON_MASTERS_OWNERSHIPCATEGORY_${stringReplaceAll(applicationData?.tradeLicenseDetail?.subOwnerShipCategory, ".", "_")}`,
         },
-      })
+      });
       return owner;
     }
     return applicationData?.tradeLicenseDetail?.owners;
-  }
+  };
 
   const defaultValues = {
     tradedetils1: clonedData,
@@ -153,10 +165,10 @@ const ReNewApplication = (props) => {
     accessories: applicationData?.tradeLicenseDetail?.accessories,
     address: applicationData?.tradeLicenseDetail?.address || {},
     ownershipCategory: ownershipCategory,
-    owners:  getOwners(applicationData)|| [],
+    owners: getOwners(applicationData) || [],
     documents: { documents: applicationData?.tradeLicenseDetail?.applicationDocuments || [] },
-    cptId: {id: propertyId},
-    cpt: {details:propertyDetails?.Properties?.[0]}
+    cptId: { id: propertyId },
+    cpt: { details: propertyDetails?.Properties?.[0] },
     // applicationData: cloneDeep(props?.location?.state?.applicationData)
   };
 
@@ -171,12 +183,15 @@ const ReNewApplication = (props) => {
   }, []);
 
   const onFormValueChange = (setValue, formData, formState) => {
-    if(sessionStorage.getItem("isBillingSlabError") === "true")
-    setSubmitValve(false);
-    else if(Object.keys(formState.errors).length > 0 && Object.keys(formState.errors).length == 1  && formState.errors["owners"] && Object.values(formState.errors["owners"].type).filter((ob) => ob.type === "required").length ==0)
-    setSubmitValve(true);
-    else
-    setSubmitValve(!(Object.keys(formState.errors).length));
+    if (sessionStorage.getItem("isBillingSlabError") === "true") setSubmitValve(false);
+    else if (
+      Object.keys(formState.errors).length > 0 &&
+      Object.keys(formState.errors).length == 1 &&
+      formState.errors["owners"] &&
+      Object.values(formState.errors["owners"].type).filter((ob) => ob.type === "required").length == 0
+    )
+      setSubmitValve(true);
+    else setSubmitValve(!Object.keys(formState.errors).length);
   };
 
   const onSubmit = (data) => {
@@ -187,12 +202,12 @@ const ReNewApplication = (props) => {
     //     return;
     //   }
     // };
-    if(data?.cpt?.id){
+    if (data?.cpt?.id) {
       if (!data?.cpt?.details || !propertyDetails) {
-          setShowToast({ key: "error" });
-          setError(t("ERR_INVALID_PROPERTY_ID"));
-          return;
-        }
+        setShowToast({ key: "error" });
+        setError(t("ERR_INVALID_PROPERTY_ID"));
+        return;
+      }
     }
 
     let EDITRENEWAL = data?.tradedetils1?.checkForRenewal;
@@ -223,7 +238,7 @@ const ReNewApplication = (props) => {
 
     if (data?.tradeUnits?.length > 0) {
       data?.tradeUnits.forEach((data) => {
-          (data.tradeType = data?.tradeSubType?.code || null),
+        (data.tradeType = data?.tradeSubType?.code || null),
           (data.uom = data?.tradeSubType?.uom || null),
           (data.uomValue = Number(data?.uomValue) || null);
       });
@@ -268,7 +283,7 @@ const ReNewApplication = (props) => {
     }
     if (!data?.address) {
       data.address = {};
-      data.address = data?.tradedetils1?.tradeLicenseDetail?.address || {}
+      data.address = data?.tradedetils1?.tradeLicenseDetail?.address || {};
     } else {
       data.address.city = data?.address?.city?.code || null;
     }
@@ -279,9 +294,12 @@ const ReNewApplication = (props) => {
     if (data?.tradedetils1?.tradeLicenseDetail.address.street !== data?.address?.street) {
       EDITRENEWAL = true;
     }
-   if( new URLSearchParams(loc.search).get("propertyId") && new URLSearchParams(loc.search).get("propertyId")!== loc?.state?.applicationDetails
-    .find((details)=>details?.title === "PT_DETAILS")?.values
-    .find((value)=> value?.title === "TL_PROPERTY_ID")?.value){
+    if (
+      new URLSearchParams(loc.search).get("propertyId") &&
+      new URLSearchParams(loc.search).get("propertyId") !==
+        loc?.state?.applicationDetails.find((details) => details?.title === "PT_DETAILS")?.values.find((value) => value?.title === "TL_PROPERTY_ID")
+          ?.value
+    ) {
       EDITRENEWAL = true;
     }
     let applicationDocuments = data?.documents?.documents || [];
@@ -314,23 +332,31 @@ const ReNewApplication = (props) => {
       if (data?.tradeUnits?.length > 0) formData.tradeLicenseDetail.tradeUnits = data?.tradeUnits;
       if (data?.owners?.length > 0) formData.tradeLicenseDetail.owners = data?.owners;
       if (structureType) formData.tradeLicenseDetail.structureType = structureType;
-      if (subOwnerShipCategory|| data?.owners?.[0]?.subOwnerShipCategory?.code) formData.tradeLicenseDetail.subOwnerShipCategory = formData?.tradeLicenseDetail?.owners?.[0]?.subOwnerShipCategory?.code?.includes("INSTITUTIONAL") ? data?.owners?.[0]?.subOwnerShipCategory.code : subOwnerShipCategory;
-      if (formData?.tradeLicenseDetail?.owners?.[0]?.subOwnerShipCategory?.code?.includes("INSTITUTIONAL")) formData.tradeLicenseDetail.institution = {
-        ...formData?.tradeLicenseDetail?.institution,
-        contactNo: data?.owners?.[0]?.altContactNumber,
-        designation: data?.owners?.[0]?.designation,
-        instituionName: data?.owners?.[0]?.instituionName,
-        name: data?.owners?.[0]?.name,
-        mobileNumber: data?.owners?.[0]?.mobileNumber,
-        emailId : data?.owners?.[0]?.emailId,
-      }
+      if (subOwnerShipCategory || data?.owners?.[0]?.subOwnerShipCategory?.code)
+        formData.tradeLicenseDetail.subOwnerShipCategory = formData?.tradeLicenseDetail?.owners?.[0]?.subOwnerShipCategory?.code?.includes(
+          "INSTITUTIONAL"
+        )
+          ? data?.owners?.[0]?.subOwnerShipCategory.code
+          : subOwnerShipCategory;
+      if (formData?.tradeLicenseDetail?.owners?.[0]?.subOwnerShipCategory?.code?.includes("INSTITUTIONAL"))
+        formData.tradeLicenseDetail.institution = {
+          ...formData?.tradeLicenseDetail?.institution,
+          contactNo: data?.owners?.[0]?.altContactNumber,
+          designation: data?.owners?.[0]?.designation,
+          instituionName: data?.owners?.[0]?.instituionName,
+          name: data?.owners?.[0]?.name,
+          mobileNumber: data?.owners?.[0]?.mobileNumber,
+          emailId: data?.owners?.[0]?.emailId,
+        };
       /* use customiseCreateFormData hook to make some chnages to the licence object */
-      formData = Digit?.Customizations?.TL?.customiseSendbackFormData ? Digit?.Customizations?.TL?.customiseSendbackFormData(data, formData) : formData;
+      formData = Digit?.Customizations?.TL?.customiseSendbackFormData
+        ? Digit?.Customizations?.TL?.customiseSendbackFormData(data, formData)
+        : formData;
       Digit.TLService.update({ Licenses: [formData] }, tenantId)
         .then((result, err) => {
           if (result?.Licenses?.length > 0) {
             if (result?.Licenses?.length > 0) {
-              history.replace(`/digit-ui/employee/tl/response`, { data: result?.Licenses });
+              history.replace(`/mgramseva-digit-ui/employee/tl/response`, { data: result?.Licenses });
             }
           }
         })
@@ -357,9 +383,9 @@ const ReNewApplication = (props) => {
       if (data?.tradeUnits?.length > 0) formData.tradeLicenseDetail.tradeUnits = data?.tradeUnits?.filter((ob) => ob?.active !== false);
       if (data?.owners?.length > 0) formData.tradeLicenseDetail.owners = data?.owners?.filter((ob) => ob?.active !== false);
       if (data?.address) formData.tradeLicenseDetail.address = data?.address;
-      if (data?.cpt?.details?.address||propertyDetails) {
+      if (data?.cpt?.details?.address || propertyDetails) {
         let address = {};
-        let ptdet=data?.cpt?.details||propertyDetails;
+        let ptdet = data?.cpt?.details || propertyDetails;
         address.city = ptdet?.address?.city || null;
         address.locality = { code: ptdet?.address?.locality?.code || null };
         if (ptdet?.address?.doorNo || data?.address?.doorNo) address.doorNo = ptdet?.address?.doorNo || data?.address?.doorNo || null;
@@ -368,26 +394,34 @@ const ReNewApplication = (props) => {
         formData.tradeLicenseDetail.address = address;
       }
       if (structureType) formData.tradeLicenseDetail.structureType = structureType;
-      if (subOwnerShipCategory || data?.owners?.[0]?.subOwnerShipCategory?.code) formData.tradeLicenseDetail["subOwnerShipCategory"] = formData?.tradeLicenseDetail?.owners?.[0]?.subOwnerShipCategory?.code?.includes("INSTITUTIONAL") ? data?.owners?.[0]?.subOwnerShipCategory?.code : subOwnerShipCategory;
+      if (subOwnerShipCategory || data?.owners?.[0]?.subOwnerShipCategory?.code)
+        formData.tradeLicenseDetail["subOwnerShipCategory"] = formData?.tradeLicenseDetail?.owners?.[0]?.subOwnerShipCategory?.code?.includes(
+          "INSTITUTIONAL"
+        )
+          ? data?.owners?.[0]?.subOwnerShipCategory?.code
+          : subOwnerShipCategory;
       if (applicationDocuments) formData.tradeLicenseDetail.applicationDocuments = applicationDocuments;
-      if (data?.cpt || propertyDetails){
-        if(!formData?.tradeLicenseDetail?.additionalDetail?.propertyId){
-          formData.tradeLicenseDetail.additionalDetail={propertyId:null}
+      if (data?.cpt || propertyDetails) {
+        if (!formData?.tradeLicenseDetail?.additionalDetail?.propertyId) {
+          formData.tradeLicenseDetail.additionalDetail = { propertyId: null };
         }
-        formData.tradeLicenseDetail.additionalDetail.propertyId = data?.cpt?.details?.propertyId||propertyDetails?.propertyId;
+        formData.tradeLicenseDetail.additionalDetail.propertyId = data?.cpt?.details?.propertyId || propertyDetails?.propertyId;
       }
-      if (formData?.tradeLicenseDetail?.owners?.[0]?.subOwnerShipCategory?.code?.includes("INSTITUTIONAL")) formData.tradeLicenseDetail.institution = {
-        ...formData?.tradeLicenseDetail?.institution,
-        contactNo: data?.owners?.[0]?.altContactNumber,
-        designation: data?.owners?.[0]?.designation,
-        instituionName: data?.owners?.[0]?.instituionName,
-        name: data?.owners?.[0]?.name,
-        mobileNumber: data?.owners?.[0]?.mobileNumber,
-        emailId : data?.owners?.[0]?.emailId,
-      }
+      if (formData?.tradeLicenseDetail?.owners?.[0]?.subOwnerShipCategory?.code?.includes("INSTITUTIONAL"))
+        formData.tradeLicenseDetail.institution = {
+          ...formData?.tradeLicenseDetail?.institution,
+          contactNo: data?.owners?.[0]?.altContactNumber,
+          designation: data?.owners?.[0]?.designation,
+          instituionName: data?.owners?.[0]?.instituionName,
+          name: data?.owners?.[0]?.name,
+          mobileNumber: data?.owners?.[0]?.mobileNumber,
+          emailId: data?.owners?.[0]?.emailId,
+        };
 
       /* use customiseCreateFormData hook to make some chnages to the licence object */
-      formData = Digit?.Customizations?.TL?.customiseRenewalCreateFormData ? Digit?.Customizations?.TL?.customiseRenewalCreateFormData(data, formData) : formData;
+      formData = Digit?.Customizations?.TL?.customiseRenewalCreateFormData
+        ? Digit?.Customizations?.TL?.customiseRenewalCreateFormData(data, formData)
+        : formData;
       Digit.TLService.update({ Licenses: [formData] }, tenantId)
         .then((result, err) => {
           if (result?.Licenses?.length > 0) {
@@ -397,7 +431,7 @@ const ReNewApplication = (props) => {
               .then((response) => {
                 Digit.SessionStorage.set("EditRenewalApplastModifiedTime", response?.Licenses[0]?.auditDetails?.lastModifiedTime);
                 if (response?.Licenses?.length > 0) {
-                  history.replace(`/digit-ui/employee/tl/response`, { data: response?.Licenses });
+                  history.replace(`/mgramseva-digit-ui/employee/tl/response`, { data: response?.Licenses });
                 }
               })
               .catch((e) => {
@@ -414,7 +448,7 @@ const ReNewApplication = (props) => {
   };
 
   let configs = [];
-  newConfig=newConfig?newConfig:newConfigTL;
+  newConfig = newConfig ? newConfig : newConfigTL;
   newConfig?.map((conf) => {
     if (conf.head !== "ES_NEW_APPLICATION_PROPERTY_ASSESSMENT") {
       configs.push(conf);
@@ -426,9 +460,13 @@ const ReNewApplication = (props) => {
       return "TL_CHECK_ADDRESS";
     } else if (head === "ES_NEW_APPLICATION_OWNERSHIP_DETAILS") {
       return "TL_OWNERSHIP_DETAILS_HEADER";
-    } else if (head === "TL_NEW_APPLICATION_PROPERTY" && (defaultValues?.tradedetils?.[0]?.structureType?.code === "MOVABLE" && (isEmpNewApplication || isEmpRenewLicense))) {
+    } else if (
+      head === "TL_NEW_APPLICATION_PROPERTY" &&
+      defaultValues?.tradedetils?.[0]?.structureType?.code === "MOVABLE" &&
+      (isEmpNewApplication || isEmpRenewLicense)
+    ) {
       return "";
-    }else {
+    } else {
       return head;
     }
   }

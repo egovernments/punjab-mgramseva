@@ -9,7 +9,7 @@ const InboxLinks = ({ parentRoute, businessService }) => {
   const allLinks = [
     {
       text: t("UC_GENERATE_NEW_CHALLAN"),
-      link: "/digit-ui/employee/mcollect/new-application",
+      link: "/mgramseva-digit-ui/employee/mcollect/new-application",
       roles: [],
     },
   ];

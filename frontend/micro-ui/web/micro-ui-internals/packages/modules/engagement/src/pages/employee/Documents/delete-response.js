@@ -14,7 +14,7 @@ const BannerPicker = (props) => {
   return (
     <Banner
       message={props.isSuccess ? t(`ENGAGEMENT_DOC_DELETED`) : t("ENGAGEMENT_DOC_DELETE_FAILURE")}
-      applicationNumber={props.mutation?.isSuccess ? props.uuid : ''}
+      applicationNumber={props.mutation?.isSuccess ? props.uuid : ""}
       info={props.isSuccess ? t("ENGAGEMENT_DOCUMENT_ID") : ""}
       successful={props.isSuccess}
     />
@@ -45,10 +45,17 @@ const Response = (props) => {
   return (
     <div>
       <Card>
-        <BannerPicker t={t} data={mutation.data} mutation={mutation} uuid={state?.DocumentEntity?.uuid} isSuccess={mutation.isSuccess} isLoading={mutation.isIdle || mutation.isLoading} />
+        <BannerPicker
+          t={t}
+          data={mutation.data}
+          mutation={mutation}
+          uuid={state?.DocumentEntity?.uuid}
+          isSuccess={mutation.isSuccess}
+          isLoading={mutation.isIdle || mutation.isLoading}
+        />
       </Card>
       <ActionBar>
-        <Link to={"/digit-ui/employee"}>
+        <Link to={"/mgramseva-digit-ui/employee"}>
           <SubmitBar label={t("CORE_COMMON_GO_TO_HOME")} />
         </Link>
       </ActionBar>

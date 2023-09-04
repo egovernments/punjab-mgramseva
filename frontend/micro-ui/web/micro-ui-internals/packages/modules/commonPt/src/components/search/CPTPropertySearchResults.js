@@ -10,8 +10,10 @@ const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast, ptSearchCon
   const { state } = useLocation();
   const search = useLocation().search;
   const urlPropertyId = new URLSearchParams(search).get("propertyId");
-  let urlParams = window.location.href.includes("&")? window.location.href.substring(window.location.href.indexOf("&")+1,window.location.href.length) : "";
-  
+  let urlParams = window.location.href.includes("&")
+    ? window.location.href.substring(window.location.href.indexOf("&") + 1, window.location.href.length)
+    : "";
+
   const [searchQuery, setSearchQuery] = useState({
     /* ...defaultValues,   to enable pagination */
     ...payload,
@@ -36,7 +38,7 @@ const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast, ptSearchCon
                   onClick={() => {
                     //sessionStorage.setItem("propertyDetailsBC",JSON.stringify({...state}))
                     history.push(
-                      `/digit-ui/employee/commonpt/view-property?propertyId=${row.original["propertyId"]}&tenantId=${tenantId}&redirectToUrl=${redirectToUrl}`,
+                      `/mgramseva-digit-ui/employee/commonpt/view-property?propertyId=${row.original["propertyId"]}&tenantId=${tenantId}&redirectToUrl=${redirectToUrl}`,
                       { ...state }
                     );
                   }}
@@ -81,7 +83,12 @@ const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast, ptSearchCon
                     <span
                       onClick={() => {
                         //sessionStorage.setItem("propertyDetailsBC",JSON.stringify({...state}))
-                        history.push(urlParams ? `${redirectToUrl}?${urlParams?.replace(urlPropertyId,row.original["propertyId"])}` : `${redirectToUrl}?propertyId=${row.original["propertyId"]}&tenantId=${tenantId}`, { ...state });
+                        history.push(
+                          urlParams
+                            ? `${redirectToUrl}?${urlParams?.replace(urlPropertyId, row.original["propertyId"])}`
+                            : `${redirectToUrl}?propertyId=${row.original["propertyId"]}&tenantId=${tenantId}`,
+                          { ...state }
+                        );
                         const scrollConst = redirectToUrl?.includes("employee/tl") ? 1600 : 300;
                         setTimeout(() => window.scrollTo(0, scrollConst), 400);
                       }}

@@ -71,7 +71,7 @@ const PropertyDetails = () => {
       } else if (window.innerWidth > 780 && isMobile) {
         setIsMobile(false);
       }
-    }
+    };
 
     window.addEventListener("resize", () => {
       onResize();
@@ -79,11 +79,10 @@ const PropertyDetails = () => {
 
     return () => {
       window.removeEventListener("resize", () => {
-        onResize()
+        onResize();
       });
     };
   });
-
 
   useEffect(() => {
     if (applicationDetails && !enableAudit) {
@@ -129,7 +128,7 @@ const PropertyDetails = () => {
           e.additionalDetails.owners.map((owner, ind) => {
             owner.values.map((value) => {
               if (value.title == "PT_OWNERSHIP_INFO_MOBILE_NO") {
-                value.textStyle = { display: "flex", wordBreak:"revert" };
+                value.textStyle = { display: "flex", wordBreak: "revert" };
                 value.caption = (
                   <span
                     onClick={() => {
@@ -173,7 +172,7 @@ const PropertyDetails = () => {
         asSectionHeader: true,
         belowComponent: () => (
           <LinkLabel
-            onClick={() => history.push({ pathname: `/digit-ui/employee/pt/payment-details/${applicationNumber}`})}
+            onClick={() => history.push({ pathname: `/mgramseva-digit-ui/employee/pt/payment-details/${applicationNumber}` })}
             style={isMobile ? { marginTop: "15px", marginLeft: "0px" } : { marginTop: "15px" }}
           >
             {t("PT_VIEW_PAYMENT")}
@@ -192,7 +191,10 @@ const PropertyDetails = () => {
       });
     }
     return () => {
-      if (appDetailsToShow?.applicationDetails?.[0]?.values?.[1].title == "PT_TOTAL_DUES" && !(sessionStorage.getItem("revalidateddone") === "done")) {
+      if (
+        appDetailsToShow?.applicationDetails?.[0]?.values?.[1].title == "PT_TOTAL_DUES" &&
+        !(sessionStorage.getItem("revalidateddone") === "done")
+      ) {
         appDetailsToShow?.applicationDetails.shift();
         sessionStorage.setItem("revalidateddone", "done");
         revalidate();
@@ -208,31 +210,34 @@ const PropertyDetails = () => {
         actionState: {
           nextActions: PT_CEMP
             ? [
-              {
-                action: "ASSESS_PROPERTY",
-                forcedName: "PT_ASSESS",
-                showFinancialYearsModal: true,
-                customFunctionToExecute: (data) => {
-                  delete data.customFunctionToExecute;
-                  history.replace({ pathname: `/digit-ui/employee/pt/ptsearch/assessment-details/${applicationNumber}`, state: { ...data } });
+                {
+                  action: "ASSESS_PROPERTY",
+                  forcedName: "PT_ASSESS",
+                  showFinancialYearsModal: true,
+                  customFunctionToExecute: (data) => {
+                    delete data.customFunctionToExecute;
+                    history.replace({
+                      pathname: `/mgramseva-digit-ui/employee/pt/ptsearch/assessment-details/${applicationNumber}`,
+                      state: { ...data },
+                    });
+                  },
+                  tenantId: Digit.ULBService.getStateId(),
                 },
-                tenantId: Digit.ULBService.getStateId(),
-              },
-              {
-                action: !fetchBillData?.Bill[0]?.totalAmount ? "MUTATE_PROPERTY" : "PT_TOTALDUES_PAY",
-                forcedName: "PT_OWNERSHIP_TRANSFER",
-                AmountDueForPay: fetchBillData?.Bill[0]?.totalAmount,
-                isWarningPopUp: !fetchBillData?.Bill[0]?.totalAmount ? false : true,
-                redirectionUrl: {
-                  pathname: !fetchBillData?.Bill[0]?.totalAmount
-                    ? `/digit-ui/employee/pt/property-mutate-docs-required/${applicationNumber}`
-                    : `/digit-ui/employee/payment/collect/PT/${applicationNumber}`,
-                  // state: { workflow: { action: "OPEN", moduleName: "PT", businessService } },
-                  state: null,
+                {
+                  action: !fetchBillData?.Bill[0]?.totalAmount ? "MUTATE_PROPERTY" : "PT_TOTALDUES_PAY",
+                  forcedName: "PT_OWNERSHIP_TRANSFER",
+                  AmountDueForPay: fetchBillData?.Bill[0]?.totalAmount,
+                  isWarningPopUp: !fetchBillData?.Bill[0]?.totalAmount ? false : true,
+                  redirectionUrl: {
+                    pathname: !fetchBillData?.Bill[0]?.totalAmount
+                      ? `/mgramseva-digit-ui/employee/pt/property-mutate-docs-required/${applicationNumber}`
+                      : `/mgramseva-digit-ui/employee/payment/collect/PT/${applicationNumber}`,
+                    // state: { workflow: { action: "OPEN", moduleName: "PT", businessService } },
+                    state: null,
+                  },
+                  tenantId: Digit.ULBService.getStateId(),
                 },
-                tenantId: Digit.ULBService.getStateId(),
-              },
-            ]
+              ]
             : [],
         },
       },
@@ -245,7 +250,7 @@ const PropertyDetails = () => {
       workflowDetails?.data?.actionState?.nextActions?.push({
         action: "UPDATE",
         redirectionUrl: {
-          pathname: `/digit-ui/employee/pt/modify-application/${applicationNumber}`,
+          pathname: `/mgramseva-digit-ui/employee/pt/modify-application/${applicationNumber}`,
           state: { workflow: { action: "OPEN", moduleName: "PT", businessService: "PT.UPDATE" } },
         },
         tenantId: Digit.ULBService.getStateId(),
@@ -288,7 +293,7 @@ const PropertyDetails = () => {
           }
           hideSubmit={true}
           isDisabled={false}
-          popupStyles={showUpdateNo ? { width: isMobile ? "473px" : "50%"} : { width: "75%"}}
+          popupStyles={showUpdateNo ? { width: isMobile ? "473px" : "50%" } : { width: "75%" }}
         >
           {showUpdateNo && (
             <UpdatePropertyNumberComponent

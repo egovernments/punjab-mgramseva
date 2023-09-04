@@ -5,8 +5,6 @@ import { useHistory } from "react-router-dom";
 import { convertDateToMaximumPossibleValue } from "../../../../utils";
 import { config } from "../../../../config/NewMessageConfig";
 
-
-
 const NewEvents = () => {
   const { t } = useTranslation();
   const history = useHistory();
@@ -34,24 +32,19 @@ const NewEvents = () => {
             documents,
             fromDate: convertDateToMaximumPossibleValue(new Date(`${fromDate}`))?.getTime(),
             toDate: convertDateToMaximumPossibleValue(new Date(`${toDate}`))?.getTime(),
-          }
-        }
-      ]
-    }
-    history.push("/digit-ui/employee/engagement/messages/response", details)
-  }
+          },
+        },
+      ],
+    };
+    history.push("/mgramseva-digit-ui/employee/engagement/messages/response", details);
+  };
 
   return (
     <Fragment>
       <Header>{t("ADD_NEW_PUBLIC_MESSAGE")}</Header>
-      <FormComposer
-        config={config}
-        onSubmit={onSubmit}
-        label={t("ACTION_ADD_NEW_MESSAGE")}
-      >
-      </FormComposer>
+      <FormComposer config={config} onSubmit={onSubmit} label={t("ACTION_ADD_NEW_MESSAGE")}></FormComposer>
     </Fragment>
-  )
-}
+  );
+};
 
 export default NewEvents;

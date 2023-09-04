@@ -114,24 +114,26 @@ const Inbox = ({ parentRoute }) => {
   const { isLoading: isInboxLoading, data: { table, statuses, totalCount } = {} } = Digit.Hooks.useBillAmendmentInbox({
     tenantId,
     filters: { ...formState },
-    config : { cacheTime : 0}
+    config: { cacheTime: 0 },
   });
 
-  const { data: statusData, isLoading } = Digit.Hooks.useApplicationStatusGeneral({ businessServices: ["WS.AMENDMENT","SW.AMENDMENT"], tenantId }, { enabled: statuses?.length>0});
-  
-  statuses?.map(status => {
-    statusData?.otherRoleStates?.map(state=>{
-      if(state?.uuid===status?.statusid){
-        status["applicationstatus"] = t(state?.state)
-      }
-    })
-    statusData?.userRoleStates?.map(state => {
-      if (state?.uuid === status?.statusid) {
-        status["applicationstatus"] = t(state?.state)
-      }
-    })
-  } )
+  const { data: statusData, isLoading } = Digit.Hooks.useApplicationStatusGeneral(
+    { businessServices: ["WS.AMENDMENT", "SW.AMENDMENT"], tenantId },
+    { enabled: statuses?.length > 0 }
+  );
 
+  statuses?.map((status) => {
+    statusData?.otherRoleStates?.map((state) => {
+      if (state?.uuid === status?.statusid) {
+        status["applicationstatus"] = t(state?.state);
+      }
+    });
+    statusData?.userRoleStates?.map((state) => {
+      if (state?.uuid === status?.statusid) {
+        status["applicationstatus"] = t(state?.state);
+      }
+    });
+  });
 
   const PropsForInboxLinks = {
     logoIcon: <CollectionIcon />,
@@ -140,11 +142,11 @@ const Inbox = ({ parentRoute }) => {
       //UM-5603 As requested by PO
       // {
       //   text: t("ACTION_TEST_REPORTS"),
-      //   link: "/digit-ui/employee/ws/reports",
+      //   link: "/mgramseva-digit-ui/employee/ws/reports",
       // },
       // {
       //   text: t("ACTION_TEST_DASHBOARD"),
-      //   link: "/digit-ui/employee/ws/dashboards",
+      //   link: "/mgramseva-digit-ui/employee/ws/dashboards",
       // },
     ],
   };
@@ -170,7 +172,7 @@ const Inbox = ({ parentRoute }) => {
         }}
       />
     ),
-    [statuses, isInboxLoading, localitiesForEmployeesCurrentTenant, loadingLocalitiesForEmployeesCurrentTenant,statusData]
+    [statuses, isInboxLoading, localitiesForEmployeesCurrentTenant, loadingLocalitiesForEmployeesCurrentTenant, statusData]
   );
 
   const onSearchFormSubmit = (data) => {
@@ -202,7 +204,19 @@ const Inbox = ({ parentRoute }) => {
     onFilterFormReset,
   };
 
-  const propsForInboxTable = useInboxTableConfig({ ...{ parentRoute, onPageSizeChange, formState, totalCount, table, dispatch, onSortingByData, inboxStyles:{overflowX:"scroll", overflowY:"hidden"}, tableStyle:{width:"70%"} } });
+  const propsForInboxTable = useInboxTableConfig({
+    ...{
+      parentRoute,
+      onPageSizeChange,
+      formState,
+      totalCount,
+      table,
+      dispatch,
+      onSortingByData,
+      inboxStyles: { overflowX: "scroll", overflowY: "hidden" },
+      tableStyle: { width: "70%" },
+    },
+  });
 
   const propsForInboxMobileCards = useInboxMobileCardsData({ parentRoute, table });
 

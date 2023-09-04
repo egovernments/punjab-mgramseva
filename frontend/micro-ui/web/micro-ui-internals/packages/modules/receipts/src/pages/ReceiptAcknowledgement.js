@@ -1,11 +1,10 @@
-
 import { ActionBar, Banner, Card, CardText, LinkButton, Loader, SubmitBar } from "@egovernments/digit-ui-react-components";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 export const printReciept = async (businessService, consumerCode) => {
-  await Digit.Utils.downloadReceipt(consumerCode, businessService, 'consolidatedreceipt');
+  await Digit.Utils.downloadReceipt(consumerCode, businessService, "consolidatedreceipt");
 };
 
 const GetMessage = (type, action, isSuccess, isEmployee, t) => {
@@ -25,7 +24,7 @@ const GetLabel = (action, isSuccess, isEmployee, t) => {
 const BannerPicker = (props) => {
   return (
     <Banner
-      message={(GetActionMessage(props.action, props.isSuccess, props.isEmployee, props.t))}
+      message={GetActionMessage(props.action, props.isSuccess, props.isEmployee, props.t)}
       applicationNumber={props?.data?.Payments?.[0]?.paymentDetails[0].receiptNumber}
       info={props.isSuccess ? props.t("CR_RECEIPT_NUMBER") : ""}
       successful={props.isSuccess}
@@ -47,7 +46,7 @@ const ReceiptAcknowledgement = (props) => {
   }, [mutation.data]);
 
   const onError = (error, variables) => {
-    setErrorInfo(error?.response?.data?.Errors[0]?.code || 'ERROR');
+    setErrorInfo(error?.response?.data?.Errors[0]?.code || "ERROR");
     setMutationHappened(true);
   };
 
@@ -58,7 +57,7 @@ const ReceiptAcknowledgement = (props) => {
     if (state.key === "UPDATE" && !mutationHappened && !errorInfo) {
       mutation.mutate(
         {
-          paymentWorkflows: [state.paymentWorkflow]
+          paymentWorkflows: [state.paymentWorkflow],
         },
         {
           onError,
@@ -70,10 +69,10 @@ const ReceiptAcknowledgement = (props) => {
 
   const DisplayText = (action, isSuccess, isEmployee, t) => {
     if (!isSuccess) {
-      return mutation?.error?.response?.data?.Errors[0].code || errorInfo
+      return mutation?.error?.response?.data?.Errors[0].code || errorInfo;
     } else {
       Digit.SessionStorage.set("isupdate", Math.floor(100000 + Math.random() * 900000));
-      return t('CR_APPLY_FORWARD_SUCCESS');
+      return t("CR_APPLY_FORWARD_SUCCESS");
     }
   };
 
@@ -100,18 +99,24 @@ const ReceiptAcknowledgement = (props) => {
               <div className="response-download-button">
                 <span>
                   <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17 5H3C1.34 5 0 6.34 0 8V14H4V18H16V14H20V8C20 6.34 18.66 5 17 5ZM14 16H6V11H14V16ZM17 9C16.45 9 16 8.55 16 8C16 7.45 16.45 7 17 7C17.55 7 18 7.45 18 8C18 8.55 17.55 9 17 9ZM16 0H4V4H16V0Z" fill="#F47738" />
+                    <path
+                      d="M17 5H3C1.34 5 0 6.34 0 8V14H4V18H16V14H20V8C20 6.34 18.66 5 17 5ZM14 16H6V11H14V16ZM17 9C16.45 9 16 8.55 16 8C16 7.45 16.45 7 17 7C17.55 7 18 7.45 18 8C18 8.55 17.55 9 17 9ZM16 0H4V4H16V0Z"
+                      fill="#F47738"
+                    />
                   </svg>
                 </span>
                 <span className="download-button">{t("COMMON_TABLE_PRINT")}</span>
               </div>
             }
             style={{ width: "100px" }}
-            onClick={() => { printReciept(Payment?.paymentDetails[0]?.businessService, Payment?.paymentDetails[0]?.bill?.consumerCode) }}
+            onClick={() => {
+              printReciept(Payment?.paymentDetails[0]?.businessService, Payment?.paymentDetails[0]?.bill?.consumerCode);
+            }}
           />
-        </CardText>)}
+        </CardText>
+      )}
       <ActionBar>
-        <Link to={`${props.parentRoute.includes("employee") ? "/digit-ui/employee" : "/digit-ui/citizen"}`}>
+        <Link to={`${props.parentRoute.includes("employee") ? "/mgramseva-digit-ui/employee" : "/digit-ui/citizen"}`}>
           <SubmitBar label={t("CORE_COMMON_GO_TO_HOME")} />
         </Link>
       </ActionBar>

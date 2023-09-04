@@ -6,10 +6,9 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import MobileSearchApplication from "./MobileSearchApplication";
 const SearchApplication = ({ tenantId, onSubmit, data, count, resultOk, businessService, isLoading }) => {
-  
   const [sessionFormData, setSessionFormData, clearSessionFormData] = Digit.Hooks.useSessionStorage("ADHOC_ADD_REBATE_DATA", {});
   const [sessionBillFormData, setSessionBillFormData, clearBillSessionFormData] = Digit.Hooks.useSessionStorage("ADHOC_BILL_ADD_REBATE_DATA", {});
-  
+
   const replaceUnderscore = (str) => {
     str = str.replace(/_/g, " ");
     return str;
@@ -39,7 +38,7 @@ const SearchApplication = ({ tenantId, onSubmit, data, count, resultOk, business
     clearSessionFormData();
     setSessionFormData({});
     setSessionBillFormData({});
-    clearBillSessionFormData()
+    clearBillSessionFormData();
   }, []);
 
   const onSort = useCallback((args) => {
@@ -65,7 +64,11 @@ const SearchApplication = ({ tenantId, onSubmit, data, count, resultOk, business
   const isMobile = window.Digit.Utils.browser.isMobile();
 
   if (isMobile) {
-    return <MobileSearchApplication {...{ Controller, register, control, t, reset, previousPage, handleSubmit, tenantId, data, onSubmit, businessService }} />;
+    return (
+      <MobileSearchApplication
+        {...{ Controller, register, control, t, reset, previousPage, handleSubmit, tenantId, data, onSubmit, businessService }}
+      />
+    );
   }
 
   //need to get from workflow
@@ -78,28 +81,28 @@ const SearchApplication = ({ tenantId, onSubmit, data, count, resultOk, business
         accessor: "connectionNo",
         Cell: ({ row }) => {
           let service = "WATER";
-            if (
-              row?.original?.["applicationType"] == "NEW_WATER_CONNECTION" || 
-              row?.original?.["applicationType"] == "MODIFY_WATER_CONNECTION" ||
-              row?.original?.["applicationType"] == "DISCONNECT_WATER_CONNECTION"
-            ) {
-              service = "WATER"
-            } else if (
-              row?.original?.["applicationType"] == "NEW_SEWERAGE_CONNECTION" ||
-              row?.original?.["applicationType"] == "MODIFY_SEWERAGE_CONNECTION" || 
-              row?.original?.["applicationType"] == "DISCONNECT_SEWERAGE_CONNECTION"
-            ) {
-              service = "SEWERAGE"
-            }
-          
+          if (
+            row?.original?.["applicationType"] == "NEW_WATER_CONNECTION" ||
+            row?.original?.["applicationType"] == "MODIFY_WATER_CONNECTION" ||
+            row?.original?.["applicationType"] == "DISCONNECT_WATER_CONNECTION"
+          ) {
+            service = "WATER";
+          } else if (
+            row?.original?.["applicationType"] == "NEW_SEWERAGE_CONNECTION" ||
+            row?.original?.["applicationType"] == "MODIFY_SEWERAGE_CONNECTION" ||
+            row?.original?.["applicationType"] == "DISCONNECT_SEWERAGE_CONNECTION"
+          ) {
+            service = "SEWERAGE";
+          }
+
           return (
             <div>
               {row.original["connectionNo"] ? (
                 <span className={"link"}>
                   <Link
-                    to={`/digit-ui/employee/ws/connection-details?applicationNumber=${
+                    to={`/mgramseva-digit-ui/employee/ws/connection-details?applicationNumber=${
                       row.original["connectionNo"]
-                      }&tenantId=${tenantId}&service=${service}&due=${row.original?.due || 0}&from=WS_SEWERAGE_APPLICATION_SEARCH`}
+                    }&tenantId=${tenantId}&service=${service}&due=${row.original?.due || 0}&from=WS_SEWERAGE_APPLICATION_SEARCH`}
                   >
                     {row.original["connectionNo"] || "NA"}
                   </Link>
@@ -118,19 +121,19 @@ const SearchApplication = ({ tenantId, onSubmit, data, count, resultOk, business
         Cell: ({ row }) => {
           let service = "WATER";
           if (
-            row?.original?.["applicationType"] == "NEW_WATER_CONNECTION" || 
+            row?.original?.["applicationType"] == "NEW_WATER_CONNECTION" ||
             row?.original?.["applicationType"] == "MODIFY_WATER_CONNECTION" ||
             row?.original?.["applicationType"] == "DISCONNECT_WATER_CONNECTION"
           ) {
-            service = "WATER"
+            service = "WATER";
           } else if (
             row?.original?.["applicationType"] == "NEW_SEWERAGE_CONNECTION" ||
-            row?.original?.["applicationType"] == "MODIFY_SEWERAGE_CONNECTION" || 
+            row?.original?.["applicationType"] == "MODIFY_SEWERAGE_CONNECTION" ||
             row?.original?.["applicationType"] == "DISCONNECT_SEWERAGE_CONNECTION"
           ) {
-            service = "SEWERAGE"
+            service = "SEWERAGE";
           }
-        
+
           if (row.original["applicationType"] === "MODIFY_SEWERAGE_CONNECTION" || row.original["applicationType"] === "MODIFY_WATER_CONNECTION") {
             let application = "application";
             if (row?.original?.["applicationType"]?.toUpperCase()?.includes("DISCONNECT")) {
@@ -142,9 +145,9 @@ const SearchApplication = ({ tenantId, onSubmit, data, count, resultOk, business
               <div>
                 <span className="link">
                   <Link
-                    to={`/digit-ui/employee/ws/${application}-details?applicationNumber=${
+                    to={`/mgramseva-digit-ui/employee/ws/${application}-details?applicationNumber=${
                       row.original["applicationNo"]
-                      }&tenantId=${tenantId}&service=${service}&mode=${"MODIFY"}&from=WS_SEWERAGE_APPLICATION_SEARCH`}
+                    }&tenantId=${tenantId}&service=${service}&mode=${"MODIFY"}&from=WS_SEWERAGE_APPLICATION_SEARCH`}
                   >
                     {row.original["applicationNo"]}
                   </Link>
@@ -162,7 +165,7 @@ const SearchApplication = ({ tenantId, onSubmit, data, count, resultOk, business
               <div>
                 <span className="link">
                   <Link
-                    to={`/digit-ui/employee/ws/${application}-details?applicationNumber=${row.original["applicationNo"]}&tenantId=${tenantId}&service=${service}&from=WS_SEWERAGE_APPLICATION_SEARCH`}
+                    to={`/mgramseva-digit-ui/employee/ws/${application}-details?applicationNumber=${row.original["applicationNo"]}&tenantId=${tenantId}&service=${service}&from=WS_SEWERAGE_APPLICATION_SEARCH`}
                   >
                     {row.original["applicationNo"]}
                   </Link>
@@ -176,7 +179,7 @@ const SearchApplication = ({ tenantId, onSubmit, data, count, resultOk, business
         Header: t("WS_APPLICATION_TYPE_LABEL"),
         disableSortBy: true,
         accessor: (row) => {
-          return GetCell(t(`WS_${row.applicationType}`))
+          return GetCell(t(`WS_${row.applicationType}`));
         },
       },
       {
@@ -199,17 +202,19 @@ const SearchApplication = ({ tenantId, onSubmit, data, count, resultOk, business
     ],
     []
   );
-  
+
   return (
     <>
-      <Header styles={{ fontSize: "32px" }}>{businessService === "WS" ? t("WS_WATER_SEARCH_APPLICATION_SUB_HEADER") : t("WS_SEWERAGE_SEARCH_APPLICATION_SUB_HEADER")}</Header>
-      < Card className={"card-search-heading"}>
+      <Header styles={{ fontSize: "32px" }}>
+        {businessService === "WS" ? t("WS_WATER_SEARCH_APPLICATION_SUB_HEADER") : t("WS_SEWERAGE_SEARCH_APPLICATION_SUB_HEADER")}
+      </Header>
+      <Card className={"card-search-heading"}>
         <span style={{ color: "#505A5F" }}>{t("WS_INFO_VALIDATION")}</span>
       </Card>
-      <SearchForm onSubmit={onSubmit} handleSubmit={handleSubmit} >
-        <SearchFields {...{ register, control, reset, tenantId, t,businessService }} />
+      <SearchForm onSubmit={onSubmit} handleSubmit={handleSubmit}>
+        <SearchFields {...{ register, control, reset, tenantId, t, businessService }} />
       </SearchForm>
-      { isLoading ? <Loader /> : null } 
+      {isLoading ? <Loader /> : null}
       {data?.display && !resultOk ? (
         <Card style={{ marginTop: 20 }}>
           {t(data?.display)

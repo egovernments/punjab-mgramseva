@@ -16,26 +16,25 @@ const MCollectCard = () => {
     kpis: [
       {
         count: isLoading ? "-" : data?.ChallanCount?.totalChallan,
-        label: t("TOTAL_CHALLANS")
+        label: t("TOTAL_CHALLANS"),
       },
       // {
       //     label: t(""),
-      //     link: `/digit-ui/employee/receipts/inbox`
-      // }  
+      //     link: `/mgramseva-digit-ui/employee/receipts/inbox`
+      // }
     ],
     links: [
       {
         label: t("UC_SEARCH_CHALLAN_LABEL"),
-        link: `/digit-ui/employee/mcollect/inbox`
+        link: `/mgramseva-digit-ui/employee/mcollect/inbox`,
       },
       {
         label: t("UC_GENERATE_NEW_CHALLAN"),
-        link: `/digit-ui/employee/mcollect/new-application`
+        link: `/mgramseva-digit-ui/employee/mcollect/new-application`,
       },
-    ]
-  }
-  return <EmployeeModuleCard {...propsForModuleCard} />
+    ],
+  };
+  return <EmployeeModuleCard {...propsForModuleCard} />;
 };
 
 export default MCollectCard;
-

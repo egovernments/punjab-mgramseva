@@ -82,7 +82,7 @@ const EmployeeApp = ({
                 <ErrorComponent
                   initData={initData}
                   goToHome={() => {
-                    history.push("/digit-ui/employee");
+                    history.push("/mgramseva-digit-ui/employee");
                   }}
                 />
               </Route>

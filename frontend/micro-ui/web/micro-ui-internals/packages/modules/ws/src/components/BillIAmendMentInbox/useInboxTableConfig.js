@@ -3,7 +3,17 @@ import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 
-const useInboxTableConfig = ({ parentRoute, onPageSizeChange, formState, totalCount, table, dispatch, onSortingByData, inboxStyles={}, tableStyle={} }) => {
+const useInboxTableConfig = ({
+  parentRoute,
+  onPageSizeChange,
+  formState,
+  totalCount,
+  table,
+  dispatch,
+  onSortingByData,
+  inboxStyles = {},
+  tableStyle = {},
+}) => {
   const { t } = useTranslation();
   const tenantId = Digit.ULBService.getCurrentTenantId();
 
@@ -35,7 +45,7 @@ const useInboxTableConfig = ({ parentRoute, onPageSizeChange, formState, totalCo
         Cell: ({ row }) => {
           return (
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <Link to={`/digit-ui/employee/ws/generate-note-bill-amendment?applicationNumber=${row.original["applicationNo"]}`}>
+              <Link to={`/mgramseva-digit-ui/employee/ws/generate-note-bill-amendment?applicationNumber=${row.original["applicationNo"]}`}>
                 <span className="link">{row.original["applicationNo"]}</span>
               </Link>
               {GetCell(t(`BILLAMENDMENT_${row?.original?.amendmentReason}_HEADING`))}
@@ -107,8 +117,8 @@ const useInboxTableConfig = ({ parentRoute, onPageSizeChange, formState, totalCo
     // searchQueryForTable,
     data: table,
     columns: tableColumnConfig,
-    inboxStyles:{...inboxStyles},
-    tableStyle:{...tableStyle},
+    inboxStyles: { ...inboxStyles },
+    tableStyle: { ...tableStyle },
   };
 };
 

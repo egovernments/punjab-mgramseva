@@ -27,13 +27,13 @@ const NewEvents = () => {
             address,
             organizer,
             fees,
-            ...geoLocation
-          }
-        }
-      ]
-    }
-    history.push("/digit-ui/employee/engagement/event/response", details)
-  }
+            ...geoLocation,
+          },
+        },
+      ],
+    };
+    history.push("/mgramseva-digit-ui/employee/engagement/event/response", details);
+  };
 
   const [mutationHappened, setMutationHappened, clear] = Digit.Hooks.useSessionStorage("EMPLOYEE_EVENT_MUTATION_HAPPENED", false);
   const [errorInfo, setErrorInfo, clearError] = Digit.Hooks.useSessionStorage("EMPLOYEE_EVENT_ERROR_DATA", false);
@@ -48,14 +48,9 @@ const NewEvents = () => {
   return (
     <Fragment>
       <Header>{t("ES_TITLE_NEW_EVENTS")}</Header>
-      <FormComposer
-        config={config}
-        onSubmit={onSubmit}
-        label={t("EVENTS_CREATE_EVENT")}
-      >
-      </FormComposer>
+      <FormComposer config={config} onSubmit={onSubmit} label={t("EVENTS_CREATE_EVENT")}></FormComposer>
     </Fragment>
-  )
-}
+  );
+};
 
 export default NewEvents;
