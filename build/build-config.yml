@@ -82,7 +82,7 @@ config:
   - name: "builds/mGramSeva/frontend/mgramseva-digit-ui"
     build:
       - work-dir: "frontend/micro-ui"
-        image-name: "mgramseva-digit-ui"
+        image-name: "mgramseva-web"
         dockerfile: "frontend/micro-ui/web/docker/Dockerfile"
   - name: "builds/mGramSeva/core-services/user-otp"
     build:
