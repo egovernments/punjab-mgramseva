@@ -219,6 +219,7 @@ class BillGenerationProvider with ChangeNotifier {
           getServiceTypeConnectionTypePropertyTypeMDMS(
               commonProvider.userDetails!.userRequest!.tenantId.toString()));
       languageList = res;
+      notifyListeners();
       streamController.add(billGenerateDetails);
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);

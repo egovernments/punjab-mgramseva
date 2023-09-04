@@ -55,7 +55,7 @@ class _HouseholdListState extends State<HouseholdList> {
 
     return LayoutBuilder(builder: (context, constraints) {
       var width =
-          constraints.maxWidth < 760 ? 145.0 : (constraints.maxWidth / 4);
+          constraints.maxWidth < 760 ? 115.0 : (constraints.maxWidth / 6);
       var tableData = householdProvider
           .getCollectionsData(expenseList as List<WaterConnection>);
       return tableData == null || tableData.isEmpty

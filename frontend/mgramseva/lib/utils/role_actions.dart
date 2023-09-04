@@ -135,7 +135,9 @@ class RoleActionsFiltering {
         return ['COLLECTION_OPERATOR', 'SUPERUSER', 'DIV_ADMIN'];
 
       case Routes.DASHBOARD:
-        return ['SUPERUSER', 'DASHBOARD_VIEWER', 'DIV_ADMIN'];
+        return ['SUPERUSER', 'DASHBOARD_VIEWER', 'GP_ADMIN', 'DIV_ADMIN'];
+      case Routes.REPORTS:
+        return ['SUPERUSER', 'DASHBOARD_VIEWER', 'GP_ADMIN', 'DIV_ADMIN'];
       default:
         return [];
     }
