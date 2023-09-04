@@ -12,16 +12,16 @@ const nationalScreenURLs = {
   ws: { key: "national-ws", stateKey: "ws", label: "NURT_WATER_SEWERAGE", active: true, nActive: true },
   obps: { key: "nss-obps", stateKey: "obps", label: "DSS_BUILDING_PERMISSION", active: true, nActive: true },
   noc: { key: "national-firenoc", stateKey: "noc", label: "NURT_FIRENOC", active: true, nActive: true },
-  bnd: {key:"nss-birth-death",stateKey:"birth-death",label:"BIRTH_AND_DEATH",active:true,nActive:true},
-  faqs: {key:"national-faqs",stateKey:"national-faqs",label:"DSS_FAQS",active:false,nActive:true,others:true},
-  finance: {key:"national-finance",stateKey:"finance",label:"DSS_FINANCE",active:true,nActive:false},
-  about: {key:"national-about",stateKey:"national-about",label:"DSS_ABOUT_DASHBOARD",active:false,nActive:true,others:true},
+  bnd: { key: "nss-birth-death", stateKey: "birth-death", label: "BIRTH_AND_DEATH", active: true, nActive: true },
+  faqs: { key: "national-faqs", stateKey: "national-faqs", label: "DSS_FAQS", active: false, nActive: true, others: true },
+  finance: { key: "national-finance", stateKey: "finance", label: "DSS_FINANCE", active: true, nActive: false },
+  about: { key: "national-about", stateKey: "national-about", label: "DSS_ABOUT_DASHBOARD", active: false, nActive: true, others: true },
 };
 
 export const checkCurrentScreen = () => {
   const moduleName = Digit.Utils.dss.getCurrentModuleName();
   const nationalURLS = Object.keys(nationalScreenURLs).map((key) => nationalScreenURLs[key].key);
-  return nationalURLS.filter(ele=>ele!=="fsm").some((e) => moduleName?.includes(e));
+  return nationalURLS.filter((ele) => ele !== "fsm").some((e) => moduleName?.includes(e));
 };
 
 const NDSSCard = () => {
@@ -36,16 +36,16 @@ const NDSSCard = () => {
     .filter((ele) => ele["nActive"] === true)
     .map((obj) => ({
       label: t(obj?.label),
-      link: `/digit-ui/employee/dss/dashboard/${obj?.key}`,
-      link: obj?.others?`/digit-ui/employee/dss/${obj?.key}`:`/digit-ui/employee/dss/dashboard/${obj?.key}`,
+      link: `/mgramseva-digit-ui/employee/dss/dashboard/${obj?.key}`,
+      link: obj?.others ? `/mgramseva-digit-ui/employee/dss/${obj?.key}` : `/mgramseva-digit-ui/employee/dss/dashboard/${obj?.key}`,
     }));
 
   const propsForModuleCard = {
     headerStyle: { border: "none", height: "48px" },
     moduleName: t("ACTION_TEST_NATDASHBOARD"),
     subHeader: t("ACTION_TEST_NATDASHBOARD"),
-    // subHeaderLink: `/digit-ui/employee/payment/integration/dss/NURT_DASHBOARD`,
-    subHeaderLink: `/digit-ui/employee/dss/landing/NURT_DASHBOARD`,
+    // subHeaderLink: `/mgramseva-digit-ui/employee/payment/integration/dss/NURT_DASHBOARD`,
+    subHeaderLink: `/mgramseva-digit-ui/employee/dss/landing/NURT_DASHBOARD`,
     className: "employeeCard customEmployeeCard card-home full-width-card full-employee-card-height",
     links: [...links],
   };
@@ -64,15 +64,15 @@ const DSSCard = () => {
     .filter((ele) => ele["active"] === true)
     .map((obj) => ({
       label: t(obj?.label),
-      link: obj.active?`/digit-ui/employee/dss/dashboard/${obj?.stateKey}`:`/employee/integration/dss/${obj?.stateKey}`,
+      link: obj.active ? `/mgramseva-digit-ui/employee/dss/dashboard/${obj?.stateKey}` : `/employee/integration/dss/${obj?.stateKey}`,
     }));
 
   const propsForModuleCard = {
     headerStyle: { border: "none", height: "48px" },
     moduleName: t("ES_TITLE_DSS"),
     subHeader: t("ACTION_TEST_SURE_DASHBOARD"),
-    // subHeaderLink: `/digit-ui/employee/payment/integration/dss/home`,
-    subHeaderLink: `/digit-ui/employee/dss/landing/home`,
+    // subHeaderLink: `/mgramseva-digit-ui/employee/payment/integration/dss/home`,
+    subHeaderLink: `/mgramseva-digit-ui/employee/dss/landing/home`,
     className: "employeeCard card-home customEmployeeCard full-width-card full-employee-card-height",
     links: [...links],
   };

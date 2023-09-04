@@ -32,13 +32,11 @@ const EditForm = ({ applicationData }) => {
       },
     })),
   };
-  sessionStorage.setItem("PropertyInitials",JSON.stringify(defaultValues?.originalData));
+  sessionStorage.setItem("PropertyInitials", JSON.stringify(defaultValues?.originalData));
 
   const onFormValueChange = (setValue, formData, formState) => {
-    if(Object.keys(formState.errors).length==1 && formState.errors.documents)
-    setSubmitValve(true);
-    else 
-    setSubmitValve(!Object.keys(formState.errors).length);
+    if (Object.keys(formState.errors).length == 1 && formState.errors.documents) setSubmitValve(true);
+    else setSubmitValve(!Object.keys(formState.errors).length);
   };
 
   const onSubmit = (data) => {
@@ -50,7 +48,8 @@ const EditForm = ({ applicationData }) => {
         city: data?.address?.city?.name,
       },
       propertyType: data?.PropertyType?.code,
-      creationReason: state?.workflow?.businessService === "PT.UPDATE" || (applicationData?.documents == null )  ? "UPDATE" : applicationData?.creationReason,
+      creationReason:
+        state?.workflow?.businessService === "PT.UPDATE" || applicationData?.documents == null ? "UPDATE" : applicationData?.creationReason,
       usageCategory: data?.usageCategoryMinor?.subuagecode ? data?.usageCategoryMinor?.subuagecode : data?.usageCategoryMajor?.code,
       usageCategoryMajor: data?.usageCategoryMajor?.code.split(".")[0],
       usageCategoryMinor: data?.usageCategoryMajor?.code.split(".")[1] || null,
@@ -59,11 +58,15 @@ const EditForm = ({ applicationData }) => {
       superBuiltUpArea: Number(data?.landarea),
       source: "MUNICIPAL_RECORDS", // required
       channel: "CFC_COUNTER", // required
-      documents: applicationData?.documents ? applicationData?.documents.map((old) => {
-        let dt = old.documentType.split(".");
-        let newDoc = data?.documents?.documents?.find((e) => e.documentType.includes(dt[0] + "." + dt[1]));
-        return { ...old, ...newDoc };
-      }):data?.documents?.documents.length > 0 ? data?.documents?.documents : null,
+      documents: applicationData?.documents
+        ? applicationData?.documents.map((old) => {
+            let dt = old.documentType.split(".");
+            let newDoc = data?.documents?.documents?.find((e) => e.documentType.includes(dt[0] + "." + dt[1]));
+            return { ...old, ...newDoc };
+          })
+        : data?.documents?.documents.length > 0
+        ? data?.documents?.documents
+        : null,
       units: [
         ...(applicationData?.units?.map((old) => ({ ...old, active: false })) || []),
         ...(data?.units?.map((unit) => {
@@ -76,7 +79,7 @@ const EditForm = ({ applicationData }) => {
     if (state?.workflow?.action === "OPEN") {
       formData.units = formData.units.filter((unit) => unit.active);
     }
-    history.push("/digit-ui/employee/pt/response", { Property: formData, key: "UPDATE", action: "SUBMIT" });
+    history.push("/mgramseva-digit-ui/employee/pt/response", { Property: formData, key: "UPDATE", action: "SUBMIT" });
   };
 
   if (isLoading) {

@@ -83,9 +83,11 @@ const SearchWaterConnection = ({ tenantId, onSubmit, data, count, resultOk, busi
               {row.original["connectionNo"] ? (
                 <span className={"link"}>
                   <Link
-                    to={`/digit-ui/employee/ws/connection-details?applicationNumber=${row.original["connectionNo"]}&tenantId=${tenantId}&service=${
-                      row.original?.["service"]
-                      }&connectionType=${row.original?.["connectionType"]}&due=${row.original?.due || 0}&from=WS_SEWERAGE_CONNECTION_SEARCH_LABEL`}
+                    to={`/mgramseva-digit-ui/employee/ws/connection-details?applicationNumber=${
+                      row.original["connectionNo"]
+                    }&tenantId=${tenantId}&service=${row.original?.["service"]}&connectionType=${row.original?.["connectionType"]}&due=${
+                      row.original?.due || 0
+                    }&from=WS_SEWERAGE_CONNECTION_SEARCH_LABEL`}
                   >
                     {row.original["connectionNo"] || "NA"}
                   </Link>
@@ -109,7 +111,11 @@ const SearchWaterConnection = ({ tenantId, onSubmit, data, count, resultOk, busi
         Header: t("WS_COMMON_TABLE_COL_OWN_NAME_LABEL"),
         disableSortBy: true,
         Cell: ({ row }) => {
-          return GetCell(row?.original?.connectionHolders?.map((owner) => owner?.name).join(",") ? row?.original?.connectionHolders?.map((owner) => owner?.name).join(",") : `${row.original?.["owner"] || "NA"}`);
+          return GetCell(
+            row?.original?.connectionHolders?.map((owner) => owner?.name).join(",")
+              ? row?.original?.connectionHolders?.map((owner) => owner?.name).join(",")
+              : `${row.original?.["owner"] || "NA"}`
+          );
         },
       },
       {
@@ -163,8 +169,8 @@ const SearchWaterConnection = ({ tenantId, onSubmit, data, count, resultOk, busi
   const getActionItem = (status, row) => {
     const userInfo = Digit.UserService.getUser();
     const userRoles = userInfo.info.roles.map((roleData) => roleData.code);
-    const isUserAllowedToAddMeterReading = userRoles.filter(role => (role === "WS_CEMP" || role === "SW_CEMP")).length > 0
-    if(!isUserAllowedToAddMeterReading) return null
+    const isUserAllowedToAddMeterReading = userRoles.filter((role) => role === "WS_CEMP" || role === "SW_CEMP").length > 0;
+    if (!isUserAllowedToAddMeterReading) return null;
     switch (status) {
       case "Active":
         return (
@@ -173,9 +179,11 @@ const SearchWaterConnection = ({ tenantId, onSubmit, data, count, resultOk, busi
               {row.original?.service === "WATER" ? (
                 <Link
                   to={{
-                    pathname: `/digit-ui/employee/payment/collect/${row.original?.["service"] === "WATER" ? "WS" : "SW"}/${encodeURIComponent(
-                      row.original?.["connectionNo"]
-                    )}/${row.original?.["tenantId"]}?tenantId=${row.original?.["tenantId"]}?workflow=WS&ISWSCON`,
+                    pathname: `/mgramseva-digit-ui/employee/payment/collect/${
+                      row.original?.["service"] === "WATER" ? "WS" : "SW"
+                    }/${encodeURIComponent(row.original?.["connectionNo"])}/${row.original?.["tenantId"]}?tenantId=${
+                      row.original?.["tenantId"]
+                    }?workflow=WS&ISWSCON`,
                   }}
                 >
                   {t(`${"WS_COMMON_COLLECT_LABEL"}`)}{" "}
@@ -183,9 +191,11 @@ const SearchWaterConnection = ({ tenantId, onSubmit, data, count, resultOk, busi
               ) : (
                 <Link
                   to={{
-                    pathname: `/digit-ui/employee/payment/collect/${row.original?.["service"] === "WATER" ? "WS" : "SW"}/${encodeURIComponent(
-                      row.original?.["connectionNo"]
-                    )}/${row.original?.["tenantId"]}?tenantId=${row.original?.["tenantId"]}?workflow=SW&ISWSCON`,
+                    pathname: `/mgramseva-digit-ui/employee/payment/collect/${
+                      row.original?.["service"] === "WATER" ? "WS" : "SW"
+                    }/${encodeURIComponent(row.original?.["connectionNo"])}/${row.original?.["tenantId"]}?tenantId=${
+                      row.original?.["tenantId"]
+                    }?workflow=SW&ISWSCON`,
                   }}
                 >
                   {t(`${"WS_COMMON_COLLECT_LABEL"}`)}{" "}
@@ -205,7 +215,7 @@ const SearchWaterConnection = ({ tenantId, onSubmit, data, count, resultOk, busi
       <SearchForm className="ws-custom-wrapper" onSubmit={onSubmit} handleSubmit={handleSubmit}>
         <SearchFields {...{ register, control, reset, tenantId, t }} />
       </SearchForm>
-      { isLoading ? <Loader /> : null } 
+      {isLoading ? <Loader /> : null}
       {data?.display && !resultOk ? (
         <Card style={{ marginTop: 20 }}>
           {t(data?.display)
@@ -216,8 +226,8 @@ const SearchWaterConnection = ({ tenantId, onSubmit, data, count, resultOk, busi
               </p>
             ))}
         </Card>
-        // <></>
-      ) : resultOk ? (
+      ) : // <></>
+      resultOk ? (
         <Table
           t={t}
           data={data}

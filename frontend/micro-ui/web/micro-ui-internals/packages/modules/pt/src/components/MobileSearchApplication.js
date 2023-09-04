@@ -1,19 +1,21 @@
 import React, { Fragment, useCallback, useMemo, useReducer } from "react";
-import {
-  CloseSvg,
-  SearchForm,
-  Table,
-  Card,
-  SearchAction,
-  PopUp,
-  DetailsCard,
-  Loader,
-  Toast,
-} from "@egovernments/digit-ui-react-components";
+import { CloseSvg, SearchForm, Table, Card, SearchAction, PopUp, DetailsCard, Loader, Toast } from "@egovernments/digit-ui-react-components";
 import SearchFormFields from "./SearchFields";
 
-const MobileSearchApplication = ({ Controller, register, control, t, reset, previousPage, handleSubmit, tenantId, data, onSubmit, formState, setShowToast}) => {
-
+const MobileSearchApplication = ({
+  Controller,
+  register,
+  control,
+  t,
+  reset,
+  previousPage,
+  handleSubmit,
+  tenantId,
+  data,
+  onSubmit,
+  formState,
+  setShowToast,
+}) => {
   function activateModal(state, action) {
     switch (action.type) {
       case "set":
@@ -21,7 +23,8 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
       case "remove":
         return false;
       default:
-        break;    }
+        break;
+    }
   }
 
   const [currentlyActiveMobileModal, setActiveMobileModal] = useReducer(activateModal, false);
@@ -66,28 +69,25 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
     [currentlyActiveMobileModal]
   );
 
-  const propsMobileInboxCards = useMemo(
-    () => {
-      if (data?.display){
-        return []
-      }
-      if(data === "")
-      {
+  const propsMobileInboxCards = useMemo(() => {
+    if (data?.display) {
       return [];
-      }
-      return data?.map((data) => ({
-        [t("PT_SEARCHPROPERTY_TABEL_PID")]: data?.propertyId,
-        [t("PT_APPLICATION_NO_LABEL")]: data?.acknowldgementNumber || "-",
-        [t("PT_SEARCHPROPERTY_TABEL_APPLICATIONTYPE")]: data?.creationReason || "",
-        [t("PT_COMMON_TABLE_COL_OWNER_NAME")]: data?.owners?.map( o => o.name ). join(",") || "" ,
-        [t("ES_SEARCH_PROPERTY_STATUS")]: t( data?.status &&`WF_PT_${data?.status}`|| "NA") || "",
-        [t("PT_ADDRESS_LABEL")]: `${data?.address?.doorNo ? `${data?.address?.doorNo}, ` : ""} ${data?.address?.street ? `${data?.address?.street}, ` : ""}${
-            data?.address?.landmark ? `${data?.address?.landmark}, ` : ""
-          }${t(data?.address?.locality.code)}, ${t(data?.address?.city.code)} ${t(data?.address?.pincode) ? `${data?.address.pincode}` : " "}` || "NA",
-      }))
-    },
-    [data]
-  );
+    }
+    if (data === "") {
+      return [];
+    }
+    return data?.map((data) => ({
+      [t("PT_SEARCHPROPERTY_TABEL_PID")]: data?.propertyId,
+      [t("PT_APPLICATION_NO_LABEL")]: data?.acknowldgementNumber || "-",
+      [t("PT_SEARCHPROPERTY_TABEL_APPLICATIONTYPE")]: data?.creationReason || "",
+      [t("PT_COMMON_TABLE_COL_OWNER_NAME")]: data?.owners?.map((o) => o.name).join(",") || "",
+      [t("ES_SEARCH_PROPERTY_STATUS")]: t((data?.status && `WF_PT_${data?.status}`) || "NA") || "",
+      [t("PT_ADDRESS_LABEL")]:
+        `${data?.address?.doorNo ? `${data?.address?.doorNo}, ` : ""} ${data?.address?.street ? `${data?.address?.street}, ` : ""}${
+          data?.address?.landmark ? `${data?.address?.landmark}, ` : ""
+        }${t(data?.address?.locality.code)}, ${t(data?.address?.city.code)} ${t(data?.address?.pincode) ? `${data?.address.pincode}` : " "}` || "NA",
+    }));
+  }, [data]);
 
   return (
     <React.Fragment>
@@ -95,7 +95,7 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
         <SearchAction
           text={t("ES_COMMON_SEARCH")}
           handleActionClick={() => setActiveMobileModal({ type: "set", payload: "SearchFormComponent" })}
-          {...{tenantId, t}} 
+          {...{ tenantId, t }}
         />
         {/* {isInboxLoading ? <Loader /> : <FilterAction text={t("ES_COMMON_FILTER")} handleActionClick={() => setActiveMobileModal({type:"set", payload:"FilterFormComponent"})}/>} */}
         {/* <SortAction text={t("ES_COMMON_SORT")} handleActionClick={() => setActiveMobileModal({type:"set", payload:"SortComponent"})}/> */}
@@ -128,13 +128,13 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
         <DetailsCard
           {...{
             data: propsMobileInboxCards,
-            linkPrefix: `/digit-ui/employee/pt/applicationsearch/application-details/`,
+            linkPrefix: `/mgramseva-digit-ui/employee/pt/applicationsearch/application-details/`,
             serviceRequestIdKey: t("PT_SEARCHPROPERTY_TABEL_PID"),
           }}
         />
       )}
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default MobileSearchApplication
+export default MobileSearchApplication;

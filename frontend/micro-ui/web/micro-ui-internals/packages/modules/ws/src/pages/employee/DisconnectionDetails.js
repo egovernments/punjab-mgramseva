@@ -21,10 +21,14 @@ const GetDisconnectionDetails = () => {
 
   sessionStorage.removeItem("Digit.PT_CREATE_EMP_WS_NEW_FORM");
   sessionStorage.removeItem("IsDetailsExists");
-  sessionStorage.setItem("disconnectionURL", JSON.stringify({url : `${location?.pathname}${location.search}`}));
+  sessionStorage.setItem("disconnectionURL", JSON.stringify({ url: `${location?.pathname}${location.search}` }));
 
-  let { isLoading, isError, data: applicationDetails, error } = Digit.Hooks.ws.useDisConnectionDetails(t, tenantId, applicationNumber, serviceType,{ privacy: Digit.Utils.getPrivacyObject() } );
-  const { isServicesMasterLoading, data: servicesMasterData } = Digit.Hooks.ws.useMDMS(stateCode, "ws-services-masters", ["WSEditApplicationByConfigUser"]);
+  let { isLoading, isError, data: applicationDetails, error } = Digit.Hooks.ws.useDisConnectionDetails(t, tenantId, applicationNumber, serviceType, {
+    privacy: Digit.Utils.getPrivacyObject(),
+  });
+  const { isServicesMasterLoading, data: servicesMasterData } = Digit.Hooks.ws.useMDMS(stateCode, "ws-services-masters", [
+    "WSEditApplicationByConfigUser",
+  ]);
   const appStatus = applicationDetails?.applicationData?.applicationStatus || "";
 
   let workflowDetails = Digit.Hooks.useWorkflowDetails(
@@ -62,7 +66,7 @@ const GetDisconnectionDetails = () => {
     workflowDetails?.data?.actionState?.nextActions?.length > 0 &&
     !workflowDetails?.data?.actionState?.nextActions?.find((e) => e.action === "EDIT") &&
     !workflowDetails?.data?.actionState?.nextActions?.find((e) => e.action === "RESUBMIT_APPLICATION") &&
-    !workflowDetails?.data?.actionState?.nextActions?.find((e) => e.action === "EXECUTE_DISCONNECTION") && 
+    !workflowDetails?.data?.actionState?.nextActions?.find((e) => e.action === "EXECUTE_DISCONNECTION") &&
     !workflowDetails?.data?.actionState?.nextActions?.find((e) => e.action === "SUBMIT_APPLICATION") &&
     !workflowDetails?.data?.actionState?.nextActions?.find((e) => e.action === "DISCONNECTION_EXECUTED")
   ) {
@@ -71,18 +75,19 @@ const GetDisconnectionDetails = () => {
     });
   }
 
-
   if (applicationDetails?.applicationData?.applicationStatus == "DISCONNECTION_EXECUTED") {
-    if (workflowDetails?.data?.actionState?.nextActions) workflowDetails.data.actionState.nextActions = []; 
+    if (workflowDetails?.data?.actionState?.nextActions) workflowDetails.data.actionState.nextActions = [];
     if (workflowDetails?.data?.nextActions) workflowDetails.data.nextActions = [];
   }
 
   workflowDetails?.data?.nextActions?.forEach((action) => {
     if (action?.action === "PAY") {
       action.redirectionUrll = {
-        pathname: `${serviceType == "WATER" ? "WS" : "SW"}/${applicationDetails?.applicationData?.connectionNo}/${applicationDetails?.tenantId}?tenantId=${
+        pathname: `${serviceType == "WATER" ? "WS" : "SW"}/${applicationDetails?.applicationData?.connectionNo}/${
           applicationDetails?.tenantId
-        }&ISWSAPP&applicationNumber=${applicationDetails?.applicationData?.connectionNo}&IsDisconnectionFlow=${true}`,
+        }?tenantId=${applicationDetails?.tenantId}&ISWSAPP&applicationNumber=${
+          applicationDetails?.applicationData?.connectionNo
+        }&IsDisconnectionFlow=${true}`,
         state: applicationDetails?.tenantId,
       };
     }
@@ -91,9 +96,11 @@ const GetDisconnectionDetails = () => {
   workflowDetails?.data?.actionState?.nextActions?.forEach((action) => {
     if (action?.action === "PAY") {
       action.redirectionUrll = {
-        pathname: `${serviceType == "WATER" ? "WS" : "SW"}/${applicationDetails?.applicationData?.connectionNo}/${applicationDetails?.tenantId}?tenantId=${
+        pathname: `${serviceType == "WATER" ? "WS" : "SW"}/${applicationDetails?.applicationData?.connectionNo}/${
           applicationDetails?.tenantId
-        }&ISWSAPP&applicationNumber=${applicationDetails?.applicationData?.connectionNo}&IsDisconnectionFlow=${true}`,
+        }?tenantId=${applicationDetails?.tenantId}&ISWSAPP&applicationNumber=${
+          applicationDetails?.applicationData?.connectionNo
+        }&IsDisconnectionFlow=${true}`,
         state: applicationDetails?.tenantId,
       };
     }
@@ -101,7 +108,7 @@ const GetDisconnectionDetails = () => {
 
   workflowDetails?.data?.actionState?.nextActions?.forEach((action) => {
     if (action?.action === "EDIT") {
-      let pathName = `/digit-ui/employee/ws/edit-disconnection-application?applicationNumber=${applicationNumber}&service=${serviceType}`;
+      let pathName = `/mgramseva-digit-ui/employee/ws/edit-disconnection-application?applicationNumber=${applicationNumber}&service=${serviceType}`;
       const userConfig = servicesMasterData?.["ws-services-masters"]?.WSEditApplicationByConfigUser || [];
       const editApplicationUserRole = userConfig?.[0]?.roles || [];
       const mdmsApplicationStatus = userConfig?.[0]?.status;
@@ -110,27 +117,27 @@ const GetDisconnectionDetails = () => {
         isFieldInspector = ifUserRoleExists(role);
         if (isFieldInspector) return false;
         else return true;
-      })
+      });
       if (isFieldInspector && appStatus === mdmsApplicationStatus) {
-        pathName = `/digit-ui/employee/ws/config-by-disconnection-application?applicationNumber=${applicationNumber}&service=${serviceType}`;
+        pathName = `/mgramseva-digit-ui/employee/ws/config-by-disconnection-application?applicationNumber=${applicationNumber}&service=${serviceType}`;
       }
       action.redirectionUrll = {
         action: "ACTIVATE_CONNECTION",
         pathname: pathName,
         state: {
           applicationDetails: applicationDetails,
-          action: "VERIFY_AND_FORWARD"
+          action: "VERIFY_AND_FORWARD",
         },
       };
     }
     if (action?.action === "RESUBMIT_APPLICATION") {
-      let pathName = `/digit-ui/employee/ws/resubmit-disconnection-application?applicationNumber=${applicationNumber}&service=${serviceType}`;
+      let pathName = `/mgramseva-digit-ui/employee/ws/resubmit-disconnection-application?applicationNumber=${applicationNumber}&service=${serviceType}`;
       action.redirectionUrll = {
         action: "ACTIVATE_CONNECTION",
         pathname: pathName,
         state: {
           applicationDetails: applicationDetails,
-          action: "VERIFY_AND_FORWARD"
+          action: "VERIFY_AND_FORWARD",
         },
       };
     }
@@ -145,13 +152,15 @@ const GetDisconnectionDetails = () => {
 
   async function getDisconnectionNoticeSearch() {
     let key = "ws-waterdisconnectionnotice";
-    let details = { WaterConnection: [{ ...applicationDetails?.applicationData, property: applicationDetails.propertyDetails }] }
+    let details = { WaterConnection: [{ ...applicationDetails?.applicationData, property: applicationDetails.propertyDetails }] };
     if (!applicationDetails?.applicationData?.applicationType?.includes("WATER")) {
       key = "ws-seweragedisconnectionnotice";
-      details = { SewerageConnection: [{ ...applicationDetails?.applicationData, property: applicationDetails.propertyDetails }] }
+      details = { SewerageConnection: [{ ...applicationDetails?.applicationData, property: applicationDetails.propertyDetails }] };
     }
     let response = await Digit.WSService.WSDisconnectionNotice(applicationDetails?.applicationData?.tenantId, details, key);
-    const fileStore = await Digit.PaymentService.printReciept(applicationDetails?.applicationData?.tenantId, { fileStoreIds: response.filestoreIds[0] });
+    const fileStore = await Digit.PaymentService.printReciept(applicationDetails?.applicationData?.tenantId, {
+      fileStoreIds: response.filestoreIds[0],
+    });
     window.open(fileStore[response?.filestoreIds[0]], "_blank");
   }
 

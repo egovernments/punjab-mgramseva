@@ -58,7 +58,13 @@ const ApplicationCitizenCard = ({
       </Card>
     );
   } else if (data && data?.length > 0) {
-    result = <DetailsCard data={data} serviceRequestIdKey={serviceRequestIdKey} linkPrefix={linkPrefix ? linkPrefix : "/digit-ui/employee/bills"} />;
+    result = (
+      <DetailsCard
+        data={data}
+        serviceRequestIdKey={serviceRequestIdKey}
+        linkPrefix={linkPrefix ? linkPrefix : "/mgramseva-digit-ui/employee/bills"}
+      />
+    );
   }
 
   return (

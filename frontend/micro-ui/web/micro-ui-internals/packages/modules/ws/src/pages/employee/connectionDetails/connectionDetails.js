@@ -39,7 +39,16 @@ const GetConnectionDetails = () => {
   const [showModal, setshowModal] = useState(false);
   const [billData, setBilldata] = useState([]);
   const [showActionToast, setshowActionToast] = useState(null);
-  const checkifPrivacyenabled = Digit.Hooks.ws.useToCheckPrivacyEnablement({privacy : { uuid:(applicationDetails?.applicationData?.applicationNo?.includes("WS") ? applicationDetails?.applicationData?.WaterConnection?.[0]?.connectionHolders?.[0]?.uuid : applicationDetails?.applicationData?.SewerageConnections?.[0]?.connectionHolders?.[0]?.uuid), fieldName: ["connectionHoldersMobileNumber"], model: "WnSConnectionOwner" }}) || false;
+  const checkifPrivacyenabled =
+    Digit.Hooks.ws.useToCheckPrivacyEnablement({
+      privacy: {
+        uuid: applicationDetails?.applicationData?.applicationNo?.includes("WS")
+          ? applicationDetails?.applicationData?.WaterConnection?.[0]?.connectionHolders?.[0]?.uuid
+          : applicationDetails?.applicationData?.SewerageConnections?.[0]?.connectionHolders?.[0]?.uuid,
+        fieldName: ["connectionHoldersMobileNumber"],
+        model: "WnSConnectionOwner",
+      },
+    }) || false;
 
   const {
     isLoading: updatingApplication,
@@ -114,7 +123,7 @@ const GetConnectionDetails = () => {
     }
     //here check if this connection have any active bills(don't allow to modify in this case)
 
-    let pathname = `/digit-ui/employee/ws/modify-application?applicationNumber=${applicationDetails?.applicationData?.connectionNo}&service=${serviceType}&propertyId=${applicationDetails?.propertyDetails?.propertyId}&from=WS_COMMON_CONNECTION_DETAIL`;
+    let pathname = `/mgramseva-digit-ui/employee/ws/modify-application?applicationNumber=${applicationDetails?.applicationData?.connectionNo}&service=${serviceType}&propertyId=${applicationDetails?.propertyDetails?.propertyId}&from=WS_COMMON_CONNECTION_DETAIL`;
 
     history.push(`${pathname}`, JSON.stringify({ data: applicationDetails }));
   };
@@ -145,7 +154,7 @@ const GetConnectionDetails = () => {
     }
 
     history.push(
-      `/digit-ui/employee/ws/required-documents?connectionNumber=${applicationDetails?.applicationData?.connectionNo}&tenantId=${getTenantId}&service=${serviceType}`,
+      `/mgramseva-digit-ui/employee/ws/required-documents?connectionNumber=${applicationDetails?.applicationData?.connectionNo}&tenantId=${getTenantId}&service=${serviceType}`,
       JSON.stringify({ data: applicationDetails })
     );
   };
@@ -161,21 +170,20 @@ const GetConnectionDetails = () => {
   Digit.Hooks.useClickOutside(actionMenuRef, closeActionMenu, displayMenu);
 
   const getDisconnectionButton = () => {
-    let pathname = `/digit-ui/employee/ws/new-disconnection`;
+    let pathname = `/mgramseva-digit-ui/employee/ws/new-disconnection`;
 
-    if(!checkWorkflow){
+    if (!checkWorkflow) {
       setshowActionToast({
         key: "error",
         label: "WORKFLOW_IN_PROGRESS",
       });
-    }
-    else{
-        if (billData[0]?.status === "ACTIVE" || applicationDetails?.fetchBillsData?.length <=0 || due === "0") {
-          Digit.SessionStorage.set("WS_DISCONNECTION", applicationDetails);
-          history.push(`${pathname}`);
-        } else {
-          setshowModal(true);
-        }
+    } else {
+      if (billData[0]?.status === "ACTIVE" || applicationDetails?.fetchBillsData?.length <= 0 || due === "0") {
+        Digit.SessionStorage.set("WS_DISCONNECTION", applicationDetails);
+        history.push(`${pathname}`);
+      } else {
+        setshowModal(true);
+      }
     }
   };
   function onActionSelect(action) {
@@ -190,9 +198,8 @@ const GetConnectionDetails = () => {
 
   //all options needs to be shown
   //const showAction = due !== "0" ? actionConfig : actionConfig.filter((item) => item !== "BILL_AMENDMENT_BUTTON");
-  const checkApplicationStatusForDisconnection =  applicationDetails?.applicationData?.status === "Active" ? true : false
-  const showAction= checkApplicationStatusForDisconnection ? actionConfig : actionConfig.filter((item) => item !== "DISCONNECTION_BUTTON");
-
+  const checkApplicationStatusForDisconnection = applicationDetails?.applicationData?.status === "Active" ? true : false;
+  const showAction = checkApplicationStatusForDisconnection ? actionConfig : actionConfig.filter((item) => item !== "DISCONNECTION_BUTTON");
 
   async function getBillSearch() {
     if (applicationDetails?.fetchBillsData?.length > 0) {
@@ -303,7 +310,7 @@ const GetConnectionDetails = () => {
             actionSaveLabel={t(`${"WS_COMMON_COLLECT_LABEL"}`)}
             actionSaveOnSubmit={() => {
               history.push(
-                `/digit-ui/employee/payment/collect/${serviceType === "WATER" ? "WS" : "SW"}/${encodeURIComponent(
+                `/mgramseva-digit-ui/employee/payment/collect/${serviceType === "WATER" ? "WS" : "SW"}/${encodeURIComponent(
                   applicationNumber
                 )}/${getTenantId}?tenantId=${getTenantId}&ISWSCON`
               );
@@ -320,7 +327,7 @@ const GetConnectionDetails = () => {
             <div className="modal-header-ws">{t("WS_CLEAR_DUES_DISCONNECTION_SUB_HEADER_LABEL")} </div>
             <div className="modal-body-ws">
               <span>
-                {t("WS_COMMON_TABLE_COL_AMT_DUE_LABEL")}: ₹{due?due:applicationDetails?.fetchBillsData?.[0]?.totalAmount}
+                {t("WS_COMMON_TABLE_COL_AMT_DUE_LABEL")}: ₹{due ? due : applicationDetails?.fetchBillsData?.[0]?.totalAmount}
               </span>
             </div>
           </Modal>

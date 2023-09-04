@@ -1,4 +1,16 @@
-import { Card, CardSubHeader, Header, Row, StatusTable, SubmitBar, ActionBar, Menu, Toast,MultiLink,DownloadBtnCommon} from "@egovernments/digit-ui-react-components";
+import {
+  Card,
+  CardSubHeader,
+  Header,
+  Row,
+  StatusTable,
+  SubmitBar,
+  ActionBar,
+  Menu,
+  Toast,
+  MultiLink,
+  DownloadBtnCommon,
+} from "@egovernments/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, useHistory, useRouteMatch } from "react-router-dom";
@@ -25,10 +37,10 @@ const EmployeeChallan = (props) => {
       case "CANCEL_CHALLAN":
         return setShowModal(true);
       case "UPDATE_CHALLAN":
-        return history.push(`/digit-ui/employee/mcollect/modify-challan/${challanno}`);
+        return history.push(`/mgramseva-digit-ui/employee/mcollect/modify-challan/${challanno}`);
       case "BUTTON_PAY":
         return history.push(
-          `/digit-ui/employee/payment/collect/${challanDetails?.businessService}/${challanno}/tenantId=${tenantId}?workflow=mcollect`
+          `/mgramseva-digit-ui/employee/payment/collect/${challanDetails?.businessService}/${challanno}/tenantId=${tenantId}?workflow=mcollect`
         );
       default:
         break;
@@ -52,7 +64,7 @@ const EmployeeChallan = (props) => {
           const challan = result.challans[0];
           let LastModifiedTime = Digit.SessionStorage.set("isMcollectAppChanged", challan.challanNo);
           history.push(
-            `/digit-ui/employee/mcollect/acknowledgement?purpose=challan&status=success&tenantId=${challan?.tenantId}&serviceCategory=${challan.businessService}&challanNumber=${challan.challanNo}&applicationStatus=${challan.applicationStatus}`,
+            `/mgramseva-digit-ui/employee/mcollect/acknowledgement?purpose=challan&status=success&tenantId=${challan?.tenantId}&serviceCategory=${challan.businessService}&challanNumber=${challan.challanNo}&applicationStatus=${challan.applicationStatus}`,
             { from: url }
           );
         }
@@ -83,12 +95,11 @@ const EmployeeChallan = (props) => {
         billDetails.push(bill);
       });
       setTotalDueAmount(res?.Bill[0]?.totalAmount);
-      billDetails && billDetails.map((ob) => {
-        if(ob.taxHeadCode.includes("CGST"))
-          ob.order = 3;
-        else if(ob.taxHeadCode.includes("SGST"))
-          ob.order = 4;
-      });
+      billDetails &&
+        billDetails.map((ob) => {
+          if (ob.taxHeadCode.includes("CGST")) ob.order = 3;
+          else if (ob.taxHeadCode.includes("SGST")) ob.order = 4;
+        });
       billDetails.sort((a, b) => a.order - b.order);
       setChallanBillDetails(billDetails);
     }
@@ -109,8 +120,8 @@ const EmployeeChallan = (props) => {
     onClick: () => downloadAndPrintReciept(challanDetails?.businessService, challanno),
   };
 
-  let dowloadOptions = []
-  dowloadOptions = challanDetails?.applicationStatus === "PAID" ? [challanDownload , receiptDownload] : [challanDownload];
+  let dowloadOptions = [];
+  dowloadOptions = challanDetails?.applicationStatus === "PAID" ? [challanDownload, receiptDownload] : [challanDownload];
 
   const workflowActions = ["CANCEL_CHALLAN", "UPDATE_CHALLAN", "BUTTON_PAY"];
 
@@ -122,14 +133,14 @@ const EmployeeChallan = (props) => {
     <React.Fragment>
       <div className={"employee-application-details"} style={{ marginBottom: "15px" }}>
         <Header>{`${t("CHALLAN_DETAILS")}`} </Header>
-          <MultiLink
-              className="multilinkWrapper employee-mulitlink-main-div"
-              onHeadClick={() => setIsDisplayDownloadMenu(!isDisplayDownloadMenu)}
-              displayOptions={isDisplayDownloadMenu}
-              options={challanDetails?.applicationStatus === "PAID" ? [challanDownload , receiptDownload] : [challanDownload]}
-              downloadBtnClassName={"employee-download-btn-className"}
-              optionsClassName={"employee-options-btn-className"}
-            />
+        <MultiLink
+          className="multilinkWrapper employee-mulitlink-main-div"
+          onHeadClick={() => setIsDisplayDownloadMenu(!isDisplayDownloadMenu)}
+          displayOptions={isDisplayDownloadMenu}
+          options={challanDetails?.applicationStatus === "PAID" ? [challanDownload, receiptDownload] : [challanDownload]}
+          downloadBtnClassName={"employee-download-btn-className"}
+          optionsClassName={"employee-options-btn-className"}
+        />
       </div>
 
       <div>
@@ -153,7 +164,9 @@ const EmployeeChallan = (props) => {
           <StatusTable>
             <Row
               label={`${t("UC_SERVICE_CATEGORY_LABEL")}`}
-              text={`${t(`BILLINGSERVICE_BUSINESSSERVICE_${stringReplaceAll(challanDetails?.businessService?.toUpperCase(), ".", "_")}` || t("CS_NA"))}`}
+              text={`${t(
+                `BILLINGSERVICE_BUSINESSSERVICE_${stringReplaceAll(challanDetails?.businessService?.toUpperCase(), ".", "_")}` || t("CS_NA")
+              )}`}
               textStyle={{ whiteSpace: "pre" }}
             />
             <Row label={`${t("UC_FROM_DATE_LABEL")}`} text={convertEpochToDate(challanDetails?.taxPeriodFrom) || t("CS_NA")} />

@@ -8,7 +8,7 @@ import SortBy from "./SortBy";
 export const ApplicationCard = ({
   t,
   data,
-  defaultSearchParams={},
+  defaultSearchParams = {},
   onFilterChange,
   onSearch,
   onSort,
@@ -62,7 +62,13 @@ export const ApplicationCard = ({
       </Card>
     );
   } else if (data && data?.length > 0) {
-    result = <DetailsCard data={data} serviceRequestIdKey={serviceRequestIdKey} linkPrefix={linkPrefix ? linkPrefix : "/digit-ui/employee/mcollect/challansearch/"} />;
+    result = (
+      <DetailsCard
+        data={data}
+        serviceRequestIdKey={serviceRequestIdKey}
+        linkPrefix={linkPrefix ? linkPrefix : "/mgramseva-digit-ui/employee/mcollect/challansearch/"}
+      />
+    );
   }
 
   return (
@@ -75,7 +81,7 @@ export const ApplicationCard = ({
               setType("SEARCH");
               setSearchFilterParams({
                 businessService: [],
-                status: []
+                status: [],
               });
               setPopup(true);
             }}
@@ -88,7 +94,7 @@ export const ApplicationCard = ({
               setType("FILTER");
               setSearchFilterParams({
                 businessService: [],
-                status: []
+                status: [],
               });
               setPopup(true);
             }}
@@ -107,7 +113,16 @@ export const ApplicationCard = ({
         <PopUp>
           {type === "FILTER" && (
             <div className="popup-module">
-              {<FilterComp onFilterChange={onSearchFilter} onRefresh={onFilterChange} Close={handlePopupClose} type="mobile" searchParams={searchFilterParams} defaultSearchParams={defaultSearchParams} />}
+              {
+                <FilterComp
+                  onFilterChange={onSearchFilter}
+                  onRefresh={onFilterChange}
+                  Close={handlePopupClose}
+                  type="mobile"
+                  searchParams={searchFilterParams}
+                  defaultSearchParams={defaultSearchParams}
+                />
+              }
             </div>
           )}
           {/* {type === "SORT" && (

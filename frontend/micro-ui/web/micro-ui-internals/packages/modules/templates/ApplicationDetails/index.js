@@ -46,9 +46,9 @@ const ApplicationDetails = (props) => {
     showTimeLine = true,
     oldValue,
     isInfoLabel = false,
-    clearDataDetails
+    clearDataDetails,
   } = props;
-  
+
   useEffect(() => {
     if (showToast) {
       workflowDetails.revalidate();
@@ -57,23 +57,23 @@ const ApplicationDetails = (props) => {
 
   function onActionSelect(action) {
     if (action) {
-      if(action?.isToast){
+      if (action?.isToast) {
         setShowToast({ key: "error", error: { message: action?.toastMessage } });
         setTimeout(closeToast, 5000);
-      }
-      else if (action?.isWarningPopUp) {
+      } else if (action?.isWarningPopUp) {
         setWarningPopUp(true);
       } else if (action?.redirectionUrll) {
         if (action?.redirectionUrll?.action === "ACTIVATE_CONNECTION") {
           // window.location.assign(`${window.location.origin}digit-ui/employee/ws/${action?.redirectionUrll?.pathname}`, { data: action?.redirectionUrll?.state });
 
-          history.push(`${action?.redirectionUrll?.pathname}`, JSON.stringify({ data: action?.redirectionUrll?.state, url: `${location?.pathname}${location.search}` }));
-        }
-        else if (action?.redirectionUrll?.action === "RE-SUBMIT-APPLICATION"){
+          history.push(
+            `${action?.redirectionUrll?.pathname}`,
+            JSON.stringify({ data: action?.redirectionUrll?.state, url: `${location?.pathname}${location.search}` })
+          );
+        } else if (action?.redirectionUrll?.action === "RE-SUBMIT-APPLICATION") {
           history.push(`${action?.redirectionUrll?.pathname}`, { data: action?.redirectionUrll?.state });
-        }
-        else {
-          window.location.assign(`${window.location.origin}/digit-ui/employee/payment/collect/${action?.redirectionUrll?.pathname}`);
+        } else {
+          window.location.assign(`${window.location.origin}/mgramseva-digit-ui/employee/payment/collect/${action?.redirectionUrll?.pathname}`);
         }
       } else if (!action?.redirectionUrl) {
         setShowModal(true);
@@ -139,31 +139,30 @@ const ApplicationDetails = (props) => {
           setIsEnableLoader(false);
           if (isOBPS?.bpa) {
             data.selectedAction = selectedAction;
-            history.replace(`/digit-ui/employee/obps/response`, { data: data });
+            history.replace(`/mgramseva-digit-ui/employee/obps/response`, { data: data });
           }
           if (isOBPS?.isStakeholder) {
             data.selectedAction = selectedAction;
-            history.push(`/digit-ui/employee/obps/stakeholder-response`, { data: data });
+            history.push(`/mgramseva-digit-ui/employee/obps/stakeholder-response`, { data: data });
           }
           if (isOBPS?.isNoc) {
-            history.push(`/digit-ui/employee/noc/response`, { data: data });
+            history.push(`/mgramseva-digit-ui/employee/noc/response`, { data: data });
           }
-          if (data?.Amendments?.length > 0 ){
+          if (data?.Amendments?.length > 0) {
             //RAIN-6981 instead just show a toast here with appropriate message
-          //show toast here and return 
-            //history.push("/digit-ui/employee/ws/response-bill-amend", { status: true, state: data?.Amendments?.[0] })
-            
-            if(variables?.AmendmentUpdate?.workflow?.action.includes("SEND_BACK")){
-              setShowToast({ key: "success", label: t("ES_MODIFYSWCONNECTION_SEND_BACK_UPDATE_SUCCESS")})
-            } else if (variables?.AmendmentUpdate?.workflow?.action.includes("RE-SUBMIT")){
-              setShowToast({ key: "success", label: t("ES_MODIFYSWCONNECTION_RE_SUBMIT_UPDATE_SUCCESS") })
-            } else if (variables?.AmendmentUpdate?.workflow?.action.includes("APPROVE")){
-              setShowToast({ key: "success", label: t("ES_MODIFYSWCONNECTION_APPROVE_UPDATE_SUCCESS") })
+            //show toast here and return
+            //history.push("/mgramseva-digit-ui/employee/ws/response-bill-amend", { status: true, state: data?.Amendments?.[0] })
+
+            if (variables?.AmendmentUpdate?.workflow?.action.includes("SEND_BACK")) {
+              setShowToast({ key: "success", label: t("ES_MODIFYSWCONNECTION_SEND_BACK_UPDATE_SUCCESS") });
+            } else if (variables?.AmendmentUpdate?.workflow?.action.includes("RE-SUBMIT")) {
+              setShowToast({ key: "success", label: t("ES_MODIFYSWCONNECTION_RE_SUBMIT_UPDATE_SUCCESS") });
+            } else if (variables?.AmendmentUpdate?.workflow?.action.includes("APPROVE")) {
+              setShowToast({ key: "success", label: t("ES_MODIFYSWCONNECTION_APPROVE_UPDATE_SUCCESS") });
+            } else if (variables?.AmendmentUpdate?.workflow?.action.includes("REJECT")) {
+              setShowToast({ key: "success", label: t("ES_MODIFYWSCONNECTION_REJECT_UPDATE_SUCCESS") });
             }
-            else if (variables?.AmendmentUpdate?.workflow?.action.includes("REJECT")){
-              setShowToast({ key: "success", label: t("ES_MODIFYWSCONNECTION_REJECT_UPDATE_SUCCESS") })
-            }            
-            return
+            return;
           }
           setShowToast({ key: "success", action: selectedAction });
           clearDataDetails && setTimeout(clearDataDetails, 3000);
@@ -171,7 +170,6 @@ const ApplicationDetails = (props) => {
           queryClient.clear();
           queryClient.refetchQueries("APPLICATION_SEARCH");
           //push false status when reject
-          
         },
       });
     }

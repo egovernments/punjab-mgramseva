@@ -22,7 +22,7 @@ const Documents = () => {
     }
   };
 
-  const onSubmit = (data) => {  
+  const onSubmit = (data) => {
     const DocumentEntity = {
       name: data.documentName,
       description: data?.description.length ? data.description : "",
@@ -34,21 +34,21 @@ const Documents = () => {
       tenantIds: data.ULB.map((e) => e.code),
     };
 
-    history.push("/digit-ui/employee/engagement/documents/response", { DocumentEntity });
+    history.push("/mgramseva-digit-ui/employee/engagement/documents/response", { DocumentEntity });
   };
 
   return (
     <div>
-     <Header>{t("ES_ENGAGEMENT_DOCUMENTS")}</Header>
-    <FormComposer
-     // heading={t("ES_ENGAGEMENT_DOCUMENTS")}
-     label={t("ES_COMMON_APPLICATION_SUBMIT")}
-     config={documentsFormConfig}
-     onSubmit={onSubmit}
-     fieldStyle={{}}
-     onFormValueChange={onFormValueChange}
-     isDisabled={!canSubmit}
-     />
+      <Header>{t("ES_ENGAGEMENT_DOCUMENTS")}</Header>
+      <FormComposer
+        // heading={t("ES_ENGAGEMENT_DOCUMENTS")}
+        label={t("ES_COMMON_APPLICATION_SUBMIT")}
+        config={documentsFormConfig}
+        onSubmit={onSubmit}
+        fieldStyle={{}}
+        onFormValueChange={onFormValueChange}
+        isDisabled={!canSubmit}
+      />
     </div>
   );
 };

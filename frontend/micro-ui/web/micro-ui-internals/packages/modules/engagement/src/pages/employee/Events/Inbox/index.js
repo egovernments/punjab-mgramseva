@@ -5,10 +5,8 @@ import { Header } from "@egovernments/digit-ui-react-components";
 import DesktopInbox from "../../../../components/Events/DesktopInbox";
 import MobileInbox from "../../../../components/Events/MobileInbox";
 
-
-
 const Inbox = ({ tenants, parentRoute }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   Digit.SessionStorage.set("ENGAGEMENT_TENANTS", tenants);
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const [pageSize, setPageSize] = useState(10);
@@ -18,9 +16,9 @@ const Inbox = ({ tenants, parentRoute }) => {
     range: {
       startDate: null,
       endDate: new Date(""),
-      title: ""
+      title: "",
     },
-    ulb: tenants?.find(tenant => tenant?.code === tenantId)
+    ulb: tenants?.find((tenant) => tenant?.code === tenantId),
   });
   let isMobile = window.Digit.Utils.browser.isMobile();
 
@@ -33,63 +31,69 @@ const Inbox = ({ tenants, parentRoute }) => {
       },
       {
         label: t("EVENTS_NAME_LABEL"),
-        name: "eventName"
-      }
-    ]
-  }
+        name: "eventName",
+      },
+    ];
+  };
 
   const links = [
     {
       text: t("ES_TITLE_NEW_EVENTS"),
-      link: "/digit-ui/employee/engagement/event/inbox/new-event",
-    }
-  ]
+      link: "/mgramseva-digit-ui/employee/engagement/event/inbox/new-event",
+    },
+  ];
 
-  const { data, isLoading } = Digit.Hooks.events.useInbox(searchParams?.ulb?.code, {},
+  const { data, isLoading } = Digit.Hooks.events.useInbox(
+    searchParams?.ulb?.code,
+    {},
     {
-      eventTypes: "EVENTSONGROUND", limit: pageSize,
+      eventTypes: "EVENTSONGROUND",
+      limit: pageSize,
       offset: pageOffset,
     },
     {
-      select: (data) => ({ events: data?.events, totalCount: data?.totalCount })
-    });
+      select: (data) => ({ events: data?.events, totalCount: data?.totalCount }),
+    }
+  );
 
   const onSearch = (params) => {
     let updatedParams = { ...params };
     if (!params?.ulb) {
-      updatedParams = { ...params, ulb: { code: tenantId } }
+      updatedParams = { ...params, ulb: { code: tenantId } };
     }
     setSearchParams({ ...searchParams, ...updatedParams });
-  }
+  };
 
   const handleFilterChange = (data) => {
-    setSearchParams({ ...searchParams, ...data })
-  }
+    setSearchParams({ ...searchParams, ...data });
+  };
 
   const globalSearch = (rows, columnIds) => {
     // return rows;
-    return rows?.filter(row =>
-      (searchParams?.eventStatus?.length > 0 ? searchParams?.eventStatus?.includes(row.original?.status) : true) &&
-      (searchParams?.eventName ? row.original?.name?.toUpperCase().startsWith(searchParams?.eventName.toUpperCase()) : true) &&
-      (searchParams?.ulb?.code ? row.original.tenantId === searchParams?.ulb?.code : true) &&
-      (searchParams?.eventCategory ? row.original.eventCategory === searchParams?.eventCategory?.code : true) &&
-      (isValid(searchParams?.range?.startDate) ? row.original.eventDetails?.fromDate >= new Date(searchParams?.range?.startDate).getTime() : true) &&
-      (isValid(searchParams?.range?.endDate) ? row.original.eventDetails?.toDate <= new Date(searchParams?.range?.endDate).getTime() : true))
-  }
-
-  const fetchNextPage = useCallback(() => {
-    setPageOffset((prevPageOffSet) => ((parseInt(prevPageOffSet) + parseInt(pageSize))));
-  }, [pageSize])
-
-  const fetchPrevPage = useCallback(() => {
-    setPageOffset((prevPageOffSet) => ((parseInt(prevPageOffSet) - parseInt(pageSize))));
-  }, [pageSize])
-
-  const handlePageSizeChange = (e) => {
-    setPageSize((prevPageSize) => (e.target.value));
+    return rows?.filter(
+      (row) =>
+        (searchParams?.eventStatus?.length > 0 ? searchParams?.eventStatus?.includes(row.original?.status) : true) &&
+        (searchParams?.eventName ? row.original?.name?.toUpperCase().startsWith(searchParams?.eventName.toUpperCase()) : true) &&
+        (searchParams?.ulb?.code ? row.original.tenantId === searchParams?.ulb?.code : true) &&
+        (searchParams?.eventCategory ? row.original.eventCategory === searchParams?.eventCategory?.code : true) &&
+        (isValid(searchParams?.range?.startDate)
+          ? row.original.eventDetails?.fromDate >= new Date(searchParams?.range?.startDate).getTime()
+          : true) &&
+        (isValid(searchParams?.range?.endDate) ? row.original.eventDetails?.toDate <= new Date(searchParams?.range?.endDate).getTime() : true)
+    );
   };
 
+  const fetchNextPage = useCallback(() => {
+    setPageOffset((prevPageOffSet) => parseInt(prevPageOffSet) + parseInt(pageSize));
+  }, [pageSize]);
 
+  const fetchPrevPage = useCallback(() => {
+    setPageOffset((prevPageOffSet) => parseInt(prevPageOffSet) - parseInt(pageSize));
+  }, [pageSize]);
+
+  const handlePageSizeChange = (e) => {
+    setPageSize((prevPageSize) => e.target.value);
+  };
 
   if (isMobile) {
     return (
@@ -105,7 +109,7 @@ const Inbox = ({ tenants, parentRoute }) => {
         iconName={"calender"}
         links={links}
       />
-    )
+    );
   }
 
   return (
@@ -136,6 +140,6 @@ const Inbox = ({ tenants, parentRoute }) => {
       />
     </div>
   );
-}
+};
 
 export default Inbox;

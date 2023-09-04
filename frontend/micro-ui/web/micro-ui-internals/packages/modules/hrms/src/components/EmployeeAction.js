@@ -41,7 +41,7 @@ const EmployeeAction = ({ t, action, tenantId, closeModal, submitAction, applica
             selectedReason,
             Reasons,
             selectReason,
-            employees: applicationData?.Employees[0] || {}
+            employees: applicationData?.Employees[0] || {},
           })
         );
       default:
@@ -121,13 +121,13 @@ const EmployeeAction = ({ t, action, tenantId, closeModal, submitAction, applica
         applicationData.Employees[0]["documents"].push(documents);
       }
 
-      set(Employees[0], 'deactivationDetails[0].effectiveFrom', new Date()?.getTime());
-      set(Employees[0], 'deactivationDetails[0].orderNo', data?.orderNo);
-      set(Employees[0], 'deactivationDetails[0].reasonForDeactivation', data?.reasonForDeactivation);
-      set(Employees[0], 'deactivationDetails[0].remarks', data?.remarks);
+      set(Employees[0], "deactivationDetails[0].effectiveFrom", new Date()?.getTime());
+      set(Employees[0], "deactivationDetails[0].orderNo", data?.orderNo);
+      set(Employees[0], "deactivationDetails[0].reasonForDeactivation", data?.reasonForDeactivation);
+      set(Employees[0], "deactivationDetails[0].remarks", data?.remarks);
 
       Employees[0].isActive = false;
-      history.replace("/digit-ui/employee/hrms/response", { Employees, key: "UPDATE", action: "DEACTIVATION" });
+      history.replace("/mgramseva-digit-ui/employee/hrms/response", { Employees, key: "UPDATE", action: "DEACTIVATION" });
     } else {
       if (file) {
         let documents = {
@@ -138,13 +138,13 @@ const EmployeeAction = ({ t, action, tenantId, closeModal, submitAction, applica
         applicationData.Employees[0]["documents"].push(documents);
       }
 
-      set(Employees[0], 'reactivationDetails[0].effectiveFrom', new Date()?.getTime());
-      set(Employees[0], 'reactivationDetails[0].orderNo', data?.orderNo);
-      set(Employees[0], 'reactivationDetails[0].reasonForDeactivation', data?.reasonForDeactivation);
-      set(Employees[0], 'reactivationDetails[0].remarks', data?.remarks);
+      set(Employees[0], "reactivationDetails[0].effectiveFrom", new Date()?.getTime());
+      set(Employees[0], "reactivationDetails[0].orderNo", data?.orderNo);
+      set(Employees[0], "reactivationDetails[0].reasonForDeactivation", data?.reasonForDeactivation);
+      set(Employees[0], "reactivationDetails[0].remarks", data?.remarks);
       Employees[0].isActive = true;
 
-      history.replace("/digit-ui/employee/hrms/response", { Employees, key: "UPDATE", action: "ACTIVATION" });
+      history.replace("/mgramseva-digit-ui/employee/hrms/response", { Employees, key: "UPDATE", action: "ACTIVATION" });
     }
   }
 
@@ -154,7 +154,7 @@ const EmployeeAction = ({ t, action, tenantId, closeModal, submitAction, applica
       headerBarEnd={<CloseBtn onClick={closeModal} />}
       actionCancelOnSubmit={closeModal}
       actionSaveLabel={t(config?.label?.submit)}
-      actionSaveOnSubmit={() => { }}
+      actionSaveOnSubmit={() => {}}
       formId="modal-action"
       isDisabled={!selectedReason}
     >

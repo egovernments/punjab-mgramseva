@@ -31,7 +31,7 @@ export const Employee = {
   ComplaintDetails: PGR_EMPLOYEE_COMPLAINT_DETAILS,
   CreateComplaint: PGR_EMPLOYEE_CREATE_COMPLAINT,
   Response: "/response",
-  Home: "/digit-ui/employee",
+  Home: "/mgramseva-digit-ui/employee",
 };
 
 export const getRoute = (match, route) => `${match.path}${route}`;

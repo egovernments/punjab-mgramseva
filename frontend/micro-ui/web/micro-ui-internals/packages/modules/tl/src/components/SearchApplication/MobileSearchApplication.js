@@ -1,20 +1,9 @@
 import React, { Fragment, useCallback, useMemo, useReducer } from "react";
-import {
-  CloseSvg,
-  SearchForm,
-  Table,
-  Card,
-  SearchAction,
-  PopUp,
-  DetailsCard,
-  Loader,
-  Toast,
-} from "@egovernments/digit-ui-react-components";
+import { CloseSvg, SearchForm, Table, Card, SearchAction, PopUp, DetailsCard, Loader, Toast } from "@egovernments/digit-ui-react-components";
 import SearchFormFields from "./SearchFields";
 import { convertEpochToDateDMY } from "../../utils";
 
-const MobileSearchApplication = ({ Controller, register, control, t, reset, previousPage, handleSubmit, tenantId, data, onSubmit}) => {
-
+const MobileSearchApplication = ({ Controller, register, control, t, reset, previousPage, handleSubmit, tenantId, data, onSubmit }) => {
   function activateModal(state, action) {
     switch (action.type) {
       case "set":
@@ -22,7 +11,8 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
       case "remove":
         return false;
       default:
-        break;    }
+        break;
+    }
   }
 
   const [currentlyActiveMobileModal, setActiveMobileModal] = useReducer(activateModal, false);
@@ -67,31 +57,25 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
     [currentlyActiveMobileModal]
   );
 
-  const propsMobileInboxCards = useMemo(
-    () => {
-      if (data?.display){
-        return []
-      }
-      if(data === "")
-      {
+  const propsMobileInboxCards = useMemo(() => {
+    if (data?.display) {
       return [];
-      }
-      return data?.map((data) => ({
-        [t("TL_COMMON_TABLE_COL_APP_NO")]: data.applicationNumber,
-        [t("TL_COMMON_TABLE_COL_APP_DATE")]: convertEpochToDateDMY(data.auditDetails?.createdTime) || "",
-        [t("TL_APPLICATION_TYPE_LABEL")]: data.applicationType
-          ? t(`TL_LOCALIZATION_APPLICATIONTYPE_${data.applicationType}`)
-          : "-",
-        [t("TL_LICENSE_NUMBERL_LABEL")]: data?.licenseNumber || "-",
-        [t("TL_LICENSE_YEAR_LABEL")]: data.financialYear || "",
-        [t("TL_COMMON_TABLE_COL_TRD_NAME")]: data.tradeName || "",
-        [t("TL_LOCALIZATION_TRADE_OWNER_NAME")]: data?.tradeLicenseDetail?.owners?.map( o => o.name ). join(",") || "" ,
-        [t("WF_INBOX_HEADER_CURRENT_OWNER")]: data?.CurrentOwners[0].currentOwner || "",
-        [t("TL_COMMON_TABLE_COL_STATUS")]: data.workflowCode && data.state ? t(`WF_${data.workflowCode}_${data.state}`) : "NA",
-      }))
-    },
-    [data]
-  );
+    }
+    if (data === "") {
+      return [];
+    }
+    return data?.map((data) => ({
+      [t("TL_COMMON_TABLE_COL_APP_NO")]: data.applicationNumber,
+      [t("TL_COMMON_TABLE_COL_APP_DATE")]: convertEpochToDateDMY(data.auditDetails?.createdTime) || "",
+      [t("TL_APPLICATION_TYPE_LABEL")]: data.applicationType ? t(`TL_LOCALIZATION_APPLICATIONTYPE_${data.applicationType}`) : "-",
+      [t("TL_LICENSE_NUMBERL_LABEL")]: data?.licenseNumber || "-",
+      [t("TL_LICENSE_YEAR_LABEL")]: data.financialYear || "",
+      [t("TL_COMMON_TABLE_COL_TRD_NAME")]: data.tradeName || "",
+      [t("TL_LOCALIZATION_TRADE_OWNER_NAME")]: data?.tradeLicenseDetail?.owners?.map((o) => o.name).join(",") || "",
+      [t("WF_INBOX_HEADER_CURRENT_OWNER")]: data?.CurrentOwners[0].currentOwner || "",
+      [t("TL_COMMON_TABLE_COL_STATUS")]: data.workflowCode && data.state ? t(`WF_${data.workflowCode}_${data.state}`) : "NA",
+    }));
+  }, [data]);
 
   return (
     <React.Fragment>
@@ -99,7 +83,7 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
         <SearchAction
           text={t("ES_COMMON_SEARCH")}
           handleActionClick={() => setActiveMobileModal({ type: "set", payload: "SearchFormComponent" })}
-          {...{tenantId, t}} 
+          {...{ tenantId, t }}
         />
         {/* {isInboxLoading ? <Loader /> : <FilterAction text={t("ES_COMMON_FILTER")} handleActionClick={() => setActiveMobileModal({type:"set", payload:"FilterFormComponent"})}/>} */}
         {/* <SortAction text={t("ES_COMMON_SORT")} handleActionClick={() => setActiveMobileModal({type:"set", payload:"SortComponent"})}/> */}
@@ -132,13 +116,13 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
         <DetailsCard
           {...{
             data: propsMobileInboxCards,
-            linkPrefix: `/digit-ui/employee/tl/application-details/`,
+            linkPrefix: `/mgramseva-digit-ui/employee/tl/application-details/`,
             serviceRequestIdKey: t("TL_COMMON_TABLE_COL_APP_NO"),
           }}
         />
       )}
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default MobileSearchApplication
+export default MobileSearchApplication;

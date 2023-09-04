@@ -322,7 +322,7 @@ const FstpOperatorDetails = () => {
     setShowToast({ key: "success", action: `ES_FSM_DISPOSE_UPDATE_SUCCESS` });
     setTimeout(() => {
       closeToast();
-      history.push(`/digit-ui/employee`);
+      history.push(`/mgramseva-digit-ui/employee`);
     }, 5000);
   };
 

@@ -21,7 +21,7 @@ export const AppModules = ({ stateCode, userType, modules, appTenants }) => {
   const user = Digit.UserService.getUser();
 
   if (!user || !user?.access_token || !user?.info) {
-    return <Redirect to={{ pathname: "/digit-ui/employee/user/login", state: { from: location.pathname + location.search } }} />;
+    return <Redirect to={{ pathname: "/mgramseva-digit-ui/employee/user/login", state: { from: location.pathname + location.search } }} />;
   }
 
   const appRoutes = modules.map(({ code, tenants }, index) => {
@@ -30,9 +30,11 @@ export const AppModules = ({ stateCode, userType, modules, appTenants }) => {
       <Route key={index} path={`${path}/${code.toLowerCase()}`}>
         <Module stateCode={stateCode} moduleCode={code} userType={userType} tenants={getTenants(tenants, appTenants)} />
       </Route>
-    ) :   <Route key={index} path={`${path}/${code.toLowerCase()}`}>
-    <Redirect to={{ pathname: "/digit-ui/employee/user/error?type=notfound", state: { from: location.pathname + location.search } }} />
-  </Route>;
+    ) : (
+      <Route key={index} path={`${path}/${code.toLowerCase()}`}>
+        <Redirect to={{ pathname: "/mgramseva-digit-ui/employee/user/error?type=notfound", state: { from: location.pathname + location.search } }} />
+      </Route>
+    );
   });
 
   return (
@@ -40,7 +42,7 @@ export const AppModules = ({ stateCode, userType, modules, appTenants }) => {
       <Switch>
         {appRoutes}
         <Route path={`${path}/login`}>
-          <Redirect to={{ pathname: "/digit-ui/employee/user/login", state: { from: location.pathname + location.search } }} />
+          <Redirect to={{ pathname: "/mgramseva-digit-ui/employee/user/login", state: { from: location.pathname + location.search } }} />
         </Route>
         <Route path={`${path}/forgot-password`}>
           <ForgotPassword />

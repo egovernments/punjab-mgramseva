@@ -44,12 +44,17 @@ const Response = (props) => {
 
   return (
     <div>
-
       <Card>
-        <BannerPicker t={t} data={mutation.data} mutation={mutation} isSuccess={mutation.isSuccess} isLoading={mutation.isIdle || mutation.isLoading} />
+        <BannerPicker
+          t={t}
+          data={mutation.data}
+          mutation={mutation}
+          isSuccess={mutation.isSuccess}
+          isLoading={mutation.isIdle || mutation.isLoading}
+        />
       </Card>
       <ActionBar>
-        <Link to={"/digit-ui/employee"}>
+        <Link to={"/mgramseva-digit-ui/employee"}>
           <SubmitBar label={t("CORE_COMMON_GO_TO_HOME")} />
         </Link>
       </ActionBar>

@@ -3,7 +3,19 @@ import { Link } from "react-router-dom";
 import { CloseSvg, SearchForm, Table, Card, SearchAction, PopUp, DetailsCard, Loader, Toast } from "@egovernments/digit-ui-react-components";
 import SearchFormFields from "./SearchFields";
 
-const MobileSearchApplication = ({ Controller, register, control, t, reset, previousPage, handleSubmit, tenantId, data, onSubmit, businessService }) => {
+const MobileSearchApplication = ({
+  Controller,
+  register,
+  control,
+  t,
+  reset,
+  previousPage,
+  handleSubmit,
+  tenantId,
+  data,
+  onSubmit,
+  businessService,
+}) => {
   function activateModal(state, action) {
     switch (action.type) {
       case "set":
@@ -38,7 +50,7 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
             <div className="MobilePopupHeadingWrapper">
               <h2>{t("ES_COMMON_SEARCH")}:</h2>
             </div>
-            <SearchFormFields {...searchFormFieldsComponentProps } {...{ closeMobilePopupModal, tenantId, t }} />
+            <SearchFormFields {...searchFormFieldsComponentProps} {...{ closeMobilePopupModal, tenantId, t }} />
             {/* <SearchField className="submit">
                       <SubmitBar label={t("ES_COMMON_SEARCH")} submit form="search-form"/>
                       <p onClick={onResetSearchForm}>{t(`ES_COMMON_CLEAR_ALL`)}</p>
@@ -67,52 +79,54 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
 
     const getWaterSewerageData = (data) => {
       if (
-        data?.applicationType == "NEW_WATER_CONNECTION" || 
+        data?.applicationType == "NEW_WATER_CONNECTION" ||
         data?.applicationType == "MODIFY_WATER_CONNECTION" ||
         data?.applicationType == "DISCONNECT_WATER_CONNECTION"
       ) {
-        return "WATER"
+        return "WATER";
       } else if (
         data?.applicationType == "NEW_SEWERAGE_CONNECTION" ||
-        data?.applicationType == "MODIFY_SEWERAGE_CONNECTION" || 
+        data?.applicationType == "MODIFY_SEWERAGE_CONNECTION" ||
         data?.applicationType == "DISCONNECT_SEWERAGE_CONNECTION"
       ) {
-        return "SEWERAGE"
+        return "SEWERAGE";
       }
-    }
+    };
 
     const getFlowUrls = (applicationType) => {
       let application = "application";
       if (applicationType?.toUpperCase()?.includes("DISCONNECT")) {
-        application = "disconnection"
+        application = "disconnection";
       } else if (applicationType?.toUpperCase()?.includes("MODIFY")) {
-        application = "modify"
+        application = "modify";
       }
       return application;
-    }
+    };
 
     return data?.map((data) => ({
-      [t("WS_MYCONNECTIONS_CONSUMER_NO")]: /*data?.connectionNo || "NA",*/data?.connectionNo ? (
+      [t("WS_MYCONNECTIONS_CONSUMER_NO")]: /*data?.connectionNo || "NA",*/ data?.connectionNo ? (
         <div>
           <span className="link">
             <Link
-              to={`/digit-ui/employee/ws/connection-details?applicationNumber=${data?.connectionNo}&tenantId=${tenantId}&service=${
-                getWaterSewerageData(data)
-              }`}
+              to={`/mgramseva-digit-ui/employee/ws/connection-details?applicationNumber=${
+                data?.connectionNo
+              }&tenantId=${tenantId}&service=${getWaterSewerageData(data)}`}
             >
               {data?.connectionNo}
             </Link>
           </span>
         </div>
-      ) : t("CS_NA"),
+      ) : (
+        t("CS_NA")
+      ),
       //[t("WS_ACK_COMMON_APP_NO_LABEL")]: data?.applicationNo || "-",
       [t("WS_ACK_COMMON_APP_NO_LABEL")]: (
         <div>
           <span className="link">
             <Link
-              to={`/digit-ui/employee/ws/${getFlowUrls(data?.applicationType)}-details?applicationNumber=${data?.applicationNo}&tenantId=${tenantId}&service=${
-                getWaterSewerageData(data)
-              }`}
+              to={`/mgramseva-digit-ui/employee/ws/${getFlowUrls(data?.applicationType)}-details?applicationNumber=${
+                data?.applicationNo
+              }&tenantId=${tenantId}&service=${getWaterSewerageData(data)}`}
             >
               {data?.applicationNo}
             </Link>
@@ -166,7 +180,7 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
         <DetailsCard
           {...{
             data: propsMobileInboxCards,
-            //linkPrefix: `/digit-ui/employee/ws/application-details/`,
+            //linkPrefix: `/mgramseva-digit-ui/employee/ws/application-details/`,
             serviceRequestIdKey: t("WS_COMMON_TABLE_COL_APP_NO"),
           }}
         />

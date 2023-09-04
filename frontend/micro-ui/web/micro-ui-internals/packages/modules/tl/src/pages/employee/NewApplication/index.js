@@ -15,7 +15,8 @@ const NewApplication = () => {
   // delete
   const [propertyId, setPropertyId] = useState(new URLSearchParams(useLocation().search).get("propertyId"));
   const isEmpNewApplication = window.location.href.includes("/employee/tl/new-application");
-  const isEmpRenewLicense = window.location.href.includes("/employee/tl/renew-application-details") || window.location.href.includes("/employee/tl/edit-application-details"); 
+  const isEmpRenewLicense =
+    window.location.href.includes("/employee/tl/renew-application-details") || window.location.href.includes("/employee/tl/edit-application-details");
 
   const [sessionFormData, setSessionFormData, clearSessionFormData] = Digit.Hooks.useSessionStorage("PT_CREATE_EMP_TRADE_NEW_FORM", {});
   const [mutationHappened, setMutationHappened, clear] = Digit.Hooks.useSessionStorage("EMPLOYEE_MUTATION_HAPPENED", false);
@@ -38,29 +39,24 @@ const NewApplication = () => {
   };
 
   useEffect(() => {
-    if(sessionStorage.getItem("isCreateEnabledEmployee") === "true")
-    {
+    if (sessionStorage.getItem("isCreateEnabledEmployee") === "true") {
       sessionStorage.removeItem("isCreateEnabledEmployee");
       history.replace("/employee");
-    }
-    else
-    sessionStorage.removeItem("isCreateEnabledEmployee");
-
-  })
+    } else sessionStorage.removeItem("isCreateEnabledEmployee");
+  });
 
   useEffect(() => {
     setMutationHappened(false);
     clearSuccessData();
   }, []);
 
-  function checkforownerPresent(formData){
-    if(formData?.owners){
+  function checkforownerPresent(formData) {
+    if (formData?.owners) {
       formData?.owners?.map((ob) => {
-        if(!ob?.name || !ob.mobileNumber || !ob?.fatherOrHusbandName || !ob?.relationship?.code || ob?.gender?.code)
-        {
+        if (!ob?.name || !ob.mobileNumber || !ob?.fatherOrHusbandName || !ob?.relationship?.code || ob?.gender?.code) {
           return true;
         }
-      })
+      });
       return false;
     }
   }
@@ -69,11 +65,9 @@ const NewApplication = () => {
     if (!_.isEqual(sessionFormData, formData)) {
       setSessionFormData({ ...sessionFormData, ...formData });
     }
-    if(checkforownerPresent(formData))
-    {
+    if (checkforownerPresent(formData)) {
       setSubmitValve(false);
-    }
-    else if (
+    } else if (
       Object.keys(formState.errors).length > 0 &&
       Object.keys(formState.errors).length == 1 &&
       formState.errors["owners"] &&
@@ -85,17 +79,16 @@ const NewApplication = () => {
     }
   };
   const onSubmit = (data) => {
-    let isSameAsPropertyOwner = sessionStorage.getItem("isSameAsPropertyOwner"); 
-    if(data?.cpt?.id){
+    let isSameAsPropertyOwner = sessionStorage.getItem("isSameAsPropertyOwner");
+    if (data?.cpt?.id) {
       if (!data?.cpt?.details || !propertyDetails) {
-          setShowToast({ key: "error" });
-          setError(t("ERR_INVALID_PROPERTY_ID"));
-          return;
-        }
+        setShowToast({ key: "error" });
+        setError(t("ERR_INVALID_PROPERTY_ID"));
+        return;
+      }
     }
     const foundValue = tenants?.find((obj) => obj.pincode?.find((item) => item.toString() === data?.address?.pincode));
-    if(!foundValue && data?.address?.pincode)
-    {
+    if (!foundValue && data?.address?.pincode) {
       setShowToast({ key: "error" });
       setError(t("TL_COMMON_PINCODE_NOT_SERVICABLE"));
       return;
@@ -140,8 +133,10 @@ const NewApplication = () => {
     if (data?.cpt?.details?.address) {
       address.city = data?.cpt?.details?.address?.city || null;
       address.locality = { code: data?.cpt?.details?.address?.locality?.code || null };
-      if (data?.cpt?.details?.address?.doorNo || data?.address?.doorNo) address.doorNo = data?.cpt?.details?.address?.doorNo || data?.address?.doorNo || null;
-      if (data?.cpt?.details?.address?.street || data?.address?.street) address.street = data?.cpt?.details?.address?.street || data?.address?.street || null;
+      if (data?.cpt?.details?.address?.doorNo || data?.address?.doorNo)
+        address.doorNo = data?.cpt?.details?.address?.doorNo || data?.address?.doorNo || null;
+      if (data?.cpt?.details?.address?.street || data?.address?.street)
+        address.street = data?.cpt?.details?.address?.street || data?.address?.street || null;
       if (data?.cpt?.details?.address?.pincode) address.pincode = data?.cpt?.details?.address?.pincode;
     } else if (data?.address) {
       address.city = data?.address?.city?.code || null;
@@ -218,11 +213,10 @@ const NewApplication = () => {
       formData.tradeLicenseDetail.institution["name"] = data?.owners?.[0]?.name;
     if (data?.owners?.length && subOwnerShipCategory.includes("INSTITUTIONAL"))
       formData.tradeLicenseDetail.institution["contactNo"] = data?.owners?.[0]?.altContactNumber;
-    if (data?.cpt) 
-    {
-      formData.tradeLicenseDetail.additionalDetail.propertyId = data?.cpt?.details?.propertyId,
-      formData.tradeLicenseDetail.additionalDetail.isSameAsPropertyOwner = isSameAsPropertyOwner
-    };
+    if (data?.cpt) {
+      (formData.tradeLicenseDetail.additionalDetail.propertyId = data?.cpt?.details?.propertyId),
+        (formData.tradeLicenseDetail.additionalDetail.isSameAsPropertyOwner = isSameAsPropertyOwner);
+    }
 
     // setFormData(formData)
     /* use customiseCreateFormData hook to make some chnages to the licence object */
@@ -238,8 +232,8 @@ const NewApplication = () => {
             .then((response) => {
               if (response?.Licenses?.length > 0) {
                 // setTimeout(() => window.location.reload());
-                sessionStorage.setItem("isCreateEnabledEmployee","true");
-                history.replace(`/digit-ui/employee/tl/response`, { data: response?.Licenses });
+                sessionStorage.setItem("isCreateEnabledEmployee", "true");
+                history.replace(`/mgramseva-digit-ui/employee/tl/response`, { data: response?.Licenses });
                 clearSessionFormData();
               }
             })
@@ -254,9 +248,9 @@ const NewApplication = () => {
         setError(e?.response?.data?.Errors[0]?.message || null);
       });
 
-    // history.replace("/digit-ui/employee/tl/response", { Licenses: [formData], documents: applicationDocuments });
-    // history.push("/digit-ui/employee/pt/response", { Property: formData });
-    // history.push("/digit-ui/employee/pt/response", { Property: _formData });
+    // history.replace("/mgramseva-digit-ui/employee/tl/response", { Licenses: [formData], documents: applicationDocuments });
+    // history.push("/mgramseva-digit-ui/employee/pt/response", { Property: formData });
+    // history.push("/mgramseva-digit-ui/employee/pt/response", { Property: _formData });
   };
   // let configs = newConfig;
   let configs = [];
@@ -272,10 +266,13 @@ const NewApplication = () => {
       return "TL_CHECK_ADDRESS";
     } else if (head === "ES_NEW_APPLICATION_OWNERSHIP_DETAILS") {
       return "TL_OWNERSHIP_DETAILS_HEADER";
-    } else if (head === "TL_NEW_APPLICATION_PROPERTY" && (sessionFormData?.tradedetils?.[0]?.structureType?.code === "MOVABLE" && (isEmpNewApplication || isEmpRenewLicense))) {
+    } else if (
+      head === "TL_NEW_APPLICATION_PROPERTY" &&
+      sessionFormData?.tradedetils?.[0]?.structureType?.code === "MOVABLE" &&
+      (isEmpNewApplication || isEmpRenewLicense)
+    ) {
       return "";
-    }
-     else {
+    } else {
       return head;
     }
   }

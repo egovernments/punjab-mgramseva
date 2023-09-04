@@ -20,7 +20,9 @@ const WSInbox = ({ parentRoute }) => {
     consumerNo: "",
   };
   const filterFormDefaultValues = {
-    businessService: checkPathName ? ["NewWS1", "ModifyWSConnection", "DisconnectWSConnection"] : ["NewSW1", "ModifySWConnection", "DisconnectSWConnection"],
+    businessService: checkPathName
+      ? ["NewWS1", "ModifyWSConnection", "DisconnectWSConnection"]
+      : ["NewSW1", "ModifySWConnection", "DisconnectSWConnection"],
     moduleName: checkPathName ? "ws-services" : "sw-services",
     locality: [],
     assignee: "ASSIGNED_TO_ALL",
@@ -141,7 +143,7 @@ const WSInbox = ({ parentRoute }) => {
   let links = [
     {
       text: t("WS_APPLY_NEW_CONNECTION_HOME_CARD_LABEL"),
-      link: `/digit-ui/employee/ws/create-application`,
+      link: `/mgramseva-digit-ui/employee/ws/create-application`,
       roles: ["WS_CEMP", "SW_CEMP"],
     },
   ];
@@ -155,8 +157,8 @@ const WSInbox = ({ parentRoute }) => {
       {
         text: t("WS_SEWERAGE_CONNECTION_SEARCH_LABEL"),
         link: checkPathName
-          ? `/digit-ui/employee/ws/water/search-connection?from=WS_SEWERAGE_INBOX`
-          : `/digit-ui/employee/ws/sewerage/search-connection?from=WS_SEWERAGE_INBOX`,
+          ? `/mgramseva-digit-ui/employee/ws/water/search-connection?from=WS_SEWERAGE_INBOX`
+          : `/mgramseva-digit-ui/employee/ws/sewerage/search-connection?from=WS_SEWERAGE_INBOX`,
         roles: checkPathName
           ? ["WS_CEMP", "WS_APPROVER", "WS_FIELD_INSPECTOR", "WS_DOC_VERIFIER", "WS_CLERK"]
           : ["SW_CEMP", "SW_APPROVER", "SW_FIELD_INSPECTOR", "SW_DOC_VERIFIER", "SW_CLERK"],
@@ -164,8 +166,8 @@ const WSInbox = ({ parentRoute }) => {
       {
         text: t("WS_SEWERAGE_APPLICATION_SEARCH"),
         link: checkPathName
-          ? `/digit-ui/employee/ws/water/search-application?from=WS_SEWERAGE_INBOX`
-          : `/digit-ui/employee/ws/sewerage/search-application?from=WS_SEWERAGE_INBOX`,
+          ? `/mgramseva-digit-ui/employee/ws/water/search-application?from=WS_SEWERAGE_INBOX`
+          : `/mgramseva-digit-ui/employee/ws/sewerage/search-application?from=WS_SEWERAGE_INBOX`,
         roles: checkPathName
           ? ["WS_CEMP", "WS_APPROVER", "WS_FIELD_INSPECTOR", "WS_DOC_VERIFIER", "WS_CLERK"]
           : ["SW_CEMP", "SW_APPROVER", "SW_FIELD_INSPECTOR", "SW_DOC_VERIFIER", "SW_CLERK"],
@@ -205,7 +207,7 @@ const WSInbox = ({ parentRoute }) => {
   };
 
   const onFilterFormSubmit = (data) => {
-    data.hasOwnProperty("") && delete data?.[""] ;
+    data.hasOwnProperty("") && delete data?.[""];
     dispatch({ action: "mutateTableForm", data: { ...tableOrderFormDefaultValues } });
     dispatch({ action: "mutateFilterForm", data });
   };
@@ -227,8 +229,20 @@ const WSInbox = ({ parentRoute }) => {
     onFilterFormReset,
   };
 
-  const propsForInboxTable = useInboxTableConfig({ ...{ parentRoute, onPageSizeChange, formState, totalCount, table, dispatch, onSortingByData,tenantId, inboxStyles:{overflowX:"scroll", overflowY:"hidden"}, tableStyle:{width:"70%"} } });
-
+  const propsForInboxTable = useInboxTableConfig({
+    ...{
+      parentRoute,
+      onPageSizeChange,
+      formState,
+      totalCount,
+      table,
+      dispatch,
+      onSortingByData,
+      tenantId,
+      inboxStyles: { overflowX: "scroll", overflowY: "hidden" },
+      tableStyle: { width: "70%" },
+    },
+  });
 
   const propsForInboxMobileCards = useInboxMobileCardsData({ parentRoute, table });
 

@@ -15,22 +15,34 @@ const ReceiptInbox = ({ parentRoute, businessService = "receipts", initialStates
   const [searchParams, setSearchParams] = useState(() => {
     return initialStates.searchParams || {};
   });
-  const { isLoading: countLoading, data: countData, ...rest1 } = Digit.Hooks.receipts.useReceiptsSearch({ ...searchParams, isCountRequest: true }, tenantId, [], isupdate);
+  const { isLoading: countLoading, data: countData, ...rest1 } = Digit.Hooks.receipts.useReceiptsSearch(
+    { ...searchParams, isCountRequest: true },
+    tenantId,
+    [],
+    isupdate
+  );
   let isMobile = window.Digit.Utils.browser.isMobile();
 
   let paginationParams = isMobile
     ? { limit: 100, offset: pageOffset, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" }
     : { limit: pageSize, offset: pageOffset, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" };
 
-  const { isLoading: hookLoading, isError, error, data, ...rest } = Digit.Hooks.receipts.useReceiptsSearch(searchParams, tenantId, paginationParams, isupdate);
+  const { isLoading: hookLoading, isError, error, data, ...rest } = Digit.Hooks.receipts.useReceiptsSearch(
+    searchParams,
+    tenantId,
+    paginationParams,
+    isupdate
+  );
   let isLoading = false;
 
   useEffect(() => {
     return () => {
       rest?.revalidate();
-    }
-  }, [])
-  useEffect(() => { setTotalRecords(countData?.Count) }, [countData])
+    };
+  }, []);
+  useEffect(() => {
+    setTotalRecords(countData?.Count);
+  }, [countData]);
   useEffect(() => {
     setPageOffset(0);
   }, [searchParams]);
@@ -43,7 +55,7 @@ const ReceiptInbox = ({ parentRoute, businessService = "receipts", initialStates
     setPageOffset((prevState) => prevState - pageSize);
   };
   const fetchLastPage = () => {
-    setPageOffset((prevState) => countData?.Count && (Math.ceil(countData?.Count / 10) * 10 - pageSize));
+    setPageOffset((prevState) => countData?.Count && Math.ceil(countData?.Count / 10) * 10 - pageSize);
   };
 
   const fetchFirstPage = () => {
@@ -60,7 +72,6 @@ const ReceiptInbox = ({ parentRoute, businessService = "receipts", initialStates
     } else {
       setSearchParams({ ...initialStates.searchParams });
     }
-
   };
 
   const handleSort = useCallback((args) => {
@@ -125,7 +136,7 @@ const ReceiptInbox = ({ parentRoute, businessService = "receipts", initialStates
           searchParams={searchParams}
           sortParams={sortParams}
           totalRecords={totalRecords}
-          linkPrefix={'/digit-ui/employee/receipts/details/'}
+          linkPrefix={"/mgramseva-digit-ui/employee/receipts/details/"}
           filterComponent={filterComponent}
         />
       );

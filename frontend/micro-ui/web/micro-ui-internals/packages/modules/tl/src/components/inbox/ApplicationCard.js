@@ -81,7 +81,7 @@ export const ApplicationCard = ({
       <DetailsCard
         data={data}
         serviceRequestIdKey={serviceRequestIdKey}
-        linkPrefix={linkPrefix ? linkPrefix :"/digit-ui/employee/tl/application-details/"}
+        linkPrefix={linkPrefix ? linkPrefix : "/mgramseva-digit-ui/employee/tl/application-details/"}
       />
     );
   }
@@ -133,9 +133,7 @@ export const ApplicationCard = ({
             </div>
           )}
           {type === "SORT" && (
-            <div className="popup-module">
-              {<SortBy type="mobile" sortParams={sortParams} onClose={handlePopupClose}  onSort={onSort} />}
-            </div>
+            <div className="popup-module">{<SortBy type="mobile" sortParams={sortParams} onClose={handlePopupClose} onSort={onSort} />}</div>
           )}
           {type === "SEARCH" && (
             <div className="popup-module">

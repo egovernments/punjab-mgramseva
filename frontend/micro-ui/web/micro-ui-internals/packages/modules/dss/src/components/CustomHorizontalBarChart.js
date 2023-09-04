@@ -73,7 +73,9 @@ const CustomHorizontalBarChart = ({
   };
 
   const goToDrillDownCharts = () => {
-    history.push(`/digit-ui/employee/dss/drilldown?chart=${response?.responseData?.drillDownChartId}&ulb=${value?.filters?.tenantId}&title=${title}`);
+    history.push(
+      `/mgramseva-digit-ui/employee/dss/drilldown?chart=${response?.responseData?.drillDownChartId}&ulb=${value?.filters?.tenantId}&title=${title}`
+    );
   };
 
   const tooltipFormatter = (value, name) => {
@@ -113,11 +115,11 @@ const CustomHorizontalBarChart = ({
 
   const getVerticalWidth = (layout) => {
     if (window?.location.href.includes("dss/dashboard/pgr")) {
-      return layout === "vertical" ? 150 : 60 
+      return layout === "vertical" ? 150 : 60;
     } else {
-      return layout === "vertical" ? 120 : 60
+      return layout === "vertical" ? 120 : 60;
     }
-  }
+  };
 
   const bars = response?.responseData?.data?.map((bar) => bar?.headerName);
   return (

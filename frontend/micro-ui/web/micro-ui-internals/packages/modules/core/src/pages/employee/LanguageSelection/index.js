@@ -17,7 +17,7 @@ const LanguageSelection = () => {
   };
 
   const handleSubmit = (event) => {
-    history.push("/digit-ui/employee/user/login");
+    history.push("/mgramseva-digit-ui/employee/user/login");
   };
 
   if (isLoading) return null;

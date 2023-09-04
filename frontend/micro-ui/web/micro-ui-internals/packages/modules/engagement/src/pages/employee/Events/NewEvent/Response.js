@@ -14,8 +14,8 @@ const BannerPicker = (props) => {
       info={t(`ENGAGEMENT_EVENT_NAME`)}
       successful={props.isSuccess}
     />
-  )
-}
+  );
+};
 
 const Response = (props) => {
   const queryClient = useQueryClient();
@@ -24,16 +24,15 @@ const Response = (props) => {
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const mutation = Digit.Hooks.events.useCreateEvent();
   const updateEventMutation = Digit.Hooks.events.useUpdateEvent();
-  const [isSuccess, setIsSuccess] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false);
   const { state } = props.location;
 
   const [mutationHappened, setMutationHappened, clear] = Digit.Hooks.useSessionStorage("EMPLOYEE_EVENT_MUTATION_HAPPENED", false);
   const [successData, setsuccessData, clearSuccessData] = Digit.Hooks.useSessionStorage("EMPLOYEE_EVENT_MUTATION_SUCCESS_DATA", false);
   const [errorInfo, setErrorInfo, clearError] = Digit.Hooks.useSessionStorage("EMPLOYEE_EVENT_ERROR_DATA", false);
 
-
   const onError = (error, variables) => {
-    setErrorInfo(error?.response?.data?.Errors[0]?.code || 'ERROR');
+    setErrorInfo(error?.response?.data?.Errors[0]?.code || "ERROR");
     setMutationHappened(true);
   };
 
@@ -48,7 +47,7 @@ const Response = (props) => {
     const onSuccess = () => {
       setMutationHappened(true);
       queryClient.clear();
-    }
+    };
     if (!mutationHappened) {
       if (Boolean(searchParams?.delete) || Boolean(searchParams?.update)) {
         updateEventMutation.mutate(state, {
@@ -60,7 +59,7 @@ const Response = (props) => {
       mutation.mutate(state, {
         onError,
         onSuccess,
-      })
+      });
       return;
     }
     return () => {
@@ -70,34 +69,47 @@ const Response = (props) => {
 
   if (searchParams?.delete || searchParams?.update) {
     if (updateEventMutation.isLoading || (updateEventMutation.isIdle && !mutationHappened)) {
-      return <Loader />
+      return <Loader />;
     }
 
     return (
       <Card>
         <BannerPicker
           t={t}
-          message={searchParams?.update ? (updateEventMutation.isSuccess || successData) ? 'ENGAGEMENT_EVENT_UPDATED' : `ENGAGEMENT_EVENT_UPDATED_FAILED` : (updateEventMutation.isSuccess || successData) ? 'ENGAGEMENT_EVENT_DELETED' : 'ENGAGEMENT_EVENT_DELETED_FAILED'}
+          message={
+            searchParams?.update
+              ? updateEventMutation.isSuccess || successData
+                ? "ENGAGEMENT_EVENT_UPDATED"
+                : `ENGAGEMENT_EVENT_UPDATED_FAILED`
+              : updateEventMutation.isSuccess || successData
+              ? "ENGAGEMENT_EVENT_DELETED"
+              : "ENGAGEMENT_EVENT_DELETED_FAILED"
+          }
           data={updateEventMutation.data || successData}
           isSuccess={updateEventMutation?.isSuccess || successData}
           isLoading={(updateEventMutation.isIdle && !mutationHappened) || updateEventMutation.isLoading}
         />
         <CardText>
-        {searchParams?.update ? (updateEventMutation.isSuccess || successData) ? t('ENGAGEMENT_EVENT_UPDATED') : t(`ENGAGEMENT_EVENT_UPDATED_FAILED`) : (updateEventMutation.isSuccess || successData) ? t('ENGAGEMENT_EVENT_DELETED') : t('ENGAGEMENT_EVENT_DELETED_FAILED')}
+          {searchParams?.update
+            ? updateEventMutation.isSuccess || successData
+              ? t("ENGAGEMENT_EVENT_UPDATED")
+              : t(`ENGAGEMENT_EVENT_UPDATED_FAILED`)
+            : updateEventMutation.isSuccess || successData
+            ? t("ENGAGEMENT_EVENT_DELETED")
+            : t("ENGAGEMENT_EVENT_DELETED_FAILED")}
         </CardText>
         <ActionBar>
-          <Link to={"/digit-ui/employee"}>
+          <Link to={"/mgramseva-digit-ui/employee"}>
             <SubmitBar label={t("CORE_COMMON_GO_TO_HOME")} />
           </Link>
         </ActionBar>
       </Card>
-    )
+    );
   }
 
   if (mutation.isLoading || (mutation.isIdle && !mutationHappened)) {
-    return <Loader />
+    return <Loader />;
   }
-
 
   const event = mutation?.data?.events?.[0] || successData?.events?.[0] || {};
   return (
@@ -110,21 +122,23 @@ const Response = (props) => {
         isLoading={(mutation.isIdle && !mutationHappened) || mutation.isLoading}
       />
       <CardText>
-        {mutation.isSuccess || successData ? t(`ENGAGEMENT_EVENT_CREATED_MESSAGES`, {
-          eventName: event?.name,
-          fromDate: Digit.DateUtils.ConvertTimestampToDate(event?.eventDetails?.fromDate),
-          toDate: Digit.DateUtils.ConvertTimestampToDate(event?.eventDetails?.toDate),
-          fromTime: mutation.isSuccess ? format(new Date(event?.eventDetails?.fromDate), 'HH:mm') : null,
-          toTime: mutation.isSuccess ? format(new Date(event?.eventDetails?.toDate), 'HH:mm') : null,
-        }) : null}
+        {mutation.isSuccess || successData
+          ? t(`ENGAGEMENT_EVENT_CREATED_MESSAGES`, {
+              eventName: event?.name,
+              fromDate: Digit.DateUtils.ConvertTimestampToDate(event?.eventDetails?.fromDate),
+              toDate: Digit.DateUtils.ConvertTimestampToDate(event?.eventDetails?.toDate),
+              fromTime: mutation.isSuccess ? format(new Date(event?.eventDetails?.fromDate), "HH:mm") : null,
+              toTime: mutation.isSuccess ? format(new Date(event?.eventDetails?.toDate), "HH:mm") : null,
+            })
+          : null}
       </CardText>
       <ActionBar>
-        <Link to={"/digit-ui/employee"}>
+        <Link to={"/mgramseva-digit-ui/employee"}>
           <SubmitBar label={t("CORE_COMMON_GO_TO_HOME")} />
         </Link>
       </ActionBar>
     </Card>
-  )
-}
+  );
+};
 
 export default Response;

@@ -20,7 +20,7 @@ const DesktopInbox = (props) => {
   };
 
   function goTo(id) {
-    // history.push("/digit-ui/employee/fsm/complaint/details/" + id);
+    // history.push("/mgramseva-digit-ui/employee/fsm/complaint/details/" + id);
   }
 
   const columns = React.useMemo(() => {
@@ -96,7 +96,10 @@ const DesktopInbox = (props) => {
               return (
                 <div>
                   <span className="link">
-                    <Link to={"/digit-ui/employee/fsm/fstp-operator-details/" + row.original["applicationNo"]}> {citizen_info?.applicationNo}</Link>
+                    <Link to={"/mgramseva-digit-ui/employee/fsm/fstp-operator-details/" + row.original["applicationNo"]}>
+                      {" "}
+                      {citizen_info?.applicationNo}
+                    </Link>
                   </span>
                 </div>
               );
@@ -151,7 +154,7 @@ const DesktopInbox = (props) => {
               return (
                 <div>
                   <span className="link">
-                    <Link to={"/digit-ui/employee/fsm/fstp-operator-details/" + row.original["applicationNo"]}>
+                    <Link to={"/mgramseva-digit-ui/employee/fsm/fstp-operator-details/" + row.original["applicationNo"]}>
                       {row.original["tripDetails"].map((i) => (
                         <div>
                           {i.referenceNo}
@@ -172,7 +175,9 @@ const DesktopInbox = (props) => {
               return (
                 <div>
                   <span className="link">
-                    <Link to={"/digit-ui/employee/fsm/fstp-operator-details/" + row.original["applicationNo"]}>{row.original["applicationNo"]}</Link>
+                    <Link to={"/mgramseva-digit-ui/employee/fsm/fstp-operator-details/" + row.original["applicationNo"]}>
+                      {row.original["applicationNo"]}
+                    </Link>
                   </span>
                 </div>
               );

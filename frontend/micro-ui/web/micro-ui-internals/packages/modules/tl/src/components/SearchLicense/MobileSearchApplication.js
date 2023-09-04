@@ -1,20 +1,9 @@
 import React, { Fragment, useCallback, useMemo, useReducer } from "react";
-import {
-  CloseSvg,
-  SearchForm,
-  Table,
-  Card,
-  SearchAction,
-  PopUp,
-  DetailsCard,
-  Loader,
-  Toast,
-} from "@egovernments/digit-ui-react-components";
+import { CloseSvg, SearchForm, Table, Card, SearchAction, PopUp, DetailsCard, Loader, Toast } from "@egovernments/digit-ui-react-components";
 import SearchFormFields from "./SearchFields";
 import { convertEpochToDateDMY, stringReplaceAll } from "../../utils";
 
-const MobileSearchApplication = ({ Controller, register, control, t, reset, previousPage, handleSubmit, tenantId, data, onSubmit}) => {
-
+const MobileSearchApplication = ({ Controller, register, control, t, reset, previousPage, handleSubmit, tenantId, data, onSubmit }) => {
   function activateModal(state, action) {
     switch (action.type) {
       case "set":
@@ -23,7 +12,7 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
         return false;
       default:
         break;
-          }
+    }
   }
 
   const [currentlyActiveMobileModal, setActiveMobileModal] = useReducer(activateModal, false);
@@ -68,27 +57,24 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
     [currentlyActiveMobileModal]
   );
 
-  const propsMobileInboxCards = useMemo(
-    () => {
-      if (data?.display){
-        return []
-      }
-      if(data === "")
-      {
+  const propsMobileInboxCards = useMemo(() => {
+    if (data?.display) {
       return [];
-      }
-      return data?.map((data) => ({
-        [t("TL_TRADE_LICENSE_LABEL")]: data.licenseNumber,
-        [t("TL_COMMON_TABLE_COL_APP_NO")]: data.applicationNumber,
-        [t("TL_LOCALIZATION_TRADE_NAME")]: data.tradeName || "",
-        [t("ES_APPLICATION_SEARCH_ISSUED_DATE")]: data.issuedDate ? convertEpochToDateDMY(data.issuedDate) : "",
-        [t("ES_APPLICATION_SEARCH_VALID_TO")]: data?.validTo ? convertEpochToDateDMY(data?.validTo) : "-",
-        [t("TL_HOME_SEARCH_RESULTS__LOCALITY")]: t(`${stringReplaceAll(data.tenantId?.toUpperCase(), ".", "_")}_REVENUE_${data.tradeLicenseDetail.address.locality.code}`) || "",
-        [t("TL_COMMON_TABLE_COL_STATUS")]: t( data?.workflowCode&&data?.status&&`WF_${data?.workflowCode?.toUpperCase()}_${data.status}`|| "NA")
-      }))
-    },
-    [data]
-  );
+    }
+    if (data === "") {
+      return [];
+    }
+    return data?.map((data) => ({
+      [t("TL_TRADE_LICENSE_LABEL")]: data.licenseNumber,
+      [t("TL_COMMON_TABLE_COL_APP_NO")]: data.applicationNumber,
+      [t("TL_LOCALIZATION_TRADE_NAME")]: data.tradeName || "",
+      [t("ES_APPLICATION_SEARCH_ISSUED_DATE")]: data.issuedDate ? convertEpochToDateDMY(data.issuedDate) : "",
+      [t("ES_APPLICATION_SEARCH_VALID_TO")]: data?.validTo ? convertEpochToDateDMY(data?.validTo) : "-",
+      [t("TL_HOME_SEARCH_RESULTS__LOCALITY")]:
+        t(`${stringReplaceAll(data.tenantId?.toUpperCase(), ".", "_")}_REVENUE_${data.tradeLicenseDetail.address.locality.code}`) || "",
+      [t("TL_COMMON_TABLE_COL_STATUS")]: t((data?.workflowCode && data?.status && `WF_${data?.workflowCode?.toUpperCase()}_${data.status}`) || "NA"),
+    }));
+  }, [data]);
 
   return (
     <React.Fragment>
@@ -96,7 +82,7 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
         <SearchAction
           text={t("ES_COMMON_SEARCH")}
           handleActionClick={() => setActiveMobileModal({ type: "set", payload: "SearchFormComponent" })}
-          {...{tenantId, t}} 
+          {...{ tenantId, t }}
         />
         {/* {isInboxLoading ? <Loader /> : <FilterAction text={t("ES_COMMON_FILTER")} handleActionClick={() => setActiveMobileModal({type:"set", payload:"FilterFormComponent"})}/>} */}
         {/* <SortAction text={t("ES_COMMON_SORT")} handleActionClick={() => setActiveMobileModal({type:"set", payload:"SortComponent"})}/> */}
@@ -129,13 +115,13 @@ const MobileSearchApplication = ({ Controller, register, control, t, reset, prev
         <DetailsCard
           {...{
             data: propsMobileInboxCards,
-            linkPrefix: `/digit-ui/employee/tl/application-details/`,
-            serviceRequestIdKey: t("TL_COMMON_TABLE_COL_APP_NO")
+            linkPrefix: `/mgramseva-digit-ui/employee/tl/application-details/`,
+            serviceRequestIdKey: t("TL_COMMON_TABLE_COL_APP_NO"),
           }}
         />
       )}
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default MobileSearchApplication
+export default MobileSearchApplication;

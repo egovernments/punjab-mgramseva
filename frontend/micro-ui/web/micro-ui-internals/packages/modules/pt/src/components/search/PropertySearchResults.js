@@ -5,9 +5,9 @@ import PropertyInvalidMobileNumber from "../../pages/citizen/MyProperties/Proper
 
 const GetCell = (value) => <span className="cell-text">{value}</span>;
 
-const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast,ptSearchConfig }) => {
+const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast, ptSearchConfig }) => {
   const history = useHistory();
-  
+
   const [searchQuery, setSearchQuery] = useState({
     /* ...defaultValues,   to enable pagination */
     ...payload,
@@ -17,7 +17,7 @@ const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast,ptSearchConf
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [ownerInvalidMobileNumberIndex, setOwnerInvalidMobileNumberIndex] = useState(0);
 
-  const { data, isLoading, error, isSuccess, billData ,revalidate} = Digit.Hooks.pt.usePropertySearchWithDue({
+  const { data, isLoading, error, isSuccess, billData, revalidate } = Digit.Hooks.pt.usePropertySearchWithDue({
     tenantId,
     filters: searchQuery,
     configs: { enabled: Object.keys(payload).length > 0 ? true : false, retry: false, retryOnMount: false, staleTime: Infinity },
@@ -35,35 +35,32 @@ const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast,ptSearchConf
   });
 
   const handleCollectTaxClick = (val) => {
-    let isAtleastOneMobileNumberInvalid = false
+    let isAtleastOneMobileNumberInvalid = false;
 
     let { owners } = val;
 
-    owners = owners && owners.filter(owner => owner.status == "ACTIVE");
-    owners && owners.map((owner, index) => {
-      let number = owner.mobileNumber;
-      
-      if (
-          (
-            (number == updateNumberConfig?.invalidNumber)
-            || !number.match(updateNumberConfig?.invalidPattern) 
-            && number == JSON.parse(getUserInfo()).mobileNumber
-          )
-        ) {
-        isAtleastOneMobileNumberInvalid = true;
-        setOwnerInvalidMobileNumberIndex(index);
-      }
-    })
+    owners = owners && owners.filter((owner) => owner.status == "ACTIVE");
+    owners &&
+      owners.map((owner, index) => {
+        let number = owner.mobileNumber;
 
-    if(isAtleastOneMobileNumberInvalid) {
+        if (
+          number == updateNumberConfig?.invalidNumber ||
+          (!number.match(updateNumberConfig?.invalidPattern) && number == JSON.parse(getUserInfo()).mobileNumber)
+        ) {
+          isAtleastOneMobileNumberInvalid = true;
+          setOwnerInvalidMobileNumberIndex(index);
+        }
+      });
+
+    if (isAtleastOneMobileNumberInvalid) {
       setShowModal(true);
       setSelectedProperty(val);
     } else {
       revalidate();
-      history.push(`/digit-ui/employee/payment/collect/PT/${val?.["propertyId"]}`)
+      history.push(`/mgramseva-digit-ui/employee/payment/collect/PT/${val?.["propertyId"]}`);
     }
-
-  }
+  };
 
   const Close = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFFFFF">
@@ -81,8 +78,8 @@ const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast,ptSearchConf
   };
 
   const skipNContinue = () => {
-    history.push(`/digit-ui/employee/payment/collect/PT/${selectedProperty?.['propertyId']}`)
-  }
+    history.push(`/mgramseva-digit-ui/employee/payment/collect/PT/${selectedProperty?.["propertyId"]}`);
+  };
 
   const updateMobileNumber = () => {
     const ind = ownerInvalidMobileNumberIndex;
@@ -93,7 +90,7 @@ const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast,ptSearchConf
       mobileNumber: selectedProperty?.owners[ind]?.mobileNumber,
       index: ind,
     });
-  }
+  };
 
   const columns = useMemo(
     () => [
@@ -104,7 +101,9 @@ const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast,ptSearchConf
           return (
             <div>
               <span className="link">
-                <Link to={`/digit-ui/employee/pt/ptsearch/property-details/${row.original["propertyId"]}`}>{row.original["propertyId"]}</Link>
+                <Link to={`/mgramseva-digit-ui/employee/pt/ptsearch/property-details/${row.original["propertyId"]}`}>
+                  {row.original["propertyId"]}
+                </Link>
               </span>
             </div>
           );
@@ -127,7 +126,7 @@ const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast,ptSearchConf
       },
       {
         Header: t("PT_AMOUNT_DUE"),
-        Cell: ({ row }) => GetCell(row?.original?.due?`₹ ${row?.original?.due}`:t("PT_NA")),
+        Cell: ({ row }) => GetCell(row?.original?.due ? `₹ ${row?.original?.due}` : t("PT_NA")),
         disableSortBy: true,
       },
       {
@@ -137,8 +136,10 @@ const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast,ptSearchConf
           return (
             <div>
               {row.original?.due > 0 && Digit.Utils.didEmployeeHasRole("PT_CEMP") ? (
-                <span className="link"> 
-                  <a  style={{textDecoration:'none'}} onClick={() => handleCollectTaxClick(row.original)}>{t("ES_PT_COLLECT_TAX")}</a>
+                <span className="link">
+                  <a style={{ textDecoration: "none" }} onClick={() => handleCollectTaxClick(row.original)}>
+                    {t("ES_PT_COLLECT_TAX")}
+                  </a>
                 </span>
               ) : null}
             </div>
@@ -163,15 +164,15 @@ const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast,ptSearchConf
     return tableData?.map((dataObj) => {
       const obj = {};
       columns.forEach((el) => {
-        if (el.Cell) obj[el.Header] = el.Cell({row:{original:dataObj}});
+        if (el.Cell) obj[el.Header] = el.Cell({ row: { original: dataObj } });
       });
       return obj;
     });
   };
 
   const tableData = Object.values(data?.FormattedData || {}) || [];
-  if(ptSearchConfig?.ptSearchCount&&payload.locality&&tableData&&tableData.length>ptSearchConfig.ptSearchCount){
-    !showToast &&setShowToast({ error: true, label: "PT_MODIFY_SEARCH_CRITERIA" });
+  if (ptSearchConfig?.ptSearchCount && payload.locality && tableData && tableData.length > ptSearchConfig.ptSearchCount) {
+    !showToast && setShowToast({ error: true, label: "PT_MODIFY_SEARCH_CRITERIA" });
     return null;
   }
   return (
@@ -223,7 +224,7 @@ const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast,ptSearchConf
               t={t}
               onValidation={(data, showToast) => {
                 let newProp = { ...selectedProperty };
-               newProp.owners[showUpdateNo?.index].mobileNumber = data.mobileNumber;
+                newProp.owners[showUpdateNo?.index].mobileNumber = data.mobileNumber;
                 newProp.creationReason = "UPDATE";
                 newProp.workflow = null;
                 let newDocObj = { ...data };
@@ -253,10 +254,16 @@ const SearchPTID = ({ tenantId, t, payload, showToast, setShowToast,ptSearchConf
               }}
             />
           )}
-          {!showUpdateNo && <PropertyInvalidMobileNumber propertyId={selectedProperty?.propertyId} userType={"employee"} skipNContinue={skipNContinue} updateMobileNumber={updateMobileNumber} />}
+          {!showUpdateNo && (
+            <PropertyInvalidMobileNumber
+              propertyId={selectedProperty?.propertyId}
+              userType={"employee"}
+              skipNContinue={skipNContinue}
+              updateMobileNumber={updateMobileNumber}
+            />
+          )}
         </Modal>
       ) : null}
-
     </React.Fragment>
   );
 };

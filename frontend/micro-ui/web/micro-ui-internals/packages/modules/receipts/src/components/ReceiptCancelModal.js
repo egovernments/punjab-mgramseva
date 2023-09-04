@@ -8,12 +8,9 @@ const ReceiptCancelModal = ({ t, action, tenantId, closeModal, submitAction, app
   const [config, setConfig] = useState({});
   const [Reasons, setReasons] = useState([]);
   const [selectedReason, selecteReason] = useState("");
-  const tenantIds = Digit.ULBService.getCurrentTenantId() || '';
+  const tenantIds = Digit.ULBService.getCurrentTenantId() || "";
   const tenant = Digit.ULBService.getStateId();
-  const { isLoading, isError, errors, data, ...rest } = Digit.Hooks.receipts.useReceiptsMDMS(
-    tenant,
-    "CancelReceiptReason"
-  );
+  const { isLoading, isError, errors, data, ...rest } = Digit.Hooks.receipts.useReceiptsMDMS(tenant, "CancelReceiptReason");
 
   useEffect(() => {
     return setConfig(
@@ -52,21 +49,22 @@ const ReceiptCancelModal = ({ t, action, tenantId, closeModal, submitAction, app
     setReasons(data?.dropdownData);
   }, [data]);
 
-
   function submit(data) {
-    history.replace("/digit-ui/employee/receipts/response", {
+    history.replace("/mgramseva-digit-ui/employee/receipts/response", {
       paymentWorkflow: {
         action: "CANCEL",
-        additionalDetails: {...data.otherDetails,selectedReasonMessage:t(`CR_REASON_${selectedReason.code}`)},
+        additionalDetails: { ...data.otherDetails, selectedReasonMessage: t(`CR_REASON_${selectedReason.code}`) },
         paymentId: applicationData?.Payments[0]?.id,
         reason: selectedReason.code,
         tenantId: applicationData?.Payments[0]?.tenantId,
-      }, key: "UPDATE", action: "CANCELLATION", businessService: applicationData?.Payments[0]?.paymentDetails[0]?.businessService
+      },
+      key: "UPDATE",
+      action: "CANCELLATION",
+      businessService: applicationData?.Payments[0]?.paymentDetails[0]?.businessService,
     });
-
   }
   if (isLoading) {
-    return <Loader></Loader>
+    return <Loader></Loader>;
   }
   return config?.form ? (
     <Modal
@@ -74,7 +72,7 @@ const ReceiptCancelModal = ({ t, action, tenantId, closeModal, submitAction, app
       headerBarEnd={<CloseBtn onClick={closeModal} />}
       actionCancelOnSubmit={closeModal}
       actionSaveLabel={t(config?.label?.submit)}
-      actionSaveOnSubmit={() => { }}
+      actionSaveOnSubmit={() => {}}
       formId="modal-action"
       isDisabled={!selectedReason}
     >

@@ -5,21 +5,12 @@ import Search from "./Search";
 import { areEqual } from "../../utils";
 import { useHistory } from "react-router-dom";
 
-
-const ApplicationCard = ({
-  searchFields,
-  searchParams,
-  onFilterChange,
-  onSearch,
-  t,
-  data,
-  responseData
-}) => {
+const ApplicationCard = ({ searchFields, searchParams, onFilterChange, onSearch, t, data, responseData }) => {
   const [type, setType] = useState("");
   const [popup, setPopup] = useState(false);
   const [params, setParams] = useState(searchParams);
   const tenantId = Digit.ULBService.getCurrentTenantId();
-  const history = useHistory()
+  const history = useHistory();
   useEffect(() => {
     if (type) setPopup(true);
   }, [type]);
@@ -34,11 +25,11 @@ const ApplicationCard = ({
   };
 
   const redirectToDetailsPage = (data) => {
-
-    const details = responseData?.find((item) => (areEqual(item?.user?.name, data["Posted By"]) && areEqual(item.name, data["Title"])));
+    const details = responseData?.find((item) => areEqual(item?.user?.name, data["Posted By"]) && areEqual(item.name, data["Title"]));
     if (details) {
-      history.push(`/digit-ui/employee/engagement/messages/inbox/details/${details?.id  }`,)}
-  }
+      history.push(`/mgramseva-digit-ui/employee/engagement/messages/inbox/details/${details?.id}`);
+    }
+  };
 
   let result;
   if (data?.length === 0) {
@@ -53,9 +44,8 @@ const ApplicationCard = ({
           ))}
       </Card>
     );
-  }
-  else if (data && data?.length > 0) {
-    result = <DetailsCard data={data} handleSelect={() => { }} handleDetailCardClick={redirectToDetailsPage}/>
+  } else if (data && data?.length > 0) {
+    result = <DetailsCard data={data} handleSelect={() => {}} handleDetailCardClick={redirectToDetailsPage} />;
   }
   return (
     <React.Fragment>
@@ -82,33 +72,18 @@ const ApplicationCard = ({
         <PopUp>
           {type === "FILTER" && (
             <div className="popup-module">
-              {
-                <Filter
-                  onFilterChange={onFilterChange}
-                  onClose={handlePopupClose}
-                  onSearch={onSearch}
-                  type="mobile"
-                  searchParams={params}
-                />
-              }
+              {<Filter onFilterChange={onFilterChange} onClose={handlePopupClose} onSearch={onSearch} type="mobile" searchParams={params} />}
             </div>
           )}
           {type === "SEARCH" && (
             <div className="popup-module">
-              <Search
-                t={t}
-                type="mobile"
-                onClose={handlePopupClose}
-                onSearch={onSearch}
-                searchParams={searchParams}
-                searchFields={searchFields}
-              />
+              <Search t={t} type="mobile" onClose={handlePopupClose} onSearch={onSearch} searchParams={searchParams} searchFields={searchFields} />
             </div>
           )}
         </PopUp>
       )}
     </React.Fragment>
-  )
+  );
 };
 
 export default ApplicationCard;

@@ -10,16 +10,16 @@ const useInboxMobileCardsData = ({ parentRoute, table }) => {
     value === "Active" || value > 0 ? <span className="sla-cell-success">{value}</span> : <span className="sla-cell-error">{value}</span>;
 
   const GetStatusLinkCell = (value, tenantId, applicationType) => {
-    let service = value?.includes("WS")?"WATER":"SEWERAGE";
+    let service = value?.includes("WS") ? "WATER" : "SEWERAGE";
     let application = "application";
     if (applicationType?.toUpperCase()?.includes("DISCONNECT")) {
-      application = "disconnection"
+      application = "disconnection";
     } else if (applicationType?.toUpperCase()?.includes("MODIFY")) {
-      application = "modify"
+      application = "modify";
     }
     return (
       <div>
-        <Link to={`/digit-ui/employee/ws/${application}-details?applicationNumber=${value}&tenantId=${tenantId}&service=${service}`}>
+        <Link to={`/mgramseva-digit-ui/employee/ws/${application}-details?applicationNumber=${value}&tenantId=${tenantId}&service=${service}`}>
           {" "}
           <span className="link">{value}</span>
         </Link>
@@ -31,7 +31,7 @@ const useInboxMobileCardsData = ({ parentRoute, table }) => {
     [t("WS_COMMON_TABLE_COL_CONSUMER_NO_LABEL")]: connectionNo,
     [t("WS_COMMON_TABLE_COL_OWN_NAME_LABEL")]: owner,
     [t("WS_COMMON_TABLE_COL_APP_TYPE_LABEL")]: t(`WS_${applicationType?.toUpperCase()}`),
-    [t("WS_COMMON_TABLE_COL_SERVICE_LABEL")]: businessService?t(`WS_COMMON_INBOX_${businessService?.toUpperCase()}`):"NA",
+    [t("WS_COMMON_TABLE_COL_SERVICE_LABEL")]: businessService ? t(`WS_COMMON_INBOX_${businessService?.toUpperCase()}`) : "NA",
     [t("WS_COMMON_TABLE_COL_APPLICATION_STATUS")]: t(`CS_${status}`),
     [t("ES_INBOX_SLA_DAYS_REMAINING")]: GetStatusCell(sla),
   }));

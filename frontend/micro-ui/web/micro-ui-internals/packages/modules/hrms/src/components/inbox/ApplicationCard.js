@@ -38,7 +38,7 @@ export const ApplicationCard = ({
     onFilterChange({ ...params, ...param });
     setType("");
     setPopup(false);
-    onSearch()
+    onSearch();
   };
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export const ApplicationCard = ({
       <DetailsCard
         data={data}
         serviceRequestIdKey={serviceRequestIdKey}
-        linkPrefix={linkPrefix ? linkPrefix : DSO ? "/digit-ui/employee/fsm/application-details/" : "/digit-ui/employee/fsm/"}
+        linkPrefix={linkPrefix ? linkPrefix : DSO ? "/mgramseva-digit-ui/employee/fsm/application-details/" : "/mgramseva-digit-ui/employee/fsm/"}
       />
     );
   }

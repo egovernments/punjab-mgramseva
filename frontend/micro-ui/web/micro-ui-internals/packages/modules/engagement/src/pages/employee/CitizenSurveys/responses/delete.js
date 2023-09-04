@@ -17,7 +17,6 @@ import { Link } from "react-router-dom";
 //   return "";
 // };
 
-
 const BannerPicker = (props) => {
   const { t } = useTranslation();
   return (
@@ -40,9 +39,9 @@ const Response = (props) => {
   useEffect(() => {
     const onSuccess = () => {
       queryClient.clear();
-      window.history.replaceState(null, 'DELETE_SURVEY_STATE')
+      window.history.replaceState(null, "DELETE_SURVEY_STATE");
     };
-    if(!!state){
+    if (!!state) {
       mutation.mutate(state, {
         onSuccess,
       });
@@ -56,10 +55,17 @@ const Response = (props) => {
   return (
     <div>
       <Card>
-        <BannerPicker t={t} data={mutation.data} mutation={mutation} uuid={state?.DocumentEntity?.uuid} isSuccess={mutation.isSuccess} isLoading={mutation.isIdle || mutation.isLoading} />
+        <BannerPicker
+          t={t}
+          data={mutation.data}
+          mutation={mutation}
+          uuid={state?.DocumentEntity?.uuid}
+          isSuccess={mutation.isSuccess}
+          isLoading={mutation.isIdle || mutation.isLoading}
+        />
       </Card>
       <ActionBar>
-        <Link to={"/digit-ui/employee"}>
+        <Link to={"/mgramseva-digit-ui/employee"}>
           <SubmitBar label={t("CORE_COMMON_GO_TO_HOME")} />
         </Link>
       </ActionBar>

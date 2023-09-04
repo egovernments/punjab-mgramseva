@@ -97,13 +97,13 @@ const Response = (props) => {
     const { Properties = [] } = mutation.data || successData;
     const Property = (Properties && Properties[0]) || {};
     const tenantInfo = tenants.find((tenant) => tenant.code === Property.tenantId);
-    
+
     let tenantId = Property.tenantId || tenantId;
     const propertyDetails = await Digit.PTService.search({ tenantId, filters: { propertyIds: Property?.propertyId, status: "INACTIVE" } });
     Property.transferorDetails = propertyDetails?.Properties?.[0] || [];
     Property.isTransferor = true;
-    Property.transferorOwnershipCategory = propertyDetails?.Properties?.[0]?.ownershipCategory
-    
+    Property.transferorOwnershipCategory = propertyDetails?.Properties?.[0]?.ownershipCategory;
+
     const data = await getPTAcknowledgementData({ ...Property, auditData }, tenantInfo, t);
     Digit.Utils.pdf.generate(data);
   };
@@ -132,7 +132,7 @@ const Response = (props) => {
       </Card>
       {showToast && <Toast error={showToast.key === "error" ? true : false} label={error} onClose={closeToast} />}
       <ActionBar>
-        <Link to={`${props.parentRoute.includes("employee") ? "/digit-ui/employee" : "/digit-ui/citizen"}`}>
+        <Link to={`${props.parentRoute.includes("employee") ? "/mgramseva-digit-ui/employee" : "/digit-ui/citizen"}`}>
           <SubmitBar label={t("CORE_COMMON_GO_TO_HOME")} />
         </Link>
       </ActionBar>

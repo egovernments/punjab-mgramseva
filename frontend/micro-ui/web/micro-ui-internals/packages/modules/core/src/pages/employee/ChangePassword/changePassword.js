@@ -1,6 +1,4 @@
-import {
-  BackButton, CardSubHeader, CardText, FormComposer, Toast
-} from "@egovernments/digit-ui-react-components";
+import { BackButton, CardSubHeader, CardText, FormComposer, Toast } from "@egovernments/digit-ui-react-components";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -22,7 +20,7 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
       return;
     }
     Digit.UserService.setUser(user);
-    const redirectPath = location.state?.from || "/digit-ui/employee";
+    const redirectPath = location.state?.from || "/mgramseva-digit-ui/employee";
     history.replace(redirectPath);
   }, [user]);
 
@@ -70,7 +68,7 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
   };
 
   const navigateToLogin = () => {
-    history.replace("/digit-ui/employee/user/login");
+    history.replace("/mgramseva-digit-ui/employee/user/login");
   };
 
   const [username, password, confirmPassword] = propsConfig.inputs;

@@ -131,7 +131,7 @@ const FstpInbox = () => {
           vehicleLog={vehicleLog}
           isLoading={isLoading}
           userRole={"FSM_EMP_FSTPO"}
-          linkPrefix={"/digit-ui/employee/fsm/fstp-operator-details/"}
+          linkPrefix={"/mgramseva-digit-ui/employee/fsm/fstp-operator-details/"}
           onSearch={onSearch}
           searchFields={searchFields}
           onSort={handleSort}

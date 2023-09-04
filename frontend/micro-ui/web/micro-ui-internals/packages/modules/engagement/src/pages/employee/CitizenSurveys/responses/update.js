@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const getMessage = (mutation) => {
-  if (mutation.isSuccess && mutation?.data?.Surveys?.[0]?.uuid){
-    return mutation?.data?.Surveys?.[0]?.uuid
+  if (mutation.isSuccess && mutation?.data?.Surveys?.[0]?.uuid) {
+    return mutation?.data?.Surveys?.[0]?.uuid;
   }
   if (mutation.isSuccess) return mutation.data?.Documents?.[0]?.uuid;
   return "";
@@ -34,9 +34,9 @@ const Response = (props) => {
   useEffect(() => {
     const onSuccess = () => {
       queryClient.clear();
-      window.history.replaceState(null, 'UPDATE_SURVEY_STATE')
+      window.history.replaceState(null, "UPDATE_SURVEY_STATE");
     };
-    if(!!state){
+    if (!!state) {
       mutation.mutate(state, {
         onSuccess,
       });
@@ -49,12 +49,17 @@ const Response = (props) => {
 
   return (
     <div>
-
       <Card>
-        <BannerPicker t={t} data={mutation.data} mutation={mutation} isSuccess={mutation.isSuccess} isLoading={mutation.isIdle || mutation.isLoading} />
+        <BannerPicker
+          t={t}
+          data={mutation.data}
+          mutation={mutation}
+          isSuccess={mutation.isSuccess}
+          isLoading={mutation.isIdle || mutation.isLoading}
+        />
       </Card>
       <ActionBar>
-        <Link to={"/digit-ui/employee"}>
+        <Link to={"/mgramseva-digit-ui/employee"}>
           <SubmitBar label={t("CORE_COMMON_GO_TO_HOME")} />
         </Link>
       </ActionBar>

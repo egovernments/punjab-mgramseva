@@ -60,7 +60,9 @@ export const ApplicationCard = ({
       </Card>
     );
   } else if (data && data?.length > 0) {
-    result = <DetailsCard data={data} serviceRequestIdKey={serviceRequestIdKey} linkPrefix={linkPrefix ? linkPrefix : "/digit-ui/employee/pt/"} />;
+    result = (
+      <DetailsCard data={data} serviceRequestIdKey={serviceRequestIdKey} linkPrefix={linkPrefix ? linkPrefix : "/mgramseva-digit-ui/employee/pt/"} />
+    );
   }
 
   return (
@@ -101,9 +103,7 @@ export const ApplicationCard = ({
             </div>
           )}
           {type === "SORT" && (
-            <div className="popup-module">
-              {<SortBy type="mobile" sortParams={sortParams} onClose={handlePopupClose} onSort={onSort} />}
-            </div>
+            <div className="popup-module">{<SortBy type="mobile" sortParams={sortParams} onClose={handlePopupClose} onSort={onSort} />}</div>
           )}
           {type === "SEARCH" && (
             <div className="popup-module">

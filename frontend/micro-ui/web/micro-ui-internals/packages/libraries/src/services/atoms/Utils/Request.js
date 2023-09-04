@@ -17,18 +17,18 @@ Axios.interceptors.response.use(
           localStorage.clear();
           sessionStorage.clear();
           window.location.href =
-            (isEmployee ? "/digit-ui/employee/user/login" : "/digit-ui/citizen/login") +
+            (isEmployee ? "/mgramseva-digit-ui/employee/user/login" : "/digit-ui/citizen/login") +
             `?from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
         } else if (
           error?.message?.toLowerCase()?.includes("internal server error") ||
           error?.message?.toLowerCase()?.includes("some error occured")
         ) {
           window.location.href =
-            (isEmployee ? "/digit-ui/employee/user/error" : "/digit-ui/citizen/error") +
+            (isEmployee ? "/mgramseva-digit-ui/employee/user/error" : "/digit-ui/citizen/error") +
             `?type=maintenance&from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
         } else if (error.message.includes("ZuulRuntimeException")) {
           window.location.href =
-            (isEmployee ? "/digit-ui/employee/user/error" : "/digit-ui/citizen/error") +
+            (isEmployee ? "/mgramseva-digit-ui/employee/user/error" : "/digit-ui/citizen/error") +
             `?type=notfound&from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
         }
       }
@@ -67,7 +67,7 @@ export const Request = async ({
   multipartFormData = false,
   multipartData = {},
   reqTimestamp = false,
-  plainAccessRequest = null
+  plainAccessRequest = null,
 }) => {
   if (method.toUpperCase() === "POST") {
     const ts = new Date().getTime();
@@ -100,10 +100,9 @@ export const Request = async ({
       data.RequestInfo = { ...data.RequestInfo, plainAccessRequest: { ...privacy } };
     }
 
-    if(plainAccessRequest){
+    if (plainAccessRequest) {
       data.RequestInfo = { ...data.RequestInfo, plainAccessRequest };
     }
-
   }
 
   const headers1 = {
@@ -198,6 +197,7 @@ export const ServiceRequest = async ({
 
   let reqParams = params;
   let reqData = data;
+  console.log(reqData, "reqData");
   if (window[preHookName] && typeof window[preHookName] === "function") {
     let preHookRes = await window[preHookName]({ params, data });
     reqParams = preHookRes.params;

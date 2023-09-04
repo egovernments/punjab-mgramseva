@@ -6,53 +6,62 @@ import DesktopInbox from "../../../components/Messages/DesktopInbox";
 import MobileInbox from "../../../components/Messages/MobileInbox";
 
 const Inbox = ({ tenants, parentRoute }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   Digit.SessionStorage.set("ENGAGEMENT_TENANTS", tenants);
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const [pageSize, setPageSize] = useState(10);
   const [pageOffset, setPageOffset] = useState(0);
   const [searchParams, setSearchParams] = useState({
     eventStatus: [],
-    name: '',
+    name: "",
     range: {
       startDate: null,
       endDate: new Date(""),
-      title: ""
+      title: "",
     },
-    ulb: tenants?.find(tenant => tenant?.code === tenantId)
+    ulb: tenants?.find((tenant) => tenant?.code === tenantId),
   });
   let isMobile = window.Digit.Utils.browser.isMobile();
-  const { data, isLoading } = Digit.Hooks.events.useInbox(searchParams?.ulb?.code, {},
+  const { data, isLoading } = Digit.Hooks.events.useInbox(
+    searchParams?.ulb?.code,
+    {},
     {
-      status: "ACTIVE,INACTIVE", eventTypes: "BROADCAST", limit: pageSize,
+      status: "ACTIVE,INACTIVE",
+      eventTypes: "BROADCAST",
+      limit: pageSize,
       offset: pageOffset,
     },
     {
-      select: (data) => ({ events: data?.events, totalCount: data?.totalCount })
-    });
+      select: (data) => ({ events: data?.events, totalCount: data?.totalCount }),
+    }
+  );
 
   const onSearch = (params) => {
     let updatedParams = { ...params };
     if (!params?.ulb) {
-      updatedParams = { ...params, ulb: { code: tenantId } }
+      updatedParams = { ...params, ulb: { code: tenantId } };
     }
     setSearchParams((prevParams) => ({ ...prevParams, ...updatedParams }));
-  }
+  };
 
   const handleFilterChange = (data) => {
-    setSearchParams((prevParams) => ({ ...prevParams, ...data }))
-  }
+    setSearchParams((prevParams) => ({ ...prevParams, ...data }));
+  };
 
   const globalSearch = (rows, columnIds) => {
     // return rows;
-    return rows?.filter(row =>
-      (searchParams?.eventStatus?.length > 0 ? searchParams?.eventStatus?.includes(row.original?.status) : true) &&
-      (searchParams?.name ? row.original?.name?.toUpperCase().startsWith(searchParams?.name.toUpperCase()) : true) &&
-      (searchParams?.ulb?.code ? row.original.tenantId === searchParams?.ulb?.code : true) &&
-      (searchParams?.eventCategory ? row.original.eventCategory === searchParams?.eventCategory?.code : true) &&
-      (isValid(searchParams?.range?.startDate) ? row.original.eventDetails?.fromDate >= new Date(searchParams?.range?.startDate).getTime() : true) &&
-      (isValid(searchParams?.range?.endDate) ? row.original.eventDetails?.toDate <= new Date(searchParams?.range?.endDate).getTime() : true))
-  }
+    return rows?.filter(
+      (row) =>
+        (searchParams?.eventStatus?.length > 0 ? searchParams?.eventStatus?.includes(row.original?.status) : true) &&
+        (searchParams?.name ? row.original?.name?.toUpperCase().startsWith(searchParams?.name.toUpperCase()) : true) &&
+        (searchParams?.ulb?.code ? row.original.tenantId === searchParams?.ulb?.code : true) &&
+        (searchParams?.eventCategory ? row.original.eventCategory === searchParams?.eventCategory?.code : true) &&
+        (isValid(searchParams?.range?.startDate)
+          ? row.original.eventDetails?.fromDate >= new Date(searchParams?.range?.startDate).getTime()
+          : true) &&
+        (isValid(searchParams?.range?.endDate) ? row.original.eventDetails?.toDate <= new Date(searchParams?.range?.endDate).getTime() : true)
+    );
+  };
 
   const getSearchFields = () => {
     return [
@@ -67,28 +76,28 @@ const Inbox = ({ tenants, parentRoute }) => {
       }, */
       {
         label: t("EVENTS_MESSAGE_LABEL"),
-        name: "name"
-      }
-    ]
-  }
+        name: "name",
+      },
+    ];
+  };
 
   const links = [
     {
       text: t("NEW_PUBLIC_MESSAGE_BUTTON_LABEL"),
-      link: "/digit-ui/employee/engagement/messages/inbox/create",
-    }
-  ]
+      link: "/mgramseva-digit-ui/employee/engagement/messages/inbox/create",
+    },
+  ];
 
   const fetchNextPage = useCallback(() => {
-    setPageOffset((prevPageOffSet) => ((parseInt(prevPageOffSet) + parseInt(pageSize))));
-  }, [pageSize])
+    setPageOffset((prevPageOffSet) => parseInt(prevPageOffSet) + parseInt(pageSize));
+  }, [pageSize]);
 
   const fetchPrevPage = useCallback(() => {
-    setPageOffset((prevPageOffSet) => ((parseInt(prevPageOffSet) - parseInt(pageSize))));
-  }, [pageSize])
+    setPageOffset((prevPageOffSet) => parseInt(prevPageOffSet) - parseInt(pageSize));
+  }, [pageSize]);
 
   const handlePageSizeChange = (e) => {
-    setPageSize((prevPageSize) => (e.target.value));
+    setPageSize((prevPageSize) => e.target.value);
   };
 
   if (isMobile) {
@@ -105,7 +114,7 @@ const Inbox = ({ tenants, parentRoute }) => {
         iconName={"calender"}
         links={links}
       />
-    )
+    );
   }
 
   return (
@@ -136,6 +145,6 @@ const Inbox = ({ tenants, parentRoute }) => {
       />
     </div>
   );
-}
+};
 
 export default Inbox;

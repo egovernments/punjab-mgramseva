@@ -8,26 +8,27 @@ const headerStyle = {
   fontSize: "30px",
   fontWeight: "700",
   marginTop: "-10px",
-  marginLeft: "15px"
-}
+  marginLeft: "15px",
+};
 
 const Inbox = ({ tenants, parentRoute }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const stateCode = Digit.ULBService.getStateId();
   const [searchParams, setSearchParams] = useState({
     applicationStatus: [],
     applicationType: [],
-    businessService: []
+    businessService: [],
   });
   let isMobile = window.Digit.Utils.browser.isMobile();
   const userInfo = Digit.UserService.getUser();
   const [pageOffset, setPageOffset] = useState(0);
-  const [pageSize, setPageSize] = useState(window.Digit.Utils.browser.isMobile()?50:10);
+  const [pageSize, setPageSize] = useState(window.Digit.Utils.browser.isMobile() ? 50 : 10);
   const [sortParams, setSortParams] = useState([{ id: "createdTime", sortOrder: "DESC" }]);
-  const paginationParams = isMobile ? { limit: 10, offset: 0, sortBy: sortParams?.[0]?.id, sortOrder: sortParams?.[0]?.sortOrder } :
-    { limit: pageSize, offset: pageOffset, sortBy: sortParams?.[0]?.id, sortOrder: sortParams?.[0]?.sortOrder }
-  const inboxSearchParams = { limit: 10, offset: 0, mobileNumber: userInfo?.info?.mobileNumber }
+  const paginationParams = isMobile
+    ? { limit: 10, offset: 0, sortBy: sortParams?.[0]?.id, sortOrder: sortParams?.[0]?.sortOrder }
+    : { limit: pageSize, offset: pageOffset, sortBy: sortParams?.[0]?.id, sortOrder: sortParams?.[0]?.sortOrder };
+  const inboxSearchParams = { limit: 10, offset: 0, mobileNumber: userInfo?.info?.mobileNumber };
 
   const { isLoading: bpaLoading, data: bpaInboxData } = Digit.Hooks.obps.useArchitectInbox({
     tenantId: stateCode,
@@ -35,13 +36,13 @@ const Inbox = ({ tenants, parentRoute }) => {
     businessService: ["BPA_LOW", "BPA", "BPA_OC"],
     filters: {
       searchForm: {
-        ...searchParams
+        ...searchParams,
       },
       tableForm: {
         sortBy: sortParams?.[0]?.id,
         limit: pageSize,
         offset: pageOffset,
-        sortOrder: sortParams?.[0]?.sortOrder
+        sortOrder: sortParams?.[0]?.sortOrder,
       },
       filterForm: {
         moduleName: "bpa-services",
@@ -49,19 +50,19 @@ const Inbox = ({ tenants, parentRoute }) => {
         applicationStatus: searchParams?.applicationStatus,
         applicationType: searchParams?.applicationType ? searchParams?.applicationType : [],
         locality: [],
-        assignee: "ASSIGNED_TO_ALL"
-      }
+        assignee: "ASSIGNED_TO_ALL",
+      },
     },
     config: {},
-    withEDCRData:false
+    withEDCRData: false,
   });
 
-    const fetchLastPage = () => {
-      setPageOffset(bpaInboxData?.totalCount && (Math.ceil(bpaInboxData?.totalCount / 10) * 10 - pageSize));
+  const fetchLastPage = () => {
+    setPageOffset(bpaInboxData?.totalCount && Math.ceil(bpaInboxData?.totalCount / 10) * 10 - pageSize);
   };
 
   const fetchFirstPage = () => {
-      setPageOffset(0);
+    setPageOffset(0);
   };
 
   const handleSort = (args) => {
@@ -75,23 +76,23 @@ const Inbox = ({ tenants, parentRoute }) => {
         name: "applicationNo",
         type: "ulb",
       },
-    ]
-  }
+    ];
+  };
 
   const links = [
     {
       text: t("NEW_PUBLIC_MESSAGE_BUTTON_LABEL"),
-      link: "/digit-ui/employee/engagement/messages/create",
-    }
-  ]
+      link: "/mgramseva-digit-ui/employee/engagement/messages/create",
+    },
+  ];
 
   const onSearch = (params) => {
     setSearchParams({ ...searchParams, ...params });
-  }
+  };
 
   const handleFilterChange = (data) => {
-    setSearchParams({ ...searchParams, ...data })
-  }
+    setSearchParams({ ...searchParams, ...data });
+  };
 
   const fetchNextPage = () => {
     setPageOffset((prevState) => prevState + pageSize);
@@ -108,7 +109,7 @@ const Inbox = ({ tenants, parentRoute }) => {
   if (isMobile) {
     return (
       <React.Fragment>
-        <h2 style={headerStyle} >{`${t("ES_COMMON_OBPS_INBOX_LABEL")} ( ${bpaInboxData?.totalCount || 0} )`}</h2>
+        <h2 style={headerStyle}>{`${t("ES_COMMON_OBPS_INBOX_LABEL")} ( ${bpaInboxData?.totalCount || 0} )`}</h2>
         <MobileInbox
           bparegData={[]}
           edcrData={[]}
@@ -127,43 +128,43 @@ const Inbox = ({ tenants, parentRoute }) => {
           links={links}
         />
       </React.Fragment>
-    )
+    );
   }
 
   return (
     <div>
-    <Header>
-      {t("ES_COMMON_INBOX")}
-      {Number(bpaInboxData?.totalCount) ? <p className="inbox-count">{Number(bpaInboxData?.totalCount)}</p> : null}
-    </Header>
-    <DesktopInbox
-      // bparegData={table}
-      bparegData={[]}
-      edcrData={[]}
-      data={bpaInboxData}
-      isLoading={bpaLoading}
-      statusMap={bpaInboxData?.statuses}
-      onFilterChange={handleFilterChange}
-      searchFields={getSearchFields()}
-      onSearch={onSearch}
-      onSort={handleSort}
-      onNextPage={fetchNextPage}
-      onPrevPage={fetchPrevPage}
-      onLastPage={fetchLastPage}
-      onFirstPage={fetchFirstPage}
-      currentPage={Math.floor(pageOffset / pageSize)}
-      pageSizeLimit={pageSize}
-      disableSort={false}
-      searchParams={searchParams}
-      onPageSizeChange={handlePageSizeChange}
-      parentRoute={parentRoute}
-      paginationParms={paginationParams}
-      sortParams={sortParams}
-      totalRecords={bpaInboxData?.totalCount}
-    // totalRecords={isInbox ? Number(applications?.totalCount) : totalCount}
-    />
+      <Header>
+        {t("ES_COMMON_INBOX")}
+        {Number(bpaInboxData?.totalCount) ? <p className="inbox-count">{Number(bpaInboxData?.totalCount)}</p> : null}
+      </Header>
+      <DesktopInbox
+        // bparegData={table}
+        bparegData={[]}
+        edcrData={[]}
+        data={bpaInboxData}
+        isLoading={bpaLoading}
+        statusMap={bpaInboxData?.statuses}
+        onFilterChange={handleFilterChange}
+        searchFields={getSearchFields()}
+        onSearch={onSearch}
+        onSort={handleSort}
+        onNextPage={fetchNextPage}
+        onPrevPage={fetchPrevPage}
+        onLastPage={fetchLastPage}
+        onFirstPage={fetchFirstPage}
+        currentPage={Math.floor(pageOffset / pageSize)}
+        pageSizeLimit={pageSize}
+        disableSort={false}
+        searchParams={searchParams}
+        onPageSizeChange={handlePageSizeChange}
+        parentRoute={parentRoute}
+        paginationParms={paginationParams}
+        sortParams={sortParams}
+        totalRecords={bpaInboxData?.totalCount}
+        // totalRecords={isInbox ? Number(applications?.totalCount) : totalCount}
+      />
     </div>
   );
-}
+};
 
-export default Inbox; 
+export default Inbox;

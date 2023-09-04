@@ -9,12 +9,12 @@ const NewApplication = () => {
   const tenants = Digit.Hooks.pt.useTenants();
   const { t } = useTranslation();
   const [canSubmit, setSubmitValve] = useState(false);
-  const defaultValues = { };
+  const defaultValues = {};
   const history = useHistory();
   // delete
   // const [_formData, setFormData,_clear] = Digit.Hooks.useSessionStorage("store-data",null);
   const [mutationHappened, setMutationHappened, clear] = Digit.Hooks.useSessionStorage("EMPLOYEE_MUTATION_HAPPENED", false);
-  const [successData, setsuccessData, clearSuccessData] = Digit.Hooks.useSessionStorage("EMPLOYEE_MUTATION_SUCCESS_DATA", { });
+  const [successData, setsuccessData, clearSuccessData] = Digit.Hooks.useSessionStorage("EMPLOYEE_MUTATION_SUCCESS_DATA", {});
   const { data: commonFields, isLoading } = Digit.Hooks.pt.useMDMS(Digit.ULBService.getStateId(), "PropertyTax", "CommonFieldsConfig");
   useEffect(() => {
     setMutationHappened(false);
@@ -120,8 +120,7 @@ const NewApplication = () => {
       };
     }
 
-    history.replace("/digit-ui/employee/pt/response", { Property: formData }); //current wala
-
+    history.replace("/mgramseva-digit-ui/employee/pt/response", { Property: formData }); //current wala
   };
   if (isLoading) {
     return <Loader />;
@@ -129,7 +128,7 @@ const NewApplication = () => {
 
   /* use newConfig instead of commonFields for local development in case needed */
 
-  const configs = commonFields?commonFields:newConfig;
+  const configs = commonFields ? commonFields : newConfig;
 
   return (
     <FormComposer

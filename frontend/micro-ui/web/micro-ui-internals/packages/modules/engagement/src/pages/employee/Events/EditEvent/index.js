@@ -1,5 +1,5 @@
 import { FormComposer, Header, Loader } from "@egovernments/digit-ui-react-components";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 import React, { Fragment, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
@@ -10,14 +10,17 @@ const EditEvents = () => {
   const history = useHistory();
   const { id: EventId } = useParams();
   const tenantId = Digit.ULBService.getCurrentTenantId();
-  const { isLoading, data } = Digit.Hooks.events.useInbox(tenantId, {},
+  const { isLoading, data } = Digit.Hooks.events.useInbox(
+    tenantId,
+    {},
     {
       eventTypes: "EVENTSONGROUND",
-      ids: EventId
+      ids: EventId,
     },
     {
-      select: (data) => data?.events?.[0]
-    });
+      select: (data) => data?.events?.[0],
+    }
+  );
   const [mutationHappened, setMutationHappened, clear] = Digit.Hooks.useSessionStorage("EMPLOYEE_EVENT_MUTATION_HAPPENED", false);
   const [errorInfo, setErrorInfo, clearError] = Digit.Hooks.useSessionStorage("EMPLOYEE_EVENT_ERROR_DATA", false);
   const [successData, setsuccessData, clearSuccessData] = Digit.Hooks.useSessionStorage("EMPLOYEE_EVENT_MUTATION_SUCCESS_DATA", false);
@@ -50,50 +53,42 @@ const EditEvents = () => {
             organizer,
             fees,
             latitude: geoLocation?.latitude,
-            longitude: geoLocation?.longitude
-          }
-        }
-      ]
-    }
-    history.push("/digit-ui/employee/engagement/event/response?update=true", details)
-  }
+            longitude: geoLocation?.longitude,
+          },
+        },
+      ],
+    };
+    history.push("/mgramseva-digit-ui/employee/engagement/event/response?update=true", details);
+  };
 
   if (isLoading) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   const defaultValues = {
     defaultTenantId: data?.tenantId,
     name: data?.name,
-    fromDate: format(new Date(data?.eventDetails?.fromDate), 'yyyy-MM-dd'),
-    toDate: format(new Date(data?.eventDetails?.toDate), 'yyyy-MM-dd'),
+    fromDate: format(new Date(data?.eventDetails?.fromDate), "yyyy-MM-dd"),
+    toDate: format(new Date(data?.eventDetails?.toDate), "yyyy-MM-dd"),
     organizer: data?.eventDetails?.organizer,
     fees: data?.eventDetails?.fees,
     description: data?.description,
     address: data?.eventDetails?.address,
     category: data?.eventCategory,
-    fromTime: format(new Date(data?.eventDetails?.fromDate), 'HH:mm'),
-    toTime: format(new Date(data?.eventDetails?.toDate), 'HH:mm'),
+    fromTime: format(new Date(data?.eventDetails?.fromDate), "HH:mm"),
+    toTime: format(new Date(data?.eventDetails?.toDate), "HH:mm"),
     geoLocation: {
       latitude: data?.eventDetails?.latitude,
       longitude: data?.eventDetails?.longitude,
-    }
-  }
+    },
+  };
 
   return (
     <Fragment>
       <Header>{t("ES_TITLE_EDIT_EVENTS")}</Header>
-      <FormComposer
-        defaultValues={defaultValues}
-        config={config}
-        onSubmit={onSubmit}
-        label={t("EVENTS_SAVE_CHANGES")}
-      >
-      </FormComposer>
+      <FormComposer defaultValues={defaultValues} config={config} onSubmit={onSubmit} label={t("EVENTS_SAVE_CHANGES")}></FormComposer>
     </Fragment>
-  )
-}
+  );
+};
 
 export default EditEvents;

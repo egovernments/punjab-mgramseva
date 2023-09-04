@@ -11,37 +11,55 @@ const Search = ({ path }) => {
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const location = useLocation();
   const details = () => {
-    if (userInformation?.roles?.filter((ob) => ob.code.includes("BPAREG_"))?.length <= 0 && userInformation?.roles?.filter((ob) =>(ob.code.includes("BPA_") || ob.code.includes("CITIZEN"))).length > 0) return "BUILDING_PLAN_SCRUTINY";
-    if (userInformation?.roles?.filter((ob) => ob.code.includes("BPAREG_"))?.length > 0 && userInformation?.roles?.filter((ob) =>(ob.code.includes("BPA_") || ob.code.includes("CITIZEN"))).length <= 0) return "BPA_STAKEHOLDER_REGISTRATION";
-    else return "BUILDING_PLAN_SCRUTINY"
-  }
+    if (
+      userInformation?.roles?.filter((ob) => ob.code.includes("BPAREG_"))?.length <= 0 &&
+      userInformation?.roles?.filter((ob) => ob.code.includes("BPA_") || ob.code.includes("CITIZEN")).length > 0
+    )
+      return "BUILDING_PLAN_SCRUTINY";
+    if (
+      userInformation?.roles?.filter((ob) => ob.code.includes("BPAREG_"))?.length > 0 &&
+      userInformation?.roles?.filter((ob) => ob.code.includes("BPA_") || ob.code.includes("CITIZEN")).length <= 0
+    )
+      return "BPA_STAKEHOLDER_REGISTRATION";
+    else return "BUILDING_PLAN_SCRUTINY";
+  };
   const [selectedType, setSelectedType] = useState(details());
   const [payload, setPayload] = useState({});
   const [searchData, setSearchData] = useState({});
 
-  useEffect(()=>{
-    if (location.pathname === "/digit-ui/citizen/obps/search/application" || location.pathname === "/digit-ui/employee/obps/search/application") {
-      Digit.SessionStorage.del("OBPS.INBOX")
-      Digit.SessionStorage.del("STAKEHOLDER.INBOX")
+  useEffect(() => {
+    if (
+      location.pathname === "/digit-ui/citizen/obps/search/application" ||
+      location.pathname === "/mgramseva-digit-ui/employee/obps/search/application"
+    ) {
+      Digit.SessionStorage.del("OBPS.INBOX");
+      Digit.SessionStorage.del("STAKEHOLDER.INBOX");
     }
-  },[location.pathname])
+  }, [location.pathname]);
 
   const Search = Digit.ComponentRegistryService.getComponent("OBPSSearchApplication");
 
   const checkData = (data) => {
-    if (data?.applicationNo === "" && data?.fromDate === "" && data?.mobileNumber === "" && data?.serviceType === "" && data?.status === "" && data?.toDate === "") return false
+    if (
+      data?.applicationNo === "" &&
+      data?.fromDate === "" &&
+      data?.mobileNumber === "" &&
+      data?.serviceType === "" &&
+      data?.status === "" &&
+      data?.toDate === ""
+    )
+      return false;
 
-    return true
+    return true;
+  };
 
-  }
-
-  const [paramerror,setparamerror] = useState("")
+  const [paramerror, setparamerror] = useState("");
 
   function onSubmit(_data) {
-    if (_data?.applicationType?.code === "BPA_STAKEHOLDER_REGISTRATION"){
-      const isSearchAllowed = checkData(_data)
-      if(!isSearchAllowed){
-        setparamerror("BPA_ADD_MORE_PARAM_STAKEHOLDER")
+    if (_data?.applicationType?.code === "BPA_STAKEHOLDER_REGISTRATION") {
+      const isSearchAllowed = checkData(_data);
+      if (!isSearchAllowed) {
+        setparamerror("BPA_ADD_MORE_PARAM_STAKEHOLDER");
       }
     }
     setSearchData(_data);
@@ -65,9 +83,7 @@ const Search = ({ path }) => {
 
   let params = {};
   let filters = {};
-  
 
-  
   if (
     (selectedType && selectedType.includes("STAKEHOLDER")) ||
     (Object.keys(payload).length > 0 && payload?.applicationType && payload?.applicationType.includes("STAKEHOLDER"))
@@ -80,9 +96,8 @@ const Search = ({ path }) => {
         payload.applicationNo = "";
       }
       if (payload && payload["applicationType"]) delete payload["applicationType"];
-      if(payload && payload["serviceType"])
-      {
-        payload["tradeType"] = payload["serviceType"]
+      if (payload && payload["serviceType"]) {
+        payload["tradeType"] = payload["serviceType"];
         delete payload["serviceType"];
       }
       params = { ...payload, tenantId: Digit.ULBService.getStateId() };
@@ -107,7 +122,7 @@ const Search = ({ path }) => {
     tenantId,
     filters,
     params,
-    {enabled:paramerror===""}
+    { enabled: paramerror === "" }
   );
   return (
     <Search

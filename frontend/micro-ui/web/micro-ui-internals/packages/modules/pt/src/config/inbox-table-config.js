@@ -76,7 +76,9 @@ export const TableConfig = (t) => ({
             <div>
               {row.original?.searchData?.due_tax > 0 && Digit.Utils.didEmployeeHasRole("PT_CEMP") ? (
                 <span className="link">
-                  <Link to={`/digit-ui/employee/payment/collect/PT/` + row.original?.searchData?.["propertyId"]}>{t("ES_PT_COLLECT_TAX")}</Link>
+                  <Link to={`/mgramseva-digit-ui/employee/payment/collect/PT/` + row.original?.searchData?.["propertyId"]}>
+                    {t("ES_PT_COLLECT_TAX")}
+                  </Link>
                 </span>
               ) : null}
             </div>
