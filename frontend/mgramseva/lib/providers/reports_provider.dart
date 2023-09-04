@@ -322,7 +322,7 @@ class ReportsProvider with ChangeNotifier {
       for (int i = 0; i < optionalData.length; i++) {
         sheet
             .getRangeByName('${CommonMethods.getAlphabetsWithKeyValue()[i].label}1')
-            .setText(headers[CommonMethods.getAlphabetsWithKeyValue()[i].key]);
+            .setText(optionalData[CommonMethods.getAlphabetsWithKeyValue()[i].key]);
       }
     }
 
