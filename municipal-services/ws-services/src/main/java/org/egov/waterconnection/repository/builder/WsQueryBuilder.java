@@ -132,6 +132,20 @@ public class WsQueryBuilder {
 
 	public static final String DEMAND_DETAILS = "select d.consumercode from egbs_demand_v1 d join egbs_demanddetail_v1 dd on d.id = dd.demandid where d.status = 'ACTIVE' ";
 	
+	
+	public static final String BILL_REPORT_QUERY = "SELECT conn.tenantId as tenantId,dd.taxheadcode as demandType, conn.connectionno as connectionNo, conn.oldConnectionno as oldConnectionNo,"
+			+ " conn.createdTime as connCreatedDate,dd.taxamount as demandAmount,connectionholder.userid as uuid FROM eg_ws_connection conn "
+			+ INNER_JOIN_STRING + " eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id "
+			+ INNER_JOIN_STRING + " egbs_demand_v1 dem ON dem.consumercode=conn.connectionno "
+			+ INNER_JOIN_STRING + " egbs_demanddetail_v1 dd on dd.demandid=dem.id ";
+	
+	public static final String COLLECTION_REPORT_QUERY = "SELECT conn.tenantId as tenantId, conn.connectionno as connectionNo, conn.oldConnectionno as oldConnectionNo,connectionholder.userid as uuid"
+			+ ",pd.amountpaid as amountpaid,pay.paymentmode as paymentmode FROM eg_ws_connection conn "
+			+ INNER_JOIN_STRING + " eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id "
+			+ INNER_JOIN_STRING + " egbs_billdetail_v1 bd on bd.consumercode=conn.connectionno "
+			+ INNER_JOIN_STRING + " egcl_paymentdetail pd on pd.billid=bd.billid "
+			+ INNER_JOIN_STRING + " egcl_payment pay on pay.id=pd.paymentid where conn.status='Active' ";
+			
 	/**
 	 * 
 	 * @param criteria          The WaterCriteria

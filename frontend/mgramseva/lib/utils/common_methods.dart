@@ -230,7 +230,7 @@ class CommonMethods {
         .toList();
   }
 
-  String truncateWithEllipsis(int cutoff, String myString) {
+  static String truncateWithEllipsis(int cutoff, String myString) {
     return (myString.length <= cutoff)
         ? myString
         : '${myString.substring(0, cutoff)}...';

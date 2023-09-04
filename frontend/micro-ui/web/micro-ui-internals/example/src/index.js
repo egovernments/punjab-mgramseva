@@ -58,16 +58,16 @@ const enabledModules = [
   "NDSS",
   "Bills",
   "SW",
-  "BillAmendment"
+  "BillAmendment",
 ];
 
 const initTokens = (stateCode) => {
   const userType = window.sessionStorage.getItem("userType") || process.env.REACT_APP_USER_TYPE || "CITIZEN";
 
-  const token = window.localStorage.getItem("token")|| process.env[`REACT_APP_${userType}_TOKEN`];
- 
-  const citizenInfo = window.localStorage.getItem("Citizen.user-info")
- 
+  const token = window.localStorage.getItem("token") || process.env[`REACT_APP_${userType}_TOKEN`];
+
+  const citizenInfo = window.localStorage.getItem("Citizen.user-info");
+
   const citizenTenantId = window.localStorage.getItem("Citizen.tenant-id") || stateCode;
 
   const employeeInfo = window.localStorage.getItem("Employee.user-info");
@@ -94,33 +94,33 @@ const initDigitUI = () => {
     PaymentModule,
     ...paymentConfigs,
     PaymentLinks,
-    PTModule,
-    PTLinks,
-    ...PTComponents,
-    MCollectLinks,
-    MCollectModule,
+    // PTModule,
+    // PTLinks,
+    // ...PTComponents,
+    // MCollectLinks,
+    // MCollectModule,
     HRMSModule,
-    ReceiptsModule,
-    BillsModule,
+    // ReceiptsModule,
+    // BillsModule,
 
     // TLModule,
     // TLLinks,
   });
 
-  initFSMComponents();
+  // initFSMComponents();
   initPGRComponents();
   initDSSComponents();
-  initMCollectComponents();
+  // initMCollectComponents();
   initHRMSComponents();
-  initTLComponents();
+  // initTLComponents();
   initReceiptsComponents();
   // initReportsComponents();
-  initOBPSComponents();
-  initEngagementComponents();
-  initNOCComponents();
-  initWSComponents();
-  initCommonPTComponents();
-  initBillsComponents();
+  // initOBPSComponents();
+  // initEngagementComponents();
+  // initNOCComponents();
+  // initWSComponents();
+  // initCommonPTComponents();
+  // initBillsComponents();
 
   // initCustomisationComponents();
 

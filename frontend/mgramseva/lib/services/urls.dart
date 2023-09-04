@@ -86,6 +86,11 @@ class Url {
       'ifix-department-entity/departmentEntity/v1/_search';
   static const String ADAPTER_MASTER_DATA_PROJECT_SEARCH=
       'adapter-master-data/project/v1/_search';
+  ///Reports
+  static const String BILL_REPORT=
+      'ws-services/wc/_billReport';
+  static const String COLLECTION_REPORT=
+      'ws-services/wc/_collectionReport';
 }
 
 

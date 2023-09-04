@@ -4,7 +4,7 @@ import 'package:mgramseva/utils/common_methods.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 
 Future<void> generateExcel(
-    List<String> headers, List<List<String>> tableData) async {
+    List<String> headers, List<List<String>> tableData,{String title='HouseholdRegister'}) async {
   //Create a Excel document.
 
   //Creating a workbook.
@@ -51,5 +51,5 @@ Future<void> generateExcel(
   workbook.dispose();
 
   //Save and launch the file.
-  await saveAndLaunchFile(bytes, 'HouseholdRegister.xlsx');
+  await saveAndLaunchFile(bytes, '$title.xlsx');
 }

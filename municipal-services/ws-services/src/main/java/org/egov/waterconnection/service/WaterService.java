@@ -5,6 +5,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
+import org.egov.waterconnection.web.models.BillReportData;
+import org.egov.waterconnection.web.models.BillReportResponse;
+import org.egov.waterconnection.web.models.CollectionReportData;
 import org.egov.waterconnection.web.models.Feedback;
 import org.egov.waterconnection.web.models.FeedbackRequest;
 import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
@@ -42,5 +45,10 @@ public interface WaterService {
 	WaterConnectionResponse planeSearch(SearchCriteria criteria, RequestInfo requestInfo);
 
 	List<RevenueCollectionData> getRevenueCollectionData(@Valid SearchCriteria criteria, RequestInfo requestInfo);
+
+	List<BillReportData> billReport(@Valid String demandStartDate,@Valid String demandEndDate, @Valid String tenantId, RequestInfo requestInfo);
+
+	List<CollectionReportData> collectionReport(String paymentStartDate, String paymentEndDate, String tenantId,
+			RequestInfo requestInfo);
 
 }

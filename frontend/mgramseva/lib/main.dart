@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mgramseva/env/app_config.dart';
+import 'package:mgramseva/providers/reports_provider.dart';
 import 'package:mgramseva/routing.dart';
 import 'package:mgramseva/providers/authentication_provider.dart';
 import 'package:mgramseva/providers/bill_generation_details_provider.dart';
@@ -192,6 +193,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => NotificationScreenProvider()),
           ChangeNotifierProvider(create: (_) => TransactionUpdateProvider()),
           ChangeNotifierProvider(create: (_) => IfixHierarchyProvider()),
+          ChangeNotifierProvider(create: (_) => ReportsProvider()),
         ],
         child: Consumer<LanguageProvider>(
             builder: (_, userProvider, child) => GestureDetector(
