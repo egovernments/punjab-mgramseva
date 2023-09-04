@@ -31,6 +31,7 @@ class ReportsRepo extends BaseService{
         url: Url.BILL_REPORT,
         queryParameters: params,
         requestInfo: requestInfo,
+        body: {},
         method: RequestType.POST);
     if (res != null && res['BillReportData'] != null) {
       try {
@@ -67,6 +68,7 @@ class ReportsRepo extends BaseService{
         url: Url.COLLECTION_REPORT,
         queryParameters: params,
         requestInfo: requestInfo,
+        body: {},
         method: RequestType.POST);
     if (res != null && res['CollectionReportData'] != null) {
       try {

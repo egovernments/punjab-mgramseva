@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 
 import '../model/common/BillsTableData.dart';
 import '../model/localization/language.dart';
@@ -15,7 +16,8 @@ import '../utils/constants.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import '../utils/date_formats.dart';
 import '../utils/error_logging.dart';
-import '../utils/excel_download/generate_excel.dart';
+import 'package:mgramseva/utils/excel_download/save_file_mobile.dart'
+  if (dart.library.html) 'package:mgramseva/utils/excel_download/save_file_web.dart';
 import '../utils/global_variables.dart';
 import '../utils/localization/application_localizations.dart';
 import '../utils/models.dart';
@@ -81,6 +83,9 @@ class ReportsProvider with ChangeNotifier {
   TableDataRow getCollectionRow(CollectionReportData data,{bool isExcel = false}) {
     String? name =
     CommonMethods.truncateWithEllipsis(20,data.consumerName!);
+    if(data.oldConnectionNo!=null && data.oldConnectionNo!.isEmpty){
+      data.oldConnectionNo='-';
+    }
     return TableDataRow([
       TableData(
           isExcel?'${data.connectionNo ?? '-'}':'${data.connectionNo?.split('/').first ?? ''}/...${data.connectionNo?.split('/').last ?? ''}',),
@@ -212,7 +217,13 @@ class ReportsProvider with ChangeNotifier {
               '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
                   .toList(),
               getDemandsData(demandreports!,isExcel: true).map<List<String>>((e) => e.tableRow.map((e) => e.label).toList()).toList()??[],
-              title: 'DemandReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(2)}_$selectedBillPeriod');
+              title: 'DemandReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(2)}_$selectedBillPeriod',
+              optionalData: [
+                'Demand Report',
+                '$selectedBillPeriod',
+                '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)} ${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
+                'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch,format: 'dd/MMM/yyyy')}'
+              ]);
         }else{
           genericTableData = BillsTableData(demandHeaderList,getDemandsData(demandreports!));
         }
@@ -255,7 +266,13 @@ class ReportsProvider with ChangeNotifier {
               '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
                   .toList(),
               getCollectionData(collectionreports!,isExcel: true).map<List<String>>((e) => e.tableRow.map((e) => e.label).toList()).toList()??[],
-          title: 'CollectionReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(2)}_$selectedBillPeriod');
+          title: 'CollectionReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_$selectedBillPeriod',
+          optionalData: [
+            'Collection Report',
+            '$selectedBillPeriod',
+            '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)} ${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
+            'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch,format: 'dd/MMM/yyyy')}'
+          ]);
         }else{
           genericTableData = BillsTableData(collectionHeaderList,getCollectionData(collectionreports!));
         }
@@ -277,5 +294,69 @@ class ReportsProvider with ChangeNotifier {
   void clearBuildTableData() {
     genericTableData = BillsTableData([],[]);
     callNotifier();
+  }
+  Future<void> generateExcel(
+      List<String> headers, List<List<String>> tableData,{String title='HouseholdRegister',List<String> optionalData=const[]}) async {
+    //Create a Excel document.
+
+    //Creating a workbook.
+    final Workbook workbook = Workbook();
+    //Accessing via index
+    final Worksheet sheet = workbook.worksheets[0];
+    // sheet.showGridlines = false;
+
+    // Enable calculation for worksheet.
+    sheet.enableSheetCalculations();
+    int dataStartRow=2;
+    int headersStartRow=1;
+    // //Set data in the worksheet.
+    if(optionalData.isEmpty){
+      sheet.getRangeByName('A1:D1').columnWidth = 32.5;
+      sheet.getRangeByName('A1:D1').cellStyle.hAlign = HAlignType.center;
+    }else{
+      sheet.getRangeByName('A1:D1').columnWidth = 32.5;
+      sheet.getRangeByName('A2:D2').columnWidth = 32.5;
+      sheet.getRangeByName('A2:D2').cellStyle.hAlign = HAlignType.center;
+      dataStartRow = 3;
+      headersStartRow= 2;
+      for (int i = 0; i < optionalData.length; i++) {
+        sheet
+            .getRangeByName('${CommonMethods.getAlphabetsWithKeyValue()[i].label}1')
+            .setText(headers[CommonMethods.getAlphabetsWithKeyValue()[i].key]);
+      }
+    }
+
+    for (int i = 0; i < headers.length; i++) {
+      sheet
+          .getRangeByName('${CommonMethods.getAlphabetsWithKeyValue()[i].label}$headersStartRow')
+          .setText(headers[CommonMethods.getAlphabetsWithKeyValue()[i].key]);
+    }
+
+    for (int i = dataStartRow; i < tableData.length + 2; i++) {
+      for (int j = 0; j < headers.length; j++) {
+        sheet
+            .getRangeByName(
+            '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
+            .setText(tableData[i - 2][j]);
+        sheet
+            .getRangeByName(
+            '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
+            .cellStyle
+            .hAlign = HAlignType.center;
+        sheet
+            .getRangeByName(
+            '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
+            .cellStyle
+            .vAlign = VAlignType.center;
+      }
+    }
+
+    //Save and launch the excel.
+    final List<int> bytes = workbook.saveAsStream();
+    //Dispose the document.
+    workbook.dispose();
+
+    //Save and launch the file.
+    await saveAndLaunchFile(bytes, '$title.xlsx');
   }
 }

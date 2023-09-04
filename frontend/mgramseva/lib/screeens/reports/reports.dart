@@ -62,7 +62,7 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
     if (viewTable == true) {
       viewTable = false;
       reportProvider.clearBuildTableData();
-    } else if(viewTable == false) {
+    } else if (viewTable == false) {
       reportProvider.clearBuildTableData();
       Navigator.pop(context);
     }
@@ -88,70 +88,88 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                      color: Color.fromRGBO(238, 238, 238, 1),
-                      margin: constraints.maxWidth < 760
-                          ? null
-                          : EdgeInsets.symmetric(
-                              horizontal:
-                                  MediaQuery.of(context).size.width / 95),
-                      height: constraints.maxHeight - 50,
-                      child: SingleChildScrollView(
-                        controller: scrollController,
-                        child: viewTable
-                            ? ViewTable(showTable)
-                            : Column(
+                color: Color.fromRGBO(238, 238, 238, 1),
+                margin: constraints.maxWidth < 760
+                    ? null
+                    : EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width / 95),
+                height: constraints.maxHeight - 50,
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  child: viewTable
+                      ? ViewTable(showTable)
+                      : Column(
                           children: [
                             HomeBack(),
-                            Text(
-                                ApplicationLocalizations.of(context)
-                                    .translate(i18.dashboard.CORE_REPORTS),
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w700)),
-                            SizedBox(
-                              height: 30,
+                            Card(
+                              margin: EdgeInsets.only(bottom: 2),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(top:15,bottom: 10.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                        ApplicationLocalizations.of(context)
+                                            .translate(
+                                                i18.dashboard.CORE_REPORTS),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700)),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
+                                    Consumer<ReportsProvider>(
+                                        builder: (_, reportProvider, child) =>
+                                            Container(
+                                              child: Column(
+                                                children: [
+                                                  SelectFieldBuilder(
+                                                    i18.demandGenerate
+                                                        .BILLING_YEAR_LABEL,
+                                                    reportProvider
+                                                        .selectedBillYear,
+                                                    '',
+                                                    '',
+                                                    reportProvider
+                                                        .onChangeOfBillYear,
+                                                    reportProvider
+                                                        .getFinancialYearListDropdown(
+                                                            reportProvider
+                                                                .languageList),
+                                                    true,
+                                                    controller: reportProvider
+                                                        .billingyearCtrl,
+                                                    key: Keys.billReport
+                                                        .BILL_REPORT_BILLING_YEAR,
+                                                  ),
+                                                  SelectFieldBuilder(
+                                                    i18.demandGenerate
+                                                        .BILLING_CYCLE_LABEL,
+                                                    reportProvider
+                                                        .selectedBillCycle,
+                                                    '',
+                                                    '',
+                                                    reportProvider
+                                                        .onChangeOfBillCycle,
+                                                    reportProvider
+                                                        .getBillingCycleDropdown(
+                                                            reportProvider
+                                                                .selectedBillYear),
+                                                    true,
+                                                    controller: reportProvider
+                                                        .billingcycleCtrl,
+                                                    key: Keys.billReport
+                                                        .BILL_REPORT_BILLING_CYCLE,
+                                                  ),
+                                                ],
+                                              ),
+                                            )),
+                                  ],
+                                ),
+                              ),
                             ),
-                            Consumer<ReportsProvider>(
-                                builder: (_, reportProvider, child) =>
-                                    Container(
-                                      child: Column(
-                                        children: [
-                                          SelectFieldBuilder(
-                                            i18.demandGenerate
-                                                .BILLING_YEAR_LABEL,
-                                            reportProvider.selectedBillYear,
-                                            '',
-                                            '',
-                                            reportProvider.onChangeOfBillYear,
-                                            reportProvider
-                                                .getFinancialYearListDropdown(
-                                                    reportProvider
-                                                        .languageList),
-                                            true,
-                                            controller:
-                                                reportProvider.billingyearCtrl,
-                                            key: Keys.billReport
-                                                .BILL_REPORT_BILLING_YEAR,
-                                          ),
-                                          SelectFieldBuilder(
-                                            i18.demandGenerate
-                                                .BILLING_CYCLE_LABEL,
-                                            reportProvider.selectedBillCycle,
-                                            '',
-                                            '',
-                                            reportProvider.onChangeOfBillCycle,
-                                            reportProvider
-                                                .getBillingCycleDropdown(
-                                                    reportProvider
-                                                        .selectedBillYear),
-                                            true,
-                                            controller:
-                                                reportProvider.billingcycleCtrl,
-                                            key: Keys.billReport
-                                                .BILL_REPORT_BILLING_CYCLE,
-                                          ),
-                                        ],
-                                      ),
-                                    )),
                             SizedBox(
                               height: 30,
                             ),
@@ -159,15 +177,28 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                               height: 1,
                               color: Colors.black,
                             ),
-                            BillReport(onViewClick:showTable),
-                            CollectionReport(onViewClick:showTable),
+                            Card(
+                              margin: EdgeInsets.only(top: 15,bottom: 2),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: Column(
+                                  children: [
+                                    BillReport(onViewClick: showTable),
+                                    CollectionReport(onViewClick: showTable),
+                                  ],
+                                ),
+                              ),
+                            ),
                             Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Footer())
                           ],
                         ),
-                      ),
-                    ),
+                ),
+              ),
             ],
           ),
         ),
