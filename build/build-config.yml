@@ -79,10 +79,10 @@ config:
       - work-dir: "frontend/mgramseva"
         image-name: "frontend-mgramseva"
         dockerfile: "frontend/mgramseva/docker/Dockerfile"
-  - name: "builds/mGramSeva/frontend/mgramseva-digit-ui"
+  - name: "builds/mGramSeva/frontend/mgramseva-web"
     build:
       - work-dir: "frontend/micro-ui"
-        image-name: "mgramseva-digit-ui"
+        image-name: "mgramseva-web"
         dockerfile: "frontend/micro-ui/web/docker/Dockerfile"
   - name: "builds/mGramSeva/core-services/user-otp"
     build:
