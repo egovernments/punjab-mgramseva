@@ -1,122 +1,93 @@
-import { useClearNotifications, useEvents, useNotificationCount } from "./events";
-import useCreateEvent from "./events/useCreateEvent";
-import useUpdateEvent from "./events/useUpdateEvent";
+import { useInitStore } from './store';
+import useWorkflowDetails from './workflow';
+import useSessionStorage from './useSessionStorage';
+import useQueryParams from './useQueryParams';
+import useDocumentSearch from './useDocumentSearch';
+import useClickOutside from './useClickOutside';
 import {
-  useBulkPdfDetails, useDemandSearch, useFetchBillsForBuissnessService, useFetchCitizenBillsForBuissnessService, useFetchPayment, useGetPaymentRulesForBusinessServices, usePaymentSearch, usePaymentUpdate, useRecieptSearch
-} from "./payment";
-import { useInitStore } from "./store";
-import useAccessControl from "./useAccessControl";
-import { useApplicationsForBusinessServiceSearch } from "./useApplicationForBillSearch";
-import useClickOutside from "./useClickOutside";
-import useCustomMDMS from "./useCustomMDMS";
-import useDocumentSearch from "./useDocumentSearch";
-import useDynamicData from "./useDynamicData";
-import useLocation from "./useLocation";
-import useCustomAPIMutationHook from "./useCustomAPIMutationHook";
+  useFetchPayment,
+  usePaymentUpdate,
+  useFetchCitizenBillsForBuissnessService,
+  useFetchBillsForBuissnessService,
+  useGetPaymentRulesForBusinessServices,
+  useDemandSearch,
+  useRecieptSearch,
+  usePaymentSearch,
+  useBulkPdfDetails,
+} from './payment';
+import { useUserSearch } from './userSearch';
+import { useApplicationsForBusinessServiceSearch } from './useApplicationForBillSearch';
+import useBoundaryLocalities from './useLocalities';
+import useCommonMDMS from './useMDMS';
+import useCustomMDMS from './useCustomMDMS';
+import useInboxGeneral from './useInboxGeneral/useInboxGeneral';
+import useApplicationStatusGeneral from './useStatusGeneral';
+import useModuleTenants from './useModuleTenants';
+import useStore from './useStore';
+import { useTenants } from './useTenants';
+import {
+  useEvents,
+  useClearNotifications,
+  useNotificationCount,
+} from './events';
+import useCreateEvent from './events/useCreateEvent';
+import useUpdateEvent from './events/useUpdateEvent';
+import useNewInboxGeneral from './useInboxGeneral/useNewInbox';
 
-import useInboxGeneral from "./useInboxGeneral/useInboxGeneral";
-import useNewInboxGeneral from "./useInboxGeneral/useNewInbox";
-import useBoundaryLocalities from "./useLocalities";
-import useCommonMDMS from "./useMDMS";
-import useWorkflowDetailsV2 from "./useWorkflowDetailsV2";
-import useModuleTenants from "./useModuleTenants";
-import useQueryParams from "./useQueryParams";
-import useRouteSubscription from "./useRouteSubscription";
-import { useUserSearch } from "./userSearch";
-import useSessionStorage from "./useSessionStorage";
-import useApplicationStatusGeneral from "./useStatusGeneral";
-import useStore from "./useStore";
-import { useTenants } from "./useTenants";
-import useWorkflowDetails from "./workflow";
-import useCustomAPIHook from "./useCustomAPIHook";
-import useUpdateCustom from "./useUpdateCustom";
+import useEmployeeSearch from './useEmployeeSearch';
 
-import useComplaintDetails from "./pgr/useComplaintDetails";
-import { useComplaintsList, useComplaintsListByMobile } from "./pgr/useComplaintList";
-import useComplaintStatus from "./pgr/useComplaintStatus";
-import useComplaintStatusCount from "./pgr/useComplaintStatusWithCount";
-import useComplaintSubType from "./pgr/useComplaintSubType";
-import useComplaintTable from "./pgr/useComplaintTable";
-import useComplaintTypes from "./pgr/useComplaintTypes";
-import useEmployeeFilter from "./pgr/useEmployeeFilter";
-import useInboxData from "./pgr/useInboxData";
-import useLocalities from "./pgr/useLocalities";
-import useServiceDefs from "./pgr/useServiceDefs";
-import usePGRTenants from "./pgr/useTenants";
-import useGenderMDMS from "./useGenderMDMS";
+import useDssMdms from './dss/useMDMS';
+import useDashboardConfig from './dss/useDashboardConfig';
+import useDSSDashboard from './dss/useDSSDashboard';
+import useGetChart from './dss/useGetChart';
 
-import useEmployeeSearch from "./useEmployeeSearch";
+import useHRMSSearch from './hrms/useHRMSsearch';
+import useHrmsMDMS from './hrms/useHRMSMDMS';
+import useHRMSCreate from './hrms/useHRMScreate';
+import useHRMSUpdate from './hrms/useHRMSUpdate';
+import useHRMSCount from './hrms/useHRMSCount';
+import useHRMSGenderMDMS from './hrms/useHRMSGender';
 
-import useDashboardConfig from "./dss/useDashboardConfig";
-import useDSSDashboard from "./dss/useDSSDashboard";
-import useGetChart from "./dss/useGetChart";
-import useDssMdms from "./dss/useMDMS";
-import useGetCustomFilterValues from "./dss/useGetCustomFilterValues";
-import useGetCustomFilterRequestValues from './dss/useGetCustomFilterRequestValues';
+import useEventInbox from './events/useEventInbox';
+import useEventDetails from './events/useEventDetails';
+import { useEngagementMDMS } from './engagement/useMdms';
+import useDocSearch from './engagement/useSearch';
+import useDocCreate from './engagement/useCreate';
+import useDocUpdate from './engagement/useUpdate';
+import useDocDelete from './engagement/useDelete';
 
+import useSurveyCreate from './surveys/useCreate';
+import useSurveyDelete from './surveys/useDelete';
+import useSurveyUpdate from './surveys/useUpdate';
+import useSurveySearch from './surveys/useSearch';
+import useSurveyShowResults from './surveys/useShowResults';
+import useSurveySubmitResponse from './surveys/useSubmitResponse';
+import useSurveyInbox from './surveys/useSurveyInbox';
 
-import useHRMSCount from "./hrms/useHRMSCount";
-import useHRMSCreate from "./hrms/useHRMScreate";
-import useHRMSGenderMDMS from "./hrms/useHRMSGender";
-import useHrmsMDMS from "./hrms/useHRMSMDMS";
-import useHRMSSearch from "./hrms/useHRMSsearch";
-import useHRMSUpdate from "./hrms/useHRMSUpdate";
+import useAccessControl from './useAccessControl';
+import useBillSearch from './bills/useBillSearch';
+import useCancelBill from './bills/useCancelBill';
 
+import useTenantsBills from './bills/useTenants';
+import useReportMeta from './reports/useReport';
 
-
-import useDocCreate from "./engagement/useCreate";
-import useDocDelete from "./engagement/useDelete";
-import { useEngagementMDMS } from "./engagement/useMdms";
-import useDocSearch from "./engagement/useSearch";
-import useDocUpdate from "./engagement/useUpdate";
-import useEventDetails from "./events/useEventDetails";
-import useEventInbox from "./events/useEventInbox";
-
-import useSurveyCreate from "./surveys/useCreate";
-import useSurveyDelete from "./surveys/useDelete";
-import useSurveySearch from "./surveys/useSearch";
-import useSurveyShowResults from "./surveys/useShowResults";
-import useSurveySubmitResponse from "./surveys/useSubmitResponse";
-import useSurveyInbox from "./surveys/useSurveyInbox";
-import useSurveyUpdate from "./surveys/useUpdate";
-
-
-
-import useGetDSSAboutJSON from "./useGetDSSAboutJSON";
-import useGetDSSFAQsJSON from "./useGetDSSFAQsJSON";
-import useGetFAQsJSON from "./useGetFAQsJSON";
-import useGetHowItWorksJSON from "./useHowItWorksJSON";
-import { usePrivacyContext } from "./usePrivacyContext";
-import useStaticData from "./useStaticData";
-
-
-
-const pgr = {
-  useComplaintDetails,
-  useComplaintsList,
-  useComplaintsListByMobile,
-  useComplaintStatus,
-  useComplaintTable,
-  useComplaintTypes,
-  useEmployeeFilter,
-  useInboxData,
-  useLocalities,
-  useServiceDefs,
-  useTenants: usePGRTenants,
-  useComplaintSubType,
-  useComplaintStatusCount,
-};
-
+import useGetHowItWorksJSON from './useHowItWorksJSON';
+import useGetFAQsJSON from './useGetFAQsJSON';
+import useGetDSSFAQsJSON from './useGetDSSFAQsJSON';
+import useGetDSSAboutJSON from './useGetDSSAboutJSON';
+import useStaticData from './useStaticData';
+import { usePrivacyContext } from './usePrivacyContext';
+import useCustomAPIHook from './useCustomAPIHook';
+import useDynamicData from './useDynamicData';
+import useRouteSubscription from './useRouteSubscription';
+import useGenderMDMS from './useGenderMDMS';
 
 const dss = {
   useMDMS: useDssMdms,
   useDashboardConfig,
   useDSSDashboard,
   useGetChart,
-  useGetCustomFilterValues,
-  useGetCustomFilterRequestValues
 };
-
 
 const hrms = {
   useHRMSSearch,
@@ -126,9 +97,6 @@ const hrms = {
   useHRMSCount,
   useHRMSGenderMDMS,
 };
-
-
-
 
 const events = {
   useInbox: useEventInbox,
@@ -153,6 +121,10 @@ const survey = {
   useSubmitResponse: useSurveySubmitResponse,
   useShowResults: useSurveyShowResults,
   useSurveyInbox,
+};
+
+const reports = {
+  useReportMeta,
 };
 
 const Hooks = {
@@ -185,31 +157,27 @@ const Hooks = {
   useDocumentSearch,
   useTenants,
   useAccessControl,
+  useBillSearch,
+  useCancelBill,
+  useTenantsBills,
   usePrivacyContext,
-  pgr,
- 
   dss,
-  
   hrms,
- 
   events,
   engagement,
   survey,
-  useGenderMDMS,
-  useRouteSubscription,
-  useCustomAPIHook,
-  useCustomAPIMutationHook,
-  useWorkflowDetailsV2,
-  useUpdateCustom,
   useCustomMDMS,
+  reports,
   useGetHowItWorksJSON,
   useGetFAQsJSON,
   useGetDSSFAQsJSON,
   useGetDSSAboutJSON,
   useStaticData,
-  useDynamicData,
   useBulkPdfDetails,
-  useLocation
+  useCustomAPIHook,
+  useRouteSubscription,
+  useDynamicData,
+  useGenderMDMS,
 };
 
 export default Hooks;

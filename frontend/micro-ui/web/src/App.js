@@ -1,72 +1,50 @@
 import React from "react";
-import { initLibraries } from "@egovernments/digit-ui-libraries";
-import {
-  paymentConfigs, PaymentLinks, PaymentModule
-} from "@egovernments/digit-ui-module-common";
-import { DigitUI } from "@egovernments/digit-ui-module-core";
-import { initDSSComponents } from "@egovernments/digit-ui-module-dss";
-import { initEngagementComponents } from "@egovernments/digit-ui-module-engagement";
-import { initHRMSComponents } from "@egovernments/digit-ui-module-hrms";
-import { initUtilitiesComponents } from  "@egovernments/digit-ui-module-utilities";
 
+import { initDSSComponents } from "@egovernments/digit-ui-module-dss";
+import { DigitUI } from "@egovernments/digit-ui-module-core";
+import { initLibraries } from "@egovernments/digit-ui-libraries";
+import { initEngagementComponents } from "@egovernments/digit-ui-module-engagement";
+import { initFSMLibraries } from "@egovernments/digit-ui-fsm-libraries";
+
+import { initFSMComponents } from "@egovernments/digit-ui-module-fsm";
+import { initHRMSComponents } from "@egovernments/digit-ui-module-hrms";
+import { PaymentModule, PaymentLinks, paymentConfigs } from "@egovernments/digit-ui-module-common";
+import { initUtilitiesComponents } from "@egovernments/digit-ui-module-utilities";
+import { UICustomizations } from "./Customisations/UICustomizations";
 
 window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
 
-const enabledModules = ["DSS", "NDSS",  "Utilities",
-"HRMS", "Engagement"
-];
+initLibraries();
+initFSMLibraries();
+
+const enabledModules = ["FSM", "Payment", "DSS", "Engagement", "HRMS", "Utilities"];
 window.Digit.ComponentRegistryService.setupRegistry({
-  PaymentModule,
   ...paymentConfigs,
+  PaymentModule,
   PaymentLinks,
 });
 
 initDSSComponents();
-initHRMSComponents();
 initEngagementComponents();
+initFSMComponents();
+initHRMSComponents();
 initUtilitiesComponents();
 
 const moduleReducers = (initData) => ({
   initData,
 });
 
-
-const initDigitUI = () => {
-  window.Digit.ComponentRegistryService.setupRegistry({});
-
-  initDSSComponents();
-  initHRMSComponents();
-  initEngagementComponents();
-  initUtilitiesComponents();
-
- 
-  window.Digit.Customizations = {
-    PGR: {},
-    TL: TLCustomisations,
-    commonUiConfig: UICustomizations,
-  };
+window.Digit.Customizations = {
+  commonUiConfig: UICustomizations
 };
-
-initLibraries().then(() => {
-  initDigitUI();
-});
 
 function App() {
   window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
-  const stateCode =
-    window.globalConfigs?.getConfig("STATE_LEVEL_TENANT_ID") ||
-    process.env.REACT_APP_STATE_LEVEL_TENANT_ID;
+  const stateCode = window.globalConfigs?.getConfig("STATE_LEVEL_TENANT_ID") || process.env.REACT_APP_STATE_LEVEL_TENANT_ID;
   if (!stateCode) {
     return <h1>stateCode is not defined</h1>;
   }
-  return (
-    <DigitUI
-      stateCode={stateCode}
-      enabledModules={enabledModules}
-      moduleReducers={moduleReducers}
-      // defaultLanding="employee"
-    />
-  );
+  return <DigitUI stateCode={stateCode} enabledModules={enabledModules} moduleReducers={moduleReducers} />;
 }
 
 export default App;
