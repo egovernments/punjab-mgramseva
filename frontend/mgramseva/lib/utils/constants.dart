@@ -102,7 +102,7 @@ class Constants {
     HomeItem(
         "CORE_REPORTS",
         (i18.dashboard.CORE_REPORTS),
-        Icons.add_chart_rounded,
+        Icons.assessment,
         Routes.REPORTS, {}),
   ];
 
