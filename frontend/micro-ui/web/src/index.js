@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { initLibraries } from "@egovernments/digit-ui-libraries";
+// import "@egovernments/digit-ui-css/dist/index.css";
 import "./index.css";
 import App from './App';
 import { TLCustomisations } from './Customisations/tl/TLCustomisation';
-
+import { UICustomizations } from './Customisations/UICustomizations';
 
 initLibraries();
 
 
-window.Digit.Customizations = { PGR: {} ,TL:TLCustomisations};
+window.Digit.Customizations = { PGR: {}, TL: TLCustomisations, commonUiConfig: UICustomizations};
 
 const user = window.Digit.SessionStorage.get("User");
 
@@ -38,8 +39,8 @@ if (!user || !user.access_token || !user.info) {
   const employeeToken = getFromStorage("Employee.token")
   const employeeInfo = getFromStorage("Employee.user-info")
   const employeeTenantId = getFromStorage("Employee.tenant-id")
-  const userType = token === citizenToken ? "citizen" : "employee";
 
+  const userType = token === citizenToken ? "citizen" : "employee";
   window.Digit.SessionStorage.set("user_type", userType);
   window.Digit.SessionStorage.set("userType", userType);
 
