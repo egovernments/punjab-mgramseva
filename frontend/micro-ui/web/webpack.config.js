@@ -23,7 +23,7 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    publicPath: "/sanitation-ui/",
+    publicPath: "/mgramseva-web/",
   },
   optimization: {
     splitChunks: {
