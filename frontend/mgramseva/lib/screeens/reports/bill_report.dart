@@ -76,11 +76,8 @@ class _BillReport extends State<BillReport>
                       // SizedBox(
                       //   width: 10,
                       // ),
-                      Container(
-                        width: 100,
-                        child: Button(
-                          "Download",
-                          () {
+                      TextButton.icon(
+                          onPressed: () {
                             if (reportProvider.selectedBillPeriod == null) {
                               Notifiers.getToastMessage(
                                   context, 'Select Billing Cycle', 'ERROR');
@@ -88,9 +85,9 @@ class _BillReport extends State<BillReport>
                               reportProvider.getDemandReport(true);
                             }
                           },
-                          key: Keys.billReport.BILL_REPORT_DOWNLOAD_BUTTON,
-                        ),
-                      ),
+                          icon: Icon(Icons.download_sharp),
+                          label: Text(
+                              ApplicationLocalizations.of(context).translate(i18.common.CORE_DOWNLOAD))),
                     ],
                   ),
                 ],

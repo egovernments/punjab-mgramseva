@@ -44,7 +44,7 @@ class _CollectionReport extends State<CollectionReport>
                 children: [
                   Row(
                     children: [
-                      Text("1. ",
+                      Text("2. ",
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w700)),
                       Text(
@@ -76,11 +76,8 @@ class _CollectionReport extends State<CollectionReport>
                       // SizedBox(
                       //   width: 10,
                       // ),
-                      Container(
-                        width: 100,
-                        child: Button(
-                          "Download",
-                          () {
+                      TextButton.icon(
+                          onPressed: () {
                             if (reportProvider.selectedBillPeriod == null) {
                               Notifiers.getToastMessage(
                                   context, 'Select Billing Cycle', 'ERROR');
@@ -88,10 +85,9 @@ class _CollectionReport extends State<CollectionReport>
                               reportProvider.getCollectionReport(true);
                             }
                           },
-                          key:
-                              Keys.billReport.COLLECTION_REPORT_DOWNLOAD_BUTTON,
-                        ),
-                      ),
+                          icon: Icon(Icons.download_sharp),
+                          label: Text(
+                              ApplicationLocalizations.of(context).translate(i18.common.CORE_DOWNLOAD))),
                     ],
                   ),
                 ],
