@@ -19,7 +19,10 @@ import {
 import { initUtilitiesComponents } from "@egovernments/digit-ui-module-utilities";
 import { UICustomizations } from "./UICustomizations";
 import "@egovernments/digit-ui-fsm-css/example/index.css";
-
+import {
+  initPGRComponents,
+  PGRReducers,
+} from "@egovernments/digit-ui-module-pgr";
 var Digit = window.Digit || {};
 
 const enabledModules = [
@@ -27,8 +30,9 @@ const enabledModules = [
   // "Works",
   "HRMS",
   "Payment",
-  "FSM",
+  // "FSM",
   "Utilities",
+  "PGR",
   // "Engagement"
 ];
 
@@ -80,14 +84,16 @@ const initDigitUI = () => {
     PaymentLinks,
   });
 
-  // initPGRComponents();
+  initPGRComponents();
   initDSSComponents();
-  initEngagementComponents();
+  // initEngagementComponents();
   // initWorksComponents();
   initHRMSComponents();
-  initFSMComponents();
+  // initFSMComponents();
   initUtilitiesComponents();
-  const moduleReducers = (initData) => initData;
+  const moduleReducers = (initData) => ({
+    pgr: PGRReducers(initData),
+  });
 
   window.Digit.Customizations = {
     TL: {
