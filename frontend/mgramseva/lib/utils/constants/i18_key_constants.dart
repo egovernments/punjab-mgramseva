@@ -147,6 +147,7 @@ class Common {
 
   /// Payment complete
   String get DOWNLOAD => 'DOWNLOAD';
+  String get CORE_DOWNLOAD => 'CORE_DOWNLOAD';
 
   /// Payment complete
   String get SHARE_BILL => 'SHARE_BILL';
