@@ -11,6 +11,7 @@ import '../../widgets/drawer_wrapper.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import '../../widgets/footer.dart';
 import '../../widgets/home_back.dart';
+import '../../widgets/label_text.dart';
 import '../../widgets/select_field_builder.dart';
 import '../../widgets/side_bar.dart';
 import 'bill_report.dart';
@@ -102,6 +103,20 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                           children: [
                             HomeBack(),
                             Card(
+                                margin: EdgeInsets.only(bottom: 2),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(0.0),
+                                ),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      LabelText(i18.dashboard.CORE_REPORTS),
+
+                                    ])),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Card(
                               margin: EdgeInsets.only(bottom: 2),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5.0),
@@ -110,16 +125,6 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                 padding: const EdgeInsets.only(top:15,bottom: 10.0),
                                 child: Column(
                                   children: [
-                                    Text(
-                                        ApplicationLocalizations.of(context)
-                                            .translate(
-                                                i18.dashboard.CORE_REPORTS),
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700)),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
                                     Consumer<ReportsProvider>(
                                         builder: (_, reportProvider, child) =>
                                             Container(
@@ -172,10 +177,6 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                             ),
                             SizedBox(
                               height: 30,
-                            ),
-                            Container(
-                              height: 1,
-                              color: Colors.black,
                             ),
                             Card(
                               margin: EdgeInsets.only(top: 15,bottom: 2),
