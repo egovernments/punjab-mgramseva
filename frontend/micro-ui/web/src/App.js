@@ -1,44 +1,44 @@
 import React from "react";
-
-import { initDSSComponents } from "@egovernments/digit-ui-module-dss";
-import { DigitUI } from "@egovernments/digit-ui-module-core";
 import { initLibraries } from "@egovernments/digit-ui-libraries";
-
 import { initHRMSComponents } from "@egovernments/digit-ui-module-hrms";
-import {
-  PaymentModule,
-  PaymentLinks,
-  paymentConfigs,
-} from "@egovernments/digit-ui-module-common";
-import { initUtilitiesComponents } from "@egovernments/digit-ui-module-utilities";
+import { DigitUI } from "@egovernments/digit-ui-module-core";
 import { UICustomizations } from "./Customisations/UICustomizations";
+import { initDSSComponents } from "@egovernments/digit-ui-module-dss";
+import { initEngagementComponents } from "@egovernments/digit-ui-module-engagement";
 import {
   initPGRComponents,
   PGRReducers,
 } from "@egovernments/digit-ui-module-pgr";
 window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
 
-initLibraries();
-
-const enabledModules = ["PGR", "DSS"];
-window.Digit.ComponentRegistryService.setupRegistry({
-  ...paymentConfigs,
-  PaymentModule,
-  PaymentLinks,
-});
-
-initPGRComponents();
-initDSSComponents();
-initHRMSComponents();
-initUtilitiesComponents();
+const enabledModules = [
+  "DSS",
+  "NDSS",
+  "Utilities",
+  "HRMS",
+  "Engagement",
+  "PGR",
+];
 
 const moduleReducers = (initData) => ({
   pgr: PGRReducers(initData),
 });
 
-window.Digit.Customizations = {
-  commonUiConfig: UICustomizations,
+const initDigitUI = () => {
+  window.Digit.ComponentRegistryService.setupRegistry({});
+  window.Digit.Customizations = {
+    PGR: {},
+    commonUiConfig: UICustomizations,
+  };
+  initHRMSComponents();
+  initDSSComponents();
+  initEngagementComponents();
+  initPGRComponents();
 };
+
+initLibraries().then(() => {
+  initDigitUI();
+});
 
 function App() {
   window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
@@ -53,6 +53,7 @@ function App() {
       stateCode={stateCode}
       enabledModules={enabledModules}
       moduleReducers={moduleReducers}
+      // defaultLanding="employee"
     />
   );
 }
