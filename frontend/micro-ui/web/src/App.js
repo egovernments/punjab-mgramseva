@@ -20,7 +20,7 @@ window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
 
 initLibraries();
 
-const enabledModules = ["PGR", "Payment", "DSS", "HRMS", "Utilities"];
+const enabledModules = ["PGR"];
 window.Digit.ComponentRegistryService.setupRegistry({
   ...paymentConfigs,
   PaymentModule,
