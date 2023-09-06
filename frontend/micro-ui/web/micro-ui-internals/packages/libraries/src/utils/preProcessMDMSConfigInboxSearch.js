@@ -1,3 +1,4 @@
+
 import _ from "lodash";
 
 /*
@@ -62,7 +63,6 @@ const convertStringToRegEx = (target) => {
         let keyToValidate = target?.preProcess?.convertStringToRegEx[toValidate];
         let regex = _.get(target, keyToValidate);
         if(typeof(regex) === "string") {
-            regex = regex.replace("+", "\\+")
             regex =  new RegExp(regex);
         }
         _.set(target, keyToValidate, regex);    
