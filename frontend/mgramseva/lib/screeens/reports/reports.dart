@@ -34,6 +34,10 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
+    var reportsProvider = Provider.of<ReportsProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    reportsProvider.clearBillingSelection();
     super.dispose();
   }
 

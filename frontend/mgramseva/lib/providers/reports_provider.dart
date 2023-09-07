@@ -35,7 +35,14 @@ class ReportsProvider with ChangeNotifier {
   List<BillReportData>? demandreports;
   List<CollectionReportData>? collectionreports;
   late BillsTableData genericTableData;
-
+  void clearBillingSelection(){
+    selectedBillYear = null;
+    selectedBillPeriod = null;
+    selectedBillCycle = null;
+    billingcycleCtrl.clear();
+    billingyearCtrl.clear();
+    notifyListeners();
+  }
   dispose() {
     streamController.close();
     super.dispose();
@@ -332,12 +339,12 @@ class ReportsProvider with ChangeNotifier {
           .setText(headers[CommonMethods.getAlphabetsWithKeyValue()[i].key]);
     }
 
-    for (int i = dataStartRow; i < tableData.length + 2; i++) {
+    for (int i = dataStartRow; i < tableData.length + dataStartRow; i++) {
       for (int j = 0; j < headers.length; j++) {
         sheet
             .getRangeByName(
             '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
-            .setText(tableData[i - 2][j]);
+            .setText(tableData[i - dataStartRow][j]);
         sheet
             .getRangeByName(
             '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
