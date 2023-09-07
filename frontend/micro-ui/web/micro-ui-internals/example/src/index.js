@@ -6,10 +6,7 @@ import { DigitUI } from "@egovernments/digit-ui-module-core";
 import { initDSSComponents } from "@egovernments/digit-ui-module-dss";
 import { initEngagementComponents } from "@egovernments/digit-ui-module-engagement";
 import { initHRMSComponents } from "@egovernments/digit-ui-module-hrms";
-import {
-  initPGRComponents,
-  PGRReducers,
-} from "@egovernments/digit-ui-module-pgr";
+import { initPGRComponents, PGRReducers } from "@egovernments/digit-ui-module-pgr";
 import "@egovernments/digit-ui-css/example/index.css";
 
 import { pgrCustomizations } from "./pgr";
@@ -17,11 +14,14 @@ import { UICustomizations } from "./UICustomizations";
 
 var Digit = window.Digit || {};
 
-const enabledModules = [ "DSS", "HRMS","PGR"
-//  "Engagement", "NDSS","QuickPayLinks", "Payment",
+const enabledModules = [
+  "DSS",
+  "HRMS",
+  "PGR",
+  //  "Engagement", "NDSS","QuickPayLinks", "Payment",
   // "Utilities",
-//added to check fsm
-// "FSM"
+  //added to check fsm
+  // "FSM"
 ];
 
 const initTokens = (stateCode) => {
@@ -53,11 +53,11 @@ const initTokens = (stateCode) => {
 const initDigitUI = () => {
   window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH") || "digit-ui";
 
-  window?.Digit.ComponentRegistryService.setupRegistry({
-    PaymentModule,
-    ...paymentConfigs,
-    PaymentLinks,
-  });
+  // window?.Digit.ComponentRegistryService.setupRegistry({
+  //   PaymentModule,
+  //   ...paymentConfigs,
+  //   PaymentLinks,
+  // });
 
   initDSSComponents();
   initHRMSComponents();
@@ -67,11 +67,10 @@ const initDigitUI = () => {
   const moduleReducers = (initData) => ({
     pgr: PGRReducers(initData),
   });
-  
+
   window.Digit.Customizations = {
     PGR: pgrCustomizations,
-    commonUiConfig: UICustomizations
-
+    commonUiConfig: UICustomizations,
   };
 
   const stateCode = window?.globalConfigs?.getConfig("STATE_LEVEL_TENANT_ID") || "pb";
