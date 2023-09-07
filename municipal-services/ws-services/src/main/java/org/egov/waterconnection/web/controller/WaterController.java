@@ -197,9 +197,8 @@ public class WaterController {
 	 
 	 @RequestMapping(value = "/_billReport", method = RequestMethod.POST)
 		public ResponseEntity<BillReportResponse> billReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
-				@RequestParam(value = "demandStartDate", required = true) String demandStartDate,@RequestParam(value = "demandEndDate", required = true) String demandEndDate,@RequestParam(value = "tenantId",required = true) String tenantId) {
-		 List<BillReportData> billReport = waterService.billReport(demandStartDate,demandEndDate,tenantId,
-					requestInfoWrapper.getRequestInfo());
+				@RequestParam(value = "demandStartDate", required = true) String demandStartDate,@RequestParam(value = "demandEndDate", required = true) String demandEndDate,@RequestParam(value = "tenantId",required = true) String tenantId,@RequestParam(value="offset",required = true) Integer offset,@RequestParam(value="limit",required = true)Integer limit,@RequestParam(value="sortOrder") String sortOrder) {
+		 List<BillReportData> billReport = waterService.billReport(demandStartDate,demandEndDate,tenantId,offset,limit,sortOrder,requestInfoWrapper.getRequestInfo());
 
 			BillReportResponse response =  BillReportResponse.builder().BillReportData(billReport)
 					.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),
@@ -210,9 +209,8 @@ public class WaterController {
 	 
 	 @RequestMapping(value = "/_collectionReport", method = RequestMethod.POST)
 		public ResponseEntity<CollectionReportResponse> collectionReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
-				@RequestParam(value = "paymentStartDate", required = true) String paymentStartDate,@RequestParam(value = "paymentEndDate", required = true) String paymentEndDate,@RequestParam(value = "tenantId",required = true) String tenantId) {
-		 List<CollectionReportData> collectionReport = waterService.collectionReport(paymentStartDate,paymentEndDate,tenantId,
-					requestInfoWrapper.getRequestInfo());
+				@RequestParam(value = "paymentStartDate", required = true) String paymentStartDate,@RequestParam(value = "paymentEndDate", required = true) String paymentEndDate,@RequestParam(value = "tenantId",required = true) String tenantId, @RequestParam(value="offset",required = true) Integer offset, @RequestParam(value="limit",required = true)Integer limit, @RequestParam(value="sortOrder") String sortOrder) {
+		 List<CollectionReportData> collectionReport = waterService.collectionReport(paymentStartDate,paymentEndDate,tenantId,offset,limit,sortOrder,requestInfoWrapper.getRequestInfo());
 
 			CollectionReportResponse response =  CollectionReportResponse.builder().CollectionReportData(collectionReport)
 					.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),

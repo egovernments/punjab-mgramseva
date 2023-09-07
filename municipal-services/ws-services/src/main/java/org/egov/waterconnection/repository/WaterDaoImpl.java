@@ -522,18 +522,40 @@ public class WaterDaoImpl implements WaterDao {
 		return jdbcTemplate.queryForObject(query.toString(), BigDecimal.class);
 	}
 
-	public List<BillReportData> getBillReportData(@Valid Long demandStartDate,@Valid Long demandEndDate, @Valid String tenantId) {
+	public List<BillReportData> getBillReportData(@Valid Long demandStartDate,@Valid Long demandEndDate, @Valid String tenantId, @Valid Integer offset, @Valid Integer limit, @Valid String sortOrder) {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.BILL_REPORT_QUERY);
-		query.append("where dem.taxperiodfrom =" + demandStartDate);
-		query.append(" and dem.taxperiodto =" + demandEndDate);
+		query.append("where dem.taxperiodfrom >=" + demandStartDate);
+		query.append(" and dem.taxperiodto <=" + demandEndDate);
+
+		List<Object> preparedStatement = new ArrayList<>();
 
 		if(!tenantId.isEmpty()){
 			query.append(" and conn.tenantId ='"+tenantId+"'"); 
 		}
-		query.append(" group by conn.connectionno,conn.tenantId,dd.taxheadcode,conn.oldConnectionno,conn.createdTime,dd.taxamount,connectionholder.userid order by conn.connectionno,dd.taxheadcode");
+		query.append(" group by conn.connectionno,conn.tenantId,dd.taxheadcode,conn.oldConnectionno,conn.createdTime,dd.taxamount,connectionholder.userid order by conn.connectionno,dd.taxheadcode ");
+        if(sortOrder.equals(SearchCriteria.SortOrder.DESC.name()))
+           query.append(" DESC ");
+		else
+			query.append(" ASC ");
 
+		Integer newlimit=wsConfiguration.getDefaultLimit();
+		Integer newoffset= wsConfiguration.getDefaultOffset();
+		if(limit==null && offset==null)
+			newlimit=wsConfiguration.getMaxLimit();
+		if(limit!=null && limit<=wsConfiguration.getMaxLimit())
+			newlimit=limit;
+		if(limit!=null && limit>=wsConfiguration.getMaxLimit())
+			newlimit=wsConfiguration.getMaxLimit();
+
+		if(offset!=null)
+			newoffset=offset;
+
+		if(newlimit > 0) {
+				query.append(" offset ?  limit ? ");
+			preparedStatement.add(newoffset);
+			preparedStatement.add(newlimit);
+		}
 		List<BillReportData> billReportList = new ArrayList<>();
-		List<Object> preparedStatement = new ArrayList<>();
 
 		billReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), reportRowMapper);
 		return billReportList;
@@ -541,17 +563,40 @@ public class WaterDaoImpl implements WaterDao {
 	}
 
 	public List<CollectionReportData> getCollectionReportData(Long payStartDateTime, Long payEndDateTime,
-			String tenantId) {
+			String tenantId,@Valid Integer offset, @Valid Integer limit, @Valid String sortOrder) {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.COLLECTION_REPORT_QUERY);
-		query.append(" and pay.transactiondate between "+ payStartDateTime +"and " + payEndDateTime);
+		query.append(" and pay.transactiondate between "+ payStartDateTime +" and " + payEndDateTime);
+
+		List<Object> preparedStatement = new ArrayList<>();
 
 		if(!tenantId.isEmpty()){
 			query.append(" and conn.tenantId ='"+tenantId+"'"); 
 		}
 		query.append(" group by conn.connectionno,conn.tenantId,conn.oldConnectionno,connectionholder.userid,pd.amountpaid,pay.paymentmode");
+		if(sortOrder.equals(SearchCriteria.SortOrder.DESC.name()))
+			query.append(" DESC ");
+		else
+			query.append(" ASC ");
+
+		Integer newlimit=wsConfiguration.getDefaultLimit();
+		Integer newoffset= wsConfiguration.getDefaultOffset();
+		if(limit==null && offset==null)
+			newlimit=wsConfiguration.getMaxLimit();
+		if(limit!=null && limit<=wsConfiguration.getMaxLimit())
+			newlimit=limit;
+		if(limit!=null && limit>=wsConfiguration.getMaxLimit())
+			newlimit=wsConfiguration.getMaxLimit();
+
+		if(offset!=null)
+			newoffset=offset;
+
+		if (newlimit>0){
+			query.append(" offset ?  limit ? ");
+			preparedStatement.add(newoffset);
+			preparedStatement.add(newlimit);
+		}
 
 		List<CollectionReportData> collectionReportList = new ArrayList<>();
-		List<Object> preparedStatement = new ArrayList<>();
 
 		collectionReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), collectionReportRowMapper);
 		return collectionReportList;
