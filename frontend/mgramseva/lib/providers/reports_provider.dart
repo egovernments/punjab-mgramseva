@@ -35,7 +35,14 @@ class ReportsProvider with ChangeNotifier {
   List<BillReportData>? demandreports;
   List<CollectionReportData>? collectionreports;
   late BillsTableData genericTableData;
-
+  void clearBillingSelection(){
+    selectedBillYear = null;
+    selectedBillPeriod = null;
+    selectedBillCycle = null;
+    billingcycleCtrl.clear();
+    billingyearCtrl.clear();
+    notifyListeners();
+  }
   dispose() {
     streamController.close();
     super.dispose();
