@@ -173,7 +173,7 @@ class ReportsProvider with ChangeNotifier {
       ytd = DatePeriod(fromDate,toDate,DateType.YTD);
 
       /// Get months based on selected billing year
-      var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd);
+      var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd,showCurrentMonth: true);
 
       /// if selected year is future year means all the months will be removed
       if(fromDate.year > ytd.endDate.year) months.clear();
