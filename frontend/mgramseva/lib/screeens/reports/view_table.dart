@@ -11,7 +11,7 @@ class ViewTable extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [HomeBack(callback: showTable(false),),Consumer<ReportsProvider>(
+      children: [Consumer<ReportsProvider>(
         builder: (_, reportProvider, child) =>GenericReportTable(reportProvider.genericTableData))],
     );
   }

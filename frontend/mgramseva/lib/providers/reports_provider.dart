@@ -200,7 +200,7 @@ class ReportsProvider with ChangeNotifier {
     return <DropdownMenuItem<Object>>[];
   }
 
-  Future<void> getDemandReport([bool download = false]) async {
+  Future<void> getDemandReport([bool download = false, int offset = 0, int limit = 50, String sortOrder = "ASC"]) async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
@@ -211,7 +211,10 @@ class ReportsProvider with ChangeNotifier {
       Map<String,dynamic> params={
         'tenantId':commonProvider.userDetails!.selectedtenant!.code,
         'demandStartDate':selectedBillPeriod?.split('-')[0],
-        'demandEndDate':selectedBillPeriod?.split('-')[1]
+        'demandEndDate':selectedBillPeriod?.split('-')[1],
+        'offset': offset,
+        'limit': download?-1:limit,
+        'sortOrder': sortOrder
       };
       var response = await ReportsRepo().fetchBillReport(
           params);
@@ -249,7 +252,7 @@ class ReportsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getCollectionReport([bool download = false]) async {
+  Future<void> getCollectionReport([bool download = false, int offset = 0, int limit = 50, String sortOrder = "ASC"]) async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
@@ -260,7 +263,10 @@ class ReportsProvider with ChangeNotifier {
       Map<String,dynamic> params={
         'tenantId':commonProvider.userDetails!.selectedtenant!.code,
         'paymentStartDate':selectedBillPeriod?.split('-')[0],
-        'paymentEndDate':selectedBillPeriod?.split('-')[1]
+        'paymentEndDate':selectedBillPeriod?.split('-')[1],
+        'offset': offset,
+        'limit': download?-1:limit,
+        'sortOrder': sortOrder
       };
       var response = await ReportsRepo().fetchCollectionReport(
           params);
