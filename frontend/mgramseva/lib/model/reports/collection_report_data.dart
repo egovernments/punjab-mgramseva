@@ -5,7 +5,7 @@ class CollectionReportData {
   String? oldConnectionNo;
   String? userId;
   String? paymentMode;
-  double? paymentAmount;
+  String? paymentAmount;
 
   CollectionReportData(
       {this.tenantName,
