@@ -524,15 +524,8 @@ public class WaterDaoImpl implements WaterDao {
 
 	public List<BillReportData> getBillReportData(@Valid Long demandStartDate,@Valid Long demandEndDate, @Valid String tenantId, @Valid Integer offset, @Valid Integer limit, @Valid String sortOrder) {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.BILL_REPORT_QUERY);
-		query.append("where dem.taxperiodfrom >=" + demandStartDate);
-		query.append(" and dem.taxperiodto <=" + demandEndDate);
-
 		List<Object> preparedStatement = new ArrayList<>();
 
-		if(!tenantId.isEmpty()){
-			query.append(" and conn.tenantId ='"+tenantId+"'"); 
-		}
-		query.append(" group by conn.connectionno,conn.tenantId,dd.taxheadcode,conn.oldConnectionno,conn.createdTime,dd.taxamount,connectionholder.userid order by conn.connectionno,dd.taxheadcode ");
         if(sortOrder.equals(SearchCriteria.SortOrder.DESC.name()))
            query.append(" DESC ");
 		else
@@ -551,7 +544,7 @@ public class WaterDaoImpl implements WaterDao {
 			newoffset=offset;
 
 		if(newlimit > 0) {
-				query.append(" offset ?  limit ? ");
+				query.append(" offset ?  limit ? ;");
 			preparedStatement.add(newoffset);
 			preparedStatement.add(newlimit);
 		}
@@ -591,7 +584,7 @@ public class WaterDaoImpl implements WaterDao {
 			newoffset=offset;
 
 		if (newlimit>0){
-			query.append(" offset ?  limit ? ");
+			query.append(" offset ?  limit ? ;");
 			preparedStatement.add(newoffset);
 			preparedStatement.add(newlimit);
 		}

@@ -47,28 +47,25 @@ public class ReportRowMapper implements ResultSetExtractor<List<BillReportData>>
 	@Override
 	public List<BillReportData> extractData(ResultSet rs) throws SQLException, DataAccessException {
 		List<BillReportData> billReportDataList = new ArrayList<>();
-		BillReportData billReportData = new BillReportData();
-	    Map<String, BillReportData> reportData = new HashMap<>();
+//		BillReportData billReportData = new BillReportData();
+//	    Map<String, BillReportData> reportData = new HashMap<>();
 		while (rs.next()) {
-			    if(reportData.get(rs.getString("connectionNo")) != null) {
-			    	setDemandTypeValue(rs, billReportData, reportData);
-			    }
-			    else {
-			    	billReportData = new BillReportData();
+			        BillReportData billReportData = new BillReportData();
 					
 					billReportData.setTenantName(rs.getString("tenantId"));
 					billReportData.setConnectionNo(rs.getString("connectionNo"));
 					billReportData.setOldConnectionNo(rs.getString("oldConnectionNo"));
 					billReportData.setUserId(rs.getString("uuid"));
 					billReportData.setConsumerCreatedOnDate(rs.getString("connCreatedDate"));
-					
-					setDemandTypeValue(rs, billReportData, reportData);
-
+					billReportData.setDemandAmount(rs.getBigDecimal("A10101_DemandAmount"));
+					billReportData.setPenalty(rs.getBigDecimal("WS_TIME_PENALTY_DemandAmount"));
+					billReportData.setAdvance(rs.getBigDecimal("WS_ADVANCE_CARRYFORWARD_DemandAmount"));
+			        billReportDataList.add(billReportData);
+//					setDemandTypeValue(rs, billReportData, reportData);
 			    }
-			    
-		}
-		List<BillReportData> listOfValues = reportData.values().stream().collect( Collectors.toCollection(ArrayList::new));
-		billReportDataList.addAll(listOfValues);
+
+//		List<BillReportData> listOfValues = reportData.values().stream().collect( Collectors.toCollection(ArrayList::new));
+//		billReportDataList.addAll(listOfValues);
 		if(!billReportDataList.isEmpty()){
 			enrichConnectionHolderDetails(billReportDataList);
 		}
