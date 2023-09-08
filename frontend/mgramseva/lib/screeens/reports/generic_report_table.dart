@@ -26,7 +26,7 @@ class GenericReportTable extends StatelessWidget{
                 builder: (context, reportsProvider,child) {
                   var width =
                   constraints.maxWidth < 760 ? 115.0 : (constraints.maxWidth / 6);
-                  return BillsTable(height: (52.0 * billsTableData.tabledata.length + 1),
+                  return this.billsTableData.isEmpty()?Center(child: Text("No Data Available"),):BillsTable(height: (52.0 * billsTableData.tabledata.length + 1),
                       scrollPhysics: NeverScrollableScrollPhysics(),headerList: billsTableData.tableHeaders, tableData: billsTableData.tabledata, leftColumnWidth: width,
                     rightColumnWidth:
                     width * (billsTableData.tableHeaders.length - 1),);

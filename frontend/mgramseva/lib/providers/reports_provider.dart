@@ -208,6 +208,7 @@ class ReportsProvider with ChangeNotifier {
       if(selectedBillPeriod==null){
         throw Exception('Select Billing Cycle');
       }
+      genericTableData = BillsTableData([], []);
       Map<String,dynamic> params={
         'tenantId':commonProvider.userDetails!.selectedtenant!.code,
         'demandStartDate':selectedBillPeriod?.split('-')[0],
@@ -238,7 +239,7 @@ class ReportsProvider with ChangeNotifier {
           genericTableData = BillsTableData(demandHeaderList,getDemandsData(demandreports!));
         }
         streamController.add(response);
-        notifyListeners();
+        callNotifier();
       }else{
         streamController.add('error');
         throw Exception('API Error');
@@ -260,6 +261,7 @@ class ReportsProvider with ChangeNotifier {
       if(selectedBillPeriod==null){
         throw Exception('Select Billing Cycle');
       }
+      genericTableData = BillsTableData([], []);
       Map<String,dynamic> params={
         'tenantId':commonProvider.userDetails!.selectedtenant!.code,
         'paymentStartDate':selectedBillPeriod?.split('-')[0],
