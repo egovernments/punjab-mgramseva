@@ -1,6 +1,7 @@
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/global_variables.dart';
+import 'dart:math' as math;
 
 class Validators {
   static validate(value, type) {
@@ -109,7 +110,7 @@ class Validators {
   static String? amountValidator(String? v) {
     if (v!.trim().isEmpty) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expense.AMOUNT_MENTIONED_IN_THE_BILL)}';
-    } else if (double.parse(v) <= 0) {
+    } else if (double.parse(v) <= 0 || (((math.log(double.parse(v!)) / math.ln10) + 1) as int) > 6) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expense.ENTER_VALID_AMOUNT)}';
     }
     return null;
