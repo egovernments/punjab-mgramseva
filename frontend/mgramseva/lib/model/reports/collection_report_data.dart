@@ -5,7 +5,7 @@ class CollectionReportData {
   String? oldConnectionNo;
   String? userId;
   String? paymentMode;
-  List<double>? paymentAmount;
+  double? paymentAmount;
 
   CollectionReportData(
       {this.tenantName,
@@ -23,7 +23,7 @@ class CollectionReportData {
     oldConnectionNo = json['oldConnectionNo'];
     userId = json['userId'];
     paymentMode = json['paymentMode'];
-    paymentAmount = json['paymentAmount'].cast<double>();
+    paymentAmount = json['paymentAmount'];
   }
 
   Map<String, dynamic> toJson() {

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 
@@ -17,7 +18,7 @@ import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import '../utils/date_formats.dart';
 import '../utils/error_logging.dart';
 import 'package:mgramseva/utils/excel_download/save_file_mobile.dart'
-  if (dart.library.html) 'package:mgramseva/utils/excel_download/save_file_web.dart';
+    if (dart.library.html) 'package:mgramseva/utils/excel_download/save_file_web.dart';
 import '../utils/global_variables.dart';
 import '../utils/localization/application_localizations.dart';
 import '../utils/models.dart';
@@ -34,8 +35,11 @@ class ReportsProvider with ChangeNotifier {
   var billingcycleCtrl = TextEditingController();
   List<BillReportData>? demandreports;
   List<CollectionReportData>? collectionreports;
-  late BillsTableData genericTableData;
-  void clearBillingSelection(){
+  BillsTableData genericTableData = BillsTableData([], []);
+  int limit = 10;
+  int offset = 1;
+
+  void clearBillingSelection() {
     selectedBillYear = null;
     selectedBillPeriod = null;
     selectedBillCycle = null;
@@ -43,74 +47,108 @@ class ReportsProvider with ChangeNotifier {
     billingyearCtrl.clear();
     notifyListeners();
   }
+
+  void clearTableData() {
+    genericTableData = BillsTableData([], []);
+    notifyListeners();
+  }
+
   dispose() {
     streamController.close();
     super.dispose();
   }
-  List<TableHeader> get demandHeaderList => [
-    TableHeader(i18.common.CONNECTION_ID),
-    TableHeader(i18.consumer.OLD_CONNECTION_ID,
-      isSortingRequired: false,),
-    TableHeader(i18.common.NAME),
-    TableHeader('Consumer Created On Date'),
-    TableHeader(i18.billDetails.CORE_PENALTY),
-    TableHeader(i18.common.CORE_ADVANCE),
-    TableHeader(i18.billDetails.TOTAL_AMOUNT),
-  ];
-  List<TableHeader> get collectionHeaderList => [
-    TableHeader(i18.common.CONNECTION_ID),
-    TableHeader(i18.consumer.OLD_CONNECTION_ID,
-      isSortingRequired: false,),
-    TableHeader(i18.common.NAME),
-    TableHeader('Payment Mode'),
-    TableHeader(i18.billDetails.TOTAL_AMOUNT),
-  ];
 
-  List<TableDataRow> getDemandsData(List<BillReportData> list,{isExcel = false}) {
-    return list.map((e) => getDemandRow(e,isExcel: isExcel)).toList();
+  List<TableHeader> get demandHeaderList => [
+        TableHeader(i18.common.CONNECTION_ID),
+        TableHeader(
+          i18.consumer.OLD_CONNECTION_ID,
+          isSortingRequired: false,
+        ),
+        TableHeader(i18.common.NAME),
+        TableHeader('Consumer Created On Date'),
+        TableHeader(i18.billDetails.CORE_PENALTY),
+        TableHeader(i18.common.CORE_ADVANCE),
+        TableHeader(i18.billDetails.TOTAL_AMOUNT),
+      ];
+
+  List<TableHeader> get collectionHeaderList => [
+        TableHeader(i18.common.CONNECTION_ID),
+        TableHeader(
+          i18.consumer.OLD_CONNECTION_ID,
+          isSortingRequired: false,
+        ),
+        TableHeader(i18.common.NAME),
+        TableHeader(i18.common.PAYMENT_METHOD),
+        TableHeader(i18.billDetails.TOTAL_AMOUNT),
+      ];
+
+  void onChangeOfPageLimit(
+      PaginationResponse response, String type, BuildContext context) {
+    if (type == i18.dashboard.BILL_REPORT) {
+      getDemandReport(limit: response.limit, offset: response.offset);
+    }
+    if (type == i18.dashboard.COLLECTION_REPORT) {
+      getCollectionReport(limit: response.limit, offset: response.offset);
+    }
   }
-  TableDataRow getDemandRow(BillReportData data,{bool isExcel = false}) {
-    String? name =
-    CommonMethods.truncateWithEllipsis(20,data.consumerName!);
+
+  List<TableDataRow> getDemandsData(List<BillReportData> list,
+      {isExcel = false}) {
+    return list.map((e) => getDemandRow(e, isExcel: isExcel)).toList();
+  }
+
+  TableDataRow getDemandRow(BillReportData data, {bool isExcel = false}) {
+    String? name = CommonMethods.truncateWithEllipsis(20, data.consumerName!);
     return TableDataRow([
       TableData(
-        isExcel?'${data.connectionNo ?? '-'}':'${data.connectionNo?.split('/').first ?? ''}/...${data.connectionNo?.split('/').last ?? ''}',),
-      TableData('${data.oldConnectionNo ?? '-'}'),
+        isExcel
+            ? '${data.connectionNo ?? '-'}'
+            : '${data.connectionNo?.split('/').first ?? ''}/...${data.connectionNo?.split('/').last ?? ''}',
+      ),
+      TableData(
+          '${(data.oldConnectionNo == null ? null : data.oldConnectionNo!.isEmpty ? null : data.oldConnectionNo) ?? '-'}'),
       TableData('${name ?? '-'}'),
-      TableData('${DateFormats.timeStampToDate(int.parse(data.consumerCreatedOnDate??'0'))}'),
+      TableData(
+          '${DateFormats.timeStampToDate(int.parse(data.consumerCreatedOnDate ?? '0'))}'),
       TableData('${data.penalty ?? '0'}'),
       TableData('${data.advance ?? '0'}'),
       TableData('${data.demandAmount ?? '0'}'),
     ]);
   }
 
-  List<TableDataRow> getCollectionData(List<CollectionReportData> list,{bool isExcel = false}) {
-    return list.map((e) => getCollectionRow(e,isExcel: isExcel)).toList();
+  List<TableDataRow> getCollectionData(List<CollectionReportData> list,
+      {bool isExcel = false}) {
+    return list.map((e) => getCollectionRow(e, isExcel: isExcel)).toList();
   }
-  TableDataRow getCollectionRow(CollectionReportData data,{bool isExcel = false}) {
-    String? name =
-    CommonMethods.truncateWithEllipsis(20,data.consumerName!);
-    if(data.oldConnectionNo!=null && data.oldConnectionNo!.isEmpty){
-      data.oldConnectionNo='-';
+
+  TableDataRow getCollectionRow(CollectionReportData data,
+      {bool isExcel = false}) {
+    String? name = CommonMethods.truncateWithEllipsis(20, data.consumerName!);
+    if (data.oldConnectionNo != null && data.oldConnectionNo!.isEmpty) {
+      data.oldConnectionNo = '-';
     }
     return TableDataRow([
       TableData(
-          isExcel?'${data.connectionNo ?? '-'}':'${data.connectionNo?.split('/').first ?? ''}/...${data.connectionNo?.split('/').last ?? ''}',),
-      TableData('${data.oldConnectionNo ?? '-'}'),
-      TableData('${name?? '-'}'),
+        isExcel
+            ? '${data.connectionNo ?? '-'}'
+            : '${data.connectionNo?.split('/').first ?? ''}/...${data.connectionNo?.split('/').last ?? ''}',
+      ),
+      TableData('${(data.oldConnectionNo == null ? null : data.oldConnectionNo!.isEmpty ? null : data.oldConnectionNo) ?? '-'}'),
+      TableData('${name ?? '-'}'),
       TableData('${data.paymentMode ?? '-'}'),
-      TableData('${data.paymentAmount==null?null:data.paymentAmount!.isNotEmpty?data.paymentAmount?.first:null ?? '0'}'),
+      TableData('${data.paymentAmount ?? '0'}'),
     ]);
   }
+
   void callNotifier() {
     notifyListeners();
   }
+
   void onChangeOfBillYear(val) {
     selectedBillYear = val;
     billingcycleCtrl.clear();
-    billingcycleCtrl.notifyListeners();
-    selectedBillCycle=null;
-    selectedBillPeriod=null;
+    selectedBillCycle = null;
+    selectedBillPeriod = null;
     notifyListeners();
   }
 
@@ -118,8 +156,8 @@ class ReportsProvider with ChangeNotifier {
     var result = DateTime.parse(val);
     selectedBillCycle = (DateFormats.getMonth(result));
     selectedBillPeriod = (DateFormats.getFilteredDate(
-        result.toLocal().toString(),
-        dateFormat: "dd/MM/yyyy")) +
+            result.toLocal().toString(),
+            dateFormat: "dd/MM/yyyy")) +
         "-" +
         DateFormats.getFilteredDate(
             (new DateTime(result.year, result.month + 1, 0))
@@ -128,14 +166,14 @@ class ReportsProvider with ChangeNotifier {
             dateFormat: "dd/MM/yyyy");
     notifyListeners();
   }
+
   Future<void> getFinancialYearList() async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
-      var res = await CoreRepository().getMdms(
-          mdms.getTenantFinancialYearList(
-              commonProvider.userDetails!.userRequest!.tenantId.toString()));
+      var res = await CoreRepository().getMdms(mdms.getTenantFinancialYearList(
+          commonProvider.userDetails!.userRequest!.tenantId.toString()));
       languageList = res;
       notifyListeners();
       streamController.add(languageList);
@@ -144,23 +182,32 @@ class ReportsProvider with ChangeNotifier {
       streamController.addError('error');
     }
   }
-  List<DropdownMenuItem<Object>> getFinancialYearListDropdown(LanguageList? languageList) {
+
+  List<DropdownMenuItem<Object>> getFinancialYearListDropdown(
+      LanguageList? languageList) {
     if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
-      CommonMethods.getFilteredFinancialYearList(languageList?.mdmsRes?.billingService?.taxPeriodList ?? <TaxPeriod>[]);
-      languageList?.mdmsRes?.billingService?.taxPeriodList!.sort((a,b)=>a.fromDate!.compareTo(b.fromDate!));
+      CommonMethods.getFilteredFinancialYearList(
+          languageList?.mdmsRes?.billingService?.taxPeriodList ??
+              <TaxPeriod>[]);
+      languageList?.mdmsRes?.billingService?.taxPeriodList!
+          .sort((a, b) => a.fromDate!.compareTo(b.fromDate!));
       return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
-          <TaxPeriod>[])
+              <TaxPeriod>[])
           .map((value) {
-        return DropdownMenuItem(
-          value: value,
-          child: new Text((value.financialYear!)),
-        );
-      }).toList().reversed.toList();
+            return DropdownMenuItem(
+              value: value,
+              child: new Text((value.financialYear!)),
+            );
+          })
+          .toList()
+          .reversed
+          .toList();
     }
     return <DropdownMenuItem<Object>>[];
   }
 
-  List<DropdownMenuItem<Object>> getBillingCycleDropdown(dynamic selectedBillYear) {
+  List<DropdownMenuItem<Object>> getBillingCycleDropdown(
+      dynamic selectedBillYear) {
     var dates = [];
     if (selectedBillYear != null) {
       DatePeriod ytd;
@@ -170,13 +217,14 @@ class ReportsProvider with ChangeNotifier {
       var toDate = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(selectedBillYear.toDate)) as DateTime;
 
-      ytd = DatePeriod(fromDate,toDate,DateType.YTD);
+      ytd = DatePeriod(fromDate, toDate, DateType.YTD);
 
       /// Get months based on selected billing year
-      var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd,showCurrentMonth: true);
+      var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd,
+          showCurrentMonth: true);
 
       /// if selected year is future year means all the months will be removed
-      if(fromDate.year > ytd.endDate.year) months.clear();
+      if (fromDate.year > ytd.endDate.year) months.clear();
 
       for (var i = 0; i < months.length; i++) {
         var prevMonth = months[i].startDate;
@@ -191,7 +239,7 @@ class ReportsProvider with ChangeNotifier {
           value: value['code'].toLocal().toString(),
           child: new Text(
               ApplicationLocalizations.of(navigatorKey.currentContext!)
-                  .translate((Constants.MONTHS[d.month - 1])) +
+                      .translate((Constants.MONTHS[d.month - 1])) +
                   " - " +
                   d.year.toString()),
         );
@@ -200,43 +248,59 @@ class ReportsProvider with ChangeNotifier {
     return <DropdownMenuItem<Object>>[];
   }
 
-  Future<void> getDemandReport([bool download = false]) async {
+  Future<void> getDemandReport(
+      {bool download = false,
+      int offset = 1,
+      int limit = 10,
+      String sortOrder = "ASC"}) async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
-      if(selectedBillPeriod==null){
+      if (selectedBillPeriod == null) {
         throw Exception('Select Billing Cycle');
       }
-      Map<String,dynamic> params={
-        'tenantId':commonProvider.userDetails!.selectedtenant!.code,
-        'demandStartDate':selectedBillPeriod?.split('-')[0],
-        'demandEndDate':selectedBillPeriod?.split('-')[1]
+      Map<String, dynamic> params = {
+        'tenantId': commonProvider.userDetails!.selectedtenant!.code,
+        'demandStartDate': selectedBillPeriod?.split('-')[0],
+        'demandEndDate': selectedBillPeriod?.split('-')[1],
+        'offset': '${offset - 1}',
+        'limit': '${download ? -1 : limit}',
+        'sortOrder': '$sortOrder'
       };
-      var response = await ReportsRepo().fetchBillReport(
-          params);
+      var response = await ReportsRepo().fetchBillReport(params);
       if (response != null) {
         demandreports = response;
-        if(download){
+        if (download) {
           generateExcel(
               demandHeaderList
                   .map<String>((e) =>
-              '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
+                      '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
                   .toList(),
-              getDemandsData(demandreports!,isExcel: true).map<List<String>>((e) => e.tableRow.map((e) => e.label).toList()).toList()??[],
-              title: 'DemandReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(2)}_$selectedBillPeriod',
+              getDemandsData(demandreports!, isExcel: true)
+                      .map<List<String>>(
+                          (e) => e.tableRow.map((e) => e.label).toList())
+                      .toList() ??
+                  [],
+              title:
+                  'DemandReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(2)}_$selectedBillPeriod',
               optionalData: [
                 'Demand Report',
                 '$selectedBillPeriod',
                 '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)} ${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
-                'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch,format: 'dd/MMM/yyyy')}'
+                'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch, format: 'dd/MMM/yyyy')}'
               ]);
-        }else{
-          genericTableData = BillsTableData(demandHeaderList,getDemandsData(demandreports!));
+        } else {
+          if (demandreports != null && demandreports!.isNotEmpty) {
+            this.limit = limit;
+            this.offset = offset;
+            this.genericTableData = BillsTableData(
+                demandHeaderList, getDemandsData(demandreports!));
+          }
         }
         streamController.add(response);
         callNotifier();
-      }else{
+      } else {
         streamController.add('error');
         throw Exception('API Error');
       }
@@ -249,43 +313,59 @@ class ReportsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getCollectionReport([bool download = false]) async {
+  Future<void> getCollectionReport(
+      {bool download = false,
+      int offset = 1,
+      int limit = 10,
+      String sortOrder = "ASC"}) async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
-      if(selectedBillPeriod==null){
+      if (selectedBillPeriod == null) {
         throw Exception('Select Billing Cycle');
       }
-      Map<String,dynamic> params={
-        'tenantId':commonProvider.userDetails!.selectedtenant!.code,
-        'paymentStartDate':selectedBillPeriod?.split('-')[0],
-        'paymentEndDate':selectedBillPeriod?.split('-')[1]
+      Map<String, dynamic> params = {
+        'tenantId': commonProvider.userDetails!.selectedtenant!.code,
+        'paymentStartDate': selectedBillPeriod?.split('-')[0],
+        'paymentEndDate': selectedBillPeriod?.split('-')[1],
+        'offset': '${offset - 1}',
+        'limit': '${download ? -1 : limit}',
+        'sortOrder': '$sortOrder'
       };
-      var response = await ReportsRepo().fetchCollectionReport(
-          params);
+      var response = await ReportsRepo().fetchCollectionReport(params);
       if (response != null) {
         collectionreports = response;
-        if(download){
+        if (download) {
           generateExcel(
               collectionHeaderList
                   .map<String>((e) =>
-              '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
+                      '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
                   .toList(),
-              getCollectionData(collectionreports!,isExcel: true).map<List<String>>((e) => e.tableRow.map((e) => e.label).toList()).toList()??[],
-          title: 'CollectionReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_$selectedBillPeriod',
-          optionalData: [
-            'Collection Report',
-            '$selectedBillPeriod',
-            '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)} ${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
-            'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch,format: 'dd/MMM/yyyy')}'
-          ]);
-        }else{
-          genericTableData = BillsTableData(collectionHeaderList,getCollectionData(collectionreports!));
+              getCollectionData(collectionreports!, isExcel: true)
+                      .map<List<String>>(
+                          (e) => e.tableRow.map((e) => e.label).toList())
+                      .toList() ??
+                  [],
+              title:
+                  'CollectionReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_$selectedBillPeriod',
+              optionalData: [
+                'Collection Report',
+                '$selectedBillPeriod',
+                '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)} ${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
+                'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch, format: 'dd/MMM/yyyy')}'
+              ]);
+        } else {
+          if (collectionreports != null && collectionreports!.isNotEmpty) {
+            this.limit = limit;
+            this.offset = offset;
+            this.genericTableData = BillsTableData(
+                collectionHeaderList, getCollectionData(collectionreports!));
+          }
         }
         streamController.add(response);
         callNotifier();
-      }else{
+      } else {
         streamController.add('error');
         throw Exception('API Error');
       }
@@ -299,11 +379,13 @@ class ReportsProvider with ChangeNotifier {
   }
 
   void clearBuildTableData() {
-    genericTableData = BillsTableData([],[]);
+    genericTableData = BillsTableData([], []);
     callNotifier();
   }
-  Future<void> generateExcel(
-      List<String> headers, List<List<String>> tableData,{String title='HouseholdRegister',List<String> optionalData=const[]}) async {
+
+  Future<void> generateExcel(List<String> headers, List<List<String>> tableData,
+      {String title = 'HouseholdRegister',
+      List<String> optionalData = const []}) async {
     //Create a Excel document.
 
     //Creating a workbook.
@@ -314,28 +396,31 @@ class ReportsProvider with ChangeNotifier {
 
     // Enable calculation for worksheet.
     sheet.enableSheetCalculations();
-    int dataStartRow=2;
-    int headersStartRow=1;
+    int dataStartRow = 2;
+    int headersStartRow = 1;
     // //Set data in the worksheet.
-    if(optionalData.isEmpty){
+    if (optionalData.isEmpty) {
       sheet.getRangeByName('A1:D1').columnWidth = 32.5;
       sheet.getRangeByName('A1:D1').cellStyle.hAlign = HAlignType.center;
-    }else{
+    } else {
       sheet.getRangeByName('A1:D1').columnWidth = 32.5;
       sheet.getRangeByName('A2:D2').columnWidth = 32.5;
       sheet.getRangeByName('A2:D2').cellStyle.hAlign = HAlignType.center;
       dataStartRow = 3;
-      headersStartRow= 2;
+      headersStartRow = 2;
       for (int i = 0; i < optionalData.length; i++) {
         sheet
-            .getRangeByName('${CommonMethods.getAlphabetsWithKeyValue()[i].label}1')
-            .setText(optionalData[CommonMethods.getAlphabetsWithKeyValue()[i].key]);
+            .getRangeByName(
+                '${CommonMethods.getAlphabetsWithKeyValue()[i].label}1')
+            .setText(
+                optionalData[CommonMethods.getAlphabetsWithKeyValue()[i].key]);
       }
     }
 
     for (int i = 0; i < headers.length; i++) {
       sheet
-          .getRangeByName('${CommonMethods.getAlphabetsWithKeyValue()[i].label}$headersStartRow')
+          .getRangeByName(
+              '${CommonMethods.getAlphabetsWithKeyValue()[i].label}$headersStartRow')
           .setText(headers[CommonMethods.getAlphabetsWithKeyValue()[i].key]);
     }
 
@@ -343,16 +428,16 @@ class ReportsProvider with ChangeNotifier {
       for (int j = 0; j < headers.length; j++) {
         sheet
             .getRangeByName(
-            '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
+                '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
             .setText(tableData[i - dataStartRow][j]);
         sheet
             .getRangeByName(
-            '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
+                '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
             .cellStyle
             .hAlign = HAlignType.center;
         sheet
             .getRangeByName(
-            '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
+                '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
             .cellStyle
             .vAlign = VAlignType.center;
       }

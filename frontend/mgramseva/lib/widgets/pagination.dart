@@ -12,7 +12,8 @@ class Pagination extends StatefulWidget {
  final int totalCount;
  final Function(PaginationResponse) callBack;
  final bool isDisabled;
-  const Pagination({Key? key, required this.limit, required this.offSet, required this.callBack, required this.totalCount, this.isDisabled = false}) : super(key: key);
+ final bool isTotalCountVisible;
+ const Pagination({Key? key, required this.limit, required this.offSet, required this.callBack, required this.totalCount, this.isDisabled = false, this.isTotalCountVisible = true}) : super(key: key);
 
   @override
   _PaginationState createState() => _PaginationState();
@@ -44,14 +45,14 @@ class _PaginationState extends State<Pagination> {
                   onChanged:  widget.isDisabled ? null : onChangeOfPageCount,
                 ),
               ),
-             _buildPageDetails()
+             _buildPageDetails(isTotalCountVisible: widget.isTotalCountVisible)
             ],
           ),
     );
   }
 
   get dropDownItems {
-    return [10, 20, 30, 40, 50].map((value) {
+    return [1,2,3,10, 20, 30, 40, 50].map((value) {
       return DropdownMenuItem(
         key: Key('$value'),
         value: value,
@@ -60,7 +61,7 @@ class _PaginationState extends State<Pagination> {
     }).toList();
   }
 
-  Widget _buildPageDetails(){
+  Widget _buildPageDetails({bool isTotalCountVisible=true}){
     return Container(
       child: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -68,7 +69,7 @@ class _PaginationState extends State<Pagination> {
           Visibility(
               visible:  widget.offSet > widget.limit,
               child: IconButton(onPressed: widget.isDisabled ? null : () => onChangeOfPage(false), icon: Icon(Icons.arrow_left))),
-          Text('${widget.offSet} - ${(widget.offSet + widget.limit - 1) <= widget.totalCount ? (widget.offSet + widget.limit -1) : widget.totalCount}'),
+        ...isTotalCountVisible?[Text('${widget.offSet} - ${(widget.offSet + widget.limit - 1) <= widget.totalCount ? (widget.offSet + widget.limit -1) : widget.totalCount}'),
           Padding(
             padding: EdgeInsets.only(left: 14),
             child: Wrap(
@@ -78,9 +79,9 @@ class _PaginationState extends State<Pagination> {
                 Text('${widget.totalCount}'),
               ],
             ),
-          ),
+          )]:[],
           Visibility(
-              visible: (widget.offSet + widget.limit - 1) < widget.totalCount ,
+              visible: isTotalCountVisible?((widget.offSet + widget.limit - 1) < widget.totalCount):true,
               child: IconButton(onPressed:  widget.isDisabled ? null : onChangeOfPage, icon:Icon(Icons.arrow_right))),
         ],
       ),

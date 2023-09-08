@@ -38,5 +38,5 @@ public class CollectionReportData {
 	private String paymentMode = null;
 	
 	@JsonProperty("paymentAmount")
-	private List<BigDecimal> paymentAmount = null;
+	private BigDecimal paymentAmount = null;
 }

@@ -31,6 +31,7 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
   var takeScreenShot = false;
   bool viewTable = false;
+  String tableTitle = 'Table Data';
 
   @override
   void dispose() {
@@ -54,9 +55,10 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
     reportsProvider.getFinancialYearList();
   }
 
-  showTable(bool status) {
+  showTable(bool status, String title) {
     setState(() {
       viewTable = status;
+      tableTitle = title;
     });
   }
 
@@ -98,11 +100,27 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                     ? null
                     : EdgeInsets.symmetric(
                         horizontal: MediaQuery.of(context).size.width / 95),
-                height: constraints.maxHeight - 50,
+                height: constraints.maxHeight,
                 child: SingleChildScrollView(
                   controller: scrollController,
                   child: viewTable
-                      ? ViewTable(showTable)
+                      ? Container(
+                          child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            HomeBack(
+                              callback: () {
+                                setState(() {
+                                  viewTable = false;
+                                });
+                              },
+                            ),
+                            ViewTable(
+                              tableTitle: tableTitle,
+                              scrollController: scrollController,
+                            ),
+                          ],
+                        ))
                       : Column(
                           children: [
                             HomeBack(),
@@ -112,10 +130,10 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                   borderRadius: BorderRadius.circular(0.0),
                                 ),
                                 child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       LabelText(i18.dashboard.CORE_REPORTS),
-
                                     ])),
                             SizedBox(
                               height: 30,
@@ -126,7 +144,8 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                 borderRadius: BorderRadius.circular(5.0),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.only(top:15,bottom: 10.0),
+                                padding: const EdgeInsets.only(
+                                    top: 15, bottom: 10.0),
                                 child: Column(
                                   children: [
                                     Consumer<ReportsProvider>(
@@ -183,7 +202,7 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                               height: 30,
                             ),
                             Card(
-                              margin: EdgeInsets.only(top: 15,bottom: 2),
+                              margin: EdgeInsets.only(top: 15, bottom: 2),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5.0),
                               ),

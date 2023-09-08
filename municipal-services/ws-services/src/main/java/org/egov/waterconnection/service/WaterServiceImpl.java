@@ -797,7 +797,7 @@ public class WaterServiceImpl implements WaterService {
 	}
 
 	@Override
-	public List<BillReportData> billReport(@Valid String demandStartDate, @Valid String demandEndDate, String tenantId, RequestInfo requestInfo) {
+	public List<BillReportData> billReport(@Valid String demandStartDate, @Valid String demandEndDate, String tenantId, @Valid Integer offset, @Valid Integer limit, @Valid String sortOrder, RequestInfo requestInfo) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate demStartDate = LocalDate.parse(demandStartDate, formatter);
 		LocalDate demEndDate = LocalDate.parse(demandEndDate, formatter);
@@ -805,12 +805,12 @@ public class WaterServiceImpl implements WaterService {
 		Long demStartDateTime = LocalDateTime.of(demStartDate.getYear(), demStartDate.getMonth(), demStartDate.getDayOfMonth(), 0, 0, 0)
 				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 		Long demEndDateTime = LocalDateTime.of(demEndDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		List<BillReportData> billReportData = waterDaoImpl.getBillReportData(demStartDateTime,demEndDateTime,tenantId);
+		List<BillReportData> billReportData = waterDaoImpl.getBillReportData(demStartDateTime,demEndDateTime,tenantId,offset,limit,sortOrder);
 		return billReportData;
 	}
 
 	@Override
-	public List<CollectionReportData> collectionReport(String paymentStartDate, String paymentEndDate, String tenantId,
+	public List<CollectionReportData> collectionReport(String paymentStartDate, String paymentEndDate, String tenantId,@Valid Integer offset, @Valid Integer limit, @Valid String sortOrder,
 													   RequestInfo requestInfo) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate payStartDate = LocalDate.parse(paymentStartDate, formatter);
@@ -819,7 +819,7 @@ public class WaterServiceImpl implements WaterService {
 		Long payStartDateTime = LocalDateTime.of(payStartDate.getYear(), payStartDate.getMonth(), payStartDate.getDayOfMonth(), 0, 0, 0)
 				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 		Long payEndDateTime = LocalDateTime.of(payEndDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		List<CollectionReportData> collectionReportData = waterDaoImpl.getCollectionReportData(payStartDateTime,payEndDateTime,tenantId);
+		List<CollectionReportData> collectionReportData = waterDaoImpl.getCollectionReportData(payStartDateTime,payEndDateTime,tenantId,offset,limit,sortOrder);
 		return collectionReportData;
 	}
 }

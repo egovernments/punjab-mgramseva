@@ -35,29 +35,16 @@ public class CollectionRowMapper implements ResultSetExtractor<List<CollectionRe
 	@Override
 	public List<CollectionReportData> extractData(ResultSet rs) throws SQLException, DataAccessException {
 		List<CollectionReportData> collectionReportDataList = new ArrayList<>();
-		CollectionReportData collectionReportData = new CollectionReportData();
-	    Map<String, CollectionReportData> reportData = new HashMap<>();
 		while (rs.next()) {
-			    if(reportData.get(rs.getString("connectionNo")) != null) {
-			    	setPayments(rs, collectionReportData, reportData);
-			    }
-			    else {
-			    	collectionReportData = new CollectionReportData();
-					List<BigDecimal> paymentAmounts = new ArrayList<>();
+			        CollectionReportData collectionReportData = new CollectionReportData();
 			    	collectionReportData.setTenantName(rs.getString("tenantId"));
 			    	collectionReportData.setConnectionNo(rs.getString("connectionNo"));
 			    	collectionReportData.setOldConnectionNo(rs.getString("oldConnectionNo"));
 			    	collectionReportData.setUserId(rs.getString("uuid"));
 			    	collectionReportData.setPaymentMode(rs.getString("paymentmode"));
-			    	paymentAmounts.add(rs.getBigDecimal("amountpaid"));
-			    	collectionReportData.setPaymentAmount(paymentAmounts);
-					reportData.put(rs.getString("connectionNo"), collectionReportData);
-
-			    }
-			    
+			    	collectionReportData.setPaymentAmount(rs.getBigDecimal("totalAmountPaid"));
+                    collectionReportDataList.add(collectionReportData);
 		}
-		List<CollectionReportData> listOfValues = reportData.values().stream().collect( Collectors.toCollection(ArrayList::new));
-		collectionReportDataList.addAll(listOfValues);
 		if(!collectionReportDataList.isEmpty()){
 			enrichConnectionHolderDetails(collectionReportDataList);
 		}

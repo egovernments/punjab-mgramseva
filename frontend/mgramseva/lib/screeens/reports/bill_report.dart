@@ -56,38 +56,39 @@ class _BillReport extends State<BillReport>
                   ),
                   Row(
                     children: [
-                      // Container(
-                      //   width: 50,
-                      //   child: Button(
-                      //     "View",
-                      //     () {
-                      //       if (reportProvider.selectedBillPeriod == null) {
-                      //         Notifiers.getToastMessage(
-                      //             context, 'Select Billing Cycle', 'ERROR');
-                      //       } else {
-                      //         widget.onViewClick(true);
-                      //         reportProvider.getDemandReport();
-                      //         // Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) { return GenericReportTable(BillsTableData(reportProvider.demandHeaderList,reportProvider.getDemandsData(reportProvider.demandreports!))); }));
-                      //       }
-                      //     },
-                      //     key: Keys.billReport.BILL_REPORT_VIEW_BUTTON,
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   width: 10,
-                      // ),
+                      Container(
+                        width: 50,
+                        child: Button(
+                          "View",
+                          () {
+                            if (reportProvider.selectedBillPeriod == null) {
+                              Notifiers.getToastMessage(
+                                  context, 'Select Billing Cycle', 'ERROR');
+                            } else {
+                              reportProvider.clearTableData();
+                              reportProvider.getDemandReport();
+                              widget.onViewClick(
+                                  true, i18.dashboard.BILL_REPORT);
+                            }
+                          },
+                          key: Keys.billReport.BILL_REPORT_VIEW_BUTTON,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
                       TextButton.icon(
                           onPressed: () {
                             if (reportProvider.selectedBillPeriod == null) {
                               Notifiers.getToastMessage(
                                   context, 'Select Billing Cycle', 'ERROR');
                             } else {
-                              reportProvider.getDemandReport(true);
+                              reportProvider.getDemandReport(download: true);
                             }
                           },
                           icon: Icon(Icons.download_sharp),
-                          label: Text(
-                              ApplicationLocalizations.of(context).translate(i18.common.CORE_DOWNLOAD))),
+                          label: Text(ApplicationLocalizations.of(context)
+                              .translate(i18.common.CORE_DOWNLOAD))),
                     ],
                   ),
                 ],

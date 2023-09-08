@@ -522,37 +522,83 @@ public class WaterDaoImpl implements WaterDao {
 		return jdbcTemplate.queryForObject(query.toString(), BigDecimal.class);
 	}
 
-	public List<BillReportData> getBillReportData(@Valid Long demandStartDate,@Valid Long demandEndDate, @Valid String tenantId) {
+	public List<BillReportData> getBillReportData(@Valid Long demandStartDate,@Valid Long demandEndDate, @Valid String tenantId, @Valid Integer offset, @Valid Integer limit, @Valid String sortOrder) {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.BILL_REPORT_QUERY);
-		query.append("where dem.taxperiodfrom =" + demandStartDate);
-		query.append(" and dem.taxperiodto =" + demandEndDate);
-
-		if(!tenantId.isEmpty()){
-			query.append(" and conn.tenantId ='"+tenantId+"'"); 
-		}
-		query.append(" group by conn.connectionno,conn.tenantId,dd.taxheadcode,conn.oldConnectionno,conn.createdTime,dd.taxamount,connectionholder.userid order by conn.connectionno,dd.taxheadcode");
-
-		List<BillReportData> billReportList = new ArrayList<>();
 		List<Object> preparedStatement = new ArrayList<>();
+        preparedStatement.add(demandStartDate);
+		preparedStatement.add(demandEndDate);
+		preparedStatement.add(tenantId);
 
-		billReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), reportRowMapper);
+        if(sortOrder.equals(SearchCriteria.SortOrder.DESC.name()))
+           query.append(" DESC ");
+		else
+			query.append(" ASC ");
+
+		Integer newlimit=wsConfiguration.getDefaultLimit();
+		Integer newoffset= wsConfiguration.getDefaultOffset();
+		if(limit==null && offset==null)
+			newlimit=wsConfiguration.getMaxLimit();
+		if(limit!=null && limit<=wsConfiguration.getMaxLimit())
+			newlimit=limit;
+		if(limit!=null && limit>=wsConfiguration.getMaxLimit())
+			newlimit=wsConfiguration.getMaxLimit();
+
+		if(offset!=null)
+			newoffset=offset;
+
+		if(newlimit > 0) {
+				query.append(" offset ?  limit ? ;");
+			preparedStatement.add(newoffset);
+			preparedStatement.add(newlimit);
+		}
+		List<BillReportData> billReportList = new ArrayList<>();
+		try {
+
+			billReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), reportRowMapper);
+		}
+		catch(Exception e){
+			Map<String,String> ex = new  HashMap<String,String>(){{
+				put("DataIntegrityViolationException","e");
+			}};
+			throw new CustomException(ex);
+		}
 		return billReportList;
 			
 	}
 
 	public List<CollectionReportData> getCollectionReportData(Long payStartDateTime, Long payEndDateTime,
-			String tenantId) {
+			String tenantId,@Valid Integer offset, @Valid Integer limit, @Valid String sortOrder) {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.COLLECTION_REPORT_QUERY);
-		query.append(" and pay.transactiondate between "+ payStartDateTime +"and " + payEndDateTime);
 
-		if(!tenantId.isEmpty()){
-			query.append(" and conn.tenantId ='"+tenantId+"'"); 
+		List<Object> preparedStatement = new ArrayList<>();
+                     preparedStatement.add(payStartDateTime);
+					 preparedStatement.add(payEndDateTime);
+					 preparedStatement.add(tenantId);
+
+		if(sortOrder.equals(SearchCriteria.SortOrder.DESC.name()))
+			query.append(" DESC ");
+		else
+			query.append(" ASC ");
+
+		Integer newlimit=wsConfiguration.getDefaultLimit();
+		Integer newoffset= wsConfiguration.getDefaultOffset();
+		if(limit==null && offset==null)
+			newlimit=wsConfiguration.getMaxLimit();
+		if(limit!=null && limit<=wsConfiguration.getMaxLimit())
+			newlimit=limit;
+		if(limit!=null && limit>=wsConfiguration.getMaxLimit())
+			newlimit=wsConfiguration.getMaxLimit();
+
+		if(offset!=null)
+			newoffset=offset;
+
+		if (newlimit>0){
+			query.append(" offset ?  limit ? ;");
+			preparedStatement.add(newoffset);
+			preparedStatement.add(newlimit);
 		}
-		query.append(" group by conn.connectionno,conn.tenantId,conn.oldConnectionno,connectionholder.userid,pd.amountpaid,pay.paymentmode");
 
 		List<CollectionReportData> collectionReportList = new ArrayList<>();
-		List<Object> preparedStatement = new ArrayList<>();
-
 		collectionReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), collectionReportRowMapper);
 		return collectionReportList;
 	}
