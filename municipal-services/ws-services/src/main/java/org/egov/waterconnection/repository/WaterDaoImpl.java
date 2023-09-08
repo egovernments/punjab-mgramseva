@@ -601,7 +601,8 @@ public class WaterDaoImpl implements WaterDao {
 		}
 
 		List<CollectionReportData> collectionReportList = new ArrayList<>();
-
+		log.debug("Query of bill report " +query.toString());
+		log.debug("Prepared Statement " +preparedStatement.toString());
 		collectionReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), collectionReportRowMapper);
 		return collectionReportList;
 	}
