@@ -99,7 +99,7 @@ class ReportsProvider with ChangeNotifier {
       TableData('${data.oldConnectionNo ?? '-'}'),
       TableData('${name?? '-'}'),
       TableData('${data.paymentMode ?? '-'}'),
-      TableData('${data.paymentAmount==null?null:data.paymentAmount!.isNotEmpty?data.paymentAmount?.first:null ?? '0'}'),
+      TableData('${data.paymentAmount ?? '0'}'),
     ]);
   }
   void callNotifier() {
