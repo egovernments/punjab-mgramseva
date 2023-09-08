@@ -140,10 +140,10 @@ public class WsQueryBuilder {
 			+ "  FROM eg_ws_connection conn " + INNER_JOIN_STRING + " eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id "
 			+   INNER_JOIN_STRING + " egbs_demand_v1 dem ON dem.consumercode = conn.connectionno "
 			+   INNER_JOIN_STRING + "  egbs_demanddetail_v1 dd on dd.demandid = dem.id WHERE dem.taxperiodfrom >= ? AND dem.taxperiodto <= ? "
-			+ "  AND conn.tenantId = ? AND conn.status='Active' AND dmd.status='ACTIVE' GROUP BY conn.connectionno,conn.tenantId,conn.oldConnectionno,conn.createdTime,connectionholder.userid ORDER BY conn.connectionno ";
+			+ "  AND conn.tenantId = ? AND conn.status='Active' AND dem.status='ACTIVE' GROUP BY conn.connectionno,conn.tenantId,conn.oldConnectionno,conn.createdTime,connectionholder.userid ORDER BY conn.connectionno ";
 	
 	public static final String COLLECTION_REPORT_QUERY = "SELECT conn.tenantId as tenantId, conn.connectionno as connectionNo, conn.oldConnectionno as oldConnectionNo,connectionholder.userid as uuid"
-			+ ",pd.amountpaid as amountpaid,pay.paymentmode as paymentmode FROM eg_ws_connection conn "
+			+ ",pd. as amountpaid,pay.paymentmode asamountpaid paymentmode FROM eg_ws_connection conn "
 			+ INNER_JOIN_STRING + " eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id "
 			+ INNER_JOIN_STRING + " egbs_billdetail_v1 bd on bd.consumercode=conn.connectionno "
 			+ INNER_JOIN_STRING + " egcl_paymentdetail pd on pd.billid=bd.billid "

@@ -551,8 +551,17 @@ public class WaterDaoImpl implements WaterDao {
 			preparedStatement.add(newlimit);
 		}
 		List<BillReportData> billReportList = new ArrayList<>();
+		try {
 
-		billReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), reportRowMapper);
+			billReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), reportRowMapper);
+		}
+		catch(Exception e){
+			Map<String,String> ex = new  HashMap<String,String>(){{
+				put("DataIntegrityViolationException","e");
+			}};
+			log.error(e.getMessage());
+			throw new CustomException(ex);
+		}
 		return billReportList;
 			
 	}
