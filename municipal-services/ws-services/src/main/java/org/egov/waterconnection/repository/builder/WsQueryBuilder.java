@@ -149,7 +149,7 @@ public class WsQueryBuilder {
 			+ INNER_JOIN_STRING  + "eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id "
 			+ INNER_JOIN_STRING + " egbs_billdetail_v1 bd on bd.consumercode = conn.connectionno "
 			+ INNER_JOIN_STRING + " egcl_paymentdetail pd on pd.billid = bd.billid"
-			+ INNER_JOIN_STRING + "egcl_payment pay on pay.id = pd.paymentid WHERE conn.status = 'Active' "
+			+ INNER_JOIN_STRING + " egcl_payment pay on pay.id = pd.paymentid WHERE conn.status = 'Active' "
 			+ " AND pay.transactiondate BETWEEN ? AND ? AND conn.tenantId = ? "
 			+ " AND pay.paymentstatus!='CANCELLED' GROUP BY conn.tenantId,conn.connectionno,conn.oldConnectionno,"
 			+ " connectionholder.userid,pay.paymentmode ORDER BY conn.connectionno ";
