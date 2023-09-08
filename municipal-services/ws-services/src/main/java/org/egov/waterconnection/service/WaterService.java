@@ -46,9 +46,9 @@ public interface WaterService {
 
 	List<RevenueCollectionData> getRevenueCollectionData(@Valid SearchCriteria criteria, RequestInfo requestInfo);
 
-	List<BillReportData> billReport(@Valid String demandStartDate,@Valid String demandEndDate, @Valid String tenantId, RequestInfo requestInfo);
+	List<BillReportData> billReport(@Valid String demandStartDate, @Valid String demandEndDate, @Valid String tenantId, @Valid Integer offset, @Valid Integer limit, @Valid String sortOrder, RequestInfo requestInfo);
 
-	List<CollectionReportData> collectionReport(String paymentStartDate, String paymentEndDate, String tenantId,
+	List<CollectionReportData> collectionReport(String paymentStartDate, String paymentEndDate, String tenantId,@Valid Integer offset, @Valid Integer limit, @Valid String sortOrder,
 			RequestInfo requestInfo);
 
 }
