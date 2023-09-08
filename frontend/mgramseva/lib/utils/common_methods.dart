@@ -57,7 +57,7 @@ class CommonMethods {
   *
   * */
 
-  static List<DatePeriod> getPastMonthUntilFinancialYTD(DatePeriod ytd) {
+  static List<DatePeriod> getPastMonthUntilFinancialYTD(DatePeriod ytd,{bool showCurrentMonth = false}) {
     var monthList = <DateTime>[];
     final currentTime = DateTime.now();
     if(currentTime.year < ytd.startDate.year){
@@ -65,7 +65,7 @@ class CommonMethods {
     }
     if (currentTime.year == ytd.startDate.year) {
       //when current year is same as start year of financial year
-      for (int i = ytd.startDate.month; i < currentTime.month; i++) {
+      for (int i = ytd.startDate.month; i <= (showCurrentMonth?currentTime.month:currentTime.month-1); i++) {
         monthList.add(DateTime(currentTime.year, i));
       }
     } else if(currentTime.year == ytd.endDate.year){
@@ -74,7 +74,7 @@ class CommonMethods {
         monthList.add(DateTime(ytd.startDate.year, i));
       }
       for (int i = 1;
-      i <= (currentTime.month <= ytd.endDate.month ? currentTime.month-1: ytd.endDate.month);
+      i <= (currentTime.month <= ytd.endDate.month ? showCurrentMonth?currentTime.month:currentTime.month-1: ytd.endDate.month);
       /*
           * if current month is less than or equal to end month of financial year
           * we are using months less than current month and if it is more than
