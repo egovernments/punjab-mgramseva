@@ -102,7 +102,17 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                 child: SingleChildScrollView(
                   controller: scrollController,
                   child: viewTable
-                      ? ViewTable(showTable)
+                      ? Container(
+                      child: Column(
+                        children: [
+                          HomeBack(callback: (){
+                            setState(() {
+                              viewTable = false;
+                            });
+                          },),
+                          ViewTable(),
+                        ],
+                      ))
                       : Column(
                           children: [
                             HomeBack(),
