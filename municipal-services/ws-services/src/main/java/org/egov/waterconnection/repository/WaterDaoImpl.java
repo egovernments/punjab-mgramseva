@@ -551,6 +551,8 @@ public class WaterDaoImpl implements WaterDao {
 			preparedStatement.add(newlimit);
 		}
 		List<BillReportData> billReportList = new ArrayList<>();
+		log.debug("Query of bill report " +query.toString());
+		log.debug("Prepared Statement " +preparedStatement.toString());
 		try {
 
 			billReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), reportRowMapper);
@@ -601,8 +603,6 @@ public class WaterDaoImpl implements WaterDao {
 		}
 
 		List<CollectionReportData> collectionReportList = new ArrayList<>();
-		log.debug("Query of bill report " +query.toString());
-		log.debug("Prepared Statement " +preparedStatement.toString());
 		collectionReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), collectionReportRowMapper);
 		return collectionReportList;
 	}
