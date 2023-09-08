@@ -528,6 +528,7 @@ public class WaterDaoImpl implements WaterDao {
         preparedStatement.add(demandStartDate);
 		preparedStatement.add(demandEndDate);
 		preparedStatement.add(tenantId);
+
         if(sortOrder.equals(SearchCriteria.SortOrder.DESC.name()))
            query.append(" DESC ");
 		else
@@ -551,8 +552,6 @@ public class WaterDaoImpl implements WaterDao {
 			preparedStatement.add(newlimit);
 		}
 		List<BillReportData> billReportList = new ArrayList<>();
-		log.debug("Query of bill report " +query.toString());
-		log.debug("Prepared Statement " +preparedStatement.toString());
 		try {
 
 			billReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), reportRowMapper);
@@ -561,7 +560,6 @@ public class WaterDaoImpl implements WaterDao {
 			Map<String,String> ex = new  HashMap<String,String>(){{
 				put("DataIntegrityViolationException","e");
 			}};
-			log.error(e.getMessage());
 			throw new CustomException(ex);
 		}
 		return billReportList;
@@ -571,14 +569,12 @@ public class WaterDaoImpl implements WaterDao {
 	public List<CollectionReportData> getCollectionReportData(Long payStartDateTime, Long payEndDateTime,
 			String tenantId,@Valid Integer offset, @Valid Integer limit, @Valid String sortOrder) {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.COLLECTION_REPORT_QUERY);
-		query.append(" and pay.transactiondate between "+ payStartDateTime +" and " + payEndDateTime);
 
 		List<Object> preparedStatement = new ArrayList<>();
+                     preparedStatement.add(payStartDateTime);
+					 preparedStatement.add(payEndDateTime);
+					 preparedStatement.add(tenantId);
 
-		if(!tenantId.isEmpty()){
-			query.append(" and conn.tenantId ='"+tenantId+"'"); 
-		}
-		query.append(" group by conn.connectionno,conn.tenantId,conn.oldConnectionno,connectionholder.userid,pd.amountpaid,pay.paymentmode");
 		if(sortOrder.equals(SearchCriteria.SortOrder.DESC.name()))
 			query.append(" DESC ");
 		else
