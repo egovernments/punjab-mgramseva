@@ -525,7 +525,9 @@ public class WaterDaoImpl implements WaterDao {
 	public List<BillReportData> getBillReportData(@Valid Long demandStartDate,@Valid Long demandEndDate, @Valid String tenantId, @Valid Integer offset, @Valid Integer limit, @Valid String sortOrder) {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.BILL_REPORT_QUERY);
 		List<Object> preparedStatement = new ArrayList<>();
-
+        preparedStatement.add(demandStartDate);
+		preparedStatement.add(demandEndDate);
+		preparedStatement.add(tenantId);
         if(sortOrder.equals(SearchCriteria.SortOrder.DESC.name()))
            query.append(" DESC ");
 		else
