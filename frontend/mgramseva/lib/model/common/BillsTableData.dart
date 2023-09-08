@@ -2,9 +2,9 @@ import '../../utils/models.dart';
 
 class BillsTableData{
   List<TableHeader> tableHeaders;
-  List<TableDataRow> tabledata;
+  List<TableDataRow> tableData;
   bool isEmpty(){
-    return tabledata.isEmpty;
+    return tableData.isEmpty;
   }
-  BillsTableData(this.tableHeaders, this.tabledata);
+  BillsTableData(this.tableHeaders, this.tableData);
 }

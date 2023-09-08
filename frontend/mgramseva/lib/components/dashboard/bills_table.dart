@@ -12,12 +12,20 @@ class BillsTable extends StatefulWidget {
   final double rightColumnWidth;
   final double? height;
   final ScrollPhysics? scrollPhysics;
+  ScrollController scrollController = ScrollController();
   BillsTable(
       {Key? key,
         required this.headerList,
         required this.tableData,
         required this.leftColumnWidth,
         required this.rightColumnWidth, this.height, this.scrollPhysics})
+      : super(key: key);
+  BillsTable.withScrollController(
+      {Key? key,
+        required this.headerList,
+        required this.tableData,
+        required this.leftColumnWidth,
+        required this.rightColumnWidth, this.height, this.scrollPhysics, required this.scrollController})
       : super(key: key);
 
   @override
@@ -27,7 +35,6 @@ class BillsTable extends StatefulWidget {
 }
 
 class _BillsTable extends State<BillsTable> {
-  final ScrollController controller = ScrollController();
   final double columnRowFixedHeight = 52.0;
 
   @override
@@ -134,7 +141,7 @@ class _BillsTable extends State<BillsTable> {
     return LayoutBuilder(builder: (context, constraints) {
       var data = widget.tableData[index].tableRow.first;
       return ScrollParent(
-          controller,
+          widget.scrollController,
           InkWell(
             onTap: () {
               if (data.callBack != null) {

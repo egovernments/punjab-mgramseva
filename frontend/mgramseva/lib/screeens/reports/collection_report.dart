@@ -65,9 +65,10 @@ class _CollectionReport extends State<CollectionReport>
                               Notifiers.getToastMessage(
                                   context, 'Select Billing Cycle', 'ERROR');
                             } else {
+                              reportProvider.clearTableData();
                               reportProvider.getCollectionReport();
-                              widget.onViewClick(true);
-                              // Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) { return GenericReportTable(BillsTableData(reportProvider.collectionHeaderList,reportProvider.getCollectionData(reportProvider.collectionreports!))); }));
+                              widget.onViewClick(
+                                  true, i18.dashboard.COLLECTION_REPORT);
                             }
                           },
                           key: Keys.billReport.COLLECTION_REPORT_VIEW_BUTTON,
@@ -82,12 +83,13 @@ class _CollectionReport extends State<CollectionReport>
                               Notifiers.getToastMessage(
                                   context, 'Select Billing Cycle', 'ERROR');
                             } else {
-                              reportProvider.getCollectionReport(true);
+                              reportProvider.getCollectionReport(
+                                  download: true);
                             }
                           },
                           icon: Icon(Icons.download_sharp),
-                          label: Text(
-                              ApplicationLocalizations.of(context).translate(i18.common.CORE_DOWNLOAD))),
+                          label: Text(ApplicationLocalizations.of(context)
+                              .translate(i18.common.CORE_DOWNLOAD))),
                     ],
                   ),
                 ],

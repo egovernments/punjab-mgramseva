@@ -4,38 +4,40 @@ import 'package:provider/provider.dart';
 
 import '../../model/common/BillsTableData.dart';
 import '../../providers/reports_provider.dart';
-import '../../widgets/custom_app_bar.dart';
-import '../../widgets/drawer_wrapper.dart';
-import '../../widgets/home_back.dart';
-import '../../widgets/side_bar.dart';
+import '../../utils/common_widgets.dart';
+import '../../utils/localization/application_localizations.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 
-class GenericReportTable extends StatelessWidget{
+class GenericReportTable extends StatelessWidget {
   final BillsTableData billsTableData;
+  final ScrollController scrollController;
 
-  GenericReportTable(this.billsTableData);
+  GenericReportTable(this.billsTableData, {required this.scrollController});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: Container(
-              width: constraints.maxWidth,
-              child: Consumer<ReportsProvider>(
-
-                builder: (context, reportsProvider,child) {
-                  var width =
-                  constraints.maxWidth < 760 ? 115.0 : (constraints.maxWidth / 6);
-                  return this.billsTableData.isEmpty()?Center(child: Text("No Data Available"),):BillsTable(height: (52.0 * billsTableData.tabledata.length + 1),
-                      scrollPhysics: NeverScrollableScrollPhysics(),headerList: billsTableData.tableHeaders, tableData: billsTableData.tabledata, leftColumnWidth: width,
-                    rightColumnWidth:
-                    width * (billsTableData.tableHeaders.length - 1),);
-                }
+    return LayoutBuilder(builder: (context, constraints) {
+      var width =
+          constraints.maxWidth < 760 ? 115.0 : (constraints.maxWidth / 6);
+      return Container(
+        width: this.billsTableData.isEmpty()
+            ? constraints.maxWidth
+            : width * billsTableData.tableHeaders.length + 2,
+        child: this.billsTableData.isEmpty()
+            ? Center(
+                child: Text(ApplicationLocalizations.of(context)
+                    .translate(i18.dashboard.NO_RECORDS_MSG)))
+            : BillsTable.withScrollController(
+                height: (53.0 * (billsTableData.tableData.length + 1)) + 2,
+                scrollPhysics: NeverScrollableScrollPhysics(),
+                headerList: billsTableData.tableHeaders,
+                tableData: billsTableData.tableData,
+                leftColumnWidth: width,
+                rightColumnWidth:
+                    width * (billsTableData.tableHeaders.length - 1),
+                scrollController: scrollController,
               ),
-            ),
-          );
-        }
       );
+    });
   }
-
 }
