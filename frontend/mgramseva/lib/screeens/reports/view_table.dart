@@ -10,10 +10,14 @@ class ViewTable extends StatelessWidget{
   ViewTable(this.showTable);
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [Consumer<ReportsProvider>(
-        builder: (_, reportProvider, child) =>GenericReportTable(reportProvider.genericTableData))],
-    );
+    return LayoutBuilder(
+        builder: (context, constraints) { return Container(
+          child: Column(
+          children: [Consumer<ReportsProvider>(
+            builder: (_, reportProvider, child) =>GenericReportTable(reportProvider.genericTableData))],
+      ),
+        );
+    });
   }
 
 }

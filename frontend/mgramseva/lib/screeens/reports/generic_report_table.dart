@@ -21,7 +21,6 @@ class GenericReportTable extends StatelessWidget{
           return SingleChildScrollView(
             child: Container(
               width: constraints.maxWidth,
-              height: constraints.maxHeight-50,
               child: Consumer<ReportsProvider>(
 
                 builder: (context, reportsProvider,child) {
