@@ -65,8 +65,8 @@ class _BillReport extends State<BillReport>
                               Notifiers.getToastMessage(
                                   context, 'Select Billing Cycle', 'ERROR');
                             } else {
-                              widget.onViewClick(true);
                               reportProvider.getDemandReport();
+                              widget.onViewClick(true);
                               // Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) { return GenericReportTable(BillsTableData(reportProvider.demandHeaderList,reportProvider.getDemandsData(reportProvider.demandreports!))); }));
                             }
                           },

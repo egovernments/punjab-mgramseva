@@ -34,7 +34,7 @@ class ReportsProvider with ChangeNotifier {
   var billingcycleCtrl = TextEditingController();
   List<BillReportData>? demandreports;
   List<CollectionReportData>? collectionreports;
-  late BillsTableData genericTableData;
+  BillsTableData genericTableData = BillsTableData([], []);
   void clearBillingSelection(){
     selectedBillYear = null;
     selectedBillPeriod = null;
@@ -212,9 +212,9 @@ class ReportsProvider with ChangeNotifier {
         'tenantId':commonProvider.userDetails!.selectedtenant!.code,
         'demandStartDate':selectedBillPeriod?.split('-')[0],
         'demandEndDate':selectedBillPeriod?.split('-')[1],
-        'offset': offset,
-        'limit': download?-1:limit,
-        'sortOrder': sortOrder
+        'offset': '$offset',
+        'limit': '${download ? -1 : limit}',
+        'sortOrder': '$sortOrder'
       };
       var response = await ReportsRepo().fetchBillReport(
           params);
@@ -238,7 +238,7 @@ class ReportsProvider with ChangeNotifier {
           genericTableData = BillsTableData(demandHeaderList,getDemandsData(demandreports!));
         }
         streamController.add(response);
-        callNotifier();
+        notifyListeners();
       }else{
         streamController.add('error');
         throw Exception('API Error');
@@ -264,9 +264,9 @@ class ReportsProvider with ChangeNotifier {
         'tenantId':commonProvider.userDetails!.selectedtenant!.code,
         'paymentStartDate':selectedBillPeriod?.split('-')[0],
         'paymentEndDate':selectedBillPeriod?.split('-')[1],
-        'offset': offset,
-        'limit': download?-1:limit,
-        'sortOrder': sortOrder
+        'offset': '$offset',
+        'limit': '${download ? -1 : limit}',
+        'sortOrder': '$sortOrder'
       };
       var response = await ReportsRepo().fetchCollectionReport(
           params);
