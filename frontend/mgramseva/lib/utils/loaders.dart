@@ -34,7 +34,7 @@ class Loaders {
 //                            controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200)),
                           // ),
                           CircularProgressIndicator(
-                            color: Theme.of(context).accentColor,
+                            color: Theme.of(context).primaryColor,
                           ),
                           const SizedBox(
                             height: 10,

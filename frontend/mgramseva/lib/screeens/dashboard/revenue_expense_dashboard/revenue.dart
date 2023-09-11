@@ -1,9 +1,9 @@
 
 
-import 'package:charts_flutter/flutter.dart';
+import 'package:community_charts_flutter/community_charts_flutter.dart';
 import 'package:mgramseva/model/dashboard/revenue_dashboard.dart';
 import 'package:mgramseva/model/dashboard/revenue_chart.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 import 'package:mgramseva/utils/models.dart';
 
 class RevenueDataHolder {

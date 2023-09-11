@@ -68,9 +68,9 @@ void main() {
     };
 
     WidgetsFlutterBinding.ensureInitialized();
-
+    await Firebase.initializeApp(options: FirebaseConfigurations.firebaseOptions);
     if (Firebase.apps.length == 0) {
-      await Firebase.initializeApp();
+
     }
 
     if (!kIsWeb) {
@@ -104,7 +104,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late Locale _locale = Locale('en', 'IN');
-  static FirebaseAnalytics analytics = FirebaseAnalytics();
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
   ReceivePort _port = ReceivePort();

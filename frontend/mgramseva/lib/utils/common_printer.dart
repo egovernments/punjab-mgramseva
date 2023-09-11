@@ -1,5 +1,5 @@
 import 'package:bluetooth_thermal_printer/bluetooth_thermal_printer.dart';
-import 'package:esc_pos_utils/esc_pos_utils.dart';
+import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 
