@@ -13,35 +13,67 @@ const Complaint = () => {
   const [popup, setPopup] = useState(false);
   const match = useRouteMatch();
   const { t } = useTranslation();
+  let location = useLocation().pathname;
 
-  const breadcrumConfig = {
-    home: {
-      content: t("CS_COMMON_HOME"),
-      path: Employee.Home,
-    },
-    inbox: {
-      content: t("CS_COMMON_INBOX"),
-      path: match.url + Employee.Inbox,
-    },
-    createComplaint: {
-      content: t("CS_PGR_CREATE_COMPLAINT"),
-      path: match.url + Employee.CreateComplaint,
-    },
-    complaintDetails: {
-      content: t("CS_PGR_COMPLAINT_DETAILS"),
-      path: match.url + Employee.ComplaintDetails + ":id",
-    },
-    response: {
-      content: t("CS_PGR_RESPONSE"),
-      path: match.url + Employee.Response,
-    },
-  };
+  const isInbox = location?.includes("inbox");
+  const isPgr = location?.includes("pgr");
+  const isCreate = location?.includes("create");
+  const isDetails = location?.includes("details");
+  // const breadcrumConfig = {
+  //   home: {
+  //     content: t("CS_COMMON_HOME"),
+  //     path: Employee.Home,
+  //   },
+  //   inbox: {
+  //     content: t("CS_COMMON_INBOX"),
+  //     path: match.url + Employee.Inbox,
+  //   },
+  //   createComplaint: {
+  //     content: t("CS_PGR_CREATE_COMPLAINT"),
+  //     path: match.url + Employee.CreateComplaint,
+  //   },
+  //   complaintDetails: {
+  //     content: t("CS_PGR_COMPLAINT_DETAILS"),
+  //     path: match.url + Employee.ComplaintDetails + ":id",
+  //   },
+  //   response: {
+  //     content: t("CS_PGR_RESPONSE"),
+  //     path: match.url + Employee.Response,
+  //   },
+  // };
   function popupCall(option) {
     setDisplayMenu(false);
     setPopup(true);
   }
 
-  let location = useLocation().pathname;
+  // let location = useLocation().pathname;
+
+  const crumbs = [
+    {
+      path: "/mgramseva-web/employee",
+      content: t("ES_COMMON_HOME"),
+      show: isPgr,
+    },
+    {
+      path: "/mgramseva-web/employee/pgr/inbox",
+      content: t("CS_COMMON_INBOX"),
+      show: isPgr && isInbox,
+    },
+    {
+      path: "/mgramseva-web/employee/pgr/complaint/create",
+      content: t("CS_PGR_CREATE_COMPLAINT"),
+      show: isPgr && isCreate,
+    },
+    {
+      path: "/mgramseva-web/employee/pgr/inbox",
+      content: t("CS_PGR_COMPLAINT_DETAILS"),
+      show: isPgr && isDetails,
+    },
+    {
+      path: "",
+      content: t("CS_PGR_RESPONSE"),
+    },
+  ];
 
   const CreateComplaint = Digit?.ComponentRegistryService?.getComponent('PGRCreateComplaintEmp');
   const ComplaintDetails = Digit?.ComponentRegistryService?.getComponent('PGRComplaintDetails');
@@ -53,22 +85,7 @@ const Complaint = () => {
       <div className="ground-container">
         {!location.includes(Employee.Response) && (
           <Switch>
-            <Route
-              path={match.url + Employee.CreateComplaint}
-              component={() => <BreadCrumb crumbs={[breadcrumConfig.home, breadcrumConfig.createComplaint]}></BreadCrumb>}
-            />
-            <Route
-              path={match.url + Employee.ComplaintDetails + ":id"}
-              component={() => <BreadCrumb crumbs={[breadcrumConfig.home, breadcrumConfig.inbox, breadcrumConfig.complaintDetails]}></BreadCrumb>}
-            />
-            <Route
-              path={match.url + Employee.Inbox}
-              component={() => <BreadCrumb crumbs={[breadcrumConfig.home, breadcrumConfig.inbox]}></BreadCrumb>}
-            />
-            <Route
-              path={match.url + Employee.Response}
-              component={<BreadCrumb crumbs={[breadcrumConfig.home, breadcrumConfig.response]}></BreadCrumb>}
-            />
+            <Route path={match.url} component={() => <BreadCrumb crumbs={crumbs}></BreadCrumb>} />
           </Switch>
         )}
         <Switch>
