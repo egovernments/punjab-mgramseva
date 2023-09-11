@@ -283,7 +283,7 @@ class ReportsProvider with ChangeNotifier {
                       .toList() ??
                   [],
               title:
-                  'DemandReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(2)}_$selectedBillPeriod',
+                  'DemandReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillPeriod.toString().replaceAll('/', '_')}',
               optionalData: [
                 'Demand Report',
                 '$selectedBillPeriod',
@@ -348,7 +348,7 @@ class ReportsProvider with ChangeNotifier {
                       .toList() ??
                   [],
               title:
-                  'CollectionReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_$selectedBillPeriod',
+                  'CollectionReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillPeriod.toString().replaceAll('/', '_')}',
               optionalData: [
                 'Collection Report',
                 '$selectedBillPeriod',
