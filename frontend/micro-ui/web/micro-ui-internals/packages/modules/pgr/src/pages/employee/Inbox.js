@@ -16,8 +16,8 @@ const Inbox = () => {
 
   useEffect(() => {
     (async () => {
-      const applicationStatus = searchParams?.filters?.pgrfilters?.applicationStatus?.map(e => e.code).join(",")
-      let response = await Digit.PGRService.count(tenantId, applicationStatus?.length > 0  ? {applicationStatus} : {} );
+      const applicationStatus = searchParams?.filters?.pgrfilters?.applicationStatus?.map((e) => e.code).join(",");
+      let response = await Digit.PGRService.count(tenantId, applicationStatus?.length > 0 ? { applicationStatus } : {});
       if (response?.count) {
         setTotalRecords(response.count);
       }
@@ -45,7 +45,7 @@ const Inbox = () => {
   };
 
   // let complaints = Digit.Hooks.pgr.useInboxData(searchParams) || [];
-  let { data: complaints, isLoading } = Digit.Hooks.pgr.useInboxData({ ...searchParams, offset: pageOffset, limit: pageSize }) ;
+  let { data: complaints, isLoading } = Digit.Hooks.pgr.useInboxData({ ...searchParams, offset: pageOffset, limit: pageSize });
 
   let isMobile = Digit.Utils.browser.isMobile();
 
@@ -57,7 +57,10 @@ const Inbox = () => {
     } else {
       return (
         <div>
-          <Header>{t("ES_COMMON_INBOX")}</Header>
+          <Header>
+            {t("ES_COMMON_INBOX")}
+            {Number(totalRecords) ? <p className="inbox-count">{Number(totalRecords)}</p> : null}
+          </Header>
           <DesktopInbox
             data={complaints}
             isLoading={isLoading}

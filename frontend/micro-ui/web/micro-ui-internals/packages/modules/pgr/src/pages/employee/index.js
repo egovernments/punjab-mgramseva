@@ -19,6 +19,7 @@ const Complaint = () => {
   const isPgr = location?.includes("pgr");
   const isCreate = location?.includes("create");
   const isDetails = location?.includes("details");
+  const isResponse = location?.includes("response");
   // const breadcrumConfig = {
   //   home: {
   //     content: t("CS_COMMON_HOME"),
@@ -70,8 +71,9 @@ const Complaint = () => {
       show: isPgr && isDetails,
     },
     {
-      path: "",
+      path: "mgramseva-web/employee/pgr/response",
       content: t("CS_PGR_RESPONSE"),
+      show: isPgr && isResponse,
     },
   ];
 
@@ -83,11 +85,9 @@ const Complaint = () => {
   return (
     <React.Fragment>
       <div className="ground-container">
-        {!location.includes(Employee.Response) && (
           <Switch>
             <Route path={match.url} component={() => <BreadCrumb crumbs={crumbs}></BreadCrumb>} />
           </Switch>
-        )}
         <Switch>
           <Route path={match.url + Employee.CreateComplaint} component={() => <CreateComplaint parentUrl={match.url} />} />
           <Route path={match.url + Employee.ComplaintDetails + ":id*"} component={() => <ComplaintDetails />} />
