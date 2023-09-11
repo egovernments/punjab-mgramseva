@@ -29,8 +29,16 @@ const PGRCard = () => {
       role: "CSR",
     },
   ];
+  let propsForDashboard = [
+    {
+      label: t("ES_PGR_DASHBOARD"),
+      link: `/${window.contextPath}/employee/dss/landing/home`,
+      role: "DASHBOARD_VIEWER",
+    },
+  ];
 
   propsForCSR = propsForCSR.filter((link) => link.role && Digit.Utils.didEmployeeHasRole(link.role));
+  propsForDashboard = propsForDashboard.filter((link) => link.role && Digit.Utils.didEmployeeHasRole(link.role));
 
   const propsForModuleCard = {
     Icon: <Icon />,
@@ -51,6 +59,7 @@ const PGRCard = () => {
         link: `/${window.contextPath}/employee/pgr/inbox`,
       },
       ...propsForCSR,
+      ...propsForDashboard,
     ],
   };
 
