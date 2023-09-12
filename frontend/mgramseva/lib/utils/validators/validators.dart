@@ -110,7 +110,7 @@ class Validators {
   static String? amountValidator(String? v) {
     if (v!.trim().isEmpty) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expense.AMOUNT_MENTIONED_IN_THE_BILL)}';
-    } else if (double.parse(v) <= 0 || (((math.log(double.parse(v!)) / math.ln10) + 1) as int) > 6) {
+    } else if (double.parse(v) <= 0) {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.expense.ENTER_VALID_AMOUNT)}';
     }
     return null;
