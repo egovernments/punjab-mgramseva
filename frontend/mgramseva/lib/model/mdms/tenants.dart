@@ -58,6 +58,11 @@ class Tenants {
   factory Tenants.fromJson(Map<String, dynamic> json) =>
       _$TenantsFromJson(json);
 
+  @override
+  String toString() {
+    return '$code';
+  }
+
   Map<String, dynamic> toJson() => _$TenantsToJson(this);
 }
 
