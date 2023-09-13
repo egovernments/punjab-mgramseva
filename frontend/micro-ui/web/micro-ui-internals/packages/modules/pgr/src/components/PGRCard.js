@@ -32,7 +32,7 @@ const PGRCard = () => {
   let propsForDashboard = [
     {
       label: t("ES_PGR_DASHBOARD"),
-      link: `/${window.contextPath}/employee/dss/landing/home`,
+      link: `/${window.contextPath}/employee/dss/dashboard/pgr`,
       role: "DASHBOARD_VIEWER",
     },
   ];
