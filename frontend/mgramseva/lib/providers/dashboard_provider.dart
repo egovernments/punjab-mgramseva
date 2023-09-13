@@ -265,6 +265,8 @@ class DashBoardProvider with ChangeNotifier {
       'tenantId': commonProvider.userDetails?.selectedtenant?.code,
       'offset': '${offset - 1}',
       'limit': '$limit',
+      'fromDate': '${selectedMonth.startDate.millisecondsSinceEpoch}',
+      'toDate': '${selectedMonth.endDate.millisecondsSinceEpoch}',
       'iscollectionAmount': 'true',
       'isPropertyCount': 'true',
     };
