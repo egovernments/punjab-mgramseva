@@ -96,7 +96,7 @@ export const StoreService = {
     // .map((tenant) => ({ i18nKey: `TENANT_TENANTS_${tenant.code.replace(".", "_").toUpperCase()}`, ...tenant }));
 
     await LocalizationService.getLocale({
-      modules: [`rainmaker-common`, `rainmaker-${stateCode.toLowerCase()}`, `rainmaker-works`],
+      modules: [`rainmaker-common`],
       locale: initData.selectedLanguage,
       tenantId: stateCode,
     });
