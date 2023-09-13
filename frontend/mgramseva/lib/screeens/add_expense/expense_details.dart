@@ -223,6 +223,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   expenseProvider.expenseWalkthrougList[0].key,
                               controller: expenseDetails.expenseTypeController,
                               key: Keys.expense.EXPENSE_TYPE,
+                              itemAsString: (i) =>'${ApplicationLocalizations.of(context)
+                                  .translate(
+                                  i.toString())}',
                             ),
                             AutoCompleteView(
                               labelText: i18.expense.VENDOR_NAME,

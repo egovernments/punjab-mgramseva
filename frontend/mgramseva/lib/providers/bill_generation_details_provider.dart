@@ -177,9 +177,10 @@ class BillGenerationProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void onChangeOfBillCycle(val) {
-    var result = DateTime.parse(val);
-    selectedBillCycle = (DateFormats.getMonth(result));
+  void onChangeOfBillCycle(cycle) {
+    var val = cycle['code'];
+    DateTime result = DateTime.parse(val.toString());
+    selectedBillCycle = cycle;
     selectedBillPeriod = (DateFormats.getFilteredDate(
             result.toLocal().toString(),
             dateFormat: "dd/MM/yyyy")) +
@@ -189,7 +190,7 @@ class BillGenerationProvider with ChangeNotifier {
                 .toLocal()
                 .toString(),
             dateFormat: "dd/MM/yyyy");
-    billGenerateDetails.billCycle = val;
+    billGenerateDetails.billCycle = result.toLocal().toString();
     notifyListeners();
   }
 
@@ -406,68 +407,54 @@ class BillGenerationProvider with ChangeNotifier {
         ' ${selectedBillYear.financialYear!.toString().substring(2)}';
   }
 
-  List<DropdownMenuItem<Object>> getPropertyTypeList() {
+  List<String> getPropertyTypeList() {
     if (languageList?.mdmsRes?.propertyTax?.PropertyTypeList != null) {
       return (languageList?.mdmsRes?.propertyTax?.PropertyTypeList ??
               <PropertyType>[])
           .map((value) {
-        return DropdownMenuItem(
-          value: value.code,
-          child: new Text(value.code!),
-        );
+        return value.code!;
       }).toList();
     }
-    return <DropdownMenuItem<Object>>[];
+    return <String>[];
   }
 
-  List<DropdownMenuItem<Object>> getConnectionTypeList() {
+  List<String> getConnectionTypeList() {
     if (languageList?.mdmsRes?.connection?.connectionTypeList != null) {
       return (languageList?.mdmsRes?.connection?.connectionTypeList ??
               <ConnectionType>[])
           .map((value) {
-        return DropdownMenuItem(
-          value: value.code,
-          child: new Text(
-              ApplicationLocalizations.of(navigatorKey.currentContext!)
-                  .translate(value.code!)),
-        );
+        return value.code!;
       }).toList();
     }
-    return <DropdownMenuItem<Object>>[];
+    return <String>[];
   }
 
-  List<DropdownMenuItem<Object>> getFinancialYearList() {
+  List<TaxPeriod> getFinancialYearList() {
     if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
       CommonMethods.getFilteredFinancialYearList(languageList?.mdmsRes?.billingService?.taxPeriodList ?? <TaxPeriod>[]);
       languageList?.mdmsRes?.billingService?.taxPeriodList!.sort((a,b)=>a.fromDate!.compareTo(b.fromDate!));
       return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
               <TaxPeriod>[])
           .map((value) {
-        return DropdownMenuItem(
-          value: value,
-          child: new Text((value.financialYear!)),
-        );
+        return value;
       }).toList().reversed.toList();
     }
-    return <DropdownMenuItem<Object>>[];
+    return <TaxPeriod>[];
   }
 
-  List<DropdownMenuItem<Object>> getServiceCategoryList() {
+  List<String> getServiceCategoryList() {
     if (languageList?.mdmsRes?.billingService?.taxHeadMasterList != null) {
       return (languageList?.mdmsRes?.billingService?.taxHeadMasterList ??
               <TaxHeadMaster>[])
           .map((value) {
-        return DropdownMenuItem(
-          value: value.code,
-          child: new Text((value.code!)),
-        );
+        return value.code!;
       }).toList();
     }
-    return <DropdownMenuItem<Object>>[];
+    return <String>[];
   }
 
-  List<DropdownMenuItem<Object>> getBillingCycle() {
-    dates = [];
+  List<Map<String,dynamic>> getBillingCycle() {
+    var dates = <Map<String,dynamic>>[];
     if (billGenerateDetails.billYear != null && selectedBillYear != null) {
       DatePeriod ytd;
       var fromDate = DateFormats.getFormattedDateToDateTime(
@@ -486,23 +473,16 @@ class BillGenerationProvider with ChangeNotifier {
 
       for (var i = 0; i < months.length; i++) {
         var prevMonth = months[i].startDate;
-        var r = {"code": prevMonth, "name": prevMonth};
+        Map<String,dynamic> r = {"code": prevMonth, "name": "${ApplicationLocalizations.of(navigatorKey.currentContext!)
+            .translate((Constants.MONTHS[prevMonth.month - 1])) +
+            " - " +
+            prevMonth.year.toString()}"};
         dates.add(r);
       }
     }
     if (dates.length > 0) {
-      return (dates).map((value) {
-        var d = value['name'];
-        return DropdownMenuItem(
-          value: value['code'].toLocal().toString(),
-          child: new Text(
-              ApplicationLocalizations.of(navigatorKey.currentContext!)
-                      .translate((Constants.MONTHS[d.month - 1])) +
-                  " - " +
-                  d.year.toString()),
-        );
-      }).toList();
+      return dates;
     }
-    return <DropdownMenuItem<Object>>[];
+    return <Map<String,dynamic>>[];
   }
 }

@@ -82,6 +82,7 @@ class _SearchExpenseState extends State<SearchExpense> {
                           onChangeOfExpense,
                           expensesDetailsProvider.getExpenseTypeList(),
                           false,
+                              itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.toString())}',
                           hint:
                               '${ApplicationLocalizations.of(context).translate(i18.common.ELECTRICITY_HINT)}',
                           controller: expenseTypeCtrl,

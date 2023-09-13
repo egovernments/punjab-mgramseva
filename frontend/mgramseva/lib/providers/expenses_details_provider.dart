@@ -519,17 +519,14 @@ class ExpensesDetailsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<DropdownMenuItem<Object>> getExpenseTypeList() {
+  List<String> getExpenseTypeList() {
     if (languageList?.mdmsRes?.expense?.expenseList != null) {
       return (languageList?.mdmsRes?.expense?.expenseList ?? <ExpenseType>[])
           .map((value) {
-        return DropdownMenuItem(
-          value: value.code,
-          child: new Text((value.code!)),
-        );
+        return value.code!;
       }).toList();
     }
-    return <DropdownMenuItem<Object>>[];
+    return <String>[];
   }
 
   incrementindex(index, expenseKey) async {

@@ -76,6 +76,7 @@ dependencies:
   syncfusion_flutter_xlsio: ^20.3.59-beta
   print_bluetooth_thermal: ^1.0.5
   nearby_connections: ^3.3.0
+  dropdown_search: ^5.0.6
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1

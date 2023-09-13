@@ -22,6 +22,8 @@ import 'package:mgramseva/widgets/text_field_builder.dart';
 import 'package:mgramseva/widgets/footer.dart';
 import 'package:provider/provider.dart';
 
+import '../../utils/localization/application_localizations.dart';
+
 class GenerateBill extends StatefulWidget {
   final String? id;
   final WaterConnection? waterconnection;
@@ -96,6 +98,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                               billgenerationprovider
                                                   .getServiceCategoryList(),
                                               true,
+                                              itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i.toString())}",
                                               readOnly: true,
                                               isEnabled: false,
                                               controller: billgenerationprovider
@@ -118,6 +121,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                 billgenerationprovider
                                                     .getConnectionTypeList(),
                                                 true,
+                                                itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i.toString())}",
                                                 readOnly: true,
                                                 isEnabled: false,
                                                 controller:
@@ -150,6 +154,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                           billgenerationprovider
                                                               .getPropertyTypeList(),
                                                           true,
+                                                          itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i.toString())}",
                                                           readOnly: true,
                                                           isEnabled: false,
                                                           controller: billgenerationprovider
@@ -262,6 +267,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                             billgenerationprovider
                                                                 .getFinancialYearList(),
                                                             true,
+                                                            itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i.financialYear)}",
                                                             controller: billgenerationprovider
                                                                 .billGenerateDetails
                                                                 .billingyearCtrl,
@@ -276,8 +282,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                             i18.demandGenerate
                                                                 .BILLING_CYCLE_LABEL,
                                                             billgenerationprovider
-                                                                .billGenerateDetails
-                                                                .billCycle,
+                                                                .selectedBillCycle,
                                                             '',
                                                             '',
                                                             billgenerationprovider
@@ -285,6 +290,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                             billgenerationprovider
                                                                 .getBillingCycle(),
                                                             true,
+                                                            itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i['name'])}",
                                                             controller: billgenerationprovider
                                                                 .billGenerateDetails
                                                                 .billingcycleCtrl,

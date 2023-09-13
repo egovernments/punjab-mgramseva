@@ -29,6 +29,11 @@ class TaxPeriod {
   factory TaxPeriod.fromJson(Map<String, dynamic> json) =>
       _$TaxPeriodFromJson(json);
   Map<String, dynamic> toJson() => _$TaxPeriodToJson(this);
+
+  @override
+  String toString() {
+    return '$financialYear';
+  }
 }
 
 

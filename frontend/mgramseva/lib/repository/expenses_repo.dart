@@ -58,6 +58,7 @@ class ExpensesRepository extends BaseService {
     if (res != null && res['vendor'] != null) {
       vendorList =
           res['vendor'].map<Vendor>((e) => Vendor.fromJson(e)).toList();
+      print(vendorList);
     }
     return vendorList;
   }
