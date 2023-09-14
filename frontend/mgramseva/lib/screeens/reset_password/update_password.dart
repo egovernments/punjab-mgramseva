@@ -388,10 +388,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
         "otpReference": _pinEditingController.text.trim(),
         "userName": widget.userDetails.userRequest?.userName,
         "newPassword": newPassword.text.trim(),
-        "tenantId": widget.userDetails.userRequest!.roles!
-            .where((element) => element.code == 'PROFILE_UPDATE')
-            .first
-            .tenantId,
+        "tenantId": widget.userDetails.userRequest?.tenantId,
         "type": widget.userDetails.userRequest?.type
       };
 
