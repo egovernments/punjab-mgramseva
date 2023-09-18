@@ -75,15 +75,9 @@ export const CreateComplaint = ({ parentUrl }) => {
 
   async function selectedType(value) {
     if (value.key !== complaintType.key) {
-      if (value.key === "Others") {
-        setSubType({ name: "" });
-        setComplaintType(value);
-        setSubTypeMenu([{ key: "Others", name: t("SERVICEDEFS.OTHERS") }]);
-      } else {
         setSubType({ name: "" });
         setComplaintType(value);
         setSubTypeMenu(await serviceDefinitions.getSubMenu(tenantId, value, t));
-      }
     }
   }
 
