@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import '../../providers/reports_provider.dart';
+import '../../utils/constants.dart';
+import '../../utils/date_formats.dart';
+import '../../utils/global_variables.dart';
 import '../../utils/localization/application_localizations.dart';
 import '../../widgets/label_text.dart';
 import '../../widgets/pagination.dart';
+import '../../widgets/sub_label.dart';
 import 'generic_report_table.dart';
 
 class ViewTable extends StatelessWidget {
@@ -29,6 +34,14 @@ class ViewTable extends StatelessWidget {
                   children: [
                     LabelText(
                         '${ApplicationLocalizations.of(context).translate(tableTitle)}'),
+                    Consumer<ReportsProvider>(
+                      builder: (_, reportProvider, child) {
+                        return SubLabelText("${ApplicationLocalizations.of(navigatorKey.currentContext!)
+                            .translate((Constants.MONTHS[DateFormats.getFormattedDateToDateTime(reportProvider.selectedBillPeriod?.split('-')[0])!.month- 1])) +
+                            " - " +
+      DateFormats.getFormattedDateToDateTime(reportProvider.selectedBillPeriod?.split('-')[0])!.year.toString()}");
+                      }
+                    ),
                   ])),
           SizedBox(
             height: 30,
