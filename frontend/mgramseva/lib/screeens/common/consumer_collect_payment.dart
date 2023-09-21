@@ -707,15 +707,21 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
         barrierColor: Colors.black.withOpacity(0.5),
         context: context,
         pageBuilder: (context, anim1, anim2) {
-          return Align(
-              alignment: Alignment.center,
-              child: ConfirmationPopUp(
-                textString: i18.payment.CORE_AMOUNT_CONFIRMATION,
-                subTextString: '₹ ${fetchBill.customAmountCtrl.text}',
-                cancelLabel: i18.common.CORE_GO_BACK,
-                confirmLabel: i18.common.CORE_CONFIRM,
-                onConfirm: () => paymentInfo(fetchBill, context),
-              ));
+          final clickedStatus = ValueNotifier<bool>(false);
+          return ValueListenableBuilder<bool>(
+            valueListenable: clickedStatus,
+            builder: (context,bool isClicked,_) {
+              return isClicked?Loaders.loaderBox(context,text: ""):Align(
+                  alignment: Alignment.center,
+                  child: ConfirmationPopUp(
+                    textString: i18.payment.CORE_AMOUNT_CONFIRMATION,
+                    subTextString: '₹ ${fetchBill.customAmountCtrl.text}',
+                    cancelLabel: i18.common.CORE_GO_BACK,
+                    confirmLabel: i18.common.CORE_CONFIRM,
+                    onConfirm: isClicked?(){}: () { clickedStatus.value = true;paymentInfo(fetchBill, context);},
+                  ));
+            }
+          );
         },
       );
     } else {

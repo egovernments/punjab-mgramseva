@@ -93,5 +93,47 @@ class Loaders {
           );
         });
   }
+  static Widget loaderBox(BuildContext context, {String? text}){
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Dialog(
+        // backgroundColor:CustomColors.BLACK,
+        shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(15)),
+        child: WillPopScope(
+          onWillPop: () async {
+            return true;
+          },
+          child: Container(
+              decoration: BoxDecoration(
+                  shape: BoxShape.rectangle
+              ),
+              alignment: Alignment.center,
+              constraints: BoxConstraints(
+                  minHeight: 160,
+                  maxHeight: 180
+              ),
+              width: MediaQuery.of(context).size.width > 720 ? MediaQuery.of(context).size.width / 3.5 : MediaQuery.of(context).size.width ,
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              child: Wrap(
+                runSpacing: 15,
+                alignment: WrapAlignment.center,
+                children: [
+                  SpinKitCircle(
+                    color: Colors.white,
+                    size: 50.0,
+                  ),
+                  Text(
+                    text ??
+                        ' Getting image data \n  Please check the values once done. ',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              )),
+        ),
+      ),
+    );
+  }
 
 }
