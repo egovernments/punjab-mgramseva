@@ -32,7 +32,7 @@ Map<String, dynamic> _$FetchBillToJson(FetchBill instance) => <String, dynamic>{
       'billNumber': instance.billNumber,
       'billDate': instance.billDate,
       'consumerCode': instance.consumerCode,
-      'billDetails': instance.billDetails,
+      'billDetails': instance.billDetails?.map((e) => e.toJson()).toList(),
     };
 
 BillDetails _$BillDetailsFromJson(Map<String, dynamic> json) {
@@ -60,7 +60,7 @@ Map<String, dynamic> _$BillDetailsToJson(BillDetails instance) =>
       'amount': instance.amount,
       'fromPeriod': instance.fromPeriod,
       'toPeriod': instance.toPeriod,
-      'billAccountDetails': instance.billAccountDetails,
+      'billAccountDetails': instance.billAccountDetails?.map((e) => e.toJson()).toList(),
     };
 
 BillAccountDetails _$BillAccountDetailsFromJson(Map<String, dynamic> json) {
