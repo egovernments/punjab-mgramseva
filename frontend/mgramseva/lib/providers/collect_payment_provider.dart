@@ -624,7 +624,6 @@ class CollectPaymentProvider with ChangeNotifier {
         "additionalDetails": {"isWhatsapp": false,"connectionType":query["connectionType"]}
       }
     };
-    print(transaction);
     try {
       var transactionDetails =
           await ConsumerRepository().createTransaction(transaction);
