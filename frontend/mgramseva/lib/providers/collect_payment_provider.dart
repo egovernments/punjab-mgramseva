@@ -601,7 +601,7 @@ class CollectPaymentProvider with ChangeNotifier {
 
   Future<void> createTransaction(
       FetchBill fetchBill, String tenantId, BuildContext context,Map query) async {
-    var amount = fetchBill.customAmountCtrl.text;
+    var amount = fetchBill.customAmountCtrl.value.text;
     var transaction = {
       "Transaction": {
         "tenantId": tenantId,
@@ -624,7 +624,6 @@ class CollectPaymentProvider with ChangeNotifier {
         "additionalDetails": {"isWhatsapp": false,"connectionType":query["connectionType"]}
       }
     };
-
     try {
       var transactionDetails =
           await ConsumerRepository().createTransaction(transaction);
