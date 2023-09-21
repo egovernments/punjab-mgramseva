@@ -670,16 +670,15 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
     if (formKey.currentState!.validate()) {
       autoValidation = false;
       if (fetchBill.paymentMethod == 'PAYGOV') {
-        final billDetails = FetchBill.fromJson(fetchBill.toJson());
-        formKey.currentState?.reset();
+        consumerPaymentProvider.createTransaction(
+            fetchBill, widget.query['tenantId'], context,widget.query);
         setState(() {
           checkValue=false;
         });
-        consumerPaymentProvider.createTransaction(
-            billDetails, widget.query['tenantId'], context,widget.query);
       }
     } else {
       setState(() {
+        checkValue=false;
         autoValidation = true;
       });
     }
