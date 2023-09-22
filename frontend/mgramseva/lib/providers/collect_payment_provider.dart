@@ -33,6 +33,7 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../components/house_connection_and_bill/js_connnector.dart' as js;
+import '../env/app_config.dart';
 import '../model/localization/language.dart';
 import '../repository/core_repo.dart';
 import 'common_provider.dart';
@@ -620,7 +621,7 @@ class CollectPaymentProvider with ChangeNotifier {
           "tenantId": tenantId
         },
         "callbackUrl":
-            "https://mgramseva-uat.psegs.in/mgramseva/paymentSuccess",
+            "${apiBaseUrl}mgramseva/paymentSuccess",
         "additionalDetails": {"isWhatsapp": false,"connectionType":query["connectionType"]}
       }
     };
