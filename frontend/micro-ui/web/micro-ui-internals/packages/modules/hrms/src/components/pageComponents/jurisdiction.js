@@ -28,7 +28,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
 
   const employeeCreateSession = Digit.Hooks.useSessionStorage("NEW_EMPLOYEE_CREATE", {});
   const [sessionFormData, setSessionFormData, clearSessionFormData] = employeeCreateSession;
-  const isEdit = window.location.href.includes("hrms/edit");
+  const isEdit = window.location.href?.includes("hrms/edit");
   const [jurisdictions, setjurisdictions] = useState(
     !isEdit && sessionFormData?.Jurisdictions?.length > 0
       ? makeDefaultValues(sessionFormData)
@@ -119,15 +119,12 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   let boundaryTypeoption = [];
   const [focusIndex, setFocusIndex] = useState(-1);
 
-  // function gethierarchylistdata() {
-  //   return [hierarchyData];
-  // }
   function getboundarydata() {
     return [];
   }
 
   function getroledata() {
-    return data?.MdmsRes?.["ACCESSCONTROL-ROLES"].roles.map((role) => {
+    return data?.MdmsRes?.["ws-services-masters"].WSServiceRoles.map((role) => {
       return { code: role.code, name: role?.name ? role?.name : " ", labelKey: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
     });
   }
@@ -151,7 +148,6 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
           index={index}
           focusIndex={focusIndex}
           setFocusIndex={setFocusIndex}
-          // gethierarchylistdata={gethierarchylistdata}
           hierarchylist={hierarchylist}
           boundaryTypeoption={boundaryTypeoption}
           getboundarydata={getboundarydata}
@@ -172,7 +168,6 @@ function Jurisdiction({
   jurisdiction,
   jurisdictions,
   setjurisdictions,
-  // gethierarchylistdata,
   handleRemoveUnit,
   hierarchylist,
   getroledata,
@@ -194,10 +189,10 @@ function Jurisdiction({
   }, [jurisdiction?.hierarchy, data?.MdmsRes]);
   const tenant = Digit.ULBService.getCurrentTenantId();
   useEffect(() => {
-    let cities = userDetails?.roles.map((role) => role.tenantId).filter((value, index, array) => array.indexOf(value) === index);
+    let cities = userDetails?.roles.map((role) => role.tenantId)?.filter((value, index, array) => array.indexOf(value) === index);
     selectboundary(
       data?.MdmsRes?.tenant?.tenants
-        .filter((city) => city.code != Digit.ULBService.getStateId() && cities.includes(city.code))
+        .filter((city) => city.code != Digit.ULBService.getStateId() && cities?.includes(city.code))
         .map((city) => {
           return { ...city, i18text: Digit.Utils.locale.getCityLocale(city.code) };
         })
