@@ -276,6 +276,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 FilteringTextInputFormatter.allow(
                                     RegExp(r"^[1-9][0-9]{0,5}$"))
                               ],
+                              hint: '${i18.expense.AMOUNT} (₹)',
                               labelSuffix: '(₹)',
                               isDisabled: (expenseDetails.allowEdit ?? true)
                                   ? false
