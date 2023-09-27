@@ -278,9 +278,9 @@ class HouseholdRegisterProvider with ChangeNotifier {
       TableData('${name ?? ''}'),
       TableData('${fatherName ?? ''}'),
       TableData(
-          '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : '${connection.additionalDetails?.collectionPendingAmount}' : '-'}'),
+          '${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}'),
       TableData(
-          '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '').abs()}' : '-' : '-'}'),
+          '${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}'),
       TableData(
           '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
           style: TextStyle(
@@ -405,8 +405,8 @@ class HouseholdRegisterProvider with ChangeNotifier {
                   '${connection.connectionNo ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
                   '${connection.connectionHolders?.first.name ?? ''}',
                   '${connection.connectionHolders?.first.fatherOrHusbandName ?? ''}',
-                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : '${connection.additionalDetails?.collectionPendingAmount}' : '-'}',
-                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '- ₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '').abs()}' : '₹ 0' : '₹ 0'}',
+                  '${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}',
+                  '${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}',
                   '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
                   '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}'
                 ])
@@ -418,8 +418,8 @@ class HouseholdRegisterProvider with ChangeNotifier {
                   '${connection.oldConnectionNo ?? ''}',
                   '${connection.connectionHolders?.first.name ?? ''}',
                   '${connection.connectionHolders?.first.fatherOrHusbandName ?? ''}',
-                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : '${connection.additionalDetails?.collectionPendingAmount}' : '-'}',
-                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '- ₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '').abs()}' : '₹ 0' : '₹ 0'}',
+                  '${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}',
+                  '${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}',
                   '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
                   '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}'
                 ])
