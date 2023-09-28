@@ -5,21 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
-import org.egov.waterconnection.web.models.BillReportData;
-import org.egov.waterconnection.web.models.BillReportResponse;
-import org.egov.waterconnection.web.models.CollectionReportData;
-import org.egov.waterconnection.web.models.Feedback;
-import org.egov.waterconnection.web.models.FeedbackRequest;
-import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
-
-import org.egov.waterconnection.web.models.LastMonthSummary;
-import org.egov.waterconnection.web.models.RevenueCollectionData;
-import org.egov.waterconnection.web.models.RevenueDashboard;
-
-import org.egov.waterconnection.web.models.SearchCriteria;
-import org.egov.waterconnection.web.models.WaterConnection;
-import org.egov.waterconnection.web.models.WaterConnectionRequest;
-import org.egov.waterconnection.web.models.WaterConnectionResponse;
+import org.egov.waterconnection.web.models.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -50,5 +36,7 @@ public interface WaterService {
 
 	List<CollectionReportData> collectionReport(String paymentStartDate, String paymentEndDate, String tenantId,@Valid Integer offset, @Valid Integer limit, @Valid String sortOrder,
 			RequestInfo requestInfo);
+	
+	List<InactiveConsumerReportData> inactiveConsumerReport(@Valid String monthStartDate, @Valid String monthEndDate, @Valid String tenantId, @Valid Integer offset, @Valid Integer limit, RequestInfo requestInfo);
 
 }

@@ -8,24 +8,7 @@ import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.service.SchedulerService;
 import org.egov.waterconnection.service.WaterService;
 import org.egov.waterconnection.util.ResponseInfoFactory;
-import org.egov.waterconnection.web.models.BillReportData;
-import org.egov.waterconnection.web.models.BillReportResponse;
-import org.egov.waterconnection.web.models.CollectionReportData;
-import org.egov.waterconnection.web.models.CollectionReportResponse;
-import org.egov.waterconnection.web.models.FeedbackRequest;
-import org.egov.waterconnection.web.models.FeedbackResponse;
-import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
-import org.egov.waterconnection.web.models.LastMonthSummary;
-import org.egov.waterconnection.web.models.LastMonthSummaryResponse;
-import org.egov.waterconnection.web.models.RequestInfoWrapper;
-import org.egov.waterconnection.web.models.RevenueCollectionData;
-import org.egov.waterconnection.web.models.RevenueCollectionDataResponse;
-import org.egov.waterconnection.web.models.RevenueDashboard;
-import org.egov.waterconnection.web.models.RevenueDashboardResponse;
-import org.egov.waterconnection.web.models.SearchCriteria;
-import org.egov.waterconnection.web.models.WaterConnection;
-import org.egov.waterconnection.web.models.WaterConnectionRequest;
-import org.egov.waterconnection.web.models.WaterConnectionResponse;
+import org.egov.waterconnection.web.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import io.swagger.models.parameters.QueryParameter;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -218,4 +200,15 @@ public class WaterController {
 					.build();
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}
+	@RequestMapping(value = "/_inactiveConsumerReport",method = RequestMethod.POST)
+	   public ResponseEntity<InactiveConsumerReportResponse> inactiveConsumerReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
+			  @RequestParam(value="monthStartDate",required = true) String monthStartDate,@RequestParam(value="monthEndDate",required = true) String monthEndDate,
+			  @RequestParam(value = "tenantId",required = true)	String tenantId,@RequestParam(value="offset",required = true) Integer offset, @RequestParam(value="limit",required = true)Integer limit)
+	{
+		List<InactiveConsumerReportData> inactiveConsumerReport=waterService.inactiveConsumerReport(monthStartDate,monthEndDate,tenantId,offset,limit,requestInfoWrapper.getRequestInfo());
+		InactiveConsumerReportResponse response=InactiveConsumerReportResponse.builder().InactiveConsumerReportData(inactiveConsumerReport)
+				.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),true)).build();
+
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 }

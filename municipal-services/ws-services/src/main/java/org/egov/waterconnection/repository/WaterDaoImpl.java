@@ -2,7 +2,6 @@ package org.egov.waterconnection.repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.Role;
 import org.egov.common.contract.request.User;
@@ -21,21 +19,8 @@ import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.producer.WaterConnectionProducer;
 import org.egov.waterconnection.repository.builder.WsQueryBuilder;
-import org.egov.waterconnection.repository.rowmapper.BillingCycleRowMapper;
-import org.egov.waterconnection.repository.rowmapper.CollectionRowMapper;
-import org.egov.waterconnection.repository.rowmapper.FeedbackRowMapper;
-import org.egov.waterconnection.repository.rowmapper.OpenWaterRowMapper;
-import org.egov.waterconnection.repository.rowmapper.ReportRowMapper;
-import org.egov.waterconnection.repository.rowmapper.WaterRowMapper;
-import org.egov.waterconnection.web.models.BillReportData;
-import org.egov.waterconnection.web.models.BillingCycle;
-import org.egov.waterconnection.web.models.CollectionReportData;
-import org.egov.waterconnection.web.models.Feedback;
-import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
-import org.egov.waterconnection.web.models.SearchCriteria;
-import org.egov.waterconnection.web.models.WaterConnection;
-import org.egov.waterconnection.web.models.WaterConnectionRequest;
-import org.egov.waterconnection.web.models.WaterConnectionResponse;
+import org.egov.waterconnection.repository.rowmapper.*;
+import org.egov.waterconnection.web.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -49,6 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 @Repository
 public class WaterDaoImpl implements WaterDao {
 
+	@Autowired
+	private InactiveConsumerReportRowMapper inactiveConsumerReportRowMapper;
 	@Autowired
 	private WaterConnectionProducer waterConnectionProducer;
 
@@ -602,6 +589,36 @@ public class WaterDaoImpl implements WaterDao {
 		collectionReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), collectionReportRowMapper);
 		return collectionReportList;
 	}
-	
 
+    public List<InactiveConsumerReportData> getInactiveConsumerReport(Long monthStartDateTime, Long monthEndDateTime, @Valid String tenantId, @Valid Integer offset, @Valid Integer limit)
+	{
+         StringBuilder inactive_consumer_query=new StringBuilder(wsQueryBuilder.INACTIVE_CONSUMER_QUERY);
+
+		 List<Object> preparedStatment=new ArrayList<>();
+		 preparedStatment.add(tenantId);
+		 preparedStatment.add(monthStartDateTime);
+		 preparedStatment.add(monthEndDateTime);
+
+		Integer newlimit=wsConfiguration.getDefaultLimit();
+		Integer newoffset= wsConfiguration.getDefaultOffset();
+		if(limit==null && offset==null)
+			newlimit=wsConfiguration.getMaxLimit();
+		if(limit!=null && limit<=wsConfiguration.getMaxLimit())
+			newlimit=limit;
+		if(limit!=null && limit>=wsConfiguration.getMaxLimit())
+			newlimit=wsConfiguration.getMaxLimit();
+
+		if(offset!=null)
+			newoffset=offset;
+
+		if (newlimit>0){
+			inactive_consumer_query.append(" offset ?  limit ? ;");
+			preparedStatment.add(newoffset);
+			preparedStatment.add(newlimit);
+		}
+
+		List<InactiveConsumerReportData> inactiveConsumerReportList=new ArrayList<>();
+		inactiveConsumerReportList=jdbcTemplate.query(inactive_consumer_query.toString(), preparedStatment.toArray(),inactiveConsumerReportRowMapper);
+         return inactiveConsumerReportList;
+    }
 }

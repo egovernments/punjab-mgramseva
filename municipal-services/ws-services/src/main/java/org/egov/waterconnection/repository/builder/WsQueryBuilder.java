@@ -153,6 +153,17 @@ public class WsQueryBuilder {
 			+ " AND pay.transactiondate BETWEEN ? AND ? AND conn.tenantId = ? "
 			+ " AND pay.paymentstatus!='CANCELLED' GROUP BY conn.tenantId,conn.connectionno,conn.oldConnectionno,"
 			+ " connectionholder.userid,pay.paymentmode ORDER BY conn.connectionno ";
+
+	public static final String INACTIVE_CONSUMER_QUERY= "SELECT"
+			+ " COALESCE(c.connectionno, ca.connectionno) AS connectionno,"
+			+ " COALESCE(c.status, ca.status) AS status,"
+			+ " COALESCE(c.lastmodifiedtime, ca.lastmodifiedtime) AS lastmodifiedtime,"
+			+ " COALESCE(c.lastmodifiedby, ca.lastmodifiedby) AS lastmodifiedbyUuid"
+			+ " FROM (SELECT connectionno FROM eg_ws_connection WHERE lastmodifiedtime >=? AND lastmodifiedtime <=?"
+			+ " AND status = 'Inactive' AND tenantid='?' UNION SELECT connectionno FROM eg_ws_connection_audit WHERE"
+			+ " lastmodifiedtime >=? AND lastmodifiedtime <=? AND status = 'Inactive' AND tenantid='?') AS inactive_connections "
+			+ LEFT_OUTER_JOIN_STRING + " eg_ws_connection c ON inactive_connections.connectionno = c.connectionno "
+			+ LEFT_OUTER_JOIN_STRING + " eg_ws_connection_audit ca ON inactive_connections.connectionno = ca.connectionno ";
 			
 	/**
 	 * 
