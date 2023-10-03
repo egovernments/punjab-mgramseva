@@ -43,6 +43,8 @@ public class WsQueryBuilder {
 
 	private static final String INNER_JOIN_STRING = "INNER JOIN";
 	private static final String LEFT_OUTER_JOIN_STRING = " LEFT OUTER JOIN ";
+
+	private static final String UNION_STRING=" UNION ";
 //	private static final String Offset_Limit_String = "OFFSET ? LIMIT ?";
 
 //    private static String holderSelectValues = "{HOLDERSELECTVALUES}";
@@ -154,16 +156,13 @@ public class WsQueryBuilder {
 			+ " AND pay.paymentstatus!='CANCELLED' GROUP BY conn.tenantId,conn.connectionno,conn.oldConnectionno,"
 			+ " connectionholder.userid,pay.paymentmode ORDER BY conn.connectionno ";
 
-	public static final String INACTIVE_CONSUMER_QUERY= "SELECT"
-			+ " COALESCE(c.connectionno, ca.connectionno) AS connectionno,"
-			+ " COALESCE(c.status, ca.status) AS status,"
-			+ " COALESCE(c.lastmodifiedtime, ca.lastmodifiedtime) AS lastmodifiedtime,"
-			+ " COALESCE(c.lastmodifiedby, ca.lastmodifiedby) AS lastmodifiedbyUuid"
-			+ " FROM (SELECT connectionno FROM eg_ws_connection WHERE lastmodifiedtime >=? AND lastmodifiedtime <=?"
-			+ " AND status = 'Inactive' AND tenantid='?' UNION SELECT connectionno FROM eg_ws_connection_audit WHERE"
-			+ " lastmodifiedtime >=? AND lastmodifiedtime <=? AND status = 'Inactive' AND tenantid='?') AS inactive_connections "
-			+ LEFT_OUTER_JOIN_STRING + " eg_ws_connection c ON inactive_connections.connectionno = c.connectionno "
-			+ LEFT_OUTER_JOIN_STRING + " eg_ws_connection_audit ca ON inactive_connections.connectionno = ca.connectionno ";
+	public static final String INACTIVE_CONSUMER_QUERY= "SELECT connectionno AS connectionno,status AS status,lastmodifiedby "
+			+ " AS lastmodifiedbyUuid,lastmodifiedtime AS lastmodifiedtime FROM eg_ws_connection_audit WHERE connectionno "
+			+ " IN (SELECT distinct connectionno FROM eg_ws_connection_audit WHERE status='Inactive' AND lastmodifiedtime >= ? AND "
+			+ " lastmodifiedtime <= ? AND tenantid= ? ) " + UNION_STRING + " SELECT connectionno,status,lastmodifiedby,lastmodifiedtime FROM eg_ws_connection WHERE "
+			+ " connectionno IN (SELECT distinct  connectionno FROM eg_ws_connection WHERE status='Inactive' AND "
+			+ " lastmodifiedtime >= ? AND lastmodifiedtime <= ? AND tenantid= ? ) "
+			+ " order by connectionno,lastmodifiedtime desc ";
 			
 	/**
 	 * 
