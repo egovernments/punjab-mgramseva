@@ -823,7 +823,7 @@ public class WaterServiceImpl implements WaterService {
 		return collectionReportData;
 	}
 
-	public List<InactiveConsumerReportData> inactiveConsumerReport(String monthStartDate, String monthEndDate, String tenantId, Integer offset, Integer limit, RequestInfo requestInfo)
+	public List<InactiveConsumerReportData> inactiveConsumerReport(String monthStartDate,String monthEndDate,String tenantId,@Valid Integer offset,@Valid Integer limit, RequestInfo requestInfo)
 	{
 		DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate startDate=LocalDate.parse(monthStartDate,formatter);

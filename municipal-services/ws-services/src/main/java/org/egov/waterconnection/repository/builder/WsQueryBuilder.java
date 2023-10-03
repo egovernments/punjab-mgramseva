@@ -158,11 +158,11 @@ public class WsQueryBuilder {
 
 	public static final String INACTIVE_CONSUMER_QUERY= "SELECT connectionno AS connectionno,status AS status,lastmodifiedby "
 			+ " AS lastmodifiedbyUuid,lastmodifiedtime AS lastmodifiedtime FROM eg_ws_connection_audit WHERE connectionno "
-			+ " IN (SELECT distinct connectionno FROM eg_ws_connection_audit WHERE status='Inactive' AND lastmodifiedtime >= ? AND "
-			+ " lastmodifiedtime <= ? AND tenantid= ? ) " + UNION_STRING + " SELECT connectionno,status,lastmodifiedby,lastmodifiedtime FROM eg_ws_connection WHERE "
-			+ " connectionno IN (SELECT distinct  connectionno FROM eg_ws_connection WHERE status='Inactive' AND "
-			+ " lastmodifiedtime >= ? AND lastmodifiedtime <= ? AND tenantid= ? ) "
-			+ " order by connectionno,lastmodifiedtime desc ";
+			+ " IN (SELECT distinct connectionno FROM eg_ws_connection_audit WHERE status='Inactive' AND lastmodifiedtime >= ? AND"
+			+ " lastmodifiedtime <= ? AND tenantid=?) " + UNION_STRING + " SELECT connectionno,status,lastmodifiedby,lastmodifiedtime FROM eg_ws_connection WHERE"
+			+ " connectionno IN (SELECT distinct connectionno FROM eg_ws_connection WHERE status='Inactive' AND"
+			+ " lastmodifiedtime >= ? AND lastmodifiedtime <= ? AND tenantid=?) "
+			+ " order by connectionno,lastmodifiedtime desc";
 			
 	/**
 	 * 
