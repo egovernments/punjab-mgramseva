@@ -2,6 +2,7 @@ package org.egov.waterconnection.repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.Role;
 import org.egov.common.contract.request.User;
@@ -21,6 +23,21 @@ import org.egov.waterconnection.producer.WaterConnectionProducer;
 import org.egov.waterconnection.repository.builder.WsQueryBuilder;
 import org.egov.waterconnection.repository.rowmapper.*;
 import org.egov.waterconnection.web.models.*;
+import org.egov.waterconnection.repository.rowmapper.BillingCycleRowMapper;
+import org.egov.waterconnection.repository.rowmapper.CollectionRowMapper;
+import org.egov.waterconnection.repository.rowmapper.FeedbackRowMapper;
+import org.egov.waterconnection.repository.rowmapper.OpenWaterRowMapper;
+import org.egov.waterconnection.repository.rowmapper.ReportRowMapper;
+import org.egov.waterconnection.repository.rowmapper.WaterRowMapper;
+import org.egov.waterconnection.web.models.BillReportData;
+import org.egov.waterconnection.web.models.BillingCycle;
+import org.egov.waterconnection.web.models.CollectionReportData;
+import org.egov.waterconnection.web.models.Feedback;
+import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
+import org.egov.waterconnection.web.models.SearchCriteria;
+import org.egov.waterconnection.web.models.WaterConnection;
+import org.egov.waterconnection.web.models.WaterConnectionRequest;
+import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;

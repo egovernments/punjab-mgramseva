@@ -6,6 +6,21 @@ import javax.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.waterconnection.web.models.*;
+import org.egov.waterconnection.web.models.BillReportData;
+import org.egov.waterconnection.web.models.BillReportResponse;
+import org.egov.waterconnection.web.models.CollectionReportData;
+import org.egov.waterconnection.web.models.Feedback;
+import org.egov.waterconnection.web.models.FeedbackRequest;
+import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
+
+import org.egov.waterconnection.web.models.LastMonthSummary;
+import org.egov.waterconnection.web.models.RevenueCollectionData;
+import org.egov.waterconnection.web.models.RevenueDashboard;
+
+import org.egov.waterconnection.web.models.SearchCriteria;
+import org.egov.waterconnection.web.models.WaterConnection;
+import org.egov.waterconnection.web.models.WaterConnectionRequest;
+import org.egov.waterconnection.web.models.WaterConnectionResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
