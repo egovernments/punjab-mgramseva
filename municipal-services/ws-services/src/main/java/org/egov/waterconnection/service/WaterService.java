@@ -52,6 +52,6 @@ public interface WaterService {
 	List<CollectionReportData> collectionReport(String paymentStartDate, String paymentEndDate, String tenantId,@Valid Integer offset, @Valid Integer limit, @Valid String sortOrder,
 			RequestInfo requestInfo);
 	
-	List<InactiveConsumerReportData> inactiveConsumerReport(@Valid String monthStartDate, @Valid String monthEndDate, @Valid String tenantId, @Valid Integer offset, @Valid Integer limit, RequestInfo requestInfo);
+	List<InactiveConsumerReportData> inactiveConsumerReport(String monthStartDate,String monthEndDate,String tenantId, @Valid Integer offset, @Valid Integer limit, RequestInfo requestInfo);
 
 }

@@ -611,13 +611,13 @@ public class WaterDaoImpl implements WaterDao {
 	{
          StringBuilder inactive_consumer_query=new StringBuilder(wsQueryBuilder.INACTIVE_CONSUMER_QUERY);
 
-		 List<Object> preparedStatment=new ArrayList<>();
-		preparedStatment.add(monthStartDateTime);
-		preparedStatment.add(monthEndDateTime);
-		preparedStatment.add(tenantId);
-		preparedStatment.add(monthStartDateTime);
-		preparedStatment.add(monthEndDateTime);
-		preparedStatment.add(tenantId);
+		 List<Object> preparedStatement=new ArrayList<>();
+		preparedStatement.add(monthStartDateTime);
+		preparedStatement.add(monthEndDateTime);
+		preparedStatement.add(tenantId);
+		preparedStatement.add(monthStartDateTime);
+		preparedStatement.add(monthEndDateTime);
+		preparedStatement.add(tenantId);
 
 		Integer newlimit=wsConfiguration.getDefaultLimit();
 		Integer newoffset= wsConfiguration.getDefaultOffset();
@@ -633,12 +633,12 @@ public class WaterDaoImpl implements WaterDao {
 
 		if (newlimit>0){
 			inactive_consumer_query.append(" offset ?  limit ? ;");
-			preparedStatment.add(newoffset);
-			preparedStatment.add(newlimit);
+			preparedStatement.add(newoffset);
+			preparedStatement.add(newlimit);
 		}
 
 		List<InactiveConsumerReportData> inactiveConsumerReportList=new ArrayList<>();
-		inactiveConsumerReportList=jdbcTemplate.query(inactive_consumer_query.toString(), preparedStatment.toArray(),inactiveConsumerReportRowMapper);
+		inactiveConsumerReportList=jdbcTemplate.query(inactive_consumer_query.toString(), preparedStatement.toArray(),inactiveConsumerReportRowMapper);
          return inactiveConsumerReportList;
     }
 }
