@@ -612,9 +612,12 @@ public class WaterDaoImpl implements WaterDao {
          StringBuilder inactive_consumer_query=new StringBuilder(wsQueryBuilder.INACTIVE_CONSUMER_QUERY);
 
 		 List<Object> preparedStatment=new ArrayList<>();
-		 preparedStatment.add(tenantId);
-		 preparedStatment.add(monthStartDateTime);
-		 preparedStatment.add(monthEndDateTime);
+		preparedStatment.add(monthStartDateTime);
+		preparedStatment.add(monthEndDateTime);
+		preparedStatment.add(tenantId);
+		preparedStatment.add(monthStartDateTime);
+		preparedStatment.add(monthEndDateTime);
+		preparedStatment.add(tenantId);
 
 		Integer newlimit=wsConfiguration.getDefaultLimit();
 		Integer newoffset= wsConfiguration.getDefaultOffset();
