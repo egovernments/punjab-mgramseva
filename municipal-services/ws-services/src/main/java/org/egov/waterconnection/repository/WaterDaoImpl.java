@@ -638,7 +638,7 @@ public class WaterDaoImpl implements WaterDao {
 		}
 
 		List<InactiveConsumerReportData> inactiveConsumerReportList=new ArrayList<>();
-		log.info("Query :"+ inactive_consumer_query.toString() +"prepared statement "+ preparedStatement.toArray());
+		log.info("Query of inactive consumer:"+ inactive_consumer_query.toString() +"prepared statement of inactive consumer"+ preparedStatement);
 		inactiveConsumerReportList=jdbcTemplate.query(inactive_consumer_query.toString(), preparedStatement.toArray(),inactiveConsumerReportRowMapper);
          return inactiveConsumerReportList;
     }
