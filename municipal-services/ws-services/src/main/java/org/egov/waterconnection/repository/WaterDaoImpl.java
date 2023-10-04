@@ -615,6 +615,9 @@ public class WaterDaoImpl implements WaterDao {
 		preparedStatement.add(monthStartDateTime);
 		preparedStatement.add(monthEndDateTime);
 		preparedStatement.add(tenantId);
+		preparedStatement.add(monthStartDateTime);
+		preparedStatement.add(monthEndDateTime);
+		preparedStatement.add(tenantId);
 
 		Integer newlimit=wsConfiguration.getDefaultLimit();
 		Integer newoffset= wsConfiguration.getDefaultOffset();
