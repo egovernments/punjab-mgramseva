@@ -287,7 +287,6 @@ public class UserRepository {
 
         namedParameterJdbcTemplate.update(userTypeQueryBuilder.getUpdateUserQuery(), updateuserInputs);
         if (user.getRoles() != null && !CollectionUtils.isEmpty(user.getRoles())) {
-            if(!oldUser.getRoles().equals(user.getRoles()))
             validateAndEnrichRoles(Collections.singletonList(user));
             updateRoles(user);
         }
