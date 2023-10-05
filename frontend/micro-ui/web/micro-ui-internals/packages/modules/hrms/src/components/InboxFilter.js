@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { getCityThatUserhasAccess } from "./Utils";
 
 const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props }) => {
-  
+
   const [filters, onSelectFilterRoles] = useState(searchParams?.filters?.role || { role: [] });
   const [_searchParams, setSearchParams] = useState(() => searchParams);
   const [selectedRoles, onSelectFilterRolessetSelectedRole] = useState(null);
@@ -54,7 +54,7 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
   });
 
   useEffect(() => {
-    if (tenantId.code) {
+    if (tenantId?.code) {
       setSearchParams({ ..._searchParams, tenantId: tenantId.code });
     }
   }, [tenantId]);
@@ -67,15 +67,14 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
       });
 
       setSearchParams({ ..._searchParams, roles: [...res].join(",") });
-      if (filters.role && filters.role.length > 1) {
+      if (filters?.role && filters?.role?.length > 1) {
         let res = [];
         filters.role.forEach((ele) => {
           res.push(ele.code);
         });
         setSearchParams({ ..._searchParams, roles: [...res].join(",") });
       }
-    }
-    else if(filters.role && filters.role.length===0) {
+    } else if (filters?.role && filters?.role?.length === 0) {
       setSearchParams({ ..._searchParams, roles: undefined });
     }
   }, [filters.role]);
@@ -165,7 +164,13 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
             <div>
               <div className="filter-label">{t("HR_ULB_LABEL")}</div>
               <Dropdown
-                option={[...getCityThatUserhasAccess(tenantIds)?.sort((x, y) => x?.name?.localeCompare(y?.name)).map(city => { return { ...city, i18text: Digit.Utils.locale.getCityLocale(city.code) } })]}
+                option={[
+                  ...getCityThatUserhasAccess(tenantIds)
+                    ?.sort((x, y) => x?.name?.localeCompare(y?.name))
+                    .map((city) => {
+                      return { ...city, i18text: Digit.Utils.locale.getCityLocale(city.code) };
+                    }),
+                ]}
                 selected={tenantId}
                 select={settenantId}
                 optionKey={"i18text"}
@@ -175,7 +180,7 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
             <div>
               <div className="filter-label">{t("HR_COMMON_TABLE_COL_DEPT")}</div>
               <Dropdown
-                option={Digit.Utils.locale.convertToLocaleData(data?.MdmsRes?.["common-masters"]?.Department, 'COMMON_MASTERS_DEPARTMENT')}
+                option={Digit.Utils.locale.convertToLocaleData(data?.MdmsRes?.["common-masters"]?.Department, "COMMON_MASTERS_DEPARTMENT")}
                 selected={departments}
                 select={setDepartments}
                 optionKey={"i18text"}
@@ -186,7 +191,7 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
               <div>
                 {GetSelectOptions(
                   t("HR_COMMON_TABLE_COL_ROLE"),
-                  Digit.Utils.locale.convertToLocaleData(data?.MdmsRes["ACCESSCONTROL-ROLES"]?.roles, 'ACCESSCONTROL_ROLES_ROLES', t),
+                  Digit.Utils.locale.convertToLocaleData(data?.MdmsRes["ws-services-masters"]?.WSServiceRoles, "ACCESSCONTROL_ROLES_ROLES", t),
                   selectedRoles,
                   onSelectRoles,
                   "i18text",
@@ -207,9 +212,11 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
                   { code: false, name: t("HR_DEACTIVATE_HEAD") },
                 ]}
               />
-              {props.type !== "mobile" && <div>
-                <SubmitBar onSubmit={() => onFilterChange(_searchParams)} label={t("HR_COMMON_APPLY")} />
-              </div>}
+              {props.type !== "mobile" && (
+                <div>
+                  <SubmitBar onSubmit={() => onFilterChange(_searchParams)} label={t("HR_COMMON_APPLY")} />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -222,8 +229,8 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
             buttonLink={t("ES_COMMON_FILTER")}
             onClear={clearAll}
             onSubmit={() => {
-              onFilterChange(_searchParams)
-              props?.onClose?.()
+              onFilterChange(_searchParams);
+              props?.onClose?.();
             }}
             style={{ flex: 1 }}
           />
