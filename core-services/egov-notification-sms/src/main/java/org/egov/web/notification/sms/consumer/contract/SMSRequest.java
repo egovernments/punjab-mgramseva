@@ -34,10 +34,10 @@ public class SMSRequest {
     private String templateId;
 
     public Sms toDomain() {
-        if (category == null) {
-            return new Sms(mobileNumber, message, Category.OTHERS, expiryTime,templateId);
+        if (category == null || tenantId == null) {
+            return new Sms(mobileNumber, message, Category.OTHERS, expiryTime,templateId,"pb");
         } else {
-            return new Sms(mobileNumber, message, category, expiryTime, templateId);
+            return new Sms(mobileNumber, message, category, expiryTime, templateId,tenantId);
         }
     }
 }
