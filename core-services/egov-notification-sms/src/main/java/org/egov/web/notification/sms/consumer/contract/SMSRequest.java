@@ -34,8 +34,9 @@ public class SMSRequest {
     private String templateId;
 
     public Sms toDomain() {
-        if (category == null || tenantId == null) {
-            return new Sms(mobileNumber, message, Category.OTHERS, expiryTime,templateId,"pb");
+        if (category == null) {
+            return new Sms(mobileNumber, message, Category.OTHERS, expiryTime,templateId,null);
+
         } else {
             return new Sms(mobileNumber, message, category, expiryTime, templateId,tenantId);
         }
