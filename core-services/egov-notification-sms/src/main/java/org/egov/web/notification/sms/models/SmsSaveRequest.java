@@ -12,6 +12,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @Builder
 @ToString
 public class SmsSaveRequest {
+    private  String id;
     private String mobileNumber;
     private String message;
     private Category category;
