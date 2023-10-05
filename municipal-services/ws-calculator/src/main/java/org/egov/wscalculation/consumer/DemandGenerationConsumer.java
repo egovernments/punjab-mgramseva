@@ -483,6 +483,7 @@ public class DemandGenerationConsumer {
 				System.out.println("Demand GP USER SMS1::" + msg);
 				if(!map.getKey().equals(config.getPspclVendorNumber())) {
 					SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(msg)
+							.tenantid(tenantId)
 							.category(Category.TRANSACTION).build();
 					if(config.isSmsForDemandEnable()) {
 						producer.push(config.getSmsNotifTopic(), smsRequest);

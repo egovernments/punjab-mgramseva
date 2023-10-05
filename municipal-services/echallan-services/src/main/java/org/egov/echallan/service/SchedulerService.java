@@ -256,6 +256,7 @@ public class SchedulerService {
 								System.out.println("New Expenditure SMS :: " + message);
 
 								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
+										.tenantid(tenantId)
 										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
 										.users(new String[] { map.getValue() }).build();
 								if(config.isSmsForExpenditureEnabled()) {
@@ -452,6 +453,7 @@ public class SchedulerService {
 								// value.
 								System.out.println("Mark expense bills SMS::" + message);
 								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
+										.tenantid(tenantId)
 										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
 										.users(new String[] { map.getValue() }).build();
 								if(config.isSmsForMarkBillEnabled()) {
@@ -583,6 +585,7 @@ public class SchedulerService {
 								message = message.replace("{user}", uuidUsername);
 								System.out.println("SMS Notification::" + message);
 								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
+										.tenantid(tenantId)
 										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
 										.users(new String[] { uuidUsername }).build();
 								if(config.isSmsForMonthlySummaryEnabled()) {

@@ -166,7 +166,7 @@ public class SchedulerService {
 								message = message.replace("{Date}", LocalDate.now().toString());
 								System.out.println("PENDING Coll SMS::" + message);
 								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
-										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
+										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY)).tenantId(tenantId)
 										.users(new String[] { uuidUsername }).build();
 								if(config.isSMSForPendingCollectionEnabled()) {
 									producer.push(config.getSmsNotifTopic(), smsRequest);
@@ -467,7 +467,7 @@ public class SchedulerService {
 										msg = msg.replace("{date}", formattedDate);
 										System.out.println("TODAY Coll SMS::" + msg);
 										SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
-												.message(msg).templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
+												.message(msg).templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY)).tenantId(tenantId)
 												.users(new String[] { uuidUsername }).build();
 										if(config.isSMSForTodaysCollectionEnabled()) {
 											producer.push(config.getSmsNotifTopic(), smsRequest);

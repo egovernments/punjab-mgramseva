@@ -1,24 +1,26 @@
-package org.egov.waterconnection.web.models;
+package org.egov.web.notification.sms.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @ToString
-public class SMSRequest {
+public class SmsSaveRequest {
+    private  String id;
     private String mobileNumber;
     private String message;
     private Category category;
-    private Long expiryTime;
+    private Long createdtime;
     private String templateId;
-    private String[] users;
     private String tenantId;
-    
+    public boolean isValid() {
+
+        return isNotEmpty(mobileNumber) && isNotEmpty(message);
+    }
 }
