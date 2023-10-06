@@ -8,6 +8,7 @@ import org.apache.http.impl.client.*;
 import org.egov.web.notification.sms.config.*;
 import org.egov.web.notification.sms.models.*;
 import org.egov.web.notification.sms.producer.Producer;
+import org.egov.web.notification.sms.repository.builder.SmsNotificationRepository;
 import org.springframework.asm.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.core.*;
@@ -45,6 +46,9 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
     @Autowired
     private Producer producer;
 
+    @Autowired
+    private SmsNotificationRepository smsNotificationRepository;
+
     @PostConstruct
     public void init() {
         List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
@@ -80,7 +84,8 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
         }
         log.info("calling submitToExternalSmsService() method");
         if(smsProperties.isSaveSmsEnable()) {
-            SmsSaveRequest smsSaveRequest = SmsSaveRequest.builder().mobileNumber(sms.getMobileNumber()).message(sms.getMessage())
+            Long id = smsNotificationRepository.getNextSequence();
+            SmsSaveRequest smsSaveRequest = SmsSaveRequest.builder().id(id).mobileNumber(sms.getMobileNumber()).message(sms.getMessage())
                     .category(sms.getCategory()).templateId(sms.getTemplateId()).tenantId(sms.getTenantId()).createdtime(System.currentTimeMillis()).build();
             log.info("SMS request to save sms topic" + smsSaveRequest);
             producer.push(smsProperties.getSaveSmsTopic(), smsSaveRequest);
