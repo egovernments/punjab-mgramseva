@@ -108,6 +108,7 @@ public class WaterServiceImpl implements WaterService {
 	private WaterConnectionProducer waterConnectionProducer;
 
 	@Autowired
+	@Lazy
 	private WaterRepository repository;
 
 	@Autowired
