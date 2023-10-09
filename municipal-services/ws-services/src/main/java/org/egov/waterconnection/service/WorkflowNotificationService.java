@@ -304,7 +304,7 @@ public class WorkflowNotificationService {
         	mobileNumberAndMessage = setRecepitDownloadLink(mobileNumberAndMessage, waterConnectionRequest, message, property);
 		List<SMSRequest> smsRequest = new ArrayList<>();
 		mobileNumberAndMessage.forEach((mobileNumber, msg) -> {
-			SMSRequest req = SMSRequest.builder().mobileNumber(mobileNumber).message(msg).category(Category.TRANSACTION).build();
+			SMSRequest req = SMSRequest.builder().mobileNumber(mobileNumber).message(msg).category(Category.TRANSACTION).tenantId(waterConnectionRequest.getWaterConnection().getTenantId()).build();
 			smsRequest.add(req);
 		});
 		return smsRequest;

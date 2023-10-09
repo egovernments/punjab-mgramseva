@@ -114,6 +114,7 @@ public class NotificationConsumer {
 				Map<String, Object> request = new HashMap<>();
 				request.put("mobileNumber", phNo);
 				request.put("message", message);
+				request.put("tenantId", bill.getTenantId());
 				log.info("Msg sent to user : " + message);
 				if(isSmsForBillNotificationEnabled) {
 					producer.send(smsTopic, smsTopickey, request);

@@ -7,6 +7,8 @@ import org.apache.http.conn.ssl.*;
 import org.apache.http.impl.client.*;
 import org.egov.web.notification.sms.config.*;
 import org.egov.web.notification.sms.models.*;
+import org.egov.web.notification.sms.producer.Producer;
+import org.egov.web.notification.sms.repository.builder.SmsNotificationRepository;
 import org.springframework.asm.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.core.*;
@@ -40,6 +42,12 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
 
     @Autowired
     protected Environment env;
+
+    @Autowired
+    private Producer producer;
+
+    @Autowired
+    private SmsNotificationRepository smsNotificationRepository;
 
     @PostConstruct
     public void init() {
@@ -75,6 +83,14 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
             return;
         }
         log.info("calling submitToExternalSmsService() method");
+        if(smsProperties.isSaveSmsEnable()) {
+            Long id = smsNotificationRepository.getNextSequence();
+            String mobileNumber = sms.getMobileNumber();
+            mobileNumber = mobileNumber.substring(0, 2) + mobileNumber.substring(6);
+            SmsSaveRequest smsSaveRequest = SmsSaveRequest.builder().id(id).mobileNumber(mobileNumber).message(sms.getMessage())
+                    .category(sms.getCategory()).templateId(sms.getTemplateId()).tenantId(sms.getTenantId()).createdtime(System.currentTimeMillis()).build();
+            producer.push(smsProperties.getSaveSmsTopic(), smsSaveRequest);
+        }
         submitToExternalSmsService(sms);
     }
 
@@ -128,7 +144,7 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
 			log.error("error response from third party api: info:"+responseMap.get("info"));
     		throw new RuntimeException(responseMap.get("info"));
     	}
-    	
+
 		log.info("executeAPI() end");
         return res;
     }

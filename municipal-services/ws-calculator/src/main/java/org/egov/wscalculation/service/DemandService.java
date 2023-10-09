@@ -341,7 +341,7 @@ public class DemandService {
 
 			System.out.println("payment genaration Message1::" + messageString);
 
-			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
+			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString).tenantid(tenantId)
 					.category(Category.TRANSACTION).build();
 			if(config.isSmsForPaymentLinkEnable()) {
 				producer.push(config.getSmsNotifTopic(), sms);
@@ -381,7 +381,7 @@ public class DemandService {
 
 				System.out.println("Demand genaration Message get bill::" + messageString);
 
-				SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
+				SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString).tenantid(tenantId)
 						.category(Category.TRANSACTION).build();
 				if(config.isSmsForBillDownloadEnabled()) {
 					producer.push(config.getSmsNotifTopic(), sms);
@@ -432,7 +432,7 @@ public class DemandService {
 			System.out.println("Denmand and Payment genaration Message::" + messageString);
 
 			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString)
-					.category(Category.TRANSACTION).build();
+					.category(Category.TRANSACTION).tenantid(tenantId).build();
 			if(config.isSmsForBillDownloadEnabled() && config.isSmsForPaymentLinkEnable()) {
 				producer.push(config.getSmsNotifTopic(), sms);
 			}

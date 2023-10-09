@@ -35,9 +35,10 @@ public class SMSRequest {
 
     public Sms toDomain() {
         if (category == null) {
-            return new Sms(mobileNumber, message, Category.OTHERS, expiryTime,templateId);
+            return new Sms(mobileNumber, message, Category.OTHERS, expiryTime,templateId,null);
+
         } else {
-            return new Sms(mobileNumber, message, category, expiryTime, templateId);
+            return new Sms(mobileNumber, message, category, expiryTime, templateId,tenantId);
         }
     }
 }

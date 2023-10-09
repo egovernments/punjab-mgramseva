@@ -61,7 +61,7 @@ public class DemandNotificationService {
 		enrichNotificationReceivers(receiverList, notificationObj);
 		receiverList.forEach(receiver -> {
 			String message = util.getAppliedMsg(receiver, messageTemplate, notificationObj);
-			SMSRequest sms = SMSRequest.builder().mobileNumber(receiver.getMobileNumber()).message(message).category(Category.TRANSACTION).build();
+			SMSRequest sms = SMSRequest.builder().mobileNumber(receiver.getMobileNumber()).message(message).category(Category.TRANSACTION).tenantid(tenantId).build();
 			smsRequest.add(sms);
 		});
 	}
