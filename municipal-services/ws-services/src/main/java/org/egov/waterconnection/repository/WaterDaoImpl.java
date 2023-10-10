@@ -21,6 +21,8 @@ import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.producer.WaterConnectionProducer;
 import org.egov.waterconnection.repository.builder.WsQueryBuilder;
+import org.egov.waterconnection.repository.rowmapper.*;
+import org.egov.waterconnection.web.models.*;
 import org.egov.waterconnection.repository.rowmapper.BillingCycleRowMapper;
 import org.egov.waterconnection.repository.rowmapper.CollectionRowMapper;
 import org.egov.waterconnection.repository.rowmapper.FeedbackRowMapper;
@@ -49,6 +51,8 @@ import lombok.extern.slf4j.Slf4j;
 @Repository
 public class WaterDaoImpl implements WaterDao {
 
+	@Autowired
+	private InactiveConsumerReportRowMapper inactiveConsumerReportRowMapper;
 	@Autowired
 	private WaterConnectionProducer waterConnectionProducer;
 
@@ -602,6 +606,40 @@ public class WaterDaoImpl implements WaterDao {
 		collectionReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), collectionReportRowMapper);
 		return collectionReportList;
 	}
-	
 
+    public List<InactiveConsumerReportData> getInactiveConsumerReport(Long monthStartDateTime, Long monthEndDateTime, @Valid String tenantId, @Valid Integer offset, @Valid Integer limit)
+	{
+         StringBuilder inactive_consumer_query=new StringBuilder(wsQueryBuilder.INACTIVE_CONSUMER_QUERY);
+
+		 List<Object> preparedStatement=new ArrayList<>();
+		preparedStatement.add(monthStartDateTime);
+		preparedStatement.add(monthEndDateTime);
+		preparedStatement.add(tenantId);
+		preparedStatement.add(monthStartDateTime);
+		preparedStatement.add(monthEndDateTime);
+		preparedStatement.add(tenantId);
+
+		Integer newlimit=wsConfiguration.getDefaultLimit();
+		Integer newoffset= wsConfiguration.getDefaultOffset();
+		if(limit==null && offset==null)
+			newlimit=wsConfiguration.getMaxLimit();
+		if(limit!=null && limit<=wsConfiguration.getMaxLimit())
+			newlimit=limit;
+		if(limit!=null && limit>=wsConfiguration.getMaxLimit())
+			newlimit=wsConfiguration.getMaxLimit();
+
+		if(offset!=null)
+			newoffset=offset;
+
+		if (newlimit>0){
+			inactive_consumer_query.append(" offset ?  limit ? ;");
+			preparedStatement.add(newoffset);
+			preparedStatement.add(newlimit);
+		}
+
+		List<InactiveConsumerReportData> inactiveConsumerReportList=new ArrayList<>();
+		log.info("Query of inactive consumer:"+ inactive_consumer_query.toString() +"prepared statement of inactive consumer"+ preparedStatement);
+		inactiveConsumerReportList=jdbcTemplate.query(inactive_consumer_query.toString(), preparedStatement.toArray(),inactiveConsumerReportRowMapper);
+         return inactiveConsumerReportList;
+    }
 }

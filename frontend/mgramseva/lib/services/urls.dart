@@ -91,6 +91,8 @@ class Url {
       'ws-services/wc/_billReport';
   static const String COLLECTION_REPORT=
       'ws-services/wc/_collectionReport';
+  static const String INACTIVE_CONSUMER_REPORT=
+      'ws-services/wc/_inactiveConsumerReport';
 }
 
 

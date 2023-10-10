@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
+import org.egov.waterconnection.web.models.*;
 import org.egov.waterconnection.web.models.BillReportData;
 import org.egov.waterconnection.web.models.BillReportResponse;
 import org.egov.waterconnection.web.models.CollectionReportData;
@@ -50,5 +51,7 @@ public interface WaterService {
 
 	List<CollectionReportData> collectionReport(String paymentStartDate, String paymentEndDate, String tenantId,@Valid Integer offset, @Valid Integer limit, @Valid String sortOrder,
 			RequestInfo requestInfo);
+	
+	List<InactiveConsumerReportData> inactiveConsumerReport(String monthStartDate,String monthEndDate,String tenantId, @Valid Integer offset, @Valid Integer limit, RequestInfo requestInfo);
 
 }
