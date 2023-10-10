@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/reports/InactiveConsumerReportData.dart';
 import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
@@ -35,6 +36,7 @@ class ReportsProvider with ChangeNotifier {
   var billingcycleCtrl = TextEditingController();
   List<BillReportData>? demandreports;
   List<CollectionReportData>? collectionreports;
+  List<InactiveConsumerReportData>? inactiveconsumers;
   BillsTableData genericTableData = BillsTableData([], []);
   int limit = 10;
   int offset = 1;
@@ -81,6 +83,13 @@ class ReportsProvider with ChangeNotifier {
         TableHeader(i18.common.PAYMENT_METHOD),
         TableHeader(i18.billDetails.TOTAL_AMOUNT),
       ];
+  List<TableHeader> get inactiveConsumerHeaderList => [
+    TableHeader(i18.common.CONNECTION_ID),
+    TableHeader(i18.common.STATUS),
+    TableHeader(i18.common.INACTIVATED_DATE),
+    TableHeader(i18.common.INACTIVATED_BY_NAME),
+    TableHeader(i18.common.INACTIVATED_BY_UUID),
+  ];
 
   void onChangeOfPageLimit(
       PaginationResponse response, String type, BuildContext context) {
@@ -89,6 +98,9 @@ class ReportsProvider with ChangeNotifier {
     }
     if (type == i18.dashboard.COLLECTION_REPORT) {
       getCollectionReport(limit: response.limit, offset: response.offset);
+    }
+    if (type == i18.dashboard.INACTIVE_CONSUMER_REPORT) {
+      getInactiveConsumerReport(limit: response.limit, offset: response.offset);
     }
   }
 
@@ -139,7 +151,30 @@ class ReportsProvider with ChangeNotifier {
       TableData('${data.paymentAmount ?? '0'}'),
     ]);
   }
+  List<TableDataRow> getInactiveConsumersData(List<InactiveConsumerReportData> list,
+      {bool isExcel = false}) {
+    return list.map((e) => getInactiveConsumersDataRow(e, isExcel: isExcel)).toList();
+  }
 
+  TableDataRow getInactiveConsumersDataRow(InactiveConsumerReportData data,
+      {bool isExcel = false}) {
+    String? inactivatedBy = CommonMethods.truncateWithEllipsis(20, data.inactivatedByName!);
+    if (data.connectionNo != null && data.connectionNo!.isEmpty) {
+      data.connectionNo = '-';
+    }
+    var inactivatedDate = DateFormats.timeStampToDate(data.inactiveDate?.toInt(),format: "dd/MM/yyyy");
+    return TableDataRow([
+      TableData(
+        isExcel
+            ? '${data.connectionNo ?? '-'}'
+            : '${data.connectionNo?.split('/').first ?? ''}/...${data.connectionNo?.split('/').last ?? ''}',
+      ),
+      TableData('${data.status??'-'}'),
+      TableData('${inactivatedDate ?? '-'}'),
+      TableData('${inactivatedBy ?? '-'}'),
+      TableData('${data.inactivatedByUuid ?? ''}'),
+    ]);
+  }
   void callNotifier() {
     notifyListeners();
   }
@@ -372,6 +407,71 @@ class ReportsProvider with ChangeNotifier {
       callNotifier();
     } catch (e, s) {
       collectionreports = [];
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
+      callNotifier();
+    }
+  }
+
+  Future<void> getInactiveConsumerReport(
+      {bool download = false,
+        int offset = 1,
+        int limit = 10,
+        String sortOrder = "ASC"}) async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+      if (selectedBillPeriod == null) {
+        throw Exception('Select Billing Cycle');
+      }
+      Map<String, dynamic> params = {
+        'tenantId': commonProvider.userDetails!.selectedtenant!.code,
+        'monthStartDate': selectedBillPeriod?.split('-')[0],
+        'monthEndDate': selectedBillPeriod?.split('-')[1],
+        'offset': '${offset - 1}',
+        'limit': '${download ? -1 : limit}',
+        'sortOrder': '$sortOrder'
+      };
+      var response = await ReportsRepo().fetchInactiveConsumerReport(params);
+      if (response != null) {
+        inactiveconsumers = response;
+        if (download) {
+          generateExcel(
+              inactiveConsumerHeaderList
+                  .map<String>((e) =>
+              '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
+                  .toList(),
+              getInactiveConsumersData(inactiveconsumers!, isExcel: true)
+                  .map<List<String>>(
+                      (e) => e.tableRow.map((e) => e.label).toList())
+                  .toList() ??
+                  [],
+              title:
+              'InactiveConsumers_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillPeriod.toString().replaceAll('/', '_')}',
+              optionalData: [
+                'Collection Report',
+                '$selectedBillPeriod',
+                '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)} ${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
+                'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch, format: 'dd/MMM/yyyy')}'
+              ]);
+        } else {
+          if (inactiveconsumers != null && inactiveconsumers!.isNotEmpty) {
+            this.limit = limit;
+            this.offset = offset;
+            this.genericTableData = BillsTableData(
+                inactiveConsumerHeaderList, getInactiveConsumersData(inactiveconsumers!));
+          }
+        }
+        streamController.add(response);
+        callNotifier();
+      } else {
+        streamController.add('error');
+        throw Exception('API Error');
+      }
+      callNotifier();
+    } catch (e, s) {
+      inactiveconsumers = [];
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       streamController.addError('error');
       callNotifier();

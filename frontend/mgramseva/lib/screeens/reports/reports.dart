@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/screeens/reports/inactive_consumer_report.dart';
 import 'package:mgramseva/screeens/reports/view_table.dart';
 import 'package:provider/provider.dart';
 
@@ -212,6 +213,7 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                   children: [
                                     BillReport(onViewClick: showTable),
                                     CollectionReport(onViewClick: showTable),
+                                    InactiveConsumerReport(onViewClick: showTable,)
                                   ],
                                 ),
                               ),
