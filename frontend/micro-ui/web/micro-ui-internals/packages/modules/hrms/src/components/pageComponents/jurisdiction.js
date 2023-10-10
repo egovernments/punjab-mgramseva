@@ -41,7 +41,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
             key: 1,
             hierarchy: null,
             boundaryType: null,
-            boundary: [],
+            boundary: null,
             division: [],
             divisionBoundary: [],
             roles: [],
@@ -70,7 +70,6 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     }
     return unique;
   }, []);
-
   useEffect(() => {
     let jurisdictionData = jurisdictions?.map((jurisdiction) => {
       let res = {
@@ -111,7 +110,6 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       }
       return res;
     });
-
     if (isEdit && STATE_ADMIN) {
       let divisionData = [];
       if (isEdit && jurisdictionData.length > 0) {
@@ -370,17 +368,8 @@ function Jurisdiction({
     setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, boundaryType: value } : item)));
   };
 
-  const selectedboundary = (e) => {
-    let res = [];
-    e &&
-      e?.map((ob) => {
-        res.push(ob?.[1]);
-      });
-
-    res?.forEach((resData) => {
-      resData.labelKey = "ACCESSCONTROL_ROLES_ROLES_" + resData.code;
-    });
-    setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, boundary: res } : item)));
+  const selectedboundary = (value) => {
+    setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, boundary: value } : item)));
   };
 
   const selectDivision = (value) => {

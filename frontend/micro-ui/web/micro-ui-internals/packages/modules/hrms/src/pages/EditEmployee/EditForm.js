@@ -200,18 +200,24 @@ const EditForm = ({ tenantId, data }) => {
 
       input?.Jurisdictions?.map((items) => {
         items?.divisionBoundary.map((item) => {
-          jurisdictions.push({
+          let obj = {
             hierarchy: items?.hierarchy,
             boundaryType: "City",
             boundary: item?.code,
             tenantId: item?.code,
             roles: items.roles,
+          };
+          data?.jurisdictions?.map((jurisdition) => {
+            if (jurisdition?.boundary === item?.code) {
+              obj["id"] = jurisdition.id;
+              obj["auditDetails"] = jurisdition.auditDetails;
+            }
           });
+          jurisdictions.push(obj);
         });
       });
-
       // Map the data and add tenantId to roles array
-      const mappedData = jurisdictions.map((jurisdiction) => {
+      const mappedData = jurisdictions.map((jurisdiction, index) => {
         return {
           ...jurisdiction,
           roles: jurisdiction.roles.map((role) => ({
