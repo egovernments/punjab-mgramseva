@@ -74,6 +74,13 @@ config:
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "business-services/billing-service/src/main/resources/db"
         image-name: "billing-service-db"
+  - name: "builds/mGramSeva/business-services/egov-hrms"
+    build:
+      - work-dir: "business-services/egov-hrms"
+        image-name: "egov-hrms"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "business-services/egov-hrms/src/main/resources/db"
+        image-name: "egov-hrms-db"
   - name: "builds/mGramSeva/frontend/frontend-mgramseva"
     build:
       - work-dir: "frontend/mgramseva"
