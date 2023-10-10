@@ -49,7 +49,7 @@ class _CollectionReport extends State<InactiveConsumerReport>
                               fontSize: 16, fontWeight: FontWeight.w700)),
                       Text(
                           ApplicationLocalizations.of(context)
-                              .translate(i18.dashboard.COLLECTION_REPORT),
+                              .translate(i18.dashboard.INACTIVE_CONSUMER_REPORT),
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w700)),
                     ],
