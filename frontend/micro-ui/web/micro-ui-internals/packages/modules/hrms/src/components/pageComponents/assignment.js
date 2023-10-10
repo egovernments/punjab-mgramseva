@@ -49,16 +49,19 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
     setassignments((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
   };
 
-  let designations = [];
-  designations = STATE_ADMIN
-    ? data?.MdmsRes?.["common-masters"]?.Designation?.filter((obj) => obj.name === "Division Admin").map((ele) => {
-        ele["i18key"] = t("COMMON_MASTERS_DESIGNATION_" + ele.code);
-        return ele;
-      })
-    : data?.MdmsRes?.["common-masters"]?.Designation.map((ele) => {
+  function getdesignationdata() {
+    if (STATE_ADMIN) {
+      return data?.MdmsRes?.["common-masters"]?.Designation?.filter((obj) => obj.name === "Division Admin").map((ele) => {
         ele["i18key"] = t("COMMON_MASTERS_DESIGNATION_" + ele.code);
         return ele;
       });
+    } else {
+      return data?.MdmsRes?.["common-masters"]?.Designation.map((ele) => {
+        ele["i18key"] = t("COMMON_MASTERS_DESIGNATION_" + ele.code);
+        return ele;
+      });
+    }
+  }
 
   const handleAddUnit = () => {
     setassignments((prev) => [
@@ -95,7 +98,7 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
             toDate: assignment?.toDate ? new Date(assignment?.toDate).getTime() : undefined,
             isCurrentAssignment: assignment?.isCurrentAssignment,
             department: assignment?.department?.code,
-            designation: STATE_ADMIN ? designations?.length > 0 && designations[0]?.code : assignment?.designation?.code,
+            designation: assignment?.designation?.code,
           })
         : [];
     });
@@ -143,7 +146,7 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
           getdepartmentdata={getdepartmentdata}
           department={department}
           designation={designation}
-          designations={designations}
+          getdesignationdata={getdesignationdata}
           assignments={assignments}
           handleRemoveUnit={handleRemoveUnit}
           setCurrentAssiginmentDate={setCurrentAssiginmentDate}
@@ -169,7 +172,7 @@ function Assignment({
   formData,
   handleRemoveUnit,
   designation,
-  designations,
+  getdesignationdata,
   setCurrentAssiginmentDate,
   currentassignemtDate,
 }) {
@@ -298,9 +301,9 @@ function Assignment({
           <CardLabel className={assignment?.id ? "card-label-smaller" : "card-label-smaller"}>{`${t("HR_DESG_LABEL")} * `}</CardLabel>
           <Dropdown
             className="form-field"
-            selected={STATE_ADMIN ? designations[0] : assignment?.designation}
-            disable={designations ? true : false}
-            option={designations || []}
+            selected={STATE_ADMIN ? getdesignationdata(designation)[0] : assignment?.designation}
+            disable={STATE_ADMIN ? true : assignment?.id ? true : false}
+            option={getdesignationdata(designation) || []}
             select={selectDesignation}
             optionCardStyles={{ maxHeight: "250px" }}
             optionKey={"i18key"}
