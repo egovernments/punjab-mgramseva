@@ -108,6 +108,7 @@ public class WaterServiceImpl implements WaterService {
 	private WaterConnectionProducer waterConnectionProducer;
 
 	@Autowired
+	@Lazy
 	private WaterRepository repository;
 
 	@Autowired
@@ -821,5 +822,17 @@ public class WaterServiceImpl implements WaterService {
 		Long payEndDateTime = LocalDateTime.of(payEndDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 		List<CollectionReportData> collectionReportData = waterDaoImpl.getCollectionReportData(payStartDateTime,payEndDateTime,tenantId,offset,limit,sortOrder);
 		return collectionReportData;
+	}
+
+	public List<InactiveConsumerReportData> inactiveConsumerReport(String monthStartDate,String monthEndDate,String tenantId,@Valid Integer offset,@Valid Integer limit, RequestInfo requestInfo)
+	{
+		DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDate startDate=LocalDate.parse(monthStartDate,formatter);
+		LocalDate endDate=LocalDate.parse(monthEndDate,formatter);
+
+		Long monthStartDateTime=LocalDateTime.of(startDate.getYear(),startDate.getMonth(),startDate.getDayOfMonth(),0,0,0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long mothEndDateTime=LocalDateTime.of(endDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		List<InactiveConsumerReportData> inactiveConsumerReport=waterDaoImpl.getInactiveConsumerReport(monthStartDateTime,mothEndDateTime,tenantId,offset,limit);
+		return inactiveConsumerReport;
 	}
 }
