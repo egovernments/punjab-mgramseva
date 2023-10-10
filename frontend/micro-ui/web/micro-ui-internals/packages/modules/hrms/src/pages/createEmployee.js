@@ -15,6 +15,7 @@ const CreateEmployee = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const isMobile = window.Digit.Utils.browser.isMobile();
+  const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
 
   const { data: mdmsData, isLoading } = Digit.Hooks.useCommonMDMS(Digit.ULBService.getStateId(), "egov-hrms", ["CommonFieldsConfig"], {
     select: (data) => {
@@ -68,6 +69,7 @@ const CreateEmployee = () => {
         boundary: {
           code: tenantId,
         },
+        division: null,
         roles: [],
       },
     ],
@@ -80,7 +82,6 @@ const CreateEmployee = () => {
     if (!_.isEqual(sessionFormData, formData)) {
       setSessionFormData({ ...sessionFormData, ...formData });
     }
-
     if (formData?.SelectEmployeePhoneNumber?.mobileNumber) {
       setMobileNumber(formData?.SelectEmployeePhoneNumber?.mobileNumber);
     } else {
@@ -88,7 +89,15 @@ const CreateEmployee = () => {
     }
     for (let i = 0; i < formData?.Jurisdictions?.length; i++) {
       let key = formData?.Jurisdictions[i];
-      if (!(key?.boundary && key?.boundaryType && key?.hierarchy && key?.tenantId && key?.roles?.length > 0)) {
+      if (
+        !(
+          (key?.boundary || key?.divisionBoundary) &&
+          (key?.boundaryType || key?.division) &&
+          key?.hierarchy &&
+          key?.tenantId &&
+          key?.roles?.length > 0
+        )
+      ) {
         setcheck(false);
         break;
       } else {
@@ -134,7 +143,7 @@ const CreateEmployee = () => {
   };
 
   const onSubmit = (data) => {
-    if (data.Jurisdictions.filter((juris) => juris.tenantId == tenantId).length == 0) {
+    if (!STATE_ADMIN && data.Jurisdictions?.filter((juris) => juris.tenantId == tenantId).length == 0) {
       setShowToast({ key: true, label: "ERR_BASE_TENANT_MANDATORY" });
       return;
     }
@@ -151,13 +160,55 @@ const CreateEmployee = () => {
       setShowToast({ key: true, label: "ERR_INVALID_JURISDICTION" });
       return;
     }
-    let roles = data?.Jurisdictions?.map((ele) => {
-      return ele.roles?.map((item) => {
-        item["tenantId"] = ele.boundary;
-        return item;
-      });
-    });
+    let roles = [];
+    let jurisdictions = [];
+    if (STATE_ADMIN) {
+      const divisionBoundaryCodes = data?.Jurisdictions.flatMap((j) => j.divisionBoundary.map((item) => item.code));
 
+      divisionBoundaryCodes &&
+        divisionBoundaryCodes.length > 0 &&
+        divisionBoundaryCodes.map((item) => {
+          data?.Jurisdictions[0]?.roles?.map((role) => {
+            roles.push({
+              code: role.code,
+              name: role.name,
+              labelKey: role.labelKey,
+              tenantId: item,
+            });
+          });
+        });
+
+      data?.Jurisdictions?.map((items) => {
+        items?.divisionBoundary.map((item) => {
+          jurisdictions.push({
+            hierarchy: items?.hierarchy,
+            boundaryType: "City",
+            boundary: item?.code,
+            tenantId: item?.code,
+            roles: items.roles,
+          });
+        });
+      });
+
+      // Map the data and add tenantId to roles array
+      const mappedData = jurisdictions.map((jurisdiction) => {
+        return {
+          ...jurisdiction,
+          roles: jurisdiction.roles.map((role) => ({
+            ...role,
+            tenantId: jurisdiction.tenantId,
+          })),
+        };
+      });
+      jurisdictions = mappedData;
+    } else {
+      roles = data?.Jurisdictions?.map((ele) => {
+        return ele.roles?.map((item) => {
+          item["tenantId"] = ele.boundary;
+          return item;
+        });
+      });
+    }
     const mappedroles = [].concat.apply([], roles);
     let Employees = [
       {
@@ -167,7 +218,7 @@ const CreateEmployee = () => {
         code: data?.SelectEmployeeId?.code ? data?.SelectEmployeeId?.code : undefined,
         dateOfAppointment: new Date(data?.SelectDateofEmployment?.dateOfAppointment).getTime(),
         employeeType: data?.SelectEmployeeType?.code,
-        jurisdictions: data?.Jurisdictions,
+        jurisdictions: STATE_ADMIN ? jurisdictions : data?.Jurisdictions,
         user: {
           mobileNumber: data?.SelectEmployeePhoneNumber?.mobileNumber,
           name: data?.SelectEmployeeName?.employeeName,
@@ -203,7 +254,6 @@ const CreateEmployee = () => {
     return <Loader />;
   }
   const config = mdmsData?.config ? mdmsData.config : newConfig;
-  console.log(config, "config");
   return (
     <div>
       <div
@@ -213,7 +263,7 @@ const CreateEmployee = () => {
             : { marginLeft: "15px", fontFamily: "calibri", color: "#FF0000" }
         }
       >
-        <Header>{t("HR_COMMON_CREATE_EMPLOYEE_HEADER")}</Header>
+        <Header>{STATE_ADMIN ? t("HR_COMMON_CREATE_DIVISION_EMPLOYEE_HEADER") : t("HR_COMMON_CREATE_EMPLOYEE_HEADER")}</Header>
       </div>
       <FormComposer
         // defaultValues={defaultValues}
