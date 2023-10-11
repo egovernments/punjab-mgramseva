@@ -228,6 +228,22 @@ const EditForm = ({ tenantId, data }) => {
       });
       jurisdictions = mappedData;
     } else {
+      input.Jurisdictions.map((items) => {
+        let obj = {
+          hierarchy: items?.hierarchy,
+          boundaryType: items?.boundaryType,
+          boundary: items?.boundary,
+          tenantId: items?.tenantId,
+          roles: items?.roles,
+        };
+        data?.jurisdictions?.map((jurisdition) => {
+          if (jurisdition?.boundary === items?.boundary) {
+            obj["id"] = jurisdition.id;
+            obj["auditDetails"] = jurisdition.auditDetails;
+          }
+        });
+        jurisdictions.push(obj);
+      });
       roles = input?.Jurisdictions?.map((ele) => {
         return ele.roles?.map((item) => {
           item["tenantId"] = ele.boundary;
