@@ -137,6 +137,12 @@ public class UserTypeQueryBuilder {
             selectQuery.append(" u.tenantid like ?");
             preparedStatementValues.add("%"+userSearchCriteria.getTenantId().trim()+"%");
         }
+        if (userSearchCriteria.getTenantIds() != null) {
+            isAppendAndClause = addAndClauseIfRequired(isAppendAndClause, selectQuery);
+            selectQuery.append(" ur.role_tenantid IN (").append(getQueryForCollection(userSearchCriteria.getTenantIds(),
+                    preparedStatementValues)).append(" )");
+            preparedStatementValues.add("%"+userSearchCriteria.getTenantId().trim()+"%");
+        }
 
         if (userSearchCriteria.getUserName() != null) {
             isAppendAndClause = addAndClauseIfRequired(isAppendAndClause, selectQuery);
@@ -239,6 +245,11 @@ public class UserTypeQueryBuilder {
             isAppendAndClause = addAndClauseIfRequired(false, selectQuery);
             selectQuery.append(" ur.role_tenantid like ? ");
             preparedStatementValues.add( '%' +  userSearchCriteria.getTenantId().trim() + '%');
+        }
+        if (userSearchCriteria.getTenantIds() != null) {
+            isAppendAndClause = addAndClauseIfRequired(false, selectQuery);
+            selectQuery.append(" ur.role_tenantid IN (" ).append(getQueryForCollection(userSearchCriteria.getTenantIds(),
+                    preparedStatementValues)).append(" )");
         }
 
 
