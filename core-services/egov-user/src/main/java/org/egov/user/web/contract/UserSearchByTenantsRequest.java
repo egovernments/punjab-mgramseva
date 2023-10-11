@@ -61,6 +61,9 @@ public class UserSearchByTenantsRequest {
 
     @Pattern(regexp = UserServiceConstants.PATTERN_TENANT)
     @Size(max = 256)
+    @JsonProperty("tenantId")
+    private String tenantId;
+
     @JsonProperty("tenantIds")
     private List<String> tenantIds;
 
@@ -94,6 +97,7 @@ public class UserSearchByTenantsRequest {
                 .offset(pageNumber)
                 .sort(sort)
                 .type(UserType.fromValue(userType))
+                .tenantId(tenantId)
                 .tenantIds(tenantIds)
                 .roleCodes(roleCodes)
                 .uuid(uuid)
