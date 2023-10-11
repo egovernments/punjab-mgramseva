@@ -141,7 +141,6 @@ public class UserTypeQueryBuilder {
             isAppendAndClause = addAndClauseIfRequired(isAppendAndClause, selectQuery);
             selectQuery.append(" ur.role_tenantid IN (").append(getQueryForCollection(userSearchCriteria.getTenantIds(),
                     preparedStatementValues)).append(" )");
-            preparedStatementValues.add("%"+userSearchCriteria.getTenantId().trim()+"%");
         }
 
         if (userSearchCriteria.getUserName() != null) {
