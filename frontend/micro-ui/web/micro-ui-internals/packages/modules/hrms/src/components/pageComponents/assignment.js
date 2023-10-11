@@ -98,11 +98,10 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
             toDate: assignment?.toDate ? new Date(assignment?.toDate).getTime() : undefined,
             isCurrentAssignment: assignment?.isCurrentAssignment,
             department: assignment?.department?.code,
-            designation: assignment?.designation?.code,
+            designation: STATE_ADMIN ? getdesignationdata()?.length > 0 && getdesignationdata()[0]?.code : assignment?.designation?.code,
           })
         : [];
     });
-
     Promise.all(promises).then(function (results) {
       onSelect(
         config.key,

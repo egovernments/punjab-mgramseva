@@ -2,7 +2,17 @@ import { Dropdown, UploadFile } from "@egovernments/digit-ui-react-components";
 import React from "react";
 import { convertEpochToDate } from "../Utils/index";
 
-export const configEmployeeActiveApplication = ({ t, action, selectFile, uploadedFile, setUploadedFile, selectedReason, Reasons, selectReason, employees = { } }) => {
+export const configEmployeeActiveApplication = ({
+  t,
+  action,
+  selectFile,
+  uploadedFile,
+  setUploadedFile,
+  selectedReason,
+  Reasons,
+  selectReason,
+  employees = {},
+}) => {
   employees.deactivationDetails = employees?.deactivationDetails?.sort((y, x) => x?.auditDetails?.createdDate - y?.auditDetails?.createdDate);
   return {
     label: {
@@ -31,7 +41,7 @@ export const configEmployeeActiveApplication = ({ t, action, selectFile, uploade
             label: t("HR_EFFECTIVE_DATE"),
             type: "date",
             isMandatory: true,
-            disable: true,   /* Disabled date and set defaultvalue */
+            disable: true /* Disabled date and set defaultvalue */,
             populators: {
               error: t("HR_EFFECTIVE_DATE_INVALID"),
               name: "effectiveFrom",
@@ -52,6 +62,8 @@ export const configEmployeeActiveApplication = ({ t, action, selectFile, uploade
                   onDelete={() => {
                     setUploadedFile(null);
                   }}
+                  enableButton={true}
+                  uploadedFiles={[]}
                   message={uploadedFile ? `1 ${t(`HR_ACTION_FILEUPLOADED`)}` : t(`HR_ACTION_NO_FILEUPLOADED`)}
                 />
               </div>
