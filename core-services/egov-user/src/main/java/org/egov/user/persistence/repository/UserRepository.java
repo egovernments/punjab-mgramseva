@@ -105,8 +105,7 @@ public class UserRepository {
         final List<Object> preparedStatementValues = new ArrayList<>();
         List<Long> usersIds = new ArrayList<>();
         String queryStr = userTypeQueryBuilder.getQueryUserRoleSearch(userSearch, preparedStatementValues);
-        log.debug(queryStr);
-
+        log.info("ROLE SEARCH QUERY:" + queryStr);
         usersIds = jdbcTemplate.queryForList(queryStr, preparedStatementValues.toArray(), Long.class);
 
         return usersIds;
@@ -580,6 +579,7 @@ public class UserRepository {
         List<Long> userIds = new ArrayList<>();
         if (!isEmpty(userSearch.getRoleCodes()) && userSearch.getTenantId() != null) {
             userIds = findUsersWithRole(userSearch);
+            log.info("USER IDS:" + userIds);
             RoleSearchHappend = true;
         }
         List<User> users = new ArrayList<>();
@@ -595,13 +595,15 @@ public class UserRepository {
                 userSearch.setTenantId(null);
                 userSearch.setRoleCodes(null);
             } else {
+
                 return users;
             }
         }
         String queryStr = userTypeQueryBuilder.getQuery(userSearch, preparedStatementValues);
-        log.debug(queryStr);
+        log.info("SEARCH USER QUERY"+queryStr);
 
         users = jdbcTemplate.query(queryStr, preparedStatementValues.toArray(), userResultSetExtractor);
+        log.info("USER SEARCH RESULT:"+users);
         enrichRoles(users);
         return users;
     }
