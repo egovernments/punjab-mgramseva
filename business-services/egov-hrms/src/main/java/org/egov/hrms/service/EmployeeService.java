@@ -570,7 +570,7 @@ public class EmployeeService {
 		Map<String, User> mapOfUsers = new HashMap<String, User>();
 		if((!CollectionUtils.isEmpty(criteria.getRoles())) && !CollectionUtils.isEmpty(criteria.getTenantIds())) {
 			Map<String, Object> userSearchCriteria = new HashMap<>();
-			userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_TENANTIDS,criteria.getTenantId());
+			userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_TENANTIDS,criteria.getTenantIds());
 			if( !CollectionUtils.isEmpty(criteria.getRoles()) )
 				userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_ROLECODES,criteria.getRoles());
 			UserResponse userResponse = userService.getUserByTenantids(requestInfo, userSearchCriteria);
