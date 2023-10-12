@@ -78,6 +78,9 @@ public class UserService {
 	@Value("${egov.user.search.endpoint}")
 	private String userSearchEndpoint;
 
+	@Value("${egov.user.search.tenant.endpoint}")
+	private String userSearchByTenantEndpoint;
+
 	@Value("${egov.user.update.endpoint}")
 	private String userUpdateEndpoint;
 	
@@ -152,7 +155,7 @@ public class UserService {
 	@SuppressWarnings("all")
 	private UserResponse userCall(Object userRequest, StringBuilder uri) {
 		String dobFormat = null;
-		if(uri.toString().contains(userSearchEndpoint) || uri.toString().contains(userUpdateEndpoint))
+		if(uri.toString().contains(userSearchEndpoint) || uri.toString().contains(userUpdateEndpoint) || uri.toString().contains(userSearchByTenantEndpoint))
 			dobFormat="yyyy-MM-dd";
 		else if(uri.toString().contains(userCreateEndpoint))
 			dobFormat = "dd/MM/yyyy";
