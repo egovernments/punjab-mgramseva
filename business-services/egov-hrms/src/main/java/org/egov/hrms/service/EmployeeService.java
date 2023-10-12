@@ -600,7 +600,7 @@ public class EmployeeService {
 			Map<String, Object> UserSearchCriteria = new HashMap<>();
 			UserSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_UUID,uuids);
 			if(mapOfUsers.isEmpty()){
-				UserResponse userResponse = userService.getUserByTenantids(requestInfo, UserSearchCriteria);
+				UserResponse userResponse = userService.getUser(requestInfo, UserSearchCriteria);
 				log.info("mapOfUsers not empty:"+userResponse.getUser().size());
 				if(!CollectionUtils.isEmpty(userResponse.getUser())) {
 					log.info("mapOfUsers not empty and user reponse size:"+userResponse.getUser().size());
