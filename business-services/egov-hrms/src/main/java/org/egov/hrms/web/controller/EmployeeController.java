@@ -120,6 +120,15 @@ public class EmployeeController {
 		return new ResponseEntity<>(employeeResponse,HttpStatus.OK);
 	}
 
+	@PostMapping(value = "/_searchListOfEmployee")
+	@ResponseBody
+	public ResponseEntity<?> _searchListOfEmployee(@RequestBody @Valid RequestInfoWrapper requestInfoWrapper, @ModelAttribute @Valid EmployeeSearchCriteria criteria) {
+		validator.validateSearchRequest(requestInfoWrapper.getRequestInfo(), criteria);
+		EmployeeResponse employeeResponse = employeeService.searchListOfEmployee(criteria, requestInfoWrapper.getRequestInfo());
+		return new ResponseEntity<>(employeeResponse,HttpStatus.OK);
+	}
+
+
 	@PostMapping("_count")
 	@ResponseBody
 	private ResponseEntity<?> count(@RequestParam("tenantId") String tenantId, @RequestBody RequestInfo requestInfo) {
