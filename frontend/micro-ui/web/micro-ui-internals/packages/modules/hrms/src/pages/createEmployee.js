@@ -148,6 +148,19 @@ const CreateEmployee = () => {
       return;
     }
     if (
+      STATE_ADMIN &&
+      !Object.values(
+        data.Jurisdictions.reduce((acc, sum) => {
+          if (sum && sum?.division?.code) {
+            acc[sum?.division?.code] = acc[sum?.division?.code] ? acc[sum?.division?.code] + 1 : 1;
+          }
+          return acc;
+        }, {})
+      ).every((s) => s == 1)
+    ) {
+      setShowToast({ key: true, label: "ERR_INVALID_JURISDICTION" });
+      return;
+    } else if (
       !Object.values(
         data.Jurisdictions.reduce((acc, sum) => {
           if (sum && sum?.tenantId) {
