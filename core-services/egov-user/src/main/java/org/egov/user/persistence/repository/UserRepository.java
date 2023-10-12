@@ -603,7 +603,6 @@ public class UserRepository {
         log.info("SEARCH USER QUERY"+queryStr);
 
         users = jdbcTemplate.query(queryStr, preparedStatementValues.toArray(), userResultSetExtractor);
-        log.info("USER SEARCH RESULT:"+users);
         enrichRoles(users);
         return users;
     }
