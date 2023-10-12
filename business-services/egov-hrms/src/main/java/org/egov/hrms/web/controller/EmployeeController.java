@@ -122,8 +122,8 @@ public class EmployeeController {
 
 	@PostMapping(value = "/_searchListOfEmployee")
 	@ResponseBody
-	public ResponseEntity<?> _searchListOfEmployee(@RequestBody @Valid RequestInfoWrapper requestInfoWrapper, @ModelAttribute @Valid EmployeeSearchCriteria criteria) {
-		validator.validateSearchRequest(requestInfoWrapper.getRequestInfo(), criteria);
+	public ResponseEntity<?> _searchListOfEmployee(@RequestBody @Valid RequestInfoWrapper requestInfoWrapper, @RequestBody @Valid EmployeeSearchCriteria criteria) {
+		//validator.validateSearchRequest(requestInfoWrapper.getRequestInfo(), criteria);
 		EmployeeResponse employeeResponse = employeeService.searchListOfEmployee(criteria, requestInfoWrapper.getRequestInfo());
 		return new ResponseEntity<>(employeeResponse,HttpStatus.OK);
 	}

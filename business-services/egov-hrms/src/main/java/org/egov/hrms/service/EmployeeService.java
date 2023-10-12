@@ -574,34 +574,42 @@ public class EmployeeService {
 			if( !CollectionUtils.isEmpty(criteria.getRoles()) )
 				userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_ROLECODES,criteria.getRoles());
 			UserResponse userResponse = userService.getUserByTenantids(requestInfo, userSearchCriteria);
+			log.info("user responsesize:"+userResponse.getUser().size() );
 			userChecked =true;
 			if(!CollectionUtils.isEmpty(userResponse.getUser())) {
 				mapOfUsers.putAll(userResponse.getUser().stream()
 						.collect(Collectors.toMap(User::getUuid, Function.identity())));
 			}
+			log.info("Map of User length:"+mapOfUsers.size());
 			List<String> userUUIDs = userResponse.getUser().stream().map(User :: getUuid).collect(Collectors.toList());
 			if(!CollectionUtils.isEmpty(criteria.getUuids()))
 				criteria.setUuids(criteria.getUuids().stream().filter(userUUIDs::contains).collect(Collectors.toList()));
 			else
 				criteria.setUuids(userUUIDs);
 		}
+		log.info("criteria:"+criteria.getUuids().size());
+		log.info("criteria list :"+criteria);
 		//checks if above criteria met and result is not  null will check for name search if list of names are given as user search on name is not bulk api
 		List <Employee> employees = new ArrayList<>();
 		log.info("Employe search boolean:"+(!((!CollectionUtils.isEmpty(criteria.getRoles())))));
-		if(!((!CollectionUtils.isEmpty(criteria.getRoles()) || !CollectionUtils.isEmpty(criteria.getNames()) || !StringUtils.isEmpty(criteria.getPhone())) && CollectionUtils.isEmpty(criteria.getUuids())))
-			employees = repository.fetchEmployees(criteria, requestInfo);
+		employees = repository.fetchEmployees(criteria, requestInfo);
+		log.info("innside fetch employee if true:"+ employees.size());
 		List<String> uuids = employees.stream().map(Employee :: getUuid).collect(Collectors.toList());
+		log.info("uuids:" +uuids.size());
 		if(!CollectionUtils.isEmpty(uuids)){
 			Map<String, Object> UserSearchCriteria = new HashMap<>();
 			UserSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_UUID,uuids);
 			if(mapOfUsers.isEmpty()){
 				UserResponse userResponse = userService.getUserByTenantids(requestInfo, UserSearchCriteria);
+				log.info("mapOfUsers not empty:"+userResponse.getUser().size());
 				if(!CollectionUtils.isEmpty(userResponse.getUser())) {
+					log.info("mapOfUsers not empty and user reponse size:"+userResponse.getUser().size());
 					mapOfUsers = userResponse.getUser().stream()
 							.collect(Collectors.toMap(User :: getUuid, Function.identity()));
 				}
 			}
 			for(Employee employee: employees){
+				log.info("employee uuid:"+employee.getUuid());
 				employee.setUser(mapOfUsers.get(employee.getUuid()));
 			}
 		}
