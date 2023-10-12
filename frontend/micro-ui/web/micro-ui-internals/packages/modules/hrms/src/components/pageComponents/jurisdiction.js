@@ -133,10 +133,10 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
           jurisdictionData?.map((jurisdiction) => {
             if (data?.division?.code === jurisdiction?.division?.code) {
               if (divisionBoundarydata?.length === 0) {
-                divisionBoundarydata.push(jurisdiction?.divisionBoundary[0]);
+                jurisdiction?.divisionBoundary[0] !== undefined && divisionBoundarydata.push(jurisdiction?.divisionBoundary[0]);
               } else if (divisionBoundarydata?.length > 0) {
                 if (divisionBoundarydata[divisionBoundarydata?.length - 1]?.code !== jurisdiction?.divisionBoundary[0]) {
-                  divisionBoundarydata.push(jurisdiction?.divisionBoundary[0]);
+                  jurisdiction?.divisionBoundary[0] !== undefined && divisionBoundarydata.push(jurisdiction?.divisionBoundary[0]);
                 }
               }
             }
@@ -416,14 +416,6 @@ function Jurisdiction({
     return finalProjects;
   };
   const selectrole = (e, data) => {
-    // const index = jurisdiction?.roles.filter((ele) => ele.code == data.code);
-    // let res = null;
-    // if (index.length) {
-    //   jurisdiction?.roles.splice(jurisdiction?.roles.indexOf(index[0]), 1);
-    //   res = jurisdiction.roles;
-    // } else {
-    //   res = [{ ...data }, ...jurisdiction?.roles];
-    // }
     let res = [];
     e &&
       e?.map((ob) => {
@@ -552,13 +544,16 @@ function Jurisdiction({
                   isMandatory={true}
                   defaultUnit="Selected"
                   selected={jurisdiction?.divisionBoundary}
-                  options={isEdit && STATE_ADMIN ? getboundarydata(jurisdiction?.division) : divisionBoundary}
+                  options={
+                    isEdit && STATE_ADMIN ? (jurisdiction?.division == undefined ? [] : getboundarydata(jurisdiction?.division)) : divisionBoundary
+                  }
                   onSelect={selectDivisionBoundary}
                   optionsKey="i18text"
                   t={t}
                 />
                 <div className="tag-container" style={{ height: jurisdiction?.divisionBoundary?.length > 0 && "50px", overflowY: "scroll" }}>
                   {jurisdiction?.divisionBoundary?.length > 0 &&
+                    jurisdiction?.divisionBoundary[0] !== undefined &&
                     jurisdiction?.divisionBoundary?.map((value, index) => {
                       return (
                         <RemoveableTag key={index} text={`${t(value["i18text"]).slice(0, 22)} ...`} onClick={() => onRemoveBoundary(index, value)} />
