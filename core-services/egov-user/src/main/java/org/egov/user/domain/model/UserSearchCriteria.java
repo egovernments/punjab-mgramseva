@@ -30,7 +30,7 @@ public class UserSearchCriteria {
     private UserType type;
     private String tenantId;
     private List<String> tenantIds;
-    private boolean isStateLevelSearch;
+    private Boolean isStateLevelSearch;
     private List<String> roleCodes;
 
     public void validate(boolean isInterServiceCall) {

@@ -181,8 +181,8 @@ public class UserService {
                                                              boolean isInterServiceCall, RequestInfo requestInfo) {
 
         searchCriteria.validate(isInterServiceCall);
-        if(!ObjectUtils.isEmpty(searchCriteria.isStateLevelSearch())) {
-            if (searchCriteria.isStateLevelSearch()) {
+        if(!ObjectUtils.isEmpty(searchCriteria.getIsStateLevelSearch())) {
+            if (searchCriteria.getIsStateLevelSearch()) {
                 searchCriteria.setTenantId(getStateLevelTenantForCitizen(searchCriteria.getTenantId(), searchCriteria.getType()));
             }
         } else {

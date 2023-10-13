@@ -242,14 +242,15 @@ public class UserTypeQueryBuilder {
         boolean isAppendAndClause = false;
 
         if (userSearchCriteria.getTenantId() != null ) {
-            if(ObjectUtils.isEmpty(userSearchCriteria.isStateLevelSearch())){
+            if(ObjectUtils.isEmpty(userSearchCriteria.getIsStateLevelSearch())){
                 isAppendAndClause = addAndClauseIfRequired(false, selectQuery);
                 selectQuery.append(" ur.role_tenantid like ? ");
                 preparedStatementValues.add( '%' +  userSearchCriteria.getTenantId().trim() + '%');
             } else {
                 isAppendAndClause = addAndClauseIfRequired(false, selectQuery);
                 selectQuery.append(" ur.role_tenantid = ?");
-                preparedStatementValues.add( '%' +  userSearchCriteria.getTenantId().trim() + '%');
+                preparedStatementValues.add(userSearchCriteria.getTenantId());
+
             }
         }
 

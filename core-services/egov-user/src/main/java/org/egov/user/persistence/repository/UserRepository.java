@@ -69,6 +69,7 @@ public class UserRepository {
             userIds = findUsersWithRole(userSearch);
             RoleSearchHappend = true;
         }
+        log.info("User role serach Count:"+userIds.size());
         List<User> users = new ArrayList<>();
         if (RoleSearchHappend) {
             if (!CollectionUtils.isEmpty(userIds)) {

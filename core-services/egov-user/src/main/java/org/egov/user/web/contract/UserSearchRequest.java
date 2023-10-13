@@ -71,7 +71,7 @@ public class UserSearchRequest {
     private int pageNumber = 0;
 
     @JsonProperty("isStateLevelSearch")
-    private boolean isStateLevelSearch;
+    private Boolean isStateLevelSearch;
 
     @JsonProperty("sort")
     private List<String> sort = Collections.singletonList("name");
