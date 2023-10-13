@@ -152,6 +152,9 @@ public class EmployeeService {
                 userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_ROLECODES,criteria.getRoles());
 			if(!ObjectUtils.isEmpty(criteria.isStateLevelSearch))
 				userSearchCriteria.put(HRMSConstants.HRMS_IS_STATE_LEVEL_SEARCH_CODE, criteria.getIsStateLevelSearch());
+			if(!ObjectUtils.isEmpty(criteria.getIsActive()))
+				userSearchCriteria.put(HRMSConstants.HRMS_IS_ACTIVE_SEARCH_CODE, criteria.getIsActive());
+
             UserResponse userResponse = userService.getUser(requestInfo, userSearchCriteria);
 			userChecked =true;
             if(!CollectionUtils.isEmpty(userResponse.getUser())) {
@@ -565,7 +568,8 @@ public class EmployeeService {
 	}
 
 	public Map<String,Object> getEmployeeCountResponseV1(RequestInfo requestInfo, List<String> roles, String tenantId, boolean isStateLevelSearch){
-		//EmployeeResponse employeeResponse = employeeService.search(criteria, requestInfoWrapper.getRequestInfo());
+		EmployeeSearchCriteria criteria= EmployeeSearchCriteria.builder().roles(roles).tenantId(tenantId).isStateLevelSearch(isStateLevelSearch).build();
+		EmployeeResponse employeeResponse = search(criteria, requestInfo);
 		Map<String,Object> response = new HashMap<>();
 		Map<String,String> results = new HashMap<>();
 		ResponseInfo responseInfo = factory.createResponseInfoFromRequestInfo(requestInfo, true);
