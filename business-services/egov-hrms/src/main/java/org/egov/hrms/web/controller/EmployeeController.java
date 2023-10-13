@@ -56,6 +56,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -136,6 +137,16 @@ public class EmployeeController {
 		Map<String,Object> response = new HashMap<>();
 		validator.validateEmployeeCountRequest(tenantId);
 		response = employeeService.getEmployeeCountResponse(requestInfo,tenantId);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+
+	@PostMapping("v1/_count")
+	@ResponseBody
+	private ResponseEntity<?> countV1(@RequestParam("tenantId") String tenantId, @RequestParam("roles") List<String> roles , @RequestParam("isStateLevelSearch") boolean isStateLevelSearch,  @RequestBody RequestInfo requestInfo) {
+
+		Map<String,Object> response = new HashMap<>();
+		validator.validateEmployeeCountRequest(tenantId);
+		response = employeeService.getEmployeeCountResponseV1(requestInfo,roles,tenantId,isStateLevelSearch);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 

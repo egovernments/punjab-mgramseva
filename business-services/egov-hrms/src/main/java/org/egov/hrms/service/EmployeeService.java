@@ -62,6 +62,7 @@ import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.function.Function;
@@ -149,6 +150,8 @@ public class EmployeeService {
                 userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_MOBILENO,criteria.getPhone());
             if( !CollectionUtils.isEmpty(criteria.getRoles()) )
                 userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_ROLECODES,criteria.getRoles());
+			if(!ObjectUtils.isEmpty(criteria.isStateLevelSearch))
+				userSearchCriteria.put(HRMSConstants.HRMS_IS_STATE_LEVEL_SEARCH_CODE, criteria.getIsStateLevelSearch());
             UserResponse userResponse = userService.getUser(requestInfo, userSearchCriteria);
 			userChecked =true;
             if(!CollectionUtils.isEmpty(userResponse.getUser())) {
@@ -550,6 +553,25 @@ public class EmployeeService {
 
 		response.put("ResponseInfo",responseInfo);
 		results	= repository.fetchEmployeeCount(tenantId);
+
+		if(CollectionUtils.isEmpty(results) || results.get("totalEmployee").equalsIgnoreCase("0")){
+			Map<String,String> error = new HashMap<>();
+			error.put("NO_RECORDS","No records found for the tenantId: "+tenantId);
+			throw new CustomException(error);
+		}
+
+		response.put("EmployeCount",results);
+		return  response;
+	}
+
+	public Map<String,Object> getEmployeeCountResponseV1(RequestInfo requestInfo, List<String> roles, String tenantId, boolean isStateLevelSearch){
+		//EmployeeResponse employeeResponse = employeeService.search(criteria, requestInfoWrapper.getRequestInfo());
+		Map<String,Object> response = new HashMap<>();
+		Map<String,String> results = new HashMap<>();
+		ResponseInfo responseInfo = factory.createResponseInfoFromRequestInfo(requestInfo, true);
+
+		response.put("ResponseInfo",responseInfo);
+		results	= repository.fetchEmployeeCountv1(tenantId, roles);
 
 		if(CollectionUtils.isEmpty(results) || results.get("totalEmployee").equalsIgnoreCase("0")){
 			Map<String,String> error = new HashMap<>();

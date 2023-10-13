@@ -121,4 +121,21 @@ public class EmployeeRepository {
 		return response;
 	}
 
+	public Map<String,String> fetchEmployeeCountv1(String tenantId, List<String> roles){
+		Map<String,String> response = new HashMap<>();
+		List<Object> preparedStmtList = new ArrayList<>();
+
+
+
+		String query = queryBuilder.getEmployeeCountQuery(tenantId, preparedStmtList);
+		log.info("query; "+query);
+		try {
+			response=jdbcTemplate.query(query, preparedStmtList.toArray(),countRowMapper);
+		}catch(Exception e) {
+			log.error("Exception while making the db call: ",e);
+			log.error("query; "+query);
+		}
+		return response;
+	}
+
 }

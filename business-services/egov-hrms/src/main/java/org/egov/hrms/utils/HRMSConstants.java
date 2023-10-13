@@ -9,6 +9,8 @@ public class HRMSConstants {
 	public static final String HRMS_MDMS_HR_MASTERS_CODE = "egov-hrms";
 	public static final String HRMS_AC_ROLES_MASTERS_CODE = "ACCESSCONTROL-ROLES";
 	public static final String HRMS_MDMS_EGOV_LOCATION_MASTERS_CODE = "egov-location";
+
+	public static final String HRMS_IS_STATE_LEVEL_SEARCH_CODE = "isStateLevelSearch";
 	
 	public static final String HRMS_MDMS_DEPT_CODE = "Department";
 	public static final String HRMS_MDMS_DESG_CODE = "Designation";

@@ -47,6 +47,8 @@ public class EmployeeSearchCriteria {
 	
 	public Boolean isActive;
 
+	public Boolean isStateLevelSearch;
+
 	@Size(max = 250)
 	public String tenantId;
 
