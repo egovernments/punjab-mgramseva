@@ -70,6 +70,9 @@ public class UserSearchRequest {
     @JsonProperty("pageNumber")
     private int pageNumber = 0;
 
+    @JsonProperty("isStateLevelSearch")
+    private boolean isStateLevelSearch;
+
     @JsonProperty("sort")
     private List<String> sort = Collections.singletonList("name");
 
@@ -95,6 +98,7 @@ public class UserSearchRequest {
                 .sort(sort)
                 .type(UserType.fromValue(userType))
                 .tenantId(tenantId)
+                .isStateLevelSearch(isStateLevelSearch)
                 .roleCodes(roleCodes)
                 .uuid(uuid)
                 .build();

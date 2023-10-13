@@ -181,9 +181,17 @@ public class UserService {
                                                              boolean isInterServiceCall, RequestInfo requestInfo) {
 
         searchCriteria.validate(isInterServiceCall);
-
-        searchCriteria.setTenantId(getStateLevelTenantForCitizen(searchCriteria.getTenantId(), searchCriteria.getType()));
+        if(!ObjectUtils.isEmpty(searchCriteria.isStateLevelSearch())) {
+            if (searchCriteria.isStateLevelSearch()) {
+                searchCriteria.setTenantId(getStateLevelTenantForCitizen(searchCriteria.getTenantId(), searchCriteria.getType()));
+            }
+        } else {
+            searchCriteria.setTenantId(getStateLevelTenantForCitizen(searchCriteria.getTenantId(), searchCriteria.getType()));
+        }
         /* encrypt here / encrypted searchcriteria will be used for search*/
+        log.info("Search Criteria:"+searchCriteria.getTenantId());
+        log.info("Search Criteria:"+searchCriteria);
+
 
 
         searchCriteria = encryptionDecryptionUtil.encryptObject(searchCriteria, "UserSearchCriteria", UserSearchCriteria.class);
