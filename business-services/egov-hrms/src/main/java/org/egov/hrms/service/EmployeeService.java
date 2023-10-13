@@ -568,20 +568,27 @@ public class EmployeeService {
 	}
 
 	public Map<String,Object> getEmployeeCountResponseV1(RequestInfo requestInfo, List<String> roles, String tenantId, boolean isStateLevelSearch){
-		EmployeeSearchCriteria criteria= EmployeeSearchCriteria.builder().roles(roles).tenantId(tenantId).isStateLevelSearch(isStateLevelSearch).build();
-		EmployeeResponse employeeResponse = search(criteria, requestInfo);
-		Map<String,Object> response = new HashMap<>();
+		EmployeeSearchCriteria activeEmployeeCriteria= EmployeeSearchCriteria.builder().roles(roles).tenantId(tenantId).isStateLevelSearch(isStateLevelSearch).isActive(true).build();
+		EmployeeResponse activeEmployeeResponse = search(activeEmployeeCriteria, requestInfo);
+		EmployeeSearchCriteria inActiveEmployeeCriteria= EmployeeSearchCriteria.builder().roles(roles).tenantId(tenantId).isStateLevelSearch(isStateLevelSearch).isActive(false).build();
+		EmployeeResponse inActiveEmployeeResponse = search(inActiveEmployeeCriteria, requestInfo);
+		Integer activeEmployeeCount= activeEmployeeResponse.getEmployees().size();
+		Integer inActiveEmployeeCount = inActiveEmployeeResponse.getEmployees().size();
+		Integer totalcount = activeEmployeeCount + inActiveEmployeeCount;
 		Map<String,String> results = new HashMap<>();
+		Map<String,Object> response = new HashMap<>();
 		ResponseInfo responseInfo = factory.createResponseInfoFromRequestInfo(requestInfo, true);
 
 		response.put("ResponseInfo",responseInfo);
-		results	= repository.fetchEmployeeCountv1(tenantId, roles);
 
-		if(CollectionUtils.isEmpty(results) || results.get("totalEmployee").equalsIgnoreCase("0")){
+		if(totalcount == 0){
 			Map<String,String> error = new HashMap<>();
 			error.put("NO_RECORDS","No records found for the tenantId: "+tenantId);
 			throw new CustomException(error);
 		}
+		results.put("totalEmployee",totalcount.toString());
+		results.put("activeEmployee",activeEmployeeCount.toString());
+		results.put("inactiveEmployee",inActiveEmployeeCount.toString());
 
 		response.put("EmployeCount",results);
 		return  response;
