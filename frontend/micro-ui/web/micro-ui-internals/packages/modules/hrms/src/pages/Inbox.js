@@ -7,6 +7,7 @@ import MobileInbox from "../components/inbox/MobileInbox";
 const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filterComponent, isInbox }) => {
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const { isLoading: isLoading, Errors, data: res } = Digit.Hooks.hrms.useHRMSCount(tenantId);
+  const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
 
   const { t } = useTranslation();
   const [pageOffset, setPageOffset] = useState(initialStates.pageOffset || 0);
@@ -22,11 +23,14 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     ? { limit: 100, offset: pageOffset, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" }
     : { limit: pageSize, offset: pageOffset, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" };
   const isupdate = Digit.SessionStorage.get("isupdate");
+  let roles = STATE_ADMIN ? { roles: "DIV_ADMIN, HRMS_ADMIN" } : { roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER" };
+
   const { isLoading: hookLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSSearch(
     searchParams,
     tenantId,
     paginationParams,
-    isupdate
+    isupdate,
+    roles
   );
 
   useEffect(() => {
@@ -114,7 +118,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
           searchParams={searchParams}
           sortParams={sortParams}
           totalRecords={totalRecords}
-          linkPrefix={ `/${window?.contextPath}/employee/hrms/details/`}
+          linkPrefix={`/${window?.contextPath}/employee/hrms/details/`}
           filterComponent={filterComponent}
         />
         // <div></div>

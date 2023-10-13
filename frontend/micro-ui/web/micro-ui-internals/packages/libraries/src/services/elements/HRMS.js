@@ -3,14 +3,14 @@ import Urls from "../atoms/urls";
 import { Request } from "../atoms/Utils/Request";
 
 const HrmsService = {
-  search: (tenantId, filters, searchParams) =>
+  search: (tenantId, filters, searchParams, roles) =>
     Request({
       url: Urls.hrms.search,
       useCache: false,
       method: "POST",
       auth: true,
       userService: true,
-      params: { tenantId, ...filters, ...searchParams },
+      params: { tenantId, ...filters, ...searchParams, ...roles },
     }),
   create: (data, tenantId) =>
     Request({
