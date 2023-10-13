@@ -738,6 +738,7 @@ const getHrmsEmployeeRolesandDesignations = () => ({
       masterDetails: [{ name: "WSServiceRoles" }],
     },
     { moduleName: "egov-location", masterDetails: [{ name: "TenantBoundary" }] },
+    { moduleName: "egov-hrms", masterDetails: [{ name: "EmployeeType" }] },
   ],
 });
 const getFSTPPlantCriteria = (tenantId, moduleCode, type) => ({
