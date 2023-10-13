@@ -258,7 +258,7 @@ function Assignment({
               type="date"
               name="toDate"
               min={assignment?.fromDate}
-              max={currentassignemtDate ? currentassignemtDate : convertEpochToDate(new Date())}
+              // max={currentassignemtDate ? currentassignemtDate : convertEpochToDate(new Date())}
               disabled={assignment?.isCurrentAssignment}
               onChange={(e) => {
                 setassignments((pre) => pre.map((item) => (item.key === assignment.key ? { ...item, toDate: e } : item)));
