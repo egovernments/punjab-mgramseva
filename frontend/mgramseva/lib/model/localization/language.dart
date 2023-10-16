@@ -29,7 +29,53 @@ class LanguageList {
     return data;
   }
 }
+class PSPCLIntegration{
+  List<AccountNumberGpMapping>? accountNumberGpMapping;
 
+  PSPCLIntegration({this.accountNumberGpMapping});
+
+  PSPCLIntegration.fromJson(Map<String, dynamic> json) {
+    if (json['accountNumberGpMapping'] != null) {
+      accountNumberGpMapping = <AccountNumberGpMapping>[];
+      json['accountNumberGpMapping'].forEach((v) {
+        accountNumberGpMapping!.add(new AccountNumberGpMapping.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.accountNumberGpMapping != null) {
+      data['accountNumberGpMapping'] =
+          this.accountNumberGpMapping!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+class AccountNumberGpMapping {
+  String? accountNumber;
+  String? departmentEntityName;
+  String? departmentEntityCode;
+
+  AccountNumberGpMapping(
+      {this.accountNumber,
+        this.departmentEntityName,
+        this.departmentEntityCode});
+
+  AccountNumberGpMapping.fromJson(Map<String, dynamic> json) {
+    accountNumber = json['accountNumber'];
+    departmentEntityName = json['departmentEntityName'];
+    departmentEntityCode = json['departmentEntityCode'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['accountNumber'] = this.accountNumber;
+    data['departmentEntityName'] = this.departmentEntityName;
+    data['departmentEntityCode'] = this.departmentEntityCode;
+    return data;
+  }
+}
 class MdmsRes {
   CommonMasters? commonMasters;
   BillingService? billingService;
@@ -40,6 +86,7 @@ class MdmsRes {
   SubCategory? subCategory;
   TaxPeriodListModel? taxPeriodList;
   WCBillingSlabs? wcBillingSlabList;
+  PSPCLIntegration? pspclIntegration;
 
   MdmsRes({this.commonMasters});
 
@@ -70,6 +117,9 @@ class MdmsRes {
         : null;
     wcBillingSlabList = json['ws-services-calculation'] != null
         ? new WCBillingSlabs.fromJson(json['ws-services-calculation'])
+        : null;
+    pspclIntegration = json['pspcl-integration'] != null
+        ? new PSPCLIntegration.fromJson(json['pspcl-integration'])
         : null;
   }
 

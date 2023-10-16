@@ -432,6 +432,8 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var res = await CoreRepository().getMdms(getExpenseMDMS(
           commonProvider.userDetails!.userRequest!.tenantId.toString()));
       languageList = res;
+      var pspcl = await CoreRepository().getPSPCLGpwscFromMdms(commonProvider.userDetails!.userRequest!.tenantId.toString().substring(0,2));
+      languageList?.mdmsRes?.pspclIntegration = pspcl;
       notifyListeners();
     } catch (e, s) {
       ErrorHandler.logError(e.toString(), s);
@@ -520,7 +522,14 @@ class ExpensesDetailsProvider with ChangeNotifier {
   }
 
   List<DropdownMenuItem<Object>> getExpenseTypeList() {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     if (languageList?.mdmsRes?.expense?.expenseList != null) {
+      var res = languageList?.mdmsRes?.pspclIntegration?.accountNumberGpMapping?.where((element) => element.departmentEntityCode==commonProvider.userDetails?.selectedtenant?.city?.code).toList();
+      if(res!.isNotEmpty){
+        languageList?.mdmsRes?.expense?.expenseList!.removeWhere((element) => element.code=="20101");
+      }
       return (languageList?.mdmsRes?.expense?.expenseList ?? <ExpenseType>[])
           .map((value) {
         return DropdownMenuItem(
