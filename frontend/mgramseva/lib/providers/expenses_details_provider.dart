@@ -69,6 +69,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
         var expenditure = await ExpensesRepository().searchExpense(query);
         if (expenditure != null && expenditure.isNotEmpty) {
           expenditureDetails = expenditure.first;
+          if(expenditureDetails.expenseType=='ELECTRICITY_BILL'){
+            expenditureDetails.allowEdit = false;
+          }
           getStoreFileDetails();
         } else {
           streamController.add(i18.expense.NO_EXPENSE_RECORD_FOUND);
