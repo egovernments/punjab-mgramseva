@@ -11,7 +11,10 @@ const HRMSCard = () => {
   }
   const { t } = useTranslation();
   const tenantId = Digit.ULBService.getCurrentTenantId();
-  const { isLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSCount(tenantId);
+  let roles = STATE_ADMIN
+    ? { roles: "DIV_ADMIN, HRMS_ADMIN", isStateLevelSearch: true }
+    : { roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER", isStateLevelSearch: false };
+  const { isLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSCount(tenantId, roles);
 
   const propsForModuleCard = {
     Icon: <PersonIcon />,

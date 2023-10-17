@@ -32,14 +32,14 @@ const HrmsService = {
       userService: true,
       params: { tenantId },
     }),
-  count: (tenantId) =>
+  count: (tenantId, roles) =>
     Request({
       url: Urls.hrms.count,
       useCache: false,
       method: "POST",
       auth: true,
       userService: true,
-      params: { tenantId },
+      params: { tenantId, ...roles },
     }),
 };
 

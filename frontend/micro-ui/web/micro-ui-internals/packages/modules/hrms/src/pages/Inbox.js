@@ -23,7 +23,10 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     ? { limit: 100, offset: pageOffset, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" }
     : { limit: pageSize, offset: pageOffset, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" };
   const isupdate = Digit.SessionStorage.get("isupdate");
-  let roles = STATE_ADMIN ? { roles: "DIV_ADMIN, HRMS_ADMIN" } : { roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER" };
+
+  let roles = STATE_ADMIN
+    ? { roles: "DIV_ADMIN, HRMS_ADMIN", isStateLevelSearch: true }
+    : { roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER", isStateLevelSearch: false };
 
   const { isLoading: hookLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSSearch(
     searchParams,
