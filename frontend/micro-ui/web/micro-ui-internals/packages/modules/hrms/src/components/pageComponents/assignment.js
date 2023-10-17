@@ -51,12 +51,12 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
 
   function getdesignationdata() {
     if (STATE_ADMIN) {
-      return data?.MdmsRes?.["common-masters"]?.Designation?.filter((obj) => obj.name === "Division Admin").map((ele) => {
+      return data?.MdmsRes?.["common-masters"]?.Designation?.filter((obj) => obj.name === "Division Admin")?.map((ele) => {
         ele["i18key"] = t("COMMON_MASTERS_DESIGNATION_" + ele.code);
         return ele;
       });
     } else {
-      return data?.MdmsRes?.["common-masters"]?.Designation.map((ele) => {
+      return data?.MdmsRes?.["common-masters"]?.Designation?.map((ele) => {
         ele["i18key"] = t("COMMON_MASTERS_DESIGNATION_" + ele.code);
         return ele;
       });
@@ -121,7 +121,7 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
   const [focusIndex, setFocusIndex] = useState(-1);
 
   function getdepartmentdata() {
-    return data?.MdmsRes?.["common-masters"]?.Department.map((ele) => {
+    return data?.MdmsRes?.["common-masters"]?.Department?.map((ele) => {
       ele["i18key"] = t("COMMON_MASTERS_DEPARTMENT_" + ele.code);
       return ele;
     });

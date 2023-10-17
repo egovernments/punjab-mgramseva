@@ -55,8 +55,8 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
 
   let divisions = [];
   divisions = data?.MdmsRes?.["tenant"]["tenants"]
-    .filter((items) => items?.divisionCode)
-    .map((item) => {
+    ?.filter((items) => items?.divisionCode)
+    ?.map((item) => {
       return {
         code: item.divisionCode,
         name: item.divisionName,
@@ -226,7 +226,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
           return { code: role.code, name: role?.name ? role?.name : " ", labelKey: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
         });
     } else {
-      return data?.MdmsRes?.["ws-services-masters"].WSServiceRoles.map((role) => {
+      return data?.MdmsRes?.["ws-services-masters"].WSServiceRoles?.map((role) => {
         return { code: role.code, name: role?.name ? role?.name : " ", labelKey: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
       });
     }
@@ -337,7 +337,7 @@ function Jurisdiction({
 
   useEffect(() => {
     setDivision(
-      divisions.map((item) => {
+      divisions?.map((item) => {
         return { ...item, i18text: Digit.Utils.locale.convertToLocale(item.code, "EGOV_LOCATION_DIVISION") };
       })
     );
@@ -348,8 +348,8 @@ function Jurisdiction({
     let cities = userDetails?.roles.map((role) => role.tenantId)?.filter((value, index, array) => array.indexOf(value) === index);
     selectboundary(
       data?.MdmsRes?.tenant?.tenants
-        .filter((city) => city.code != Digit.ULBService.getStateId() && cities?.includes(city.code))
-        .map((city) => {
+        ?.filter((city) => city.code != Digit.ULBService.getStateId() && cities?.includes(city.code))
+        ?.map((city) => {
           return { ...city, i18text: Digit.Utils.locale.getCityLocale(city.code) };
         })
     );
@@ -619,4 +619,4 @@ function Jurisdiction({
   );
 }
 
-export default Jurisdictions;
+export default Jurisdictions; 
