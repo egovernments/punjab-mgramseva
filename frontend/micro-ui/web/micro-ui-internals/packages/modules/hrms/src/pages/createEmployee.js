@@ -222,6 +222,11 @@ const CreateEmployee = () => {
         });
       });
     }
+    roles.push({
+      name: "EMPLOYEE",
+      code: "EMPLOYEE",
+      tenantId: "pb",
+    });
     const mappedroles = [].concat.apply([], roles);
     let Employees = [
       {
