@@ -6,6 +6,8 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
   const { pathname: url } = useLocation();
   const [iserror, setError] = useState(false);
   let isMobile = window.Digit.Utils.browser.isMobile();
+  const isEdit = window.location.href?.includes("hrms/edit");
+
   const inputs = [
     {
       label: t("HR_MOB_NO_LABEL"),
@@ -39,7 +41,7 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
               {t(input.label)}
               {input.isMandatory ? " * " : null}
             </CardLabel>
-            <div className="field-container" style={{ width:isMobile? "100%":"50%", display: "block" }}>
+            <div className="field-container" style={{ width: isMobile ? "100%" : "50%", display: "block" }}>
               <div>
                 <div style={{ display: "flex" }}>
                   <div className="employee-card-input employee-card-input--front">+91</div>
@@ -47,20 +49,32 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
                     className="field desktop-w-full"
                     key={input.name}
                     value={formData && formData[config.key] ? formData[config.key][input.name] : undefined}
-                    onChange={(e) =>{ setValue(e.target.value, input.name,validate(e.target.value, input))}}
-                    disable={false}
+                    onChange={(e) => {
+                      setValue(e.target.value, input.name, validate(e.target.value, input));
+                    }}
+                    disable={isEdit ? true : false}
                     defaultValue={undefined}
                     onBlur={(e) => validate(e.target.value, input)}
                     {...input.validation}
                   />
                 </div>
-                <div>{iserror ? <CardLabelError style={{ width: "100%" }}>{t(input.populators.error)}</CardLabelError> : <span style={{
-                  color: "gray", width: "100%", border: "none",
-                  background: "none",
-                  justifyContent: "start"
-                }}>
-                  {t("HR_MOBILE_NO_CHECK")}
-                </span>}</div>
+                <div>
+                  {iserror ? (
+                    <CardLabelError style={{ width: "100%" }}>{t(input.populators.error)}</CardLabelError>
+                  ) : (
+                    <span
+                      style={{
+                        color: "gray",
+                        width: "100%",
+                        border: "none",
+                        background: "none",
+                        justifyContent: "start",
+                      }}
+                    >
+                      {t("HR_MOBILE_NO_CHECK")}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </LabelFieldPair>
