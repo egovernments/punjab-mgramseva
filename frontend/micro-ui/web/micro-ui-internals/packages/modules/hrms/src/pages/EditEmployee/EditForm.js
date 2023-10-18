@@ -122,7 +122,7 @@ const EditForm = ({ tenantId, data }) => {
 
     for (let i = 0; i < formData?.Jurisdictions?.length; i++) {
       let key = formData?.Jurisdictions[i];
-      if (!(key?.boundary && key?.boundaryType && key?.hierarchy && key?.roles?.length > 0)) {
+      if (!((key?.boundary || key?.divisionBoundary) && (key?.boundaryType || key?.division) && key?.hierarchy && key?.roles?.length > 0)) {
         setcheck(false);
         break;
       } else {

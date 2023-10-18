@@ -15,14 +15,13 @@ const SelectEmployeeType = ({ t, config, onSelect, formData = {}, userType }) =>
   function SelectEmployeeType(value) {
     setemployeeType(value);
   }
-
   useEffect(() => {
-    setEmployeeTypeData(data?.MdmsRes?.["egov-hrms"]?.EmployeeType);
+    setEmployeeTypeData(data?.MdmsRes?.["egov-hrms"]?.EmployeeType?.filter((x) => x?.code === "PERMANENT"));
   }, [data, data?.MdmsRes]);
 
   useEffect(() => {
-    onSelect(config.key, employeeType);
-  }, [employeeType]);
+    onSelect(config.key, employeeTypeData?.length == 1 ? employeeTypeData[0] : employeeType);
+  }, [employeeTypeData]);
   const inputs = [
     {
       label: "HR_EMPLOYMENT_TYPE_LABEL",
@@ -48,9 +47,10 @@ const SelectEmployeeType = ({ t, config, onSelect, formData = {}, userType }) =>
         </CardLabel>
         <Dropdown
           className="form-field"
-          selected={employeeType}
+          selected={employeeTypeData?.length > 0 ? employeeTypeData[0] : employeeType}
           option={employeeTypeData}
           select={SelectEmployeeType}
+          disable={true}
           optionKey="code"
           defaultValue={undefined}
           t={t}

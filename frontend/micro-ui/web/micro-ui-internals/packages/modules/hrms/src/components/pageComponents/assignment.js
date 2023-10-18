@@ -39,8 +39,8 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
             key: 1,
             fromDate: undefined,
             toDate: undefined,
-            isCurrentAssignment: false,
-            department: null,
+            isCurrentAssignment: true,
+            department: "DWSS",
             designation: null,
           },
         ]
@@ -61,6 +61,13 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
         return ele;
       });
     }
+  }
+
+  function getdepartmentdata() {
+    return data?.MdmsRes?.["common-masters"]?.Department?.map((ele) => {
+      ele["i18key"] = t("COMMON_MASTERS_DEPARTMENT_" + ele.code);
+      return ele;
+    });
   }
 
   const handleAddUnit = () => {
@@ -97,8 +104,10 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
             fromDate: assignment?.fromDate ? new Date(assignment?.fromDate).getTime() : undefined,
             toDate: assignment?.toDate ? new Date(assignment?.toDate).getTime() : undefined,
             isCurrentAssignment: assignment?.isCurrentAssignment,
-            department: assignment?.department?.code,
-            designation: STATE_ADMIN ? getdesignationdata()?.length > 0 && getdesignationdata()[0]?.code : assignment?.designation?.code,
+            department: assignment?.department?.code || "DWSS",
+            designation: STATE_ADMIN
+              ? getdesignationdata()?.length > 0 && (getdesignationdata()[0]?.code || "DIV_ADMIN")
+              : assignment?.designation?.code,
           })
         : [];
     });
@@ -119,13 +128,6 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
   let department = [];
   let designation = [];
   const [focusIndex, setFocusIndex] = useState(-1);
-
-  function getdepartmentdata() {
-    return data?.MdmsRes?.["common-masters"]?.Department?.map((ele) => {
-      ele["i18key"] = t("COMMON_MASTERS_DEPARTMENT_" + ele.code);
-      return ele;
-    });
-  }
   if (isLoading) {
     return <Loader />;
   }
@@ -152,9 +154,9 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
           currentassignemtDate={currentassignemtDate}
         />
       ))}
-      <label onClick={handleAddUnit} className="link-label" style={{ width: "12rem" }}>
+      {/* <label onClick={handleAddUnit} className="link-label" style={{ width: "12rem" }}>
         {t("HR_ADD_ASSIGNMENT")}
-      </label>
+      </label> */}
     </div>
   );
 };
@@ -177,7 +179,7 @@ function Assignment({
 }) {
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
   const selectDepartment = (value) => {
-    setassignments((pre) => pre.map((item) => (item.key === assignment.key ? { ...item, department: value } : item)));
+    setassignments((pre) => pre.map((item) => (item.key === assignment.key ? { ...item, department: getdepartmentdata(department)[0] } : item)));
   };
   const selectDesignation = (value) => {
     setassignments((pre) => pre.map((item) => (item.key === assignment.key ? { ...item, designation: value } : item)));
@@ -286,8 +288,8 @@ function Assignment({
           <CardLabel className={assignment?.id ? "card-label-smaller" : "card-label-smaller"}> {`${t("HR_DEPT_LABEL")} * `}</CardLabel>
           <Dropdown
             className="form-field"
-            selected={assignment?.department}
-            disable={assignment?.id ? true : false}
+            selected={getdepartmentdata(department)[0] || assignment?.department}
+            disable={getdepartmentdata(department)?.length == 1 ? true : false}
             optionKey={"i18key"}
             option={getdepartmentdata(department) || []}
             select={selectDepartment}

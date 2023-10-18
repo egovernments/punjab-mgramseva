@@ -148,6 +148,21 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
           };
           finalData.push(obj);
         });
+      finalData?.map((items, index) => {
+        if (items?.division == undefined && items?.divisionBoundary?.length == 0 && jurisdictionsData[index]?.divisionBoundary?.length > 0) {
+          finalData[index] = jurisdictionsData[index] !== undefined && jurisdictionsData[index];
+        } else if (
+          finalData?.length > jurisdictionsData?.length &&
+          jurisdictionsData[index]?.division == undefined &&
+          items?.division != undefined &&
+          jurisdictionsData?.length + 1 == finalData?.length
+        ) {
+          finalData = jurisdictionsData;
+        }
+        // else if (finalData?.length > jurisdictionsData?.length && jurisdictionsData?.length + 1 !== finalData?.length) {
+        //   finalData.splice(jurisdictionsData?.length, 1);
+        // }
+      });
       jurisdictionData = finalData;
     }
     onSelect(
@@ -200,6 +215,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       }
       setInactiveJurisdictions([...inactiveJurisdictions, res]);
     }
+    setJuristictionsData((pre) => pre.filter((el) => el.key !== unit.key));
     setjurisdictions((prev) => prev.filter((el) => el.key !== unit.key));
     if (FormData.errors?.Jurisdictions?.type == unit.key) {
       clearErrors("Jurisdictions");
@@ -353,7 +369,7 @@ function Jurisdiction({
           return { ...city, i18text: Digit.Utils.locale.getCityLocale(city.code) };
         })
     );
-  }, [jurisdiction?.boundaryType, data?.MdmsRes]);
+  }, [jurisdiction?.hierarchy, jurisdiction?.boundaryType, data?.MdmsRes]);
 
   useEffect(() => {
     if (Boundary?.length > 0) {
@@ -415,7 +431,7 @@ function Jurisdiction({
     }));
     return finalProjects;
   };
-  const selectrole = (e, data) => {
+  const selectrole = (e) => {
     let res = [];
     e &&
       e?.map((ob) => {
@@ -425,6 +441,25 @@ function Jurisdiction({
     res?.forEach((resData) => {
       resData.labelKey = "ACCESSCONTROL_ROLES_ROLES_" + resData.code;
     });
+
+    if (isEdit && STATE_ADMIN) setJuristictionsData((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, roles: res } : item)));
+    let data = jurisdictionsData?.map((items, index) => {
+      let obj = {};
+      if (index === jurisdiction?.key) {
+        obj = {
+          ...items,
+          roles: res,
+        };
+      } else {
+        obj = { ...items };
+      }
+      return obj;
+    });
+    if (isEdit && STATE_ADMIN)
+      onSelect(
+        config?.key,
+        [...data].filter((value) => Object.keys(value).length !== 0)
+      );
     setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, roles: res } : item)));
   };
 
@@ -619,4 +654,4 @@ function Jurisdiction({
   );
 }
 
-export default Jurisdictions; 
+export default Jurisdictions;
