@@ -162,7 +162,6 @@ class HouseHoldProvider with ChangeNotifier {
         }
       });
     } catch (e, s) {
-      print(e.toString());
       streamController.addError('error');
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
