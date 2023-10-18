@@ -88,7 +88,6 @@ class ReportsProvider with ChangeNotifier {
     TableHeader(i18.common.STATUS),
     TableHeader(i18.common.INACTIVATED_DATE),
     TableHeader(i18.common.INACTIVATED_BY_NAME),
-    TableHeader(i18.common.INACTIVATED_BY_UUID),
   ];
 
   void onChangeOfPageLimit(
@@ -172,7 +171,6 @@ class ReportsProvider with ChangeNotifier {
       TableData('${data.status??'-'}'),
       TableData('${inactivatedDate ?? '-'}'),
       TableData('${inactivatedBy ?? '-'}'),
-      TableData('${data.inactivatedByUuid ?? ''}'),
     ]);
   }
   void callNotifier() {
@@ -322,7 +320,8 @@ class ReportsProvider with ChangeNotifier {
               optionalData: [
                 'Demand Report',
                 '$selectedBillPeriod',
-                '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)} ${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
+                '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)}',
+                '${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
                 'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch, format: 'dd/MMM/yyyy')}'
               ]);
         } else {
@@ -387,7 +386,8 @@ class ReportsProvider with ChangeNotifier {
               optionalData: [
                 'Collection Report',
                 '$selectedBillPeriod',
-                '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)} ${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
+                '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)}',
+                '${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
                 'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch, format: 'dd/MMM/yyyy')}'
               ]);
         } else {
@@ -450,9 +450,10 @@ class ReportsProvider with ChangeNotifier {
               title:
               'InactiveConsumers_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillPeriod.toString().replaceAll('/', '_')}',
               optionalData: [
-                'Collection Report',
+                'Inactive Consumer Report',
                 '$selectedBillPeriod',
-                '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)} ${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
+                '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)}',
+                '${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
                 'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch, format: 'dd/MMM/yyyy')}'
               ]);
         } else {

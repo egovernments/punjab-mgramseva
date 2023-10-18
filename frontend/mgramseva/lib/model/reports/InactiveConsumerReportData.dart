@@ -10,12 +10,12 @@ class InactiveConsumerReportData {
       this.inactiveDate, this.inactivatedByUuid, this.inactivatedByName);
 
   InactiveConsumerReportData.fromJson(Map<String, dynamic> json) {
-    tenantName = json['tenantName'];
-    connectionNo = json['connectionno'];
-    status = json['status'];
+    tenantName = json['tenantName']??'';
+    connectionNo = json['connectionno']??'-';
+    status = json['status']??'-';
     inactiveDate = json['inactiveDate'];
-    inactivatedByUuid = json['inactivatedByUuid'];
-    inactivatedByName = json['inactivatedByName'];
+    inactivatedByUuid = json['inactivatedByUuid']??'-';
+    inactivatedByName = json['inactivatedByName']??'-';
   }
 
   Map<String, dynamic> toJson() {

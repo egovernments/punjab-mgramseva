@@ -108,10 +108,10 @@ class ReportsRepo extends BaseService{
         requestInfo: requestInfo,
         body: {},
         method: RequestType.POST);
-    if (res != null && res['InactiveConsumerReportData'] != null) {
+    if (res != null && res['InactiveConsumerReport'] != null) {
       try {
         inactiveConsumers = [];
-        res['InactiveConsumerReportData'].forEach((val){
+        res['InactiveConsumerReport'].forEach((val){
           inactiveConsumers?.add(InactiveConsumerReportData.fromJson(val));
         });
       } catch (e) {
