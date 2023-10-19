@@ -1,7 +1,7 @@
-import { CardLabel, Dropdown, LabelFieldPair, Loader, RemoveableTag, MultiSelectDropdown } from "@egovernments/digit-ui-react-components";
+import { CardLabel, Dropdown, LabelFieldPair, Loader, RemoveableTag } from "@egovernments/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import cleanup from "../Utils/cleanup";
-// import MultiSelectDropdown from "./Multiselect";
+import MultiSelectDropdown from "./Multiselect";
 
 const makeDefaultValues = (sessionFormData) => {
   return sessionFormData?.Jurisdictions?.map((ele, index) => {
@@ -225,10 +225,6 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   let boundaryTypeoption = [];
   const [focusIndex, setFocusIndex] = useState(-1);
 
-  function getboundarydata() {
-    return [];
-  }
-
   function getroledata() {
     if (STATE_ADMIN) {
       // Specify the role codes you want to filter
@@ -242,7 +238,12 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
           return { code: role.code, name: role?.name ? role?.name : " ", labelKey: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
         });
     } else {
-      return data?.MdmsRes?.["ws-services-masters"].WSServiceRoles?.map((role) => {
+      // Specify the role codes you want to filter
+      const roleCodesToFilter = ["HRMS_ADMIN", "DIV_ADMIN"];
+      // Use the filter method to extract roles with the specified codes
+      return data?.MdmsRes?.["ws-services-masters"].WSServiceRoles?.filter((role) => {
+        return !roleCodesToFilter.includes(role.code);
+      })?.map((role) => {
         return { code: role.code, name: role?.name ? role?.name : " ", labelKey: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
       });
     }
@@ -276,7 +277,6 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
               hierarchylist={hierarchylist}
               divisions={uniqueDivisions}
               boundaryTypeoption={boundaryTypeoption}
-              getboundarydata={getboundarydata}
               getroledata={getroledata}
               handleRemoveUnit={handleRemoveUnit}
             />
@@ -300,7 +300,6 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
             hierarchylist={hierarchylist}
             divisions={uniqueDivisions}
             boundaryTypeoption={boundaryTypeoption}
-            getboundarydata={getboundarydata}
             getroledata={getroledata}
             handleRemoveUnit={handleRemoveUnit}
           />
@@ -584,6 +583,7 @@ function Jurisdiction({
                   }
                   onSelect={selectDivisionBoundary}
                   optionsKey="i18text"
+                  showSelectAll={true}
                   t={t}
                 />
                 <div className="tag-container" style={{ height: jurisdiction?.divisionBoundary?.length > 0 && "50px", overflowY: "scroll" }}>
