@@ -44,6 +44,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   var phoneNumberAutoValidation = false;
   var dateAutoValidation = false;
   GlobalKey<FilePickerDemoState>? filePickerKey;
+  var isPSPCLEnabled = false;
 
 
   dispose() {
@@ -56,23 +57,34 @@ class ExpensesDetailsProvider with ChangeNotifier {
     try {
       if(expensesDetails != null || id != null) await fetchVendors();
       else fetchVendors();
+      var commonProvider =
+      Provider.of<CommonProvider>(context, listen: false);
+      if (languageList?.mdmsRes?.expense?.expenseList != null) {
+        var res = languageList?.mdmsRes?.pspclIntegration?.accountNumberGpMapping?.where((element) => element.departmentEntityCode==commonProvider.userDetails?.selectedtenant?.city?.code).toList();
+        if(res!.isNotEmpty){
+          isPSPCLEnabled = true;
+          notifyListeners();
+        }else{
+          isPSPCLEnabled = false;
+          notifyListeners();
+        }
+      }
       if (expensesDetails != null) {
         expenditureDetails = expensesDetails;
-        if(expenditureDetails.expenseType=='ELECTRICITY_BILL'){
+        if(expenditureDetails.expenseType=='ELECTRICITY_BILL' && isPSPCLEnabled){
           expenditureDetails.allowEdit = false;
         }
         getStoreFileDetails();
       } else if (id != null) {
-        var commonProvider =
-            Provider.of<CommonProvider>(context, listen: false);
         var query = {
           'tenantId': commonProvider.userDetails?.selectedtenant?.code,
           'challanNo': id
         };
         var expenditure = await ExpensesRepository().searchExpense(query);
+
         if (expenditure != null && expenditure.isNotEmpty) {
           expenditureDetails = expenditure.first;
-          if(expenditureDetails.expenseType=='ELECTRICITY_BILL'){
+          if(expenditureDetails.expenseType=='ELECTRICITY_BILL' && isPSPCLEnabled){
             expenditureDetails.allowEdit = false;
           }
           getStoreFileDetails();
@@ -83,6 +95,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
       }
 
       this.expenditureDetails.getText();
+      if(this.expenditureDetails.expenseType=='ELECTRICITY_BILL' && isPSPCLEnabled){
+        this.expenditureDetails.allowEdit = false;
+      }
       streamController.add(this.expenditureDetails);
     } on CustomException catch (e, s) {
       ErrorHandler.handleApiException(context, e, s);

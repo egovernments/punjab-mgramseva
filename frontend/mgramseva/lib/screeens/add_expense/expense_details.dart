@@ -141,9 +141,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               (expensesDetailsProvider
                                       .expenditureDetails.isBillCancelled ??
                                   false)) ||
-                          !isUpdate) || (expensesDetailsProvider
-                  .expenditureDetails.expenseType!='ELECTRICITY_BILL')
-                  ? () => expensesDetailsProvider.validateExpensesDetails(
+                          !isUpdate)
+                  ? expensesDetailsProvider.isPSPCLEnabled && expensesDetailsProvider
+                  .expenditureDetails.expenseType=='ELECTRICITY_BILL'?null:() => expensesDetailsProvider.validateExpensesDetails(
                       context, isUpdate)
                   : null,
           key: Keys.expense.EXPENSE_SUBMIT,
@@ -472,34 +472,35 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 contextKey: expenseProvider
                                     .expenseWalkthrougList[5].key,
                               ),
-                            if (isUpdate && expenseDetails.expenseType!='ELECTRICITY_BILL')
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 18),
-                                child: Wrap(
-                                  direction: Axis.horizontal,
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  spacing: 8,
-                                  children: [
-                                    SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: Checkbox(
-                                          value: expenseDetails.isBillCancelled,
-                                          onChanged: expensesDetailsProvider
-                                              .onChangeOfCheckBox),
-                                    ),
-                                    Text(
-                                        ApplicationLocalizations.of(context)
-                                            .translate(i18.expense
-                                                .MARK_BILL_HAS_CANCELLED),
-                                        style: TextStyle(
-                                            fontSize: 19,
-                                            fontWeight: FontWeight.normal))
-                                  ],
+                            if (isUpdate)
+                              expensesDetailsProvider.isPSPCLEnabled && expenseDetails.expenseType=='ELECTRICITY_BILL'?Container():
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 18),
+                                  child: Wrap(
+                                    direction: Axis.horizontal,
+                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                    spacing: 8,
+                                    children: [
+                                      SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: Checkbox(
+                                            value: expenseDetails.isBillCancelled,
+                                            onChanged: expensesDetailsProvider
+                                                .onChangeOfCheckBox),
+                                      ),
+                                      Text(
+                                          ApplicationLocalizations.of(context)
+                                              .translate(i18.expense
+                                              .MARK_BILL_HAS_CANCELLED),
+                                          style: TextStyle(
+                                              fontSize: 19,
+                                              fontWeight: FontWeight.normal))
+                                    ],
+                                  ),
                                 ),
-                              ),
                             SizedBox(
                               height: 20,
                             ),
