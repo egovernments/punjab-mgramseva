@@ -95,6 +95,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
       }
 
       this.expenditureDetails.getText();
+      if(this.expenditureDetails.expenseType=='ELECTRICITY_BILL' && isPSPCLEnabled){
+        this.expenditureDetails.allowEdit = false;
+      }
       streamController.add(this.expenditureDetails);
     } on CustomException catch (e, s) {
       ErrorHandler.handleApiException(context, e, s);

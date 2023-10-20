@@ -189,12 +189,6 @@ class ExpensesDetailsModel {
       paidDateCtrl.text = '';
       allowEdit = true;
     }
-    var expenseProvider = Provider.of<ExpensesDetailsProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
-    if(expenseType=='ELECTRICITY_BILL' && expenseProvider.isPSPCLEnabled){
-      allowEdit = false;
-    }
   }
 
   factory ExpensesDetailsModel.fromJson(Map<String, dynamic> json) =>
