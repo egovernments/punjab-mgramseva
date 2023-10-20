@@ -185,6 +185,9 @@ class ExpensesDetailsModel {
       paidDateCtrl.text = '';
       allowEdit = true;
     }
+    if(expenseType=='ELECTRICITY_BILL'){
+      allowEdit = false;
+    }
   }
 
   factory ExpensesDetailsModel.fromJson(Map<String, dynamic> json) =>

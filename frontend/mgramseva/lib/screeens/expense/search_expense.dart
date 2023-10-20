@@ -80,7 +80,7 @@ class _SearchExpenseState extends State<SearchExpense> {
                           '',
                           '',
                           onChangeOfExpense,
-                          expensesDetailsProvider.getExpenseTypeList(),
+                          expensesDetailsProvider.getExpenseTypeList(isSearch: true),
                           false,
                           hint:
                               '${ApplicationLocalizations.of(context).translate(i18.common.ELECTRICITY_HINT)}',

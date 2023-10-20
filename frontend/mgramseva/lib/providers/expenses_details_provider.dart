@@ -58,6 +58,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
       else fetchVendors();
       if (expensesDetails != null) {
         expenditureDetails = expensesDetails;
+        if(expenditureDetails.expenseType=='ELECTRICITY_BILL'){
+          expenditureDetails.allowEdit = false;
+        }
         getStoreFileDetails();
       } else if (id != null) {
         var commonProvider =
@@ -524,16 +527,17 @@ class ExpensesDetailsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<DropdownMenuItem<Object>> getExpenseTypeList() {
+  List<DropdownMenuItem<Object>> getExpenseTypeList({bool isSearch=false}) {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
     if (languageList?.mdmsRes?.expense?.expenseList != null) {
       var res = languageList?.mdmsRes?.pspclIntegration?.accountNumberGpMapping?.where((element) => element.departmentEntityCode==commonProvider.userDetails?.selectedtenant?.city?.code).toList();
+      var temp_list = languageList?.mdmsRes?.expense?.expenseList?.toList();
       if(res!.isNotEmpty){
-        languageList?.mdmsRes?.expense?.expenseList!.removeWhere((element) => element.code=="20101");
+        isSearch?{}:temp_list!.removeWhere((element) => element.code=="ELECTRICITY_BILL");
       }
-      return (languageList?.mdmsRes?.expense?.expenseList ?? <ExpenseType>[])
+      return (temp_list ?? <ExpenseType>[])
           .map((value) {
         return DropdownMenuItem(
           value: value.code,
