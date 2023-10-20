@@ -550,11 +550,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var res = languageList?.mdmsRes?.pspclIntegration?.accountNumberGpMapping?.where((element) => element.departmentEntityCode==commonProvider.userDetails?.selectedtenant?.city?.code).toList();
       var temp_list = languageList?.mdmsRes?.expense?.expenseList?.toList();
       if(res!.isNotEmpty){
-        isPSPCLEnabled = true;
-        notifyListeners();
         isSearch?{}:temp_list!.removeWhere((element) => element.code=="ELECTRICITY_BILL");
-      }else{
-        isPSPCLEnabled = false;
       }
       return (temp_list ?? <ExpenseType>[])
           .map((value) {
