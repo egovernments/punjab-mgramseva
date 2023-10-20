@@ -141,7 +141,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               (expensesDetailsProvider
                                       .expenditureDetails.isBillCancelled ??
                                   false)) ||
-                          !isUpdate)
+                          !isUpdate) || (expensesDetailsProvider
+                  .expenditureDetails.expenseType!='ELECTRICITY_BILL')
                   ? () => expensesDetailsProvider.validateExpensesDetails(
                       context, isUpdate)
                   : null,
@@ -214,7 +215,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               '',
                               '',
                               expensesDetailsProvider.onChangeOfExpenses,
-                              expensesDetailsProvider.getExpenseTypeList(),
+                              expensesDetailsProvider.getExpenseTypeList(isSearch: isUpdate),
                               true,
                               isEnabled: expenseDetails.allowEdit,
                               requiredMessage:
@@ -471,7 +472,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 contextKey: expenseProvider
                                     .expenseWalkthrougList[5].key,
                               ),
-                            if (isUpdate)
+                            if (isUpdate && expenseDetails.expenseType!='ELECTRICITY_BILL')
                               Container(
                                 alignment: Alignment.centerLeft,
                                 padding: EdgeInsets.symmetric(
@@ -526,5 +527,5 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
       ));
   }
 
-  bool get isUpdate => widget.id != null || widget.expensesDetails != null;
+  bool get isUpdate => widget.id != null || widget.expensesDetails != null ;
 }
