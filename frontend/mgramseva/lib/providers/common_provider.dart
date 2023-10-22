@@ -182,7 +182,7 @@ class CommonProvider with ChangeNotifier {
       userLoggedStreamCtrl.add(null);
     }
     if (userResponse == null) {
-      userResponse = 'false';
+      userResponse = 'true';
     }
     return userResponse;
   }
