@@ -106,7 +106,7 @@ class MeterReadingDigitTextFieldBox extends StatelessWidget {
           keyboardType: TextInputType.number,
           maxLength: 1,
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+$'))
+            FilteringTextInputFormatter.allow(RegExp(r'^[0-9]+'))
           ],
           decoration: InputDecoration(
             // contentPadding: EdgeInsets.all(0),
