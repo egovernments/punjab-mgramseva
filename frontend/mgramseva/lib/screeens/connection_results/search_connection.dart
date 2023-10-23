@@ -99,6 +99,11 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                 onChange: (value) => searchConnectionProvider
                                     .getdetails(value, 0),
                                 key: Keys.searchConnection.SEARCH_PHONE_NUMBER_KEY,
+                                  onSubmit: (value){
+                                    searchConnectionProvider.validatesearchConnectionDetails(
+                                        context, widget.arguments, (searchConnectionProvider.searchconnection.controllers[1] == false)
+                                        ? true : false);
+                                  }
                               ),
                               Text(
                                 '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
@@ -116,6 +121,11 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                 ],
                                 onChange: (value) => searchConnectionProvider
                                     .getdetails(value, 1),
+                                onSubmit: (value){
+                                      searchConnectionProvider.validatesearchConnectionDetails(
+                                      context, widget.arguments, (searchConnectionProvider.searchconnection.controllers[1] == false)
+                                      ? true : false);
+                                },
                                 hint: ApplicationLocalizations.of(context)
                                     .translate(
                                         i18.searchWaterConnection.NAME_HINT),
@@ -145,6 +155,11 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                               .searchWaterConnection
                                               .OLD_CONNECTION_HINT),
                                       key: Keys.searchConnection.SEARCH_OLD_ID_KEY,
+                                        onSubmit: (value){
+                                          searchConnectionProvider.validatesearchConnectionDetails(
+                                              context, widget.arguments, (searchConnectionProvider.searchconnection.controllers[1] == false)
+                                              ? true : false);
+                                        }
                                     ),
                                     Text(
                                         '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
@@ -166,6 +181,11 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                               .searchWaterConnection
                                               .NEW_CONNECTION_HINT),
                                       key: Keys.searchConnection.SEARCH_NEW_ID_KEY,
+                                        onSubmit: (value){
+                                          searchConnectionProvider.validatesearchConnectionDetails(
+                                              context, widget.arguments, (searchConnectionProvider.searchconnection.controllers[1] == false)
+                                              ? true : false);
+                                        }
                                     ),
                                   ]),
                             ]))),

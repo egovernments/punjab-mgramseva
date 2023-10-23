@@ -36,6 +36,7 @@ class BuildTextField extends StatefulWidget {
   final bool? isFilled;
   final Widget? suffixIcon;
   final Key? key;
+  final TextInputAction? textInputAction;
 
   BuildTextField(this.labelText, this.controller,
       {this.input = '',
@@ -65,7 +66,7 @@ class BuildTextField extends StatefulWidget {
         this.requiredMessage,
         this.autoValidation,
         this.suffixIcon,
-        this.key});
+        this.key, this.textInputAction});
 
   @override
   State<StatefulWidget> createState() => _BuildTextField();
@@ -90,6 +91,7 @@ class _BuildTextField extends State<BuildTextField> {
                 : true,
             controller: widget.controller,
             keyboardType: widget.textInputType ?? TextInputType.text,
+            textInputAction: widget.textInputAction??TextInputAction.done,
             inputFormatters: widget.inputFormatter,
             autofocus: false,
             maxLength: widget.maxLength,
@@ -153,7 +155,9 @@ class _BuildTextField extends State<BuildTextField> {
                     )),
                 suffixIcon: widget.suffixIcon
             ),
-            onChanged: widget.onChange));
+            onChanged: widget.onChange,
+            onFieldSubmitted: widget.onSubmit,
+        ));
 // Label Text
     Widget textLabelwidget =
     Wrap(direction: Axis.horizontal, children: <Widget>[
