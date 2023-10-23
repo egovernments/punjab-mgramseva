@@ -92,6 +92,7 @@ class AutoCompleteView extends StatelessWidget {
       textFieldConfiguration: TextFieldConfiguration(
           inputFormatters: inputFormatter,
           keyboardType: textInputType ?? TextInputType.text,
+          textInputAction: TextInputAction.done,
           enabled: (isEnabled ?? true),
           controller: controller,
           style: TextStyle(
@@ -106,6 +107,7 @@ class AutoCompleteView extends StatelessWidget {
       suggestionsCallback: (pattern) async {
         return await callBack(pattern);
       },
+      minCharsForSuggestions: 1,
       itemBuilder: listTile,
       onSuggestionSelected: onSuggestionSelected,
       validator: isRequired == null || !isRequired!
