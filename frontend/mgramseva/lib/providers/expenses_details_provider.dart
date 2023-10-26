@@ -405,7 +405,13 @@ class ExpensesDetailsProvider with ChangeNotifier {
       if(expenditureDetails.selectedVendor != null && (expenditureDetails.selectedVendor?.owner?.mobileNumber == null || expenditureDetails.selectedVendor!.owner!.mobileNumber.isEmpty)){
         var mobileNumber = vendorList.firstWhere((vendor) => vendor.id == expenditureDetails.vendorId, orElse: () => Vendor('', '')).owner?.mobileNumber ?? '';
         expenditureDetails.selectedVendor?.owner = Owner(mobileNumber);
+        if(expenditureDetails.mobileNumberController.text.isNotEmpty && expenditureDetails.mobileNumberController.text!=mobileNumber){
+          return true;
+        }
         expenditureDetails.mobileNumberController.text = mobileNumber;
+      }
+      if(expenditureDetails.mobileNumberController.text.isEmpty){
+        return true;
       }
       return false;
     }
