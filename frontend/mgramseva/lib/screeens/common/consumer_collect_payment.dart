@@ -711,7 +711,7 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
           return ValueListenableBuilder<bool>(
             valueListenable: clickedStatus,
             builder: (context,bool isClicked,_) {
-              return isClicked?Loaders.loaderBox(context,text: ""):Align(
+              return isClicked?Loaders.loaderBoxCircularLoader(context,text: ""):Align(
                   alignment: Alignment.center,
                   child: ConfirmationPopUp(
                     textString: i18.payment.CORE_AMOUNT_CONFIRMATION,
