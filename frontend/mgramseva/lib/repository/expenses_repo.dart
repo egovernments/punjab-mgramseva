@@ -56,8 +56,16 @@ class ExpensesRepository extends BaseService {
         ));
 
     if (res != null && res['vendor'] != null) {
-      vendorList =
-          res['vendor'].map<Vendor>((e) => Vendor.fromJson(e)).toList();
+      var vendors = res['vendor'];
+      vendorList = [];
+      for (int i =0;i<vendors.length;i++){
+        if(vendors[i]!=null){
+          if(vendors[i]['owner']==null){
+            continue;
+          }
+          vendorList.add(Vendor.fromJson(vendors[i]));
+        }
+      }
     }
     return vendorList;
   }
