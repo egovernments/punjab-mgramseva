@@ -1634,6 +1634,9 @@ export const MdmsService = {
   getHrmsEmployeeReason: (tenantId, moduleCode, type) => {
     return MdmsService.getDataByCriteria(tenantId, getGeneralCriteria(tenantId, moduleCode, type), moduleCode);
   },
+  getHrmsEmployeeData: (tenantId, moduleCode, type) => {
+    return MdmsService.getDataByCriteria(tenantId, getGeneralCriteria(tenantId, moduleCode, type), moduleCode);
+  },
   getMultipleTypes: (tenantId, moduleCode, types) => {
     return MdmsService.getDataByCriteria(tenantId, getMultipleTypes(tenantId, moduleCode, types), moduleCode);
   },

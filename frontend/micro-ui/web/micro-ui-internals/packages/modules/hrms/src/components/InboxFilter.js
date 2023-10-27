@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { getCityThatUserhasAccess } from "./Utils";
 
 const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props }) => {
-
   const [filters, onSelectFilterRoles] = useState(searchParams?.filters?.role || { role: [] });
   const [_searchParams, setSearchParams] = useState(() => searchParams);
   const [selectedRoles, onSelectFilterRolessetSelectedRole] = useState(null);
@@ -161,7 +160,7 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
             )}
           </div>
           <div>
-            <div>
+            {/* <div>
               <div className="filter-label">{t("HR_ULB_LABEL")}</div>
               <Dropdown
                 option={[
@@ -176,8 +175,8 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
                 optionKey={"i18text"}
                 t={t}
               />
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <div className="filter-label">{t("HR_COMMON_TABLE_COL_DEPT")}</div>
               <Dropdown
                 option={Digit.Utils.locale.convertToLocaleData(data?.MdmsRes?.["common-masters"]?.Department, "COMMON_MASTERS_DEPARTMENT")}
@@ -186,7 +185,7 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
                 optionKey={"i18text"}
                 t={t}
               />
-            </div>
+            </div> */}
             <div>
               <div>
                 {GetSelectOptions(
