@@ -26,6 +26,7 @@ const CreateEmployee = () => {
     retry: false,
     enable: false,
   });
+  const { data: data = {} } = Digit.Hooks.hrms.useHrmsMDMS(tenantId, "egov-hrms", "HRMSConfig") || {};
   const [mutationHappened, setMutationHappened, clear] = Digit.Hooks.useSessionStorage("EMPLOYEE_HRMS_MUTATION_HAPPENED", false);
   const [errorInfo, setErrorInfo, clearError] = Digit.Hooks.useSessionStorage("EMPLOYEE_HRMS_ERROR_DATA", false);
   const [successData, setsuccessData, clearSuccessData] = Digit.Hooks.useSessionStorage("EMPLOYEE_HRMS_MUTATION_SUCCESS_DATA", false);
@@ -105,21 +106,21 @@ const CreateEmployee = () => {
       }
     }
 
-    let setassigncheck = false;
-    for (let i = 0; i < formData?.Assignments?.length; i++) {
-      let key = formData?.Assignments[i];
-      if (
-        !(key.department && key.designation && key.fromDate && (formData?.Assignments[i].toDate || formData?.Assignments[i]?.isCurrentAssignment))
-      ) {
-        setassigncheck = false;
-        break;
-      } else if (formData?.Assignments[i].toDate == null && formData?.Assignments[i]?.isCurrentAssignment == false) {
-        setassigncheck = false;
-        break;
-      } else {
-        setassigncheck = true;
-      }
-    }
+    // let setassigncheck = false;
+    // for (let i = 0; i < formData?.Assignments?.length; i++) {
+    //   let key = formData?.Assignments[i];
+    //   if (
+    //     !(key.department && key.designation && key.fromDate && (formData?.Assignments[i].toDate || formData?.Assignments[i]?.isCurrentAssignment))
+    //   ) {
+    //     setassigncheck = false;
+    //     break;
+    //   } else if (formData?.Assignments[i].toDate == null && formData?.Assignments[i]?.isCurrentAssignment == false) {
+    //     setassigncheck = false;
+    //     break;
+    //   } else {
+    //     setassigncheck = true;
+    //   }
+    // }
     if (
       formData?.SelectDateofEmployment?.dateOfAppointment &&
       formData?.SelectEmployeeCorrespondenceAddress?.correspondenceAddress &&
@@ -128,7 +129,7 @@ const CreateEmployee = () => {
       formData?.SelectEmployeeType?.code &&
       formData?.SelectEmployeePhoneNumber?.mobileNumber &&
       checkfield &&
-      setassigncheck &&
+      // setassigncheck &&
       phonecheck &&
       checkMailNameNum(formData)
     ) {
@@ -232,10 +233,19 @@ const CreateEmployee = () => {
       {
         tenantId: tenantId,
         employeeStatus: "EMPLOYED",
-        assignments: data?.Assignments,
+        assignments: [
+          {
+            fromDate: new Date().getTime(),
+            isCurrentAssignment: data?.["egov-hrms"]?.HRMSConfig[0]?.isCurrentAssignment,
+            department: data?.["egov-hrms"]?.HRMSConfig[0]?.department,
+            designation: STATE_ADMIN
+              ? data?.["egov-hrms"]?.HRMSConfig[0]?.designation?.filter((x) => x?.isStateUser)[0]?.code
+              : data?.["egov-hrms"]?.HRMSConfig[0]?.designation?.filter((x) => !x?.isStateUser)[0]?.code,
+          },
+        ],
         code: data?.SelectEmployeeId?.code ? data?.SelectEmployeeId?.code : undefined,
         dateOfAppointment: new Date(data?.SelectDateofEmployment?.dateOfAppointment).getTime(),
-        employeeType: data?.SelectEmployeeType?.code,
+        employeeType: data?.["egov-hrms"]?.HRMSConfig[0]?.employeeType,
         jurisdictions: STATE_ADMIN ? jurisdictions : data?.Jurisdictions,
         user: {
           mobileNumber: data?.SelectEmployeePhoneNumber?.mobileNumber,
@@ -243,7 +253,7 @@ const CreateEmployee = () => {
           correspondenceAddress: data?.SelectEmployeeCorrespondenceAddress?.correspondenceAddress,
           emailId: data?.SelectEmployeeEmailId?.emailId ? data?.SelectEmployeeEmailId?.emailId : undefined,
           gender: data?.SelectEmployeeGender?.gender.code,
-          dob: new Date(data?.SelectDateofBirthEmployment?.dob).getTime(),
+          dob: 805055400000,
           roles: mappedroles,
           tenantId: tenantId,
         },

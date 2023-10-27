@@ -12,7 +12,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
   const { t } = useTranslation();
   const [pageOffset, setPageOffset] = useState(initialStates.pageOffset || 0);
   const [pageSize, setPageSize] = useState(initialStates.pageSize || 10);
-  const [sortParams, setSortParams] = useState(initialStates.sortParams || [{ id: "createdTime", desc: false }]);
+  const [sortParams, setSortParams] = useState([{ id: "createdTime", desc: false }]);
   const [totalRecords, setTotalReacords] = useState(undefined);
   const [searchParams, setSearchParams] = useState(() => {
     return initialStates.searchParams || {};
@@ -20,8 +20,8 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
 
   let isMobile = window.Digit.Utils.browser.isMobile();
   let paginationParams = isMobile
-    ? { limit: 100, offset: pageOffset, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" }
-    : { limit: pageSize, offset: pageOffset, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" };
+    ? { limit: 100, offset: pageOffset, sortBy: sortParams?.[0]?.id, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" }
+    : { limit: pageSize, offset: pageOffset, sortBy: sortParams?.[0]?.id, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" };
   const isupdate = Digit.SessionStorage.get("isupdate");
 
   let roles = STATE_ADMIN

@@ -22,12 +22,6 @@ export const newConfig = [
       },
       {
         type: "component",
-        component: "SelectDateofBirthEmployment",
-        key: "SelectDateofBirthEmployment",
-        withoutLabel: true,
-      },
-      {
-        type: "component",
         component: "SelectEmployeeEmailId",
         key: "SelectEmployeeEmailId",
         withoutLabel: true,
@@ -45,20 +39,8 @@ export const newConfig = [
     body: [
       {
         type: "component",
-        component: "SelectEmployeeType",
-        key: "SelectEmployeeType",
-        withoutLabel: true,
-      },
-      {
-        type: "component",
         component: "SelectDateofEmployment",
         key: "SelectDateofEmployment",
-        withoutLabel: true,
-      },
-      {
-        type: "component",
-        component: "SelectEmployeeId",
-        key: "SelectEmployeeId",
         withoutLabel: true,
       },
 
@@ -82,29 +64,6 @@ export const newConfig = [
         isMandatory: true,
         component: "Jurisdictions",
         key: "Jurisdictions",
-        withoutLabel: true,
-      },
-    ],
-  },
-
-  {
-    head: "HR_ASSIGN_DET_HEADER",
-    body: [
-      {
-        type: "component",
-        component: "HRBanner",
-        key: "Banner2",
-        withoutLabel: true,
-        texts: {
-          nosideText:true,
-          headerCaption: "Info",
-          header: "HR_ASSIGN_DET_SUB_HEADER",
-        },
-      },
-      {
-        type: "component",
-        component: "Assignments",
-        key: "Assignments",
         withoutLabel: true,
       },
     ],

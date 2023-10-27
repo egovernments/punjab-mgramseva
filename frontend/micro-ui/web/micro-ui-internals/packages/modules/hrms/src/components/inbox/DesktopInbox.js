@@ -26,7 +26,8 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
     return [
       {
         Header: t("HR_EMP_ID_LABEL"),
-        disableSortBy: true,
+        disableSortBy: false,
+        accessor: "createdTime",
         Cell: ({ row }) => {
           return (
             <span className="link">
@@ -42,49 +43,50 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
           return GetCell(`${row.original?.user?.name}`);
         },
       },
+      // {
+      //   Header: t("HR_ROLE_NO_LABEL"),
+      //   Cell: ({ row }) => {
+      //     return (
+      //       <div className="tooltip">
+      //         {" "}
+      //         {GetCell(`${row.original?.user?.roles.length}`)}
+      //         <span className="tooltiptext" style={{ whiteSpace: "nowrap" }}>
+      //           {row.original?.user?.roles.map((ele, index) => (
+      //             <span>
+      //               {`${index + 1}. ` + t(`ACCESSCONTROL_ROLES_ROLES_${ele.code}`)} <br />{" "}
+      //             </span>
+      //           ))}
+      //         </span>
+      //       </div>
+      //     );
+      //   },
+      //   disableSortBy: true,
+      // },
+      // {
+      //   Header: t("HR_DESG_LABEL"),
+      //   disableSortBy: true,
+      //   Cell: ({ row }) => {
+      //     return GetCell(
+      //       `${
+      //         t(
+      //           "COMMON_MASTERS_DESIGNATION_" + row.original?.assignments?.sort((a, b) => new Date(a.fromDate) - new Date(b.fromDate))[0]?.designation
+      //         ) || ""
+      //       }`
+      //     );
+      //   },
+      // },
       {
-        Header: t("HR_ROLE_NO_LABEL"),
-        Cell: ({ row }) => {
-          return (
-            <div className="tooltip">
-              {" "}
-              {GetCell(`${row.original?.user?.roles.length}`)}
-              <span className="tooltiptext" style={{ whiteSpace: "nowrap" }}>
-                {row.original?.user?.roles.map((ele, index) => (
-                  <span>
-                    {`${index + 1}. ` + t(`ACCESSCONTROL_ROLES_ROLES_${ele.code}`)} <br />{" "}
-                  </span>
-                ))}
-              </span>
-            </div>
-          );
-        },
-        disableSortBy: true,
-      },
-      {
-        Header: t("HR_DESG_LABEL"),
+        Header: t("HR_USER_ID_LABEL"),
         disableSortBy: true,
         Cell: ({ row }) => {
-          return GetCell(
-            `${
-              t(
-                "COMMON_MASTERS_DESIGNATION_" + row.original?.assignments?.sort((a, b) => new Date(a.fromDate) - new Date(b.fromDate))[0]?.designation
-              ) || ""
-            }`
-          );
-        },
-      },
-      {
-        Header: t("HR_DEPT_LABEL"),
-        disableSortBy: true,
-        Cell: ({ row }) => {
-          return GetCell(
-            `${
-              t(
-                "COMMON_MASTERS_DEPARTMENT_" + row.original?.assignments?.sort((a, b) => new Date(a.fromDate) - new Date(b.fromDate))[0]?.department
-              ) || ""
-            }`
-          );
+          return GetCell(`${row.original?.user?.mobileNumber}`);
+          // return GetCell(
+          // `${
+          //   t(
+          //     "COMMON_MASTERS_DEPARTMENT_" + row.original?.assignments?.sort((a, b) => new Date(a.fromDate) - new Date(b.fromDate))[0]?.department
+          //   ) || ""
+          // }`
+          // );
         },
       },
       {

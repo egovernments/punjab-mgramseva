@@ -232,10 +232,10 @@ const Details = () => {
                   );
                 })
               : null}
-            {data?.Employees?.[0]?.assignments.length > 0 ? (
+            {/* {data?.Employees?.[0]?.assignments.length > 0 ? (
               <CardSubHeader className="card-section-header">{t("HR_ASSIGN_DET_HEADER")}</CardSubHeader>
-            ) : null}
-            {data?.Employees?.[0]?.assignments.map((element, index) => (
+            ) : null} */}
+            {/* {data?.Employees?.[0]?.assignments.map((element, index) => (
               <StatusTable
                 key={index}
                 style={{
@@ -259,7 +259,7 @@ const Details = () => {
                 <Row label={t("HR_DEPT_LABEL")} text={t("COMMON_MASTERS_DEPARTMENT_" + element?.department)} />
                 <Row label={t("HR_DESG_LABEL")} text={t("COMMON_MASTERS_DESIGNATION_" + element?.designation)} />
               </StatusTable>
-            ))}
+            ))} */}
           </Card>
         </div>
       ) : null}
