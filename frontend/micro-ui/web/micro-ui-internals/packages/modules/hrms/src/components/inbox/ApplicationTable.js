@@ -12,8 +12,9 @@ const ApplicationTable = ({
   totalRecords,
   pageSizeLimit,
   onPageSizeChange,
-  onSort,
+  // onSort,
   sortParams,
+  disableSort,
 }) => (
   <Table
     t={t}
@@ -26,8 +27,10 @@ const ApplicationTable = ({
     totalRecords={totalRecords}
     onPageSizeChange={onPageSizeChange}
     pageSizeLimit={pageSizeLimit}
-    onSort={onSort}
+    // onSort={onSort}
     sortParams={sortParams}
+    disableSort={disableSort}
+    autoSort={true}
   />
 );
 
