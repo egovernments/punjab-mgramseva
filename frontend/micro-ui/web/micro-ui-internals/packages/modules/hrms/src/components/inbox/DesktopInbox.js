@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ApplicationTable from "../inbox/ApplicationTable";
 import { Card, Loader } from "@egovernments/digit-ui-react-components";
@@ -27,7 +27,7 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
       {
         Header: t("HR_EMP_ID_LABEL"),
         disableSortBy: false,
-        accessor: "createdTime",
+        accessor: "code",
         Cell: ({ row }) => {
           return (
             <span className="link">
@@ -38,7 +38,8 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
       },
       {
         Header: t("HR_EMP_NAME_LABEL"),
-        disableSortBy: true,
+        disableSortBy: false,
+        accessor: "name",
         Cell: ({ row }) => {
           return GetCell(`${row.original?.user?.name}`);
         },
@@ -77,7 +78,8 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
       // },
       {
         Header: t("HR_USER_ID_LABEL"),
-        disableSortBy: true,
+        disableSortBy: false,
+        accessor: "mobileNumber",
         Cell: ({ row }) => {
           return GetCell(`${row.original?.user?.mobileNumber}`);
           // return GetCell(
@@ -91,7 +93,8 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
       },
       {
         Header: t("HR_STATUS_LABEL"),
-        disableSortBy: true,
+        disableSortBy: false,
+        accessor: "isActive",
         Cell: ({ row }) => {
           return GetSlaCell(`${row.original?.isActive ? "ACTIVE" : "INACTIVE"}`);
         },
@@ -136,7 +139,7 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
         onNextPage={props.onNextPage}
         onPrevPage={props.onPrevPage}
         pageSizeLimit={props.pageSizeLimit}
-        onSort={props.onSort}
+        // onSort={props.onSort}
         disableSort={props.disableSort}
         sortParams={props.sortParams}
         totalRecords={props.totalRecords}

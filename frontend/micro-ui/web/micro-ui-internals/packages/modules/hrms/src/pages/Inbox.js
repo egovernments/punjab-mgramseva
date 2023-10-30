@@ -12,7 +12,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
   const { t } = useTranslation();
   const [pageOffset, setPageOffset] = useState(initialStates.pageOffset || 0);
   const [pageSize, setPageSize] = useState(initialStates.pageSize || 10);
-  const [sortParams, setSortParams] = useState([{ id: "createdTime", desc: false }]);
+  const [sortParams, setSortParams] = useState([{ id: "code", desc: false }]);
   const [totalRecords, setTotalReacords] = useState(undefined);
   const [searchParams, setSearchParams] = useState(() => {
     return initialStates.searchParams || {};

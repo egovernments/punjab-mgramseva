@@ -26,7 +26,7 @@ const CreateEmployee = () => {
     retry: false,
     enable: false,
   });
-  const { data: data = {} } = Digit.Hooks.hrms.useHrmsMDMS(tenantId, "egov-hrms", "HRMSConfig") || {};
+  const { data: hrmsData = {} } = Digit.Hooks.hrms.useHrmsMDMS(tenantId, "egov-hrms", "HRMSConfig") || {};
   const [mutationHappened, setMutationHappened, clear] = Digit.Hooks.useSessionStorage("EMPLOYEE_HRMS_MUTATION_HAPPENED", false);
   const [errorInfo, setErrorInfo, clearError] = Digit.Hooks.useSessionStorage("EMPLOYEE_HRMS_ERROR_DATA", false);
   const [successData, setsuccessData, clearSuccessData] = Digit.Hooks.useSessionStorage("EMPLOYEE_HRMS_MUTATION_SUCCESS_DATA", false);
@@ -126,7 +126,7 @@ const CreateEmployee = () => {
       formData?.SelectEmployeeCorrespondenceAddress?.correspondenceAddress &&
       formData?.SelectEmployeeGender?.gender.code &&
       formData?.SelectEmployeeName?.employeeName &&
-      formData?.SelectEmployeeType?.code &&
+      // formData?.SelectEmployeeType?.code &&
       formData?.SelectEmployeePhoneNumber?.mobileNumber &&
       checkfield &&
       // setassigncheck &&
@@ -236,16 +236,16 @@ const CreateEmployee = () => {
         assignments: [
           {
             fromDate: new Date().getTime(),
-            isCurrentAssignment: data?.["egov-hrms"]?.HRMSConfig[0]?.isCurrentAssignment,
-            department: data?.["egov-hrms"]?.HRMSConfig[0]?.department,
+            isCurrentAssignment: hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.isCurrentAssignment,
+            department: hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.department,
             designation: STATE_ADMIN
-              ? data?.["egov-hrms"]?.HRMSConfig[0]?.designation?.filter((x) => x?.isStateUser)[0]?.code
-              : data?.["egov-hrms"]?.HRMSConfig[0]?.designation?.filter((x) => !x?.isStateUser)[0]?.code,
+              ? hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.designation?.filter((x) => x?.isStateUser)[0]?.code
+              : hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.designation?.filter((x) => !x?.isStateUser)[0]?.code,
           },
         ],
         code: data?.SelectEmployeeId?.code ? data?.SelectEmployeeId?.code : undefined,
         dateOfAppointment: new Date(data?.SelectDateofEmployment?.dateOfAppointment).getTime(),
-        employeeType: data?.["egov-hrms"]?.HRMSConfig[0]?.employeeType,
+        employeeType: hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.employeeType,
         jurisdictions: STATE_ADMIN ? jurisdictions : data?.Jurisdictions,
         user: {
           mobileNumber: data?.SelectEmployeePhoneNumber?.mobileNumber,
