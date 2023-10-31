@@ -253,13 +253,13 @@ const EditForm = ({ tenantId, data }) => {
     }
     let requestdata = Object.assign({}, data);
     roles = [].concat.apply([], roles);
-    requestdata.assignments = input?.Assignments;
+    requestdata.assignments = input?.Assignments ? input?.Assignments : data?.assignments;
     requestdata.dateOfAppointment = Date.parse(input?.SelectDateofEmployment?.dateOfAppointment);
-    requestdata.code = input?.SelectEmployeeId?.code ? input?.SelectEmployeeId?.code : undefined;
+    requestdata.code = input?.SelectEmployeeId?.code ? input?.SelectEmployeeId?.code : data?.code;
     requestdata.jurisdictions = jurisdictions;
     requestdata.user.emailId = input?.SelectEmployeeEmailId?.emailId ? input?.SelectEmployeeEmailId?.emailId : undefined;
     requestdata.user.gender = input?.SelectEmployeeGender?.gender.code;
-    requestdata.user.dob = Date.parse(input?.SelectDateofBirthEmployment?.dob);
+    requestdata.user.dob = Date.parse(input?.SelectDateofBirthEmployment?.dob) || data?.user?.dob;
     requestdata.user.mobileNumber = input?.SelectEmployeePhoneNumber?.mobileNumber;
     requestdata["user"]["name"] = input?.SelectEmployeeName?.employeeName;
     requestdata.user.correspondenceAddress = input?.SelectEmployeeCorrespondenceAddress?.correspondenceAddress;

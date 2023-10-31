@@ -228,7 +228,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   function getroledata() {
     if (STATE_ADMIN) {
       // Specify the role codes you want to filter
-      const roleCodesToFilter = ["HRMS_ADMIN", "EMPLOYEE", "DIV_ADMIN"];
+      const roleCodesToFilter = ["HRMS_ADMIN", "EMPLOYEE", "DIV_ADMIN", "LOC_ADMIN", "MDMS_ADMIN"];
       // Use the filter method to extract roles with the specified codes
       return data?.MdmsRes?.["ws-services-masters"]["WSServiceRoles"]
         .filter((role) => {

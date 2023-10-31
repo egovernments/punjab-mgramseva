@@ -6,6 +6,8 @@ import EmployeeModuleCard from "./EmployeeModuleCard";
 const HRMSCard = () => {
   const ADMIN = Digit.Utils.hrmsAccess();
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
+  const DIV_ADMIN = Digit.UserService.hasAccess(["DIV_ADMIN"]);
+  const MDMS_ADMIN = Digit.UserService.hasAccess(["MDMS_ADMIN"]);
   if (!ADMIN) {
     return null;
   }
@@ -16,6 +18,15 @@ const HRMSCard = () => {
     : { roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER", isStateLevelSearch: false };
   const { isLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSCount(tenantId, roles);
 
+  const moduleForSomeDIVAdmin =
+    DIV_ADMIN && MDMS_ADMIN
+      ? [
+          {
+            label: t("WORK_BENCH_URL"),
+            link: "/workbench-ui/employee",
+          },
+        ]
+      : [];
   const propsForModuleCard = {
     Icon: <PersonIcon />,
     moduleName: t("ACTION_TEST_HRMS"),
@@ -44,6 +55,7 @@ const HRMSCard = () => {
         label: t("HR_STATE_ REPORTS"),
         link: "https://ifix-dwss.psegs.in/digit-ui/employee/dss/dashboard/ifix",
       },
+      ...moduleForSomeDIVAdmin,
     ],
   };
 
