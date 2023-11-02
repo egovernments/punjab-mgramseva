@@ -223,9 +223,6 @@ public class UserController {
     public UserSearchResponse getUserBytenant(@RequestBody @Valid UserSearchByTenantsRequest request, @RequestHeader HttpHeaders headers) {
 
         log.info("Received User search Request  " + request);
-        if (request.getActive() == null) {
-            request.setActive(true);
-        }
         return searchUsersBytenant(request, headers);
     }
 
