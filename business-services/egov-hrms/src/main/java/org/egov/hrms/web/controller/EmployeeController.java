@@ -43,10 +43,7 @@ package org.egov.hrms.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.hrms.service.EmployeeService;
-import org.egov.hrms.web.contract.EmployeeRequest;
-import org.egov.hrms.web.contract.EmployeeResponse;
-import org.egov.hrms.web.contract.EmployeeSearchCriteria;
-import org.egov.hrms.web.contract.RequestInfoWrapper;
+import org.egov.hrms.web.contract.*;
 import org.egov.hrms.web.validator.EmployeeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -123,9 +120,10 @@ public class EmployeeController {
 
 	@PostMapping(value = "/_searchListOfEmployee")
 	@ResponseBody
-	public ResponseEntity<?> _searchListOfEmployee(@RequestBody @Valid RequestInfoWrapper requestInfoWrapper, @RequestBody @Valid EmployeeSearchCriteria criteria) {
+	public ResponseEntity<?> _searchListOfEmployee(@RequestBody @Valid EmployeeSearchByTenantRequestWrapper employeeSearchByTenantRequestWrapper) {
 		//validator.validateSearchRequest(requestInfoWrapper.getRequestInfo(), criteria);
-		EmployeeResponse employeeResponse = employeeService.searchListOfEmployee(criteria, requestInfoWrapper.getRequestInfo());
+		log.info("criteria::"+ employeeSearchByTenantRequestWrapper.getCriteria());
+		EmployeeResponse employeeResponse = employeeService.searchListOfEmployee(employeeSearchByTenantRequestWrapper.getCriteria(), employeeSearchByTenantRequestWrapper.getRequestInfo());
 		return new ResponseEntity<>(employeeResponse,HttpStatus.OK);
 	}
 

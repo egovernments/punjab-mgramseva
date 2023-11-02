@@ -601,6 +601,7 @@ public class EmployeeService {
 			criteria.setIsActive(true);
 		else
 			criteria.setIsActive(false);*/
+		log.info("criteria :" + criteria.getRoles());
 		Map<String, User> mapOfUsers = new HashMap<String, User>();
 		if((!CollectionUtils.isEmpty(criteria.getRoles())) && !CollectionUtils.isEmpty(criteria.getTenantIds())) {
 			Map<String, Object> userSearchCriteria = new HashMap<>();
