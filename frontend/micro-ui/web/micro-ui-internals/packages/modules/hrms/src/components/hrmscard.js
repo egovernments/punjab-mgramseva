@@ -22,8 +22,12 @@ const HRMSCard = () => {
     DIV_ADMIN && MDMS_ADMIN
       ? [
           {
-            label: t("WORK_BENCH_URL"),
-            link: "/workbench-ui/employee",
+            label: t("WORK_BENCH_URL_MASTER_DATA"),
+            link: "https://mgramseva-uat.psegs.in/workbench-ui/employee/workbench/manage-master-data",
+          },
+          {
+            label: t("WORK_BENCH_URL_LOCALIZATION"),
+            link: "https://mgramseva-uat.psegs.in/workbench-ui/employee/workbench/localisation-search",
           },
         ]
       : [];
