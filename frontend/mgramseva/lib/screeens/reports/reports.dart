@@ -1,6 +1,5 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/mdms/tax_period.dart';
+import 'package:mgramseva/screeens/reports/inactive_consumer_report.dart';
 import 'package:mgramseva/screeens/reports/view_table.dart';
 import 'package:provider/provider.dart';
 
@@ -151,53 +150,51 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                 child: Column(
                                   children: [
                                     Consumer<ReportsProvider>(
-                                        builder:
-                                            (_, reportProvider, child) =>
-                                                Container(
-                                                  child: Column(
-                                                    children: [
-                                                      SelectFieldBuilder(
-                                                        i18.demandGenerate
-                                                            .BILLING_YEAR_LABEL,
-                                                        reportProvider
-                                                            .selectedBillYear,
-                                                        '',
-                                                        '',
-                                                        reportProvider
-                                                            .onChangeOfBillYear,
-                                                        reportProvider
-                                                            .getFinancialYearListDropdownA(
+                                        builder: (_, reportProvider, child) =>
+                                            Container(
+                                              child: Column(
+                                                children: [
+                                                  SelectFieldBuilder(
+                                                    i18.demandGenerate
+                                                        .BILLING_YEAR_LABEL,
+                                                    reportProvider
+                                                        .selectedBillYear,
+                                                    '',
+                                                    '',
+                                                    reportProvider
+                                                        .onChangeOfBillYear,
+                                                    reportProvider
+                                                        .getFinancialYearListDropdown(
                                                             reportProvider
-                                                                .billingYearList),
-                                                        true,
-                                                        controller:
-                                                        reportProvider
-                                                            .billingyearCtrl,
-                                                        key: Keys.billReport
-                                                            .BILL_REPORT_BILLING_YEAR, itemAsString: (i) =>i.toString(),
-                                                      ),
-                                                      SelectFieldBuilder(
-                                                        i18.demandGenerate
-                                                            .BILLING_CYCLE_LABEL,
-                                                        reportProvider
-                                                            .selectedBillCycle,
-                                                        '',
-                                                        '',
-                                                        reportProvider
-                                                            .onChangeOfBillCycle,
-                                                        reportProvider
-                                                            .getBillingCycleDropdownA(
+                                                                .languageList),
+                                                    true,
+                                                    controller: reportProvider
+                                                        .billingyearCtrl,
+                                                    key: Keys.billReport
+                                                        .BILL_REPORT_BILLING_YEAR,
+                                                  ),
+                                                  SelectFieldBuilder(
+                                                    i18.demandGenerate
+                                                        .BILLING_CYCLE_LABEL,
+                                                    reportProvider
+                                                        .selectedBillCycle,
+                                                    '',
+                                                    '',
+                                                    reportProvider
+                                                        .onChangeOfBillCycle,
+                                                    reportProvider
+                                                        .getBillingCycleDropdown(
                                                             reportProvider
                                                                 .selectedBillYear),
-                                                        true,
-                                                        controller: reportProvider
-                                                            .billingcycleCtrl,
-                                                        key: Keys.billReport
-                                                            .BILL_REPORT_BILLING_CYCLE, itemAsString: (i) => i['name'],
-                                                      ),
-                                                    ],
+                                                    true,
+                                                    controller: reportProvider
+                                                        .billingcycleCtrl,
+                                                    key: Keys.billReport
+                                                        .BILL_REPORT_BILLING_CYCLE,
                                                   ),
-                                                )),
+                                                ],
+                                              ),
+                                            )),
                                   ],
                                 ),
                               ),
@@ -216,6 +213,7 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                   children: [
                                     BillReport(onViewClick: showTable),
                                     CollectionReport(onViewClick: showTable),
+                                    InactiveConsumerReport(onViewClick: showTable,)
                                   ],
                                 ),
                               ),

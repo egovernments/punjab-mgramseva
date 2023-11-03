@@ -107,6 +107,41 @@ class CoreRepository extends BaseService {
     }
     return languageList.mdmsRes?.wcBillingSlabList;
   }
+  Future<PSPCLIntegration?> getPSPCLGpwscFromMdms(String tenantId) async {
+    var body = {
+      "MdmsCriteria": {
+        "tenantId": tenantId,
+        "moduleDetails": [
+          {
+            "moduleName": "pspcl-integration",
+            "masterDetails": [
+              {
+                "name": "accountNumberGpMapping"
+              }
+            ]
+          }
+        ]
+      }
+    };
+    late LanguageList languageList;
+    var res = await makeRequest(
+        url: Url.MDMS,
+        body: body,
+        method: RequestType.POST,
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "_search",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
+            ""));
+    if (res != null) {
+      languageList = LanguageList.fromJson(res);
+    }
+    return languageList.mdmsRes?.pspclIntegration;
+  }
 
   Future<PaymentType> getPaymentTypeMDMS(Map body) async {
     late PaymentType paymentType;

@@ -670,16 +670,15 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
     if (formKey.currentState!.validate()) {
       autoValidation = false;
       if (fetchBill.paymentMethod == 'PAYGOV') {
-        final billDetails = FetchBill.fromJson(fetchBill.toJson());
-        formKey.currentState?.reset();
+        consumerPaymentProvider.createTransaction(
+            fetchBill, widget.query['tenantId'], context,widget.query);
         setState(() {
           checkValue=false;
         });
-        consumerPaymentProvider.createTransaction(
-            billDetails, widget.query['tenantId'], context,widget.query);
       }
     } else {
       setState(() {
+        checkValue=false;
         autoValidation = true;
       });
     }
@@ -708,15 +707,21 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
         barrierColor: Colors.black.withOpacity(0.5),
         context: context,
         pageBuilder: (context, anim1, anim2) {
-          return Align(
-              alignment: Alignment.center,
-              child: ConfirmationPopUp(
-                textString: i18.payment.CORE_AMOUNT_CONFIRMATION,
-                subTextString: '₹ ${fetchBill.customAmountCtrl.text}',
-                cancelLabel: i18.common.CORE_GO_BACK,
-                confirmLabel: i18.common.CORE_CONFIRM,
-                onConfirm: () => paymentInfo(fetchBill, context),
-              ));
+          final clickedStatus = ValueNotifier<bool>(false);
+          return ValueListenableBuilder<bool>(
+            valueListenable: clickedStatus,
+            builder: (context,bool isClicked,_) {
+              return isClicked?Loaders.loaderBoxCircularLoader(context,text: ""):Align(
+                  alignment: Alignment.center,
+                  child: ConfirmationPopUp(
+                    textString: i18.payment.CORE_AMOUNT_CONFIRMATION,
+                    subTextString: '₹ ${fetchBill.customAmountCtrl.text}',
+                    cancelLabel: i18.common.CORE_GO_BACK,
+                    confirmLabel: i18.common.CORE_CONFIRM,
+                    onConfirm: isClicked?(){}: () { clickedStatus.value = true;paymentInfo(fetchBill, context);},
+                  ));
+            }
+          );
         },
       );
     } else {

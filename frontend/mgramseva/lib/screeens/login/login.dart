@@ -95,6 +95,7 @@ class _LoginState extends State<Login> {
                   maxLength: 10,
                   validator: Validators.mobileNumberValidator,
                   textInputType: TextInputType.phone,
+                  textInputAction: TextInputAction.done,
                   key: Keys.login.LOGIN_PHONE_NUMBER_KEY,
                 ),
                 BuildTextField(
@@ -105,6 +106,12 @@ class _LoginState extends State<Login> {
                   suffixIcon: buildPasswordVisibility(),
                   maxLines: 1,
                   key: Keys.login.LOGIN_PASSWORD_KEY,
+                  textInputAction: TextInputAction.done,
+                  onSubmit: (value){
+                    if(buttonStatus){
+                      saveandLogin(context);
+                    }
+                  },
                 ),
                 GestureDetector(
                   onTap: () =>

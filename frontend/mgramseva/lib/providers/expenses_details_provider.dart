@@ -44,6 +44,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
   var phoneNumberAutoValidation = false;
   var dateAutoValidation = false;
   GlobalKey<FilePickerDemoState>? filePickerKey;
+  var isPSPCLEnabled = false;
 
 
   dispose() {
@@ -56,19 +57,36 @@ class ExpensesDetailsProvider with ChangeNotifier {
     try {
       if(expensesDetails != null || id != null) await fetchVendors();
       else fetchVendors();
+      var commonProvider =
+      Provider.of<CommonProvider>(context, listen: false);
+      if (languageList?.mdmsRes?.expense?.expenseList != null) {
+        var res = languageList?.mdmsRes?.pspclIntegration?.accountNumberGpMapping?.where((element) => element.departmentEntityCode==commonProvider.userDetails?.selectedtenant?.city?.code).toList();
+        if(res!.isNotEmpty){
+          isPSPCLEnabled = true;
+          notifyListeners();
+        }else{
+          isPSPCLEnabled = false;
+          notifyListeners();
+        }
+      }
       if (expensesDetails != null) {
         expenditureDetails = expensesDetails;
+        if(expenditureDetails.expenseType=='ELECTRICITY_BILL' && isPSPCLEnabled){
+          expenditureDetails.allowEdit = false;
+        }
         getStoreFileDetails();
       } else if (id != null) {
-        var commonProvider =
-            Provider.of<CommonProvider>(context, listen: false);
         var query = {
           'tenantId': commonProvider.userDetails?.selectedtenant?.code,
           'challanNo': id
         };
         var expenditure = await ExpensesRepository().searchExpense(query);
+
         if (expenditure != null && expenditure.isNotEmpty) {
           expenditureDetails = expenditure.first;
+          if(expenditureDetails.expenseType=='ELECTRICITY_BILL' && isPSPCLEnabled){
+            expenditureDetails.allowEdit = false;
+          }
           getStoreFileDetails();
         } else {
           streamController.add(i18.expense.NO_EXPENSE_RECORD_FOUND);
@@ -77,6 +95,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
       }
 
       this.expenditureDetails.getText();
+      if(this.expenditureDetails.expenseType=='ELECTRICITY_BILL' && isPSPCLEnabled){
+        this.expenditureDetails.allowEdit = false;
+      }
       streamController.add(this.expenditureDetails);
     } on CustomException catch (e, s) {
       ErrorHandler.handleApiException(context, e, s);
@@ -384,7 +405,13 @@ class ExpensesDetailsProvider with ChangeNotifier {
       if(expenditureDetails.selectedVendor != null && (expenditureDetails.selectedVendor?.owner?.mobileNumber == null || expenditureDetails.selectedVendor!.owner!.mobileNumber.isEmpty)){
         var mobileNumber = vendorList.firstWhere((vendor) => vendor.id == expenditureDetails.vendorId, orElse: () => Vendor('', '')).owner?.mobileNumber ?? '';
         expenditureDetails.selectedVendor?.owner = Owner(mobileNumber);
+        if(expenditureDetails.mobileNumberController.text.isNotEmpty && expenditureDetails.mobileNumberController.text!=mobileNumber){
+          return true;
+        }
         expenditureDetails.mobileNumberController.text = mobileNumber;
+      }
+      if(expenditureDetails.mobileNumberController.text.isEmpty){
+        return true;
       }
       return false;
     }
@@ -432,6 +459,8 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var res = await CoreRepository().getMdms(getExpenseMDMS(
           commonProvider.userDetails!.userRequest!.tenantId.toString()));
       languageList = res;
+      var pspcl = await CoreRepository().getPSPCLGpwscFromMdms(commonProvider.userDetails!.userRequest!.tenantId.toString().substring(0,2));
+      languageList?.mdmsRes?.pspclIntegration = pspcl;
       notifyListeners();
     } catch (e, s) {
       ErrorHandler.logError(e.toString(), s);
@@ -519,14 +548,25 @@ class ExpensesDetailsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<String> getExpenseTypeList() {
+  List<DropdownMenuItem<Object>> getExpenseTypeList({bool isSearch=false}) {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     if (languageList?.mdmsRes?.expense?.expenseList != null) {
-      return (languageList?.mdmsRes?.expense?.expenseList ?? <ExpenseType>[])
+      var res = languageList?.mdmsRes?.pspclIntegration?.accountNumberGpMapping?.where((element) => element.departmentEntityCode==commonProvider.userDetails?.selectedtenant?.city?.code).toList();
+      var temp_list = languageList?.mdmsRes?.expense?.expenseList?.toList();
+      if(res!.isNotEmpty){
+        isSearch?{}:temp_list!.removeWhere((element) => element.code=="ELECTRICITY_BILL");
+      }
+      return (temp_list ?? <ExpenseType>[])
           .map((value) {
-        return value.code!;
+        return DropdownMenuItem(
+          value: value.code,
+          child: new Text((value.code!)),
+        );
       }).toList();
     }
-    return <String>[];
+    return <DropdownMenuItem<Object>>[];
   }
 
   incrementindex(index, expenseKey) async {

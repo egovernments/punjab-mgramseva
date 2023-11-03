@@ -224,6 +224,9 @@ class Common {
   String get RATE_PERCENTAGE => 'RATE_PERCENTAGE';
 
   String get REGION_NAME => 'REGION_NAME';
+  String get INACTIVATED_BY_NAME => 'INACTIVATED_BY_NAME';
+  String get INACTIVATED_DATE => 'INACTIVATED_DATE';
+  String get INACTIVATED_BY_UUID => 'INACTIVATED_BY_UUID';
 }
 
 class Password {
@@ -671,6 +674,7 @@ class _DashBoard {
   String get CORE_REPORTS => 'CORE_REPORTS';
   String get BILL_REPORT => 'BILL_REPORT';
   String get COLLECTION_REPORT => 'COLLECTION_REPORT';
+  String get INACTIVE_CONSUMER_REPORT => 'INACTIVE_CONSUMER_REPORT';
   String get GPWSC_RATE_INFO => 'GPWSC_RATE_INFO';
 }
 

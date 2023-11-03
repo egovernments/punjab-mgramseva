@@ -18,6 +18,7 @@ public class SMSRequest {
     private Category category;
     private Long expiryTime;
     private String templateId;
-    private String[] users; 
+    private String[] users;
+    private String tenantId;
     
 }

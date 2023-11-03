@@ -87,6 +87,12 @@ public class SMSProperties {
     @Value("${sms.enabled:false}")
     private boolean smsEnabled;
 
+    @Value("${save.sms.entity.topic}")
+    private String saveSmsTopic;
+
+    @Value("${save.sms.entity.enabled}")
+    private boolean isSaveSmsEnable;
+
     @Setter(AccessLevel.PROTECTED) private List<Pattern> whitelistPatterns;
     @Setter(AccessLevel.PROTECTED) private List<Pattern> blacklistPatterns;
 

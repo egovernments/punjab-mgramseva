@@ -8,6 +8,7 @@ import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.service.SchedulerService;
 import org.egov.waterconnection.service.WaterService;
 import org.egov.waterconnection.util.ResponseInfoFactory;
+import org.egov.waterconnection.web.models.*;
 import org.egov.waterconnection.web.models.BillReportData;
 import org.egov.waterconnection.web.models.BillReportResponse;
 import org.egov.waterconnection.web.models.CollectionReportData;
@@ -218,4 +219,15 @@ public class WaterController {
 					.build();
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}
+	@RequestMapping(value = "/_inactiveConsumerReport",method = RequestMethod.POST)
+	   public ResponseEntity<InactiveConsumerReportResponse> inactiveConsumerReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
+			  @RequestParam(value="monthStartDate",required = true) String monthStartDate,@RequestParam(value="monthEndDate",required = true) String monthEndDate,
+			  @RequestParam(value = "tenantId",required = true)	String tenantId,@RequestParam(value="offset",required = true) Integer offset, @RequestParam(value="limit",required = true)Integer limit)
+	{
+		List<InactiveConsumerReportData> inactiveConsumerReport=waterService.inactiveConsumerReport(monthStartDate,monthEndDate,tenantId,offset,limit,requestInfoWrapper.getRequestInfo());
+		InactiveConsumerReportResponse response=InactiveConsumerReportResponse.builder().InactiveConsumerReportData(inactiveConsumerReport)
+				.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),true)).build();
+
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 }

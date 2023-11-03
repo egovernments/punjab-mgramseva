@@ -142,7 +142,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
             backButton: false,
             isWithoutLogin: true,
             isConsumer: true,
-            amount: '${transactionObject.transaction!.first.currencyCode!}${transactionObject.transaction!.first.transactionAmount!}',
+            amount: '${transactionObject.transaction!.first.txnAmount! ?? '0'}',
           )
         : NoLoginFailurePage(i18.payment.PAYMENT_FAILED);
   }

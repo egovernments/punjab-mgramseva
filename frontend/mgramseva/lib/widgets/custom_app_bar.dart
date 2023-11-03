@@ -3,6 +3,7 @@ import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/tenants_provider.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -80,7 +81,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     }
   }
 
-  showDialogBox(result) {
+  showDialogBox(List<Tenants> tenants) {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -96,83 +97,115 @@ class _CustomAppBarState extends State<CustomAppBar> {
         barrierDismissible: commonProvider.userDetails!.selectedtenant != null,
         context: context,
         builder: (BuildContext context) {
-          return Stack(children: <Widget>[
-            Container(
-                margin: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width > 720
-                        ? MediaQuery.of(context).size.width -
-                            MediaQuery.of(context).size.width / 3
-                        : 0,
-                    top: 60),
-                width: MediaQuery.of(context).size.width > 720
-                    ? MediaQuery.of(context).size.width / 3
-                    : MediaQuery.of(context).size.width,
-                height: res.length * 50 < 300 ?
-                res.length * 50 : 300,
-                color: Colors.white,
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  children: List.generate(result.length, (index) {
-                    return GestureDetector(
-                        onTap: () {
-                          commonProvider.setTenant(result[index]);
-                          Navigator.pop(context);
-                          CommonMethods.home();
-                        },
-                        child: Material(
-                            child: Container(
-                          color: index.isEven
-                              ? Colors.white
-                              : Color.fromRGBO(238, 238, 238, 1),
-                          width: MediaQuery.of(context).size.width,
-                          height: 50,
-                          padding: EdgeInsets.all(5),
+          var searchController = TextEditingController();
+          var visibleTenants = tenants.asMap().values.toList();
+          return StatefulBuilder(
+            builder: (context, StateSetter stateSetter) {
+              return Stack(children: <Widget>[
+                Container(
+                    margin: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width > 720
+                            ? MediaQuery.of(context).size.width -
+                                MediaQuery.of(context).size.width / 3
+                            : 0,
+                        top: 60),
+                    width: MediaQuery.of(context).size.width > 720
+                        ? MediaQuery.of(context).size.width / 3
+                        : MediaQuery.of(context).size.width,
+                    height: (visibleTenants.length * 50 < 300 ?
+                    visibleTenants.length * 50 : 300)+ 60,
+                    color: Colors.white,
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      children: [
+                        Material(
                           child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    ApplicationLocalizations.of(context)
-                                        .translate(result[index].code!),
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                        color: commonProvider.userDetails!
-                                                        .selectedtenant !=
-                                                    null &&
-                                                commonProvider
-                                                        .userDetails!
-                                                        .selectedtenant!
-                                                        .city!
-                                                        .code ==
-                                                    result[index].city!.code!
-                                            ? Theme.of(context).primaryColor
-                                            : Colors.black),
-                                  ),
-                                  Text(result[index].city!.code!,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400,
-                                          color: commonProvider.userDetails!
-                                                          .selectedtenant !=
-                                                      null &&
-                                                  commonProvider
-                                                          .userDetails!
-                                                          .selectedtenant!
-                                                          .city!
-                                                          .code ==
-                                                      result[index].city!.code!
-                                              ? Theme.of(context).primaryColor
-                                              : Colors.black))
-                                ]),
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: searchController,
+                              decoration: InputDecoration(
+                                hintText: "${ApplicationLocalizations.of(context)
+                                    .translate(i18.common.SEARCH)}"
+                              ),
+                              onChanged: (text) {
+                                  if(text.isEmpty){
+                                    stateSetter(()=>{
+                                      visibleTenants = tenants.asMap().values.toList()
+                                    });
+                                  }else{
+                                    var tresult = tenants.where((e) => "${ApplicationLocalizations.of(context)
+                                        .translate(e.code!)}-${e.city!.code!}".toLowerCase().trim().contains(text.toLowerCase().trim())).toList();
+                                    stateSetter(()=>{
+                                        visibleTenants = tresult
+                                    });
+                                  }
+                              },
+                            ),
                           ),
-                        )));
-                  }),
-                ))
-          ]);
+                        ),
+                        ...List.generate(visibleTenants.length, (index) {
+                        return GestureDetector(
+                            onTap: () {
+                              commonProvider.setTenant(visibleTenants[index]);
+                              Navigator.pop(context);
+                              CommonMethods.home();
+                            },
+                            child: Material(
+                                child: Container(
+                              color: index.isEven
+                                  ? Colors.white
+                                  : Color.fromRGBO(238, 238, 238, 1),
+                              width: MediaQuery.of(context).size.width,
+                              height: 50,
+                              padding: EdgeInsets.all(5),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        ApplicationLocalizations.of(context)
+                                            .translate(visibleTenants[index].code!),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: commonProvider.userDetails!
+                                                            .selectedtenant !=
+                                                        null &&
+                                                    commonProvider
+                                                            .userDetails!
+                                                            .selectedtenant!
+                                                            .city!
+                                                            .code ==
+                                                        visibleTenants[index].city!.code!
+                                                ? Theme.of(context).primaryColor
+                                                : Colors.black),
+                                      ),
+                                      Text(visibleTenants[index].city!.code!,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                              color: commonProvider.userDetails!
+                                                              .selectedtenant !=
+                                                          null &&
+                                                      commonProvider
+                                                              .userDetails!
+                                                              .selectedtenant!
+                                                              .city!
+                                                              .code ==
+                                                          visibleTenants[index].city!.code!
+                                                  ? Theme.of(context).primaryColor
+                                                  : Colors.black))
+                                    ]),
+                              ),
+                            )));
+                      },growable: true)],
+                    ))
+              ]);
+            }
+          );
         });
   }
 

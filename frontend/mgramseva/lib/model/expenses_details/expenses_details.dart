@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mgramseva/model/expenses_details/vendor.dart';
 import 'package:mgramseva/model/file/file_store.dart';
+import 'package:mgramseva/providers/expenses_details_provider.dart';
 import 'package:mgramseva/utils/date_formats.dart';
+import 'package:provider/provider.dart';
+
+import '../../utils/global_variables.dart';
 
 part 'expenses_details.g.dart';
 
@@ -167,10 +171,10 @@ class ExpensesDetailsModel {
         expensesAmount?.first.amount ?? totalAmount?.toInt().toString() ?? '';
     billDateCtrl.text = DateFormats.timeStampToDate(billDate);
     paidDateCtrl.text =
-        paidDate == 0 ? '' : DateFormats.timeStampToDate(paidDate);
+        paidDate == null || paidDate == 0 ? '' : DateFormats.timeStampToDate(paidDate);
     billIssuedDateCtrl.text =
         billIssuedDate == 0 ? '' : DateFormats.timeStampToDate(billIssuedDate);
-    isBillPaid ??= false;
+    isBillPaid = paidDate != null && paidDate != 0 ? isBillPaid : false;
     challanNumberCtrl.text = challanNo?.toString() ?? '';
     fromDateCtrl.text = DateFormats.timeStampToDate(taxPeriodFrom);
     toDateCtrl.text = DateFormats.timeStampToDate(taxPeriodTo);
@@ -179,7 +183,7 @@ class ExpensesDetailsModel {
       selectedVendor = Vendor(vendorName ?? '', vendorId ?? '');
     }
 
-    if (isBillPaid!) {
+    if (isBillPaid! && paidDate != null && paidDate != 0) {
       allowEdit = false;
     } else {
       paidDateCtrl.text = '';

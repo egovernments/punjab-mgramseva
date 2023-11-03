@@ -142,7 +142,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                       .expenditureDetails.isBillCancelled ??
                                   false)) ||
                           !isUpdate)
-                  ? () => expensesDetailsProvider.validateExpensesDetails(
+                  ? expensesDetailsProvider.isPSPCLEnabled && expensesDetailsProvider
+                  .expenditureDetails.expenseType=='ELECTRICITY_BILL'?null:() => expensesDetailsProvider.validateExpensesDetails(
                       context, isUpdate)
                   : null,
           key: Keys.expense.EXPENSE_SUBMIT,
@@ -214,7 +215,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               '',
                               '',
                               expensesDetailsProvider.onChangeOfExpenses,
-                              expensesDetailsProvider.getExpenseTypeList(),
+                              expensesDetailsProvider.getExpenseTypeList(isSearch: isUpdate),
                               true,
                               isEnabled: expenseDetails.allowEdit,
                               requiredMessage:
@@ -279,6 +280,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 FilteringTextInputFormatter.allow(
                                     RegExp(r"^[1-9][0-9]{0,5}$"))
                               ],
+                              placeHolder: '${i18.expense.AMOUNT} (₹)',
                               labelSuffix: '(₹)',
                               isDisabled: (expenseDetails.allowEdit ?? true)
                                   ? false
@@ -474,33 +476,34 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                     .expenseWalkthrougList[5].key,
                               ),
                             if (isUpdate)
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 18),
-                                child: Wrap(
-                                  direction: Axis.horizontal,
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  spacing: 8,
-                                  children: [
-                                    SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: Checkbox(
-                                          value: expenseDetails.isBillCancelled,
-                                          onChanged: expensesDetailsProvider
-                                              .onChangeOfCheckBox),
-                                    ),
-                                    Text(
-                                        ApplicationLocalizations.of(context)
-                                            .translate(i18.expense
-                                                .MARK_BILL_HAS_CANCELLED),
-                                        style: TextStyle(
-                                            fontSize: 19,
-                                            fontWeight: FontWeight.normal))
-                                  ],
+                              expensesDetailsProvider.isPSPCLEnabled && expenseDetails.expenseType=='ELECTRICITY_BILL'?Container():
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 18),
+                                  child: Wrap(
+                                    direction: Axis.horizontal,
+                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                    spacing: 8,
+                                    children: [
+                                      SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: Checkbox(
+                                            value: expenseDetails.isBillCancelled,
+                                            onChanged: expensesDetailsProvider
+                                                .onChangeOfCheckBox),
+                                      ),
+                                      Text(
+                                          ApplicationLocalizations.of(context)
+                                              .translate(i18.expense
+                                              .MARK_BILL_HAS_CANCELLED),
+                                          style: TextStyle(
+                                              fontSize: 19,
+                                              fontWeight: FontWeight.normal))
+                                    ],
+                                  ),
                                 ),
-                              ),
                             SizedBox(
                               height: 20,
                             ),
@@ -528,5 +531,5 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
       ));
   }
 
-  bool get isUpdate => widget.id != null || widget.expensesDetails != null;
+  bool get isUpdate => widget.id != null || widget.expensesDetails != null ;
 }

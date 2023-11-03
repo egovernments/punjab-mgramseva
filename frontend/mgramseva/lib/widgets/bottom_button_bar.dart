@@ -6,7 +6,8 @@ class BottomButtonBar extends StatelessWidget {
   final String label;
   final Function()? callBack;
   final Key? key;
-  BottomButtonBar(this.label, this.callBack, {this.key});
+  final bool isDisabled;
+  BottomButtonBar(this.label, this.callBack, {this.key, this.isDisabled=false});
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -44,7 +45,7 @@ class BottomButtonBar extends StatelessWidget {
     print(ApplicationLocalizations.of(context).translate(this.label));
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-          primary: callBack == null ? Color.fromRGBO(244, 119, 56, 0.7) : null
+          primary: callBack != null ? Color.fromRGBO(244, 119, 56, 0.7) : Color.fromRGBO(235,235,228, 0.7)
       ),
       child: Text(
         ApplicationLocalizations.of(context).translate(this.label),

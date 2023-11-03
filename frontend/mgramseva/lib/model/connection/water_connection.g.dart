@@ -42,7 +42,7 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) =>
               json['processInstance'] as Map<String, dynamic>)
       ..paymentType = json['paymentType'] as String?
       ..penalty = (json['penalty'] as num?)?.toDouble()
-      ..advance = (json['advance'] as num?)?.toDouble();
+      ..advance = (json['advance'] as num?)?.toDouble().abs();
 
 Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
     <String, dynamic>{
