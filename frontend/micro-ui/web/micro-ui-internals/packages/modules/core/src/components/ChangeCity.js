@@ -69,6 +69,8 @@ const ChangeCity = (prop) => {
     setSelectCityData(filteredArray);
   }, [dropDownData, data?.MdmsRes]);
 
+  console.log(dropDownData, "dropDownData");
+  console.log(selectCityData, "selectCityData");
   // if (isDropdown) {
   return (
     <div style={prop?.mobileView ? { color: "#767676" } : {}}>
@@ -76,7 +78,7 @@ const ChangeCity = (prop) => {
         t={prop?.t}
         style={{ width: "150px" }}
         option={selectCityData}
-        selected={dropDownData?.value === "pb" ? dropDownData : selectCityData.filter((cityValue) => cityValue.value === dropDownData?.value)}
+        selected={selectCityData.filter((cityValue) => cityValue.value === dropDownData?.value)}
         optionKey={"label"}
         select={handleChangeCity}
         // freeze={true}
