@@ -635,14 +635,14 @@ public class WaterServiceImpl implements WaterService {
 		List<Map<String, Object>> data;
 		try {
 			data = wsDataResponse(esResponse);
-			log.info("Data:::" ,data);
+			log.info("Data:::" + data);
 			if (data.isEmpty()) {
 				throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND",
 						"Could not find user or water connection details !");
 
 			}
 		} catch (Exception e) {
-			log.info("Stack Trace"+e);
+			log.info("Stack Trace " +e.getStackTrace());
 			throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND",
 					"Could not find user or water connection details !");
 		}
