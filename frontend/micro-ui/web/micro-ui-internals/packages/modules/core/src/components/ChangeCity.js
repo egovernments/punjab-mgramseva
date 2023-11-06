@@ -52,7 +52,7 @@ const ChangeCity = (prop) => {
       data?.MdmsRes?.["tenant"]["tenants"]?.map((items) => {
         if (items?.code !== "pb" && items?.code === uniCode) {
           filteredArray.push({
-            label: `${prop?.t(Digit.Utils.locale.getCityLocale(items.divisionCode))} - ${prop?.t(
+            label: `${prop?.t(Digit.Utils.locale.convertToLocale(items?.divisionCode, "EGOV_LOCATION_DIVISION"))} - ${prop?.t(
               `TENANT_TENANTS_${stringReplaceAll(uniCode, ".", "_")?.toUpperCase()}`
             )}`,
             value: uniCode,
@@ -78,7 +78,7 @@ const ChangeCity = (prop) => {
         t={prop?.t}
         style={{ width: "150px" }}
         option={selectCityData}
-        selected={selectCityData.filter((cityValue) => cityValue.value === dropDownData?.value)}
+        selected={dropDownData}
         optionKey={"label"}
         select={handleChangeCity}
         // freeze={true}
