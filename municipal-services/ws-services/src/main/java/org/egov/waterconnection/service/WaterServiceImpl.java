@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
@@ -56,6 +57,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.JsonPath;
 
 @Component
+@Slf4j
 public class WaterServiceImpl implements WaterService {
 
 
@@ -611,6 +613,7 @@ public class WaterServiceImpl implements WaterService {
 		if (!StringUtils.isEmpty(criteria.getTextSearch())) {
 			data = waterConnectionSearch(criteria, esResponse);
 		} else {
+			log.info("Criteria ::"+criteria);
 			data = waterConnectionFuzzySearch(criteria, esResponse);
 		}
 
@@ -632,12 +635,14 @@ public class WaterServiceImpl implements WaterService {
 		List<Map<String, Object>> data;
 		try {
 			data = wsDataResponse(esResponse);
+			log.info("Data:::" ,data);
 			if (data.isEmpty()) {
 				throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND",
 						"Could not find user or water connection details !");
 
 			}
 		} catch (Exception e) {
+			log.info("Stack Trace"+e);
 			throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND",
 					"Could not find user or water connection details !");
 		}
@@ -655,6 +660,7 @@ public class WaterServiceImpl implements WaterService {
 	private List<Map<String, Object>> wsDataResponse(Object esResponse) {
 
 		List<Map<String, Object>> data;
+		log.info("Data",esResponse);
 		try {
 			data = JsonPath.read(esResponse, WCConstants.ES_DATA_PATH);
 		} catch (Exception e) {
