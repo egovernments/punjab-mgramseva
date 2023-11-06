@@ -660,7 +660,7 @@ public class WaterServiceImpl implements WaterService {
 	private List<Map<String, Object>> wsDataResponse(Object esResponse) {
 
 		List<Map<String, Object>> data;
-		log.info("Data",esResponse);
+		log.info("Data:" +esResponse);
 		try {
 			data = JsonPath.read(esResponse, WCConstants.ES_DATA_PATH);
 		} catch (Exception e) {
