@@ -664,6 +664,7 @@ public class WaterServiceImpl implements WaterService {
 		try {
 			data = JsonPath.read(esResponse, WCConstants.ES_DATA_PATH);
 		} catch (Exception e) {
+			log.info("Stack trace here::",e.getStackTrace());
 			throw new CustomException("PARSING_ERROR", "Failed to extract data from es response");
 		}
 
