@@ -78,7 +78,7 @@ const EmployeeAction = ({ t, action, tenantId, closeModal, submitAction, applica
   }
   useEffect(() => {
     setReasons(
-      data?.["egov-hrms"]?.DeactivationReason.map((ele) => {
+      data?.["egov-hrms"]?.DeactivationReason?.map((ele) => {
         ele["i18key"] = "EGOV_HRMS_DEACTIVATIONREASON_" + ele.code;
         return ele;
       })

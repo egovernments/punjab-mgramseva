@@ -23,11 +23,11 @@ const HRMSCard = () => {
       ? [
           {
             label: t("WORK_BENCH_URL_MASTER_DATA"),
-            link: "https://mgramseva-uat.psegs.in/workbench-ui/employee/workbench/manage-master-data",
+            link: `${window?.location?.origin}/workbench-ui/employee/workbench/manage-master-data`,
           },
           {
             label: t("WORK_BENCH_URL_LOCALIZATION"),
-            link: "https://mgramseva-uat.psegs.in/workbench-ui/employee/workbench/localisation-search",
+            link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
           },
         ]
       : [];
