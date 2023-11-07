@@ -209,13 +209,13 @@ const Details = () => {
                         text={t(element?.hierarchy ? `EGOV_LOCATION_TENANTBOUNDARY_${element?.hierarchy}` : "NA")}
                         textStyle={{ whiteSpace: "pre" }}
                       />
-                      {STATE_ADMIN && (
+                      {STATE_ADMIN ? (
                         <Row
                           label={t("HR_DIVISIONS_LABEL")}
                           text={t(Digit.Utils.locale.convertToLocale(element?.division, "EGOV_LOCATION_BOUNDARYTYPE"))}
                           textStyle={{ whiteSpace: "pre" }}
                         />
-                      )}
+                      ) : null}
                       <Row
                         label={t("HR_BOUNDARY_TYPE_LABEL")}
                         text={t(Digit.Utils.locale.convertToLocale(element?.boundaryType, "EGOV_LOCATION_BOUNDARYTYPE"))}

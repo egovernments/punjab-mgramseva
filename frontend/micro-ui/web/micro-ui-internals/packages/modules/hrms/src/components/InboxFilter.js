@@ -7,6 +7,8 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
   const [filters, onSelectFilterRoles] = useState(searchParams?.filters?.role || { role: [] });
   const [_searchParams, setSearchParams] = useState(() => searchParams);
   const [selectedRoles, onSelectFilterRolessetSelectedRole] = useState(null);
+  const [divisionTenants, setDivisionTenants] = useState([]);
+  const [seletedDivision, setSelectedDivision] = useState();
   const { t } = useTranslation();
   const tenantIds = Digit.SessionStorage.get("HRMS_TENANTS");
 
@@ -99,6 +101,12 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
       setSearchParams({ ..._searchParams, isActive: isActive.code });
     }
   }, [isActive]);
+
+  useEffect(() => {
+    if (divisionTenants) {
+      setSearchParams({ ..._searchParams, tenantIds: divisionTenants });
+    }
+  }, [divisionTenants]);
   const clearAll = () => {
     onFilterChange({ delete: Object.keys(searchParams) });
     settenantId(tenantIds.filter((ele) => ele.code == Digit.ULBService.getCurrentTenantId())[0]);
@@ -107,6 +115,7 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
     setIsactive(null);
     props?.onClose?.();
     onSelectFilterRoles({ role: [] });
+    setDivisionTenants(null);
   };
 
   const GetSelectOptions = (lable, options, selected, select, optionKey, onRemove, key) => {
@@ -123,6 +132,31 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
         </div>
       </div>
     );
+  };
+
+  let divisions = [];
+  divisions = data?.MdmsRes?.["tenant"]["tenants"]
+    ?.filter((items) => items?.divisionCode)
+    ?.map((item) => {
+      return {
+        code: item.divisionCode,
+        name: item.divisionName,
+        i18text: Digit.Utils.locale.convertToLocale(item?.divisionCode, "EGOV_LOCATION_DIVISION"),
+      };
+    });
+  const uniqueDivisions = divisions?.reduce((unique, obj) => {
+    const isDuplicate = unique.some((item) => item.id === obj.id && item.name === obj.name);
+    if (!isDuplicate) {
+      unique.push(obj);
+    }
+    return unique;
+  }, []);
+  const selectDivision = (value) => {
+    // Extract projects using array methods
+    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj.divisionCode === value.code);
+    const finalProjects = project?.map((project) => project?.code);
+    setDivisionTenants(finalProjects);
+    setSelectedDivision(value);
   };
   return (
     <React.Fragment>
@@ -160,32 +194,10 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
             )}
           </div>
           <div>
-            {/* <div>
-              <div className="filter-label">{t("HR_ULB_LABEL")}</div>
-              <Dropdown
-                option={[
-                  ...getCityThatUserhasAccess(tenantIds)
-                    ?.sort((x, y) => x?.name?.localeCompare(y?.name))
-                    .map((city) => {
-                      return { ...city, i18text: Digit.Utils.locale.getCityLocale(city.code) };
-                    }),
-                ]}
-                selected={tenantId}
-                select={settenantId}
-                optionKey={"i18text"}
-                t={t}
-              />
-            </div> */}
-            {/* <div>
-              <div className="filter-label">{t("HR_COMMON_TABLE_COL_DEPT")}</div>
-              <Dropdown
-                option={Digit.Utils.locale.convertToLocaleData(data?.MdmsRes?.["common-masters"]?.Department, "COMMON_MASTERS_DEPARTMENT")}
-                selected={departments}
-                select={setDepartments}
-                optionKey={"i18text"}
-                t={t}
-              />
-            </div> */}
+            <div>
+              <div className="filter-label">{t("HR_DIVISIONS_LABEL")}</div>
+              <Dropdown option={uniqueDivisions} selected={seletedDivision} select={selectDivision} optionKey={"i18text"} t={t} />
+            </div>
             <div>
               <div>
                 {GetSelectOptions(
