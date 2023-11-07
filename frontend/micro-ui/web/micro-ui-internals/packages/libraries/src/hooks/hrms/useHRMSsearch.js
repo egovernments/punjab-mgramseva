@@ -10,3 +10,7 @@ export const useHRMSSearch = (searchparams, tenantId, filters, isupdated, roles,
 };
 
 export default useHRMSSearch;
+
+export const useHRMSEmployeeSearch = (criteria, isupdated, config = {}) => {
+  return useQuery(["HRMS_SEARCH", criteria, isupdated], () => HrmsService.searchEmployee(criteria), config);
+};

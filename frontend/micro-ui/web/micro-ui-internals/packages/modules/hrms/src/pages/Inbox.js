@@ -17,7 +17,6 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
   const [searchParams, setSearchParams] = useState(() => {
     return initialStates.searchParams || {};
   });
-
   let isMobile = window.Digit.Utils.browser.isMobile();
   let paginationParams = isMobile
     ? { limit: 100, offset: pageOffset, sortBy: sortParams?.[0]?.id, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" }
@@ -35,6 +34,15 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     isupdate,
     roles
   );
+  let requestBody = {
+    criteria: {
+      tenantIds: searchParams?.tenantIds,
+      roles: ["DIV_ADMIN", "HRMS_ADMIN"],
+      type: "EMPLOYEE",
+    },
+  };
+
+  const { data: divisionData, ...rests } = Digit.Hooks.hrms.useHRMSEmployeeSearch(requestBody, isupdate);
 
   useEffect(() => {
     // setTotalReacords(res?.EmployeCount?.totalEmployee);
@@ -92,7 +100,6 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
       },
     ];
   };
-
   if (isLoading) {
     return <Loader />;
   }
@@ -102,7 +109,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
       return (
         <MobileInbox
           businessService={businessService}
-          data={data}
+          data={divisionData ? divisionData : data}
           isLoading={hookLoading}
           defaultSearchParams={initialStates.searchParams}
           isSearch={!isInbox}
@@ -132,7 +139,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
           {isInbox && <Header>{t("HR_HOME_SEARCH_RESULTS_HEADING")}</Header>}
           <DesktopInbox
             businessService={businessService}
-            data={data}
+            data={divisionData ? divisionData : data}
             isLoading={hookLoading}
             defaultSearchParams={initialStates.searchParams}
             isSearch={!isInbox}
