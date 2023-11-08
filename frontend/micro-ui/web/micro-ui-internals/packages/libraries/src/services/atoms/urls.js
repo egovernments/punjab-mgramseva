@@ -112,7 +112,7 @@ const Urls = {
   },
   hrms: {
     search: "/egov-hrms/employees/_search",
-    searchListOfEmployee: "egov-hrms/employees/_searchListOfEmployee",
+    searchListOfEmployee: "/egov-hrms/employees/_searchListOfEmployee",
     count: "/egov-hrms/employees/v1/_count",
     create: "/egov-hrms/employees/_create",
     update: "/egov-hrms/employees/_update",
