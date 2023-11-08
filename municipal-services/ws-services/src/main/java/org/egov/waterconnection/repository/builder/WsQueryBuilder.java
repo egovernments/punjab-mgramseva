@@ -144,17 +144,14 @@ public class WsQueryBuilder {
 			+   INNER_JOIN_STRING + "  egbs_demanddetail_v1 dd on dd.demandid = dem.id WHERE dem.taxperiodfrom >= ? AND dem.taxperiodto <= ? "
 			+ "  AND conn.tenantId = ? AND conn.status='Active' AND dem.status='ACTIVE' GROUP BY conn.connectionno,conn.tenantId,conn.oldConnectionno,conn.createdTime,connectionholder.userid ORDER BY conn.connectionno ";
 	
-	public static final String COLLECTION_REPORT_QUERY = "SELECT distinct conn.tenantId as tenantId,"
-			+ " conn.connectionno as connectionNo,conn.oldConnectionno as oldConnectionNo,"
-			+ " connectionholder.userid as uuid, SUM(pd.amountpaid) as totalAmountPaid,"
-			+ " pay.paymentmode as paymentmode FROM eg_ws_connection conn "
-			+ INNER_JOIN_STRING  + " eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id "
-			+ INNER_JOIN_STRING + " egbs_billdetail_v1 bd on bd.consumercode = conn.connectionno "
-			+ INNER_JOIN_STRING + " egcl_paymentdetail pd on pd.billid = bd.billid "
-			+ INNER_JOIN_STRING + " egcl_payment pay on pay.id = pd.paymentid WHERE conn.status = 'Active' "
-			+ " AND pay.transactiondate BETWEEN ? AND ? AND conn.tenantId = ? "
-			+ " AND pay.paymentstatus!='CANCELLED' GROUP BY conn.tenantId,conn.connectionno,conn.oldConnectionno,"
-			+ " connectionholder.userid,pay.paymentmode ORDER BY conn.connectionno ";
+	public static final String COLLECTION_REPORT_QUERY = "SELECT c.connectionno as connectionNo,p.tenantid as tenantId,c.oldconnectionno as oldConnectionNo," +
+			" p.paymentmode,ch.userid as uuid,SUM(p.totalamountpaid) AS totalAmountPaid FROM egcl_payment p " + INNER_JOIN_STRING +
+			" eg_ws_connection c ON p.tenantid = c.tenantid " + INNER_JOIN_STRING + " eg_ws_connectionholder ch " +
+			" ON c.id = ch.connectionid WHERE p.tenantid = ? AND p.transactiondate BETWEEN ? AND ? AND " +
+			" p.id IN (SELECT paymentid FROM egcl_paymentdetail pd WHERE pd.tenantid =? and " +
+			" pd.billid IN (SELECT bd.billid FROM egbs_billdetail_v1 bd WHERE bd.consumercode = c.connectionno " +
+			" and bd.tenantid = ?)) AND p.instrumentstatus = 'APPROVED' AND p.paymentstatus NOT IN ('CANCELLED') " +
+			" GROUP BY c.connectionno, p.tenantid, c.oldconnectionno, p.paymentmode, ch.userid ";
 
 	public static final String INACTIVE_CONSUMER_QUERY= "SELECT connectionno AS connectionno,status AS status,lastmodifiedby "
 			+ " AS lastmodifiedbyUuid,lastmodifiedtime AS lastmodifiedtime FROM eg_ws_connection_audit WHERE connectionno "
