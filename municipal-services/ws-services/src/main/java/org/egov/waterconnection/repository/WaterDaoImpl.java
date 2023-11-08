@@ -576,9 +576,11 @@ public class WaterDaoImpl implements WaterDao {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.COLLECTION_REPORT_QUERY);
 
 		List<Object> preparedStatement = new ArrayList<>();
+		             preparedStatement.add(tenantId);
                      preparedStatement.add(payStartDateTime);
 					 preparedStatement.add(payEndDateTime);
 					 preparedStatement.add(tenantId);
+		             preparedStatement.add(tenantId);
 
 		if(sortOrder.equals(SearchCriteria.SortOrder.DESC.name()))
 			query.append(" DESC ");
