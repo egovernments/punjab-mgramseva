@@ -148,10 +148,10 @@ public class WsQueryBuilder {
 			" p.paymentmode,ch.userid as uuid,SUM(p.totalamountpaid) AS totalAmountPaid FROM egcl_payment p " + INNER_JOIN_STRING +
 			" eg_ws_connection c ON p.tenantid = c.tenantid " + INNER_JOIN_STRING + " eg_ws_connectionholder ch " +
 			" ON c.id = ch.connectionid WHERE p.tenantid = ? AND p.transactiondate BETWEEN ? AND ? AND " +
-			" p.id IN (SELECT paymentid FROM egcl_paymentdetail pd WHERE pd.tenantid =? and " +
-			" pd.billid IN (SELECT bd.billid FROM egbs_billdetail_v1 bd WHERE bd.consumercode = c.connectionno " +
+			" p.id IN ( SELECT paymentid FROM egcl_paymentdetail pd WHERE pd.tenantid =? and " +
+			" pd.billid IN ( SELECT bd.billid FROM egbs_billdetail_v1 bd WHERE bd.consumercode = c.connectionno " +
 			" and bd.tenantid = ?)) AND p.instrumentstatus = 'APPROVED' AND p.paymentstatus NOT IN ('CANCELLED') " +
-			" GROUP BY c.connectionno, p.tenantid, c.oldconnectionno, p.paymentmode, ch.userid ";
+			" GROUP BY c.connectionno, p.tenantid, c.oldconnectionno, p.paymentmode, ch.userid ORDER BY c.connectionno ";
 
 	public static final String INACTIVE_CONSUMER_QUERY= "SELECT connectionno AS connectionno,status AS status,lastmodifiedby "
 			+ " AS lastmodifiedbyUuid,lastmodifiedtime AS lastmodifiedtime FROM eg_ws_connection_audit WHERE connectionno "
