@@ -40,9 +40,8 @@ const CreateEmployee = () => {
   const checkMailNameNum = (formData) => {
     const email = formData?.SelectEmployeeEmailId?.emailId || "";
     const name = formData?.SelectEmployeeName?.employeeName || "";
-    const address = formData?.SelectEmployeeCorrespondenceAddress?.correspondenceAddress || "";
     const validEmail = email.length == 0 ? true : email.match(Digit.Utils.getPattern("Email"));
-    return validEmail && name.match(Digit.Utils.getPattern("Name")) && address.match(Digit.Utils.getPattern("Address"));
+    return validEmail && name.match(Digit.Utils.getPattern("Name"));
   };
   useEffect(() => {
     if (mobileNumber && mobileNumber.length == 10 && mobileNumber.match(Digit.Utils.getPattern("MobileNo"))) {
@@ -90,46 +89,23 @@ const CreateEmployee = () => {
     }
     for (let i = 0; i < formData?.Jurisdictions?.length; i++) {
       let key = formData?.Jurisdictions[i];
-      if (
-        !(
-          (key?.boundary || key?.divisionBoundary) &&
-          (key?.boundaryType || key?.division) &&
-          key?.hierarchy &&
-          key?.tenantId &&
-          key?.roles?.length > 0
-        )
-      ) {
+      if (!((key?.boundary || key?.divisionBoundary) && (key?.boundaryType || key?.division) && key?.tenantId)) {
         setcheck(false);
         break;
       } else {
-        setcheck(true);
+        if (!STATE_ADMIN) {
+          key?.roles?.length > 0 && setcheck(true);
+        } else if (STATE_ADMIN) {
+          setcheck(true);
+        }
       }
     }
 
-    // let setassigncheck = false;
-    // for (let i = 0; i < formData?.Assignments?.length; i++) {
-    //   let key = formData?.Assignments[i];
-    //   if (
-    //     !(key.department && key.designation && key.fromDate && (formData?.Assignments[i].toDate || formData?.Assignments[i]?.isCurrentAssignment))
-    //   ) {
-    //     setassigncheck = false;
-    //     break;
-    //   } else if (formData?.Assignments[i].toDate == null && formData?.Assignments[i]?.isCurrentAssignment == false) {
-    //     setassigncheck = false;
-    //     break;
-    //   } else {
-    //     setassigncheck = true;
-    //   }
-    // }
     if (
-      formData?.SelectDateofEmployment?.dateOfAppointment &&
-      formData?.SelectEmployeeCorrespondenceAddress?.correspondenceAddress &&
       formData?.SelectEmployeeGender?.gender.code &&
       formData?.SelectEmployeeName?.employeeName &&
-      // formData?.SelectEmployeeType?.code &&
       formData?.SelectEmployeePhoneNumber?.mobileNumber &&
       checkfield &&
-      // setassigncheck &&
       phonecheck &&
       checkMailNameNum(formData)
     ) {
@@ -178,11 +154,27 @@ const CreateEmployee = () => {
     let jurisdictions = [];
     if (STATE_ADMIN) {
       const divisionBoundaryCodes = data?.Jurisdictions.flatMap((j) => j.divisionBoundary.map((item) => item.code));
-
+      let stateRoles = [
+        {
+          code: "EMPLOYEE",
+          name: "EMPLOYEE",
+          labelKey: "ACCESSCONTROL_ROLES_ROLES_EMPLOYEE",
+        },
+        {
+          code: "DIV_ADMIN",
+          name: "DIVISION ADMIN",
+          labelKey: "ACCESSCONTROL_ROLES_ROLES_DIV_ADMIN",
+        },
+        {
+          code: "HRMS_ADMIN",
+          name: "HRMS_ADMIN",
+          labelKey: "ACCESSCONTROL_ROLES_ROLES_HRMS_ADMIN",
+        },
+      ];
       divisionBoundaryCodes &&
         divisionBoundaryCodes.length > 0 &&
         divisionBoundaryCodes.map((item) => {
-          data?.Jurisdictions[0]?.roles?.map((role) => {
+          stateRoles?.map((role) => {
             roles.push({
               code: role.code,
               name: role.name,
@@ -195,11 +187,11 @@ const CreateEmployee = () => {
       data?.Jurisdictions?.map((items) => {
         items?.divisionBoundary.map((item) => {
           jurisdictions.push({
-            hierarchy: items?.hierarchy,
+            hierarchy: "REVENUE",
             boundaryType: "City",
             boundary: item?.code,
             tenantId: item?.code,
-            roles: items.roles,
+            roles: stateRoles,
           });
         });
       });
@@ -233,6 +225,11 @@ const CreateEmployee = () => {
       {
         tenantId: tenantId,
         employeeStatus: "EMPLOYED",
+
+        code: data?.SelectEmployeeId?.code ? data?.SelectEmployeeId?.code : undefined,
+        dateOfAppointment: new Date().getTime(),
+        employeeType: hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.employeeType,
+        jurisdictions: STATE_ADMIN ? jurisdictions : data?.Jurisdictions,
         assignments: [
           {
             fromDate: new Date().getTime(),
@@ -243,14 +240,10 @@ const CreateEmployee = () => {
               : hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.designation?.filter((x) => !x?.isStateUser)[0]?.code,
           },
         ],
-        code: data?.SelectEmployeeId?.code ? data?.SelectEmployeeId?.code : undefined,
-        dateOfAppointment: new Date(data?.SelectDateofEmployment?.dateOfAppointment).getTime(),
-        employeeType: hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.employeeType,
-        jurisdictions: STATE_ADMIN ? jurisdictions : data?.Jurisdictions,
         user: {
           mobileNumber: data?.SelectEmployeePhoneNumber?.mobileNumber,
           name: data?.SelectEmployeeName?.employeeName,
-          correspondenceAddress: data?.SelectEmployeeCorrespondenceAddress?.correspondenceAddress,
+          correspondenceAddress: tenantId,
           emailId: data?.SelectEmployeeEmailId?.emailId ? data?.SelectEmployeeEmailId?.emailId : undefined,
           gender: data?.SelectEmployeeGender?.gender.code,
           dob: 805055400000,

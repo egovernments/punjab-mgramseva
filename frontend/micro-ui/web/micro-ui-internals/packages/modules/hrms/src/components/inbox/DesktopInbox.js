@@ -161,7 +161,7 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
                 roles: ["HRMS_ADMIN"],
               },
             ]}
-            headerText={"HRMS"}
+            headerText={"User Management"}
             businessService={props.businessService}
           />
           <div>

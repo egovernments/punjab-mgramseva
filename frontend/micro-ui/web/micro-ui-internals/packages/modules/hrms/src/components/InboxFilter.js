@@ -8,16 +8,19 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
   const [_searchParams, setSearchParams] = useState(() => searchParams);
   const [selectedRoles, onSelectFilterRolessetSelectedRole] = useState(null);
   const [divisionTenants, setDivisionTenants] = useState([]);
-  const [seletedDivision, setSelectedDivision] = useState();
+  const [selectedDivision, setSelectedDivision] = useState();
+  const [Divisions, setDivisions] = useState([]);
+  const [rolesData, setRolesData] = useState([]);
+  const [isRefreshed, setIsRefreshed] = useState(false);
   const { t } = useTranslation();
   const tenantIds = Digit.SessionStorage.get("HRMS_TENANTS");
+  const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
 
   function onSelectRoles(value, type) {
     if (!ifExists(filters.role, value)) {
       onSelectFilterRoles({ ...filters, role: [...filters.role, value] });
     }
   }
-
   const onRemove = (index, key) => {
     let afterRemove = filters[key].filter((value, i) => {
       return i !== index;
@@ -107,6 +110,39 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
       setSearchParams({ ..._searchParams, tenantIds: divisionTenants });
     }
   }, [divisionTenants]);
+
+  useEffect(() => {
+    let divisions = [];
+    divisions = data?.MdmsRes?.["tenant"]["tenants"]
+      ?.filter((items) => items?.divisionCode)
+      ?.map((item) => {
+        return {
+          code: item.divisionCode,
+          name: item.divisionName,
+          i18text: Digit.Utils.locale.convertToLocale(item?.divisionCode, "EGOV_LOCATION_DIVISION"),
+        };
+      });
+    const uniqueDivisions = divisions?.reduce((unique, obj) => {
+      const isDuplicate = unique.some((item) => item.id === obj.id && item.name === obj.name);
+      if (!isDuplicate) {
+        unique.push(obj);
+      }
+      return unique;
+    }, []);
+
+    setDivisions(uniqueDivisions);
+
+    // Specify the role codes you want to filter
+    const roleCodesToFilter = ["HRMS_ADMIN", "DIV_ADMIN", "MDMS_ADMIN", "LOC_ADMIN", "SYSTEM"];
+    // Use the filter method to extract roles with the specified codes
+    const roles = data?.MdmsRes?.["ws-services-masters"]?.WSServiceRoles?.filter((role) => {
+      return !roleCodesToFilter.includes(role.code);
+    })?.map((role) => {
+      return { code: role.code, name: role?.name ? role?.name : " ", i18text: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
+    });
+    setRolesData(roles);
+  }, [data?.MdmsRes, isRefreshed, divisionTenants, selectedDivision]);
+
   const clearAll = () => {
     onFilterChange({ delete: Object.keys(searchParams) });
     settenantId(tenantIds.filter((ele) => ele.code == Digit.ULBService.getCurrentTenantId())[0]);
@@ -116,6 +152,8 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
     props?.onClose?.();
     onSelectFilterRoles({ role: [] });
     setDivisionTenants(null);
+    setSelectedDivision(null);
+    setIsRefreshed(!isRefreshed);
   };
 
   const GetSelectOptions = (lable, options, selected, select, optionKey, onRemove, key) => {
@@ -134,23 +172,6 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
     );
   };
 
-  let divisions = [];
-  divisions = data?.MdmsRes?.["tenant"]["tenants"]
-    ?.filter((items) => items?.divisionCode)
-    ?.map((item) => {
-      return {
-        code: item.divisionCode,
-        name: item.divisionName,
-        i18text: Digit.Utils.locale.convertToLocale(item?.divisionCode, "EGOV_LOCATION_DIVISION"),
-      };
-    });
-  const uniqueDivisions = divisions?.reduce((unique, obj) => {
-    const isDuplicate = unique.some((item) => item.id === obj.id && item.name === obj.name);
-    if (!isDuplicate) {
-      unique.push(obj);
-    }
-    return unique;
-  }, []);
   const selectDivision = (value) => {
     // Extract projects using array methods
     const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj.divisionCode === value.code);
@@ -158,6 +179,7 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
     setDivisionTenants(finalProjects);
     setSelectedDivision(value);
   };
+
   return (
     <React.Fragment>
       <div className="filter">
@@ -194,23 +216,23 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
             )}
           </div>
           <div>
-            <div>
-              <div className="filter-label">{t("HR_DIVISIONS_LABEL")}</div>
-              <Dropdown option={uniqueDivisions} selected={seletedDivision} select={selectDivision} optionKey={"i18text"} t={t} />
-            </div>
-            <div>
+            {STATE_ADMIN ? (
               <div>
-                {GetSelectOptions(
-                  t("HR_COMMON_TABLE_COL_ROLE"),
-                  Digit.Utils.locale.convertToLocaleData(data?.MdmsRes["ws-services-masters"]?.WSServiceRoles, "ACCESSCONTROL_ROLES_ROLES", t),
-                  selectedRoles,
-                  onSelectRoles,
-                  "i18text",
-                  onRemove,
-                  "role"
-                )}
+                <div className="filter-label">{t("HR_DIVISIONS_LABEL")}</div>
+                <Dropdown option={Divisions} selected={selectedDivision} select={selectDivision} optionKey={"i18text"} t={t} />
               </div>
-            </div>
+            ) : (
+              <div>
+                <div className="filter-label">{t("HR_COMMON_TABLE_COL_ROLE")}</div>
+                <Dropdown option={rolesData} selected={selectedRoles} select={onSelectRoles} optionKey={"i18text"} t={t} />
+                <div className="tag-container">
+                  {filters?.role?.length > 0 &&
+                    filters?.role?.map((value, index) => {
+                      return <RemoveableTag key={index} text={t(value["i18text"])} onClick={() => onRemove(index, "role")} />;
+                    })}
+                </div>
+              </div>
+            )}
             <div>
               <div className="filter-label">{t("HR_EMP_STATUS_LABEL")}</div>
               <RadioButtons

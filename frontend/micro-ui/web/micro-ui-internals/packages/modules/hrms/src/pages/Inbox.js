@@ -34,14 +34,21 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     isupdate,
     roles
   );
+
   let requestBody = {
     criteria: {
       tenantIds: searchParams?.tenantIds,
+      isActive: searchParams?.isActive,
       roles: ["DIV_ADMIN", "HRMS_ADMIN"],
       type: "EMPLOYEE",
     },
   };
-
+  if (searchParams?.hasOwnProperty("isActive")) {
+    requestBody.criteria = {
+      ...requestBody.criteria,
+      isActive: searchParams?.isActive,
+    };
+  }
   const { data: divisionData, ...rests } = Digit.Hooks.hrms.useHRMSEmployeeSearch(requestBody, isupdate);
 
   useEffect(() => {

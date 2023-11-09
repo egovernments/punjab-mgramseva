@@ -75,7 +75,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       let res = {
         id: jurisdiction?.id,
         hierarchy: hierarchylist[0]?.code,
-        boundaryType: jurisdiction?.boundaryType?.label,
+        boundaryType: "City",
         boundary: jurisdiction?.boundary?.code,
         tenantId: STATE_ADMIN ? jurisdiction?.divisionBoundary && jurisdiction?.divisionBoundary[0]?.code : jurisdiction?.boundary?.code,
         auditDetails: jurisdiction?.auditDetails,
@@ -125,7 +125,6 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       }
 
       let finalData = [];
-
       divisionData &&
         divisionData?.length > 0 &&
         divisionData?.map((data, index) => {
@@ -169,7 +168,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       config.key,
       [...jurisdictionData, ...inactiveJurisdictions].filter((value) => Object.keys(value).length !== 0)
     );
-  }, [jurisdictions]);
+  }, [jurisdictions, data?.MdmsRes]);
 
   useEffect(() => {
     setJuristictionsData(formData?.Jurisdictions);
@@ -228,7 +227,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   function getroledata() {
     if (STATE_ADMIN) {
       // Specify the role codes you want to filter
-      const roleCodesToFilter = ["HRMS_ADMIN", "EMPLOYEE", "DIV_ADMIN", "LOC_ADMIN", "MDMS_ADMIN"];
+      const roleCodesToFilter = ["HRMS_ADMIN", "EMPLOYEE", "DIV_ADMIN"];
       // Use the filter method to extract roles with the specified codes
       return data?.MdmsRes?.["ws-services-masters"]["WSServiceRoles"]
         .filter((role) => {
@@ -239,7 +238,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
         });
     } else {
       // Specify the role codes you want to filter
-      const roleCodesToFilter = ["HRMS_ADMIN", "DIV_ADMIN"];
+      const roleCodesToFilter = ["HRMS_ADMIN", "DIV_ADMIN", "MDMS_ADMIN", "LOC_ADMIN", "SYSTEM"];
       // Use the filter method to extract roles with the specified codes
       return data?.MdmsRes?.["ws-services-masters"].WSServiceRoles?.filter((role) => {
         return !roleCodesToFilter.includes(role.code);
@@ -248,7 +247,6 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       });
     }
   }
-
   if (isLoading) {
     return <Loader />;
   }
@@ -368,7 +366,7 @@ function Jurisdiction({
           return { ...city, i18text: Digit.Utils.locale.getCityLocale(city.code) };
         })
     );
-  }, [jurisdiction?.hierarchy, jurisdiction?.boundaryType, data?.MdmsRes]);
+  }, [jurisdiction?.hierarchy, data?.MdmsRes]);
 
   useEffect(() => {
     if (Boundary?.length > 0) {
@@ -542,19 +540,6 @@ function Jurisdiction({
             </div>
           ) : null}
         </LabelFieldPair>
-        <LabelFieldPair>
-          <CardLabel isMandatory={true} className="card-label-smaller">{`${t("HR_HIERARCHY_LABEL")} * `}</CardLabel>
-          <Dropdown
-            className="form-field"
-            selected={hierarchylist[0]}
-            disable={hierarchylist.length === 1 ? true : false}
-            isMandatory={true}
-            option={hierarchylist || []}
-            select={selectHierarchy}
-            optionKey="code"
-            t={t}
-          />
-        </LabelFieldPair>
         {STATE_ADMIN ? (
           <React.Fragment>
             <LabelFieldPair>
@@ -601,54 +586,40 @@ function Jurisdiction({
         ) : (
           <React.Fragment>
             <LabelFieldPair>
-              <CardLabel className="card-label-smaller">{`${t("HR_BOUNDARY_TYPE_LABEL")} * `}</CardLabel>
-              <Dropdown
-                className="form-field"
-                isMandatory={true}
-                selected={jurisdiction?.boundaryType}
-                disable={BoundaryType?.length === 0}
-                option={BoundaryType}
-                select={selectboundaryType}
-                optionKey="i18text"
-                t={t}
-              />
-            </LabelFieldPair>
-            <LabelFieldPair>
               <CardLabel className="card-label-smaller">{`${t("HR_BOUNDARY_LABEL")} * `}</CardLabel>
               <Dropdown
                 className="form-field"
                 isMandatory={true}
                 selected={jurisdiction?.boundary}
-                disable={Boundary?.length === 0}
                 option={Boundary}
                 select={selectedboundary}
                 optionKey="i18text"
                 t={t}
               />
             </LabelFieldPair>
+            <div style={{ display: !isMobile ? "flex" : "" }}>
+              <CardLabel className="card-label-smaller">{t("HR_COMMON_TABLE_COL_ROLE")} *</CardLabel>
+              <div className="form-field">
+                <MultiSelectDropdown
+                  className="form-field"
+                  isMandatory={true}
+                  defaultUnit="Selected"
+                  selected={jurisdiction?.roles}
+                  options={getroledata(roleoption)}
+                  onSelect={selectrole}
+                  optionsKey="labelKey"
+                  t={t}
+                />
+                <div className="tag-container">
+                  {jurisdiction?.roles.length > 0 &&
+                    jurisdiction?.roles.map((value, index) => {
+                      return <RemoveableTag key={index} text={`${t(value["labelKey"]).slice(0, 22)} ...`} onClick={() => onRemove(index, value)} />;
+                    })}
+                </div>
+              </div>
+            </div>
           </React.Fragment>
         )}
-        <div style={{ display: !isMobile ? "flex" : "" }}>
-          <CardLabel className="card-label-smaller">{t("HR_COMMON_TABLE_COL_ROLE")} *</CardLabel>
-          <div className="form-field">
-            <MultiSelectDropdown
-              className="form-field"
-              isMandatory={true}
-              defaultUnit="Selected"
-              selected={jurisdiction?.roles}
-              options={getroledata(roleoption)}
-              onSelect={selectrole}
-              optionsKey="labelKey"
-              t={t}
-            />
-            <div className="tag-container">
-              {jurisdiction?.roles.length > 0 &&
-                jurisdiction?.roles.map((value, index) => {
-                  return <RemoveableTag key={index} text={`${t(value["labelKey"]).slice(0, 22)} ...`} onClick={() => onRemove(index, value)} />;
-                })}
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
