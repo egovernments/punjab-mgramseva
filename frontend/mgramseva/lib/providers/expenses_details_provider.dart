@@ -410,9 +410,6 @@ class ExpensesDetailsProvider with ChangeNotifier {
         }
         expenditureDetails.mobileNumberController.text = mobileNumber;
       }
-      if(expenditureDetails.mobileNumberController.text.isEmpty){
-        return true;
-      }
       return false;
     }
     else {
