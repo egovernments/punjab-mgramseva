@@ -69,8 +69,6 @@ const ChangeCity = (prop) => {
     setSelectCityData(filteredArray);
   }, [dropDownData, data?.MdmsRes]);
 
-  console.log(dropDownData, "dropDownData");
-  console.log(selectCityData, "selectCityData");
   // if (isDropdown) {
   return (
     <div style={prop?.mobileView ? { color: "#767676" } : {}}>

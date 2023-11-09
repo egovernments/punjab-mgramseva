@@ -115,21 +115,6 @@ const Details = () => {
               <Row label={t("HR_MOB_NO_LABEL")} text={data?.Employees?.[0]?.user?.mobileNumber || "NA"} textStyle={{ whiteSpace: "pre" }} />
               <Row label={t("HR_GENDER_LABEL")} text={t(data?.Employees?.[0]?.user?.gender) || "NA"} />
               <Row label={t("HR_EMAIL_LABEL")} text={data?.Employees?.[0]?.user?.emailId || "NA"} />
-              <Row label={t("HR_CORRESPONDENCE_ADDRESS_LABEL")} text={data?.Employees?.[0]?.user?.correspondenceAddress || "NA"} />
-            </StatusTable>
-            <CardSubHeader className="card-section-header">{t("HR_NEW_EMPLOYEE_FORM_HEADER")}</CardSubHeader>
-            <StatusTable>
-              <Row
-                label={t("HR_EMPLOYMENT_TYPE_LABEL")}
-                text={t(data?.Employees?.[0]?.employeeType ? `EGOV_HRMS_EMPLOYEETYPE_${data?.Employees?.[0]?.employeeType}` : "NA")}
-                textStyle={{ whiteSpace: "pre" }}
-              />
-              <Row
-                label={t("HR_APPOINTMENT_DATE_LABEL")}
-                text={convertEpochFormateToDate(data?.Employees?.[0]?.dateOfAppointment) || "NA"}
-                textStyle={{ whiteSpace: "pre" }}
-              />
-              <Row label={t("HR_EMPLOYEE_ID_LABEL")} text={data?.Employees?.[0]?.code} />
             </StatusTable>
             {data?.Employees?.[0]?.isActive == false ? (
               <StatusTable>
@@ -204,11 +189,6 @@ const Details = () => {
                         {" "}
                         {t("HR_JURISDICTION")} {index + 1}
                       </div>
-                      <Row
-                        label={t("HR_HIERARCHY_LABEL")}
-                        text={t(element?.hierarchy ? `EGOV_LOCATION_TENANTBOUNDARY_${element?.hierarchy}` : "NA")}
-                        textStyle={{ whiteSpace: "pre" }}
-                      />
                       {STATE_ADMIN ? (
                         <Row
                           label={t("HR_DIVISIONS_LABEL")}
@@ -216,50 +196,19 @@ const Details = () => {
                           textStyle={{ whiteSpace: "pre" }}
                         />
                       ) : null}
-                      <Row
-                        label={t("HR_BOUNDARY_TYPE_LABEL")}
-                        text={t(Digit.Utils.locale.convertToLocale(element?.boundaryType, "EGOV_LOCATION_BOUNDARYTYPE"))}
-                        textStyle={{ whiteSpace: "pre" }}
-                      />
                       <Row label={t("HR_BOUNDARY_LABEL")} text={t(element?.boundary)} />
-                      <Row
-                        label={t("HR_ROLE_LABEL")}
-                        text={data?.Employees?.[0]?.user.roles
-                          .filter((ele) => ele.tenantId == element?.boundary)
-                          ?.map((ele) => t(`ACCESSCONTROL_ROLES_ROLES_` + ele?.code))}
-                      />
+                      {!STATE_ADMIN ? (
+                        <Row
+                          label={t("HR_ROLE_LABEL")}
+                          text={data?.Employees?.[0]?.user.roles
+                            .filter((ele) => ele.tenantId == element?.boundary)
+                            ?.map((ele) => t(`ACCESSCONTROL_ROLES_ROLES_` + ele?.code))}
+                        />
+                      ) : null}
                     </StatusTable>
                   );
                 })
               : null}
-            {/* {data?.Employees?.[0]?.assignments.length > 0 ? (
-              <CardSubHeader className="card-section-header">{t("HR_ASSIGN_DET_HEADER")}</CardSubHeader>
-            ) : null} */}
-            {/* {data?.Employees?.[0]?.assignments.map((element, index) => (
-              <StatusTable
-                key={index}
-                style={{
-                  maxWidth: "640px",
-                  border: "1px solid rgb(214, 213, 212)",
-                  inset: "0px",
-                  width: "auto",
-                  padding: ".2rem",
-                  marginBottom: "2rem",
-                }}
-              >
-                <div style={{ paddingBottom: "2rem" }}>
-                  {t("HR_ASSIGNMENT")} {index + 1}
-                </div>
-                <Row label={t("HR_ASMT_FROM_DATE_LABEL")} text={convertEpochFormateToDate(element?.fromDate)} textStyle={{ whiteSpace: "pre" }} />
-                <Row
-                  label={t("HR_ASMT_TO_DATE_LABEL")}
-                  text={element?.isCurrentAssignment ? "Currently Working Here" : convertEpochFormateToDate(element?.toDate)}
-                  textStyle={{ whiteSpace: "pre" }}
-                />
-                <Row label={t("HR_DEPT_LABEL")} text={t("COMMON_MASTERS_DEPARTMENT_" + element?.department)} />
-                <Row label={t("HR_DESG_LABEL")} text={t("COMMON_MASTERS_DESIGNATION_" + element?.designation)} />
-              </StatusTable>
-            ))} */}
           </Card>
         </div>
       ) : null}

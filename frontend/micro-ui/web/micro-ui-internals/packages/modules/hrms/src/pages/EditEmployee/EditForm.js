@@ -1,307 +1,175 @@
-import { FormComposer, Toast, Loader } from "@egovernments/digit-ui-react-components";
-import React, { useEffect, useState } from "react";
+import { Header, Loader } from "@egovernments/digit-ui-react-components";
+import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
-import { newConfig } from "../../components/config/config";
-import { convertEpochToDate } from "../../components/Utils";
+import DesktopInbox from "../components/inbox/DesktopInbox";
+import MobileInbox from "../components/inbox/MobileInbox";
 
-const EditForm = ({ tenantId, data }) => {
-  const { t } = useTranslation();
-  const history = useHistory();
-  const [canSubmit, setSubmitValve] = useState(false);
-  const [showToast, setShowToast] = useState(null);
-  const [mobileNumber, setMobileNumber] = useState(null);
-  const [phonecheck, setPhonecheck] = useState(false);
-  const [checkfield, setcheck] = useState(false);
-  const { data: mdmsData, isLoading } = Digit.Hooks.useCommonMDMS(Digit.ULBService.getStateId(), "egov-hrms", ["CommonFieldsConfig"], {
-    select: (data) => {
-      return {
-        config: data?.MdmsRes?.["egov-hrms"]?.CommonFieldsConfig,
-      };
-    },
-    retry: false,
-    enable: false,
-  });
-  const [errorInfo, setErrorInfo, clearError] = Digit.Hooks.useSessionStorage("EMPLOYEE_HRMS_ERROR_DATA", false);
-  const [mutationHappened, setMutationHappened, clear] = Digit.Hooks.useSessionStorage("EMPLOYEE_HRMS_MUTATION_HAPPENED", false);
-  const [successData, setsuccessData, clearSuccessData] = Digit.Hooks.useSessionStorage("EMPLOYEE_HRMS_MUTATION_SUCCESS_DATA", false);
-
+const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filterComponent, isInbox }) => {
+  const tenantId = Digit.ULBService.getCurrentTenantId();
+  const { isLoading: isLoading, Errors, data: res } = Digit.Hooks.hrms.useHRMSCount(tenantId);
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
+
+  const { t } = useTranslation();
+  const [pageOffset, setPageOffset] = useState(initialStates.pageOffset || 0);
+  const [pageSize, setPageSize] = useState(initialStates.pageSize || 10);
+  const [sortParams, setSortParams] = useState([{ id: "code", desc: false }]);
+  const [totalRecords, setTotalReacords] = useState(undefined);
+  const [searchParams, setSearchParams] = useState(() => {
+    return initialStates.searchParams || {};
+  });
+  let isMobile = window.Digit.Utils.browser.isMobile();
+  let paginationParams = isMobile
+    ? { limit: 100, offset: pageOffset, sortBy: sortParams?.[0]?.id, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" }
+    : { limit: pageSize, offset: pageOffset, sortBy: sortParams?.[0]?.id, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" };
+  const isupdate = Digit.SessionStorage.get("isupdate");
+
+  let roles = STATE_ADMIN
+    ? { roles: "DIV_ADMIN, HRMS_ADMIN", isStateLevelSearch: true }
+    : { roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER", isStateLevelSearch: false };
+
+  const { isLoading: hookLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSSearch(
+    searchParams,
+    tenantId,
+    paginationParams,
+    isupdate,
+    roles
+  );
+
+  let requestBody = {
+    criteria: {
+      tenantIds: searchParams?.tenantIds,
+      isActive: searchParams?.isActive,
+      roles: ["DIV_ADMIN", "HRMS_ADMIN"],
+      type: "EMPLOYEE",
+    },
+  };
+  if (searchParams?.hasOwnProperty("isActive")) {
+    requestBody.criteria = {
+      ...requestBody.criteria,
+      isActive: searchParams?.isActive,
+    };
+  }
+  const { data: divisionData, ...rests } = Digit.Hooks.hrms.useHRMSEmployeeSearch(requestBody, isupdate);
+
   useEffect(() => {
-    setMutationHappened(false);
-    clearSuccessData();
-    clearError();
+    // setTotalReacords(res?.EmployeCount?.totalEmployee);
+  }, [res]);
+
+  useEffect(() => {}, [hookLoading, rest]);
+
+  useEffect(() => {
+    setPageOffset(0);
+  }, [searchParams]);
+
+  const fetchNextPage = () => {
+    setPageOffset((prevState) => prevState + pageSize);
+  };
+
+  const fetchPrevPage = () => {
+    setPageOffset((prevState) => prevState - pageSize);
+  };
+
+  const handleFilterChange = (filterParam) => {
+    let keys_to_delete = filterParam.delete;
+    let _new = { ...searchParams, ...filterParam };
+    if (keys_to_delete) keys_to_delete.forEach((key) => delete _new[key]);
+    filterParam.delete;
+    delete _new.delete;
+    setSearchParams({ ..._new });
+  };
+
+  const handleSort = useCallback((args) => {
+    if (args.length === 0) return;
+    setSortParams(args);
   }, []);
 
-  useEffect(() => {
-    if (mobileNumber && mobileNumber.length == 10 && mobileNumber?.match(Digit.Utils.getPattern("MobileNo"))) {
-      setShowToast(null);
-      if (data.user.mobileNumber == mobileNumber) {
-        setPhonecheck(true);
-      } else {
-        Digit.HRMSService?.search(tenantId, null, { phone: mobileNumber })?.then((result, err) => {
-          if (result.Employees.length > 0) {
-            setShowToast({ key: true, label: "ERR_HRMS_USER_EXIST_MOB" });
-            setPhonecheck(false);
-          } else {
-            setPhonecheck(true);
-          }
-        });
-      }
-    } else {
-      setPhonecheck(false);
-    }
-  }, [mobileNumber]);
+  const handlePageSizeChange = (e) => {
+    setPageSize(Number(e.target.value));
+  };
 
-  let defaultValues = {
-    tenantId: tenantId,
-    employeeStatus: "EMPLOYED",
-    employeeType: data?.code,
-    SelectEmployeePhoneNumber: { mobileNumber: data?.user?.mobileNumber },
-    SelectEmployeeId: { code: data?.code },
-    SelectEmployeeName: { employeeName: data?.user?.name },
-    SelectEmployeeEmailId: { emailId: data?.user?.emailId },
-    SelectEmployeeCorrespondenceAddress: { correspondenceAddress: data?.user?.correspondenceAddress },
-    SelectDateofEmployment: { dateOfAppointment: convertEpochToDate(data?.dateOfAppointment) },
-    SelectEmployeeType: { code: data?.employeeType, active: true },
-    SelectEmployeeGender: {
-      gender: {
-        code: data?.user?.gender,
-        name: `COMMON_GENDER_${data?.user?.gender}`,
+  const getSearchFields = () => {
+    return [
+      {
+        label: t("HR_NAME_LABEL"),
+        name: "names",
       },
-    },
-
-    SelectDateofBirthEmployment: { dob: convertEpochToDate(data?.user?.dob) },
-    Jurisdictions: data?.jurisdictions?.map((ele, index) => {
-      let obj = {
-        key: index,
-        hierarchy: {
-          code: ele.hierarchy,
-          name: ele.hierarchy,
-        },
-        boundaryType: { label: ele.boundaryType, i18text: `EGOV_LOCATION_BOUNDARYTYPE_${ele.boundaryType.toUpperCase()}` },
-        boundary: { code: ele.boundary },
-        roles: data?.user?.roles?.filter((item) => item.tenantId == ele.boundary),
-        division: {},
-        divisionBoundary: [],
-      };
-
-      return obj;
-    }),
-    Assignments: data?.assignments?.map((ele, index) => {
-      return Object.assign({}, ele, {
-        key: index,
-        fromDate: convertEpochToDate(ele.fromDate),
-        toDate: convertEpochToDate(ele.toDate),
-        isCurrentAssignment: ele.isCurrentAssignment,
-        designation: {
-          code: ele.designation,
-          i18key: "COMMON_MASTERS_DESIGNATION_" + ele.designation,
-        },
-        department: {
-          code: ele.department,
-          i18key: "COMMON_MASTERS_DEPARTMENT_" + ele.department,
-        },
-      });
-    }),
-  };
-  const checkMailNameNum = (formData) => {
-    const email = formData?.SelectEmployeeEmailId?.emailId || "";
-    const name = formData?.SelectEmployeeName?.employeeName || "";
-    const address = formData?.SelectEmployeeCorrespondenceAddress?.correspondenceAddress || "";
-    const validEmail = email.length == 0 ? true : email.match(Digit.Utils.getPattern("Email"));
-    return validEmail && name.match(Digit.Utils.getPattern("Name")) && address.match(Digit.Utils.getPattern("Address"));
-  };
-
-  const onFormValueChange = (setValue = true, formData) => {
-    if (formData?.SelectEmployeePhoneNumber?.mobileNumber) {
-      setMobileNumber(formData?.SelectEmployeePhoneNumber?.mobileNumber);
-    } else {
-      setMobileNumber(formData?.SelectEmployeePhoneNumber?.mobileNumber);
-    }
-
-    for (let i = 0; i < formData?.Jurisdictions?.length; i++) {
-      let key = formData?.Jurisdictions[i];
-      if (!((key?.boundary || key?.divisionBoundary) && (key?.boundaryType || key?.division) && key?.hierarchy && key?.roles?.length > 0)) {
-        setcheck(false);
-        break;
-      } else {
-        setcheck(true);
-      }
-    }
-
-    let setassigncheck = false;
-    for (let i = 0; i < formData?.Assignments?.length; i++) {
-      let key = formData?.Assignments[i];
-      if (
-        !(key.department && key.designation && key.fromDate && (formData?.Assignments[i].toDate || formData?.Assignments[i]?.isCurrentAssignment))
-      ) {
-        setassigncheck = false;
-        break;
-      } else if (formData?.Assignments[i].toDate == null && formData?.Assignments[i]?.isCurrentAssignment == false) {
-        setassigncheck = false;
-        break;
-      } else {
-        setassigncheck = true;
-      }
-    }
-    if (
-      formData?.SelectDateofEmployment?.dateOfAppointment &&
-      formData?.SelectEmployeeCorrespondenceAddress?.correspondenceAddress &&
-      formData?.SelectEmployeeGender?.gender.code &&
-      formData?.SelectEmployeeName?.employeeName &&
-      formData?.SelectEmployeePhoneNumber?.mobileNumber &&
-      checkfield &&
-      // setassigncheck &&
-      phonecheck &&
-      checkMailNameNum(formData)
-    ) {
-      setSubmitValve(true);
-    } else {
-      setSubmitValve(false);
-    }
-  };
-
-  const onSubmit = (input) => {
-    if (!STATE_ADMIN && input.Jurisdictions.filter((juris) => juris.tenantId == tenantId && juris.isActive !== false).length == 0) {
-      setShowToast({ key: true, label: "ERR_BASE_TENANT_MANDATORY" });
-      return;
-    }
-    if (
-      !Object.values(
-        input.Jurisdictions.reduce((acc, sum) => {
-          if (sum && sum?.tenantId) {
-            acc[sum.tenantId] = acc[sum.tenantId] ? acc[sum.tenantId] + 1 : 1;
-          }
-          return acc;
-        }, {})
-      ).every((s) => s == 1)
-    ) {
-      setShowToast({ key: true, label: "ERR_INVALID_JURISDICTION" });
-      return;
-    }
-    let roles = [];
-    let jurisdictions = [];
-    if (STATE_ADMIN) {
-      const divisionBoundaryCodes = input?.Jurisdictions.flatMap((j) => j.divisionBoundary.map((item) => item.code));
-
-      divisionBoundaryCodes &&
-        divisionBoundaryCodes.length > 0 &&
-        divisionBoundaryCodes.map((item) => {
-          input?.Jurisdictions[0]?.roles?.map((role) => {
-            roles.push({
-              code: role.code,
-              name: role.name,
-              labelKey: role.labelKey,
-              tenantId: item,
-            });
-          });
-        });
-
-      input?.Jurisdictions?.map((items) => {
-        items?.divisionBoundary.map((item) => {
-          let obj = {
-            hierarchy: items?.hierarchy,
-            boundaryType: "City",
-            boundary: item?.code,
-            tenantId: item?.code,
-            roles: items.roles,
-          };
-          data?.jurisdictions?.map((jurisdition) => {
-            if (jurisdition?.boundary === item?.code) {
-              obj["id"] = jurisdition.id;
-              obj["auditDetails"] = jurisdition.auditDetails;
-            }
-          });
-          jurisdictions.push(obj);
-        });
-      });
-      // Map the data and add tenantId to roles array
-      const mappedData = jurisdictions.map((jurisdiction, index) => {
-        return {
-          ...jurisdiction,
-          roles: jurisdiction.roles.map((role) => ({
-            ...role,
-            tenantId: jurisdiction.tenantId,
-          })),
-        };
-      });
-      jurisdictions = mappedData;
-    } else {
-      input.Jurisdictions.map((items) => {
-        let obj = {
-          hierarchy: items?.hierarchy,
-          boundaryType: items?.boundaryType,
-          boundary: items?.boundary,
-          tenantId: items?.tenantId,
-          roles: items?.roles,
-        };
-        data?.jurisdictions?.map((jurisdition) => {
-          if (jurisdition?.boundary === items?.boundary) {
-            obj["id"] = jurisdition.id;
-            obj["auditDetails"] = jurisdition.auditDetails;
-          }
-        });
-        jurisdictions.push(obj);
-      });
-      roles = input?.Jurisdictions?.map((ele) => {
-        return ele.roles?.map((item) => {
-          item["tenantId"] = ele.boundary;
-          return item;
-        });
-      });
-    }
-    let requestdata = Object.assign({}, data);
-    roles = [].concat.apply([], roles);
-    requestdata.assignments = input?.Assignments ? input?.Assignments : data?.assignments;
-    requestdata.dateOfAppointment = Date.parse(input?.SelectDateofEmployment?.dateOfAppointment);
-    requestdata.code = input?.SelectEmployeeId?.code ? input?.SelectEmployeeId?.code : data?.code;
-    requestdata.jurisdictions = jurisdictions;
-    requestdata.user.emailId = input?.SelectEmployeeEmailId?.emailId ? input?.SelectEmployeeEmailId?.emailId : undefined;
-    requestdata.user.gender = input?.SelectEmployeeGender?.gender.code;
-    requestdata.user.dob = Date.parse(input?.SelectDateofBirthEmployment?.dob) || data?.user?.dob;
-    requestdata.user.mobileNumber = input?.SelectEmployeePhoneNumber?.mobileNumber;
-    requestdata["user"]["name"] = input?.SelectEmployeeName?.employeeName;
-    requestdata.user.correspondenceAddress = input?.SelectEmployeeCorrespondenceAddress?.correspondenceAddress;
-    requestdata.user.roles = roles.filter((role) => role && role.name);
-    let Employees = [requestdata];
-
-    /* use customiseUpdateFormData hook to make some chnages to the Employee object */
-    Employees = Digit?.Customizations?.HRMS?.customiseUpdateFormData ? Digit.Customizations.HRMS.customiseUpdateFormData(data, Employees) : Employees;
-    history.replace(`/${window?.contextPath}/employee/hrms/response`, { Employees, key: "UPDATE", action: "UPDATE" });
+      {
+        label: t("HR_MOB_NO_LABEL"),
+        name: "phone",
+        maxlength: 10,
+        pattern: "[6-9][0-9]{9}",
+        title: t("ES_SEARCH_APPLICATION_MOBILE_INVALID"),
+        componentInFront: "+91",
+      },
+      {
+        label: t("HR_EMPLOYEE_ID_LABEL"),
+        name: "codes",
+      },
+    ];
   };
   if (isLoading) {
     return <Loader />;
   }
 
-  const config = mdmsData?.config ? mdmsData.config : newConfig;
-  return (
-    <div>
-      <FormComposer
-        heading={t("HR_COMMON_EDIT_EMPLOYEE_HEADER")}
-        isDisabled={!canSubmit}
-        label={t("HR_COMMON_BUTTON_SUBMIT")}
-        config={config.map((config) => {
-          return {
-            ...config,
-            body: config.body.filter((a) => !a.hideInEmployee),
-          };
-        })}
-        fieldStyle={{ marginRight: 0 }}
-        onSubmit={onSubmit}
-        defaultValues={defaultValues}
-        onFormValueChange={onFormValueChange}
-      />{" "}
-      {showToast && (
-        <Toast
-          error={showToast.key}
-          label={t(showToast.label)}
-          onClose={() => {
-            setShowToast(null);
-          }}
+  if (data?.length !== null) {
+    if (isMobile) {
+      return (
+        <MobileInbox
+          businessService={businessService}
+          data={divisionData ? divisionData : data}
+          isLoading={hookLoading}
+          defaultSearchParams={initialStates.searchParams}
+          isSearch={!isInbox}
+          onFilterChange={handleFilterChange}
+          searchFields={getSearchFields()}
+          onSearch={handleFilterChange}
+          onSort={handleSort}
+          onNextPage={fetchNextPage}
+          tableConfig={rest?.tableConfig}
+          onPrevPage={fetchPrevPage}
+          currentPage={Math.floor(pageOffset / pageSize)}
+          pageSizeLimit={pageSize}
+          disableSort={false}
+          onPageSizeChange={handlePageSizeChange}
+          parentRoute={parentRoute}
+          searchParams={searchParams}
+          sortParams={sortParams}
+          totalRecords={totalRecords}
+          linkPrefix={`/${window?.contextPath}/employee/hrms/details/`}
+          filterComponent={filterComponent}
         />
-      )}
-    </div>
-  );
+        // <div></div>
+      );
+    } else {
+      return (
+        <div>
+          {isInbox && <Header>{t("HR_HOME_SEARCH_RESULTS_HEADING")}</Header>}
+          <DesktopInbox
+            businessService={businessService}
+            data={divisionData ? divisionData : data}
+            isLoading={hookLoading}
+            defaultSearchParams={initialStates.searchParams}
+            isSearch={!isInbox}
+            onFilterChange={handleFilterChange}
+            searchFields={getSearchFields()}
+            onSearch={handleFilterChange}
+            onSort={handleSort}
+            onNextPage={fetchNextPage}
+            onPrevPage={fetchPrevPage}
+            currentPage={Math.floor(pageOffset / pageSize)}
+            pageSizeLimit={pageSize}
+            disableSort={false}
+            onPageSizeChange={handlePageSizeChange}
+            parentRoute={parentRoute}
+            searchParams={searchParams}
+            sortParams={sortParams}
+            totalRecords={totalRecords}
+            filterComponent={filterComponent}
+          />
+        </div>
+      );
+    }
+  }
 };
-export default EditForm;
+
+export default Inbox;
