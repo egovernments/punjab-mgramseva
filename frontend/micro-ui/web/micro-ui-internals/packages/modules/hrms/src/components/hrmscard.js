@@ -23,7 +23,7 @@ const HRMSCard = () => {
       ? [
           {
             label: t("WORK_BENCH_URL_MASTER_DATA"),
-            link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-add-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
+            link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
           },
           // {
           //   label: t("WORK_BENCH_URL_LOCALIZATION"),
