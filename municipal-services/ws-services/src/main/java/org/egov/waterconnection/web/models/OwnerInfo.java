@@ -30,6 +30,7 @@ public class OwnerInfo extends User{
 	@JsonProperty("ownerInfoUuid")
 	private String ownerInfoUuid;
 
+	@NotNull
 	@SafeHtml
 	@JsonProperty("mobileNumber")
 	private String mobileNumber;
