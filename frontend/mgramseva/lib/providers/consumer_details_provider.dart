@@ -460,6 +460,7 @@ class ConsumerProvider with ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
   Future<void> fetchBoundary() async {

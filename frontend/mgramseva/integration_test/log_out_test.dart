@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mgramseva/main.dart' as app;
 import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
-import 'Test Inputs/test_inputs.dart';
 
 void main() {
   testWidgets("Log Out Test", (tester) async {

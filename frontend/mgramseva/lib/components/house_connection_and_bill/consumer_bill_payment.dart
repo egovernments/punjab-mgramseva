@@ -256,6 +256,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                   : PrintBluetooth.printTicket(
                       img.decodeImage(value), navigatorKey.currentContext!)
             });
+    return null;
   }
 
   afterViewBuild() {
@@ -374,7 +375,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                               ApplicationLocalizations.of(context).translate(i18
                                   .consumerReciepts
                                   .CONSUMER_RECIEPT_SHARE_RECEIPT),
-                              style: Theme.of(context).textTheme.subtitle2,
+                              style: Theme.of(context).textTheme.titleSmall,
                             ),
                           ),
                         ),
@@ -394,7 +395,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                         .CONSUMER_RECEIPT_PRINT),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .subtitle1!
+                                    .titleMedium!
                                     .apply(color: Colors.white))),
                       ),
                     ]),

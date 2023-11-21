@@ -1,10 +1,7 @@
 import 'package:bluetooth_thermal_printer/bluetooth_thermal_printer.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 
-import 'localization/application_localizations.dart';
-import 'global_variables.dart';
 
 class CommonPrinter {
   static bool connected = false;

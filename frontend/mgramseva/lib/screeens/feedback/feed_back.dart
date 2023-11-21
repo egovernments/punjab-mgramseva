@@ -52,7 +52,7 @@ class _PaymentFeedBackState extends State<PaymentFeedBack> {
   Widget build(BuildContext context) {
     return FocusWatcher(
         child: Scaffold(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: Theme.of(context).colorScheme.background,
             appBar: AppBar(
               title: Text('mGramSeva'),
               automaticallyImplyLeading: false,

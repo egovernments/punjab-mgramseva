@@ -246,12 +246,11 @@ class CoreRepository extends BaseService {
           headers: header,
           body: jsonEncode({"url": inputUrl}));
 
-      if (response.body != null) {
-        return response.body;
-      }
-    } catch (e, s) {
+      return response.body;
+        } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
+    return null;
   }
 
   Future<PDFServiceResponse?> getFileStorefromPdfService(body, params) async {
@@ -286,6 +285,7 @@ class CoreRepository extends BaseService {
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
+    return null;
   }
 
   Future<EventsList?> fetchNotifications(params) async {
@@ -318,6 +318,7 @@ class CoreRepository extends BaseService {
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
+    return null;
   }
 
   Future<bool?> updateNotifications(events) async {
@@ -348,6 +349,7 @@ class CoreRepository extends BaseService {
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
+    return null;
   }
 
   Future<bool?> fileDownload(BuildContext context, String url,
@@ -390,6 +392,7 @@ class CoreRepository extends BaseService {
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
     }
+    return null;
   }
 
   Future<String?> submitFeedBack(Map body) async {

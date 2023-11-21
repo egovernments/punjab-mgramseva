@@ -307,7 +307,7 @@ class _GenerateBillState extends State<GenerateBill> {
         Provider.of<BillGenerationProvider>(context, listen: false);
     return KeyboardFocusWatcher(
         child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: BaseAppBar(
           Text(i18.common.MGRAM_SEVA),
           AppBar(),

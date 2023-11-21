@@ -20,7 +20,7 @@ class ToastUtils {
       }
       _overlayEntry = createOverlayEntry(context, message, type);
 
-      Overlay.of(context)!.insert(_overlayEntry!);
+      Overlay.of(context).insert(_overlayEntry!);
       toastTimer = Timer(Duration(seconds: 10), () {
         if (_overlayEntry != null) {
           _overlayEntry!.remove();

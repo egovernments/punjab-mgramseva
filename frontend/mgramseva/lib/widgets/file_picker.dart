@@ -59,7 +59,7 @@ class FilePickerDemoState extends State<FilePickerDemo> {
       if(paths != null){
         var isNotValidSize = false;
         for(var path in paths){
-          if (!(await CommonMethods.isValidFileSize(path.size))) isNotValidSize = true;;
+          if (!(await CommonMethods.isValidFileSize(path.size))) isNotValidSize = true;
         }
 
         if(isNotValidSize){
@@ -306,7 +306,7 @@ class FilePickerDemoState extends State<FilePickerDemo> {
             if (!(await CommonMethods.isValidFileSize(await file.length()))){
               Notifiers.getToastMessage(context, i18.common.FILE_SIZE, 'ERROR');
               return;
-            };
+            }
             if(_multiPick){
               _selectedFiles.addAll([file]);
             }else{

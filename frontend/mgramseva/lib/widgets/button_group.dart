@@ -52,7 +52,7 @@ class ButtonGroup extends StatelessWidget {
                           child: Text(
                               ApplicationLocalizations.of(context)
                                   .translate(i18.common.SHARE_BILL_PDF),
-                              style: Theme.of(context).textTheme.subtitle2)),
+                              style: Theme.of(context).textTheme.titleSmall)),
                       )),
                       Expanded(child: ShortButton(label, callBack))
                     ],

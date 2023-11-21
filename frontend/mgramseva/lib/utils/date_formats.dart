@@ -9,21 +9,21 @@ import 'models.dart';
 
 class DateFormats {
   static getFilteredDate(String date, {String? dateFormat}) {
-    if (date == null || date.trim().isEmpty) return '';
+    if (date.trim().isEmpty) return '';
     try {
       var dateTime = DateTime.parse(date).toLocal();
       return DateFormat(dateFormat ?? "dd-MM-yyyy").format(dateTime);
-    } on Exception catch (e) {
+    } on Exception {
       return '';
     }
   }
 
   static DateTime? getDateFromString(String date) {
-    if (date == null || date.trim().isEmpty) return null;
+    if (date.trim().isEmpty) return null;
     try {
       var dateTime = DateTime.parse(date).toLocal();
       return dateTime;
-    } on Exception catch (e) {
+    } on Exception {
       return null;
     }
   }
@@ -38,17 +38,17 @@ class DateFormats {
       }
       var inputDate = inputFormat.parse(date);
       return inputDate;
-    } on Exception catch (e) {
+    } on Exception {
       return null;
     }
   }
 
   static String getTime(String date) {
-    if (date == null || date.trim().isEmpty) return '';
+    if (date.trim().isEmpty) return '';
     try {
       var dateTime = getDateFromString(date);
       return DateFormat.Hms().format(dateTime!);
-    } on Exception catch (e, stackTrace) {
+    } on Exception {
       return '';
     }
   }
@@ -57,7 +57,7 @@ class DateFormats {
     try {
       var dateTime = getDateFromString(date);
       return DateFormat.jm().format(dateTime!);
-    } on Exception catch (e, stackTrace) {
+    } on Exception {
       return '';
     }
   }

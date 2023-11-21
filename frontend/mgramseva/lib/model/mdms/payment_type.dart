@@ -3,7 +3,7 @@
 import '../localization/language.dart';
 
 class PaymentType {
-  dynamic? responseInfo;
+  dynamic responseInfo;
   MdmsRes? mdmsRes;
 
   PaymentType({this.responseInfo, this.mdmsRes});

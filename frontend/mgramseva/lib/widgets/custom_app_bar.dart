@@ -130,15 +130,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               ),
                               onChanged: (text) {
                                   if(text.isEmpty){
-                                    stateSetter(()=>{
-                                      visibleTenants = tenants.asMap().values.toList()
-                                    });
+                                    stateSetter(()=>visibleTenants = tenants.asMap().values.toList()
+                                    );
                                   }else{
                                     var tresult = tenants.where((e) => "${ApplicationLocalizations.of(context)
                                         .translate(e.code!)}-${e.city!.code!}".toLowerCase().trim().contains(text.toLowerCase().trim())).toList();
-                                    stateSetter(()=>{
-                                        visibleTenants = tresult
-                                    });
+                                    stateSetter(()=>visibleTenants = tresult
+                                    );
                                   }
                               },
                             ),

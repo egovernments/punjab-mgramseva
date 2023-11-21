@@ -424,6 +424,7 @@ class CollectPaymentProvider with ChangeNotifier {
                   : PrintBluetooth.printTicket(
                       img.decodeImage(value), navigatorKey.currentContext!)
             });
+    return null;
   }
 
   Future<void> getPaymentModes(FetchBill fetchBill, String tenantId,

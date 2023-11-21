@@ -551,11 +551,11 @@ class ExpensesDetailsProvider with ChangeNotifier {
         listen: false);
     if (languageList?.mdmsRes?.expense?.expenseList != null) {
       var res = languageList?.mdmsRes?.pspclIntegration?.accountNumberGpMapping?.where((element) => element.departmentEntityCode==commonProvider.userDetails?.selectedtenant?.city?.code).toList();
-      var temp_list = languageList?.mdmsRes?.expense?.expenseList?.toList();
+      var tempList = languageList?.mdmsRes?.expense?.expenseList?.toList();
       if(res!.isNotEmpty){
-        isSearch?{}:temp_list!.removeWhere((element) => element.code=="ELECTRICITY_BILL");
+        isSearch?{}:tempList!.removeWhere((element) => element.code=="ELECTRICITY_BILL");
       }
-      return (temp_list ?? <ExpenseType>[])
+      return (tempList ?? <ExpenseType>[])
           .map((value) {
         return DropdownMenuItem(
           value: value.code,

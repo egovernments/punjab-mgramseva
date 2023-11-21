@@ -45,7 +45,7 @@ class _SearchExpenseState extends State<SearchExpense> {
   @override
   Widget build(BuildContext context) {
     return KeyboardFocusWatcher(child:Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),

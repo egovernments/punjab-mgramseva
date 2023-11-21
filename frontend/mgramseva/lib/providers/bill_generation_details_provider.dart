@@ -285,59 +285,57 @@ class BillGenerationProvider with ChangeNotifier {
               "businessService": "WS"
             }).then((value) => billList = value);
             Navigator.pop(context);
-            if (billResponse1 != null) {
-              late String localizationText;
-              localizationText =
-                  '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT)}';
-              localizationText = localizationText.replaceFirst(
-                  '{number}', '(+91 - ${billList.bill!.first.mobileNumber})');
-              Navigator.of(context).pushReplacement(
-                  new MaterialPageRoute(builder: (BuildContext context) {
-                return CommonSuccess(
-                  SuccessHandler(
-                      ApplicationLocalizations.of(context)
-                          .translate(i18.demandGenerate.GENERATE_BILL_SUCCESS),
-                      localizationText,
-                      ApplicationLocalizations.of(context)
-                          .translate(i18.common.COLLECT_PAYMENT),
-                      Routes.BILL_GENERATE,
-                      downloadLink: '',
-                      downloadLinkLabel: ApplicationLocalizations.of(context)
-                          .translate(i18.common.DOWNLOAD),
-                      whatsAppShare: '',
-                      subHeader:
-                          '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)}',
-                      subHeaderText:
-                          '${billList.bill!.first.billNumber.toString()}'),
-                  callBack: () =>
-                      onClickOfCollectPayment(billList.bill!.first, context),
-                  callBackDownload: () => commonProvider
-                      .getFileFromPDFBillService({
-                    "Bill": [billList.bill!.first]
-                  }, {
-                    "key": waterconnection.connectionType == 'Metered'
-                        ? "ws-bill"
-                        : "ws-bill-nm",
-                    "tenantId":
-                        commonProvider.userDetails!.selectedtenant!.code,
-                  }, billList.bill!.first.mobileNumber, billList.bill!.first,
-                          "Download"),
-                  callBackWhatsApp: () => commonProvider
-                      .getFileFromPDFBillService({
-                    "Bill": [billList.bill!.first],
-                  }, {
-                    "key": waterconnection.connectionType == 'Metered'
-                        ? "ws-bill"
-                        : "ws-bill-nm",
-                    "tenantId":
-                        commonProvider.userDetails!.selectedtenant!.code,
-                  }, billList.bill!.first.mobileNumber, billList.bill!.first,
-                          "Share"),
-                  backButton: true,
-                );
-              }));
-            }
-          } catch (e) {
+            late String localizationText;
+            localizationText =
+                '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_BILL_SUCCESS_SUBTEXT)}';
+            localizationText = localizationText.replaceFirst(
+                '{number}', '(+91 - ${billList.bill!.first.mobileNumber})');
+            Navigator.of(context).pushReplacement(
+                new MaterialPageRoute(builder: (BuildContext context) {
+              return CommonSuccess(
+                SuccessHandler(
+                    ApplicationLocalizations.of(context)
+                        .translate(i18.demandGenerate.GENERATE_BILL_SUCCESS),
+                    localizationText,
+                    ApplicationLocalizations.of(context)
+                        .translate(i18.common.COLLECT_PAYMENT),
+                    Routes.BILL_GENERATE,
+                    downloadLink: '',
+                    downloadLinkLabel: ApplicationLocalizations.of(context)
+                        .translate(i18.common.DOWNLOAD),
+                    whatsAppShare: '',
+                    subHeader:
+                        '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILL_ID_NO)}',
+                    subHeaderText:
+                        '${billList.bill!.first.billNumber.toString()}'),
+                callBack: () =>
+                    onClickOfCollectPayment(billList.bill!.first, context),
+                callBackDownload: () => commonProvider
+                    .getFileFromPDFBillService({
+                  "Bill": [billList.bill!.first]
+                }, {
+                  "key": waterconnection.connectionType == 'Metered'
+                      ? "ws-bill"
+                      : "ws-bill-nm",
+                  "tenantId":
+                      commonProvider.userDetails!.selectedtenant!.code,
+                }, billList.bill!.first.mobileNumber, billList.bill!.first,
+                        "Download"),
+                callBackWhatsApp: () => commonProvider
+                    .getFileFromPDFBillService({
+                  "Bill": [billList.bill!.first],
+                }, {
+                  "key": waterconnection.connectionType == 'Metered'
+                      ? "ws-bill"
+                      : "ws-bill-nm",
+                  "tenantId":
+                      commonProvider.userDetails!.selectedtenant!.code,
+                }, billList.bill!.first.mobileNumber, billList.bill!.first,
+                        "Share"),
+                backButton: true,
+              );
+            }));
+                    } catch (e) {
             Navigator.pop(context);
             Navigator.of(context).pushReplacement(
                 new MaterialPageRoute(builder: (BuildContext context) {
@@ -362,23 +360,21 @@ class BillGenerationProvider with ChangeNotifier {
         };
         var billResponse2 = await BillGenerateRepository().bulkDemand(res2);
         Navigator.pop(context);
-        if (billResponse2 != null) {
-          String localizationText = getSubtitleText(context);
-          Navigator.of(context).pushReplacement(
-              new MaterialPageRoute(builder: (BuildContext context) {
-            return CommonSuccess(SuccessHandler(
-                ApplicationLocalizations.of(context)
-                    .translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS),
-                localizationText,
-                i18.common.BACK_HOME,
-                Routes.BILL_GENERATE,
-                subHeader:
-                    '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)}',
-                subTextFun: () => getLocalizedText(context),
-                subtitleFun: () => getSubtitleText(context)));
-          }));
-        }
-      } catch (e) {
+        String localizationText = getSubtitleText(context);
+        Navigator.of(context).pushReplacement(
+            new MaterialPageRoute(builder: (BuildContext context) {
+          return CommonSuccess(SuccessHandler(
+              ApplicationLocalizations.of(context)
+                  .translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS),
+              localizationText,
+              i18.common.BACK_HOME,
+              Routes.BILL_GENERATE,
+              subHeader:
+                  '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)}',
+              subTextFun: () => getLocalizedText(context),
+              subtitleFun: () => getSubtitleText(context)));
+        }));
+            } catch (e) {
         Navigator.of(context).pushReplacement(
             new MaterialPageRoute(builder: (BuildContext context) {
           return ErrorPage(e.toString());

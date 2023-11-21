@@ -626,7 +626,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
     var userProvider = Provider.of<ConsumerProvider>(context, listen: false);
     return KeyboardFocusWatcher(
         child: Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),

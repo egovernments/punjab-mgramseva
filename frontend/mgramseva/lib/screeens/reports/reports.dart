@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../../providers/reports_provider.dart';
 import '../../utils/global_variables.dart';
-import '../../utils/localization/application_localizations.dart';
 import '../../utils/testing_keys/testing_keys.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/drawer_wrapper.dart';
@@ -17,7 +16,6 @@ import '../../widgets/select_field_builder.dart';
 import '../../widgets/side_bar.dart';
 import 'bill_report.dart';
 import 'collection_report.dart';
-import 'generic_report_table.dart';
 
 class Reports extends StatefulWidget {
   const Reports({Key? key}) : super(key: key);

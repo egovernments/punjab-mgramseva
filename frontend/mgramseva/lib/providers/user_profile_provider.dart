@@ -19,11 +19,9 @@ class UserProfileProvider with ChangeNotifier {
   Future<void> getUserProfileDetails(body, BuildContext context) async {
     try {
       var userResponse = await UserProfileRepository().getProfile(body);
-      if (userResponse != null) {
-        streamController.add(userResponse.user?.first);
-        profileDetails = userResponse.user!.first;
-      }
-    } catch (e, s) {
+      streamController.add(userResponse.user?.first);
+      profileDetails = userResponse.user!.first;
+        } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
       streamController.addError('error');
     }
