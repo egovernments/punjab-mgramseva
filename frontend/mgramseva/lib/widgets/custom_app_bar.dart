@@ -236,10 +236,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               children: [
                                   Text(ApplicationLocalizations.of(context)
                                       .translate(commonProvider
-                                          .userDetails!.selectedtenant!.code!)),
+                                          .userDetails!.selectedtenant!.code!),style: Theme.of(context).textTheme.labelMedium,),
                                   Text(ApplicationLocalizations.of(context)
                                       .translate(commonProvider.userDetails!
-                                          .selectedtenant!.city!.code!))
+                                          .selectedtenant!.city!.code!),style: Theme.of(context).textTheme.labelSmall,)
                                 ])),
               Icon(Icons.arrow_drop_down)
             ],
@@ -255,6 +255,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         Provider.of<LanguageProvider>(context, listen: false);
     return AppBar(
       titleSpacing: 0,
+      iconTheme: IconThemeData(color: Colors.white),
       title: Image(
           width: 130,
           image: NetworkImage(

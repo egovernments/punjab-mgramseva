@@ -117,10 +117,10 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                   navigatorKey.currentContext!)
                               .translate(i18.consumerReciepts
                                   .GRAM_PANCHAYAT_WATER_SUPPLY_AND_SANITATION),
-                          textScaleFactor: kIsWeb ? 3 : 1,
+                          textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
                           maxLines: 3,
                           style: TextStyle(
-                              color: Colors.blue,
+                              color: Colors.black,
                               fontSize: 10,
                               height: 1,
                               fontWeight: FontWeight.bold,
@@ -140,9 +140,9 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                           ApplicationLocalizations.of(
                                   navigatorKey.currentContext!)
                               .translate(i18.consumerReciepts.WATER_RECEIPT),
-                          textScaleFactor: kIsWeb ? 3 : 1,
+                          textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
                           style: TextStyle(
-                            color: Colors.blue,
+                            color: Colors.black,
                             fontSize: 10,
                             height: 1,
                             fontWeight: FontWeight.bold,
@@ -232,7 +232,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                     height: 8,
                   ),
                   Text('- - *** - -',
-                      textScaleFactor: kIsWeb ? 3 : 1,
+                      textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           color: Colors.red,
@@ -240,7 +240,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                           fontWeight: FontWeight.bold)),
                   Text(
                       "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.RECEIPT_FOOTER)}",
-                      textScaleFactor: kIsWeb ? 3 : 1,
+                      textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           color: Colors.red,
@@ -364,18 +364,9 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                             "tenantId": commonProvider
                                 .userDetails!.selectedtenant!.code,
                           }, item.mobileNumber, item, "Share"),
-                          style: ButtonStyle(
-                            alignment: Alignment.center,
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(vertical: 8)),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                              side: BorderSide(
-                                  width: 2,
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius: BorderRadius.circular(0.0),
-                            )),
-                          ),
+                          style: ElevatedButton.styleFrom(padding:EdgeInsets.symmetric(vertical: 8),alignment: Alignment.center,side:BorderSide(
+                              width: 1,
+                              color: Theme.of(context).disabledColor)),
                           icon: (Image.asset('assets/png/whats_app.png')),
                           label: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
@@ -395,7 +386,8 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                             : MediaQuery.of(context).size.width / 2.2,
                         child: ElevatedButton.icon(
                             onPressed: () => _capturePng(item),
-                            icon: Icon(Icons.print),
+                            icon: Icon(Icons.print,color: Colors.white,),
+                            style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(244, 119, 56, 1)),
                             label: Text(
                                 ApplicationLocalizations.of(context).translate(
                                     i18.consumerReciepts

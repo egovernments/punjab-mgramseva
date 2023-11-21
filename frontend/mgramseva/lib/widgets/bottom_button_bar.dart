@@ -49,6 +49,7 @@ class BottomButtonBar extends StatelessWidget {
       ),
       child: Text(
         ApplicationLocalizations.of(context).translate(this.label),
+        style: Theme.of(context).textTheme.labelLarge,
       ),
       onPressed: () => callBack != null ? callBack!() : null,
     );
