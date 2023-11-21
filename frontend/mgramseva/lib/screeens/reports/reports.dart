@@ -166,12 +166,12 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                                     reportProvider
                                                         .getFinancialYearListDropdown(
                                                             reportProvider
-                                                                .languageList),
+                                                                .billingYearList),
                                                     true,
                                                     controller: reportProvider
                                                         .billingyearCtrl,
                                                     key: Keys.billReport
-                                                        .BILL_REPORT_BILLING_YEAR,
+                                                        .BILL_REPORT_BILLING_YEAR, itemAsString: (e) {  return e.toString();},
                                                   ),
                                                   SelectFieldBuilder(
                                                     i18.demandGenerate
@@ -190,7 +190,7 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                                     controller: reportProvider
                                                         .billingcycleCtrl,
                                                     key: Keys.billReport
-                                                        .BILL_REPORT_BILLING_CYCLE,
+                                                        .BILL_REPORT_BILLING_CYCLE, itemAsString: (e) { return e.toString(); },
                                                   ),
                                                 ],
                                               ),

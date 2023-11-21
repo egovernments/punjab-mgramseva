@@ -87,7 +87,7 @@ class _SearchExpenseState extends State<SearchExpense> {
                             hint:
                             '${ApplicationLocalizations.of(context).translate(i18.common.ELECTRICITY_HINT)}',
                             controller: expenseTypeCtrl,
-                            key: Keys.expense.SEARCH_EXPENSE_TYPE,
+                            key: Keys.expense.SEARCH_EXPENSE_TYPE, itemAsString: (e) { return e.toString(); },
                           );
                         }
                             ,
