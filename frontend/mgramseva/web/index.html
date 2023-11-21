@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -26,6 +27,7 @@
   <title>mgramseva</title>
   <script src="./webcomponents-lite.min.js"></script>
   <link rel="manifest" href="manifest.json">
+</head>
 <style>
   #payGovHiddenForm {
     display: none;
@@ -77,34 +79,20 @@
   }
 </style>
 
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = null;
-  </script>
-  <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
+</script>
 </head>
-<body>
-<script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
-            appRunner.runApp();
-          });
-        }
-      });
-    });
-  </script>
-  <image id="image1" alt="loading.." src="" onerror="this.style.display='none'" width="300px" height="640px"></image>
-  <image id="image" alt="loading.." onload="loadImage()" onerror="this.style.display='none'" src="" width="520px"
-    height="640px"></image>
 
-  <script>
+<body style="background: rgba(214, 213, 212, 1);">
+<script type="text/javascript">
+
+    window.flutterWebRenderer = "canvaskit";
+
+  </script>
+<image id="image1" alt="loading.." src="" onerror="this.style.display='none'" width="300px" height="640px"></image>
+<image id="image" alt="loading.." onload="loadImage()" onerror="this.style.display='none'" src="" width="520px"
+       height="640px"></image>
+
+<script>
 
 
     let progress = document.querySelector('#progress');
@@ -369,6 +357,95 @@
 
     }
   </script>
+<script></script>
+<!-- This script installs service_worker.js to provide PWA functionality to
+     application. For more information, see:
+     https://developers.google.com/web/fundamentals/primers/service-workers -->
+<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+<!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
+<script>
+     // Your web app's Firebase configuration
+<!--    var firebaseConfig = {-->
+<!--      apiKey: "AIzaSyA9ZfXItmFcJU_lbGHGBp1DJv8kmRoPwWA",-->
+<!--      authDomain: "sample-mgramseva.firebaseapp.com",-->
+<!--      projectId: "sample-mgramseva",-->
+<!--      storageBucket: "sample-mgramseva.appspot.com",-->
+<!--      messagingSenderId: "1026518772539",-->
+<!--      appId: "1:1026518772539:web:fa821c49b5c270b089251e",-->
+<!--       measurementId: "G-H2F8HT25X1"-->
+<!--    };-->
+
+     // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+     </script>
+<script>
+    var serviceWorkerVersion = null;
+    var scriptLoaded = false;
+    function loadMainDartJs() {
+      if (scriptLoaded) {
+        return;
+      }
+      scriptLoaded = true;
+      var scriptTag = document.createElement('script');
+      scriptTag.src = 'main.dart.js';
+      scriptTag.type = 'application/javascript';
+      document.body.append(scriptTag);
+    }
+
+    if ('serviceWorker' in navigator) {
+
+      // Service workers are supported. Use them.
+      window.addEventListener('load', function () {
+        // Wait for registration to finish before dropping the <script> tag.
+        // Otherwise, the browser will load the script multiple times,
+        // potentially different versions.
+        var serviceWorkerUrl = 'flutter_service_worker.js?v=' + serviceWorkerVersion;
+        navigator.serviceWorker.register(serviceWorkerUrl)
+          .then((reg) => {
+            function waitForActivation(serviceWorker) {
+              serviceWorker.addEventListener('statechange', () => {
+                if (serviceWorker.state == 'activated') {
+                  console.log('Installed new service worker.');
+                  loadMainDartJs();
+                }
+              });
+            }
+            if (!reg.active && (reg.installing || reg.waiting)) {
+              // No active web worker and we have installed or are installing
+              // one for the first time. Simply wait for it to activate.
+              waitForActivation(reg.installing ?? reg.waiting);
+            } else if (!reg.active.scriptURL.endsWith(serviceWorkerVersion)) {
+              // When the app updates the serviceWorkerVersion changes, so we
+              // need to ask the service worker to update.
+              console.log('New service worker available.');
+              reg.update();
+              waitForActivation(reg.installing);
+            } else {
+              // Existing service worker is still good.
+              console.log('Loading app from service worker.');
+              loadMainDartJs();
+            }
+          });
+
+        // If service worker doesn't succeed in a reasonable amount of time,
+        // fallback to plaint <script> tag.
+        setTimeout(() => {
+          if (!scriptLoaded) {
+            console.warn(
+              'Failed to load app from service worker. Falling back to plain <script> tag.',
+            );
+            loadMainDartJs();
+          }
+        }, 4000);
+      });
+    } else {
+      // Service workers not supported. Just drop the <script> tag.
+      loadMainDartJs();
+    }
+  </script>
 <div class="loading">
   <div class="loader"></div>
 </div>
@@ -394,4 +471,5 @@
   </form>
 </div>
 </body>
+
 </html>
