@@ -11,7 +11,7 @@
     For more details:
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
   -->
-    <base href="/mgramseva/withoutAuth/mgramseva-common/consumerBillPayment/" />
+    <base href="/mgramseva/withoutAuth/mgramseva-common/consumerDownloadBill/" />
 
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -83,8 +83,7 @@
       const billNumber = params.billNumber;
       const key = params.key;
       const receiptNumber = params.receiptNumber;
-      // const url = window.location.origin;
-      const url = 'https://mgramseva-uat.psegs.in';
+      const url = window.location.origin;
       const headers = {
         method: "POST",
         headers: {
