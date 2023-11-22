@@ -67,7 +67,7 @@ void main() {
     };
 
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(options: FirebaseConfigurations.firebaseOptions);
+    await Firebase.initializeApp();
     if (Firebase.apps.length == 0) {
 
     }
