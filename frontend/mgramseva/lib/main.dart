@@ -125,13 +125,13 @@ class _MyAppState extends State<MyApp> {
     IsolateNameServer.removePortNameMapping('downloader_send_port');
     super.dispose();
   }
-
+  @pragma('vm:entry-point')
   static void downloadCallback(
       String id, int status, int progress) {
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port')!;
 
-    send.send([id, status, progress]);
+    send.send([id, DownloadTaskStatus.values.elementAt(status), progress]);
   }
 
   afterViewBuild() async {
@@ -142,10 +142,10 @@ class _MyAppState extends State<MyApp> {
       String id = data[0];
       DownloadTaskStatus status = data[1];
       int progress = data[2];
+      print("Download progress: "+progress.toString());
       if (status == DownloadTaskStatus.complete) {
         if (CommonProvider.downloadUrl.containsKey(id)) {
-          if (Platform.isIOS && CommonProvider.downloadUrl[id] != null)
-            OpenFilex.open(CommonProvider.downloadUrl[id] ?? '');
+          if (CommonProvider.downloadUrl[id] != null) OpenFilex.open(CommonProvider.downloadUrl[id] ?? '');
           CommonProvider.downloadUrl.remove(id);
         } else if (status == DownloadTaskStatus.failed ||
             status == DownloadTaskStatus.canceled ||
@@ -154,7 +154,9 @@ class _MyAppState extends State<MyApp> {
             CommonProvider.downloadUrl.remove(id);
         }
       }
-      setState(() {});
+      setState(() {
+        print("Download progress: "+progress.toString());
+      });
     });
     FlutterDownloader.registerCallback(downloadCallback);
   }
