@@ -271,7 +271,7 @@ class ReportsProvider with ChangeNotifier {
     // }
     return dates;
   }
-  List<DropdownMenuItem<Object>> getFinancialYearListDropdown(
+  List<TaxPeriod> getFinancialYearListDropdown(
       LanguageList? languageList) {
     if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
       CommonMethods.getFilteredFinancialYearList(
@@ -282,21 +282,18 @@ class ReportsProvider with ChangeNotifier {
       return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
               <TaxPeriod>[])
           .map((value) {
-            return DropdownMenuItem(
-              value: value,
-              child: new Text((value.financialYear!)),
-            );
+            return value;
           })
           .toList()
           .reversed
           .toList();
     }
-    return <DropdownMenuItem<Object>>[];
+    return <TaxPeriod>[];
   }
 
-  List<DropdownMenuItem<Object>> getBillingCycleDropdown(
+  List<Map<String,dynamic>> getBillingCycleDropdown(
       dynamic selectedBillYear) {
-    var dates = [];
+    var dates = <Map<String,dynamic>>[];
     if (selectedBillYear != null) {
       DatePeriod ytd;
       var fromDate = DateFormats.getFormattedDateToDateTime(
@@ -316,24 +313,17 @@ class ReportsProvider with ChangeNotifier {
 
       for (var i = 0; i < months.length; i++) {
         var prevMonth = months[i].startDate;
-        var r = {"code": prevMonth, "name": prevMonth};
+        Map<String,dynamic> r = {"code": prevMonth, "name": "${ApplicationLocalizations.of(navigatorKey.currentContext!)
+            .translate((Constants.MONTHS[prevMonth.month - 1])) +
+            " - " +
+            prevMonth.year.toString()}"};
         dates.add(r);
       }
     }
     if (dates.length > 0) {
-      return (dates).map((value) {
-        var d = value['name'];
-        return DropdownMenuItem(
-          value: value['code'].toLocal().toString(),
-          child: new Text(
-              ApplicationLocalizations.of(navigatorKey.currentContext!)
-                      .translate((Constants.MONTHS[d.month - 1])) +
-                  " - " +
-                  d.year.toString()),
-        );
-      }).toList();
+      return dates;
     }
-    return <DropdownMenuItem<Object>>[];
+    return <Map<String,dynamic>>[];
   }
 
   Future<void> getDemandReport(

@@ -9,6 +9,9 @@ ThemeData get theme => ThemeData(
     primaryColor: Color.fromRGBO(244, 119, 56, 1),
     disabledColor: Colors.grey,
     cardTheme: CardTheme(surfaceTintColor: Colors.white),
+    drawerTheme: DrawerThemeData(
+      surfaceTintColor: Colors.white
+    ),
     // accentColor:  Color(0xff0B4B66),
 
     appBarTheme: AppBarTheme(
@@ -26,7 +29,7 @@ ThemeData get theme => ThemeData(
     ),
 
     /// Background color
-    // scaffoldBackgroundColor: Color.fromRGBO(238, 238, 238, 1),
+    scaffoldBackgroundColor: Color.fromRGBO(238, 238, 238, 1),
 
     textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(

@@ -152,11 +152,15 @@ class ConsumerProvider with ChangeNotifier {
       isEdit = true;
       waterconnection = data;
       waterconnection.getText();
-      selectedcycle = {'code':DateTime.parse(waterconnection.previousReadingDate.toString()),'name':DateFormats.timeStampToDate(
-          waterconnection.previousReadingDate,
-          format: 'yyyy-MM-dd')
-          .toString() +
-          " 00:00:00.000"};
+      selectedcycle = {'code':DateTime.fromMillisecondsSinceEpoch(waterconnection.previousReadingDate!),
+        'name':"${ApplicationLocalizations.of(navigatorKey.currentContext!)
+    .translate(DateFormats.timeStampToDate(
+    waterconnection.previousReadingDate,
+    format: 'MMMM')) +
+    " - " +
+    DateFormats.timeStampToDate(
+    waterconnection.previousReadingDate,
+    format: 'yyyy')}"};
       if (waterconnection.previousReadingDate != null &&
           (languageList?.mdmsRes?.billingService?.taxPeriodList?.isNotEmpty ??
               false)) {

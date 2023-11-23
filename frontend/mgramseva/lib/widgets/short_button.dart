@@ -17,7 +17,8 @@ class ShortButton extends StatelessWidget {
             decoration: CommonStyles.buttonBottomDecoration,
             child: new ElevatedButton(
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 13)
+                padding: EdgeInsets.symmetric(vertical: 13),
+                backgroundColor: callBack!=null?Theme.of(context).primaryColor:Theme.of(context).disabledColor
               ),
               key: key,
               child: new Text(

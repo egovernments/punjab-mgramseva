@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/reports_provider.dart';
 import '../../utils/global_variables.dart';
+import '../../utils/localization/application_localizations.dart';
 import '../../utils/testing_keys/testing_keys.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/drawer_wrapper.dart';
@@ -169,7 +170,7 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                                     controller: reportProvider
                                                         .billingyearCtrl,
                                                     key: Keys.billReport
-                                                        .BILL_REPORT_BILLING_YEAR, itemAsString: (e) {  return e.toString();},
+                                                        .BILL_REPORT_BILLING_YEAR, itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i.financialYear)}",
                                                   ),
                                                   SelectFieldBuilder(
                                                     i18.demandGenerate
@@ -188,7 +189,7 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                                     controller: reportProvider
                                                         .billingcycleCtrl,
                                                     key: Keys.billReport
-                                                        .BILL_REPORT_BILLING_CYCLE, itemAsString: (e) { return e.toString(); },
+                                                        .BILL_REPORT_BILLING_CYCLE, itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i['name'])}",
                                                   ),
                                                 ],
                                               ),

@@ -393,13 +393,13 @@ class BillGenerationProvider with ChangeNotifier {
         '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS_SUBTEXT)}';
     localizationText = localizationText.replaceFirst(
         '{billing cycle}',
-        '${ApplicationLocalizations.of(context).translate(selectedBillCycle.toString())}' +
+        '${ApplicationLocalizations.of(context).translate(selectedBillCycle['name'].toString())} | ' +
             ' ${selectedBillYear.financialYear!.toString().substring(2)}');
     return localizationText;
   }
 
   String getLocalizedText(BuildContext context) {
-    return '${ApplicationLocalizations.of(context).translate(selectedBillCycle)}' +
+    return '${ApplicationLocalizations.of(context).translate(selectedBillCycle['name'])} | ' +
         ' ${selectedBillYear.financialYear!.toString().substring(2)}';
   }
 

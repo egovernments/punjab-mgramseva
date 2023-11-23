@@ -515,7 +515,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             consumerProvider
                                                                 .getFinancialYearList(),
                                                             true,
-                                                            itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.toString())}',
+                                                            itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.financialYear)}',
                                                             controller: consumerProvider
                                                                 .waterconnection
                                                                 .billingCycleYearCtrl,
@@ -534,7 +534,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             consumerProvider
                                                                 .getBillingCycle(),
                                                             true,
-                                                            itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i['name'].toString())}',
+                                                            itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i['name'])}",
                                                             controller: consumerProvider
                                                                 .waterconnection
                                                                 .BillingCycleCtrl,

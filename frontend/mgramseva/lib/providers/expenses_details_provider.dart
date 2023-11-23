@@ -545,7 +545,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<DropdownMenuItem<Object>> getExpenseTypeList({bool isSearch=false}) {
+  List<dynamic> getExpenseTypeList({bool isSearch=false}) {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -557,13 +557,10 @@ class ExpensesDetailsProvider with ChangeNotifier {
       }
       return (tempList ?? <ExpenseType>[])
           .map((value) {
-        return DropdownMenuItem(
-          value: value.code,
-          child: new Text((value.code!)),
-        );
+        return value.code;
       }).toList();
     }
-    return <DropdownMenuItem<Object>>[];
+    return <dynamic>[];
   }
 
   incrementindex(index, expenseKey) async {
