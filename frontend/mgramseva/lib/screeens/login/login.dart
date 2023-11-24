@@ -147,10 +147,11 @@ class _LoginState extends State<Login> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
+                            Navigator.pushNamed(context, Routes.PRIVACY_POLICY,arguments:true);
                           },
                       ),
                       TextSpan(
-                          text: 'and',
+                          text: ' and ',
                           style: TextStyle(
                               color: Colors.black
                           )
@@ -163,6 +164,7 @@ class _LoginState extends State<Login> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
+                            Navigator.pushNamed(context, Routes.TERMS_OF_USE,arguments:true);
                           },
                       ),
                     ],
