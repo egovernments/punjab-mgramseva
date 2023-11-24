@@ -359,14 +359,22 @@ class Routing {
             builder: (_) => Reports(),
             settings: RouteSettings(name: Routes.REPORTS));
       case Routes.PRIVACY_POLICY:
-        Object? args = settings.arguments;
+        bool? args = settings.arguments==null?false:settings.arguments as bool;
         return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: args==null?false:args as bool,),
+            builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: args),
             settings: RouteSettings(name: Routes.PRIVACY_POLICY));
       case Routes.TERMS_OF_USE:
-        Object? args = settings.arguments;
+        bool? args = settings.arguments==null?false:settings.arguments as bool;
         return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType: Routes.TERMS_OF_USE,showLeading: args==null?false:args as bool,),
+            builder: (_) => PrivacyAndTerms(pageType: Routes.TERMS_OF_USE,showLeading: args),
+            settings: RouteSettings(name: Routes.TERMS_OF_USE));
+        case Routes.PRIVACY_POLICY_S:
+        return MaterialPageRoute(
+            builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: false),
+            settings: RouteSettings(name: Routes.PRIVACY_POLICY));
+      case Routes.TERMS_OF_USE_S:
+        return MaterialPageRoute(
+            builder: (_) => PrivacyAndTerms(pageType: Routes.TERMS_OF_USE,showLeading: false),
             settings: RouteSettings(name: Routes.TERMS_OF_USE));
 
       case Routes.SEARCH_CONSUMER_RESULT:
