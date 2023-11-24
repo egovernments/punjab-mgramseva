@@ -56,6 +56,18 @@ class Routing {
     Map<String, dynamic>? query = uri.queryParameters;
     String? path = uri.path;
     if (kIsWeb) {
+      if (settings.name == Routes.PRIVACY_POLICY || settings.name == Routes.PRIVACY_POLICY_S) {
+        bool q = settings.arguments==null?false:settings.arguments as bool;
+       return MaterialPageRoute(
+            builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: q),
+            settings: RouteSettings(name: Routes.PRIVACY_POLICY));
+      }
+      if (settings.name == Routes.TERMS_OF_USE || settings.name == Routes.TERMS_OF_USE_S) {
+        bool q = settings.arguments==null?false:settings.arguments as bool;
+       return MaterialPageRoute(
+            builder: (_) => PrivacyAndTerms(pageType:Routes.TERMS_OF_USE,showLeading: q),
+            settings: RouteSettings(name: Routes.TERMS_OF_USE));
+      }
       if (Routes.POST_PAYMENT_FEED_BACK == path && settings.arguments == null) {
         Map localQuery;
         String routePath;
@@ -359,22 +371,14 @@ class Routing {
             builder: (_) => Reports(),
             settings: RouteSettings(name: Routes.REPORTS));
       case Routes.PRIVACY_POLICY:
-        bool? args = settings.arguments==null?false:settings.arguments as bool;
+        bool args = settings.arguments==null?false:settings.arguments as bool;
         return MaterialPageRoute(
             builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: args),
             settings: RouteSettings(name: Routes.PRIVACY_POLICY));
       case Routes.TERMS_OF_USE:
-        bool? args = settings.arguments==null?false:settings.arguments as bool;
+        bool args = settings.arguments==null?false:settings.arguments as bool;
         return MaterialPageRoute(
             builder: (_) => PrivacyAndTerms(pageType: Routes.TERMS_OF_USE,showLeading: args),
-            settings: RouteSettings(name: Routes.TERMS_OF_USE));
-        case Routes.PRIVACY_POLICY_S:
-        return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: false),
-            settings: RouteSettings(name: Routes.PRIVACY_POLICY));
-      case Routes.TERMS_OF_USE_S:
-        return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType: Routes.TERMS_OF_USE,showLeading: false),
             settings: RouteSettings(name: Routes.TERMS_OF_USE));
 
       case Routes.SEARCH_CONSUMER_RESULT:
