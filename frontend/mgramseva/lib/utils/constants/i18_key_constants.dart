@@ -227,6 +227,7 @@ class Common {
   String get INACTIVATED_BY_NAME => 'INACTIVATED_BY_NAME';
   String get INACTIVATED_DATE => 'INACTIVATED_DATE';
   String get INACTIVATED_BY_UUID => 'INACTIVATED_BY_UUID';
+  String get UPLOADING_FILE => 'UPLOADING_FILE';
 }
 
 class Password {

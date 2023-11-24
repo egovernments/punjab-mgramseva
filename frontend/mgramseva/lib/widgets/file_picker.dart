@@ -203,7 +203,7 @@ class FilePickerDemoState extends State<FilePickerDemo> {
               ),
               Row(
                 children: [
-                  fileUploading==FileUploadStatus.STARTED?Text("Uploading File",style: TextStyle(
+                  fileUploading==FileUploadStatus.STARTED?Text("${ApplicationLocalizations.of(context).translate(i18.common.UPLOADING_FILE)}",style: TextStyle(
                       color: Colors.black
                   ),):SizedBox(),
                   fileUploading==FileUploadStatus.STARTED?Transform.scale(
