@@ -40,7 +40,7 @@ class _PrivacyAndTermsState extends State<PrivacyAndTerms> {
             padding: const EdgeInsets.all(8.0),
             child: Container(
               alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width>800?MediaQuery.of(context).size.width*0.75:MediaQuery.of(context).size.width*0.95,
+              width: MediaQuery.of(context).size.width>900?MediaQuery.of(context).size.width*0.55:MediaQuery.of(context).size.width>800?MediaQuery.of(context).size.width*0.75:MediaQuery.of(context).size.width*0.95,
               child: Card(
                 child: SingleChildScrollView(
                   child: Column(
