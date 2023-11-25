@@ -26,7 +26,6 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  bluetooth_thermal_printer: ^0.0.6
   universal_html: ^2.0.8
   flutter_secure_storage: ^4.2.0
   flutter_svg: ^0.22.0
@@ -71,7 +70,7 @@ dependencies:
   open_file: ^3.2.1       #use for web
   #open_file_safe: ^3.2.3  #use for mobiles
   syncfusion_flutter_xlsio: ^20.3.59-beta
-  print_bluetooth_thermal: ^1.0.5
+  print_bluetooth_thermal: ^1.0.9
   nearby_connections: ^3.2.0
 
 dev_dependencies:
