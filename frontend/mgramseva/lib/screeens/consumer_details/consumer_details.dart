@@ -409,10 +409,10 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                             .consmerWalkthrougList[7].key,
                                         controller: consumerProvider
                                             .waterconnection.ServiceTypeCtrl,
-                                        isEnabled: consumerProvider.isEdit ==
-                                                false ||
+                                        readOnly: consumerProvider.isEdit ==
+                                                true ||
                                             consumerProvider.isFirstDemand ==
-                                                false,
+                                                true,
                                         key: Keys.createConsumer
                                             .CONSUMER_SERVICE_KEY,
                                       ),

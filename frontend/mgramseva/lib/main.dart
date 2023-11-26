@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 
+import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -58,6 +59,10 @@ void main() {
   setPathUrlStrategy();
   //configureApp();
   setEnvironment(Environment.dev);
+  // Register DartPingIOS
+  if (Platform.isIOS) {
+    DartPingIOS.register();
+  }
 
   runZonedGuarded(() async {
     FlutterError.onError = (FlutterErrorDetails details) {

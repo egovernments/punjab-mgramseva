@@ -397,6 +397,33 @@ class HouseholdRegisterProvider with ChangeNotifier {
       i18.householdRegister.ACTIVE_INACTIVE,
       i18.householdRegister.LAST_BILL_GEN_DATE
     ];
+    var downloadheaderList = [
+      i18.common.VILLAGE_CODE,
+      i18.common.VILLAGE_NAME,
+      i18.common.TENANT_ID,
+      i18.common.NAME,
+      i18.common.GENDER,
+      i18.consumer.FATHER_SPOUSE_NAME,
+      i18.common.MOBILE_NUMBER,
+      i18.consumer.OLD_CONNECTION_ID,
+      i18.common.CONNECTION_ID,
+      i18.consumer.CONSUMER_CATEGORY,
+      i18.consumer.CONSUMER_SUBCATEGORY,
+      i18.searchWaterConnection.PROPERTY_TYPE,
+      i18.searchWaterConnection.CONNECTION_TYPE,
+      i18.demandGenerate.METER_READING_DATE,
+      i18.searchWaterConnection.METER_NUMBER,
+      i18.demandGenerate.PREV_METER_READING_LABEL,
+      i18.householdRegister.LAST_BILL_GEN_DATE,
+      i18.common.ARREARS,
+      i18.common.CORE_PENALTY,
+      i18.common.CORE_ADVANCE,
+      i18.householdRegister.PENDING_COLLECTIONS,
+      i18.common.CORE_ADVANCE,
+      i18.householdRegister.PENDING_COLLECTIONS,
+      i18.householdRegister.ACTIVE_INACTIVE
+
+    ];
 
     var pdfTableData = waterConnectionsDetails.waterConnection
             ?.map<List<String>>((connection) => [

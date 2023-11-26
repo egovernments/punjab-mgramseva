@@ -22,7 +22,7 @@ class _PrivacyAndTermsState extends State<PrivacyAndTerms> {
     var languageProvider =
     Provider.of<LanguageProvider>(context, listen: false);
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         titleSpacing: 0,
         centerTitle: true,

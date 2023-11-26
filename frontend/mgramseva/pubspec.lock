@@ -65,15 +65,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.10"
-  bluetooth_thermal_printer:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: master
-      resolved-ref: bfcaca5652be108953bfc0c10af00dfea4f7ba99
-      url: "https://github.com/rahuldevgarg/BluetoothThermalPrinter.git"
-    source: git
-    version: "0.0.6"
   boolean_selector:
     dependency: transitive
     description:
@@ -274,6 +265,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
+  dart_ping:
+    dependency: transitive
+    description:
+      name: dart_ping
+      sha256: "91ee37e5bf5316caca5bd6f7b6016e73cd861b6a4b99565a2fd89b1d65003e1a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.0.1"
+  dart_ping_ios:
+    dependency: "direct main"
+    description:
+      name: dart_ping_ios
+      sha256: ade22dedb8bbe37b6ba69bbfb0cbb36b6a20f55f6a63abcb4583373f9ea8eebd
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   dart_style:
     dependency: transitive
     description:
@@ -290,6 +297,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  dbus:
+    dependency: transitive
+    description:
+      name: dbus
+      sha256: "365c771ac3b0e58845f39ec6deebc76e3276aa9922b0cc60840712094d9047ac"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.10"
   dropdown_search:
     dependency: "direct main"
     description:
@@ -298,6 +313,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.6"
+  enum_to_string:
+    dependency: transitive
+    description:
+      name: enum_to_string
+      sha256: bd9e83a33b754cb43a75b36a9af2a0b92a757bfd9847d2621ca0b1bed45f8e7a
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   esc_pos_utils_plus:
     dependency: "direct main"
     description:
@@ -460,6 +483,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  flutter_icmp_ping:
+    dependency: transitive
+    description:
+      name: flutter_icmp_ping
+      sha256: de9633cf65a8c733fae29d08a35d3d4b343620cd1d13e1bfa88eccf56696d896
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.3"
   flutter_keyboard_visibility:
     dependency: transitive
     description:
@@ -600,6 +631,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  gbk_codec:
+    dependency: transitive
+    description:
+      name: gbk_codec
+      sha256: "3af5311fc9393115e3650ae6023862adf998051a804a08fb804f042724999f61"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   glob:
     dependency: transitive
     description:
@@ -853,6 +892,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  network_info_plus:
+    dependency: transitive
+    description:
+      name: network_info_plus
+      sha256: "2d9e88b9a459e5d4e224f828d26cc38ea140511e89b943116939994324be5c96"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
+  network_info_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: network_info_plus_platform_interface
+      sha256: "881f5029c5edaf19c616c201d3d8b366c5b1384afd5c1da5a49e4345de82fb8b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.3"
   new_version_plus:
     dependency: "direct main"
     description:
@@ -861,6 +916,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.11"
+  nm:
+    dependency: transitive
+    description:
+      name: nm
+      sha256: "2c9aae4127bdc8993206464fcc063611e0e36e72018696cd9631023a31b24254"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   number_to_words:
     dependency: "direct main"
     description:
@@ -1037,6 +1100,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.5.1"
+  ping_discover_network_forked:
+    dependency: transitive
+    description:
+      name: ping_discover_network_forked
+      sha256: d3975c4f3fbaa388f78fb4037ad9c33059d8e2ec0e804ed45e05277d2451fe77
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   platform:
     dependency: transitive
     description:
@@ -1133,6 +1204,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.27.7"
   screenshot:
     dependency: "direct main"
     description:
@@ -1266,6 +1345,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.1"
+  thermal_printer:
+    dependency: "direct main"
+    description:
+      name: thermal_printer
+      sha256: "0434f1c18a58b03d46139917e58e7236ad9776fccc36fd9ffd2f17a75fbbc333"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   timing:
     dependency: transitive
     description:

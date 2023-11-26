@@ -100,7 +100,6 @@ class _GenerateBillState extends State<GenerateBill> {
                                               true,
                                               itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i.toString())}",
                                               readOnly: true,
-                                              isEnabled: false,
                                               controller: billgenerationprovider
                                                   .billGenerateDetails
                                                   .serviceCategoryCtrl,
@@ -123,7 +122,6 @@ class _GenerateBillState extends State<GenerateBill> {
                                                 true,
                                                 itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i.toString())}",
                                                 readOnly: true,
-                                                isEnabled: false,
                                                 controller:
                                                     billgenerationprovider
                                                         .billGenerateDetails
@@ -156,7 +154,6 @@ class _GenerateBillState extends State<GenerateBill> {
                                                           true,
                                                           itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i.toString())}",
                                                           readOnly: true,
-                                                          isEnabled: false,
                                                           controller: billgenerationprovider
                                                               .billGenerateDetails
                                                               .propertyTypeCtrl)),

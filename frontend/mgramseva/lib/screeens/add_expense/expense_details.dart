@@ -204,23 +204,23 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                             if (isUpdate)
                               BuildTextField(
                                 '${i18.common.BILL_ID}',
-                                expenseDetails.challanNumberCtrl,
+                                expensesDetailsProvider.expenditureDetails.challanNumberCtrl,
                                 isDisabled: true,
                               ),
                             SelectFieldBuilder(
                               i18.expense.EXPENSE_TYPE,
-                              expenseDetails.expenseType,
+                              expensesDetailsProvider.expenditureDetails.expenseType,
                               '',
                               '',
                               expensesDetailsProvider.onChangeOfExpenses,
                               expensesDetailsProvider.getExpenseTypeList(isSearch: isUpdate),
                               true,
-                              isEnabled: expenseDetails.allowEdit,
+                              readOnly: !expensesDetailsProvider.expenditureDetails.allowEdit!,
                               requiredMessage:
                                   i18.expense.SELECT_EXPENDITURE_CATEGORY,
                               contextKey:
                                   expenseProvider.expenseWalkthrougList[0].key,
-                              controller: expenseDetails.expenseTypeController,
+                              controller: expensesDetailsProvider.expenditureDetails.expenseTypeController,
                               key: Keys.expense.EXPENSE_TYPE,
                               itemAsString: (i) =>'${ApplicationLocalizations.of(context)
                                   .translate(
@@ -228,7 +228,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                             ),
                             AutoCompleteView(
                               labelText: i18.expense.VENDOR_NAME,
-                              controller: expenseDetails.vendorNameCtrl,
+                              controller: expensesDetailsProvider.expenditureDetails.vendorNameCtrl,
                               suggestionsBoxController: expensesDetailsProvider
                                   .suggestionsBoxController,
                               onSuggestionSelected:
@@ -237,7 +237,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   expensesDetailsProvider.onSearchVendorList,
                               listTile: buildTile,
                               isRequired: true,
-                              isEnabled: expenseDetails.allowEdit,
+                              isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit,
                               requiredMessage:
                                   i18.expense.MENTION_NAME_OF_VENDOR,
                               inputFormatter: [
@@ -248,10 +248,10 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   expenseProvider.expenseWalkthrougList[1].key,
                               key: Keys.expense.VENDOR_NAME,
                             ),
-                            if (expenseDetails.vendorNameCtrl.text.trim().isNotEmpty)
+                            if (expensesDetailsProvider.expenditureDetails.vendorNameCtrl.text.trim().isNotEmpty)
                               BuildTextField(
                                 '${i18.common.MOBILE_NUMBER}',
-                                expenseDetails.mobileNumberController,
+                                expensesDetailsProvider.expenditureDetails.mobileNumberController,
                                 isRequired: true,
                                 prefixText: '+91 - ',
                                 textInputType: TextInputType.number,
@@ -271,7 +271,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               ),
                             BuildTextField(
                               '${i18.expense.AMOUNT}',
-                              expenseDetails.expensesAmount!.first.amountCtrl,
+                              expensesDetailsProvider.expenditureDetails.expensesAmount!.first.amountCtrl,
                               isRequired: true,
                               textInputType: TextInputType.number,
                               inputFormatter: [
@@ -280,7 +280,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               ],
                               placeHolder: '${i18.expense.AMOUNT} (₹)',
                               labelSuffix: '(₹)',
-                              isDisabled: (expenseDetails.allowEdit ?? true)
+                              isDisabled: (expensesDetailsProvider.expenditureDetails.allowEdit ?? true)
                                   ? false
                                   : true,
                               requiredMessage:
@@ -308,23 +308,23 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                     BasicDateField(
                                       i18.expense.BILL_DATE,
                                       true,
-                                      expenseDetails.billDateCtrl,
-                                      firstDate: expenseDetails.billIssuedDateCtrl.text
+                                      expensesDetailsProvider.expenditureDetails.billDateCtrl,
+                                      firstDate: expensesDetailsProvider.expenditureDetails.billIssuedDateCtrl.text
                                           .trim()
                                           .isEmpty
                                           ? null
                                           : DateFormats.getFormattedDateToDateTime(
-                                        expenseDetails.billIssuedDateCtrl.text
+                                        expensesDetailsProvider.expenditureDetails.billIssuedDateCtrl.text
                                             .trim(),
                                       ),
                                       initialDate:
                                       DateFormats.getFormattedDateToDateTime(
-                                        expenseDetails.billDateCtrl.text.trim(),
+                                        expensesDetailsProvider.expenditureDetails.billDateCtrl.text.trim(),
                                       ),
                                       lastDate: DateTime.now(),
                                       onChangeOfDate:
                                       expensesDetailsProvider.onChangeOfBillDate,
-                                      isEnabled: expenseDetails.allowEdit,
+                                      isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit,
                                       requiredMessage:
                                       i18.expense.DATE_BILL_ENTERED_IN_RECORDS,
                                       contextKey:
@@ -335,13 +335,13 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                     BasicDateField(
                                       i18.expense.EXPENSE_START_DATE,
                                       true,
-                                      expenseDetails.fromDateCtrl,
+                                      expensesDetailsProvider.expenditureDetails.fromDateCtrl,
                                       onChangeOfDate:
                                       expensesDetailsProvider.onChangeOfStartEndDate,
                                       lastDate: DateFormats.getFormattedDateToDateTime(
-                                        expenseDetails.billDateCtrl.text.trim(),
+                                        expensesDetailsProvider.expenditureDetails.billDateCtrl.text.trim(),
                                       ) ?? DateTime.now(),
-                                      isEnabled: expenseDetails.allowEdit,
+                                      isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit,
                                       validator: (val) => expensesDetailsProvider.fromToDateValidator(val, true),
                                       autoValidation: expenseProvider.dateAutoValidation ? AutovalidateMode.always
                                           : AutovalidateMode.disabled,
@@ -350,16 +350,16 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                     BasicDateField(
                                       i18.expense.EXPENSE_END_DATE,
                                       true,
-                                      expenseDetails.toDateCtrl,
+                                      expensesDetailsProvider.expenditureDetails.toDateCtrl,
                                       initialDate: DateFormats.getFormattedDateToDateTime(
-                                        expenseDetails.billDateCtrl.text.trim(),
+                                        expensesDetailsProvider.expenditureDetails.billDateCtrl.text.trim(),
                                       ),
                                       lastDate: DateFormats.getFormattedDateToDateTime(
-                                        expenseDetails.billDateCtrl.text.trim(),
+                                        expensesDetailsProvider.expenditureDetails.billDateCtrl.text.trim(),
                                       ) ?? DateTime.now(),
                                       onChangeOfDate:
                                       expensesDetailsProvider.onChangeOfStartEndDate,
-                                      isEnabled: expenseDetails.allowEdit,
+                                      isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit,
                                       validator: expensesDetailsProvider.fromToDateValidator,
                                       autoValidation: expenseProvider.dateAutoValidation ? AutovalidateMode.always
                                           : AutovalidateMode.disabled,
@@ -373,20 +373,20 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                             BasicDateField(
                               i18.expense.PARTY_BILL_DATE,
                               false,
-                              expenseDetails.billIssuedDateCtrl,
+                              expensesDetailsProvider.expenditureDetails.billIssuedDateCtrl,
                               initialDate:
                                   DateFormats.getFormattedDateToDateTime(
-                                expenseDetails.billIssuedDateCtrl.text.trim(),
+                                expensesDetailsProvider.expenditureDetails.billIssuedDateCtrl.text.trim(),
                               ),
-                              lastDate: expenseDetails.billDateCtrl.text
+                              lastDate: expensesDetailsProvider.expenditureDetails.billDateCtrl.text
                                       .trim()
                                       .isEmpty
                                   ? DateTime.now()
                                   : DateFormats.getFormattedDateToDateTime(
-                                      expenseDetails.billDateCtrl.text.trim()),
+                                      expensesDetailsProvider.expenditureDetails.billDateCtrl.text.trim()),
                               onChangeOfDate:
                                   expensesDetailsProvider.onChangeOfDate,
-                              isEnabled: expenseDetails.allowEdit,
+                              isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit,
                               contextKey:
                                   expenseProvider.expenseWalkthrougList[4].key,
                               key: Keys.expense.EXPENSE_PARTY_DATE,
@@ -394,31 +394,31 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                             RadioButtonFieldBuilder(
                                 context,
                                 i18.expense.HAS_THIS_BILL_PAID,
-                                expenseDetails.isBillPaid,
+                                expensesDetailsProvider.expenditureDetails.isBillPaid,
                                 '',
                                 '',
                                 true,
                                 Constants.EXPENSESTYPE,
                                 expensesDetailsProvider.onChangeOfBillPaid,
-                                isEnabled: expenseDetails.allowEdit),
-                            if (expenseDetails.isBillPaid ?? false)
+                                isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit),
+                            if (expensesDetailsProvider.expenditureDetails.isBillPaid ?? false)
                               BasicDateField(i18.expense.PAYMENT_DATE, true,
-                                  expenseDetails.paidDateCtrl,
+                                  expensesDetailsProvider.expenditureDetails.paidDateCtrl,
                                   firstDate:
                                       DateFormats.getFormattedDateToDateTime(
-                                          expenseDetails.billDateCtrl.text
+                                          expensesDetailsProvider.expenditureDetails.billDateCtrl.text
                                               .trim()),
                                   lastDate: DateTime.now(),
                                   initialDate:
                                       DateFormats.getFormattedDateToDateTime(
-                                          expenseDetails.paidDateCtrl.text
+                                          expensesDetailsProvider.expenditureDetails.paidDateCtrl.text
                                               .trim()),
                                   onChangeOfDate:
                                       expensesDetailsProvider.onChangeOfDate,
-                                  isEnabled: expenseDetails.allowEdit),
+                                  isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit),
                             if (isUpdate &&
-                                expenseDetails.fileStoreList != null &&
-                                expenseDetails.fileStoreList!.isNotEmpty)
+                                expensesDetailsProvider.expenditureDetails.fileStoreList != null &&
+                                expensesDetailsProvider.expenditureDetails.fileStoreList!.isNotEmpty)
                               Container(
                                 margin: const EdgeInsets.only(
                                     top: 20.0, bottom: 5, right: 20, left: 20),
@@ -433,7 +433,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                             fontSize: 19,
                                             fontWeight: FontWeight.normal)),
                                     Wrap(
-                                        children: expenseDetails.fileStoreList!
+                                        children: expensesDetailsProvider.expenditureDetails.fileStoreList!
                                             .map<Widget>((e) => InkWell(
                                                   onTap: () =>
                                                       expensesDetailsProvider
@@ -464,7 +464,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   ],
                                 ),
                               ),
-                            if (expenseDetails.allowEdit ?? true)
+                            if (expensesDetailsProvider.expenditureDetails.allowEdit ?? true)
                               FilePickerDemo(
                                 key: expensesDetailsProvider.filePickerKey,
                                 callBack:
@@ -474,7 +474,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                     .expenseWalkthrougList[5].key,
                               ),
                             if (isUpdate)
-                              expensesDetailsProvider.isPSPCLEnabled && expenseDetails.expenseType=='ELECTRICITY_BILL'?Container():
+                              expensesDetailsProvider.isPSPCLEnabled && expensesDetailsProvider.expenditureDetails.expenseType=='ELECTRICITY_BILL'?Container():
                                 Container(
                                   alignment: Alignment.centerLeft,
                                   padding: EdgeInsets.symmetric(
@@ -488,7 +488,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                         width: 20,
                                         height: 20,
                                         child: Checkbox(
-                                            value: expenseDetails.isBillCancelled,
+                                            value: expensesDetailsProvider.expenditureDetails.isBillCancelled,
                                             onChanged: expensesDetailsProvider
                                                 .onChangeOfCheckBox),
                                       ),

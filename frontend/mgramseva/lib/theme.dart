@@ -9,6 +9,9 @@ ThemeData get theme => ThemeData(
     primaryColor: Color.fromRGBO(244, 119, 56, 1),
     disabledColor: Colors.grey,
     cardTheme: CardTheme(surfaceTintColor: Colors.white),
+    datePickerTheme: DatePickerThemeData(
+      surfaceTintColor: Colors.white
+    ),
     drawerTheme: DrawerThemeData(
       surfaceTintColor: Colors.white
     ),

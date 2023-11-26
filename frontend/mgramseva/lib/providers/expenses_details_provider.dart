@@ -61,7 +61,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       Provider.of<CommonProvider>(context, listen: false);
       if (languageList?.mdmsRes?.expense?.expenseList != null) {
         var res = languageList?.mdmsRes?.pspclIntegration?.accountNumberGpMapping?.where((element) => element.departmentEntityCode==commonProvider.userDetails?.selectedtenant?.city?.code).toList();
-        if(res!.isNotEmpty){
+        if(res!=null && res.isNotEmpty){
           isPSPCLEnabled = true;
           notifyListeners();
         }else{
@@ -552,7 +552,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
     if (languageList?.mdmsRes?.expense?.expenseList != null) {
       var res = languageList?.mdmsRes?.pspclIntegration?.accountNumberGpMapping?.where((element) => element.departmentEntityCode==commonProvider.userDetails?.selectedtenant?.city?.code).toList();
       var tempList = languageList?.mdmsRes?.expense?.expenseList?.toList();
-      if(res!.isNotEmpty){
+      if(res!=null && res.isNotEmpty){
         isSearch?{}:tempList!.removeWhere((element) => element.code=="ELECTRICITY_BILL");
       }
       return (tempList ?? <ExpenseType>[])

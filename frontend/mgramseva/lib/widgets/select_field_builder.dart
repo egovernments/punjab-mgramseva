@@ -19,7 +19,6 @@ class SelectFieldBuilder extends StatefulWidget {
   final String? hint;
   final bool? readOnly;
   final bool showSearchBox;
-  final bool? isEnabled;
   final String? requiredMessage;
   final GlobalKey? contextKey;
   final TextEditingController? controller;
@@ -29,7 +28,6 @@ class SelectFieldBuilder extends StatefulWidget {
   const SelectFieldBuilder(this.labelText, this.value, this.input, this.prefixText,
       this.widget, this.options, this.isRequired,
       {this.hint,
-      this.isEnabled,
       this.readOnly = false,
       this.requiredMessage,
       this.contextKey,
@@ -52,7 +50,7 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
           style: TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
-              color: (widget.isEnabled ?? true)
+              color: (!widget.readOnly!)
                   ? Theme.of(context).primaryColorDark
                   : Colors.grey)),
       Visibility(
@@ -62,7 +60,7 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
             style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 16,
-                color: (widget.isEnabled ?? true)
+                color: (!widget.readOnly! ?? true)
                     ? Theme.of(context).primaryColorDark
                     : Colors.grey)),
       ),
@@ -160,6 +158,11 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
                 items: widget.options,
                 onChanged: widget.widget,
                 enabled: !widget.readOnly!,
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  baseStyle: TextStyle(
+                    color: !widget.readOnly!?Theme.of(context).primaryColorDark:Colors.grey
+                  )
+                ),
                 popupProps: PopupProps.menu(
                   showSearchBox: widget.showSearchBox,
                   fit: FlexFit.loose,

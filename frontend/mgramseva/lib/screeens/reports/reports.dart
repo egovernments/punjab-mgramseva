@@ -167,6 +167,7 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                                             reportProvider
                                                                 .billingYearList),
                                                     true,
+                                                    readOnly: false,
                                                     controller: reportProvider
                                                         .billingyearCtrl,
                                                     key: Keys.billReport
@@ -186,6 +187,7 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                                             reportProvider
                                                                 .selectedBillYear),
                                                     true,
+                                                    readOnly: false,
                                                     controller: reportProvider
                                                         .billingcycleCtrl,
                                                     key: Keys.billReport
