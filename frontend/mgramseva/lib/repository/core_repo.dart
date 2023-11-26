@@ -27,7 +27,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
-
+enum FileUploadStatus {
+  NOT_ACTIVE,STARTED,COMPLETED
+}
 class CoreRepository extends BaseService {
   Future<List<LocalizationLabel>> getLocilisation(
       Map<String, dynamic> query) async {

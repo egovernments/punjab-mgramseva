@@ -469,7 +469,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                 key: expensesDetailsProvider.filePickerKey,
                                 callBack:
                                     expensesDetailsProvider.fileStoreIdCallBack,
-                                extensions: ['jpg', 'pdf', 'png'],
+                                extensions: ['jpg', 'pdf', 'png', 'jpeg'],
                                 contextKey: expenseProvider
                                     .expenseWalkthrougList[5].key,
                               ),

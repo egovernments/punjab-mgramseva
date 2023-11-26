@@ -147,6 +147,24 @@ class _LoginState extends State<Login> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
+                            Navigator.pushNamed(context, Routes.PRIVACY_POLICY,arguments:true);
+                          },
+                      ),
+                      TextSpan(
+                          text: ' and ',
+                          style: TextStyle(
+                              color: Colors.black
+                          )
+                      ),
+                      TextSpan(
+                        text: 'Terms of use',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor, // set link color
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.pushNamed(context, Routes.TERMS_OF_USE,arguments:true);
                           },
                       ),
                     ],
