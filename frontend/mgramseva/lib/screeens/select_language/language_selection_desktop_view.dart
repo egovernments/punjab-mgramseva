@@ -8,9 +8,7 @@ import 'package:mgramseva/widgets/background_container.dart';
 import 'package:mgramseva/widgets/button.dart';
 import 'package:mgramseva/widgets/language_card.dart';
 import 'package:mgramseva/widgets/footer_banner.dart';
-import 'package:provider/provider.dart';
 
-import '../../providers/language.dart';
 
 class LanguageSelectionDesktopView extends StatelessWidget {
   final StateInfo stateInfo;

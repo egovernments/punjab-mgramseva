@@ -1,4 +1,3 @@
-import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
@@ -8,7 +7,6 @@ import 'package:mgramseva/widgets/logo.dart';
 import 'package:mgramseva/widgets/mobile_view.dart';
 import 'package:mgramseva/widgets/success_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class PasswordSuccess extends StatefulWidget {
   State<StatefulWidget> createState() {

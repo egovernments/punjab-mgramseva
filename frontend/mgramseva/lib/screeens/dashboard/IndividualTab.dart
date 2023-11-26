@@ -62,7 +62,7 @@ class _IndividualTabState extends State<IndividualTab> {
               (expenseList is List<ExpensesDetailsModel> ? 5 : 3));
       var tableData = expenseList is List<ExpensesDetailsModel>
           ? dashBoardProvider
-              .getExpenseData(expenseList as List<ExpensesDetailsModel>)
+              .getExpenseData(expenseList)
           : dashBoardProvider
               .getCollectionsData(expenseList as List<WaterConnection>);
       var extraHeight = 0.0;
@@ -70,7 +70,7 @@ class _IndividualTabState extends State<IndividualTab> {
         if (e.tableRow.first.label.length > 28)
           extraHeight += e.tableRow.first.label.substring(28).length.toDouble();
       });
-      return tableData == null || tableData.isEmpty
+      return tableData.isEmpty
           ? SizedBox(
               height: 100,
               child: CommonWidgets.buildEmptyMessage(

@@ -30,11 +30,9 @@ class ForgotPasswordProvider with ChangeNotifier {
           await ForgotPasswordRepository().forgotPassword(body, context);
       Navigator.pop(context);
 
-      if (otpResponse != null) {
-        Navigator.of(context)
-            .pushNamed(Routes.RESET_PASSWORD, arguments: {"id": mobileNumber});
-      }
-    } catch (e, s) {
+      Navigator.of(context)
+          .pushNamed(Routes.RESET_PASSWORD, arguments: {"id": mobileNumber});
+        } catch (e, s) {
       Navigator.pop(context);
       ErrorHandler().allExceptionsHandler(context, e, s);
     }

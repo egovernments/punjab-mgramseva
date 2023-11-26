@@ -80,7 +80,7 @@ class _HomeState extends State<Home> {
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),

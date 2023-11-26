@@ -347,28 +347,9 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                       billList.bill!.first,
                                                       "Share",
                                                     ),
-                                                    style: ButtonStyle(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      padding:
-                                                          MaterialStateProperty
-                                                              .all(EdgeInsets
-                                                                  .symmetric(
-                                                                      vertical:
-                                                                          0)),
-                                                      shape: MaterialStateProperty
-                                                          .all(
-                                                              RoundedRectangleBorder(
-                                                        side: BorderSide(
-                                                            width: 2,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(0.0),
-                                                      )),
-                                                    ),
+                                                    style: ElevatedButton.styleFrom(padding:EdgeInsets.symmetric(vertical: 8),alignment: Alignment.center,side:BorderSide(
+                                                        width: 1,
+                                                        color: Theme.of(context).disabledColor)),
                                                     icon: (Image.asset(
                                                         'assets/png/whats_app.png')),
                                                     label: Padding(

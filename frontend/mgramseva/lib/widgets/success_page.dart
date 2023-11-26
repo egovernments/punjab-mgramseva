@@ -23,7 +23,7 @@ class SuccessPage extends StatelessWidget {
               child: Text(ApplicationLocalizations.of(context).translate(label),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Theme.of(context).backgroundColor,
+                    color: Theme.of(context).colorScheme.background,
                     fontSize: 32,
                     fontFamily: 'Roboto Condensed',
                     fontWeight: FontWeight.w700
@@ -35,10 +35,10 @@ class SuccessPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                amount==null?SizedBox():Text('₹${amount}',
+                amount==null?SizedBox():Text('₹$amount',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: Theme.of(context).backgroundColor,
+                        color: Theme.of(context).colorScheme.background,
                         fontSize: 32,
                         fontFamily: 'Roboto Condensed',
                         fontWeight: FontWeight.w700
@@ -46,7 +46,7 @@ class SuccessPage extends StatelessWidget {
                 SizedBox(width: 8,),
                 Icon(
                   Icons.check_circle,
-                  color: Theme.of(context).backgroundColor,
+                  color: Theme.of(context).colorScheme.background,
                   size: 32,
                 ),
               ],
@@ -60,7 +60,7 @@ class SuccessPage extends StatelessWidget {
               child: Text(ApplicationLocalizations.of(context).translate(subTextHeader ?? ''),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Theme.of(context).backgroundColor,
+                    color: Theme.of(context).colorScheme.background,
                     fontSize: 18,
                     fontWeight: FontWeight.w700
                   )),
@@ -71,7 +71,7 @@ class SuccessPage extends StatelessWidget {
               child: Text(ApplicationLocalizations.of(context).translate(subText ?? ''),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Theme.of(context).backgroundColor,
+                    color: Theme.of(context).colorScheme.background,
                     fontSize: 24,
                     fontWeight: FontWeight.w700
                   )),

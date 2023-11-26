@@ -1,13 +1,12 @@
 import 'dart:math';
-import 'package:charts_flutter/src/text_element.dart' as ChartText;
-import 'package:charts_flutter/src/text_style.dart' as ChartStyle;
-import 'package:charts_flutter/flutter.dart';
+import 'package:community_charts_flutter/community_charts_flutter.dart';
+import 'package:community_charts_flutter/src/text_element.dart' as ChartTextElement;
+import 'package:community_charts_flutter/src/text_style.dart' as ChartTextStyle;
 
 
 String? _xAxis;
 String? _pointColor;
 num? _maxVal;
-
 class ToolTipMgr {
 
   static String? get xAxis => _xAxis;
@@ -57,14 +56,14 @@ class CustomTooltipLabelRenderer extends CircleSymbolRenderer {
       roundTopLeft: true, roundTopRight: true, roundBottomLeft: true, roundBottomRight: true,
       radius: 4);
 
-    ChartStyle.TextStyle textStyle = ChartStyle.TextStyle();
+    ChartTextStyle.TextStyle textStyle = ChartTextStyle.TextStyle();
 
     textStyle.color = Color.fromHex(code: ToolTipMgr.pointColor ?? '#505A5F');
 
     textStyle.fontSize = 12;
 
     canvas.drawText(
-        ChartText.TextElement('₹ ${ToolTipMgr.xAxis}', style: textStyle),
+        ChartTextElement.TextElement('₹ ${ToolTipMgr.xAxis}', style: textStyle),
         (bounds.left - bounds.width ).round(),
         -10);
   }

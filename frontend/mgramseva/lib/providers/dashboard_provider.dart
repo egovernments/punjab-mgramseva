@@ -307,41 +307,39 @@ class DashBoardProvider with ChangeNotifier {
 
       isLoaderEnabled = false;
       if (selectedDashboardType != DashBoardType.collections) return;
-      if (response != null) {
-        if (waterConnectionsDetails == null) {
-          waterConnectionsDetails = response;
+      if (waterConnectionsDetails == null) {
+        waterConnectionsDetails = response;
 
-          if (selectedTab == 'all') {
-            collectionCountHolder['all'] = response.totalCount ?? 0;
-            propertyTaxList.forEach((key) {
-              collectionCountHolder[key.code!] =
-                  int.parse(response.tabData?[key.code!] ?? '0');
-            });
-          } else if (searchResponse != null) {
-            collectionCountHolder['all'] = searchResponse.totalCount ?? 0;
-            propertyTaxList.forEach((key) {
-              collectionCountHolder[key.code!] =
-                  int.parse(searchResponse.tabData?[key.code!] ?? '0');
-            });
-          }
-
-          notifyListeners();
-        } else {
-          waterConnectionsDetails?.totalCount = response.totalCount;
-          waterConnectionsDetails?.waterConnection
-              ?.addAll(response.waterConnection ?? <WaterConnection>[]);
+        if (selectedTab == 'all') {
+          collectionCountHolder['all'] = response.totalCount ?? 0;
+          propertyTaxList.forEach((key) {
+            collectionCountHolder[key.code!] =
+                int.parse(response.tabData?[key.code!] ?? '0');
+          });
+        } else if (searchResponse != null) {
+          collectionCountHolder['all'] = searchResponse.totalCount ?? 0;
+          propertyTaxList.forEach((key) {
+            collectionCountHolder[key.code!] =
+                int.parse(searchResponse.tabData?[key.code!] ?? '0');
+          });
         }
+
         notifyListeners();
-        streamController.add(waterConnectionsDetails!.waterConnection!.isEmpty
-            ? <WaterConnection>[]
-            : waterConnectionsDetails?.waterConnection?.sublist(
-                offSet - 1,
-                ((offset + limit - 1) >
-                        (waterConnectionsDetails?.totalCount ?? 0))
-                    ? (waterConnectionsDetails!.totalCount!)
-                    : (offset + limit) - 1));
+      } else {
+        waterConnectionsDetails?.totalCount = response.totalCount;
+        waterConnectionsDetails?.waterConnection
+            ?.addAll(response.waterConnection ?? <WaterConnection>[]);
       }
-    } catch (e, s) {
+      notifyListeners();
+      streamController.add(waterConnectionsDetails!.waterConnection!.isEmpty
+          ? <WaterConnection>[]
+          : waterConnectionsDetails?.waterConnection?.sublist(
+              offSet - 1,
+              ((offset + limit - 1) >
+                      (waterConnectionsDetails?.totalCount ?? 0))
+                  ? (waterConnectionsDetails!.totalCount!)
+                  : (offset + limit) - 1));
+        } catch (e, s) {
       isLoaderEnabled = false;
       notifyListeners();
       streamController.addError('error');

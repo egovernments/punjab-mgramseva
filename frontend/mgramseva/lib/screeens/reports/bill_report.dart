@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/common/BillsTableData.dart';
 import '../../providers/reports_provider.dart';
 import '../../utils/localization/application_localizations.dart';
 
@@ -10,7 +9,6 @@ import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import '../../utils/notifiers.dart';
 import '../../utils/testing_keys/testing_keys.dart';
 import '../../widgets/button.dart';
-import 'generic_report_table.dart';
 
 class BillReport extends StatefulWidget {
   final Function onViewClick;

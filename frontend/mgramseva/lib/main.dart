@@ -3,8 +3,8 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 
+import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +46,7 @@ import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifiers.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
@@ -59,6 +59,10 @@ void main() {
   setPathUrlStrategy();
   //configureApp();
   setEnvironment(Environment.dev);
+  // Register DartPingIOS
+  if (Platform.isIOS) {
+    DartPingIOS.register();
+  }
 
   runZonedGuarded(() async {
     FlutterError.onError = (FlutterErrorDetails details) {
@@ -68,9 +72,13 @@ void main() {
     };
 
     WidgetsFlutterBinding.ensureInitialized();
-
-    if (Firebase.apps.length == 0) {
+    if(kIsWeb){
+      await Firebase.initializeApp(options: FirebaseConfigurations.firebaseOptions);
+    }else{
       await Firebase.initializeApp();
+    }
+    if (Firebase.apps.length == 0) {
+
     }
 
     if (!kIsWeb) {
@@ -104,7 +112,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late Locale _locale = Locale('en', 'IN');
-  static FirebaseAnalytics analytics = FirebaseAnalytics();
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
   ReceivePort _port = ReceivePort();
@@ -126,13 +134,13 @@ class _MyAppState extends State<MyApp> {
     IsolateNameServer.removePortNameMapping('downloader_send_port');
     super.dispose();
   }
-
+  @pragma('vm:entry-point')
   static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
+      String id, int status, int progress) {
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port')!;
 
-    send.send([id, status, progress]);
+    send.send([id, DownloadTaskStatus.values.elementAt(status), progress]);
   }
 
   afterViewBuild() async {
@@ -143,10 +151,10 @@ class _MyAppState extends State<MyApp> {
       String id = data[0];
       DownloadTaskStatus status = data[1];
       int progress = data[2];
+      print("Download progress: "+progress.toString());
       if (status == DownloadTaskStatus.complete) {
         if (CommonProvider.downloadUrl.containsKey(id)) {
-          if (Platform.isIOS && CommonProvider.downloadUrl[id] != null)
-            OpenFile.open(CommonProvider.downloadUrl[id] ?? '');
+          if (CommonProvider.downloadUrl[id] != null) OpenFilex.open(CommonProvider.downloadUrl[id] ?? '');
           CommonProvider.downloadUrl.remove(id);
         } else if (status == DownloadTaskStatus.failed ||
             status == DownloadTaskStatus.canceled ||
@@ -155,7 +163,9 @@ class _MyAppState extends State<MyApp> {
             CommonProvider.downloadUrl.remove(id);
         }
       }
-      setState(() {});
+      setState(() {
+        print("Download progress: "+progress.toString());
+      });
     });
     FlutterDownloader.registerCallback(downloadCallback);
   }

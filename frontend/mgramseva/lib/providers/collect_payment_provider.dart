@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as img;
 import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/common/fetch_bill.dart';
@@ -26,7 +25,6 @@ import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifiers.dart';
-import 'package:mgramseva/utils/print_bluetooth.dart';
 import 'package:mgramseva/widgets/common_success_page.dart';
 import 'package:number_to_words/number_to_words.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +34,7 @@ import '../components/house_connection_and_bill/js_connnector.dart' as js;
 import '../env/app_config.dart';
 import '../model/localization/language.dart';
 import '../repository/core_repo.dart';
+import '../widgets/bluetooth_printer.dart';
 import 'common_provider.dart';
 
 class CollectPaymentProvider with ChangeNotifier {
@@ -400,7 +399,7 @@ class CollectPaymentProvider with ChangeNotifier {
                     height: 8,
                   ),
                   Text('- - *** - -',
-                      textScaleFactor: kIsWeb ? 3 : 1,
+                      textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           color: Colors.red,
@@ -408,7 +407,7 @@ class CollectPaymentProvider with ChangeNotifier {
                           fontWeight: FontWeight.bold)),
                   Text(
                       "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.RECEIPT_FOOTER)}",
-                      textScaleFactor: kIsWeb ? 3 : 1,
+                      textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           color: Colors.red,
@@ -421,9 +420,9 @@ class CollectPaymentProvider with ChangeNotifier {
               kIsWeb
                   ? js.onButtonClick(
                       value, stateProvider.stateInfo!.stateLogoURL.toString())
-                  : PrintBluetooth.printTicket(
-                      img.decodeImage(value), navigatorKey.currentContext!)
+                  :Navigator.push(navigatorKey.currentContext!, new MaterialPageRoute(builder: (context)=>BluetoothPrinterScreen(imageData: value)))
             });
+    return null;
   }
 
   Future<void> getPaymentModes(FetchBill fetchBill, String tenantId,

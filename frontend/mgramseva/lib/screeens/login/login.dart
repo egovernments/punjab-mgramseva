@@ -131,6 +131,7 @@ class _LoginState extends State<Login> {
                           ))),
                 ),
                 RichText(
+                  maxLines: 3,
                   text: TextSpan(
                     children: <TextSpan>[
                       TextSpan(

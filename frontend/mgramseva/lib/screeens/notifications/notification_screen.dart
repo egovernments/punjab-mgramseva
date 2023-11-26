@@ -44,7 +44,7 @@ class _NotificationScreen extends State<NotificationScreen> {
         ..notifications.clear()
         ..getNotifications(notificationProvider.offset, notificationProvider.limit);
     }
-    catch (e, s) {
+    catch (e) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e);
     }
   }

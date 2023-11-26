@@ -9,7 +9,7 @@ import 'package:mgramseva/model/mdms/tax_period.dart';
 import '../../repository/water_services_calculation.dart';
 
 class LanguageList {
-  dynamic? responseInfo;
+  dynamic responseInfo;
   MdmsRes? mdmsRes;
 
   LanguageList({this.responseInfo, this.mdmsRes});
