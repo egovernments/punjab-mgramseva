@@ -4,7 +4,7 @@
     "start_url": ".",
     "display": "standalone",
     "background_color": "#eeeeee",
-    "theme_color": "#f47738",
+    "theme_color": "#0B4B66",
     "description": "A mobile-based application that enables the gram panchayat water committee to collect & manage revenue and expenditure.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
