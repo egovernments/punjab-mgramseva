@@ -98,6 +98,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       if(this.expenditureDetails.expenseType=='ELECTRICITY_BILL' && isPSPCLEnabled){
         this.expenditureDetails.allowEdit = false;
       }
+      notifyListeners();
       streamController.add(this.expenditureDetails);
     } on CustomException catch (e, s) {
       ErrorHandler.handleApiException(context, e, s);
@@ -581,6 +582,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
           Vendor(vendorList[index].name.trim(), vendorList[index].id);
       expenditureDetails.selectedVendor?.owner ??= Owner(mobileNumber);
     }
+    notifyListeners();
   }
 
   callNotifyer() {

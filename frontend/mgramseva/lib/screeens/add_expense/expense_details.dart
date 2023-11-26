@@ -106,7 +106,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                     return CommonWidgets.buildEmptyMessage(
                         snapshot.data, context);
                   }
-                  return _buildUserView(snapshot.data);
+                  return _buildUserView();
                 } else if (snapshot.hasError) {
                   return Notifiers.networkErrorPage(
                       context,
@@ -153,7 +153,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
     print(context);
   }
 
-  Widget _buildUserView(ExpensesDetailsModel expenseDetails) {
+  Widget _buildUserView() {
     return FormWrapper(Consumer<ExpensesDetailsProvider>(
         builder: (_, expenseProvider, child) => Column(
                 mainAxisAlignment: MainAxisAlignment.start,

@@ -24,6 +24,9 @@ class _PrivacyAndTermsState extends State<PrivacyAndTerms> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.white, //change your color here
+        ),
         titleSpacing: 0,
         centerTitle: true,
         automaticallyImplyLeading: widget.showLeading,
