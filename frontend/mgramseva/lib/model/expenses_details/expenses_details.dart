@@ -180,7 +180,7 @@ class ExpensesDetailsModel {
       selectedVendor = Vendor(vendorName ?? '', vendorId ?? '');
     }
 
-    if (isBillPaid! && paidDate != null) {
+    if (isBillPaid! && paidDate != null && paidDate != 0) {
       allowEdit = false;
     } else {
       paidDateCtrl.text = '';
