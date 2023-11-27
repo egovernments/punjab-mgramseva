@@ -66,7 +66,7 @@ public class VendorService {
 		
 		vendorValidator.validateCreate(vendorRequest);
 		enrichmentService.enrichCreate(vendorRequest);
-		vendorRepository.save(vendorRequest);
+		repository.save(vendorRequest);
 		return vendorRequest.getVendor();
 
 	}
