@@ -36,9 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 public class VendorService {
 
 	@Autowired
-	private VendorRepository vendorRepository;
-
-	@Autowired
 	private VendorValidator vendorValidator;
 
 	@Autowired
@@ -175,7 +172,7 @@ public class VendorService {
 				0,0,0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 //		Long monthEndDateTime=LocalDateTime.of(endDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
-		List<VendorReportData> vendorReportData=vendorRepository.getVendorReportData(monthStartDateTime,tenantId,offset,limit);
+		List<VendorReportData> vendorReportData=repository.getVendorReportData(monthStartDateTime,tenantId,offset,limit);
 				return vendorReportData;
 
 	}
