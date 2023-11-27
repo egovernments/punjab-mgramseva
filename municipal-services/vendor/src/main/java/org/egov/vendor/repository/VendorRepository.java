@@ -121,9 +121,9 @@ public class VendorRepository {
 		StringBuilder vendor_report_query=new StringBuilder(vendorQueryBuilder.VENDOR_REPORT_QUERY);
 
 		List<Object> preparedStatement=new ArrayList<>();
+		preparedStatement.add(tenantId);
 		preparedStatement.add(monthStartDateTime);
 //		preparedStatement.add(monthEndDateTime);
-		preparedStatement.add(tenantId);
 
 
 		Integer newlimit=configuration.getDefaultLimit();
