@@ -33,10 +33,10 @@ public class VendorReportRowMapper implements ResultSetExtractor<List<VendorRepo
         while(resultSet.next())
         {
              VendorReportData vendorReportData=new VendorReportData();
-             vendorReportData.setVendor_name("name");
-             vendorReportData.setBill_id("challanno");
-             vendorReportData.setUuid("owner_uuid");
-             vendorReportData.setType_of_expense("type_of_expense");
+             vendorReportData.setVendor_name(resultSet.getString("name"));
+             vendorReportData.setBill_id(resultSet.getString("challanno"));
+             vendorReportData.setUuid(resultSet.getString("owner_uuid"));
+             vendorReportData.setType_of_expense(resultSet.getString("type_of_expense"));
              vendorReportDataList.add(vendorReportData);
         }
          if(!vendorReportDataList.isEmpty())
@@ -72,6 +72,10 @@ public class VendorReportRowMapper implements ResultSetExtractor<List<VendorRepo
     {
         List<User> connectionHolderInfos = userDetailResponse.getUser();
         Map<String, User> userIdToConnectionHolderMap = new HashMap<>();
+        if(connectionHolderInfos.isEmpty())
+        {
+            return;
+        }
         connectionHolderInfos.forEach(user -> userIdToConnectionHolderMap.put(user.getUuid(), user));
 
         log.info(userIdToConnectionHolderMap.toString());
