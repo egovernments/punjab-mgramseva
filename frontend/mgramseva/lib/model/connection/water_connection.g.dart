@@ -97,7 +97,9 @@ AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) =>
       ..doorNo = json['doorNo'] as String?
       ..collectionAmount = json['collectionAmount'] as String?
       ..collectionPendingAmount = json['collectionPendingAmount'] as String?
-      ..action = json['action'] as String?;
+      ..action = json['action'] as String?
+      ..totalAmount = json['totalamount']!=null?double.parse(json['totalamount'] as String):0.0
+      ..appCreatedDate = json['appCreatedDate'] as int?;
 
 Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
     <String, dynamic>{
@@ -114,4 +116,6 @@ Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
       'collectionAmount': instance.collectionAmount,
       'collectionPendingAmount': instance.collectionPendingAmount,
       'action': instance.action,
+      'totalamount': instance.totalAmount,
+      'appCreatedDate': instance.appCreatedDate,
     };
