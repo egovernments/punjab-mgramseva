@@ -1,6 +1,7 @@
 package org.egov.vendor.repository.rowmapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.egov.vendor.service.UserService;
 import org.egov.vendor.web.model.VendorReportData;
 import org.egov.vendor.web.model.user.User;
@@ -17,6 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class VendorReportRowMapper implements ResultSetExtractor<List<VendorReportData>>
 {
     @Autowired
@@ -52,11 +54,18 @@ public class VendorReportRowMapper implements ResultSetExtractor<List<VendorRepo
         {
               lastModifiedByUuid.add(vendorReportData.getUuid());
         }
+
         UserSearchRequest userSearchRequest=new UserSearchRequest();
         userSearchRequest.setUuid((new ArrayList<>(lastModifiedByUuid)));
 
+        log.info(userSearchRequest.getUuid().toString());
+
         UserDetailResponse userDetailResponse = userService.getUser(userSearchRequest);
+
+        log.info(userDetailResponse.getUser().toString());
+
         enrichConnectionHolderInfo(userDetailResponse, vendorReportDataList);
+
     }
 
     private void enrichConnectionHolderInfo(UserDetailResponse userDetailResponse, List<VendorReportData> vendorReportDataList)
@@ -64,6 +73,9 @@ public class VendorReportRowMapper implements ResultSetExtractor<List<VendorRepo
         List<User> connectionHolderInfos = userDetailResponse.getUser();
         Map<String, User> userIdToConnectionHolderMap = new HashMap<>();
         connectionHolderInfos.forEach(user -> userIdToConnectionHolderMap.put(user.getUuid(), user));
+
+        log.info(userIdToConnectionHolderMap.toString());
+
         vendorReportDataList.forEach(vendorReportData-> vendorReportData.setMobile_no(userIdToConnectionHolderMap.get(vendorReportData.getUuid()).getMobileNumber()));
     }
 }

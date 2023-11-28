@@ -145,6 +145,8 @@ public class VendorRepository {
 			preparedStatement.add(newlimit);
 		}
 
+		log.info("Query of vendor report : "+vendor_report_query.toString()+" prepared statement of vendor report "+ preparedStatement);
+
 		List<VendorReportData> vendorReportDataList=jdbcTemplate.query(vendor_report_query.toString() , preparedStatement.toArray(), vendorReportRowMapper);
 
 		return vendorReportDataList;
