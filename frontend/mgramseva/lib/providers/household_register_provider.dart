@@ -493,6 +493,32 @@ class HouseholdRegisterProvider with ChangeNotifier {
       i18.householdRegister.ACTIVE_INACTIVE,
       i18.householdRegister.LAST_BILL_GEN_DATE
     ];
+    var pdfHeaderList = [
+      i18.common.CONNECTION_ID,
+      i18.common.NAME,
+      i18.common.GENDER,
+      i18.consumer.FATHER_SPOUSE_NAME,
+      i18.common.MOBILE_NUMBER,
+      i18.consumer.OLD_CONNECTION_ID,
+      i18.consumer.CONSUMER_CATEGORY,
+      i18.consumer.CONSUMER_SUBCATEGORY,
+      i18.searchWaterConnection.PROPERTY_TYPE,
+      i18.searchWaterConnection.CONNECTION_TYPE,
+      i18.demandGenerate.METER_READING_DATE,
+      i18.searchWaterConnection.METER_NUMBER,
+      i18.demandGenerate.PREV_METER_READING_LABEL,
+      i18.consumer.ARREARS_ON_CREATION,
+      i18.consumer.CORE_PENALTY_ON_CREATION,
+      i18.consumer.CORE_ADVANCE_ON_CREATION,
+      i18.common.CORE_TOTAL_BILL_AMOUNT,
+      i18.billDetails.TOTAL_AMOUNT_COLLECTED,
+      i18.common.CORE_ADVANCE_AS_ON_TODAY,
+      i18.common.CORE_BALANCE_AS_ON_TODAY,
+      i18.common.CREATED_ON_DATE,
+      i18.householdRegister.LAST_BILL_GEN_DATE,
+      i18.householdRegister.ACTIVE_INACTIVE
+
+    ];
     var downloadHeaderList = [
       i18.common.VILLAGE_CODE,
       i18.common.VILLAGE_NAME,
@@ -525,15 +551,11 @@ class HouseholdRegisterProvider with ChangeNotifier {
 
     var pdfTableData = waterConnectionsDetails.waterConnection
             ?.map<List<String>>((connection) => [
-      '${commonProvider.userDetails?.selectedtenant?.city?.code ?? 'NA'}',
-      '${ApplicationLocalizations.of(context).translate(connection.tenantId ?? 'NA')}',
-      '${connection.tenantId ?? 'NA'}',
+      '${connection.connectionNo ?? 'NA'}',
       '${connection.connectionHolders?.first.name ?? 'NA'}',
       '${ApplicationLocalizations.of(context).translate(connection.connectionHolders?.first.gender ?? 'NA')}',
       '${connection.connectionHolders?.first.fatherOrHusbandName ?? 'NA'}',
       '${connection.connectionHolders?.first.mobileNumber ?? 'NA'}',
-      '${connection.oldConnectionNo ?? 'NA'}',
-      '${connection.connectionNo ?? 'NA'}',
       '${ApplicationLocalizations.of(context).translate(connection.additionalDetails?.category ?? 'NA')}',
       '${ApplicationLocalizations.of(context).translate(connection.additionalDetails?.subCategory ?? 'NA')}',
       '${ApplicationLocalizations.of(context).translate(connection.additionalDetails?.propertyType ?? 'NA')}',
@@ -595,7 +617,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
             excelTableData)
         : await HouseholdPdfCreator(
                 context,
-        downloadHeaderList.where((e) => e!=i18.consumer.OLD_CONNECTION_ID)
+        pdfHeaderList.where((e) => e!=i18.consumer.OLD_CONNECTION_ID)
                     .map<String>((e) =>
                         '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e)}')
                     .toList(),
