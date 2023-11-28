@@ -221,13 +221,15 @@ const CreateEmployee = () => {
       tenantId: "pb",
     });
     const mappedroles = [].concat.apply([], roles);
+    let dateOfAppointment = new Date();
+    dateOfAppointment.setDate(dateOfAppointment.getDate() - 1);
     let Employees = [
       {
         tenantId: tenantId,
         employeeStatus: "EMPLOYED",
 
         code: data?.SelectEmployeeId?.code ? data?.SelectEmployeeId?.code : undefined,
-        dateOfAppointment: new Date().getTime(),
+        dateOfAppointment: dateOfAppointment.getTime(),
         employeeType: hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.employeeType,
         jurisdictions: STATE_ADMIN ? jurisdictions : data?.Jurisdictions,
         assignments: [
