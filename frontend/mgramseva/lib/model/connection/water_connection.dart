@@ -268,10 +268,10 @@ class AdditionalDetails {
   String? collectionPendingAmount;
 
   @JsonKey(name: "totalamount")
-  double? totalAmount;
+  String? totalAmount;
 
   @JsonKey(name: "appCreatedDate")
-  int? appCreatedDate;
+  num? appCreatedDate;
 
   @JsonKey(ignore: true)
   var initialMeterReadingCtrl = TextEditingController();

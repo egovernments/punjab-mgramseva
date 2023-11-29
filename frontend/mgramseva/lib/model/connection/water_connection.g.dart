@@ -98,8 +98,8 @@ AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) =>
       ..collectionAmount = json['collectionAmount'] as String?
       ..collectionPendingAmount = json['collectionPendingAmount'] as String?
       ..action = json['action'] as String?
-      ..totalAmount = json['totalamount']!=null?double.parse(json['totalamount'] as String):0.0
-      ..appCreatedDate = json['appCreatedDate'] as int?;
+      ..totalAmount = json['totalamount'] as String?
+      ..appCreatedDate = json['appCreatedDate'] as num?;
 
 Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
     <String, dynamic>{

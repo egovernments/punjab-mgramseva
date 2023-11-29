@@ -180,9 +180,9 @@ class _BluetoothPrinterScreenState extends State<BluetoothPrinterScreen> {
       final decodedImage = img.decodeImage(imageBytes)!;
       // Create a black bottom layer
       // Resize the image to a 130x? thumbnail (maintaining the aspect ratio).
-      img.Image thumbnail = img.copyResize(decodedImage, height: decodedImage.height);
+      img.Image thumbnail = img.copyResize(decodedImage,width: PaperSize.mm58.width,maintainAspect: false,);
       // creates a copy of the original image with set dimensions
-      img.Image originalImg = img.copyResize(decodedImage, width: PaperSize.mm58.width, height: decodedImage.height);
+      img.Image originalImg = img.copyResize(decodedImage, width: PaperSize.mm58.width,maintainAspect: false, );
       // fills the original image with a white background
       img.fill(originalImg, color: img.ColorRgb8(255, 255, 255));
       // var padding = (originalImg.width - thumbnail.width) / 2;

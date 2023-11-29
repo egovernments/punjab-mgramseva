@@ -20,7 +20,7 @@ img.Image drawImage(img.Image dst, img.Image src,
   srcY ??= 0;
   srcW ??= src.width;
   srcH ??= src.height;
-  dstW ??= (dst.width < src.width) ? dstW = dst.width : src.width;
+  dstW ??= (dst.width < src.width) ? dst.width : src.width;
   dstH ??= (dst.height < src.height) ? dst.height : src.height;
 
   if (blend) {
@@ -45,3 +45,4 @@ img.Image drawImage(img.Image dst, img.Image src,
 
   return dst;
 }
+
