@@ -371,7 +371,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
         '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '-'}',
       ),
       TableData(
-        '${connection.additionalDetails?.appCreatedDate != null ? DateFormats.timeStampToDate(connection.additionalDetails?.appCreatedDate) : '-'}',
+        '${connection.additionalDetails?.appCreatedDate != null ? DateFormats.timeStampToDate(connection.additionalDetails?.appCreatedDate?.toInt()) : '-'}',
       ),
       TableData(
         '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}',
@@ -570,7 +570,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
       '${connection.additionalDetails?.collectionAmount != null ? '₹ ${connection.additionalDetails?.collectionAmount}' : '-'}',
       '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '-' : '-'}',
       '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '-'}',
-      '${connection.additionalDetails?.appCreatedDate != null ? DateFormats.timeStampToDate(connection.additionalDetails?.appCreatedDate) : '-'}',
+      '${connection.additionalDetails?.appCreatedDate != null ? DateFormats.timeStampToDate(connection.additionalDetails?.appCreatedDate?.toInt()) : '-'}',
       '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}',
       '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
                 ])
@@ -601,7 +601,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
       '${connection.additionalDetails?.collectionAmount != null ? '₹ ${connection.additionalDetails?.collectionAmount}' : '-'}',
       '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '-' : '-'}',
       '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '-'}',
-      '${connection.additionalDetails?.appCreatedDate != null ? DateFormats.timeStampToDate(connection.additionalDetails?.appCreatedDate) : '-'}',
+      '${connection.additionalDetails?.appCreatedDate != null ? DateFormats.timeStampToDate(connection.additionalDetails?.appCreatedDate?.toInt()) : '-'}',
       '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}',
       '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
                 ])
