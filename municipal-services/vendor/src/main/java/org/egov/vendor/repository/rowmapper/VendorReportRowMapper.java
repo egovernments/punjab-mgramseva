@@ -80,6 +80,16 @@ public class VendorReportRowMapper implements ResultSetExtractor<List<VendorRepo
 
         log.info(userIdToConnectionHolderMap.toString());
 
-        vendorReportDataList.forEach(vendorReportData-> vendorReportData.setMobile_no(userIdToConnectionHolderMap.get(vendorReportData.getUuid()).getMobileNumber()));
+//        vendorReportDataList.forEach(vendorReportData-> vendorReportData.setMobile_no(userIdToConnectionHolderMap.get(vendorReportData.getUuid()).getMobileNumber()));
+
+        vendorReportDataList.forEach(vendorReportData -> {
+            User connection = userIdToConnectionHolderMap.get(vendorReportData.getUuid());
+            if (connection != null) {
+                vendorReportData.setMobile_no(connection.getMobileNumber());
+            } else {
+                log.warn("User not found for UUID: " + vendorReportData.getUuid());
+            }
+        });
+
     }
 }
