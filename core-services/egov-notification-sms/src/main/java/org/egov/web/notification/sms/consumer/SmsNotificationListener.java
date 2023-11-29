@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.*;
 import org.egov.tracer.kafka.*;
+import org.egov.web.notification.sms.config.SMSProperties;
 import org.egov.web.notification.sms.consumer.contract.SMSRequest;
 import org.egov.web.notification.sms.models.Category;
 import org.egov.web.notification.sms.models.RequestContext;
@@ -44,6 +45,9 @@ public class SmsNotificationListener {
     @Value("${kafka.topics.error.sms}")
     String errorSmsTopic;
 
+    @Autowired
+    protected SMSProperties smsProperties;
+
 
     @Autowired
     public SmsNotificationListener(
@@ -63,18 +67,20 @@ public class SmsNotificationListener {
         SMSRequest request = null;
         try {
             request = objectMapper.convertValue(consumerRecord, SMSRequest.class);
-            if (request.getExpiryTime() != null && request.getCategory() == Category.OTP) {
-                Long expiryTime = request.getExpiryTime();
-                Long currentTime = System.currentTimeMillis();
-                if (expiryTime < currentTime) {
-                    log.info("OTP Expired");
-                    if (!StringUtils.isEmpty(expiredSmsTopic))
-                        kafkaTemplate.send(expiredSmsTopic, request);
+            if(!ObjectUtils.isEmpty(request.getTenantId()) && !smsProperties.getSmsDisabledTenantList().contains(request.getTenantId())) {
+                if (request.getExpiryTime() != null && request.getCategory() == Category.OTP) {
+                    Long expiryTime = request.getExpiryTime();
+                    Long currentTime = System.currentTimeMillis();
+                    if (expiryTime < currentTime) {
+                        log.info("OTP Expired");
+                        if (!StringUtils.isEmpty(expiredSmsTopic))
+                            kafkaTemplate.send(expiredSmsTopic, request);
+                    } else {
+                        smsService.sendSMS(request.toDomain());
+                    }
                 } else {
                     smsService.sendSMS(request.toDomain());
                 }
-            } else {
-                smsService.sendSMS(request.toDomain());
             }
         } catch (RestClientException rx) {
             log.info("Going to backup SMS Service", rx);
