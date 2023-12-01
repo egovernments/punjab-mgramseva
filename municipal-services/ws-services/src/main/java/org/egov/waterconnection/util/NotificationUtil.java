@@ -191,7 +191,7 @@ public class NotificationUtil {
 		StringBuilder uri = new StringBuilder();
 		uri.append(config.getLocalizationHost()).append(config.getLocalizationContextPath())
 				.append(config.getLocalizationSearchEndpoint()).append("?").append("locale=").append(locale)
-				.append("&tenantId=").append("pb").append("&module=").append("mgramseva-common")
+				.append("&tenantId=").append(tenantId,0,2).append("&module=").append("mgramseva-common")
 				.append("&codes=").append(code);
 
 		Map<String, Object> request = new HashMap<>();

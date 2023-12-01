@@ -246,5 +246,8 @@ public class WSCalculationConfiguration {
 
 	@Value("${sms.bill.download.enabled}")
 	private boolean isSmsForBillDownloadEnabled;
+
+	@Value("${sms.exclude.tenant}")
+	private String smsExcludeTenant;
 	
 }
