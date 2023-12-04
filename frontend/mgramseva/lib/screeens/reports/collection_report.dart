@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/model/common/BillsTableData.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/reports_provider.dart';
@@ -10,7 +9,6 @@ import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import '../../utils/notifiers.dart';
 import '../../utils/testing_keys/testing_keys.dart';
 import '../../widgets/button.dart';
-import 'generic_report_table.dart';
 
 class CollectionReport extends StatefulWidget {
   final Function onViewClick;

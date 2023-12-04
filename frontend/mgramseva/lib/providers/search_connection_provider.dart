@@ -59,7 +59,7 @@ class SearchConnectionProvider with ChangeNotifier {
       try {
         Loaders.showLoadingDialog(context);
         var inputJson = searchconnection.toJson();
-        inputJson.removeWhere((key, value) => key == null || value == "");
+        inputJson.removeWhere((key, value) => value == "");
         var connectionresults = isNameSearch == true ? SearchConnectionRepository().getConnectionName({
           "tenantId": commonProvider.userDetails!.selectedtenant!.code,
           ...inputJson
@@ -70,30 +70,28 @@ class SearchConnectionProvider with ChangeNotifier {
 
         /// popping the loader
 
-        if (connectionresults != null) {
-          connectionresults.then(
-              (value) => {
-                    Navigator.pop(context),
-                    if (value.waterConnectionData!.length > 0 || value.waterConnection!.length > 0)
-                      {
-                        waterConnections = value,
-                        Navigator.pushNamed(
-                            context, Routes.SEARCH_CONSUMER_RESULT,
-                            arguments: {...inputJson, ...arguments, "isNameSearch" : isNameSearch })
-                      }
-                    else
-                      {
-                        Notifiers.getToastMessage(
-                            context,
-                            i18.searchWaterConnection.NO_CONNECTION_FOUND,
-                            "ERROR")
-                      }
-                  }, onError: (e, s) {
-            Navigator.pop(context);
-            ErrorHandler().allExceptionsHandler(context, e, s);
-          });
-        }
-      } catch (e, s) {
+        connectionresults.then(
+            (value) => {
+                  Navigator.pop(context),
+                  if (value.waterConnectionData!.length > 0 || value.waterConnection!.length > 0)
+                    {
+                      waterConnections = value,
+                      Navigator.pushNamed(
+                          context, Routes.SEARCH_CONSUMER_RESULT,
+                          arguments: {...inputJson, ...arguments, "isNameSearch" : isNameSearch })
+                    }
+                  else
+                    {
+                      Notifiers.getToastMessage(
+                          context,
+                          i18.searchWaterConnection.NO_CONNECTION_FOUND,
+                          "ERROR")
+                    }
+                }, onError: (e, s) {
+          Navigator.pop(context);
+          ErrorHandler().allExceptionsHandler(context, e, s);
+        });
+            } catch (e, s) {
         Navigator.pop(context);
         ErrorHandler().allExceptionsHandler(context, e, s);
       }

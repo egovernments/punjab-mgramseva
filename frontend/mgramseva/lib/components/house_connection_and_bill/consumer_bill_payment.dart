@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as img;
 import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/bill_payments_provider.dart';
@@ -12,7 +11,7 @@ import 'package:mgramseva/utils/common_styles.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/print_bluetooth.dart';
+import 'package:mgramseva/widgets/bluetooth_printer.dart';
 import 'package:mgramseva/widgets/list_label_text.dart';
 import 'package:number_to_words/number_to_words.dart';
 import 'package:provider/provider.dart';
@@ -48,17 +47,20 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
         Container(
             margin: EdgeInsets.zero,
             padding: EdgeInsets.zero,
-            width: kIsWeb ? 150 : 65,
+            width: kIsWeb ? 150 : 80,
             child: Text(ApplicationLocalizations.of(context).translate(key),
                 maxLines: 3,
                 textScaleFactor: kIsWeb ? 2.5 : 1,
                 textAlign: TextAlign.start,
                 style: TextStyle(
-                    color: Colors.red,
-                    fontSize: kIsWeb ? 5 : 6,
-                    fontWeight: FontWeight.w900))),
+                    color: Colors.black,
+                    fontSize: kIsWeb ? 5 : 9,
+                    fontWeight: FontWeight.w500))),
+        SizedBox(
+          width: 5,
+        ),
         Container(
-            width: kIsWeb ? 215 : 85,
+            width: kIsWeb ? 215 : 110,
             child: Text(
               ApplicationLocalizations.of(navigatorKey.currentContext!)
                   .translate(value),
@@ -66,9 +68,9 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
               textAlign: TextAlign.start,
               textScaleFactor: kIsWeb ? 2.5 : 1,
               style: TextStyle(
-                  color: Colors.red,
-                  fontSize: kIsWeb ? 5 : 6,
-                  fontWeight: FontWeight.w900),
+                  color: Colors.black,
+                  fontSize: kIsWeb ? 5 : 9,
+                  fontWeight: FontWeight.w500),
             )),
       ],
     );
@@ -87,175 +89,184 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
         listen: false);
 
     screenshotController
-        .captureFromWidget(
+        .captureFromLongWidget(
           Container(
-              width: kIsWeb ? 375 : 150,
+              width: kIsWeb ? 375 : 195,
               margin: EdgeInsets.zero,
               padding: EdgeInsets.zero,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              child: Row(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      kIsWeb
-                          ? SizedBox(
-                              width: 70,
-                              height: 70,
-                            )
-                          : Image(
-                              width: 40,
-                              height: 40,
-                              image: NetworkImage(stateProvider
-                                  .stateInfo!.stateLogoURL
-                                  .toString())),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          kIsWeb
+                              ? SizedBox(
+                                  width: 70,
+                                  height: 70,
+                                )
+                              : Image(
+                                  width: 40,
+                                  height: 40,
+                                  color: Colors.black,
+                                  image: NetworkImage(stateProvider
+                                      .stateInfo!.stateLogoURL
+                                      .toString())),
+                          Container(
+                            width: kIsWeb ? 290 : 90,
+                            margin: EdgeInsets.all(5),
+                            child: Text(
+                              ApplicationLocalizations.of(
+                                      navigatorKey.currentContext!)
+                                  .translate(i18.consumerReciepts
+                                      .GRAM_PANCHAYAT_WATER_SUPPLY_AND_SANITATION),
+                              textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
+                              maxLines: 3,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 10,
+                                  height: 1,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic),
+                              textAlign: TextAlign.left,
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
                       Container(
-                        width: kIsWeb ? 290 : 90,
-                        margin: EdgeInsets.all(5),
-                        child: Text(
-                          ApplicationLocalizations.of(
-                                  navigatorKey.currentContext!)
-                              .translate(i18.consumerReciepts
-                                  .GRAM_PANCHAYAT_WATER_SUPPLY_AND_SANITATION),
-                          textScaleFactor: kIsWeb ? 3 : 1,
-                          maxLines: 3,
-                          style: TextStyle(
-                              color: Colors.blue,
-                              fontSize: 10,
-                              height: 1,
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic),
-                          textAlign: TextAlign.left,
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Container(
-                      width: kIsWeb ? 375 : 90,
-                      margin: EdgeInsets.all(5),
-                      child: Text(
-                          ApplicationLocalizations.of(
-                                  navigatorKey.currentContext!)
-                              .translate(i18.consumerReciepts.WATER_RECEIPT),
-                          textScaleFactor: kIsWeb ? 3 : 1,
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 10,
-                            height: 1,
-                            fontWeight: FontWeight.bold,
-                          ))),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  getPrinterLabel(
-                      i18.consumerReciepts.RECEIPT_GPWSC_NAME,
-                      ApplicationLocalizations.of(navigatorKey.currentContext!)
-                          .translate(commonProvider
-                              .userDetails!.selectedtenant!.code!)),
-                  getPrinterLabel(i18.consumerReciepts.RECEIPT_CONSUMER_NO,
-                      widget.waterConnection!.connectionNo),
-                  getPrinterLabel(
-                    i18.consumerReciepts.RECEIPT_CONSUMER_NAME,
-                    widget.waterConnection!.connectionHolders!.first.name,
-                  ),
-                  getPrinterLabel(
-                      i18.consumerReciepts.RECEIPT_CONSUMER_MOBILE_NO,
-                      item.mobileNumber),
-                  getPrinterLabel(
-                      i18.consumerReciepts.RECEIPT_CONSUMER_ADDRESS,
-                      ApplicationLocalizations.of(navigatorKey.currentContext!)
-                              .translate(widget.waterConnection!.additionalDetails!
-                                  .doorNo
-                                  .toString()) +
-                          " " +
-                          ApplicationLocalizations.of(navigatorKey.currentContext!)
-                              .translate(widget.waterConnection!.additionalDetails!
-                                  .street
-                                  .toString()) +
-                          " " +
-                          ApplicationLocalizations.of(navigatorKey.currentContext!)
-                              .translate(widget
-                                  .waterConnection!.additionalDetails!.locality
-                                  .toString()) +
-                          " " +
+                          width: kIsWeb ? 375 : 90,
+                          margin: EdgeInsets.all(5),
+                          child: Text(
+                              ApplicationLocalizations.of(
+                                      navigatorKey.currentContext!)
+                                  .translate(i18.consumerReciepts.WATER_RECEIPT),
+                              textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 10,
+                                height: 1,
+                                fontWeight: FontWeight.bold,
+                              ))),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      getPrinterLabel(
+                          i18.consumerReciepts.RECEIPT_GPWSC_NAME,
                           ApplicationLocalizations.of(navigatorKey.currentContext!)
                               .translate(commonProvider
                                   .userDetails!.selectedtenant!.code!)),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  getPrinterLabel(i18.consumer.SERVICE_TYPE,
-                      widget.waterConnection?.connectionType),
-                  getPrinterLabel(i18.consumerReciepts.CONSUMER_RECEIPT_NO,
-                      item.paymentDetails!.first.receiptNumber),
-                  getPrinterLabel(
-                      i18.consumerReciepts.RECEIPT_ISSUE_DATE,
-                      DateFormats.timeStampToDate(item.transactionDate,
-                              format: "dd/MM/yyyy")
-                          .toString()),
-                  getPrinterLabel(
-                      i18.consumerReciepts.RECEIPT_BILL_PERIOD,
-                      DateFormats.timeStampToDate(
-                              item.paymentDetails?.last.bill!.billDetails!.first
-                                  .fromPeriod,
-                              format: "dd/MM/yyyy") +
-                          '-' +
-                          DateFormats.timeStampToDate(
-                                  item.paymentDetails?.last.bill?.billDetails!
-                                      .first.toPeriod,
+                      getPrinterLabel(i18.consumerReciepts.RECEIPT_CONSUMER_NO,
+                          widget.waterConnection!.connectionNo),
+                      getPrinterLabel(
+                        i18.consumerReciepts.RECEIPT_CONSUMER_NAME,
+                        widget.waterConnection!.connectionHolders!.first.name,
+                      ),
+                      getPrinterLabel(
+                          i18.consumerReciepts.RECEIPT_CONSUMER_MOBILE_NO,
+                          item.mobileNumber),
+                      getPrinterLabel(
+                          i18.consumerReciepts.RECEIPT_CONSUMER_ADDRESS,
+                          ApplicationLocalizations.of(navigatorKey.currentContext!)
+                                  .translate(widget.waterConnection!.additionalDetails!
+                                      .doorNo
+                                      .toString()) +
+                              " " +
+                              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                                  .translate(widget.waterConnection!.additionalDetails!
+                                      .street
+                                      .toString()) +
+                              " " +
+                              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                                  .translate(widget
+                                      .waterConnection!.additionalDetails!.locality
+                                      .toString()) +
+                              " " +
+                              ApplicationLocalizations.of(navigatorKey.currentContext!)
+                                  .translate(commonProvider
+                                      .userDetails!.selectedtenant!.code!)),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      getPrinterLabel(i18.consumer.SERVICE_TYPE,
+                          widget.waterConnection?.connectionType),
+                      getPrinterLabel(i18.consumerReciepts.CONSUMER_RECEIPT_NO,
+                          item.paymentDetails!.first.receiptNumber),
+                      getPrinterLabel(
+                          i18.consumerReciepts.RECEIPT_ISSUE_DATE,
+                          DateFormats.timeStampToDate(item.transactionDate,
                                   format: "dd/MM/yyyy")
                               .toString()),
-                  SizedBox(
-                    height: 8,
+                      getPrinterLabel(
+                          i18.consumerReciepts.RECEIPT_BILL_PERIOD,
+                          DateFormats.timeStampToDate(
+                                  item.paymentDetails?.last.bill!.billDetails!.first
+                                      .fromPeriod,
+                                  format: "dd/MM/yyyy") +
+                              '-' +
+                              DateFormats.timeStampToDate(
+                                      item.paymentDetails?.last.bill?.billDetails!
+                                          .first.toPeriod,
+                                      format: "dd/MM/yyyy")
+                                  .toString()),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      getPrinterLabel(
+                          i18.consumerReciepts.CONSUMER_ACTUAL_DUE_AMOUNT,
+                          ('₹' + (item.totalDue).toString())),
+                      getPrinterLabel(i18.consumerReciepts.RECEIPT_AMOUNT_PAID,
+                          ('₹' + (item.totalAmountPaid).toString())),
+                      getPrinterLabel(
+                          i18.consumerReciepts.RECEIPT_AMOUNT_IN_WORDS,
+                          ('Rupees ' +
+                              (NumberToWord()
+                                  .convert('en-in', item.totalAmountPaid!.toInt())
+                                  .toString()) +
+                              ' only')),
+                      getPrinterLabel(
+                          i18.consumerReciepts.CONSUMER_PENDING_AMOUNT,
+                          ('₹' +
+                              ((item.totalDue ?? 0) - (item.totalAmountPaid ?? 0))
+                                  .toString())),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text('- - *** - -',
+                          textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: kIsWeb ? 5 : 6,
+                              fontWeight: FontWeight.bold)),
+                      Text(
+                          "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.RECEIPT_FOOTER)}",
+                          textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: kIsWeb ? 5 : 6,
+                              fontWeight: FontWeight.bold)),
+                    ],
                   ),
-                  getPrinterLabel(
-                      i18.consumerReciepts.CONSUMER_ACTUAL_DUE_AMOUNT,
-                      ('₹' + (item.totalDue).toString())),
-                  getPrinterLabel(i18.consumerReciepts.RECEIPT_AMOUNT_PAID,
-                      ('₹' + (item.totalAmountPaid).toString())),
-                  getPrinterLabel(
-                      i18.consumerReciepts.RECEIPT_AMOUNT_IN_WORDS,
-                      ('Rupees ' +
-                          (NumberToWord()
-                              .convert('en-in', item.totalAmountPaid!.toInt())
-                              .toString()) +
-                          ' only')),
-                  getPrinterLabel(
-                      i18.consumerReciepts.CONSUMER_PENDING_AMOUNT,
-                      ('₹' +
-                          ((item.totalDue ?? 0) - (item.totalAmountPaid ?? 0))
-                              .toString())),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text('- - *** - -',
-                      textScaleFactor: kIsWeb ? 3 : 1,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          color: Colors.red,
-                          fontSize: kIsWeb ? 5 : 6,
-                          fontWeight: FontWeight.bold)),
-                  Text(
-                      "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.RECEIPT_FOOTER)}",
-                      textScaleFactor: kIsWeb ? 3 : 1,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          color: Colors.red,
-                          fontSize: kIsWeb ? 5 : 6,
-                          fontWeight: FontWeight.bold)),
                 ],
               )),
+      pixelRatio: 16/9
         )
         .then((value) => {
               kIsWeb
                   ? js.onButtonClick(
                       value, stateProvider.stateInfo!.stateLogoURL.toString())
-                  : PrintBluetooth.printTicket(
-                      img.decodeImage(value), navigatorKey.currentContext!)
+              :showDialog(
+                  context: context,
+                  builder: (_) => BluetoothPrinterScreen(imageData: value)
+                )
             });
+    return null;
   }
 
   afterViewBuild() {
@@ -364,18 +375,9 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                             "tenantId": commonProvider
                                 .userDetails!.selectedtenant!.code,
                           }, item.mobileNumber, item, "Share"),
-                          style: ButtonStyle(
-                            alignment: Alignment.center,
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(vertical: 8)),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                              side: BorderSide(
-                                  width: 2,
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius: BorderRadius.circular(0.0),
-                            )),
-                          ),
+                          style: ElevatedButton.styleFrom(padding:EdgeInsets.symmetric(vertical: 8),alignment: Alignment.center,side:BorderSide(
+                              width: 1,
+                              color: Theme.of(context).disabledColor)),
                           icon: (Image.asset('assets/png/whats_app.png')),
                           label: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
@@ -383,7 +385,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                               ApplicationLocalizations.of(context).translate(i18
                                   .consumerReciepts
                                   .CONSUMER_RECIEPT_SHARE_RECEIPT),
-                              style: Theme.of(context).textTheme.subtitle2,
+                              style: Theme.of(context).textTheme.titleSmall,
                             ),
                           ),
                         ),
@@ -395,14 +397,15 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                             : MediaQuery.of(context).size.width / 2.2,
                         child: ElevatedButton.icon(
                             onPressed: () => _capturePng(item),
-                            icon: Icon(Icons.print),
+                            icon: Icon(Icons.print,color: Colors.white,),
+                            style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(244, 119, 56, 1)),
                             label: Text(
                                 ApplicationLocalizations.of(context).translate(
                                     i18.consumerReciepts
                                         .CONSUMER_RECEIPT_PRINT),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .subtitle1!
+                                    .titleMedium!
                                     .apply(color: Colors.white))),
                       ),
                     ]),

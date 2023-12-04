@@ -61,7 +61,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       Provider.of<CommonProvider>(context, listen: false);
       if (languageList?.mdmsRes?.expense?.expenseList != null) {
         var res = languageList?.mdmsRes?.pspclIntegration?.accountNumberGpMapping?.where((element) => element.departmentEntityCode==commonProvider.userDetails?.selectedtenant?.city?.code).toList();
-        if(res!.isNotEmpty){
+        if(res!=null && res.isNotEmpty){
           isPSPCLEnabled = true;
           notifyListeners();
         }else{
@@ -98,6 +98,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       if(this.expenditureDetails.expenseType=='ELECTRICITY_BILL' && isPSPCLEnabled){
         this.expenditureDetails.allowEdit = false;
       }
+      notifyListeners();
       streamController.add(this.expenditureDetails);
     } on CustomException catch (e, s) {
       ErrorHandler.handleApiException(context, e, s);
@@ -545,25 +546,22 @@ class ExpensesDetailsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<DropdownMenuItem<Object>> getExpenseTypeList({bool isSearch=false}) {
+  List<dynamic> getExpenseTypeList({bool isSearch=false}) {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
     if (languageList?.mdmsRes?.expense?.expenseList != null) {
       var res = languageList?.mdmsRes?.pspclIntegration?.accountNumberGpMapping?.where((element) => element.departmentEntityCode==commonProvider.userDetails?.selectedtenant?.city?.code).toList();
-      var temp_list = languageList?.mdmsRes?.expense?.expenseList?.toList();
-      if(res!.isNotEmpty){
-        isSearch?{}:temp_list!.removeWhere((element) => element.code=="ELECTRICITY_BILL");
+      var tempList = languageList?.mdmsRes?.expense?.expenseList?.toList();
+      if(res!=null && res.isNotEmpty){
+        isSearch?{}:tempList!.removeWhere((element) => element.code=="ELECTRICITY_BILL");
       }
-      return (temp_list ?? <ExpenseType>[])
+      return (tempList ?? <ExpenseType>[])
           .map((value) {
-        return DropdownMenuItem(
-          value: value.code,
-          child: new Text((value.code!)),
-        );
+        return value.code;
       }).toList();
     }
-    return <DropdownMenuItem<Object>>[];
+    return <dynamic>[];
   }
 
   incrementindex(index, expenseKey) async {
@@ -584,6 +582,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
           Vendor(vendorList[index].name.trim(), vendorList[index].id);
       expenditureDetails.selectedVendor?.owner ??= Owner(mobileNumber);
     }
+    notifyListeners();
   }
 
   callNotifyer() {

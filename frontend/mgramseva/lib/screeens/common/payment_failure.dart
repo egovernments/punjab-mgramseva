@@ -38,7 +38,7 @@ class _PaymentFailureState extends State<PaymentFailure> {
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
           title: Text('mGramSeva'),
           automaticallyImplyLeading: false,

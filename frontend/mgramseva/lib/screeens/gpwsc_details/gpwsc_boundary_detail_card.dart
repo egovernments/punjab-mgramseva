@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import '../../utils/localization/application_localizations.dart';
 import '../../utils/common_widgets.dart';
 import '../../utils/loaders.dart';
-import '../../utils/notifiers.dart';
 import '../../widgets/label_text.dart';
 import 'gpwsc_card.dart';
 

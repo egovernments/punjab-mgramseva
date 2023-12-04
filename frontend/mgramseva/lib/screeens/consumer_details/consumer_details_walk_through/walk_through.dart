@@ -63,6 +63,7 @@ var json = [
       (val) => {},
       [],
       true,
+      itemAsString: (i) =>i.toString(),
     )
   },
   {
@@ -75,6 +76,7 @@ var json = [
       (val) => {},
       [],
       true,
+      itemAsString: (i) =>i.toString(),
     )
   },
   {
@@ -87,6 +89,7 @@ var json = [
       (val) => {},
       [],
       true,
+      itemAsString: (i) =>i.toString(),
     )
   },
   {

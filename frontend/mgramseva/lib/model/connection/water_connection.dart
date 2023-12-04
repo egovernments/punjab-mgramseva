@@ -267,6 +267,12 @@ class AdditionalDetails {
   @JsonKey(name: "collectionPendingAmount")
   String? collectionPendingAmount;
 
+  @JsonKey(name: "totalamount")
+  String? totalAmount;
+
+  @JsonKey(name: "appCreatedDate")
+  num? appCreatedDate;
+
   @JsonKey(ignore: true)
   var initialMeterReadingCtrl = TextEditingController();
   String? action;

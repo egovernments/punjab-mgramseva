@@ -38,7 +38,7 @@ class DashboardCard extends StatelessWidget {
                                   dashBoardProvider.selectedMonth, context),
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle1
+                                  .titleMedium
                                   ?.apply(
                                       color: Theme.of(context).primaryColor),
                             ),

@@ -1,6 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:flutter/material.dart';
-import 'package:mgramseva/utils/date_formats.dart';
 
 part 'vendor.g.dart';
 

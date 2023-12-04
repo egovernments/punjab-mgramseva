@@ -15,12 +15,11 @@ class Button extends StatelessWidget {
           decoration: CommonStyles.buttonBottomDecoration,
           child: new ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
-                  primary: widgetFunction == null ? Color.fromRGBO(244, 119, 56, 0.7) : null
+                  minimumSize: Size(double.infinity, 50), backgroundColor: widgetFunction != null ? Color.fromRGBO(244, 119, 56, 1) : Color.fromRGBO(244, 119, 56, 0.7)
                 // padding: EdgeInsets.all(15),
               ),
               child: new Text(ApplicationLocalizations.of(context).translate(label),
-                  style: Theme.of(context).textTheme.button),
+                  style: Theme.of(context).textTheme.labelLarge),
               onPressed: () => widgetFunction != null ? widgetFunction!() : null
           ),
         ));

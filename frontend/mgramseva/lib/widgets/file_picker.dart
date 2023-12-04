@@ -36,6 +36,7 @@ class FilePickerDemoState extends State<FilePickerDemo> {
   FileType _pickingType = FileType.custom;
   TextEditingController _controller = TextEditingController();
   final ImagePicker _picker = ImagePicker();
+  FileUploadStatus fileUploading = FileUploadStatus.NOT_ACTIVE;
 
   @override
   void initState() {
@@ -59,7 +60,7 @@ class FilePickerDemoState extends State<FilePickerDemo> {
       if(paths != null){
         var isNotValidSize = false;
         for(var path in paths){
-          if (!(await CommonMethods.isValidFileSize(path.size))) isNotValidSize = true;;
+          if (!(await CommonMethods.isValidFileSize(path.size))) isNotValidSize = true;
         }
 
         if(isNotValidSize){
@@ -92,11 +93,20 @@ class FilePickerDemoState extends State<FilePickerDemo> {
 
   uploadFiles(List<dynamic> files) async {
     try{
+      setState(() {
+        fileUploading = FileUploadStatus.STARTED;
+      });
       var response = await CoreRepository().uploadFiles(files, widget.moduleName ?? APIConstants.API_MODULE_NAME);
+      setState(() {
+        fileUploading = FileUploadStatus.COMPLETED;
+      });
       _fileStoreList.addAll(response);
       if(_selectedFiles.isNotEmpty)
         widget.callBack(_fileStoreList);
     }catch(e){
+      setState(() {
+        fileUploading = FileUploadStatus.NOT_ACTIVE;
+      });
       Notifiers.getToastMessage(context, e.toString(), 'ERROR');
     }
   }
@@ -190,6 +200,19 @@ class FilePickerDemoState extends State<FilePickerDemo> {
             : Text(
                 "${ApplicationLocalizations.of(context).translate(i18.common.NO_FILE_UPLOADED)}",
                 style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
+              Row(
+                children: [
+                  fileUploading==FileUploadStatus.STARTED?Text("${ApplicationLocalizations.of(context).translate(i18.common.UPLOADING_FILE)}",style: TextStyle(
+                      color: Colors.black
+                  ),):SizedBox(),
+                  fileUploading==FileUploadStatus.STARTED?Transform.scale(
+                    scale: 0.5,
+                    child: CircularProgressIndicator(),
+                  )
+                      :fileUploading==FileUploadStatus.COMPLETED?Icon(Icons.check_circle,color: Theme.of(context).primaryColor,)
+                      :SizedBox(),
+                ],
               )
             ],
           ))
@@ -199,12 +222,16 @@ class FilePickerDemoState extends State<FilePickerDemo> {
   void onClickOfClear(int index){
     setState(() {
       _selectedFiles.removeAt(index);
+      fileUploading = FileUploadStatus.NOT_ACTIVE;
     if(index < _fileStoreList.length)  _fileStoreList.removeAt(index);
     });
     widget.callBack(_fileStoreList);
   }
 
   void reset(){
+    setState(() {
+      fileUploading = FileUploadStatus.NOT_ACTIVE;
+    });
     _selectedFiles.clear();
     _fileStoreList.clear();
   }
@@ -306,7 +333,7 @@ class FilePickerDemoState extends State<FilePickerDemo> {
             if (!(await CommonMethods.isValidFileSize(await file.length()))){
               Notifiers.getToastMessage(context, i18.common.FILE_SIZE, 'ERROR');
               return;
-            };
+            }
             if(_multiPick){
               _selectedFiles.addAll([file]);
             }else{

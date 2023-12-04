@@ -298,14 +298,12 @@ class _ResetPasswordState extends State<ResetPassword> {
         var resetResponse =
             await ResetPasswordRepository().forgotPassword(body, context);
         Navigator.pop(context);
-        if (resetResponse != null) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => PasswordSuccess(),
-                  settings: RouteSettings(name: '/resetPasswordSuccess')));
-        }
-      } catch (e, s) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => PasswordSuccess(),
+                settings: RouteSettings(name: '/resetPasswordSuccess')));
+            } catch (e, s) {
         Navigator.pop(context);
         ErrorHandler().allExceptionsHandler(context, e, s);
       }

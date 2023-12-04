@@ -110,7 +110,7 @@ public class OnBoardService {
 							if (!StringUtils.isEmpty(tenantId)) {
 								tenantId = tenantId.split("\\.")[0];
 							} else {
-								tenantId = "pb";
+								throw new CustomException("ONBOARD_NOT_FOUND", "Invalid tenantid");
 							}
 							user.setTenantId(tenantId);
 						} else if (2 == address.getColumn()) {

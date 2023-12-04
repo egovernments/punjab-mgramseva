@@ -81,11 +81,11 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                         ))))),
       Consumer<NotificationProvider>(builder: (_, notificationProvider, child) =>
       Positioned(
-            left: position.dx + 5,
+            left: position.dx + 3.7,
             top: notificationProvider.enableNotification == true ? box.size.height + position.dy : (homeProvider.activeIndex == 6 ||
                     homeProvider.activeIndex == 7 ||
                     homeProvider.activeIndex == 8)
-                ? position.dy - 25
+                ? position.dy - 15
                 : box.size.height + position.dy,
             child: CustomPaint(
               painter: TrianglePainter(
@@ -94,8 +94,8 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                 paintingStyle: PaintingStyle.fill,
               ),
               child: Container(
-                height: 30,
-                width: 30,
+                height: 20,
+                width: 20,
               ),
             ))),
       Consumer<NotificationProvider>(builder: (_, notificationProvider, child) =>
@@ -103,13 +103,13 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
             left: ((homeProvider.activeIndex + 1) % 3 == 0)
                 ? position.dx - 140
                 : position.dx,
-            top: notificationProvider.enableNotification == true ? box.size.height + position.dy + 25 : (homeProvider.activeIndex == 6 ||
+            top: notificationProvider.enableNotification == true ? box.size.height + position.dy + 15 : (homeProvider.activeIndex == 6 ||
                     homeProvider.activeIndex == 7 ||
                     homeProvider.activeIndex == 8)
                 ? position.dy -
                     box.size.height -
                     (MediaQuery.of(context).size.width > 720 ? 55 : 25)
-                : box.size.height + position.dy + 25,
+                : box.size.height + position.dy + 15,
             child: Container(
                 width: MediaQuery.of(context).size.width > 720
                     ? MediaQuery.of(context).size.width / 3
@@ -118,6 +118,9 @@ class _HomeWalkThroughContainerState extends State<HomeWalkThroughContainer> {
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.only(right: 15),
                 child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(topLeft:((homeProvider.activeIndex + 1) % 3 == 0)?Radius.circular(10):Radius.circular(0),topRight:Radius.circular(10),bottomLeft: Radius.circular(10),bottomRight: Radius.circular(10)),
+                    ),
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
