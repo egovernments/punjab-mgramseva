@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 1.2.17+33
+version: 1.2.18+34
 
 environment:
   sdk: ">=2.12.0 <4.0.0"
@@ -112,7 +112,7 @@ flutter:
     - assets/png/
     - assets/icons/
     - assets/svg/
-    - assets/
+    - assets/.env
   # To add assets to your application, add an assets section, like this:
 
   #   - images/a_dot_ham.jpeg
