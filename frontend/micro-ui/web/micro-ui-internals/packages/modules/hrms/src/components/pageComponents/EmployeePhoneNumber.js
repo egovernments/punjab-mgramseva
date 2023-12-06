@@ -16,6 +16,7 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
       name: "mobileNumber",
       populators: {
         validation: {
+          maxLength: 10,
           required: true,
           pattern: /^[6-9]\d{9}$/,
         },
@@ -54,8 +55,9 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
                     }}
                     disable={isEdit ? true : false}
                     defaultValue={undefined}
+                    maxlength={input.populators.validation.maxLength}
                     onBlur={(e) => validate(e.target.value, input)}
-                    {...input.validation}
+                    {...input.populators.validation}
                   />
                 </div>
                 <div>
