@@ -47,14 +47,13 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
     }
 
     /*  RAIN-6489 Logic to navigate to National DSS home incase user has only one role [NATADMIN]*/
-    if (user?.info?.roles && user?.info?.roles?.every((e) => e.code === "NATADMIN")) {
-      redirectPath = `/${window?.contextPath}/employee/dss/landing/NURT_DASHBOARD`;
-    }
+    // if (user?.info?.roles && user?.info?.roles?.every((e) => e.code === "NATADMIN")) {
+    //   redirectPath = `/${window?.contextPath}/employee/dss/landing/NURT_DASHBOARD`;
+    // }
     /*  RAIN-6489 Logic to navigate to National DSS home incase user has only one role [NATADMIN]*/
-    if (user?.info?.roles && user?.info?.roles?.every((e) => e.code === "STADMIN")) {
-      redirectPath = `/${window?.contextPath}/employee/dss/landing/home`;
-    }
-
+    // if (user?.info?.roles && user?.info?.roles?.every((e) => e.code === "STADMIN")) {
+    //   redirectPath = `/${window?.contextPath}/employee/dss/landing/home`;
+    // }
     history.replace(redirectPath);
   }, [user]);
 
@@ -98,7 +97,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
     name: Digit.Utils.locale.getTransformedLocale(`TENANT_TENANTS_${Digit.ULBService.getStateId()}`),
   };
 
-  let config = [{body : propsConfig?.inputs}];
+  let config = [{ body: propsConfig?.inputs }];
 
   const { mode } = Digit.Hooks.useQueryParams();
   if (mode === "admin" && config?.[0]?.body?.[2]?.disable == false && config?.[0]?.body?.[2]?.populators?.defaultValue == undefined) {
