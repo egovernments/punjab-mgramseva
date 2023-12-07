@@ -296,12 +296,11 @@ class CommonMethods {
 
   void checkVersion(BuildContext context, AppVersion appVersion) async {
     try {
-      String? latestAppVersion = Platform.isIOS
-          ? appVersion.latestAppVersionIos
-          : appVersion.latestAppVersion;
-      print("app" + latestAppVersion!);
+      String? latestAppVersion = Platform.isAndroid
+          ? appVersion.latestAppVersion
+          : appVersion.latestAppVersionIos;
       if (latestAppVersion != null && !kIsWeb) {
-        if (int.parse(packageInfo!.version.split('.').join("").toString()) >
+        if (int.parse(packageInfo!.version.split('.').join("").toString()) <
             int.parse(latestAppVersion.split('.').join("").toString())) {
           late Uri uri;
 
