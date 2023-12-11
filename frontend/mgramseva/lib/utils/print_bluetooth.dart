@@ -90,6 +90,7 @@ class PrintBluetooth {
     if (!isPermissionGranted) {
       await Permission.bluetooth.request();
       await Permission.location.request();
+      await Nearby().askLocationPermission();
     }
     bool? isConnected = await PrintBluetoothThermal.connectionStatus;
     if (isConnected) {

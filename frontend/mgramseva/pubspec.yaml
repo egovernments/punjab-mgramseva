@@ -106,6 +106,7 @@ flutter:
   assets:
     - assets/png/
     - assets/icons/
+    - assets/json/
   # To add assets to your application, add an assets section, like this:
 
   #   - images/a_dot_ham.jpeg

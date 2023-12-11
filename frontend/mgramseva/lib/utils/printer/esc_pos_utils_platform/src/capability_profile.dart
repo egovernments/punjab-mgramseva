@@ -20,7 +20,7 @@ class CapabilityProfile {
 
   /// Public factory
   static Future<CapabilityProfile> load({String name = 'default'}) async {
-    final content = await rootBundle.loadString('packages/thermal_printer/resources/capabilities.json');
+    final content = await rootBundle.loadString('assets/json/capabilities.json');
     Map capabilities = json.decode(content);
 
     var profile = capabilities['profiles'][name];
