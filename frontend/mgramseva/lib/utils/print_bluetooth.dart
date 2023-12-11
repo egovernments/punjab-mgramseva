@@ -1,7 +1,13 @@
-import 'package:esc_pos_utils/esc_pos_utils.dart';
+import 'dart:typed_data';
+
+import 'printer/esc_pos_utils_platform/esc_pos_utils_platform.dart';
+import 'package:mgramseva/utils/printer/image_utils.dart';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:nearby_connections/nearby_connections.dart';
+import 'package:image/image.dart' as img;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
 import 'localization/application_localizations.dart';
@@ -82,7 +88,9 @@ class PrintBluetooth {
         await PrintBluetoothThermal.isPermissionBluetoothGranted;
     print(isPermissionGranted);
     if (!isPermissionGranted) {
-      Nearby().askBluetoothPermission();
+      await Permission.bluetooth.request();
+      await Permission.location.request();
+      await Nearby().askLocationPermission();
     }
     bool? isConnected = await PrintBluetoothThermal.connectionStatus;
     if (isConnected) {
@@ -96,13 +104,25 @@ class PrintBluetooth {
   }
 
   static Future<List<int>> getTicket(value) async {
-    print(value);
+
     List<int> bytes = [];
     CapabilityProfile profile = await CapabilityProfile.load();
-    final generator = Generator(PaperSize.mm80, profile);
-    bytes += generator.image(value);
-
+    final generator = Generator(PaperSize.mm58, profile);
+    final Uint8List imageBytes = value;
+    final decodedImage = img.decodeImage(imageBytes)!;
+    img.Image thumbnail = img.copyResize(decodedImage,width: PaperSize.mm58.width);
+    // creates a copy of the original image with set dimensions
+    img.Image originalImg = img.copyResize(decodedImage, width: PaperSize.mm58.width);
+    // fills the original image with a white background
+    img.fill(originalImg, img.getColor(255, 255, 255));
+    // var padding = (originalImg.width - thumbnail.width) / 2;
+    //
+    // //insert the image inside the frame and center it
+    drawImage(originalImg, thumbnail, dstX: 0);
     // ticket.feed(2);
+    bytes += generator.feed(1);
+    bytes += generator.imageRaster(originalImg, align: PosAlign.center);
+    bytes += generator.feed(1);
     bytes += generator.cut();
     return bytes;
   }
