@@ -484,10 +484,4 @@ public class ChallanRepository {
 				new SingleColumnRowMapper<>(String.class));
 		return ids;
 	}
-
-	public void getExpenseBillReport(Long monthStartDateTime, String tenantId, Long offset, Long limit)
-	{
-           StringBuilder expenseBillQuery =new StringBuilder(queryBuilder.EXPENSEBILLQUERY);
-
-	}
 }
