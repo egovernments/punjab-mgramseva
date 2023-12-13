@@ -166,19 +166,23 @@ class CommonMasters {
 
 class AppVersion {
   String? latestAppVersion;
+  String? latestAppVersionIos;
   // List<LocalizationModules>? localizationModules;
 
   AppVersion({
     this.latestAppVersion,
+    this.latestAppVersionIos
   });
 
   AppVersion.fromJson(Map<String, dynamic> json) {
     latestAppVersion = json['latestAppVersion'];
+    latestAppVersionIos = json['latestAppVersionIos'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['latestAppVersion'] = this.latestAppVersion;
+    data['latestAppVersionIos'] = this.latestAppVersionIos;
 
     return data;
   }

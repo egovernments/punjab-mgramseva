@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -283,8 +284,11 @@ class CommonMethods {
     }
   }
 
-  void checkVersion(BuildContext context, String? latestAppVersion) async {
+  void checkVersion(BuildContext context, AppVersion appVersion) async {
     try {
+      String? latestAppVersion = Platform.isAndroid
+          ? appVersion.latestAppVersion
+          : appVersion.latestAppVersionIos;
       if (latestAppVersion != null && !kIsWeb) {
         if (int.parse(packageInfo!.version.split('.').join("").toString()) <
             int.parse(latestAppVersion.split('.').join("").toString())) {
