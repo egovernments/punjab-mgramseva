@@ -108,6 +108,7 @@ public class ChallanRepository {
     	
     	if(challanRequest.getChallan().getPaidDate()!=null)
 		{
+			log.info("Setting NewpaidDate as PaidDate");
 			challanRequest.getChallan().setNewpaidDate(Long.valueOf(challanRequest.getChallan().getPaidDate()));
 		}
 		log.info("CHALLAN ISBILLPAID:"+challanRequest.getChallan().getIsBillPaid()  +" | NEW PAID DATE: "+challanRequest.getChallan().getNewpaidDate());
