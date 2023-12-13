@@ -108,7 +108,7 @@ public class ChallanRepository {
     	
     	if(challanRequest.getChallan().getPaidDate()!=null)
 		{
-			challanRequest.getChallan().setPaidDate(Long.valueOf(challanRequest.getChallan().getPaidDate()));
+			challanRequest.getChallan().setNewpaidDate(Long.valueOf(challanRequest.getChallan().getPaidDate()));
 		}
 		log.info("CHALLAN ISBILLPAID:"+challanRequest.getChallan().getIsBillPaid()  +" | PAID DATE: "+challanRequest.getChallan().getPaidDate());
 		producer.push(config.getUpdateChallanTopic(), challanRequest);
