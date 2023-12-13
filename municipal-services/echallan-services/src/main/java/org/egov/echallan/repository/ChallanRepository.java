@@ -110,7 +110,7 @@ public class ChallanRepository {
 		{
 			challanRequest.getChallan().setNewpaidDate(Long.valueOf(challanRequest.getChallan().getPaidDate()));
 		}
-		log.info("CHALLAN ISBILLPAID:"+challanRequest.getChallan().getIsBillPaid()  +" | PAID DATE: "+challanRequest.getChallan().getPaidDate());
+		log.info("CHALLAN ISBILLPAID:"+challanRequest.getChallan().getIsBillPaid()  +" | NEW PAID DATE: "+challanRequest.getChallan().getNewpaidDate());
 		producer.push(config.getUpdateChallanTopic(), challanRequest);
     }
     
@@ -483,5 +483,11 @@ public class ChallanRepository {
 				preparedStmtList.toArray(),
 				new SingleColumnRowMapper<>(String.class));
 		return ids;
+	}
+
+	public void getExpenseBillReport(Long monthStartDateTime, String tenantId, Long offset, Long limit)
+	{
+           StringBuilder expenseBillQuery =new StringBuilder(queryBuilder.EXPENSEBILLQUERY);
+
 	}
 }
