@@ -52,6 +52,7 @@ class _GenerateBillState extends State<GenerateBill> {
       ..readingExist
       ..getServiceTypePropertyTypeandConnectionType()
       ..autoValidation = false
+      ..clearBillYear()
       ..formKey = GlobalKey<FormState>();
   }
 
