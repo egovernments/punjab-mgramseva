@@ -90,6 +90,7 @@ public class PaymentUpdateService {
 						challan.setIsBillPaid(true);
 						challan.setAuditDetails(auditDetails);
 						ChallanRequest request = ChallanRequest.builder().requestInfo(requestInfo).challan(challan).build();
+						log.info("CHALLAN ISBILLPAID:"+challanRequest.getChallan().getIsBillPaid()  +" |AND PAID DATE: "+challanRequest.getChallan().getPaidDate());
 						producer.push(config.getUpdateChallanTopic(), request);
 					});
 				}
