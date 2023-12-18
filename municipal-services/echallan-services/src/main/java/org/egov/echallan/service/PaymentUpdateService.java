@@ -88,8 +88,8 @@ public class PaymentUpdateService {
 
 						challan.setApplicationStatus(StatusEnum.PAID);
 						challan.setIsBillPaid(true);
-						log.info("Payment date is "+paymentRequest.getPayment().getTransactionDate());
-						challan.setPaidDate(paymentRequest.getPayment().getTransactionDate());
+						log.info("Payment date is "+paymentRequest.getPayment().getInstrumentDate());
+						challan.setPaidDate(paymentRequest.getPayment().getInstrumentDate());
 						challan.setAuditDetails(auditDetails);
 						ChallanRequest request = ChallanRequest.builder().requestInfo(requestInfo).challan(challan).build();
 						producer.push(config.getUpdateChallanTopic(), request);

@@ -53,7 +53,7 @@ public class PaymentService {
 		if ( challan.getIsBillPaid()) {
 
 			Payment payment = Payment.builder().tenantId(challan.getTenantId()).paymentMode("CASH")
-					.mobileNumber(challan.getCitizen().getMobileNumber()).paidBy(challan.getCitizen().getName()).transactionDate(challan.getPaidDate())
+					.mobileNumber(challan.getCitizen().getMobileNumber()).paidBy(challan.getCitizen().getName()).instrumentDate(challan.getPaidDate())
 					.build();
 
 			List<Bill> billList = fetchBill(request);
