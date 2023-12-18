@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jdk.jpackage.internal.Log;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
 import org.egov.echallan.expense.validator.ExpenseValidator;
@@ -89,7 +88,7 @@ public class PaymentUpdateService {
 
 						challan.setApplicationStatus(StatusEnum.PAID);
 						challan.setIsBillPaid(true);
-						Log.info("Payment date is "+paymentRequest.getPayment().getTransactionDate());
+						log.info("Payment date is "+paymentRequest.getPayment().getTransactionDate());
 						challan.setPaidDate(paymentRequest.getPayment().getTransactionDate());
 						challan.setAuditDetails(auditDetails);
 						ChallanRequest request = ChallanRequest.builder().requestInfo(requestInfo).challan(challan).build();
