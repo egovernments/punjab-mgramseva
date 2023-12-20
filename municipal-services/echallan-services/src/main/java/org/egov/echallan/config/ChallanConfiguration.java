@@ -80,7 +80,10 @@ public class ChallanConfiguration {
 
     @Value("${persister.update.challan.topic}")
     private String updateChallanTopic;
-    
+
+    @Value("${persister.update.challan.topic}")
+    private String updateNewChallanTopic;
+
     @Value("${persister.update.status.challan.topic}")
     private String updateStatusChallanTopic;
 
