@@ -159,9 +159,6 @@ public class Challan {
 	@JsonProperty("paidDate")
 	private Long paidDate ;
 
-    @JsonProperty("NewpaidDate")
-    private Long NewpaidDate ;
-
 	@JsonProperty("isBillPaid")
 	private Boolean isBillPaid;
 	
