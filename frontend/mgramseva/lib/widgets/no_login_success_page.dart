@@ -89,7 +89,7 @@ class NoLoginSuccess extends StatelessWidget {
                                   successHandler.downloadLinkLabel != null
                                       ? successHandler.downloadLinkLabel!
                                       : ''),
-                              textScaleFactor: MediaQuery.of(context).size.width>340?0.9:0.68,
+                              textScaleFactor: MediaQuery.of(context).size.width>360?0.9:0.68,
                               style: TextStyle(
                                   fontSize: 16,
                                   color: Theme.of(context).primaryColor)),
@@ -109,7 +109,7 @@ class NoLoginSuccess extends StatelessWidget {
                                   successHandler.printLabel != null
                                       ? successHandler.printLabel!
                                       : ''),
-                              textScaleFactor: MediaQuery.of(context).size.width>340?0.9:0.68,
+                              textScaleFactor: MediaQuery.of(context).size.width>360?0.9:0.68,
                               style: TextStyle(
                                   fontSize: 16,
                                   color: Theme.of(context).primaryColor)),
@@ -124,7 +124,7 @@ class NoLoginSuccess extends StatelessWidget {
                           label: Text(
                             ApplicationLocalizations.of(context)
                                 .translate(i18.common.SHARE_BILL),
-                            textScaleFactor: MediaQuery.of(context).size.width>340?0.9:0.68,
+                            textScaleFactor: MediaQuery.of(context).size.width>360?0.9:0.68,
                             style: TextStyle(
                                 fontSize: 16,
                                 color: Theme.of(context).primaryColor),
