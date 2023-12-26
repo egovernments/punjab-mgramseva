@@ -4,11 +4,10 @@ import 'package:mgramseva/utils/printer/image_utils.dart';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:nearby_connections/nearby_connections.dart';
 import 'package:image/image.dart' as img;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
-import 'package:thermal_printer/esc_pos_utils_platform/esc_pos_utils_platform.dart';
+import 'package:mgramseva/utils/printer/esc_pos_utils_platform/esc_pos_utils_platform.dart';
 
 import 'localization/application_localizations.dart';
 
