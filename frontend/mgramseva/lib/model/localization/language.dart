@@ -9,7 +9,7 @@ import 'package:mgramseva/model/mdms/tax_period.dart';
 import '../../repository/water_services_calculation.dart';
 
 class LanguageList {
-  dynamic? responseInfo;
+  dynamic responseInfo;
   MdmsRes? mdmsRes;
 
   LanguageList({this.responseInfo, this.mdmsRes});
@@ -29,7 +29,8 @@ class LanguageList {
     return data;
   }
 }
-class PSPCLIntegration{
+
+class PSPCLIntegration {
   List<AccountNumberGpMapping>? accountNumberGpMapping;
 
   PSPCLIntegration({this.accountNumberGpMapping});
@@ -52,6 +53,7 @@ class PSPCLIntegration{
     return data;
   }
 }
+
 class AccountNumberGpMapping {
   String? accountNumber;
   String? departmentEntityName;
@@ -59,8 +61,8 @@ class AccountNumberGpMapping {
 
   AccountNumberGpMapping(
       {this.accountNumber,
-        this.departmentEntityName,
-        this.departmentEntityCode});
+      this.departmentEntityName,
+      this.departmentEntityCode});
 
   AccountNumberGpMapping.fromJson(Map<String, dynamic> json) {
     accountNumber = json['accountNumber'];
@@ -76,6 +78,7 @@ class AccountNumberGpMapping {
     return data;
   }
 }
+
 class MdmsRes {
   CommonMasters? commonMasters;
   BillingService? billingService;

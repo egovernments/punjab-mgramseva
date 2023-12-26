@@ -25,21 +25,18 @@ class UserEditProfileProvider with ChangeNotifier {
       var edituserResponse =
           await UserEditProfileRepository().editProfile(body);
       Navigator.pop(context);
-      if (edituserResponse != null) {
-        Notifiers.getToastMessage(
-            context, i18.profileEdit.PROFILE_EDIT_SUCCESS, 'SUCCESS');
-        streamController.add(edituserResponse);
-        if(edituserResponse.user?.isNotEmpty ?? false) {
-          Provider.of<CommonProvider>(context, listen: false)
-            ..userDetails?.userRequest?.name = edituserResponse.user?.first.name
-            ..userDetails?.userRequest?.emailId = edituserResponse.user?.first
-                .emailId
-          ..loginCredentials = Provider.of<CommonProvider>(context, listen: false).userDetails;
-        }
-        Navigator.pop(context);
-        Navigator.pop(context);
+      Notifiers.getToastMessage(
+          context, i18.profileEdit.PROFILE_EDIT_SUCCESS, 'SUCCESS');
+      streamController.add(edituserResponse);
+      if(edituserResponse.user?.isNotEmpty ?? false) {
+        Provider.of<CommonProvider>(context, listen: false)
+          ..userDetails?.userRequest?.name = edituserResponse.user?.first.name
+          ..userDetails?.userRequest?.emailId = edituserResponse.user?.first
+              .emailId
+        ..loginCredentials = Provider.of<CommonProvider>(context, listen: false).userDetails;
       }
-    } catch (e, s) {
+      Navigator.pop(context);
+        } catch (e, s) {
       Navigator.pop(context);
       ErrorHandler().allExceptionsHandler(context, e, s);
     }

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/reports/InactiveConsumerReportData.dart';
-import 'package:mgramseva/utils/common_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 
@@ -28,7 +27,7 @@ import 'package:mgramseva/services/mdms.dart' as mdms;
 
 class ReportsProvider with ChangeNotifier {
   var streamController = StreamController.broadcast();
-  LanguageList? languageList;
+  LanguageList? billingYearList;
   var selectedBillYear;
   var selectedBillPeriod;
   var selectedBillCycle;
@@ -179,15 +178,18 @@ class ReportsProvider with ChangeNotifier {
 
   void onChangeOfBillYear(val) {
     selectedBillYear = val;
+    print(val.toString());
+    billingyearCtrl.text = val.toString();
     billingcycleCtrl.clear();
     selectedBillCycle = null;
     selectedBillPeriod = null;
     notifyListeners();
   }
 
-  void onChangeOfBillCycle(val) {
-    var result = DateTime.parse(val);
-    selectedBillCycle = (DateFormats.getMonth(result));
+  void onChangeOfBillCycle(cycle) {
+    var val = cycle['code'];
+    var result = DateTime.parse(val.toString());
+    selectedBillCycle = cycle;
     selectedBillPeriod = (DateFormats.getFilteredDate(
             result.toLocal().toString(),
             dateFormat: "dd/MM/yyyy")) +
@@ -207,16 +209,15 @@ class ReportsProvider with ChangeNotifier {
           listen: false);
       var res = await CoreRepository().getMdms(mdms.getTenantFinancialYearList(
           commonProvider.userDetails!.userRequest!.tenantId.toString()));
-      languageList = res;
+      billingYearList = res;
       notifyListeners();
-      streamController.add(languageList);
+      streamController.add(billingYearList);
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       streamController.addError('error');
     }
   }
-
-  List<DropdownMenuItem<Object>> getFinancialYearListDropdown(
+  List<TaxPeriod> getFinancialYearListDropdownA(
       LanguageList? languageList) {
     if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
       CommonMethods.getFilteredFinancialYearList(
@@ -225,23 +226,15 @@ class ReportsProvider with ChangeNotifier {
       languageList?.mdmsRes?.billingService?.taxPeriodList!
           .sort((a, b) => a.fromDate!.compareTo(b.fromDate!));
       return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
-              <TaxPeriod>[])
-          .map((value) {
-            return DropdownMenuItem(
-              value: value,
-              child: new Text((value.financialYear!)),
-            );
-          })
-          .toList()
+          <TaxPeriod>[])
           .reversed
           .toList();
     }
-    return <DropdownMenuItem<Object>>[];
+    return <TaxPeriod>[];
   }
-
-  List<DropdownMenuItem<Object>> getBillingCycleDropdown(
+  List<Map<String,dynamic>> getBillingCycleDropdownA(
       dynamic selectedBillYear) {
-    var dates = [];
+    List<Map<String,dynamic>> dates = [];
     if (selectedBillYear != null) {
       DatePeriod ytd;
       var fromDate = DateFormats.getFormattedDateToDateTime(
@@ -261,24 +254,77 @@ class ReportsProvider with ChangeNotifier {
 
       for (var i = 0; i < months.length; i++) {
         var prevMonth = months[i].startDate;
-        var r = {"code": prevMonth, "name": prevMonth};
+        var r = {"code": prevMonth, "name": '${ApplicationLocalizations.of(navigatorKey.currentContext!)
+            .translate((Constants.MONTHS[prevMonth.month - 1])) +
+        " - " +
+            prevMonth.year.toString()}'};
+        dates.add(r);
+      }
+    }
+    // if (dates.length > 0) {
+    //   return (dates).map((value) {
+    //     var d = value['name'];
+    //     return "${ApplicationLocalizations.of(navigatorKey.currentContext!)
+    //         .translate((Constants.MONTHS[d.month - 1])) +
+    //         " - " +
+    //         d.year.toString()}";
+    //   }).toList();
+    // }
+    return dates;
+  }
+  List<TaxPeriod> getFinancialYearListDropdown(
+      LanguageList? languageList) {
+    if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
+      CommonMethods.getFilteredFinancialYearList(
+          languageList?.mdmsRes?.billingService?.taxPeriodList ??
+              <TaxPeriod>[]);
+      languageList?.mdmsRes?.billingService?.taxPeriodList!
+          .sort((a, b) => a.fromDate!.compareTo(b.fromDate!));
+      return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
+              <TaxPeriod>[])
+          .map((value) {
+            return value;
+          })
+          .toList()
+          .reversed
+          .toList();
+    }
+    return <TaxPeriod>[];
+  }
+
+  List<Map<String,dynamic>> getBillingCycleDropdown(
+      dynamic selectedBillYear) {
+    var dates = <Map<String,dynamic>>[];
+    if (selectedBillYear != null) {
+      DatePeriod ytd;
+      var fromDate = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(selectedBillYear.fromDate)) as DateTime;
+
+      var toDate = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(selectedBillYear.toDate)) as DateTime;
+
+      ytd = DatePeriod(fromDate, toDate, DateType.YTD);
+
+      /// Get months based on selected billing year
+      var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd,
+          showCurrentMonth: true);
+
+      /// if selected year is future year means all the months will be removed
+      if (fromDate.year > ytd.endDate.year) months.clear();
+
+      for (var i = 0; i < months.length; i++) {
+        var prevMonth = months[i].startDate;
+        Map<String,dynamic> r = {"code": prevMonth, "name": "${ApplicationLocalizations.of(navigatorKey.currentContext!)
+            .translate((Constants.MONTHS[prevMonth.month - 1])) +
+            " - " +
+            prevMonth.year.toString()}"};
         dates.add(r);
       }
     }
     if (dates.length > 0) {
-      return (dates).map((value) {
-        var d = value['name'];
-        return DropdownMenuItem(
-          value: value['code'].toLocal().toString(),
-          child: new Text(
-              ApplicationLocalizations.of(navigatorKey.currentContext!)
-                      .translate((Constants.MONTHS[d.month - 1])) +
-                  " - " +
-                  d.year.toString()),
-        );
-      }).toList();
+      return dates;
     }
-    return <DropdownMenuItem<Object>>[];
+    return <Map<String,dynamic>>[];
   }
 
   Future<void> getDemandReport(

@@ -28,7 +28,7 @@ class NotificationScreenProvider with ChangeNotifier {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    if (notifications != null && notifications.length > 0) {
+    if (notifications.length > 0) {
       final jsonList = notifications.map((item) => jsonEncode(item)).toList();
       final uniqueJsonList = jsonList.toSet().toList();
       var result = new EventsList.fromJson(

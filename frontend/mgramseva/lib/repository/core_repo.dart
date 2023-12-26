@@ -248,12 +248,11 @@ class CoreRepository extends BaseService {
           headers: header,
           body: jsonEncode({"url": inputUrl}));
 
-      if (response.body != null) {
-        return response.body;
-      }
-    } catch (e, s) {
+      return response.body;
+        } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
+    return null;
   }
 
   Future<PDFServiceResponse?> getFileStorefromPdfService(body, params) async {
@@ -288,6 +287,7 @@ class CoreRepository extends BaseService {
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
+    return null;
   }
 
   Future<EventsList?> fetchNotifications(params) async {
@@ -320,6 +320,7 @@ class CoreRepository extends BaseService {
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
+    return null;
   }
 
   Future<bool?> updateNotifications(events) async {
@@ -350,6 +351,7 @@ class CoreRepository extends BaseService {
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
+    return null;
   }
 
   Future<bool?> fileDownload(BuildContext context, String url,
@@ -370,11 +372,19 @@ class CoreRepository extends BaseService {
       } else if (Platform.isIOS) {
         downloadPath = (await getApplicationDocumentsDirectory()).path;
       } else {
-        downloadPath = (await getExternalStorageDirectory())?.path;
+        downloadPath = (await getDownloadsDirectory())?.path;
       }
       var status = await Permission.storage.status;
+      var status2 = await Permission.photos.status;
+      var status1 = await Permission.notification.status;
       if (!status.isGranted) {
         await Permission.storage.request();
+      }if (!status1.isGranted) {
+        await Permission.notification.request();
+      }
+      if (!status2.isGranted) {
+        await Permission.photos.request();
+        await Permission.videos.request();
       }
 
       final response = await FlutterDownloader.enqueue(
@@ -392,6 +402,7 @@ class CoreRepository extends BaseService {
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(context, e, s);
     }
+    return null;
   }
 
   Future<String?> submitFeedBack(Map body) async {

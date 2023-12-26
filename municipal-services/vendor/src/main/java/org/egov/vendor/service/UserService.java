@@ -610,4 +610,12 @@ public class UserService {
 
 		return Boolean.TRUE;
 	}
+
+
+	public UserDetailResponse getUser(UserSearchRequest userSearchRequest) {
+		StringBuilder uri = new StringBuilder(config.getUserHost())
+				.append(config.getUserSearchEndpoint());
+		UserDetailResponse userDetailResponse = userCall(userSearchRequest, uri);
+		return userDetailResponse;
+	}
 }

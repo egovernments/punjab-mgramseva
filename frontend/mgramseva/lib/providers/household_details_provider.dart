@@ -61,8 +61,7 @@ class HouseHoldProvider with ChangeNotifier {
           "tenantId": commonProvider.userDetails!.selectedtenant!.code,
           ...{'connectionNumber': id},
         });
-        if (res != null &&
-            res.waterConnection != null &&
+        if (res.waterConnection != null &&
             res.waterConnection!.isNotEmpty) {
           data = res.waterConnection!.first;
         }

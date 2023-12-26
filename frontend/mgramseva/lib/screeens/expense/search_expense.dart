@@ -45,7 +45,7 @@ class _SearchExpenseState extends State<SearchExpense> {
   @override
   Widget build(BuildContext context) {
     return KeyboardFocusWatcher(child:Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),
@@ -87,7 +87,9 @@ class _SearchExpenseState extends State<SearchExpense> {
                             hint:
                             '${ApplicationLocalizations.of(context).translate(i18.common.ELECTRICITY_HINT)}',
                             controller: expenseTypeCtrl,
-                            key: Keys.expense.SEARCH_EXPENSE_TYPE,
+                            key: Keys.expense.SEARCH_EXPENSE_TYPE, itemAsString: (i) =>'${ApplicationLocalizations.of(context)
+                              .translate(
+                              i.toString())}',
                           );
                         }
                             ,

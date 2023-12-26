@@ -43,27 +43,25 @@ class AuthenticationProvider with ChangeNotifier {
 
       Navigator.pop(context);
 
-      if (loginResponse != null) {
-        var userInfo = await AuthenticationRepository().getProfile({
-          "tenantId": loginResponse.userRequest!.tenantId,
-          "id": [loginResponse.userRequest!.id],
-          "mobileNumber": loginResponse.userRequest!.mobileNumber
-        }, loginResponse.accessToken!);
-        var commonProvider =
-            Provider.of<CommonProvider>(context, listen: false);
-        loginResponse.isFirstTimeLogin = userInfo.user!.first.defaultPwdChgd;
-        commonProvider.loginCredentials = loginResponse;
-        if (userInfo.user!.first.defaultPwdChgd == false) {
-          commonProvider.userProfile = userInfo;
-          Navigator.pushNamed(context, Routes.UPDATE_PASSWORD,
-              arguments: loginResponse);
-          return;
-        } else {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              Routes.HOME, (Route<dynamic> route) => false);
-        }
+      var userInfo = await AuthenticationRepository().getProfile({
+        "tenantId": loginResponse.userRequest!.tenantId,
+        "id": [loginResponse.userRequest!.id],
+        "mobileNumber": loginResponse.userRequest!.mobileNumber
+      }, loginResponse.accessToken!);
+      var commonProvider =
+          Provider.of<CommonProvider>(context, listen: false);
+      loginResponse.isFirstTimeLogin = userInfo.user!.first.defaultPwdChgd;
+      commonProvider.loginCredentials = loginResponse;
+      if (userInfo.user!.first.defaultPwdChgd == false) {
+        commonProvider.userProfile = userInfo;
+        Navigator.pushNamed(context, Routes.UPDATE_PASSWORD,
+            arguments: loginResponse);
+        return;
+      } else {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            Routes.HOME, (Route<dynamic> route) => false);
       }
-    } on CustomException catch (e, s) {
+        } on CustomException catch (e, s) {
       Navigator.pop(context);
       if (ErrorHandler.handleApiException(context, e, s)) {
         Notifiers.getToastMessage(context, e.message, 'ERROR');

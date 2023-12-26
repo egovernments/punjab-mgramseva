@@ -152,11 +152,15 @@ class ConsumerProvider with ChangeNotifier {
       isEdit = true;
       waterconnection = data;
       waterconnection.getText();
-      selectedcycle = DateFormats.timeStampToDate(
-                  waterconnection.previousReadingDate,
-                  format: 'yyyy-MM-dd')
-              .toString() +
-          " 00:00:00.000";
+      selectedcycle = {'code':DateTime.fromMillisecondsSinceEpoch(waterconnection.previousReadingDate!),
+        'name':"${ApplicationLocalizations.of(navigatorKey.currentContext!)
+    .translate(DateFormats.timeStampToDate(
+    waterconnection.previousReadingDate,
+    format: 'MMMM')) +
+    " - " +
+    DateFormats.timeStampToDate(
+    waterconnection.previousReadingDate,
+    format: 'yyyy')}"};
       if (waterconnection.previousReadingDate != null &&
           (languageList?.mdmsRes?.billingService?.taxPeriodList?.isNotEmpty ??
               false)) {
@@ -346,7 +350,7 @@ class ConsumerProvider with ChangeNotifier {
             streamController.add(property);
             Notifiers.getToastMessage(
                 context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
-            selectedcycle = '';
+            selectedcycle = null;
             waterconnection.connectionType = '';
             Navigator.pop(context);
           }
@@ -460,6 +464,7 @@ class ConsumerProvider with ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
   Future<void> fetchBoundary() async {
@@ -514,57 +519,43 @@ class ConsumerProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<DropdownMenuItem<Object>> getBoundaryList() {
+  List<Boundary> getBoundaryList() {
     if (boundaryList.length > 0) {
-      return (boundaryList).map((value) {
-        return DropdownMenuItem(
-          value: value,
-          child: new Text(value.code!),
-        );
-      }).toList();
+      return boundaryList;
     }
-    return <DropdownMenuItem<Object>>[];
+    return <Boundary>[];
   }
 
-  List<DropdownMenuItem<Object>> getCategoryList() {
+  List<String> getCategoryList() {
     if (languageList?.mdmsRes?.category != null) {
       return (languageList?.mdmsRes?.category?.categoryList ?? <CategoryType>[])
           .map((value) {
-        return DropdownMenuItem(
-          value: value.code,
-          child: new Text((value.code!)),
-        );
-      }).toList();
-    }
-    return <DropdownMenuItem<Object>>[];
+        return value.code!;
+    }).toList();
+   }
+    return <String>[];
   }
 
-  List<DropdownMenuItem<Object>> getSubCategoryList() {
+  List<String> getSubCategoryList() {
     if (languageList?.mdmsRes?.subCategory != null) {
       return (languageList?.mdmsRes?.subCategory?.subcategoryList ??
               <SubCategoryType>[])
           .map((value) {
-        return DropdownMenuItem(
-          value: value.code,
-          child: new Text((value.code!)),
-        );
+        return value.code!;
       }).toList();
     }
-    return <DropdownMenuItem<Object>>[];
+    return <String>[];
   }
 
-  List<DropdownMenuItem<Object>> getPropertyTypeList() {
+  List<String> getPropertyTypeList() {
     if (languageList?.mdmsRes?.propertyTax?.PropertyTypeList != null) {
       return (languageList?.mdmsRes?.propertyTax?.PropertyTypeList ??
               <PropertyType>[])
           .map((value) {
-        return DropdownMenuItem(
-          value: value.code,
-          child: new Text(value.code!),
-        );
+        return value.code!;
       }).toList();
     }
-    return <DropdownMenuItem<Object>>[];
+    return <String>[];
   }
 
   onChangeOfConnectionType(val) {
@@ -582,30 +573,28 @@ class ConsumerProvider with ChangeNotifier {
 
   onChangeBillingCycle(val) {
     selectedcycle = val;
+    DateTime result = DateTime.parse(val['code'].toString());
     waterconnection.previousReadingDateCtrl.clear();
-    waterconnection.BillingCycleCtrl.text = selectedcycle ?? '';
-    waterconnection.meterInstallationDateCtrl.text = selectedcycle ?? '';
+    waterconnection.BillingCycleCtrl.text = result.toLocal().toString();
+    waterconnection.meterInstallationDateCtrl.text = result.toLocal().toString();
     notifyListeners();
   }
 
 //Displaying ConnectionType data Fetched From MDMD (Ex Metered, Non Metered..)
-  List<DropdownMenuItem<Object>> getConnectionTypeList() {
+  List<String> getConnectionTypeList() {
     if (languageList?.mdmsRes?.connection?.connectionTypeList != null) {
       return (languageList?.mdmsRes?.connection?.connectionTypeList ??
               <ConnectionType>[])
           .map((value) {
-        return DropdownMenuItem(
-          value: value.code,
-          child: new Text((value.code!)),
-        );
+        return value.code!;
       }).toList();
     }
-    return <DropdownMenuItem<Object>>[];
+    return <String>[];
   }
 
   //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
-  List<DropdownMenuItem<Object>> getBillingCycle() {
-    dates = [];
+  List<Map<String,dynamic>> getBillingCycle() {
+    var dates = <Map<String,dynamic>>[];
     if (billYear != null) {
       DatePeriod ytd;
       var fromDate = DateFormats.getFormattedDateToDateTime(
@@ -624,24 +613,17 @@ class ConsumerProvider with ChangeNotifier {
 
       for (var i = 0; i < months.length; i++) {
         var prevMonth = months[i].startDate;
-        var r = {"code": prevMonth, "name": prevMonth};
+        var r = {"code": prevMonth, "name": '${ApplicationLocalizations.of(navigatorKey.currentContext!)
+            .translate((Constants.MONTHS[prevMonth.month - 1])) +
+            " - " +
+            prevMonth.year.toString()}'};
         dates.add(r);
       }
     }
     if (dates.length > 0 && waterconnection.connectionType == 'Non_Metered') {
-      return (dates).map((value) {
-        var d = value['name'];
-        return DropdownMenuItem(
-          value: value['code'].toLocal().toString(),
-          child: new Text(
-              ApplicationLocalizations.of(navigatorKey.currentContext!)
-                      .translate((Constants.MONTHS[d.month - 1])) +
-                  " - " +
-                  d.year.toString()),
-        );
-      }).toList();
+      return dates;
     }
-    return <DropdownMenuItem<Object>>[];
+    return <Map<String,dynamic>>[];
   }
 
   incrementIndex(index, consumerGenderKey) async {
@@ -673,22 +655,17 @@ class ConsumerProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<DropdownMenuItem<Object>> getFinancialYearList() {
+  List<TaxPeriod> getFinancialYearList() {
     if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
-      CommonMethods.getFilteredFinancialYearList(
-          languageList?.mdmsRes?.billingService?.taxPeriodList ??
-              <TaxPeriod>[]);
+      CommonMethods.getFilteredFinancialYearList(languageList?.mdmsRes?.billingService?.taxPeriodList ?? <TaxPeriod>[]);
       languageList?.mdmsRes?.billingService?.taxPeriodList!.sort((a,b)=>a.fromDate!.compareTo(b.fromDate!));
       return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
-              <TaxPeriod>[])
+          <TaxPeriod>[])
           .map((value) {
-        return DropdownMenuItem(
-          value: value,
-          child: new Text((value.financialYear!)),
-        );
+        return value;
       }).toList().reversed.toList();
     }
-    return <DropdownMenuItem<Object>>[];
+    return <TaxPeriod>[];
   }
 
   void onChangeOfAmountType(value) {

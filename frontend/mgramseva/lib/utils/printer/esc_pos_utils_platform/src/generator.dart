@@ -137,7 +137,7 @@ class Generator {
 
     // Create a black bottom layer
     final biggerImage = img.copyResize(image, width: widthPx, height: heightPx);
-    img.fill(biggerImage, img.getColor(255,255, 255));
+    img.fill(biggerImage, color:img.ColorRgb8(255,255, 255));
     // Insert source image into bigger one
     drawImage(biggerImage, image, dstX: 0, dstY: 0);
 
@@ -145,7 +145,7 @@ class Generator {
     final List<List<int>> blobs = [];
 
     while (left < widthPx) {
-      final img.Image slice = img.copyCrop(biggerImage, left, 0, lineHeight, heightPx);
+      final img.Image slice = img.copyCrop(biggerImage, x:left, y:0, width:lineHeight, height: heightPx,);
       final Uint8List bytes = slice.getBytes(); //  slice.getBytes(format: luminance)
       blobs.add(bytes);
       left += lineHeight;
@@ -681,8 +681,8 @@ class Generator {
     const bool highDensityVertical = true;
 
     img.invert(image);
-    img.flip(image, img.Flip.horizontal);
-    final img.Image imageRotated = img.copyRotate(image, 270);
+    img.flip(image, direction: img.FlipDirection.horizontal);
+    final img.Image imageRotated = img.copyRotate(image, angle: 270);
 
     // ignore: dead_code
     const int lineHeight = highDensityVertical ? 3 : 1;

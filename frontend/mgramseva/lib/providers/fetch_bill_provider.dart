@@ -19,23 +19,17 @@ class FetchBillProvider with ChangeNotifier {
         "consumerCode": data.connectionNo.toString(),
         "businessService": "WS"
       });
-      if (res != null) {
-        if (res.bill!.isNotEmpty) {
-          res.bill?.first.billDetails
-              ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
-          billList = res;
-          streamController.add(res);
-        } else {
-           billList = new BillList();
-          billList.bill = [];
-          streamController.add(billList);
-        }
+      if (res.bill!.isNotEmpty) {
+        res.bill?.first.billDetails
+            ?.sort((a, b) => b.fromPeriod!.compareTo(a.fromPeriod!));
+        billList = res;
+        streamController.add(res);
       } else {
          billList = new BillList();
         billList.bill = [];
         streamController.add(billList);
       }
-    } catch (e, s) {
+        } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       streamController.addError('error');
     }

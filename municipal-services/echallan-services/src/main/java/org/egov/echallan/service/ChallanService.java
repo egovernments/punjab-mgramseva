@@ -160,11 +160,11 @@ public class ChallanService {
 			userService.setAccountUser(request);
 			enrichmentService.enrichUpdateRequest(request, searchResult.get(0));
 			calculationService.addCalculation(request);
+		    repository.update(request);
 			if (request.getChallan().getApplicationStatus() == StatusEnum.PAID && searchResult.get(0).getApplicationStatus() == StatusEnum.ACTIVE)
 				paymentService.createPayment(request);
 			if (searchResult.get(0).getApplicationStatus() == StatusEnum.PAID)
 				paymentService.updatePayment(request);
-			repository.update(request);
 			return request.getChallan();
 		}
 

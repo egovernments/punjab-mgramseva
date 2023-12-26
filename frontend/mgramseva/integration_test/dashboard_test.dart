@@ -32,7 +32,7 @@ void main() {
     await tester.pumpAndSettle(Duration(milliseconds: 3000));
 
     // final tabSelection = find.byKey(Keys.dashboard.DASHBOARD_SEARCH);
-    final dashboard_search = find.byKey(Keys.dashboard.DASHBOARD_SEARCH);
+    final dashboardSearch = find.byKey(Keys.dashboard.DASHBOARD_SEARCH);
     final datePicker = find.byKey(Keys.dashboard.DASHBOARD_DATE_PICKER);
     final expenditureTab = find.widgetWithText(GestureDetector, ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.dashboard.EXPENDITURE)).first;
     final tab = find.byKey(Keys.dashboard.SECOND_TAB);
@@ -86,8 +86,8 @@ void main() {
     await tester.pumpAndSettle(Duration(milliseconds: 5000));
 
     /// Searching items
-    await tester.ensureVisible(dashboard_search);
-    await tester.enterText(dashboard_search, dashboardTestData['dashboardSearch']);
+    await tester.ensureVisible(dashboardSearch);
+    await tester.enterText(dashboardSearch, dashboardTestData['dashboardSearch']);
     await tester.pumpAndSettle(Duration(milliseconds: 5000));
 
     // await tester.ensureVisible(share);

@@ -298,6 +298,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               false,
                               // contextkey: consumerProvider
                               //     .consmerWalkthrougList[6].key,
+                                  itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.toString())}',
                               controller:
                                   consumerProvider.waterconnection.categoryCtrl,
                               key: Keys.createConsumer.CONSUMER_CATEORY_KEY,
@@ -315,6 +316,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     consumerProvider.onChangeOfSubCategory,
                                     consumerProvider.getSubCategoryList(),
                                     false,
+                                    itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.toString())}',
                                     // contextkey: consumerProvider
                                     //     .consmerWalkthrougList[6].key,
                                     controller: consumerProvider
@@ -364,6 +366,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                           consumerProvider.onChangeOfLocality,
                                           consumerProvider.getBoundaryList(),
                                           true,
+                                          itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.code!.toString())}',
                                           contextKey: consumerProvider
                                               .consmerWalkthrougList[5].key)
                                       : Container()),
@@ -379,6 +382,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               consumerProvider.onChangeOfPropertyType,
                               consumerProvider.getPropertyTypeList(),
                               true,
+                              itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.toString())}',
                               contextKey:
                                   consumerProvider.consmerWalkthrougList[6].key,
                               controller: property.address.propertyCtrl,
@@ -400,14 +404,15 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                         consumerProvider
                                             .getConnectionTypeList(),
                                         true,
+                                        itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.toString())}',
                                         contextKey: consumerProvider
                                             .consmerWalkthrougList[7].key,
                                         controller: consumerProvider
                                             .waterconnection.ServiceTypeCtrl,
-                                        isEnabled: consumerProvider.isEdit ==
-                                                false ||
+                                        readOnly: consumerProvider.isEdit ==
+                                                true ||
                                             consumerProvider.isFirstDemand ==
-                                                false,
+                                                true,
                                         key: Keys.createConsumer
                                             .CONSUMER_SERVICE_KEY,
                                       ),
@@ -510,6 +515,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             consumerProvider
                                                                 .getFinancialYearList(),
                                                             true,
+                                                            itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.financialYear)}',
                                                             controller: consumerProvider
                                                                 .waterconnection
                                                                 .billingCycleYearCtrl,
@@ -528,6 +534,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             consumerProvider
                                                                 .getBillingCycle(),
                                                             true,
+                                                            itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i['name'])}",
                                                             controller: consumerProvider
                                                                 .waterconnection
                                                                 .BillingCycleCtrl,
@@ -619,7 +626,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
     var userProvider = Provider.of<ConsumerProvider>(context, listen: false);
     return KeyboardFocusWatcher(
         child: Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),

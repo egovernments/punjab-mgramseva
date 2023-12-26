@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mgramseva/providers/language.dart';
@@ -12,11 +13,12 @@ class SelectFieldBuilder extends StatefulWidget {
   final String input;
   final String prefixText;
   final Function(dynamic) widget;
-  final List<DropdownMenuItem<Object>> options;
+  final String Function(dynamic) itemAsString;
+  final List<dynamic> options;
   final bool isRequired;
   final String? hint;
   final bool? readOnly;
-  final bool? isEnabled;
+  final bool showSearchBox;
   final String? requiredMessage;
   final GlobalKey? contextKey;
   final TextEditingController? controller;
@@ -26,11 +28,10 @@ class SelectFieldBuilder extends StatefulWidget {
   const SelectFieldBuilder(this.labelText, this.value, this.input, this.prefixText,
       this.widget, this.options, this.isRequired,
       {this.hint,
-      this.isEnabled,
-      this.readOnly,
+      this.readOnly = false,
       this.requiredMessage,
       this.contextKey,
-      this.controller,this.key, this.suggestionKey});
+      this.controller,this.key, this.suggestionKey, required this.itemAsString, this.showSearchBox = false});
 
   @override
   State<SelectFieldBuilder> createState() => SelectFieldBuilderState();
@@ -49,7 +50,7 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
           style: TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
-              color: (widget.isEnabled ?? true)
+              color: (!widget.readOnly!)
                   ? Theme.of(context).primaryColorDark
                   : Colors.grey)),
       Visibility(
@@ -59,7 +60,7 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
             style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 16,
-                color: (widget.isEnabled ?? true)
+                color: (!widget.readOnly! ?? true)
                     ? Theme.of(context).primaryColorDark
                     : Colors.grey)),
       ),
@@ -107,15 +108,31 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
                   children: [
                     Consumer<LanguageProvider>(
                         builder: (_, consumerProvider, child) =>
-                            SearchSelectField(
-                                widget.labelText,
-                                widget.options,
-                                widget.controller,
-                                widget.widget,
-                                widget.value,
-                                widget.isEnabled,
-                                widget.isRequired,
-                                widget.requiredMessage, key : widget.suggestionKey)),
+                            // SearchSelectField(
+                            //     widget.labelText,
+                            //     widget.options,
+                            //     widget.controller,
+                            //     widget.widget,
+                            //     widget.value,
+                            //     widget.isEnabled,
+                            //     widget.isRequired,
+                            //     widget.requiredMessage, key : widget.suggestionKey),
+                      DropdownSearch(
+                        key: widget.suggestionKey,
+                        selectedItem: widget.value,
+                        itemAsString: widget.itemAsString,
+                        items: widget.options,
+                        onChanged: widget.widget,
+                        enabled: !widget.readOnly!,
+                        popupProps: PopupProps.menu(
+                          showSearchBox: widget.showSearchBox,
+                          fit: FlexFit.loose,
+                          searchDelay: Duration(seconds: 0),
+                          //comment this if you want that the items do not takes all available height
+                          constraints: BoxConstraints(maxHeight: 400),
+                        ),
+                      )
+                    ),
                     CommonWidgets().buildHint(
                       widget.hint,
                       context,
@@ -134,8 +151,26 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
                 child: new Align(
                     alignment: Alignment.centerLeft, child: textLabelWidget)),
             Consumer<LanguageProvider>(builder: (_, consumerProvider, child) {
-              return SearchSelectField(widget.labelText, widget.options, widget.controller, widget.widget,
-                  widget.value, widget.isEnabled, widget.isRequired, widget.requiredMessage, key: widget.suggestionKey,);
+              return DropdownSearch(
+                key: widget.suggestionKey,
+                selectedItem: widget.value,
+                itemAsString: widget.itemAsString,
+                items: widget.options,
+                onChanged: widget.widget,
+                enabled: !widget.readOnly!,
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  baseStyle: TextStyle(
+                    color: !widget.readOnly!?Theme.of(context).primaryColorDark:Colors.grey
+                  )
+                ),
+                popupProps: PopupProps.menu(
+                  showSearchBox: widget.showSearchBox,
+                  fit: FlexFit.loose,
+                  searchDelay: Duration(seconds: 0),
+                  //comment this if you want that the items do not takes all available height
+                  constraints: BoxConstraints(maxHeight: 200),
+                ),
+              );
             }),
             CommonWidgets().buildHint(widget.hint, context)
           ]),

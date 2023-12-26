@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/screeens/connection_results/connection_details_card.dart';
@@ -43,7 +42,7 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
         Provider.of<SearchConnectionProvider>(context, listen: false);
 
     return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),

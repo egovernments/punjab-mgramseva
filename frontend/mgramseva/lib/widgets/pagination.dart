@@ -52,7 +52,7 @@ class _PaginationState extends State<Pagination> {
   }
 
   get dropDownItems {
-    return [1,2,3,10, 20, 30, 40, 50].map((value) {
+    return [10, 20, 30, 40, 50].map((value) {
       return DropdownMenuItem(
         key: Key('$value'),
         value: value,

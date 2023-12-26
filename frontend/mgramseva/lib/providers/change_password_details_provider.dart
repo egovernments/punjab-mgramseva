@@ -19,15 +19,13 @@ class ChangePasswordProvider with ChangeNotifier {
 
       var changePasswordResponse = await ChangePasswordRepository().updatePassword(body);
       Navigator.pop(context);
-      if (changePasswordResponse != null) {
-        Notifiers.getToastMessage(
-            context, i18.password.CHANGE_PASSWORD_SUCCESS, 'SUCCESS');
-        new Future.delayed(const Duration(seconds: 5),
-            () => Navigator.pop(context),
-        );
+      Notifiers.getToastMessage(
+          context, i18.password.CHANGE_PASSWORD_SUCCESS, 'SUCCESS');
+      new Future.delayed(const Duration(seconds: 5),
+          () => Navigator.pop(context),
+      );
 
-      }
-    } catch (e, s) {
+        } catch (e, s) {
       Navigator.pop(context);
       ErrorHandler().allExceptionsHandler(context, e, s);
     }

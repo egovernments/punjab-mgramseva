@@ -128,40 +128,38 @@ class HouseholdRegisterProvider with ChangeNotifier {
 
       isLoaderEnabled = false;
 
-      if (response != null) {
-        if (selectedTab == Constants.ALL) {
-          collectionCountHolder[Constants.ALL] = response.totalCount ?? 0;
-          collectionCountHolder[Constants.PAID] =
-              response.collectionDataCount?.collectionPaid ?? 0;
-          collectionCountHolder[Constants.PENDING] =
-              response.collectionDataCount?.collectionPending ?? 0;
-        } else if (searchResponse != null) {
-          collectionCountHolder[Constants.ALL] = searchResponse.totalCount ?? 0;
-          collectionCountHolder[Constants.PAID] =
-              searchResponse.collectionDataCount?.collectionPaid ?? 0;
-          collectionCountHolder[Constants.PENDING] =
-              searchResponse.collectionDataCount?.collectionPending ?? 0;
-        }
-
-        if (waterConnectionsDetails == null) {
-          waterConnectionsDetails = response;
-          notifyListeners();
-        } else {
-          waterConnectionsDetails?.totalCount = response.totalCount;
-          waterConnectionsDetails?.waterConnection
-              ?.addAll(response.waterConnection ?? <WaterConnection>[]);
-        }
-        notifyListeners();
-        streamController.add(waterConnectionsDetails!.waterConnection!.isEmpty
-            ? <WaterConnection>[]
-            : waterConnectionsDetails?.waterConnection?.sublist(
-                offSet - 1,
-                ((offset + limit - 1) >
-                        (waterConnectionsDetails?.totalCount ?? 0))
-                    ? (waterConnectionsDetails!.totalCount!)
-                    : (offset + limit) - 1));
+      if (selectedTab == Constants.ALL) {
+        collectionCountHolder[Constants.ALL] = response.totalCount ?? 0;
+        collectionCountHolder[Constants.PAID] =
+            response.collectionDataCount?.collectionPaid ?? 0;
+        collectionCountHolder[Constants.PENDING] =
+            response.collectionDataCount?.collectionPending ?? 0;
+      } else if (searchResponse != null) {
+        collectionCountHolder[Constants.ALL] = searchResponse.totalCount ?? 0;
+        collectionCountHolder[Constants.PAID] =
+            searchResponse.collectionDataCount?.collectionPaid ?? 0;
+        collectionCountHolder[Constants.PENDING] =
+            searchResponse.collectionDataCount?.collectionPending ?? 0;
       }
-    } catch (e, s) {
+
+      if (waterConnectionsDetails == null) {
+        waterConnectionsDetails = response;
+        notifyListeners();
+      } else {
+        waterConnectionsDetails?.totalCount = response.totalCount;
+        waterConnectionsDetails?.waterConnection
+            ?.addAll(response.waterConnection ?? <WaterConnection>[]);
+      }
+      notifyListeners();
+      streamController.add(waterConnectionsDetails!.waterConnection!.isEmpty
+          ? <WaterConnection>[]
+          : waterConnectionsDetails?.waterConnection?.sublist(
+              offSet - 1,
+              ((offset + limit - 1) >
+                      (waterConnectionsDetails?.totalCount ?? 0))
+                  ? (waterConnectionsDetails!.totalCount!)
+                  : (offset + limit) - 1));
+        } catch (e, s) {
       isLoaderEnabled = false;
       notifyListeners();
       streamController.addError('error');
