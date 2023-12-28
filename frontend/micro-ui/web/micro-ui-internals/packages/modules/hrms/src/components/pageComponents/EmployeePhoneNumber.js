@@ -30,7 +30,7 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
     onSelect(config.key, { ...formData[config.key], [input]: value });
   }
   function validate(value, input) {
-    setError(!input.populators.validation.pattern.test(value));
+    setError(!input?.populators?.validation?.pattern?.test(value));
   }
 
   return (
