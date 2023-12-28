@@ -7,11 +7,13 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 import javax.validation.Valid;
 
+import io.swagger.models.auth.In;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
 import org.egov.echallan.expense.service.PaymentService;
@@ -21,7 +23,6 @@ import org.egov.echallan.model.Challan.StatusEnum;
 import org.egov.echallan.model.ChallanRequest;
 import org.egov.echallan.model.LastMonthSummary;
 import org.egov.echallan.model.SearchCriteria;
-import org.egov.echallan.model.biiling.service.BillResponseDTO;
 import org.egov.echallan.repository.BillingServiceRepository;
 import org.egov.echallan.repository.ChallanRepository;
 import org.egov.echallan.util.CommonUtils;
@@ -32,7 +33,6 @@ import org.egov.echallan.web.models.user.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 
 @Service
@@ -160,11 +160,11 @@ public class ChallanService {
 			userService.setAccountUser(request);
 			enrichmentService.enrichUpdateRequest(request, searchResult.get(0));
 			calculationService.addCalculation(request);
-			if (request.getChallan().getApplicationStatus() == StatusEnum.PAID && searchResult.get(0).getApplicationStatus() == StatusEnum.ACTIVE)
+		    repository.update(request);
+		 if (request.getChallan().getApplicationStatus() == StatusEnum.PAID && searchResult.get(0).getApplicationStatus() == StatusEnum.ACTIVE)
 				paymentService.createPayment(request);
 			if (searchResult.get(0).getApplicationStatus() == StatusEnum.PAID)
 				paymentService.updatePayment(request);
-			repository.update(request);
 			return request.getChallan();
 		}
 
@@ -377,5 +377,4 @@ public class ChallanService {
 	        challans = enrichmentService.enrichChallanSearch(challans,criteria,requestInfo);
 	        return challans;
 	    }
-	
 }
