@@ -682,13 +682,20 @@ def getdaterange(i):
         lastepoch = datetime.now().strftime('%s') + '000'
         
     if i == 'Previous Month':
-        today = datetime.now().year
-        lastonemonth = (datetime.now() - relativedelta(months=1)).month
-        start_date = datetime(today, lastonemonth, 1)
-        end_date = datetime(today, lastonemonth + 1, 1) + timedelta(days=-1)
+        nowdate = datetime.now()
+        today = nowdate.year
+        lastonemonth = (nowdate - relativedelta(months=1)).month
+        if lastonemonth == 12:
+            start_date = datetime(today-1,lastonemonth,1)
+            end_date = datetime(today,1,1) + timedelta(days=-1)
+        else:
+            start_date = datetime(today, lastonemonth, 1)
+            end_date = datetime(today, lastonemonth + 1, 1) + timedelta(days=-1)
         enddate = end_date.combine(end_date, time.max)
         epochnow = start_date.strftime('%s') + '000'
         lastepoch = enddate.strftime('%s') + '000'
+        print(start_date)
+        print(end_date)
         
     if i == 'Quarter-1':
         year = datetime.now().year
