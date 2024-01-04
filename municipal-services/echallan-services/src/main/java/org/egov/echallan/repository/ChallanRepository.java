@@ -24,8 +24,10 @@ import org.egov.echallan.model.biiling.service.BillResponseDTO;
 import org.egov.echallan.producer.Producer;
 import org.egov.echallan.repository.builder.ChallanQueryBuilder;
 import org.egov.echallan.repository.rowmapper.ChallanRowMapper;
+import org.egov.echallan.repository.rowmapper.ExpenseBillReportRowMapper;
 import org.egov.echallan.service.ChallanService;
 import org.egov.echallan.util.CommonUtils;
+import org.egov.echallan.web.models.ExpenseBillReportData;
 import org.egov.echallan.web.models.collection.Bill;
 import org.egov.echallan.web.models.collection.PaymentDetail;
 import org.egov.echallan.web.models.collection.PaymentRequest;
@@ -63,7 +65,9 @@ public class ChallanRepository {
     private ChallanQueryBuilder queryBuilder;
 
     private ChallanRowMapper rowMapper;
-    
+
+	private ExpenseBillReportRowMapper expenseBillReportRowMapper;
+
     private RestTemplate restTemplate;
 
     @Autowired
@@ -483,5 +487,39 @@ public class ChallanRepository {
 				preparedStmtList.toArray(),
 				new SingleColumnRowMapper<>(String.class));
 		return ids;
+	}
+
+	public List<ExpenseBillReportData> getExpenseBillReport(Long monthStartDateTime, String tenantId, Integer offset, Integer limit)
+	{
+           StringBuilder expenseBillQuery =new StringBuilder(queryBuilder.EXPENSEBILLQUERY);
+
+		   List<Object> preparedStatement=new ArrayList<>();
+		   preparedStatement.add(tenantId);
+		   preparedStatement.add(monthStartDateTime);
+
+		   Integer newLimit=config.getDefaultLimit();
+		   Integer newOffset=config.getDefaultOffset();
+
+		   if(limit==null && offset==null)
+			   newLimit=config.getMaxSearchLimit();
+		   if(limit!=null && limit<=config.getMaxSearchLimit())
+			   newLimit=limit;
+		   if(limit!=null && limit>=config.getMaxSearchLimit())
+			   newLimit=config.getMaxSearchLimit();
+
+           if(offset!=null)
+			   newOffset=offset;
+
+		   if(newLimit>0)
+		   {
+			   expenseBillQuery.append("offset ? limit ? ;");
+			   preparedStatement.add(newOffset);
+			   preparedStatement.add(newLimit);
+		   }
+
+		   log.info("Query of expense bill report " +expenseBillQuery.toString()+" prepared statement "+preparedStatement);
+
+		   List<ExpenseBillReportData> expenseBillReportDataList=jdbcTemplate.query(expenseBillQuery.toString(), preparedStatement.toArray(),expenseBillReportRowMapper);
+		   return expenseBillReportDataList;
 	}
 }

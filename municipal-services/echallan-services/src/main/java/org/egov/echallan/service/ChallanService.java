@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
@@ -27,6 +28,7 @@ import org.egov.echallan.repository.ChallanRepository;
 import org.egov.echallan.util.CommonUtils;
 import org.egov.echallan.validator.ChallanValidator;
 import org.egov.echallan.web.models.ChallanCollectionData;
+import org.egov.echallan.web.models.ExpenseBillReportData;
 import org.egov.echallan.web.models.ExpenseDashboard;
 import org.egov.echallan.web.models.user.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -377,5 +379,17 @@ public class ChallanService {
 	        challans = enrichmentService.enrichChallanSearch(challans,criteria,requestInfo);
 	        return challans;
 	    }
-	
+
+	public List<ExpenseBillReportData> expenseBillReport(RequestInfo requestInfo, String monthstartDate, String tenantId, Integer offset, Integer limit)
+	{
+        DateTimeFormatter dtf=DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate startDate=LocalDate.parse(monthstartDate,dtf);
+
+		Long monthStartDateTime=LocalDateTime.of(startDate.getYear(),startDate.getMonth(),startDate.getDayOfMonth(),
+				0,0,0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+		List<ExpenseBillReportData> expenseBillReport=repository.getExpenseBillReport(monthStartDateTime,tenantId,offset,limit);
+		return expenseBillReport;
+
+	}
 }

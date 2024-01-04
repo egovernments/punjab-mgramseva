@@ -85,8 +85,14 @@ public class ChallanQueryBuilder {
 
 	  public static final String PENDINGEXPCOLLTILLDATE = "SELECT coalesce(SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT),0) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID INNER JOIN EG_ECHALLAN CH ON CH.referenceId=DMD.CONSUMERCODE AND DMD.TENANTID=CH.TENANTID WHERE DMD.BUSINESSSERVICE LIKE '%EXPENSE%' and DMD.status='ACTIVE' ";
 
+      public static final String EXPENSEBILLQUERY="SELECT challan.typeofexpense,vendor.name,challan.billdate," +
+			  " challan.taxperiodfrom,challan.taxperiodto,challan.applicationstatus,challan.paiddate," +
+			  " challan.filestoreid,challan.lastmodifiedtime,challan.lastmodifiedby from " +
+			  " eg_echallan challan LEFT JOIN eg_vendor vendor on challan.vendor=vendor.id " +
+			  " where challan.tenantid=? and vendor.status='ACTIVE' and " +
+			  " challan.taxperiodfrom >=? order by challan.taxperiodfrom desc ";
 
-		public String getChallanSearchQuery(SearchCriteria criteria, List<Object> preparedStmtList) {
+	  public String getChallanSearchQuery(SearchCriteria criteria, List<Object> preparedStmtList) {
 
 			StringBuilder builder = new StringBuilder(QUERY);
 
