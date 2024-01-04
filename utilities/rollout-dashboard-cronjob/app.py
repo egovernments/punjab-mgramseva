@@ -694,8 +694,6 @@ def getdaterange(i):
         enddate = end_date.combine(end_date, time.max)
         epochnow = start_date.strftime('%s') + '000'
         lastepoch = enddate.strftime('%s') + '000'
-        print(start_date)
-        print(end_date)
         
     if i == 'Quarter-1':
         year = datetime.now().year
