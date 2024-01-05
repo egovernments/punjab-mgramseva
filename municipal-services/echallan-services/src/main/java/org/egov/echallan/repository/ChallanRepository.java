@@ -83,13 +83,14 @@ public class ChallanRepository {
 	private ObjectMapper mapper; 
     @Autowired
     public ChallanRepository(Producer producer, ChallanConfiguration config,ChallanQueryBuilder queryBuilder,
-    		JdbcTemplate jdbcTemplate,ChallanRowMapper rowMapper,RestTemplate restTemplate) {
+    		JdbcTemplate jdbcTemplate,ChallanRowMapper rowMapper,RestTemplate restTemplate, ExpenseBillReportRowMapper expenseBillReportRowMapper) {
         this.producer = producer;
         this.config = config;
         this.jdbcTemplate = jdbcTemplate;
         this.queryBuilder = queryBuilder ; 
         this.rowMapper = rowMapper;
         this.restTemplate = restTemplate;
+		this.expenseBillReportRowMapper = expenseBillReportRowMapper;
     }
 
 
