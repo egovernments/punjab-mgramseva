@@ -518,7 +518,7 @@ public class ChallanRepository {
 		   }
 
 		   log.info("Query of expense bill report " +expenseBillQuery.toString()+" prepared statement "+preparedStatement);
-
+           List<ExpenseBillReportData> expenseBillReportData=new ArrayList<>();
 		   List<ExpenseBillReportData> expenseBillReportDataList=jdbcTemplate.query(expenseBillQuery.toString(), preparedStatement.toArray(),expenseBillReportRowMapper);
 		   return expenseBillReportDataList;
 	}
