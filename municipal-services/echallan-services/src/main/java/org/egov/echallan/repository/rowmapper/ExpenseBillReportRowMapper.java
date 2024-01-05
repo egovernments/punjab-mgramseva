@@ -42,7 +42,10 @@ public class ExpenseBillReportRowMapper implements ResultSetExtractor<List<Expen
             expenseBillReportData.setTaxPeriodFrom(resultSet.getLong("taxperiodfrom"));
             expenseBillReportData.setTaxPeriodTo(resultSet.getLong("taxperiodto"));
             expenseBillReportData.setApplicationStatus(resultSet.getString("applicationstatus"));
+            if(resultSet.getString("paiddate")!=null)
             expenseBillReportData.setPaidDate(resultSet.getLong("paiddate"));
+            else
+                expenseBillReportData.setPaidDate(0L);
             if(resultSet.getString("filestoreid")!=null)
                 expenseBillReportData.setFilestoreid("Yes");
             else
