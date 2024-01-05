@@ -2,6 +2,7 @@ package org.egov.echallan.repository.rowmapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.egov.echallan.model.UserInfo;
 import org.egov.echallan.service.UserService;
 import org.egov.echallan.web.models.ExpenseBillReportData;
 import org.egov.echallan.web.models.ExpenseBillReportResponse;
@@ -96,8 +97,9 @@ public class ExpenseBillReportRowMapper implements ResultSetExtractor<List<Expen
 
     private void enrichConnectionHolderInfo(UserDetailResponse userDetailResponse, ExpenseBillReportData expenseBillReportData)
     {
-          User connectionHolderInfos= (User) userDetailResponse.getUser();
+          List<UserInfo> connectionHolderInfos= userDetailResponse.getUser();
+//          Map<String,UserInfo>
           log.info(connectionHolderInfos.toString());
-          expenseBillReportData.setLastModifiedBy(connectionHolderInfos.getName());
+          expenseBillReportData.setLastModifiedBy(connectionHolderInfos.get(0).getUserName());
     }
 }
