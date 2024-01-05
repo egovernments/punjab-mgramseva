@@ -87,7 +87,7 @@ public class ChallanQueryBuilder {
 
       public static final String EXPENSEBILLQUERY="SELECT challan.typeofexpense,vendor.name,challan.billdate," +
 			  " challan.taxperiodfrom,challan.taxperiodto,challan.applicationstatus,challan.paiddate," +
-			  " challan.filestoreid,challan.lastmodifiedtime,challan.lastmodifiedby from " +
+			  " challan.filestoreid,challan.lastmodifiedtime,challan.lastmodifiedby as lastmodifiedbyUuid from " +
 			  " eg_echallan challan LEFT JOIN eg_vendor vendor on challan.vendor=vendor.id " +
 			  " where challan.tenantid=? and vendor.status='ACTIVE' and " +
 			  " challan.taxperiodfrom >=? order by challan.taxperiodfrom desc ";
