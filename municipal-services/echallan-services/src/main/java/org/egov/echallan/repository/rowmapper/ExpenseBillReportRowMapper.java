@@ -56,7 +56,7 @@ public class ExpenseBillReportRowMapper implements ResultSetExtractor<List<Expen
                 expenseBillReportData.setFilestoreid("No");
             if(Objects.equals(resultSet.getString("applicationstatus"), "CANCELLED")) {
                 expenseBillReportData.setLastModifiedTime(resultSet.getLong("lastmodifiedtime"));
-                expenseBillReportData.setLastModifiedBy(resultSet.getString("lastmodifiedbyUuid"));
+                expenseBillReportData.setLastModifiedByUuid(resultSet.getString("lastmodifiedbyUuid"));
                 enrichExpenseHolderDetails(expenseBillReportData);
             }
             else
@@ -68,29 +68,18 @@ public class ExpenseBillReportRowMapper implements ResultSetExtractor<List<Expen
             expenseBillReportDataList.add(expenseBillReportData);
         }
 
-//        if()
-//        {
-//            enrichExpenseHolderDetails(expenseBillReportDataList);
-//        }
         log.info("Before return");
         return expenseBillReportDataList;
     }
 
     private void enrichExpenseHolderDetails(ExpenseBillReportData expenseBillReportData)
     {
-//        Set<String> lastModifiedByUuid =new HashSet<>();
-//
-//        for(ExpenseBillReportData expenseBillReportData:expenseBillReportData)
-//        {
-//            lastModifiedByUuid.add(expenseBillReportData.getLastModifiedBy());
-//        }
-
         UserSearchRequest userSearchRequest=new UserSearchRequest();
         userSearchRequest.setUuid(Collections.singletonList(expenseBillReportData.getLastModifiedByUuid()));
-        log.info(userSearchRequest.getUuid().toString());
+        log.info("Uuid's for searching users"+userSearchRequest.getUuid().toString());
 
         UserDetailResponse userDetailResponse=userService.getUsers(userSearchRequest);
-        log.info(userDetailResponse.getUser().toString());
+        log.info("User after searching"+userDetailResponse.getUser().toString());
 
         enrichConnectionHolderInfo(userDetailResponse,expenseBillReportData);
     }
@@ -98,8 +87,10 @@ public class ExpenseBillReportRowMapper implements ResultSetExtractor<List<Expen
     private void enrichConnectionHolderInfo(UserDetailResponse userDetailResponse, ExpenseBillReportData expenseBillReportData)
     {
           List<UserInfo> connectionHolderInfos= userDetailResponse.getUser();
-//          Map<String,UserInfo>
-          log.info(connectionHolderInfos.toString());
+        if (connectionHolderInfos.isEmpty()) {
+            return;
+        }
+          log.info("Users in enrichConnectionHolderInfo method"+connectionHolderInfos.toString());
           expenseBillReportData.setLastModifiedBy(connectionHolderInfos.get(0).getUserName());
     }
 }
