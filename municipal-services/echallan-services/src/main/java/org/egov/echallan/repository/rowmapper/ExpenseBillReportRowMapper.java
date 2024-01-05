@@ -55,6 +55,11 @@ public class ExpenseBillReportRowMapper implements ResultSetExtractor<List<Expen
                 expenseBillReportData.setLastModifiedBy(resultSet.getString("lastmodifiedbyUuid"));
                 enrichExpenseHolderDetails(expenseBillReportData);
             }
+            else
+            {
+                expenseBillReportData.setLastModifiedTime(0L);
+                expenseBillReportData.setLastModifiedBy(null);
+            }
             expenseBillReportDataList.add(expenseBillReportData);
         }
 
