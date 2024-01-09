@@ -44,8 +44,6 @@ public class ExpenseBillReportRowMapper implements ResultSetExtractor<List<Expen
             expenseBillReportData.setTaxPeriodTo(resultSet.getLong("taxperiodto"));
             expenseBillReportData.setApplicationStatus(resultSet.getString("applicationstatus"));
 
-            log.info("Before if condition");
-
             if(resultSet.getString("paiddate")!=null)
                 expenseBillReportData.setPaidDate(resultSet.getLong("paiddate"));
             else
@@ -64,11 +62,8 @@ public class ExpenseBillReportRowMapper implements ResultSetExtractor<List<Expen
                 expenseBillReportData.setLastModifiedTime(0L);
                 expenseBillReportData.setLastModifiedBy(null);
             }
-            log.info("after if condition");
             expenseBillReportDataList.add(expenseBillReportData);
         }
-
-        log.info("Before return");
         return expenseBillReportDataList;
     }
 
