@@ -38,7 +38,7 @@ public class ExpenseBillReportRowMapper implements ResultSetExtractor<List<Expen
             ExpenseBillReportData expenseBillReportData=new ExpenseBillReportData();
             expenseBillReportData.setTypeOfExpense(resultSet.getString("typeofexpense"));
             expenseBillReportData.setVendorName(resultSet.getString("name"));
-//          expenseBillReportData.setAmount(resultSet.getString(""));
+            expenseBillReportData.setAmount(resultSet.getLong("total_taxamount"));
             expenseBillReportData.setBillDate(resultSet.getLong("billdate"));
             expenseBillReportData.setTaxPeriodFrom(resultSet.getLong("taxperiodfrom"));
             expenseBillReportData.setTaxPeriodTo(resultSet.getLong("taxperiodto"));
