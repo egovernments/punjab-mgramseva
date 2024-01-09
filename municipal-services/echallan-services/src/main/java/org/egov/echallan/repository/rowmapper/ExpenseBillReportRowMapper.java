@@ -91,6 +91,6 @@ public class ExpenseBillReportRowMapper implements ResultSetExtractor<List<Expen
             return;
         }
           log.info("Users in enrichConnectionHolderInfo method"+connectionHolderInfos.toString());
-          expenseBillReportData.setLastModifiedBy(connectionHolderInfos.get(0).getUserName());
+          expenseBillReportData.setLastModifiedBy(connectionHolderInfos.get(0).getName());
     }
 }
