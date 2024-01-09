@@ -21,7 +21,7 @@ public class ExpenseBillReportData
     private String vendorName;
 
     @JsonProperty("amount")
-    private List<Amount> amount;
+    private Long amount;
 
     @JsonProperty("billDate")
     private Long billDate;
