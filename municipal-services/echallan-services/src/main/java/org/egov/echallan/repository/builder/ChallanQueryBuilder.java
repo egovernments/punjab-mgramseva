@@ -92,7 +92,7 @@ public class ChallanQueryBuilder {
 			  " FROM eg_echallan challan LEFT JOIN eg_vendor vendor ON challan.vendor = vendor.id " +
 			  " LEFT JOIN egbs_demand_v1 d ON challan.challanno = d.consumercode " +
 			  " LEFT JOIN egbs_demanddetail_v1 dd ON d.id = dd.demandid WHERE " +
-			  " challan.tenantid = ? AND dd.tenantid = 'pb.aulakh' " +
+			  " challan.tenantid = ? AND dd.tenantid = ? " +
 			  " AND vendor.status = 'ACTIVE' AND challan.taxperiodfrom >= ? " +
 			  " GROUP BY challan.typeofexpense,vendor.name,challan.billdate,challan.taxperiodfrom, " +
 			  " challan.taxperiodto,challan.applicationstatus,challan.paiddate,challan.filestoreid, " +
