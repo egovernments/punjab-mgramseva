@@ -96,7 +96,7 @@ public class ChallanQueryBuilder {
 			  " AND vendor.status = 'ACTIVE' AND challan.taxperiodfrom >= ? " +
 			  " GROUP BY challan.typeofexpense,vendor.name,challan.billdate,challan.taxperiodfrom, " +
 			  " challan.taxperiodto,challan.applicationstatus,challan.paiddate,challan.filestoreid, " +
-			  " challan.lastmodifiedtime,challan.lastmodifiedby ORDER BY challan.taxperiodfrom DESC; ";
+			  " challan.lastmodifiedtime,challan.lastmodifiedby ORDER BY challan.taxperiodfrom DESC ";
 
 	  public String getChallanSearchQuery(SearchCriteria criteria, List<Object> preparedStmtList) {
 
