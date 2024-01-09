@@ -496,6 +496,7 @@ public class ChallanRepository {
 
 		   List<Object> preparedStatement=new ArrayList<>();
 		   preparedStatement.add(tenantId);
+		   preparedStatement.add(tenantId);
 		   preparedStatement.add(monthStartDateTime);
 
 		   Integer newLimit=config.getDefaultLimit();
