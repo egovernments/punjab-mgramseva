@@ -100,8 +100,8 @@ class ReportsProvider with ChangeNotifier {
     TableHeader(i18.expense.APPLICATION_STATUS),
     TableHeader(i18.expense.PAID_DATE),
     TableHeader(i18.expense.FILE_LINK),
-    TableHeader(i18.expense.LAST_MODIFIED_TIME),
-    TableHeader(i18.expense.LAST_MODIFIED_BY),
+    TableHeader(i18.expense.CANCELLED_TIME),
+    TableHeader(i18.expense.CANCELLED_BY),
 
   ];
   void onChangeOfPageLimit(
@@ -114,6 +114,9 @@ class ReportsProvider with ChangeNotifier {
     }
     if (type == i18.dashboard.INACTIVE_CONSUMER_REPORT) {
       getInactiveConsumerReport(limit: response.limit, offset: response.offset);
+    }
+    if (type == i18.dashboard.EXPENSE_BILL_REPORT) {
+      getExpenseBillReport(limit: response.limit, offset: response.offset);
     }
   }
 
@@ -201,8 +204,8 @@ class ReportsProvider with ChangeNotifier {
     var billDate = DateFormats.timeStampToDate(data.billDate?.toInt(),format: "dd/MM/yyyy");
     var taxPeriodFrom = DateFormats.timeStampToDate(data.taxPeriodFrom?.toInt(),format: "dd/MM/yyyy");
     var taxPeriodTo = DateFormats.timeStampToDate(data.taxPeriodTo?.toInt(),format: "dd/MM/yyyy");
-    var paidDate = DateFormats.timeStampToDate(data.paidDate?.toInt(),format: "dd/MM/yyyy");
-    var lastModifiedTime = DateFormats.timeStampToDate(data.lastModifiedTime?.toInt(),format: "dd/MM/yyyy");
+    var paidDate = data.paidDate==0?'-':DateFormats.timeStampToDate(data.paidDate?.toInt(),format: "dd/MM/yyyy");
+    var lastModifiedTime = data.lastModifiedTime==0?'-':DateFormats.timeStampToDate(data.lastModifiedTime?.toInt(),format: "dd/MM/yyyy");
     return TableDataRow([
       TableData('${typeOfExpense ?? '-'}'),
       TableData('${vendorName ?? '-'}'),

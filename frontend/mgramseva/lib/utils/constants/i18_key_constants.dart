@@ -360,8 +360,8 @@ class Expense {
   String get APPLICATION_STATUS => 'APPLICATION_STATUS';
   String get PAID_DATE => 'PAID_DATE';
   String get FILE_LINK => 'FILE_LINK';
-  String get LAST_MODIFIED_TIME => 'LAST_MODIFIED_TIME';
-  String get LAST_MODIFIED_BY => 'LAST_MODIFIED_BY';
+  String get CANCELLED_TIME => 'CANCELLED_TIME';
+  String get CANCELLED_BY => 'CANCELLED_BY';
 }
 
 class CreateConsumer {

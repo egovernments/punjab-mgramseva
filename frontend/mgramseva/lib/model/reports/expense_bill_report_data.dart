@@ -36,9 +36,9 @@ class ExpenseBillReportData {
     taxPeriodFrom = json['taxPeriodFrom'];
     taxPeriodTo = json['taxPeriodTo'];
     applicationStatus = json['applicationStatus'];
-    paidDate = json['paidDate'];
+    paidDate = json['paidDate']??0;
     filestoreid = json['filestoreid'];
-    lastModifiedTime = json['lastModifiedTime'];
+    lastModifiedTime = json['lastModifiedTime']??0;
     lastModifiedByUuid = json['lastModifiedByUuid'];
     lastModifiedBy = json['lastModifiedBy']??'-';
     tenantId = json['tenantId'];
