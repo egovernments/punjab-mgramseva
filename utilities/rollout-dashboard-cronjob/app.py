@@ -839,6 +839,7 @@ def process():
     
     tenants = getGPWSCHeirarchy()
     for tenant in tenants:
+        print("Tenant:", tenant['tenantId'])
         activeUsersCount= getActiveUsersCount(tenant['tenantId'])
         daterange = ['Last seven days','Last 15 days','currentMonth-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','Quarter-4','Consolidated (As on date)','FY to date','Previous 1st FY (23-24)','Previous 2nd FY (22-23)','Previous 3rd FY (21-22)']
         for i,date in enumerate(daterange):
