@@ -93,6 +93,8 @@ class Url {
       'ws-services/wc/_collectionReport';
   static const String INACTIVE_CONSUMER_REPORT=
       'ws-services/wc/_inactiveConsumerReport';
+  static const String EXPENSE_BILL_REPORT=
+      'echallan-services/eChallan/v1/_expenseBillReport';
 }
 
 

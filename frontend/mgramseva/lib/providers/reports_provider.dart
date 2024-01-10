@@ -10,6 +10,7 @@ import '../model/localization/language.dart';
 import '../model/mdms/tax_period.dart';
 import '../model/reports/bill_report_data.dart';
 import '../model/reports/collection_report_data.dart';
+import '../model/reports/expense_bill_report_data.dart';
 import '../repository/core_repo.dart';
 import '../repository/reports_repo.dart';
 import '../utils/common_methods.dart';
@@ -36,6 +37,7 @@ class ReportsProvider with ChangeNotifier {
   List<BillReportData>? demandreports;
   List<CollectionReportData>? collectionreports;
   List<InactiveConsumerReportData>? inactiveconsumers;
+  List<ExpenseBillReportData>? expenseBillReportData;
   BillsTableData genericTableData = BillsTableData([], []);
   int limit = 10;
   int offset = 1;
@@ -88,7 +90,20 @@ class ReportsProvider with ChangeNotifier {
     TableHeader(i18.common.INACTIVATED_DATE),
     TableHeader(i18.common.INACTIVATED_BY_NAME),
   ];
+  List<TableHeader> get expenseBillReportHeaderList => [
+    TableHeader(i18.expense.EXPENSE_TYPE),
+    TableHeader(i18.expense.VENDOR_NAME),
+    TableHeader(i18.expense.AMOUNT),
+    TableHeader(i18.expense.BILL_DATE),
+    TableHeader(i18.expense.EXPENSE_START_DATE),
+    TableHeader(i18.expense.EXPENSE_END_DATE),
+    TableHeader(i18.expense.APPLICATION_STATUS),
+    TableHeader(i18.expense.PAID_DATE),
+    TableHeader(i18.expense.FILE_LINK),
+    TableHeader(i18.expense.LAST_MODIFIED_TIME),
+    TableHeader(i18.expense.LAST_MODIFIED_BY),
 
+  ];
   void onChangeOfPageLimit(
       PaginationResponse response, String type, BuildContext context) {
     if (type == i18.dashboard.BILL_REPORT) {
@@ -170,6 +185,36 @@ class ReportsProvider with ChangeNotifier {
       TableData('${data.status??'-'}'),
       TableData('${inactivatedDate ?? '-'}'),
       TableData('${inactivatedBy ?? '-'}'),
+    ]);
+  }
+  List<TableDataRow> getExpenseBillReportData(List<ExpenseBillReportData> list,
+      {bool isExcel = false}) {
+    return list.map((e) => getExpenseBillReportDataRow(e, isExcel: isExcel)).toList();
+  }
+  TableDataRow getExpenseBillReportDataRow(ExpenseBillReportData data,
+      {bool isExcel = false}) {
+    String? vendorName = CommonMethods.truncateWithEllipsis(20, data.vendorName!);
+    String? typeOfExpense = CommonMethods.truncateWithEllipsis(20, data.typeOfExpense!);
+    String? applicationStatus = CommonMethods.truncateWithEllipsis(20, data.applicationStatus!);
+    String? lastModifiedBy = CommonMethods.truncateWithEllipsis(20, data.lastModifiedBy!);
+    String? fileLink = CommonMethods.truncateWithEllipsis(20, data.filestoreid!);
+    var billDate = DateFormats.timeStampToDate(data.billDate?.toInt(),format: "dd/MM/yyyy");
+    var taxPeriodFrom = DateFormats.timeStampToDate(data.taxPeriodFrom?.toInt(),format: "dd/MM/yyyy");
+    var taxPeriodTo = DateFormats.timeStampToDate(data.taxPeriodTo?.toInt(),format: "dd/MM/yyyy");
+    var paidDate = DateFormats.timeStampToDate(data.paidDate?.toInt(),format: "dd/MM/yyyy");
+    var lastModifiedTime = DateFormats.timeStampToDate(data.lastModifiedTime?.toInt(),format: "dd/MM/yyyy");
+    return TableDataRow([
+      TableData('${typeOfExpense ?? '-'}'),
+      TableData('${vendorName ?? '-'}'),
+      TableData('${data.amount ?? '-'}'),
+      TableData('${billDate ?? '-'}'),
+      TableData('${taxPeriodFrom ?? '-'}'),
+      TableData('${taxPeriodTo ?? '-'}'),
+      TableData('${applicationStatus ?? '-'}'),
+      TableData('${paidDate ?? '-'}'),
+      TableData('${fileLink ?? '-'}'),
+      TableData('${lastModifiedTime ?? '-'}'),
+      TableData('${lastModifiedBy ?? '-'}'),
     ]);
   }
   void callNotifier() {
@@ -524,7 +569,70 @@ class ReportsProvider with ChangeNotifier {
       callNotifier();
     }
   }
-
+  Future<void> getExpenseBillReport(
+      {bool download = false,
+        int offset = 1,
+        int limit = 10,
+        String sortOrder = "ASC"}) async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+      if (selectedBillPeriod == null) {
+        throw Exception('Select Billing Cycle');
+      }
+      Map<String, dynamic> params = {
+        'tenantId': commonProvider.userDetails!.selectedtenant!.code,
+        'monthstartDate': selectedBillPeriod?.split('-')[0],
+        'monthendDate': selectedBillPeriod?.split('-')[1],
+        'offset': '${offset - 1}',
+        'limit': '${download ? -1 : limit}',
+        'sortOrder': '$sortOrder'
+      };
+      var response = await ReportsRepo().fetchExpenseBillReport(params);
+      if (response != null) {
+        expenseBillReportData = response;
+        if (download) {
+          generateExcel(
+              expenseBillReportHeaderList
+                  .map<String>((e) =>
+              '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
+                  .toList(),
+              getExpenseBillReportData(expenseBillReportData!, isExcel: true)
+                  .map<List<String>>(
+                      (e) => e.tableRow.map((e) => e.label).toList())
+                  .toList() ??
+                  [],
+              title:
+              'ExpenseBillReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillPeriod.toString().replaceAll('/', '_')}',
+              optionalData: [
+                'Expense Bill Report',
+                '$selectedBillPeriod',
+                '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)}',
+                '${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
+                'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch, format: 'dd/MMM/yyyy')}'
+              ]);
+        } else {
+          if (expenseBillReportData != null && expenseBillReportData!.isNotEmpty) {
+            this.limit = limit;
+            this.offset = offset;
+            this.genericTableData = BillsTableData(
+                expenseBillReportHeaderList, getExpenseBillReportData(expenseBillReportData!));
+          }
+        }
+        streamController.add(response);
+        callNotifier();
+      } else {
+        streamController.add('error');
+        throw Exception('API Error');
+      }
+    }
+    catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
+      callNotifier();
+    }
+  }
   void clearBuildTableData() {
     genericTableData = BillsTableData([], []);
     callNotifier();
