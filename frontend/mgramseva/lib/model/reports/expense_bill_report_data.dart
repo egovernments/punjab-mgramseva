@@ -9,8 +9,8 @@ class ExpenseBillReportData {
   int? paidDate;
   String? filestoreid;
   int? lastModifiedTime;
-  dynamic? lastModifiedByUuid;
-  dynamic? lastModifiedBy;
+  String? lastModifiedByUuid;
+  String? lastModifiedBy;
   String? tenantId;
 
   ExpenseBillReportData(
@@ -40,7 +40,7 @@ class ExpenseBillReportData {
     filestoreid = json['filestoreid'];
     lastModifiedTime = json['lastModifiedTime'];
     lastModifiedByUuid = json['lastModifiedByUuid'];
-    lastModifiedBy = json['lastModifiedBy'];
+    lastModifiedBy = json['lastModifiedBy']??'-';
     tenantId = json['tenantId'];
   }
 
