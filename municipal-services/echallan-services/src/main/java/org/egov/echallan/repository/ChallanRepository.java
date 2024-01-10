@@ -490,7 +490,7 @@ public class ChallanRepository {
 		return ids;
 	}
 
-	public List<ExpenseBillReportData> getExpenseBillReport(Long monthStartDateTime, String tenantId, Integer offset, Integer limit)
+	public List<ExpenseBillReportData> getExpenseBillReport(Long monthStartDateTime, Long monthEndDateTime, String tenantId, Integer offset, Integer limit)
 	{
            StringBuilder expenseBillQuery =new StringBuilder(queryBuilder.EXPENSEBILLQUERY);
 
@@ -498,6 +498,7 @@ public class ChallanRepository {
 		   preparedStatement.add(tenantId);
 		   preparedStatement.add(tenantId);
 		   preparedStatement.add(monthStartDateTime);
+		   preparedStatement.add(monthEndDateTime);
 
 		   Integer newLimit=config.getDefaultLimit();
 		   Integer newOffset=config.getDefaultOffset();

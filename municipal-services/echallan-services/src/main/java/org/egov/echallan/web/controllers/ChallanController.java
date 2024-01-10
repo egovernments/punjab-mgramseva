@@ -166,11 +166,12 @@ public class ChallanController {
 	@PostMapping("/_expenseBillReport")
 	public ResponseEntity<ExpenseBillReportResponse> expenseBillReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
 																	   @RequestParam("monthstartDate") String monthstartDate,
+																	   @RequestParam("monthendDate") String monthendDate,
 																	   @RequestParam("tenantId") String tenantId,
 																	   @RequestParam("offset") Integer offset,
 																	   @RequestParam("limit") Integer limit)
 	{
-		List<ExpenseBillReportData> expenseBillReport=challanService.expenseBillReport(requestInfoWrapper.getRequestInfo(),monthstartDate,tenantId,offset,limit);
+		List<ExpenseBillReportData> expenseBillReport=challanService.expenseBillReport(requestInfoWrapper.getRequestInfo(),monthstartDate,monthendDate,tenantId,offset,limit);
 		ExpenseBillReportResponse expenseBillReportResponse=
 				ExpenseBillReportResponse.builder().ExpenseBillReportData(expenseBillReport)
 						.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),

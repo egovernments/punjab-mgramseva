@@ -93,7 +93,7 @@ public class ChallanQueryBuilder {
 			  " LEFT JOIN egbs_demand_v1 d ON challan.challanno = d.consumercode " +
 			  " LEFT JOIN egbs_demanddetail_v1 dd ON d.id = dd.demandid WHERE " +
 			  " challan.tenantid = ? AND dd.tenantid = ? " +
-			  " AND vendor.status = 'ACTIVE' AND challan.taxperiodfrom >= ? " +
+			  " AND challan.createdtime >= ? AND challan.createdtime <= ?" +
 			  " GROUP BY challan.typeofexpense,vendor.name,challan.billdate,challan.taxperiodfrom, " +
 			  " challan.taxperiodto,challan.applicationstatus,challan.paiddate,challan.filestoreid, " +
 			  " challan.lastmodifiedtime,challan.lastmodifiedby ORDER BY challan.taxperiodfrom DESC ";
