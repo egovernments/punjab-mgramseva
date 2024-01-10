@@ -96,7 +96,7 @@ public class ChallanQueryBuilder {
 			  " AND challan.createdtime >= ? AND challan.createdtime <= ?" +
 			  " GROUP BY challan.typeofexpense,vendor.name,challan.billdate,challan.taxperiodfrom, " +
 			  " challan.taxperiodto,challan.applicationstatus,challan.paiddate,challan.filestoreid, " +
-			  " challan.lastmodifiedtime,challan.lastmodifiedby ORDER BY challan.createdtime DESC ";
+			  " challan.lastmodifiedtime,challan.lastmodifiedby,challan.createdtime ORDER BY challan.createdtime DESC ";
 
 	  public String getChallanSearchQuery(SearchCriteria criteria, List<Object> preparedStmtList) {
 
