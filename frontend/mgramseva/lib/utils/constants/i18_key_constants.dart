@@ -359,7 +359,7 @@ class Expense {
   String get ADD_NEW_EXPENSE => 'ADD_NEW_EXPENSE';
   String get APPLICATION_STATUS => 'APPLICATION_STATUS';
   String get PAID_DATE => 'PAID_DATE';
-  String get FILE_LINK => 'FILE_LINK';
+  String get HAS_ATTACHMENT => 'HAS_ATTACHMENT';
   String get CANCELLED_TIME => 'CANCELLED_TIME';
   String get CANCELLED_BY => 'CANCELLED_BY';
 }

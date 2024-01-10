@@ -99,7 +99,7 @@ class ReportsProvider with ChangeNotifier {
     TableHeader(i18.expense.EXPENSE_END_DATE),
     TableHeader(i18.expense.APPLICATION_STATUS),
     TableHeader(i18.expense.PAID_DATE),
-    TableHeader(i18.expense.FILE_LINK),
+    TableHeader(i18.expense.HAS_ATTACHMENT),
     TableHeader(i18.expense.CANCELLED_TIME),
     TableHeader(i18.expense.CANCELLED_BY),
 
@@ -207,7 +207,7 @@ class ReportsProvider with ChangeNotifier {
     var paidDate = data.paidDate==0?'-':DateFormats.timeStampToDate(data.paidDate?.toInt(),format: "dd/MM/yyyy");
     var lastModifiedTime = data.lastModifiedTime==0?'-':DateFormats.timeStampToDate(data.lastModifiedTime?.toInt(),format: "dd/MM/yyyy");
     return TableDataRow([
-      TableData('${typeOfExpense ?? '-'}'),
+      TableData('${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(typeOfExpense ?? '-')}'),
       TableData('${vendorName ?? '-'}'),
       TableData('${data.amount ?? '-'}'),
       TableData('${billDate ?? '-'}'),
