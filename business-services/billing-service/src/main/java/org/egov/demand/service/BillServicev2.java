@@ -64,7 +64,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.egov.common.contract.request.PlainAccessRequest;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.demand.config.ApplicationProperties;
 import org.egov.demand.model.BillAccountDetailV2;
@@ -393,36 +392,6 @@ public class BillServicev2 {
 		return create(billRequest);
 	}
 
-	/**
-	 * method to get user unmasked
-	 * 
-	 * @param requestInfo
-	 * @param uuid
-	 * @return user
-	 */
-	private User getUnmaskedUser(RequestInfo requestInfo, String uuid) {
-		
-		PlainAccessRequest apiPlainAccessRequest = requestInfo.getPlainAccessRequest();
-		List<String> plainRequestFieldsList = getOwnerFieldsPlainAccessList();
-		PlainAccessRequest plainAccessRequest = PlainAccessRequest.builder()
-				.plainRequestFields(plainRequestFieldsList)
-				.recordId(uuid)
-				.build();
-		requestInfo.setPlainAccessRequest(plainAccessRequest);
-		
-		UserSearchRequest  userSearchRequest= UserSearchRequest.builder()
-				.uuid(Stream.of(uuid).collect(Collectors.toSet()))
-				.requestInfo(requestInfo)
-				.build();
-		String userUri = appProps.getUserServiceHostName()
-				.concat(appProps.getUserServiceSearchPath());
-		List<User> payer = mapper.convertValue(restRepository.fetchResult(userUri, userSearchRequest),
-				UserResponse.class).getUser();
-		
-		requestInfo.setPlainAccessRequest(apiPlainAccessRequest);
-		
-		return payer.get(0);
-	}
 
 	/**
 	 * Prepares the bill object from the list of given demands
@@ -436,8 +405,6 @@ public class BillServicev2 {
 		
 		List<BillV2> bills = new ArrayList<>();
 		User payer = null != demands.get(0).getPayer() ? demands.get(0).getPayer() : new User();
-		if (payer.getUuid() != null)
-			payer = getUnmaskedUser(requestInfo, payer.getUuid());
 
 		Map<String, List<Demand>> tenatIdDemandsList = demands.stream().collect(Collectors.groupingBy(Demand::getTenantId));
 		for (Entry<String, List<Demand>> demandTenantEntry : tenatIdDemandsList.entrySet()) {

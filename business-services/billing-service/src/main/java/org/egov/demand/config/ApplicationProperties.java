@@ -207,4 +207,7 @@ public class ApplicationProperties {
     
     @Value("${kafka.mgramseva.update.bill}")
     private String updateBill;
+
+	@Value("${statelevel.rolecode.excluded.list}")
+	private List<String> statelevelRolecodeExclusionList;
 }
