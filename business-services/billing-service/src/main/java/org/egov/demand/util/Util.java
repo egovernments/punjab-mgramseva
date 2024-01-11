@@ -1,24 +1,15 @@
 package org.egov.demand.util;
 
-import static java.util.Objects.isNull;
-import static org.egov.demand.util.Constants.ADVANCE_BUSINESSSERVICE_JSONPATH_CODE;
-import static org.egov.demand.util.Constants.INVALID_TENANT_ID_MDMS_KEY;
-import static org.egov.demand.util.Constants.INVALID_TENANT_ID_MDMS_MSG;
-import static org.egov.demand.util.Constants.MDMS_CODE_FILTER;
-import static org.egov.demand.util.Constants.MDMS_MASTER_NAMES;
-import static org.egov.demand.util.Constants.MODULE_NAME;
-
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import lombok.extern.slf4j.Slf4j;
 
 import org.egov.common.contract.request.RequestInfo;
+import org.egov.common.contract.request.Role;
 import org.egov.demand.amendment.model.ProcessInstance;
 import org.egov.demand.amendment.model.ProcessInstanceRequest;
 import org.egov.demand.amendment.model.ProcessInstanceResponse;
@@ -38,14 +29,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.*;
 
-import lombok.extern.slf4j.Slf4j;
+import static java.util.Objects.isNull;
+import static org.egov.demand.util.Constants.*;
 
 @Component
 @Slf4j
@@ -248,12 +237,32 @@ public class Util {
 	
 	/**
 	 * validates state level tenant-id for citizens and employees
-	 * 
+	 *
+	 * state level search is allowed for employee if they contian state level roles 
 	 */
 	public void validateTenantIdForUserType(String tenantId, RequestInfo requestInfo) {
 
 		String userType = requestInfo.getUserInfo().getType();
-		if(Constants.EMPLOYEE_TYPE_CODE.equalsIgnoreCase(userType) && tenantId.split("\\.").length == 1) {
+		if (Constants.EMPLOYEE_TYPE_CODE.equalsIgnoreCase(userType) && !tenantId.contains(".")) {
+
+		Set<String> rolesTenantList = new HashSet<>();
+		Set<String> rolecodeList = new HashSet<>();
+		for (Role role : requestInfo.getUserInfo().getRoles()) {
+			rolesTenantList.add(role.getTenantId());
+			rolecodeList.add(role.getCode());
+		}
+
+		//bypassing required roles from the validation
+		boolean isEmployeeSearchByStateTenantAllowed = false;
+		List<String> statelevelRolecodeExclusionList = appProps.getStatelevelRolecodeExclusionList();
+		for (String rolecode : rolecodeList) {
+			if (statelevelRolecodeExclusionList.contains(rolecode)) {
+				isEmployeeSearchByStateTenantAllowed = true;
+				break;
+			}
+		}
+
+		if (!isEmployeeSearchByStateTenantAllowed)
 			throw new CustomException("EG_BS_INVALID_TENANTID","Employees cannot search based on state level tenantid");
 		}
 	}

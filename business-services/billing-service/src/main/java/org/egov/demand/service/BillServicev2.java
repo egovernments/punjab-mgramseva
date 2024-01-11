@@ -62,7 +62,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.egov.common.contract.request.PlainAccessRequest;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.demand.config.ApplicationProperties;
 import org.egov.demand.model.BillAccountDetailV2;
@@ -79,6 +81,7 @@ import org.egov.demand.model.TaxHeadMaster;
 import org.egov.demand.model.TaxHeadMasterCriteria;
 import org.egov.demand.model.UpdateBillCriteria;
 import org.egov.demand.model.UpdateBillRequest;
+import org.egov.demand.producer.Producer;
 import org.egov.demand.repository.BillRepositoryV2;
 import org.egov.demand.repository.IdGenRepo;
 import org.egov.demand.repository.ServiceRequestRepository;
@@ -88,6 +91,8 @@ import org.egov.demand.web.contract.BillResponseV2;
 import org.egov.demand.web.contract.BusinessServiceDetailCriteria;
 import org.egov.demand.web.contract.RequestInfoWrapper;
 import org.egov.demand.web.contract.User;
+import org.egov.demand.web.contract.UserResponse;
+import org.egov.demand.web.contract.UserSearchRequest;
 import org.egov.demand.web.contract.factory.ResponseFactory;
 import org.egov.demand.web.validator.BillValidator;
 import org.egov.tracer.model.CustomException;
@@ -99,6 +104,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -138,9 +145,20 @@ public class BillServicev2 {
 	
 	@Autowired
 	private BillValidator billValidator;
+
+	@Autowired
+	private Producer producer;
 	
+	@Autowired
+	private ObjectMapper mapper;
+
+	@Value("${kafka.topics.cancel.bill.topic.name}")
+	private String billCancelTopic;
+
 	@Value("${kafka.topics.billgen.topic.name}")
 	private String notifTopicName;
+	
+	private static List<String> ownerPlainRequestFieldsList;
 	
 	/**
 	 * Cancell bill operation can be carried by this method, based on consumerCodes
@@ -154,6 +172,7 @@ public class BillServicev2 {
 	public Integer cancelBill(UpdateBillRequest updateBillRequest) {
 		
 		UpdateBillCriteria cancelBillCriteria = updateBillRequest.getUpdateBillCriteria();
+		billValidator.validateBillSearchRequest(cancelBillCriteria);
 		Set<String> consumerCodes = cancelBillCriteria.getConsumerCodes();
 		cancelBillCriteria.setStatusToBeUpdated(BillStatus.CANCELLED);
 
@@ -161,9 +180,29 @@ public class BillServicev2 {
 			
 			throw new CustomException("EG_BS_CANCEL_BILL_ERROR", "Only one consumer code can be provided in the Cancel request");
 		} else {
-
-			return billRepository.updateBillStatus(cancelBillCriteria);
+			int result = billRepository.updateBillStatus(cancelBillCriteria);
+			sendNotificationForBillCancellation(updateBillRequest.getRequestInfo(), cancelBillCriteria);
+			return result;
 		}
+	}
+
+	private void sendNotificationForBillCancellation(RequestInfo requestInfo, UpdateBillCriteria cancelBillCriteria) {
+		Set<String> consumerCodes = cancelBillCriteria.getConsumerCodes();
+		if(CollectionUtils.isEmpty(consumerCodes))
+			return;
+
+		List<BillV2> bills =  billRepository.findBill(BillSearchCriteria.builder()
+				.service(cancelBillCriteria.getBusinessService())
+				.tenantId(cancelBillCriteria.getTenantId())
+				.consumerCode(consumerCodes)
+				.build());
+
+		if (CollectionUtils.isEmpty(bills))
+			return;
+
+		BillRequestV2 req = BillRequestV2.builder().bills(bills).requestInfo(requestInfo).build();
+		producer.push(billCancelTopic, req);
+
 	}
 
 	/**
@@ -337,10 +376,11 @@ public class BillServicev2 {
 				.receiptRequired(false)
 				.demandId(demandIds)
 				.build();
+		
 
 		/* Fetching demands for the given bill search criteria */
 		List<Demand> demands = demandService.getDemands(demandCriteria, requestInfo);
-
+		
 		List<BillV2> bills;
 
 		if (!demands.isEmpty())
@@ -354,6 +394,37 @@ public class BillServicev2 {
 	}
 
 	/**
+	 * method to get user unmasked
+	 * 
+	 * @param requestInfo
+	 * @param uuid
+	 * @return user
+	 */
+	private User getUnmaskedUser(RequestInfo requestInfo, String uuid) {
+		
+		PlainAccessRequest apiPlainAccessRequest = requestInfo.getPlainAccessRequest();
+		List<String> plainRequestFieldsList = getOwnerFieldsPlainAccessList();
+		PlainAccessRequest plainAccessRequest = PlainAccessRequest.builder()
+				.plainRequestFields(plainRequestFieldsList)
+				.recordId(uuid)
+				.build();
+		requestInfo.setPlainAccessRequest(plainAccessRequest);
+		
+		UserSearchRequest  userSearchRequest= UserSearchRequest.builder()
+				.uuid(Stream.of(uuid).collect(Collectors.toSet()))
+				.requestInfo(requestInfo)
+				.build();
+		String userUri = appProps.getUserServiceHostName()
+				.concat(appProps.getUserServiceSearchPath());
+		List<User> payer = mapper.convertValue(restRepository.fetchResult(userUri, userSearchRequest),
+				UserResponse.class).getUser();
+		
+		requestInfo.setPlainAccessRequest(apiPlainAccessRequest);
+		
+		return payer.get(0);
+	}
+
+	/**
 	 * Prepares the bill object from the list of given demands
 	 * 
 	 * @param demands demands for which bill should be generated
@@ -364,7 +435,9 @@ public class BillServicev2 {
 
 		
 		List<BillV2> bills = new ArrayList<>();
-		User payer = null != demands.get(0).getPayer() ?  demands.get(0).getPayer() : new User();
+		User payer = null != demands.get(0).getPayer() ? demands.get(0).getPayer() : new User();
+		if (payer.getUuid() != null)
+			payer = getUnmaskedUser(requestInfo, payer.getUuid());
 
 		Map<String, List<Demand>> tenatIdDemandsList = demands.stream().collect(Collectors.groupingBy(Demand::getTenantId));
 		for (Entry<String, List<Demand>> demandTenantEntry : tenatIdDemandsList.entrySet()) {
@@ -416,6 +489,7 @@ public class BillServicev2 {
 					billAmount = billAmount.add(billDetail.getAmount());
 				}
 				
+				if (billAmount.compareTo(BigDecimal.ZERO) >= 0) {
 
 					BillV2 bill = BillV2.builder()
 						.auditDetails(util.getAuditDetail(requestInfo))
@@ -428,13 +502,14 @@ public class BillServicev2 {
 						.status(BillStatus.ACTIVE)
 						.billDetails(billDetails)
 						.totalAmount(billAmount)
+						.userId(payer.getUuid())
 						.billNumber(billNumber)
 						.tenantId(tenantId)
 						.id(billId)
 						.build();
 				
 					bills.add(bill);
-				
+				}
 			}
 
 		}
@@ -443,23 +518,15 @@ public class BillServicev2 {
 
 	private List<String> getBillNumbers(RequestInfo requestInfo, String tenantId, String module, int count) {
 
-		List<String> billNumbers= new ArrayList<>();
-		List<String> formattedBillNumbers= new ArrayList<>();
-
 		String billNumberFormat = appProps.getBillNumberFormat();
 		billNumberFormat = billNumberFormat.replace(appProps.getModuleReplaceStirng(), module);
 
 		if (appProps.getIsTenantLevelBillNumberingEnabled())
 			billNumberFormat = billNumberFormat.replace(appProps.getTenantIdReplaceString(), "_".concat(tenantId.split("\\.")[1]));
 		else
-			billNumberFormat = billNumberFormat.replace(appProps.getTenantIdReplaceString(),"");
+			billNumberFormat = billNumberFormat.replace(appProps.getTenantIdReplaceString(), "");
 
-		billNumbers = idGenRepo.getId(requestInfo, tenantId, appProps.getBillNumberName(), billNumberFormat, count);
-		
-		if (!billNumbers.isEmpty())
-			billNumbers.forEach(bNumber -> formattedBillNumbers.add(bNumber.replace(appProps.getModuleReplaceStirng(), module)));
-
-		return formattedBillNumbers;
+		return idGenRepo.getId(requestInfo, tenantId, "billnumberid", billNumberFormat, count);
 	}
 
 
@@ -647,6 +714,23 @@ public class BillServicev2 {
 		if (!CollectionUtils.isEmpty(billRequest.getBills()))
 			billRepository.saveBill(billRequest);
 		return getBillResponse(billRequest.getBills());
+	}
+	
+	public static List<String> getOwnerFieldsPlainAccessList() {
+
+		if (ownerPlainRequestFieldsList == null) {
+			
+			ownerPlainRequestFieldsList = new ArrayList<>();
+			ownerPlainRequestFieldsList.add("mobileNumber");
+			ownerPlainRequestFieldsList.add("guardian");
+			ownerPlainRequestFieldsList.add("fatherOrHusbandName");
+			ownerPlainRequestFieldsList.add("correspondenceAddress");
+			ownerPlainRequestFieldsList.add("userName");
+			ownerPlainRequestFieldsList.add("name");
+			ownerPlainRequestFieldsList.add("gender");
+			ownerPlainRequestFieldsList.add("permanentAddress");
+		}
+		return ownerPlainRequestFieldsList;
 	}
 	
 }
