@@ -330,8 +330,9 @@ public class DemandGenerationConsumer {
 			 * log.warn("this connection doen't have the demand in previous billing cycle :"
 			 * + connectionNo ); continue; }
 			 */
+			log.info(tenantId);
 			try {
-					if(!tenantId.equals(config.getSmsExcludeTenant())) {
+					if(!tenantId.equalsIgnoreCase(config.getSmsExcludeTenant())) {
 						generateDemandInBatch(calculationReq, masterMap, billingCycle, isSendMessage);
 					}
 
