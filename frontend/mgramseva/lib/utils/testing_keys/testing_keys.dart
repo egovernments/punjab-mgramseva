@@ -139,4 +139,5 @@ class BillReportKeys {
   Key get BILL_REPORT_BILLING_YEAR => Key("bill_report_billing_year");
   Key get BILL_REPORT_BILLING_CYCLE => Key("bill_report_billing_cycle");
   Key get EXPENSE_BILL_REPORT_VIEW_BUTTON => Key("expense_bill_report_view_button");
+  Key get VENDOR_REPORT_VIEW_BUTTON => Key("vendor_report_view_button");
 }

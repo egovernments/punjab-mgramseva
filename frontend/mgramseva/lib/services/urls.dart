@@ -50,6 +50,7 @@ class Url {
   static const String FETCH_WC_CONNECTION = 'ws-services/wc/_search';
   static const String VENDOR_SEARCH = 'vendor/v1/_search';
   static const String CREATE_VENDOR = 'vendor/v1/_create';
+  static const String VENDOR_REPORT = 'vendor/v1/_vendorReport';
   static const String EGOV_LOCATIONS =
       'egov-location/location/v11/boundarys/_search';
 

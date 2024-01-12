@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/reports/InactiveConsumerReportData.dart';
+import 'package:mgramseva/model/reports/vendor_report_data.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 
@@ -38,6 +39,7 @@ class ReportsProvider with ChangeNotifier {
   List<CollectionReportData>? collectionreports;
   List<InactiveConsumerReportData>? inactiveconsumers;
   List<ExpenseBillReportData>? expenseBillReportData;
+  List<VendorReportData>? vendorReportData;
   BillsTableData genericTableData = BillsTableData([], []);
   int limit = 10;
   int offset = 1;
@@ -104,6 +106,14 @@ class ReportsProvider with ChangeNotifier {
     TableHeader(i18.expense.CANCELLED_BY),
 
   ];
+
+  List<TableHeader> get vendorReportHeaderList => [
+        TableHeader(i18.expense.VENDOR_NAME),
+        TableHeader(i18.common.MOBILE_NUMBER),
+        TableHeader(i18.expense.EXPENSE_TYPE),
+        TableHeader(i18.common.BILL_ID),
+      ];
+
   void onChangeOfPageLimit(
       PaginationResponse response, String type, BuildContext context) {
     if (type == i18.dashboard.BILL_REPORT) {
@@ -117,6 +127,9 @@ class ReportsProvider with ChangeNotifier {
     }
     if (type == i18.dashboard.EXPENSE_BILL_REPORT) {
       getExpenseBillReport(limit: response.limit, offset: response.offset);
+    }
+    if (type == i18.dashboard.VENDOR_REPORT) {
+      getVendorReport(limit: response.limit, offset: response.offset);
     }
   }
 
@@ -220,6 +233,23 @@ class ReportsProvider with ChangeNotifier {
       TableData('${lastModifiedBy ?? '-'}'),
     ]);
   }
+  List<TableDataRow> getVendorReportData(List<VendorReportData> list,
+      {bool isExcel = false}) {
+    return list.map((e) => getVendorReportDataRow(e, isExcel: isExcel)).toList();
+  }
+  TableDataRow getVendorReportDataRow(VendorReportData data,
+      {bool isExcel = false}) {
+    String? vendorName = CommonMethods.truncateWithEllipsis(20, data.vendorName!);
+    String? typeOfExpense = CommonMethods.truncateWithEllipsis(20, data.typeOfExpense!);
+    String? billId = CommonMethods.truncateWithEllipsis(20, data.billId!);
+    return TableDataRow([
+      TableData('${vendorName ?? '-'}'),
+      TableData('${data.mobileNo ?? '-'}'),
+      TableData('${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(typeOfExpense ?? '-')}'),
+      TableData('${billId ?? '-'}'),
+    ]);
+  }
+
   void callNotifier() {
     notifyListeners();
   }
@@ -636,6 +666,72 @@ class ReportsProvider with ChangeNotifier {
       callNotifier();
     }
   }
+
+  Future<void> getVendorReport(
+      {bool download = false,
+        int offset = 1,
+        int limit = 10,
+        String sortOrder = "ASC"}) async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+      if (selectedBillPeriod == null) {
+        throw Exception('Select Billing Cycle');
+      }
+      Map<String, dynamic> params = {
+        'tenantId': commonProvider.userDetails!.selectedtenant!.code,
+        'monthStartDate': selectedBillPeriod?.split('-')[0],
+        'monthEndDate': selectedBillPeriod?.split('-')[1],
+        'offset': '${offset - 1}',
+        'limit': '${download ? -1 : limit}',
+        'sortOrder': '$sortOrder'
+      };
+      var response = await ReportsRepo().fetchVendorReport(params);
+      if (response != null) {
+        vendorReportData = response;
+        if (download) {
+          generateExcel(
+              vendorReportHeaderList
+                  .map<String>((e) =>
+              '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
+                  .toList(),
+              getVendorReportData(vendorReportData!, isExcel: true)
+                  .map<List<String>>(
+                      (e) => e.tableRow.map((e) => e.label).toList())
+                  .toList() ??
+                  [],
+              title:
+              'VendorReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillPeriod.toString().replaceAll('/', '_')}',
+              optionalData: [
+                'Vendor Report',
+                '$selectedBillPeriod',
+                '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)}',
+                '${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
+                'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch, format: 'dd/MMM/yyyy')}'
+              ]);
+        } else {
+          if (vendorReportData != null && vendorReportData!.isNotEmpty) {
+            this.limit = limit;
+            this.offset = offset;
+            this.genericTableData = BillsTableData(
+                vendorReportHeaderList, getVendorReportData(vendorReportData!));
+          }
+        }
+        streamController.add(response);
+        callNotifier();
+      } else {
+        streamController.add('error');
+        throw Exception('API Error');
+      }
+    }
+    catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
+      callNotifier();
+    }
+  }
+
   void clearBuildTableData() {
     genericTableData = BillsTableData([], []);
     callNotifier();
