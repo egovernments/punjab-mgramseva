@@ -24,6 +24,10 @@
     if (stateNameMatch) {
         var stateName = stateNameMatch[1];
         document.querySelector('base').href = '/' + stateName + '/mgramseva/';
+        document.querySelector('script[src="/webcomponents-lite.min.js"]').src = '/' + stateName + '/mgramseva/webcomponents-lite.min.js';
+        document.querySelector('script[src="/flutter.js"]').src = '/' + stateName + '/mgramseva/flutter.js';
+        document.querySelector('link[rel="manifest"]').href = '/' + stateName + '/mgramseva/manifest.json';
+        document.querySelector('link[rel="apple-touch-icon"]').href = '/' + stateName + '/mgramseva/icons/Icon-192.png';
     }
 </script>
   <meta charset="utf-8">
@@ -37,14 +41,14 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <title>mGramSeva</title>
-  <script src="./webcomponents-lite.min.js"></script>
+  <script src="/webcomponents-lite.min.js"></script>
   <link rel="manifest" href="manifest.json">
   <script>
     // The value below is injected by flutter build, do not touch.
     const serviceWorkerVersion = null;
   </script>
   <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
+  <script src="/flutter.js" defer></script>
 </head>
 <style>
   #payGovHiddenForm {
