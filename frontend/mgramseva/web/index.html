@@ -25,19 +25,6 @@
     // Set the base URL dynamically based on the state name
     if (stateName) {
         document.querySelector('base').href = '/' + stateName + '/mgramseva/';
-        var webcomponentsScript = document.querySelector('script[src="webcomponents-lite.min.js"]');
-    if (webcomponentsScript) {
-        webcomponentsScript.src = '/' + stateName + '/mgramseva/webcomponents-lite.min.js';
-    }
-
-    // Update the path for flutter.js based on the state name
-    var flutterScript = document.querySelector('script[src="flutter.js"]');
-    if (flutterScript) {
-        flutterScript.src = '/' + stateName + '/mgramseva/flutter.js';
-    }
-        document.querySelector('link[rel="manifest"]').href = '/' + stateName + '/mgramseva/manifest.json';
-        document.querySelector('link[rel="apple-touch-icon"]').href = '/' + stateName + '/mgramseva/icons/Icon-192.png';
-        document.querySelector('link[rel="manifest"]').href = '/' + stateName + '/mgramseva/manifest.json';
     }
 </script>
   <meta charset="utf-8">
