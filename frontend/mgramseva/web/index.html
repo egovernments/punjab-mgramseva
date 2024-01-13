@@ -12,7 +12,7 @@
     For more details:
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
   -->
-  <base href="$FLUTTER_BASE_HREF">
+  <base href="/mgramseva">
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -27,6 +27,19 @@
   <title>mGramSeva</title>
   <script src="./webcomponents-lite.min.js"></script>
   <link rel="manifest" href="manifest.json">
+  <script>
+    // Get the current URL
+    var currentUrl = window.location.href;
+
+    // Extract the state name from the URL path
+    var stateNameMatch = currentUrl.match(/\/([^/]+)\/mgramseva/);
+
+    // Set the base URL dynamically based on the state name
+    if (stateNameMatch) {
+        var stateName = stateNameMatch[1];
+        document.querySelector('base').href = '/' + stateName + '/mgramseva/';
+    }
+</script>
   <script>
     // The value below is injected by flutter build, do not touch.
     const serviceWorkerVersion = null;
