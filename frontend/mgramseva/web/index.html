@@ -24,7 +24,6 @@
 
     // Set the base URL dynamically based on the state name
     if (stateName) {
-        var stateName = stateNameMatch[1];
         document.querySelector('base').href = '/' + stateName + '/mgramseva/';
         document.querySelector('script[src="/webcomponents-lite.min.js"]').src = '/' + stateName + '/mgramseva/webcomponents-lite.min.js';
         document.querySelector('script[src="/flutter.js"]').src = '/' + stateName + '/mgramseva/flutter.js';
