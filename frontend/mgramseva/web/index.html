@@ -18,10 +18,12 @@
     var currentUrl = window.location.href;
 
     // Extract the state name from the URL path
-    var stateNameMatch = currentUrl.match(/\/([^/]+)\/mgramseva/);
+    var stateNameMatch = currentUrl.match(/\/([^/]+)\/mgramseva(\/|$)/);
+    var stateName = stateNameMatch && currentUrl.split('/')[4] == 'mgramseva' ? stateNameMatch[1] : null;
+
 
     // Set the base URL dynamically based on the state name
-    if (stateNameMatch) {
+    if (stateName) {
         var stateName = stateNameMatch[1];
         document.querySelector('base').href = '/' + stateName + '/mgramseva/';
         document.querySelector('script[src="/webcomponents-lite.min.js"]').src = '/' + stateName + '/mgramseva/webcomponents-lite.min.js';
