@@ -103,17 +103,28 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		List<WaterConnection> wsresults = calculatorUtil.getWaterConnection(request.getRequestInfo(),
 				request.getCalculationCriteria().get(0).getConnectionNo(),
 				request.getCalculationCriteria().get(0).getTenantId());
-
+		if(!wsresults.isEmpty()) {
+			log.info("wsresults :"+ wsresults.get(0));
+			log.info("wsresults size:" +wsresults.size());
+			log.info("wsresults previous reading:" +wsresults.get(0).getPreviousReadingDate().longValue());
+		}
 		//TODO need to change this to WS service.
 		if (wsresults != null && wsresults.get(0).getStatus() != null
 				&& wsresults.get(0).getStatus().equals(org.egov.wscalculation.web.models.Connection.StatusEnum.INACTIVE)) {
+			log.info("INSIDE STATUS ws result status equals inactive");
 			return calculations;
 		}
 		boolean isWSUpdateSMS = false;
 		List<Demand> searchResult = demandService.searchDemandBasedOnConsumerCode(
 				request.getCalculationCriteria().get(0).getTenantId(),
 				request.getCalculationCriteria().get(0).getConnectionNo(), request.getRequestInfo());
-		
+		if(!searchResult.isEmpty()) {
+			log.info("Search result consumer type:"+searchResult.get(0).getConsumerType());
+			log.info("request IsconnectionCalculation: "+ request.getIsconnectionCalculation());
+			log.info("request previous reading :"+ request.getCalculationCriteria().get(0)
+					.getWaterConnection().getPreviousReadingDate().longValue());
+			log.info("Search result:"+ searchResult.get(0));
+		}
 		if ((searchResult != null && searchResult.size() > 0
 				&& searchResult.get(0).getConsumerType().equalsIgnoreCase("waterConnection-arrears")
 				&& !request.getIsconnectionCalculation() && wsresults != null && wsresults.size() > 0
