@@ -120,11 +120,12 @@ public class PaymentService {
 			StringBuilder uri = new StringBuilder(config.getPaymentContextPath())
 					.append(config.getPaymentUpdateEndpoint());
 
-			System.out.println("URL to check the payment search::" + uri);
+			log.info("URL to check the payment search::" + uri +" and paymentworkflow is " + paymentWorkflow);
 			Object result = serviceRequestRepository.fetchResult(uri, PaymentWorkflowRequest.builder()
 					.paymentWorkflows(Arrays.asList(paymentWorkflow)).requestInfo(request.getRequestInfo()).build());
 			try {
 				response = mapper.convertValue(result, PaymentResponse.class);
+				log.info(response.toString());
 			} catch (IllegalArgumentException e) {
 				log.error("Error parsing update payment response Challan id : " + challan.getId());
 				throw new CustomException("EXP_PAYMENT_PARSING_ERROR", "Unable to parse payment response");
