@@ -94,7 +94,7 @@ public class PaymentUpdateService {
 						log.info("Paid Date "+request.getChallan().getPaidDate());
 						log.info("Is Bill Paid "+request.getChallan().getIsBillPaid());
 						log.info("Application status "+request.getChallan().getApplicationStatus());
-						producer.push(config.getUpdateNewChallanTopic(), request);
+						producer.push(config.getUpdateChallanTopic(), request);
 					});
 				}
 			}
