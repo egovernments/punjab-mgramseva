@@ -120,6 +120,7 @@ public class PaymentService {
 			StringBuilder uri = new StringBuilder(config.getPaymentContextPath())
 					.append(config.getPaymentUpdateEndpoint());
 
+			System.out.println("URL to check the payment search::" + uri);
 			Object result = serviceRequestRepository.fetchResult(uri, PaymentWorkflowRequest.builder()
 					.paymentWorkflows(Arrays.asList(paymentWorkflow)).requestInfo(request.getRequestInfo()).build());
 			try {
