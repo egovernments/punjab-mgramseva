@@ -162,7 +162,7 @@ public class ChallanService {
 				paymentService.createPayment(request);
 			if (searchResult.get(0).getApplicationStatus() == StatusEnum.PAID)
 				paymentService.updatePayment(request);
-		 		repository.update(request);
+			repository.update(request);
 			return request.getChallan();
 		}
 
