@@ -682,16 +682,25 @@ def getdaterange(i):
         lastepoch = datetime.now().strftime('%s') + '000'
         
     if i == 'Previous Month':
-        today = datetime.now().year
-        lastonemonth = (datetime.now() - relativedelta(months=1)).month
-        start_date = datetime(today, lastonemonth, 1)
-        end_date = datetime(today, lastonemonth + 1, 1) + timedelta(days=-1)
+        nowdate = datetime.now()
+        today = nowdate.year
+        lastonemonth = (nowdate - relativedelta(months=1)).month
+        if lastonemonth == 12:
+            start_date = datetime(today-1,lastonemonth,1)
+            end_date = datetime(today,1,1) + timedelta(days=-1)
+        else:
+            start_date = datetime(today, lastonemonth, 1)
+            end_date = datetime(today, lastonemonth + 1, 1) + timedelta(days=-1)
         enddate = end_date.combine(end_date, time.max)
         epochnow = start_date.strftime('%s') + '000'
         lastepoch = enddate.strftime('%s') + '000'
         
     if i == 'Quarter-1':
-        year = datetime.now().year
+        month = datetime.now().month
+        if(month < 4):
+            year = datetime.now().year-1                     
+        else:
+            year = datetime.now().year
         start_date = datetime(year, 4, 1)
         end_date = datetime(year, 6, 30)
         end = datetime.combine(end_date,time.max)
@@ -699,7 +708,11 @@ def getdaterange(i):
         lastepoch = end.strftime('%s') + '000'
         
     if i == 'Quarter-2':
-        year = datetime.now().year
+        month = datetime.now().month
+        if(month < 4):
+            year = datetime.now().year-1                     
+        else:
+            year = datetime.now().year
         start_date = datetime(year, 7, 1)
         end_date = datetime(year, 9, 30)
         end = datetime.combine(end_date,time.max)
@@ -707,20 +720,36 @@ def getdaterange(i):
         lastepoch = end.strftime('%s') + '000'
         
     if i == 'Quarter-3':
-        year = datetime.now().year
+        month = datetime.now().month
+        if(month < 4):
+            year = datetime.now().year-1                     
+        else:
+            year = datetime.now().year
         start_date = datetime(year, 10, 1)
         end_date = datetime(year, 12, 31)
+        end = datetime.combine(end_date,time.max)
+        epochnow = start_date.strftime('%s') + '000'
+        lastepoch = end.strftime('%s') + '000'
+            
+    if i == 'Quarter-4':
+        year = datetime.now().year                    
+        start_date = datetime(year, 1, 1)
+        end_date = datetime(year, 3, 31)
         end = datetime.combine(end_date,time.max)
         epochnow = start_date.strftime('%s') + '000'
         lastepoch = end.strftime('%s') + '000'
     
     if i == 'FY to date':
         today = datetime.now().year
-        start_date = datetime(today, 4, 1)
+        month = datetime.now().month
+        if(month < 4):
+            start_date = datetime(today-1, 4, 1)                         
+        else:
+            start_date = datetime(today, 4, 1)
         epochnow = start_date.strftime('%s') + '000'
         lastepoch = datetime.now().strftime('%s') + '000'
             
-    if i == 'Previous 1st FY (22-23)':
+    if i == 'Previous 1st FY (23-24)':
         today = datetime.now().year
         lastyear = today-1
         start_date = datetime(lastyear, 4, 1)
@@ -729,7 +758,7 @@ def getdaterange(i):
         epochnow = start_date.strftime('%s') + '000'
         lastepoch = enddate.strftime('%s') + '000'
         
-    if i == 'Previous 2nd FY (21-22)':
+    if i == 'Previous 2nd FY (22-23)':
         today = datetime.now().year
         start_date = datetime(today-2, 4, 1)
         end_date = datetime(today-1, 4, 1) + timedelta(days=-1)
@@ -738,7 +767,7 @@ def getdaterange(i):
         lastepoch = enddate.strftime('%s') + '000'
         
         
-    if i == 'Previous 3rd FY (20-21)':
+    if i == 'Previous 3rd FY (21-22)':
         today = datetime.now().year
         start_date = datetime(today-3, 4, 1)
         end_date = datetime(today-2, 4, 1) + timedelta(days=-1)
@@ -810,8 +839,9 @@ def process():
     
     tenants = getGPWSCHeirarchy()
     for tenant in tenants:
+        print("Tenant:", tenant['tenantId'])
         activeUsersCount= getActiveUsersCount(tenant['tenantId'])
-        daterange = ['Last seven days','Last 15 days','currentMonth-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','Consolidated (As on date)','FY to date','Previous 1st FY (22-23)','Previous 2nd FY (21-22)','Previous 3rd FY (20-21)']
+        daterange = ['Last seven days','Last 15 days','currentMonth-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','Quarter-4','Consolidated (As on date)','FY to date','Previous 1st FY (23-24)','Previous 2nd FY (22-23)','Previous 3rd FY (21-22)']
         for i,date in enumerate(daterange):
             startdate,enddate= getdaterange(date)
             totalAdvance= getTotalAdvanceCreated(tenant['tenantId'],startdate,enddate)
