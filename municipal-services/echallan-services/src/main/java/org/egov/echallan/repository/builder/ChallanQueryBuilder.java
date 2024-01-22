@@ -45,7 +45,7 @@ public class ChallanQueryBuilder {
 
       public static final String FILESTOREID_UPDATE_SQL = "UPDATE eg_echallan SET filestoreid=? WHERE id=?";
       
-      public static final String CANCEL_RECEIPT_UPDATE_SQL = "UPDATE eg_echallan SET applicationStatus='ACTIVE' WHERE referenceId=? and businessService=?";
+      public static final String CANCEL_RECEIPT_UPDATE_SQL = "UPDATE eg_echallan SET applicationStatus='CANCELLED' WHERE referenceId=? and businessService=?";
       
       private static final String TENANTIDS = "SELECT distinct(tenantid) FROM eg_echallan challan";
       

@@ -110,12 +110,7 @@ public class ChallanRepository {
      * @param ChallanRequest The challan create request
      */
     public void update(ChallanRequest challanRequest) {
-    	
-    	if(challanRequest.getChallan().getPaidDate()!=null)
-		{
-			challanRequest.getChallan().setPaidDate(Long.valueOf(challanRequest.getChallan().getPaidDate()));
-		}
-		log.info("CHALLAN ISBILLPAID:"+challanRequest.getChallan().getIsBillPaid()  +" | PAID DATE: "+challanRequest.getChallan().getPaidDate());
+		log.info("CHALLAN ISBILLPAID:"+challanRequest.getChallan().getIsBillPaid()  +" | PAID DATE: "+challanRequest.getChallan().getPaidDate()+" | STATUS: "+challanRequest.getChallan().getApplicationStatus());
 		producer.push(config.getUpdateChallanTopic(), challanRequest);
     }
     
