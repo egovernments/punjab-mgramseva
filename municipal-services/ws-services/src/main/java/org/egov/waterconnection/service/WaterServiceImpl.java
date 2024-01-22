@@ -201,6 +201,10 @@ public class WaterServiceImpl implements WaterService {
 		return waterConnection;
 	}
 
+	public WaterConnectionByDemandGenerationDateResponse countWCbyDemandGennerationDate(SearchCriteria criteria, RequestInfo requestInfo) {
+		return getWCbyDemandGennerationDate(criteria, requestInfo);
+	}
+
 	/**
 	 *
 	 * @param criteria    WaterConnectionSearchCriteria contains search criteria on
@@ -210,6 +214,9 @@ public class WaterServiceImpl implements WaterService {
 	 */
 	public WaterConnectionResponse getWaterConnectionsList(SearchCriteria criteria, RequestInfo requestInfo) {
 		return waterDaoImpl.getWaterConnectionList(criteria, requestInfo);
+	}
+	public WaterConnectionByDemandGenerationDateResponse getWCbyDemandGennerationDate(SearchCriteria criteria, RequestInfo requestInfo) {
+		return waterDaoImpl.getWaterConnectionByDemandDate(criteria, requestInfo);
 	}
 
 	/**

@@ -2,7 +2,6 @@ package org.egov.waterconnection.repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.Role;
 import org.egov.common.contract.request.User;
@@ -67,6 +65,9 @@ public class WaterDaoImpl implements WaterDao {
 
 	@Autowired
 	private OpenWaterRowMapper openWaterRowMapper;
+
+	@Autowired
+	private WcbyDemandRowMapper wcbyDemandRowMapper;
 	
 	@Autowired
 	private ReportRowMapper reportRowMapper;
@@ -159,7 +160,39 @@ public class WaterDaoImpl implements WaterDao {
 			waterConnectionProducer.push(wsConfiguration.getWorkFlowUpdateTopic(), waterConnectionRequest);
 		}
 	}
-	
+	public WaterConnectionByDemandGenerationDateResponse getWaterConnectionByDemandDate (SearchCriteria criteria, RequestInfo requestInfo) {
+
+		List<WaterConnectionByDemandGenerationDate> waterConnectionByPreviousReadingDateList = new ArrayList<>();
+		List<WaterConnectionByDemandGenerationDate> waterConnectionByDemandGenerationDateList = new ArrayList<>();
+		List<WaterConnectionByDemandGenerationDate> combinedDataByDate = new ArrayList<>();
+		List<Object> preparedStatement = new ArrayList<>();
+		Map<String, Long> collectionDataCount = null;
+		List<Map<String, Object>> countData = null;
+		Boolean flag = null;
+		Set<String> consumerCodeSet = null;
+
+		String query = wsQueryBuilder.getQueryForWCCountbyDemandDate(criteria, preparedStatement, requestInfo);
+
+		if (query == null)
+			return null;
+        log.info("QUERY to get data 1"+query);
+		WaterConnectionByDemandGenerationDateResponse response = new WaterConnectionByDemandGenerationDateResponse();
+		waterConnectionByDemandGenerationDateList = jdbcTemplate.query(query, preparedStatement.toArray(), wcbyDemandRowMapper);
+		combinedDataByDate.addAll(waterConnectionByDemandGenerationDateList);
+
+        query = wsQueryBuilder.getQueryForWCCountForPreviousreadingdate(criteria, preparedStatement, requestInfo);
+		if (query == null)
+			return null;
+		log.info("QUERY to get data2"+query);
+		waterConnectionByPreviousReadingDateList = jdbcTemplate.query(query, preparedStatement.toArray(), wcbyDemandRowMapper);
+		combinedDataByDate.addAll(waterConnectionByPreviousReadingDateList);
+
+		response.setWaterConnectionByDemandGenerationDates(combinedDataByDate);
+		log.info("Combined data",combinedDataByDate);
+
+		return response;
+	}
+
 	/**
 	 * push object to create meter reading
 	 * 
