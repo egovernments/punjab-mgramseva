@@ -415,7 +415,7 @@ class ReportsProvider with ChangeNotifier {
           navigatorKey.currentContext!,
           listen: false);
       if (selectedBillPeriod == null) {
-        throw Exception('${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}');
+        throw Exception('${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.SELECT_BILLING_CYCLE)}');
       }
       Map<String, dynamic> params = {
         'tenantId': commonProvider.userDetails!.selectedtenant!.code,
@@ -481,7 +481,7 @@ class ReportsProvider with ChangeNotifier {
           navigatorKey.currentContext!,
           listen: false);
       if (selectedBillPeriod == null) {
-        throw Exception('${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}');
+        throw Exception('${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.SELECT_BILLING_CYCLE)}');
       }
       Map<String, dynamic> params = {
         'tenantId': commonProvider.userDetails!.selectedtenant!.code,
@@ -547,7 +547,7 @@ class ReportsProvider with ChangeNotifier {
           navigatorKey.currentContext!,
           listen: false);
       if (selectedBillPeriod == null) {
-        throw Exception('${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}');
+        throw Exception('${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.SELECT_BILLING_CYCLE)}');
       }
       Map<String, dynamic> params = {
         'tenantId': commonProvider.userDetails!.selectedtenant!.code,
@@ -612,7 +612,7 @@ class ReportsProvider with ChangeNotifier {
           navigatorKey.currentContext!,
           listen: false);
       if (selectedBillPeriod == null) {
-        throw Exception('${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}');
+        throw Exception('${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.SELECT_BILLING_CYCLE)}');
       }
       Map<String, dynamic> params = {
         'tenantId': commonProvider.userDetails!.selectedtenant!.code,
@@ -677,7 +677,7 @@ class ReportsProvider with ChangeNotifier {
           navigatorKey.currentContext!,
           listen: false);
       if (selectedBillPeriod == null) {
-        throw Exception('${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}');
+        throw Exception('${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.SELECT_BILLING_CYCLE)}');
       }
       Map<String, dynamic> params = {
         'tenantId': commonProvider.userDetails!.selectedtenant!.code,
