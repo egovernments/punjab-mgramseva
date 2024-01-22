@@ -64,7 +64,7 @@ void main() {
   // if (Platform.isIOS) {
   //   DartPingIOS.register();
   // }
-
+  // Uncomment when compiling on iOS
   runZonedGuarded(() async {
     FlutterError.onError = (FlutterErrorDetails details) {
       FlutterError.dumpErrorToConsole(details);
@@ -152,8 +152,8 @@ class _MyAppState extends State<MyApp> {
     _port.listen((dynamic data) {
       String id = data[0];
       DownloadTaskStatus status = data[1];
-      int progress = data[2];
-      print("Download progress: "+progress.toString());
+      // int progress = data[2];
+      // print("Download progress: "+progress.toString());
       if (status == DownloadTaskStatus.complete) {
         if (CommonProvider.downloadUrl.containsKey(id)) {
           if (CommonProvider.downloadUrl[id] != null) OpenFilex.open(CommonProvider.downloadUrl[id] ?? '');
@@ -166,7 +166,7 @@ class _MyAppState extends State<MyApp> {
         }
       }
       setState(() {
-        print("Download progress: "+progress.toString());
+        // print("Download progress: "+progress.toString());
       });
     });
     FlutterDownloader.registerCallback(downloadCallback);
