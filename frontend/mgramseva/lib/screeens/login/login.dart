@@ -137,13 +137,13 @@ class _LoginState extends State<Login> {
                     text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                          text: 'By continuing you accept our ',
+                          text: '${ApplicationLocalizations.of(context).translate(i18.common.BY_CONTINUING_YOU_ACCEPT_OUR)} ',
                           style: TextStyle(
                               color: Colors.black
                           )
                         ),
                         TextSpan(
-                          text: 'Privacy Policy',
+                          text: '${ApplicationLocalizations.of(context).translate(i18.common.PRIVACY_POLICY)}',
                           style: TextStyle(
                             color: Theme.of(context).primaryColor, // set link color
                             decoration: TextDecoration.underline,
@@ -154,13 +154,13 @@ class _LoginState extends State<Login> {
                             },
                         ),
                         TextSpan(
-                            text: ' and ',
+                            text: ' ${ApplicationLocalizations.of(context).translate(i18.common.AND)} ',
                             style: TextStyle(
                                 color: Colors.black
                             )
                         ),
                         TextSpan(
-                          text: 'Terms of use',
+                          text: '${ApplicationLocalizations.of(context).translate(i18.common.TERMS_OF_USE)}',
                           style: TextStyle(
                             color: Theme.of(context).primaryColor, // set link color
                             decoration: TextDecoration.underline,

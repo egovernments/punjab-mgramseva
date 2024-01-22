@@ -129,7 +129,12 @@ class Common {
   String get WATER_CHARGES => 'WS_CHARGE'; //Please enter Mobile number
   String get ARREARS => 'ARREARS'; //Please enter Mobile number
   String get COLLECT_PAYMENT => 'COLLECT_PAYMENT';
+  String get BY_CONTINUING_YOU_ACCEPT_OUR => 'BY_CONTINUING_YOU_ACCEPT_OUR';
   String get ONLINE => 'ONLINE';
+  String get AND => 'AND';
+  String get PRIVACY_POLICY => 'PRIVACY_POLICY';
+  String get TERMS_OF_USE => 'TERMS_OF_USE';
+  String get SELECT_BILLING_CYCLE => 'SELECT_BILLING_CYCLE';
   String get CHEQUE => 'CHEQUE';
   String get CASH => 'CASH';
   String get DD => 'DD';

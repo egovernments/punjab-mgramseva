@@ -72,7 +72,7 @@ class _VendorReportState extends State<VendorReport>
                               () {
                             if (reportProvider.selectedBillPeriod == null) {
                               Notifiers.getToastMessage(
-                                  context, 'Select Billing Cycle', 'ERROR');
+                                  context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
                             } else {
                               reportProvider.clearTableData();
                               reportProvider.getVendorReport();
@@ -90,7 +90,7 @@ class _VendorReportState extends State<VendorReport>
                           onPressed: () {
                             if (reportProvider.selectedBillPeriod == null) {
                               Notifiers.getToastMessage(
-                                  context, 'Select Billing Cycle', 'ERROR');
+                                  context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
                             } else {
                               reportProvider.getVendorReport(
                                   download: true);

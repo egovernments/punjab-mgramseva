@@ -68,7 +68,7 @@ class _ExpenseBillReportState extends State<ExpenseBillReport>
                               () {
                             if (reportProvider.selectedBillPeriod == null) {
                               Notifiers.getToastMessage(
-                                  context, 'Select Billing Cycle', 'ERROR');
+                                  context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
                             } else {
                               reportProvider.clearTableData();
                               reportProvider.getExpenseBillReport();
@@ -86,7 +86,7 @@ class _ExpenseBillReportState extends State<ExpenseBillReport>
                           onPressed: () {
                             if (reportProvider.selectedBillPeriod == null) {
                               Notifiers.getToastMessage(
-                                  context, 'Select Billing Cycle', 'ERROR');
+                                  context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
                             } else {
                               reportProvider.getExpenseBillReport(download: true);
                             }
