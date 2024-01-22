@@ -17,7 +17,7 @@ class CommonWidgets {
   static Widget buildEmptyMessage(String label, BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      child: Text('${ApplicationLocalizations.of(context).translate(label)}', style: Theme.of(context).textTheme.subtitle1),
+      child: Text('${ApplicationLocalizations.of(context).translate(label)}', style: Theme.of(context).textTheme.titleMedium),
     );
   }
 }

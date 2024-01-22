@@ -167,7 +167,7 @@ class Routing {
     }
 
     if (kIsWeb) {
-      FirebaseAnalytics analytics = FirebaseAnalytics();
+      FirebaseAnalytics analytics = FirebaseAnalytics.instance;
       analytics.logEvent(name: "screen_view", parameters: {
         'firebase_screen': "$path",
         'screen_name': "$path",

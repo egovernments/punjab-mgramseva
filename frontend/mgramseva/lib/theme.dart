@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/color_codes.dart';
 
 ThemeData get theme => ThemeData(
-    primarySwatch: createMaterialColor(Color(0XFFf47738)),
     highlightColor: createMaterialColor(Color(0XFFC7E0F1)),
-    backgroundColor: createMaterialColor(Color.fromRGBO(238, 238, 238, 1)),
     hintColor: createMaterialColor(Color(0XFF3498DB)),
     primaryColorDark: Color.fromRGBO(11, 12, 12, 1),
     primaryColorLight: Color.fromRGBO(80, 90, 95, 1),
+    primaryColor: Color.fromRGBO(244, 119, 56, 1),
     disabledColor: Colors.grey,
+    cardTheme: CardTheme(surfaceTintColor: Colors.white,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))),
+    datePickerTheme: DatePickerThemeData(
+      surfaceTintColor: Colors.white
+    ),
+    drawerTheme: DrawerThemeData(
+      surfaceTintColor: Colors.white
+    ),
     // accentColor:  Color(0xff0B4B66),
 
     appBarTheme: AppBarTheme(
@@ -16,15 +22,17 @@ ThemeData get theme => ThemeData(
       centerTitle: false,
     ),
     textTheme: TextTheme(
-      headline1: TextStyle(fontWeight: FontWeight.w700, fontSize: 32, fontStyle: FontStyle.normal, color: Color.fromRGBO(11, 12, 12, 1)),
-      headline2: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
-      button: TextStyle(fontWeight: FontWeight.w500, fontSize: 19, color: Colors.white), // Elevated Button(Orange)
-      subtitle1: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
-      subtitle2: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Color.fromRGBO(244, 119, 56, 1)) // Only for outlined button text
+      displayLarge: TextStyle(fontWeight: FontWeight.w700, fontSize: 32, fontStyle: FontStyle.normal, color: Color.fromRGBO(11, 12, 12, 1)),
+      displayMedium: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
+      labelLarge: TextStyle(fontWeight: FontWeight.w500, fontSize: 19, color: Colors.white), // Elevated Button(Orange)
+      labelMedium: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white), // Elevated Button(Orange)
+      labelSmall: TextStyle(fontWeight: FontWeight.w500, fontSize: 10, color: Colors.white), // Elevated Button(Orange)
+      titleMedium: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
+      titleSmall: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Color.fromRGBO(244, 119, 56, 1)) // Only for outlined button text
     ),
 
     /// Background color
-    // scaffoldBackgroundColor: Color.fromRGBO(238, 238, 238, 1),
+    scaffoldBackgroundColor: Color.fromRGBO(238, 238, 238, 1),
 
     textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -67,7 +75,7 @@ ThemeData get theme => ThemeData(
     iconTheme: IconThemeData(
       color: ColorCodes.HOME_ICON,
       // size: 25
-    ));
+    ), colorScheme: ColorScheme.fromSwatch(primarySwatch: createMaterialColor(Color(0XFFf47738))).copyWith(background: createMaterialColor(Color.fromRGBO(238, 238, 238, 1))));
 
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];

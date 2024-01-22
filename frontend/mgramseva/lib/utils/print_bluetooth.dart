@@ -1,14 +1,13 @@
 import 'dart:typed_data';
 
-import 'printer/esc_pos_utils_platform/esc_pos_utils_platform.dart';
 import 'package:mgramseva/utils/printer/image_utils.dart';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:nearby_connections/nearby_connections.dart';
 import 'package:image/image.dart' as img;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+import 'package:mgramseva/utils/printer/esc_pos_utils_platform/esc_pos_utils_platform.dart';
 
 import 'localization/application_localizations.dart';
 
@@ -89,8 +88,9 @@ class PrintBluetooth {
     print(isPermissionGranted);
     if (!isPermissionGranted) {
       await Permission.bluetooth.request();
+      await Permission.bluetoothScan.request();
       await Permission.location.request();
-      await Nearby().askLocationPermission();
+      await Permission.bluetoothConnect.request();
     }
     bool? isConnected = await PrintBluetoothThermal.connectionStatus;
     if (isConnected) {
@@ -110,11 +110,11 @@ class PrintBluetooth {
     final generator = Generator(PaperSize.mm58, profile);
     final Uint8List imageBytes = value;
     final decodedImage = img.decodeImage(imageBytes)!;
-    img.Image thumbnail = img.copyResize(decodedImage,width: PaperSize.mm58.width);
+    img.Image thumbnail = img.copyResize(decodedImage,width: PaperSize.mm58.width,maintainAspect: false,);
     // creates a copy of the original image with set dimensions
-    img.Image originalImg = img.copyResize(decodedImage, width: PaperSize.mm58.width);
+    img.Image originalImg = img.copyResize(decodedImage, width: PaperSize.mm58.width,maintainAspect: false, );
     // fills the original image with a white background
-    img.fill(originalImg, img.getColor(255, 255, 255));
+    img.fill(originalImg, color: img.ColorRgb8(255, 255, 255));
     // var padding = (originalImg.width - thumbnail.width) / 2;
     //
     // //insert the image inside the frame and center it

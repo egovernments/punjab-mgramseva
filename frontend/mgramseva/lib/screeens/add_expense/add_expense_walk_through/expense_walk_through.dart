@@ -20,6 +20,7 @@ var json = [
       (val) => {},
       [],
       true,
+      itemAsString: (i) =>i.toString(),
     ),
   },
   {

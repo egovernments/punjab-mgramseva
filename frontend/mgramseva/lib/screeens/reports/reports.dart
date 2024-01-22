@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/screeens/reports/expense_bill_report.dart';
 import 'package:mgramseva/screeens/reports/inactive_consumer_report.dart';
+import 'package:mgramseva/screeens/reports/vendor_report.dart';
 import 'package:mgramseva/screeens/reports/view_table.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +19,6 @@ import '../../widgets/select_field_builder.dart';
 import '../../widgets/side_bar.dart';
 import 'bill_report.dart';
 import 'collection_report.dart';
-import 'generic_report_table.dart';
 
 class Reports extends StatefulWidget {
   const Reports({Key? key}) : super(key: key);
@@ -166,12 +167,13 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                                     reportProvider
                                                         .getFinancialYearListDropdown(
                                                             reportProvider
-                                                                .languageList),
+                                                                .billingYearList),
                                                     true,
+                                                    readOnly: false,
                                                     controller: reportProvider
                                                         .billingyearCtrl,
                                                     key: Keys.billReport
-                                                        .BILL_REPORT_BILLING_YEAR,
+                                                        .BILL_REPORT_BILLING_YEAR, itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i.financialYear)}",
                                                   ),
                                                   SelectFieldBuilder(
                                                     i18.demandGenerate
@@ -187,10 +189,11 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                                             reportProvider
                                                                 .selectedBillYear),
                                                     true,
+                                                    readOnly: false,
                                                     controller: reportProvider
                                                         .billingcycleCtrl,
                                                     key: Keys.billReport
-                                                        .BILL_REPORT_BILLING_CYCLE,
+                                                        .BILL_REPORT_BILLING_CYCLE, itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i['name'])}",
                                                   ),
                                                 ],
                                               ),
@@ -213,7 +216,9 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                   children: [
                                     BillReport(onViewClick: showTable),
                                     CollectionReport(onViewClick: showTable),
-                                    InactiveConsumerReport(onViewClick: showTable,)
+                                    InactiveConsumerReport(onViewClick: showTable,),
+                                    ExpenseBillReport(onViewClick: showTable,),
+                                    VendorReport(onViewClick: showTable,)
                                   ],
                                 ),
                               ),

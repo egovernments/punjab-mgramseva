@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/components/dashboard/bills_table.dart';
-import 'package:provider/provider.dart';
 
 import '../../model/common/BillsTableData.dart';
-import '../../providers/reports_provider.dart';
-import '../../utils/common_widgets.dart';
 import '../../utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 

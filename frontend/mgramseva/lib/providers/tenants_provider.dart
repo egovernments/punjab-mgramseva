@@ -25,11 +25,9 @@ class TenantsProvider with ChangeNotifier {
           navigatorKey.currentContext!,
           listen: false);
       var userResponse = await TenantRepo().fetchTenants(getTenantsMDMS(commonProvider.userDetails!.userRequest!.tenantId.toString()));
-      if (userResponse != null) {
-        tenants = userResponse;
-        streamController.add(userResponse);
-      }
-    } catch (e, s) {
+      tenants = userResponse;
+      streamController.add(userResponse);
+        } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       streamController.addError('error');
     }

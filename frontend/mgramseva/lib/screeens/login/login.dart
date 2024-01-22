@@ -130,44 +130,48 @@ class _LoginState extends State<Login> {
                                 color: Theme.of(context).primaryColor),
                           ))),
                 ),
-                RichText(
-                  text: TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: 'By continuing you accept our ',
-                        style: TextStyle(
-                            color: Colors.black
-                        )
-                      ),
-                      TextSpan(
-                        text: 'Privacy Policy',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor, // set link color
-                          decoration: TextDecoration.underline,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.pushNamed(context, Routes.PRIVACY_POLICY,arguments:true);
-                          },
-                      ),
-                      TextSpan(
-                          text: ' and ',
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0 ),
+                  child: RichText(
+                    maxLines: 3,
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '${ApplicationLocalizations.of(context).translate(i18.common.BY_CONTINUING_YOU_ACCEPT_OUR)} ',
                           style: TextStyle(
                               color: Colors.black
                           )
-                      ),
-                      TextSpan(
-                        text: 'Terms of use',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor, // set link color
-                          decoration: TextDecoration.underline,
                         ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.pushNamed(context, Routes.TERMS_OF_USE,arguments:true);
-                          },
-                      ),
-                    ],
+                        TextSpan(
+                          text: '${ApplicationLocalizations.of(context).translate(i18.common.PRIVACY_POLICY)}',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor, // set link color
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.pushNamed(context, Routes.PRIVACY_POLICY,arguments:true);
+                            },
+                        ),
+                        TextSpan(
+                            text: ' ${ApplicationLocalizations.of(context).translate(i18.common.AND)} ',
+                            style: TextStyle(
+                                color: Colors.black
+                            )
+                        ),
+                        TextSpan(
+                          text: '${ApplicationLocalizations.of(context).translate(i18.common.TERMS_OF_USE)}',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor, // set link color
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.pushNamed(context, Routes.TERMS_OF_USE,arguments:true);
+                            },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Padding(

@@ -93,8 +93,7 @@ class GPWSCRateCard extends StatelessWidget {
       wcBillingSlabs.wCBillingSlabs
           ?.where(
               (element) => element.connectionType?.compareTo("Metered") == 0)
-          .forEach((e) => {
-                e.slabs?.forEach((slabs) => rows.add(DataRow(cells: [
+          .forEach((e) => e.slabs?.forEach((slabs) => rows.add(DataRow(cells: [
                       DataCell(Text(
                           "${ApplicationLocalizations.of(context).translate(i18.common.WATER_CHARGES)}-10101")),
                       DataCell(Text(
@@ -104,7 +103,7 @@ class GPWSCRateCard extends StatelessWidget {
                           "${ApplicationLocalizations.of(context).translate("${e.buildingType}")}")),
                       DataCell(Text("${slabs.charge}"))
                     ])))
-              });
+              );
       return rows;
     }
 

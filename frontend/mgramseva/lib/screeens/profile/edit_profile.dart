@@ -136,7 +136,7 @@ class _EditProfileState extends State<EditProfile> {
     var userProvider = Provider.of<UserProfileProvider>(context, listen: false);
 
     return FocusWatcher(child: Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: BaseAppBar(
         Text(i18.common.MGRAM_SEVA),
         AppBar(),

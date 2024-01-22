@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/dashboard/revenue_dashboard.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -14,7 +15,6 @@ import 'package:mgramseva/model/dashboard/revenue_dashboard.dart' as expense;
 
 import '../screeens/dashboard/revenue_expense_dashboard/revenue.dart';
 import 'dashboard_provider.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 
 class RevenueDashboard with ChangeNotifier {
   int selectedIndex = 0;

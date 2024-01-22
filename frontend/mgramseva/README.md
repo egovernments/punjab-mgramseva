@@ -8,6 +8,7 @@ mGramSeva is a Hybrid Application (web + App(Android + IOS)) built using Open So
 
 ## Commands for flutter
 - **flutter run** : Command to run the app 
+- **flutter run --no-enable-impeller** : Command to run the app on mac virtual machine without GPU Passthrough
 - **flutter build web** : Command to build web 
 - **flutter build apk --release** : Command to build the apk of the application
 

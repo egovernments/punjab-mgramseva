@@ -53,7 +53,7 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
     if (demandList.demands!.isNotEmpty) {
       int? num = demandList.demands?.first.auditDetails?.createdTime;
       var houseHoldProvider =
-      Provider.of<HouseHoldProvider>(context, listen: false);;
+      Provider.of<HouseHoldProvider>(context, listen: false);
       return LayoutBuilder(builder: (context, constraints) {
         return Column(
           children: [
@@ -222,7 +222,7 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                                                 .GENERATE_BILL_LABEL),
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .subtitle2)),
+                                                            .titleSmall)),
                                               )),
                                               Expanded(
                                                   child: ShortButton(

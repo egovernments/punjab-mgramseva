@@ -135,7 +135,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         Provider.of<ChangePasswordProvider>(context, listen: false);
     return FocusWatcher(
         child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: BaseAppBar(
           Text(i18.common.MGRAM_SEVA),
           AppBar(),

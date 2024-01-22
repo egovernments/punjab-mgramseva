@@ -58,7 +58,7 @@ class _HouseholdListState extends State<HouseholdList> {
           constraints.maxWidth < 760 ? 115.0 : (constraints.maxWidth / 6);
       var tableData = householdProvider
           .getCollectionsData(expenseList as List<WaterConnection>);
-      return tableData == null || tableData.isEmpty
+      return tableData.isEmpty
           ? CommonWidgets.buildEmptyMessage(
               ApplicationLocalizations.of(context)
                   .translate(i18.dashboard.NO_RECORDS_MSG),

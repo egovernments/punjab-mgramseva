@@ -20,6 +20,9 @@ class Notifiers {
           Padding(
             padding: EdgeInsets.all(12.0),
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromRGBO(244, 119, 56, 0.7)
+              ),
               onPressed: callBack,
               child: Text(
                 'Retry',

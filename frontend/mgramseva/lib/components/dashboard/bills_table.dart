@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/models.dart';
@@ -83,7 +82,6 @@ class _BillsTable extends State<BillsTable> {
     var index = 0;
     return widget.headerList.map((e) {
       index++;
-      ;
       if (e.isSortingRequired ?? false) {
         return TextButton(
             style: TextButton.styleFrom(

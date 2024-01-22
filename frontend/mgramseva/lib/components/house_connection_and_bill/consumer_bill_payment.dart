@@ -90,7 +90,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
         listen: false);
 
     screenshotController
-        .captureFromWidget(
+        .captureFromLongWidget(
           Container(
               width: kIsWeb ? 375 : 195,
               margin: EdgeInsets.zero,
@@ -374,18 +374,9 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                             "tenantId": commonProvider
                                 .userDetails!.selectedtenant!.code,
                           }, item.mobileNumber, item, "Share"),
-                          style: ButtonStyle(
-                            alignment: Alignment.center,
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(vertical: 8)),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                              side: BorderSide(
-                                  width: 2,
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius: BorderRadius.circular(0.0),
-                            )),
-                          ),
+                          style: ElevatedButton.styleFrom(padding:EdgeInsets.symmetric(vertical: 8),alignment: Alignment.center,side:BorderSide(
+                              width: 1,
+                              color: Theme.of(context).disabledColor)),
                           icon: (Image.asset('assets/png/whats_app.png')),
                           label: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
@@ -393,7 +384,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                               ApplicationLocalizations.of(context).translate(i18
                                   .consumerReciepts
                                   .CONSUMER_RECIEPT_SHARE_RECEIPT),
-                              style: Theme.of(context).textTheme.subtitle2,
+                              style: Theme.of(context).textTheme.titleSmall,
                             ),
                           ),
                         ),
@@ -405,14 +396,15 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                             : MediaQuery.of(context).size.width / 2.2,
                         child: ElevatedButton.icon(
                             onPressed: () => _capturePng(item),
-                            icon: Icon(Icons.print),
+                            icon: Icon(Icons.print,color: Colors.white,),
+                            style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(244, 119, 56, 1)),
                             label: Text(
                                 ApplicationLocalizations.of(context).translate(
                                     i18.consumerReciepts
                                         .CONSUMER_RECEIPT_PRINT),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .subtitle1!
+                                    .titleMedium!
                                     .apply(color: Colors.white))),
                       ),
                     ]),

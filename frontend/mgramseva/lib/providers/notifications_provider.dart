@@ -22,7 +22,7 @@ class NotificationProvider with ChangeNotifier {
       List<Events> res = []
         ..addAll(notifications2!.events!)
         ..addAll(notifications1!.events!);
-      if (res != null && res.length > 0) {
+      if (res.length > 0) {
         final jsonList = res.map((item) => jsonEncode(item)).toList();
         final uniqueJsonList = jsonList.toSet().toList();
         var result = EventsList.fromJson({

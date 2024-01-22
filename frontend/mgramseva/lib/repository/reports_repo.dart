@@ -1,3 +1,5 @@
+import 'package:mgramseva/model/reports/expense_bill_report_data.dart';
+import 'package:mgramseva/model/reports/vendor_report_data.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/services/base_service.dart';
 import 'package:provider/provider.dart';
@@ -120,5 +122,76 @@ class ReportsRepo extends BaseService{
       }
     }
     return inactiveConsumers;
+  }
+  Future<List<ExpenseBillReportData>?> fetchExpenseBillReport(Map<String,dynamic> params,
+      [String? token]) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    List<ExpenseBillReportData>? expenseBillReports;
+    final requestInfo = RequestInfo(
+        APIConstants.API_MODULE_NAME,
+        APIConstants.API_VERSION,
+        APIConstants.API_TS,
+        '_get',
+        APIConstants.API_DID,
+        APIConstants.API_KEY,
+        APIConstants.API_MESSAGE_ID,
+        commonProvider.userDetails?.accessToken,
+        commonProvider.userDetails?.userRequest?.toJson());
+
+    var res = await makeRequest(
+        url: Url.EXPENSE_BILL_REPORT,
+        queryParameters: params,
+        requestInfo: requestInfo,
+        body: {},
+        method: RequestType.POST);
+    if (res != null && res['ExpenseBillReportData'] != null) {
+      try {
+        expenseBillReports = [];
+        res['ExpenseBillReportData'].forEach((val){
+          expenseBillReports?.add(ExpenseBillReportData.fromJson(val));
+        });
+      } catch (e) {
+        print(e);
+        expenseBillReports = null;
+      }
+    }
+    return expenseBillReports;
+  }
+  Future<List<VendorReportData>?> fetchVendorReport(Map<String,dynamic> params,
+      [String? token]) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    List<VendorReportData>? vendorReports;
+    final requestInfo = RequestInfo(
+        APIConstants.API_MODULE_NAME,
+        APIConstants.API_VERSION,
+        APIConstants.API_TS,
+        '_get',
+        APIConstants.API_DID,
+        APIConstants.API_KEY,
+        APIConstants.API_MESSAGE_ID,
+        commonProvider.userDetails?.accessToken,
+        commonProvider.userDetails?.userRequest?.toJson());
+    var res = await makeRequest(
+        url: Url.VENDOR_REPORT,
+        queryParameters: params,
+        requestInfo: requestInfo,
+        body: {},
+        method: RequestType.POST);
+    if (res != null && res['VendorReportData'] != null) {
+      try {
+        vendorReports = [];
+        res['VendorReportData'].forEach((val){
+          vendorReports?.add(VendorReportData.fromJson(val));
+        });
+      } catch (e) {
+        print(e);
+        vendorReports = null;
+      }
+    }
+    return vendorReports;
   }
 }

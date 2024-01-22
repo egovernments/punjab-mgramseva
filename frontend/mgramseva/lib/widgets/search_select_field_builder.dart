@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 class SearchSelectField extends StatefulWidget {
   final String labelText;
-  final List<DropdownMenuItem<Object>> options;
+  final List<dynamic> options;
   final dynamic value;
   final Function(dynamic) widget;
   final bool? isEnabled;
@@ -35,7 +35,7 @@ class SearchSelectFieldState extends State<SearchSelectField> {
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         this._overlayEntry = this._createOverlayEntry();
-        Overlay.of(context)!.insert(this._overlayEntry);
+        Overlay.of(context).insert(this._overlayEntry);
       } else {
         this._overlayEntry.remove();
       }
@@ -47,10 +47,10 @@ class SearchSelectFieldState extends State<SearchSelectField> {
 
   afterViewBuild() {
     var res = widget.options
-        .where((e) => (e.value == (widget.value)));
+        .where((e) => (e.toString() == (widget.value)));
     if (res.isNotEmpty && _focusNode.hasFocus == false) {
       widget.controller?.text = ApplicationLocalizations.of(context)
-          .translate((res.first.child as Text).data.toString());
+          .translate((res.first).toString());
     }
   }
 
@@ -59,16 +59,24 @@ class SearchSelectFieldState extends State<SearchSelectField> {
       setState(() {
         isInit = true;
         Options = widget.options
-            .where((element) => (element.child as Text)
-                .data
+            .where((element) => element
                 .toString()
                 .toLowerCase()
-                .contains(val.toString().toLowerCase()))
-            .toList();
+                .contains(val.toString().toLowerCase())).map((e) =>
+                    DropdownMenuItem(
+                          value: e,
+                          child: new Text(('${e.toString()}')),
+                    ),
+        ).toList();
       });
     } else {
       setState(() {
-        Options = widget.options;
+        Options = widget.options.map((e) =>
+            DropdownMenuItem(
+              value: e,
+              child: new Text(('${e.toString()}')),
+            ),
+        ).toList();
       });
     }
   }
@@ -105,16 +113,15 @@ class SearchSelectFieldState extends State<SearchSelectField> {
                             child: ListTile(
                               title: Text(ApplicationLocalizations.of(context)
                                   .translate(
-                                      (item.child as Text).data.toString())),
+                                      item.toString())),
                               onTap: () {
-                                Text txt = item.child as Text;
-                                widget.widget(item.value);
+                                widget.widget(item.toString());
                                 setState(() {
-                                  selectedCode = item.value;
+                                  selectedCode = item;
                                 });
                                 widget.controller?.text =
                                     ApplicationLocalizations.of(context)
-                                        .translate((txt.data.toString()));
+                                        .translate((item.toString()));
                                 _focusNode.unfocus();
                               },
                             )),
@@ -156,7 +163,7 @@ class SearchSelectFieldState extends State<SearchSelectField> {
             } else if (widget.options
                 .where((element) =>
                     ApplicationLocalizations.of(context)
-                        .translate((element.child as Text).data.toString())
+                        .translate((element).toString())
                         .toLowerCase() ==
                     (value.toString().toLowerCase()))
                 .toList()
