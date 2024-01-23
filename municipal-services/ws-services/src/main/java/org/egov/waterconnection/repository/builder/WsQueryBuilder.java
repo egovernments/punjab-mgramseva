@@ -725,7 +725,7 @@ public class WsQueryBuilder {
 		if (criteria.isEmpty() || criteria.getTenantId().isEmpty())
 			return null;
 		StringBuilder query = new StringBuilder(WATER_CONNECTION_BY_PREVIOUSREADINNDATE);
-		query.append(" WHERE status='Active' AND  tenantid='"+criteria.getTenantId()+"' and connectionno NOT IN (" + CONSUMERCODE_IN_DEMANDTABLE+" where tenantid='"+criteria.getTenantId()+"') group by previousreadingdate");
+		query.append(" WHERE status='Active' AND  tenantid='"+criteria.getTenantId()+"' and connectionno NOT IN (" + CONSUMERCODE_IN_DEMANDTABLE+" where tenantid='"+criteria.getTenantId()+"') group by previousreadingdate;");
 		return query.toString();
 	}
 
