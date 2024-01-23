@@ -726,7 +726,6 @@ public class WsQueryBuilder {
 			return null;
 		StringBuilder query = new StringBuilder(WATER_CONNECTION_BY_PREVIOUSREADINNDATE);
 		query.append(" WHERE status='Active' AND  tenantid='"+criteria.getTenantId()+"' and connectionno NOT IN (" + CONSUMERCODE_IN_DEMANDTABLE+" where tenantid='"+criteria.getTenantId()+"') group by previousreadingdate");
-		query.append(" GROUP BY taxperiodto ");
 		return query.toString();
 	}
 
