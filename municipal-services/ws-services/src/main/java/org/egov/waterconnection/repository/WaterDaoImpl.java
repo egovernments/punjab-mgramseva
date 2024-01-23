@@ -179,7 +179,8 @@ public class WaterDaoImpl implements WaterDao {
 		WaterConnectionByDemandGenerationDateResponse response = new WaterConnectionByDemandGenerationDateResponse();
 		waterConnectionByDemandGenerationDateList = jdbcTemplate.query(query, preparedStatement.toArray(), wcbyDemandRowMapper);
 		combinedDataByDate.addAll(waterConnectionByDemandGenerationDateList);
-
+		log.info("combinedDataByDate:"+combinedDataByDate);
+		log.info("combinedDataByDate size:"+combinedDataByDate.size());
         query = wsQueryBuilder.getQueryForWCCountForPreviousreadingdate(criteria, preparedStatement, requestInfo);
 		if (query == null)
 			return null;
