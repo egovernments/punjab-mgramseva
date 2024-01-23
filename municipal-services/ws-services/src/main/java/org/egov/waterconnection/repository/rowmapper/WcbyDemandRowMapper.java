@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 @Component
 public class WcbyDemandRowMapper implements ResultSetExtractor<List<WaterConnectionByDemandGenerationDate>> {
+
     @Override
     public List<WaterConnectionByDemandGenerationDate> extractData(ResultSet rs) throws SQLException, DataAccessException {
         List<WaterConnectionByDemandGenerationDate> waterDemandGenerationDateResponseList = new ArrayList<WaterConnectionByDemandGenerationDate>();

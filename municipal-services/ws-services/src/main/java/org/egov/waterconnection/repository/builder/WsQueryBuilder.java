@@ -66,9 +66,8 @@ public class WsQueryBuilder {
 			+ "eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id"
 			+ LEFT_OUTER_JOIN_STRING + "eg_ws_roadcuttinginfo roadcuttingInfo ON roadcuttingInfo.wsid = conn.id";
 
-	private static final String WATER_CONNNECTION_BY_DEMANNDDATE = "SELECT  distinct((select d.taxperiodto as taxperiodto from egbs_demand_v1 d where d.consumercode = conn.connectionno order by d.createdtime desc limit 1)) as taxperiodto, count(*) as count  FROM eg_ws_connection conn " +
-			"INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id LEFT OUTER JOIN eg_ws_applicationdocument document ON document.wsid = conn.id LEFT OUTER JOIN eg_ws_plumberinfo plumber ON plumber.wsid = conn.id LEFT OUTER JOIN eg_ws_connectionholder connectionholder " +
-			"ON connectionholder.connectionid = conn.id LEFT OUTER JOIN eg_ws_roadcuttinginfo roadcuttingInfo ON roadcuttingInfo.wsid = conn.id ";
+	private static final String WATER_CONNNECTION_BY_DEMANNDDATE = "SELECT  distinct((select d.taxperiodto as taxperiodto from egbs_demand_v1 d where d.consumercode = conn.connectionno order by d.createdtime desc limit 1)) as taxperiodto, count(*) as count" +
+			" FROM eg_ws_connection conn INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id and conn.status='Active'";
 
 	private  static final String WATER_CONNECTION_BY_PREVIOUSREADINNDATE = "select previousreadingdate as taxperiodto , count(*) as count from eg_ws_connection";
 
@@ -726,7 +725,7 @@ public class WsQueryBuilder {
 		if (criteria.isEmpty() || criteria.getTenantId().isEmpty())
 			return null;
 		StringBuilder query = new StringBuilder(WATER_CONNECTION_BY_PREVIOUSREADINNDATE);
-		query.append(" WHERE tenantid='"+criteria.getTenantId()+"' and connectionno NOT IN (" + CONSUMERCODE_IN_DEMANDTABLE+" where tenantid='"+criteria.getTenantId()+"') group by previousreadingdate");
+		query.append(" WHERE status='Active' AND  tenantid='"+criteria.getTenantId()+"' and connectionno NOT IN (" + CONSUMERCODE_IN_DEMANDTABLE+" where tenantid='"+criteria.getTenantId()+"') group by previousreadingdate");
 		query.append(" GROUP BY taxperiodto ");
 		return query.toString();
 	}
