@@ -18,14 +18,14 @@ public class WcbyDemandRowMapper implements ResultSetExtractor<List<WaterConnect
     public List<WaterConnectionByDemandGenerationDate> extractData(ResultSet rs) throws SQLException, DataAccessException {
         List<WaterConnectionByDemandGenerationDate> waterDemandGenerationDateResponseList = new ArrayList<WaterConnectionByDemandGenerationDate>();
         while (rs.next()) {
-            WaterConnectionByDemandGenerationDate waterDemandGenerationDateResponse = new WaterConnectionByDemandGenerationDate();
             String taxperiodto = String.valueOf(rs.getLong("taxperiodto"));
             if (!taxperiodto.isEmpty() && !taxperiodto.equalsIgnoreCase("0")) {
-                log.info("taxperiodto"+taxperiodto);
+                WaterConnectionByDemandGenerationDate waterDemandGenerationDateResponse = new WaterConnectionByDemandGenerationDate();
                 waterDemandGenerationDateResponse.setDate(Long.valueOf(taxperiodto));
                 waterDemandGenerationDateResponse.setCount(Integer.valueOf(rs.getInt("count")));
+                waterDemandGenerationDateResponseList.add(waterDemandGenerationDateResponse);
             }
-            waterDemandGenerationDateResponseList.add(waterDemandGenerationDateResponse);
+
         }
         return waterDemandGenerationDateResponseList;
     }
