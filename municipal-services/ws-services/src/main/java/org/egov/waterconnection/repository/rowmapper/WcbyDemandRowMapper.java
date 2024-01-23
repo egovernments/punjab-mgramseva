@@ -17,7 +17,7 @@ public class WcbyDemandRowMapper implements ResultSetExtractor<List<WaterConnect
         List<WaterConnectionByDemandGenerationDate> waterDemandGenerationDateResponseList = new ArrayList<WaterConnectionByDemandGenerationDate>();
         WaterConnectionByDemandGenerationDate waterDemandGenerationDateResponse = new WaterConnectionByDemandGenerationDate();
         while (rs.next()) {
-            String taxperiodto = String.valueOf(rs.getInt("taxperiodto"));
+            String taxperiodto = String.valueOf(rs.getLong("taxperiodto"));
             if (!taxperiodto.isEmpty()) {
                 waterDemandGenerationDateResponse.setDate(Long.valueOf(taxperiodto));
                 waterDemandGenerationDateResponse.setCount(Integer.valueOf(rs.getInt("count")));
