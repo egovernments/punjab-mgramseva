@@ -165,28 +165,32 @@ public class WaterDaoImpl implements WaterDao {
 		List<WaterConnectionByDemandGenerationDate> waterConnectionByPreviousReadingDateList = new ArrayList<>();
 		List<WaterConnectionByDemandGenerationDate> waterConnectionByDemandGenerationDateList = new ArrayList<>();
 		List<WaterConnectionByDemandGenerationDate> combinedDataByDate = new ArrayList<>();
+		WaterConnectionByDemandGenerationDateResponse response = new WaterConnectionByDemandGenerationDateResponse();
 		List<Object> preparedStatement = new ArrayList<>();
 		Map<String, Long> collectionDataCount = null;
 		List<Map<String, Object>> countData = null;
 		Boolean flag = null;
 		Set<String> consumerCodeSet = null;
-
-		String query = wsQueryBuilder.getQueryForWCCountbyDemandDate(criteria, preparedStatement, requestInfo);
-
-		if (query == null)
-			return null;
-        log.info("QUERY to get data 1"+query);
-		WaterConnectionByDemandGenerationDateResponse response = new WaterConnectionByDemandGenerationDateResponse();
-		waterConnectionByDemandGenerationDateList = jdbcTemplate.query(query, preparedStatement.toArray(), wcbyDemandRowMapper);
-		combinedDataByDate.addAll(waterConnectionByDemandGenerationDateList);
-		log.info("combinedDataByDate:"+combinedDataByDate);
-		log.info("combinedDataByDate size:"+combinedDataByDate.size());
-        query = wsQueryBuilder.getQueryForWCCountForPreviousreadingdate(criteria, preparedStatement, requestInfo);
+		String query = wsQueryBuilder.getQueryForWCCountForPreviousreadingdate(criteria, preparedStatement, requestInfo);
 		if (query == null)
 			return null;
 		log.info("QUERY to get data2"+query);
 		waterConnectionByPreviousReadingDateList = jdbcTemplate.query(query, preparedStatement.toArray(), wcbyDemandRowMapper);
+	    query = wsQueryBuilder.getQueryForWCCountbyDemandDate(criteria, preparedStatement, requestInfo);
 		combinedDataByDate.addAll(waterConnectionByPreviousReadingDateList);
+
+		if (query == null)
+			return null;
+        log.info("QUERY to get data 1"+query);
+		waterConnectionByDemandGenerationDateList = jdbcTemplate.query(query, preparedStatement.toArray(), wcbyDemandRowMapper);
+		combinedDataByDate.addAll(waterConnectionByDemandGenerationDateList);
+		log.info("combinedDataByDate:"+combinedDataByDate);
+		log.info("combinedDataByDate size:"+combinedDataByDate.size());
+        /*query = wsQueryBuilder.getQueryForWCCountForPreviousreadingdate(criteria, preparedStatement, requestInfo);
+		if (query == null)
+			return null;
+		log.info("QUERY to get data2"+query);
+		waterConnectionByPreviousReadingDateList = jdbcTemplate.query(query, preparedStatement.toArray(), wcbyDemandRowMapper);*/
 
 		response.setWaterConnectionByDemandGenerationDates(combinedDataByDate);
 		log.info("Combined data",combinedDataByDate);
