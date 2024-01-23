@@ -1,5 +1,6 @@
 package org.egov.waterconnection.repository.rowmapper;
 
+import lombok.extern.slf4j.Slf4j;
 import org.egov.waterconnection.web.models.WaterConnectionByDemandGenerationDate;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 @Component
+@Slf4j
 public class WcbyDemandRowMapper implements ResultSetExtractor<List<WaterConnectionByDemandGenerationDate>> {
 
     @Override
@@ -17,6 +19,7 @@ public class WcbyDemandRowMapper implements ResultSetExtractor<List<WaterConnect
         List<WaterConnectionByDemandGenerationDate> waterDemandGenerationDateResponseList = new ArrayList<WaterConnectionByDemandGenerationDate>();
         WaterConnectionByDemandGenerationDate waterDemandGenerationDateResponse = new WaterConnectionByDemandGenerationDate();
         while (rs.next()) {
+            log.info("RESULT SET" + rs.toString());
             String taxperiodto = String.valueOf(rs.getLong("taxperiodto"));
             if (!taxperiodto.isEmpty()) {
                 waterDemandGenerationDateResponse.setDate(Long.valueOf(taxperiodto));
