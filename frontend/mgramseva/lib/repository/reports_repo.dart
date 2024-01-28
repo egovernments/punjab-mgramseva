@@ -5,6 +5,7 @@ import 'package:mgramseva/services/base_service.dart';
 import 'package:provider/provider.dart';
 
 import '../model/reports/InactiveConsumerReportData.dart';
+import '../model/reports/WaterConnectionCount.dart';
 import '../model/reports/bill_report_data.dart';
 import '../model/reports/collection_report_data.dart';
 import '../providers/common_provider.dart';
@@ -193,5 +194,40 @@ class ReportsRepo extends BaseService{
       }
     }
     return vendorReports;
+  }
+  Future<List<WaterConnectionCount>?> fetchWaterConnectionsCount(Map<String,dynamic> params,
+      [String? token]) async {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    List<WaterConnectionCount>? waterConnectionCount;
+    final requestInfo = RequestInfo(
+        APIConstants.API_MODULE_NAME,
+        APIConstants.API_VERSION,
+        APIConstants.API_TS,
+        '_get',
+        APIConstants.API_DID,
+        APIConstants.API_KEY,
+        APIConstants.API_MESSAGE_ID,
+        commonProvider.userDetails?.accessToken,
+        commonProvider.userDetails?.userRequest?.toJson());
+    var res = await makeRequest(
+        url: Url.WATER_CONNECTION_COUNT,
+        queryParameters: params,
+        requestInfo: requestInfo,
+        body: {},
+        method: RequestType.POST);
+    if (res != null && res['WaterConnectionCount'] != null) {
+      try {
+        waterConnectionCount = [];
+        res['WaterConnectionCount'].forEach((val){
+          waterConnectionCount?.add(WaterConnectionCount.fromJson(val));
+        });
+      } catch (e) {
+        print(e);
+        waterConnectionCount = null;
+      }
+    }
+    return waterConnectionCount;
   }
 }

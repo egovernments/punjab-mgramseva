@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/providers/reports_provider.dart';
+import 'package:mgramseva/screeens/generate_bill/widgets/WaterConnectionCountWidget.dart';
 import 'package:mgramseva/widgets/keyboard_focus_watcher.dart';
 import 'package:mgramseva/model/bill/bill_generation_details/bill_generation_details.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
@@ -58,6 +60,8 @@ class _GenerateBillState extends State<GenerateBill> {
 
     Provider.of<IfixHierarchyProvider>(context,listen: false)
       ..getBillingSlabs();
+    Provider.of<ReportsProvider>(context,listen: false)
+      ..getWaterConnectionsCount();
   }
 
   var metVal = "";
@@ -139,6 +143,7 @@ class _GenerateBillState extends State<GenerateBill> {
                                                     billgenerationprovider
                                                         .billGenerateDetails
                                                         .serviceTypeCtrl)),
+                                    WaterConnectionCountWidget(),
                                     billgenerationprovider.billGenerateDetails
                                                 .serviceType !=
                                             "Metered"
