@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.egov.tracer.model.CustomException;
 import org.egov.wscalculation.config.WSCalculationConfiguration;
 import org.egov.wscalculation.util.NotificationUtil;
@@ -22,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONArray;
 
 @Service
+@Slf4j
 public class DemandNotificationService {
 
 	@Autowired
@@ -42,6 +44,7 @@ public class DemandNotificationService {
 			enrichSMSRequest(notificationObj, smsRequests, topic);
 			if (!CollectionUtils.isEmpty(smsRequests)) {
 				if(config.isSmsForDemandEnable()) {
+					log.info("Bulk demand generate call");
 					util.sendSMS(smsRequests);
 				}
 			}
