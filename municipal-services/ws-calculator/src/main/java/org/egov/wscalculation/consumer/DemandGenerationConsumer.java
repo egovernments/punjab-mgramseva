@@ -486,7 +486,7 @@ public class DemandGenerationConsumer {
 							.tenantid(tenantId)
 							.category(Category.TRANSACTION).build();
 					if(config.isSmsForDemandEnable()) {
-						producer.push(config.getSmsNotifTopic(), smsRequest);
+//						producer.push(config.getSmsNotifTopic(), smsRequest);
 					}
 				}
 
