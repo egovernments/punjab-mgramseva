@@ -67,7 +67,7 @@ public class WsQueryBuilder {
 			+ LEFT_OUTER_JOIN_STRING + "eg_ws_roadcuttinginfo roadcuttingInfo ON roadcuttingInfo.wsid = conn.id";
 
 	private static final String WATER_CONNNECTION_BY_DEMANNDDATE = "SELECT ((select distinct d.taxperiodto as taxperiodto from egbs_demand_v1 d where d.status = 'ACTIVE' and d.businessservice = 'WS' and d.consumercode = conn.connectionno order by d.taxperiodto desc limit 1)) as taxperiodto, count(*) as count" +
-			" FROM eg_ws_connection conn INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id and conn.status='Active'";
+			" FROM eg_ws_connection conn INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id and connectiontype='Non_Metered'and conn.status='Active'";
 
 	private  static final String WATER_CONNECTION_BY_PREVIOUSREADINNDATE = "select previousreadingdate as taxperiodto , count(*) as count from eg_ws_connection";
 
@@ -725,7 +725,7 @@ public class WsQueryBuilder {
 		if (criteria.isEmpty() || criteria.getTenantId().isEmpty())
 			return null;
 		StringBuilder query = new StringBuilder(WATER_CONNECTION_BY_PREVIOUSREADINNDATE);
-		query.append(" WHERE status='Active' AND  tenantid='"+criteria.getTenantId()+"' and connectionno NOT IN (" + CONSUMERCODE_IN_DEMANDTABLE+" where d.businessservice='WS' and d.tenantid='"+criteria.getTenantId()+"') ");
+		query.append(" WHERE status='Active' AND  tenantid='"+criteria.getTenantId()+"' and connectiontype='Non_Metered' and connectionno NOT IN (" + CONSUMERCODE_IN_DEMANDTABLE+" where d.businessservice='WS' and d.tenantid='"+criteria.getTenantId()+"') ");
 		query.append(" GROUP BY taxperiodto ");
 		return query.toString();
 	}
