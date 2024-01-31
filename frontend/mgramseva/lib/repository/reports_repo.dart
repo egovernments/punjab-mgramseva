@@ -217,10 +217,10 @@ class ReportsRepo extends BaseService{
         requestInfo: requestInfo,
         body: {},
         method: RequestType.POST);
-    if (res != null && res['WaterConnectionCount'] != null) {
+    if (res != null && res['WaterConnections'] != null) {
       try {
         waterConnectionCount = [];
-        res['WaterConnectionCount'].forEach((val){
+        res['WaterConnections'].forEach((val){
           waterConnectionCount?.add(WaterConnectionCount.fromJson(val));
         });
       } catch (e) {

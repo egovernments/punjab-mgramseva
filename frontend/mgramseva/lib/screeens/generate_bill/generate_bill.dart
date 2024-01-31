@@ -60,8 +60,6 @@ class _GenerateBillState extends State<GenerateBill> {
 
     Provider.of<IfixHierarchyProvider>(context,listen: false)
       ..getBillingSlabs();
-    Provider.of<ReportsProvider>(context,listen: false)
-      ..getWaterConnectionsCount();
   }
 
   var metVal = "";
