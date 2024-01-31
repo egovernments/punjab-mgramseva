@@ -195,12 +195,12 @@ class ReportsRepo extends BaseService{
     }
     return vendorReports;
   }
-  Future<List<WaterConnectionCount>?> fetchWaterConnectionsCount(Map<String,dynamic> params,
+  Future<WaterConnectionCountResponse?> fetchWaterConnectionsCount(Map<String,dynamic> params,
       [String? token]) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    List<WaterConnectionCount>? waterConnectionCount;
+    WaterConnectionCountResponse? waterConnectionResponse = WaterConnectionCountResponse();
     final requestInfo = RequestInfo(
         APIConstants.API_MODULE_NAME,
         APIConstants.API_VERSION,
@@ -217,17 +217,14 @@ class ReportsRepo extends BaseService{
         requestInfo: requestInfo,
         body: {},
         method: RequestType.POST);
-    if (res != null && res['WaterConnections'] != null) {
+    if (res != null ){
       try {
-        waterConnectionCount = [];
-        res['WaterConnections'].forEach((val){
-          waterConnectionCount?.add(WaterConnectionCount.fromJson(val));
-        });
+        waterConnectionResponse = WaterConnectionCountResponse.fromJson(res);
       } catch (e) {
         print(e);
-        waterConnectionCount = null;
+        waterConnectionResponse = null;
       }
     }
-    return waterConnectionCount;
+    return waterConnectionResponse;
   }
 }

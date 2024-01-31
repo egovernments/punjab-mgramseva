@@ -41,7 +41,7 @@ class ReportsProvider with ChangeNotifier {
   List<InactiveConsumerReportData>? inactiveconsumers;
   List<ExpenseBillReportData>? expenseBillReportData;
   List<VendorReportData>? vendorReportData;
-  List<WaterConnectionCount>? waterConnectionCount;
+  WaterConnectionCountResponse? waterConnectionCount;
   BillsTableData genericTableData = BillsTableData([], []);
   int limit = 10;
   int offset = 1;
@@ -826,7 +826,6 @@ class ReportsProvider with ChangeNotifier {
       }
       callNotifier();
     } catch (e, s) {
-      waterConnectionCount = [];
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       streamController.addError('error');
       callNotifier();

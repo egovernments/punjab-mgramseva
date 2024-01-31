@@ -28,34 +28,66 @@ class _WaterConnectionCountWidgetState
       child: Consumer<ReportsProvider>(
         builder: (_, provider, child) {
           return Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
               children: [
-                Text("LAST BILL CYCLE"),
-                Container(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                  child:Column(
-                    children:[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Last Bill Cycle Month"),
-                          Text("Consumer Count"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("LAST BILL CYCLE DEMAND GENERATED"),
+                    Container(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child:Column(
+                            children:[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Last Bill Cycle Month"),
+                                  Text("Consumer Count"),
 
-                        ],
-                      ),
-                      ...?provider.waterConnectionCount?.map((e) => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(DateFormats.getMonthAndYearFromDateTime(DateTime.fromMillisecondsSinceEpoch(e.taxperiodto!))),
-                          Text(e.count.toString()),
-                        ],
-                      )).toList(),
-                    ]
-                  )
-                )
+                                ],
+                              ),
+                              ...?provider.waterConnectionCount?.waterConnectionsDemandGenerated?.map((e) => Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(DateFormats.getMonthAndYearFromDateTime(DateTime.fromMillisecondsSinceEpoch(e.taxperiodto!))),
+                                  Text(e.count.toString()),
+                                ],
+                              )).toList(),
+                            ]
+                        )
+                    )
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("LAST BILL CYCLE DEMAND NOT GENERATED"),
+                    Container(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child:Column(
+                            children:[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Last Bill Cycle Month"),
+                                  Text("Consumer Count"),
+
+                                ],
+                              ),
+                              ...?provider.waterConnectionCount?.waterConnectionsDemandNotGenerated?.map((e) => Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(DateFormats.getMonthAndYearFromDateTime(DateTime.fromMillisecondsSinceEpoch(e.taxperiodto!))),
+                                  Text(e.count.toString()),
+                                ],
+                              )).toList(),
+                            ]
+                        )
+                    )
+                  ],
+                ),
               ],
-            ),
+            )
           );
         },
       ),
