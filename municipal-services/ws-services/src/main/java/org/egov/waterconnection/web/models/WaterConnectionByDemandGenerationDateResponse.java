@@ -11,6 +11,8 @@ import java.util.List;
 @Builder
 public class WaterConnectionByDemandGenerationDateResponse {
 
-    @JsonProperty("WaterConnections")
+    @JsonProperty("WaterConnectionsDemandGenerated")
     List<WaterConnectionByDemandGenerationDate> waterConnectionByDemandGenerationDates;
+    @JsonProperty("WaterConnectionsDemandNotGenerated")
+    List<WaterConnectionByDemandGenerationDate> waterConnectionByDemandNotGeneratedDates;
 }

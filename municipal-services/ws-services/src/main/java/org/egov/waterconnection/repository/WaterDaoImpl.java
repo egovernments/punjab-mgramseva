@@ -164,21 +164,19 @@ public class WaterDaoImpl implements WaterDao {
 
 		List<WaterConnectionByDemandGenerationDate> waterConnectionByPreviousReadingDateList = new ArrayList<>();
 		List<WaterConnectionByDemandGenerationDate> waterConnectionByDemandGenerationDateList = new ArrayList<>();
-		List<WaterConnectionByDemandGenerationDate> combinedDataByDate = new ArrayList<>();
 		WaterConnectionByDemandGenerationDateResponse response = new WaterConnectionByDemandGenerationDateResponse();
 		List<Object> preparedStatement = new ArrayList<>();
-		String query = wsQueryBuilder.getQueryForWCCountForPreviousreadingdate(criteria, preparedStatement, requestInfo);
-		if (query == null)
+		String query1 = wsQueryBuilder.getQueryForWCCountForPreviousreadingdate(criteria, preparedStatement, requestInfo);
+		if (query1 == null)
 			return null;
-		waterConnectionByPreviousReadingDateList = jdbcTemplate.query(query, preparedStatement.toArray(), wcbyDemandRowMapper);
-	    query = wsQueryBuilder.getQueryForWCCountbyDemandDate(criteria, preparedStatement, requestInfo);
-		combinedDataByDate.addAll(waterConnectionByPreviousReadingDateList);
+		waterConnectionByPreviousReadingDateList = jdbcTemplate.query(query1, preparedStatement.toArray(), wcbyDemandRowMapper);
+	    String query2 = wsQueryBuilder.getQueryForWCCountbyDemandDate(criteria, preparedStatement, requestInfo);
 
-		if (query == null)
+		if (query2 == null)
 			return null;
-		waterConnectionByDemandGenerationDateList = jdbcTemplate.query(query, preparedStatement.toArray(), wcbyDemandRowMapper);
-		combinedDataByDate.addAll(waterConnectionByDemandGenerationDateList);
-		response.setWaterConnectionByDemandGenerationDates(combinedDataByDate);
+		waterConnectionByDemandGenerationDateList = jdbcTemplate.query(query2, preparedStatement.toArray(), wcbyDemandRowMapper);
+		response.setWaterConnectionByDemandGenerationDates(waterConnectionByDemandGenerationDateList);
+		response.setWaterConnectionByDemandNotGeneratedDates(waterConnectionByPreviousReadingDateList);
 		return response;
 	}
 
