@@ -71,7 +71,7 @@ public class WsQueryBuilder {
 
 	private  static final String WATER_CONNECTION_BY_PREVIOUSREADINNDATE = "select previousreadingdate as taxperiodto , count(*) as count from eg_ws_connection";
 
-	private static final String CONSUMERCODE_IN_DEMANDTABLE= "select consumercode from egbs_demand_v1 d where d.buisnessservice = 'WS'";
+	private static final String CONSUMERCODE_IN_DEMANDTABLE= "select consumercode from egbs_demand_v1 d";
 	private static final String PAGINATION_WRAPPER = "{} {orderby} {pagination}";
 
 	private static final String ORDER_BY_CLAUSE = " ORDER BY wc.appCreatedDate DESC";
@@ -725,7 +725,7 @@ public class WsQueryBuilder {
 		if (criteria.isEmpty() || criteria.getTenantId().isEmpty())
 			return null;
 		StringBuilder query = new StringBuilder(WATER_CONNECTION_BY_PREVIOUSREADINNDATE);
-		query.append(" WHERE status='Active' AND  tenantid='"+criteria.getTenantId()+"' and connectionno NOT IN (" + CONSUMERCODE_IN_DEMANDTABLE+" where tenantid='"+criteria.getTenantId()+"') ");
+		query.append(" WHERE status='Active' AND  tenantid='"+criteria.getTenantId()+"' and connectionno NOT IN (" + CONSUMERCODE_IN_DEMANDTABLE+" where d.businessservice='WS' and d.tenantid='"+criteria.getTenantId()+"') ");
 		query.append(" GROUP BY taxperiodto ");
 		return query.toString();
 	}
