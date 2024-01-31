@@ -71,7 +71,7 @@ public class WsQueryBuilder {
 
 	private  static final String WATER_CONNECTION_BY_PREVIOUSREADINNDATE = "select previousreadingdate as taxperiodto , count(*) as count from eg_ws_connection";
 
-	private static final String CONSUMERCODE_IN_DEMANDTABLE= "select consumercode from egbs_demand_v1";
+	private static final String CONSUMERCODE_IN_DEMANDTABLE= "select consumercode from egbs_demand_v1 d where d.buisnessservice = 'WS'";
 	private static final String PAGINATION_WRAPPER = "{} {orderby} {pagination}";
 
 	private static final String ORDER_BY_CLAUSE = " ORDER BY wc.appCreatedDate DESC";
