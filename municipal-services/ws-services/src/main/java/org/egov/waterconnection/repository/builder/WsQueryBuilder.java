@@ -66,7 +66,7 @@ public class WsQueryBuilder {
 			+ "eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id"
 			+ LEFT_OUTER_JOIN_STRING + "eg_ws_roadcuttinginfo roadcuttingInfo ON roadcuttingInfo.wsid = conn.id";
 
-	private static final String WATER_CONNNECTION_BY_DEMANNDDATE = "SELECT  distinct((select d.taxperiodto as taxperiodto from egbs_demand_v1 d where d.consumercode = conn.connectionno order by d.createdtime desc limit 1)) as taxperiodto, count(*) as count" +
+	private static final String WATER_CONNNECTION_BY_DEMANNDDATE = "SELECT  distinct((select d.taxperiodto as taxperiodto from egbs_demand_v1 d where d.status = 'Active' and a.businessservice = 'WS' and d.consumercode = conn.connectionno order by d.createdtime desc limit 1)) as taxperiodto, count(*) as count" +
 			" FROM eg_ws_connection conn INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id and conn.status='Active'";
 
 	private  static final String WATER_CONNECTION_BY_PREVIOUSREADINNDATE = "select previousreadingdate as taxperiodto , count(*) as count from eg_ws_connection";
