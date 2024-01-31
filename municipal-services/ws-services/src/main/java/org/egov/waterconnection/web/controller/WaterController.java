@@ -41,7 +41,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import io.swagger.models.parameters.QueryParameter;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -230,4 +229,10 @@ public class WaterController {
 
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+	@RequestMapping(value = "/_countWCbyDemandGenerationDate", method = RequestMethod.POST)
+	   public ResponseEntity<WaterConnectionByDemandGenerationDateResponse> countWCbyDemandGenerationDate(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper, @Valid @ModelAttribute SearchCriteria criteria) {
+		WaterConnectionByDemandGenerationDateResponse response = waterService.countWCbyDemandGennerationDate(criteria, requestInfoWrapper.getRequestInfo());
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
 }

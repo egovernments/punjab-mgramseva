@@ -7,9 +7,7 @@ import javax.validation.Valid;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.waterconnection.web.models.*;
 import org.egov.waterconnection.web.models.BillReportData;
-import org.egov.waterconnection.web.models.BillReportResponse;
 import org.egov.waterconnection.web.models.CollectionReportData;
-import org.egov.waterconnection.web.models.Feedback;
 import org.egov.waterconnection.web.models.FeedbackRequest;
 import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 
@@ -30,7 +28,8 @@ public interface WaterService {
 	List<WaterConnection> createWaterConnection(WaterConnectionRequest waterConnectionRequest);
 
 	WaterConnectionResponse search(SearchCriteria criteria, RequestInfo requestInfo);
-	
+
+	WaterConnectionByDemandGenerationDateResponse countWCbyDemandGennerationDate(SearchCriteria criteria, RequestInfo requestInfo);
 	List<WaterConnection> updateWaterConnection(WaterConnectionRequest waterConnectionRequest);
 	
 	void submitFeedback( FeedbackRequest feedbackrequest);

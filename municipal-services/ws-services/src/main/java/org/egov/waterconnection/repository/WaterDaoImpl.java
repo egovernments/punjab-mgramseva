@@ -2,7 +2,6 @@ package org.egov.waterconnection.repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.Role;
 import org.egov.common.contract.request.User;
@@ -67,6 +65,9 @@ public class WaterDaoImpl implements WaterDao {
 
 	@Autowired
 	private OpenWaterRowMapper openWaterRowMapper;
+
+	@Autowired
+	private WcbyDemandRowMapper wcbyDemandRowMapper;
 	
 	@Autowired
 	private ReportRowMapper reportRowMapper;
@@ -159,7 +160,26 @@ public class WaterDaoImpl implements WaterDao {
 			waterConnectionProducer.push(wsConfiguration.getWorkFlowUpdateTopic(), waterConnectionRequest);
 		}
 	}
-	
+	public WaterConnectionByDemandGenerationDateResponse getWaterConnectionByDemandDate (SearchCriteria criteria, RequestInfo requestInfo) {
+
+		List<WaterConnectionByDemandGenerationDate> waterConnectionByPreviousReadingDateList = new ArrayList<>();
+		List<WaterConnectionByDemandGenerationDate> waterConnectionByDemandGenerationDateList = new ArrayList<>();
+		WaterConnectionByDemandGenerationDateResponse response = new WaterConnectionByDemandGenerationDateResponse();
+		List<Object> preparedStatement = new ArrayList<>();
+		String query1 = wsQueryBuilder.getQueryForWCCountForPreviousreadingdate(criteria, preparedStatement, requestInfo);
+		if (query1 == null)
+			return null;
+		waterConnectionByPreviousReadingDateList = jdbcTemplate.query(query1, preparedStatement.toArray(), wcbyDemandRowMapper);
+	    String query2 = wsQueryBuilder.getQueryForWCCountbyDemandDate(criteria, preparedStatement, requestInfo);
+
+		if (query2 == null)
+			return null;
+		waterConnectionByDemandGenerationDateList = jdbcTemplate.query(query2, preparedStatement.toArray(), wcbyDemandRowMapper);
+		response.setWaterConnectionByDemandGenerationDates(waterConnectionByDemandGenerationDateList);
+		response.setWaterConnectionByDemandNotGeneratedDates(waterConnectionByPreviousReadingDateList);
+		return response;
+	}
+
 	/**
 	 * push object to create meter reading
 	 * 
