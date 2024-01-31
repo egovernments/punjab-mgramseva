@@ -30,8 +30,9 @@ class _WaterConnectionCountWidgetState
           return Container(
             child: Column(
               children: [
-                Row(
+                provider.waterConnectionCount?.waterConnectionsDemandGenerated?.length==0?SizedBox():Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("LAST BILL CYCLE DEMAND GENERATED"),
                     Container(
@@ -58,8 +59,10 @@ class _WaterConnectionCountWidgetState
                     )
                   ],
                 ),
-                Row(
+                SizedBox(height: 20,),
+                provider.waterConnectionCount?.waterConnectionsDemandNotGenerated?.length==0?SizedBox():Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("LAST BILL CYCLE DEMAND NOT GENERATED"),
                     Container(
