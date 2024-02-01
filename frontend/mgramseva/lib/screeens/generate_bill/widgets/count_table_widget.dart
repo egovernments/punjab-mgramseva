@@ -63,16 +63,26 @@ class _CountTableWidgetState extends State<CountTableWidget> {
   Widget _buildDataTable(List<WaterConnectionCount> connectionCount) {
     return DataTable(
       border: TableBorder.all(
-          width: 0.5, borderRadius: BorderRadius.all(Radius.circular(5))),
+        width: 0.5,
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+        color: Colors.grey, // Set border color to grey
+      ),// Set heading row background color to grey
+      headingTextStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold), // Set heading text color to black and bold
       columns: [
         DataColumn(
-            label: FittedBox(
-                child: Text(
-                    "${ApplicationLocalizations.of(context).translate(i18.common.LAST_BILL_CYCLE_MONTH)}"))),
+          label: FittedBox(
+            child: Text(
+              "${ApplicationLocalizations.of(context).translate(i18.common.LAST_BILL_CYCLE_MONTH)}",
+            ),
+          ),
+        ),
         DataColumn(
-            label: FittedBox(
-                child: Text(
-                    "${ApplicationLocalizations.of(context).translate(i18.common.CONSUMER_COUNT)}")))
+          label: FittedBox(
+            child: Text(
+              "${ApplicationLocalizations.of(context).translate(i18.common.CONSUMER_COUNT)}",
+            ),
+          ),
+        )
       ],
       rows: _isCollapsed
           ? connectionCount.take(5).map((e) => _buildDataRow(e)).toList()
@@ -81,11 +91,22 @@ class _CountTableWidgetState extends State<CountTableWidget> {
   }
 
   DataRow _buildDataRow(WaterConnectionCount count) {
+    final bool isEvenRow = widget.waterConnectionCount!.indexOf(count) % 2 == 0;
+    final Color? rowColor = isEvenRow ? Colors.grey[100] : Colors.white; // Set alternate row background color to grey
+
     return DataRow(
+      color: MaterialStateColor.resolveWith((states) => rowColor!), // Apply alternate row background color
       cells: [
-        DataCell(Text(DateFormats.getMonthAndYearFromDateTime(
-            DateTime.fromMillisecondsSinceEpoch(count.taxperiodto!)))),
-        DataCell(Text(count.count.toString())),
+        DataCell(
+          Text(
+            DateFormats.getMonthAndYearFromDateTime(
+              DateTime.fromMillisecondsSinceEpoch(count.taxperiodto!),
+            ),
+          ),
+        ),
+        DataCell(
+          Text(count.count.toString()),
+        ),
       ],
     );
   }

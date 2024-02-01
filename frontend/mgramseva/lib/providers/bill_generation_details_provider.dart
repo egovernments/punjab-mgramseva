@@ -374,7 +374,8 @@ class BillGenerationProvider with ChangeNotifier {
             FittedBox(
               child: DataTable(
                   border: TableBorder.all(
-                      width: 0.5, borderRadius: BorderRadius.all(Radius.circular(5))), columns: [
+                      width: 0.5, borderRadius: BorderRadius.all(Radius.circular(5)),
+                    color: Colors.grey,), columns: [
                         DataColumn(
                   label: Text(
                     "${ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_TYPE)}",
