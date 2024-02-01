@@ -119,7 +119,7 @@ class DateFormats {
 
   static String getMonthAndYearFromDateTime(DateTime date) {
     try {
-      return '${DateFormat.MMM().format(date)}-${DateFormat.y().format(date)}';
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(Constants.MONTHS[date.month-1])}-${DateFormat.y().format(date)}';
     } catch (e) {
       return '';
     }
