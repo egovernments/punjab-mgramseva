@@ -41,7 +41,7 @@ class _CountTableWidgetState extends State<CountTableWidget> {
               }
             },
           ),
-          if (connectionCount!.length >= 5)
+          if (connectionCount!.length > 5)
             Align(
               alignment: Alignment.bottomRight,
               child: TextButton(
