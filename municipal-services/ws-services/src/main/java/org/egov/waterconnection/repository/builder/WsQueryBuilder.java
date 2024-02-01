@@ -725,7 +725,7 @@ public class WsQueryBuilder {
 		if (criteria.isEmpty() || criteria.getTenantId().isEmpty())
 			return null;
 		StringBuilder query = new StringBuilder(WATER_CONNECTION_BY_PREVIOUSREADINNDATE);
-		query.append(" INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id WHERE conn.status='Active' AND  conn.tenantid='"+criteria.getTenantId()+"' and wc.connectiontype='Non_Metered' and connectionno NOT IN (" + CONSUMERCODE_IN_DEMANDTABLE+" where d.businessservice='WS' and d.tenantid='"+criteria.getTenantId()+"') ");
+		query.append(" INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id WHERE conn.status='Active' AND  conn.tenantid='"+criteria.getTenantId()+"' and wc.connectiontype='Non_Metered' and connectionno NOT IN (" + CONSUMERCODE_IN_DEMANDTABLE+" where d.status ='ACTIVE' and  d.businessservice='WS' and d.tenantid='"+criteria.getTenantId()+"') ");
 		query.append(" GROUP BY taxperiodto ");
 		return query.toString();
 	}
