@@ -96,6 +96,8 @@ class Url {
       'ws-services/wc/_inactiveConsumerReport';
   static const String EXPENSE_BILL_REPORT=
       'echallan-services/eChallan/v1/_expenseBillReport';
+  static const String WATER_CONNECTION_COUNT=
+      'ws-services/wc/_countWCbyDemandGenerationDate';
 }
 
 
