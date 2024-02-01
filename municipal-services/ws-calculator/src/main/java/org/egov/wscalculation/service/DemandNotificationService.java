@@ -45,7 +45,7 @@ public class DemandNotificationService {
 			if (!CollectionUtils.isEmpty(smsRequests)) {
 				if(config.isSmsForDemandEnable()) {
 					log.info("Bulk demand generate call");
-					util.sendSMS(smsRequests);
+//					util.sendSMS(smsRequests);
 				}
 			}
 		}
