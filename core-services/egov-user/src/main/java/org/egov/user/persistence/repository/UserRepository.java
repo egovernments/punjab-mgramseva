@@ -580,7 +580,6 @@ public class UserRepository {
         List<Long> userIds = new ArrayList<>();
         if (!isEmpty(userSearch.getRoleCodes()) && userSearch.getTenantIds() != null) {
             userIds = findUsersWithRole(userSearch);
-            log.info("USER IDS:" + userIds);
             RoleSearchHappend = true;
         }
         List<User> users = new ArrayList<>();
