@@ -371,8 +371,7 @@ class BillGenerationProvider with ChangeNotifier {
             children: [
               Text('${ApplicationLocalizations.of(context).translate(i18.demandGenerate.ARE_YOU_SURE_TO_GENERATE_DEMAND_FOR)} "${ApplicationLocalizations.of(context).translate(billGenerateDetails.serviceType!)}" ${ApplicationLocalizations.of(context).translate(i18.demandGenerate.WITH_MINIMUM_CHARGE_OF)} : '),
               SizedBox(height: 10,),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+            FittedBox(
               child: DataTable(
                   border: TableBorder.all(
                       width: 0.5, borderRadius: BorderRadius.all(Radius.circular(5))), columns: [
