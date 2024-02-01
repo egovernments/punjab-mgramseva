@@ -41,25 +41,39 @@ class _WaterConnectionCountWidgetState
                     '${"${ApplicationLocalizations.of(context).translate(i18.common.WS_REPORTS_WATER_CONNECTION_COUNT)}"}'),
                 Container(
                   margin: MediaQuery.of(context).size.width > 760
-                      ? EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 20)
+                      ? EdgeInsets.only(
+                          top: 5.0, bottom: 5, right: 20, left: 20)
                       : EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final provider = Provider.of<ReportsProvider>(context);
-                      final waterConnectionCount = provider.waterConnectionCount;
+                      final waterConnectionCount =
+                          provider.waterConnectionCount;
                       if (waterConnectionCount == null) {
                         return SizedBox();
                       }
                       return Column(
                         children: [
-                          if (constraints.maxWidth > 760)
+                          if (waterConnectionCount.waterConnectionsDemandGenerated !=
+                                  null &&
+                              waterConnectionCount
+                                      .waterConnectionsDemandGenerated
+                                      ?.length !=
+                                  0 &&
+                              constraints.maxWidth > 760)
                             _buildDataTableRow(
                               context,
                               "${ApplicationLocalizations.of(context).translate(i18.common.LAST_BILL_CYCLE_DEMAND_GENERATED)}",
                               waterConnectionCount
                                   .waterConnectionsDemandGenerated,
                             ),
-                          if (constraints.maxWidth <= 760)
+                          if (waterConnectionCount.waterConnectionsDemandGenerated !=
+                                  null &&
+                              waterConnectionCount
+                                      .waterConnectionsDemandGenerated
+                                      ?.length !=
+                                  0 &&
+                              constraints.maxWidth <= 760)
                             _buildDataTableColumn(
                               context,
                               "${ApplicationLocalizations.of(context).translate(i18.common.LAST_BILL_CYCLE_DEMAND_GENERATED)}",
@@ -67,14 +81,26 @@ class _WaterConnectionCountWidgetState
                                   .waterConnectionsDemandGenerated,
                             ),
                           SizedBox(height: 20),
-                          if (constraints.maxWidth > 760)
+                          if (waterConnectionCount.waterConnectionsDemandNotGenerated !=
+                                  null &&
+                              waterConnectionCount
+                                      .waterConnectionsDemandNotGenerated
+                                      ?.length !=
+                                  0 &&
+                              constraints.maxWidth > 760)
                             _buildDataTableRow(
                               context,
                               "${ApplicationLocalizations.of(context).translate(i18.common.LAST_BILL_CYCLE_DEMAND_NOT_GENERATED)}",
                               waterConnectionCount
                                   .waterConnectionsDemandNotGenerated,
                             ),
-                          if (constraints.maxWidth <= 760)
+                          if (waterConnectionCount.waterConnectionsDemandNotGenerated !=
+                                  null &&
+                              waterConnectionCount
+                                      .waterConnectionsDemandNotGenerated
+                                      ?.length !=
+                                  0 &&
+                              constraints.maxWidth <= 760)
                             _buildDataTableColumn(
                               context,
                               "${ApplicationLocalizations.of(context).translate(i18.common.LAST_BILL_CYCLE_DEMAND_NOT_GENERATED)}",
