@@ -360,47 +360,48 @@ class BillGenerationProvider with ChangeNotifier {
           navigatorKey.currentContext!,
           listen: false);
       var rate = rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered').toList();
-      showDialog(context: context, builder: (context)=>AlertDialog(
-        surfaceTintColor: Colors.white,
-        title: Text('${ApplicationLocalizations.of(context).translate(i18.common.CORE_CONFIRM)}'),
-        content: Container(
-          height: 370,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('${ApplicationLocalizations.of(context).translate(i18.demandGenerate.ARE_YOU_SURE_TO_GENERATE_DEMAND_FOR)} "${ApplicationLocalizations.of(context).translate(billGenerateDetails.serviceType!)}" ${ApplicationLocalizations.of(context).translate(i18.demandGenerate.WITH_MINIMUM_CHARGE_OF)} : '),
-              SizedBox(height: 10,),
-            FittedBox(
-              child: DataTable(
-                  border: TableBorder.all(
+      if(selectedBillPeriod!=null){
+        showDialog(context: context, builder: (context)=>AlertDialog(
+          surfaceTintColor: Colors.white,
+          title: Text('${ApplicationLocalizations.of(context).translate(i18.common.CORE_CONFIRM)}'),
+          content: Container(
+            height: 370,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('${ApplicationLocalizations.of(context).translate(i18.demandGenerate.ARE_YOU_SURE_TO_GENERATE_DEMAND_FOR)} "${ApplicationLocalizations.of(context).translate(billGenerateDetails.serviceType!)}" ${ApplicationLocalizations.of(context).translate(i18.demandGenerate.WITH_MINIMUM_CHARGE_OF)} : '),
+                SizedBox(height: 10,),
+                FittedBox(
+                  child: DataTable(
+                    border: TableBorder.all(
                       width: 0.5, borderRadius: BorderRadius.all(Radius.circular(5)),
-                    color: Colors.grey,), columns: [
-                        DataColumn(
-                  label: Text(
-                    "${ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_TYPE)}",
-                    style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                  )),
-                DataColumn(
-                    label: Text(
-                      "${ApplicationLocalizations.of(context).translate(i18.common.RATE_PERCENTAGE)}",
-                      style:
-                      TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                    )),], rows: [
-                      ...rate.map((e) => DataRow(cells: [
-                        DataCell(Text(
-                            "${ApplicationLocalizations.of(context).translate("${e.buildingType}")}")),
-                        DataCell(Text("${e.minimumCharge}"))
-                      ])).toList()
-              ],),
+                      color: Colors.grey,), columns: [
+                    DataColumn(
+                        label: Text(
+                          "${ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_TYPE)}",
+                          style:
+                          TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                        )),
+                    DataColumn(
+                        label: Text(
+                          "${ApplicationLocalizations.of(context).translate(i18.common.RATE_PERCENTAGE)}",
+                          style:
+                          TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                        )),], rows: [
+                    ...rate.map((e) => DataRow(cells: [
+                      DataCell(Text(
+                          "${ApplicationLocalizations.of(context).translate("${e.buildingType}")}")),
+                      DataCell(Text("${e.minimumCharge}"))
+                    ])).toList()
+                  ],),
+                ),
+                SizedBox(height: 10,),
+                Text('${ApplicationLocalizations.of(context).translate(i18.demandGenerate.NO_DEMAND_GEN_WITH_RATE_0)}'), //* Note : No Demand will be generated for the Service Type with rate set to 0.
+              ],
             ),
-              SizedBox(height: 10,),
-              Text('${ApplicationLocalizations.of(context).translate(i18.demandGenerate.NO_DEMAND_GEN_WITH_RATE_0)}'), //* Note : No Demand will be generated for the Service Type with rate set to 0.
-            ],
           ),
-        ),
-        actions:
+          actions:
           (rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered').length- rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered' && element.minimumCharge==0).length == 0 )
               ?
           [TextButton(onPressed: (){
@@ -445,11 +446,14 @@ class BillGenerationProvider with ChangeNotifier {
                   }));
             }
           }, child: Text('${ApplicationLocalizations.of(context).translate(i18.common.YES)}')),
-          TextButton(onPressed: (){
-            Navigator.pop(context);
-          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.common.NO)}')),]
-        ,
-      ));
+            TextButton(onPressed: (){
+              Navigator.pop(context);
+            }, child: Text('${ApplicationLocalizations.of(context).translate(i18.common.NO)}')),]
+          ,
+        ));
+      }else{
+        Notifiers.getToastMessage(context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR'); //Please select billing cycle
+      }
     } else {
       autoValidation = true;
       notifyListeners();
