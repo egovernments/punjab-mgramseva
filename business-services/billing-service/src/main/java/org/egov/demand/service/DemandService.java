@@ -53,8 +53,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.validation.Valid;
-
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.demand.amendment.model.Amendment;
 import org.egov.demand.amendment.model.AmendmentCriteria;
@@ -68,7 +66,6 @@ import org.egov.demand.model.Demand;
 import org.egov.demand.model.DemandApportionRequest;
 import org.egov.demand.model.DemandCriteria;
 import org.egov.demand.model.DemandDetail;
-import org.egov.demand.model.DemandHistory;
 import org.egov.demand.model.PaymentBackUpdateAudit;
 import org.egov.demand.model.UpdateBillCriteria;
 import org.egov.demand.repository.AmendmentRepository;
@@ -270,9 +267,6 @@ public class DemandService {
 		generateAndSetIdsForNewDemands(newDemands, auditDetail);
 
 		update(demandRequest, paymentBackUpdateAudit);
-		if(paymentBackUpdateAudit != null){
-			log.debug("Payment id after update: " + paymentBackUpdateAudit.getPaymentId());
-		}
 		String businessService = demands.get(0).getBusinessService();
 		String tenantId = demands.get(0).getTenantId();
 		
@@ -287,11 +281,9 @@ public class DemandService {
 			updateBillCriteria.setStatusToBeUpdated(BillStatus.EXPIRED);
 			billRepoV2.updateBillStatus(updateBillCriteria);
 		} else {
-			log.debug("Payment id before setting billstatus to paid : " + paymentBackUpdateAudit.getPaymentId());
+			
 			updateBillCriteria.setStatusToBeUpdated(BillStatus.PAID);
 			billRepoV2.updateBillStatus(updateBillCriteria);
-			log.debug("Payment id after updateBillStatus : " + paymentBackUpdateAudit.getPaymentId());
-
 		}
 		// producer.push(applicationProperties.getDemandIndexTopic(), demandRequest);
 		return new DemandResponse(responseInfoFactory.getResponseInfo(requestInfo, HttpStatus.CREATED), demands);
@@ -393,7 +385,7 @@ public class DemandService {
 
 			// Searching demands based on consumer code of the current demand (demand which has to be created)
 			DemandCriteria searchCriteria = DemandCriteria.builder().tenantId(tenantId)
-					.status(Demand.StatusEnum.ACTIVE.toString()).consumerCode(Collections.singleton(consumerCode)).businessService(businessService).build();
+			.consumerCode(Collections.singleton(consumerCode)).businessService(businessService).build();
 			List<Demand> demandsFromSearch = demandRepository.getDemands(searchCriteria);
 
 			// If no demand is found means there is no advance available. The current demand is added for creation
@@ -522,37 +514,6 @@ public class DemandService {
 		}
 
 		return updateListForConsumedAmendments;
-	}
-
-	public DemandHistory getDemandHistory(@Valid DemandCriteria demandCriteria, RequestInfo requestInfo) {
-		demandValidatorV1.validateDemandCriteria(demandCriteria, requestInfo);
-
-		List<Demand> demands = null;
-		List<Demand> demandList = getDemands(demandCriteria, requestInfo);
-		demands = demandRepository.getDemandHistory(demandCriteria);
-		List<Demand> demList = demandList.stream().filter(i->(!i.getIsPaymentCompleted().booleanValue())).collect(Collectors.toList());
-		
-		BigDecimal advanceAdjustedAmount = BigDecimal.ZERO;
-		BigDecimal waterCharge = demList.get(demList.size() - 1).getDemandDetails().get(0).getTaxAmount();
-		for(Demand dem : demList) {
-			for(DemandDetail ddl : dem.getDemandDetails()){
-				if(ddl.getTaxHeadMasterCode().equalsIgnoreCase("WS_ADVANCE_CARRYFORWARD")){
-					   advanceAdjustedAmount = demList.get(demList.size() - 1).getDemandDetails().get(0).getCollectionAmount();
-					}
-				}
-		}
-		if(demandList.size() == 1) {
-		 waterCharge = demList.get(demList.size() - 1).getDemandDetails().get(0).getTaxAmount().
-				 subtract(demList.get(demList.size() - 1).getDemandDetails().get(0).getCollectionAmount());
-		}
-
-		demands.stream().filter(i->i.getStatus().equals(Demand.StatusEnum.ACTIVE));
-		DemandHistory demandHistory = new DemandHistory();
-		demandHistory.setDemandList(demands);
-		demandHistory.setWaterCharge(waterCharge);
-		demandHistory.setAdvanceAdjustedAmount(advanceAdjustedAmount);
-		return demandHistory;
-	
 	}
 	
 }
