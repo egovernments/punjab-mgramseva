@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/providers/reports_provider.dart';
+import 'package:mgramseva/screeens/generate_bill/widgets/water_connection_count_widget.dart';
 import 'package:mgramseva/widgets/keyboard_focus_watcher.dart';
 import 'package:mgramseva/model/bill/bill_generation_details/bill_generation_details.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
@@ -78,6 +80,7 @@ class _GenerateBillState extends State<GenerateBill> {
             Provider.of<BillGenerationProvider>(context, listen: false).clearBillYear();
             Navigator.pop(context);
           },),
+              WaterConnectionCountWidget(),
           Container(
               width: MediaQuery.of(context).size.width,
               child: Card(

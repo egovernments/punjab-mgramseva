@@ -9,6 +9,7 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../model/common/BillsTableData.dart';
 import '../model/localization/language.dart';
 import '../model/mdms/tax_period.dart';
+import '../model/reports/WaterConnectionCount.dart';
 import '../model/reports/bill_report_data.dart';
 import '../model/reports/collection_report_data.dart';
 import '../model/reports/expense_bill_report_data.dart';
@@ -40,6 +41,7 @@ class ReportsProvider with ChangeNotifier {
   List<InactiveConsumerReportData>? inactiveconsumers;
   List<ExpenseBillReportData>? expenseBillReportData;
   List<VendorReportData>? vendorReportData;
+  WaterConnectionCountResponse? waterConnectionCount;
   BillsTableData genericTableData = BillsTableData([], []);
   int limit = 10;
   int offset = 1;
@@ -804,5 +806,29 @@ class ReportsProvider with ChangeNotifier {
 
     //Save and launch the file.
     await saveAndLaunchFile(bytes, '$title.xlsx');
+  }
+  Future<void> getWaterConnectionsCount() async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+      Map<String, dynamic> params = {
+        'tenantId': commonProvider.userDetails!.selectedtenant!.code,
+      };
+      var response = await ReportsRepo().fetchWaterConnectionsCount(params);
+      if (response != null) {
+        waterConnectionCount = response;
+        streamController.add(response);
+        callNotifier();
+      } else {
+        streamController.add('error');
+        throw Exception('API Error');
+      }
+      callNotifier();
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
+      callNotifier();
+    }
   }
 }
