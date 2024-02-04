@@ -182,6 +182,7 @@ class BillGenerationProvider with ChangeNotifier {
     billGenerateDetails.billYear = null;
     selectedBillCycle = null;
     billGenerateDetails.billCycle = null;
+    selectedBillPeriod = null;
     notifyListeners();
   }
   void onChangeOfBillCycle(cycle) {
