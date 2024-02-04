@@ -52,6 +52,11 @@ class ReportsProvider with ChangeNotifier {
     selectedBillCycle = null;
     billingcycleCtrl.clear();
     billingyearCtrl.clear();
+    demandreports = [];
+    collectionreports = [];
+    inactiveconsumers = [];
+    expenseBillReportData = [];
+    vendorReportData = [];
     notifyListeners();
   }
 
@@ -110,10 +115,10 @@ class ReportsProvider with ChangeNotifier {
   ];
 
   List<TableHeader> get vendorReportHeaderList => [
+        TableHeader(i18.common.BILL_ID),
         TableHeader(i18.expense.VENDOR_NAME),
         TableHeader(i18.common.MOBILE_NUMBER),
         TableHeader(i18.expense.EXPENSE_TYPE),
-        TableHeader(i18.common.BILL_ID),
       ];
 
   void onChangeOfPageLimit(
@@ -245,10 +250,10 @@ class ReportsProvider with ChangeNotifier {
     String? typeOfExpense = CommonMethods.truncateWithEllipsis(20, data.typeOfExpense!);
     String? billId = CommonMethods.truncateWithEllipsis(20, data.billId!);
     return TableDataRow([
+      TableData('${billId ?? '-'}'),
       TableData('${vendorName ?? '-'}'),
       TableData('${data.mobileNo ?? '-'}'),
       TableData('${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(typeOfExpense ?? '-')}'),
-      TableData('${billId ?? '-'}'),
     ]);
   }
 
@@ -263,6 +268,11 @@ class ReportsProvider with ChangeNotifier {
     billingcycleCtrl.clear();
     selectedBillCycle = null;
     selectedBillPeriod = null;
+    demandreports = [];
+    collectionreports = [];
+    inactiveconsumers = [];
+    expenseBillReportData = [];
+    vendorReportData = [];
     notifyListeners();
   }
 
@@ -279,6 +289,11 @@ class ReportsProvider with ChangeNotifier {
                 .toLocal()
                 .toString(),
             dateFormat: "dd/MM/yyyy");
+    demandreports = [];
+    collectionreports = [];
+    inactiveconsumers = [];
+    expenseBillReportData = [];
+    vendorReportData = [];
     notifyListeners();
   }
 
@@ -745,6 +760,7 @@ class ReportsProvider with ChangeNotifier {
     //Create a Excel document.
 
     //Creating a workbook.
+    headers.insert(0, '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.S_NO)}');
     final Workbook workbook = Workbook();
     //Accessing via index
     final Worksheet sheet = workbook.worksheets[0];
@@ -754,20 +770,25 @@ class ReportsProvider with ChangeNotifier {
     sheet.enableSheetCalculations();
     int dataStartRow = 2;
     int headersStartRow = 1;
-    // //Set data in the worksheet.
+    // //Set data in the worksheet.s
     if (optionalData.isEmpty) {
       sheet.getRangeByName('A1:D1').columnWidth = 32.5;
       sheet.getRangeByName('A1:D1').cellStyle.hAlign = HAlignType.center;
     } else {
-      sheet.getRangeByName('A1:D1').columnWidth = 32.5;
-      sheet.getRangeByName('A2:D2').columnWidth = 32.5;
-      sheet.getRangeByName('A2:D2').cellStyle.hAlign = HAlignType.center;
+      sheet.getRangeByName('A1:A${tableData.length+1}').columnWidth = 12.5;
+      sheet.getRangeByName('A1:A${tableData.length+1}').cellStyle.hAlign = HAlignType.center;
+      sheet.getRangeByName('A1:A${tableData.length+1}').autoFit();
+      sheet.getRangeByName('B1:${CommonMethods.getAlphabetsWithKeyValue()[optionalData.length+1].label}1').columnWidth = 32.5;
+      sheet.getRangeByName('B1:${CommonMethods.getAlphabetsWithKeyValue()[optionalData.length+1].label}1').cellStyle.hAlign = HAlignType.center;
+      sheet.getRangeByName('B2:${CommonMethods.getAlphabetsWithKeyValue()[headers.length+1].label}2').columnWidth = 32.5;
+      sheet.getRangeByName('A2:${CommonMethods.getAlphabetsWithKeyValue()[headers.length+1].label}2').cellStyle.hAlign = HAlignType.center;
+      sheet.getRangeByName('A2:${CommonMethods.getAlphabetsWithKeyValue()[headers.length+1].label}2').cellStyle.bold = true;
       dataStartRow = 3;
       headersStartRow = 2;
       for (int i = 0; i < optionalData.length; i++) {
         sheet
             .getRangeByName(
-                '${CommonMethods.getAlphabetsWithKeyValue()[i].label}1')
+                '${CommonMethods.getAlphabetsWithKeyValue()[i+1].label}1')
             .setText(
                 optionalData[CommonMethods.getAlphabetsWithKeyValue()[i].key]);
       }
@@ -782,10 +803,17 @@ class ReportsProvider with ChangeNotifier {
 
     for (int i = dataStartRow; i < tableData.length + dataStartRow; i++) {
       for (int j = 0; j < headers.length; j++) {
-        sheet
-            .getRangeByName(
-                '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
-            .setText(tableData[i - dataStartRow][j]);
+        if(j==0){
+          sheet
+              .getRangeByName(
+              '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
+              .setText('${i - dataStartRow+1}');
+        }else{
+          sheet
+              .getRangeByName(
+              '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
+              .setText(tableData[i - dataStartRow][j - 1]);
+        }
         sheet
             .getRangeByName(
                 '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')

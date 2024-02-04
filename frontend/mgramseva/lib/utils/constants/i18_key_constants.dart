@@ -38,6 +38,7 @@ class Login {
 class Common {
   const Common();
   String get CONTINUE => 'CORE_COMMON_CONTINUE';
+  String get S_NO => 'S_NO';
   String get LAST_BILL_CYCLE_MONTH => 'LAST_BILL_CYCLE_MONTH';
   String get CONSUMER_COUNT => 'CONSUMER_COUNT';
   String get LAST_BILL_CYCLE_DEMAND_NOT_GENERATED => 'LAST_BILL_CYCLE_DEMAND_NOT_GENERATED';
