@@ -55,6 +55,10 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
         navigatorKey.currentContext!,
         listen: false);
     reportsProvider.getFinancialYearList();
+    reportsProvider.clearBillingSelection();
+    reportsProvider.clearBuildTableData();
+    reportsProvider.clearTableData();
+
   }
 
   showTable(bool status, String title) {
