@@ -1,22 +1,20 @@
 package org.egov.demand.model;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -27,6 +25,9 @@ public class BillV2 {
 	@JsonProperty("id")
 	@Size(max = 256)
 	private String id;
+
+	@JsonProperty("userId")
+	private String userId;
 
 	@JsonProperty("mobileNumber")
 	@Pattern(regexp = "^[0-9]{10}$", message = "MobileNumber should be 10 digit number")

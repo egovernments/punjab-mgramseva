@@ -1,19 +1,17 @@
 package org.egov.demand.model;
 
-import java.util.Set;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
-import org.egov.demand.model.BillV2.BillStatus;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.egov.demand.model.BillV2.BillStatus;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Data
 @Builder
@@ -57,9 +55,7 @@ public class BillSearchCriteria {
 	private String email;
 
 	private BillStatus status;
-	
-	@Default
-	private Boolean returnAllBills = false;
+
 
 	@Pattern(regexp = "^[0-9]{10}$", message = "MobileNumber should be 10 digit number")
 	private String mobileNumber;

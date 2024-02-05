@@ -1,8 +1,5 @@
 package org.egov.demand.repository.querybuilder;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.egov.demand.model.BillSearchCriteria;
 import org.egov.demand.model.BillV2.BillStatus;
 import org.egov.demand.model.UpdateBillCriteria;
@@ -11,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
+import java.util.List;
+
 @Component
 public class BillQueryBuilder {
 	
@@ -18,15 +18,13 @@ public class BillQueryBuilder {
 	private Util util;
 	
 	public static final String REPLACE_STRING = "{replace}";
-	
-	public static final String BILL_STATUS_UPDATE_BASE_QUERY = "UPDATE egbs_bill_v1 SET status=?, lastmodifieddate=? {replace} WHERE status='ACTIVE' AND tenantId = ? ";
-	
-	public static final String INSERT_BILL_QUERY = "INSERT into egbs_bill_v1 "
-			+ " (id, tenantid, payername, payeraddress, payeremail, isactive, iscancelled, createdby, createddate, lastmodifiedby, lastmodifieddate, mobilenumber, status, additionaldetails)"
-			+ " SELECT ?,?,?,?,?,?,?,?,?,?,?,?,?,? "
-			+ " WHERE NOT EXISTS (SELECT distinct(consumercode) FROM egbs_bill_v1 bill INNER JOIN egbs_billdetail_v1 billd ON bill.id=billd.billid "
-			+ " WHERE status = 'ACTIVE' AND consumerCode = ? AND bill.tenantid = ?)";
 
+	public static final String BILL_STATUS_UPDATE_BASE_QUERY = "UPDATE egbs_bill_v1 SET status=? {replace} WHERE status='ACTIVE' AND tenantId = ? ";
+
+	public static final String INSERT_BILL_QUERY = "INSERT into egbs_bill_v1 "
+			+"(id, tenantid, payername, payeraddress, payeremail, isactive, iscancelled, createdby, createddate, lastmodifiedby, lastmodifieddate,"
+			+" mobilenumber, status, additionaldetails, payerid, consumercode)"
+			+"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	public static final String INSERT_BILLDETAILS_QUERY = "INSERT into egbs_billdetail_v1 "
 			+"(id, tenantid, billid, demandid, fromperiod, toperiod, businessservice, billno, billdate, consumercode, consumertype, billdescription, displaymessage, "
@@ -48,8 +46,8 @@ public class BillQueryBuilder {
 	public static final String BILL_MIN_QUERY = "WITH billresult AS ({replace}) SELECT * FROM billresult "
 			+ " INNER JOIN (SELECT bd_consumercode, min(b_createddate) as mindate FROM billresult GROUP BY bd_consumercode) as uniqbill"
 			+ " ON uniqbill.bd_consumercode=billresult.bd_consumercode AND uniqbill.mindate=billresult.b_createddate ";
-	
-	public static final String BILL_BASE_QUERY = "SELECT b.id AS b_id,b.mobilenumber, b.tenantid AS b_tenantid,"
+
+	public static final String BILL_BASE_QUERY = "SELECT b.id AS b_id,b.mobilenumber, b.tenantid AS b_tenantid,b.payerid AS b_payerid,"
 			+ " b.payername AS b_payername, b.payeraddress AS b_payeraddress, b.payeremail AS b_payeremail,b.filestoreid AS b_fileStoreId,"
 			+ " b.isactive AS b_isactive, b.iscancelled AS b_iscancelled, b.createdby AS b_createdby, b.status as b_status,"
 			+ " b.createddate AS b_createddate, b.lastmodifiedby AS b_lastmodifiedby, b.lastmodifieddate AS b_lastmodifieddate,"
@@ -82,9 +80,7 @@ public class BillQueryBuilder {
 		}
 		addWhereClause(billQuery, preparedStatementValues, billSearchCriteria);
 		
-		if(billSearchCriteria!=null && billSearchCriteria.getReturnAllBills()) {
-			return billQuery.toString();
-		}
+
 		StringBuilder maxQuery = addPagingClause(billQuery, preparedStatementValues, billSearchCriteria);
 		
 		return maxQuery.toString();
@@ -175,7 +171,6 @@ public class BillQueryBuilder {
 		StringBuilder builder = new StringBuilder();
 		
 		preparedStmtList.add(updateBillCriteria.getStatusToBeUpdated().toString());
-		preparedStmtList.add(System.currentTimeMillis());
 
 		if (updateBillCriteria.getStatusToBeUpdated().equals(BillStatus.CANCELLED)
 				&& updateBillCriteria.getAdditionalDetails() != null) {

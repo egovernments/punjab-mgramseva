@@ -39,17 +39,11 @@
  */
 package org.egov.demand.web.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-
+import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
-import org.egov.demand.config.ApplicationProperties;
 import org.egov.demand.model.Demand;
 import org.egov.demand.model.DemandCriteria;
 import org.egov.demand.model.DemandHistory;
-import org.egov.demand.producer.Producer;
 import org.egov.demand.service.DemandService;
 import org.egov.demand.util.migration.DemandMigration;
 import org.egov.demand.web.contract.DemandHistoryResponse;
@@ -61,16 +55,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/demand")
@@ -85,12 +74,6 @@ public class DemandController {
 	
 	@Autowired
 	private DemandMigration migrationService;
-	
-	@Autowired
-	private ApplicationProperties properties;
-	
-	@Autowired
-	Producer producer;
 	
 	
 
@@ -109,20 +92,13 @@ public class DemandController {
 
 		DemandResponse demandResponse = demandService.create(demandRequest);
 		
-		demandRequest.setDemands(demandResponse.getDemands());
-		
-		producer.push(properties.getCreateDemand(), demandRequest);
-		
 		return new ResponseEntity<>(demandResponse, HttpStatus.CREATED);
 	}
 
 	@PostMapping("_update")
 	public ResponseEntity<?> update(@RequestHeader HttpHeaders headers, @RequestBody @Valid DemandRequest demandRequest) {
 
-		DemandResponse demandResponse=demandService.updateAsync(demandRequest, null);
-		demandRequest.setDemands(demandResponse.getDemands());
-		producer.push(properties.getUpdateDemand(), demandRequest);
-		return new ResponseEntity<>(demandResponse, HttpStatus.CREATED);
+		return new ResponseEntity<>(demandService.updateAsync(demandRequest, null), HttpStatus.CREATED);
 	}
 
 	@PostMapping("_search")

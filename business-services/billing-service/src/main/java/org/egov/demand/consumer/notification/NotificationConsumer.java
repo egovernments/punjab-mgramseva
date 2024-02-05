@@ -1,16 +1,16 @@
 package org.egov.demand.consumer.notification;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.demand.model.Bill;
 import org.egov.demand.model.BillDetail;
+import org.egov.demand.model.BillDetailV2;
+import org.egov.demand.model.BillV2;
 import org.egov.demand.web.contract.BillRequest;
+import org.egov.demand.web.contract.BillRequestV2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,10 +20,8 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.*;
+import org.egov.demand.util.Constants;
 
 @Service
 @Slf4j
@@ -40,12 +38,13 @@ public class NotificationConsumer {
 	
 	@Value("${kafka.topics.notification.sms}")
 	private String smsTopic;
+
+	@Value("${kafka.topics.cancel.bill.topic.name}")
+	private String billCancelTopic;
 	
 	@Value("${kafka.topics.notification.sms.key}")
 	private String smsTopickey;
 
-	@Value("${sms.bill.notification.enable}")
-	private boolean isSmsForBillNotificationEnabled;
 	
     @Autowired
     private ObjectMapper objectMapper;
@@ -58,6 +57,7 @@ public class NotificationConsumer {
 	
     private static final String BILLING_LOCALIZATION_MODULE = "billing-services";
 	public static final String PAYMENT_MSG_LOCALIZATION_CODE = "BILLINGSERVICE_BUSINESSSERVICE_BILL_GEN_NOTIF_MSG";
+	public static final String BILL_CANCELLATION_MSG_LOCALIZATION_CODE = "BILLINGSERVICE_BILL_CANCELLATION_NOTIF_MSG";
 	public static final String BUSINESSSERVICELOCALIZATION_CODE_PREFIX = "BILLINGSERVICE_BUSINESSSERVICE_";
 	
 	public static final String LOCALIZATION_CODES_JSONPATH = "$.messages.*.code";
@@ -86,15 +86,58 @@ public class NotificationConsumer {
 	 * @param record
 	 * @param topic
 	 */
-	@KafkaListener(topics = { "${kafka.topics.billgen.topic.name}" })
+	@KafkaListener(topics = { "${kafka.topics.billgen.topic.name}", "${kafka.topics.cancel.bill.topic.name}" })
 	public void listen(Map<String, Object> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
 
 		try {
-			BillRequest req = objectMapper.convertValue(record, BillRequest.class);
-			sendNotification(req);
+			if(topic.equals(billCancelTopic)){
+				BillRequestV2 req = objectMapper.convertValue(record, BillRequestV2.class);
+				sendNotificationForBillCancellation(req);
+			}else {
+				BillRequest req = objectMapper.convertValue(record, BillRequest.class);
+				sendNotification(req);
+			}
 		} catch (Exception e) {
 			log.error("Exception while reading from the queue: ", e);
 		}
+	}
+
+	private void sendNotificationForBillCancellation(BillRequestV2 req) {
+		req.getBills().forEach(bill -> {
+			String phNo = bill.getMobileNumber();
+			String message = buildSmsBodyForBillCancellation(bill, req.getRequestInfo());
+			if (!StringUtils.isEmpty(message)) {
+
+				Map<String, Object> request = new HashMap<>();
+				request.put("mobileNumber", phNo);
+				request.put("message", message);
+				log.info("Msg sent to user : " + message);
+				producer.send(smsTopic, smsTopickey, request);
+			} else {
+				log.error("No message configured! Notification will not be sent.");
+			}
+		});
+	}
+
+	private String buildSmsBodyForBillCancellation(BillV2 bill, RequestInfo requestInfo) {
+		if (bill.getMobileNumber() == null)
+			return null;
+
+		String tenantId = bill.getTenantId();
+		BillDetailV2 detail = bill.getBillDetails().get(0);
+
+		String content = fetchContentFromLocalization(requestInfo, tenantId, BILLING_LOCALIZATION_MODULE,
+				BILL_CANCELLATION_MSG_LOCALIZATION_CODE);
+
+		if (!StringUtils.isEmpty(content)) {
+
+			content = content.replace("{OWNER_NAME}", bill.getPayerName());
+			content = content.replace("{SERVICE}", bill.getBusinessService());
+			content = content.replace("{BILLING_PERIOD}", getPeriod(detail.getFromPeriod(), detail.getToPeriod()));
+			content = content.replace("{REASON_FOR_CANCELLATION}", bill.getAdditionalDetails().get(Constants.CANCELLATION_REASON_MSG).textValue());
+
+		}
+		return content;
 	}
 	
 	/**
@@ -114,11 +157,8 @@ public class NotificationConsumer {
 				Map<String, Object> request = new HashMap<>();
 				request.put("mobileNumber", phNo);
 				request.put("message", message);
-				request.put("tenantId", bill.getTenantId());
 				log.info("Msg sent to user : " + message);
-				if(isSmsForBillNotificationEnabled) {
-					producer.send(smsTopic, smsTopickey, request);
-				}
+				producer.send(smsTopic, smsTopickey, request);
 			} else {
 				log.error("No message configured! Notification will not be sent.");
 			}

@@ -1,18 +1,6 @@
 package org.egov.demand.repository;
 
-import static org.egov.demand.repository.querybuilder.AmendmentQueryBuilder.AMENDMENT_INSERT_QUERY;
-import static org.egov.demand.repository.querybuilder.AmendmentQueryBuilder.AMENDMENT_TAXDETAIL_INSERT_QUERY;
-import static org.egov.demand.repository.querybuilder.AmendmentQueryBuilder.AMENDMENT_UPDATE_QUERY;
-import static org.egov.demand.repository.querybuilder.AmendmentQueryBuilder.DOCUMET_INSERT_QUERY;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.egov.demand.amendment.model.Amendment;
-import org.egov.demand.amendment.model.AmendmentCriteria;
-import org.egov.demand.amendment.model.AmendmentRequest;
-import org.egov.demand.amendment.model.AmendmentUpdate;
-import org.egov.demand.amendment.model.Document;
+import org.egov.demand.amendment.model.*;
 import org.egov.demand.model.AuditDetails;
 import org.egov.demand.model.DemandDetail;
 import org.egov.demand.repository.querybuilder.AmendmentQueryBuilder;
@@ -24,6 +12,11 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.egov.demand.repository.querybuilder.AmendmentQueryBuilder.*;
 
 @Repository
 public class AmendmentRepository {
@@ -154,6 +147,10 @@ public class AmendmentRepository {
 			updateParamMap.addValue("additionaldetails", util.getPGObject(amendmentUpdate.getAdditionalDetails()));
 			updateParamMap.addValue("tenantid", amendmentUpdate.getTenantId());
 			updateParamMap.addValue("amendmentid", amendmentUpdate.getAmendmentId());
+			updateParamMap.addValue("amendmentreason", amendmentUpdate.getAmendmentReason().toString());
+			updateParamMap.addValue("reasondocumentnumber", amendmentUpdate.getReasonDocumentNumber());
+			updateParamMap.addValue("effectivefrom", amendmentUpdate.getEffectiveFrom());
+			updateParamMap.addValue("effectivetill", amendmentUpdate.getEffectiveTill());
 			updateParamMapList.add(updateParamMap);
 		}
 		return updateParamMapList;

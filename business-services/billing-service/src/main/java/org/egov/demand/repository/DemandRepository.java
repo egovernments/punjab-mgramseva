@@ -39,21 +39,8 @@
  */
 package org.egov.demand.repository;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import org.egov.demand.model.AuditDetails;
-import org.egov.demand.model.Demand;
-import org.egov.demand.model.DemandCriteria;
-import org.egov.demand.model.DemandDetail;
-import org.egov.demand.model.PaymentBackUpdateAudit;
+import lombok.extern.slf4j.Slf4j;
+import org.egov.demand.model.*;
 import org.egov.demand.repository.querybuilder.DemandQueryBuilder;
 import org.egov.demand.repository.rowmapper.DemandHistoryRowMapper;
 import org.egov.demand.repository.rowmapper.DemandRowMapper;
@@ -67,7 +54,10 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.extern.slf4j.Slf4j;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 @Slf4j
@@ -84,6 +74,8 @@ public class DemandRepository {
 	
 	@Autowired
 	private Util util;
+
+
 	
 	@Autowired
 	private DemandHistoryRowMapper demandHistoryRowMapper;

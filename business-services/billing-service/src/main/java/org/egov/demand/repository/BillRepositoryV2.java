@@ -1,27 +1,12 @@
 package org.egov.demand.repository;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.egov.demand.model.AuditDetails;
-import org.egov.demand.model.BillAccountDetailV2;
-import org.egov.demand.model.BillDetailV2;
-import org.egov.demand.model.BillSearchCriteria;
-import org.egov.demand.model.BillV2;
+import lombok.extern.slf4j.Slf4j;
+import org.egov.demand.model.*;
 import org.egov.demand.model.BillV2.BillStatus;
-import org.egov.demand.model.UpdateBillCriteria;
 import org.egov.demand.repository.querybuilder.BillQueryBuilder;
 import org.egov.demand.repository.rowmapper.BillRowMapperV2;
 import org.egov.demand.util.Util;
 import org.egov.demand.web.contract.BillRequestV2;
-import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,7 +14,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import lombok.extern.slf4j.Slf4j;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Repository
 @Slf4j
@@ -37,38 +26,40 @@ public class BillRepositoryV2 {
 
 	@Autowired
 	private BillQueryBuilder billQueryBuilder;
-	
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
+
 	@Autowired
 	private Util util;
-	
+
 	@Autowired
 	private BillRowMapperV2 searchBillRowMapper;
-	
+
 	public List<BillV2> findBill(BillSearchCriteria billCriteria){
-		
+
 		List<Object> preparedStatementValues = new ArrayList<>();
 		String queryStr = billQueryBuilder.getBillQuery(billCriteria, preparedStatementValues);
 		log.debug("query:::"+queryStr+"  preparedStatementValues::"+preparedStatementValues);
 		return jdbcTemplate.query(queryStr, preparedStatementValues.toArray(), searchBillRowMapper);
 	}
-	
+
 	@Transactional
 	public void saveBill(BillRequestV2 billRequest){
-		
+
 		List<BillV2> bills = billRequest.getBills();
-		
-		int[] saveBill = jdbcTemplate.batchUpdate(BillQueryBuilder.INSERT_BILL_QUERY, new BatchPreparedStatementSetter() {
-			
+
+		jdbcTemplate.batchUpdate(BillQueryBuilder.INSERT_BILL_QUERY, new BatchPreparedStatementSetter() {
+
 			@Override
 			public void setValues(PreparedStatement ps, int index) throws SQLException {
 				BillV2 bill = bills.get(index);
 
 				AuditDetails auditDetails = bill.getAuditDetails();
-				
+
 				ps.setString(1, bill.getId());
+				ps.setString(15, bill.getUserId());
+				ps.setString(16, bill.getConsumerCode());
 				ps.setString(2, bill.getTenantId());
 				ps.setString(3, bill.getPayerName());
 				ps.setString(4, bill.getPayerAddress());
@@ -82,42 +73,32 @@ public class BillRepositoryV2 {
 				ps.setString(12, bill.getMobileNumber());
 				ps.setString(13, bill.getStatus().toString());
 				ps.setObject(14, util.getPGObject(bill.getAdditionalDetails()));
-				ps.setString(15, bill.getConsumerCode());
-				ps.setString(16, bill.getTenantId());
-
 			}
-			
+
 			@Override
 			public int getBatchSize() {
 				return bills.size();
 			}
 		});
-		
-		for (int i = 0; i < saveBill.length; i++) {
-			if(0 == saveBill[i])
-				throw new CustomException("EG_BS_DUPLICATE_ACTIVE_BILL_INSERTION_ERROR",
-						"Insertion failed due to presence of ACTIVE bill in DB for consumer-code : "
-								+ bills.get(i).getConsumerCode());
-		}
 		saveBillDetails(billRequest);
 	}
-	
+
 	public void saveBillDetails(BillRequestV2 billRequest) {
 
 		List<BillV2> bills = billRequest.getBills();
 		List<BillDetailV2> billDetails = new ArrayList<>();
 		List<BillAccountDetailV2> billAccountDetails = new ArrayList<>();
 		AuditDetails auditDetails = bills.get(0).getAuditDetails();
-		
+
 		Map<String, BillV2> billDetailIdAndBillMap = new HashMap<>();
 
 		for (BillV2 bill : bills) {
-			
+
 			List<BillDetailV2> tempBillDetails = bill.getBillDetails();
 			billDetails.addAll(tempBillDetails);
 
 			for (BillDetailV2 billDetail : tempBillDetails) {
-				
+
 				billDetailIdAndBillMap.put(billDetail.getId(), bill);
 				billAccountDetails.addAll(billDetail.getBillAccountDetails());
 			}
@@ -145,7 +126,7 @@ public class BillRepositoryV2 {
 				ps.setString(13, null);
 				ps.setObject(14, null);
 				ps.setObject(15, billDetail.getAmount());
-				// apportioning logic does not reside in billing service anymore 
+				// apportioning logic does not reside in billing service anymore
 				ps.setBoolean(16, false);
 				ps.setObject(17, null);
 				ps.setString(18, null);
@@ -199,7 +180,7 @@ public class BillRepositoryV2 {
 	}
 
 	/**
-	 * executes query to update bill status to expired 
+	 * executes query to update bill status to expired
 	 * @param billIds
 	 */
 	public Integer updateBillStatus(UpdateBillCriteria updateBillCriteria) {
@@ -207,37 +188,26 @@ public class BillRepositoryV2 {
 		Set<String> consumerCodes = updateBillCriteria.getConsumerCodes();
 		if(CollectionUtils.isEmpty(consumerCodes))
 			return 0;
-		
-		BillSearchCriteria billSearchCriteria = BillSearchCriteria.builder()
-							.service(updateBillCriteria.getBusinessService())
-							.tenantId(updateBillCriteria.getTenantId())
-							.consumerCode(consumerCodes)
-							.build();
-		
-		// only ACTIVE bill can be EXPIRED/UPDATED 
-		if (BillStatus.EXPIRED.equals(updateBillCriteria.getStatusToBeUpdated())) {
-			billSearchCriteria.setStatus(BillStatus.ACTIVE);
-			billSearchCriteria.setReturnAllBills(true);
-		}
 
-		List<BillV2> bills =  findBill(billSearchCriteria);
-		
+		List<BillV2> bills =  findBill(BillSearchCriteria.builder()
+				.service(updateBillCriteria.getBusinessService())
+				.tenantId(updateBillCriteria.getTenantId())
+				.consumerCode(consumerCodes)
+				.build());
+
 		if (CollectionUtils.isEmpty(bills))
 			return 0;
 
+		BillStatus status = bills.get(0).getStatus();
+		if (!status.equals(BillStatus.ACTIVE)) {
+			if (status.equals(BillStatus.PAID) || status.equals(BillStatus.PARTIALLY_PAID))
+				return -1;
+			else
+				return 0;
+		}
 
-		/*
-		 * In case of cancel flow, controller needs integer return type for error response 
-		 */
 		if (BillStatus.CANCELLED.equals(updateBillCriteria.getStatusToBeUpdated())) {
-			
-			BillStatus status = bills.get(0).getStatus();
-			if (!status.equals(BillStatus.ACTIVE)) {
-				if (status.equals(BillStatus.PAID) || status.equals(BillStatus.PARTIALLY_PAID))
-					return -1;
-				else
-					return 0;
-			}
+
 			updateBillCriteria.setBillIds(Stream.of(bills.get(0).getId()).collect(Collectors.toSet()));
 			updateBillCriteria.setAdditionalDetails(
 					util.jsonMerge(updateBillCriteria.getAdditionalDetails(), bills.get(0).getAdditionalDetails()));
@@ -246,10 +216,10 @@ public class BillRepositoryV2 {
 
 			updateBillCriteria.setBillIds(bills.stream().map(BillV2::getId).collect(Collectors.toSet()));
 		}
-		
+
 		List<Object> preparedStmtList = new ArrayList<>();
 		String queryStr = billQueryBuilder.getBillStatusUpdateQuery(updateBillCriteria, preparedStmtList);
 		return jdbcTemplate.update(queryStr, preparedStmtList.toArray());
 	}
-	
+
 }

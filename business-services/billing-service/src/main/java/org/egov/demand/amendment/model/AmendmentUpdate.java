@@ -1,20 +1,18 @@
 package org.egov.demand.amendment.model;
 
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import org.egov.demand.amendment.model.enums.AmendmentStatus;
-import org.egov.demand.model.AuditDetails;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.egov.demand.amendment.model.enums.AmendmentReason;
+import org.egov.demand.amendment.model.enums.AmendmentStatus;
+import org.egov.demand.model.AuditDetails;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * The update object which carries the workflow action info along with the
@@ -53,6 +51,19 @@ public class AmendmentUpdate {
 	@JsonProperty("documents")
 	@Valid
 	private List<Document> documents;
+
+	@NotNull
+	@JsonProperty("amendmentReason")
+	private AmendmentReason amendmentReason;
+
+	@JsonProperty("reasonDocumentNumber")
+	private String reasonDocumentNumber;
+
+	@JsonProperty("effectiveFrom")
+	private Long effectiveFrom;
+
+	@JsonProperty("effectiveTill")
+	private Long effectiveTill;
 	
 	public AmendmentCriteria toSearchCriteria() {
 		

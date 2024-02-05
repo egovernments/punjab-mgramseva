@@ -1,21 +1,7 @@
 package org.egov.demand.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.egov.common.contract.request.RequestInfo;
-import org.egov.demand.amendment.model.Amendment;
-import org.egov.demand.amendment.model.AmendmentCriteria;
-import org.egov.demand.amendment.model.AmendmentRequest;
-import org.egov.demand.amendment.model.AmendmentUpdate;
-import org.egov.demand.amendment.model.AmendmentUpdateRequest;
-import org.egov.demand.amendment.model.State;
+import org.egov.demand.amendment.model.*;
 import org.egov.demand.amendment.model.enums.AmendmentStatus;
 import org.egov.demand.config.ApplicationProperties;
 import org.egov.demand.model.AuditDetails;
@@ -33,6 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class AmendmentService {
@@ -186,6 +176,10 @@ public class AmendmentService {
 					.status(AmendmentStatus.CONSUMED)
 					.amendedDemandId(demand.getId())
 					.auditDetails(auditDetails)
+					.amendmentReason(amendment.getAmendmentReason())
+					.reasonDocumentNumber(amendment.getReasonDocumentNumber())
+					.effectiveFrom(amendment.getEffectiveFrom())
+					.effectiveTill(amendment.getEffectiveTill())
 					.build();
 			
 			amendmentRepository.updateAmendment(Arrays.asList(amendmentUpdate));

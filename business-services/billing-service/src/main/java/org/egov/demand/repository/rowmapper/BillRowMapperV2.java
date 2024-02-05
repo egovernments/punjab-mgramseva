@@ -1,14 +1,5 @@
 package org.egov.demand.repository.rowmapper;
 
-import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.egov.demand.model.AuditDetails;
 import org.egov.demand.model.BillAccountDetailV2;
 import org.egov.demand.model.BillDetailV2;
@@ -19,6 +10,11 @@ import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 @Component
 public class BillRowMapperV2 implements ResultSetExtractor<List<BillV2>>{
@@ -50,6 +46,7 @@ public class BillRowMapperV2 implements ResultSetExtractor<List<BillV2>>{
 					.id(billId)
 					.totalAmount(BigDecimal.ZERO)
 					.tenantId(rs.getString("b_tenantid"))
+					.userId(rs.getString("b_payerid"))
 					.payerName(rs.getString("b_payername"))
 					.payerAddress(rs.getString("b_payeraddress"))
 					.payerEmail(rs.getString("b_payeremail"))

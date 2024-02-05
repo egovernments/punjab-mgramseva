@@ -1,18 +1,11 @@
 package org.egov.demand.web.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.validation.Valid;
-
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.response.ResponseInfo;
-import org.egov.demand.config.ApplicationProperties;
 import org.egov.demand.helper.BillHelperV2;
 import org.egov.demand.model.BillSearchCriteria;
 import org.egov.demand.model.GenerateBillCriteria;
 import org.egov.demand.model.UpdateBillRequest;
-import org.egov.demand.producer.Producer;
 import org.egov.demand.service.BillServicev2;
 import org.egov.demand.util.Constants;
 import org.egov.demand.web.contract.BillRequestV2;
@@ -25,12 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("bill/v2/")
@@ -47,12 +39,6 @@ public class BillControllerv2 {
 	
 	@Autowired
 	private BillHelperV2 billHelper;
-	
-	@Autowired
-	ApplicationProperties properties;
-	
-	@Autowired
-	Producer producer;
 	
 	
 	@PostMapping("_search")

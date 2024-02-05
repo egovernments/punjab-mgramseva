@@ -39,48 +39,24 @@
  */
 package org.egov.demand.service;
 
-import static org.egov.demand.util.Constants.ADVANCE_TAXHEAD_JSONPATH_CODE;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.DocumentContext;
+import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.demand.amendment.model.Amendment;
 import org.egov.demand.amendment.model.AmendmentCriteria;
 import org.egov.demand.amendment.model.AmendmentUpdate;
 import org.egov.demand.amendment.model.enums.AmendmentStatus;
 import org.egov.demand.config.ApplicationProperties;
-import org.egov.demand.model.ApportionDemandResponse;
-import org.egov.demand.model.AuditDetails;
+import org.egov.demand.model.*;
 import org.egov.demand.model.BillV2.BillStatus;
-import org.egov.demand.model.Demand;
-import org.egov.demand.model.DemandApportionRequest;
-import org.egov.demand.model.DemandCriteria;
-import org.egov.demand.model.DemandDetail;
-import org.egov.demand.model.DemandHistory;
-import org.egov.demand.model.PaymentBackUpdateAudit;
-import org.egov.demand.model.UpdateBillCriteria;
 import org.egov.demand.repository.AmendmentRepository;
 import org.egov.demand.repository.BillRepositoryV2;
 import org.egov.demand.repository.DemandRepository;
 import org.egov.demand.repository.ServiceRequestRepository;
 import org.egov.demand.util.DemandEnrichmentUtil;
 import org.egov.demand.util.Util;
-import org.egov.demand.web.contract.DemandRequest;
-import org.egov.demand.web.contract.DemandResponse;
-import org.egov.demand.web.contract.User;
-import org.egov.demand.web.contract.UserResponse;
-import org.egov.demand.web.contract.UserSearchRequest;
+import org.egov.demand.web.contract.*;
 import org.egov.demand.web.contract.factory.ResponseFactory;
 import org.egov.demand.web.validator.DemandValidatorV1;
 import org.egov.tracer.model.CustomException;
@@ -91,10 +67,13 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.DocumentContext;
+import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import lombok.extern.slf4j.Slf4j;
+import static org.egov.demand.util.Constants.ADVANCE_TAXHEAD_JSONPATH_CODE;
 
 @Service
 @Slf4j
@@ -392,7 +371,7 @@ public class DemandService {
 
 			// Searching demands based on consumer code of the current demand (demand which has to be created)
 			DemandCriteria searchCriteria = DemandCriteria.builder().tenantId(tenantId)
-					.status(Demand.StatusEnum.ACTIVE.toString()).consumerCode(Collections.singleton(consumerCode)).businessService(businessService).build();
+					.consumerCode(Collections.singleton(consumerCode)).businessService(businessService).build();
 			List<Demand> demandsFromSearch = demandRepository.getDemands(searchCriteria);
 
 			// If no demand is found means there is no advance available. The current demand is added for creation
@@ -485,7 +464,7 @@ public class DemandService {
 		 */
 		AmendmentCriteria amendmentCriteria = AmendmentCriteria.builder()
 				.tenantId(demands.get(0).getTenantId())
-				.status(AmendmentStatus.ACTIVE)
+				.status(Stream.of(AmendmentStatus.ACTIVE.toString()).collect(Collectors.toSet()))
 				.consumerCode(consumerCodes)
 				.build();
 		List<Amendment> amendmentsFromSearch = amendmentRepository.getAmendments(amendmentCriteria);

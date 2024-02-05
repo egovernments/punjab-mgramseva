@@ -1,36 +1,12 @@
 package org.egov.demand.web.validator;
 
-import static org.egov.demand.util.Constants.BUSINESSSERVICE_MODULE_PATH;
-import static org.egov.demand.util.Constants.TAXHEADMASTER_PATH_CODE;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.validation.Valid;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.DocumentContext;
 import org.egov.common.contract.request.RequestInfo;
-import org.egov.demand.amendment.model.Amendment;
-import org.egov.demand.amendment.model.AmendmentCriteria;
-import org.egov.demand.amendment.model.AmendmentRequest;
-import org.egov.demand.amendment.model.AmendmentUpdate;
-import org.egov.demand.amendment.model.AmendmentUpdateRequest;
-import org.egov.demand.amendment.model.ProcessInstance;
+import org.egov.demand.amendment.model.*;
 import org.egov.demand.amendment.model.enums.AmendmentStatus;
 import org.egov.demand.config.ApplicationProperties;
-import org.egov.demand.model.BusinessServiceDetail;
-import org.egov.demand.model.Demand;
-import org.egov.demand.model.DemandCriteria;
-import org.egov.demand.model.DemandDetail;
-import org.egov.demand.model.TaxHeadMaster;
+import org.egov.demand.model.*;
 import org.egov.demand.repository.AmendmentRepository;
 import org.egov.demand.repository.IdGenRepo;
 import org.egov.demand.service.DemandService;
@@ -42,8 +18,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.DocumentContext;
+import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.egov.demand.util.Constants.BUSINESSSERVICE_MODULE_PATH;
+import static org.egov.demand.util.Constants.TAXHEADMASTER_PATH_CODE;
 
 @Component
 public class AmendmentValidator {
@@ -114,7 +97,7 @@ public class AmendmentValidator {
 		AmendmentCriteria amendmentCriteria = AmendmentCriteria.builder()
 				.consumerCode(Stream.of(amendment.getConsumerCode()).collect(Collectors.toSet()))
 				.tenantId(amendment.getTenantId())
-				.status(AmendmentStatus.INWORKFLOW)
+				.status(Stream.of(AmendmentStatus.INWORKFLOW.toString()).collect(Collectors.toSet()))
 				.build();
 		
 		List<Amendment> amendmentsFromSearch = amendmentRepository.getAmendments(amendmentCriteria);
@@ -227,11 +210,12 @@ public class AmendmentValidator {
 		/*
 		 * enrich workflow fields if enabled
 		 */
+		String workflowName = amendment.getBusinessService().concat(".").concat(Constants.AMENDMENT_STRING_CONSTANT);
 		if (props.getIsAmendmentworkflowEnabed()) {
 
 			ProcessInstance processInstance = ProcessInstance.builder()
-					.moduleName(props.getAmendmentWfModuleName())
-					.businessService(props.getAmendmentWfName())
+					.businessService(workflowName)
+					.moduleName(amendment.getBusinessService())
 					.action(props.getAmendmentWfOpenAction())
 					.businessId(amendment.getAmendmentId())
 					.tenantId(amendment.getTenantId())
