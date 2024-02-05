@@ -79,7 +79,7 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
         }
 
         if (!smsProperties.isNumberWhitelisted(sms.getMobileNumber())) {
-            log.error(String.format("Sms to %s ismobileNumber=7009141334, message=ਪਿਆਰੇ Tarjinder Singh, Dabour Lower ਲਈ ਬਿਲਿੰਗ ਸਾਈਕਲ 01/06/2022-30/06/2022 ਅਨੁਸਾਰ ਭੁਗਤਾਨ ਯੋਗ ਰਕਮ ਐਮ ਗ੍ਰਾਮ ਸੇਵਾ ਵਿੱਚ ਦਰਜ਼ ਹੋ ਚੁੱਕੀ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਅਦਾਇਗੀ ਯੋਗ ਰਕਮ ਨੂੰ ਇੱਕਤਰ ਕਰਨ ਦੀ ਪ੍ਰਕਿਰਿਆ ਸ਼ੁਰੂ ਕਰੋ। https://mgramseva-uat.psegs.in/mgramseva/home -DWSS#1007268996965726804, category=TRANSACTION, expiryTime=null, templateId=null, tenantId=pb.dabourlower not in whitelist", sms.getMobileNumber()));
+            log.error(String.format("Sms to %s is not in whitelist", sms.getMobileNumber()));
             return;
         }
         log.info("calling submitToExternalSmsService() method");
