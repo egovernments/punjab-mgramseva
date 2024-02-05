@@ -62,6 +62,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class DemandGenerationConsumer {
 
+	private int sms=0;
 	@Autowired
 	private ObjectMapper mapper;
 
@@ -486,12 +487,14 @@ public class DemandGenerationConsumer {
 							.tenantid(tenantId)
 							.category(Category.TRANSACTION).build();
 					if(config.isSmsForDemandEnable()) {
-//						producer.push(config.getSmsNotifTopic(), smsRequest);
+						sms++;
+						producer.push(config.getSmsNotifTopic(), smsRequest);
 					}
 				}
 
 			});
 		}
+		log.info("Total count of sms->"+sms);
 	}
 
 	/**
