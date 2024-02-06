@@ -62,7 +62,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class DemandGenerationConsumer {
 
-	private int sms=0;
+//	private int sms=0;
 	@Autowired
 	private ObjectMapper mapper;
 
