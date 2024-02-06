@@ -171,6 +171,7 @@ public class WaterDaoImpl implements WaterDao {
 			return null;
 		waterConnectionByPreviousReadingDateList = jdbcTemplate.query(query1, preparedStatement.toArray(), wcbyDemandRowMapper);
 	    String query2 = wsQueryBuilder.getQueryForWCCountbyDemandDate(criteria, preparedStatement, requestInfo);
+		log.info(query2);
 
 		if (query2 == null)
 			return null;
