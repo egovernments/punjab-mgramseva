@@ -116,14 +116,14 @@ public class VendorRepository {
 
 	}
 
-	public List<VendorReportData> getVendorReportData(Long monthStartDateTime, String tenantId, Integer offset, Integer limit)
+	public List<VendorReportData> getVendorReportData(Long monthStartDateTime, Long monthEndDateTime,String tenantId, Integer offset, Integer limit)
 	{
 		StringBuilder vendor_report_query=new StringBuilder(vendorQueryBuilder.VENDOR_REPORT_QUERY);
 
 		List<Object> preparedStatement=new ArrayList<>();
 		preparedStatement.add(tenantId);
 		preparedStatement.add(monthStartDateTime);
-//		preparedStatement.add(monthEndDateTime);
+		preparedStatement.add(monthEndDateTime);
 
 
 		Integer newlimit=configuration.getDefaultLimit();

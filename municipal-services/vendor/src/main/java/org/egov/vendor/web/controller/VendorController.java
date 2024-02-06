@@ -70,12 +70,13 @@ public class VendorController {
 	@RequestMapping(value="/_vendorReport" ,method = RequestMethod.POST)
 	public ResponseEntity<VendorReportResponse> vendorReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
 															 @RequestParam(value="monthStartDate" , required = true) String monthStartDate,
+															 @RequestParam("monthEndDate") String monthEndDate,
 															 @RequestParam ("tenantId") String tenantId,
 															 @RequestParam ("offset") Integer offset,
 															 @RequestParam ("limit") Integer limit)
 	{
 
-        List<VendorReportData> vendorReportData=vendorService.vendorReport(monthStartDate,tenantId,offset,limit,requestInfoWrapper.getRequestInfo());
+        List<VendorReportData> vendorReportData=vendorService.vendorReport(monthStartDate,monthEndDate,tenantId,offset,limit,requestInfoWrapper.getRequestInfo());
 		VendorReportResponse vendorReportResponse= VendorReportResponse.builder().VendorReportData(vendorReportData).responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),true)).build();
 
 		return new ResponseEntity<>(vendorReportResponse,HttpStatus.OK);

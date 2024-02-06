@@ -161,18 +161,18 @@ public class VendorService {
         return vendorList;
 	}
 
-	public List<VendorReportData> vendorReport(String monthStartDate, String tenantId, Integer offset, Integer limit, RequestInfo requestInfo)
+	public List<VendorReportData> vendorReport(String monthStartDate, String monthEndDate,String tenantId, Integer offset, Integer limit, RequestInfo requestInfo)
 	{
 
 		DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate startDate= LocalDate.parse(monthStartDate,formatter);
-//		LocalDate endDate=LocalDate.parse(monthEndDate,formatter);
+		LocalDate endDate=LocalDate.parse(monthEndDate,formatter);
 
 		Long monthStartDateTime= LocalDateTime.of(startDate.getYear(),startDate.getMonth(),startDate.getDayOfMonth(),
 				0,0,0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-//		Long monthEndDateTime=LocalDateTime.of(endDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long monthEndDateTime=LocalDateTime.of(endDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
-		List<VendorReportData> vendorReportData=repository.getVendorReportData(monthStartDateTime,tenantId,offset,limit);
+		List<VendorReportData> vendorReportData=repository.getVendorReportData(monthStartDateTime,monthEndDateTime,tenantId,offset,limit);
 				return vendorReportData;
 
 	}
