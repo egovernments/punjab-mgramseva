@@ -487,14 +487,14 @@ public class DemandGenerationConsumer {
 							.tenantid(tenantId)
 							.category(Category.TRANSACTION).build();
 					if(config.isSmsForDemandEnable()) {
-						sms++;
-						producer.push(config.getSmsNotifTopic(), smsRequest);
+//						sms++;
+//						producer.push(config.getSmsNotifTopic(), smsRequest);
 					}
 				}
 
 			});
 		}
-		log.info("Total count of sms->"+sms);
+//		log.info("Total count of sms->"+sms);
 	}
 
 	/**
