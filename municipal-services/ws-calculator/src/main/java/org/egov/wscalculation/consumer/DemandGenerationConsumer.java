@@ -488,7 +488,7 @@ public class DemandGenerationConsumer {
 							.category(Category.TRANSACTION).build();
 					if(config.isSmsForDemandEnable()) {
 //						sms++;
-//						producer.push(config.getSmsNotifTopic(), smsRequest);
+						producer.push(config.getSmsNotifTopic(), smsRequest);
 					}
 				}
 
