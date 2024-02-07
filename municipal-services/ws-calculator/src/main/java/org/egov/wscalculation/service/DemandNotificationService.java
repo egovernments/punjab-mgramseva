@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONArray;
 
 @Service
-@Slf4j
 public class DemandNotificationService {
 
 	@Autowired
@@ -44,7 +43,6 @@ public class DemandNotificationService {
 			enrichSMSRequest(notificationObj, smsRequests, topic);
 			if (!CollectionUtils.isEmpty(smsRequests)) {
 				if(config.isSmsForDemandEnable()) {
-					log.info("Bulk demand generate call");
 //					util.sendSMS(smsRequests);
 				}
 			}
