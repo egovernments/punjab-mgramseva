@@ -76,11 +76,9 @@ public class SmsNotificationListener {
                         if (!StringUtils.isEmpty(expiredSmsTopic))
                             kafkaTemplate.send(expiredSmsTopic, request);
                     } else {
-                        log.info("Call from inside if condition");
                         smsService.sendSMS(request.toDomain());
                     }
                 } else {
-                    log.info("Call outside");
                     smsService.sendSMS(request.toDomain());
                 }
             }
