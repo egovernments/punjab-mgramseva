@@ -42,7 +42,7 @@ public class DemandNotificationService {
 			enrichSMSRequest(notificationObj, smsRequests, topic);
 			if (!CollectionUtils.isEmpty(smsRequests)) {
 				if(config.isSmsForDemandEnable()) {
-//					util.sendSMS(smsRequests);
+					util.sendSMS(smsRequests);
 				}
 			}
 		}
