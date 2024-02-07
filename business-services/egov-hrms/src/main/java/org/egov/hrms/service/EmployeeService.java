@@ -251,7 +251,9 @@ public class EmployeeService {
 		pwdParams.add(employee.getUser().getMobileNumber());
 		pwdParams.add(employee.getTenantId());
 		pwdParams.add(employee.getUser().getName().toUpperCase());
-		employee.getUser().setPassword(hrmsUtils.generatePassword(pwdParams));
+		//TODO:Add localition of sms and add template to register SMS
+		//employee.getUser().setPassword(hrmsUtils.generatePassword(pwdParams));
+		employee.getUser().setPassword(HRMSConstants.HRMS_USER_DEFAULT_PASSWORD);
 		log.info("password:"+employee.getUser().getPassword());
 		employee.getUser().setUserName(employee.getCode());
 		employee.getUser().setActive(true);
