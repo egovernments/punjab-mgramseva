@@ -51,7 +51,8 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
                     key={input.name}
                     value={formData && formData[config.key] ? formData[config.key][input.name] : undefined}
                     onChange={(e) => {
-                      setValue(e.target.value, input.name, validate(e.target.value, input));
+                      const value = e.target.value.replace(/\D/, ""); // Remove non-numeric characters
+                      setValue(value, input.name, validate(value, input));
                     }}
                     disable={isEdit ? true : false}
                     defaultValue={undefined}
