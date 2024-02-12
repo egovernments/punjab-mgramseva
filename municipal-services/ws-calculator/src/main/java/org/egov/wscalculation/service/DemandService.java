@@ -304,8 +304,8 @@ public class DemandService {
 					}
 				}
 				BigDecimal totalAmount=fetchTotalBillAmount(demands,requestInfo);
-				log.info(String.valueOf(totalAmount));
-				sendDownloadBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers,paymentDueDate);
+				log.info("Total Amount from fetch Bill"+String.valueOf(totalAmount));
+				sendDownloadBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers,paymentDueDate,totalAmount);
 			}
 		}
 		log.info("Demand Object" + demands.toString());
@@ -351,7 +351,7 @@ public class DemandService {
 			}
 		}
 	}
-	private void sendDownloadBillSMSNotification(RequestInfo requestInfo, String tenantId, User owner, WaterConnectionRequest waterConnectionRequest, Property property, List<DemandDetail> demandDetails, String consumerCode, List<Demand> demands, Boolean isForConnectionNO, String businessService, String billCycle,List<String> billNumbers, String paymentDueDate) {
+	private void sendDownloadBillSMSNotification(RequestInfo requestInfo, String tenantId, User owner, WaterConnectionRequest waterConnectionRequest, Property property, List<DemandDetail> demandDetails, String consumerCode, List<Demand> demands, Boolean isForConnectionNO, String businessService, String billCycle,List<String> billNumbers, String paymentDueDate,BigDecimal totalamount) {
 		HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo,
 				WSCalculationConstant.mGram_Consumer_NewBill, tenantId);
 		String actionLink = config.getNotificationUrl()
@@ -378,8 +378,7 @@ public class DemandService {
 				messageString = messageString.replace("{ownername}", owner.getName());
 				messageString = messageString.replace("{Period}", billCycle);
 				messageString = messageString.replace("{consumerno}", consumerCode);
-				messageString = messageString.replace("{billamount}", demandDetails.stream()
-						.map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add).toString());
+				messageString = messageString.replace("{billamount}", totalamount.toString());
 				messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionLink));
 
 				System.out.println("Demand genaration Message get bill::" + messageString);
