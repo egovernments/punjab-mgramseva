@@ -83,6 +83,10 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     if (keys_to_delete) keys_to_delete.forEach((key) => delete _new[key]);
     filterParam.delete;
     delete _new.delete;
+    if (!_new.tenantId){
+      _new = {tenantId: tenantId}
+    } 
+    console.log(_new,"_new")
     setSearchParams({ ..._new });
   };
 

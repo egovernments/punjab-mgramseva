@@ -105,6 +105,11 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
     config[0].body[2].isMandatory = false;
     config[0].body[2].populators.defaultValue = defaultValue;
   }
+  if(config && config[0].body && config[0].body[1].label === 'CORE_LOGIN_PASSWORD'){
+    config[0].body[1].populators.validation = {
+      maxlength: 30
+    };
+  } 
   return isLoading || isStoreLoading ? (
     <Loader />
   ) : (
@@ -112,7 +117,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       <div className="employeeBackbuttonAlign">
         <BackButton variant="white" style={{ borderBottom: "none" }} />
       </div>
-
+      
       <FormComposerV2
         onSubmit={onLogin}
         isDisabled={isDisabled || disable}
@@ -135,7 +140,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       <div className="employee-login-home-footer" style={{ backgroundColor: "unset" }}>
         <img
           alt="Powered by DIGIT"
-          src={window?.globalConfigs?.getConfig?.("DIGIT_FOOTER_BW")}
+          src={"https://naljal-uat-s3.s3.ap-south-1.amazonaws.com/logo/nic-footer.png"}
           style={{ cursor: "pointer" }}
           onClick={() => {
             window.open(window?.globalConfigs?.getConfig?.("DIGIT_HOME_URL"), "_blank").focus();
