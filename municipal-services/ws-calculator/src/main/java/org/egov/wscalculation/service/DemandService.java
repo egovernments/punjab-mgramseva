@@ -178,6 +178,7 @@ public class DemandService {
 					.collect(Collectors.toSet());
 
 			List<Demand> demands = searchDemand(tenantId, consumerCodes, fromDateSearch, toDateSearch, requestInfo, "ACTIVE");
+			log.info(demands.toString());
 			Set<String> connectionNumbersFromDemands = new HashSet<>();
 			if (!CollectionUtils.isEmpty(demands)) {
 				connectionNumbersFromDemands = demands.stream()
@@ -302,6 +303,8 @@ public class DemandService {
 						//sendPaymentAndBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers,paymentDueDate);
 					}
 				}
+				BigDecimal totalAmount=fetchTotalBillAmount(demands,requestInfo);
+				log.info(String.valueOf(totalAmount));
 				sendDownloadBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers,paymentDueDate);
 			}
 		}
