@@ -47,7 +47,7 @@ const CreateEmployee = () => {
   const closeToast = () => {
     setTimeout(() => {
       setShowToast(null);
-    }, 9000);
+    }, 5000);
   };
   useEffect(() => {
     if (mobileNumber && mobileNumber.length == 10 && mobileNumber.match(Digit.Utils.getPattern("MobileNo"))) {
@@ -179,6 +179,11 @@ const CreateEmployee = () => {
           code: "HRMS_ADMIN",
           name: "HRMS_ADMIN",
           labelKey: "ACCESSCONTROL_ROLES_ROLES_HRMS_ADMIN",
+        },
+        {
+          code: "MDMS_ADMIN",
+          name: "MDMS Admin",
+          description: "Mdms admin",
         },
       ];
       divisionBoundaryCodes &&

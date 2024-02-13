@@ -1,4 +1,4 @@
-import { Header, Loader } from "@egovernments/digit-ui-react-components";
+import { Header, Loader, Toast } from "@egovernments/digit-ui-react-components";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import DesktopInbox from "../components/inbox/DesktopInbox";
@@ -8,6 +8,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const { isLoading: isLoading, Errors, data: res } = Digit.Hooks.hrms.useHRMSCount(tenantId);
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
+  const DIVISION_ADMIN = Digit.UserService.hasAccess(["DIV_ADMIN"]);
 
   const { t } = useTranslation();
   const [pageOffset, setPageOffset] = useState(initialStates.pageOffset || 0);
@@ -17,6 +18,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
   const [searchParams, setSearchParams] = useState(() => {
     return initialStates.searchParams || {};
   });
+  const [toast, setToast] = useState(null);
 
   let isMobile = window.Digit.Utils.browser.isMobile();
   let paginationParams = isMobile
@@ -43,6 +45,8 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     };
   }
 
+  const checkRoles = requestBody.criteria.roles[0] !== "DIV_ADMIN";
+
   const { data: divisionData, ...rests } = Digit.Hooks.hrms.useHRMSEmployeeSearch(requestBody, isupdate, {
     enabled: (STATE_ADMIN && searchParams?.hasOwnProperty("isActive")) || searchParams?.hasOwnProperty("tenantIds") ? true : false,
   });
@@ -50,13 +54,16 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
   if (searchParams?.hasOwnProperty("roles")) {
     roles.roles = searchParams?.roles;
   }
+
   const { isLoading: hookLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSSearch(
     searchParams,
     tenantId,
     paginationParams,
     isupdate,
     roles,
-    { enabled: !searchParams?.hasOwnProperty("isActive") || !searchParams?.hasOwnProperty("tenantIds") || !STATE_ADMIN ? true : false }
+    {
+      enabled: (!searchParams?.hasOwnProperty("isActive") && !searchParams?.hasOwnProperty("tenantIds")) || DIVISION_ADMIN ? true : false,
+    }
   );
 
   useEffect(() => {
@@ -77,7 +84,20 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     setPageOffset((prevState) => prevState - pageSize);
   };
 
+  const closeToast = () => {
+    setTimeout(() => {
+      setToast(null);
+    }, 5000);
+  };
   const handleFilterChange = (filterParam) => {
+    console.log("filter", filterParam, searchParams);
+    // if (!searchParams.names || !searchParams.phone || !searchParams.codes || !filterParam.tenantIds || !filterParam.isActive) {
+    //   // Show toast message
+    //   setToast({ key: true, label: "Please enter a minimum one value to search" });
+    //   closeToast();
+    //   return; // Don't proceed with the search
+    // }
+
     let keys_to_delete = filterParam.delete;
     let _new = { ...searchParams, ...filterParam };
     if (keys_to_delete) keys_to_delete.forEach((key) => delete _new[key]);
@@ -174,6 +194,15 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
             totalRecords={totalRecords}
             filterComponent={filterComponent}
           />
+          {toast && (
+            <Toast
+              error={toast.key}
+              label={t(toast.label)}
+              onClose={() => {
+                setToast(null);
+              }}
+            />
+          )}
         </div>
       );
     }
