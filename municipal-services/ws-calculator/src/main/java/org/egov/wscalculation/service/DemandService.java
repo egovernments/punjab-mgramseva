@@ -178,7 +178,6 @@ public class DemandService {
 					.collect(Collectors.toSet());
 
 			List<Demand> demands = searchDemand(tenantId, consumerCodes, fromDateSearch, toDateSearch, requestInfo, "ACTIVE");
-			log.info(demands.toString());
 			Set<String> connectionNumbersFromDemands = new HashSet<>();
 			if (!CollectionUtils.isEmpty(demands)) {
 				connectionNumbersFromDemands = demands.stream()
