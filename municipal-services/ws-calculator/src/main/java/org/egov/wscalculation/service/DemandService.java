@@ -303,8 +303,9 @@ public class DemandService {
 					}
 				}
 				BigDecimal totalAmount=fetchTotalBillAmount(demands,requestInfo);
-				log.info("Total Amount from fetch Bill"+String.valueOf(totalAmount));
-				sendDownloadBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers,paymentDueDate,totalAmount);
+				//log.info("Total Amount from fetch Bill"+String.valueOf(totalAmount));
+				if(totalAmount.signum()> 0)
+					sendDownloadBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers,paymentDueDate,totalAmount);
 			}
 		}
 		log.info("Demand Object" + demands.toString());
@@ -366,8 +367,8 @@ public class DemandService {
 		}
 		String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 
-		System.out.println("Localization message get bill::" + messageString);
-		System.out.println("isForConnectionNO:" + isForConnectionNO);
+		//System.out.println("Localization message get bill::" + messageString);
+		//System.out.println("isForConnectionNO:" + isForConnectionNO);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
 			log.info("Demand Object get bill" + demands.toString());
 			log.info("requestInfo get Bill" + requestInfo);
@@ -380,7 +381,7 @@ public class DemandService {
 				messageString = messageString.replace("{billamount}", totalamount.toString());
 				messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionLink));
 
-				System.out.println("Demand genaration Message get bill::" + messageString);
+			//	System.out.println("Demand genaration Message get bill::" + messageString);
 
 				SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString).tenantid(tenantId)
 						.category(Category.TRANSACTION).build();
