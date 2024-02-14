@@ -373,7 +373,7 @@ public class DemandService {
 			log.info("Demand Object get bill" + demands.toString());
 			log.info("requestInfo get Bill" + requestInfo);
 			log.info("bill number get bill size :" + billNumbers.size());
-			if (billNumbers.size() > 0 && totalamount.signum()>0) {
+			if (billNumbers.size() > 0 && totalamount.signum()>0 && totalamount!=null) {
 				actionLink = actionLink.replace("$billNumber", billNumbers.get(0));
 				messageString = messageString.replace("{ownername}", owner.getName());
 				messageString = messageString.replace("{Period}", billCycle);
