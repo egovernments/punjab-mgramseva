@@ -304,7 +304,7 @@ public class DemandService {
 				}
 				BigDecimal totalAmount=fetchTotalBillAmount(demands,requestInfo);
 				//log.info("Total Amount from fetch Bill"+String.valueOf(totalAmount));
-				if(totalAmount.signum()> 0 && totalAmount!=null)
+				if(totalAmount!=null && totalAmount.signum()> 0)
 					sendDownloadBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers,paymentDueDate,totalAmount);
 			}
 		}
@@ -373,7 +373,7 @@ public class DemandService {
 			log.info("Demand Object get bill" + demands.toString());
 			log.info("requestInfo get Bill" + requestInfo);
 			log.info("bill number get bill size :" + billNumbers.size());
-			if (billNumbers.size() > 0 && totalamount.signum()>0 && totalamount!=null) {
+			if (totalamount!=null && billNumbers.size() > 0 && totalamount.signum()>0) {
 				actionLink = actionLink.replace("$billNumber", billNumbers.get(0));
 				messageString = messageString.replace("{ownername}", owner.getName());
 				messageString = messageString.replace("{Period}", billCycle);
