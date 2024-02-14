@@ -304,7 +304,7 @@ public class DemandService {
 				}
 				BigDecimal totalAmount=fetchTotalBillAmount(demands,requestInfo);
 				//log.info("Total Amount from fetch Bill"+String.valueOf(totalAmount));
-				if(totalAmount.signum()> 0)
+				if(totalAmount.signum()> 0 && totalAmount!=null)
 					sendDownloadBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers,paymentDueDate,totalAmount);
 			}
 		}
