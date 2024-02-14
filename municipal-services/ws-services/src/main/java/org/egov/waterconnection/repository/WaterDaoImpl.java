@@ -149,6 +149,7 @@ public class WaterDaoImpl implements WaterDao {
 			connectionResponse = WaterConnectionResponse.builder().waterConnection(waterConnectionList)
 					.totalCount(waterRowMapper.getFull_count()).collectionDataCount(collectionDataCount).propertyCount(counter).build();
 		}
+		log.info(connectionResponse.toString());
 		return connectionResponse;
 	}
 
