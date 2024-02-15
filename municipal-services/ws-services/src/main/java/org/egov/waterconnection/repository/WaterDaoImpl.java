@@ -129,7 +129,7 @@ public class WaterDaoImpl implements WaterDao {
 					.totalCount(openWaterRowMapper.getFull_count()).build();
 		} else {
                 log.info("HouseHold Register Query"+ query);
-				log.info("Prepared Statement of household register "+ preparedStatement.toArray());
+				log.info("Prepared Statement of household register "+ preparedStatement);
 			waterConnectionList = jdbcTemplate.query(query, preparedStatement.toArray(), waterRowMapper);
 			Map<String, Object> counter = new HashMap();
 			if (criteria.getIsPropertyCount()!= null && criteria.getIsPropertyCount()) {
@@ -149,7 +149,7 @@ public class WaterDaoImpl implements WaterDao {
 			connectionResponse = WaterConnectionResponse.builder().waterConnection(waterConnectionList)
 					.totalCount(waterRowMapper.getFull_count()).collectionDataCount(collectionDataCount).propertyCount(counter).build();
 		}
-		log.info(connectionResponse.toString());
+		log.info("Connection Response"+connectionResponse.toString());
 		return connectionResponse;
 	}
 
