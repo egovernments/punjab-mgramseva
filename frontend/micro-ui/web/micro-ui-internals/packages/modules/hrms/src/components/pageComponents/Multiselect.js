@@ -88,7 +88,13 @@ const MultiSelectDropdown = ({
   }, [selected?.length]);
 
   function fnToSelectOptionThroughProvidedSelection(selected) {
-    return selected?.map((e) => ({ [optionsKey]: e?.[optionsKey], propsData: [null, e] }));
+    
+    return selected?.map((e) => (
+      { 
+        [optionsKey]: `ACCESSCONTROL_ROLES_ROLES_${e.code}`,
+        propsData: [null, e] 
+      }
+    ));
   }
 
   const [alreadyQueuedSelectedState, dispatch] = useReducer(reducer, selected, fnToSelectOptionThroughProvidedSelection);
@@ -225,7 +231,6 @@ const MultiSelectDropdown = ({
     );
     // return filteredOptions?.map((option, index) => <MenuItem option={option} key={index} index={index} />);
   };
-
   return (
     <div>
       <div className="multi-select-dropdown-wrap" ref={dropdownRef} style={{ marginBottom: "24px" }}>
