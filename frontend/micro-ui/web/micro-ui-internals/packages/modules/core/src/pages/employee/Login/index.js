@@ -12,7 +12,7 @@ const EmployeeLogin = () => {
   const { data: mdmsData, isLoading } = Digit.Hooks.useCommonMDMS(Digit.ULBService.getStateId(), "commonUiConfig", ["LoginConfig"], {
     select: (data) => {
       return {
-        config: data?.commonUiConfig?.LoginConfig
+        config: data?.commonUiConfig?.LoginConfig,
       };
     },
     retry: false,
@@ -20,12 +20,10 @@ const EmployeeLogin = () => {
 
   //let loginConfig = mdmsData?.config ? mdmsData?.config : defaultLoginConfig;
   useEffect(() => {
-    if(isLoading == false && mdmsData?.config)
-    {  
-      setloginConfig(mdmsData?.config)
+    if (isLoading == false && mdmsData?.config) {
+      setloginConfig(mdmsData?.config);
     }
-  },[mdmsData, isLoading])
-
+  }, [mdmsData, isLoading]);
 
   const loginParams = useMemo(() =>
     loginConfig.map(
