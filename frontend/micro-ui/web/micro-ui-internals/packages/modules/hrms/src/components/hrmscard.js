@@ -21,16 +21,28 @@ const HRMSCard = () => {
   const moduleForSomeDIVAdmin =
     DIV_ADMIN && MDMS_ADMIN
       ? [
-          {
-            label: t("WORK_BENCH_URL_MASTER_DATA"),
-            link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
-          },
-          // {
-          //   label: t("WORK_BENCH_URL_LOCALIZATION"),
-          //   link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
-          // },
-        ]
+        {
+          label: t("WORK_BENCH_URL_MASTER_DATA"),
+          link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
+        },
+        // {
+        //   label: t("WORK_BENCH_URL_LOCALIZATION"),
+        //   link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
+        // },
+      ]
       : [];
+
+  const moduleForSomeSTATEUser =
+    STATE_ADMIN && MDMS_ADMIN
+      ? [
+        {
+          label: t("WORK_BENCH_URL_MASTER_DATA"),
+          link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=tenant&masterName=tenants`,
+        },
+      ]
+      : [];
+
+
   const propsForModuleCard = {
     Icon: <PersonIcon />,
     moduleName: t("ACTION_TEST_HRMS"),
@@ -60,6 +72,8 @@ const HRMSCard = () => {
         link: "https://ifix-dwss.psegs.in/digit-ui/employee/dss/dashboard/ifix",
       },
       ...moduleForSomeDIVAdmin,
+      ...moduleForSomeSTATEUser,
+
     ],
   };
 
