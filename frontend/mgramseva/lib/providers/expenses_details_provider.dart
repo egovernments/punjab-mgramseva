@@ -285,7 +285,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       if (boundaryList.length > 0) {
         code = boundaryList.first.code;
       } else {
-        code = commonProvider.userDetails?.selectedtenant?.city?.code;
+        code = "WARD1";
       }
 
       var body = {

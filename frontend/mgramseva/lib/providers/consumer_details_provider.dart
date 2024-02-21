@@ -479,10 +479,34 @@ class ConsumerProvider with ChangeNotifier {
         "tenantId": commonProvider.userDetails!.selectedtenant!.code
       });
       boundaryList = [];
-      boundaryList.addAll(
-          TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!);
+      result['TenantBoundary']!=null && result['TenantBoundary'].length>0?boundaryList.addAll(
+          TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!):{};
       if (boundaryList.length == 1) {
         property.address.localityCtrl = boundaryList.first;
+        onChangeOfLocality(property.address.localityCtrl);
+      }else{
+        boundaryList.add(Boundary.fromJson({
+          "code": "WARD1",
+          "name": commonProvider.userDetails!.selectedtenant!.name,
+          "label": "Locality",
+          "latitude": null,
+          "longitude": null,
+          "area": null,
+          "pincode": null,
+          "boundaryNum": 1,
+          "children": []
+        }));
+        property.address.localityCtrl = Locality.fromJson({
+          "code": "WARD1",
+          "name": commonProvider.userDetails!.selectedtenant!.name,
+          "label": "Locality",
+          "latitude": null,
+          "longitude": null,
+          "area": null,
+          "pincode": null,
+          "boundaryNum": 1,
+          "children": []
+        });
         onChangeOfLocality(property.address.localityCtrl);
       }
       // notifyListeners();
