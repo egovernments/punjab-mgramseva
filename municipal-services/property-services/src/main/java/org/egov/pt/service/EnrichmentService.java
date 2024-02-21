@@ -8,11 +8,7 @@ import java.util.UUID;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.pt.config.PropertyConfiguration;
-import org.egov.pt.models.AuditDetails;
-import org.egov.pt.models.Institution;
-import org.egov.pt.models.OwnerInfo;
-import org.egov.pt.models.Property;
-import org.egov.pt.models.PropertyCriteria;
+import org.egov.pt.models.*;
 import org.egov.pt.models.enums.Status;
 import org.egov.pt.models.user.User;
 import org.egov.pt.util.PTConstants;
@@ -198,8 +194,9 @@ public class EnrichmentService {
      * @param property The property object received for create or update
      */
     public void enrichBoundary(Property property, RequestInfo requestInfo){
-    	
-//        boundaryService.getAreaType(property, requestInfo, PTConstants.BOUNDARY_HEIRARCHY_CODE);
+		 //boundaryService.getAreaType(property, requestInfo, PTConstants.BOUNDARY_HEIRARCHY_CODE);
+		// this we have chnaged due to mdms-v2 doesn't support egov-location boundary data
+		 property.getAddress().setLocality(Locality.builder().code("WARD1").build());
     }
     
     /**
