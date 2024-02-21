@@ -18,7 +18,7 @@ import * as dateUtils from "./services/atoms/Utils/Date";
 import Download from "./services/atoms/Download";
 import { WorkflowService } from "./services/elements/WorkFlow";
 import { MdmsService } from "./services/elements/MDMS";
-import { MdmsServiceV1 } from "./services/elements/MDMSV2";
+import { MdmsServiceV1 } from "./services/elements/MDMSV1";
 
 import { Complaint } from "./services/elements/Complaint";
 import { UserService } from "./services/elements/User";
