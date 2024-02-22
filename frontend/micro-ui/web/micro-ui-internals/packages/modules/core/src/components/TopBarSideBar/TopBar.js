@@ -97,11 +97,11 @@ const TopBar = ({
     );
   }
   const loggedin = userDetails?.access_token ? true : false;
-
+  console.log(window?.globalConfigs?.getConfig?.("LOGO_URL"),"sss")
   return (
     <div className="topbar">
       {mobileView ? <Hamburger handleClick={toggleSidebar} color="#9E9E9E" /> : null}
-      <img className="city" src={"https://mseva.lgpunjab.gov.in/pb-egov-assets/pb.punjab/logo.png"} />
+      <img className="city" src={window?.globalConfigs?.getConfig?.("LOGO_URL")} />
       <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
         {loggedin &&
           (cityDetails?.city?.ulbGrade ? (
