@@ -51,8 +51,8 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   );
   const [jurisdictionsData, setJuristictionsData] = useState([]);
   let hierarchylist = [];
-  const hierarchyData = data?.MdmsRes?.["egov-location"]["TenantBoundary"].filter((ele) => ele?.hierarchyType?.code == "REVENUE")[0]?.hierarchyType;
-  hierarchylist.push(hierarchyData);
+  // const hierarchyData = data?.MdmsRes?.["egov-location"]["TenantBoundary"].filter((ele) => ele?.hierarchyType?.code == "REVENUE")[0]?.hierarchyType;
+  // hierarchylist.push(hierarchyData);
 
   let divisions = [];
   divisions = data?.MdmsRes?.["tenant"]["tenants"]
@@ -90,7 +90,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     let jurisdictionData = jurisdictions?.map((jurisdiction) => {
       let res = {
         id: jurisdiction?.id,
-        hierarchy: hierarchylist[0]?.code,
+        hierarchy: jurisdiction?.boundary?.code,
         boundaryType: "City",
         boundary: jurisdiction?.boundary?.code,
         tenantId: STATE_ADMIN ? jurisdiction?.divisionBoundary && jurisdiction?.divisionBoundary[0]?.code : jurisdiction?.boundary?.code,
@@ -343,17 +343,17 @@ function Jurisdiction({
   let isMobile = window.Digit.Utils.browser.isMobile();
   const isEdit = window.location.href?.includes("hrms/edit");
 
-  useEffect(() => {
-    selectBoundaryType(
-      data?.MdmsRes?.["egov-location"]["TenantBoundary"]
-        .filter((ele) => {
-          return ele?.hierarchyType?.code == hierarchylist[0]?.code;
-        })
-        .map((item) => {
-          return { ...item.boundary, i18text: Digit.Utils.locale.convertToLocale(item.boundary.label, "EGOV_LOCATION_BOUNDARYTYPE") };
-        })
-    );
-  }, [jurisdiction?.hierarchy, data?.MdmsRes]);
+  // useEffect(() => {
+  //   selectBoundaryType(
+  //     data?.MdmsRes?.["egov-location"]["TenantBoundary"]
+  //       .filter((ele) => {
+  //         return ele?.hierarchyType?.code == hierarchylist[0]?.code;
+  //       })
+  //       .map((item) => {
+  //         return { ...item.boundary, i18text: Digit.Utils.locale.convertToLocale(item.boundary.label, "EGOV_LOCATION_BOUNDARYTYPE") };
+  //       })
+  //   );
+  // }, [jurisdiction?.hierarchy, data?.MdmsRes]);
 
   useEffect(() => {
     setDivision(
