@@ -101,7 +101,7 @@ const TopBar = ({
   return (
     <div className="topbar">
       {mobileView ? <Hamburger handleClick={toggleSidebar} color="#9E9E9E" /> : null}
-      <img className="city" src={loggedin ? cityDetails?.logoId : stateInfo?.statelogo} />
+      <img className="city" src={"https://mseva.lgpunjab.gov.in/pb-egov-assets/pb.punjab/logo.png"} />
       <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
         {loggedin &&
           (cityDetails?.city?.ulbGrade ? (
