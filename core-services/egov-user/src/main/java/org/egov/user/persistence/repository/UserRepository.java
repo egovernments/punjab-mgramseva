@@ -69,7 +69,6 @@ public class UserRepository {
             userIds = findUsersWithRole(userSearch);
             RoleSearchHappend = true;
         }
-        log.info("User role serach Count:"+userIds.size());
         List<User> users = new ArrayList<>();
         if (RoleSearchHappend) {
             if (!CollectionUtils.isEmpty(userIds)) {
@@ -106,7 +105,6 @@ public class UserRepository {
         final List<Object> preparedStatementValues = new ArrayList<>();
         List<Long> usersIds = new ArrayList<>();
         String queryStr = userTypeQueryBuilder.getQueryUserRoleSearch(userSearch, preparedStatementValues);
-        log.info("ROLE SEARCH QUERY:" + queryStr);
         usersIds = jdbcTemplate.queryForList(queryStr, preparedStatementValues.toArray(), Long.class);
 
         return usersIds;

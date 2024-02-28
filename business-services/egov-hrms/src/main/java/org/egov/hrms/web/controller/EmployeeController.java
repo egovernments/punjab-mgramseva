@@ -121,8 +121,6 @@ public class EmployeeController {
 	@PostMapping(value = "/_searchListOfEmployee")
 	@ResponseBody
 	public ResponseEntity<?> _searchListOfEmployee(@RequestBody @Valid EmployeeSearchByTenantRequestWrapper employeeSearchByTenantRequestWrapper) {
-		//validator.validateSearchRequest(requestInfoWrapper.getRequestInfo(), criteria);
-		log.info("criteria::"+ employeeSearchByTenantRequestWrapper.getCriteria());
 		EmployeeResponse employeeResponse = employeeService.searchListOfEmployee(employeeSearchByTenantRequestWrapper.getCriteria(), employeeSearchByTenantRequestWrapper.getRequestInfo());
 		return new ResponseEntity<>(employeeResponse,HttpStatus.OK);
 	}

@@ -234,7 +234,6 @@ public class EmployeeService {
 			employee.getUser().setUuid(user.getUuid());
 		}catch(Exception e) {
 			log.error("Exception while creating user: ",e);
-			log.error("request: "+request);
 			throw new CustomException(ErrorConstants.HRMS_USER_CREATION_FAILED_CODE, ErrorConstants.HRMS_USER_CREATION_FAILED_MSG);
 		}
 
@@ -252,9 +251,7 @@ public class EmployeeService {
 		pwdParams.add(employee.getTenantId());
 		pwdParams.add(employee.getUser().getName().toUpperCase());
 		//TODO:Add localition of sms and add template to register SMS
-		//employee.getUser().setPassword(hrmsUtils.generatePassword(pwdParams));
-		employee.getUser().setPassword(HRMSConstants.HRMS_USER_DEFAULT_PASSWORD);
-		log.info("password:"+employee.getUser().getPassword());
+		employee.getUser().setPassword(hrmsUtils.generatePassword(pwdParams));
 		employee.getUser().setUserName(employee.getCode());
 		employee.getUser().setActive(true);
 		employee.getUser().setType(UserType.EMPLOYEE.toString());
@@ -363,7 +360,6 @@ public class EmployeeService {
 			userService.updateUser(request);
 		}catch(Exception e) {
 			log.error("Exception while updating user: ",e);
-			log.error("request: "+request);
 			throw new CustomException(ErrorConstants.HRMS_USER_UPDATION_FAILED_CODE, ErrorConstants.HRMS_USER_UPDATION_FAILED_MSG);
 		}
 
@@ -603,7 +599,6 @@ public class EmployeeService {
 			criteria.setIsActive(true);
 		else
 			criteria.setIsActive(false);*/
-		log.info("criteria :" + criteria.getRoles());
 		Map<String, User> mapOfUsers = new HashMap<String, User>();
 		if((!CollectionUtils.isEmpty(criteria.getRoles())) && !CollectionUtils.isEmpty(criteria.getTenantIds())) {
 			Map<String, Object> userSearchCriteria = new HashMap<>();
@@ -611,13 +606,11 @@ public class EmployeeService {
 			if( !CollectionUtils.isEmpty(criteria.getRoles()) )
 				userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_ROLECODES,criteria.getRoles());
 			UserResponse userResponse = userService.getUserByTenantids(requestInfo, userSearchCriteria);
-			log.info("user responsesize:"+userResponse.getUser().size() );
 			userChecked =true;
 			if(!CollectionUtils.isEmpty(userResponse.getUser())) {
 				mapOfUsers.putAll(userResponse.getUser().stream()
 						.collect(Collectors.toMap(User::getUuid, Function.identity())));
 			}
-			log.info("Map of User length:"+mapOfUsers.size());
 			List<String> userUUIDs = userResponse.getUser().stream().map(User :: getUuid).collect(Collectors.toList());
 			if(!CollectionUtils.isEmpty(criteria.getUuids()))
 				criteria.setUuids(criteria.getUuids().stream().filter(userUUIDs::contains).collect(Collectors.toList()));
@@ -626,25 +619,19 @@ public class EmployeeService {
 		}
 		//checks if above criteria met and result is not  null will check for name search if list of names are given as user search on name is not bulk api
 		List <Employee> employees = new ArrayList<>();
-		log.info("Employe search boolean:"+(!((!CollectionUtils.isEmpty(criteria.getRoles())))));
 		employees = repository.fetchEmployees(criteria, requestInfo);
-		log.info("innside fetch employee if true:"+ employees.size());
 		List<String> uuids = employees.stream().map(Employee :: getUuid).collect(Collectors.toList());
-		log.info("uuids:" +uuids.size());
 		if(!CollectionUtils.isEmpty(uuids)){
 			Map<String, Object> UserSearchCriteria = new HashMap<>();
 			UserSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_UUID,uuids);
 			if(mapOfUsers.isEmpty()){
 				UserResponse userResponse = userService.getUser(requestInfo, UserSearchCriteria);
-				log.info("mapOfUsers not empty:"+userResponse.getUser().size());
 				if(!CollectionUtils.isEmpty(userResponse.getUser())) {
-					log.info("mapOfUsers not empty and user reponse size:"+userResponse.getUser().size());
 					mapOfUsers = userResponse.getUser().stream()
 							.collect(Collectors.toMap(User :: getUuid, Function.identity()));
 				}
 			}
 			for(Employee employee: employees){
-				log.info("employee uuid:"+employee.getUuid());
 				employee.setUser(mapOfUsers.get(employee.getUuid()));
 			}
 		}
