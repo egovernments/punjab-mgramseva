@@ -65,7 +65,7 @@ public class NotificationService {
 	 * @param pwdMap
 	 */
 	public void sendNotification(EmployeeRequest request, Map<String, String> pwdMap) {
-		String message = getMessage(request,HRMSConstants.HRMS_EMP_CREATE_LOCLZN_CODE);
+		String message = getMessage(request,HRMSConstants.ON_BOARD_EMPLOYEE);
 		if(StringUtils.isEmpty(message)) {
 			log.info("SMS content has not been configured for this case");
 			return;
@@ -149,9 +149,14 @@ public class NotificationService {
 	 * @return
 	 */
 	public String buildMessage(Employee employee, String message, Map<String, String> pwdMap) {
-		message = message.replace("$username", employee.getCode()).replace("$password", pwdMap.get(employee.getUuid()))
-				.replace("$employeename", employee.getUser().getName());
-		message = message.replace("$applink", appLink);
+//		message = message.replace("$username", employee.getCode()).replace("$password", pwdMap.get(employee.getUuid()))
+//				.replace("$employeename", employee.getUser().getName());
+//		message = message.replace("$applink", appLink);
+		message=message.replace("{USER}", employee.getUser().getName());
+		message=message.replace("{LINK}",appLink);
+		message=message.replace("{PHNO}",employee.getUser().getMobileNumber());
+		message=message.replace("{PASSWORD}",pwdMap.get(employee.getUuid()));
+		log.info("Message send to user at time of onboard "+message);
 		return message;
 	}
 	
