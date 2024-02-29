@@ -152,7 +152,7 @@ public class NotificationService {
 //		message = message.replace("$username", employee.getCode()).replace("$password", pwdMap.get(employee.getUuid()))
 //				.replace("$employeename", employee.getUser().getName());
 //		message = message.replace("$applink", appLink);
-		message=message.replace("{USER}", employee.getCode());
+		message=message.replace("{USER}", employee.getUser().getName());
 		message=message.replace("{LINK}",appLink);
 		message=message.replace("{PHNO}",employee.getUser().getMobileNumber());
 		message=message.replace("{PASSWORD}",pwdMap.get(employee.getUuid()));
