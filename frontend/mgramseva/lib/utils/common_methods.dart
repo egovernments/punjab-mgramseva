@@ -170,7 +170,7 @@ class CommonMethods {
       {int monthCount=2,bool showCurrentMonth = false}) {
     var monthList = <DateTime>[];
     final currentTime = DateTime.now();
-    DatePeriod newDT = DatePeriod(ytd.endDate.subtract(Duration(days: daysToSub(monthCount,currentTime.year))), ytd.endDate, DateType.MONTH);
+    DatePeriod newDT = DatePeriod(ytd.endDate.subtract(Duration(days: daysToSubtract(monthCount,currentTime.year,currentTime.month))), ytd.endDate, DateType.MONTH);
     if (currentTime.year < newDT.startDate.year) {
       return <DatePeriod>[];
     }
