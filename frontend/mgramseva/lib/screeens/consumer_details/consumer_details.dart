@@ -512,8 +512,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             '',
                                                             consumerProvider
                                                                 .onChangeOfBillYear,
-                                                            consumerProvider
-                                                                .getFinancialYearList(),
+                                                            [consumerProvider
+                                                                .getFinancialYearList().first],
                                                             true,
                                                             itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.financialYear)}',
                                                             controller: consumerProvider
@@ -532,7 +532,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             consumerProvider
                                                                 .onChangeBillingCycle,
                                                             consumerProvider
-                                                                .getBillingCycle(),
+                                                                .getBillingCycleMonthCountCurrent(consumerProvider
+                                                                .billYear),
                                                             true,
                                                             itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i['name'])}",
                                                             controller: consumerProvider
