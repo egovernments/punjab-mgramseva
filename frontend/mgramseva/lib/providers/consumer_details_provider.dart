@@ -649,6 +649,39 @@ class ConsumerProvider with ChangeNotifier {
     }
     return <Map<String,dynamic>>[];
   }
+  //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
+  List<Map<String,dynamic>> getBillingCycleMonthCountCurrent(TaxPeriod? billYear) {
+    var dates = <Map<String,dynamic>>[];
+    if (billYear!=null) {
+      DatePeriod ytd;
+      var fromDate = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(billYear?.fromDate)) as DateTime;
+
+      var toDate = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(billYear?.toDate)) as DateTime;
+
+      ytd = DatePeriod(fromDate,toDate,DateType.YTD);
+
+      /// Get months based on selected billing year
+      var months = CommonMethods.getPastMonthUntilFinancialYTDMonthCount(ytd);
+
+      /// if selected year is future year means all the months will be removed
+      if(fromDate.year > ytd.endDate.year) months.clear();
+
+      for (var i = 0; i < months.length; i++) {
+        var prevMonth = months[i].startDate;
+        var r = {"code": prevMonth, "name": '${ApplicationLocalizations.of(navigatorKey.currentContext!)
+            .translate((Constants.MONTHS[prevMonth.month - 1])) +
+            " - " +
+            prevMonth.year.toString()}'};
+        dates.add(r);
+      }
+    }
+    if (dates.length > 0 && waterconnection.connectionType == 'Non_Metered') {
+      return dates;
+    }
+    return <Map<String,dynamic>>[];
+  }
 
   incrementIndex(index, consumerGenderKey) async {
     if (boundaryList.length > 1) {
