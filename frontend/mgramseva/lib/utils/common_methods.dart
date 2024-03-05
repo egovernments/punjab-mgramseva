@@ -100,13 +100,17 @@ class CommonMethods {
       return false;
     }
   }
-  static int daysToSub(int monthCount, int year) {
-    var days = 0;
+  static int daysToSubtract(int monthCount, int year,int currentMonth) {
+    int days = 0;
     for (int i = 0; i < monthCount; i++) {
-      if (isLeapYear(year)) {
-        days += daysInMonthLeap[i];
+      if (currentMonth - i < 0) {
+        days += isLeapYear(year - 1)
+            ? daysInMonthLeap[12 - (currentMonth - i).abs()]
+            : daysInMonth[12 - (currentMonth - i).abs()];
       } else {
-        days += daysInMonth[i];
+        days += isLeapYear(year)
+            ? daysInMonthLeap[currentMonth - i]
+            : daysInMonth[currentMonth - i];
       }
     }
     return days;
