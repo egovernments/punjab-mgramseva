@@ -72,7 +72,8 @@ public class NotificationService {
 		}
 		for(Employee employee: request.getEmployees()) {
 			message = buildMessage(employee, message, pwdMap);
-			SMSRequest smsRequest = SMSRequest.builder().mobileNumber(employee.getUser().getMobileNumber()).message(message).build();
+			SMSRequest smsRequest = SMSRequest.builder().mobileNumber(employee.getUser().getMobileNumber()).message(message).tenantId(employee.getTenantId()).build();
+			log.info(smsRequest.toString());
 			producer.push(smsTopic, smsRequest);
 		}
 	}
