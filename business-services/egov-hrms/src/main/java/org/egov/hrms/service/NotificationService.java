@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
+import org.egov.hrms.config.PropertiesManager;
 import org.egov.hrms.model.Employee;
 import org.egov.hrms.model.SMSRequest;
 import org.egov.hrms.producer.HRMSProducer;
@@ -35,6 +36,9 @@ public class NotificationService {
 	@Autowired
 	private RestTemplate restTemplate;
 
+	@Autowired
+	private PropertiesManager propertiesManager;
+
 	@Value("${kafka.topics.notification.sms}")
     private String smsTopic;
     
@@ -57,7 +61,6 @@ public class NotificationService {
 	private String envHost;
 
 
-
 	/**
 	 * Sends notification by putting the sms content onto the core-sms topic
 	 * 
@@ -73,7 +76,10 @@ public class NotificationService {
 		for(Employee employee: request.getEmployees()) {
 			message = buildMessage(employee, message, pwdMap);
 			SMSRequest smsRequest = SMSRequest.builder().mobileNumber(employee.getUser().getMobileNumber()).message(message).tenantId(employee.getTenantId()).build();
-			producer.push(smsTopic, smsRequest);
+			if(propertiesManager.isSMSForUserCreationEnable())
+			{
+				producer.push(smsTopic, smsRequest);
+			}
 		}
 	}
 
