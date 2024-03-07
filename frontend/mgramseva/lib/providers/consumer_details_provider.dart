@@ -724,6 +724,9 @@ class ConsumerProvider with ChangeNotifier {
     }
     return <TaxPeriod>[];
   }
+  List<TaxPeriod> getLastFinancialYearList(int count) {
+    return getFinancialYearList().length>count?getFinancialYearList().sublist(0,count):getFinancialYearList();
+  }
   List<Map<String,dynamic>> newFunction({int pastMonthCount = 2}){
     List<TaxPeriod> financialYears = getFinancialYearList();
     var dates = <Map<String,dynamic>>[];
