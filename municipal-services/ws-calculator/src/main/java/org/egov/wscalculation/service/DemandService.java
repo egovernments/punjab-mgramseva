@@ -378,10 +378,21 @@ public class DemandService {
 				messageString = messageString.replace("{ownername}", owner.getName());
 				messageString = messageString.replace("{Period}", billCycle);
 				messageString = messageString.replace("{consumerno}", consumerCode);
-				messageString = messageString.replace("{billamount}", totalamount.toString());
+//				messageString = messageString.replace("{billamount}", totalamount.toString());
+				BigDecimal demandAmount= demandDetails.stream()
+						.map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+				BigDecimal arrears=totalamount.subtract(demandAmount);
+				if(arrears.compareTo(BigDecimal.ZERO)>0)
+				{
+					messageString = messageString.replace("{billamount}", totalamount.toString()+"(includes Rs."+ arrears.toString()+ " arrears)");
+				}
+				else
+				{
+					messageString = messageString.replace("{billamount}", totalamount.toString());
+				}
 				messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionLink));
 
-			//	System.out.println("Demand genaration Message get bill::" + messageString);
+				System.out.println("Demand genaration Message get bill::" + messageString);
 
 				SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString).tenantid(tenantId)
 						.category(Category.TRANSACTION).build();
