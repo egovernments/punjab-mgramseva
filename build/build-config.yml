@@ -134,8 +134,8 @@ config:
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "business-services/egov-apportion-service/src/main/resources/db"
         image-name: "egov-apportion-service-db"
- - name: "builds/mGramSeva/utilities/egov-penalty-schedular"
-   build:
+  - name: "builds/mGramSeva/utilities/egov-penalty-schedular"
+    build:
       - work-dir: "utilities/egov-penalty-schedular"
         image-name: "egov-penalty-schedular"
         dockerfile: "build/maven/Dockerfile"
