@@ -12,6 +12,8 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
   const [showToast, setShowToast] = useState(null);
   const getUserType = () => Digit.UserService.getType();
 
+  const tenantId = Digit.ULBService.getCurrentTenantId();
+
   useEffect(() => {
     if (!user) {
       Digit.UserService.setType("employee");
@@ -27,21 +29,22 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
   };
 
   const onForgotPassword = async (data) => {
-    if (!data.city) {
-      alert("Please Select City!");
-      return;
-    }
+    console.log("datatata", data);
+    // if (!data.city) {
+    //   alert("Please Select City!");
+    //   return;
+    // }
     const requestData = {
       otp: {
         mobileNumber: data.mobileNumber,
         userType: getUserType().toUpperCase(),
         type: "passwordreset",
-        tenantId: data.city.code,
+        tenantId: tenantId,
       },
     };
     try {
-      await Digit.UserService.sendOtp(requestData, data.city.code);
-      history.push(`/${window?.contextPath}/employee/user/change-password?mobile_number=${data.mobileNumber}&tenantId=${data.city.code}`);
+      await Digit.UserService.sendOtp(requestData, tenantId);
+      history.push(`/${window?.contextPath}/employee/user/change-password?mobile_number=${data.mobileNumber}&tenantId=${tenantId}`);
     } catch (err) {
       setShowToast(err?.response?.data?.error?.fields?.[0]?.message || "Invalid login credentials!");
       setTimeout(closeToast, 5000);
@@ -61,10 +64,15 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
           type: userId.type,
           populators: {
             name: userId.name,
+            validation: {
+              pattern: /^[6-9]\d{9}$/,
+              maxLength: 10,
+            },
             componentInFront: "+91",
           },
+
           isMandatory: true,
-        }
+        },
       ],
     },
   ];
@@ -72,7 +80,7 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
   if (isLoading) {
     return <Loader />;
   }
-  console.log(config,"config")
+  console.log("configgg", config);
   return (
     <Background>
       <div className="employeeBackbuttonAlign">

@@ -6,7 +6,6 @@ import Background from "../../../components/Background";
 import Header from "../../../components/Header";
 import SelectOtp from "../../citizen/Login/SelectOtp";
 
-
 const ChangePasswordComponent = ({ config: propsConfig, t }) => {
   const [user, setUser] = useState(null);
   const { mobile_number: mobileNumber, tenantId } = Digit.Hooks.useQueryParams();
@@ -76,14 +75,6 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
   const config = [
     {
       body: [
-        {
-          label: t(username.label),
-          type: username.type,
-          populators: {
-            name: username.name,
-          },
-          isMandatory: true,
-        },
         {
           label: t(password.label),
           type: password.type,
