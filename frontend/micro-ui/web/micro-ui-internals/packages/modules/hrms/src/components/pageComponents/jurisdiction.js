@@ -27,7 +27,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   const userDetails = Digit.UserService.getUser();
   const uuids = [userDetails?.info?.uuid];
   const { data: userData, isUserDataLoading } = Digit.Hooks.useUserSearch(Digit.ULBService.getStateId(), { uuid: uuids }, {});
- 
+
   const employeeCreateSession = Digit.Hooks.useSessionStorage("NEW_EMPLOYEE_CREATE", {});
   const [sessionFormData, setSessionFormData, clearSessionFormData] = employeeCreateSession;
   const isEdit = window.location.href?.includes("hrms/edit");
@@ -73,10 +73,8 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   }, []);
 
   useEffect(() => {
-    console.log("ssss")
     let cities = userData?.user[0]?.roles?.map((role) => role.tenantId)?.filter((value, index, array) => array.indexOf(value) === index);
-    console.log(userData?.user[0],"ssss")
-    
+
     selectboundary(
       data?.MdmsRes?.tenant?.tenants
         ?.filter((city) => city.code != Digit.ULBService.getStateId() && cities?.includes(city.code))
@@ -249,10 +247,9 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       });
     }
   }
-  if (isLoading && isUserDataLoading ) {
+  if (isLoading && isUserDataLoading) {
     return <Loader />;
   }
-  console.log(Boundary,"Boundary")
   return (
     <div>
       {isEdit && STATE_ADMIN ? (
@@ -333,7 +330,7 @@ function Jurisdiction({
   getroledata,
   roleoption,
   index,
-  Boundary
+  Boundary,
 }) {
   const [BoundaryType, selectBoundaryType] = useState([]);
   // const [Boundary, selectboundary] = useState([]);
