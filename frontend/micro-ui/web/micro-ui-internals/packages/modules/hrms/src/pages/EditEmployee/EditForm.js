@@ -146,15 +146,13 @@ const EditForm = ({ tenantId, data }) => {
     } else {
       setSubmitValve(false);
     }
-    console.log(formData,"formData")
-
   };
 
   const onSubmit = (input) => {
     if (!STATE_ADMIN && input.Jurisdictions.filter((juris) => juris.tenantId == tenantId && juris.isActive !== false).length == 0) {
       setShowToast({ key: true, label: "ERR_BASE_TENANT_MANDATORY" });
       return;
-    }else if (!STATE_ADMIN && input.Jurisdictions.filter((juris) => !(juris?.roles?.length)  ).length > 0){
+    } else if (!STATE_ADMIN && input.Jurisdictions.filter((juris) => !juris?.roles?.length).length > 0) {
       setShowToast({ key: true, label: "Atleast one Role should be selected per Jurisdiction" });
       return;
     }
@@ -175,11 +173,32 @@ const EditForm = ({ tenantId, data }) => {
     let jurisdictions = [];
     if (STATE_ADMIN) {
       const divisionBoundaryCodes = input?.Jurisdictions.flatMap((j) => j.divisionBoundary.map((item) => item.code));
-
+      let stateRoles = [
+        {
+          code: "EMPLOYEE",
+          name: "EMPLOYEE",
+          labelKey: "ACCESSCONTROL_ROLES_ROLES_EMPLOYEE",
+        },
+        {
+          code: "DIV_ADMIN",
+          name: "DIVISION ADMIN",
+          labelKey: "ACCESSCONTROL_ROLES_ROLES_DIV_ADMIN",
+        },
+        {
+          code: "HRMS_ADMIN",
+          name: "HRMS_ADMIN",
+          labelKey: "ACCESSCONTROL_ROLES_ROLES_HRMS_ADMIN",
+        },
+        {
+          code: "MDMS_ADMIN",
+          name: "MDMS Admin",
+          description: "Mdms admin",
+        },
+      ];
       divisionBoundaryCodes &&
         divisionBoundaryCodes.length > 0 &&
         divisionBoundaryCodes.map((item) => {
-          input?.Jurisdictions[0]?.roles?.map((role) => {
+          stateRoles?.map((role) => {
             roles.push({
               code: role.code,
               name: role.name,
@@ -188,11 +207,10 @@ const EditForm = ({ tenantId, data }) => {
             });
           });
         });
-
       input?.Jurisdictions?.map((items) => {
         items?.divisionBoundary.map((item) => {
           let obj = {
-            hierarchy: items?.hierarchy,
+            hierarchy: "REVENUE",
             boundaryType: "City",
             boundary: item?.code,
             tenantId: item?.code,
@@ -211,12 +229,13 @@ const EditForm = ({ tenantId, data }) => {
       const mappedData = jurisdictions.map((jurisdiction, index) => {
         return {
           ...jurisdiction,
-          roles: jurisdiction.roles.map((role) => ({
+          roles: stateRoles.map((role) => ({
             ...role,
             tenantId: jurisdiction.tenantId,
           })),
         };
       });
+
       jurisdictions = mappedData;
     } else {
       input.Jurisdictions.map((items) => {
@@ -266,8 +285,7 @@ const EditForm = ({ tenantId, data }) => {
   }
 
   const config = mdmsData?.config ? mdmsData.config : newConfig;
-  console.log(defaultValues,"defaultValues")
-  console.log(config,"config")
+
   return (
     <div>
       <FormComposer
