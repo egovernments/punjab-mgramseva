@@ -5,17 +5,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.egov.wscalculation.web.models.AdhocTaxReq;
-import org.egov.wscalculation.web.models.BulkDemand;
-import org.egov.wscalculation.web.models.BulkDemandResponse;
-import org.egov.wscalculation.web.models.Calculation;
-import org.egov.wscalculation.web.models.CalculationReq;
-import org.egov.wscalculation.web.models.CalculationRes;
-import org.egov.wscalculation.web.models.Demand;
-import org.egov.wscalculation.web.models.DemandPenaltyResponse;
-import org.egov.wscalculation.web.models.DemandResponse;
-import org.egov.wscalculation.web.models.GetBillCriteria;
-import org.egov.wscalculation.web.models.RequestInfoWrapper;
+import org.egov.common.contract.request.RequestInfo;
+import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.service.DemandService;
 import org.egov.wscalculation.service.WSCalculationService;
 import org.egov.wscalculation.service.WSCalculationServiceImpl;
@@ -115,6 +106,13 @@ public class CalculatorController {
 		demandPenaltyResponse = DemandPenaltyResponse.builder().demands(demandPenaltyResponse.getDemands()).
 				totalApplicablePenalty(demandPenaltyResponse.getTotalApplicablePenalty()).responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true)).build();
 		return new ResponseEntity<>(demandPenaltyResponse, HttpStatus.OK);
+	}
+
+
+	@PostMapping("/_addPenalty")
+	public ResponseEntity<org.apache.http.HttpStatus> addPenalty(@RequestBody RequestInfo requestInfo, @Valid @RequestBody AddPenaltyCriteria addPenaltyCriteria) {
+		return demandService.addPenalty(requestInfo,addPenaltyCriteria);
+
 	}
 
 }
