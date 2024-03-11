@@ -625,6 +625,39 @@ class ConsumerProvider with ChangeNotifier {
     }
     return <Map<String,dynamic>>[];
   }
+  //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
+  List<Map<String,dynamic>> getBillingCycleMonthCountCurrent(TaxPeriod? billYear) {
+    var dates = <Map<String,dynamic>>[];
+    if (billYear!=null) {
+      DatePeriod ytd;
+      var fromDate = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(billYear?.fromDate)) as DateTime;
+
+      var toDate = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(billYear?.toDate)) as DateTime;
+
+      ytd = DatePeriod(fromDate,toDate,DateType.YTD);
+
+      /// Get months based on selected billing year
+      var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd);
+
+      /// if selected year is future year means all the months will be removed
+      if(fromDate.year > ytd.endDate.year) months.clear();
+
+      for (var i = 0; i < months.length; i++) {
+        var prevMonth = months[i].startDate;
+        var r = {"code": prevMonth, "name": '${ApplicationLocalizations.of(navigatorKey.currentContext!)
+            .translate((Constants.MONTHS[prevMonth.month - 1])) +
+            " - " +
+            prevMonth.year.toString()}'};
+        dates.add(r);
+      }
+    }
+    if (dates.length > 0 && waterconnection.connectionType == 'Non_Metered') {
+      return dates;
+    }
+    return <Map<String,dynamic>>[];
+  }
 
   incrementIndex(index, consumerGenderKey) async {
     if (boundaryList.length > 1) {
@@ -667,7 +700,18 @@ class ConsumerProvider with ChangeNotifier {
     }
     return <TaxPeriod>[];
   }
-
+  List<TaxPeriod> getLastFinancialYearList(int count) {
+    return getFinancialYearList().length>count?getFinancialYearList().sublist(0,count):getFinancialYearList();
+  }
+  List<Map<String,dynamic>> newBillingCycleFunction({int pastMonthCount = 2}){
+    List<TaxPeriod> financialYears = getFinancialYearList();
+    var dates = <Map<String,dynamic>>[];
+    financialYears.forEach((year) {
+      dates.addAll(getBillingCycleMonthCountCurrent(year));
+    });
+    dates.sort((a, b) => b['code'].compareTo(a['code']));
+    return dates.toList().length>2?dates.toList().sublist(0,2):dates.toList();
+  }
   void onChangeOfAmountType(value) {
     waterconnection.paymentType = value;
 

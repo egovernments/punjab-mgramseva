@@ -438,7 +438,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             .waterconnection
                                                             .previousReadingDateCtrl,
                                                         firstDate:
-                                                            DateTime.fromMillisecondsSinceEpoch(consumerProvider.languageList?.mdmsRes?.billingService?.taxPeriodList!.first.fromDate??0),
+                                                            DateTime.fromMillisecondsSinceEpoch(consumerProvider.getLastFinancialYearList(2).reversed.first.fromDate??0),
                                                         lastDate:
                                                             DateTime.now(),
                                                         onChangeOfDate:
@@ -503,25 +503,25 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             false
                                                     ? Wrap(
                                                         children: [
-                                                          SelectFieldBuilder(
-                                                            i18.demandGenerate
-                                                                .BILLING_YEAR_LABEL,
-                                                            consumerProvider
-                                                                .billYear,
-                                                            '',
-                                                            '',
-                                                            consumerProvider
-                                                                .onChangeOfBillYear,
-                                                            consumerProvider
-                                                                .getFinancialYearList(),
-                                                            true,
-                                                            itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.financialYear)}',
-                                                            controller: consumerProvider
-                                                                .waterconnection
-                                                                .billingCycleYearCtrl,
-                                                            key: Keys.bulkDemand
-                                                                .BULK_DEMAND_BILLING_YEAR,
-                                                          ),
+                                                          // SelectFieldBuilder(
+                                                          //   i18.demandGenerate
+                                                          //       .BILLING_YEAR_LABEL,
+                                                          //   consumerProvider
+                                                          //       .billYear,
+                                                          //   '',
+                                                          //   '',
+                                                          //   consumerProvider
+                                                          //       .onChangeOfBillYear,
+                                                          //   consumerProvider
+                                                          //       .getFinancialYearList(),
+                                                          //   true,
+                                                          //   itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.financialYear)}',
+                                                          //   controller: consumerProvider
+                                                          //       .waterconnection
+                                                          //       .billingCycleYearCtrl,
+                                                          //   key: Keys.bulkDemand
+                                                          //       .BULK_DEMAND_BILLING_YEAR,
+                                                          // ),
                                                           SelectFieldBuilder(
                                                             i18.consumer
                                                                 .CONSUMER_BILLING_CYCLE,
@@ -532,7 +532,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             consumerProvider
                                                                 .onChangeBillingCycle,
                                                             consumerProvider
-                                                                .getBillingCycle(),
+                                                                .newBillingCycleFunction(),
                                                             true,
                                                             itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i['name'])}",
                                                             controller: consumerProvider
