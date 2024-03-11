@@ -136,6 +136,6 @@ config:
         image-name: "egov-apportion-service-db"
   - name: "builds/mGramSeva/utilities/egov-penalty-schedular"
     build:
-      - work-dir: "utilities/egov-penalty-schedular"
+      - work-dir: "utilities/penalty"
         image-name: "egov-penalty-schedular"
         dockerfile: "build/maven/Dockerfile"
