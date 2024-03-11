@@ -438,7 +438,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             .waterconnection
                                                             .previousReadingDateCtrl,
                                                         firstDate:
-                                                            DateTime.fromMillisecondsSinceEpoch(consumerProvider.languageList?.mdmsRes?.billingService?.taxPeriodList!.first.fromDate??0),
+                                                            DateTime.fromMillisecondsSinceEpoch(consumerProvider.getLastFinancialYearList(2).reversed.first.fromDate??0),
                                                         lastDate:
                                                             DateTime.now(),
                                                         onChangeOfDate:
