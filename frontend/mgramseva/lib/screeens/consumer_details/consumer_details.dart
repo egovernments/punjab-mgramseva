@@ -532,7 +532,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             consumerProvider
                                                                 .onChangeBillingCycle,
                                                             consumerProvider
-                                                                .newFunction(),
+                                                                .newBillingCycleFunction(),
                                                             true,
                                                             itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i['name'])}",
                                                             controller: consumerProvider
