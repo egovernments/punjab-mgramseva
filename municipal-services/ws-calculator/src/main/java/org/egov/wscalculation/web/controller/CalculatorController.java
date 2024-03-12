@@ -110,8 +110,8 @@ public class CalculatorController {
 
 
 	@PostMapping("/_addPenalty")
-	public ResponseEntity<org.apache.http.HttpStatus> addPenalty(@RequestBody RequestInfo requestInfo, @Valid @RequestBody AddPenaltyCriteria addPenaltyCriteria) {
-		return demandService.addPenalty(requestInfo,addPenaltyCriteria);
+	public ResponseEntity<org.apache.http.HttpStatus> addPenalty(@RequestBody PenaltyRequest penaltyRequest) {
+		return demandService.addPenalty(penaltyRequest.getRequestInfo(),penaltyRequest.getAddPenaltyCriteria());
 
 	}
 

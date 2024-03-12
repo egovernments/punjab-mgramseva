@@ -1,5 +1,6 @@
 package org.egov.wscalculation.web.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class AddPenaltyCriteria {
-    private String limit;
-    private String offset;
+
+    @JsonProperty("tenantId")
     private String tenantId;
-    private List<String> tenantids;
 }
