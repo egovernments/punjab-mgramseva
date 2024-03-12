@@ -1431,9 +1431,9 @@ public class DemandService {
 				.moduleDetails(moduleDetails)
 				.build();
 		Map<String, Object> paymentMasterData = calculatorUtils.getPenaltyMasterForTenantId(addPenaltyCriteria.getTenantId(),mdmsCriteria,requestInfo);
-		String rate = (String) paymentMasterData.get("rate");
-		log.info(rate);
-		String penaltyType = (String) paymentMasterData.get("type");
+		Integer rate = (Integer) paymentMasterData.get("rate");
+		log.info("Rate"+String.valueOf(rate));
+		String penaltyType = String.valueOf(paymentMasterData.get("type"));
 		String penaltySubType = (String) paymentMasterData.get("subType");
 		log.info("Type:" + penaltyType + " Subtype:"+ penaltySubType);
         demandIds.stream().forEach(demandId ->{
@@ -1465,7 +1465,7 @@ public class DemandService {
 		return new ResponseEntity<>(org.springframework.http.HttpStatus.ACCEPTED);
 	}
 
-	public List<DemandDetail> addTimePenalty(String rate, String type, String SubType,Demand demand) {
+	public List<DemandDetail> addTimePenalty(Integer rate, String type, String SubType,Demand demand) {
 
 		BigDecimal taxPercentage = BigDecimal.valueOf(Double.valueOf(rate));
 		List<DemandDetail> demandDetailList=  demand.getDemandDetails();
