@@ -726,6 +726,7 @@ public class DemandService {
 		url.append("&");
 		url.append("demandId=");
 		url.append(StringUtils.join(demandIds, ','));
+		log.info("Search demand url:"+url);
 		return url;
 	}
 	/**
@@ -1438,17 +1439,18 @@ public class DemandService {
         demandIds.stream().forEach(demandId ->{
 			Set<String> demandids = new HashSet<>();
 			demandids.add(demandId);
-           List<Demand> demands = searchDemandBydemandId(addPenaltyCriteria.getTenantId(),demandids,requestInfo);
-		   if(!CollectionUtils.isEmpty(demands)) {
+            List<Demand> demands = searchDemandBydemandId(addPenaltyCriteria.getTenantId(),demandids,requestInfo);
+		    if(!CollectionUtils.isEmpty(demands)) {
 			   Demand demand = demands.get(0);
 			   Boolean isPenaltyExistForDemand = demand.getDemandDetails().stream().anyMatch(demandDetail -> {
 				   return demandDetail.getTaxHeadMasterCode().equalsIgnoreCase("WS_TIME_PENALTY");
 			   });
+			   log.info("isPenaltyExistForDemand : "+isPenaltyExistForDemand);
 			   if(!isPenaltyExistForDemand) {
 				   if(CollectionUtils.isEmpty(demand.getDemandDetails()) && demand.getDemandDetails().size() == 1) {
-
 					   demand.setDemandDetails(addTimePenalty(rate,penaltyType,penaltySubType,demand));
 					   demands.add(demand);
+					   log.info("Demand:"+ demands);
 					   List<Demand> demandRes = demandRepository.updateDemand(requestInfo, demands);
 					   log.info("DemandResponse size:" +demandRes.size());
 					   if(!CollectionUtils.isEmpty(demandRes)) {
@@ -1481,6 +1483,7 @@ public class DemandService {
 
 			demandDetailList.add(timeDemandDetail);
 		}
+		log.info("demandDetailList:"+demandDetailList);
 		return demandDetailList;
 
 	}
