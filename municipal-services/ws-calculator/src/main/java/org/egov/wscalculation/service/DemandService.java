@@ -1397,9 +1397,9 @@ public class DemandService {
 		List<String> demandids = getDemandToAddPenalty(addPenaltyCriteria.getTenantId(),config.getPenaltyStartThresholdTime());
 		log.info("demandids size:"+demandids.size());
 		List<MasterDetail> masterDetails = new ArrayList<>();
-		MasterDetail masterDetail =new MasterDetail("Penalty","");
+		MasterDetail masterDetail =new MasterDetail("Penalty","[?(@)]");
 		masterDetails.add(masterDetail);
-		ModuleDetail moduleDetail = ModuleDetail.builder().moduleName("Penalty").masterDetails(masterDetails).build();
+		ModuleDetail moduleDetail = ModuleDetail.builder().moduleName("ws-services-calculation").masterDetails(masterDetails).build();
 		List<ModuleDetail> moduleDetails = new ArrayList<>();
 		moduleDetails.add(moduleDetail);
 		MdmsCriteria mdmsCriteria = MdmsCriteria.builder().tenantId(addPenaltyCriteria.getTenantId())
