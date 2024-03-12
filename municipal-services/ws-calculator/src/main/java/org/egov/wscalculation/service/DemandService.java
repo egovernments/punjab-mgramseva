@@ -853,9 +853,6 @@ public class DemandService {
 					demandsToBeUpdated.add(demand);
 				});
 			}
-
-			log.info("Demamd to be updated:" + demandsToBeUpdated.size());
-			log.info("Demand:::: " + demandsToBeUpdated.get(0));
 			
 		
 			// Call demand update in bulk to update the interest or penalty
