@@ -1438,6 +1438,7 @@ public class DemandService {
 				   log.info("inside if");
 				   if(!CollectionUtils.isEmpty(demand.getDemandDetails()) && demand.getDemandDetails().size() == 1) {
 					   demand.setDemandDetails(addTimePenalty(rate,penaltyType,penaltySubType,demand));
+					   demands.clear();
 					   demands.add(demand);
 					   log.info("Demand:"+ demands);
 					   List<Demand> demandRes = demandRepository.updateDemand(requestInfo, demands);
