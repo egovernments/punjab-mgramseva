@@ -1470,20 +1470,28 @@ public class DemandService {
 
 		BigDecimal taxPercentage = BigDecimal.valueOf(Double.valueOf(rate));
 		List<DemandDetail> demandDetailList=  demand.getDemandDetails();
-		DemandDetail waterChargeDemandDetails = (DemandDetail) demandDetailList.stream().filter(demandDetail -> demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_CHARGE));
-		BigDecimal netPayableAmountWithouttax= waterChargeDemandDetails.getTaxAmount().subtract(waterChargeDemandDetails.getCollectionAmount());
-		if(netPayableAmountWithouttax.signum()> 0) {
-			BigDecimal tax = netPayableAmountWithouttax.multiply(taxPercentage.divide(WSCalculationConstant.HUNDRED));
-			//round off to next higest number
-			tax = roundOffTax(tax);
-			DemandDetail timeDemandDetail = DemandDetail.builder().demandId(demand.getId())
-					.taxHeadMasterCode(WSCalculationConstant.WS_TIME_PENALTY)
-					.taxAmount(tax)
-					.collectionAmount(BigDecimal.ZERO)
-					.tenantId(demand.getTenantId()).build();
+		DemandDetail waterChargeDemandDetails = null;
+		if(!CollectionUtils.isEmpty(demandDetailList)) {
+			if(demandDetailList.get(0).getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_CHARGE)){
+				log.info("Inside if of addTimePenalty");
+				//mapper.convertValue(demandDetailList.stream().filter(demandDetail -> demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_CHARGE)), DemandDetail.class) ;
+				waterChargeDemandDetails=demandDetailList.get(0);
+				BigDecimal netPayableAmountWithouttax= waterChargeDemandDetails.getTaxAmount().subtract(waterChargeDemandDetails.getCollectionAmount());
+				if(netPayableAmountWithouttax.signum()> 0) {
+					BigDecimal tax = netPayableAmountWithouttax.multiply(taxPercentage.divide(WSCalculationConstant.HUNDRED));
+					//round off to next higest number
+					tax = roundOffTax(tax);
+					DemandDetail timeDemandDetail = DemandDetail.builder().demandId(demand.getId())
+							.taxHeadMasterCode(WSCalculationConstant.WS_TIME_PENALTY)
+							.taxAmount(tax)
+							.collectionAmount(BigDecimal.ZERO)
+							.tenantId(demand.getTenantId()).build();
 
-			demandDetailList.add(timeDemandDetail);
+					demandDetailList.add(timeDemandDetail);
+				}
+			}
 		}
+
 		log.info("demandDetailList:"+demandDetailList);
 		return demandDetailList;
 
