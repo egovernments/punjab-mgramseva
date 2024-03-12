@@ -1447,7 +1447,8 @@ public class DemandService {
 			   });
 			   log.info("isPenaltyExistForDemand : "+isPenaltyExistForDemand);
 			   if(!isPenaltyExistForDemand) {
-				   if(CollectionUtils.isEmpty(demand.getDemandDetails()) && demand.getDemandDetails().size() == 1) {
+				   log.info("inside if");
+				   if(!CollectionUtils.isEmpty(demand.getDemandDetails()) && demand.getDemandDetails().size() == 1) {
 					   demand.setDemandDetails(addTimePenalty(rate,penaltyType,penaltySubType,demand));
 					   demands.add(demand);
 					   log.info("Demand:"+ demands);
