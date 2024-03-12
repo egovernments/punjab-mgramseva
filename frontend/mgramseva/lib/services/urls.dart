@@ -6,7 +6,7 @@ class Url {
   static const String MDMS = 'egov-mdms-service/v1/_search';
   static const String FILE_UPLOAD = 'filestore/v1/files';
   static const String FILE_FETCH = 'filestore/v1/files/url';
-  static const String URL_SHORTNER = 'egov-url-shortening/shortener';
+  static const String URL_SHORTNER = 'eus/shortener';
   static const String FETCH_FILESTORE_ID_PDF_SERVICE = 'pdf-service/v1/_create';
 
   /// Expenses
