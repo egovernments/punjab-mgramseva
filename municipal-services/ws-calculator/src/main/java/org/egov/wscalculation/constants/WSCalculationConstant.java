@@ -184,7 +184,10 @@ public class WSCalculationConstant {
 
 	public static final String JSONPATH_ROOT_FOR_billingService = "$.MdmsRes.BillingService";
 	public static final String JSONPATH_ROOT_FOR_Allowed_PAyment = "$.MdmsRes.BillingService.PaymentService";
+	public static final String JSONPATH_ROOT_FOR_ws_service_calculator = "$.MdmsRes.ws-services-calculation";
 	public static final String JSONPATH_ROOT_FOR_Penalty = "$.MdmsRes.ws-services-calculation.Penalty";
+
+
 
 	public static final String JSON_PATH_ROOT_FOR_Allowed_PAyment = "$.MdmsRes.BillingService.BusinessService";
 

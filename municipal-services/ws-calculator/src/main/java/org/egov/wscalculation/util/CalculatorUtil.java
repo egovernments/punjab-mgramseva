@@ -403,7 +403,7 @@ public class CalculatorUtil {
 		}
 		log.info("Response", res);
 		Map<String, Object> mdmsres = JsonPath.read(res, WSCalculationConstant.JSONPATH_ROOT_FOR_mdmsRes);
-		Map<String, Object> mdmsPenaltyMaster = JsonPath.read(res,WSCalculationConstant.JSONPATH_ROOT_FOR_Penalty);
+		Map<String, Object> mdmsPenaltyMaster = JsonPath.read(res,WSCalculationConstant.JSONPATH_ROOT_FOR_ws_service_calculator);
 		if(mdmsres.isEmpty() || mdmsPenaltyMaster.isEmpty()) {
 			log.info("Inside No MDMS response found for tenantId::::" +tenantId);
 			String stateLevelTenantId = tenantId.split("\\.")[0];
