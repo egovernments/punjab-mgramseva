@@ -277,35 +277,4 @@ public class WSCalculatorQueryBuilder {
 		return builder.toString();
 	}
 
-	public String getPenaltyQuery(Set<String> connectionNos, String tenantId, Long startDate,
-												  Long endDate, List<Object> preparedStmtList) {
-
-		StringBuilder builder = new StringBuilder(PREVIOUS_BILLING_CYCLE_DEMAND);
-
-		if (!CollectionUtils.isEmpty(connectionNos)) {
-			addClauseIfRequired(preparedStmtList, builder);
-			builder.append(" consumercode IN (").append(createQuery(connectionNos)).append(")");
-			addToPreparedStatement(preparedStmtList, connectionNos);
-		}
-		if (startDate != null && endDate != null) {
-			addClauseIfRequired(preparedStmtList, builder);
-			builder.append(" taxperiodto between  ?  and  ? ");
-			preparedStmtList.add(startDate);
-			preparedStmtList.add(endDate);
-			// todo taxperiod to is in between startdate and enddate of previous billing
-			// cycle
-		}
-
-		if (!StringUtils.isEmpty(tenantId)) {
-			addClauseIfRequired(preparedStmtList, builder);
-			builder.append(" tenantId =?  ");
-			preparedStmtList.add(tenantId);
-		}
-		if(!CollectionUtils.isEmpty(preparedStmtList))
-			builder.append("and status not IN ('CANCELLED')");
-
-		System.out.println("Final query ::" + builder.toString());
-		return builder.toString();
-	}
-
 }
