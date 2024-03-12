@@ -99,7 +99,6 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
 
   let config = [{ body: propsConfig?.inputs }];
 
-  console.log("configigigig", config);
 
   const { mode } = Digit.Hooks.useQueryParams();
   if (mode === "admin" && config?.[0]?.body?.[2]?.disable == false && config?.[0]?.body?.[2]?.populators?.defaultValue == undefined) {

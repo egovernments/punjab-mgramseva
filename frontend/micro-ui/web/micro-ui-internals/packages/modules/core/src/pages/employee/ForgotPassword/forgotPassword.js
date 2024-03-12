@@ -1,4 +1,4 @@
-import { BackButton, Dropdown, FormComposer, Loader, Toast } from "@egovernments/digit-ui-react-components";
+import { BackButton, Dropdown, FormComposer, FormComposerV2, Loader, Toast } from "@egovernments/digit-ui-react-components";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -28,12 +28,7 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
     setShowToast(null);
   };
 
-  const onForgotPassword = async (data) => {
-    console.log("datatata", data);
-    // if (!data.city) {
-    //   alert("Please Select City!");
-    //   return;
-    // }
+  const onForgotPassword = async (data) => {  
     const requestData = {
       otp: {
         mobileNumber: data.mobileNumber,
@@ -61,18 +56,14 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
       body: [
         {
           label: t(userId.label),
-          type: userId.type,
+          type: "mobileNumber",
           populators: {
             name: userId.name,
-            validation: {
-              pattern: /^[6-9]\d{9}$/,
-              maxLength: 10,
-            },
             componentInFront: "+91",
           },
-
           isMandatory: true,
         },
+        
       ],
     },
   ];
@@ -80,13 +71,12 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
   if (isLoading) {
     return <Loader />;
   }
-  console.log("configgg", config);
   return (
     <Background>
       <div className="employeeBackbuttonAlign">
         <BackButton variant="white" style={{ borderBottom: "none" }} />
       </div>
-      <FormComposer
+      <FormComposerV2
         onSubmit={onForgotPassword}
         noBoxShadow
         inline
@@ -102,7 +92,7 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
         className="employeeForgotPassword"
       >
         <Header />
-      </FormComposer>
+      </FormComposerV2>
       {showToast && <Toast error={true} label={t(showToast)} onClose={closeToast} />}
       <div className="EmployeeLoginFooter">
         <img
