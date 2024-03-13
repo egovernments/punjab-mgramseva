@@ -166,6 +166,7 @@ class CommonMethods {
         .toList();
     return list;
   }
+  
   static List<DatePeriod> getPastMonthIncludingCurrentMonthUntilFinancialYTD(
       DatePeriod ytd) {
     var monthList = <DateTime>[];

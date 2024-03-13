@@ -64,6 +64,10 @@ public class PropertiesManager {
 	
 	@Value("${egov.user.search.endpoint}")
 	public String userSearchEndpoint;
+
+	@Value("${egov.user.search.tenant.endpoint}")
+	public String userSearchByTenantEndpoint;
+
 	
 	@Value("${egov.user.create.endpoint}")
 	public String userCreateEndpoint;
@@ -110,4 +114,7 @@ public class PropertiesManager {
 
 	@Value("${state.level.tenant.id}")
 	public String stateLevelTenantId;
+
+	@Value("${sms.user.creation.enabled}")
+	public boolean isSMSForUserCreationEnable;
 }
