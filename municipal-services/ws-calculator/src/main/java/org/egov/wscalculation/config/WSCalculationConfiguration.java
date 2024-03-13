@@ -250,11 +250,12 @@ public class WSCalculationConfiguration {
 	@Value("${sms.exclude.tenant}")
 	private String smsExcludeTenant;
 
-	@Value("${penalty.applicable.days}")
-	private String penaltyApplicableDays;
+	@Value("${penalty.applicable.in.days}")
+	private Integer penaltyApplicableDays;
 
 	@Value("${penalty.start.threshold.time}")
 	private Long penaltyStartThresholdTime;
 
-	
+	@Value("${is.penalty.feature.enable}")
+	private boolean isPenaltyEnabled;
 }

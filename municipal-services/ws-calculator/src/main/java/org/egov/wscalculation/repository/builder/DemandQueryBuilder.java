@@ -29,8 +29,11 @@ public class DemandQueryBuilder {
         long tenDaysAgoMillis = Instant.ofEpochMilli(currentTimeMillis)
                 .minus(daysToBeSubstracted, ChronoUnit.DAYS)
                 .toEpochMilli();
-        subQuery = subQuery +  "AND d.tenantid = '"+tenantId+"'";
-        subQuery = subQuery + "AND d.createdtime < " + tenDaysAgoMillis;
+        subQuery = subQuery +  " AND d.tenantid = '"+tenantId+"'";
+        subQuery = subQuery + " AND d.createdtime < " + tenDaysAgoMillis;
+        if(!ObjectUtils.isEmpty(penaltyThresholdDate) && penaltyThresholdDate > 0) {
+            subQuery = subQuery + " AND d.taxperiodfrom > " + penaltyThresholdDate;
+        }
         secondWhereClause= secondWhereClause +tenantId+"'";
         firstWhereClause = firstWhereClause + subQuery + secondWhereClause + groupByClause;
         selectClause = selectClause + firstWhereClause;
