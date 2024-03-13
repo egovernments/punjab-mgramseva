@@ -21,7 +21,7 @@ public class DemandQueryBuilder {
     private String thresholdQueryforPenalty= "AND d.";
 
     String groupByClause = "GROUP BY b.demandid " +
-            "HAVING COUNT(*) = 1 limit 10";
+            "HAVING COUNT(*) = 1 ";
 
     public String getPenaltyQuery(String tenantId, Long penaltyThresholdDate, Integer daysToBeSubstracted ) {
         //TODO: find out days
@@ -30,7 +30,7 @@ public class DemandQueryBuilder {
                 .minus(daysToBeSubstracted, ChronoUnit.DAYS)
                 .toEpochMilli();
         subQuery = subQuery +  "AND d.tenantid = '"+tenantId+"'";
-        subQuery = subQuery + "AND d.createdtime < " + tenDaysAgoMillis + " order by d.createdtime asc ";
+        subQuery = subQuery + "AND d.createdtime < " + tenDaysAgoMillis;
         secondWhereClause= secondWhereClause +tenantId+"'";
         firstWhereClause = firstWhereClause + subQuery + secondWhereClause + groupByClause;
         selectClause = selectClause + firstWhereClause;
