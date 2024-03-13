@@ -16,21 +16,16 @@ const MobileNumber = (props) => {
     <React.Fragment>
       <div className="field-container">
         {!props.hideSpan ? (
-          <span
-            style={{ maxWidth: "50px", marginTop: "unset", border: "1px solid #464646", borderRight: "none", ...props.labelStyle }}
-            className="citizen-card-input citizen-card-input--front"
-          >
+          <span style={{ maxWidth: "50px", marginTop: "unset",border:"1px solid #464646",borderRight:"none", ...props.labelStyle }} className="citizen-card-input citizen-card-input--front">
             +91
           </span>
         ) : null}
-        <div className={`text-input ${user_type === "employee" ? "" : "text-mobile-input-width"} ${props.className}`}>
+        <div className={`text-input ${user_type === "employee"? "" : "text-mobile-input-width"} ${props.className}`}>
           <input
             type={"text"}
             name={props.name}
             id={props.id}
-            className={`${user_type ? "employee-card-input" : "citizen-card-input"} ${props.disable && "disabled"} focus-visible ${
-              props.errorStyle && "employee-card-input-error"
-            }`}
+            className={`${user_type ? "employee-card-input" : "citizen-card-input"} ${props.disable && "disabled"} focus-visible ${props.errorStyle && "employee-card-input-error"}`}
             placeholder={props.placeholder}
             onChange={onChange}
             ref={props.inputRef}
