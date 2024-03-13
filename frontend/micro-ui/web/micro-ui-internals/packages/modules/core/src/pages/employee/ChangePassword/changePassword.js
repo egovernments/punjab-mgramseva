@@ -91,7 +91,7 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
           populators: {
             name: password.name,
             validation:{
-              maxlength: 30,
+              maxlength: 15,
             }
           },
           isMandatory: true,
@@ -102,7 +102,7 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
           populators: {
             name: confirmPassword.name,
             validation:{
-              maxlength: 30,
+              maxlength: 15,
             }
           },
           isMandatory: true,
