@@ -274,8 +274,9 @@ public class EstimationService {
 				WaterConnectionRequest.builder().waterConnection(waterConnection).requestInfo(requestInfo).build());
 		// get billing Slab
 		log.debug(" the slabs count : " + billingSlabs.size());
-		final String buildingType = (property.getUsageCategory() != null) ? property.getUsageCategory().split("\\.")[0]
-				: "";
+		//final String buildingType = (property.getUsageCategory() != null) ? property.getUsageCategory().split("\\.")[0]: "";
+		//TODO:FIX ME : here before we passing buildingtype as UsageCategory from proerty response . but while creating property usagecategoty is residentialeven when we are creating commercial connection. Hennce we have change this to proertytype
+		final String buildingType = (property.getPropertyType() != null) ? property.getPropertyType().split("\\.")[0]: "";
 		// final String buildingType = "Domestic";
 		final String connectionType = waterConnection.getConnectionType();
 

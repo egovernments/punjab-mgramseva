@@ -50,6 +50,7 @@ public class BoundaryService {
 	 */
 	public void getAreaType(Property property, RequestInfo requestInfo, String hierarchyTypeCode) {
 
+		//EnrichmentService 202 line was calling this method previously
 		if (ObjectUtils.isEmpty(property))
 			return;
 		String tenantId = property.getTenantId();

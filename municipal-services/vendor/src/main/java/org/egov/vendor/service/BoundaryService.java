@@ -40,6 +40,7 @@ public class BoundaryService {
 	}
 
 	public void getAreaType(VendorRequest request, String hierarchyTypeCode) {
+		//EnrichmentService 102 , VendorValidator 113 line was calling this method
 		if (request.getVendor() == null) {
 			return;
 		}
