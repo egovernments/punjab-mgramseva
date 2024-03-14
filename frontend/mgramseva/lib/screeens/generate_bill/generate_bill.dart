@@ -80,7 +80,7 @@ class _GenerateBillState extends State<GenerateBill> {
             Provider.of<BillGenerationProvider>(context, listen: false).clearBillYear();
             Navigator.pop(context);
           },),
-              WaterConnectionCountWidget(),
+              widget.id == null ?WaterConnectionCountWidget():Container(),
           Container(
               width: MediaQuery.of(context).size.width,
               child: Card(
