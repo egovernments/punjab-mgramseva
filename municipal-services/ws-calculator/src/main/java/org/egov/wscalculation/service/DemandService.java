@@ -1419,12 +1419,8 @@ public class DemandService {
 					.moduleDetails(moduleDetails)
 					.build();
 			Map<String, Object> paymentMasterData = calculatorUtils.getPenaltyMasterForTenantId(addPenaltyCriteria.getTenantId(), mdmsCriteria, requestInfo);
-			Integer rate = 0;
-			try {
-				rate= (Integer) paymentMasterData.get("rate");
-			}catch (Exception e) {
-				rate = 0;
-			}
+
+			Integer rate= (Integer) paymentMasterData.get("rate");
 			String penaltyType = String.valueOf(paymentMasterData.get("type"));
 			String penaltySubType = (String) paymentMasterData.get("subType");
 			if (rate > 0) {
