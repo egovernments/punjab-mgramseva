@@ -118,7 +118,7 @@ class BillGenerationProvider with ChangeNotifier {
 
   setMeterReading(meterRes) {
     if (meterRes.meterReadings!.length > 0 &&
-        meterRes.meterReadings!.first.currentReading.toString() != '0') {
+        meterRes.meterReadings!.first.currentReading != null) {
       readingExist = false;
       var previousMeterReading = meterRes.meterReadings!.first.currentReading
           .toString()
@@ -134,8 +134,7 @@ class BillGenerationProvider with ChangeNotifier {
       var reqDate = readDate.add(Duration(days: 1)).toLocal().toString();
       prevReadingDate = DateFormats.dateToTimeStamp(
           DateFormats.getFilteredDate(reqDate, dateFormat: 'dd/MM/yyyy'));
-    } else if (waterconnection.additionalDetails!.meterReading.toString() !=
-        '0') {
+    } else {
       readingExist = false;
       var previousMeterReading = waterconnection.additionalDetails!.meterReading
           .toString()
@@ -146,8 +145,6 @@ class BillGenerationProvider with ChangeNotifier {
       billGenerateDetails.om_4Ctrl.text = previousMeterReading.toString()[3];
       billGenerateDetails.om_5Ctrl.text = previousMeterReading.toString()[4];
       prevReadingDate = waterconnection.previousReadingDate;
-    } else {
-      readingExist = true;
     }
     notifyListeners();
   }
