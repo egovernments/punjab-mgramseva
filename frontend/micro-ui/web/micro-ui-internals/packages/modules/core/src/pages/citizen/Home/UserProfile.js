@@ -47,7 +47,6 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const stateId = Digit.ULBService.getStateId();
   const tenant = Digit.ULBService.getCurrentTenantId();
   const userInfo = Digit.UserService.getUser()?.info || {};
-  console.log(userInfo, "userInfo");
   const [userDetails, setUserDetails] = useState(null);
   const [name, setName] = useState(userInfo?.name ? userInfo.name : "");
   const [email, setEmail] = useState(userInfo?.emailId ? userInfo.emailId : "");
@@ -275,7 +274,6 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
         showToast("success", t("CORE_COMMON_PROFILE_UPDATE_SUCCESS"), 5000);
       }
     } catch (error) {
-      console.log(error,"error")
       if(error?.response?.data?.Errors[0].message){
         showToast("error", error?.response?.data?.Errors[0].message);
         

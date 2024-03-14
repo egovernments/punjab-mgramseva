@@ -90,7 +90,6 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     }, 5000);
   };
   const handleFilterChange = (filterParam) => {
-    console.log("filter", filterParam, searchParams);
     // if (!searchParams.names || !searchParams.phone || !searchParams.codes || !filterParam.tenantIds || !filterParam.isActive) {
     //   // Show toast message
     //   setToast({ key: true, label: "Please enter a minimum one value to search" });
@@ -106,7 +105,6 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     if (!_new.tenantId){
       _new = {tenantId: tenantId}
     } 
-    console.log(_new,"_new")
     setSearchParams({ ..._new });
   };
 
