@@ -119,9 +119,6 @@ class HouseHoldProvider with ChangeNotifier {
         waterConnection?.demands = demandList;
         updateDemandList?.demands = demandList;
       } else {}
-      if(waterConnection?.connectionType == 'Metered' && waterConnection?.fetchBill?.bill?.isNotEmpty == true){
-        checkMeterDemand(waterConnection?.fetchBill, waterConnection);
-      }
       await BillingServiceRepository().fetchdDemand({
         "tenantId": data.tenantId,
         "consumerCode": data.connectionNo.toString(),
