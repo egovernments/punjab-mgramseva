@@ -1,6 +1,7 @@
 package org.egov.wscalculation.repository.builder;
 
-import jdk.jpackage.internal.Log;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 @Component
+@Slf4j
 public class DemandQueryBuilder {
     private String selectClause = "SELECT b.demandid FROM egbs_demanddetail_v1 b ";
     private String subQuery = "SELECT dt.demandid FROM egbs_demand_v1 d LEFT OUTER JOIN egbs_demanddetail_v1 dt ON d.id = dt.demandid AND dt.taxamount > dt.collectionamount " +
@@ -37,7 +39,7 @@ public class DemandQueryBuilder {
         firstWhereClause = firstWhereClause + subQuery + secondWhereClause + groupByClause;
         selectClause = selectClause + firstWhereClause;
         StringBuilder  builder = new StringBuilder(selectClause);
-        Log.info("Query formed :" + builder.toString());
+        log.info("Query formed :" + builder.toString());
         return builder.toString();
 
     }
