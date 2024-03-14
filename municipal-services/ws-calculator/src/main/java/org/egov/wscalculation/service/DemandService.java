@@ -1419,7 +1419,12 @@ public class DemandService {
 					.moduleDetails(moduleDetails)
 					.build();
 			Map<String, Object> paymentMasterData = calculatorUtils.getPenaltyMasterForTenantId(addPenaltyCriteria.getTenantId(), mdmsCriteria, requestInfo);
-			Integer rate = (Integer) paymentMasterData.get("rate");
+			Integer rate = 0;
+			try {
+				rate= (Integer) paymentMasterData.get("rate");
+			}catch (Exception e) {
+				rate = 0;
+			}
 			String penaltyType = String.valueOf(paymentMasterData.get("type"));
 			String penaltySubType = (String) paymentMasterData.get("subType");
 			if (rate > 0) {
@@ -1443,8 +1448,9 @@ public class DemandService {
 						}
 					}
 				});
+			} else {
+				return new ResponseEntity<>(org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED);
 			}
-			return new ResponseEntity<>(org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED);
 		}
 		return new ResponseEntity<>(org.springframework.http.HttpStatus.ACCEPTED);
 	}

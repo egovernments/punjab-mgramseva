@@ -1,5 +1,6 @@
 package org.egov.wscalculation.repository.builder;
 
+import jdk.jpackage.internal.Log;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -18,9 +19,7 @@ public class DemandQueryBuilder {
     private String firstWhereClause = "WHERE demandid IN (" ;
     private String secondWhereClause = ") AND b.tenantid = '";
 
-    private String thresholdQueryforPenalty= "AND d.";
-
-    String groupByClause = "GROUP BY b.demandid " +
+    String groupByClause = " GROUP BY b.demandid " +
             "HAVING COUNT(*) = 1 ";
 
     public String getPenaltyQuery(String tenantId, Long penaltyThresholdDate, Integer daysToBeSubstracted ) {
@@ -38,6 +37,8 @@ public class DemandQueryBuilder {
         firstWhereClause = firstWhereClause + subQuery + secondWhereClause + groupByClause;
         selectClause = selectClause + firstWhereClause;
         StringBuilder  builder = new StringBuilder(selectClause);
+        Log.info("Query formed :" + builder.toString());
         return builder.toString();
+
     }
 }
