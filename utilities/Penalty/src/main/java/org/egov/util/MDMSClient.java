@@ -72,7 +72,7 @@ public class MDMSClient {
             }
 
             if (mdmsResponse != null && (mdmsResponse.getMdmsRes() == null || mdmsResponse.getMdmsRes().isEmpty())) {
-                log.error("Tenants file is missing in mdms!!");
+                log.info("Tenants file is missing in mdms!!");
             } else {
                 if (mdmsResponse.getMdmsRes().get(PenaltySchedularConstant.MDMS_MODULE_NAME) != null && mdmsResponse.getMdmsRes().get(PenaltySchedularConstant.MDMS_MODULE_NAME)
                         .get(PenaltySchedularConstant.MDMS_TENANT_MASTER_NAME) != null) {
@@ -88,7 +88,7 @@ public class MDMSClient {
             }
 
         } catch (IOException e) {
-            log.error("Error occurred while getting the account to gp mapping from MDMS", e);
+            log.info("Error occurred while getting the account to gp mapping from MDMS", e);
         }
     }
 

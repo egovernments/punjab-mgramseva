@@ -10,12 +10,10 @@ import org.egov.util.MDMSClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +37,6 @@ public class PenaltySchedularJob implements ApplicationRunner {
 
         try {
             List<Tenant> tenantList = mdmsClient.getTenants();
-            System.out.println(tenantList.size());
             tenantList=tenantList.stream().filter(
                     tenant -> {
                         return adapterConfiguration.getPenaltyEnabledDivisionlist().contains(tenant.getDivisionCode());
@@ -54,7 +51,7 @@ public class PenaltySchedularJob implements ApplicationRunner {
             });
 
         } catch (Exception e) {
-            log.error("Exception occurred while running PenaltySchedularJob", e);
+            log.info("Exception occurred while running PenaltySchedularJob", e);
         }
     }
 
@@ -67,7 +64,7 @@ public class PenaltySchedularJob implements ApplicationRunner {
 
                 log.info("Posted request to add Penalty for tenant:" + penaltyCriteria.getTenantId());
             } catch (RestClientException e) {
-                log.error("Error while calling to water calculator service for tenant :" + penaltyCriteria.getTenantId() + " ERROR MESSAGE:" + e.getMessage(), e.getCause());
+                log.info("Error while calling to water calculator service for tenant :" + penaltyCriteria.getTenantId() + " ERROR MESSAGE:" + e.getMessage(), e.getCause());
             }
         }
     }
