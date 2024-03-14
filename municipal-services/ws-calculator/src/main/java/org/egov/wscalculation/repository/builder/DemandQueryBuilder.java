@@ -15,13 +15,13 @@ import java.util.Set;
 @Component
 @Slf4j
 public class DemandQueryBuilder {
-    private String selectClause = "SELECT b.demandid FROM egbs_demanddetail_v1 b ";
-    private String subQuery = "SELECT dt.demandid FROM egbs_demand_v1 d LEFT OUTER JOIN egbs_demanddetail_v1 dt ON d.id = dt.demandid AND dt.taxamount > dt.collectionamount " +
+    private static String selectClause = "SELECT b.demandid FROM egbs_demanddetail_v1 b ";
+    private static String subQuery = "SELECT dt.demandid FROM egbs_demand_v1 d LEFT OUTER JOIN egbs_demanddetail_v1 dt ON d.id = dt.demandid AND dt.taxamount > dt.collectionamount " +
             "AND dt.taxheadcode = '10101'"+"AND d.status = 'ACTIVE'";
-    private String firstWhereClause = "WHERE demandid IN (" ;
-    private String secondWhereClause = ") AND b.tenantid = '";
+    private static String firstWhereClause = "WHERE demandid IN (" ;
+    private static String secondWhereClause = ") AND b.tenantid = '";
 
-    String groupByClause = " GROUP BY b.demandid " +
+    private static String groupByClause = " GROUP BY b.demandid " +
             "HAVING COUNT(*) = 1 ";
 
     public String getPenaltyQuery(String tenantId, Long penaltyThresholdDate, Integer daysToBeSubstracted ) {
