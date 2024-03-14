@@ -258,4 +258,7 @@ public class WSCalculationConfiguration {
 
 	@Value("${is.penalty.feature.enable}")
 	private boolean isPenaltyEnabled;
+
+	@Value("${egov.update.demand.add.penalty}")
+	private String updateAddPenaltytopic;
 }

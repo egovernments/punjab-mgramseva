@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
@@ -33,19 +34,7 @@ import org.egov.wscalculation.util.NotificationUtil;
 import org.egov.wscalculation.util.WSCalculationUtil;
 import org.egov.wscalculation.validator.WSCalculationValidator;
 import org.egov.wscalculation.validator.WSCalculationWorkflowValidator;
-import org.egov.wscalculation.web.models.Action;
-import org.egov.wscalculation.web.models.ActionItem;
-import org.egov.wscalculation.web.models.BulkDemand;
-import org.egov.wscalculation.web.models.CalculationCriteria;
-import org.egov.wscalculation.web.models.CalculationReq;
-import org.egov.wscalculation.web.models.Category;
-import org.egov.wscalculation.web.models.Demand;
-import org.egov.wscalculation.web.models.Event;
-import org.egov.wscalculation.web.models.EventRequest;
-import org.egov.wscalculation.web.models.OwnerInfo;
-import org.egov.wscalculation.web.models.Recipient;
-import org.egov.wscalculation.web.models.SMSRequest;
-import org.egov.wscalculation.web.models.Source;
+import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.web.models.users.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -547,4 +536,10 @@ public class DemandGenerationConsumer {
 		
 	}
 
+	@KafkaListener(topics = {
+			"${egov.update.demand.add.penalty}" }, containerFactory = "kafkaListenerContainerFactory")
+	public void updateAddPenalty(HashMap<Object, Object> messageData) {
+		DemandRequest demandRequest = mapper.convertValue(messageData, DemandRequest.class);
+		demandService.updateDemandAddPenalty(demandRequest.getRequestInfo(), demandRequest.getDemands());
+	}
 }

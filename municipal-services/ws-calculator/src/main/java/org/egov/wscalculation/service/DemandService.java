@@ -1409,7 +1409,6 @@ public class DemandService {
 	public ResponseEntity<HttpStatus> addPenalty(@Valid RequestInfo requestInfo, AddPenaltyCriteria addPenaltyCriteria) {
 		if(config.isPenaltyEnabled()) {
 			List<String> demandIds = getDemandToAddPenalty(addPenaltyCriteria.getTenantId(), config.getPenaltyStartThresholdTime());
-			log.info("demandids size:" + demandIds.size());
 			List<MasterDetail> masterDetails = new ArrayList<>();
 			MasterDetail masterDetail = new MasterDetail("Penalty", "[?(@)]");
 			masterDetails.add(masterDetail);
@@ -1421,10 +1420,8 @@ public class DemandService {
 					.build();
 			Map<String, Object> paymentMasterData = calculatorUtils.getPenaltyMasterForTenantId(addPenaltyCriteria.getTenantId(), mdmsCriteria, requestInfo);
 			Integer rate = (Integer) paymentMasterData.get("rate");
-			log.info("Rate" + String.valueOf(rate));
 			String penaltyType = String.valueOf(paymentMasterData.get("type"));
 			String penaltySubType = (String) paymentMasterData.get("subType");
-			log.info("Type:" + penaltyType + " Subtype:" + penaltySubType);
 			if (rate > 0) {
 				demandIds.stream().forEach(demandId -> {
 					Set<String> demandids = new HashSet<>();
@@ -1435,21 +1432,13 @@ public class DemandService {
 						Boolean isPenaltyExistForDemand = demand.getDemandDetails().stream().anyMatch(demandDetail -> {
 							return demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY);
 						});
-						log.info("isPenaltyExistForDemand : " + isPenaltyExistForDemand);
 						if (!isPenaltyExistForDemand) {
-							log.info("inside if");
 							if (!CollectionUtils.isEmpty(demand.getDemandDetails()) && demand.getDemandDetails().size() == 1) {
 								demand.setDemandDetails(addTimePenalty(rate, penaltyType, penaltySubType, demand));
 								demands.clear();
 								demands.add(demand);
-								log.info("Demand:" + demands);
-								List<Demand> demandRes = demandRepository.updateDemand(requestInfo, demands);
-								log.info("DemandResponse size:" + demandRes.size());
-								if (!CollectionUtils.isEmpty(demandRes)) {
-									log.info("Demand res::" + demandRes.get(0));
-									log.info("Demand res:", demandRes.get(0));
-									fetchBillDate(demandRes, requestInfo);
-								}
+								DemandRequest demandRequest = DemandRequest.builder().requestInfo(requestInfo).demands(demands).build();
+								producer.push(config.getUpdateAddPenaltytopic(), demandRequest);
 							}
 						}
 					}
@@ -1469,7 +1458,6 @@ public class DemandService {
 		DemandDetail waterChargeDemandDetails = null;
 		if(!CollectionUtils.isEmpty(demandDetailList)) {
 			if(demandDetailList.get(0).getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_CHARGE)){
-				log.info("Inside if of addTimePenalty");
 				//mapper.convertValue(demandDetailList.stream().filter(demandDetail -> demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_CHARGE)), DemandDetail.class) ;
 				waterChargeDemandDetails=demandDetailList.get(0);
 				BigDecimal netPayableAmountWithouttax= waterChargeDemandDetails.getTaxAmount().subtract(waterChargeDemandDetails.getCollectionAmount());
@@ -1487,8 +1475,6 @@ public class DemandService {
 				}
 			}
 		}
-
-		log.info("demandDetailList:"+demandDetailList);
 		return demandDetailList;
 
 	}
@@ -1497,5 +1483,9 @@ public class DemandService {
 
 		// Round the value up to the next highest integer
 		return  tax.setScale(0, RoundingMode.CEILING);
+	}
+
+	public void updateDemandAddPenalty(RequestInfo requestInfo , List<Demand> demands) {
+		demandRepository.updateDemand(requestInfo,demands);
 	}
 }
