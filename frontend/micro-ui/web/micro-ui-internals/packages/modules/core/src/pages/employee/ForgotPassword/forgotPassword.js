@@ -72,7 +72,6 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
   if (isLoading) {
     return <Loader />;
   }
-  console.log(config,"config")
   return (
     <Background>
       <div className="employeeBackbuttonAlign">
