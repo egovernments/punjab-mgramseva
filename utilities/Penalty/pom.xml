@@ -10,10 +10,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.egov</groupId>
-    <artifactId>penalty-schedular</artifactId>
+    <artifactId>egov-penalty-schedular</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>penalty-schedular</name>
-    <description>penalty schedular</description>
+    <name>egov-penalty-schedular</name>
+    <description>egov-penalty schedular</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
