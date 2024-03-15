@@ -27,7 +27,7 @@ class HouseHoldProvider with ChangeNotifier {
 
   Future<List<MeterReadings>> checkMeterDemand(
       BillList? data, WaterConnection? waterConnection) async {
-    if (data!=null && data.bill!.isNotEmpty) {
+    if (data!=null && data.bill!=null && data.bill!.isNotEmpty&& data.bill!.isNotEmpty) {
       try {
         var res = await BillGenerateRepository().searchMeteredDemand({
           "tenantId": data.bill!.first.tenantId,

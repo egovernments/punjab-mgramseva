@@ -131,9 +131,11 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                     : widget.waterConnection?.additionalDetails!
                                         .meterReading
                                         .toString()
-                                : demandList.demands?.first.meterReadings!.first
+                                :demandList.demands!.first.meterReadings!.isNotEmpty? demandList.demands?.first.meterReadings!.first
                                     .currentReading
-                                    .toString(),
+                                    .toString():widget.waterConnection?.additionalDetails!
+                                .meterReading
+                                .toString(),
                             context),
                         if(CommonProvider.getPenaltyOrAdvanceStatus(widget.waterConnection?.mdmsData, false) && !houseHoldProvider.isfirstdemand &&
                             widget.demandList.demands?.first.demandDetails?.first.taxHeadMasterCode != 'WS_ADVANCE_CARRYFORWARD'
