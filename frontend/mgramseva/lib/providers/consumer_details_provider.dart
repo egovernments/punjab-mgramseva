@@ -152,15 +152,12 @@ class ConsumerProvider with ChangeNotifier {
       isEdit = true;
       waterconnection = data;
       waterconnection.getText();
-      selectedcycle = {'code':DateTime.fromMillisecondsSinceEpoch(waterconnection.previousReadingDate!),
-        'name':"${ApplicationLocalizations.of(navigatorKey.currentContext!)
-    .translate(DateFormats.timeStampToDate(
-    waterconnection.previousReadingDate,
-    format: 'MMMM')) +
-    " - " +
-    DateFormats.timeStampToDate(
-    waterconnection.previousReadingDate,
-    format: 'yyyy')}"};
+      selectedcycle = {
+        'code': DateTime.fromMillisecondsSinceEpoch(
+            waterconnection.previousReadingDate!),
+        'name':
+            "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(DateFormats.timeStampToDate(waterconnection.previousReadingDate, format: 'MMMM')) + " - " + DateFormats.timeStampToDate(waterconnection.previousReadingDate, format: 'yyyy')}"
+      };
       if (waterconnection.previousReadingDate != null &&
           (languageList?.mdmsRes?.billingService?.taxPeriodList?.isNotEmpty ??
               false)) {
@@ -479,12 +476,14 @@ class ConsumerProvider with ChangeNotifier {
         "tenantId": commonProvider.userDetails!.selectedtenant!.code
       });
       boundaryList = [];
-      result['TenantBoundary']!=null && result['TenantBoundary'].length>0?boundaryList.addAll(
-          TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!):{};
+      result['TenantBoundary'] != null && result['TenantBoundary'].length > 0
+          ? boundaryList.addAll(
+              TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!)
+          : {};
       if (boundaryList.length == 1) {
         property.address.localityCtrl = boundaryList.first;
         onChangeOfLocality(property.address.localityCtrl);
-      }else{
+      } else {
         boundaryList.add(Boundary.fromJson({
           "code": "WARD1",
           "name": commonProvider.userDetails!.selectedtenant!.name,
@@ -528,12 +527,14 @@ class ConsumerProvider with ChangeNotifier {
 
   void onChangeOfCategory(val) {
     waterconnection.additionalDetails ??= addition.AdditionalDetails();
+    waterconnection.categoryCtrl.text = val;
     waterconnection.additionalDetails?.category = val;
     notifyListeners();
   }
 
   void onChangeOfSubCategory(val) {
     waterconnection.additionalDetails ??= addition.AdditionalDetails();
+    waterconnection.subCategoryCtrl.text = val;
     waterconnection.additionalDetails?.subCategory = val;
     notifyListeners();
   }
@@ -555,8 +556,8 @@ class ConsumerProvider with ChangeNotifier {
       return (languageList?.mdmsRes?.category?.categoryList ?? <CategoryType>[])
           .map((value) {
         return value.code!;
-    }).toList();
-   }
+      }).toList();
+    }
     return <String>[];
   }
 
@@ -600,7 +601,8 @@ class ConsumerProvider with ChangeNotifier {
     DateTime result = DateTime.parse(val['code'].toString());
     waterconnection.previousReadingDateCtrl.clear();
     waterconnection.BillingCycleCtrl.text = result.toLocal().toString();
-    waterconnection.meterInstallationDateCtrl.text = result.toLocal().toString();
+    waterconnection.meterInstallationDateCtrl.text =
+        result.toLocal().toString();
     notifyListeners();
   }
 
@@ -617,8 +619,8 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
-  List<Map<String,dynamic>> getBillingCycle() {
-    var dates = <Map<String,dynamic>>[];
+  List<Map<String, dynamic>> getBillingCycle() {
+    var dates = <Map<String, dynamic>>[];
     if (billYear != null) {
       DatePeriod ytd;
       var fromDate = DateFormats.getFormattedDateToDateTime(
@@ -627,32 +629,35 @@ class ConsumerProvider with ChangeNotifier {
       var toDate = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(billYear?.toDate)) as DateTime;
 
-      ytd = DatePeriod(fromDate,toDate,DateType.YTD);
+      ytd = DatePeriod(fromDate, toDate, DateType.YTD);
 
       /// Get months based on selected billing year
       var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd);
 
       /// if selected year is future year means all the months will be removed
-      if(fromDate.year > ytd.endDate.year) months.clear();
+      if (fromDate.year > ytd.endDate.year) months.clear();
 
       for (var i = 0; i < months.length; i++) {
         var prevMonth = months[i].startDate;
-        var r = {"code": prevMonth, "name": '${ApplicationLocalizations.of(navigatorKey.currentContext!)
-            .translate((Constants.MONTHS[prevMonth.month - 1])) +
-            " - " +
-            prevMonth.year.toString()}'};
+        var r = {
+          "code": prevMonth,
+          "name":
+              '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate((Constants.MONTHS[prevMonth.month - 1])) + " - " + prevMonth.year.toString()}'
+        };
         dates.add(r);
       }
     }
     if (dates.length > 0 && waterconnection.connectionType == 'Non_Metered') {
       return dates;
     }
-    return <Map<String,dynamic>>[];
+    return <Map<String, dynamic>>[];
   }
+
   //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
-  List<Map<String,dynamic>> getBillingCycleMonthCountCurrent(TaxPeriod? billYear) {
-    var dates = <Map<String,dynamic>>[];
-    if (billYear!=null) {
+  List<Map<String, dynamic>> getBillingCycleMonthCountCurrent(
+      TaxPeriod? billYear) {
+    var dates = <Map<String, dynamic>>[];
+    if (billYear != null) {
       DatePeriod ytd;
       var fromDate = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(billYear?.fromDate)) as DateTime;
@@ -660,27 +665,28 @@ class ConsumerProvider with ChangeNotifier {
       var toDate = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(billYear?.toDate)) as DateTime;
 
-      ytd = DatePeriod(fromDate,toDate,DateType.YTD);
+      ytd = DatePeriod(fromDate, toDate, DateType.YTD);
 
       /// Get months based on selected billing year
       var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd);
 
       /// if selected year is future year means all the months will be removed
-      if(fromDate.year > ytd.endDate.year) months.clear();
+      if (fromDate.year > ytd.endDate.year) months.clear();
 
       for (var i = 0; i < months.length; i++) {
         var prevMonth = months[i].startDate;
-        var r = {"code": prevMonth, "name": '${ApplicationLocalizations.of(navigatorKey.currentContext!)
-            .translate((Constants.MONTHS[prevMonth.month - 1])) +
-            " - " +
-            prevMonth.year.toString()}'};
+        var r = {
+          "code": prevMonth,
+          "name":
+              '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate((Constants.MONTHS[prevMonth.month - 1])) + " - " + prevMonth.year.toString()}'
+        };
         dates.add(r);
       }
     }
     if (dates.length > 0 && waterconnection.connectionType == 'Non_Metered') {
       return dates;
     }
-    return <Map<String,dynamic>>[];
+    return <Map<String, dynamic>>[];
   }
 
   incrementIndex(index, consumerGenderKey) async {
@@ -714,28 +720,41 @@ class ConsumerProvider with ChangeNotifier {
 
   List<TaxPeriod> getFinancialYearList() {
     if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
-      CommonMethods.getFilteredFinancialYearList(languageList?.mdmsRes?.billingService?.taxPeriodList ?? <TaxPeriod>[]);
-      languageList?.mdmsRes?.billingService?.taxPeriodList!.sort((a,b)=>a.fromDate!.compareTo(b.fromDate!));
+      CommonMethods.getFilteredFinancialYearList(
+          languageList?.mdmsRes?.billingService?.taxPeriodList ??
+              <TaxPeriod>[]);
+      languageList?.mdmsRes?.billingService?.taxPeriodList!
+          .sort((a, b) => a.fromDate!.compareTo(b.fromDate!));
       return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
-          <TaxPeriod>[])
+              <TaxPeriod>[])
           .map((value) {
-        return value;
-      }).toList().reversed.toList();
+            return value;
+          })
+          .toList()
+          .reversed
+          .toList();
     }
     return <TaxPeriod>[];
   }
+
   List<TaxPeriod> getLastFinancialYearList(int count) {
-    return getFinancialYearList().length>count?getFinancialYearList().sublist(0,count):getFinancialYearList();
+    return getFinancialYearList().length > count
+        ? getFinancialYearList().sublist(0, count)
+        : getFinancialYearList();
   }
-  List<Map<String,dynamic>> newBillingCycleFunction({int pastMonthCount = 2}){
+
+  List<Map<String, dynamic>> newBillingCycleFunction({int pastMonthCount = 2}) {
     List<TaxPeriod> financialYears = getFinancialYearList();
-    var dates = <Map<String,dynamic>>[];
+    var dates = <Map<String, dynamic>>[];
     financialYears.forEach((year) {
       dates.addAll(getBillingCycleMonthCountCurrent(year));
     });
     dates.sort((a, b) => b['code'].compareTo(a['code']));
-    return dates.toList().length>2?dates.toList().sublist(0,2):dates.toList();
+    return dates.toList().length > 2
+        ? dates.toList().sublist(0, 2)
+        : dates.toList();
   }
+
   void onChangeOfAmountType(value) {
     waterconnection.paymentType = value;
 
