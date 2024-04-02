@@ -99,17 +99,18 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
 
   let config = [{ body: propsConfig?.inputs }];
 
+
   const { mode } = Digit.Hooks.useQueryParams();
   if (mode === "admin" && config?.[0]?.body?.[2]?.disable == false && config?.[0]?.body?.[2]?.populators?.defaultValue == undefined) {
     config[0].body[2].disable = true;
     config[0].body[2].isMandatory = false;
     config[0].body[2].populators.defaultValue = defaultValue;
   }
-  if(config && config[0].body && config[0].body[1].label === 'CORE_LOGIN_PASSWORD'){
+  if (config && config[0].body && config[0].body[1].label === "CORE_LOGIN_PASSWORD") {
     config[0].body[1].populators.validation = {
-      maxlength: 30
+      maxlength: 10,
     };
-  } 
+  }
   return isLoading || isStoreLoading ? (
     <Loader />
   ) : (
@@ -117,7 +118,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       <div className="employeeBackbuttonAlign">
         <BackButton variant="white" style={{ borderBottom: "none" }} />
       </div>
-      
+
       <FormComposerV2
         onSubmit={onLogin}
         isDisabled={isDisabled || disable}
