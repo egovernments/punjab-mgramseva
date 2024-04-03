@@ -613,6 +613,7 @@ function Jurisdiction({
                   options={getroledata(roleoption)}
                   onSelect={selectrole}
                   optionsKey="labelKey"
+                  showSelectAll={true}
                   t={t}
                 />
                 <div className="tag-container">
