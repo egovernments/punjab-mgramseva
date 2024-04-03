@@ -73,7 +73,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   }, []);
 
   useEffect(() => {
-    let cities = userData?.user[0]?.roles?.map((role) => role.tenantId)?.filter((value, index, array) => array.indexOf(value) === index);
+    let cities = [Digit.ULBService.getCurrentTenantId()]
 
     selectboundary(
       data?.MdmsRes?.tenant?.tenants
