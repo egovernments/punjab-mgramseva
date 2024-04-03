@@ -18,6 +18,8 @@ const EmployeeModuleCard = ({
     </svg>
   );
 
+  console.log(links,'links')
+
   return (
     <div className={className ? className : "employeeCard customEmployeeCard card-home home-action-cards"} style={styles ? styles : {}}>
       <div className="complaint-links-container">
@@ -48,6 +50,9 @@ const EmployeeModuleCard = ({
             {links.map(({ count, label, link }, index) => (
               <span className="link" key={index}>
                 {link && link?.includes("https") ? (
+                  label.includes("Dashboard")?<a href={link} target="_blank">
+                  {label}
+                </a> :
                   <a href={link} target="">
                     {label}
                   </a>
