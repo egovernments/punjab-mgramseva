@@ -18,8 +18,6 @@ const EmployeeModuleCard = ({
     </svg>
   );
 
-  console.log(links,'links')
-
   return (
     <div className={className ? className : "employeeCard customEmployeeCard card-home home-action-cards"} style={styles ? styles : {}}>
       <div className="complaint-links-container">
