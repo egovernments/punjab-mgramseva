@@ -63,7 +63,7 @@ public class MasterDataService {
 
 	/**
 	 * Fetches and creates map of all required masters
-	 * 
+	 *
 	 * @param requestInfo The calculation request
 	 * @param tenantId Tenant Id
 	 * @param serviceFieldValue Service Field value
@@ -120,7 +120,7 @@ public class MasterDataService {
 	public void setWaterConnectionMasterValues(RequestInfo requestInfo, String tenantId,
 			Map<String, JSONArray> billingSlabMaster, Map<String, JSONArray> timeBasedExemptionMasterMap) {
 
-		MdmsResponse response = mapper.convertValue(repository.fetchResult(calculatorUtils.getMdmsSearchUrl(),
+		MdmsResponse response = mapper.convertValue(repository.fetchResult(calculatorUtils.getMdmsv2SearchUrl(),
 				calculatorUtils.getWaterConnectionModuleRequest(requestInfo, tenantId)), MdmsResponse.class);
 		Map<String, JSONArray> res = response.getMdmsRes().get(WSCalculationConstant.WS_TAX_MODULE);
 		for (Entry<String, JSONArray> entry : res.entrySet()) {
@@ -145,7 +145,7 @@ public class MasterDataService {
 	public void loadBillingSlabsAndTimeBasedExemptions(RequestInfo requestInfo, String tenantId,
 			Map<String, Object> masterMap) {
 
-		MdmsResponse response = mapper.convertValue(repository.fetchResult(calculatorUtils.getMdmsSearchUrl(),
+		MdmsResponse response = mapper.convertValue(repository.fetchResult(calculatorUtils.getMdmsv2SearchUrl(),
 				calculatorUtils.getWaterConnectionModuleRequest(requestInfo, tenantId)), MdmsResponse.class);
 		Map<String, JSONArray> res = response.getMdmsRes().get(WSCalculationConstant.WS_TAX_MODULE);
 		for (Entry<String, JSONArray> entry : res.entrySet()) {

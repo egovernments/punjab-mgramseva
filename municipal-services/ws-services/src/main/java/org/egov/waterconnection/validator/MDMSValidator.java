@@ -46,6 +46,12 @@ public class MDMSValidator {
 	@Value("${egov.mdms.search.endpoint}")
 	private String mdmsEndpoint;
 
+	@Value("${egov.mdms-v2.host}")
+	private String mdmsv2Host;
+
+	@Value("${egov.mdms-v2.search.endpoint}")
+	private String mdmsv2Endpoint;
+
 	@Autowired
 	private MasterDataService masterDataService;
 	
@@ -98,7 +104,12 @@ public class MDMSValidator {
 
 	public Map<String, List<String>> getAttributeValues(String tenantId, String moduleName, List<String> names,
 			String filter, String jsonPath, RequestInfo requestInfo) {
-		StringBuilder uri = new StringBuilder(mdmsHost).append(mdmsEndpoint);
+		StringBuilder uri= null;
+		if(moduleName.equals(WCConstants.WS_TAX_MODULE)) {
+			uri=new StringBuilder(mdmsv2Host).append(mdmsv2Endpoint);
+		} else {
+			uri=new StringBuilder(mdmsHost).append(mdmsEndpoint);
+		}
 		MdmsCriteriaReq criteriaReq = waterServicesUtil.prepareMdMsRequest(tenantId, moduleName, names, filter,
 				requestInfo);
 		try {

@@ -76,6 +76,10 @@ public class CalculatorUtil {
 		return new StringBuilder().append(calculationConfig.getMdmsHost()).append(calculationConfig.getMdmsEndPoint());
 	}
 
+	public StringBuilder getMdmsv2SearchUrl() {
+		return new StringBuilder().append(calculationConfig.getMdmsv2Host()).append(calculationConfig.getMdmsv2Endpoint());
+	}
+
 	/**
 	 * Prepares and returns Mdms search request with financial master criteria
 	 *
