@@ -1741,6 +1741,22 @@ const WarningIcon =({ className = "", fill = "none", style = {} })=>(<svg width=
 </defs>
 </svg>
 )
+
+const PasswordEyeEnableSvg = ({ className, fill = "white", style = {} }) => (
+  <svg width="32" height="32" xmlns="http://www.w3.org/2000/svg" transform="rotate(90 0 0)">
+  <path d="M16,3.2 C25.6,8 25.6,20.8 16,25.6 C6.4,20.8 6.4,8 16,3.2 Z" fill="none" stroke="black" stroke-width="0.8"/>
+  <circle cx="16" cy="14" r="4" fill="black"/>
+</svg>
+);
+
+const PasswordEyeDisableSvg = ({ className, fill = "white", style = {} }) => (
+  <svg width="32" height="32" xmlns="http://www.w3.org/2000/svg" transform="rotate(90 0 0)">
+  <path d="M16,3.2 C25.6,8 25.6,20.8 16,25.6 C6.4,20.8 6.4,8 16,3.2 Z" fill="none" stroke="black" stroke-width="0.8"/>
+  <circle cx="16" cy="14" r="4" fill="none" stroke="black" stroke-width="0.8"/>
+  <line x1="6" y1="6" x2="26" y2="22" stroke="black" stroke-width="1.5"/>
+</svg>
+);
+
 const ExpenditureIcon = BillsIcon;
 
 export {
@@ -1893,5 +1909,8 @@ export {
   InfoIcon,
   PaymentIcon,
   HistoryIcon,
-  WarningIcon
+  WarningIcon,
+  PasswordEyeEnableSvg,
+  PasswordEyeDisableSvg
+
 };
