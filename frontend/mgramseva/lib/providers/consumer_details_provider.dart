@@ -663,7 +663,7 @@ class ConsumerProvider with ChangeNotifier {
       ytd = DatePeriod(fromDate,toDate,DateType.YTD);
 
       /// Get months based on selected billing year
-      var months = CommonMethods.getPastMonthUntilFinancialYTDMonthCount(ytd);
+      var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd);
 
       /// if selected year is future year means all the months will be removed
       if(fromDate.year > ytd.endDate.year) months.clear();
@@ -724,7 +724,16 @@ class ConsumerProvider with ChangeNotifier {
     }
     return <TaxPeriod>[];
   }
-
+  List<Map<String,dynamic>> newFunction({int pastMonthCount = 2}){
+    List<TaxPeriod> financialYears = getFinancialYearList();
+    var dates = <Map<String,dynamic>>[];
+    financialYears.forEach((year) {
+      dates.addAll(getBillingCycleMonthCountCurrent(year));
+    });
+    dates.sort((a, b) => b['code'].compareTo(a['code']));
+    print(dates.toString());
+    return dates.toList().length>2?dates.toList().sublist(0,2):dates.toList();
+  }
   void onChangeOfAmountType(value) {
     waterconnection.paymentType = value;
 

@@ -166,58 +166,6 @@ class CommonMethods {
         .toList();
     return list;
   }
-  static List<DatePeriod> getPastMonthUntilFinancialYTDMonthCount(DatePeriod ytd,
-      {int monthCount=2,bool showCurrentMonth = false}) {
-    var monthList = <DateTime>[];
-    final currentTime = DateTime.now();
-    DatePeriod newDT = DatePeriod(ytd.endDate.subtract(Duration(days: daysToSubtract(monthCount,currentTime.year,currentTime.month))), ytd.endDate, DateType.MONTH);
-    if (currentTime.year < newDT.startDate.year) {
-      return <DatePeriod>[];
-    }
-    if (currentTime.year == newDT.startDate.year) {
-      //when current year is same as start year of financial year
-      for (int i = newDT.startDate.month;
-      i <= (showCurrentMonth ? currentTime.month : currentTime.month - 1);
-      i++) {
-        monthList.add(DateTime(currentTime.year, i));
-      }
-    } else if (currentTime.year == newDT.endDate.year) {
-      //when current year is same as end year of financial year
-      for (int i = newDT.startDate.month; i <= 12; i++) {
-        monthList.add(DateTime(newDT.startDate.year, i));
-      }
-      for (int i = 1;
-      i <=
-          (currentTime.month <= newDT.endDate.month
-              ? showCurrentMonth
-              ? currentTime.month
-              : currentTime.month - 1
-              : newDT.endDate.month);
-      /*
-          * if current month is less than or equal to end month of financial year
-          * we are using months less than current month and if it is more than
-          * end month of financial year we are using till end month of financial
-          * year
-          */
-      i++) {
-        monthList.add(DateTime(newDT.endDate.year, i));
-      }
-    } else {
-      for (int i = newDT.startDate.month; i <= 12; i++) {
-        monthList.add(DateTime(newDT.startDate.year, i));
-      }
-      for (int i = 1; i <= newDT.endDate.month; i++) {
-        monthList.add(DateTime(newDT.endDate.year, i));
-      }
-    }
-    var list = monthList
-        .map((e) => DatePeriod(DateTime(e.year, e.month, 1),
-        DateTime(e.year, e.month + 1, 0, 23, 59, 59, 999), DateType.MONTH))
-        .toList()
-        .reversed
-        .toList();
-    return list;
-  }
   static List<DatePeriod> getPastMonthIncludingCurrentMonthUntilFinancialYTD(
       DatePeriod ytd) {
     var monthList = <DateTime>[];
