@@ -731,7 +731,6 @@ class ConsumerProvider with ChangeNotifier {
       dates.addAll(getBillingCycleMonthCountCurrent(year));
     });
     dates.sort((a, b) => b['code'].compareTo(a['code']));
-    print(dates.toString());
     return dates.toList().length>2?dates.toList().sublist(0,2):dates.toList();
   }
   void onChangeOfAmountType(value) {
