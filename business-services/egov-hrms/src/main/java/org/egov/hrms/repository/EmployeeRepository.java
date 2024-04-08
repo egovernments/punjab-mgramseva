@@ -60,6 +60,7 @@ public class EmployeeRepository {
 		}
 		String query = queryBuilder.getEmployeeSearchQuery(criteria, preparedStmtList);
 		log.info("Employee search query is "+query);
+		log.info("Prepared statement"+preparedStmtList);
 		try {
 			employees = jdbcTemplate.query(query, preparedStmtList.toArray(),rowMapper);
 		}catch(Exception e) {

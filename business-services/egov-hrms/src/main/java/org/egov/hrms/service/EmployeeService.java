@@ -156,6 +156,7 @@ public class EmployeeService {
 				userSearchCriteria.put(HRMSConstants.HRMS_IS_ACTIVE_SEARCH_CODE, criteria.getIsActive());
 
             UserResponse userResponse = userService.getUser(requestInfo, userSearchCriteria);
+			log.info(userResponse.getUser().toString());
 			userChecked =true;
             if(!CollectionUtils.isEmpty(userResponse.getUser())) {
                  mapOfUsers.putAll(userResponse.getUser().stream()

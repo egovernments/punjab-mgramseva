@@ -121,6 +121,7 @@ public class UserService {
 		UserResponse userResponse = new UserResponse();
 		try {
 			userResponse = userCall(userSearchReq,uri);
+			log.info(userResponse.toString());
 		}catch(Exception e) {
 			log.error("User search failed: ",e);
 		}
