@@ -59,6 +59,7 @@ public class EmployeeRepository {
 			}
 		}
 		String query = queryBuilder.getEmployeeSearchQuery(criteria, preparedStmtList);
+		log.info("Employee search query is "+query);
 		try {
 			employees = jdbcTemplate.query(query, preparedStmtList.toArray(),rowMapper);
 		}catch(Exception e) {
