@@ -73,7 +73,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   }, []);
 
   useEffect(() => {
-    let cities = [Digit.ULBService.getCurrentTenantId()]
+    let cities = userData?.user[0]?.roles?.map((role) => role.tenantId)?.filter((value, index, array) => array.indexOf(value) === index);
 
     selectboundary(
       data?.MdmsRes?.tenant?.tenants
@@ -339,6 +339,16 @@ function Jurisdiction({
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
   let isMobile = window.Digit.Utils.browser.isMobile();
   const isEdit = window.location.href?.includes("hrms/edit");
+  let defaultjurisdiction = () =>{
+    let currentTenant = Digit.ULBService.getCurrentTenantId();
+    let defaultjurisdiction;
+    Boundary?.map((ele)=>{
+      if (ele.code === currentTenant){
+        defaultjurisdiction = ele;
+      }
+    })
+    return defaultjurisdiction;
+  } 
 
   // useEffect(() => {
   //   selectBoundaryType(
@@ -595,7 +605,7 @@ function Jurisdiction({
               <Dropdown
                 className="form-field"
                 isMandatory={true}
-                selected={jurisdiction?.boundary}
+                selected={jurisdiction?.boundary || defaultjurisdiction()}
                 option={Boundary}
                 select={selectedboundary}
                 optionKey="i18text"
