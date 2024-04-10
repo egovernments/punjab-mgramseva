@@ -203,8 +203,7 @@ public class EmployeeService {
             Map<String, Object> UserSearchCriteria = new HashMap<>();
             UserSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_UUID,uuids);
             if(mapOfUsers.isEmpty()){
-            UserResponse userResponse = userService.
-					getUser(requestInfo, UserSearchCriteria);
+            UserResponse userResponse = userService.getUser(requestInfo, UserSearchCriteria);
 			if(!CollectionUtils.isEmpty(userResponse.getUser())) {
 				mapOfUsers = userResponse.getUser().stream()
 						.collect(Collectors.toMap(User :: getUuid, Function.identity()));
