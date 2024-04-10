@@ -178,6 +178,7 @@ public class EmployeeService {
 					userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_TENANTID,criteria.getTenantId());
 					userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_NAME,name);
 					UserResponse userResponse = userService.getUser(requestInfo, userSearchCriteria);
+					log.info("User response from line 181 "+userResponse.toString());
 					userChecked =true;
 					if(!CollectionUtils.isEmpty(userResponse.getUser())) {
 						mapOfUsers.putAll(userResponse.getUser().stream()
@@ -202,7 +203,8 @@ public class EmployeeService {
             Map<String, Object> UserSearchCriteria = new HashMap<>();
             UserSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_UUID,uuids);
             if(mapOfUsers.isEmpty()){
-            UserResponse userResponse = userService.getUser(requestInfo, UserSearchCriteria);
+            UserResponse userResponse = userService.
+					getUser(requestInfo, UserSearchCriteria);
 			if(!CollectionUtils.isEmpty(userResponse.getUser())) {
 				mapOfUsers = userResponse.getUser().stream()
 						.collect(Collectors.toMap(User :: getUuid, Function.identity()));
