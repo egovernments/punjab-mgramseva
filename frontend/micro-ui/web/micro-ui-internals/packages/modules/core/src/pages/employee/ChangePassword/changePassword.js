@@ -77,14 +77,6 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
   const config = [
     {
       body: [
-        // {
-        //   label: t(username.label),
-        //   type: username.type,
-        //   populators: {
-        //     name: username.name,
-        //   },
-        //   isMandatory: true,
-        // },
         {
           label: t(password.label),
           type: password.type,
