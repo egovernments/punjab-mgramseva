@@ -146,8 +146,8 @@ public class UserTypeQueryBuilder {
 
         if (userSearchCriteria.getUserName() != null) {
             isAppendAndClause = addAndClauseIfRequired(isAppendAndClause, selectQuery);
-            selectQuery.append(" u.username like ?");
-            preparedStatementValues.add("%"+userSearchCriteria.getUserName().trim()+"%");
+            selectQuery.append(" u.username = ?");
+            preparedStatementValues.add(userSearchCriteria.getUserName().trim());
         }
 
         if (!userSearchCriteria.isFuzzyLogic() && userSearchCriteria.getName() != null) {
