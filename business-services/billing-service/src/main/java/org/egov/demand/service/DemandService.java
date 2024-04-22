@@ -42,14 +42,7 @@ package org.egov.demand.service;
 import static org.egov.demand.util.Constants.ADVANCE_TAXHEAD_JSONPATH_CODE;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -358,7 +351,7 @@ public class DemandService {
 				}
 			}
 		}
-		
+
 		if (!CollectionUtils.isEmpty(demands) && !CollectionUtils.isEmpty(payers))
 			demands = demandEnrichmentUtil.enrichPayer(demands, payers);
 
@@ -373,7 +366,82 @@ public class DemandService {
 		demandRepository.update(demandRequest, paymentBackUpdateAudit);
 	}
 
+	public List<Demand> getAllDemands(DemandCriteria demandCriteria, RequestInfo requestInfo) {
 
+		demandValidatorV1.validateDemandCriteria(demandCriteria, requestInfo);
+
+		UserSearchRequest userSearchRequest = null;
+		List<User> payers = null;
+		List<Demand> demands = null;
+
+		String userUri = applicationProperties.getUserServiceHostName()
+				.concat(applicationProperties.getUserServiceSearchPath());
+
+		/*
+		 * user type is CITIZEN by default because only citizen can have demand or payer can be null
+		 */
+		String citizenTenantId = demandCriteria.getTenantId().split("\\.")[0];
+
+		/*
+		 * If payer related data is provided first then user search has to be made first followed by demand search
+		 */
+		if (demandCriteria.getEmail() != null || demandCriteria.getMobileNumber() != null) {
+
+			userSearchRequest = UserSearchRequest.builder().requestInfo(requestInfo)
+					.tenantId(citizenTenantId).emailId(demandCriteria.getEmail())
+					.mobileNumber(demandCriteria.getMobileNumber()).build();
+
+			payers = mapper.convertValue(serviceRequestRepository.fetchResult(userUri, userSearchRequest), UserResponse.class).getUser();
+
+			if(CollectionUtils.isEmpty(payers))
+				return new ArrayList<>();
+
+			Set<String> ownerIds = payers.stream().map(User::getUuid).collect(Collectors.toSet());
+			demandCriteria.setPayer(ownerIds);
+			demands = demandRepository.getDemands(demandCriteria);
+
+		} else {
+
+			/*
+			 * If no payer related data given then search demand first then enrich payer(user) data
+			 */
+			demands = demandRepository.getDemands(demandCriteria);
+			if (!demands.isEmpty()) {
+
+				Set<String> payerUuids = demands.stream().filter(demand -> null != demand.getPayer())
+						.map(demand -> demand.getPayer().getUuid()).collect(Collectors.toSet());
+
+				if (!CollectionUtils.isEmpty(payerUuids)) {
+
+					userSearchRequest = UserSearchRequest.builder().requestInfo(requestInfo).uuid(payerUuids).build();
+
+					payers = mapper.convertValue(serviceRequestRepository.fetchResult(userUri, userSearchRequest),
+							UserResponse.class).getUser();
+				}
+			}
+		}
+
+		if (!CollectionUtils.isEmpty(demands) && !CollectionUtils.isEmpty(payers))
+			demands = demandEnrichmentUtil.enrichPayer(demands, payers);
+
+		Map<Long, List<DemandDetail>> demandMap = new HashMap<>();
+
+		for (Demand demand : demands) {
+			Long taxPeriodFrom = (Long) demand.getTaxPeriodFrom();
+			List demandDetails =  demand.getDemandDetails();
+			demandMap.put(taxPeriodFrom, demandDetails);
+		}
+		log.info("Demand Details:",demandMap);
+		// Print the demand map
+		for (Map.Entry<Long, List<DemandDetail>> entry : demandMap.entrySet()) {
+			log.info("Tax Period From: " ,entry.getKey());
+			System.out.println("Demand Details:");
+			for (DemandDetail detail : entry.getValue()) {
+				log.info("DemandDetails:",detail);
+			}
+		}
+		return demands;
+	}
 	/**
 	 * Calls the demand apportion API if any advance amoount is available for that comsumer code
 	 * @param demandRequest The demand request for create

@@ -162,5 +162,17 @@ public class DemandController {
 				responseInfo(responseFactory.getResponseInfo(requestInfo, HttpStatus.OK)).build();
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
+
+	@PostMapping("_getAggregateDemandDetails")
+	public ResponseEntity<?> getAggregatedDemandDetails(@RequestBody RequestInfoWrapper requestInfoWrapper,
+									@ModelAttribute @Valid DemandCriteria demandCriteria) {
+
+		RequestInfo requestInfo = requestInfoWrapper.getRequestInfo();
+
+		List<Demand> demands = demandService.getAllDemands(demandCriteria, requestInfo);
+		DemandResponse response = DemandResponse.builder().demands(demands)
+				.responseInfo(responseFactory.getResponseInfo(requestInfo, HttpStatus.OK)).build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
     
 }
