@@ -408,7 +408,7 @@ public class DemandService {
 			demands = demandEnrichmentUtil.enrichPayer(demands, payers);
 
 		Map<Long, List<DemandDetail>> demandMap = new HashMap<>();
-		List<Map<Long, List<DemandDetail>>> demandDetailsList = null;
+		List<Map<Long, List<DemandDetail>>> demandDetailsList = new ArrayList<>();
 
 		for (Demand demand : demands) {
 			Long taxPeriodFrom = (Long) demand.getTaxPeriodFrom();
