@@ -366,7 +366,7 @@ public class DemandService {
 		demandRepository.update(demandRequest, paymentBackUpdateAudit);
 	}
 
-	public Map<Long, List<DemandDetail>> getAllDemands(DemandCriteria demandCriteria, RequestInfo requestInfo) {
+	public List<Map<Long, List<DemandDetail>>> getAllDemands(DemandCriteria demandCriteria, RequestInfo requestInfo) {
 
 		//demandValidatorV1.validateDemandCriteria(demandCriteria, requestInfo);
 
@@ -408,6 +408,7 @@ public class DemandService {
 			demands = demandEnrichmentUtil.enrichPayer(demands, payers);
 
 		Map<Long, List<DemandDetail>> demandMap = new HashMap<>();
+		List<Map<Long, List<DemandDetail>>> demandDetailsList = null;
 
 		for (Demand demand : demands) {
 			Long taxPeriodFrom = (Long) demand.getTaxPeriodFrom();
@@ -415,6 +416,7 @@ public class DemandService {
 			demandMap.put(taxPeriodFrom, demandDetails);
 		}
 		log.info("Demand Details:"+demandMap);
+		demandDetailsList.add(demandMap);
 		// Print the demand map
 		for (Map.Entry<Long, List<DemandDetail>> entry : demandMap.entrySet()) {
 			log.info("Tax Period From: " + entry.getKey());
@@ -422,7 +424,7 @@ public class DemandService {
 				log.info("DemandDetails:"+detail);
 			}
 		}
-		return demandMap;
+		return demandDetailsList;
 	}
 	/**
 	 * Calls the demand apportion API if any advance amoount is available for that comsumer code

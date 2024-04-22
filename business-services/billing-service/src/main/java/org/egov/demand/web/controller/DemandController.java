@@ -170,7 +170,7 @@ public class DemandController {
 
 		RequestInfo requestInfo = requestInfoWrapper.getRequestInfo();
 
-		Map<Long, List<DemandDetail>> demands  = demandService.getAllDemands(demandCriteria, requestInfo);
+		List<Map<Long, List<DemandDetail>>> demands  = demandService.getAllDemands(demandCriteria, requestInfo);
 		return new ResponseEntity<>(demands, HttpStatus.OK);
 	}
     
