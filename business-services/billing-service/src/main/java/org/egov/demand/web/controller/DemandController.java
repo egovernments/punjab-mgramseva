@@ -48,6 +48,7 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.demand.config.ApplicationProperties;
 import org.egov.demand.model.Demand;
 import org.egov.demand.model.DemandCriteria;
+import org.egov.demand.model.DemandDetail;
 import org.egov.demand.model.DemandHistory;
 import org.egov.demand.producer.Producer;
 import org.egov.demand.service.DemandService;
@@ -169,10 +170,8 @@ public class DemandController {
 
 		RequestInfo requestInfo = requestInfoWrapper.getRequestInfo();
 
-		List<Demand> demands = demandService.getAllDemands(demandCriteria, requestInfo);
-		DemandResponse response = DemandResponse.builder().demands(demands)
-				.responseInfo(responseFactory.getResponseInfo(requestInfo, HttpStatus.OK)).build();
-		return new ResponseEntity<>(response, HttpStatus.OK);
+		Map<Long, List<DemandDetail>> demands  = demandService.getAllDemands(demandCriteria, requestInfo);
+		return new ResponseEntity<>(demandCriteria, HttpStatus.OK);
 	}
     
 }

@@ -366,7 +366,7 @@ public class DemandService {
 		demandRepository.update(demandRequest, paymentBackUpdateAudit);
 	}
 
-	public List<Demand> getAllDemands(DemandCriteria demandCriteria, RequestInfo requestInfo) {
+	public Map<Long, List<DemandDetail>> getAllDemands(DemandCriteria demandCriteria, RequestInfo requestInfo) {
 
 		//demandValidatorV1.validateDemandCriteria(demandCriteria, requestInfo);
 
@@ -385,39 +385,22 @@ public class DemandService {
 		/*
 		 * If payer related data is provided first then user search has to be made first followed by demand search
 		 */
-		if (demandCriteria.getEmail() != null || demandCriteria.getMobileNumber() != null) {
-
-			userSearchRequest = UserSearchRequest.builder().requestInfo(requestInfo)
-					.tenantId(citizenTenantId).emailId(demandCriteria.getEmail())
-					.mobileNumber(demandCriteria.getMobileNumber()).build();
-
-			payers = mapper.convertValue(serviceRequestRepository.fetchResult(userUri, userSearchRequest), UserResponse.class).getUser();
-
-			if(CollectionUtils.isEmpty(payers))
-				return new ArrayList<>();
-
-			Set<String> ownerIds = payers.stream().map(User::getUuid).collect(Collectors.toSet());
-			demandCriteria.setPayer(ownerIds);
-			demands = demandRepository.getDemands(demandCriteria);
-
-		} else {
 
 			/*
 			 * If no payer related data given then search demand first then enrich payer(user) data
 			 */
-			demands = demandRepository.getDemands(demandCriteria);
-			if (!demands.isEmpty()) {
+		demands = demandRepository.getDemands(demandCriteria);
+		if (!demands.isEmpty()) {
 
-				Set<String> payerUuids = demands.stream().filter(demand -> null != demand.getPayer())
-						.map(demand -> demand.getPayer().getUuid()).collect(Collectors.toSet());
+			Set<String> payerUuids = demands.stream().filter(demand -> null != demand.getPayer())
+					.map(demand -> demand.getPayer().getUuid()).collect(Collectors.toSet());
 
-				if (!CollectionUtils.isEmpty(payerUuids)) {
+			if (!CollectionUtils.isEmpty(payerUuids)) {
 
-					userSearchRequest = UserSearchRequest.builder().requestInfo(requestInfo).uuid(payerUuids).build();
+				userSearchRequest = UserSearchRequest.builder().requestInfo(requestInfo).uuid(payerUuids).build();
 
-					payers = mapper.convertValue(serviceRequestRepository.fetchResult(userUri, userSearchRequest),
+				payers = mapper.convertValue(serviceRequestRepository.fetchResult(userUri, userSearchRequest),
 							UserResponse.class).getUser();
-				}
 			}
 		}
 
@@ -435,12 +418,11 @@ public class DemandService {
 		// Print the demand map
 		for (Map.Entry<Long, List<DemandDetail>> entry : demandMap.entrySet()) {
 			log.info("Tax Period From: " + entry.getKey());
-			System.out.println("Demand Details:");
 			for (DemandDetail detail : entry.getValue()) {
 				log.info("DemandDetails:"+detail);
 			}
 		}
-		return demands;
+		return demandMap;
 	}
 	/**
 	 * Calls the demand apportion API if any advance amoount is available for that comsumer code
