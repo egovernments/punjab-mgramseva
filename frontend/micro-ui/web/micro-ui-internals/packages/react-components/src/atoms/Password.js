@@ -27,7 +27,7 @@ const Password = (props) => {
                         ref={props.inputRef}
                         value={props.value}
                         style={{ ...props.style }}
-                        minLength={props.minlength || 10}
+                        minLength={props.minlength}
                         maxLength={props.maxlength || 10}
                         max={props.max}
                         min={props.min}
