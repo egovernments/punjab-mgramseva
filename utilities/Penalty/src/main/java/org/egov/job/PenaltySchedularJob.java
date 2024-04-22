@@ -3,8 +3,10 @@ package org.egov.job;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.egov.common.contract.request.RequestInfo;
 import org.egov.config.PenaltyShedularConfiguration;
 import org.egov.model.AddPenaltyCriteria;
+import org.egov.model.PenaltyRequest;
 import org.egov.model.Tenant;
 import org.egov.util.MDMSClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,11 +58,12 @@ public class PenaltySchedularJob implements ApplicationRunner {
     }
 
     public void addPenaltyEventToWaterCalculator(AddPenaltyCriteria penaltyCriteria) {
+        PenaltyRequest penaltyRequest = PenaltyRequest.builder().requestInfo(RequestInfo.builder().build()).addPenaltyCriteria(penaltyCriteria).build();
         log.info("Posting request to add Penalty for tenantid:" +penaltyCriteria.getTenantId());
-
+        log.info("Penalty Request", penaltyRequest);
         if (penaltyCriteria.getTenantId() != null) {
             try {
-                restTemplate.put(getWaterConnnectionAddPennanltyUrl(), penaltyCriteria);
+                restTemplate.put(getWaterConnnectionAddPennanltyUrl(), penaltyRequest);
 
                 log.info("Posted request to add Penalty for tenant:" + penaltyCriteria.getTenantId());
             } catch (RestClientException e) {
