@@ -368,7 +368,7 @@ public class DemandService {
 
 	public List<Demand> getAllDemands(DemandCriteria demandCriteria, RequestInfo requestInfo) {
 
-		demandValidatorV1.validateDemandCriteria(demandCriteria, requestInfo);
+		//demandValidatorV1.validateDemandCriteria(demandCriteria, requestInfo);
 
 		UserSearchRequest userSearchRequest = null;
 		List<User> payers = null;
@@ -431,13 +431,13 @@ public class DemandService {
 			List demandDetails =  demand.getDemandDetails();
 			demandMap.put(taxPeriodFrom, demandDetails);
 		}
-		log.info("Demand Details:",demandMap);
+		log.info("Demand Details:"+demandMap);
 		// Print the demand map
 		for (Map.Entry<Long, List<DemandDetail>> entry : demandMap.entrySet()) {
-			log.info("Tax Period From: " ,entry.getKey());
+			log.info("Tax Period From: " + entry.getKey());
 			System.out.println("Demand Details:");
 			for (DemandDetail detail : entry.getValue()) {
-				log.info("DemandDetails:",detail);
+				log.info("DemandDetails:"+detail);
 			}
 		}
 		return demands;
