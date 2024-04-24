@@ -97,6 +97,7 @@ const TopBar = ({
     );
   }
   const loggedin = userDetails?.access_token ? true : false;
+  console.log(userDetails,"userDetails")
   return (
     <div className="topbar">
       {mobileView ? <Hamburger handleClick={toggleSidebar} color="#9E9E9E" /> : null}
@@ -107,9 +108,13 @@ const TopBar = ({
             <p className="ulb" style={mobileView ? { fontSize: "14px", display: "inline-block" } : {}}>
               {t(cityDetails?.i18nKey).toUpperCase()}{" "}
               {t(`ULBGRADE_${cityDetails?.city?.ulbGrade.toUpperCase().replace(" ", "_").replace(".", "_")}`).toUpperCase()}
+              {` ${userDetails?.info?.roles.some(obj => obj.name === "STATE ADMIN")?` (${userDetails?.info?.name} | State User)`:` (${userDetails?.info?.name} | Division User)`}`}  
             </p>
           ) : (
-            <img className="state" src={logoUrl} />
+            <div style={{display:"flex"}}>
+              <img className="state" src={logoUrl} />
+              <p style={{marginLeft:"5px", fontWeight: "bold"}}>{` ${userDetails?.info?.roles.some(obj => obj.name === "STATE ADMIN")?`(${userDetails?.info?.name} | State User)`:`(${userDetails?.info?.name} | Division User)`}`}  </p>
+            </div>
           ))}
         {!loggedin && (
           <p className="ulb" style={mobileView ? { fontSize: "14px", display: "inline-block" } : {}}>
