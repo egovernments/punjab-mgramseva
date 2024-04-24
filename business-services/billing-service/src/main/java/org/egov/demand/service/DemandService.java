@@ -416,8 +416,8 @@ public class DemandService {
 			List<DemandDetail> filteredDemandDetaillist=demandDetails.stream()
 					.filter(detail -> detail.getTaxAmount().compareTo(detail.getCollectionAmount()) > 0)  // Filter condition
 					.collect(Collectors.toList());
-			if(!demandDetails.isEmpty())
-				demandMap.put(taxPeriodFrom, demandDetails);
+			if(!filteredDemandDetaillist.isEmpty())
+				demandMap.put(taxPeriodFrom, filteredDemandDetaillist);
 		}
 		log.info("Demand Details:"+demandMap);
 		demandDetailsList.add(demandMap);
