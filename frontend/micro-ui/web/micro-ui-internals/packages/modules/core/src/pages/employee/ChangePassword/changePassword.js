@@ -54,6 +54,8 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
       }
       const requestData = {
         ...data,
+        username:mobileNumber,
+
         otpReference: otp,
         tenantId,
         type: getUserType().toUpperCase(),
