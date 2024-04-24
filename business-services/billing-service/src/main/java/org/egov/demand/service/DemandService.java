@@ -413,10 +413,11 @@ public class DemandService {
 		for (Demand demand : demands) {
 			Long taxPeriodFrom = (Long) demand.getTaxPeriodFrom();
 			List<DemandDetail> demandDetails =  demand.getDemandDetails();
-			demandDetails.stream()
+			List<DemandDetail> filteredDemandDetaillist=demandDetails.stream()
 					.filter(detail -> detail.getTaxAmount().compareTo(detail.getCollectionAmount()) > 0)  // Filter condition
 					.collect(Collectors.toList());
-			demandMap.put(taxPeriodFrom, demandDetails);
+			if(!demandDetails.isEmpty())
+				demandMap.put(taxPeriodFrom, demandDetails);
 		}
 		log.info("Demand Details:"+demandMap);
 		demandDetailsList.add(demandMap);
