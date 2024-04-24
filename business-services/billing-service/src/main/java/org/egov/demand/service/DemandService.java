@@ -414,7 +414,7 @@ public class DemandService {
 			Long taxPeriodFrom = (Long) demand.getTaxPeriodFrom();
 			List<DemandDetail> demandDetails =  demand.getDemandDetails();
 			List<DemandDetail> filteredDemandDetaillist=demandDetails.stream()
-					.filter(detail -> detail.getTaxAmount().compareTo(detail.getCollectionAmount()) > 0)  // Filter condition
+					.filter(detail -> !detail.getTaxAmount().subtract(detail.getCollectionAmount()).equals(BigDecimal.ZERO) )  // Filter condition
 					.collect(Collectors.toList());
 			if(!filteredDemandDetaillist.isEmpty())
 				demandMap.put(taxPeriodFrom, filteredDemandDetaillist);
