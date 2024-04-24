@@ -234,7 +234,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
           return roleCodesToFilter.includes(role.code);
         })
         .map((role) => {
-          return { code: role.code, name: role?.name ? role?.name : " ", labelKey: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
+          return { code: role.code, name: role?.name ? role?.name : " ", i18text: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
         });
     } else {
       // Specify the role codes you want to filter
@@ -243,7 +243,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       return data?.MdmsRes?.["ws-services-masters"].WSServiceRoles?.filter((role) => {
         return !roleCodesToFilter.includes(role.code);
       })?.map((role) => {
-        return { code: role.code, name: role?.name ? role?.name : " ", labelKey: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
+        return { code: role.code, name: role?.name ? role?.name : " ", i18text: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
       });
     }
   }
@@ -622,7 +622,7 @@ function Jurisdiction({
                   selected={jurisdiction?.roles}
                   options={getroledata(roleoption)}
                   onSelect={selectrole}
-                  optionsKey="labelKey"
+                  optionsKey="i18text"
                   showSelectAll={true}
                   t={t}
                 />
