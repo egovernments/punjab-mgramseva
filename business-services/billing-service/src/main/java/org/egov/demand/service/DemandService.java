@@ -416,7 +416,7 @@ public class DemandService {
 			List<DemandDetail> filteredDemandDetaillist=demandDetails.stream()
 					.filter(detail -> {
 						log.info("Amount : "+detail.getTaxAmount().subtract(detail.getCollectionAmount()));
-						return !(detail.getTaxAmount().subtract(detail.getCollectionAmount())).equals(BigDecimal.ZERO);
+						return !((detail.getTaxAmount().subtract(detail.getCollectionAmount())).equals(BigDecimal.ZERO));
 					})  // Filter condition
 					.collect(Collectors.toList());
 			if(!filteredDemandDetaillist.isEmpty())
