@@ -416,14 +416,15 @@ public class DemandService {
 			List<DemandDetail> filteredDemandDetaillist=demandDetails.stream()
 					.filter(detail -> {
 						BigDecimal difference = detail.getTaxAmount().subtract(detail.getCollectionAmount());
-						return (difference.compareTo(BigDecimal.ZERO))!= 0;
+						return (difference.compareTo(BigDecimal.ZERO)) != 0;
 					})  // Filter condition
 					.collect(Collectors.toList());
+			log.info("Filtered List:"+filteredDemandDetaillist);
 			if(!filteredDemandDetaillist.isEmpty())
 				demandMap.put(taxPeriodFrom, filteredDemandDetaillist);
 		}
 		log.info("Demand Details:"+demandMap);
-			demandDetailsList.add(demandMap);
+		demandDetailsList.add(demandMap);
 		// Print the demand map
 		for (Map.Entry<Long, List<DemandDetail>> entry : demandMap.entrySet()) {
 			log.info("Tax Period From: " + entry.getKey());
