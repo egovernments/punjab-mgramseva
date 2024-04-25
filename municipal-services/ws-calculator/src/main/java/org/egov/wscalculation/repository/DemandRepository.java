@@ -78,9 +78,9 @@ public class DemandRepository {
         }
     }
 
-    public List<String> getDemandsToAddPenalty(String tenantId, Long penaltyThresholdTime) {
+    public List<String> getDemandsToAddPenalty(String tenantId, Long penaltyThresholdTime, Integer penaltyApplicableAfterDays) {
         List<Object> preparedStmtList = new ArrayList<>();
-        String query = queryBuilder.getPenaltyQuery(tenantId, penaltyThresholdTime, config.getPenaltyApplicableDays());
+        String query = queryBuilder.getPenaltyQuery(tenantId, penaltyThresholdTime, penaltyApplicableAfterDays);
         log.info("query:"+ query);
         return jdbcTemplate.queryForList(query, String.class);
     }

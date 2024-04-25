@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import io.swagger.models.auth.In;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
@@ -1402,13 +1403,13 @@ public class DemandService {
 		else
 			return true;
 	}
-	public  List<String> getDemandToAddPenalty(String tenantid,Long penaltyThresholdDate){
-      return  demandRepository.getDemandsToAddPenalty(tenantid,penaltyThresholdDate);
+	public  List<String> getDemandToAddPenalty(String tenantid,Long penaltyThresholdDate,Integer penaltyApplicableAfterDays){
+      return  demandRepository.getDemandsToAddPenalty(tenantid,penaltyThresholdDate,penaltyApplicableAfterDays);
 	}
 
 	public ResponseEntity<HttpStatus> addPenalty(@Valid RequestInfo requestInfo, AddPenaltyCriteria addPenaltyCriteria) {
 		if(config.isPenaltyEnabled()) {
-			List<String> demandIds = getDemandToAddPenalty(addPenaltyCriteria.getTenantId(), config.getPenaltyStartThresholdTime());
+
 			List<MasterDetail> masterDetails = new ArrayList<>();
 			MasterDetail masterDetail = new MasterDetail("Penalty", "[?(@)]");
 			masterDetails.add(masterDetail);
@@ -1423,6 +1424,9 @@ public class DemandService {
 			Integer rate= (Integer) paymentMasterData.get("rate");
 			String penaltyType = String.valueOf(paymentMasterData.get("type"));
 			String penaltySubType = (String) paymentMasterData.get("subType");
+			String startingDay = (String) paymentMasterData.get("startingDay");
+			Integer applicableAfterDays = (Integer) paymentMasterData.get("applicableAfterDays");
+			List<String> demandIds = getDemandToAddPenalty(addPenaltyCriteria.getTenantId(), config.getPenaltyStartThresholdTime(),applicableAfterDays);
 			if (rate > 0) {
 				demandIds.stream().forEach(demandId -> {
 					Set<String> demandids = new HashSet<>();
