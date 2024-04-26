@@ -113,7 +113,7 @@ const CreateEmployee = () => {
       formData?.SelectEmployeeName?.employeeName &&
       formData?.SelectEmployeePhoneNumber?.mobileNumber &&
       formData?.Jurisdictions.length &&
-      formData?.Jurisdictions.filter((juris) => juris?.roles?.length).length > 0 &&
+      (formData?.Jurisdictions.filter((juris) => juris?.roles?.length).length > 0 || formData?.Jurisdictions.filter((juris) => juris?.divisionBoundary?.length).length > 0) &&
       checkfield &&
       phonecheck &&
       checkMailNameNum(formData)
