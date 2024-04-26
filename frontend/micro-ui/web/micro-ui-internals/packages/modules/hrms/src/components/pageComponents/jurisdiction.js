@@ -311,7 +311,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     </div>
   );
 };
-// -------------------------------------------------------------------------------------
+
 function Jurisdiction({
   t,
   formData,
@@ -350,18 +350,6 @@ function Jurisdiction({
     return defaultjurisdiction;
   } 
 
-  // useEffect(() => {
-  //   selectBoundaryType(
-  //     data?.MdmsRes?.["egov-location"]["TenantBoundary"]
-  //       .filter((ele) => {
-  //         return ele?.hierarchyType?.code == hierarchylist[0]?.code;
-  //       })
-  //       .map((item) => {
-  //         return { ...item.boundary, i18text: Digit.Utils.locale.convertToLocale(item.boundary.label, "EGOV_LOCATION_BOUNDARYTYPE") };
-  //       })
-  //   );
-  // }, [jurisdiction?.hierarchy, data?.MdmsRes]);
-
   useEffect(() => {
     setDivision(
       divisions?.map((item) => {
@@ -371,17 +359,6 @@ function Jurisdiction({
   }, [divisions]);
 
   const tenant = Digit.ULBService.getCurrentTenantId();
-  // useEffect(() => {
-  //   console.log("ssss")
-  //   let cities = userDetails?.roles.map((role) => role.tenantId)?.filter((value, index, array) => array.indexOf(value) === index);
-  //   selectboundary(
-  //     data?.MdmsRes?.tenant?.tenants
-  //       ?.filter((city) => city.code != Digit.ULBService.getStateId() && cities?.includes(city.code))
-  //       ?.map((city) => {
-  //         return { ...city, i18text: Digit.Utils.locale.getCityLocale(city.code) };
-  //       })
-  //   );
-  // }, [data]);
 
   useEffect(() => {
     if (Boundary?.length > 0) {
@@ -451,7 +428,7 @@ function Jurisdiction({
       });
 
     res?.forEach((resData) => {
-      resData.labelKey = "ACCESSCONTROL_ROLES_ROLES_" + resData.code;
+      resData.i18text = "ACCESSCONTROL_ROLES_ROLES_" + resData.code;
     });
 
     if (isEdit && STATE_ADMIN) setJuristictionsData((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, roles: res } : item)));
@@ -473,6 +450,7 @@ function Jurisdiction({
         [...data].filter((value) => Object.keys(value).length !== 0)
       );
     setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, roles: res } : item)));
+    selectedboundary(jurisdiction?.boundary?jurisdiction?.boundary:defaultjurisdiction());
   };
 
   const selectDivisionBoundary = (e) => {
