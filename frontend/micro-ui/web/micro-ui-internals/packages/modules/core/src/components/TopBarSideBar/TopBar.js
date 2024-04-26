@@ -112,7 +112,7 @@ const TopBar = ({
           ) : (
             <div style={{display:"flex"}}>
               <img className="state" src={logoUrl} />
-              <p style={{marginLeft:"5px", fontWeight: "bold"}}>{` ${userDetails?.info?.roles.some(obj => obj.name === "STATE ADMIN")?`(${userDetails?.info?.name} | State User)`:`(${userDetails?.info?.name} | Division User)`}`}  </p>
+              <p style={{margin:"0px 5px", fontWeight: "bold"}}>{` ${userDetails?.info?.roles.some(obj => obj.name === "STATE ADMIN")?`(${userDetails?.info?.name} | State User)`:`(${userDetails?.info?.name} | Division User)`}`}  </p>
             </div>
           ))}
         {!loggedin && (
