@@ -107,6 +107,15 @@ const MultiSelectDropdown = ({
     }
   }, [active]);
 
+  useEffect(()=>{
+    if (alreadyQueuedSelectedState?.length === filteredOptions?.length){
+      setIsSelected(true)
+    }else{
+      setIsSelected(false)
+
+    }
+  },[alreadyQueuedSelectedState])
+
   function handleOutsideClickAndSubmitSimultaneously() {
     setActive(false);
   }
