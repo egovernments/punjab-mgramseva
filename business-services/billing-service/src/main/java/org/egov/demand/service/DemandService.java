@@ -510,7 +510,7 @@ public class DemandService {
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 		advanceAvailable = currentMonthAdvanceAvailable.add(remainingMonthAdvanceAvailable);
 		advanceAdjusted = currentMonthAdvanceCollected.add(remainingMonthAdvanceCollected);
-		remainingAdvance = advanceAdjusted.subtract(advanceAdjusted);
+		remainingAdvance = advanceAvailable.subtract(advanceAdjusted);
 
 		//BigDecimal currentMonthBill
 		AggregatedDemandDetailResponse aggregatedDemandDetailResponse = AggregatedDemandDetailResponse.builder()
