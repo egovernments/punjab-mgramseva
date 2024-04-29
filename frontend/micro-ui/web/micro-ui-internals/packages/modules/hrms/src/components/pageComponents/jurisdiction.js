@@ -604,10 +604,12 @@ function Jurisdiction({
                   showSelectAll={true}
                   t={t}
                 />
-                <div className="tag-container">
+                <div className="tag-container" style={{ height: jurisdiction?.divisionBoundary?.length > 0 && "50px", overflowY: "scroll" }}>
                   {jurisdiction?.roles.length > 0 &&
                     jurisdiction?.roles.map((value, index) => {
-                      return <RemoveableTag key={index} text={`${t(value["labelKey"]).slice(0, 22)} ...`} onClick={() => onRemove(index, value)} />;
+                      return (
+                        <RemoveableTag key={index} text={`${t(value["i18text"]).slice(0, 22)} ...`} onClick={() => onRemove(index, value)} />
+                      )
                     })}
                 </div>
               </div>
