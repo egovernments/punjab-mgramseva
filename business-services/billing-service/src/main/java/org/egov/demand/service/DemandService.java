@@ -462,10 +462,12 @@ public class DemandService {
 				.filter(dd -> dd.getTaxHeadMasterCode().equals("10101")) // filter by taxHeadCode
 				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // map to the balance between taxAmount and collectedAmount
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		log.info("currentMonthDemandDetailList::::"+currentMonthDemandDetailList);
 		currentMonthPenalty = currentMonthDemandDetailList.stream()
 				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_TIME_PENALTY")) // filter by taxHeadCode
 				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // map to the balance between taxAmount and collectedAmount
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		log.info("currentMonthDemandDetailListafter::::"+currentMonthDemandDetailList);
 		log.info("currentMonthPenalty" + currentMonthPenalty);
 		currentmonthTotalDue = currentmonthBill.add(currentMonthPenalty);
 
