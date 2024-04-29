@@ -399,30 +399,32 @@ public class DemandService {
 		if (!CollectionUtils.isEmpty(demands) && !CollectionUtils.isEmpty(payers))
 			demands = demandEnrichmentUtil.enrichPayer(demands, payers);
 
-		Map<Long, List<DemandDetail>> demandMap = new HashMap<>();
+
 		List<Map<Long, List<DemandDetail>>> demandDetailsList = new ArrayList<>();
 
 		for (Demand demand : demands) {
+			Map<Long, List<DemandDetail>> demandMap = new HashMap<>();
 			Long taxPeriodFrom = (Long) demand.getTaxPeriodFrom();
 			List<DemandDetail> demandDetails =  demand.getDemandDetails();
-			List<DemandDetail> filteredDemandDetaillist=demandDetails.stream()
+			List<DemandDetail> filteredDemandDetaillist = demandDetails.stream()
 					.filter(detail -> {
 						BigDecimal difference = detail.getTaxAmount().subtract(detail.getCollectionAmount());
 						return (difference.compareTo(BigDecimal.ZERO)) != 0;
 					})  // Filter condition
 					.collect(Collectors.toList());
 			log.info("Filtered List:"+filteredDemandDetaillist);
-			if(!filteredDemandDetaillist.isEmpty())
+			if(!filteredDemandDetaillist.isEmpty()) {
 				demandMap.put(taxPeriodFrom, filteredDemandDetaillist);
+				demandDetailsList.add(demandMap);
+			}
 		}
-		log.info("Demand Details:"+demandMap);
-		demandDetailsList.add(demandMap);
+		log.info("demandDetailsList:"+demandDetailsList);
 		// Sorting the list of maps based on the key in descending order
 		List<Map<Long, List<DemandDetail>>> sortedDemandDetailsList = demandDetailsList.stream()
 				.sorted((mapA, mapB) -> {
 					Long keyA = mapA.keySet().stream().findFirst().orElse(0L);
 					Long keyB = mapB.keySet().stream().findFirst().orElse(0L);
-					return -keyB.compareTo(keyA); // Descending order
+					return keyB.compareTo(keyA); // Descending order
 				})
 				.collect(Collectors.toList());
 
@@ -510,12 +512,6 @@ public class DemandService {
 		advanceAdjusted = currentMonthAdvanceCollected.add(remainingMonthAdvanceCollected);
 		remainingAdvance = advanceAdjusted.subtract(advanceAdjusted);
 
-		for (Map.Entry<Long, List<DemandDetail>> entry : demandMap.entrySet()) {
-			log.info("Tax Period From: " + entry.getKey());
-			for (DemandDetail detail : entry.getValue()) {
-				log.info("DemandDetails:"+detail);
-			}
-		}
 		//BigDecimal currentMonthBill
 		AggregatedDemandDetailResponse aggregatedDemandDetailResponse = AggregatedDemandDetailResponse.builder()
 				.mapOfDemandDetailList(sortedDemandDetailsList)
