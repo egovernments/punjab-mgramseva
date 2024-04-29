@@ -466,6 +466,7 @@ public class DemandService {
 				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_TIME_PENALTY")) // filter by taxHeadCode
 				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // map to the balance between taxAmount and collectedAmount
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		log.info("currentMonthPenalty" + currentMonthPenalty);
 		currentmonthTotalDue = currentmonthBill.add(currentMonthPenalty);
 
 		//Tax headcode for WScharges,legacypenalty,legacyarea
@@ -484,8 +485,8 @@ public class DemandService {
 
         totalAreasWithPenalty = totalAreas.add(penaltyInRemainingMonth);
 
-		netdue=currentmonthBill.add(totalAreas);
-		netDueWithPenalty =currentmonthTotalDue.add(totalAreasWithPenalty);
+		netdue = currentmonthBill.add(totalAreas);
+		netDueWithPenalty = currentmonthTotalDue.add(totalAreasWithPenalty);
 
 		BigDecimal currentMonthAdvanceAvailable=currentMonthDemandDetailList.stream()
 				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_ADVANCE_CARRYFORWARD")) // filter by taxHeadCode
@@ -505,7 +506,7 @@ public class DemandService {
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 		advanceAvailable = currentMonthAdvanceAvailable.add(remainingMonthAdvanceAvailable);
 		advanceAdjusted = currentMonthAdvanceCollected.add(remainingMonthAdvanceCollected);
-		remainingAdvance=advanceAdjusted.subtract(advanceAdjusted);
+		remainingAdvance = advanceAdjusted.subtract(advanceAdjusted);
 
 		for (Map.Entry<Long, List<DemandDetail>> entry : demandMap.entrySet()) {
 			log.info("Tax Period From: " + entry.getKey());
