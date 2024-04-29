@@ -422,9 +422,11 @@ public class DemandService {
 				.sorted((mapA, mapB) -> {
 					Long keyA = mapA.keySet().stream().findFirst().orElse(0L);
 					Long keyB = mapB.keySet().stream().findFirst().orElse(0L);
-					return keyB.compareTo(keyA); // Descending order
+					return -keyB.compareTo(keyA); // Descending order
 				})
 				.collect(Collectors.toList());
+
+		log.info("Sorted map:"+sortedDemandDetailsList);
 
 		List<DemandDetail> currentMonthDemandDetailList = new ArrayList<>();
 		if (!sortedDemandDetailsList.isEmpty()) {
@@ -485,19 +487,19 @@ public class DemandService {
 		netdue=currentmonthBill.add(totalAreas);
 		netDueWithPenalty =currentmonthTotalDue.add(totalAreasWithPenalty);
 
-		BigDecimal currentMonthAdvanceAvailable=currentMonthPenalty = currentMonthDemandDetailList.stream()
+		BigDecimal currentMonthAdvanceAvailable=currentMonthDemandDetailList.stream()
 				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_ADVANCE_CARRYFORWARD")) // filter by taxHeadCode
 				.map(dd -> dd.getTaxAmount()) // map to the balance between taxAmount and collectedAmount
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
-		BigDecimal currentMonthAdvanceCollected=currentMonthPenalty = currentMonthDemandDetailList.stream()
+		BigDecimal currentMonthAdvanceCollected= currentMonthDemandDetailList.stream()
 				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_ADVANCE_CARRYFORWARD")) // filter by taxHeadCode
 				.map(dd -> dd.getCollectionAmount()) // map to the balance between taxAmount and collectedAmount
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
-		BigDecimal remainingMonthAdvanceAvailable=currentMonthPenalty = remainingMonthDemandDetailList.stream()
+		BigDecimal remainingMonthAdvanceAvailable = remainingMonthDemandDetailList.stream()
 				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_ADVANCE_CARRYFORWARD")) // filter by taxHeadCode
 				.map(dd -> dd.getTaxAmount()) // map to the balance between taxAmount and collectedAmount
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
-		BigDecimal remainingMonthAdvanceCollected=currentMonthPenalty = remainingMonthDemandDetailList.stream()
+		BigDecimal remainingMonthAdvanceCollected= remainingMonthDemandDetailList.stream()
 				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_ADVANCE_CARRYFORWARD")) // filter by taxHeadCode
 				.map(dd -> dd.getCollectionAmount()) // map to the balance between taxAmount and collectedAmount
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
