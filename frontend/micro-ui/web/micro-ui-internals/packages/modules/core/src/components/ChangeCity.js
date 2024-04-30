@@ -10,6 +10,8 @@ const stringReplaceAll = (str = "", searcher = "", replaceWith = "") => {
   return str;
 };
 
+
+
 const ChangeCity = (prop) => {
   const [dropDownData, setDropDownData] = useState({
     label: `TENANT_TENANTS_${stringReplaceAll(Digit.SessionStorage.get("Employee.tenantId"), ".", "_")?.toUpperCase()}`,
@@ -20,6 +22,12 @@ const ChangeCity = (prop) => {
   const history = useHistory();
   const isDropdown = prop.dropdown || false;
   let selectedCities = [];
+
+    const uuids = [prop.userDetails?.info?.uuid];
+    const { data: userData, isUserDataLoading } = Digit.Hooks.useUserSearch(Digit.ULBService.getStateId(), { uuid: uuids }, {}); 
+    // setSelectedCity(userData?.data?.user[0]?.roles)
+
+   
 
   const { data: data = {}, isLoading } =
     Digit.Hooks.hrms.useHrmsMDMS(Digit.ULBService.getCurrentTenantId(), "egov-hrms", "HRMSRolesandDesignation") || {};
@@ -43,9 +51,8 @@ const ChangeCity = (prop) => {
 
   useEffect(() => {
     const userloggedValues = Digit.SessionStorage.get("citizen.userRequestObject");
-    let teantsArray = [],
-      filteredArray = [];
-    userloggedValues?.info?.roles?.forEach((role) => teantsArray.push(role.tenantId));
+    let teantsArray = [],filteredArray = [];
+    userData?.user[0].roles?.forEach((role) => teantsArray.push(role.tenantId));
     let unique = teantsArray.filter((item, i, ar) => ar.indexOf(item) === i);
 
     unique?.forEach((uniCode) => {
@@ -69,7 +76,6 @@ const ChangeCity = (prop) => {
     setSelectCityData(filteredArray);
   }, [dropDownData, data?.MdmsRes]);
 
-  // if (isDropdown) {
   return (
     <div style={prop?.mobileView ? { color: "#767676" } : {}}>
       <Dropdown
@@ -79,35 +85,11 @@ const ChangeCity = (prop) => {
         selected={dropDownData}
         optionKey={"label"}
         select={handleChangeCity}
-        // freeze={true}
-        // noBorder={true}
         optionCardStyles={{ overflow: "revert", display: "table" }}
-        // customSelector={
-        //   <label className="cp">
-        //     {prop?.t(`TENANT_TENANTS_${stringReplaceAll(Digit.SessionStorage.get("Employee.tenantId"), ".", "_")?.toUpperCase()}`)}
-        //   </label>
-        // }
       />
     </div>
   );
-  // } else {
-  //   return (
-  //     <React.Fragment>
-  //       <div style={{ marginBottom: "5px" }}>City</div>
-  //       <div className="language-selector" style={{display: "flex", flexWrap: "wrap"}}>
-  //         {selectCityData?.map((city, index) => (
-  //           <div className="language-button-container" key={index}>
-  //             <CustomButton
-  //               selected={city.value === Digit.SessionStorage.get("Employee.tenantId")}
-  //               text={city.label}
-  //               onClick={() => handleChangeCity(city)}
-  //             ></CustomButton>
-  //           </div>
-  //         ))}
-  //       </div>
-  //     </React.Fragment>
-  //   );
-  // }
+
 };
 
 export default ChangeCity;
