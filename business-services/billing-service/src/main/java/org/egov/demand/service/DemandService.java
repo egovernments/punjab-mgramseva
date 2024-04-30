@@ -474,7 +474,7 @@ public class DemandService {
 		currentmonthTotalDue = currentmonthBill.add(currentMonthPenalty);
 
 		//Tax headcode for WScharges,legacypenalty,legacyarea
-		List<String> taxHeadCodesToFilterWithoutPenalty = Arrays.asList("10101", "10201", "10101");
+		List<String> taxHeadCodesToFilterWithoutPenalty = Arrays.asList("10102", "10201", "10101");
 
 		// Initialize the variable for the sum of taxAmount - collectedAmount for the filtered tax head codes
 		totalAreas = remainingMonthDemandDetailList.stream()
