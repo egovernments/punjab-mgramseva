@@ -88,10 +88,9 @@ const MultiSelectDropdown = ({
   }, [selected?.length]);
 
   function fnToSelectOptionThroughProvidedSelection(selected) {
-    
     return selected?.map((e) => (
       { 
-        [optionsKey]: `ACCESSCONTROL_ROLES_ROLES_${e.code}`,
+        [optionsKey]: e?.i18text? e.i18text : `ACCESSCONTROL_ROLES_ROLES_${e.code}`,
         propsData: [null, e] 
       }
     ));
@@ -107,6 +106,15 @@ const MultiSelectDropdown = ({
       );
     }
   }, [active]);
+
+  useEffect(()=>{
+    if (alreadyQueuedSelectedState?.length === filteredOptions?.length){
+      setIsSelected(true)
+    }else{
+      setIsSelected(false)
+
+    }
+  },[alreadyQueuedSelectedState])
 
   function handleOutsideClickAndSubmitSimultaneously() {
     setActive(false);

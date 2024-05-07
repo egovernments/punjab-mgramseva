@@ -234,7 +234,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
           return roleCodesToFilter.includes(role.code);
         })
         .map((role) => {
-          return { code: role.code, name: role?.name ? role?.name : " ", labelKey: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
+          return { code: role.code, name: role?.name ? role?.name : " ", i18text: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
         });
     } else {
       // Specify the role codes you want to filter
@@ -243,7 +243,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       return data?.MdmsRes?.["ws-services-masters"].WSServiceRoles?.filter((role) => {
         return !roleCodesToFilter.includes(role.code);
       })?.map((role) => {
-        return { code: role.code, name: role?.name ? role?.name : " ", labelKey: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
+        return { code: role.code, name: role?.name ? role?.name : " ", i18text: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
       });
     }
   }
@@ -311,7 +311,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     </div>
   );
 };
-// -------------------------------------------------------------------------------------
+
 function Jurisdiction({
   t,
   formData,
@@ -339,18 +339,16 @@ function Jurisdiction({
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
   let isMobile = window.Digit.Utils.browser.isMobile();
   const isEdit = window.location.href?.includes("hrms/edit");
-
-  // useEffect(() => {
-  //   selectBoundaryType(
-  //     data?.MdmsRes?.["egov-location"]["TenantBoundary"]
-  //       .filter((ele) => {
-  //         return ele?.hierarchyType?.code == hierarchylist[0]?.code;
-  //       })
-  //       .map((item) => {
-  //         return { ...item.boundary, i18text: Digit.Utils.locale.convertToLocale(item.boundary.label, "EGOV_LOCATION_BOUNDARYTYPE") };
-  //       })
-  //   );
-  // }, [jurisdiction?.hierarchy, data?.MdmsRes]);
+  let defaultjurisdiction = () =>{
+    let currentTenant = Digit.ULBService.getCurrentTenantId();
+    let defaultjurisdiction;
+    Boundary?.map((ele)=>{
+      if (ele.code === currentTenant){
+        defaultjurisdiction = ele;
+      }
+    })
+    return defaultjurisdiction;
+  } 
 
   useEffect(() => {
     setDivision(
@@ -361,17 +359,6 @@ function Jurisdiction({
   }, [divisions]);
 
   const tenant = Digit.ULBService.getCurrentTenantId();
-  // useEffect(() => {
-  //   console.log("ssss")
-  //   let cities = userDetails?.roles.map((role) => role.tenantId)?.filter((value, index, array) => array.indexOf(value) === index);
-  //   selectboundary(
-  //     data?.MdmsRes?.tenant?.tenants
-  //       ?.filter((city) => city.code != Digit.ULBService.getStateId() && cities?.includes(city.code))
-  //       ?.map((city) => {
-  //         return { ...city, i18text: Digit.Utils.locale.getCityLocale(city.code) };
-  //       })
-  //   );
-  // }, [data]);
 
   useEffect(() => {
     if (Boundary?.length > 0) {
@@ -441,7 +428,7 @@ function Jurisdiction({
       });
 
     res?.forEach((resData) => {
-      resData.labelKey = "ACCESSCONTROL_ROLES_ROLES_" + resData.code;
+      resData.i18text = "ACCESSCONTROL_ROLES_ROLES_" + resData.code;
     });
 
     if (isEdit && STATE_ADMIN) setJuristictionsData((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, roles: res } : item)));
@@ -463,6 +450,7 @@ function Jurisdiction({
         [...data].filter((value) => Object.keys(value).length !== 0)
       );
     setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, roles: res } : item)));
+    selectedboundary(jurisdiction?.boundary?jurisdiction?.boundary:defaultjurisdiction());
   };
 
   const selectDivisionBoundary = (e) => {
@@ -595,7 +583,7 @@ function Jurisdiction({
               <Dropdown
                 className="form-field"
                 isMandatory={true}
-                selected={jurisdiction?.boundary}
+                selected={jurisdiction?.boundary || defaultjurisdiction()}
                 option={Boundary}
                 select={selectedboundary}
                 optionKey="i18text"
@@ -612,13 +600,16 @@ function Jurisdiction({
                   selected={jurisdiction?.roles}
                   options={getroledata(roleoption)}
                   onSelect={selectrole}
-                  optionsKey="labelKey"
+                  optionsKey="i18text"
+                  showSelectAll={true}
                   t={t}
                 />
-                <div className="tag-container">
+                <div className="tag-container" style={{ height: jurisdiction?.divisionBoundary?.length > 0 && "50px", overflowY: "scroll" }}>
                   {jurisdiction?.roles.length > 0 &&
                     jurisdiction?.roles.map((value, index) => {
-                      return <RemoveableTag key={index} text={`${t(value["labelKey"]).slice(0, 22)} ...`} onClick={() => onRemove(index, value)} />;
+                      return (
+                        <RemoveableTag key={index} text={`${t(value["i18text"]).slice(0, 22)} ...`} onClick={() => onRemove(index, value)} />
+                      )
                     })}
                 </div>
               </div>

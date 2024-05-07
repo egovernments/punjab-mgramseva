@@ -48,6 +48,9 @@ const EmployeeModuleCard = ({
             {links.map(({ count, label, link }, index) => (
               <span className="link" key={index}>
                 {link && link?.includes("https") ? (
+                  label.includes("Dashboard")?<a href={link} target="_blank">
+                  {label}
+                </a> :
                   <a href={link} target="">
                     {label}
                   </a>
