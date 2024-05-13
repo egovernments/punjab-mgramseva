@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/common/pdf_service.dart';
@@ -54,23 +55,30 @@ class BillingServiceRepository extends BaseService {
     return demandList;
   }
 
-  Future<dynamic> fetchAggregateDemand(Map<String, dynamic> queryparams) async {
-    log(jsonEncode(getRequestInfo('_getAggregateDemandDetails')));
+  Future<AggragateDemandDetails> fetchAggregateDemand(
+      Map<String, dynamic> queryparams) async {
     // var commonProvider = Provider.of<CommonProvider>(
     //     navigatorKey.currentContext!,
     //     listen: false);
-    // late DemandList demandList;
+    late AggragateDemandDetails aggItems;
     var res = await makeRequest(
         url: Url.FETCH_AGGREGATE_DEMAND,
-        body: {'RequestInfo': {}},
+        body: {
+          'RequestInfo': getRequestInfo('_search'),
+        },
         queryParameters: queryparams,
-        // requestInfo: getRequestInfo('_search'),
         method: RequestType.POST);
-    // if (res != null) {
-    //   demandList = DemandList.fromJson({"Demands": res['Demands']});
-    //   (res);
-    // }
-    // return demandList;
+
+    print("========================");
+    print(res);
+    log(jsonEncode(AggragateDemandDetails.fromJson(res)));
+    print("========================");
+
+    if (res != null) {
+      aggItems = AggragateDemandDetails.fromJson(res);
+    }
+
+    return aggItems;
   }
 
   Future<UpdateDemandList> fetchUpdateDemand(
