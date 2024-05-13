@@ -27,9 +27,10 @@ dynamic get apiBaseUrl {
 }
 
 Map<String, dynamic> devConstants = {
-  _baseUrl: kIsWeb
-      ? (window.location.origin) + "/"
-      : const String.fromEnvironment('BASE_URL'),
+  _baseUrl: "https://mgramseva-uat.psegs.in/",
+  // _baseUrl: kIsWeb
+  //     ? (window.location.origin) + "/"
+  //     : const String.fromEnvironment('BASE_URL'),
 };
 
 Map<String, dynamic> stageConstants = {
@@ -45,7 +46,7 @@ class FirebaseConfigurations {
   static const _authDomain = "mgramseva-qa.egov.org.in";
   static const _projectId = "sample-mgramseva";
   static const _storageBucket = "sample-mgramseva.appspot.com";
-  static const _messagingSenderId ="1026518772539";
+  static const _messagingSenderId = "1026518772539";
   static const _appId = "1:1026518772539:android:bfa7ff7ef250f28789251e";
 
 //Make some getter functions
@@ -56,5 +57,11 @@ class FirebaseConfigurations {
   String get messagingSenderId => _messagingSenderId;
   String get appId => _appId;
 
-  static FirebaseOptions get firebaseOptions => FirebaseOptions(apiKey: _apiKey, appId: _appId, messagingSenderId: _messagingSenderId, projectId: _projectId, storageBucket: _storageBucket, authDomain: _authDomain);
+  static FirebaseOptions get firebaseOptions => FirebaseOptions(
+      apiKey: _apiKey,
+      appId: _appId,
+      messagingSenderId: _messagingSenderId,
+      projectId: _projectId,
+      storageBucket: _storageBucket,
+      authDomain: _authDomain);
 }
