@@ -61,8 +61,7 @@ class HouseHoldProvider with ChangeNotifier {
           "tenantId": commonProvider.userDetails!.selectedtenant!.code,
           ...{'connectionNumber': id},
         });
-        if (res.waterConnection != null &&
-            res.waterConnection!.isNotEmpty) {
+        if (res.waterConnection != null && res.waterConnection!.isNotEmpty) {
           data = res.waterConnection!.first;
         }
       }
@@ -146,7 +145,11 @@ class HouseHoldProvider with ChangeNotifier {
                   value.demands?.first.demandDetails?.first.taxHeadMasterCode ==
                       'WS_ADVANCE_CARRYFORWARD' &&
                   ((waterConnection?.fetchBill?.bill ?? []).length == 0) ||
-              ((waterConnection?.fetchBill?.bill??[]).length>0?(waterConnection?.fetchBill?.bill?.first.totalAmount ?? 0):0) < 0) {
+              ((waterConnection?.fetchBill?.bill ?? []).length > 0
+                      ? (waterConnection?.fetchBill?.bill?.first.totalAmount ??
+                          0)
+                      : 0) <
+                  0) {
             isfirstdemand = false;
           } else {
             isfirstdemand = true;

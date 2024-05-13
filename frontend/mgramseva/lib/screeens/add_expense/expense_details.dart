@@ -82,7 +82,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
     if (!_numberFocus.hasFocus) {
       Provider.of<ExpensesDetailsProvider>(context, listen: false)
         ..phoneNumberAutoValidation = true
-      ..callNotifyer();
+        ..callNotifyer();
     }
   }
 
@@ -92,61 +92,65 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
         Provider.of<ExpensesDetailsProvider>(context, listen: false);
     return KeyboardFocusWatcher(
         child: Scaffold(
-         appBar: CustomAppBar(),
-         drawer: DrawerWrapper(
-          Drawer(child: SideBar()),
-        ),
-        body: SingleChildScrollView(
-            child: Column(children: [
-          StreamBuilder(
-              stream: expensesDetailsProvider.streamController.stream,
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.data is String) {
-                    return CommonWidgets.buildEmptyMessage(
-                        snapshot.data, context);
-                  }
-                  return _buildUserView();
-                } else if (snapshot.hasError) {
-                  return Notifiers.networkErrorPage(
-                      context,
-                      () => expensesDetailsProvider.getExpensesDetails(
-                          context, widget.expensesDetails, widget.id));
-                } else {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return Loaders.circularLoader();
-                    case ConnectionState.active:
-                      return Loaders.circularLoader();
-                    default:
-                      return Container();
-                  }
-                }
-              }),
-          Footer()
-        ])),
-        bottomNavigationBar: Consumer<ExpensesDetailsProvider>(
-          builder: (_, expensesDetailsProvider, child) => BottomButtonBar(
-              i18.common.SUBMIT,
-              (isUpdate &&
-                          (expensesDetailsProvider
-                                  .expenditureDetails.allowEdit ??
-                              false)) ||
-                      ((isUpdate &&
-                              !(expensesDetailsProvider
-                                      .expenditureDetails.allowEdit ??
-                                  false) &&
-                              (expensesDetailsProvider
-                                      .expenditureDetails.isBillCancelled ??
-                                  false)) ||
-                          !isUpdate)
-                  ? expensesDetailsProvider.isPSPCLEnabled && expensesDetailsProvider
-                  .expenditureDetails.expenseType=='ELECTRICITY_BILL'?null:() => expensesDetailsProvider.validateExpensesDetails(
-                      context, isUpdate)
-                  : null,
-          key: Keys.expense.EXPENSE_SUBMIT,
-          ),
-        )));
+            appBar: CustomAppBar(),
+            drawer: DrawerWrapper(
+              Drawer(child: SideBar()),
+            ),
+            body: SingleChildScrollView(
+                child: Column(children: [
+              StreamBuilder(
+                  stream: expensesDetailsProvider.streamController.stream,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data is String) {
+                        return CommonWidgets.buildEmptyMessage(
+                            snapshot.data, context);
+                      }
+                      return _buildUserView();
+                    } else if (snapshot.hasError) {
+                      return Notifiers.networkErrorPage(
+                          context,
+                          () => expensesDetailsProvider.getExpensesDetails(
+                              context, widget.expensesDetails, widget.id));
+                    } else {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return Loaders.circularLoader();
+                        case ConnectionState.active:
+                          return Loaders.circularLoader();
+                        default:
+                          return Container();
+                      }
+                    }
+                  }),
+              Footer()
+            ])),
+            bottomNavigationBar: Consumer<ExpensesDetailsProvider>(
+              builder: (_, expensesDetailsProvider, child) => BottomButtonBar(
+                i18.common.SUBMIT,
+                (isUpdate &&
+                            (expensesDetailsProvider
+                                    .expenditureDetails.allowEdit ??
+                                false)) ||
+                        ((isUpdate &&
+                                !(expensesDetailsProvider
+                                        .expenditureDetails.allowEdit ??
+                                    false) &&
+                                (expensesDetailsProvider
+                                        .expenditureDetails.isBillCancelled ??
+                                    false)) ||
+                            !isUpdate)
+                    ? expensesDetailsProvider.isPSPCLEnabled &&
+                            expensesDetailsProvider
+                                    .expenditureDetails.expenseType ==
+                                'ELECTRICITY_BILL'
+                        ? null
+                        : () => expensesDetailsProvider.validateExpensesDetails(
+                            context, isUpdate)
+                    : null,
+                key: Keys.expense.EXPENSE_SUBMIT,
+              ),
+            )));
   }
 
   saveInput(context) async {
@@ -204,31 +208,36 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                             if (isUpdate)
                               BuildTextField(
                                 '${i18.common.BILL_ID}',
-                                expensesDetailsProvider.expenditureDetails.challanNumberCtrl,
+                                expensesDetailsProvider
+                                    .expenditureDetails.challanNumberCtrl,
                                 isDisabled: true,
                               ),
                             SelectFieldBuilder(
                               i18.expense.EXPENSE_TYPE,
-                              expensesDetailsProvider.expenditureDetails.expenseType,
+                              expensesDetailsProvider
+                                  .expenditureDetails.expenseType,
                               '',
                               '',
                               expensesDetailsProvider.onChangeOfExpenses,
-                              expensesDetailsProvider.getExpenseTypeList(isSearch: isUpdate),
+                              expensesDetailsProvider.getExpenseTypeList(
+                                  isSearch: isUpdate),
                               true,
-                              readOnly: !expensesDetailsProvider.expenditureDetails.allowEdit!,
+                              readOnly: !expensesDetailsProvider
+                                  .expenditureDetails.allowEdit!,
                               requiredMessage:
                                   i18.expense.SELECT_EXPENDITURE_CATEGORY,
                               contextKey:
                                   expenseProvider.expenseWalkthrougList[0].key,
-                              controller: expensesDetailsProvider.expenditureDetails.expenseTypeController,
+                              controller: expensesDetailsProvider
+                                  .expenditureDetails.expenseTypeController,
                               key: Keys.expense.EXPENSE_TYPE,
-                              itemAsString: (i) =>'${ApplicationLocalizations.of(context)
-                                  .translate(
-                                  i.toString())}',
+                              itemAsString: (i) =>
+                                  '${ApplicationLocalizations.of(context).translate(i.toString())}',
                             ),
                             AutoCompleteView(
                               labelText: i18.expense.VENDOR_NAME,
-                              controller: expensesDetailsProvider.expenditureDetails.vendorNameCtrl,
+                              controller: expensesDetailsProvider
+                                  .expenditureDetails.vendorNameCtrl,
                               suggestionsBoxController: expensesDetailsProvider
                                   .suggestionsBoxController,
                               onSuggestionSelected:
@@ -237,7 +246,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   expensesDetailsProvider.onSearchVendorList,
                               listTile: buildTile,
                               isRequired: true,
-                              isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit,
+                              isEnabled: expensesDetailsProvider
+                                  .expenditureDetails.allowEdit,
                               requiredMessage:
                                   i18.expense.MENTION_NAME_OF_VENDOR,
                               inputFormatter: [
@@ -248,30 +258,38 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   expenseProvider.expenseWalkthrougList[1].key,
                               key: Keys.expense.VENDOR_NAME,
                             ),
-                            if (expensesDetailsProvider.expenditureDetails.vendorNameCtrl.text.trim().isNotEmpty)
+                            if (expensesDetailsProvider
+                                .expenditureDetails.vendorNameCtrl.text
+                                .trim()
+                                .isNotEmpty)
                               BuildTextField(
                                 '${i18.common.MOBILE_NUMBER}',
-                                expensesDetailsProvider.expenditureDetails.mobileNumberController,
+                                expensesDetailsProvider
+                                    .expenditureDetails.mobileNumberController,
                                 isRequired: true,
                                 prefixText: '+91 - ',
                                 textInputType: TextInputType.number,
                                 validator: Validators.mobileNumberValidator,
                                 focusNode: _numberFocus,
-                                autoValidation: expensesDetailsProvider.phoneNumberAutoValidation
+                                autoValidation: expensesDetailsProvider
+                                        .phoneNumberAutoValidation
                                     ? AutovalidateMode.always
                                     : AutovalidateMode.disabled,
                                 maxLength: 10,
-                                isDisabled: !expensesDetailsProvider.isNewVendor(),
+                                isDisabled:
+                                    !expensesDetailsProvider.isNewVendor(),
                                 inputFormatter: [
                                   FilteringTextInputFormatter.allow(
                                       RegExp("[0-9]"))
                                 ],
-                                onChange: expensesDetailsProvider.onChangeOfMobileNumber,
+                                onChange: expensesDetailsProvider
+                                    .onChangeOfMobileNumber,
                                 key: Keys.expense.VENDOR_MOBILE_NUMBER,
                               ),
                             BuildTextField(
                               '${i18.expense.AMOUNT}',
-                              expensesDetailsProvider.expenditureDetails.expensesAmount!.first.amountCtrl,
+                              expensesDetailsProvider.expenditureDetails
+                                  .expensesAmount!.first.amountCtrl,
                               isRequired: true,
                               textInputType: TextInputType.number,
                               inputFormatter: [
@@ -280,7 +298,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               ],
                               placeHolder: '${i18.expense.AMOUNT} (₹)',
                               labelSuffix: '(₹)',
-                              isDisabled: (expensesDetailsProvider.expenditureDetails.allowEdit ?? true)
+                              isDisabled: (expensesDetailsProvider
+                                          .expenditureDetails.allowEdit ??
+                                      true)
                                   ? false
                                   : true,
                               requiredMessage:
@@ -290,103 +310,154 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   expenseProvider.expenseWalkthrougList[2].key,
                               key: Keys.expense.EXPENSE_AMOUNT,
                             ),
-                            LayoutBuilder(
-                              builder: (context, constraints) {
-                               var margin = constraints.maxWidth > 760 ? EdgeInsets.only(
-                                    top: 20.0, bottom: 5, right: 10, left: 10) : null;
-                                return Container(
-                                padding: constraints.maxWidth > 760 ? EdgeInsets.only(bottom: 12) : EdgeInsets.all(8),
-                                margin:  EdgeInsets.all(10),
+                            LayoutBuilder(builder: (context, constraints) {
+                              var margin = constraints.maxWidth > 760
+                                  ? EdgeInsets.only(
+                                      top: 20.0, bottom: 5, right: 10, left: 10)
+                                  : null;
+                              return Container(
+                                padding: constraints.maxWidth > 760
+                                    ? EdgeInsets.only(bottom: 12)
+                                    : EdgeInsets.all(8),
+                                margin: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: Color.fromRGBO(238, 238, 238, 0.4),
-                                  border: Border.all(color: Colors.grey, width: 0.6),
-                                  borderRadius: BorderRadius.all(Radius.circular(10),
-                                  )
-                                ),
+                                    color: Color.fromRGBO(238, 238, 238, 0.4),
+                                    border: Border.all(
+                                        color: Colors.grey, width: 0.6),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    )),
                                 child: Wrap(
                                   children: [
                                     BasicDateField(
                                       i18.expense.BILL_DATE,
                                       true,
-                                      expensesDetailsProvider.expenditureDetails.billDateCtrl,
-                                      firstDate: expensesDetailsProvider.expenditureDetails.billIssuedDateCtrl.text
-                                          .trim()
-                                          .isEmpty
+                                      expensesDetailsProvider
+                                          .expenditureDetails.billDateCtrl,
+                                      firstDate: expensesDetailsProvider
+                                              .expenditureDetails
+                                              .billIssuedDateCtrl
+                                              .text
+                                              .trim()
+                                              .isEmpty
                                           ? null
-                                          : DateFormats.getFormattedDateToDateTime(
-                                        expensesDetailsProvider.expenditureDetails.billIssuedDateCtrl.text
+                                          : DateFormats
+                                              .getFormattedDateToDateTime(
+                                              expensesDetailsProvider
+                                                  .expenditureDetails
+                                                  .billIssuedDateCtrl
+                                                  .text
+                                                  .trim(),
+                                            ),
+                                      initialDate: DateFormats
+                                          .getFormattedDateToDateTime(
+                                        expensesDetailsProvider
+                                            .expenditureDetails
+                                            .billDateCtrl
+                                            .text
                                             .trim(),
                                       ),
-                                      initialDate:
-                                      DateFormats.getFormattedDateToDateTime(
-                                        expensesDetailsProvider.expenditureDetails.billDateCtrl.text.trim(),
-                                      ),
                                       lastDate: DateTime.now(),
-                                      onChangeOfDate:
-                                      expensesDetailsProvider.onChangeOfBillDate,
-                                      isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit,
-                                      requiredMessage:
-                                      i18.expense.DATE_BILL_ENTERED_IN_RECORDS,
-                                      contextKey:
-                                      expenseProvider.expenseWalkthrougList[3].key,
+                                      onChangeOfDate: expensesDetailsProvider
+                                          .onChangeOfBillDate,
+                                      isEnabled: expensesDetailsProvider
+                                          .expenditureDetails.allowEdit,
+                                      requiredMessage: i18
+                                          .expense.DATE_BILL_ENTERED_IN_RECORDS,
+                                      contextKey: expenseProvider
+                                          .expenseWalkthrougList[3].key,
                                       key: Keys.expense.EXPENSE_BILL_DATE,
                                       margin: margin,
                                     ),
                                     BasicDateField(
                                       i18.expense.EXPENSE_START_DATE,
                                       true,
-                                      expensesDetailsProvider.expenditureDetails.fromDateCtrl,
-                                      onChangeOfDate:
-                                      expensesDetailsProvider.onChangeOfStartEndDate,
-                                      lastDate: DateFormats.getFormattedDateToDateTime(
-                                        expensesDetailsProvider.expenditureDetails.billDateCtrl.text.trim(),
-                                      ) ?? DateTime.now(),
-                                      isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit,
-                                      validator: (val) => expensesDetailsProvider.fromToDateValidator(val, true),
-                                      autoValidation: expenseProvider.dateAutoValidation ? AutovalidateMode.always
-                                          : AutovalidateMode.disabled,
+                                      expensesDetailsProvider
+                                          .expenditureDetails.fromDateCtrl,
+                                      onChangeOfDate: expensesDetailsProvider
+                                          .onChangeOfStartEndDate,
+                                      lastDate: DateFormats
+                                              .getFormattedDateToDateTime(
+                                            expensesDetailsProvider
+                                                .expenditureDetails
+                                                .billDateCtrl
+                                                .text
+                                                .trim(),
+                                          ) ??
+                                          DateTime.now(),
+                                      isEnabled: expensesDetailsProvider
+                                          .expenditureDetails.allowEdit,
+                                      validator: (val) =>
+                                          expensesDetailsProvider
+                                              .fromToDateValidator(val, true),
+                                      autoValidation:
+                                          expenseProvider.dateAutoValidation
+                                              ? AutovalidateMode.always
+                                              : AutovalidateMode.disabled,
                                       margin: margin,
                                     ),
                                     BasicDateField(
                                       i18.expense.EXPENSE_END_DATE,
                                       true,
-                                      expensesDetailsProvider.expenditureDetails.toDateCtrl,
-                                      initialDate: DateFormats.getFormattedDateToDateTime(
-                                        expensesDetailsProvider.expenditureDetails.billDateCtrl.text.trim(),
+                                      expensesDetailsProvider
+                                          .expenditureDetails.toDateCtrl,
+                                      initialDate: DateFormats
+                                          .getFormattedDateToDateTime(
+                                        expensesDetailsProvider
+                                            .expenditureDetails
+                                            .billDateCtrl
+                                            .text
+                                            .trim(),
                                       ),
-                                      lastDate: DateFormats.getFormattedDateToDateTime(
-                                        expensesDetailsProvider.expenditureDetails.billDateCtrl.text.trim(),
-                                      ) ?? DateTime.now(),
-                                      onChangeOfDate:
-                                      expensesDetailsProvider.onChangeOfStartEndDate,
-                                      isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit,
-                                      validator: expensesDetailsProvider.fromToDateValidator,
-                                      autoValidation: expenseProvider.dateAutoValidation ? AutovalidateMode.always
-                                          : AutovalidateMode.disabled,
+                                      lastDate: DateFormats
+                                              .getFormattedDateToDateTime(
+                                            expensesDetailsProvider
+                                                .expenditureDetails
+                                                .billDateCtrl
+                                                .text
+                                                .trim(),
+                                          ) ??
+                                          DateTime.now(),
+                                      onChangeOfDate: expensesDetailsProvider
+                                          .onChangeOfStartEndDate,
+                                      isEnabled: expensesDetailsProvider
+                                          .expenditureDetails.allowEdit,
+                                      validator: expensesDetailsProvider
+                                          .fromToDateValidator,
+                                      autoValidation:
+                                          expenseProvider.dateAutoValidation
+                                              ? AutovalidateMode.always
+                                              : AutovalidateMode.disabled,
                                       margin: margin,
                                     )
                                   ],
                                 ),
                               );
-                              }
-                            ),
+                            }),
                             BasicDateField(
                               i18.expense.PARTY_BILL_DATE,
                               false,
-                              expensesDetailsProvider.expenditureDetails.billIssuedDateCtrl,
+                              expensesDetailsProvider
+                                  .expenditureDetails.billIssuedDateCtrl,
                               initialDate:
                                   DateFormats.getFormattedDateToDateTime(
-                                expensesDetailsProvider.expenditureDetails.billIssuedDateCtrl.text.trim(),
+                                expensesDetailsProvider
+                                    .expenditureDetails.billIssuedDateCtrl.text
+                                    .trim(),
                               ),
-                              lastDate: expensesDetailsProvider.expenditureDetails.billDateCtrl.text
+                              lastDate: expensesDetailsProvider
+                                      .expenditureDetails.billDateCtrl.text
                                       .trim()
                                       .isEmpty
                                   ? DateTime.now()
                                   : DateFormats.getFormattedDateToDateTime(
-                                      expensesDetailsProvider.expenditureDetails.billDateCtrl.text.trim()),
+                                      expensesDetailsProvider
+                                          .expenditureDetails.billDateCtrl.text
+                                          .trim()),
                               onChangeOfDate:
                                   expensesDetailsProvider.onChangeOfDate,
-                              isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit,
+                              isEnabled: expensesDetailsProvider
+                                  .expenditureDetails.allowEdit,
                               contextKey:
                                   expenseProvider.expenseWalkthrougList[4].key,
                               key: Keys.expense.EXPENSE_PARTY_DATE,
@@ -394,31 +465,37 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                             RadioButtonFieldBuilder(
                                 context,
                                 i18.expense.HAS_THIS_BILL_PAID,
-                                expensesDetailsProvider.expenditureDetails.isBillPaid,
+                                expensesDetailsProvider
+                                    .expenditureDetails.isBillPaid,
                                 '',
                                 '',
                                 true,
                                 Constants.EXPENSESTYPE,
                                 expensesDetailsProvider.onChangeOfBillPaid,
-                                isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit),
+                                isEnabled: expensesDetailsProvider
+                                    .expenditureDetails.allowEdit),
                             if (expensesDetailsProvider.expenditureDetails.isBillPaid ?? false)
                               BasicDateField(i18.expense.PAYMENT_DATE, true,
                                   expensesDetailsProvider.expenditureDetails.paidDateCtrl,
-                                  firstDate:
-                                      DateFormats.getFormattedDateToDateTime(
-                                          expensesDetailsProvider.expenditureDetails.billDateCtrl.text
-                                              .trim()),
+                                  firstDate: DateFormats.getFormattedDateToDateTime(
+                                      expensesDetailsProvider
+                                          .expenditureDetails.billDateCtrl.text
+                                          .trim()),
                                   lastDate: DateTime.now(),
-                                  initialDate:
-                                      DateFormats.getFormattedDateToDateTime(
-                                          expensesDetailsProvider.expenditureDetails.paidDateCtrl.text
-                                              .trim()),
+                                  initialDate: DateFormats.getFormattedDateToDateTime(
+                                      expensesDetailsProvider
+                                          .expenditureDetails.paidDateCtrl.text
+                                          .trim()),
                                   onChangeOfDate:
                                       expensesDetailsProvider.onChangeOfDate,
-                                  isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit),
+                                  isEnabled: expensesDetailsProvider
+                                      .expenditureDetails.allowEdit),
                             if (isUpdate &&
-                                expensesDetailsProvider.expenditureDetails.fileStoreList != null &&
-                                expensesDetailsProvider.expenditureDetails.fileStoreList!.isNotEmpty)
+                                expensesDetailsProvider
+                                        .expenditureDetails.fileStoreList !=
+                                    null &&
+                                expensesDetailsProvider.expenditureDetails
+                                    .fileStoreList!.isNotEmpty)
                               Container(
                                 margin: const EdgeInsets.only(
                                     top: 20.0, bottom: 5, right: 20, left: 20),
@@ -433,7 +510,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                             fontSize: 19,
                                             fontWeight: FontWeight.normal)),
                                     Wrap(
-                                        children: expensesDetailsProvider.expenditureDetails.fileStoreList!
+                                        children: expensesDetailsProvider
+                                            .expenditureDetails.fileStoreList!
                                             .map<Widget>((e) => InkWell(
                                                   onTap: () =>
                                                       expensesDetailsProvider
@@ -464,7 +542,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   ],
                                 ),
                               ),
-                            if (expensesDetailsProvider.expenditureDetails.allowEdit ?? true)
+                            if (expensesDetailsProvider
+                                    .expenditureDetails.allowEdit ??
+                                true)
                               FilePickerDemo(
                                 key: expensesDetailsProvider.filePickerKey,
                                 callBack:
@@ -474,34 +554,44 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                     .expenseWalkthrougList[5].key,
                               ),
                             if (isUpdate)
-                              expensesDetailsProvider.isPSPCLEnabled && expensesDetailsProvider.expenditureDetails.expenseType=='ELECTRICITY_BILL'?Container():
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 18),
-                                  child: Wrap(
-                                    direction: Axis.horizontal,
-                                    crossAxisAlignment: WrapCrossAlignment.center,
-                                    spacing: 8,
-                                    children: [
-                                      SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: Checkbox(
-                                            value: expensesDetailsProvider.expenditureDetails.isBillCancelled,
-                                            onChanged: expensesDetailsProvider
-                                                .onChangeOfCheckBox),
+                              expensesDetailsProvider.isPSPCLEnabled &&
+                                      expensesDetailsProvider
+                                              .expenditureDetails.expenseType ==
+                                          'ELECTRICITY_BILL'
+                                  ? Container()
+                                  : Container(
+                                      alignment: Alignment.centerLeft,
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 18),
+                                      child: Wrap(
+                                        direction: Axis.horizontal,
+                                        crossAxisAlignment:
+                                            WrapCrossAlignment.center,
+                                        spacing: 8,
+                                        children: [
+                                          SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: Checkbox(
+                                                value: expensesDetailsProvider
+                                                    .expenditureDetails
+                                                    .isBillCancelled,
+                                                onChanged:
+                                                    expensesDetailsProvider
+                                                        .onChangeOfCheckBox),
+                                          ),
+                                          Text(
+                                              ApplicationLocalizations.of(
+                                                      context)
+                                                  .translate(i18.expense
+                                                      .MARK_BILL_HAS_CANCELLED),
+                                              style: TextStyle(
+                                                  fontSize: 19,
+                                                  fontWeight:
+                                                      FontWeight.normal))
+                                        ],
                                       ),
-                                      Text(
-                                          ApplicationLocalizations.of(context)
-                                              .translate(i18.expense
-                                              .MARK_BILL_HAS_CANCELLED),
-                                          style: TextStyle(
-                                              fontSize: 19,
-                                              fontWeight: FontWeight.normal))
-                                    ],
-                                  ),
-                                ),
+                                    ),
                             SizedBox(
                               height: 20,
                             ),
@@ -517,17 +607,17 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   Widget buildTile(context, vendor) {
     var style = TextStyle(fontSize: 18);
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 5),
-      child:
-      Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('${vendor?.name}', style: style),
-          Text('${vendor.owner.mobileNumber}', style : style.apply(fontSizeDelta: -2))
-        ],
-      ));
+        padding: EdgeInsets.symmetric(vertical: 6, horizontal: 5),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('${vendor?.name}', style: style),
+            Text('${vendor.owner.mobileNumber}',
+                style: style.apply(fontSizeDelta: -2))
+          ],
+        ));
   }
 
-  bool get isUpdate => widget.id != null || widget.expensesDetails != null ;
+  bool get isUpdate => widget.id != null || widget.expensesDetails != null;
 }
