@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/components/household_register/household_card.dart';
 import 'package:mgramseva/providers/household_register_provider.dart';
@@ -44,6 +46,7 @@ class _HouseholdRegister extends State<HouseholdRegister>
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     var householdRegisterProvider =
         Provider.of<HouseholdRegisterProvider>(context, listen: false);
 
@@ -76,14 +79,25 @@ class _HouseholdRegister extends State<HouseholdRegister>
                     child: CustomScrollView(slivers: [
                       SliverList(
                           delegate: SliverChildListDelegate([
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            HomeBack(),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [_buildDownload, _buildShare])
-                          ],
+                        SizedBox(
+                          width: size.width,
+                          child: Row(
+                            children: [
+                              HomeBack(),
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Expanded(
+                                        child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: _buildDownload)),
+                                    _buildShare
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                         Container(key: key, child: HouseholdCard()),
                       ])),
@@ -130,7 +144,11 @@ class _HouseholdRegister extends State<HouseholdRegister>
       onPressed: () => showDownloadList(Constants.DOWNLOAD_OPTIONS, context),
       icon: Icon(Icons.download_sharp),
       label: Text(
-          ApplicationLocalizations.of(context).translate(i18.common.DOWNLOAD)));
+        ApplicationLocalizations.of(context).translate(i18.common.DOWNLOAD),
+        maxLines: 1,
+        softWrap: false,
+        overflow: TextOverflow.ellipsis,
+      ));
 }
 
 showDownloadList(List<String> result, BuildContext context) {
