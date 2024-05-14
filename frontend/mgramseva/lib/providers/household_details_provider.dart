@@ -1,12 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill/billing.dart';
+import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/model/demand/update_demand_list.dart';
 import 'package:mgramseva/repository/bill_generation_details_repo.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
+import 'package:mgramseva/repository/pdf_repository.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -23,6 +27,7 @@ class HouseHoldProvider with ChangeNotifier {
   bool isfirstdemand = false;
   var streamController = StreamController.broadcast();
   var isVisible = false;
+  String? filestoreIds = "";
 
   Future<void> checkMeterDemand(
       BillList data, WaterConnection waterConnection) async {
@@ -162,6 +167,28 @@ class HouseHoldProvider with ChangeNotifier {
           demandList.demands = [];
           streamController.add(demandList);
         }
+      });
+
+      //*** Fetch Aggregated Demand Details  ***//
+      //*** Body FOR CreatePDF ***//
+      var body = {};
+
+      await BillingServiceRepository().fetchAggregateDemand({
+        "tenantId": data.tenantId,
+        "consumerCode": data.connectionNo.toString(),
+        "businessService": "WS",
+      }).then((value) {
+        body = {
+          "Bill": waterConnection?.fetchBill?.bill,
+          "AggregatedDemands": value,
+        };
+      });
+
+      //*** Create PDF Request ***//
+      var prams = {"key": "ws-bill-nm-v2", "tenantId": data.tenantId};
+      filestoreIds = "";
+      await PDFServiceRepository().CreatePDF(body, prams).then((value) async {
+        filestoreIds = value?.filestoreIds?.first;
       });
     } catch (e, s) {
       streamController.addError('error');

@@ -127,24 +127,26 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                         child: TextButton.icon(
                                           onPressed: () => commonProvider
                                               .getFileFromPDFBillService(
-                                                  {
-                                                "Bill": [billList.bill?.first]
-                                              },
-                                                  {
-                                                "key": widget.waterConnection
-                                                            ?.connectionType ==
-                                                        'Metered'
-                                                    ? "ws-bill"
-                                                    : "ws-bill-nm",
-                                                "tenantId": commonProvider
-                                                    .userDetails
-                                                    ?.selectedtenant
-                                                    ?.code,
-                                              },
-                                                  billList
-                                                      .bill!.first.mobileNumber,
-                                                  billList.bill?.first,
-                                                  "Download"),
+                                            {
+                                              "Bill": [billList.bill?.first]
+                                            },
+                                            {
+                                              "key": widget.waterConnection
+                                                          ?.connectionType ==
+                                                      'Metered'
+                                                  ? "ws-bill"
+                                                  : "ws-bill-nm",
+                                              "tenantId": commonProvider
+                                                  .userDetails
+                                                  ?.selectedtenant
+                                                  ?.code,
+                                            },
+                                            billList.bill!.first.mobileNumber,
+                                            billList.bill?.first,
+                                            "Download",
+                                            fireStoreId:
+                                                houseHoldProvider.filestoreIds,
+                                          ),
                                           icon: Icon(Icons.download_sharp),
                                           label: Text(
                                             ApplicationLocalizations.of(context)

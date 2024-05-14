@@ -79,7 +79,7 @@ class CommonProvider with ChangeNotifier {
       var response = await CoreRepository().getLocilisation(query);
       labels = localizedStrings = response;
       setLocalizationLabels(response);
-        } catch (e) {
+    } catch (e) {
       print(e);
     }
     return labels;
@@ -262,8 +262,8 @@ class CommonProvider with ChangeNotifier {
 
   Future<void> getAppVersionDetails() async {
     try {
-      var localizationList =
-          await CoreRepository().getMdms(initRequestBody({"tenantId": dotenv.get('STATE_LEVEL_TENANT_ID')}));
+      var localizationList = await CoreRepository().getMdms(
+          initRequestBody({"tenantId": dotenv.get('STATE_LEVEL_TENANT_ID')}));
       appVersion = localizationList.mdmsRes!.commonMasters!.appVersion!.first;
     } catch (e) {
       print(e.toString());
@@ -423,13 +423,8 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
-  void getFileFromPDFBillService(
-    body,
-    params,
-    mobileNumber,
-    bill,
-    mode,
-  ) async {
+  void getFileFromPDFBillService(body, params, mobileNumber, bill, mode,
+      {String? fireStoreId = ""}) async {
     try {
       var res = await CoreRepository().getFileStorefromPdfService(body, params);
 
@@ -442,7 +437,7 @@ class CommonProvider with ChangeNotifier {
           .replaceFirst('{new consumer id}', bill.consumerCode!.toString())
           .replaceFirst('{Amount}', bill.totalAmount.toString()));
       getStoreFileDetails(
-        res!.filestoreIds!.first,
+        fireStoreId ?? res!.filestoreIds!.first,
         mode,
         mobileNumber,
         navigatorKey.currentContext,

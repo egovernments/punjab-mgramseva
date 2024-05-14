@@ -51,15 +51,11 @@ class BillingServiceRepository extends BaseService {
       (res);
     }
 
-    await fetchAggregateDemand(queryparams);
     return demandList;
   }
 
   Future<AggragateDemandDetails> fetchAggregateDemand(
       Map<String, dynamic> queryparams) async {
-    // var commonProvider = Provider.of<CommonProvider>(
-    //     navigatorKey.currentContext!,
-    //     listen: false);
     late AggragateDemandDetails aggItems;
     var res = await makeRequest(
         url: Url.FETCH_AGGREGATE_DEMAND,
@@ -68,11 +64,6 @@ class BillingServiceRepository extends BaseService {
         },
         queryParameters: queryparams,
         method: RequestType.POST);
-
-    print("========================");
-    print(res);
-    log(jsonEncode(AggragateDemandDetails.fromJson(res)));
-    print("========================");
 
     if (res != null) {
       aggItems = AggragateDemandDetails.fromJson(res);

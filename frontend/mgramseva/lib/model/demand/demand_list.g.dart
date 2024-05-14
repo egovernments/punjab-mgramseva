@@ -47,11 +47,11 @@ Map<String, dynamic> _$DemandsToJson(Demands instance) => <String, dynamic>{
       'consumerCode': instance.consumerCode,
       'consumerType': instance.consumerType,
       'businessService': instance.businessService,
-      'payer': instance.payer,
+      'payer': instance.payer?.toJson(),
       'taxPeriodFrom': instance.taxPeriodFrom,
       'taxPeriodTo': instance.taxPeriodTo,
-      'demandDetails': instance.demandDetails,
-      'auditDetails': instance.auditDetails,
+      'demandDetails': instance.demandDetails?.map((e) => e.toJson()).toList(),
+      'auditDetails': instance.auditDetails?.toJson(),
       'billExpiryTime': instance.billExpiryTime,
       'minimumAmountPayable': instance.minimumAmountPayable,
       'status': instance.status,
@@ -128,7 +128,7 @@ Map<String, dynamic> _$DemandDetailsToJson(DemandDetails instance) =>
       'taxAmount': instance.taxAmount,
       'collectionAmount': instance.collectionAmount,
       'additionalDetails': instance.additionalDetails,
-      'auditDetails': instance.auditDetails,
+      'auditDetails': instance.auditDetails?.toJson(),
       'tenantId': instance.tenantId,
     };
 
