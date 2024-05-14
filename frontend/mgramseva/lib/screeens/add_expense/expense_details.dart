@@ -489,8 +489,10 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                         height: 20,
                                         child: Checkbox(
                                             value: expensesDetailsProvider.expenditureDetails.isBillCancelled,
-                                            onChanged: expensesDetailsProvider
-                                                .onChangeOfCheckBox),
+                                            onChanged:
+                                            expensesDetailsProvider.expenditureDetails.allowEdit == true ?
+                                            expensesDetailsProvider
+                                                .onChangeOfCheckBox : null ) ,
                                       ),
                                       Text(
                                           ApplicationLocalizations.of(context)
@@ -498,6 +500,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                               .MARK_BILL_HAS_CANCELLED),
                                           style: TextStyle(
                                               fontSize: 19,
+                                              color: expensesDetailsProvider.expenditureDetails.allowEdit == true ? Colors.black:  Colors.grey,
                                               fontWeight: FontWeight.normal))
                                     ],
                                   ),
