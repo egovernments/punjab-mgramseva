@@ -14,34 +14,36 @@ const HRMSCard = () => {
   const { t } = useTranslation();
   const tenantId = Digit.ULBService.getCurrentTenantId();
   let roles = STATE_ADMIN
-    ? { roles: "DIV_ADMIN, HRMS_ADMIN", isStateLevelSearch: true }
-    : { roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER, SARPANCH, REVENUE_COLLECTOR, SECRETARY", isStateLevelSearch: false };
+    ? { roles: "DIV_ADMIN", isStateLevelSearch: true }
+    : {
+        roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER, SARPANCH, REVENUE_COLLECTOR, SECRETARY",
+        isStateLevelSearch: false,
+      };
   const { isLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSCount(tenantId, roles);
 
   const moduleForSomeDIVAdmin =
     DIV_ADMIN && MDMS_ADMIN
       ? [
-        {
-          label: t("WORK_BENCH_URL_MASTER_DATA"),
-          link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
-        },
-        // {
-        //   label: t("WORK_BENCH_URL_LOCALIZATION"),
-        //   link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
-        // },
-      ]
+          {
+            label: t("WORK_BENCH_URL_MASTER_DATA"),
+            link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
+          },
+          // {
+          //   label: t("WORK_BENCH_URL_LOCALIZATION"),
+          //   link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
+          // },
+        ]
       : [];
 
   const moduleForSomeSTATEUser =
     STATE_ADMIN && MDMS_ADMIN
       ? [
-        {
-          label: t("WORK_BENCH_URL_MASTER_DATA"),
-          link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=tenant&masterName=tenants`,
-        },
-      ]
+          {
+            label: t("WORK_BENCH_URL_MASTER_DATA"),
+            link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=tenant&masterName=tenants`,
+          },
+        ]
       : [];
-
 
   const propsForModuleCard = {
     Icon: <PersonIcon />,
@@ -73,7 +75,6 @@ const HRMSCard = () => {
       },
       ...moduleForSomeDIVAdmin,
       ...moduleForSomeSTATEUser,
-
     ],
   };
 

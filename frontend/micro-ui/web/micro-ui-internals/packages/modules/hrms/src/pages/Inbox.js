@@ -27,8 +27,11 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
   const isupdate = Digit.SessionStorage.get("isupdate");
 
   let roles = STATE_ADMIN
-    ? { roles: "DIV_ADMIN, HRMS_ADMIN", isStateLevelSearch: true }
-    : { roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER, SARPANCH, REVENUE_COLLECTOR, SECRETARY", isStateLevelSearch: false };
+    ? { roles: "DIV_ADMIN", isStateLevelSearch: true }
+    : {
+        roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER, SARPANCH, REVENUE_COLLECTOR, SECRETARY",
+        isStateLevelSearch: false,
+      };
 
   let requestBody = {
     criteria: {
@@ -102,9 +105,9 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     if (keys_to_delete) keys_to_delete.forEach((key) => delete _new[key]);
     filterParam.delete;
     delete _new.delete;
-    if (!_new.tenantId){
-      _new = {tenantId: tenantId}
-    } 
+    if (!_new.tenantId) {
+      _new = { tenantId: tenantId };
+    }
     setSearchParams({ ..._new });
   };
 
@@ -127,7 +130,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
         label: t("HR_MOB_NO_LABEL"),
         name: "phone",
         maxlength: 10,
-        pattern: "[6-9][0-9]{9}",
+        pattern: "[4-9][0-9]{9}",
         title: t("ES_SEARCH_APPLICATION_MOBILE_INVALID"),
         componentInFront: "+91",
       },
