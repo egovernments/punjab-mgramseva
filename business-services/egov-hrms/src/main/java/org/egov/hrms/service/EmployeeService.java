@@ -156,6 +156,7 @@ public class EmployeeService {
 				userSearchCriteria.put(HRMSConstants.HRMS_IS_ACTIVE_SEARCH_CODE, criteria.getIsActive());
 
             UserResponse userResponse = userService.getUser(requestInfo, userSearchCriteria);
+			log.info("userResponse"+userResponse.getUser().size());
 			userChecked =true;
             if(!CollectionUtils.isEmpty(userResponse.getUser())) {
                  mapOfUsers.putAll(userResponse.getUser().stream()
@@ -166,6 +167,7 @@ public class EmployeeService {
                 criteria.setUuids(criteria.getUuids().stream().filter(userUUIDs::contains).collect(Collectors.toList()));
             else
                 criteria.setUuids(userUUIDs);
+			log.info("userUUIDs::"+userUUIDs);
 		}
 		//checks if above criteria met and result is not  null will check for name search if list of names are given as user search on name is not bulk api
 
@@ -197,11 +199,13 @@ public class EmployeeService {
         if(!((!CollectionUtils.isEmpty(criteria.getRoles()) || !CollectionUtils.isEmpty(criteria.getNames()) || !StringUtils.isEmpty(criteria.getPhone())) && CollectionUtils.isEmpty(criteria.getUuids())))
             employees = repository.fetchEmployees(criteria, requestInfo);
         List<String> uuids = employees.stream().map(Employee :: getUuid).collect(Collectors.toList());
+		log.info("uuids fetch employe:"+uuids);
 		if(!CollectionUtils.isEmpty(uuids)){
             Map<String, Object> UserSearchCriteria = new HashMap<>();
             UserSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_UUID,uuids);
             if(mapOfUsers.isEmpty()){
             UserResponse userResponse = userService.getUser(requestInfo, UserSearchCriteria);
+			log.info("userResponse fetch employee::"+userResponse);
 			if(!CollectionUtils.isEmpty(userResponse.getUser())) {
 				mapOfUsers = userResponse.getUser().stream()
 						.collect(Collectors.toMap(User :: getUuid, Function.identity()));
