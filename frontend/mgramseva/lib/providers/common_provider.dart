@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -657,6 +658,14 @@ class CommonProvider with ChangeNotifier {
 
   static num getNetDueAmountWithWithOutPenalty(num totalAmount, Penalty penalty,
       [bool withPenalty = false]) {
+      //   log(
+      //  totalAmount.toString() ,
+      //  name: "total",
+      //   );
+      //   log(
+      //  penalty.penalty.toString() ,
+      //  name: "total P",
+      //   );
     if (withPenalty)
       return totalAmount >= 0
           ? (penalty.isDueDateCrossed
@@ -739,6 +748,11 @@ class CommonProvider with ChangeNotifier {
 
     return currentBill;
   }
+
+  
+
+  
+
 
   static Penalty getPenalty(List<UpdateDemands>? demandList) {
     Penalty? penalty;
@@ -867,7 +881,7 @@ class CommonProvider with ChangeNotifier {
     if (!isFirstDemand(demandList)) {
       var arrearsAmount = 0.0;
       demandList.first.demandDetails?.forEach((demand) {
-        if (demand.taxHeadMasterCode == '10102')
+        if (demand.taxHeadMasterCode == '10102')  
           arrearsAmount +=
               ((demand.taxAmount ?? 0) - (demand.collectionAmount ?? 0));
       });

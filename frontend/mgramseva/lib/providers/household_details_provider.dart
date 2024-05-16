@@ -24,6 +24,9 @@ class HouseHoldProvider with ChangeNotifier {
   late GlobalKey<FormState> formKey;
   WaterConnection? waterConnection;
   UpdateDemandList? updateDemandList;
+  AggragateDemandDetails? aggDemandItems;
+  List<DemandDetails>? demandListItems = [];
+
   bool isfirstdemand = false;
   var streamController = StreamController.broadcast();
   var isVisible = false;
@@ -173,11 +176,14 @@ class HouseHoldProvider with ChangeNotifier {
       //*** Body FOR CreatePDF ***//
       var body = {};
 
+      
       await BillingServiceRepository().fetchAggregateDemand({
         "tenantId": data.tenantId,
         "consumerCode": data.connectionNo.toString(),
         "businessService": "WS",
       }).then((value) {
+        aggDemandItems = value;
+        
         body = {
           "Bill": waterConnection?.fetchBill?.bill,
           "AggregatedDemands": value,

@@ -99,6 +99,8 @@ class NewConsumerBillState extends State<NewConsumerBill> {
     return LayoutBuilder(builder: (context, constraints) {
       var houseHoldProvider =
           Provider.of<HouseHoldProvider>(context, listen: false);
+      AggragateDemandDetails? updateDemandList = houseHoldProvider.aggDemandItems;
+          
       return billList.bill!.isEmpty
           ? Text("")
           : showBill(widget.demandList)
@@ -215,6 +217,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                                     .demandList))
                                                     .toString()),
                                             context),
+                                      // Current Bill
                                       if (houseHoldProvider.isfirstdemand)
                                         getLabelText(
                                             houseHoldProvider.isfirstdemand == true
@@ -259,6 +262,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                             widget.demandList))
                                                     .toString()),
                                             context),
+                                      // Arrear Dues
                                       if (houseHoldProvider.isfirstdemand ==
                                           true)
                                         getLabelText(
@@ -283,6 +287,8 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                                     .demandList)
                                                         .toString()),
                                             context),
+                                      
+                                      // Total Amount
                                       getLabelText(
                                           !houseHoldProvider.isfirstdemand
                                               ? ((widget
@@ -328,6 +334,8 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                       ?.mdmsData,
                                                   true) &&
                                           houseHoldProvider.isfirstdemand)
+                                        
+                                        // Advance Adjust Amount
                                         getLabelText(
                                             i18.common.CORE_ADVANCE_ADJUSTED,
                                             ((double.parse(CommonProvider
@@ -370,6 +378,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                       ?.mdmsData,
                                                   true) &&
                                           houseHoldProvider.isfirstdemand)
+                                        //Net due Amount
                                         getLabelText(
                                             i18.common.CORE_NET_DUE_AMOUNT,
                                             ('₹' +
@@ -412,9 +421,23 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                                         ?.first
                                                                         .totalAmount ??
                                                                     0,
-                                                                penalty,
+                                                                Penalty(houseHoldProvider.aggDemandItems?.currentMonthPenalty ?? 0, penalty.date, penalty.isDueDateCrossed),
                                                                 true)
                                                         .toString()),
+
+                                                    // OLD
+                                                    // CommonProvider
+                                                    //         .getNetDueAmountWithWithOutPenalty(
+                                                    //             billList
+                                                    //                     .bill
+                                                    //                     ?.first
+                                                    //                     .totalAmount ??
+                                                    //                 0,
+                                                    //             penalty,
+                                                    //             true)
+                                                    //     .toString()),
+                                                    // OLD
+
                                                 context,
                                                 subLabel: getDueDatePenalty(
                                                     penalty.date, context))
