@@ -32,6 +32,12 @@ class HouseHoldProvider with ChangeNotifier {
   var isVisible = false;
   String? filestoreIds = "";
 
+  updateFireStoreId(String? val) {
+    if (val != null) {
+      filestoreIds = val;
+    }
+  }
+
   Future<void> checkMeterDemand(
       BillList data, WaterConnection waterConnection) async {
     if (data.bill!.isNotEmpty) {
@@ -58,6 +64,9 @@ class HouseHoldProvider with ChangeNotifier {
     }
   }
 
+  //*** Body FOR CreatePDF ***//
+  Map<String, dynamic> createPDFBody = {};
+  Map<String, dynamic> createPDFPrams = {};
   Future<void> fetchDemand(data, List<UpdateDemands>? demandList,
       [String? id, String? status]) async {
     var commonProvider = Provider.of<CommonProvider>(
@@ -173,29 +182,21 @@ class HouseHoldProvider with ChangeNotifier {
       });
 
       //*** Fetch Aggregated Demand Details  ***//
-      //*** Body FOR CreatePDF ***//
-      var body = {};
-
-      
       await BillingServiceRepository().fetchAggregateDemand({
         "tenantId": data.tenantId,
         "consumerCode": data.connectionNo.toString(),
         "businessService": "WS",
       }).then((value) {
         aggDemandItems = value;
-        
-        body = {
+        createPDFBody = {
           "Bill": waterConnection?.fetchBill?.bill,
           "AggregatedDemands": value,
         };
       });
 
-      //*** Create PDF Request ***//
-      var prams = {"key": "ws-bill-nm-v2", "tenantId": data.tenantId};
+      //*** Create PDF Request Body ***//
+      createPDFPrams = {"key": "ws-bill-nm-v2", "tenantId": data.tenantId};
       filestoreIds = "";
-      await PDFServiceRepository().CreatePDF(body, prams).then((value) async {
-        filestoreIds = value?.filestoreIds?.first;
-      });
     } catch (e, s) {
       streamController.addError('error');
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);

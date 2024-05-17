@@ -438,7 +438,7 @@ class CommonProvider with ChangeNotifier {
           .replaceFirst('{new consumer id}', bill.consumerCode!.toString())
           .replaceFirst('{Amount}', bill.totalAmount.toString()));
       getStoreFileDetails(
-        fireStoreId ?? res!.filestoreIds!.first,
+        fireStoreId != "" ? fireStoreId : res!.filestoreIds!.first,
         mode,
         mobileNumber,
         navigatorKey.currentContext,
@@ -658,14 +658,6 @@ class CommonProvider with ChangeNotifier {
 
   static num getNetDueAmountWithWithOutPenalty(num totalAmount, Penalty penalty,
       [bool withPenalty = false]) {
-      //   log(
-      //  totalAmount.toString() ,
-      //  name: "total",
-      //   );
-      //   log(
-      //  penalty.penalty.toString() ,
-      //  name: "total P",
-      //   );
     if (withPenalty)
       return totalAmount >= 0
           ? (penalty.isDueDateCrossed
@@ -748,11 +740,6 @@ class CommonProvider with ChangeNotifier {
 
     return currentBill;
   }
-
-  
-
-  
-
 
   static Penalty getPenalty(List<UpdateDemands>? demandList) {
     Penalty? penalty;
@@ -881,7 +868,7 @@ class CommonProvider with ChangeNotifier {
     if (!isFirstDemand(demandList)) {
       var arrearsAmount = 0.0;
       demandList.first.demandDetails?.forEach((demand) {
-        if (demand.taxHeadMasterCode == '10102')  
+        if (demand.taxHeadMasterCode == '10102')
           arrearsAmount +=
               ((demand.taxAmount ?? 0) - (demand.collectionAmount ?? 0));
       });

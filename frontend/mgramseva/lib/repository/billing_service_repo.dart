@@ -35,7 +35,6 @@ class BillingServiceRepository extends BaseService {
   }
 
   Future<DemandList> fetchdDemand(Map<String, dynamic> queryparams) async {
-    // log(jsonEncode(getRequestInfo('_search')));
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);

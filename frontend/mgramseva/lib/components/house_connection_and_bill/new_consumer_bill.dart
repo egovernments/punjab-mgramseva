@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/household_details_provider.dart';
+import 'package:mgramseva/repository/pdf_repository.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
@@ -34,6 +37,27 @@ class NewConsumerBillState extends State<NewConsumerBill> {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      var houseHoldProvider =
+          Provider.of<HouseHoldProvider>(context, listen: false);
+
+      if (houseHoldProvider.isfirstdemand &&
+          widget.waterConnection?.connectionType != 'Metered') {
+        createPDFInitCall();
+      }
+    });
+  }
+
+  Future<void> createPDFInitCall() async {
+    var houseHoldProvider =
+        Provider.of<HouseHoldProvider>(context, listen: false);
+    await PDFServiceRepository()
+        .CreatePDF(
+            houseHoldProvider.createPDFBody, houseHoldProvider.createPDFPrams)
+        .then((value) async {
+      houseHoldProvider.updateFireStoreId(value?.filestoreIds?.first);
+    });
   }
 
   static getLabelText(label, value, context, {subLabel = ''}) {
@@ -99,8 +123,10 @@ class NewConsumerBillState extends State<NewConsumerBill> {
     return LayoutBuilder(builder: (context, constraints) {
       var houseHoldProvider =
           Provider.of<HouseHoldProvider>(context, listen: false);
-      AggragateDemandDetails? updateDemandList = houseHoldProvider.aggDemandItems;
-          
+      AggragateDemandDetails? updateDemandList =
+          houseHoldProvider.aggDemandItems;
+
+      // Handler Status
       return billList.bill!.isEmpty
           ? Text("")
           : showBill(widget.demandList)
@@ -287,7 +313,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                                     .demandList)
                                                         .toString()),
                                             context),
-                                      
+
                                       // Total Amount
                                       getLabelText(
                                           !houseHoldProvider.isfirstdemand
@@ -334,7 +360,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                       ?.mdmsData,
                                                   true) &&
                                           houseHoldProvider.isfirstdemand)
-                                        
+
                                         // Advance Adjust Amount
                                         getLabelText(
                                             i18.common.CORE_ADVANCE_ADJUSTED,
@@ -414,35 +440,66 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                 i18.billDetails
                                                     .CORE_NET_DUE_AMOUNT_WITH_PENALTY,
                                                 ('₹' +
-                                                    CommonProvider
-                                                            .getNetDueAmountWithWithOutPenalty(
-                                                                billList
-                                                                        .bill
-                                                                        ?.first
-                                                                        .totalAmount ??
+                                                    CommonProvider.getNetDueAmountWithWithOutPenalty(
+                                                            billList.bill?.first
+                                                                    .totalAmount ??
+                                                                0,
+                                                            Penalty(
+                                                                houseHoldProvider
+                                                                        .aggDemandItems
+                                                                        ?.currentMonthPenalty ??
                                                                     0,
-                                                                Penalty(houseHoldProvider.aggDemandItems?.currentMonthPenalty ?? 0, penalty.date, penalty.isDueDateCrossed),
-                                                                true)
+                                                                penalty.date,
+                                                                penalty
+                                                                    .isDueDateCrossed),
+                                                            true)
                                                         .toString()),
-
-                                                    // OLD
-                                                    // CommonProvider
-                                                    //         .getNetDueAmountWithWithOutPenalty(
-                                                    //             billList
-                                                    //                     .bill
-                                                    //                     ?.first
-                                                    //                     .totalAmount ??
-                                                    //                 0,
-                                                    //             penalty,
-                                                    //             true)
-                                                    //     .toString()),
-                                                    // OLD
-
+                                                // OLD
+                                                // CommonProvider
+                                                //         .getNetDueAmountWithWithOutPenalty(
+                                                //             billList
+                                                //                     .bill
+                                                //                     ?.first
+                                                //                     .totalAmount ??
+                                                //                 0,
+                                                //             penalty,
+                                                //             true)
+                                                //     .toString()),
+                                                // OLD
                                                 context,
                                                 subLabel: getDueDatePenalty(
                                                     penalty.date, context))
                                           ],
                                         )),
+
+                                      // Total Amount Due
+
+                                      // if (houseHoldProvider.isfirstdemand)
+                                      //   getLabelText(
+                                      //       i18.common.TOTAL_DUE_AMOUNT,
+                                      //       ('₹' +
+                                      //           (widget
+                                      //                           .demandList
+                                      //                           .first
+                                      //                           .demandDetails!
+                                      //                           .first
+                                      //                           .taxHeadMasterCode ==
+                                      //                       'WS_TIME_PENALTY'
+                                      //                   ? CommonProvider
+                                      //                           .getCurrentBill(
+                                      //                               widget
+                                      //                                   .demandList) +
+                                      //                       CommonProvider
+                                      //                           .getArrearsAmountOncePenaltyExpires(
+                                      //                               widget
+                                      //                                   .demandList)
+                                      //                   : CommonProvider
+                                      //                       .getTotalBillAmount(
+                                      //                           widget
+                                      //                               .demandList))
+                                      //               .toString()),
+                                      //       context),
+
                                       widget.mode == 'collect'
                                           ? Align(
                                               alignment: Alignment.centerLeft,

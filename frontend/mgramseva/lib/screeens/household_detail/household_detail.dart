@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/components/house_connection_and_bill/consumer_bill_payment.dart';
 import 'package:mgramseva/components/house_connection_and_bill/generate_new_bill.dart';
@@ -41,6 +43,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   }
 
   afterViewBuild() {
+   
     Provider.of<HouseHoldProvider>(context, listen: false)
       ..isVisible = false
       ..fetchDemand(widget.waterConnection, widget.waterConnection?.demands,
@@ -48,6 +51,8 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   }
 
   buildDemandView(DemandList data) {
+
+
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
     return Column(
