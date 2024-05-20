@@ -490,11 +490,16 @@ public class DemandService {
 					.build();
 			MdmsCriteriaReq mdmsreq = MdmsCriteriaReq.builder().mdmsCriteria(mdmsCriteria).requestInfo(requestInfo).build();
 			DocumentContext mdmsData = util.getAttributeValues(mdmsreq);
-			Map<String, Object> paymentMasterData = mdmsData.read(PENALTY_PATH_CODE);
-			Integer rate= (Integer) paymentMasterData.get("rate");
-			String penaltyType = String.valueOf(paymentMasterData.get("type"));
-			totalApplicablePenalty = currentmonthBill.multiply(new BigDecimal(rate).divide(new BigDecimal(100)));
-			totalApplicablePenalty= totalApplicablePenalty.setScale(0, RoundingMode.CEILING);
+			if (!mdmsData.equals(null)) {
+				List<Map<String, Object>> paymentMasterDataList = mdmsData.read(PENALTY_PATH_CODE);
+				Map<String, Object> paymentMasterData = paymentMasterDataList.get(0);
+				Integer rate = (Integer) paymentMasterData.get("rate");
+				String penaltyType = String.valueOf(paymentMasterData.get("type"));
+				totalApplicablePenalty = currentmonthBill.multiply(new BigDecimal(rate).divide(new BigDecimal(100)));
+				totalApplicablePenalty = totalApplicablePenalty.setScale(0, RoundingMode.CEILING);
+			} else {
+				log.info("MDMS data is Null Penalty not connfigured");
+			}
 		}
 
 
