@@ -36,4 +36,6 @@ public class AggregatedDemandDetailResponse {
     private BigDecimal netdue;
 
     private BigDecimal netDueWithPenalty;
+
+    private BigDecimal totalApplicablePenalty;
 }

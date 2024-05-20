@@ -20,6 +20,7 @@ public class Constants {
 	public static final String TAXPERIOD_PATH_CODE = "$.MdmsRes.BillingService.TaxPeriod";
 	public static final String TAXHEADMASTER_PATH_CODE = "$.MdmsRes.BillingService.TaxHeadMaster";
 	public static final String BUSINESSSERVICE_PATH_CODE = "$.MdmsRes.BillingService.BusinessService.*.code";
+	public static final String PENALTY_PATH_CODE = "$.MdmsRes.ws-services-calculation.Penalty";
 	public static final String BUSINESSSERVICE_MODULE_PATH = "$.MdmsRes.BillingService.BusinessService";
 	
 	

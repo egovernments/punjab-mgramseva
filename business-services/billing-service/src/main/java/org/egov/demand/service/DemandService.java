@@ -39,9 +39,8 @@
  */
 package org.egov.demand.service;
 
-import static org.egov.demand.util.Constants.ADVANCE_TAXHEAD_JSONPATH_CODE;
-
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -68,6 +67,10 @@ import org.egov.demand.web.contract.UserResponse;
 import org.egov.demand.web.contract.UserSearchRequest;
 import org.egov.demand.web.contract.factory.ResponseFactory;
 import org.egov.demand.web.validator.DemandValidatorV1;
+import org.egov.mdms.model.MasterDetail;
+import org.egov.mdms.model.MdmsCriteria;
+import org.egov.mdms.model.MdmsCriteriaReq;
+import org.egov.mdms.model.ModuleDetail;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -80,6 +83,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 
 import lombok.extern.slf4j.Slf4j;
+
+import static org.egov.demand.util.Constants.*;
 
 @Service
 @Slf4j
@@ -459,6 +464,7 @@ public class DemandService {
 		BigDecimal totalAreasWithPenalty = BigDecimal.ZERO;
 		BigDecimal netdue = BigDecimal.ZERO;
 		BigDecimal netDueWithPenalty = BigDecimal.ZERO;
+		BigDecimal totalApplicablePenalty =BigDecimal.ZERO;
 
 		currentmonthBill = currentMonthDemandDetailList.stream()
 				.filter(dd -> dd.getTaxHeadMasterCode().equals("10101")) // filter by taxHeadCode
@@ -472,6 +478,25 @@ public class DemandService {
 		log.info("currentMonthDemandDetailListafter::::"+currentMonthDemandDetailList);
 		log.info("currentMonthPenalty" + currentMonthPenalty);
 		currentmonthTotalDue = currentmonthBill.add(currentMonthPenalty);
+		if(currentMonthPenalty.equals(BigDecimal.ZERO)) {
+			List<MasterDetail> masterDetails = new ArrayList<>();
+			MasterDetail masterDetail = new MasterDetail("Penalty", "[?(@)]");
+			masterDetails.add(masterDetail);
+			ModuleDetail moduleDetail = ModuleDetail.builder().moduleName("ws-services-calculation").masterDetails(masterDetails).build();
+			List<ModuleDetail> moduleDetails = new ArrayList<>();
+			moduleDetails.add(moduleDetail);
+			MdmsCriteria mdmsCriteria = MdmsCriteria.builder().tenantId(demandCriteria.getTenantId())
+					.moduleDetails(moduleDetails)
+					.build();
+			MdmsCriteriaReq mdmsreq = MdmsCriteriaReq.builder().mdmsCriteria(mdmsCriteria).requestInfo(requestInfo).build();
+			DocumentContext mdmsData = util.getAttributeValues(mdmsreq);
+			Map<String, Object> paymentMasterData = mdmsData.read(PENALTY_PATH_CODE);
+			Integer rate= (Integer) paymentMasterData.get("rate");
+			String penaltyType = String.valueOf(paymentMasterData.get("type"));
+			totalApplicablePenalty = currentmonthBill.multiply(new BigDecimal(rate).divide(new BigDecimal(100)));
+			totalApplicablePenalty= totalApplicablePenalty.setScale(0, RoundingMode.CEILING);
+		}
+
 
 		//Tax headcode for WScharges,legacypenalty,legacyarea
 		List<String> taxHeadCodesToFilterWithoutPenalty = Arrays.asList("10102", "10201", "10101");
@@ -524,7 +549,8 @@ public class DemandService {
 				.netDueWithPenalty(netDueWithPenalty)
 				.advanceAdjusted(advanceAdjusted)
 				.advanceAvailable(advanceAvailable)
-				.remainingAdvance(remainingAdvance).build();
+				.remainingAdvance(remainingAdvance)
+				.totalApplicablePenalty(totalApplicablePenalty).build();
 
 
 		return aggregatedDemandDetailResponse;
