@@ -147,6 +147,8 @@ AggragateDemandDetails _$AggragateDemandDetailsFromJson(
           (json['totalAreasWithPenalty'] as num?)?.toDouble()
       ..netdue = (json['netdue'] as num?)?.toDouble()
       ..netDueWithPenalty = (json['netDueWithPenalty'] as num?)?.toDouble()
+      ..totalApplicablePenalty =
+          (json['totalApplicablePenalty'] as num?)?.toDouble()
       ..mapOfDemandDetailList = (json['mapOfDemandDetailList']
               as List<dynamic>?)
           ?.map((e) => (e as Map<String, dynamic>).map(
@@ -172,6 +174,7 @@ Map<String, dynamic> _$AggragateDemandDetailsToJson(
       'totalAreasWithPenalty': instance.totalAreasWithPenalty,
       'netdue': instance.netdue,
       'netDueWithPenalty': instance.netDueWithPenalty,
+      'totalApplicablePenalty': instance.totalApplicablePenalty,
       'mapOfDemandDetailList': instance.mapOfDemandDetailList,
     };
 

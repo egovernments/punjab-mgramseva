@@ -583,46 +583,59 @@ class CommonProvider with ChangeNotifier {
   // }
 
   static String getAdvanceAdjustedAmount(List<Demands> demandList) {
+    // Set Amt as 0
     var amount = '0';
     var index = -1;
 
+    // if demandList.isEmpty return Amt as 0
     if (demandList.isEmpty) return amount;
 
+    // Sort Demands where Payments were not completed
     var filteredDemands =
         demandList.where((e) => !(e.isPaymentCompleted ?? false)).toList();
+
+    // Early return if first demand has time penalty and there's applicable penalty
     if (filteredDemands.first.demandDetails?.first.taxHeadMasterCode ==
             'WS_TIME_PENALTY' &&
         CommonProvider.getPenaltyApplicable(demandList).penaltyApplicable !=
             0) {
+      // here also return 0;
       return amount;
     } else {
       for (int i = 0; i < filteredDemands.length; i++) {
         index = demandList[i].demandDetails?.lastIndexWhere(
                 (e) => e.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD') ??
             -1;
-
+        // Find the last index of "WS_ADVANCE_CARRYFORWARD" element in the current demand's details list (if it exists)
+        // true => index value else => -1
         if (index != -1) {
           var demandDetail = demandList[i].demandDetails?[index];
+          // Collection Amt < tax amt
           if (demandDetail!.collectionAmount!.abs() <
               demandDetail.taxAmount!.abs()) {
+            //  save amount
             amount = filteredDemands.first.demandDetails?.last.collectionAmount
                     ?.toString() ??
                 '0.0';
           } else if (demandDetail.collectionAmount! ==
               demandDetail.taxAmount!) {
+            // Iterate through  filteredDemands
             if (filteredDemands.first.demandDetails?.last.collectionAmount !=
                 0) {
               var list = <double>[];
               for (int j = 0; j <= i; j++) {
+                // Iterate through  elements in the current demand's details list
                 for (int k = 0;
                     k < (filteredDemands[j].demandDetails?.length ?? 0);
                     k++) {
                   if (k == index && j == i) break;
+                  // Add amount to collection
                   list.add(
                       filteredDemands[j].demandDetails![k].collectionAmount ??
                           0);
                 }
               }
+              // find sum of colleted amount
               var collectedAmount = list.reduce((a, b) => a + b);
               amount = double.parse("$collectedAmount") >=
                       double.parse("${demandDetail.collectionAmount?.abs()}")
@@ -630,6 +643,7 @@ class CommonProvider with ChangeNotifier {
                           ?.toString() ??
                       '0'
                   : '0';
+              // set amount
             }
           }
         }

@@ -72,6 +72,7 @@ class HouseHoldProvider with ChangeNotifier {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+
     try {
       if (data == null) {
         var res = await SearchConnectionRepository().getconnection({
@@ -88,6 +89,30 @@ class HouseHoldProvider with ChangeNotifier {
               navigatorKey.currentContext!,
               listen: false)
           .fetchBill(waterConnection, navigatorKey.currentContext!);
+
+      //*** Fetch Aggregated Demand Details  ***//
+      aggDemandItems = null;
+      // isLoading = true;
+      notifyListeners();
+      await BillingServiceRepository().fetchAggregateDemand({
+        "tenantId": data.tenantId,
+        "consumerCode": data.connectionNo.toString(),
+        "businessService": "WS",
+      }).then((AggragateDemandDetails? value) {
+        if (value != null) {
+          aggDemandItems = value;
+          notifyListeners();
+        }
+        createPDFBody = {
+          "Bill": waterConnection?.fetchBill?.bill,
+          "AggregatedDemands": value,
+        };
+      });
+      notifyListeners();
+
+      //*** Create PDF Request Body ***//
+      createPDFPrams = {"key": "ws-bill-nm-v2", "tenantId": data.tenantId};
+      filestoreIds = "";
 
       var mdms = await CommonProvider.getMdmsBillingService(
           commonProvider.userDetails!.selectedtenant?.code.toString() ??
@@ -172,8 +197,6 @@ class HouseHoldProvider with ChangeNotifier {
             isfirstdemand = true;
           }
           streamController.add(value);
-
-          // fetchBill(data);
         } else {
           DemandList demandList = new DemandList();
           demandList.demands = [];
@@ -181,22 +204,30 @@ class HouseHoldProvider with ChangeNotifier {
         }
       });
 
-      //*** Fetch Aggregated Demand Details  ***//
-      await BillingServiceRepository().fetchAggregateDemand({
-        "tenantId": data.tenantId,
-        "consumerCode": data.connectionNo.toString(),
-        "businessService": "WS",
-      }).then((value) {
-        aggDemandItems = value;
-        createPDFBody = {
-          "Bill": waterConnection?.fetchBill?.bill,
-          "AggregatedDemands": value,
-        };
-      });
+      // //*** Fetch Aggregated Demand Details  ***//
+      // aggDemandItems = null;
+      // isLoading = true;
+      // notifyListeners();
+      // await BillingServiceRepository().fetchAggregateDemand({
+      //   "tenantId": data.tenantId,
+      //   "consumerCode": data.connectionNo.toString(),
+      //   "businessService": "WS",
+      // }).then((AggragateDemandDetails? value) {
+      //   if (value != null) {
+      //     aggDemandItems = value;
+      //     notifyListeners();
+      //   }
+      //   createPDFBody = {
+      //     "Bill": waterConnection?.fetchBill?.bill,
+      //     "AggregatedDemands": value,
+      //   };
+      // });
+      // isLoading = false;
+      // notifyListeners();
 
-      //*** Create PDF Request Body ***//
-      createPDFPrams = {"key": "ws-bill-nm-v2", "tenantId": data.tenantId};
-      filestoreIds = "";
+      // //*** Create PDF Request Body ***//
+      // createPDFPrams = {"key": "ws-bill-nm-v2", "tenantId": data.tenantId};
+      // filestoreIds = "";
     } catch (e, s) {
       streamController.addError('error');
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
