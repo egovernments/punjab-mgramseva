@@ -285,6 +285,9 @@ public class DemandService {
 						.businessService(businessService).status(StatusEnum.valueOf("ACTIVE")).billExpiryTime(expiryDate)
 						.build());
 			}
+			//TODO:Write logic to enter in new table
+			log.info("CREATE DEMAND REQ : "+demands.size());
+			log.info("CREATE DEMAND REQ : "+demands);
 			demandRes = demandRepository.saveDemand(requestInfo, demands);
 			finalDemandRes.addAll(demandRes);
 
@@ -945,7 +948,10 @@ public class DemandService {
 						.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).collectionAmount(BigDecimal.ZERO)
 						.tenantId(calculation.getTenantId()).build());
 			});
+			log.info("UPDATE DEMAND req : "+demand);
 			demands.add(demand);
+			log.info("UPDATE DEMANDS req : "+demand);
+			//TODO: write logic to enter in new table
 			demandRes = demandRepository.updateDemand(requestInfo, demands);
 			finalDemandRes.addAll(demandRes);
 			List<String> billNumbers = fetchBill(demands, waterConnectionRequest.getRequestInfo());
