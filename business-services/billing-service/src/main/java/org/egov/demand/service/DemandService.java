@@ -386,7 +386,9 @@ public class DemandService {
 			/*
 			 * If no payer related data given then search demand first then enrich payer(user) data
 			 */
+		log.info("demandCriteria::"+demandCriteria);
 		demands = demandRepository.getDemands(demandCriteria);
+		log.info("demands:"+demands);
 		if (!demands.isEmpty()) {
 
 			Set<String> payerUuids = demands.stream().filter(demand -> null != demand.getPayer())
@@ -400,14 +402,16 @@ public class DemandService {
 							UserResponse.class).getUser();
 			}
 		}
+        log.info("demannds::"+demands);
 
 		if (!CollectionUtils.isEmpty(demands) && !CollectionUtils.isEmpty(payers))
 			demands = demandEnrichmentUtil.enrichPayer(demands, payers);
 
-
+		log.info("demannddddds::"+demands);
 		List<Map<Long, List<DemandDetail>>> demandDetailsList = new ArrayList<>();
 
 		for (Demand demand : demands) {
+			log.info("Inside demand");
 			Map<Long, List<DemandDetail>> demandMap = new HashMap<>();
 			Long taxPeriodFrom = (Long) demand.getTaxPeriodFrom();
 			List<DemandDetail> demandDetails =  demand.getDemandDetails();
