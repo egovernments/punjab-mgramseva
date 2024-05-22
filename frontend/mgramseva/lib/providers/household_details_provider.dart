@@ -30,13 +30,6 @@ class HouseHoldProvider with ChangeNotifier {
   bool isfirstdemand = false;
   var streamController = StreamController.broadcast();
   var isVisible = false;
-  String? filestoreIds = "";
-
-  updateFireStoreId(String? val) {
-    if (val != null) {
-      filestoreIds = val;
-    }
-  }
 
   Future<void> checkMeterDemand(
       BillList data, WaterConnection waterConnection) async {
@@ -105,7 +98,7 @@ class HouseHoldProvider with ChangeNotifier {
         }
         createPDFBody = {
           "Bill": waterConnection?.fetchBill?.bill,
-          "AggregatedDemands": value,
+          "AggregatedDemands": aggDemandItems,
         };
       });
       notifyListeners();
@@ -116,7 +109,6 @@ class HouseHoldProvider with ChangeNotifier {
       } else {
         createPDFPrams = {"key": "ws-bill-nm-v2", "tenantId": data.tenantId};
       }
-      filestoreIds = "";
 
       var mdms = await CommonProvider.getMdmsBillingService(
           commonProvider.userDetails!.selectedtenant?.code.toString() ??

@@ -40,24 +40,13 @@ class NewConsumerBillState extends State<NewConsumerBill> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      var houseHoldProvider =
-          Provider.of<HouseHoldProvider>(context, listen: false);
+      // var houseHoldProvider =
+      //     Provider.of<HouseHoldProvider>(context, listen: false);
 
-      if (houseHoldProvider.isfirstdemand &&
-          widget.waterConnection?.connectionType != 'Metered') {
-        createPDFInitCall();
-      }
-    });
-  }
-
-  Future<void> createPDFInitCall() async {
-    var houseHoldProvider =
-        Provider.of<HouseHoldProvider>(context, listen: false);
-    await PDFServiceRepository()
-        .CreatePDF(
-            houseHoldProvider.createPDFBody, houseHoldProvider.createPDFPrams)
-        .then((value) async {
-      houseHoldProvider.updateFireStoreId(value?.filestoreIds?.first);
+      // if (houseHoldProvider.isfirstdemand &&
+      //     widget.waterConnection?.connectionType != 'Metered') {
+      //   createPDFInitCall();
+      // }
     });
   }
 
@@ -156,28 +145,10 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                 ? true
                                                 : false,
                                         child: TextButton.icon(
-                                          onPressed: () => commonProvider
-                                              .getFileFromPDFBillService(
-                                            {
-                                              "Bill": [billList.bill?.first]
-                                            },
-                                            {
-                                              "key": widget.waterConnection
-                                                          ?.connectionType ==
-                                                      'Metered'
-                                                  ? "ws-bill-v2"
-                                                  : "ws-bill-nm-v2",
-                                              "tenantId": commonProvider
-                                                  .userDetails
-                                                  ?.selectedtenant
-                                                  ?.code,
-                                            },
-                                            billList.bill!.first.mobileNumber,
-                                            billList.bill?.first,
-                                            "Download",
-                                            fireStoreId:
-                                                houseHoldProvider.filestoreIds,
-                                          ),
+                                          onPressed: () => downloadPdf(
+                                              commonProvider,
+                                              billList,
+                                              houseHoldProvider),
                                           icon: Icon(Icons.download_sharp),
                                           label: Text(
                                             ApplicationLocalizations.of(context)
@@ -296,34 +267,39 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                 ? "₹ 0"
                                                 : '- ₹${double.parse(CommonProvider.getAdvanceAdjustedAmount(widget.demandList))}',
                                             context),
-                                      if (CommonProvider
-                                              .getPenaltyOrAdvanceStatus(
-                                                  widget.waterConnection
-                                                      ?.mdmsData,
-                                                  false,
-                                                  true) &&
-                                          houseHoldProvider.isfirstdemand &&
-                                          penalty.isDueDateCrossed)
-                                        // getLabelText(
-                                        //     i18.billDetails.CORE_PENALTY,
-                                        //     ('₹' +
-                                        //         penaltyApplicable
-                                        //             .penaltyApplicable
-                                        //             .toString()),
-                                        //     context),
-                                        if (CommonProvider
-                                                .getPenaltyOrAdvanceStatus(
-                                                    widget.waterConnection
-                                                        ?.mdmsData,
-                                                    true) &&
-                                            houseHoldProvider.isfirstdemand)
-                                          //Net due Amount
-                                          getLabelText(
-                                              i18.common.CORE_NET_DUE_AMOUNT,
-                                              ('₹' +
-                                                  "${houseHoldProvider.aggDemandItems?.netDueWithPenalty ?? 0.0}"
-                                                      .toString()),
-                                              context),
+                                      // Net Due Amount
+                                      getLabelText(
+                                          i18.common.CORE_NET_DUE_AMOUNT,
+                                          "${netDueAmount(houseHoldProvider)}",
+                                          context),
+                                      // if (CommonProvider
+                                      //         .getPenaltyOrAdvanceStatus(
+                                      //             widget.waterConnection
+                                      //                 ?.mdmsData,
+                                      //             false,
+                                      //             true) &&
+                                      //     houseHoldProvider.isfirstdemand &&
+                                      //     penalty.isDueDateCrossed)
+                                      // getLabelText(
+                                      //     i18.billDetails.CORE_PENALTY,
+                                      //     ('₹' +
+                                      //         penaltyApplicable
+                                      //             .penaltyApplicable
+                                      //             .toString()),
+                                      //     context),
+                                      // if (CommonProvider
+                                      //         .getPenaltyOrAdvanceStatus(
+                                      //             widget.waterConnection
+                                      //                 ?.mdmsData,
+                                      //             true) &&
+                                      //     houseHoldProvider.isfirstdemand)
+                                      //Net due Amount
+                                      // getLabelText(
+                                      //     i18.common.CORE_NET_DUE_AMOUNT,
+                                      //     ('₹' +
+                                      //         "${houseHoldProvider.aggDemandItems?.netDueWithPenalty ?? 0.0}"
+                                      //             .toString()),
+                                      //     context),
                                       if (CommonProvider
                                               .getPenaltyOrAdvanceStatus(
                                                   widget.waterConnection
@@ -549,6 +525,43 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                     )
               : Text("");
     });
+  }
+
+  double netDueAmount(HouseHoldProvider houseHoldProvider) {
+    return ((houseHoldProvider.aggDemandItems?.netDueWithPenalty ?? 0.0) +
+            double.parse(
+                CommonProvider.getAdvanceAdjustedAmount(widget.demandList))) -
+        ((double.parse(
+            CommonProvider.getAdvanceAdjustedAmount(widget.demandList))));
+  }
+
+  void downloadPdf(CommonProvider commonProvider, BillList billList,
+      HouseHoldProvider houseHoldProvider) async {
+    if (houseHoldProvider.isfirstdemand) {
+      await PDFServiceRepository()
+          .CreatePDF(
+              houseHoldProvider.createPDFBody, houseHoldProvider.createPDFPrams)
+          .then((value) async {
+        commonProvider.getFileFromPDFBillService(
+          {
+            "BillAndDemand": {
+              "Bill": [billList.bill?.first],
+              "AggregatedDemands": houseHoldProvider.aggDemandItems
+            }
+          },
+          {
+            "key": widget.waterConnection?.connectionType == 'Metered'
+                ? "ws-bill-v2"
+                : "ws-bill-nm-v2",
+            "tenantId": commonProvider.userDetails?.selectedtenant?.code,
+          },
+          billList.bill!.first.mobileNumber,
+          billList.bill?.first,
+          "Download",
+          fireStoreId: value?.filestoreIds?.first,
+        );
+      });
+    }
   }
 
   void onClickOfCollectPayment(List<Bill> bill, BuildContext context) {

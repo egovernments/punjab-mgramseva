@@ -427,7 +427,10 @@ class CommonProvider with ChangeNotifier {
   void getFileFromPDFBillService(body, params, mobileNumber, bill, mode,
       {String? fireStoreId = ""}) async {
     try {
-      var res = await CoreRepository().getFileStorefromPdfService(body, params);
+      var res;
+      if (fireStoreId == "") {
+        res = await CoreRepository().getFileStorefromPdfService(body, params);
+      }
 
       String link = (ApplicationLocalizations.of(navigatorKey.currentContext!)
           .translate(i18.common.SHARE_BILL_LINK)
