@@ -165,8 +165,8 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                               "key": widget.waterConnection
                                                           ?.connectionType ==
                                                       'Metered'
-                                                  ? "ws-bill"
-                                                  : "ws-bill-nm",
+                                                  ? "ws-bill-v2"
+                                                  : "ws-bill-nm-v2",
                                               "tenantId": commonProvider
                                                   .userDetails
                                                   ?.selectedtenant

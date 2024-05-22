@@ -111,7 +111,11 @@ class HouseHoldProvider with ChangeNotifier {
       notifyListeners();
 
       //*** Create PDF Request Body ***//
-      createPDFPrams = {"key": "ws-bill-nm-v2", "tenantId": data.tenantId};
+      if (waterConnection?.connectionType == 'Metered') {
+        createPDFPrams = {"key": "ws-bill-v2", "tenantId": data.tenantId};
+      } else {
+        createPDFPrams = {"key": "ws-bill-nm-v2", "tenantId": data.tenantId};
+      }
       filestoreIds = "";
 
       var mdms = await CommonProvider.getMdmsBillingService(
@@ -203,31 +207,6 @@ class HouseHoldProvider with ChangeNotifier {
           streamController.add(demandList);
         }
       });
-
-      // //*** Fetch Aggregated Demand Details  ***//
-      // aggDemandItems = null;
-      // isLoading = true;
-      // notifyListeners();
-      // await BillingServiceRepository().fetchAggregateDemand({
-      //   "tenantId": data.tenantId,
-      //   "consumerCode": data.connectionNo.toString(),
-      //   "businessService": "WS",
-      // }).then((AggragateDemandDetails? value) {
-      //   if (value != null) {
-      //     aggDemandItems = value;
-      //     notifyListeners();
-      //   }
-      //   createPDFBody = {
-      //     "Bill": waterConnection?.fetchBill?.bill,
-      //     "AggregatedDemands": value,
-      //   };
-      // });
-      // isLoading = false;
-      // notifyListeners();
-
-      // //*** Create PDF Request Body ***//
-      // createPDFPrams = {"key": "ws-bill-nm-v2", "tenantId": data.tenantId};
-      // filestoreIds = "";
     } catch (e, s) {
       streamController.addError('error');
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
