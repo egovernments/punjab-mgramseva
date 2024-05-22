@@ -890,6 +890,9 @@ public class DemandService {
 			// Call demand update in bulk to update the interest or penalty
 			if(!isGetPenaltyEstimate) {
 				if(demandsToBeUpdated.size() > 0) {
+					//TODO: add the data
+					log.info("DEMAND UPDATE FROM UPDATE DEMAND CALL : " +demandsToBeUpdated.size());
+					log.info("demandsToBeUpdated : " +demandsToBeUpdated);
 					DemandRequest request = DemandRequest.builder().demands(demandsToBeUpdated).requestInfo(requestInfo).build();
 					repository.fetchResult(utils.getUpdateDemandUrl(), request);
 					return res.getDemands();
