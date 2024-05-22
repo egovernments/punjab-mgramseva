@@ -253,6 +253,6 @@ public class WSCalculationConfiguration {
 	@Value("${is.save.demand.audit.enabled}")
 	private boolean isSaveDemandAuditEnabled;
 
-	@Value("${egov.save.demand.audit.from.wsservice}")
+	@Value("${egov.save.demand.audit.from.wscal}")
 	private String saveDemandAudit;
 }
