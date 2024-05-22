@@ -43,6 +43,7 @@ import org.egov.tracer.model.CustomException;
 import org.egov.wscalculation.config.WSCalculationConfiguration;
 import org.egov.wscalculation.constants.WSCalculationConstant;
 import org.egov.wscalculation.producer.WSCalculationProducer;
+import org.egov.wscalculation.repository.DemandAuditSeqBuilder;
 import org.egov.wscalculation.repository.DemandRepository;
 import org.egov.wscalculation.repository.ServiceRequestRepository;
 import org.egov.wscalculation.repository.WSCalculationDao;
@@ -51,26 +52,8 @@ import org.egov.wscalculation.util.NotificationUtil;
 import org.egov.wscalculation.util.WSCalculationUtil;
 import org.egov.wscalculation.validator.WSCalculationValidator;
 import org.egov.wscalculation.validator.WSCalculationWorkflowValidator;
-import org.egov.wscalculation.web.models.BulkDemand;
-import org.egov.wscalculation.web.models.Calculation;
-import org.egov.wscalculation.web.models.Category;
-import org.egov.wscalculation.web.models.Demand;
+import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.web.models.Demand.StatusEnum;
-import org.egov.wscalculation.web.models.DemandDetail;
-import org.egov.wscalculation.web.models.DemandDetailAndCollection;
-import org.egov.wscalculation.web.models.DemandPenaltyResponse;
-import org.egov.wscalculation.web.models.DemandRequest;
-import org.egov.wscalculation.web.models.DemandResponse;
-import org.egov.wscalculation.web.models.GetBillCriteria;
-import org.egov.wscalculation.web.models.OwnerInfo;
-import org.egov.wscalculation.web.models.Property;
-import org.egov.wscalculation.web.models.Recipient;
-import org.egov.wscalculation.web.models.RequestInfoWrapper;
-import org.egov.wscalculation.web.models.SMSRequest;
-import org.egov.wscalculation.web.models.TaxHeadEstimate;
-import org.egov.wscalculation.web.models.TaxPeriod;
-import org.egov.wscalculation.web.models.WaterConnection;
-import org.egov.wscalculation.web.models.WaterConnectionRequest;
 import org.egov.wscalculation.web.models.users.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -146,6 +129,9 @@ public class DemandService {
 	
 	@Autowired
 	private EstimationService estimationService;
+
+	@Autowired
+	private DemandAuditSeqBuilder demandAuditSeqBuilder;
 
 	/**
 	 * Creates or updates Demand
@@ -285,9 +271,20 @@ public class DemandService {
 						.businessService(businessService).status(StatusEnum.valueOf("ACTIVE")).billExpiryTime(expiryDate)
 						.build());
 			}
-			//TODO:Write logic to enter in new table
-			log.info("CREATE DEMAND REQ : "+demands.size());
-			log.info("CREATE DEMAND REQ : "+demands);
+			if(config.isSaveDemandAuditEnabled()){
+				demands.stream().forEach(demand -> {
+					Long id = demandAuditSeqBuilder.getNextSequence();
+					WsDemandChangeAuditRequest req = WsDemandChangeAuditRequest.builder().id(id).
+							consumercode(demand.getConsumerCode()).
+							tenant_id(demand.getTenantId()).
+							status(demand.getStatus().toString()).
+							action("CREATE DEMAND BULK").
+							data((Map<String, Object>) demand).
+							createdby(demand.getAuditDetails().getCreatedBy()).
+							createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
+					producer.push(config.getSaveDemandAudit(), req);
+				});
+			}
 			demandRes = demandRepository.saveDemand(requestInfo, demands);
 			finalDemandRes.addAll(demandRes);
 
@@ -890,9 +887,20 @@ public class DemandService {
 			// Call demand update in bulk to update the interest or penalty
 			if(!isGetPenaltyEstimate) {
 				if(demandsToBeUpdated.size() > 0) {
-					//TODO: add the data
-					log.info("DEMAND UPDATE FROM UPDATE DEMAND CALL : " +demandsToBeUpdated.size());
-					log.info("demandsToBeUpdated : " +demandsToBeUpdated);
+					if(config.isSaveDemandAuditEnabled()){
+						demandsToBeUpdated.stream().forEach(demand -> {
+							Long id = demandAuditSeqBuilder.getNextSequence();
+							WsDemandChangeAuditRequest req = WsDemandChangeAuditRequest.builder().id(id).
+									consumercode(demand.getConsumerCode()).
+									tenant_id(demand.getTenantId()).
+									status(demand.getStatus().toString()).
+									action("UPDATE DEMAND GET PENALTY/UPDATE API").
+									data((Map<String, Object>) demand).
+									createdby(demand.getAuditDetails().getCreatedBy()).
+									createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
+							producer.push(config.getSaveDemandAudit(), req);
+						});
+					}
 					DemandRequest request = DemandRequest.builder().demands(demandsToBeUpdated).requestInfo(requestInfo).build();
 					repository.fetchResult(utils.getUpdateDemandUrl(), request);
 					return res.getDemands();
@@ -951,10 +959,22 @@ public class DemandService {
 						.taxHeadMasterCode(taxHeadEstimate.getTaxHeadCode()).collectionAmount(BigDecimal.ZERO)
 						.tenantId(calculation.getTenantId()).build());
 			});
-			log.info("UPDATE DEMAND req : "+demand);
 			demands.add(demand);
-			log.info("UPDATE DEMANDS req : "+demand);
 			//TODO: write logic to enter in new table
+			if(config.isSaveDemandAuditEnabled()){
+				demands.stream().forEach(dem -> {
+					Long id = demandAuditSeqBuilder.getNextSequence();
+					WsDemandChangeAuditRequest req = WsDemandChangeAuditRequest.builder().id(id).
+							consumercode(dem.getConsumerCode()).
+							tenant_id(dem.getTenantId()).
+							status(dem.getStatus().toString()).
+							action("UPDATE DEMAND BULK").
+							data((Map<String, Object>) dem).
+							createdby(dem.getAuditDetails().getCreatedBy()).
+							createdtime(dem.getAuditDetails().getLastModifiedTime()).build();
+					producer.push(config.getSaveDemandAudit(), req);
+				});
+			}
 			demandRes = demandRepository.updateDemand(requestInfo, demands);
 			finalDemandRes.addAll(demandRes);
 			List<String> billNumbers = fetchBill(demands, waterConnectionRequest.getRequestInfo());
@@ -1384,6 +1404,20 @@ public class DemandService {
 		}
 
 		log.info("Updated Demand Details " + demands.toString());
+		if(config.isSaveDemandAuditEnabled()){
+			demands.stream().forEach(demand -> {
+				Long id = demandAuditSeqBuilder.getNextSequence();
+				WsDemandChangeAuditRequest req = WsDemandChangeAuditRequest.builder().id(id).
+						consumercode(demand.getConsumerCode()).
+						tenant_id(demand.getTenantId()).
+						status(demand.getStatus().toString()).
+						action("UPDATE DEMAND APPLYADHOCTAX").
+						data((Map<String, Object>) demand).
+						createdby(demand.getAuditDetails().getCreatedBy()).
+						createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
+				producer.push(config.getSaveDemandAudit(), req);
+			});
+		}
 		demandRepository.updateDemand(requestInfo, demands);
 		return calculations;
 	}

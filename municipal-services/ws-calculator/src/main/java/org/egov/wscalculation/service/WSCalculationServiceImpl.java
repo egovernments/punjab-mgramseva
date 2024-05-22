@@ -17,21 +17,9 @@ import org.egov.tracer.model.CustomException;
 import org.egov.wscalculation.config.WSCalculationConfiguration;
 import org.egov.wscalculation.constants.WSCalculationConstant;
 import org.egov.wscalculation.producer.WSCalculationProducer;
-import org.egov.wscalculation.web.models.AdhocTaxReq;
-import org.egov.wscalculation.web.models.BulkDemand;
-import org.egov.wscalculation.web.models.Calculation;
-import org.egov.wscalculation.web.models.CalculationCriteria;
-import org.egov.wscalculation.web.models.CalculationReq;
-import org.egov.wscalculation.web.models.Demand;
+import org.egov.wscalculation.repository.DemandAuditSeqBuilder;
+import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.web.models.Demand.StatusEnum;
-import org.egov.wscalculation.web.models.GetBillCriteria;
-import org.egov.wscalculation.web.models.TaxHeadCategory;
-import org.egov.wscalculation.web.models.Property;
-import org.egov.wscalculation.web.models.RequestInfoWrapper;
-import org.egov.wscalculation.web.models.TaxHeadEstimate;
-import org.egov.wscalculation.web.models.TaxHeadMaster;
-import org.egov.wscalculation.web.models.WaterConnection;
-import org.egov.wscalculation.web.models.WaterConnectionRequest;
 import org.egov.wscalculation.web.models.enums.Status;
 import org.egov.wscalculation.repository.DemandRepository;
 import org.egov.wscalculation.repository.ServiceRequestRepository;
@@ -82,6 +70,9 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	@Autowired
 	private WSCalculationConfiguration config;
 
+	@Autowired
+	private DemandAuditSeqBuilder demandAuditSeqBuilder;
+
 	/**
 	 * Get CalculationReq and Calculate the Tax Head on Water Charge And Estimation Charge
 	 */
@@ -127,6 +118,20 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 								.getWaterConnection().getPreviousReadingDate().longValue())) {
 			searchResult.get(0).setStatus(StatusEnum.CANCELLED);
 			isWSUpdateSMS = true;
+			if(config.isSaveDemandAuditEnabled()){
+				searchResult.stream().forEach(demand -> {
+					Long id = demandAuditSeqBuilder.getNextSequence();
+					WsDemandChangeAuditRequest req = WsDemandChangeAuditRequest.builder().id(id).
+							consumercode(demand.getConsumerCode()).
+							tenant_id(demand.getTenantId()).
+							status(demand.getStatus().toString()).
+							action("GET CALCULATION UPDATE").
+							data((Map<String, Object>) demand).
+							createdby(demand.getAuditDetails().getCreatedBy()).
+							createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
+					wsCalculationProducer.push(config.getSaveDemandAudit(), req);
+				});
+			}
 			demandRepository.updateDemand(request.getRequestInfo(), searchResult);
 		}
 		
