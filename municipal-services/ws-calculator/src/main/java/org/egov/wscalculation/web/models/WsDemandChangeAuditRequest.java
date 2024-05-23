@@ -19,7 +19,7 @@ public class WsDemandChangeAuditRequest {
     private String tenant_id;
     private String status;
     private String action;
-    private Map<String,Object> data;
+    private Object data;
     private String createdby;
     private Long createdtime;
     public boolean isValid() {
