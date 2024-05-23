@@ -276,6 +276,7 @@ public class DemandService {
 				demands.stream().forEach(demand -> {
 					Long id = demandAuditSeqBuilder.getNextSequence();
 					log.info("Audit details:"+demand.getAuditDetails());
+					log.info("request details:"+requestInfo.getUserInfo());
 					WsDemandChangeAuditRequest req = WsDemandChangeAuditRequest.builder().id(id).
 							consumercode(demand.getConsumerCode()).
 							tenant_id(demand.getTenantId()).
