@@ -271,15 +271,17 @@ public class DemandService {
 						.businessService(businessService).status(StatusEnum.valueOf("ACTIVE")).billExpiryTime(expiryDate)
 						.build());
 			}
+
 			if(config.isSaveDemandAuditEnabled()){
 				demands.stream().forEach(demand -> {
 					Long id = demandAuditSeqBuilder.getNextSequence();
+					log.info("Audit details:"+demand.getAuditDetails());
 					WsDemandChangeAuditRequest req = WsDemandChangeAuditRequest.builder().id(id).
 							consumercode(demand.getConsumerCode()).
 							tenant_id(demand.getTenantId()).
 							status(demand.getStatus().toString()).
 							action("CREATE DEMAND BULK").
-							//data(demand).
+							data(demand).
 							createdby(demand.getAuditDetails().getCreatedBy()).
 							createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
 					producer.push(config.getSaveDemandAudit(), req);
