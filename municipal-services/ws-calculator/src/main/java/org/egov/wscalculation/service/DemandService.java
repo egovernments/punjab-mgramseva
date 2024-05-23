@@ -279,7 +279,7 @@ public class DemandService {
 							tenant_id(demand.getTenantId()).
 							status(demand.getStatus().toString()).
 							action("CREATE DEMAND BULK").
-							data(demand).
+							//data(demand).
 							createdby(demand.getAuditDetails().getCreatedBy()).
 							createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
 					producer.push(config.getSaveDemandAudit(), req);
