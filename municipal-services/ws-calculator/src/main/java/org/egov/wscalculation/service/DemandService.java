@@ -283,8 +283,8 @@ public class DemandService {
 							status(demand.getStatus().toString()).
 							action("CREATE DEMAND BULK").
 							data(demand).
-							createdby(demand.getAuditDetails().getCreatedBy()).
-							createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
+							createdby(requestInfo.getUserInfo().getUuid()).
+							createdtime(System.currentTimeMillis()).build();
 					producer.push(config.getSaveDemandAudit(), req);
 				});
 			}
