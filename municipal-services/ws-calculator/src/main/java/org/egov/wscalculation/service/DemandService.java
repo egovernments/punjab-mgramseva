@@ -895,7 +895,7 @@ public class DemandService {
 									tenant_id(demand.getTenantId()).
 									status(demand.getStatus().toString()).
 									action("UPDATE DEMAND GET PENALTY/UPDATE API").
-									data((Map<String, Object>) demand).
+									data(demand).
 									createdby(demand.getAuditDetails().getCreatedBy()).
 									createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
 							producer.push(config.getSaveDemandAudit(), req);
@@ -969,7 +969,7 @@ public class DemandService {
 							tenant_id(dem.getTenantId()).
 							status(dem.getStatus().toString()).
 							action("UPDATE DEMAND BULK").
-							data((Map<String, Object>) dem).
+							data(dem).
 							createdby(dem.getAuditDetails().getCreatedBy()).
 							createdtime(dem.getAuditDetails().getLastModifiedTime()).build();
 					producer.push(config.getSaveDemandAudit(), req);
@@ -1412,7 +1412,7 @@ public class DemandService {
 						tenant_id(demand.getTenantId()).
 						status(demand.getStatus().toString()).
 						action("UPDATE DEMAND APPLYADHOCTAX").
-						data((Map<String, Object>) demand).
+						data(demand).
 						createdby(demand.getAuditDetails().getCreatedBy()).
 						createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
 				producer.push(config.getSaveDemandAudit(), req);

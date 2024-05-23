@@ -126,7 +126,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 							tenant_id(demand.getTenantId()).
 							status(demand.getStatus().toString()).
 							action("GET CALCULATION UPDATE").
-							data((Map<String, Object>) demand).
+							data(demand).
 							createdby(demand.getAuditDetails().getCreatedBy()).
 							createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
 					wsCalculationProducer.push(config.getSaveDemandAudit(), req);
