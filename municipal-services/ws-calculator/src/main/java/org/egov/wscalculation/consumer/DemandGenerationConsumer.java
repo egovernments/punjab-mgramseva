@@ -336,7 +336,7 @@ public class DemandGenerationConsumer {
 					}
 
 			} catch (Exception e) {
-				System.out.println("Got the exception while genating the demands:" + connectionNo);
+				System.out.println("Got the exception while genating the demands:" + e);
 				failedConnectionNos.add(connectionNo);
 			}
 		}
