@@ -275,9 +275,7 @@ public class DemandService {
 			if(config.isSaveDemandAuditEnabled()){
 				demands.stream().forEach(demand -> {
 					Long id = demandAuditSeqBuilder.getNextSequence();
-					log.info("Audit details:"+demand.getAuditDetails());
-					log.info("request details:"+requestInfo.getUserInfo());
-					WsDemandChangeAuditRequest req = WsDemandChangeAuditRequest.builder().id(id).
+					WsDemandChangeAuditRequest wsDemandChangeAuditRequest = WsDemandChangeAuditRequest.builder().id(id).
 							consumercode(demand.getConsumerCode()).
 							tenant_id(demand.getTenantId()).
 							status(demand.getStatus().toString()).
@@ -285,7 +283,7 @@ public class DemandService {
 							data(demand).
 							createdby(requestInfo.getUserInfo().getUuid()).
 							createdtime(System.currentTimeMillis()).build();
-					producer.push(config.getSaveDemandAudit(), req);
+					producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequest);
 				});
 			}
 			demandRes = demandRepository.saveDemand(requestInfo, demands);
@@ -893,7 +891,7 @@ public class DemandService {
 					if(config.isSaveDemandAuditEnabled()){
 						demandsToBeUpdated.stream().forEach(demand -> {
 							Long id = demandAuditSeqBuilder.getNextSequence();
-							WsDemandChangeAuditRequest req = WsDemandChangeAuditRequest.builder().id(id).
+							WsDemandChangeAuditRequest wsDemandChangeAuditRequest = WsDemandChangeAuditRequest.builder().id(id).
 									consumercode(demand.getConsumerCode()).
 									tenant_id(demand.getTenantId()).
 									status(demand.getStatus().toString()).
@@ -901,7 +899,7 @@ public class DemandService {
 									data(demand).
 									createdby(demand.getAuditDetails().getCreatedBy()).
 									createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
-							producer.push(config.getSaveDemandAudit(), req);
+							producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequest);
 						});
 					}
 					DemandRequest request = DemandRequest.builder().demands(demandsToBeUpdated).requestInfo(requestInfo).build();
@@ -967,7 +965,7 @@ public class DemandService {
 			if(config.isSaveDemandAuditEnabled()){
 				demands.stream().forEach(dem -> {
 					Long id = demandAuditSeqBuilder.getNextSequence();
-					WsDemandChangeAuditRequest req = WsDemandChangeAuditRequest.builder().id(id).
+					WsDemandChangeAuditRequest wsDemandChangeAuditRequest = WsDemandChangeAuditRequest.builder().id(id).
 							consumercode(dem.getConsumerCode()).
 							tenant_id(dem.getTenantId()).
 							status(dem.getStatus().toString()).
@@ -975,7 +973,7 @@ public class DemandService {
 							data(dem).
 							createdby(dem.getAuditDetails().getCreatedBy()).
 							createdtime(dem.getAuditDetails().getLastModifiedTime()).build();
-					producer.push(config.getSaveDemandAudit(), req);
+					producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequest);
 				});
 			}
 			demandRes = demandRepository.updateDemand(requestInfo, demands);
@@ -1410,7 +1408,7 @@ public class DemandService {
 		if(config.isSaveDemandAuditEnabled()){
 			demands.stream().forEach(demand -> {
 				Long id = demandAuditSeqBuilder.getNextSequence();
-				WsDemandChangeAuditRequest req = WsDemandChangeAuditRequest.builder().id(id).
+				WsDemandChangeAuditRequest wsDemandChangeAuditRequest = WsDemandChangeAuditRequest.builder().id(id).
 						consumercode(demand.getConsumerCode()).
 						tenant_id(demand.getTenantId()).
 						status(demand.getStatus().toString()).
@@ -1418,7 +1416,7 @@ public class DemandService {
 						data(demand).
 						createdby(demand.getAuditDetails().getCreatedBy()).
 						createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
-				producer.push(config.getSaveDemandAudit(), req);
+				producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequest);
 			});
 		}
 		demandRepository.updateDemand(requestInfo, demands);

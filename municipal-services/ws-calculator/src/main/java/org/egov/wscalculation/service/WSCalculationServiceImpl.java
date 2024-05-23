@@ -121,7 +121,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 			if(config.isSaveDemandAuditEnabled()){
 				searchResult.stream().forEach(demand -> {
 					Long id = demandAuditSeqBuilder.getNextSequence();
-					WsDemandChangeAuditRequest req = WsDemandChangeAuditRequest.builder().id(id).
+					WsDemandChangeAuditRequest wsDemandChangeAuditRequest = WsDemandChangeAuditRequest.builder().id(id).
 							consumercode(demand.getConsumerCode()).
 							tenant_id(demand.getTenantId()).
 							status(demand.getStatus().toString()).
@@ -129,7 +129,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 							data(demand).
 							createdby(demand.getAuditDetails().getCreatedBy()).
 							createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
-					wsCalculationProducer.push(config.getSaveDemandAudit(), req);
+					wsCalculationProducer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequest);
 				});
 			}
 			demandRepository.updateDemand(request.getRequestInfo(), searchResult);
