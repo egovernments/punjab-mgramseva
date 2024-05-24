@@ -283,8 +283,9 @@ public class DemandService {
 							data(demand).
 							createdby(requestInfo.getUserInfo().getUuid()).
 							createdtime(System.currentTimeMillis()).build();
-					log.info("wsDemandChangeAuditRequest:"+wsDemandChangeAuditRequest);
-					producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequest);
+					WsDemandChangeAuditRequestWrapper wsDemandChangeAuditRequestWrapper = WsDemandChangeAuditRequestWrapper.builder().wsDemandChangeAuditRequest(wsDemandChangeAuditRequest).build();
+					log.info("WsDemandChangeAuditRequestWrapper:"+wsDemandChangeAuditRequestWrapper);
+					producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequestWrapper);
 				});
 			}
 			demandRes = demandRepository.saveDemand(requestInfo, demands);
