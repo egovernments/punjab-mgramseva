@@ -12,33 +12,20 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import io.swagger.models.auth.In;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
-import org.egov.mdms.model.MasterDetail;
-import org.egov.mdms.model.MdmsCriteria;
-import org.egov.mdms.model.MdmsCriteriaReq;
-import org.egov.mdms.model.ModuleDetail;
+import org.egov.mdms.model.*;
 import org.egov.tracer.model.CustomException;
 import org.egov.wscalculation.config.WSCalculationConfiguration;
 import org.egov.wscalculation.constants.WSCalculationConstant;
@@ -51,28 +38,11 @@ import org.egov.wscalculation.util.NotificationUtil;
 import org.egov.wscalculation.util.WSCalculationUtil;
 import org.egov.wscalculation.validator.WSCalculationValidator;
 import org.egov.wscalculation.validator.WSCalculationWorkflowValidator;
-import org.egov.wscalculation.web.models.BulkDemand;
-import org.egov.wscalculation.web.models.Calculation;
-import org.egov.wscalculation.web.models.Category;
-import org.egov.wscalculation.web.models.Demand;
+import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.web.models.Demand.StatusEnum;
-import org.egov.wscalculation.web.models.DemandDetail;
-import org.egov.wscalculation.web.models.DemandDetailAndCollection;
-import org.egov.wscalculation.web.models.DemandPenaltyResponse;
-import org.egov.wscalculation.web.models.DemandRequest;
-import org.egov.wscalculation.web.models.DemandResponse;
-import org.egov.wscalculation.web.models.GetBillCriteria;
-import org.egov.wscalculation.web.models.OwnerInfo;
-import org.egov.wscalculation.web.models.Property;
-import org.egov.wscalculation.web.models.Recipient;
-import org.egov.wscalculation.web.models.RequestInfoWrapper;
-import org.egov.wscalculation.web.models.SMSRequest;
-import org.egov.wscalculation.web.models.TaxHeadEstimate;
-import org.egov.wscalculation.web.models.TaxPeriod;
-import org.egov.wscalculation.web.models.WaterConnection;
-import org.egov.wscalculation.web.models.WaterConnectionRequest;
 import org.egov.wscalculation.web.models.users.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
@@ -651,6 +621,19 @@ public class DemandService {
 
 	}
 
+	public List<Demand> searchDemandBydemandId(String tenantId, Set<String> demandids,
+									 RequestInfo requestInfo) {
+		Object result = serviceRequestRepository.fetchResult(
+				getDemandSearchURLByDemandId(tenantId, demandids),
+				RequestInfoWrapper.builder().requestInfo(requestInfo).build());
+		try {
+			return mapper.convertValue(result, DemandResponse.class).getDemands();
+		} catch (IllegalArgumentException e) {
+			throw new CustomException("PARSING_ERROR", "Failed to parse response from Demand Search");
+		}
+
+	}
+
 	/**
 	 * Creates demand Search url based on tenantId,businessService, and
 	 * 
@@ -733,6 +716,18 @@ public class DemandService {
 		return url;
 	}
 
+	public StringBuilder getDemandSearchURLByDemandId(String tenantId, Set<String> demandIds) {
+		StringBuilder url = new StringBuilder(configs.getBillingServiceHost());
+		url.append(configs.getDemandSearchEndPoint());
+		url.append("?");
+		url.append("tenantId=");
+		url.append(tenantId);
+		url.append("&");
+		url.append("demandId=");
+		url.append(StringUtils.join(demandIds, ','));
+		log.info("Search demand url:"+url);
+		return url;
+	}
 	/**
 	 * 
 	 * @param getBillCriteria    Bill Criteria
@@ -1418,5 +1413,97 @@ public class DemandService {
 		else
 			return true;
 	}
+	public  List<String> getDemandToAddPenalty(String tenantid,BigInteger penaltyThresholdDate,Integer penaltyApplicableAfterDays){
+      return  demandRepository.getDemandsToAddPenalty(tenantid,penaltyThresholdDate,penaltyApplicableAfterDays);
+	}
 
+	public ResponseEntity<HttpStatus> addPenalty(@Valid RequestInfo requestInfo, AddPenaltyCriteria addPenaltyCriteria) {
+		if(config.isPenaltyEnabled()) {
+            if (requestInfo.getUserInfo().equals(null)) {
+
+			}
+			List<MasterDetail> masterDetails = new ArrayList<>();
+			MasterDetail masterDetail = new MasterDetail("Penalty", "[?(@)]");
+			masterDetails.add(masterDetail);
+			ModuleDetail moduleDetail = ModuleDetail.builder().moduleName("ws-services-calculation").masterDetails(masterDetails).build();
+			List<ModuleDetail> moduleDetails = new ArrayList<>();
+			moduleDetails.add(moduleDetail);
+			MdmsCriteria mdmsCriteria = MdmsCriteria.builder().tenantId(addPenaltyCriteria.getTenantId())
+					.moduleDetails(moduleDetails)
+					.build();
+			Map<String, Object> paymentMasterData = calculatorUtils.getPenaltyMasterForTenantId(addPenaltyCriteria.getTenantId(), mdmsCriteria, requestInfo);
+
+			Integer rate= (Integer) paymentMasterData.get("rate");
+			String penaltyType = String.valueOf(paymentMasterData.get("type"));
+			String penaltySubType = (String) paymentMasterData.get("subType");
+			String startingDay = (String) paymentMasterData.get("startingDay");
+			Integer applicableAfterDays = (Integer) paymentMasterData.get("applicableAfterDays");
+			List<String> demandIds = getDemandToAddPenalty(addPenaltyCriteria.getTenantId(), new BigInteger(config.getPenaltyStartThresholdTime()),applicableAfterDays);
+			if (rate > 0) {
+				demandIds.stream().forEach(demandId -> {
+					Set<String> demandids = new HashSet<>();
+					demandids.add(demandId);
+					List<Demand> demands = searchDemandBydemandId(addPenaltyCriteria.getTenantId(), demandids, requestInfo);
+					if (!CollectionUtils.isEmpty(demands)) {
+						Demand demand = demands.get(0);
+						Boolean isPenaltyExistForDemand = demand.getDemandDetails().stream().anyMatch(demandDetail -> {
+							return demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY);
+						});
+						if (!isPenaltyExistForDemand) {
+							if (!CollectionUtils.isEmpty(demand.getDemandDetails()) && demand.getDemandDetails().size() == 1) {
+								demand.setDemandDetails(addTimePenalty(rate, penaltyType, penaltySubType, demand));
+								demands.clear();
+								demands.add(demand);
+								DemandRequest demandRequest = DemandRequest.builder().requestInfo(requestInfo).demands(demands).build();
+								producer.push(config.getUpdateAddPenaltytopic(), demandRequest);
+							}
+						}
+					}
+				});
+			} else {
+				return new ResponseEntity<>(org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED);
+			}
+		}
+		return new ResponseEntity<>(org.springframework.http.HttpStatus.ACCEPTED);
+	}
+
+	public List<DemandDetail> addTimePenalty(Integer rate, String type, String SubType,Demand demand) {
+		// TODO:  if type is fixed annd subtype is curretmonnth than only add penalty
+		//TODO : check for metered connection also what is taxheadcode
+
+		BigDecimal taxPercentage = BigDecimal.valueOf(Double.valueOf(rate));
+		List<DemandDetail> demandDetailList=  demand.getDemandDetails();
+		DemandDetail waterChargeDemandDetails = null;
+		if(!CollectionUtils.isEmpty(demandDetailList)) {
+			if(demandDetailList.get(0).getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_CHARGE)){
+				//mapper.convertValue(demandDetailList.stream().filter(demandDetail -> demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_CHARGE)), DemandDetail.class) ;
+				waterChargeDemandDetails=demandDetailList.get(0);
+				BigDecimal netPayableAmountWithouttax= waterChargeDemandDetails.getTaxAmount().subtract(waterChargeDemandDetails.getCollectionAmount());
+				if(netPayableAmountWithouttax.signum()> 0) {
+					BigDecimal tax = netPayableAmountWithouttax.multiply(taxPercentage.divide(WSCalculationConstant.HUNDRED));
+					//round off to next higest number
+					tax = roundOffTax(tax);
+					DemandDetail timeDemandDetail = DemandDetail.builder().demandId(demand.getId())
+							.taxHeadMasterCode(WSCalculationConstant.WS_TIME_PENALTY)
+							.taxAmount(tax)
+							.collectionAmount(BigDecimal.ZERO)
+							.tenantId(demand.getTenantId()).build();
+
+					demandDetailList.add(timeDemandDetail);
+				}
+			}
+		}
+		return demandDetailList;
+
+	}
+
+	public BigDecimal roundOffTax (BigDecimal tax) {
+
+		// Round the value up to the next highest integer
+		return  tax.setScale(0, RoundingMode.CEILING);
+	}
+
+	public void updateDemandAddPenalty(RequestInfo requestInfo , List<Demand> demands) {
+		demandRepository.updateDemand(requestInfo,demands);
+	}
 }

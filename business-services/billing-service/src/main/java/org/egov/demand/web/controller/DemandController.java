@@ -46,9 +46,7 @@ import javax.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.demand.config.ApplicationProperties;
-import org.egov.demand.model.Demand;
-import org.egov.demand.model.DemandCriteria;
-import org.egov.demand.model.DemandHistory;
+import org.egov.demand.model.*;
 import org.egov.demand.producer.Producer;
 import org.egov.demand.service.DemandService;
 import org.egov.demand.util.migration.DemandMigration;
@@ -161,6 +159,16 @@ public class DemandController {
 				.advanceAdjustedAmount(demands.getAdvanceAdjustedAmount()).waterCharge(demands.getWaterCharge()).
 				responseInfo(responseFactory.getResponseInfo(requestInfo, HttpStatus.OK)).build();
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PostMapping("_getAggregateDemandDetails")
+	public ResponseEntity<?> getAggregatedDemandDetails(@RequestBody RequestInfoWrapper requestInfoWrapper,
+									@ModelAttribute @Valid DemandCriteria demandCriteria) {
+
+		RequestInfo requestInfo = requestInfoWrapper.getRequestInfo();
+
+		AggregatedDemandDetailResponse demands  = demandService.getAllDemands(demandCriteria, requestInfo);
+		return new ResponseEntity<>(demands, HttpStatus.OK);
 	}
     
 }

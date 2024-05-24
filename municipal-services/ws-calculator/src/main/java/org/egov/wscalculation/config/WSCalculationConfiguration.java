@@ -1,6 +1,7 @@
 package org.egov.wscalculation.config;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -249,5 +250,16 @@ public class WSCalculationConfiguration {
 
 	@Value("${sms.exclude.tenant}")
 	private String smsExcludeTenant;
-	
+
+	@Value("${penalty.applicable.in.days}")
+	private Integer penaltyApplicableDays;
+
+	@Value("${penalty.start.threshold.time}")
+	private String penaltyStartThresholdTime;
+
+	@Value("${is.penalty.feature.enable}")
+	private boolean isPenaltyEnabled;
+
+	@Value("${egov.update.demand.add.penalty}")
+	private String updateAddPenaltytopic;
 }
