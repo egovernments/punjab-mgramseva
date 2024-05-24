@@ -129,7 +129,8 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 							data(demand).
 							createdby(demand.getAuditDetails().getCreatedBy()).
 							createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
-					wsCalculationProducer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequest);
+					WsDemandChangeAuditRequestWrapper wsDemandChangeAuditRequestWrapper = WsDemandChangeAuditRequestWrapper.builder().wsDemandChangeAuditRequest(wsDemandChangeAuditRequest).build();
+					wsCalculationProducer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequestWrapper);
 				});
 			}
 			demandRepository.updateDemand(request.getRequestInfo(), searchResult);

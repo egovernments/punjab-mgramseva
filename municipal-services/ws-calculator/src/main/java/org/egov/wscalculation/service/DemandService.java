@@ -284,7 +284,6 @@ public class DemandService {
 							createdby(requestInfo.getUserInfo().getUuid()).
 							createdtime(System.currentTimeMillis()).build();
 					WsDemandChangeAuditRequestWrapper wsDemandChangeAuditRequestWrapper = WsDemandChangeAuditRequestWrapper.builder().wsDemandChangeAuditRequest(wsDemandChangeAuditRequest).build();
-					log.info("WsDemandChangeAuditRequestWrapper:"+wsDemandChangeAuditRequestWrapper);
 					producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequestWrapper);
 				});
 			}
@@ -901,7 +900,8 @@ public class DemandService {
 									data(demand).
 									createdby(demand.getAuditDetails().getCreatedBy()).
 									createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
-							producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequest);
+							WsDemandChangeAuditRequestWrapper wsDemandChangeAuditRequestWrapper = WsDemandChangeAuditRequestWrapper.builder().wsDemandChangeAuditRequest(wsDemandChangeAuditRequest).build();
+							producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequestWrapper);
 						});
 					}
 					DemandRequest request = DemandRequest.builder().demands(demandsToBeUpdated).requestInfo(requestInfo).build();
@@ -975,7 +975,8 @@ public class DemandService {
 							data(dem).
 							createdby(dem.getAuditDetails().getCreatedBy()).
 							createdtime(dem.getAuditDetails().getLastModifiedTime()).build();
-					producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequest);
+					WsDemandChangeAuditRequestWrapper wsDemandChangeAuditRequestWrapper = WsDemandChangeAuditRequestWrapper.builder().wsDemandChangeAuditRequest(wsDemandChangeAuditRequest).build();
+					producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequestWrapper);
 				});
 			}
 			demandRes = demandRepository.updateDemand(requestInfo, demands);
@@ -1418,7 +1419,8 @@ public class DemandService {
 						data(demand).
 						createdby(demand.getAuditDetails().getCreatedBy()).
 						createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
-				producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequest);
+				WsDemandChangeAuditRequestWrapper wsDemandChangeAuditRequestWrapper = WsDemandChangeAuditRequestWrapper.builder().wsDemandChangeAuditRequest(wsDemandChangeAuditRequest).build();
+				producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequestWrapper);
 			});
 		}
 		demandRepository.updateDemand(requestInfo, demands);
