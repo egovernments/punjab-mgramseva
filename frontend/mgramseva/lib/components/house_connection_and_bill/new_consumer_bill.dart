@@ -268,10 +268,17 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                 : '- ₹${double.parse(CommonProvider.getAdvanceAdjustedAmount(widget.demandList))}',
                                             context),
                                       // Net Due Amount
-                                      getLabelText(
-                                          i18.common.CORE_NET_DUE_AMOUNT,
-                                          "${netDueAmount(houseHoldProvider)}",
-                                          context),
+
+                                      if (CommonProvider
+                                              .getPenaltyOrAdvanceStatus(
+                                                  widget.waterConnection
+                                                      ?.mdmsData,
+                                                  true) &&
+                                          houseHoldProvider.isfirstdemand)
+                                        getLabelText(
+                                            i18.common.CORE_NET_DUE_AMOUNT,
+                                            "${netDueAmount(houseHoldProvider)}",
+                                            context),
                                       // if (CommonProvider
                                       //         .getPenaltyOrAdvanceStatus(
                                       //             widget.waterConnection
@@ -528,11 +535,12 @@ class NewConsumerBillState extends State<NewConsumerBill> {
   }
 
   double netDueAmount(HouseHoldProvider houseHoldProvider) {
-    return ((houseHoldProvider.aggDemandItems?.netDueWithPenalty ?? 0.0) +
+    var data = ((houseHoldProvider.aggDemandItems?.netDueWithPenalty ?? 0.0) +
             double.parse(
                 CommonProvider.getAdvanceAdjustedAmount(widget.demandList))) -
         ((double.parse(
             CommonProvider.getAdvanceAdjustedAmount(widget.demandList))));
+    return data;
   }
 
   void downloadPdf(CommonProvider commonProvider, BillList billList,
