@@ -1,14 +1,13 @@
 package org.egov.wscalculation.web.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
+
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
