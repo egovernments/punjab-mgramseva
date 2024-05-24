@@ -11,6 +11,6 @@ import lombok.*;
 @ToString
 public class WsDemandChangeAuditRequestWrapper {
 
-   @JsonProperty("WsDemandChangeAuditRequestWrapper")
+   @JsonProperty("WsDemandChangeAuditRequest")
    private  WsDemandChangeAuditRequest wsDemandChangeAuditRequest;
 }
