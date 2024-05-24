@@ -1403,13 +1403,15 @@ public class DemandService {
 		else
 			return true;
 	}
-	public  List<String> getDemandToAddPenalty(String tenantid,Long penaltyThresholdDate,Integer penaltyApplicableAfterDays){
+	public  List<String> getDemandToAddPenalty(String tenantid,BigInteger penaltyThresholdDate,Integer penaltyApplicableAfterDays){
       return  demandRepository.getDemandsToAddPenalty(tenantid,penaltyThresholdDate,penaltyApplicableAfterDays);
 	}
 
 	public ResponseEntity<HttpStatus> addPenalty(@Valid RequestInfo requestInfo, AddPenaltyCriteria addPenaltyCriteria) {
 		if(config.isPenaltyEnabled()) {
+            if (requestInfo.getUserInfo().equals(null)) {
 
+			}
 			List<MasterDetail> masterDetails = new ArrayList<>();
 			MasterDetail masterDetail = new MasterDetail("Penalty", "[?(@)]");
 			masterDetails.add(masterDetail);

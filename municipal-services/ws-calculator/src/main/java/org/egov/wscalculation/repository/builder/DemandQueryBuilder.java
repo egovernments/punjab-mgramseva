@@ -7,6 +7,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import java.math.BigInteger;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -24,7 +25,7 @@ public class DemandQueryBuilder {
     private final  static String groupByClause = " GROUP BY b.demandid " +
             "HAVING COUNT(*) = 1 ";
 
-    public String getPenaltyQuery(String tenantId, Long penaltyThresholdDate, Integer daysToBeSubstracted ) {
+    public String getPenaltyQuery(String tenantId, BigInteger penaltyThresholdDate, Integer daysToBeSubstracted ) {
         //TODO: find out days
         long currentTimeMillis = System.currentTimeMillis();
         long tenDaysAgoMillis = Instant.ofEpochMilli(currentTimeMillis)

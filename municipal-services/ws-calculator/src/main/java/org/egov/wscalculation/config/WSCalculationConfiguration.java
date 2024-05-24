@@ -1,6 +1,7 @@
 package org.egov.wscalculation.config;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -254,7 +255,7 @@ public class WSCalculationConfiguration {
 	private Integer penaltyApplicableDays;
 
 	@Value("${penalty.start.threshold.time}")
-	private Long penaltyStartThresholdTime;
+	private BigInteger penaltyStartThresholdTime;
 
 	@Value("${is.penalty.feature.enable}")
 	private boolean isPenaltyEnabled;

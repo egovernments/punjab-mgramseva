@@ -1,5 +1,6 @@
 package org.egov.wscalculation.repository;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -78,7 +79,7 @@ public class DemandRepository {
         }
     }
 
-    public List<String> getDemandsToAddPenalty(String tenantId, Long penaltyThresholdTime, Integer penaltyApplicableAfterDays) {
+    public List<String> getDemandsToAddPenalty(String tenantId, BigInteger penaltyThresholdTime, Integer penaltyApplicableAfterDays) {
         List<Object> preparedStmtList = new ArrayList<>();
         String query = queryBuilder.getPenaltyQuery(tenantId, penaltyThresholdTime, penaltyApplicableAfterDays);
         log.info("query:"+ query);
