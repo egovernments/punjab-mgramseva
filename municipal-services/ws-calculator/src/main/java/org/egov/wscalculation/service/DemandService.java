@@ -1428,7 +1428,7 @@ public class DemandService {
 			String penaltySubType = (String) paymentMasterData.get("subType");
 			String startingDay = (String) paymentMasterData.get("startingDay");
 			Integer applicableAfterDays = (Integer) paymentMasterData.get("applicableAfterDays");
-			List<String> demandIds = getDemandToAddPenalty(addPenaltyCriteria.getTenantId(), config.getPenaltyStartThresholdTime(),applicableAfterDays);
+			List<String> demandIds = getDemandToAddPenalty(addPenaltyCriteria.getTenantId(), new BigInteger(config.getPenaltyStartThresholdTime()),applicableAfterDays);
 			if (rate > 0) {
 				demandIds.stream().forEach(demandId -> {
 					Set<String> demandids = new HashSet<>();

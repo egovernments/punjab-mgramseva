@@ -255,7 +255,7 @@ public class WSCalculationConfiguration {
 	private Integer penaltyApplicableDays;
 
 	@Value("${penalty.start.threshold.time}")
-	private BigInteger penaltyStartThresholdTime;
+	private String penaltyStartThresholdTime;
 
 	@Value("${is.penalty.feature.enable}")
 	private boolean isPenaltyEnabled;
