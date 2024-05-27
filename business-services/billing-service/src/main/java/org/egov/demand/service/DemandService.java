@@ -707,8 +707,7 @@ public class DemandService {
 
 		totalAreasWithPenalty = totalAreas.add(penaltyInRemainingMonth);
 
-		netdue = currentmonthBill.add(totalAreas);
-		netDueWithPenalty = currentmonthTotalDue.add(totalAreasWithPenalty);
+
 
 		BigDecimal currentMonthAdvanceAvailable=currentMonthDemandDetailList.stream()
 				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_ADVANCE_CARRYFORWARD")) // filter by taxHeadCode
@@ -729,6 +728,9 @@ public class DemandService {
 		advanceAvailable = currentMonthAdvanceAvailable.add(remainingMonthAdvanceAvailable);
 		advanceAdjusted = currentMonthAdvanceCollected.add(remainingMonthAdvanceCollected);
 		remainingAdvance = advanceAvailable.subtract(advanceAdjusted);
+
+		netdue = currentmonthBill.add(totalAreas).add(remainingAdvance).add(remainingAdvance);
+		netDueWithPenalty = currentmonthTotalDue.add(totalAreasWithPenalty).add(remainingAdvance);
 
 		//BigDecimal currentMonthBill
 		AggregatedDemandDetailResponse aggregatedDemandDetailResponse = AggregatedDemandDetailResponse.builder()
