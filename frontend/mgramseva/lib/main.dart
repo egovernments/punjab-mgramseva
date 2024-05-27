@@ -74,14 +74,13 @@ void main() {
 
     WidgetsFlutterBinding.ensureInitialized();
     await dotenv.load(fileName: 'assets/.env');
-    if(kIsWeb){
-      await Firebase.initializeApp(options: FirebaseConfigurations.firebaseOptions);
-    }else{
+    if (kIsWeb) {
+      await Firebase.initializeApp(
+          options: FirebaseConfigurations.firebaseOptions);
+    } else {
       await Firebase.initializeApp();
     }
-    if (Firebase.apps.length == 0) {
-
-    }
+    if (Firebase.apps.length == 0) {}
 
     if (!kIsWeb) {
       await FlutterDownloader.initialize(
@@ -136,9 +135,9 @@ class _MyAppState extends State<MyApp> {
     IsolateNameServer.removePortNameMapping('downloader_send_port');
     super.dispose();
   }
+
   @pragma('vm:entry-point')
-  static void downloadCallback(
-      String id, int status, int progress) {
+  static void downloadCallback(String id, int status, int progress) {
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port')!;
 
@@ -156,7 +155,8 @@ class _MyAppState extends State<MyApp> {
       // print("Download progress: "+progress.toString());
       if (status == DownloadTaskStatus.complete) {
         if (CommonProvider.downloadUrl.containsKey(id)) {
-          if (CommonProvider.downloadUrl[id] != null) OpenFilex.open(CommonProvider.downloadUrl[id] ?? '');
+          if (CommonProvider.downloadUrl[id] != null)
+            OpenFilex.open(CommonProvider.downloadUrl[id] ?? '');
           CommonProvider.downloadUrl.remove(id);
         } else if (status == DownloadTaskStatus.failed ||
             status == DownloadTaskStatus.canceled ||
@@ -286,8 +286,7 @@ class _LandingPageState extends State<LandingPage> {
     commonProvider.getLoginCredentials();
     await commonProvider.getAppVersionDetails();
     if (!kIsWeb)
-      CommonMethods()
-          .checkVersion(context, commonProvider.appVersion!);
+      CommonMethods().checkVersion(context, commonProvider.appVersion!);
   }
 
   @override

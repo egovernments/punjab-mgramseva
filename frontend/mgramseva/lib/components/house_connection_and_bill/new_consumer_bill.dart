@@ -268,7 +268,6 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                 : '- ₹${double.parse(CommonProvider.getAdvanceAdjustedAmount(widget.demandList))}',
                                             context),
                                       // Net Due Amount
-
                                       if (CommonProvider
                                               .getPenaltyOrAdvanceStatus(
                                                   widget.waterConnection
