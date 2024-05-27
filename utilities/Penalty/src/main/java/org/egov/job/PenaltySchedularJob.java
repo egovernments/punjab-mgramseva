@@ -62,12 +62,14 @@ public class PenaltySchedularJob implements ApplicationRunner {
         log.info("Posting request to add Penalty for tenantid:" +penaltyCriteria.getTenantId());
         log.info("Penalty Request", penaltyRequest);
         if (penaltyCriteria.getTenantId() != null) {
-            try {
-                restTemplate.put(getWaterConnnectionAddPennanltyUrl(), penaltyRequest);
+            if (penaltyCriteria.getTenantId().equalsIgnoreCase("pb.abianakhurd")) {
+                try {
+                    restTemplate.put(getWaterConnnectionAddPennanltyUrl(), penaltyRequest);
 
-                log.info("Posted request to add Penalty for tenant:" + penaltyCriteria.getTenantId());
-            } catch (RestClientException e) {
-                log.info("Error while calling to water calculator service for tenant :" + penaltyCriteria.getTenantId() + " ERROR MESSAGE:" + e.getMessage(), e.getCause());
+                    log.info("Posted request to add Penalty for tenant:" + penaltyCriteria.getTenantId());
+                } catch (RestClientException e) {
+                    log.info("Error while calling to water calculator service for tenant :" + penaltyCriteria.getTenantId() + " ERROR MESSAGE:" + e.getMessage(), e.getCause());
+                }
             }
         }
     }
