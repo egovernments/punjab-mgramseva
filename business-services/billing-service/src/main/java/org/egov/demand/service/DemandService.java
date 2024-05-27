@@ -589,6 +589,9 @@ public class DemandService {
 			demands = demandEnrichmentUtil.enrichPayer(demands, payers);
 
 		log.info("demannddddds::"+demands);
+		demands = demands.stream().filter(demand -> {
+			return demand.getStatus().equals(Demand.StatusEnum.ACTIVE);
+		}).collect(Collectors.toList());
 		List<Map<Long, List<DemandDetail>>> demandDetailsList = new ArrayList<>();
 
 		for (Demand demand : demands) {
