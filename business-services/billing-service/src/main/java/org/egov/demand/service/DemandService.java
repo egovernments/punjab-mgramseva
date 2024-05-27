@@ -729,7 +729,7 @@ public class DemandService {
 		advanceAdjusted = currentMonthAdvanceCollected.add(remainingMonthAdvanceCollected);
 		remainingAdvance = advanceAvailable.subtract(advanceAdjusted);
 
-		netdue = currentmonthBill.add(totalAreas).add(remainingAdvance).add(remainingAdvance);
+		netdue = currentmonthBill.add(totalAreas).add(remainingAdvance);
 		netDueWithPenalty = currentmonthTotalDue.add(totalAreasWithPenalty).add(remainingAdvance);
 
 		//BigDecimal currentMonthBill
