@@ -249,5 +249,10 @@ public class WSCalculationConfiguration {
 
 	@Value("${sms.exclude.tenant}")
 	private String smsExcludeTenant;
-	
+
+	@Value("${is.save.demand.audit.enabled}")
+	private boolean isSaveDemandAuditEnabled;
+
+	@Value("${egov.save.demand.audit.from.wscal}")
+	private String saveDemandAudit;
 }
