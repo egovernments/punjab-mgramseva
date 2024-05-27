@@ -30,7 +30,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
-
+import io.swagger.models.auth.In;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
@@ -65,6 +65,8 @@ import com.jayway.jsonpath.JsonPath;
 
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
+import org.springframework.http.ResponseEntity;
+import org.apache.http.HttpStatus;
 
 @Service
 @Slf4j
@@ -1465,6 +1467,125 @@ public class DemandService {
 			return false;
 		else
 			return true;
+	}
+	public List<Demand> searchDemandBydemandId(String tenantId, Set<String> demandids,
+											   RequestInfo requestInfo) {
+		Object result = serviceRequestRepository.fetchResult(
+				getDemandSearchURLByDemandId(tenantId, demandids),
+				RequestInfoWrapper.builder().requestInfo(requestInfo).build());
+		try {
+			return mapper.convertValue(result, DemandResponse.class).getDemands();
+		} catch (IllegalArgumentException e) {
+			throw new CustomException("PARSING_ERROR", "Failed to parse response from Demand Search");
+		}
+
+	}
+
+	public StringBuilder getDemandSearchURLByDemandId(String tenantId, Set<String> demandIds) {
+		StringBuilder url = new StringBuilder(configs.getBillingServiceHost());
+		url.append(configs.getDemandSearchEndPoint());
+		url.append("?");
+		url.append("tenantId=");
+		url.append(tenantId);
+		url.append("&");
+		url.append("demandId=");
+		url.append(StringUtils.join(demandIds, ','));
+		log.info("Search demand url:"+url);
+		return url;
+	}
+
+	public  List<String> getDemandToAddPenalty(String tenantid,BigInteger penaltyThresholdDate,Integer penaltyApplicableAfterDays){
+		return  demandRepository.getDemandsToAddPenalty(tenantid,penaltyThresholdDate,penaltyApplicableAfterDays);
+	}
+
+	public ResponseEntity<HttpStatus> addPenalty(@Valid RequestInfo requestInfo, AddPenaltyCriteria addPenaltyCriteria) {
+		if(config.isPenaltyEnabled()) {
+			if (requestInfo.getUserInfo().equals(null)) {
+
+			}
+			List<MasterDetail> masterDetails = new ArrayList<>();
+			MasterDetail masterDetail = new MasterDetail("Penalty", "[?(@)]");
+			masterDetails.add(masterDetail);
+			ModuleDetail moduleDetail = ModuleDetail.builder().moduleName("ws-services-calculation").masterDetails(masterDetails).build();
+			List<ModuleDetail> moduleDetails = new ArrayList<>();
+			moduleDetails.add(moduleDetail);
+			MdmsCriteria mdmsCriteria = MdmsCriteria.builder().tenantId(addPenaltyCriteria.getTenantId())
+					.moduleDetails(moduleDetails)
+					.build();
+			Map<String, Object> paymentMasterData = calculatorUtils.getPenaltyMasterForTenantId(addPenaltyCriteria.getTenantId(), mdmsCriteria, requestInfo);
+
+			Integer rate= (Integer) paymentMasterData.get("rate");
+			String penaltyType = String.valueOf(paymentMasterData.get("type"));
+			String penaltySubType = (String) paymentMasterData.get("subType");
+			String startingDay = (String) paymentMasterData.get("startingDay");
+			Integer applicableAfterDays = (Integer) paymentMasterData.get("applicableAfterDays");
+			List<String> demandIds = getDemandToAddPenalty(addPenaltyCriteria.getTenantId(), new BigInteger(config.getPenaltyStartThresholdTime()),applicableAfterDays);
+			if (rate > 0) {
+				demandIds.stream().forEach(demandId -> {
+					Set<String> demandids = new HashSet<>();
+					demandids.add(demandId);
+					List<Demand> demands = searchDemandBydemandId(addPenaltyCriteria.getTenantId(), demandids, requestInfo);
+					if (!CollectionUtils.isEmpty(demands)) {
+						Demand demand = demands.get(0);
+						Boolean isPenaltyExistForDemand = demand.getDemandDetails().stream().anyMatch(demandDetail -> {
+							return demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY);
+						});
+						if (!isPenaltyExistForDemand) {
+							if (!CollectionUtils.isEmpty(demand.getDemandDetails()) && demand.getDemandDetails().size() == 1) {
+								demand.setDemandDetails(addTimePenalty(rate, penaltyType, penaltySubType, demand));
+								demands.clear();
+								demands.add(demand);
+								DemandRequest demandRequest = DemandRequest.builder().requestInfo(requestInfo).demands(demands).build();
+								producer.push(config.getUpdateAddPenaltytopic(), demandRequest);
+							}
+						}
+					}
+				});
+			} else {
+				return new ResponseEntity<>(org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED);
+			}
+		}
+		return new ResponseEntity<>(org.springframework.http.HttpStatus.ACCEPTED);
+	}
+
+	public List<DemandDetail> addTimePenalty(Integer rate, String type, String SubType,Demand demand) {
+		// TODO:  if type is fixed annd subtype is curretmonnth than only add penalty
+		//TODO : check for metered connection also what is taxheadcode
+
+		BigDecimal taxPercentage = BigDecimal.valueOf(Double.valueOf(rate));
+		List<DemandDetail> demandDetailList=  demand.getDemandDetails();
+		DemandDetail waterChargeDemandDetails = null;
+		if(!CollectionUtils.isEmpty(demandDetailList)) {
+			if(demandDetailList.get(0).getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_CHARGE)){
+				//mapper.convertValue(demandDetailList.stream().filter(demandDetail -> demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_CHARGE)), DemandDetail.class) ;
+				waterChargeDemandDetails=demandDetailList.get(0);
+				BigDecimal netPayableAmountWithouttax= waterChargeDemandDetails.getTaxAmount().subtract(waterChargeDemandDetails.getCollectionAmount());
+				if(netPayableAmountWithouttax.signum()> 0) {
+					BigDecimal tax = netPayableAmountWithouttax.multiply(taxPercentage.divide(WSCalculationConstant.HUNDRED));
+					//round off to next higest number
+					tax = roundOffTax(tax);
+					DemandDetail timeDemandDetail = DemandDetail.builder().demandId(demand.getId())
+							.taxHeadMasterCode(WSCalculationConstant.WS_TIME_PENALTY)
+							.taxAmount(tax)
+							.collectionAmount(BigDecimal.ZERO)
+							.tenantId(demand.getTenantId()).build();
+
+					demandDetailList.add(timeDemandDetail);
+				}
+			}
+		}
+		return demandDetailList;
+
+	}
+
+	public BigDecimal roundOffTax (BigDecimal tax) {
+
+		// Round the value up to the next highest integer
+		return  tax.setScale(0, RoundingMode.CEILING);
+	}
+
+	public void updateDemandAddPenalty(RequestInfo requestInfo , List<Demand> demands) {
+		demandRepository.updateDemand(requestInfo,demands);
 	}
 
 }
