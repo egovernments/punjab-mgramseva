@@ -230,7 +230,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                   .toString()) +
                               ' only')),
                       getPrinterLabel(
-                          (item.totalDue ?? 0) - (item.totalAmountPaid ?? 0)>0?i18.consumerReciepts.CONSUMER_PENDING_AMOUNT:i18.common.CORE_ADVANCE,
+                          (item.totalDue ?? 0) - (item.totalAmountPaid ?? 0)>=0?i18.consumerReciepts.CONSUMER_PENDING_AMOUNT:i18.common.CORE_ADVANCE,
                           ('₹' +
                               ((item.totalDue ?? 0) - (item.totalAmountPaid ?? 0)).abs()
                                   .toString())),

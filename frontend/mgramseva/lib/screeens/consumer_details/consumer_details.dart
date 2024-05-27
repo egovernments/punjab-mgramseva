@@ -472,7 +472,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                   inputFormatter: [
                                                     FilteringTextInputFormatter
                                                         .allow(RegExp(
-                                                            "[a-zA-Z0-9]"))
+                                                            r"^(?!0+$)[a-zA-Z0-9]+$"))
                                                   ],
                                                   key: Keys.createConsumer
                                                       .CONSUMER_METER_NUMBER_KEY,

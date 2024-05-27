@@ -11,7 +11,7 @@ import {
   BackButton,
   Loader,
   SubmitBar,
-  Password
+  Password,
 } from "@egovernments/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -136,7 +136,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const setUserMobileNumber = (value) => {
     setMobileNo(value);
 
-    if (userType === "employee" && !new RegExp(/^[6-9]{1}[0-9]{9}$/).test(value)) {
+    if (userType === "employee" && !new RegExp(/^[4-9]{1}[0-9]{9}$/).test(value)) {
       setErrors({ ...errors, mobileNumber: { type: "pattern", message: "CORE_COMMON_PROFILE_MOBILE_NUMBER_INVALID" } });
     } else {
       setErrors({ ...errors, mobileNumber: null });
@@ -200,7 +200,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
         throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_NAME_INVALID") });
       }
 
-      if (userType === "employee" && !new RegExp(/^[6-9]{1}[0-9]{9}$/).test(mobileNumber)) {
+      if (userType === "employee" && !new RegExp(/^[4-9]{1}[0-9]{9}$/).test(mobileNumber)) {
         throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_MOBILE_NUMBER_INVALID") });
       }
 
@@ -277,7 +277,6 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
     } catch (error) {
       if (error?.response?.data?.Errors[0].message) {
         showToast("error", error?.response?.data?.Errors[0].message);
-
       } else {
         const errorObj = JSON.parse(error);
         showToast(errorObj.type, t(errorObj.message), 5000);
@@ -605,7 +604,6 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
                             onChange={(value) => setUserCurrentPassword(value)}
                             disable={editScreen}
                             maxlength={10}
-
                           />
                           {errors?.currentPassword && <CardLabelError>{t(errors?.currentPassword?.message)}</CardLabelError>}
                         </div>
@@ -643,7 +641,6 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
                             onChange={(value) => setUserConfirmPassword(value)}
                             disable={editScreen}
                             maxlength={10}
-
                           />
                           {errors?.confirmPassword && <CardLabelError>{t(errors?.confirmPassword?.message)}</CardLabelError>}
                         </div>
