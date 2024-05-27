@@ -99,11 +99,10 @@ class Constants {
         (i18.dashboard.CORE_GPWSC_DETAILS_AND_RATE_INFO),
         HomeIcons.gpwscdetails,
         Routes.GPWSC_DETAILS_AND_RATE_INFO, {}),
-    HomeItem(
-        "CORE_REPORTS",
-        (i18.dashboard.CORE_REPORTS),
-        Icons.assessment,
+    HomeItem("CORE_REPORTS", (i18.dashboard.CORE_REPORTS), Icons.assessment,
         Routes.REPORTS, {}),
+    HomeItem('USER_MANAGEMENT', (i18.common.USER_MANAGEMENT),
+        HomeIcons.gpwscdetails, Routes.USER_MANAGEMENT, {})
   ];
 
   static List<KeyValue> SERVICECATEGORY = [

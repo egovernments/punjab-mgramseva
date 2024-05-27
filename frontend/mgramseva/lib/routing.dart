@@ -36,6 +36,7 @@ import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/role_actions.dart';
 import 'package:mgramseva/widgets/page_not_available.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'model/success_handler.dart';
 import 'model/user/user_details.dart';
@@ -56,16 +57,22 @@ class Routing {
     Map<String, dynamic>? query = uri.queryParameters;
     String? path = uri.path;
     if (kIsWeb) {
-      if (settings.name == Routes.PRIVACY_POLICY || settings.name == Routes.PRIVACY_POLICY_S) {
-        bool q = settings.arguments==null?false:settings.arguments as bool;
-       return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: q),
+      if (settings.name == Routes.PRIVACY_POLICY ||
+          settings.name == Routes.PRIVACY_POLICY_S) {
+        bool q =
+            settings.arguments == null ? false : settings.arguments as bool;
+        return MaterialPageRoute(
+            builder: (_) => PrivacyAndTerms(
+                pageType: Routes.PRIVACY_POLICY, showLeading: q),
             settings: RouteSettings(name: Routes.PRIVACY_POLICY));
       }
-      if (settings.name == Routes.TERMS_OF_USE || settings.name == Routes.TERMS_OF_USE_S) {
-        bool q = settings.arguments==null?false:settings.arguments as bool;
-       return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType:Routes.TERMS_OF_USE,showLeading: q),
+      if (settings.name == Routes.TERMS_OF_USE ||
+          settings.name == Routes.TERMS_OF_USE_S) {
+        bool q =
+            settings.arguments == null ? false : settings.arguments as bool;
+        return MaterialPageRoute(
+            builder: (_) =>
+                PrivacyAndTerms(pageType: Routes.TERMS_OF_USE, showLeading: q),
             settings: RouteSettings(name: Routes.TERMS_OF_USE));
       }
       if (Routes.POST_PAYMENT_FEED_BACK == path && settings.arguments == null) {
@@ -159,7 +166,9 @@ class Routing {
       } else if (Routes.LOGIN == settings.name ||
           Routes.FORGOT_PASSWORD == settings.name ||
           Routes.DEFAULT_PASSWORD_UPDATE == settings.name ||
-          Routes.RESET_PASSWORD == settings.name || Routes.PRIVACY_POLICY == settings.name || Routes.TERMS_OF_USE == settings.name) {
+          Routes.RESET_PASSWORD == settings.name ||
+          Routes.PRIVACY_POLICY == settings.name ||
+          Routes.TERMS_OF_USE == settings.name) {
         path = settings.name;
       } else if (path == '/') {
         path = Routes.HOME;
@@ -371,14 +380,18 @@ class Routing {
             builder: (_) => Reports(),
             settings: RouteSettings(name: Routes.REPORTS));
       case Routes.PRIVACY_POLICY:
-        bool args = settings.arguments==null?false:settings.arguments as bool;
+        bool args =
+            settings.arguments == null ? false : settings.arguments as bool;
         return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: args),
+            builder: (_) => PrivacyAndTerms(
+                pageType: Routes.PRIVACY_POLICY, showLeading: args),
             settings: RouteSettings(name: Routes.PRIVACY_POLICY));
       case Routes.TERMS_OF_USE:
-        bool args = settings.arguments==null?false:settings.arguments as bool;
+        bool args =
+            settings.arguments == null ? false : settings.arguments as bool;
         return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType: Routes.TERMS_OF_USE,showLeading: args),
+            builder: (_) => PrivacyAndTerms(
+                pageType: Routes.TERMS_OF_USE, showLeading: args),
             settings: RouteSettings(name: Routes.TERMS_OF_USE));
 
       case Routes.SEARCH_CONSUMER_RESULT:
@@ -506,6 +519,10 @@ class Routing {
         return MaterialPageRoute(
             builder: (_) => NotificationScreen(),
             settings: RouteSettings(name: Routes.NOTIFICATIONS));
+      case Routes.USER_MANAGEMENT:
+        final url = "https://mgramseva-uat.psegs.in/mgramseva-web/employee";
+        _launchURL(url);
+        return _redirectToExternal();
       default:
         return MaterialPageRoute(
           builder: (_) => SelectLanguage(),
@@ -562,4 +579,22 @@ class Routing {
   static get pageNotAvailable => MaterialPageRoute(
         builder: (_) => PageNotAvailable(),
       );
+
+  static void _launchURL(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  static Route<dynamic> _redirectToExternal() {
+    return MaterialPageRoute(
+      builder: (_) => Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
+  }
 }

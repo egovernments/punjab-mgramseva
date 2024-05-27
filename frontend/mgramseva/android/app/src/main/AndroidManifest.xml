@@ -57,6 +57,9 @@
     <category android:name="android.intent.category.BROWSABLE" />
     <data android:scheme="http" android:host="mgramseva-qa.egov.org.in" />
     <data android:scheme="https" />
+     <data android:scheme="http" android:host="mgramseva-uat.psegs.in" android:pathPrefix="/mgramseva-web/employee" />
+    <data android:scheme="https" android:host="mgramseva-uat.psegs.in" android:pathPrefix="/mgramseva-web/employee" />
+            
 </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
