@@ -76,7 +76,7 @@ public class PenaltySchedularJob implements ApplicationRunner {
                 tenantId(config.getTenantId()).build();
         PenaltyRequest penaltyRequest = PenaltyRequest.builder().requestInfo(RequestInfo.builder().userInfo(user).build()).addPenaltyCriteria(penaltyCriteria).build();
         log.info("Posting request to add Penalty for tenantid:" +penaltyCriteria.getTenantId());
-        log.info("Penalty Request", penaltyRequest);
+        log.info("Penalty Request"+ penaltyRequest);
         if (penaltyCriteria.getTenantId() != null) {
             if (penaltyCriteria.getTenantId().equalsIgnoreCase("pb.poohlahjgfid")) {
                 try {
