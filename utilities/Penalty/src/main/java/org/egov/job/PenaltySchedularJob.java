@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
+import org.egov.common.contract.request.User;
 import org.egov.config.PenaltyShedularConfiguration;
 import org.egov.model.AddPenaltyCriteria;
 import org.egov.model.PenaltyRequest;
@@ -58,7 +59,7 @@ public class PenaltySchedularJob implements ApplicationRunner {
     }
 
     public void addPenaltyEventToWaterCalculator(AddPenaltyCriteria penaltyCriteria) {
-        PenaltyRequest penaltyRequest = PenaltyRequest.builder().requestInfo(RequestInfo.builder().build()).addPenaltyCriteria(penaltyCriteria).build();
+        PenaltyRequest penaltyRequest = PenaltyRequest.builder().requestInfo(RequestInfo.builder().userInfo(User.builder().uuid(adapterConfiguration.getUuid()).tenantId("pb").type("SYSTEM").build()).build()).addPenaltyCriteria(penaltyCriteria).build();
         log.info("Posting request to add Penalty for tenantid:" +penaltyCriteria.getTenantId());
         log.info("Penalty Request", penaltyRequest);
         if (penaltyCriteria.getTenantId() != null) {

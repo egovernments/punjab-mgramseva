@@ -45,5 +45,9 @@ public class PenaltyShedularConfiguration {
 
     @Value("#{'${egov.penalty.enabled.division.code.list}'.split(',')}")
     private List<String> penaltyEnabledDivisionlist;
+
+    @Value ("${user.system.uuid}")
+    private String uuid;
+
 }
 
