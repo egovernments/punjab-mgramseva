@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -75,7 +76,7 @@ public class PenaltySchedularJob implements ApplicationRunner {
         if (penaltyCriteria.getTenantId() != null) {
             if (penaltyCriteria.getTenantId().equalsIgnoreCase("pb.poohlahjgfid")) {
                 try {
-                    restTemplate.put(getWaterConnnectionAddPennanltyUrl(), penaltyRequest);
+                    restTemplate.postForObject(getWaterConnnectionAddPennanltyUrl(), penaltyRequest, Map.class);
 
                     log.info("Posted request to add Penalty for tenant:" + penaltyCriteria.getTenantId());
                 } catch (RestClientException e) {
