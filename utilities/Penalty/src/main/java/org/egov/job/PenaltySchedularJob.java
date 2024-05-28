@@ -14,6 +14,10 @@ import org.egov.util.MDMSClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -76,7 +80,11 @@ public class PenaltySchedularJob implements ApplicationRunner {
         if (penaltyCriteria.getTenantId() != null) {
             if (penaltyCriteria.getTenantId().equalsIgnoreCase("pb.poohlahjgfid")) {
                 try {
-                    restTemplate.postForObject(getWaterConnnectionAddPennanltyUrl(), penaltyRequest, Map.class);
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+
+                    HttpEntity<PenaltyRequest> request = new HttpEntity<>(penaltyRequest, headers);
+                    restTemplate.exchange(getWaterConnnectionAddPennanltyUrl(), HttpMethod.POST,request,Map.class);
 
                     log.info("Posted request to add Penalty for tenant:" + penaltyCriteria.getTenantId());
                 } catch (RestClientException e) {
