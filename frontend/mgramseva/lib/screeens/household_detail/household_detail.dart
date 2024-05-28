@@ -43,7 +43,6 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   }
 
   afterViewBuild() {
-   
     Provider.of<HouseHoldProvider>(context, listen: false)
       ..isVisible = false
       ..fetchDemand(widget.waterConnection, widget.waterConnection?.demands,
@@ -51,10 +50,10 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   }
 
   buildDemandView(DemandList data) {
-
-
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
+    log("${houseHoldProvider.waterConnection?.connectionType}");
+    log("${houseHoldProvider.isfirstdemand}");
     return Column(
       children: [
         data.demands!.isEmpty
@@ -95,6 +94,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   Widget build(BuildContext context) {
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
+
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: CustomAppBar(),

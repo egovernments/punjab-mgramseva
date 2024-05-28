@@ -27,6 +27,9 @@ dynamic get apiBaseUrl {
 }
 
 Map<String, dynamic> devConstants = {
+  // PROD
+  // _baseUrl: "https://mgramseva-dwss.punjab.gov.in/",
+  // UAT
   _baseUrl: "https://mgramseva-uat.psegs.in/",
   // _baseUrl: kIsWeb
   //     ? (window.location.origin) + "/"

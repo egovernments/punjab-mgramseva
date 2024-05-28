@@ -104,18 +104,13 @@ class NewConsumerBillState extends State<NewConsumerBill> {
   buildBillView(BillList billList) {
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
-
-    // if(houseHoldProvider.isLoading){
-    //   return CircularProgressIndicator();
-    // }
-    // AggragateDemandDetails? updateDemandList = houseHoldProvider.aggDemandItems;
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     var penalty = billList.bill!.isEmpty
         ? Penalty(0.0, '0', false)
         : CommonProvider.getPenalty(widget.waterConnection?.demands);
-    var penaltyApplicable = billList.bill!.isEmpty
-        ? PenaltyApplicable(0.0)
-        : CommonProvider.getPenaltyApplicable(widget.demandList);
+    // var penaltyApplicable = billList.bill!.isEmpty
+    //     ? PenaltyApplicable(0.0)
+    //     : CommonProvider.getPenaltyApplicable(widget.demandList);
 
     return LayoutBuilder(builder: (context, constraints) {
       // Handler Status
@@ -238,25 +233,27 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                             i18.billDetails.TOTAL_AMOUNT,
                                             "₹ ${(houseHoldProvider.aggDemandItems?.netDueWithPenalty ?? 0.0) + double.parse(CommonProvider.getAdvanceAdjustedAmount(widget.demandList))}",
                                             context),
+
                                       // Advance Avaialble
                                       if (houseHoldProvider.aggDemandItems
                                                   ?.remainingAdvance !=
                                               null &&
                                           houseHoldProvider.aggDemandItems
                                                   ?.remainingAdvance !=
-                                              0)
+                                              0 &&
+                                          !houseHoldProvider.isfirstdemand)
                                         getLabelText(
                                             i18.common.ADVANCE_AVAILABLE,
-                                            "${houseHoldProvider.aggDemandItems?.remainingAdvance?.sign == -1 ? "-" : ""} ₹ ${(houseHoldProvider.aggDemandItems?.remainingAdvance?.abs() ?? 0.0)}",
+                                            "${houseHoldProvider.aggDemandItems?.remainingAdvance?.sign == -1 ? "-" : ""} ₹ ${(houseHoldProvider.aggDemandItems?.remainingAdvance?.abs())}",
                                             context),
+
+                                      // Advance Adjust Amount
                                       if (CommonProvider
                                               .getPenaltyOrAdvanceStatus(
                                                   widget.waterConnection
                                                       ?.mdmsData,
                                                   true) &&
                                           houseHoldProvider.isfirstdemand)
-
-                                        // Advance Adjust Amount
                                         getLabelText(
                                             i18.common.CORE_ADVANCE_ADJUSTED,
                                             double.parse(CommonProvider
@@ -264,7 +261,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                             widget
                                                                 .demandList)) <=
                                                     0
-                                                ? "₹ 0"
+                                                ? "₹ ${double.parse(CommonProvider.getAdvanceAdjustedAmount(widget.demandList))}"
                                                 : '- ₹${double.parse(CommonProvider.getAdvanceAdjustedAmount(widget.demandList))}',
                                             context),
                                       // Net Due Amount
@@ -640,6 +637,14 @@ class NewConsumerBillState extends State<NewConsumerBill> {
               return collectedAmount == demandDetail.collectionAmount?.abs();
             }
           } else if (demandDetail.taxAmount! < demandDetail.collectionAmount!) {
+            return true;
+          } else if ((houseHoldRegister.aggDemandItems?.remainingAdvance ??
+                  0) ==
+              0) {
+            return false;
+          } else if (((houseHoldRegister.aggDemandItems?.remainingAdvance ??
+                  0) !=
+              0)) {
             return true;
           }
         }

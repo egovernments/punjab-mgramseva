@@ -16,6 +16,7 @@ import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/model/user/user_details.dart';
 import 'package:mgramseva/model/user_profile/user_profile.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/repository/authentication_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/services/local_storage.dart';
@@ -325,10 +326,12 @@ class CommonProvider with ChangeNotifier {
     return userDetails;
   }
 
-  void onLogout() {
-    navigatorKey.currentState
-        ?.pushNamedAndRemoveUntil(Routes.SELECT_LANGUAGE, (route) => false);
-    loginCredentials = null;
+  void onLogout() async {
+    await AuthenticationRepository().logoutUser().then((onValue) {
+      navigatorKey.currentState
+          ?.pushNamedAndRemoveUntil(Routes.SELECT_LANGUAGE, (route) => false);
+      loginCredentials = null;
+    });
   }
 
   void onTapOfAttachment(FileStore store, context) async {

@@ -34,13 +34,16 @@ class HouseHoldProvider with ChangeNotifier {
 
   Future<List<MeterReadings>> checkMeterDemand(
       BillList? data, WaterConnection? waterConnection) async {
-    if (data!=null && data.bill!=null && data.bill!.isNotEmpty&& data.bill!.isNotEmpty) {
+    if (data != null &&
+        data.bill != null &&
+        data.bill!.isNotEmpty &&
+        data.bill!.isNotEmpty) {
       try {
         var res = await BillGenerateRepository().searchMeteredDemand({
           "tenantId": data.bill!.first.tenantId,
           "connectionNos": data.bill!.first.consumerCode
         });
-        if (res.meterReadings!=null && res.meterReadings!.isNotEmpty) {
+        if (res.meterReadings != null && res.meterReadings!.isNotEmpty) {
           data.bill!.first.meterReadings = res.meterReadings;
         }
         if (data.bill!.first.billDetails != null) {
@@ -161,7 +164,7 @@ class HouseHoldProvider with ChangeNotifier {
         "consumerCode": data.connectionNo.toString(),
         "businessService": "WS",
         // "status": "ACTIVE"
-      }).then((value) async{
+      }).then((value) async {
         value.demands = value.demands
             ?.where((element) => element.status != 'CANCELLED')
             .toList();
@@ -190,7 +193,8 @@ class HouseHoldProvider with ChangeNotifier {
           } else {
             isfirstdemand = true;
           }
-          if(waterConnection?.connectionType == 'Metered' && waterConnection?.fetchBill?.bill?.isNotEmpty == true){
+          if (waterConnection?.connectionType == 'Metered' &&
+              waterConnection?.fetchBill?.bill?.isNotEmpty == true) {
             value.demands?.first.meterReadings = await checkMeterDemand(
                 waterConnection?.fetchBill, waterConnection);
           }

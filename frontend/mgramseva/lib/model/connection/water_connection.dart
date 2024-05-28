@@ -254,30 +254,30 @@ class WaterConnection {
   @override
   int get hashCode {
     return id.hashCode ^
-    connectionNo.hashCode ^
-    propertyId.hashCode ^
-    applicationNo.hashCode ^
-    tenantId.hashCode ^
-    action.hashCode ^
-    status.hashCode ^
-    meterInstallationDate.hashCode ^
-    documents.hashCode ^
-    proposedTaps.hashCode ^
-    noOfTaps.hashCode ^
-    arrears.hashCode ^
-    connectionType.hashCode ^
-    oldConnectionNo.hashCode ^
-    meterId.hashCode ^
-    propertyType.hashCode ^
-    previousReadingDate.hashCode ^
-    previousReading.hashCode ^
-    proposedPipeSize.hashCode ^
-    connectionHolders.hashCode ^
-    additionalDetails.hashCode ^
-    processInstance.hashCode ^
-    paymentType.hashCode ^
-    penalty.hashCode ^
-    advance.hashCode;
+        connectionNo.hashCode ^
+        propertyId.hashCode ^
+        applicationNo.hashCode ^
+        tenantId.hashCode ^
+        action.hashCode ^
+        status.hashCode ^
+        meterInstallationDate.hashCode ^
+        documents.hashCode ^
+        proposedTaps.hashCode ^
+        noOfTaps.hashCode ^
+        arrears.hashCode ^
+        connectionType.hashCode ^
+        oldConnectionNo.hashCode ^
+        meterId.hashCode ^
+        propertyType.hashCode ^
+        previousReadingDate.hashCode ^
+        previousReading.hashCode ^
+        proposedPipeSize.hashCode ^
+        connectionHolders.hashCode ^
+        additionalDetails.hashCode ^
+        processInstance.hashCode ^
+        paymentType.hashCode ^
+        penalty.hashCode ^
+        advance.hashCode;
   }
 }
 
