@@ -49,5 +49,10 @@ public class PenaltyShedularConfiguration {
     @Value ("${user.system.uuid}")
     private String uuid;
 
+    @Value("${user.system.mobileNumber}")
+    private String userName;
+
+    @Value("${user.system.role}")
+    private String role;
 }
 

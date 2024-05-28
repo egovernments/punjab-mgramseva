@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
+import org.egov.common.contract.request.Role;
 import org.egov.common.contract.request.User;
 import org.egov.config.PenaltyShedularConfiguration;
 import org.egov.model.AddPenaltyCriteria;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +32,7 @@ public class PenaltySchedularJob implements ApplicationRunner {
     private MDMSClient mdmsClient;
 
     @Autowired
-    private PenaltyShedularConfiguration adapterConfiguration;
+    private PenaltyShedularConfiguration config;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -42,7 +44,7 @@ public class PenaltySchedularJob implements ApplicationRunner {
             List<Tenant> tenantList = mdmsClient.getTenants();
             tenantList=tenantList.stream().filter(
                     tenant -> {
-                        return adapterConfiguration.getPenaltyEnabledDivisionlist().contains(tenant.getDivisionCode());
+                        return config.getPenaltyEnabledDivisionlist().contains(tenant.getDivisionCode());
                     }).collect(Collectors.toList());
 
             System.out.println(tenantList.size());
@@ -59,7 +61,15 @@ public class PenaltySchedularJob implements ApplicationRunner {
     }
 
     public void addPenaltyEventToWaterCalculator(AddPenaltyCriteria penaltyCriteria) {
-        PenaltyRequest penaltyRequest = PenaltyRequest.builder().requestInfo(RequestInfo.builder().userInfo(User.builder().uuid(adapterConfiguration.getUuid()).tenantId("pb").type("SYSTEM").build()).build()).addPenaltyCriteria(penaltyCriteria).build();
+        Role role= Role.builder().code(config.getRole()).tenantId(config.getTenantId()).name(config.getRole()).build();
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        User user = User.builder().userName(config.getUserName()).
+                mobileNumber(config.getUserName()).
+                uuid(config.getUuid()).
+                roles(roles).
+                tenantId(config.getTenantId()).build();
+        PenaltyRequest penaltyRequest = PenaltyRequest.builder().requestInfo(RequestInfo.builder().userInfo(user).build()).addPenaltyCriteria(penaltyCriteria).build();
         log.info("Posting request to add Penalty for tenantid:" +penaltyCriteria.getTenantId());
         log.info("Penalty Request", penaltyRequest);
         if (penaltyCriteria.getTenantId() != null) {
@@ -79,7 +89,7 @@ public class PenaltySchedularJob implements ApplicationRunner {
      * @return - return iFix event publish url
      */
     public String getWaterConnnectionAddPennanltyUrl() {
-        return (adapterConfiguration.getEgovWaterCalculatorHost() + adapterConfiguration.getEgovWaterCalculatorSearchUrl());
+        return (config.getEgovWaterCalculatorHost() + config.getEgovWaterCalculatorSearchUrl());
     }
 
 
