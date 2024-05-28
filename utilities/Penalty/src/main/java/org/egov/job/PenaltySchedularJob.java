@@ -62,7 +62,7 @@ public class PenaltySchedularJob implements ApplicationRunner {
         log.info("Posting request to add Penalty for tenantid:" +penaltyCriteria.getTenantId());
         log.info("Penalty Request", penaltyRequest);
         if (penaltyCriteria.getTenantId() != null) {
-            if (penaltyCriteria.getTenantId().equalsIgnoreCase("pb.abianakhurd")) {
+            if (penaltyCriteria.getTenantId().equalsIgnoreCase("pb.poohlahjgfid")) {
                 try {
                     restTemplate.put(getWaterConnnectionAddPennanltyUrl(), penaltyRequest);
 
