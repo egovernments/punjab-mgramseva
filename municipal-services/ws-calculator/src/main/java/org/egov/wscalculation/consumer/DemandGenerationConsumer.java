@@ -336,7 +336,7 @@ public class DemandGenerationConsumer {
 					}
 
 			} catch (Exception e) {
-				System.out.println("Got the exception while genating the demands:" + connectionNo);
+				System.out.println("Got the exception while genating the demands:" + e);
 				failedConnectionNos.add(connectionNo);
 			}
 		}
@@ -462,14 +462,12 @@ public class DemandGenerationConsumer {
 			String msgLink = config.getNotificationUrl() + config.getGpUserDemandLink();
 
 			for (OwnerInfo userInfo : userDetailResponse.getUser()) {
-				log.info("USER NUMBER:" + userInfo.getMobileNumber() + " USER ROLE:" + userInfo.getRoles());
 				if (userInfo.getName() != null) {
 					mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
 				} else {
 					mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
 				}
 			}
-			log.info("MOBILENUMBER MAPPINNG USERROLE:" +mobileNumberIdMap);
 			mobileNumberIdMap.entrySet().stream().forEach(map -> {
 				String msg = demandMessage.get(WSCalculationConstant.MSG_KEY);
 				msg = msg.replace("{ownername}", map.getValue());
