@@ -638,6 +638,33 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                 ],
                               ),
                             ),
+
+                          // REMARKS
+                          // Show Remarks TextField when check box is clicked
+                          if (consumerProvider.isEdit &&
+                              consumerProvider.waterconnection.status ==
+                                  "Inactive")
+                            Consumer<ConsumerProvider>(
+                              builder: (_, consumerProvider, child) =>
+                                  BuildTextField(
+                                i18.consumer.CONSUMER_REMARKS,
+                                property.owners!.first.consumerRemarksCtrl,
+                                validator: (val) =>
+                                    Validators.consumerRemarksValidator(
+                                        val, 20, i18.consumer.CONSUMER_REMARKS),
+                                isRequired: true,
+                                contextKey: consumerProvider
+                                    .consmerWalkthrougList[9].key,
+                                key: Keys.createConsumer.CONSUMER_REMARKS_KEY,
+                                inputFormatter: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp("[a-zA-Z0-9/\\-]"))
+                                ],
+                                isDisabled: false,
+                              ),
+                            ),
+
+                          // REMARKS
                           SizedBox(
                             height: 20,
                           ),
