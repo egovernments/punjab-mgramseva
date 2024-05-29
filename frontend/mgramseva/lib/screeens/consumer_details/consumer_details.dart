@@ -640,7 +640,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             ),
 
                           // REMARKS
-                          // Show Remarks TextField when check box is clicked
+                          // Show Remarks TextField when check box is true
                           if (consumerProvider.isEdit &&
                               consumerProvider.waterconnection.status ==
                                   "Inactive")
