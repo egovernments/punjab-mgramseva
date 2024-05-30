@@ -95,12 +95,12 @@ public class BillRepositoryV2 {
 			}
 		});
 		
-		// for (int i = 0; i < saveBill.length; i++) {
-		// 	if(0 == saveBill[i])
-		// 		throw new CustomException("EG_BS_DUPLICATE_ACTIVE_BILL_INSERTION_ERROR",
-		// 				"Insertion failed due to presence of ACTIVE bill in DB for consumer-code : "
-		// 						+ bills.get(i).getConsumerCode());
-		// }
+		for (int i = 0; i < saveBill.length; i++) {
+			if(0 == saveBill[i])
+				throw new CustomException("EG_BS_DUPLICATE_ACTIVE_BILL_INSERTION_ERROR",
+						"Insertion failed due to presence of ACTIVE bill in DB for consumer-code : "
+								+ bills.get(i).getConsumerCode());
+		}
 		saveBillDetails(billRequest);
 	}
 	
