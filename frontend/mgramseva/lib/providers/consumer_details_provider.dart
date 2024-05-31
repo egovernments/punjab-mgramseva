@@ -365,6 +365,7 @@ class ConsumerProvider with ChangeNotifier {
             waterconnection.arrears = null;
             waterconnection.advance = null;
           }
+
           var result1 =
               await ConsumerRepository().updateProperty(property.toJson());
           var result2 = await ConsumerRepository()

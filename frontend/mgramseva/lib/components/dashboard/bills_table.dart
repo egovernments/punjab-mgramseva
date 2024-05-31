@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
@@ -14,17 +17,22 @@ class BillsTable extends StatefulWidget {
   ScrollController scrollController = ScrollController();
   BillsTable(
       {Key? key,
-        required this.headerList,
-        required this.tableData,
-        required this.leftColumnWidth,
-        required this.rightColumnWidth, this.height, this.scrollPhysics})
+      required this.headerList,
+      required this.tableData,
+      required this.leftColumnWidth,
+      required this.rightColumnWidth,
+      this.height,
+      this.scrollPhysics})
       : super(key: key);
   BillsTable.withScrollController(
       {Key? key,
-        required this.headerList,
-        required this.tableData,
-        required this.leftColumnWidth,
-        required this.rightColumnWidth, this.height, this.scrollPhysics, required this.scrollController})
+      required this.headerList,
+      required this.tableData,
+      required this.leftColumnWidth,
+      required this.rightColumnWidth,
+      this.height,
+      this.scrollPhysics,
+      required this.scrollController})
       : super(key: key);
 
   @override
@@ -106,22 +114,22 @@ class _BillsTable extends State<BillsTable> {
     return Container(
       decoration: isBorderRequired
           ? BoxDecoration(
-          border: Border(
-              left: tableCellBorder,
-              bottom: tableCellBorder,
-              right: tableCellBorder))
+              border: Border(
+                  left: tableCellBorder,
+                  bottom: tableCellBorder,
+                  right: tableCellBorder))
           : null,
       child: isAscending != null
           ? Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 5,
-        children: [
-          textWidget,
-          Icon(isAscending
-              ? Icons.arrow_upward
-              : Icons.arrow_downward_sharp)
-        ],
-      )
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 5,
+              children: [
+                textWidget,
+                Icon(isAscending
+                    ? Icons.arrow_upward
+                    : Icons.arrow_downward_sharp)
+              ],
+            )
           : textWidget,
       width: widget.leftColumnWidth,
       height: 56,
@@ -129,9 +137,13 @@ class _BillsTable extends State<BillsTable> {
       alignment: Alignment.centerLeft,
     );
   }
+
   double columnRowIncreasedHeight(int index) {
-    return
-      (50 + widget.tableData[index].tableRow.first.label.substring(28).length.toDouble());
+    return (50 +
+        widget.tableData[index].tableRow.first.label
+            .substring(28)
+            .length
+            .toDouble());
     //if greater than 28 characters
   }
 
@@ -149,17 +161,20 @@ class _BillsTable extends State<BillsTable> {
             child: Container(
               decoration: BoxDecoration(
                   border: Border(
-                    left: tableCellBorder,
-                    bottom: tableCellBorder,
-                    right: tableCellBorder,
-                  )),
+                left: tableCellBorder,
+                bottom: tableCellBorder,
+                right: tableCellBorder,
+              )),
               child: Text(
                 ApplicationLocalizations.of(context)
                     .translate(widget.tableData[index].tableRow.first.label),
-                style: widget.tableData[index].tableRow.first.style ?? TextStyle(color: Theme.of(context).primaryColor),
+                style: widget.tableData[index].tableRow.first.style ??
+                    TextStyle(color: Theme.of(context).primaryColor),
               ),
               width: widget.leftColumnWidth,
-              height: widget.tableData[index].tableRow.first.label.length > 28 ? columnRowIncreasedHeight(index) : columnRowFixedHeight,
+              height: widget.tableData[index].tableRow.first.label.length > 28
+                  ? columnRowIncreasedHeight(index)
+                  : columnRowFixedHeight,
               padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
               alignment: Alignment.centerLeft,
             ),
@@ -174,7 +189,8 @@ class _BillsTable extends State<BillsTable> {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: Text(ApplicationLocalizations.of(context).translate(input),
+            child: Text(
+              ApplicationLocalizations.of(context).translate(input),
               style: style,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -183,7 +199,9 @@ class _BillsTable extends State<BillsTable> {
         ],
       ),
       width: widget.leftColumnWidth,
-      height: widget.tableData[index].tableRow.first.label.length > 28 ? columnRowIncreasedHeight(index) : columnRowFixedHeight,
+      height: widget.tableData[index].tableRow.first.label.length > 28
+          ? columnRowIncreasedHeight(index)
+          : columnRowFixedHeight,
       padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
       alignment: Alignment.centerLeft,
     );
@@ -191,6 +209,7 @@ class _BillsTable extends State<BillsTable> {
 
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
     var data = widget.tableData[index];
+
     return LayoutBuilder(builder: (context, constraints) {
       var list = <Widget>[];
       for (int i = 1; i < data.tableRow.length; i++) {
