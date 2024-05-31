@@ -33,19 +33,7 @@ import org.egov.wscalculation.util.NotificationUtil;
 import org.egov.wscalculation.util.WSCalculationUtil;
 import org.egov.wscalculation.validator.WSCalculationValidator;
 import org.egov.wscalculation.validator.WSCalculationWorkflowValidator;
-import org.egov.wscalculation.web.models.Action;
-import org.egov.wscalculation.web.models.ActionItem;
-import org.egov.wscalculation.web.models.BulkDemand;
-import org.egov.wscalculation.web.models.CalculationCriteria;
-import org.egov.wscalculation.web.models.CalculationReq;
-import org.egov.wscalculation.web.models.Category;
-import org.egov.wscalculation.web.models.Demand;
-import org.egov.wscalculation.web.models.Event;
-import org.egov.wscalculation.web.models.EventRequest;
-import org.egov.wscalculation.web.models.OwnerInfo;
-import org.egov.wscalculation.web.models.Recipient;
-import org.egov.wscalculation.web.models.SMSRequest;
-import org.egov.wscalculation.web.models.Source;
+import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.web.models.users.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -543,6 +531,12 @@ public class DemandGenerationConsumer {
 		generateDemandAndSendnotification(bulkDemand.getRequestInfo(), bulkDemand.getTenantId(), billingPeriod, billingMasterData,
 				isSendMessage, isManual);
 		
+	}
+	@KafkaListener(topics = {
+			"${egov.update.demand.add.penalty}" }, containerFactory = "kafkaListenerContainerFactory")
+	public void updateAddPenalty(HashMap<Object, Object> messageData) {
+		DemandRequest demandRequest = mapper.convertValue(messageData, DemandRequest.class);
+		demandService.updateDemandAddPenalty(demandRequest.getRequestInfo(), demandRequest.getDemands());
 	}
 
 }
