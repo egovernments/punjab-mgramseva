@@ -171,4 +171,6 @@ public class Constants {
 	public static final String PAID_CANCEL_BILL_MSG = "You cannot cancel the bill in the workflow";
 	
 	public static final String COUNT_REPLACE_CANCEL_BILL_MSG = "{count}";
+
+	public static final String PENALTY_PATH_CODE = "$.MdmsRes.ws-services-calculation.Penalty";
 }
