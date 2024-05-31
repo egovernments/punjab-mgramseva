@@ -42,7 +42,7 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) =>
               json['processInstance'] as Map<String, dynamic>)
       ..paymentType = json['paymentType'] as String?
       ..penalty = (json['penalty'] as num?)?.toDouble()
-      ..advance = (json['advance'] as num?)?.toDouble().abs();
+      ..advance = (json['advance'] as num?)?.toDouble();
 
 Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
     <String, dynamic>{
@@ -83,9 +83,7 @@ Map<String, dynamic> _$ProcessInstanceToJson(ProcessInstance instance) =>
 
 AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) =>
     AdditionalDetails()
-      ..initialMeterReading = json['initialMeterReading'] is double
-          ? json['initialMeterReading'].toInt()
-          : json['initialMeterReading'] as int?
+      ..initialMeterReading = json['initialMeterReading'] as int?
       ..meterReading = json['meterReading'] as int?
       ..locality = json['locality'] as String?
       ..category = json['category'] as String?
@@ -97,9 +95,9 @@ AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) =>
       ..doorNo = json['doorNo'] as String?
       ..collectionAmount = json['collectionAmount'] as String?
       ..collectionPendingAmount = json['collectionPendingAmount'] as String?
-      ..action = json['action'] as String?
       ..totalAmount = json['totalamount'] as String?
-      ..appCreatedDate = json['appCreatedDate'] as num?;
+      ..appCreatedDate = json['appCreatedDate'] as num?
+      ..action = json['action'] as String?;
 
 Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
     <String, dynamic>{
@@ -115,7 +113,7 @@ Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
       'doorNo': instance.doorNo,
       'collectionAmount': instance.collectionAmount,
       'collectionPendingAmount': instance.collectionPendingAmount,
-      'action': instance.action,
       'totalamount': instance.totalAmount,
       'appCreatedDate': instance.appCreatedDate,
+      'action': instance.action,
     };

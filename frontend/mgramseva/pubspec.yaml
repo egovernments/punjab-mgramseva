@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 1.2.21+38
+version: 1.2.25+39
 
 environment:
   sdk: ">=2.12.0 <4.0.0"
@@ -41,7 +41,7 @@ dependencies:
   flutter_spinkit: ^5.0.0
   json_annotation: ^4.8.0
   url_strategy: ^0.2.0
-  screenshot: ^2.1.0
+  screenshot: any
   number_to_words: ^1.0.0
   flutter_localizations:
     sdk: flutter
@@ -71,7 +71,8 @@ dependencies:
   firebase_core: ^2.23.0
   package_info_plus: ^4.0.2
   open_filex: ^4.3.4
-  syncfusion_flutter_xlsio: ^23.2.4
+  syncfusion_flutter_xlsio: ^25.2.4
+  # syncfusion_flutter_xlsio: ^23.2.4
   print_bluetooth_thermal: ^1.0.9
   nearby_connections: ^4.0.1
   dropdown_search: ^5.0.6
