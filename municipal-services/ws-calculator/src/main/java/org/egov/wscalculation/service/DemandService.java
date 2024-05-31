@@ -1581,7 +1581,7 @@ public class DemandService {
 	public BigDecimal roundOffTax (BigDecimal tax) {
 
 		// Round the value up to the next highest integer
-		return  tax.setScale(0, RoundingMode.CEILING);
+		return tax.setScale(0, RoundingMode.HALF_UP);
 	}
 
 	public void updateDemandAddPenalty(RequestInfo requestInfo , List<Demand> demands) {
