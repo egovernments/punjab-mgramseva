@@ -298,6 +298,8 @@ public class DemandGenerationConsumer {
 		previousToDate.add(Calendar.MONTH, -1); 
 		int max = previousToDate.getActualMaximum(Calendar.DAY_OF_MONTH);
 		previousToDate.set(Calendar.DAY_OF_MONTH, max);
+		Map<String, Object> masterMap = mDataService.loadMasterData(requestInfo,
+				tenantId);
 		
 		String assessmentYear = estimationService.getAssessmentYear();
 		ArrayList<String> failedConnectionNos = new ArrayList<String>();
@@ -309,8 +311,6 @@ public class DemandGenerationConsumer {
 			CalculationReq calculationReq = CalculationReq.builder().calculationCriteria(calculationCriteriaList)
 					.requestInfo(requestInfo).isconnectionCalculation(true).isAdvanceCalculation(false).build();
 
-			Map<String, Object> masterMap = mDataService.loadMasterData(calculationReq.getRequestInfo(),
-					calculationReq.getCalculationCriteria().get(0).getTenantId());
 			Set<String> consumerCodes = new LinkedHashSet<String>();
 			consumerCodes.add(connectionNo);
 
