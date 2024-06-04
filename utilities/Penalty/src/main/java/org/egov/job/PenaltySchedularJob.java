@@ -69,21 +69,16 @@ public class PenaltySchedularJob implements ApplicationRunner {
         Role role= Role.builder().code(config.getRole()).tenantId(config.getTenantId()).name(config.getRole()).build();
         List<Role> roles = new ArrayList<>();
         roles.add(role);
-        log.info("role:"+role);
-        log.info("roles:"+roles);
         User user = User.builder().userName(config.getUserName()).
                 mobileNumber(config.getUserName()).
                 uuid(config.getUuid()).
                 roles(roles).
                 tenantId(config.getTenantId()).build();
-        log.info("userInfo:"+user);
-        log.info("penaltyCriteria:"+penaltyCriteria);
         RequestInfo requestInfo= RequestInfo.builder().userInfo(user).build();
         PenaltyRequest penaltyRequest = PenaltyRequest.builder().requestInfo(requestInfo).addPenaltyCriteria(penaltyCriteria).build();
         log.info("Posting request to add Penalty for tenantid:" +penaltyCriteria.getTenantId());
         log.info("Penalty Request"+ penaltyRequest);
         if (penaltyCriteria.getTenantId() != null) {
-            if (penaltyCriteria.getTenantId().equalsIgnoreCase("pb.poohlahjgfid")) {
                 try {
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -96,7 +91,6 @@ public class PenaltySchedularJob implements ApplicationRunner {
                     log.info("Error while calling to water calculator service for tenant :" + penaltyCriteria.getTenantId() + " ERROR MESSAGE:" + e.getMessage(), e.getCause());
                 }
             }
-        }
     }
 
     /**
