@@ -564,8 +564,8 @@ public class DemandGenerationConsumer {
 		genarateDemandData.put("billingCycle",billingCycle);
 		genarateDemandData.put("isSendMessage",isSendMessage);
 		genarateDemandData.put("tenantId",tenantId);*/
-		Map<String, Object> masterMap;
-		CalculationReq calculationReq;
+		Map<String, Object> masterMap = null;
+		CalculationReq calculationReq= new CalculationReq();
 		String billingCycle ;
 		boolean isSendMessage = true;
 		String tenantId="";
@@ -575,6 +575,13 @@ public class DemandGenerationConsumer {
 		billingCycle= (String) genarateDemandData.get("billingCycle");
 		isSendMessage= (boolean) genarateDemandData.get("isSendMessage");
 		tenantId=(String) genarateDemandData.get("tenantId");
+		log.info("masterMap :"+masterMap);
+		if(!masterMap.isEmpty()) {
+			log.info("CalculationAttribute:"+masterMap.get("CalculationAttribute"));
+		}
+		log.info("calculationReq :"+calculationReq);
+		log.info("tenantId :"+tenantId);
+		log.info("billingCycle :"+billingCycle);
 		generateDemandInBulk(calculationReq,masterMap,billingCycle,isSendMessage,tenantId);
 	}
 
