@@ -307,7 +307,7 @@ public class DemandGenerationConsumer {
 			if (!waterCalculatorDao.isDemandExists(tenantId, previousFromDate.getTimeInMillis(),
 					previousToDate.getTimeInMillis(), consumerCodes)
 					&& !waterCalculatorDao.isConnectionExists(tenantId, previousFromDate.getTimeInMillis(),
-					previousToDate.getTimeInMillis(), consumerCodes)) {
+							previousToDate.getTimeInMillis(), consumerCodes)) {
 				log.warn("this connection doen't have the demand in previous billing cycle :" + connectionNo);
 				failedConnectionNos.add(connectionNo);
 				continue;
@@ -362,8 +362,7 @@ public class DemandGenerationConsumer {
 				util.sendEventNotification(eventReq);
 			}
 
-		}
-		else {
+		} else {
 			System.out.println("Event Messages to the users");
 			List<ActionItem> items = new ArrayList<>();
 			String demandActionLink = config.getBulkDemandLink();
@@ -387,7 +386,7 @@ public class DemandGenerationConsumer {
 				message = message.replace("{billing cycle}", billingCycle);
 				int nmSize = connectionNos.size() - failedConnectionNos.size();
 				message = message.replace("{X}", String.valueOf(nmSize)); // this should be x- failed
-				// connections count
+																			// connections count
 				message = message.replace("{X/X+Y}", String.valueOf(nmSize) + "/" + String.valueOf(size));
 				message = message.replace("{Y}", String.valueOf(meteredConnectionNos.size()));
 				additionals.put("localizationCode", WSCalculationConstant.NEW_BULK_DEMAND_EVENT);
@@ -468,11 +467,11 @@ public class DemandGenerationConsumer {
 				msg = msg.replace("{LINK}", msgLink);
 
 				System.out.println("Demand GP USER SMS1::" + msg);
-				if (!map.getKey().equals(config.getPspclVendorNumber())) {
+				if(!map.getKey().equals(config.getPspclVendorNumber())) {
 					SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(msg)
 							.tenantid(tenantId)
 							.category(Category.TRANSACTION).build();
-					if (config.isSmsForDemandEnable()) {
+					if(config.isSmsForDemandEnable()) {
 						producer.push(config.getSmsNotifTopic(), smsRequest);
 					}
 				}
@@ -490,6 +489,8 @@ public class DemandGenerationConsumer {
 
 		} catch (Exception e) {
 			System.out.println("Got the exception while genating the demands:" + e);
+			log.info("Errro :"+e.getStackTrace());
+
 		}
 
 	}
