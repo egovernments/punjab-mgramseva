@@ -291,6 +291,8 @@ public class DemandGenerationConsumer {
 		
 		String assessmentYear = estimationService.getAssessmentYear();
 		ArrayList<String> failedConnectionNos = new ArrayList<String>();
+
+
 		for (String connectionNo : connectionNos) {
 			CalculationCriteria calculationCriteria = CalculationCriteria.builder().tenantId(tenantId)
 					.assessmentYear(assessmentYear).connectionNo(connectionNo).from(dayStartTime).to(dayEndTime).build();
@@ -305,12 +307,18 @@ public class DemandGenerationConsumer {
 			if (!waterCalculatorDao.isDemandExists(tenantId, previousFromDate.getTimeInMillis(),
 					previousToDate.getTimeInMillis(), consumerCodes)
 					&& !waterCalculatorDao.isConnectionExists(tenantId, previousFromDate.getTimeInMillis(),
-							previousToDate.getTimeInMillis(), consumerCodes)) {
+					previousToDate.getTimeInMillis(), consumerCodes)) {
 				log.warn("this connection doen't have the demand in previous billing cycle :" + connectionNo);
 				failedConnectionNos.add(connectionNo);
 				continue;
 			}
-			
+			HashMap<Object, Object> genarateDemandData = new HashMap<Object, Object>();
+			genarateDemandData.put("calculationReq", calculationReq);
+			genarateDemandData.put("masterMap", masterMap);
+			genarateDemandData.put("billingCycle",billingCycle);
+			genarateDemandData.put("isSendMessage",isSendMessage);
+			genarateDemandData.put("tenantId",tenantId);
+
 			/*
 			 * List<Demand> demands = demandService.searchDemand(tenantId, consumerCodes,
 			 * previousFromDate.getTimeInMillis(), previousToDate.getTimeInMillis(),
@@ -318,18 +326,10 @@ public class DemandGenerationConsumer {
 			 * log.warn("this connection doen't have the demand in previous billing cycle :"
 			 * + connectionNo ); continue; }
 			 */
-			try {
-					if(!tenantId.equals(config.getSmsExcludeTenant())) {
-						generateDemandInBatch(calculationReq, masterMap, billingCycle, isSendMessage);
-					}
+			producer.push(config.getWsGenerateDemandBulktopic(),genarateDemandData);
 
-			} catch (Exception e) {
-				System.out.println("Got the exception while genating the demands:" + e);
-				failedConnectionNos.add(connectionNo);
-			}
 		}
-		System.out.println("demand Failed event Messages to the GP users ");
-		if (isSendMessage && failedConnectionNos.size() > 0) {
+	/*	if (isSendMessage && failedConnectionNos.size() > 0) {
 			List<ActionItem> actionItems = new ArrayList<>();
 			String actionLink = config.getBulkDemandFailedLink();
 			ActionItem actionItem = ActionItem.builder().actionUrl(actionLink).build();
@@ -344,7 +344,7 @@ public class DemandGenerationConsumer {
 					WSCalculationConstant.GENERATE_DEMAND_EVENT, tenantId);
 			String messages = failedMessage.get(WSCalculationConstant.MSG_KEY);
 			messages = messages.replace("{BILLING_CYCLE}", LocalDate.now().getMonth().toString());
-			
+
 			additionals.put("localizationCode", WSCalculationConstant.GENERATE_DEMAND_EVENT);
 			HashMap<String, String> attributes = new HashMap<String, String>();
 			attributes.put("{BILLING_CYCLE}", LocalDate.now().getMonth().toString());
@@ -362,7 +362,8 @@ public class DemandGenerationConsumer {
 				util.sendEventNotification(eventReq);
 			}
 
-		} else {
+		}
+		else {
 			System.out.println("Event Messages to the users");
 			List<ActionItem> items = new ArrayList<>();
 			String demandActionLink = config.getBulkDemandLink();
@@ -386,7 +387,7 @@ public class DemandGenerationConsumer {
 				message = message.replace("{billing cycle}", billingCycle);
 				int nmSize = connectionNos.size() - failedConnectionNos.size();
 				message = message.replace("{X}", String.valueOf(nmSize)); // this should be x- failed
-																			// connections count
+				// connections count
 				message = message.replace("{X/X+Y}", String.valueOf(nmSize) + "/" + String.valueOf(size));
 				message = message.replace("{Y}", String.valueOf(meteredConnectionNos.size()));
 				additionals.put("localizationCode", WSCalculationConstant.NEW_BULK_DEMAND_EVENT);
@@ -467,17 +468,30 @@ public class DemandGenerationConsumer {
 				msg = msg.replace("{LINK}", msgLink);
 
 				System.out.println("Demand GP USER SMS1::" + msg);
-				if(!map.getKey().equals(config.getPspclVendorNumber())) {
+				if (!map.getKey().equals(config.getPspclVendorNumber())) {
 					SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(msg)
 							.tenantid(tenantId)
 							.category(Category.TRANSACTION).build();
-					if(config.isSmsForDemandEnable()) {
+					if (config.isSmsForDemandEnable()) {
 						producer.push(config.getSmsNotifTopic(), smsRequest);
 					}
 				}
 
 			});
+		}*/
+	}
+
+	public void generateDemandInBulk(CalculationReq calculationReq,Map<String, Object> masterMap, String billingCycle,
+									 boolean isSendMessage,String tenantId) {
+		try {
+			if(!tenantId.equals(config.getSmsExcludeTenant())) {
+				generateDemandInBatch(calculationReq, masterMap, billingCycle, isSendMessage);
+			}
+
+		} catch (Exception e) {
+			System.out.println("Got the exception while genating the demands:" + e);
 		}
+
 	}
 
 	/**
@@ -537,6 +551,30 @@ public class DemandGenerationConsumer {
 	public void updateAddPenalty(HashMap<Object, Object> messageData) {
 		DemandRequest demandRequest = mapper.convertValue(messageData, DemandRequest.class);
 		demandService.updateDemandAddPenalty(demandRequest.getRequestInfo(), demandRequest.getDemands());
+	}
+
+	@KafkaListener(topics = {
+			"${ws.generate.demand.bulk}" }, containerFactory = "kafkaListenerContainerFactory")
+	public void generateDemandInBulkListner(HashMap<Object, Object> messageData) {
+		log.info("genarate Demand in Bulk data values for non metered connection:: {}", messageData);
+		/*HashMap<Object, Object> genarateDemandData = new HashMap<Object, Object>();
+		genarateDemandData.put("calculationReq", calculationReq);
+		genarateDemandData.put("masterMap", masterMap);
+		genarateDemandData.put("billingCycle",billingCycle);
+		genarateDemandData.put("isSendMessage",isSendMessage);
+		genarateDemandData.put("tenantId",tenantId);*/
+		Map<String, Object> masterMap;
+		CalculationReq calculationReq;
+		String billingCycle ;
+		boolean isSendMessage = true;
+		String tenantId="";
+		HashMap<Object, Object> genarateDemandData = (HashMap<Object, Object>) messageData;
+		masterMap = (Map<String, Object>) genarateDemandData.get("masterMap");
+		calculationReq = mapper.convertValue(genarateDemandData.get("calculationReq"), CalculationReq.class);
+		billingCycle= (String) genarateDemandData.get("billingCycle");
+		isSendMessage= (boolean) genarateDemandData.get("isSendMessage");
+		tenantId=(String) genarateDemandData.get("tenantId");
+		generateDemandInBulk(calculationReq,masterMap,billingCycle,isSendMessage,tenantId);
 	}
 
 }
