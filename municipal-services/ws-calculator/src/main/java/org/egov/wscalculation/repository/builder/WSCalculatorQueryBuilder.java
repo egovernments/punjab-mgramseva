@@ -272,7 +272,6 @@ public class WSCalculatorQueryBuilder {
 			builder.append(" tenantId =?  ");
 			preparedStmtList.add(tenantId);
 		}
-		System.out.println("Final conn query ::" + builder.toString());
 		return builder.toString();
 	}
 

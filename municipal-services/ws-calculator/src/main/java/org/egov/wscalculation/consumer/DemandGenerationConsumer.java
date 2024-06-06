@@ -324,6 +324,7 @@ public class DemandGenerationConsumer {
 			 * log.warn("this connection doen't have the demand in previous billing cycle :"
 			 * + connectionNo ); continue; }
 			 */
+			log.info("sending generate demand for connection no :"+connectionNo);
 			producer.push(config.getWsGenerateDemandBulktopic(),genarateDemandData);
 
 		}
@@ -482,7 +483,6 @@ public class DemandGenerationConsumer {
 									 boolean isSendMessage,String tenantId) {
 		Map<String, Object> masterMap = mDataService.loadMasterData(calculationReq.getRequestInfo(),
 				tenantId);
-		log.info("Master map:" + masterMap);
 		try {
 			if(!tenantId.equals(config.getSmsExcludeTenant())) {
 				generateDemandInBatch(calculationReq, masterMap, billingCycle, isSendMessage);
@@ -566,6 +566,7 @@ public class DemandGenerationConsumer {
 		billingCycle= (String) genarateDemandData.get("billingCycle");
 		isSendMessage= (boolean) genarateDemandData.get("isSendMessage");
 		tenantId=(String) genarateDemandData.get("tenantId");
+		log.info("got generate demand call for :"+calculationReq.getCalculationCriteria().get(0).getConnectionNo());
 		generateDemandInBulk(calculationReq,billingCycle,isSendMessage,tenantId);
 	}
 
