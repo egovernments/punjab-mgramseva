@@ -192,7 +192,7 @@ public class DemandGenerationConsumer {
 			wsCalulationWorkflowValidator.applicationValidation(request.getRequestInfo(), criteria.getTenantId(),
 					criteria.getConnectionNo(), genratedemand);
 		}
-		System.out.println("Calling Bulk Demand generation");
+		System.out.println("Calling Bulk Demand generation connection Number" + request.getCalculationCriteria().get(0).getConnectionNo());
 		wSCalculationServiceImpl.bulkDemandGeneration(request, masterMap);
 		String connectionNoStrings = request.getCalculationCriteria().stream()
 				.map(criteria -> criteria.getConnectionNo()).collect(Collectors.toSet()).toString();
@@ -491,7 +491,7 @@ public class DemandGenerationConsumer {
 
 		} catch (Exception e) {
 			System.out.println("Got the exception while genating the demands:" + e);
-			log.info("Errro :"+e.getStackTrace());
+			log.info("Errro in Apllication no :"+calculationReq.getCalculationCriteria().get(0).getConnectionNo());
 
 		}
 
@@ -559,13 +559,6 @@ public class DemandGenerationConsumer {
 	@KafkaListener(topics = {
 			"${ws.generate.demand.bulk}" }, containerFactory = "kafkaListenerContainerFactory")
 	public void generateDemandInBulkListner(HashMap<Object, Object> messageData) {
-		log.info("genarate Demand in Bulk data values for non metered connection:: {}", messageData);
-		/*HashMap<Object, Object> genarateDemandData = new HashMap<Object, Object>();
-		genarateDemandData.put("calculationReq", calculationReq);
-		genarateDemandData.put("masterMap", masterMap);
-		genarateDemandData.put("billingCycle",billingCycle);
-		genarateDemandData.put("isSendMessage",isSendMessage);
-		genarateDemandData.put("tenantId",tenantId);*/
 		CalculationReq calculationReq= new CalculationReq();
 		String billingCycle ;
 		boolean isSendMessage = true;
@@ -575,10 +568,6 @@ public class DemandGenerationConsumer {
 		billingCycle= (String) genarateDemandData.get("billingCycle");
 		isSendMessage= (boolean) genarateDemandData.get("isSendMessage");
 		tenantId=(String) genarateDemandData.get("tenantId");
-
-		log.info("calculationReq :"+calculationReq);
-		log.info("tenantId :"+tenantId);
-		log.info("billingCycle :"+billingCycle);
 		generateDemandInBulk(calculationReq,billingCycle,isSendMessage,tenantId);
 	}
 
