@@ -318,7 +318,6 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 
 	@SuppressWarnings("unchecked")
 	public void getBillingPeriod(ArrayList<?> mdmsResponse, RequestInfo requestInfo, String tenantId) {
-		log.info("Billing Frequency Map" + mdmsResponse.toString());
 		Map<String, Object> master = (Map<String, Object>) mdmsResponse.get(0);
 		LocalDateTime demandStartingDate = LocalDateTime.now();
 		Long demandGenerateDateMillis = (Long) master.get(WSCalculationConstant.Demand_Generate_Date_String);

@@ -272,8 +272,6 @@ public class DemandGenerationConsumer {
 		
 		List<String> connectionNos = waterCalculatorDao.getNonMeterConnectionsList(tenantId, dayStartTime, dayEndTime);
 
-		List<String> meteredConnectionNos = waterCalculatorDao.getConnectionsNoList(tenantId,
-				WSCalculationConstant.meteredConnectionType);
 		
 		
 		Calendar previousFromDate = Calendar.getInstance();
@@ -286,12 +284,13 @@ public class DemandGenerationConsumer {
 		previousToDate.add(Calendar.MONTH, -1); 
 		int max = previousToDate.getActualMaximum(Calendar.DAY_OF_MONTH);
 		previousToDate.set(Calendar.DAY_OF_MONTH, max);
-		Map<String, Object> masterMap = mDataService.loadMasterData(requestInfo,
-				tenantId);
-		
 		String assessmentYear = estimationService.getAssessmentYear();
 		ArrayList<String> failedConnectionNos = new ArrayList<String>();
 
+		log.info("connectionNos" + connectionNos.size());
+		log.info("connectionNos" + connectionNos);
+		log.info("dayStartTime:"+dayStartTime);
+		log.info("dayEndTime"+dayEndTime);
 
 		for (String connectionNo : connectionNos) {
 			CalculationCriteria calculationCriteria = CalculationCriteria.builder().tenantId(tenantId)
@@ -314,7 +313,6 @@ public class DemandGenerationConsumer {
 			}
 			HashMap<Object, Object> genarateDemandData = new HashMap<Object, Object>();
 			genarateDemandData.put("calculationReq", calculationReq);
-			genarateDemandData.put("masterMap", masterMap);
 			genarateDemandData.put("billingCycle",billingCycle);
 			genarateDemandData.put("isSendMessage",isSendMessage);
 			genarateDemandData.put("tenantId",tenantId);
@@ -533,7 +531,6 @@ public class DemandGenerationConsumer {
 	@KafkaListener(topics = {
 			"${egov.generate.bulk.demand.manually.topic}" }, containerFactory = "kafkaListenerContainerFactory")
 	public void generateBulkDemandForULB(HashMap<Object, Object> messageData) {
-		log.info("Billing master data values for non metered connection:: {}", messageData);
 		Map<String, Object> billingMasterData;
 		BulkDemand bulkDemand;
 		boolean isSendMessage = false;

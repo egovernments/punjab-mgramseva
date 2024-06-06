@@ -312,7 +312,6 @@ public class DemandService {
 					sendDownloadBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers,paymentDueDate,totalAmount);
 			}
 		}
-		log.info("Demand Object" + demands.toString());
 
 
 		return finalDemandRes;
@@ -332,21 +331,18 @@ public class DemandService {
 				.replace("$tenantId", property.getTenantId())
 				.replace("$businessService", businessService)
 				.replace("$connectionType", connectionType);
-		log.info("Payment Link ::: " + actionLinkPayment);
+
 
 		String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 		BigDecimal totalAmount = fetchTotalBillAmount(demands,requestInfo);
 
-		System.out.println("Localization message::" + messageString);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
-			log.info("Demand Object" + demands.toString());
 			messageString = messageString.replace("{ownername}", owner.getName());
 			messageString = messageString.replace("{billamount}",totalAmount.toString());
 			messageString = messageString.replace("{Date}", paymentDueDate);
 			messageString = messageString.replace("{connectionno}", consumerCode);
 			messageString = messageString.replace("{PAY_LINK}", getShortenedUrl(actionLinkPayment));
 
-			System.out.println("payment genaration Message1::" + messageString);
 
 			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString).tenantid(tenantId)
 					.category(Category.TRANSACTION).build();
@@ -374,9 +370,6 @@ public class DemandService {
 		//System.out.println("Localization message get bill::" + messageString);
 		//System.out.println("isForConnectionNO:" + isForConnectionNO);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
-			log.info("Demand Object get bill" + demands.toString());
-			log.info("requestInfo get Bill" + requestInfo);
-			log.info("bill number get bill size :" + billNumbers.size());
 			if (totalamount!=null && billNumbers.size() > 0 && totalamount.signum()>0) {
 				actionLink = actionLink.replace("$billNumber", billNumbers.get(0));
 				messageString = messageString.replace("{ownername}", owner.getName());
@@ -430,11 +423,7 @@ public class DemandService {
         BigDecimal totalAmount =  fetchTotalBillAmount(demands, requestInfo);
 		String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 
-		System.out.println("Localization message get payment and bill::" + messageString);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
-			log.info("Demand Object get payment and bill" + demands.toString());
-			log.info("requestInfo get Bill and Payment::" +requestInfo);
-			log.info("Bill Number get payment and bill:: " + billNumbers.toString());
 			if (billNumbers.size() > 0) {
 				actionBillLink = actionBillLink.replace("$billNumber", billNumbers.get(0));
 			}
@@ -463,13 +452,10 @@ public class DemandService {
 				Object result = serviceRequestRepository.fetchResult(
 						calculatorUtils.getFetchBillURL(demand.getTenantId(), demand.getConsumerCode()),
 						RequestInfoWrapper.builder().requestInfo(requestInfo).build());
-				log.debug("response from fetch bill total bill: " + mapper.writeValueAsString(result));
 				List<Map<String, Object>> jsonOutput = JsonPath.read(result, "$.Bill");
-				log.info("Bill Response totalAMount fetch:: " + result);
                 log.info(mapper.writeValueAsString(jsonOutput));
 				totalAmount=new BigDecimal(jsonOutput.get(0).get("totalAmount").toString());
 				//totalAmount = new BigDecimal(JsonPath.read(result, "$.Bill[0].totalAmount").toString());
-				log.info("Bill Response totalAMount:: " + result);
 
 				HashMap<String, Object> billResponse = new HashMap<>();
 
@@ -1409,7 +1395,6 @@ public class DemandService {
 			demands.add(demand);
 		}
 
-		log.info("Updated Demand Details " + demands.toString());
 		if(config.isSaveDemandAuditEnabled()){
 			demands.stream().forEach(demand -> {
 				Long id = demandAuditSeqBuilder.getNextSequence();
@@ -1447,7 +1432,6 @@ public class DemandService {
 	}
 	public boolean isOnlinePaymentAllowed(RequestInfo requestInfo, String tenantId)
 	{
-		log.info("inside online payment allowed method");
 		List<MasterDetail> masterDetails = new ArrayList<>();
 		MasterDetail masterDetail =new MasterDetail("BusinessService",WSCalculationConstant.FILTER_PAYMENT_METHOD_SEARCH);
 		masterDetails.add(masterDetail);
@@ -1457,12 +1441,8 @@ public class DemandService {
         MdmsCriteria mdmsCriteria = MdmsCriteria.builder().tenantId(tenantId)
 				.moduleDetails(moduleDetails)
 				.build();
-		log.info("mdmscrtiteria:::"+mdmsCriteria.getTenantId());
-		log.info("mdmscrtiteria::::::"+mdmsCriteria.getModuleDetails().get(0).getModuleName());
-		log.info("mdmscrtiteria:::::::::"+mdmsCriteria.getModuleDetails().get(0));
 		Map<String, Object> paymentMasterData = calculatorUtils.getAllowedPaymentForTenantId(tenantId,mdmsCriteria,requestInfo);
 		List<String> paymentModesNotAllowed = (List<String>) paymentMasterData.get(WSCalculationConstant.Payment_Modes_Not_Allowed);
-		log.info("size::" +paymentModesNotAllowed.size());
 		if(paymentModesNotAllowed.contains("ONLINE"))
 			return false;
 		else

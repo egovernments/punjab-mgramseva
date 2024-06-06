@@ -67,8 +67,6 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 		String query = queryBuilder.getSearchQueryString(criteria, preparedStatement);
 		if (query == null)
 			return Collections.emptyList();
-		log.debug("Query: " + query);
-		log.debug("Prepared Statement" + preparedStatement.toString());
 		return jdbcTemplate.query(query, preparedStatement.toArray(), meterReadingRowMapper);
 	}
 
@@ -78,8 +76,6 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 		String query = queryBuilder.getCurrentReadingConnectionQuery(criteria, preparedStatement);
 		if (query == null)
 			return Collections.emptyList();
-		log.debug("Query: " + query);
-		log.debug("Prepared Statement" + preparedStatement.toString());
 		return jdbcTemplate.query(query, preparedStatement.toArray(), currentMeterReadingRowMapper);
 	}
 
@@ -94,7 +90,6 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 		Set<String> connectionIds = new HashSet<>(ids);
 		List<Object> preparedStatement = new ArrayList<>();
 		String query = queryBuilder.getNoOfMeterReadingConnectionQuery(connectionIds, preparedStatement);
-		log.debug("Query: " + query);
 		return jdbcTemplate.queryForObject(query, preparedStatement.toArray(), Integer.class);
 	}
 
@@ -104,7 +99,6 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 		String query = queryBuilder.getTenantIdConnectionQuery();
 		if (query == null)
 			return tenantIds;
-		log.debug("Query: " + query);
 		tenantIds = (ArrayList<String>) jdbcTemplate.queryForList(query, String.class);
 		return tenantIds;
 	}
@@ -117,8 +111,6 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 				tenantId);
 		if (query == null)
 			return connectionNos;
-		log.info("Query: " + query);
-
 		connectionNos = (ArrayList<String>) jdbcTemplate.query(query, preparedStatement.toArray(),
 				demandSchedulerRowMapper);
 		return connectionNos;
@@ -128,7 +120,6 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 	public List<String> getConnectionsNoList(String tenantId, String connectionType) {
 		List<Object> preparedStatement = new ArrayList<>();
 		String query = queryBuilder.getConnectionNumberList(tenantId, connectionType, preparedStatement);
-		log.info("water " + connectionType + " connection list : " + query);
 		return jdbcTemplate.query(query, preparedStatement.toArray(), demandSchedulerRowMapper);
 	}
 
@@ -136,14 +127,12 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 	public List<String> getNonMeterConnectionsList(String tenantId, Long dayStartTime, Long dayEndTime) {
 		List<Object> preparedStatement = new ArrayList<>();
 		String query = queryBuilder.getNonMeteredConnectionsList(tenantId, dayStartTime, dayEndTime, preparedStatement);
-		log.info("water NMconnection list query: " + query);
 		return jdbcTemplate.query(query, preparedStatement.toArray(), demandSchedulerRowMapper);
 	}
 
 	@Override
 	public List<String> getTenantId() {
 		String query = queryBuilder.getDistinctTenantIds();
-		log.info("Tenant Id's List Query : " + query);
 		return jdbcTemplate.queryForList(query, String.class);
 	}
 
@@ -151,7 +140,6 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 	public int isBillingPeriodExists(String connectionNo, String billingPeriod) {
 		List<Object> preparedStatement = new ArrayList<>();
 		String query = queryBuilder.isBillingPeriodExists(connectionNo, billingPeriod, preparedStatement);
-		log.info("Is BillingPeriod Exits Query: " + query);
 		return jdbcTemplate.queryForObject(query, preparedStatement.toArray(), Integer.class);
 	}
 
