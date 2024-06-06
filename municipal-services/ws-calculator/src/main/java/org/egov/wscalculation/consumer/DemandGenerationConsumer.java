@@ -565,24 +565,26 @@ public class DemandGenerationConsumer {
 		genarateDemandData.put("isSendMessage",isSendMessage);
 		genarateDemandData.put("tenantId",tenantId);*/
 		Map<String, Object> masterMap = null;
+		Map<String, Object> masterMapDemandGen = new HashMap<>();
 		CalculationReq calculationReq= new CalculationReq();
 		String billingCycle ;
 		boolean isSendMessage = true;
 		String tenantId="";
 		HashMap<Object, Object> genarateDemandData = (HashMap<Object, Object>) messageData;
 		masterMap = (Map<String, Object>) genarateDemandData.get("masterMap");
+		for(Map.Entry<String, Object> res : masterMap.entrySet()) {
+			masterMapDemandGen.put(String.valueOf(res.getKey()), (Object)res.getValue());
+		}
 		calculationReq = mapper.convertValue(genarateDemandData.get("calculationReq"), CalculationReq.class);
 		billingCycle= (String) genarateDemandData.get("billingCycle");
 		isSendMessage= (boolean) genarateDemandData.get("isSendMessage");
 		tenantId=(String) genarateDemandData.get("tenantId");
-		log.info("masterMap :"+masterMap);
-		if(!masterMap.isEmpty()) {
-			log.info("CalculationAttribute:"+masterMap.get("CalculationAttribute"));
-		}
+		log.info("masterMap :"+masterMapDemandGen);
+
 		log.info("calculationReq :"+calculationReq);
 		log.info("tenantId :"+tenantId);
 		log.info("billingCycle :"+billingCycle);
-		generateDemandInBulk(calculationReq,masterMap,billingCycle,isSendMessage,tenantId);
+		generateDemandInBulk(calculationReq,masterMapDemandGen,billingCycle,isSendMessage,tenantId);
 	}
 
 }
