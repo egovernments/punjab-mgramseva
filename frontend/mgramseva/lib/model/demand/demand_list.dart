@@ -44,7 +44,7 @@ class Demands {
   @JsonKey(name: "status")
   String? status;
   @JsonKey(name: "meterReadings")
-  List<MeterReadings>? meterReadings;
+  List<MeterReadings>? meterReadings = [];
   @JsonKey(name: "isPaymentCompleted")
   bool? isPaymentCompleted = false;
   Demands();

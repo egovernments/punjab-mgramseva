@@ -27,9 +27,7 @@ dynamic get apiBaseUrl {
 }
 
 Map<String, dynamic> devConstants = {
-  _baseUrl: kIsWeb
-      ? (window.location.origin) + "/"
-      : const String.fromEnvironment('BASE_URL'),
+  _baseUrl: "https://mgramseva-uat.psegs.in/"
 };
 
 Map<String, dynamic> stageConstants = {
