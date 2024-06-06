@@ -484,6 +484,7 @@ public class DemandGenerationConsumer {
 									 boolean isSendMessage,String tenantId) {
 		Map<String, Object> masterMap = mDataService.loadMasterData(calculationReq.getRequestInfo(),
 				tenantId);
+		log.info("Master map:" + masterMap);
 		try {
 			if(!tenantId.equals(config.getSmsExcludeTenant())) {
 				generateDemandInBatch(calculationReq, masterMap, billingCycle, isSendMessage);
