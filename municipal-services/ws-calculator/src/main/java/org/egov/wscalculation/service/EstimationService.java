@@ -80,7 +80,7 @@ public class EstimationService {
 		ArrayList<String> billingSlabIds = new ArrayList<>();
 		log.info("masterData.get(WSCalculationConstant.WC_BILLING_SLAB_MASTER):"+masterData.get(WSCalculationConstant.WC_BILLING_SLAB_MASTER));
 		log.info("masterData.get(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST)" +masterData.get(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST));
-		// Convert and assign WC_BILLING_SLAB_MASTER
+		/*// Convert and assign WC_BILLING_SLAB_MASTER
 		ArrayList<String> wcBillingSlabList = (ArrayList<String>) masterData.get(WSCalculationConstant.WC_BILLING_SLAB_MASTER);
 		JSONArray wcBillingSlabArray = new JSONArray();
 		wcBillingSlabArray.addAll(wcBillingSlabList);
@@ -89,12 +89,12 @@ public class EstimationService {
 		ArrayList<String> calculationAttributeList = (ArrayList<String>) masterData.get(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST);
 		JSONArray calculationAttributeArray = new JSONArray();
 		calculationAttributeArray.addAll(calculationAttributeList);
-		billingSlabMaster.put(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST, calculationAttributeArray);
+		billingSlabMaster.put(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST, calculationAttributeArray);*/
 
-		/*billingSlabMaster.put(WSCalculationConstant.WC_BILLING_SLAB_MASTER,
+		billingSlabMaster.put(WSCalculationConstant.WC_BILLING_SLAB_MASTER,
 				(JSONArray) masterData.get(WSCalculationConstant.WC_BILLING_SLAB_MASTER));
 		billingSlabMaster.put(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST,
-				(JSONArray) masterData.get(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST));*/
+				(JSONArray) masterData.get(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST));
 //		timeBasedExemptionMasterMap.put(WSCalculationConstant.WC_WATER_CESS_MASTER,
 //				(JSONArray) (masterData.getOrDefault(WSCalculationConstant.WC_WATER_CESS_MASTER, null)));
 		// mDataService.setWaterConnectionMasterValues(requestInfo, tenantId,
