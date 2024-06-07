@@ -219,7 +219,7 @@ class Owners {
 
   setText() {
     name = consumerNameCtrl.text.trim();
-    remarks = consumerRemarksCtrl.text;
+    remarks = consumerRemarksCtrl.text.trim();
     mobileNumber = phoneNumberCtrl.text;
     fatherOrHusbandName = fatherOrSpouseCtrl.text.trim();
   }

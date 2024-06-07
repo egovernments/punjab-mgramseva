@@ -80,7 +80,9 @@ class ConsumerProvider with ChangeNotifier {
       "channel": "CITIZEN",
       "ownershipCategory": "INDIVIDUAL",
       "owners": [
-        Owners.fromJson({"ownerType": "NONE"}).toJson()
+        Owners.fromJson({
+          "ownerType": "NONE",
+        }).toJson()
       ],
       "address": Address().toJson()
     });
@@ -135,6 +137,7 @@ class ConsumerProvider with ChangeNotifier {
         "tenantId": commonProvider.userDetails!.selectedtenant!.code,
         "connectionNumber": id.split('_').join('/')
       });
+
       if (waterconnections.waterConnection != null &&
           waterconnections.waterConnection!.isNotEmpty) {
         setWaterConnection(waterconnections.waterConnection?.first);
@@ -231,6 +234,7 @@ class ConsumerProvider with ChangeNotifier {
           paymentDetails.payments!.isNotEmpty) {
         isFirstDemand = true;
       }
+
       notifyListeners();
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
@@ -306,7 +310,8 @@ class ConsumerProvider with ChangeNotifier {
               : waterconnection.additionalDetails?.subCategory,
           "aadharNumber": waterconnection.addharCtrl.text.trim().isEmpty
               ? null
-              : waterconnection.addharCtrl.text.trim()
+              : waterconnection.addharCtrl.text.trim(),
+          "remarks": property.owners?.first.remarks
         });
       } else {
         waterconnection.additionalDetails!.locality =
@@ -330,6 +335,9 @@ class ConsumerProvider with ChangeNotifier {
         waterconnection.additionalDetails!.meterReading =
             waterconnection.previousReading;
         waterconnection.additionalDetails!.propertyType = property.propertyType;
+
+        waterconnection.additionalDetails!.remarks =
+            property.owners?.first.remarks;
       }
 
       try {
@@ -448,6 +456,11 @@ class ConsumerProvider with ChangeNotifier {
       var res = await ConsumerRepository().getProperty(query);
       if (res != null)
         property = new Property.fromJson(res['Properties'].first);
+
+      property.owners!.first.remarks =
+          waterconnection.additionalDetails?.remarks ?? "-";
+      // property.owners!.first.remarks =
+      //     waterconnection.additionalDetails?.remarks ?? "";
       property.owners!.first.getText();
       property.address.getText();
 
@@ -459,6 +472,7 @@ class ConsumerProvider with ChangeNotifier {
           commonProvider.userDetails!.selectedtenant!.code!;
       property.address.gpNameCityCodeCtrl.text =
           commonProvider.userDetails!.selectedtenant!.city!.code!;
+
       streamController.add(property);
       notifyListeners();
     } catch (e) {

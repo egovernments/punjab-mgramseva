@@ -330,6 +330,9 @@ class AdditionalDetails {
   @JsonKey(name: "totalamount")
   String? totalAmount;
 
+  @JsonKey(name: "remarks")
+  String? remarks;
+
   @JsonKey(name: "appCreatedDate")
   num? appCreatedDate;
 

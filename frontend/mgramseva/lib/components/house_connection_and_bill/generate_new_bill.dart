@@ -120,14 +120,15 @@ class _GenerateNewBillState extends State<GenerateNewBill> {
                                             .meterReading ==
                                         null
                                     ? "NA".toString()
+                                    : "${widget.waterConnection?.additionalDetails!.meterReading.toString()}"
+                                : demandList.demands!.first.meterReadings!
+                                        .isNotEmpty
+                                    ? demandList.demands?.first.meterReadings!
+                                        .first.currentReading
+                                        .toString()
                                     : widget.waterConnection?.additionalDetails!
                                         .meterReading
-                                        .toString()
-                                :demandList.demands!.first.meterReadings!.isNotEmpty? demandList.demands?.first.meterReadings!.first
-                                    .currentReading
-                                    .toString():widget.waterConnection?.additionalDetails!
-                                .meterReading
-                                .toString(),
+                                        .toString(),
                             context),
                         if (CommonProvider.getPenaltyOrAdvanceStatus(
                                 widget.waterConnection?.mdmsData, false) &&
