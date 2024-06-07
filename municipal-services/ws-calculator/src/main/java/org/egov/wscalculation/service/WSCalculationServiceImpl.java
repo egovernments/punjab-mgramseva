@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
 import org.egov.mdms.model.MdmsCriteriaReq;
@@ -72,6 +74,9 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 
 	@Autowired
 	private DemandAuditSeqBuilder demandAuditSeqBuilder;
+
+	@Autowired
+	ObjectMapper mapper;
 
 	/**
 	 * Get CalculationReq and Calculate the Tax Head on Water Charge And Estimation Charge
@@ -196,10 +201,28 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		
 		String tenantId = null != property.getTenantId() ? property.getTenantId() : criteria.getTenantId();
 
-		@SuppressWarnings("unchecked")
-		Map<String, TaxHeadCategory> taxHeadCategoryMap = ((List<TaxHeadMaster>) masterMap
+
+		/*Map<String, TaxHeadCategory> taxHeadCategoryMap = ((List<TaxHeadMaster>) masterMap
 				.get(WSCalculationConstant.TAXHEADMASTER_MASTER_KEY)).stream()
-						.collect(Collectors.toMap(TaxHeadMaster::getCode, TaxHeadMaster::getCategory, (OldValue, NewValue) -> NewValue));
+						.collect(Collectors.toMap(TaxHeadMaster::getCode, TaxHeadMaster::getCategory, (OldValue, NewValue) -> NewValue));*
+
+		 */
+		Map<String, TaxHeadCategory> taxHeadCategoryMap;
+		try {
+			// Deserialize the list
+			List<TaxHeadMaster> taxHeadMasters = mapper.convertValue(
+					masterMap.get(WSCalculationConstant.TAXHEADMASTER_MASTER_KEY),
+					new TypeReference<List<TaxHeadMaster>>() {}
+			);
+			// Convert to Map
+			taxHeadCategoryMap = taxHeadMasters.stream()
+					.collect(Collectors.toMap(TaxHeadMaster::getCode, TaxHeadMaster::getCategory, (oldValue, newValue) -> newValue));
+			// Output for verification
+			System.out.println(taxHeadCategoryMap);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw  new CustomException();
+		}
 
 		BigDecimal taxAmt = BigDecimal.ZERO;
 		BigDecimal waterCharge = BigDecimal.ZERO;
@@ -256,10 +279,12 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		}
 
 		BigDecimal totalAmount = taxAmt.add(penalty).add(rebate).add(exemption).add(waterCharge).add(fee).add(advance);
+
 		return Calculation.builder().totalAmount(totalAmount).taxAmount(taxAmt).penalty(penalty).exemption(exemption)
 				.charge(waterCharge).advance(advance).fee(fee).waterConnection(waterConnection).rebate(rebate).tenantId(tenantId)
 				.taxHeadEstimates(estimates).billingSlabIds(billingSlabIds).connectionNo(criteria.getConnectionNo()).applicationNO(criteria.getApplicationNo())
 				.build();
+
 	}
 	
 	
@@ -273,7 +298,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		List<Calculation> calculations = new ArrayList<>(request.getCalculationCriteria().size());
 		for (CalculationCriteria criteria : request.getCalculationCriteria()) {
 			Map<String, List> estimationMap = null;
-			log.info("Innside get Calculation");
+			log.info("Innside get Calculationn");
 			if(request.getIsAdvanceCalculation() == null || (!request.getIsAdvanceCalculation().booleanValue())) {
 				estimationMap	= estimationService.getEstimationMap(criteria, request.getRequestInfo(),
 						masterMap,request.getIsconnectionCalculation(),false);

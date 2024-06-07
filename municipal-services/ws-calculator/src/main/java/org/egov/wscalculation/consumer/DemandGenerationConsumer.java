@@ -517,10 +517,10 @@ public class DemandGenerationConsumer {
 
 	public void generateDemandInBulk(CalculationReq calculationReq, String billingCycle, Map<String, Object> masterMap,
 									 boolean isSendMessage,String tenantId) {
-		Map<String, Object> masterMapDemand =  (Map<String, Object>) masterMap;
+		log.info("masterMap:"+masterMap);
 		try {
 			if(!tenantId.equals(config.getSmsExcludeTenant())) {
-				generateDemandInBatch(calculationReq, masterMapDemand, billingCycle, isSendMessage);
+				generateDemandInBatch(calculationReq, masterMap, billingCycle, isSendMessage);
 			}
 
 		} catch (Exception e) {
