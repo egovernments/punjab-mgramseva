@@ -194,10 +194,10 @@ public class DemandGenerationConsumer {
 		}
 		System.out.println("Calling Bulk Demand generation connection Number" + request.getCalculationCriteria().get(0).getConnectionNo());
 		wSCalculationServiceImpl.bulkDemandGeneration(request, masterMap);
-		String connectionNoStrings = request.getCalculationCriteria().stream()
+		/*String connectionNoStrings = request.getCalculationCriteria().stream()
 				.map(criteria -> criteria.getConnectionNo()).collect(Collectors.toSet()).toString();
 		StringBuilder str = new StringBuilder("Demand generated Successfully. For records : ")
-				.append(connectionNoStrings);
+				.append(connectionNoStrings);*/
 //			producer.push(errorTopic, request);
 //			remove the try catch or throw the exception to the previous method to catch it.
 
@@ -557,6 +557,7 @@ public class DemandGenerationConsumer {
 	@KafkaListener(topics = {
 			"${ws.generate.demand.bulk}" }, containerFactory = "kafkaListenerContainerFactory")
 	public void generateDemandInBulkListner(HashMap<Object, Object> messageData) {
+		log.info("got generate demand call");
 		CalculationReq calculationReq= new CalculationReq();
 		String billingCycle ;
 		boolean isSendMessage = true;
