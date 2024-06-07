@@ -17,6 +17,7 @@ import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/model/mdms/sub_category_type.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
@@ -86,6 +87,7 @@ class ConsumerProvider with ChangeNotifier {
       ],
       "address": Address().toJson()
     });
+
     if (boundaryList.length == 1) {
       property.address.localityCtrl = boundaryList.first;
       onChangeOfLocality(property.address.localityCtrl);
@@ -354,6 +356,7 @@ class ConsumerProvider with ChangeNotifier {
           if (result2 != null) {
             setModel();
             phoneNumberAutoValidation = false;
+
             streamController.add(property);
             Notifiers.getToastMessage(
                 context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
@@ -448,7 +451,9 @@ class ConsumerProvider with ChangeNotifier {
     }
   }
 
-  Future<Property?> getProperty(Map<String, dynamic> query) async {
+  Future<Property?> getProperty(
+    Map<String, dynamic> query,
+  ) async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
@@ -457,10 +462,6 @@ class ConsumerProvider with ChangeNotifier {
       if (res != null)
         property = new Property.fromJson(res['Properties'].first);
 
-      property.owners!.first.remarks =
-          waterconnection.additionalDetails?.remarks ?? "-";
-      // property.owners!.first.remarks =
-      //     waterconnection.additionalDetails?.remarks ?? "";
       property.owners!.first.getText();
       property.address.getText();
 

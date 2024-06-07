@@ -7,6 +7,7 @@ import 'package:mgramseva/model/connection/property.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
+import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/screeens/consumer_details/consumer_details_walk_through/walk_flow_container.dart';
 import 'package:mgramseva/screeens/consumer_details/consumer_details_walk_through/walk_through.dart';
 import 'package:mgramseva/screeens/generate_bill/widgets/meter_reading.dart';
@@ -69,15 +70,18 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
         var commonProvider = Provider.of<CommonProvider>(
             navigatorKey.currentContext!,
             listen: false);
+
         consumerProvider
           ..setModel()
           ..setWaterConnection(widget.waterConnection)
           ..fetchBoundary()
           ..getPaymentType()
-          ..getProperty({
-            "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-            "propertyIds": widget.waterConnection!.propertyId
-          })
+          ..getProperty(
+            {
+              "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+              "propertyIds": widget.waterConnection!.propertyId
+            },
+          )
           ..autoValidation = false
           ..formKey = GlobalKey<FormState>()
           ..setWalkThrough(ConsumerWalkThrough().consumerWalkThrough.map((e) {
@@ -89,6 +93,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Provider.of<CommonProvider>(navigatorKey.currentContext!,
             listen: false);
+
         consumerProvider
           ..setModel()
           ..getWaterConnection(widget.id)
@@ -650,9 +655,14 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                   (consumerProvider.waterconnection.status ==
                                       "Inactive"),
                               child: Consumer<ConsumerProvider>(
-                                builder: (_, consumerProvider, child) =>
-                                    BuildTextField(
-                                  i18.consumer.CONSUMER_REMARKS,
+                                  builder: (_, consumerProvider, child) {
+                                property.owners!.first.consumerRemarksCtrl
+                                    .text = consumerProvider.waterconnection
+                                        .additionalDetails!.remarks ??
+                                    "";
+                                return BuildTextField(
+                                  "Remarks",
+                                  // i18.consumer.CONSUMER_REMARKS,
                                   property.owners!.first.consumerRemarksCtrl,
                                   validator: (val) =>
                                       Validators.consumerRemarksValidator(val,
@@ -666,8 +676,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                         RegExp("[A-Za-z ]"))
                                   ],
                                   isDisabled: false,
-                                ),
-                              ),
+                                );
+                              }),
                             ),
 
                           // REMARKS
