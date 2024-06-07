@@ -328,6 +328,39 @@ public class DemandGenerationConsumer {
 			producer.push(config.getWsGenerateDemandBulktopic(),genarateDemandData);
 
 		}
+		HashMap<String, String> demandMessage = util.getLocalizationMessage(requestInfo,
+				WSCalculationConstant.mGram_Consumer_NewDemand, tenantId);
+		HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
+		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
+				Arrays.asList("COLLECTION_OPERATOR"), tenantId);
+		Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+		String msgLink = config.getNotificationUrl() + config.getGpUserDemandLink();
+		for (OwnerInfo userInfo : userDetailResponse.getUser()) {
+			if (userInfo.getName() != null) {
+				mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
+			} else {
+				mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
+			}
+		}
+		mobileNumberIdMap.entrySet().stream().forEach(map -> {
+			String msg = demandMessage.get(WSCalculationConstant.MSG_KEY);
+			msg = msg.replace("{ownername}", map.getValue());
+			msg = msg.replace("{villagename}",
+					(gpwscMap != null && !StringUtils.isEmpty(gpwscMap.get(WSCalculationConstant.MSG_KEY)))
+							? gpwscMap.get(WSCalculationConstant.MSG_KEY)
+							: tenantId);
+			msg = msg.replace("{billingcycle}", billingCycle);
+			msg = msg.replace("{LINK}", msgLink);
+			if(!map.getKey().equals(config.getPspclVendorNumber())) {
+				SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(msg)
+						.tenantid(tenantId)
+						.category(Category.TRANSACTION).build();
+				if(config.isSmsForDemandEnable()) {
+					producer.push(config.getSmsNotifTopic(), smsRequest);
+				}
+			}
+
+		});
 	/*	if (isSendMessage && failedConnectionNos.size() > 0) {
 			List<ActionItem> actionItems = new ArrayList<>();
 			String actionLink = config.getBulkDemandFailedLink();
