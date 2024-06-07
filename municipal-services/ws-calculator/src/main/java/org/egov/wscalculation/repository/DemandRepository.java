@@ -50,6 +50,7 @@ public class DemandRepository {
         StringBuilder url = new StringBuilder(config.getBillingServiceHost());
         url.append(config.getDemandCreateEndPoint());
         DemandRequest request = new DemandRequest(requestInfo,demands);
+        log.info("Creating demand for consumer code: "+request.getDemands().get(0).getConsumerCode());
         Object result = serviceRequestRepository.fetchResult(url, request);
         try{
            return  mapper.convertValue(result,DemandResponse.class).getDemands();
@@ -69,6 +70,7 @@ public class DemandRepository {
         StringBuilder url = new StringBuilder(config.getBillingServiceHost());
         url.append(config.getDemandUpdateEndPoint());
         DemandRequest request = new DemandRequest(requestInfo,demands);
+        log.info("Updating demand for consumer code: "+request.getDemands().get(0).getConsumerCode());
         Object result = serviceRequestRepository.fetchResult(url, request);
         try{
             return mapper.convertValue(result,DemandResponse.class).getDemands();

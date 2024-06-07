@@ -267,4 +267,7 @@ public class WSCalculationConfiguration {
 
 	@Value("${egov.update.demand.add.penalty}")
 	private String updateAddPenaltytopic;
+
+	@Value("${ws.generate.demand.bulk}")
+	private String wsGenerateDemandBulktopic;
 }
