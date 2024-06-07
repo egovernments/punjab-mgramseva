@@ -141,7 +141,7 @@ public class DemandGenerationConsumer {
 	 * @param records failed batch processing
 	 */
 	@KafkaListener(topics = {
-			"${persister.demand.based.dead.letter.topic.batch}" }, containerFactory = "kafkaListenerContainerFactory")
+			"${persister.demand.based.dead.letter.topic.batch}" })
 	public void listenDeadLetterTopic(final List<Message<?>> records) {
 		CalculationReq calculationReq = mapper.convertValue(records.get(0).getPayload(), CalculationReq.class);
 		Map<String, Object> masterMap = mDataService.loadMasterData(calculationReq.getRequestInfo(),
@@ -208,7 +208,7 @@ public class DemandGenerationConsumer {
 	 * @param tenantId TenantId for getting master data.
 	 */
 	@KafkaListener(topics = {
-			"${egov.wscal.bulk.demand.schedular.topic}" }, containerFactory = "kafkaListenerContainerFactory")
+			"${egov.wscal.bulk.demand.schedular.topic}" })
 	public void generateDemandForTenantId(HashMap<Object, Object> messageData) {
 		String tenantId;
 		RequestInfo requestInfo;
@@ -529,7 +529,7 @@ public class DemandGenerationConsumer {
 
 	@SuppressWarnings("unchecked")
 	@KafkaListener(topics = {
-			"${egov.generate.bulk.demand.manually.topic}" }, containerFactory = "kafkaListenerContainerFactory")
+			"${egov.generate.bulk.demand.manually.topic}" })
 	public void generateBulkDemandForULB(HashMap<Object, Object> messageData) {
 		Map<String, Object> billingMasterData;
 		BulkDemand bulkDemand;
@@ -548,14 +548,14 @@ public class DemandGenerationConsumer {
 		
 	}
 	@KafkaListener(topics = {
-			"${egov.update.demand.add.penalty}" }, containerFactory = "kafkaListenerContainerFactory")
+			"${egov.update.demand.add.penalty}" })
 	public void updateAddPenalty(HashMap<Object, Object> messageData) {
 		DemandRequest demandRequest = mapper.convertValue(messageData, DemandRequest.class);
 		demandService.updateDemandAddPenalty(demandRequest.getRequestInfo(), demandRequest.getDemands());
 	}
 
 	@KafkaListener(topics = {
-			"${ws.generate.demand.bulk}" }, containerFactory = "kafkaListenerContainerFactory")
+			"${ws.generate.demand.bulk}" })
 	public void generateDemandInBulkListner(HashMap<Object, Object> messageData) {
 		log.info("got generate demand call");
 		CalculationReq calculationReq= new CalculationReq();
