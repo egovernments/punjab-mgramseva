@@ -56,6 +56,7 @@ import org.egov.demand.amendment.model.enums.AmendmentStatus;
 import org.egov.demand.config.ApplicationProperties;
 import org.egov.demand.model.*;
 import org.egov.demand.model.BillV2.BillStatus;
+import org.egov.demand.producer.Producer;
 import org.egov.demand.repository.AmendmentRepository;
 import org.egov.demand.repository.BillRepositoryV2;
 import org.egov.demand.repository.DemandRepository;
@@ -120,6 +121,9 @@ public class DemandService {
 
 	@Autowired
 	private DemandValidatorV1 demandValidatorV1;
+
+	@Autowired
+	private Producer producer;
 	
 	/**
 	 * Method to create new demand 
@@ -358,6 +362,7 @@ public class DemandService {
 
 	public void save(DemandRequest demandRequest) {
 		demandRepository.save(demandRequest);
+		producer.push(applicationProperties.getDemandIndexTopic(), demandRequest);
 	}
 
 	public void update(DemandRequest demandRequest, PaymentBackUpdateAudit paymentBackUpdateAudit) {
