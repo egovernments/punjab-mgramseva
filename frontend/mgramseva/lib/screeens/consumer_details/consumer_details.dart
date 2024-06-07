@@ -506,7 +506,6 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             .waterconnection
                                                             .om_5Ctrl,
                                                         isRequired: false,
-                                                        isDisabled: true,
                                                       )
                                                     : Text(""),
                                               ],
