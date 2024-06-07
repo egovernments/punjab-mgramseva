@@ -524,6 +524,7 @@ public class DemandGenerationConsumer {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Got the exception while genating the demands:" + e);
 			log.info("Errro in Apllication no :"+calculationReq.getCalculationCriteria().get(0).getConnectionNo());
 
