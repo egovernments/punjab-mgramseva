@@ -78,6 +78,8 @@ public class EstimationService {
 		Map<String, JSONArray> billingSlabMaster = new HashMap<>();
 		Map<String, JSONArray> timeBasedExemptionMasterMap = new HashMap<>();
 		ArrayList<String> billingSlabIds = new ArrayList<>();
+		log.info("masterData.get(WSCalculationConstant.WC_BILLING_SLAB_MASTER):"+masterData.get(WSCalculationConstant.WC_BILLING_SLAB_MASTER));
+		log.info("masterData.get(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST)" +masterData.get(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST));
 		billingSlabMaster.put(WSCalculationConstant.WC_BILLING_SLAB_MASTER,
 				(JSONArray) masterData.get(WSCalculationConstant.WC_BILLING_SLAB_MASTER));
 		billingSlabMaster.put(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST,
