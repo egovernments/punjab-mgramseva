@@ -362,11 +362,12 @@ public class DemandService {
 
 	public void save(DemandRequest demandRequest) {
 		demandRepository.save(demandRequest);
-		producer.push(applicationProperties.getDemandIndexTopic(), demandRequest);
+		producer.push(applicationProperties.getCreateDemandIndexTopic(), demandRequest);
 	}
 
 	public void update(DemandRequest demandRequest, PaymentBackUpdateAudit paymentBackUpdateAudit) {
 		demandRepository.update(demandRequest, paymentBackUpdateAudit);
+		producer.push(applicationProperties.getUpdateDemandIndexTopic(), demandRequest);
 	}
 
 
