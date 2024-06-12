@@ -52,7 +52,8 @@ const HRMSCard = () => {
   [
           {
             label: t("WORK_BENCH_URL_PENALTY_MASTER_DATA"),
-            link: `${window?.location?.origin}/workbench-ui/employee/mdms-search-v2?moduleName=ws-services-calculation&masterName=Penalty`,
+            link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=Penalty`,
+                                              
           },
         ] : [];
       
