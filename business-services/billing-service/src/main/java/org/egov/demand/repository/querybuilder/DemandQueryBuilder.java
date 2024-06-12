@@ -198,7 +198,6 @@ public class DemandQueryBuilder {
 
 		Set<String> ids = demandCriteria.getDemandId();
 		if (!CollectionUtils.isEmpty(ids)) {
-			addAndClause(demandQuery);
 			demandQuery.append(" dmd.id IN (").append(createQuery( new ArrayList<>(ids))).append(")");
 			addToPreparedStatement(preparedStmtList, ids);
 		}
