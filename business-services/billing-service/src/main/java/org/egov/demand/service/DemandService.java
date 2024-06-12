@@ -291,6 +291,24 @@ public class DemandService {
 		return new DemandResponse(responseInfoFactory.getResponseInfo(requestInfo, HttpStatus.CREATED), demands);
 	}
 
+	public List<Demand> demandPlainSearch(DemandCriteria demandCriteria, RequestInfo requestInfo)
+	{
+		if (demandCriteria.getLimit() != null && demandCriteria.getLimit() > applicationProperties.getDemandMaxLimit())
+			demandCriteria.setLimit(applicationProperties.getDemandMaxLimit());
+
+		Set<String> demandIds = null;
+
+		if(demandCriteria.getDemandId() != null && !CollectionUtils.isEmpty(demandCriteria.getDemandId()))
+			demandIds = demandCriteria.getDemandId();
+		else
+			demandIds = new HashSet<>(demandRepository.getDemandIds(demandCriteria));
+
+		if(demandIds.isEmpty())
+			return Collections.emptyList();
+
+		DemandCriteria demandSearchCriteria = DemandCriteria.builder().demandId(demandIds).build();
+        return demandRepository.getDemandsPlainSearch(demandSearchCriteria);
+	}
 
 	/**
 	 * Search method to fetch demands from DB

@@ -209,4 +209,14 @@ public class ApplicationProperties {
     
     @Value("${kafka.mgramseva.update.bill}")
     private String updateBill;
+
+	@Value("${egov.demand.default.offset}")
+	private Integer demandDefaultOffset;
+
+	@Value("${egov.demand.default.limit}")
+	private Integer demandDefaultLimit;
+
+	@Value("${egov.demand.max.limit}")
+	private Integer demandMaxLimit;
+
 }
