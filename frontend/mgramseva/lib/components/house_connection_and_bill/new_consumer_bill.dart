@@ -38,16 +38,6 @@ class NewConsumerBillState extends State<NewConsumerBill> {
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      // var houseHoldProvider =
-      //     Provider.of<HouseHoldProvider>(context, listen: false);
-
-      // if (houseHoldProvider.isfirstdemand &&
-      //     widget.waterConnection?.connectionType != 'Metered') {
-      //   createPDFInitCall();
-      // }
-    });
   }
 
   static getLabelText(label, value, context, {subLabel = ''}) {
@@ -108,9 +98,6 @@ class NewConsumerBillState extends State<NewConsumerBill> {
     var penalty = billList.bill!.isEmpty
         ? Penalty(0.0, '0', false)
         : CommonProvider.getPenalty(widget.waterConnection?.demands);
-    // var penaltyApplicable = billList.bill!.isEmpty
-    //     ? PenaltyApplicable(0.0)
-    //     : CommonProvider.getPenaltyApplicable(widget.demandList);
 
     return LayoutBuilder(builder: (context, constraints) {
       // Handler Status
@@ -593,8 +580,6 @@ class NewConsumerBillState extends State<NewConsumerBill> {
         .where((e) =>
             (!(e.isPaymentCompleted ?? false) && e.status != 'CANCELLED'))
         .toList();
-
-    demandList = demandList.map((e) => Demands.fromJson(e.toJson())).toList();
 
     demandList.forEach((e) {
       e.demandDetails?.sort((a, b) =>

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -52,8 +53,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   buildDemandView(DemandList data) {
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
-    log("${houseHoldProvider.waterConnection?.connectionType}");
-    log("${houseHoldProvider.isfirstdemand}");
+
     return Column(
       children: [
         data.demands!.isEmpty

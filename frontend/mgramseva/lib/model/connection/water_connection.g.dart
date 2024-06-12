@@ -15,19 +15,19 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) =>
       ..tenantId = json['tenantId'] as String?
       ..action = json['action'] as String?
       ..status = json['status'] as String?
-      ..meterInstallationDate = json['meterInstallationDate'] as int?
+      ..meterInstallationDate = (json['meterInstallationDate'] as num?)?.toInt()
       ..documents = json['documents'] == null
           ? null
           : Documents.fromJson(json['documents'] as Map<String, dynamic>)
-      ..proposedTaps = json['proposedTaps'] as int?
-      ..noOfTaps = json['noOfTaps'] as int?
+      ..proposedTaps = (json['proposedTaps'] as num?)?.toInt()
+      ..noOfTaps = (json['noOfTaps'] as num?)?.toInt()
       ..arrears = (json['arrears'] as num?)?.toDouble()
       ..connectionType = json['connectionType'] as String?
       ..oldConnectionNo = json['oldConnectionNo'] as String?
       ..meterId = json['meterId'] as String?
       ..propertyType = json['propertyType'] as String?
-      ..previousReadingDate = json['previousReadingDate'] as int?
-      ..previousReading = json['previousReading'] as int?
+      ..previousReadingDate = (json['previousReadingDate'] as num?)?.toInt()
+      ..previousReading = (json['previousReading'] as num?)?.toInt()
       ..proposedPipeSize = (json['proposedPipeSize'] as num?)?.toDouble()
       ..connectionHolders = (json['connectionHolders'] as List<dynamic>?)
           ?.map((e) => Owners.fromJson(e as Map<String, dynamic>))
@@ -83,8 +83,8 @@ Map<String, dynamic> _$ProcessInstanceToJson(ProcessInstance instance) =>
 
 AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) =>
     AdditionalDetails()
-      ..initialMeterReading = json['initialMeterReading'] as int?
-      ..meterReading = json['meterReading'] as int?
+      ..initialMeterReading = (json['initialMeterReading'] as num?)?.toInt()
+      ..meterReading = (json['meterReading'] as num?)?.toInt()
       ..locality = json['locality'] as String?
       ..category = json['category'] as String?
       ..subCategory = json['subCategory'] as String?
@@ -96,6 +96,7 @@ AdditionalDetails _$AdditionalDetailsFromJson(Map<String, dynamic> json) =>
       ..collectionAmount = json['collectionAmount'] as String?
       ..collectionPendingAmount = json['collectionPendingAmount'] as String?
       ..totalAmount = json['totalamount'] as String?
+      ..remarks = json['remarks'] as String?
       ..appCreatedDate = json['appCreatedDate'] as num?
       ..action = json['action'] as String?;
 
@@ -114,6 +115,7 @@ Map<String, dynamic> _$AdditionalDetailsToJson(AdditionalDetails instance) =>
       'collectionAmount': instance.collectionAmount,
       'collectionPendingAmount': instance.collectionPendingAmount,
       'totalamount': instance.totalAmount,
+      'remarks': instance.remarks,
       'appCreatedDate': instance.appCreatedDate,
       'action': instance.action,
     };

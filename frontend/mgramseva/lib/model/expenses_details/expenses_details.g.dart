@@ -9,7 +9,7 @@ part of 'expenses_details.dart';
 ExpensesDetailsWithPagination _$ExpensesDetailsWithPaginationFromJson(
         Map<String, dynamic> json) =>
     ExpensesDetailsWithPagination()
-      ..totalCount = json['totalCount'] as int?
+      ..totalCount = (json['totalCount'] as num?)?.toInt()
       ..billDataCount = json['billData'] == null
           ? null
           : BillDataCount.fromJson(json['billData'] as Map<String, dynamic>)
@@ -55,17 +55,17 @@ ExpensesDetailsModel _$ExpensesDetailsModelFromJson(
       ..expensesAmount = (json['amount'] as List<dynamic>?)
           ?.map((e) => ExpensesAmount.fromJson(e as Map<String, dynamic>))
           .toList()
-      ..billDate = json['billDate'] as int?
-      ..paidDate = json['paidDate'] as int?
-      ..billIssuedDate = json['billIssuedDate'] as int?
+      ..billDate = (json['billDate'] as num?)?.toInt()
+      ..paidDate = (json['paidDate'] as num?)?.toInt()
+      ..billIssuedDate = (json['billIssuedDate'] as num?)?.toInt()
       ..challanNo = json['challanNo'] as String?
       ..accountId = json['accountId'] as String?
       ..applicationStatus = json['applicationStatus'] as String?
       ..totalAmount = (json['totalAmount'] as num?)?.toDouble()
       ..isBillPaid = json['isBillPaid'] as bool? ?? false
       ..fileStoreId = json['filestoreid'] as String?
-      ..taxPeriodFrom = json['taxPeriodFrom'] as int?
-      ..taxPeriodTo = json['taxPeriodTo'] as int?;
+      ..taxPeriodFrom = (json['taxPeriodFrom'] as num?)?.toInt()
+      ..taxPeriodTo = (json['taxPeriodTo'] as num?)?.toInt();
 
 Map<String, dynamic> _$ExpensesDetailsModelToJson(
         ExpensesDetailsModel instance) =>
@@ -105,7 +105,7 @@ Map<String, dynamic> _$ExpensesAmountToJson(ExpensesAmount instance) =>
     };
 
 Citizen _$CitizenFromJson(Map<String, dynamic> json) => Citizen()
-  ..id = json['id'] as int?
+  ..id = (json['id'] as num?)?.toInt()
   ..uuid = json['uuid'] as String?
   ..userName = json['userName'] as String?
   ..name = json['name'] as String?
@@ -122,8 +122,8 @@ Map<String, dynamic> _$CitizenToJson(Citizen instance) => <String, dynamic>{
 AuditDetails _$AuditDetailsFromJson(Map<String, dynamic> json) => AuditDetails()
   ..createdBy = json['createdBy'] as String?
   ..lastModifiedBy = json['lastModifiedBy'] as String?
-  ..createdTime = json['createdTime'] as int?
-  ..lastModifiedTime = json['lastModifiedTime'] as int?;
+  ..createdTime = (json['createdTime'] as num?)?.toInt()
+  ..lastModifiedTime = (json['lastModifiedTime'] as num?)?.toInt();
 
 Map<String, dynamic> _$AuditDetailsToJson(AuditDetails instance) =>
     <String, dynamic>{
