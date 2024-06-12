@@ -581,8 +581,6 @@ class NewConsumerBillState extends State<NewConsumerBill> {
             (!(e.isPaymentCompleted ?? false) && e.status != 'CANCELLED'))
         .toList();
 
-    // demandList = demandList.map((e) => Demands.fromJson(e.toJson())).toList();
-
     demandList.forEach((e) {
       e.demandDetails?.sort((a, b) =>
           a.auditDetails!.createdTime!.compareTo(b.auditDetails!.createdTime!));
