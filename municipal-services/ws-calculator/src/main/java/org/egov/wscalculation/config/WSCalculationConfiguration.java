@@ -255,4 +255,19 @@ public class WSCalculationConfiguration {
 
 	@Value("${egov.save.demand.audit.from.wscal}")
 	private String saveDemandAudit;
+
+	@Value("${penalty.applicable.in.days}")
+	private Integer penaltyApplicableDays;
+
+	@Value("${penalty.start.threshold.time}")
+	private String penaltyStartThresholdTime;
+
+	@Value("${is.penalty.feature.enable}")
+	private boolean isPenaltyEnabled;
+
+	@Value("${egov.update.demand.add.penalty}")
+	private String updateAddPenaltytopic;
+
+	@Value("${ws.generate.demand.bulk}")
+	private String wsGenerateDemandBulktopic;
 }

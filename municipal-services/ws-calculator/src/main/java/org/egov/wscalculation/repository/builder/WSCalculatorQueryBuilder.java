@@ -247,8 +247,7 @@ public class WSCalculatorQueryBuilder {
 		}
 		if(!CollectionUtils.isEmpty(preparedStmtList))
 			builder.append("and status not IN ('CANCELLED')");
-		
-		System.out.println("Final query ::" + builder.toString());
+
 		return builder.toString();
 	}
 
@@ -273,7 +272,6 @@ public class WSCalculatorQueryBuilder {
 			builder.append(" tenantId =?  ");
 			preparedStmtList.add(tenantId);
 		}
-		System.out.println("Final conn query ::" + builder.toString());
 		return builder.toString();
 	}
 

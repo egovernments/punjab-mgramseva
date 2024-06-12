@@ -172,6 +172,7 @@ public class Constants {
 	
 	public static final String COUNT_REPLACE_CANCEL_BILL_MSG = "{count}";
 
+
 	// Bill cancel
 
 	public static final String CANCELLATION_REASON_MSG= "reasonMessage";
@@ -185,4 +186,7 @@ public class Constants {
 	public static final String CANCELL_REASON_CODE_NOT_FOUND = "EG_BS_CANCELL_REASON_CODE_NOT";
 	public static final String CANCELL_REASON_CODE_NOT_FOUND_MSG = "Cancellation Reason with key " + "'" + CANCELLATION_REASON_CODE + "'" + " is a madnatory Text field in additionalDetails of Bill cancell Request";
 	public static final String CANCELL_REASON_CODE_EMPTY_MSG = "Cancell Reason code cannot be empty";
+
+	public static final String PENALTY_PATH_CODE = "$.MdmsRes.ws-services-calculation.Penalty";
+
 }
