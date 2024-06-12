@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
@@ -55,6 +56,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.JsonPath;
 
+@Slf4j
 @Component
 public class WaterServiceImpl implements WaterService {
 
@@ -370,10 +372,12 @@ public class WaterServiceImpl implements WaterService {
 			waterConnectionRequest.getWaterConnection().setApplicationStatus("INACTIVE");
 		}
 		// setting oldApplication Flag
+		log.info("sending water connection request to method markOldApplication "+waterConnectionRequest.toString());
 		markOldApplication(waterConnectionRequest);
 		// check for edit and send edit notification
 		waterDaoImpl.pushForEditNotification(waterConnectionRequest);
 		postForMeterReading(waterConnectionRequest, WCConstants.MODIFY_CONNECTION);
+		log.info("before sending data from line 380 in water service impl "+waterConnectionRequest.toString());
 		return Arrays.asList(waterConnectionRequest.getWaterConnection());
 	}
 
