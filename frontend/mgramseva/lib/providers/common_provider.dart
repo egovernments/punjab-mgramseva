@@ -81,9 +81,7 @@ class CommonProvider with ChangeNotifier {
       var response = await CoreRepository().getLocilisation(query);
       labels = localizedStrings = response;
       setLocalizationLabels(response);
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     return labels;
   }
 
