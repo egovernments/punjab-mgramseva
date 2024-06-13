@@ -380,7 +380,7 @@ public class DemandService {
 				BigDecimal arrears=totalamount.subtract(demandAmount);
 				if(arrears.compareTo(BigDecimal.ZERO)>0)
 				{
-					messageString = messageString.replace("{billamount}", totalamount.toString()+"(includes Rs."+ arrears.toString()+ " arrears)");
+					messageString = messageString.replace("{billamount}", totalamount.toString());
 				}
 				else
 				{

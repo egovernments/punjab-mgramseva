@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/common/pdf_service.dart';
@@ -45,7 +49,26 @@ class BillingServiceRepository extends BaseService {
       demandList = DemandList.fromJson({"Demands": res['Demands']});
       (res);
     }
+
     return demandList;
+  }
+
+  Future<AggragateDemandDetails> fetchAggregateDemand(
+      Map<String, dynamic> queryparams) async {
+    late AggragateDemandDetails aggItems;
+    var res = await makeRequest(
+        url: Url.FETCH_AGGREGATE_DEMAND,
+        body: {
+          'RequestInfo': getRequestInfo('_search'),
+        },
+        queryParameters: queryparams,
+        method: RequestType.POST);
+
+    if (res != null) {
+      aggItems = AggragateDemandDetails.fromJson(res);
+    }
+
+    return aggItems;
   }
 
   Future<UpdateDemandList> fetchUpdateDemand(

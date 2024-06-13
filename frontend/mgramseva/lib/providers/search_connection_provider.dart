@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/search_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
@@ -60,25 +61,30 @@ class SearchConnectionProvider with ChangeNotifier {
         Loaders.showLoadingDialog(context);
         var inputJson = searchconnection.toJson();
         inputJson.removeWhere((key, value) => value == "");
-        var connectionresults = isNameSearch == true ? SearchConnectionRepository().getConnectionName({
-          "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-          ...inputJson
-        }) : SearchConnectionRepository().getconnection({
-          "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-          ...inputJson
-        });
+        var connectionresults = isNameSearch == true
+            ? SearchConnectionRepository().getConnectionName({
+                "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+                ...inputJson
+              })
+            : SearchConnectionRepository().getconnection({
+                "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+                ...inputJson
+              });
 
         /// popping the loader
-
         connectionresults.then(
             (value) => {
                   Navigator.pop(context),
-                  if (value.waterConnectionData!.length > 0 || value.waterConnection!.length > 0)
+                  if (value.waterConnectionData!.length > 0 ||
+                      value.waterConnection!.length > 0)
                     {
                       waterConnections = value,
                       Navigator.pushNamed(
-                          context, Routes.SEARCH_CONSUMER_RESULT,
-                          arguments: {...inputJson, ...arguments, "isNameSearch" : isNameSearch })
+                          context, Routes.SEARCH_CONSUMER_RESULT, arguments: {
+                        ...inputJson,
+                        ...arguments,
+                        "isNameSearch": isNameSearch
+                      })
                     }
                   else
                     {
@@ -91,7 +97,7 @@ class SearchConnectionProvider with ChangeNotifier {
           Navigator.pop(context);
           ErrorHandler().allExceptionsHandler(context, e, s);
         });
-            } catch (e, s) {
+      } catch (e, s) {
         Navigator.pop(context);
         ErrorHandler().allExceptionsHandler(context, e, s);
       }

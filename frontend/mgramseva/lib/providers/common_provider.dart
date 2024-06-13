@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/model/user/user_details.dart';
 import 'package:mgramseva/model/user_profile/user_profile.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/repository/authentication_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/services/local_storage.dart';
@@ -79,9 +81,7 @@ class CommonProvider with ChangeNotifier {
       var response = await CoreRepository().getLocilisation(query);
       labels = localizedStrings = response;
       setLocalizationLabels(response);
-        } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     return labels;
   }
 
@@ -262,8 +262,8 @@ class CommonProvider with ChangeNotifier {
 
   Future<void> getAppVersionDetails() async {
     try {
-      var localizationList =
-          await CoreRepository().getMdms(initRequestBody({"tenantId": dotenv.get('STATE_LEVEL_TENANT_ID')}));
+      var localizationList = await CoreRepository().getMdms(
+          initRequestBody({"tenantId": dotenv.get('STATE_LEVEL_TENANT_ID')}));
       appVersion = localizationList.mdmsRes!.commonMasters!.appVersion!.first;
     } catch (e) {
       print(e.toString());
@@ -324,10 +324,12 @@ class CommonProvider with ChangeNotifier {
     return userDetails;
   }
 
-  void onLogout() {
-    navigatorKey.currentState
-        ?.pushNamedAndRemoveUntil(Routes.SELECT_LANGUAGE, (route) => false);
-    loginCredentials = null;
+  void onLogout() async {
+    await AuthenticationRepository().logoutUser().then((onValue) {
+      navigatorKey.currentState
+          ?.pushNamedAndRemoveUntil(Routes.SELECT_LANGUAGE, (route) => false);
+      loginCredentials = null;
+    });
   }
 
   void onTapOfAttachment(FileStore store, context) async {
@@ -423,15 +425,13 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
-  void getFileFromPDFBillService(
-    body,
-    params,
-    mobileNumber,
-    bill,
-    mode,
-  ) async {
+  void getFileFromPDFBillService(body, params, mobileNumber, bill, mode,
+      {String? fireStoreId = ""}) async {
     try {
-      var res = await CoreRepository().getFileStorefromPdfService(body, params);
+      var res;
+      if (fireStoreId == "") {
+        res = await CoreRepository().getFileStorefromPdfService(body, params);
+      }
 
       String link = (ApplicationLocalizations.of(navigatorKey.currentContext!)
           .translate(i18.common.SHARE_BILL_LINK)
@@ -442,7 +442,7 @@ class CommonProvider with ChangeNotifier {
           .replaceFirst('{new consumer id}', bill.consumerCode!.toString())
           .replaceFirst('{Amount}', bill.totalAmount.toString()));
       getStoreFileDetails(
-        res!.filestoreIds!.first,
+        fireStoreId != "" ? fireStoreId : res!.filestoreIds!.first,
         mode,
         mobileNumber,
         navigatorKey.currentContext,
@@ -587,46 +587,59 @@ class CommonProvider with ChangeNotifier {
   // }
 
   static String getAdvanceAdjustedAmount(List<Demands> demandList) {
+    // Set Amt as 0
     var amount = '0';
     var index = -1;
 
+    // if demandList.isEmpty return Amt as 0
     if (demandList.isEmpty) return amount;
 
+    // Sort Demands where Payments were not completed
     var filteredDemands =
         demandList.where((e) => !(e.isPaymentCompleted ?? false)).toList();
+
+    // Early return if first demand has time penalty and there's applicable penalty
     if (filteredDemands.first.demandDetails?.first.taxHeadMasterCode ==
             'WS_TIME_PENALTY' &&
         CommonProvider.getPenaltyApplicable(demandList).penaltyApplicable !=
             0) {
+      // here also return 0;
       return amount;
     } else {
       for (int i = 0; i < filteredDemands.length; i++) {
         index = demandList[i].demandDetails?.lastIndexWhere(
                 (e) => e.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD') ??
             -1;
-
+        // Find the last index of "WS_ADVANCE_CARRYFORWARD" element in the current demand's details list (if it exists)
+        // true => index value else => -1
         if (index != -1) {
           var demandDetail = demandList[i].demandDetails?[index];
+          // Collection Amt < tax amt
           if (demandDetail!.collectionAmount!.abs() <
               demandDetail.taxAmount!.abs()) {
+            //  save amount
             amount = filteredDemands.first.demandDetails?.last.collectionAmount
                     ?.toString() ??
                 '0.0';
           } else if (demandDetail.collectionAmount! ==
               demandDetail.taxAmount!) {
+            // Iterate through  filteredDemands
             if (filteredDemands.first.demandDetails?.last.collectionAmount !=
                 0) {
               var list = <double>[];
               for (int j = 0; j <= i; j++) {
+                // Iterate through  elements in the current demand's details list
                 for (int k = 0;
                     k < (filteredDemands[j].demandDetails?.length ?? 0);
                     k++) {
                   if (k == index && j == i) break;
+                  // Add amount to collection
                   list.add(
                       filteredDemands[j].demandDetails![k].collectionAmount ??
                           0);
                 }
               }
+              // find sum of colleted amount
               var collectedAmount = list.reduce((a, b) => a + b);
               amount = double.parse("$collectedAmount") >=
                       double.parse("${demandDetail.collectionAmount?.abs()}")
@@ -634,6 +647,7 @@ class CommonProvider with ChangeNotifier {
                           ?.toString() ??
                       '0'
                   : '0';
+              // set amount
             }
           }
         }
