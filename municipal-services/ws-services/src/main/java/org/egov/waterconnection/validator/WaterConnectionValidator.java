@@ -183,12 +183,10 @@ public class WaterConnectionValidator {
 			}
 				Boolean isArrear = false;
 				Boolean isAdvance = false;
-			    List<String> demandIds = checkForPayments(request);
+				Boolean hasPayments=false;
 
-				for (String demandId : demandIds)
-				{
-					demList.remove(demandId);
-				}
+				if(!request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE))
+			     hasPayments = checkForPayments(request);
 
 				if(request.getWaterConnection().getAdvance()!=null && request.getWaterConnection().getAdvance().compareTo(BigDecimal.ZERO) == 0) {
 					isAdvance =  true;
@@ -196,23 +194,21 @@ public class WaterConnectionValidator {
 				if(request.getWaterConnection().getArrears()!=null && request.getWaterConnection().getArrears().compareTo(BigDecimal.ZERO) == 0) {
 					isArrear =  true;
 				}
-				if ((request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demList != null && demList.size() > 0)
+				if (!hasPayments && ((request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demList != null && demList.size() > 0)
 						|| (searchResult.getArrears() != null && request.getWaterConnection().getArrears() == null && demList != null && demList.size() > 0
 								|| (isArrear && demList != null && demList.size() > 0))|| (request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demList != null && demList.size() > 0)
 						|| (searchResult.getAdvance() != null && request.getWaterConnection().getAdvance() == null && demList != null && demList.size() > 0
-						|| isAdvance)) {
+						|| isAdvance))) {
 					for (Demand demand : demList) {
 						demand.setStatus(org.egov.waterconnection.web.models.Demand.StatusEnum.CANCELLED);
 					}
 					updateDemand(request.getRequestInfo(), demList);
-					
+
 				}
 			}
-			
-		
 	}
 
-	private List<String> checkForPayments(WaterConnectionRequest waterConnectionRequest) {
+	private Boolean checkForPayments(WaterConnectionRequest waterConnectionRequest) {
 		String consumerCode,service;
 		if(org.apache.commons.lang.StringUtils.isEmpty(waterConnectionRequest.getWaterConnection().getConnectionNo())){
 			consumerCode = waterConnectionRequest.getWaterConnection().getApplicationNo();
@@ -228,33 +224,33 @@ public class WaterConnectionValidator {
 		RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build();
 		Object response = serviceRequestRepository.fetchResult(URL,requestInfoWrapper);
 		PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
-		List<String> demandIds=new ArrayList<>();
+//		List<String> demandIds=new ArrayList<>();
 
-		if(paymentResponse.getPayments()!=null)
-		{
-			for(Payment payment:paymentResponse.getPayments())
-			{
-				if(payment.getPaymentDetails()!=null)
-				{
-					for(PaymentDetail paymentDetail:payment.getPaymentDetails())
-					{
-						Bill bill=paymentDetail.getBill();
-						if(bill!=null && bill.getBillDetails()!=null)
-						{
-							for(BillDetail billDetail:bill.getBillDetails())
-							{
-								demandIds.add(billDetail.getDemandId());
-							}
-						}
-					}
-				}
-			}
-		}
-		return demandIds;
+//		if(paymentResponse.getPayments()!=null)
+//		{
+//			for(Payment payment:paymentResponse.getPayments())
+//			{
+//				if(payment.getPaymentDetails()!=null)
+//				{
+//					for(PaymentDetail paymentDetail:payment.getPaymentDetails())
+//					{
+//						Bill bill=paymentDetail.getBill();
+//						if(bill!=null && bill.getBillDetails()!=null)
+//						{
+//							for(BillDetail billDetail:bill.getBillDetails())
+//							{
+//								demandIds.add(billDetail.getDemandId());
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//		return demandIds;
 //
-//		if(paymentResponse.getPayments().size()>0)
-//			return true;
-//		else return false;
+		if(paymentResponse.getPayments().size()>0)
+			return true;
+		else return false;
 	}
 
 	/**
