@@ -187,11 +187,11 @@ public class DemandGenerationConsumer {
 	 */
 	private void generateDemandInBatch(CalculationReq request, Map<String, Object> masterMap, String errorTopic,
 			boolean isSendMessage) throws Exception {
-		for (CalculationCriteria criteria : request.getCalculationCriteria()) {
+		/*for (CalculationCriteria criteria : request.getCalculationCriteria()) {
 			Boolean genratedemand = true;
 			wsCalulationWorkflowValidator.applicationValidation(request.getRequestInfo(), criteria.getTenantId(),
 					criteria.getConnectionNo(), genratedemand);
-		}
+		}*/
 		System.out.println("Calling Bulk Demand generation connection Number" + request.getCalculationCriteria().get(0).getConnectionNo());
 		wSCalculationServiceImpl.bulkDemandGeneration(request, masterMap);
 		/*String connectionNoStrings = request.getCalculationCriteria().stream()
@@ -517,7 +517,6 @@ public class DemandGenerationConsumer {
 
 	public void generateDemandInBulk(CalculationReq calculationReq, String billingCycle, Map<String, Object> masterMap,
 									 boolean isSendMessage,String tenantId) {
-		log.info("masterMap:"+masterMap);
 		try {
 			if(!tenantId.equals(config.getSmsExcludeTenant())) {
 				generateDemandInBatch(calculationReq, masterMap, billingCycle, isSendMessage);
