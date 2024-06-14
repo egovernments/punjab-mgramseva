@@ -185,8 +185,9 @@ public class WaterConnectionValidator {
 				Boolean isAdvance = false;
 				Boolean hasPayments=false;
 
-				if(!request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE))
-			     hasPayments = checkForPayments(request);
+				if(!request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE)) {
+					hasPayments = checkForPayments(request);
+				}
 
 				if(request.getWaterConnection().getAdvance()!=null && request.getWaterConnection().getAdvance().compareTo(BigDecimal.ZERO) == 0) {
 					isAdvance =  true;
@@ -224,6 +225,7 @@ public class WaterConnectionValidator {
 		RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build();
 		Object response = serviceRequestRepository.fetchResult(URL,requestInfoWrapper);
 		PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
+		log.info("Payment response from line 228 "+paymentResponse.toString());
 //		List<String> demandIds=new ArrayList<>();
 
 //		if(paymentResponse.getPayments()!=null)
@@ -248,9 +250,14 @@ public class WaterConnectionValidator {
 //		}
 //		return demandIds;
 //
-		if(paymentResponse.getPayments().size()>0)
-			return true;
-		else return false;
+		if(!paymentResponse.getPayments().isEmpty())
+		{
+			if(paymentResponse.getPayments().size()>0)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
