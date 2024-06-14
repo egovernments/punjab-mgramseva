@@ -660,12 +660,12 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                         .additionalDetails!.remarks ??
                                     "";
                                 return BuildTextField(
-                                  "Remarks",
-                                  // i18.consumer.CONSUMER_REMARKS,
+                                  
+                                  i18.consumer.CONSUMER_REMARKS,
                                   property.owners!.first.consumerRemarksCtrl,
                                   validator: (val) =>
                                       Validators.consumerRemarksValidator(val,
-                                          20, i18.consumer.CONSUMER_REMARKS),
+                                          40, i18.consumer.CONSUMER_REMARKS),
                                   isRequired: true,
                                   contextKey: consumerProvider
                                       .consmerWalkthrougList[9].key,
