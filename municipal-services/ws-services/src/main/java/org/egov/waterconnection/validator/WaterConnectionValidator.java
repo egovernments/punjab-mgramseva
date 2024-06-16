@@ -211,7 +211,7 @@ public class WaterConnectionValidator {
 
 	private Boolean checkForPayments(WaterConnectionRequest waterConnectionRequest) {
 		String consumerCode,service;
-		if(org.apache.commons.lang.StringUtils.isEmpty(waterConnectionRequest.getWaterConnection().getConnectionNo())){
+		if(StringUtils.isEmpty(waterConnectionRequest.getWaterConnection().getConnectionNo())){
 			consumerCode = waterConnectionRequest.getWaterConnection().getApplicationNo();
 			service = businessService;
 		}
@@ -224,6 +224,8 @@ public class WaterConnectionValidator {
 				.append("&").append("tenantId=").append(waterConnectionRequest.getWaterConnection().getTenantId());
 		RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build();
 		Object response = serviceRequestRepository.fetchResult(URL,requestInfoWrapper);
+		log.info("URL for getting payments "+URL.toString());
+		log.info("Respinse from paymnets "+response.toString());
 		PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
 		log.info("Payment response from line 228 "+paymentResponse.toString());
 //		List<String> demandIds=new ArrayList<>();
