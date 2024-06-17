@@ -196,10 +196,10 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		@SuppressWarnings("unchecked")
 		List<String> billingSlabIds = estimatesAndBillingSlabs.get("billingSlabIds");
 		WaterConnection waterConnection = criteria.getWaterConnection();
-		Property property = wSCalculationUtil.getProperty(
-				WaterConnectionRequest.builder().waterConnection(waterConnection).requestInfo(requestInfo).build());
+		/*Property property = wSCalculationUtil.getProperty(
+				WaterConnectionRequest.builder().waterConnection(waterConnection).requestInfo(requestInfo).build());*/
 		
-		String tenantId = null != property.getTenantId() ? property.getTenantId() : criteria.getTenantId();
+		String tenantId = criteria.getTenantId();
 
 
 		/*Map<String, TaxHeadCategory> taxHeadCategoryMap = ((List<TaxHeadMaster>) masterMap

@@ -55,12 +55,6 @@ class BillingServiceRepository extends BaseService {
 
   Future<AggragateDemandDetails> fetchAggregateDemand(
       Map<String, dynamic> queryparams) async {
-    // log(jsonEncode(queryparams));
-    // log(jsonEncode(
-    //   {
-    //     'RequestInfo': getRequestInfo('_search'),
-    //   },
-    // ));
     late AggragateDemandDetails aggItems;
     var res = await makeRequest(
         url: Url.FETCH_AGGREGATE_DEMAND,

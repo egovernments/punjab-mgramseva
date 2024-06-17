@@ -937,12 +937,12 @@ public class DemandService {
 			String businessService = configs.getBusinessService();
 			WaterConnectionRequest waterConnectionRequest = WaterConnectionRequest.builder()
 					.waterConnection(calculation.getWaterConnection()).requestInfo(requestInfo).build();
-			Property property = wsCalculationUtil.getProperty(waterConnectionRequest);
+			/*Property property = wsCalculationUtil.getProperty(waterConnectionRequest);
 			String tenantId = calculation.getTenantId();
 			User owner = property.getOwners().get(0).toCommonUser();
 			if (!CollectionUtils.isEmpty(waterConnectionRequest.getWaterConnection().getConnectionHolders())) {
 				owner = waterConnectionRequest.getWaterConnection().getConnectionHolders().get(0).toCommonUser();
-			}
+			}*/
 
 			List<DemandDetail> demandDetails = new LinkedList<>();
 			calculation.getTaxHeadEstimates().forEach(taxHeadEstimate -> {
@@ -1028,7 +1028,7 @@ public class DemandService {
 			}*/
 			 
 
-			if (isForConnectionNo) {
+			/*if (isForConnectionNo) {
 				WaterConnection connection = calculation.getWaterConnection();
 				if (connection == null) {
 					List<WaterConnection> waterConnectionList = calculatorUtils.getWaterConnection(requestInfo,
@@ -1050,7 +1050,7 @@ public class DemandService {
 //						demand.setPayer(owner);
 //				}
 
-			}
+			}*/
 
 		}
 

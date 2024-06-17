@@ -285,8 +285,6 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                             .HOUSE_DETAILS_VIEW
                                         : i18.searchWaterConnection
                                             .HOUSE_DETAILS_EDIT, () {
-                              log("${isNameSearch}");
-                              log("${jsonEncode(waterconnections.waterConnection![index])}");
                               Navigator.pushNamed(
                                   context,
                                   (arguments['Mode'] == 'collect'

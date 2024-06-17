@@ -684,7 +684,7 @@ public class DemandService {
 				Integer rate = (Integer) paymentMasterData.get("rate");
 				String penaltyType = String.valueOf(paymentMasterData.get("type"));
 				totalApplicablePenalty = currentmonthBill.multiply(new BigDecimal(rate).divide(new BigDecimal(100)));
-				totalApplicablePenalty = totalApplicablePenalty.setScale(0, RoundingMode.CEILING);
+				totalApplicablePenalty = totalApplicablePenalty.setScale(0, RoundingMode.HALF_UP);
 			} else {
 				log.info("MDMS data is Null Penalty not connfigured");
 			}

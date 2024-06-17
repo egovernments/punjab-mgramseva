@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/common/demand.dart';
@@ -15,6 +17,7 @@ import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/model/mdms/sub_category_type.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
@@ -78,10 +81,13 @@ class ConsumerProvider with ChangeNotifier {
       "channel": "CITIZEN",
       "ownershipCategory": "INDIVIDUAL",
       "owners": [
-        Owners.fromJson({"ownerType": "NONE"}).toJson()
+        Owners.fromJson({
+          "ownerType": "NONE",
+        }).toJson()
       ],
       "address": Address().toJson()
     });
+
     if (boundaryList.length == 1) {
       property.address.localityCtrl = boundaryList.first;
       onChangeOfLocality(property.address.localityCtrl);
@@ -133,6 +139,7 @@ class ConsumerProvider with ChangeNotifier {
         "tenantId": commonProvider.userDetails!.selectedtenant!.code,
         "connectionNumber": id.split('_').join('/')
       });
+
       if (waterconnections.waterConnection != null &&
           waterconnections.waterConnection!.isNotEmpty) {
         setWaterConnection(waterconnections.waterConnection?.first);
@@ -229,6 +236,7 @@ class ConsumerProvider with ChangeNotifier {
           paymentDetails.payments!.isNotEmpty) {
         isFirstDemand = true;
       }
+
       notifyListeners();
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
@@ -304,7 +312,8 @@ class ConsumerProvider with ChangeNotifier {
               : waterconnection.additionalDetails?.subCategory,
           "aadharNumber": waterconnection.addharCtrl.text.trim().isEmpty
               ? null
-              : waterconnection.addharCtrl.text.trim()
+              : waterconnection.addharCtrl.text.trim(),
+          "remarks": property.owners?.first.remarks
         });
       } else {
         waterconnection.additionalDetails!.locality =
@@ -328,6 +337,9 @@ class ConsumerProvider with ChangeNotifier {
         waterconnection.additionalDetails!.meterReading =
             waterconnection.previousReading;
         waterconnection.additionalDetails!.propertyType = property.propertyType;
+
+        waterconnection.additionalDetails!.remarks =
+            property.owners?.first.remarks;
       }
 
       try {
@@ -344,6 +356,7 @@ class ConsumerProvider with ChangeNotifier {
           if (result2 != null) {
             setModel();
             phoneNumberAutoValidation = false;
+
             streamController.add(property);
             Notifiers.getToastMessage(
                 context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
@@ -363,6 +376,7 @@ class ConsumerProvider with ChangeNotifier {
             waterconnection.arrears = null;
             waterconnection.advance = null;
           }
+
           var result1 =
               await ConsumerRepository().updateProperty(property.toJson());
           var result2 = await ConsumerRepository()
@@ -437,7 +451,9 @@ class ConsumerProvider with ChangeNotifier {
     }
   }
 
-  Future<Property?> getProperty(Map<String, dynamic> query) async {
+  Future<Property?> getProperty(
+    Map<String, dynamic> query,
+  ) async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
@@ -445,6 +461,7 @@ class ConsumerProvider with ChangeNotifier {
       var res = await ConsumerRepository().getProperty(query);
       if (res != null)
         property = new Property.fromJson(res['Properties'].first);
+
       property.owners!.first.getText();
       property.address.getText();
 
@@ -456,6 +473,7 @@ class ConsumerProvider with ChangeNotifier {
           commonProvider.userDetails!.selectedtenant!.code!;
       property.address.gpNameCityCodeCtrl.text =
           commonProvider.userDetails!.selectedtenant!.city!.code!;
+
       streamController.add(property);
       notifyListeners();
     } catch (e) {

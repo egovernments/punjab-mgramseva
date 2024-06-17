@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import EmployeeModuleCard from "./EmployeeModuleCard";
 
 const HRMSCard = () => {
+
   const ADMIN = Digit.Utils.hrmsAccess();
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
   const DIV_ADMIN = Digit.UserService.hasAccess(["DIV_ADMIN"]);
@@ -11,6 +12,7 @@ const HRMSCard = () => {
   if (!ADMIN) {
     return null;
   }
+
   const { t } = useTranslation();
   const tenantId = Digit.ULBService.getCurrentTenantId();
   let roles = STATE_ADMIN
@@ -45,6 +47,17 @@ const HRMSCard = () => {
         ]
       : [];
 
+  const moduleForDivisionUser =
+  DIV_ADMIN && MDMS_ADMIN?
+  [
+          {
+            label: t("WORK_BENCH_URL_PENALTY_MASTER_DATA"),
+            link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=Penalty`,
+                                              
+          },
+        ] : [];
+      
+
   const propsForModuleCard = {
     Icon: <PersonIcon />,
     moduleName: t("ACTION_TEST_HRMS"),
@@ -75,10 +88,12 @@ const HRMSCard = () => {
       },
       ...moduleForSomeDIVAdmin,
       ...moduleForSomeSTATEUser,
+      ...moduleForDivisionUser,
     ],
   };
 
   return <EmployeeModuleCard {...propsForModuleCard} />;
 };
+
 
 export default HRMSCard;
