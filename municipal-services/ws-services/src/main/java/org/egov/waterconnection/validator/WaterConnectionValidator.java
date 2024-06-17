@@ -219,14 +219,21 @@ public class WaterConnectionValidator {
 			consumerCode = waterConnectionRequest.getWaterConnection().getConnectionNo();
 			service = "WS";
 		}
-		StringBuilder URL = waterServiceUtil.getcollectionURL();
-		URL.append(service).append("/_search").append("?").append("consumerCodes=").append(consumerCode)
+		StringBuilder uri = new StringBuilder();
+		uri.append(waterServiceUtil.getcollectionURL()).append(service).append("/_search").append("?").append("consumerCodes=").append(consumerCode)
 				.append("&").append("tenantId=").append(waterConnectionRequest.getWaterConnection().getTenantId());
 		RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build();
-		Object response = serviceRequestRepository.fetchResult(URL,requestInfoWrapper);
-		log.info("URL for getting payments "+URL.toString());
+		Object response = serviceRequestRepository.fetchResult(uri,requestInfoWrapper);
+		log.info("URL for getting payments "+uri);
 		log.info("Respinse from paymnets "+response.toString());
-		PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
+		PaymentResponse paymentResponse=null;
+		try {
+			 paymentResponse = mapper.convertValue(response, PaymentResponse.class);
+		}
+		catch (Exception ex)
+		{
+			log.error("Response not found");
+		}
 		log.info("Payment response from line 228 "+paymentResponse.toString());
 //		List<String> demandIds=new ArrayList<>();
 
@@ -252,9 +259,9 @@ public class WaterConnectionValidator {
 //		}
 //		return demandIds;
 //
-		if(!paymentResponse.getPayments().isEmpty())
+		if(paymentResponse.getPayments()!=null)
 		{
-			if(paymentResponse.getPayments().size()>0)
+			if(!paymentResponse.getPayments().isEmpty())
 			{
 				return true;
 			}
