@@ -155,7 +155,6 @@ public class WaterDaoImpl implements WaterDao {
 	@Override
 	public void updateWaterConnection(WaterConnectionRequest waterConnectionRequest, boolean isStateUpdatable) {
 		if (isStateUpdatable) {
-			log.info("sending data to kafka topic updateWaterConnection " +waterConnectionRequest.toString());
 			waterConnectionProducer.push(updateWaterConnection, waterConnectionRequest);
 		} else {
 			waterConnectionProducer.push(wsConfiguration.getWorkFlowUpdateTopic(), waterConnectionRequest);

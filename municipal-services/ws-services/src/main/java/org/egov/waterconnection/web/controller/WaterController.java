@@ -88,7 +88,6 @@ public class WaterController {
 	public ResponseEntity<WaterConnectionResponse> updateWaterConnection(
 			@Valid @RequestBody WaterConnectionRequest waterConnectionRequest) {
 		List<WaterConnection> waterConnection = waterService.updateWaterConnection(waterConnectionRequest);
-		log.info("response sent back from api update "+waterConnection.toString());
 		WaterConnectionResponse response = WaterConnectionResponse.builder().waterConnection(waterConnection)
 				.responseInfo(responseInfoFactory
 						.createResponseInfoFromRequestInfo(waterConnectionRequest.getRequestInfo(), true))

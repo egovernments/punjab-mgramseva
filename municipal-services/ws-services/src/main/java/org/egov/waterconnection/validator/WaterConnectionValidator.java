@@ -220,12 +220,14 @@ public class WaterConnectionValidator {
 			service = "WS";
 		}
 		StringBuilder uri = new StringBuilder();
-		uri.append(waterServiceUtil.getcollectionURL()).append(service).append("/_search").append("?").append("consumerCodes=").append(consumerCode)
-				.append("&").append("tenantId=").append(waterConnectionRequest.getWaterConnection().getTenantId());
+		uri.append(waterServiceUtil.getcollectionURL()).append(service).append("/_search").append("?").
+				append("tenantId=").append(waterConnectionRequest.getWaterConnection().getTenantId())
+				.append("&").
+				append("consumerCodes=").append(consumerCode)
+				.append("&").
+				append("businessService").append(service);
 		RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build();
 		Object response = serviceRequestRepository.fetchResult(uri,requestInfoWrapper);
-		log.info("URL for getting payments "+uri);
-		log.info("Respinse from paymnets "+response.toString());
 		PaymentResponse paymentResponse=null;
 		try {
 			 paymentResponse = mapper.convertValue(response, PaymentResponse.class);
@@ -234,31 +236,6 @@ public class WaterConnectionValidator {
 		{
 			log.error("Response not found");
 		}
-		log.info("Payment response from line 228 "+paymentResponse.toString());
-//		List<String> demandIds=new ArrayList<>();
-
-//		if(paymentResponse.getPayments()!=null)
-//		{
-//			for(Payment payment:paymentResponse.getPayments())
-//			{
-//				if(payment.getPaymentDetails()!=null)
-//				{
-//					for(PaymentDetail paymentDetail:payment.getPaymentDetails())
-//					{
-//						Bill bill=paymentDetail.getBill();
-//						if(bill!=null && bill.getBillDetails()!=null)
-//						{
-//							for(BillDetail billDetail:bill.getBillDetails())
-//							{
-//								demandIds.add(billDetail.getDemandId());
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
-//		return demandIds;
-//
 		if(paymentResponse.getPayments()!=null)
 		{
 			if(!paymentResponse.getPayments().isEmpty())

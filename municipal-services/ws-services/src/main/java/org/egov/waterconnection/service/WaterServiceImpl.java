@@ -372,12 +372,10 @@ public class WaterServiceImpl implements WaterService {
 			waterConnectionRequest.getWaterConnection().setApplicationStatus("INACTIVE");
 		}
 		// setting oldApplication Flag
-		log.info("sending water connection request to method markOldApplication "+waterConnectionRequest.toString());
 		markOldApplication(waterConnectionRequest);
 		// check for edit and send edit notification
 		waterDaoImpl.pushForEditNotification(waterConnectionRequest);
 		postForMeterReading(waterConnectionRequest, WCConstants.MODIFY_CONNECTION);
-		log.info("before sending data from line 380 in water service impl "+waterConnectionRequest.toString());
 		return Arrays.asList(waterConnectionRequest.getWaterConnection());
 	}
 
