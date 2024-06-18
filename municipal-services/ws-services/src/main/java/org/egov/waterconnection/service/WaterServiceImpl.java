@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
@@ -55,7 +54,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.JsonPath;
-
 
 @Component
 public class WaterServiceImpl implements WaterService {

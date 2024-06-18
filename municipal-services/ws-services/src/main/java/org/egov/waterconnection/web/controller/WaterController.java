@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-
 import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.service.SchedulerService;
 import org.egov.waterconnection.service.WaterService;
@@ -45,7 +44,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Getter
 @Setter
