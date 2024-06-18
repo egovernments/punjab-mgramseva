@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import lombok.extern.slf4j.Slf4j;
+
 import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.service.SchedulerService;
 import org.egov.waterconnection.service.WaterService;
@@ -46,7 +46,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Slf4j
+
 @Getter
 @Setter
 @Builder
