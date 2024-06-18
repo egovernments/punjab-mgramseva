@@ -125,6 +125,7 @@ public class EmployeeService {
 			employee.getUser().setPassword(null);
 		});
 		hrmsProducer.push(propertiesManager.getSaveEmployeeTopic(), employeeRequest);
+		hrmsProducer.push(propertiesManager.getSaveEmployeeIndexTopic(), employeeRequest);
 		notificationService.sendNotification(employeeRequest, pwdMap);
 		return generateResponse(employeeRequest);
 	}
@@ -344,6 +345,7 @@ public class EmployeeService {
 			updateUser(employee, requestInfo);
 		});
 		hrmsProducer.push(propertiesManager.getUpdateTopic(), employeeRequest);
+		hrmsProducer.push(propertiesManager.getUpdateEmployeeIndexTopic(), employeeRequest);
 		//notificationService.sendReactivationNotification(employeeRequest);
 		return generateResponse(employeeRequest);
 	}
