@@ -602,7 +602,7 @@ public class DemandService {
 						.anyMatch(detail -> "10101".equals(detail.getTaxHeadMasterCode())))
 				.collect(Collectors.toList());
 
-		Collections.sort(demandsTogetDemandGeneratedDate, new Comparator<Demand>() {
+		Collections.sort(filteredDemands, new Comparator<Demand>() {
 			@Override
 			public int compare(Demand d1, Demand d2) {
 				return Long.compare(d2.getTaxPeriodFrom(), d1.getTaxPeriodFrom());
