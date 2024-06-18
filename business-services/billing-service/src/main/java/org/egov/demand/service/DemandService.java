@@ -547,6 +547,9 @@ public class DemandService {
 	public AggregatedDemandDetailResponse getAllDemands(DemandCriteria demandCriteria, RequestInfo requestInfo) {
 
 		//demandValidatorV1.validateDemandCriteria(demandCriteria, requestInfo);
+		long latestDemandCreatedTime = 0l;
+
+		long latestDemandPenaltyCreatedtime=0l;
 
 		UserSearchRequest userSearchRequest = null;
 		List<User> payers = null;
@@ -612,11 +615,25 @@ public class DemandService {
 
 
 		if (!filteredDemands.isEmpty()) {
-			log.info("lastest demand:"+filteredDemands.get(0));
-			long latestDemandCreatedTime = filteredDemands.get(0).getAuditDetails().getCreatedTime();
-			System.out.println("CreatedTime: " + latestDemandCreatedTime);
+			Demand latestDemand = filteredDemands.get(0);
+
+			Optional<DemandDetail> detail10101 = latestDemand.getDemandDetails().stream()
+					.filter(detail -> "10101".equals(detail.getTaxHeadMasterCode()))
+					.findFirst();
+
+			Optional<DemandDetail> detailWSTimePenalty = latestDemand.getDemandDetails().stream()
+					.filter(detail -> "WS_TIME_PENALTY".equals(detail.getTaxHeadMasterCode()))
+					.findFirst();
+
+			if (detail10101.isPresent()) {
+				latestDemandCreatedTime = detail10101.get().getAuditDetails().getCreatedTime();
+			}
+
+			if (detailWSTimePenalty.isPresent()) {
+				latestDemandPenaltyCreatedtime = detailWSTimePenalty.get().getAuditDetails().getCreatedTime();
+			}
 		} else {
-			System.out.println("No demands found with taxHeadMasterCode 10101.");
+			log.info("No demands found with taxHeadMasterCode 10101 or WS_TIME_PENALTY.");
 		}
 
 
@@ -774,7 +791,9 @@ public class DemandService {
 				.advanceAdjusted(advanceAdjusted)
 				.advanceAvailable(advanceAvailable)
 				.remainingAdvance(remainingAdvance)
-				.totalApplicablePenalty(totalApplicablePenalty).build();
+				.totalApplicablePenalty(totalApplicablePenalty)
+				.latestDemandCreatedTime(latestDemandCreatedTime)
+				.latestDemandPenaltyCreatedtime(latestDemandPenaltyCreatedtime).build();
 
 
 		return aggregatedDemandDetailResponse;

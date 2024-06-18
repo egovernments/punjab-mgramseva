@@ -38,4 +38,9 @@ public class AggregatedDemandDetailResponse {
     private BigDecimal netDueWithPenalty;
 
     private BigDecimal totalApplicablePenalty;
+
+    private long latestDemandCreatedTime;
+
+    private long latestDemandPenaltyCreatedtime;
+
 }
