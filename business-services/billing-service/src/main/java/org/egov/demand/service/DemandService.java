@@ -594,6 +594,32 @@ public class DemandService {
 		}).collect(Collectors.toList());
 		List<Map<Long, List<DemandDetail>>> demandDetailsList = new ArrayList<>();
 
+		List<Demand> demandsTogetDemandGeneratedDate= demands;
+
+		// Filter demands where demandDetails have taxHeadMasterCode as 10101
+		List<Demand> filteredDemands = demandsTogetDemandGeneratedDate.stream()
+				.filter(demand -> demand.getDemandDetails().stream()
+						.anyMatch(detail -> "10101".equals(detail.getTaxHeadMasterCode())))
+				.collect(Collectors.toList());
+
+		Collections.sort(demandsTogetDemandGeneratedDate, new Comparator<Demand>() {
+			@Override
+			public int compare(Demand d1, Demand d2) {
+				return Long.compare(d2.getTaxPeriodFrom(), d1.getTaxPeriodFrom());
+			}
+		});
+
+
+
+		if (!filteredDemands.isEmpty()) {
+			log.info("lastest demand:"+filteredDemands.get(0));
+			long latestDemandCreatedTime = filteredDemands.get(0).getAuditDetails().getCreatedTime();
+			System.out.println("CreatedTime: " + latestDemandCreatedTime);
+		} else {
+			System.out.println("No demands found with taxHeadMasterCode 10101.");
+		}
+
+
 		for (Demand demand : demands) {
 			log.info("Inside demand");
 			Map<Long, List<DemandDetail>> demandMap = new HashMap<>();
