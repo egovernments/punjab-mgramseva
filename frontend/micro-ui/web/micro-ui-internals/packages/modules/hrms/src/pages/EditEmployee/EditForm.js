@@ -133,8 +133,6 @@ const EditForm = ({ tenantId, data }) => {
       }
     }
 
-    console.log(formData?.Jurisdictions,"roles");
-
     if (
       formData?.SelectEmployeeGender?.gender.code &&
       formData?.SelectEmployeeName?.employeeName &&
