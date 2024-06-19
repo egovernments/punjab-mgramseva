@@ -22,7 +22,6 @@ const ChangeCity = (prop) => {
   const history = useHistory();
   const isDropdown = prop.dropdown || false;
   let selectedCities = [];
-
     const uuids = [prop.userDetails?.info?.uuid];
     const { data: userData, isUserDataLoading } = Digit.Hooks.useUserSearch(Digit.ULBService.getStateId(), { uuid: uuids }, {}); 
     // setSelectedCity(userData?.data?.user[0]?.roles)
@@ -39,6 +38,7 @@ const ChangeCity = (prop) => {
       loggedInData.info.roles = filteredRoles;
       loggedInData.info.tenantId = city?.value;
     }
+
     Digit.SessionStorage.set("Employee.tenantId", city?.value);
     Digit.UserService.setUser(loggedInData);
     setDropDownData(city);
@@ -54,8 +54,8 @@ const ChangeCity = (prop) => {
     let teantsArray = [],filteredArray = [];
     userData?.user[0].roles?.forEach((role) => teantsArray.push(role.tenantId));
     let unique = teantsArray.filter((item, i, ar) => ar.indexOf(item) === i);
-
     unique?.forEach((uniCode) => {
+
       data?.MdmsRes?.["tenant"]["tenants"]?.map((items) => {
         if (items?.code !== "pb" && items?.code === uniCode) {
           filteredArray.push({
@@ -74,6 +74,7 @@ const ChangeCity = (prop) => {
     });
     selectedCities = filteredArray?.filter((select) => select.value == Digit.SessionStorage.get("Employee.tenantId"));
     setSelectCityData(filteredArray);
+
   }, [dropDownData, data?.MdmsRes]);
 
   return (
