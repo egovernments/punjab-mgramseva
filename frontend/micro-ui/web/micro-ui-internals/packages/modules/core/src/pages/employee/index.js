@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Redirect, Route, Switch, useLocation, useRouteMatch, useHistory } from "react-router-dom";
 import { AppModules } from "../../components/AppModules";
@@ -10,7 +10,10 @@ import LanguageSelection from "./LanguageSelection";
 import EmployeeLogin from "./Login";
 import UserProfile from "../citizen/Home/UserProfile";
 import ErrorComponent from "../../components/ErrorComponent";
-import { PrivateRoute } from "@egovernments/digit-ui-react-components";
+import { PrivateRoute, Card, CardText, CardSubHeader, CardLabelError } from "@egovernments/digit-ui-react-components";
+
+
+
 
 const userScreensExempted = ["user/profile", "user/error"];
 
@@ -36,9 +39,23 @@ const EmployeeApp = ({
   const location = useLocation();
   const showLanguageChange = location?.pathname?.includes("language-selection");
   const isUserProfile = userScreensExempted.some((url) => location?.pathname?.includes(url));
+  const DIV_ADMIN = Digit.UserService.hasAccess(["DIV_ADMIN"]);
+  const [showAlert, setShowAlert] = useState(false);
   useEffect(() => {
     Digit.UserService.setType("employee");
+    if (cityDetails.code == "pb" && DIV_ADMIN == 0) {
+      setShowAlert(true);
+    }
+    else {
+      setShowAlert(false);
+    }
   }, []);
+
+  const closeAlert = () => {
+    setShowAlert(false);
+  };
+
+
 
   return (
     <div className="employee">
@@ -113,7 +130,25 @@ const EmployeeApp = ({
               <ErrorBoundary initData={initData}>
                 <AppModules stateCode={stateCode} userType="employee" modules={modules} appTenants={appTenants} />
               </ErrorBoundary>
+              {/* ALERT BOX */}
+              {showAlert && <div className="customEmployeeWarnings"> {/* Centered row */}
+                <Card className="customEmployeeWarnings">
+                  <div className="employee-app-container">
+                    <div className="">
+                      <div className="">
+                        <CardText> {t("CS_COMMON_SELECT_TITLE_VILLAGE")}</CardText>
+                        <CardLabelError>{t("CS_COMMON_SELECT_VILLAGE")}</CardLabelError>
+                        {/* <button onClick={closeAlert}>Close</button> */}
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </div>}
+              {/* ALERT BOX */}
+
+
             </div>
+
             <div className="employee-home-footer">
               <img
                 alt="Powered by DIGIT"
