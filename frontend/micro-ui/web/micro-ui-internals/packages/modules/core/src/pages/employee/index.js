@@ -40,15 +40,52 @@ const EmployeeApp = ({
   const showLanguageChange = location?.pathname?.includes("language-selection");
   const isUserProfile = userScreensExempted.some((url) => location?.pathname?.includes(url));
   const DIV_ADMIN = Digit.UserService.hasAccess(["DIV_ADMIN"]);
+  const MDMS_ADMIN = Digit.UserService.hasAccess(["MDMS_ADMIN"]);
+  const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
+
+  
+
+  console.log(DIV_ADMIN,"DIV_ADMIN");
+  console.log(MDMS_ADMIN,"MDMS_ADMIN");
+  console.log(STATE_ADMIN,"STATE_ADMIN");
+  console.log(userDetails ,"userDetails");
   const [showAlert, setShowAlert] = useState(false);
   useEffect(() => {
     Digit.UserService.setType("employee");
-    if (cityDetails.code == "pb" && DIV_ADMIN == 0) {
-      setShowAlert(true);
-    }
-    else {
+
+    
+  
+    if(userDetails?.info?.roles.some(obj => obj.name === "STATE ADMIN")){
       setShowAlert(false);
-    }
+      console.log("REACHED 1");
+    } 
+     if (cityDetails.code == "pb") {
+      if( DIV_ADMIN == 0 && MDMS_ADMIN ==1 && STATE_ADMIN == 1){
+        setShowAlert(false);
+      }
+      if(DIV_ADMIN == 0 && MDMS_ADMIN ==0 && STATE_ADMIN == 0){
+        setShowAlert(true);
+
+      }else{
+        setShowAlert(false);
+
+      }
+
+      console.log("REACHED 2");
+      }
+
+      else{
+      console.log("REACHED 3");
+        setShowAlert(false);
+      }
+
+    
+    // if (cityDetails.code == "pb") {
+    //   setShowAlert(true);
+    // }
+    // else {
+    //   setShowAlert(false);
+    // }
   }, []);
 
   const closeAlert = () => {
@@ -131,7 +168,7 @@ const EmployeeApp = ({
                 <AppModules stateCode={stateCode} userType="employee" modules={modules} appTenants={appTenants} />
               </ErrorBoundary>
               {/* ALERT BOX */}
-              {showAlert && <div className="customEmployeeWarnings"> {/* Centered row */}
+              { (userDetails?.info?.roles.some(obj => obj.name === "STATE ADMIN") ? false : true ) &&  showAlert && <div className="customEmployeeWarnings"> {/* Centered row */}
                 <Card className="customEmployeeWarnings">
                   <div className="employee-app-container">
                     <div className="">
