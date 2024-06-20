@@ -145,12 +145,7 @@ const EditForm = ({ tenantId, data }) => {
       (formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.division == undefined  || juris?.divisionBoundary?.length === 0 ) )
       
       :formData?.Jurisdictions.length && formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.roles?.length === 0 )      
-      && 
-
-
-      // formData?.Jurisdictions.length && formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.division == undefined  || juris?.divisionBoundary?.length === 0 )&& 
-
-      
+      &&       
       checkfield &&
       phonecheck &&
       checkMailNameNum(formData)
