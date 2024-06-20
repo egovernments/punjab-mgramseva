@@ -215,14 +215,38 @@ public class EmployeeService {
 		return EmployeeResponse.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfo, true))
 				.employees(employees).build();
 	}
-	
-	
+
 	/**
-	 * Creates user by making call to egov-user.
-	 * 
-	 * @param employee
-	 * @param requestInfo
+	 * Plain search for employees
+	 *
+	 * @param criteria
+	 * @return
 	 */
+	public List<Employee> plainsearch(EmployeePlainSearchCriteria criteria) {
+		if (criteria.getLimit() != null && criteria.getLimit() > propertiesManager.getHrmsMaxLimit())
+			criteria.setLimit(propertiesManager.getHrmsMaxLimit());
+
+		List<String> employeeIds = null;
+
+		if(CollectionUtils.isEmpty(criteria.getUuids()))
+			employeeIds = repository.fetchEmployeeIds(criteria);
+		else
+			employeeIds = criteria.getUuids();
+
+
+		if(employeeIds.isEmpty())
+			return Collections.emptyList();
+
+		EmployeePlainSearchCriteria employeePlainSearchCriteria = EmployeePlainSearchCriteria.builder().uuids(employeeIds).build();
+		return repository.fetchPlainSearchEmployees(employeePlainSearchCriteria);
+	}
+
+		/**
+         * Creates user by making call to egov-user.
+         *
+         * @param employee
+         * @param requestInfo
+         */
 	private void createUser(Employee employee, RequestInfo requestInfo) {
 		enrichUser(employee);
 		UserRequest request = UserRequest.builder().requestInfo(requestInfo).user(employee.getUser()).build();

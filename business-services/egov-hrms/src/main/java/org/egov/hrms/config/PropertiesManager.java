@@ -122,4 +122,7 @@ public class PropertiesManager {
 
 	@Value("${sms.user.creation.enabled}")
 	public boolean isSMSForUserCreationEnable;
+
+	@Value("${egov.hrms.max.pagination.limit}")
+	public Integer hrmsMaxLimit;
 }
