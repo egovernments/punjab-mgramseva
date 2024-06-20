@@ -313,7 +313,7 @@ class ConsumerProvider with ChangeNotifier {
           "aadharNumber": waterconnection.addharCtrl.text.trim().isEmpty
               ? null
               : waterconnection.addharCtrl.text.trim(),
-          "remarks": property.owners?.first.remarks
+          "remarks": waterconnection.status == "Inactive" ?  property.owners?.first.remarks : ""
         });
       } else {
         waterconnection.additionalDetails!.locality =
@@ -338,8 +338,8 @@ class ConsumerProvider with ChangeNotifier {
             waterconnection.previousReading;
         waterconnection.additionalDetails!.propertyType = property.propertyType;
 
-        waterconnection.additionalDetails!.remarks =
-            property.owners?.first.remarks;
+        waterconnection.additionalDetails!.remarks =  waterconnection.status == "Inactive" ?
+            property.owners?.first.remarks : "";
       }
 
       try {
