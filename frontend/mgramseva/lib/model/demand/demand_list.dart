@@ -153,6 +153,10 @@ class AggragateDemandDetails {
   double? netDueWithPenalty;
   @JsonKey(name: "totalApplicablePenalty")
   double? totalApplicablePenalty;
+  @JsonKey(name: "latestDemandCreatedTime")
+  double? latestDemandCreatedTime;
+  @JsonKey(name: "latestDemandPenaltyCreatedtime")
+  double? latestDemandPenaltyCreatedtime;
   @JsonKey(name: "mapOfDemandDetailList")
   List<Map<String, List<DemandDetails>>>? mapOfDemandDetailList;
   AggragateDemandDetails();
