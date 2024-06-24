@@ -26,6 +26,7 @@
     "dev:components": "cd packages/react-components && yarn start",
     "dev:pgr": "cd packages/modules/pgr && yarn start",
     "dev:hrms": "cd packages/modules/hrms && yarn start",
+    "dev:openpayment": "cd packages/modules/open-payment && yarn start",
     "dev:core": "cd packages/modules/core && yarn start",
     "dev:example": "cd example && yarn start",
     "build": "run-p build:**",
@@ -35,6 +36,7 @@
     "build:pgr": "cd packages/modules/pgr && yarn build",
     "build:hrms": "cd packages/modules/hrms && yarn build",
     "build:core": "cd packages/modules/core && yarn build",
+    "build:openpayment": "cd packages/modules/open-payment && yarn build",
     "build:sample": "cd packages/modules/sample && yarn build",
     "deploy:jenkins": "./scripts/jenkins.sh",
     "clean": "rm -rf node_modules"
