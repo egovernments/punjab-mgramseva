@@ -97,7 +97,6 @@ const TopBar = ({
     );
   }
   const loggedin = userDetails?.access_token ? true : false;
-  console.log(window?.globalConfigs?.getConfig?.("LOGO_URL"),"NAME1");
   return (
     <div className="topbar">
       {mobileView ? <Hamburger handleClick={toggleSidebar} color="#9E9E9E" /> : null}
