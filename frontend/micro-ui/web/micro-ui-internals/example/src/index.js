@@ -7,7 +7,7 @@ import { initDSSComponents } from "@egovernments/digit-ui-module-dss";
 import { initEngagementComponents } from "@egovernments/digit-ui-module-engagement";
 import { initHRMSComponents } from "@egovernments/digit-ui-module-hrms";
 import { initPGRComponents, PGRReducers } from "@egovernments/digit-ui-module-pgr";
-import {initOpenPaymentComponents} from "@egovernments/digit-ui-module-open-payment";
+import {initPaymentComponents} from "@egovernments/digit-ui-module-payment";
 import "@egovernments/digit-ui-css/example/index.css";
 
 import { pgrCustomizations } from "./pgr";
@@ -19,7 +19,7 @@ const enabledModules = [
   "DSS",
   "HRMS",
   "PGR",
-  "OpenPayment"
+  "Payment"
   //  "Engagement", "NDSS","QuickPayLinks", "Payment",
   // "Utilities",
   //added to check fsm
@@ -65,7 +65,7 @@ const initDigitUI = () => {
   initHRMSComponents();
   initEngagementComponents();
   initPGRComponents();
-  initOpenPaymentComponents();
+  initPaymentComponents();
 
   const moduleReducers = (initData) => ({
     pgr: PGRReducers(initData),

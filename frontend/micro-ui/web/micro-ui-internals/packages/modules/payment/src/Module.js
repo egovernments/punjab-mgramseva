@@ -6,7 +6,7 @@ import { CustomisedHooks } from "./hooks";
 import { UICustomizations } from "./configs/UICustomizations";
 import {ErrorBoundary} from "@egovernments/digit-ui-components"
 
-const OpenPaymentModule = ({ stateCode, userType, tenants }) => {
+const PaymentModule = ({ stateCode, userType, tenants }) => {
   
   const { path, url } = useRouteMatch();
   const tenantId = Digit.ULBService.getCurrentTenantId();
@@ -31,9 +31,7 @@ const OpenPaymentModule = ({ stateCode, userType, tenants }) => {
 };
 
 const componentsToRegister = {
-  // HRMSModule:OpenPaymentModule,
-  OpenPaymentModule
-  // DSSCard:OpenPaymentModule
+  PaymentModule
 };
 
 const overrideHooks = () => {
@@ -79,10 +77,10 @@ const updateCustomConfigs = () => {
 };
 
 /**
- * The `initOpenPaymentComponents` function initializes OpenPayment components by overriding hooks, updating
+ * The `initPaymentComponents` function initializes OpenPayment components by overriding hooks, updating
  * custom configurations, and registering components.
  */
-const initOpenPaymentComponents = () => {
+const initPaymentComponents = () => {
   overrideHooks();
   updateCustomConfigs();
   Object.entries(componentsToRegister).forEach(([key, value]) => {
@@ -90,4 +88,4 @@ const initOpenPaymentComponents = () => {
   });
 };
 
-export { initOpenPaymentComponents };
+export { initPaymentComponents };

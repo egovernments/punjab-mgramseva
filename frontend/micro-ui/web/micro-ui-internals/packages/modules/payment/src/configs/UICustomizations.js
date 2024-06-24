@@ -67,7 +67,7 @@ export const UICustomizations = {
       if(key === "OP_CONS_CODE") {
         return <span className="link">
             <Link
-              to={`/${window.contextPath}/citizen/openpayment/open-view?tenantId=${row.tenantId}&businessService=${row.businessService}&consumerCode=${row.consumerCode}`}
+              to={`/${window.contextPath}/citizen/payment/open-view?tenantId=${row.tenantId}&businessService=${row.businessService}&consumerCode=${row.consumerCode}`}
             >
               {String(value ? (column.translate ? t(column.prefix ? `${column.prefix}${value}` : value) : value) : t("ES_COMMON_NA"))}
             </Link>

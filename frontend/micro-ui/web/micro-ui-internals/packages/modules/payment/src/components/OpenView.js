@@ -24,6 +24,7 @@ const OpenView = () => {
     },
   }
   const { isLoading, data:bill, revalidate,isFetching,error } = Digit.Hooks.useCustomAPIHook(requestCriteria);
+ 
 
   const arrears =
     bill?.billDetails
@@ -54,7 +55,7 @@ const OpenView = () => {
         },
         // success
         // callbackUrl: `${window.location.protocol}//${window.location.host}/${window.contextPath}/citizen/openpayment/success?consumerCode=${queryParams.consumerCode}&tenantId=${queryParams.tenantId}&businessService=${queryParams.businessService}`,
-        callbackUrl: `${window.location.protocol}//${window.location.host}/${window.contextPath}/citizen/openpayment/success/${queryParams.businessService}/${queryParams.consumerCode}/${queryParams.tenantId}`,
+        callbackUrl: `${window.location.protocol}//${window.location.host}/${window.contextPath}/citizen/payment/success/${queryParams.businessService}/${queryParams.consumerCode}/${queryParams.tenantId}`,
         additionalDetails: {
           isWhatsapp: false,
         },

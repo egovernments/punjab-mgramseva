@@ -1,18 +1,18 @@
 import utils from "../utils";
 
-const openpayment = {
+const payment = {
  
 };
 
 const Hooks = {
-  openpayment,
+  payment,
 };
 
 const Utils = {
   browser: {
     sample: () => {},
   },
-  openpayment:{
+  payment:{
     ...utils
   }
 };

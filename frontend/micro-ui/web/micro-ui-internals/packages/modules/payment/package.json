@@ -1,5 +1,5 @@
 {
-  "name": "@egovernments/digit-ui-module-open-payment",
+  "name": "@egovernments/digit-ui-module-payment",
   "version": "0.0.1",
   "description": "Open Payments",
   "main": "dist/index.js",
