@@ -4,6 +4,16 @@ import { useTranslation } from "react-i18next";
 import { makePayment } from '../utils/payGov';
 import $ from "jquery";
 
+function anonymizeHalfString(input) {
+   // Calculate the midpoint of the string
+   const midpoint = Math.ceil(input.length / 2);
+
+   // Replace the first 50% of the string with asterisks
+   const anonymized = '*'.repeat(midpoint) + input.substring(midpoint);
+
+   return anonymized;
+}
+
 const OpenView = () => {
   const { t } = useTranslation();
   const [showToast,setShowToast] = useState(null)
@@ -213,13 +223,13 @@ const OpenView = () => {
   }
   return (
     <>
-    <Card>
+    <Card style={{maxWidth:"95vw",paddingLeft:"1.5rem"}}>
       <Header className="works-header-search">{t("OP_PAYMENT_DETAILS")}</Header>
       <StatusTable>
           <Row label={t("OP_CONSUMER_NAME")}  text={bill?.payerName || t("ES_COMMON_NA")} />
-          <Row label={t("OP_CONSUMER_EMAIL")}  text={bill?.payerEmail || t("ES_COMMON_NA")} />
-          <Row label={t("OP_CONSUMER_ADDRESS")}  text={bill?.payerAddress || t("ES_COMMON_NA")} />
-          <Row label={t("OP_CONSUMER_PHNO")}  text={bill?.mobileNumber || t("ES_COMMON_NA")} />
+          <Row label={t("OP_CONSUMER_EMAIL")}  text={bill?.payerEmail ? anonymizeHalfString(bill?.payerEmail) : t("ES_COMMON_NA")} />
+          <Row label={t("OP_CONSUMER_ADDRESS")}  text={bill?.payerAddress ? anonymizeHalfString(bill?.payerAddress) : t("ES_COMMON_NA")} />
+          <Row label={t("OP_CONSUMER_PHNO")}  text={bill?.mobileNumber ? anonymizeHalfString(bill?.mobileNumber) : t("ES_COMMON_NA")} />
           <Row label={t("ES_PAYMENT_TAXHEADS")} labelStyle={{ fontWeight: "bold" }} textStyle={{ fontWeight: "bold" }} text={t("ES_PAYMENT_AMOUNT")} />
           {/* <hr style={{ width: "40%" }} className="underline" /> */}
           {bill?.billDetails?.[0]?.billAccountDetails
