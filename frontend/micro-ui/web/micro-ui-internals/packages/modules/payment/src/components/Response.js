@@ -5,10 +5,10 @@ import { useQueryClient } from "react-query";
 import { Link, useParams } from "react-router-dom";
 
 export const SuccessfulPayment = (props)=>{
-  if(localStorage.getItem("BillPaymentEnabled")!=="true"){
-    window.history.forward();
-   return null;
- }
+//   if(localStorage.getItem("BillPaymentEnabled")!=="true"){
+//     window.history.forward();
+//    return null;
+//  }
  return <WrapPaymentComponent {...props}/>
 }
 
@@ -34,17 +34,18 @@ export const convertEpochToDate = (dateEpoch) => {
   const [printing, setPrinting] = useState(false);
   const [allowFetchBill, setallowFetchBill] = useState(false);
   const { businessService: business_service, consumerCode, tenantId } = useParams();
-  const { data: bpaData = {}, isLoading: isBpaSearchLoading, isSuccess: isBpaSuccess, error: bpaerror } = Digit.Hooks.obps.useOBPSSearch(
-    "", {}, tenantId, { applicationNo: consumerCode }, {}, {enabled:(window.location.href.includes("bpa") || window.location.href.includes("BPA"))}
-  );
+  
+  // const { data: bpaData = {}, isLoading: isBpaSearchLoading, isSuccess: isBpaSuccess, error: bpaerror } = Digit.Hooks.obps.useOBPSSearch(
+  //   "", {}, tenantId, { applicationNo: consumerCode }, {}, {enabled:(window.location.href.includes("bpa") || window.location.href.includes("BPA"))}
+  // );
   
   const { isLoading, data, isError } = Digit.Hooks.usePaymentUpdate({ egId }, business_service, {
     retry: false,
     staleTime: Infinity,
     refetchOnWindowFocus: false,
-  });
+  },false,false);
 
-  const { label } = Digit.Hooks.useApplicationsForBusinessServiceSearch({ businessService: business_service }, { enabled: false });
+  // const { label } = Digit.Hooks.useApplicationsForBusinessServiceSearch({ businessService: business_service }, { enabled: false });
 
   // const { data: demand } = Digit.Hooks.useDemandSearch(
   //   { consumerCode, businessService: business_service },
@@ -116,7 +117,7 @@ export const convertEpochToDate = (dateEpoch) => {
         />
         <CardText>{t("CS_PAYMENT_FAILURE_MESSAGE")}</CardText>
         {!(business_service?.includes("PT")) ? (
-          <Link to={`/digit-ui/citizen`}>
+          <Link to={`/mgramseva-web/citizen/payment/open-search?businessService=WS`}>
             <SubmitBar label={t("CORE_COMMON_GO_TO_HOME")} />
           </Link>
         ) : (
@@ -566,7 +567,7 @@ export const convertEpochToDate = (dateEpoch) => {
   };
   const ommitRupeeSymbol = ["PT"].includes(business_service);
 
-  if ((window.location.href.includes("bpa") || window.location.href.includes("BPA")) && isBpaSearchLoading) return <Loader />
+  // if ((window.location.href.includes("bpa") || window.location.href.includes("BPA")) && isBpaSearchLoading) return <Loader />
 
   return (
     <Card>
@@ -586,7 +587,7 @@ export const convertEpochToDate = (dateEpoch) => {
       />
       <CardText>{t(`${bannerText}_DETAIL`)}</CardText>
       <StatusTable>
-        <Row rowContainerStyle={rowContainerStyle} last label={t(label)} text={applicationNo} />
+        <Row rowContainerStyle={rowContainerStyle} last label={t("label")} text={applicationNo} />
         {/** TODO : move this key and value into the hook based on business Service */}
         {(business_service === "PT" || workflw) && (
           <Row
@@ -641,7 +642,7 @@ export const convertEpochToDate = (dateEpoch) => {
           {t("TL_CERTIFICATE")}
         </div>
       ) : null}
-      {bpaData?.[0]?.businessService === "BPA_OC" && (bpaData?.[0]?.status==="APPROVED" || bpaData?.[0]?.status==="PENDING_SANC_FEE_PAYMENT") ? (
+      {/* {bpaData?.[0]?.businessService === "BPA_OC" && (bpaData?.[0]?.status==="APPROVED" || bpaData?.[0]?.status==="PENDING_SANC_FEE_PAYMENT") ? (
         <div className="primary-label-btn d-grid" style={{ marginLeft: "unset" }} onClick={e => getPermitOccupancyOrderSearch("occupancy-certificate")}>
           <DownloadPrefixIcon />
             {t("BPA_OC_CERTIFICATE")}
@@ -658,7 +659,7 @@ export const convertEpochToDate = (dateEpoch) => {
           <DownloadPrefixIcon />
             {t("BPA_PERMIT_ORDER")}
           </div>
-        ) : null}
+        ) : null} */}
       </div>
       {business_service?.includes("PT") &&<div style={{marginTop:"10px"}}><Link to={`/digit-ui/citizen/feedback?redirectedFrom=${"digit-ui/citizen/payment/success"}&propertyId=${consumerCode? consumerCode : ""}&acknowldgementNumber=${egId ? egId : ""}&tenantId=${tenantId}&creationReason=${business_service?.split(".")?.[1]}`}>
           <SubmitBar label={t("CS_REVIEW_AND_FEEDBACK")} />

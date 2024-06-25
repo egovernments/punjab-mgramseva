@@ -5,7 +5,7 @@ export const OpenSearchConfig =  {
     "serviceName": "/billing-service/bill/v2/_fetchbill",
     "requestParam": {},
     "requestBody": {},
-    "minParametersForSearchForm": 1,
+    "minParametersForSearchForm": 2,
     "masterName": "commonUiConfig",
     "moduleName": "OpenPaymentSearch",
     "tableFormJsonPath": "requestBody.pagination",
@@ -20,7 +20,7 @@ export const OpenSearchConfig =  {
         "headerStyle": null,
         "primaryLabel": "ES_COMMON_SEARCH",
         "secondaryLabel": "ES_COMMON_CLEAR_SEARCH",
-        "minReqFields": 1,
+        "minReqFields": 2,
         // "showFormInstruction": "OPEN_PAYMENT_SEARCH_HINT",
         "defaultValues": {
           "consumerCode": ""
@@ -36,6 +36,23 @@ export const OpenSearchConfig =  {
               "style":{
                 "marginBottom":"0px"
               }
+            },
+          },
+          {
+            label: "SELECT_TENANT",
+            type: "apidropdown",
+            isMandatory: false,
+            disable: false,
+            populators: {
+              "optionsCustomStyle": {
+                    "top": "2.3rem"
+                  },
+              name: "tenantId",
+              optionsKey: "updatedCode",
+              allowMultiSelect: false,
+              masterName: "commonUiConfig",
+              moduleName: "OpenPaymentSearch",
+              customfn: "populateReqCriteria",
             },
           },
         ]

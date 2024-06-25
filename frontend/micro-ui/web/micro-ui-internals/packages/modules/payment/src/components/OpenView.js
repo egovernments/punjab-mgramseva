@@ -33,9 +33,53 @@ const OpenView = () => {
         }
     },
   }
+  
   const { isLoading, data:bill, revalidate,isFetching,error } = Digit.Hooks.useCustomAPIHook(requestCriteria);
+
+  const requestCriteriaForConnectionSearch = {
+    url:"/ws-services/wc/_search?",
+    params:queryParams,
+    body:{},
+    options:{
+      userService:false,
+      auth:false
+    },
+    config: {
+        enabled: !!queryParams.consumerCode && !!queryParams.tenantId && !!queryParams.businessService,
+        select:(data) => {
+          return data?.WaterConnection?.[0]
+        }
+    },
+  }
+  const { isLoading:isLoadingConnection, data:connection,isFetching:isFetchingConnection,error:errorConnection } = Digit.Hooks.useCustomAPIHook(requestCriteriaForConnectionSearch);
  
 
+  const requestCriteriaForPayments = {
+    url:"/collection-services/payments/WS/_search",
+    params:queryParams,
+    body:{},
+    options:{
+      userService:false,
+      auth:false
+    },
+    config: {
+        enabled: !!queryParams.consumerCode && !!queryParams.tenantId && !!queryParams.businessService,
+        select:(data) => {
+          const payments =  data?.Payments
+          if(payments?.length === 0){
+            return null
+          }else if(payments?.length >5){
+            return payments.slice(0,5)
+          }else{
+            return payments
+          }
+        }
+    },
+  }
+  
+  const { isLoading:isLoadingPayments, data:payments,isFetching:isFetchingPayments,error:isErrorPayments } = Digit.Hooks.useCustomAPIHook(requestCriteriaForPayments);
+
+  
   const arrears =
     bill?.billDetails
       ?.sort((a, b) => b.fromPeriod - a.fromPeriod)
@@ -218,18 +262,19 @@ const OpenView = () => {
 
   }
 
-  if(isLoading){
+  if(isLoading || isLoadingPayments || isLoadingConnection){
     return <Loader />
   }
+  console.log(payments);
   return (
     <>
+    <Header className="works-header-search" styles={{marginLeft:"0.5rem"}}>{t("OP_PAYMENT_DETAILS")}</Header>
     <Card style={{maxWidth:"95vw",paddingLeft:"1.5rem"}}>
-      <Header className="works-header-search">{t("OP_PAYMENT_DETAILS")}</Header>
-      <StatusTable>
-          <Row label={t("OP_CONSUMER_NAME")}  text={bill?.payerName || t("ES_COMMON_NA")} />
-          <Row label={t("OP_CONSUMER_EMAIL")}  text={bill?.payerEmail ? anonymizeHalfString(bill?.payerEmail) : t("ES_COMMON_NA")} />
-          <Row label={t("OP_CONSUMER_ADDRESS")}  text={bill?.payerAddress ? anonymizeHalfString(bill?.payerAddress) : t("ES_COMMON_NA")} />
-          <Row label={t("OP_CONSUMER_PHNO")}  text={bill?.mobileNumber ? anonymizeHalfString(bill?.mobileNumber) : t("ES_COMMON_NA")} />
+      {bill && <StatusTable>
+          <Row label={t("OP_CONSUMER_NAME")}  text={bill?.payerName ? anonymizeHalfString(bill?.payerName) : t("ES_COMMON_NA")}  rowContainerStyle={{border:"none"}}/>
+          {/* <Row label={t("OP_CONSUMER_EMAIL")}  text={bill?.payerEmail ? anonymizeHalfString(bill?.payerEmail) : t("ES_COMMON_NA")} rowContainerStyle={{border:"none"}} /> */}
+          {/* <Row label={t("OP_CONSUMER_ADDRESS")}  text={bill?.payerAddress ? anonymizeHalfString(bill?.payerAddress) : t("ES_COMMON_NA")} rowContainerStyle={{border:"none"}} /> */}
+          <Row label={t("OP_CONSUMER_PHNO")}  text={bill?.mobileNumber ? anonymizeHalfString(bill?.mobileNumber) : t("ES_COMMON_NA")} rowContainerStyle={{border:"none"}} />
           <Row label={t("ES_PAYMENT_TAXHEADS")} labelStyle={{ fontWeight: "bold" }} textStyle={{ fontWeight: "bold" }} text={t("ES_PAYMENT_AMOUNT")} />
           {/* <hr style={{ width: "40%" }} className="underline" /> */}
           {bill?.billDetails?.[0]?.billAccountDetails
@@ -239,7 +284,7 @@ const OpenView = () => {
                 key={index + "taxheads"}
                 labelStyle={{ fontWeight: "normal" }}
                 textStyle={{ textAlign: "right", maxWidth: "100px" }}
-                label={t(amountDetails.taxHeadCode)}
+                label={t(`TAX_HC_${amountDetails.taxHeadCode}`)}
                 text={"₹ " + amountDetails.amount?.toFixed(2)}
               />
             ))}
@@ -260,11 +305,24 @@ const OpenView = () => {
             textStyle={{ fontWeight: "bold", textAlign: "right", maxWidth: "100px" }}
             text={"₹ " + Number(bill?.totalAmount).toFixed(2)}
           />
-        </StatusTable>
+      </StatusTable>}
     </Card>
+    {payments && <Header className="works-header-search" styles={{marginLeft:"0.5rem",marginTop:"2rem",marginBottom:"-0.5rem"}}>{t("OP_CONSUMER_RECEIPTS")}</Header>}
+    {payments && payments.map(payment => {
+        return (
+          <Card style={{maxWidth:"95vw",paddingLeft:"1.5rem",marginTop:"2rem"}}>
+          <StatusTable>
+          <Row label={t("OP_RECEIPT_NO")}  text={payment?.paymentDetails?.[0]?.receiptNumber || t("ES_COMMON_NA")}  rowContainerStyle={{border:"none"}}/>
+          <Row label={t("OP_RECEIPT_AMT")}  text={payment?.totalAmountPaid || t("ES_COMMON_NA")} rowContainerStyle={{border:"none"}} />
+          <Row label={t("OP_RECEIPT_PAID_DATE")} labelStyle={{ fontWeight: "bold" }} textStyle={{ fontWeight: "bold" }} text={payment?.transactionDate ? Digit.DateUtils.ConvertEpochToDate(payment?.transactionDate) : t("ES_COMMON_NA")} />
+        </StatusTable>
+        </Card>
+        )
+      })}
+    
     <ActionBar style={{ display: "flex", justifyContent: "flex-end", alignItems: "baseline" }}>
           {/* {displayMenu ? <Menu localeKeyPrefix={"ES_COMMON"} options={ACTIONS} t={t} onSelect={onActionSelect} /> : null} */}
-          <SubmitBar disabled={Number(bill?.totalAmount) === 0} onSubmit={onSubmit} label={t("OP_PROCEED_TO_PAY")} />
+          <SubmitBar disabled={Number(bill?.totalAmount) === 0 || !bill} onSubmit={onSubmit} label={t("OP_PROCEED_TO_PAY")} />
     </ActionBar>
     {showToast && (
         <Toast

@@ -432,7 +432,7 @@ export const UICustomizations = {
       // businessService and tenantId can be either in queryParams or in form
       let {consumerCode,businessService,tenantId} = data?.state?.searchForm || {};
       businessService = businessService?.code
-      tenantId = tenantId?.code
+      tenantId = tenantId?.[0]?.code
       if(!businessService){
         businessService = additionalDetails?.queryParams?.businessService
       }
@@ -445,7 +445,6 @@ export const UICustomizations = {
         businessService
       }
       data.params = finalParams
-      console.log(data);
       // const tenantId = Digit.ULBService.getCurrentTenantId();
       // data.body = { RequestInfo: data.body.RequestInfo };
       // const { limit, offset } = data?.state?.tableForm || {};
@@ -495,6 +494,40 @@ export const UICustomizations = {
             </Link>
           </span> 
       }
+    },
+    populateReqCriteria: () => {
+      const tenantId = Digit.ULBService.getCurrentTenantId();
+      return {
+        url: "/mdms-v2/v1/_search",
+        params: { tenantId },
+        body: {
+          MdmsCriteria: {
+            tenantId,
+            moduleDetails: [
+              {
+                moduleName: "tenant",
+                masterDetails: [
+                  {
+                    name: "tenants",
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        config: {
+          enabled: true,
+          select: (data) => {
+            const result = data?.MdmsRes?.tenant?.tenants?.filter(row => row?.divisionCode && row?.divisionName)?.map(row => {
+              return {
+                ...row,
+                updatedCode:`${row.divisionName} - ${row?.name}`
+              }
+            });
+            return result;
+          },
+        },
+      };
     },
   }
 };
