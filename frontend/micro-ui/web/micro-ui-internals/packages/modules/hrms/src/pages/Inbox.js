@@ -124,6 +124,10 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
 
   const getSearchFields = () => {
     return [
+      // {
+      //   label: t("HR_NAME_LABEL"),
+      //   name: "names",
+      // },
       {
         label: t("HR_MOB_NO_LABEL"),
         name: "phone",
