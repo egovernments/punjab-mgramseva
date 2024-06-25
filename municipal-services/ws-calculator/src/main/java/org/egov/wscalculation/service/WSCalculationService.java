@@ -3,10 +3,7 @@ package org.egov.wscalculation.service;
 import java.util.List;
 
 import org.egov.common.contract.request.RequestInfo;
-import org.egov.wscalculation.web.models.BulkDemand;
-import org.egov.wscalculation.web.models.Calculation;
-import org.egov.wscalculation.web.models.CalculationReq;
-import org.egov.wscalculation.web.models.RollOutDashboard;
+import org.egov.wscalculation.web.models.*;
 
 public interface WSCalculationService {
 
@@ -16,5 +13,5 @@ public interface WSCalculationService {
 
 	void generateDemandBasedOnTimePeriod(RequestInfo requestInfo, boolean isSendMessage);
 	void generateBulkDemandForTenant(BulkDemand bulkDemand);
-	RollOutDashboard sendDataForRollOut(RollOutDashboard rollOutDashboard);
+	RollOutDashboard sendDataForRollOut(RollOutDashboardRequest rollOutDashboardRequest);
 }
