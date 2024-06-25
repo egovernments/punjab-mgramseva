@@ -113,4 +113,10 @@ public class CalculatorController {
 
 	}
 
+	@PostMapping("/_rollOutDashboardSearch")
+	public ResponseEntity<RollOutDashboardResponse> rollOutDashboardSearch(@RequestBody @Valid RequestInfoWrapper requestInfoWrapper, @ModelAttribute @Valid RollOutDashboard rollOutDashboard)
+	{
+		wSCalculationService.sendDataForRollOut(rollOutDashboard);
+		return new ResponseEntity<>(new RollOutDashboardResponse(),HttpStatus.OK);
+	}
 }

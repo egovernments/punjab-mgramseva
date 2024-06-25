@@ -29,11 +29,19 @@ import org.egov.wscalculation.repository.WSCalculationDao;
 import org.egov.wscalculation.util.CalculatorUtil;
 import org.egov.wscalculation.util.WSCalculationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.jayway.jsonpath.JsonPath;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.validation.Valid;
 
 @Service
 @Slf4j
@@ -401,6 +409,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		}
 		
 	}
+
 	/**
 	 * 
 	 * @param request - Calculation Request Object
@@ -456,7 +465,20 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		return demandService.updateDemandForAdhocTax(adhocTaxReq.getRequestInfo(), calculations);
 	}
 
+	@Override
+	public void sendDataForRollOut(RollOutDashboard rollOutDashboard) {
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime date = LocalDateTime.now();
+		log.info("Time schedule start for roll out dashboard on : " + date.format(dateTimeFormatter));
 
-
-	
+		try {
+			String tenantId = rollOutDashboard.getTenantid();
+			if (tenantId != null) {
+				wsCalculationProducer.push(config.getRollOutDashBoardTopic(), rollOutDashboard);
+			}
+		} catch (Exception e) {
+			log.info("Exception occurred while fetching tenantId");
+			throw new DataRetrievalFailureException("Data not found "+e);
+		}
+	}
 }
