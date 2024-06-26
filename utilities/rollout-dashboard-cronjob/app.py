@@ -1,3 +1,4 @@
+import json
 from typing import BinaryIO, List
 import requests
 from datetime import datetime, timezone,time,timedelta
@@ -806,7 +807,72 @@ def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,tot
     finally:
             if connection:
                 cursor.close()
-                connection.close() 
+                connection.close()
+
+
+def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance, totalPenalty, totalConsumerCount,consumerCount, lastDemandGenratedDate, noOfDemandRaised, totaldemAmount,collectionsMade, lastCollectionDate, expenseCount,countOfElectricityExpenseBills, noOfPaidExpenseBills, lastExpTrnsDate,totalAmountOfExpenseBills, totalAmountOfElectricityBills,totalAmountOfPaidExpenseBills, date):
+    # url = 'http://localhost:8080/ws-calculator/waterCalculator/_rollOutDashboardSearch'
+    rollOut_headers = {'Content-Type': 'application/json'}
+    url = os.getenv('WS_API_URL')
+
+    if not url:
+        print("API_URL environment variable is not set.")
+        return
+
+    requestData = {
+        "RequestInfo": {
+            "apiId": "Rainmaker",
+            "action": "",
+            "did": 1,
+            "key": "",
+            "msgId": "20170310130900|en_IN",
+            "requesterId": "",
+            "ts": 1513579888683,
+            "ver": ".01",
+            "authToken": "572ad571-9061-444e-bcdb-84061b61f467"
+        },
+        "rollOutDashboard": {
+            "id": 1,
+            "tenantid": tenant['tenantId'],
+            "projectcode": tenant['projectcode'],
+            "zone": tenant['zone'],
+            "circle": tenant['circle'],
+            "division": tenant['division'],
+            "subdivision": tenant['subdivision'],
+            "section": tenant['section'],
+            "activeUsersCount": activeUsersCount,
+            "totalAdvance": totalAdvance,
+            "totalPenalty": totalPenalty,
+            "totalConnections": totalConsumerCount,
+            "activeConnections": consumerCount,
+            "lastDemandGenDate": lastDemandGenratedDate,
+            "demandGeneratedConsumerCount": noOfDemandRaised,
+            "totalDemandAmount": totaldemAmount,
+            "collectionTillDate": collectionsMade,
+            "lastCollectionDate": lastCollectionDate,
+            "expenseCount": expenseCount,
+            "countOfElectricityExpenseBills": countOfElectricityExpenseBills,
+            "noOfPaidExpenseBills": noOfPaidExpenseBills,
+            "lastExpenseTxnDate": lastExpTrnsDate,
+            "totalAmountOfExpenseBills": totalAmountOfExpenseBills,
+            "totalAmountOfElectricityBills": totalAmountOfElectricityBills,
+            "totalAmountOfPaidExpenseBills": totalAmountOfPaidExpenseBills,
+            "dateRange": date,
+            "createdTime": 1711909800000
+        }
+    }
+
+    try:
+        response = requests.post(url+'ws-calculator/waterCalculator/_rollOutDashboardSearch', headers=rollOut_headers,json=requestData)
+        if response.status_code == 200:
+            print("Successfully inserted data for tenant "+ tenant['tenantId'] + " and date range "+ date)
+        else:
+            print("Failed to insert data for tenant "+ tenant['tenantId'] + " and date range "+ date)
+            print("Response:", response.json())
+    except Exception as e:
+        print("An error occurred:")
+        print(e)
+
 
 def process():
     print("continue is the process")
@@ -860,8 +926,12 @@ def process():
             totalAmountOfExpenseBills = getTotalAmountExpenseBills(tenant['tenantId'],startdate,enddate)
             totalAmountOfElectricityBills = getTotalAmountElectricityBills(tenant['tenantId'],startdate,enddate)
             totalAmountOfPaidExpenseBills = getTotalAmountPaidBills(tenant['tenantId'],startdate,enddate)
-            createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,totalConsumerCount,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date)
-        
+            # createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,totalConsumerCount,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date)
+            createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance, totalPenalty, totalConsumerCount,
+                                  consumerCount, lastDemandGenratedDate, noOfDemandRaised, totaldemAmount,
+                                  collectionsMade, lastCollectionDate, expenseCount, countOfElectricityExpenseBills,
+                                  noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills,
+                                  totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills, date)
     print("End of rollout dashboard")
     return 
 
