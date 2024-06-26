@@ -43,7 +43,7 @@ def getGPWSCHeirarchy():
             }
         }
 
-        mdms_response = requests.post(mdms_url + 'egov-mdms-service/v1/_search', json=mdms_requestData,verify=False)
+        mdms_response = requests.post(mdms_url + '/mdms-v2/v1/_search', json=mdms_requestData,verify=False)
 
         mdms_responseData = mdms_response.json()
         tenantList = mdms_responseData['MdmsRes']['tenant']['tenants']
@@ -149,7 +149,7 @@ def getRateMasters(tenantId):
                 }
             }
 
-            response = requests.post(url+'egov-mdms-service/v1/_search', json=requestData)
+            response = requests.post(url+'/mdms-v2/v1/_search', json=requestData)
         
             responseData = response.json()
             wcBillingSlabList = responseData['MdmsRes']['ws-services-calculation']['WCBillingSlab']
