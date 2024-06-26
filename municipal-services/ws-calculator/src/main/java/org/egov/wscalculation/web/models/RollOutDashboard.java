@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class RollOutDashboard {
 
-    private Long id;
+    private String id;
     private String tenantid;
     private String projectcode;
     private String zone;
