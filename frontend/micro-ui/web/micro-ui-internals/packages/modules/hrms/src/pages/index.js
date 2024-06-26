@@ -1,7 +1,7 @@
 import { PrivateRoute } from "@egovernments/digit-ui-react-components";
 import React,{ useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, Switch, useLocation } from "react-router-dom";
+import { Link, Switch, useLocation, useHistory } from "react-router-dom";
 
 // const {SixFtApart,Rotate360}=SVG;
 const EmployeeApp = ({ path, url, userType }) => {
@@ -14,6 +14,7 @@ const EmployeeApp = ({ path, url, userType }) => {
       tenantId: tenantId,
     },
   };
+  const history = useHistory();
 
   const HRMSResponse = Digit?.ComponentRegistryService?.getComponent("HRMSResponse");
   const HRMSDetails = Digit?.ComponentRegistryService?.getComponent("HRMSDetails");
@@ -41,6 +42,8 @@ const EmployeeApp = ({ path, url, userType }) => {
             </Link>{" "}
             / <span>{location.pathname ===  `/${window?.contextPath}/employee/hrms/inbox` ? t("HR_COMMON_HEADER") : t("HR_COMMON_HEADER")}</span>
           </p>
+          <button className="clear-search" onClick={() => history.goBack()}>{t("HR_COMMON_BACK_ROUTE")}</button>
+          
           <PrivateRoute
             path={`${path}/inbox`}
             component={() => (
