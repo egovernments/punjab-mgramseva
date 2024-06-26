@@ -38,5 +38,5 @@ public class RollOutDashboard {
     private double totalAmountOfElectricityBills;
     private double totalAmountOfPaidExpenseBills;
     private String dateRange;
-    private String createdTime;
+    private Long createdTime;
 }
