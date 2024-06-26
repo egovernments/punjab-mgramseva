@@ -42,7 +42,10 @@ const EmployeeApp = ({ path, url, userType }) => {
             </Link>{" "}
             / <span>{location.pathname ===  `/${window?.contextPath}/employee/hrms/inbox` ? t("HR_COMMON_HEADER") : t("HR_COMMON_HEADER")}</span>
           </p>
-          <button className="clear-search" onClick={() => history.goBack()}>{t("HR_COMMON_BACK_ROUTE")}</button>
+          <button className="clear-search" style={{ marginLeft: "15px",
+            marginBottom: "5px",
+            padding: "8px",
+            borderRadius: "5px" }}  onClick={() => history.goBack()}>{t("HR_COMMON_BACK_ROUTE")}</button>
           
           <PrivateRoute
             path={`${path}/inbox`}
