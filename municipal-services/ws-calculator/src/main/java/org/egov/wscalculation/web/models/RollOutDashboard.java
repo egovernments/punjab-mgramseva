@@ -25,18 +25,18 @@ public class RollOutDashboard {
     private double totalPenalty;
     private int totalConnections;
     private int activeConnections;
-    private LocalDateTime lastDemandGenDate;
+    private String lastDemandGenDate;
     private int demandGeneratedConsumerCount;
     private double totalDemandAmount;
     private double collectionTillDate;
-    private LocalDateTime lastCollectionDate;
+    private String lastCollectionDate;
     private int expenseCount;
     private int countOfElectricityExpenseBills;
     private int noOfPaidExpenseBills;
-    private LocalDateTime lastExpenseTxnDate;
+    private String lastExpenseTxnDate;
     private double totalAmountOfExpenseBills;
     private double totalAmountOfElectricityBills;
     private double totalAmountOfPaidExpenseBills;
     private String dateRange;
-    private LocalDateTime createdTime;
+    private String createdTime;
 }
