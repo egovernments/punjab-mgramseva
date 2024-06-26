@@ -18,11 +18,13 @@ export const UICustomizations = {
         tenantId = additionalDetails?.queryParams?.tenantId
       }
       const finalParams = {
-        consumerCode,
+        // consumerCode,
         tenantId,
-        businessService
+        businessService,
+        textSearch:consumerCode
       }
       data.params = finalParams
+      // data.params.textSearch = finalParams.consumerCode
       // const tenantId = Digit.ULBService.getCurrentTenantId();
       // data.body = { RequestInfo: data.body.RequestInfo };
       // const { limit, offset } = data?.state?.tableForm || {};
@@ -55,6 +57,47 @@ export const UICustomizations = {
       return data;
     },
     additionalCustomizations: (row, key, column, value, t, searchResult) => {
+
+      switch (key) {
+        case "OP_CONS_CODE":
+          return <span className="link">
+            <Link
+              to={`/${window.contextPath}/citizen/payment/open-view?tenantId=${row.tenantId}&businessService=WS&consumerCode=${row.connectionNo}`}
+            >
+              {String(value ? (column.translate ? t(column.prefix ? `${column.prefix}${value}` : value) : value) : t("ES_COMMON_NA"))}
+            </Link>
+          </span>
+        
+        case "OP_APPLICATION_TYPE":
+          return <div>
+            { value ? t(Digit.Utils.locale.getTransformedLocale(`OP_APPLICATION_TYPE_${value}`)) : t("ES_COMMON_NA")}
+          </div>
+        
+        case "OP_APPLICATION_STATUS":
+          return <div>
+            { value ? t(Digit.Utils.locale.getTransformedLocale(`OP_APPLICATION_STATUS_${value}`)) : t("ES_COMMON_NA")}
+          </div>
+        case "OP_CONNECTION_TYPE":
+          return <div>
+            { value ? t(Digit.Utils.locale.getTransformedLocale(`OP_CONNECTION_TYPE_${value}`)) : t("ES_COMMON_NA")}
+          </div>
+        case "OP_METER_INSTALLATION_DATE":
+          return <div>
+            {value ? Digit.DateUtils.ConvertEpochToDate(value) : t("ES_COMMON_NA")}
+          </div>
+        case "OP_METER_READING_DATE":
+          return <div>
+            {value ? Digit.DateUtils.ConvertEpochToDate(value) : t("ES_COMMON_NA")}
+          </div>
+        case "OP_PROPERTY_TYPE":
+          return <div>
+            { value ? t(Digit.Utils.locale.getTransformedLocale(`OP_PROPERTY_TYPE_${value}`)) : t("ES_COMMON_NA")}
+          </div>
+          
+      
+        default:
+          return <span>{t("ES_COMMON_DEFAULT_NA")}</span>
+      }
       if (key === "OP_BILL_DATE") {
         return Digit.DateUtils.ConvertEpochToDate(value);
       }

@@ -2,7 +2,7 @@ export const OpenSearchConfig =  {
   "label": "OPEN_PAYMENT_SEARCH",
   "type": "search",
   "apiDetails": {
-    "serviceName": "/billing-service/bill/v2/_fetchbill",
+    "serviceName": "/ws-services/wc/_search",
     "requestParam": {},
     "requestBody": {},
     "minParametersForSearchForm": 2,
@@ -66,34 +66,79 @@ export const OpenSearchConfig =  {
         "columns": [
           {
             "label": "OP_CONS_CODE",
-            "jsonPath": "consumerCode",
+            "jsonPath": "connectionNo",
             "additionalCustomization": true
           },
-          {
-            "label": "OP_BILL_NUM",
-            "jsonPath": "billNumber",
-            // "additionalCustomization": true
-          },
+          // {
+          //   "label": "OP_BILL_NUM",
+          //   "jsonPath": "billNumber",
+          //   // "additionalCustomization": true
+          // },
           {
             "label": "OP_PAYER_NAME",
-            "jsonPath": "payerName",
+            "jsonPath": "connectionHolders[0].name",
             // "additionalCustomization": true
           },
           {
-            "label": "OP_MOB_NO",
-            "jsonPath": "mobileNumber",
+            "label": "OP_APPLICATION_TYPE",
+            "jsonPath": "applicationType",
+            "additionalCustomization": true
+          },
+          {
+            "label": "OP_CONNECTION_TYPE",
+            "jsonPath": "connectionType",
+            "additionalCustomization": true
+          },
+          {
+            "label": "OP_METER_ID",
+            "jsonPath": "meterId",
             // "additionalCustomization": true
           },
           {
-            "label": "OP_BILL_DATE",
-            "jsonPath": "billDate",
+            "label": "OP_CONNECTION_OLD_ID",
+            "jsonPath": "oldConnectionNo",
+            // "additionalCustomization": true
+          },
+          {
+            "label": "OP_METER_INSTALLATION_DATE",
+            "jsonPath": "meterInstallationDate",
             "additionalCustomization": true
           },
           {
-            "label": "OP_BILL_TOTAL_AMT",
-            "jsonPath": "totalAmount",
+            "label": "OP_METER_READING_DATE",
+            "jsonPath": "previousReadingDate",
             "additionalCustomization": true
           },
+          // {
+          //   "label": "OP_PROPERTY_TYPE",
+          //   "jsonPath": "additionalDetails.propertyType",
+          //   "additionalCustomization": true
+          // },
+          {
+            "label": "OP_APPLICATION_STATUS",
+            "jsonPath": "applicationStatus",
+            "additionalCustomization": true
+          },
+          // {
+          //   "label": "OP_SERVICE_TYPE",
+          //   "jsonPath": "connectionType",
+          //   "additionalCustomization": true
+          // },
+          // {
+          //   "label": "OP_MOB_NO",
+          //   "jsonPath": "mobileNumber",
+          //   // "additionalCustomization": true
+          // },
+          // {
+          //   "label": "OP_BILL_DATE",
+          //   "jsonPath": "billDate",
+          //   "additionalCustomization": true
+          // },
+          // {
+          //   "label": "OP_BILL_TOTAL_AMT",
+          //   "jsonPath": "totalAmount",
+          //   "additionalCustomization": true
+          // },
           // {
           //   "label": "TQM_PLANT",
           //   "jsonPath": "plantCode",
@@ -130,7 +175,7 @@ export const OpenSearchConfig =  {
         // "actionButtonLabelMobileCard": "TQM_VIEW_RESULTS",
         "enableGlobalSearch": false,
         "enableColumnSort": true,
-        "resultsJsonPath": "Bill",
+        "resultsJsonPath": "WaterConnection",
         "tableClassName":"table pqm-table"
       },
       "children": {},
