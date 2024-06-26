@@ -50,10 +50,10 @@ def getGPWSCHeirarchy():
         print(len(tenantList))
         teanant_data_Map = {}
         for tenant in tenantList:
-            if tenant.get('code') == state_tenantid or tenant.get('code') == (state_tenantid + '.testing'):
-                continue
-            if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
+            if tenant.get('code') == state_tenantid or tenant.get('code') == (state_tenantid + '.poohlahjgfid'):
                 teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
+            if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
+                continue
 
         url = 'https://mgramseva-dwss.punjab.gov.in/'
         print(url)
@@ -907,7 +907,7 @@ def process():
     for tenant in tenants:
         print("Tenant:", tenant['tenantId'])
         activeUsersCount= getActiveUsersCount(tenant['tenantId'])
-        daterange = ['Last seven days','Last 15 days','currentMonth-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','Quarter-4','Consolidated (As on date)','FY to date','Previous 1st FY (23-24)','Previous 2nd FY (22-23)','Previous 3rd FY (21-22)']
+        daterange = ['Consolidated (As on date)']
         for i,date in enumerate(daterange):
             startdate,enddate= getdaterange(date)
             totalAdvance= getTotalAdvanceCreated(tenant['tenantId'],startdate,enddate)
