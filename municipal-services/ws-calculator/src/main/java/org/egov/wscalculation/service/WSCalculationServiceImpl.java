@@ -3,11 +3,7 @@ package org.egov.wscalculation.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -475,6 +471,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 			String tenantId = rollOutDashboardRequest.getRollOutDashboard().getTenantid();
 			if (tenantId != null) {
 				log.info("Role out data sending to kafka topic "+ rollOutDashboardRequest.getRollOutDashboard());
+				rollOutDashboardRequest.getRollOutDashboard().setCreatedTime(new Date());
 				wsCalculationProducer.push(config.getRollOutDashBoardTopic(), rollOutDashboardRequest.getRollOutDashboard());
 			}
 		} catch (Exception e) {

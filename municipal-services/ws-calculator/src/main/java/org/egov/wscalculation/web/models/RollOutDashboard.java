@@ -1,17 +1,16 @@
 package org.egov.wscalculation.web.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jdk.nashorn.internal.ir.annotations.Ignore;
+import lombok.*;
+
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class RollOutDashboard {
-
     private String id;
     private String tenantid;
     private String projectcode;
@@ -38,5 +37,5 @@ public class RollOutDashboard {
     private double totalAmountOfElectricityBills;
     private double totalAmountOfPaidExpenseBills;
     private String dateRange;
-    private Long createdTime;
+    private Date createdTime;
 }
