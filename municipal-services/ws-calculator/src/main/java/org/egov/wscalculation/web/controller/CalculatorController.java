@@ -117,6 +117,7 @@ public class CalculatorController {
 	@PostMapping("/_rollOutDashboardSearch")
 	public ResponseEntity<RollOutDashboardResponse> rollOutDashboardSearch(@RequestBody RollOutDashboardRequest rollOutDashboardRequest)
 	{
+		log.info("Roll out dashboard request"+rollOutDashboardRequest.getRollOutDashboard());
 		RollOutDashboard sendDataForRollOut=wSCalculationService.sendDataForRollOut(rollOutDashboardRequest);
 		RollOutDashboardResponse response = RollOutDashboardResponse.builder().
 				rollOutDashboard(sendDataForRollOut).build();
