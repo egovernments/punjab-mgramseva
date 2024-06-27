@@ -21,7 +21,7 @@ export const OpenSearchConfig =  {
         "primaryLabel": "ES_COMMON_SEARCH",
         "secondaryLabel": "ES_COMMON_CLEAR_SEARCH",
         "minReqFields": 2,
-        // "showFormInstruction": "OPEN_PAYMENT_SEARCH_HINT",
+        "showFormInstruction": "OPEN_PAYMENT_SEARCH_HINT",
         "defaultValues": {
           "consumerCode": ""
         },

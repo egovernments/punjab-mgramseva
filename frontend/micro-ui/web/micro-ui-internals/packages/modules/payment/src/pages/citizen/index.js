@@ -11,13 +11,15 @@ const CitizenApp = ({ path }) => {
   const { t } = useTranslation();
   const location = useLocation();
   const commonProps = { stateCode:"pb", cityCode:"pb.abianakhurd", moduleCode:"WS" };
+  const excludeBackBtn = ["/response","/open-search","/success"]
+  
   return (
     <React.Fragment>
       <div className="engagement-citizen-wrapper" style={{
         width:"95vw",
         marginTop:"2rem"
       }}>
-      {!location.pathname.includes("response") && <BackButton>{t("CS_COMMON_BACK")}</BackButton>}
+      {!excludeBackBtn?.some(url => location.pathname.includes(url)) && <BackButton>{t("CS_COMMON_BACK")}</BackButton>}
       <Switch>
           <PrivateRoute path={`${path}/sample`} component={() => <div> In Open Payment Module</div> } />
           <Route path={`${path}/open-search`} render={()=><OpenSearch />} />

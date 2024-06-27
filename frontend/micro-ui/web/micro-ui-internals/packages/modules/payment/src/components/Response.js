@@ -73,7 +73,6 @@ export const convertEpochToDate = (dateEpoch) => {
       enabled: allowFetchBill,
     }
   );
-
   const { data: generatePdfKey } = Digit.Hooks.useCommonMDMS(newTenantId, "common-masters", "ReceiptKey", {
     select: (data) =>
       data["common-masters"]?.uiCommonPay?.filter(({ code }) => business_service?.includes(code))[0]?.receiptKey || "consolidatedreceipt",
@@ -587,7 +586,7 @@ export const convertEpochToDate = (dateEpoch) => {
       />
       <CardText>{t(`${bannerText}_DETAIL`)}</CardText>
       <StatusTable>
-        <Row rowContainerStyle={rowContainerStyle} last label={t("label")} text={applicationNo} />
+        <Row rowContainerStyle={rowContainerStyle} last label={t("OP_CONS_CODE")} text={applicationNo} />
         {/** TODO : move this key and value into the hook based on business Service */}
         {(business_service === "PT" || workflw) && (
           <Row
@@ -612,7 +611,7 @@ export const convertEpochToDate = (dateEpoch) => {
           rowContainerStyle={rowContainerStyle}
           last
           label={t(ommitRupeeSymbol ? "CS_PAYMENT_AMOUNT_PAID_WITHOUT_SYMBOL" : "CS_PAYMENT_AMOUNT_PAID")}
-          text={reciept_data?.paymentDetails?.[0]?.totalAmountPaid ? ("₹ " +  reciept_data?.paymentDetails?.[0]?.totalAmountPaid) : `₹ 0` }
+          text={paymentData?.totalAmountPaid ? ("₹ " +  paymentData?.totalAmountPaid) : `₹ 0` }
         />
         {(business_service !== "PT" || workflw) && (
           <Row
