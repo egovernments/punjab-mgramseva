@@ -1,7 +1,7 @@
 import json
 from typing import BinaryIO, List
 import requests
-from datetime import datetime, timezone,time,timedelta
+from datetime import datetime, timezone,time,timedelta,date
 from dateutil.relativedelta import relativedelta
 from dateutil import tz
 import pytz
@@ -816,6 +816,10 @@ def convert_decimal_to_float(value):
     return float(value) if  isinstance(value,Decimal) else value
 
 
+def convert_date_to_string(value):
+    return value.isoformat() if isinstance(value,(date,datetime)) else value
+
+
 def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance, totalPenalty, totalConsumerCount,consumerCount, lastDemandGenratedDate, noOfDemandRaised, totaldemAmount,collectionsMade, lastCollectionDate, expenseCount,countOfElectricityExpenseBills, noOfPaidExpenseBills, lastExpTrnsDate,totalAmountOfExpenseBills, totalAmountOfElectricityBills,totalAmountOfPaidExpenseBills, date):
     # url = 'http://localhost:8080/ws-calculator/waterCalculator/_rollOutDashboardSearch'
     rollOut_headers = {'Content-Type': 'application/json'}
@@ -835,7 +839,10 @@ def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance,
             "requesterId": "",
             "ts": 1513579888683,
             "ver": ".01",
-            "authToken": "572ad571-9061-444e-bcdb-84061b61f467"
+            "authToken": "572ad571-9061-444e-bc'Bathinda', 'division': 'Bathinda No. 1', 'subdivision': 'Nathana at Bathinda', 'section': 'NATHANA', 'activeUsersCount': 22, 'totalAdvance': -4799.0, 'totalPenalty': 534.0, 'totalConnections': 179, 'activeConnections': 159, 'lastDemandGenDate': datetime.date(2024, 5, 31), 'demandGeneratedConsumerCount': 80, 'totalDemandAmount': 168219.0, 'collectionTillDate': 12318.0, 'lastCollectionDate': datetime.datetime(2024, 6, 21, 10, 52, 31, 343000), 'expenseCount': 2, 'countOfElectricityExpenseBills': 0, 'noOfPaidExpenseBills': 3, 'lastExpenseTxnDate': datetime.datetime(2024, 6, 13, 10, 16, 33, 553000), 'totalAmountOfExpenseBills': 275538.0, 'totalAmountOfElectricityBills': 300487.0, 'totalAmountOfPaidExpenseBills': 162584.0, 'dateRange': 'Consolidated (As on date)', 'createdTime': 1711909800000}}
+An error occurred:
+Object of type date is not JSON serializable
+db-84061b61f467"
         },
         "rollOutDashboard": {
             "id": 1,
@@ -851,15 +858,15 @@ def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance,
             "totalPenalty": convert_decimal_to_float(totalPenalty),
             "totalConnections": totalConsumerCount,
             "activeConnections": consumerCount,
-            "lastDemandGenDate": lastDemandGenratedDate,
+            "lastDemandGenDate": convert_date_to_string(lastDemandGenratedDate),
             "demandGeneratedConsumerCount": noOfDemandRaised,
             "totalDemandAmount": convert_decimal_to_float(totaldemAmount),
             "collectionTillDate": convert_decimal_to_float(collectionsMade),
-            "lastCollectionDate": lastCollectionDate,
+            "lastCollectionDate": convert_date_to_string(lastCollectionDate),
             "expenseCount": expenseCount,
             "countOfElectricityExpenseBills": countOfElectricityExpenseBills,
             "noOfPaidExpenseBills": noOfPaidExpenseBills,
-            "lastExpenseTxnDate": lastExpTrnsDate,
+            "lastExpenseTxnDate": convert_date_to_string(lastExpTrnsDate),
             "totalAmountOfExpenseBills": convert_decimal_to_float(totalAmountOfExpenseBills),
             "totalAmountOfElectricityBills": convert_decimal_to_float(totalAmountOfElectricityBills),
             "totalAmountOfPaidExpenseBills": convert_decimal_to_float(totalAmountOfPaidExpenseBills),
