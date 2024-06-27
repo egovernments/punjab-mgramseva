@@ -839,10 +839,7 @@ def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance,
             "requesterId": "",
             "ts": 1513579888683,
             "ver": ".01",
-            "authToken": "572ad571-9061-444e-bc'Bathinda', 'division': 'Bathinda No. 1', 'subdivision': 'Nathana at Bathinda', 'section': 'NATHANA', 'activeUsersCount': 22, 'totalAdvance': -4799.0, 'totalPenalty': 534.0, 'totalConnections': 179, 'activeConnections': 159, 'lastDemandGenDate': datetime.date(2024, 5, 31), 'demandGeneratedConsumerCount': 80, 'totalDemandAmount': 168219.0, 'collectionTillDate': 12318.0, 'lastCollectionDate': datetime.datetime(2024, 6, 21, 10, 52, 31, 343000), 'expenseCount': 2, 'countOfElectricityExpenseBills': 0, 'noOfPaidExpenseBills': 3, 'lastExpenseTxnDate': datetime.datetime(2024, 6, 13, 10, 16, 33, 553000), 'totalAmountOfExpenseBills': 275538.0, 'totalAmountOfElectricityBills': 300487.0, 'totalAmountOfPaidExpenseBills': 162584.0, 'dateRange': 'Consolidated (As on date)', 'createdTime': 1711909800000}}
-An error occurred:
-Object of type date is not JSON serializable
-db-84061b61f467"
+            "authToken": "572ad571-9061-444e-bcdb-84061b61f467"
         },
         "rollOutDashboard": {
             "id": 1,
