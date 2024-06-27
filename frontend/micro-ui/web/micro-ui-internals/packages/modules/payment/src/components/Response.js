@@ -107,7 +107,7 @@ export const convertEpochToDate = (dateEpoch) => {
 
   if (isError || !payments || !payments.Payments || payments.Payments.length === 0 || data.txnStatus === "FAILURE") {
     return (
-      <Card>
+      <Card style={{ maxWidth: "95vw"}}>
         <Banner
           message={t("CITIZEN_FAILURE_COMMON_PAYMENT_MESSAGE")}
           info={t("CS_PAYMENT_TRANSANCTION_ID")}
@@ -569,7 +569,7 @@ export const convertEpochToDate = (dateEpoch) => {
   // if ((window.location.href.includes("bpa") || window.location.href.includes("BPA")) && isBpaSearchLoading) return <Loader />
 
   return (
-    <Card>
+    <Card style={{ maxWidth: "95vw"}}>
       <Banner
         svg={
           <svg className="payment-svg" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
@@ -710,7 +710,7 @@ export const FailedPayment = (props) => {
   const {consumerCode} = Digit.Hooks.useQueryParams();
   const getMessage = () => "Failure !";
   return (
-    <Card>
+    <Card style={{ maxWidth: "95vw"}}>
       <Banner message={getMessage()} complaintNumber={consumerCode} successful={false} />
       <CardText>{t("ES_COMMON_TRACK_COMPLAINT_TEXT")}</CardText>
     </Card>
