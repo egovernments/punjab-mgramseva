@@ -822,6 +822,7 @@ def convert_date_to_string(value):
 
 def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance, totalPenalty, totalConsumerCount,consumerCount, lastDemandGenratedDate, noOfDemandRaised, totaldemAmount,collectionsMade, lastCollectionDate, expenseCount,countOfElectricityExpenseBills, noOfPaidExpenseBills, lastExpTrnsDate,totalAmountOfExpenseBills, totalAmountOfElectricityBills,totalAmountOfPaidExpenseBills, date):
     # url = 'http://localhost:8080/ws-calculator/waterCalculator/_rollOutDashboardSearch'
+    current_time_millis = int(time.time() * 1000)
     rollOut_headers = {'Content-Type': 'application/json'}
     url = os.getenv('WS_API_URL')
 
@@ -868,7 +869,7 @@ def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance,
             "totalAmountOfElectricityBills": convert_decimal_to_float(totalAmountOfElectricityBills),
             "totalAmountOfPaidExpenseBills": convert_decimal_to_float(totalAmountOfPaidExpenseBills),
             "dateRange": date,
-            "createdTime": 1711909800000
+            "createdTime":current_time_millis
         }
     }
 
