@@ -868,6 +868,8 @@ def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance,
         }
     }
 
+    print(requestData)
+
     try:
         response = requests.post(url+'ws-calculator/waterCalculator/_rollOutDashboardSearch', headers=rollOut_headers,json=requestData)
         if response.status_code == 200:
