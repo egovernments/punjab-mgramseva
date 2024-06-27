@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 from dateutil import tz
 import pytz
 from dateutil import parser
+from decimal import Decimal
 import os
 import psycopg2
 
@@ -649,7 +650,8 @@ def getTotalDemandAmount(tenantId,startdate,enddate):
             
             cursor.execute(TOTAL_DEMAND_AMOUNT)
             result = cursor.fetchone()
-            
+
+            print(result[0])
             return result[0]
             
         except Exception as exception:
@@ -810,6 +812,10 @@ def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,tot
                 connection.close()
 
 
+def convert_decimal_to_float(value):
+    return float(value) if  isinstance(value,Decimal) else value
+
+
 def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance, totalPenalty, totalConsumerCount,consumerCount, lastDemandGenratedDate, noOfDemandRaised, totaldemAmount,collectionsMade, lastCollectionDate, expenseCount,countOfElectricityExpenseBills, noOfPaidExpenseBills, lastExpTrnsDate,totalAmountOfExpenseBills, totalAmountOfElectricityBills,totalAmountOfPaidExpenseBills, date):
     # url = 'http://localhost:8080/ws-calculator/waterCalculator/_rollOutDashboardSearch'
     rollOut_headers = {'Content-Type': 'application/json'}
@@ -841,22 +847,22 @@ def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance,
             "subdivision": tenant['subdivision'],
             "section": tenant['section'],
             "activeUsersCount": activeUsersCount,
-            "totalAdvance": totalAdvance,
-            "totalPenalty": totalPenalty,
+            "totalAdvance": convert_decimal_to_float(totalAdvance),
+            "totalPenalty": convert_decimal_to_float(totalPenalty),
             "totalConnections": totalConsumerCount,
             "activeConnections": consumerCount,
             "lastDemandGenDate": lastDemandGenratedDate,
             "demandGeneratedConsumerCount": noOfDemandRaised,
-            "totalDemandAmount": totaldemAmount,
-            "collectionTillDate": collectionsMade,
+            "totalDemandAmount": convert_decimal_to_float(totaldemAmount),
+            "collectionTillDate": convert_decimal_to_float(collectionsMade),
             "lastCollectionDate": lastCollectionDate,
             "expenseCount": expenseCount,
             "countOfElectricityExpenseBills": countOfElectricityExpenseBills,
             "noOfPaidExpenseBills": noOfPaidExpenseBills,
             "lastExpenseTxnDate": lastExpTrnsDate,
-            "totalAmountOfExpenseBills": totalAmountOfExpenseBills,
-            "totalAmountOfElectricityBills": totalAmountOfElectricityBills,
-            "totalAmountOfPaidExpenseBills": totalAmountOfPaidExpenseBills,
+            "totalAmountOfExpenseBills": convert_decimal_to_float(totalAmountOfExpenseBills),
+            "totalAmountOfElectricityBills": convert_decimal_to_float(totalAmountOfElectricityBills),
+            "totalAmountOfPaidExpenseBills": convert_decimal_to_float(totalAmountOfPaidExpenseBills),
             "dateRange": date,
             "createdTime": 1711909800000
         }
