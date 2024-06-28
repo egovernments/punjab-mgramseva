@@ -85,6 +85,24 @@ const CreateEmployee = () => {
   const employeeCreateSession = Digit.Hooks.useSessionStorage("NEW_EMPLOYEE_CREATE", {});
   const [sessionFormData, setSessionFormData, clearSessionFormData] = employeeCreateSession;
 
+  function hasUniqueTenantIds(items) {
+    // Create a Set to efficiently store unique tenantIds
+    const uniqueTenantIds = new Set();
+    // Iterate through each item
+    for (const item of items) {
+      const tenantId = item.tenantId;
+      // Check if tenantId already exists in the Set
+      if (uniqueTenantIds.has(tenantId)) {
+        // Duplicate found, return false
+        return false;
+      }
+      // Add unique tenantId to the Set
+      uniqueTenantIds.add(tenantId);
+    }
+    // No duplicates found, all tenantIds are unique
+    return true;
+  }
+
   const onFormValueChange = (setValue = true, formData) => {
     if (!_.isEqual(sessionFormData, formData)) {
       setSessionFormData({ ...sessionFormData, ...formData });
@@ -120,7 +138,8 @@ const CreateEmployee = () => {
       && 
       checkfield &&
       phonecheck &&
-      checkMailNameNum(formData)
+      checkMailNameNum(formData) &&
+      hasUniqueTenantIds(formData?.Jurisdictions)
     ) {
       setSubmitValve(true);
     } else {
