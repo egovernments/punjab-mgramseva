@@ -978,7 +978,7 @@ def process():
 
             totalAmountOfExpenseBills = getTotalAmountExpenseBills(tenant['tenantId'], startdate, enddate)
 
-            if totalAmountOfExpenseBills > 0:
+            if totalAmountOfExpenseBills is not None and totalAmountOfExpenseBills > 0:
                 # totalAmountOfExpenseBills = getTotalAmountExpenseBills(tenant['tenantId'], startdate, enddate)
                 totalAmountOfElectricityBills = getTotalAmountElectricityBills(tenant['tenantId'], startdate, enddate)
                 totalAmountOfPaidExpenseBills = getTotalAmountPaidBills(tenant['tenantId'], startdate, enddate)
