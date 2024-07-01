@@ -38,4 +38,5 @@ public class RollOutDashboard {
     private double totalAmountOfPaidExpenseBills;
     private String dateRange;
     private Date createdTime;
+    private String tenantName;
 }

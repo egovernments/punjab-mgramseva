@@ -470,8 +470,8 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		try {
 			String tenantId = rollOutDashboardRequest.getRollOutDashboard().getTenantid();
 			if (tenantId != null) {
-				log.info("Role out data sending to kafka topic "+ rollOutDashboardRequest.getRollOutDashboard());
 				rollOutDashboardRequest.getRollOutDashboard().setCreatedTime(new Date());
+				log.info("Role out data sending to kafka topic "+ rollOutDashboardRequest.getRollOutDashboard());
 				wsCalculationProducer.push(config.getRollOutDashBoardTopic(), rollOutDashboardRequest.getRollOutDashboard());
 			}
 		} catch (Exception e) {
