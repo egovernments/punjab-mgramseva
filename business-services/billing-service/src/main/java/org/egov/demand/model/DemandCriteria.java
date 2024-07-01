@@ -86,7 +86,11 @@ public class DemandCriteria {
 	private String status;
 	
 	private Boolean isPaymentCompleted;
-	
+
+	private Integer offset;
+
+	private Integer limit;
+
 	@Default
 	private Boolean receiptRequired=false;
 }
