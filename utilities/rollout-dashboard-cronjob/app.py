@@ -843,23 +843,46 @@ def process():
         activeUsersCount= getActiveUsersCount(tenant['tenantId'])
         daterange = ['Last seven days','Last 15 days','currentMonth-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','Quarter-4','Consolidated (As on date)','FY to date','Previous 1st FY (23-24)','Previous 2nd FY (22-23)','Previous 3rd FY (21-22)']
         for i,date in enumerate(daterange):
-            startdate,enddate= getdaterange(date)
-            totalAdvance= getTotalAdvanceCreated(tenant['tenantId'],startdate,enddate)
-            totalPenalty= getTotalPenaltyCreated(tenant['tenantId'],startdate,enddate)
-            expenseCount = getExpenseBillEntered(tenant['tenantId'],startdate,enddate)
-            countOfElectricityExpenseBills=getElectricityExpenseBillEntered(tenant['tenantId'],startdate,enddate)
-            lastExpTrnsDate = getLastExpTransactionDate(tenant['tenantId'],startdate,enddate)
-            noOfPaidExpenseBills= getNoOfBillsPaid(tenant['tenantId'],startdate,enddate)
-            lastDemandGenratedDate = getLastDemandDate(tenant['tenantId'],startdate,enddate)
-            noOfDemandRaised= getTotalDemandRaised(tenant['tenantId'],startdate,enddate)
-            lastCollectionDate = getLastCollectionDate(tenant['tenantId'],startdate,enddate)
-            collectionsMade = getCollectionsMade(tenant['tenantId'],startdate,enddate)
-            totalConsumerCount= getTotalConsumerCount(tenant['tenantId'],startdate,enddate)
-            consumerCount= getConsumersCount(tenant['tenantId'],startdate,enddate)
-            totaldemAmount = getTotalDemandAmount(tenant['tenantId'],startdate,enddate)
-            totalAmountOfExpenseBills = getTotalAmountExpenseBills(tenant['tenantId'],startdate,enddate)
-            totalAmountOfElectricityBills = getTotalAmountElectricityBills(tenant['tenantId'],startdate,enddate)
-            totalAmountOfPaidExpenseBills = getTotalAmountPaidBills(tenant['tenantId'],startdate,enddate)
+            startdate, enddate = getdaterange(date)
+
+            totalConsumerCount = getTotalConsumerCount(tenant['tenantId'], startdate, enddate)
+            if totalConsumerCount > 0:
+                totaldemAmount = getTotalDemandAmount(tenant['tenantId'], startdate, enddate)
+                totalAdvance = getTotalAdvanceCreated(tenant['tenantId'], startdate, enddate)
+                totalPenalty = getTotalPenaltyCreated(tenant['tenantId'], startdate, enddate)
+                lastDemandGenratedDate = getLastDemandDate(tenant['tenantId'], startdate, enddate)
+                noOfDemandRaised = getTotalDemandRaised(tenant['tenantId'], startdate, enddate)
+                lastCollectionDate = getLastCollectionDate(tenant['tenantId'], startdate, enddate)
+                collectionsMade = getCollectionsMade(tenant['tenantId'], startdate, enddate)
+                consumerCount = getConsumersCount(tenant['tenantId'], startdate, enddate)
+            else:
+                totaldemAmount = 0.0
+                totalAdvance = 0.0
+                totalPenalty = 0.0
+                lastDemandGenratedDate = None
+                noOfDemandRaised = 0
+                lastCollectionDate = None
+                collectionsMade = 0.0
+                consumerCount = 0
+
+            totalAmountOfExpenseBills = getTotalAmountExpenseBills(tenant['tenantId'], startdate, enddate)
+
+            if totalAmountOfExpenseBills is not None and totalAmountOfExpenseBills > 0:
+                # totalAmountOfExpenseBills = getTotalAmountExpenseBills(tenant['tenantId'], startdate, enddate)
+                totalAmountOfElectricityBills = getTotalAmountElectricityBills(tenant['tenantId'], startdate, enddate)
+                totalAmountOfPaidExpenseBills = getTotalAmountPaidBills(tenant['tenantId'], startdate, enddate)
+                countOfElectricityExpenseBills = getElectricityExpenseBillEntered(tenant['tenantId'], startdate,enddate)
+                lastExpTrnsDate = getLastExpTransactionDate(tenant['tenantId'], startdate, enddate)
+                noOfPaidExpenseBills = getNoOfBillsPaid(tenant['tenantId'], startdate, enddate)
+            else:
+                # totalAmountOfExpenseBills = 0.0
+                totalAmountOfElectricityBills = 0.0
+                totalAmountOfPaidExpenseBills = 0.0
+                countOfElectricityExpenseBills = 0
+                lastExpTrnsDate = None
+                noOfPaidExpenseBills = 0
+
+            expenseCount = getExpenseBillEntered(tenant['tenantId'], startdate, enddate)
             createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,totalConsumerCount,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date)
         
     print("End of rollout dashboard")
