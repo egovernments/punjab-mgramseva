@@ -856,7 +856,7 @@ def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance,
                                          collectionsMade, lastCollectionDate, expenseCount,
                                          countOfElectricityExpenseBills, noOfPaidExpenseBills, lastExpTrnsDate,
                                          totalAmountOfExpenseBills, totalAmountOfElectricityBills,
-                                         totalAmountOfPaidExpenseBills, date):
+                                         totalAmountOfPaidExpenseBills, date,tenantName):
     # url = 'http://localhost:8080/ws-calculator/waterCalculator/_rollOutDashboardSearch'
     rollOut_headers = {'Content-Type': 'application/json'}
     url = os.getenv('WS_API_URL')
@@ -903,7 +903,8 @@ def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance,
             "totalAmountOfExpenseBills": convert_decimal_to_float(totalAmountOfExpenseBills),
             "totalAmountOfElectricityBills": convert_decimal_to_float(totalAmountOfElectricityBills),
             "totalAmountOfPaidExpenseBills": convert_decimal_to_float(totalAmountOfPaidExpenseBills),
-            "dateRange": date
+            "dateRange": date,
+            "tenantName": tenantName
         }
     }
 
@@ -954,6 +955,8 @@ def process():
     tenants = getGPWSCHeirarchy()
     for tenant in tenants:
         print("Tenant:", tenant['tenantId'])
+        tenantName = tenant['tenantName']
+        print("Tenant Name:", tenantName)
         activeUsersCount = getActiveUsersCount(tenant['tenantId'])
         daterange = ['Consolidated (As on date)']
         for i, date in enumerate(daterange):
@@ -1005,7 +1008,7 @@ def process():
                                                  collectionsMade, lastCollectionDate, expenseCount,
                                                  countOfElectricityExpenseBills,
                                                  noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills,
-                                                 totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills, date)
+                                                 totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills, date,tenantName)
     print("End of rollout dashboard")
     return
 
