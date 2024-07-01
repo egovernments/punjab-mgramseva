@@ -11,10 +11,10 @@
 }
 
 .employee-card-input-only {
-  @apply mb-lg pl-sm outline-none block border w-full h-12 border-input-border border-solid bg-white leading-10 text-form-field text-text-primary;
 }
 .employee-card-input-only .employee-card-input  {
   border: none;
+  @apply mb-lg pl-sm outline-none block border w-full h-12 border-input-border border-solid bg-white leading-10 text-form-field text-text-primary;
 }
 
 

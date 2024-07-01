@@ -579,7 +579,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                                 onChanged: expensesDetailsProvider
                                                             .expenditureDetails
                                                             .allowEdit ==
-                                                        true
+                                                        true && expensesDetailsProvider.expenditureDetails.isBillPaid == false
                                                     ? expensesDetailsProvider
                                                         .onChangeOfCheckBox
                                                     : null),
@@ -594,7 +594,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                                   color: expensesDetailsProvider
                                                               .expenditureDetails
                                                               .allowEdit ==
-                                                          true
+                                                          true && expensesDetailsProvider.expenditureDetails.isBillPaid == false
                                                       ? Colors.black
                                                       : Colors.grey,
                                                   fontWeight:
