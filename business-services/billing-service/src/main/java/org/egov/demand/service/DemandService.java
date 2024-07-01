@@ -571,6 +571,9 @@ public class DemandService {
 	public AggregatedDemandDetailResponse getAllDemands(DemandCriteria demandCriteria, RequestInfo requestInfo) {
 
 		//demandValidatorV1.validateDemandCriteria(demandCriteria, requestInfo);
+		long latestDemandCreatedTime = 0l;
+
+		long latestDemandPenaltyCreatedtime=0l;
 
 		UserSearchRequest userSearchRequest = null;
 		List<User> payers = null;
@@ -617,6 +620,46 @@ public class DemandService {
 			return demand.getStatus().equals(Demand.StatusEnum.ACTIVE);
 		}).collect(Collectors.toList());
 		List<Map<Long, List<DemandDetail>>> demandDetailsList = new ArrayList<>();
+
+		List<Demand> demandsTogetDemandGeneratedDate= demands;
+
+		// Filter demands where demandDetails have taxHeadMasterCode as 10101
+		List<Demand> filteredDemands = demandsTogetDemandGeneratedDate.stream()
+				.filter(demand -> demand.getDemandDetails().stream()
+						.anyMatch(detail -> "10101".equals(detail.getTaxHeadMasterCode())))
+				.collect(Collectors.toList());
+
+		Collections.sort(filteredDemands, new Comparator<Demand>() {
+			@Override
+			public int compare(Demand d1, Demand d2) {
+				return Long.compare(d2.getTaxPeriodFrom(), d1.getTaxPeriodFrom());
+			}
+		});
+
+
+
+		if (!filteredDemands.isEmpty()) {
+			Demand latestDemand = filteredDemands.get(0);
+
+			Optional<DemandDetail> detail10101 = latestDemand.getDemandDetails().stream()
+					.filter(detail -> "10101".equals(detail.getTaxHeadMasterCode()))
+					.findFirst();
+
+			Optional<DemandDetail> detailWSTimePenalty = latestDemand.getDemandDetails().stream()
+					.filter(detail -> "WS_TIME_PENALTY".equals(detail.getTaxHeadMasterCode()))
+					.findFirst();
+
+			if (detail10101.isPresent()) {
+				latestDemandCreatedTime = detail10101.get().getAuditDetails().getCreatedTime();
+			}
+
+			if (detailWSTimePenalty.isPresent()) {
+				latestDemandPenaltyCreatedtime = detailWSTimePenalty.get().getAuditDetails().getCreatedTime();
+			}
+		} else {
+			log.info("No demands found with taxHeadMasterCode 10101 or WS_TIME_PENALTY.");
+		}
+
 
 		for (Demand demand : demands) {
 			log.info("Inside demand");
@@ -772,7 +815,9 @@ public class DemandService {
 				.advanceAdjusted(advanceAdjusted)
 				.advanceAvailable(advanceAvailable)
 				.remainingAdvance(remainingAdvance)
-				.totalApplicablePenalty(totalApplicablePenalty).build();
+				.totalApplicablePenalty(totalApplicablePenalty)
+				.latestDemandCreatedTime(latestDemandCreatedTime)
+				.latestDemandPenaltyCreatedtime(latestDemandPenaltyCreatedtime).build();
 
 
 		return aggregatedDemandDetailResponse;
