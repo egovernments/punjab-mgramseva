@@ -111,13 +111,13 @@ def getGPWSCHeirarchy():
                                         formatedTenantId = teanant_data_Map.get(tenantCode)['code']
                                         tenantName=teanant_data_Map.get(tenantCode)['name']
                                         print(teanant_data_Map)
-                                        print(formatedTenantId)
+                                        # print(formatedTenantId)
                                         obj1 = {"tenantId": formatedTenantId, "zone": zone, "circle": circle,
                                                 "division": division, "subdivision": subdivision,
                                                 "section": section, "projectcode": tenantCode,"tenantName":tenantName}
                                         dataList.append(obj1)
         print("heirarchy collected")
-        print(dataList)
+        # print(dataList)
         return (dataList)
     except Exception as exception:
         print("Exception occurred while connecting to the database")
