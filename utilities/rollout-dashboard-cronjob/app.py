@@ -108,7 +108,7 @@ def getGPWSCHeirarchy():
                                             'code')
                                     # tenantId = tenantName.replace(" ", "").lower()
                                     if teanant_data_Map.get(tenantCode) is not None:
-                                        formatedTenantId = teanant_data_Map.get(tenantCode)['code']
+                                        formatedTenantId = teanant_data_Map.get(tenantCode)
                                         #tenantName=teanant_data_Map.get(tenantCode)['name']
                                         print(teanant_data_Map)
                                         # print(formatedTenantId)
