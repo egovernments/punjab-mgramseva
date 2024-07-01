@@ -43,12 +43,7 @@ const EmployeeApp = ({
   const MDMS_ADMIN = Digit.UserService.hasAccess(["MDMS_ADMIN"]);
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
 
-  
 
-  console.log(DIV_ADMIN,"DIV_ADMIN");
-  console.log(MDMS_ADMIN,"MDMS_ADMIN");
-  console.log(STATE_ADMIN,"STATE_ADMIN");
-  console.log(userDetails ,"userDetails");
   const [showAlert, setShowAlert] = useState(false);
   useEffect(() => {
     Digit.UserService.setType("employee");
@@ -57,7 +52,6 @@ const EmployeeApp = ({
   
     if(userDetails?.info?.roles.some(obj => obj.name === "STATE ADMIN")){
       setShowAlert(false);
-      console.log("REACHED 1");
     } 
      if (cityDetails.code == "pb") {
       if( DIV_ADMIN == 0 && MDMS_ADMIN ==1 && STATE_ADMIN == 1){
@@ -70,12 +64,8 @@ const EmployeeApp = ({
         setShowAlert(false);
 
       }
-
-      console.log("REACHED 2");
       }
-
       else{
-      console.log("REACHED 3");
         setShowAlert(false);
       }
 

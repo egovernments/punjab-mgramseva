@@ -169,6 +169,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       config.key,
       [...jurisdictionData, ...inactiveJurisdictions].filter((value) => Object.keys(value).length !== 0)
     );
+    
   }, [jurisdictions, data?.MdmsRes]);
   // useEffect(() => {
   //   setJuristictionsData(formData?.Jurisdictions);
@@ -193,36 +194,55 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     ]);
   };
   const handleRemoveUnit = (unit) => {
-    if (unit.id) {
-      let res = {
-        id: unit?.id,
-        hierarchy: unit?.hierarchy?.code,
-        boundaryType: unit?.boundaryType?.label,
-        boundary: unit?.boundary?.code,
-        division: unit?.division?.code,
-        tenantId: unit?.boundary?.code,
-        auditDetails: unit?.auditDetails,
-        isdeleted: true,
-        isActive: false,
-      };
-      res = cleanup(res);
-      if (unit?.roles) {
-        res["roles"] = unit?.roles.map((ele) => {
-          delete ele.description;
-          return ele;
-        });
+    if(STATE_ADMIN){
+      const updatedJurisdictionsData = jurisdictionsData.filter(
+        (element) => element.key !== unit.key
+      );
+      setJuristictionsData(updatedJurisdictionsData);
+      setjurisdictions(updatedJurisdictionsData)
+      if (FormData.errors?.Jurisdictions?.type == unit.key) {
+        clearErrors("Jurisdictions");
       }
-      setInactiveJurisdictions([...inactiveJurisdictions, res]);
+      reviseIndexKeys();
+
     }
-    setJuristictionsData((pre) => pre.filter((el) => el.key !== unit.key));
-    setjurisdictions((prev) => prev.filter((el) => el.key !== unit.key));
-    if (FormData.errors?.Jurisdictions?.type == unit.key) {
-      clearErrors("Jurisdictions");
+    else{
+      if (unit.id) {
+        let res = {
+          id: unit?.id,
+          hierarchy: unit?.hierarchy?.code,
+          boundaryType: unit?.boundaryType?.label,
+          boundary: unit?.boundary?.code,
+          division: unit?.division?.code,
+          tenantId: unit?.boundary?.code,
+          auditDetails: unit?.auditDetails,
+          isdeleted: true,
+          isActive: false,
+        };
+        res = cleanup(res);
+        if (unit?.roles) {
+          res["roles"] = unit?.roles.map((ele) => {
+            delete ele.description;
+            return ele;
+          });
+        }
+        setInactiveJurisdictions([...inactiveJurisdictions, res]);
+      }
+      setJuristictionsData((pre) => pre.filter((el) => el.key !== unit.key));
+      setjurisdictions((prev) => prev.filter((el) => el.key !== unit.key));
+      if (FormData.errors?.Jurisdictions?.type == unit.key) {
+        clearErrors("Jurisdictions");
+      }
+  
+      reviseIndexKeys();
+
     }
-    reviseIndexKeys();
+
   };
   let boundaryTypeoption = [];
   const [focusIndex, setFocusIndex] = useState(-1);
+
+
 
   function getroledata() {
     if (STATE_ADMIN) {
