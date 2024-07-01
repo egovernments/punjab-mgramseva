@@ -54,7 +54,7 @@ def getGPWSCHeirarchy():
             if tenant.get('code') == state_tenantid or tenant.get('code') == (state_tenantid + '.testing'):
                 continue
             if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
-                teanant_data_Map.update({tenant.get('city').get('code'): {"code":tenant.get('code'),"name":tenant.get('name')}})
+                teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
 
         url = 'https://mgramseva-dwss.punjab.gov.in/'
         print(url)
@@ -109,7 +109,7 @@ def getGPWSCHeirarchy():
                                     # tenantId = tenantName.replace(" ", "").lower()
                                     if teanant_data_Map.get(tenantCode) is not None:
                                         formatedTenantId = teanant_data_Map.get(tenantCode)['code']
-                                        tenantName=teanant_data_Map.get(tenantCode)['name']
+                                        #tenantName=teanant_data_Map.get(tenantCode)['name']
                                         print(teanant_data_Map)
                                         # print(formatedTenantId)
                                         obj1 = {"tenantId": formatedTenantId, "zone": zone, "circle": circle,
