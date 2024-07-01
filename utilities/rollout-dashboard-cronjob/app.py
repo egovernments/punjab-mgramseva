@@ -848,7 +848,7 @@ def convert_decimal_to_float(value):
 
 
 def convert_date_to_string(value):
-    return value.isoformat() if isinstance(value, (date, datetime)) else value
+    return value.isoformat() if isinstance(value, (date, datetime)) else None
 
 
 def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance, totalPenalty, totalConsumerCount,
@@ -973,9 +973,9 @@ def process():
                 totaldemAmount = 0.0
                 totalAdvance = 0.0
                 totalPenalty = 0.0
-                lastDemandGenratedDate = ""
+                lastDemandGenratedDate = None
                 noOfDemandRaised = 0
-                lastCollectionDate = ""
+                lastCollectionDate = None
                 collectionsMade = 0.0
                 consumerCount = 0
 
@@ -993,7 +993,7 @@ def process():
                 totalAmountOfElectricityBills = 0.0
                 totalAmountOfPaidExpenseBills = 0.0
                 countOfElectricityExpenseBills = 0
-                lastExpTrnsDate = ""
+                lastExpTrnsDate = None
                 noOfPaidExpenseBills = 0
 
             expenseCount = getExpenseBillEntered(tenant['tenantId'], startdate, enddate)
