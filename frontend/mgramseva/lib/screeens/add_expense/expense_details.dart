@@ -593,8 +593,8 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                                   fontSize: 19,
                                                   color: expensesDetailsProvider
                                                               .expenditureDetails
-                                                              .allowEdit ==
-                                                          true && expensesDetailsProvider.expenditureDetails.isBillPaid == false
+                                                              .allowEdit ==    
+                                                          true &&   expensesDetailsProvider.expenditureDetails.isBillPaid == false
                                                       ? Colors.black
                                                       : Colors.grey,
                                                   fontWeight:
