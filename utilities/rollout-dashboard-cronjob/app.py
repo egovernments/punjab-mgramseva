@@ -54,7 +54,7 @@ def getGPWSCHeirarchy():
             if tenant.get('code') == state_tenantid or tenant.get('code') == (state_tenantid + '.testing'):
                 continue
             if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
-                teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
+                teanant_data_Map.update({tenant.get('city').get('code'): {"code":tenant.get('code'),"name":tenant.get('name')}})
 
         url = 'https://mgramseva-dwss.punjab.gov.in/'
         print(url)
@@ -108,13 +108,16 @@ def getGPWSCHeirarchy():
                                             'code')
                                     # tenantId = tenantName.replace(" ", "").lower()
                                     if teanant_data_Map.get(tenantCode) is not None:
-                                        formatedTenantId = teanant_data_Map.get(tenantCode)
+                                        formatedTenantId = teanant_data_Map.get(tenantCode)['code']
+                                        tenantName=teanant_data_Map.get(tenantCode)['name']
+                                        print(teanant_data_Map)
                                         print(formatedTenantId)
                                         obj1 = {"tenantId": formatedTenantId, "zone": zone, "circle": circle,
                                                 "division": division, "subdivision": subdivision,
-                                                "section": section, "projectcode": tenantCode}
+                                                "section": section, "projectcode": tenantCode,"tenantName":tenantName}
                                         dataList.append(obj1)
         print("heirarchy collected")
+        print(dataList)
         return (dataList)
     except Exception as exception:
         print("Exception occurred while connecting to the database")
