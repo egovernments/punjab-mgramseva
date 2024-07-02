@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import lombok.extern.slf4j.Slf4j;
 import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.service.DemandService;
 import org.egov.wscalculation.service.WSCalculationService;
@@ -24,7 +25,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-
+@Slf4j
 @Getter
 @Setter
 @Builder
@@ -113,4 +114,14 @@ public class CalculatorController {
 
 	}
 
+	@PostMapping("/_rollOutDashboardSearch")
+	public ResponseEntity<RollOutDashboardResponse> rollOutDashboardSearch(@RequestBody RollOutDashboardRequest rollOutDashboardRequest)
+	{
+		log.info("Roll out dashboard request"+rollOutDashboardRequest.getRollOutDashboard());
+		RollOutDashboard sendDataForRollOut=wSCalculationService.sendDataForRollOut(rollOutDashboardRequest);
+		RollOutDashboardResponse response = RollOutDashboardResponse.builder().
+				rollOutDashboard(sendDataForRollOut).build();
+
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
 }
