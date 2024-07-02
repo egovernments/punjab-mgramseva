@@ -120,6 +120,11 @@ config:
       - work-dir: "utilities/rollout-dashboard-cronjob"
         image-name: "rollout-dashboard-cronjob"
         dockerfile: "utilities/rollout-dashboard-cronjob/Dockerfile"
+  - name: "builds/mGramSeva/utilities/rollout-dashboard-cronjob-indexer"
+    build:
+      - work-dir: "utilities/rollout-dashboard-cronjob-indexer"
+        image-name: "rollout-dashboard-cronjob-indexer"
+        dockerfile: "utilities/rollout-dashboard-cronjob-indexer/Dockerfile"
   - name: "builds/mGramSeva/municipal-services/property-services"
     build:
       - work-dir: "municipal-services/property-services"
