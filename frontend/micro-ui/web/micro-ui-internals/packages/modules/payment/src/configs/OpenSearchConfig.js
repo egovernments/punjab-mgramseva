@@ -33,7 +33,9 @@ export const OpenSearchConfig =  {
             disable: false,
             populators: {
               "optionsCustomStyle": {
-                    "top": "2.3rem"
+                    "top": "2.3rem",
+                    "overflow":"auto",
+                    "maxHeight":"400px"
                   },
               name: "tenantId",
               optionsKey: "updatedCode",

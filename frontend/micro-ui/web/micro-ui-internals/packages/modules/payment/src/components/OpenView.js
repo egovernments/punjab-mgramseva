@@ -272,6 +272,7 @@ const OpenView = () => {
                 labelStyle={{ fontWeight: "bold" }}
                 textStyle={{ fontWeight: "bold" }}
                 text={t("ES_PAYMENT_AMOUNT")}
+                rowContainerStyle={{ border: "none" }}
               />
               {/* <hr style={{ width: "40%" }} className="underline" /> */}
               {bill?.billDetails?.[0]?.billAccountDetails
@@ -283,6 +284,7 @@ const OpenView = () => {
                     textStyle={{ textAlign: "right", maxWidth: "100px" }}
                     label={t(`TAX_HC_${amountDetails.taxHeadCode}`)}
                     text={"₹ " + amountDetails.amount?.toFixed(2)}
+                    rowContainerStyle={{ border: "none" }}
                   />
                 ))}
 
@@ -292,6 +294,7 @@ const OpenView = () => {
                   textStyle={{ textAlign: "right", maxWidth: "100px" }}
                   label={t("COMMON_ARREARS")}
                   text={"₹ " + arrears?.toFixed?.(2) || Number(0).toFixed(2)}
+                  rowContainerStyle={{ border: "none" }}
                 />
               ) : null}
 
@@ -301,6 +304,7 @@ const OpenView = () => {
                 labelStyle={{ fontWeight: "bold" }}
                 textStyle={{ fontWeight: "bold", textAlign: "right", maxWidth: "100px" }}
                 text={"₹ " + Number(bill?.totalAmount).toFixed(2)}
+                rowContainerStyle={{ border: "none" }}
               />
             </>
           ) : (
@@ -329,6 +333,7 @@ const OpenView = () => {
                   // labelStyle={{ fontWeight: "bold" }}
                   // textStyle={{ fontWeight: "bold" }}
                   text={payment?.transactionDate ? Digit.DateUtils.ConvertEpochToDate(payment?.transactionDate) : t("ES_COMMON_NA")}
+                  rowContainerStyle={{ border: "none" }}
                 />
                 {/* <Row
                   label={t("OP_TXN_NO")}
