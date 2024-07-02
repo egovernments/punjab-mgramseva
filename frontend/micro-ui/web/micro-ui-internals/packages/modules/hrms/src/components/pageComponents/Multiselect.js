@@ -109,7 +109,9 @@ const MultiSelectDropdown = ({
 
   useEffect(()=>{
     if (alreadyQueuedSelectedState?.length === filteredOptions?.length){
+      if(alreadyQueuedSelectedState?.length != 0 &&  filteredOptions?.length != 0){
       setIsSelected(true)
+      }   
     }else{
       setIsSelected(false)
 

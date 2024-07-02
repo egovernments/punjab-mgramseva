@@ -24,7 +24,8 @@ const HRMSCard = () => {
   const { isLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSCount(tenantId, roles);
 
   const moduleForSomeDIVAdmin =
-    DIV_ADMIN && MDMS_ADMIN
+    
+  DIV_ADMIN && MDMS_ADMIN
       ? [
           {
             label: t("WORK_BENCH_URL_MASTER_DATA"),
@@ -38,10 +39,10 @@ const HRMSCard = () => {
       : [];
 
   const moduleForSomeSTATEUser =
-    STATE_ADMIN && MDMS_ADMIN
+    STATE_ADMIN && MDMS_ADMIN 
       ? [
           {
-            label: t("WORK_BENCH_URL_MASTER_DATA"),
+            label: t("WORK_BENCH_URL_VILLAGE_MASTER_DATA"),
             link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=tenant&masterName=tenants`,
           },
         ]
@@ -82,7 +83,7 @@ const HRMSCard = () => {
         label: STATE_ADMIN ? t("HR_COMMON_CREATE_DIVISION_EMPLOYEE_HEADER") : t("HR_COMMON_CREATE_EMPLOYEE_HEADER"),
         link: `/${window?.contextPath}/employee/hrms/create`,
       },
-      {
+      DIV_ADMIN ?  {}: {
         label: t("HR_STATE_ REPORTS"),
         link: "https://ifix-dwss.psegs.in/digit-ui/employee/dss/dashboard/ifix",
       },

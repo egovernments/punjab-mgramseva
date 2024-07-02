@@ -48,11 +48,13 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     };
   }
 
-  const checkRoles = requestBody.criteria.roles[0] !== "DIV_ADMIN";
 
+  const checkRoles = requestBody.criteria.roles[0] !== "DIV_ADMIN";
   const { data: divisionData, ...rests } = Digit.Hooks.hrms.useHRMSEmployeeSearch(requestBody, isupdate, {
-    enabled: (STATE_ADMIN && searchParams?.hasOwnProperty("isActive")) || searchParams?.hasOwnProperty("tenantIds") ? true : false,
+    enabled: !STATE_ADMIN ?  false : (STATE_ADMIN && searchParams?.hasOwnProperty("isActive")) || searchParams?.hasOwnProperty("tenantIds") ? true : false,
   });
+  
+
 
   if (searchParams?.hasOwnProperty("roles")) {
     roles.roles = searchParams?.roles;
@@ -122,10 +124,10 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
 
   const getSearchFields = () => {
     return [
-      {
-        label: t("HR_NAME_LABEL"),
-        name: "names",
-      },
+      // {
+      //   label: t("HR_NAME_LABEL"),
+      //   name: "names",
+      // },
       {
         label: t("HR_MOB_NO_LABEL"),
         name: "phone",

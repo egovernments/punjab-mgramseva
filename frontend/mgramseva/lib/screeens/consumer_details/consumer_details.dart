@@ -654,13 +654,15 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                   (consumerProvider.waterconnection.status ==
                                       "Inactive"),
                               child: Consumer<ConsumerProvider>(
-                                  builder: (_, consumerProvider, child) {
-                                property.owners!.first.consumerRemarksCtrl
-                                    .text = consumerProvider.waterconnection
-                                        .additionalDetails!.remarks ??
-                                    "";
+                                  builder: (_, consumerProvider, child) {                                    
+                             
+                                  property.owners!.first.consumerRemarksCtrl
+                                      .text = consumerProvider.waterconnection
+                                          .additionalDetails!.remarks ??
+                                      "";
+           
+
                                 return BuildTextField(
-                                  
                                   i18.consumer.CONSUMER_REMARKS,
                                   property.owners!.first.consumerRemarksCtrl,
                                   validator: (val) =>
