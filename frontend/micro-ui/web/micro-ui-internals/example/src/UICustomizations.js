@@ -7,6 +7,15 @@ import _ from "lodash";
 var Digit = window.Digit || {};
 
 
+function anonymizeHalfString(input) {
+  // Calculate the midpoint of the string
+  const midpoint = Math.ceil(input.length / 2);
+
+  // Replace the first 50% of the string with asterisks
+  const anonymized = "*".repeat(midpoint) + input.substring(midpoint);
+
+  return anonymized;
+}
 
 const businessServiceMap = {
  
@@ -514,6 +523,10 @@ export const UICustomizations = {
         case "OP_PROPERTY_TYPE":
           return <div>
             { value ? t(Digit.Utils.locale.getTransformedLocale(`OP_PROPERTY_TYPE_${value}`)) : t("ES_COMMON_NA")}
+          </div>
+        case "OP_PAYER_NAME":
+          return <div>
+            {value ? anonymizeHalfString(value) : t("ES_COMMON_NA")}
           </div>
           
       

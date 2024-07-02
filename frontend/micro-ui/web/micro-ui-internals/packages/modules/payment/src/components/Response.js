@@ -75,7 +75,7 @@ export const convertEpochToDate = (dateEpoch) => {
   );
   const { data: generatePdfKey } = Digit.Hooks.useCommonMDMS(newTenantId, "common-masters", "ReceiptKey", {
     select: (data) =>
-      data["common-masters"]?.uiCommonPay?.filter(({ code }) => business_service?.includes(code))[0]?.receiptKey || "consolidatedreceipt",
+      data["common-masters"]?.uiCommonPay?.filter(({ code }) => business_service?.includes(code))[0]?.receiptKey || "ws-receipt",
     retry: false,
     staleTime: Infinity,
     refetchOnWindowFocus: false,
@@ -673,6 +673,9 @@ export const convertEpochToDate = (dateEpoch) => {
             {t("CS_DOWNLOAD_RECEIPT")}
           </div>
       ) : null}
+      {business_service?.includes("WS") ? <Link to={`/mgramseva-web/citizen/payment/open-search?businessService=WS`}>
+            <SubmitBar style={{"marginTop":"1rem"}} label={t("CORE_COMMON_GO_TO_HOME")} />
+          </Link>:null}
       {business_service?.includes("SW") ? (
         <div className="link" style={isMobile ? { marginTop: "8px", width: "100%", textAlign: "center" } : { marginTop: "8px" }} onClick={printReciept}>
             {t("CS_DOWNLOAD_RECEIPT")}
