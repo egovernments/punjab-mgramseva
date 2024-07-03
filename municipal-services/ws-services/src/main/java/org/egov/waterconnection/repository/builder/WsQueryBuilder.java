@@ -309,6 +309,12 @@ public class WsQueryBuilder {
 			}
 		}
 
+		if (!CollectionUtils.isEmpty(criteria.getConnectionNoSet())) {
+			addClauseIfRequired(preparedStatement, query);
+			query.append(" conn.connectionno in (").append(createQuery(criteria.getConnectionNoSet())).append(" )");
+			addToPreparedStatement(preparedStatement, criteria.getConnectionNoSet());
+		}
+
 		if (!StringUtils.isEmpty(criteria.getStatus())) {
 			addClauseIfRequired(preparedStatement, query);
 			query.append(" conn.status = ? ");
