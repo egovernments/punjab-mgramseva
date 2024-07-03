@@ -76,6 +76,10 @@ public class DemandCriteria {
 	private Long periodFrom;
 	
 	private Long periodTo;
+
+	private Long fromDate;
+
+	private Long toDate;
 	
 	private Type type;
 	

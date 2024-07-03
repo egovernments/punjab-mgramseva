@@ -260,6 +260,18 @@ public class DemandQueryBuilder {
 			preparedStatementValues.add(demandCriteria.getPeriodTo());
 		}
 
+		if(demandCriteria.getFromDate() != null){
+			addAndClause(demandQuery);
+			demandQuery.append("dmd.createdtime >= ?");
+			preparedStatementValues.add(demandCriteria.getFromDate());
+		}
+
+		if(demandCriteria.getToDate() != null){
+			addAndClause(demandQuery);
+			demandQuery.append("dmd.createdtime <= ?");
+			preparedStatementValues.add(demandCriteria.getToDate());
+		}
+
 		if (demandCriteria.getConsumerCode() != null && !demandCriteria.getConsumerCode().isEmpty()) {
 			addAndClause(demandQuery);
 			demandQuery.append("dmd.consumercode IN ("
