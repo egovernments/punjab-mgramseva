@@ -50,14 +50,8 @@ body {
   color: theme(colors.text.secondary);
   display: flex;
   margin-bottom: 10px;
-  padding: initial;
   list-style: none;
-  .bread-crumb--item {
-    a {
-      text-decoration: inherit;
-      color: inherit;
-    }
-  }
+  padding: 0;
 }
 .bread-crumb--item {
   margin-left: 5px;
