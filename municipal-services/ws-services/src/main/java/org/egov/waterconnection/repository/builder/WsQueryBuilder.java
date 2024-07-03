@@ -302,8 +302,9 @@ public class WsQueryBuilder {
 				}
 			}
 		} else {
-			addClauseIfRequired(preparedStatement, query);
+
 			if (!StringUtils.isEmpty(criteria.getConnectionNumber())){
+				addClauseIfRequired(preparedStatement, query);
 				query.append(" conn.connectionno =  ? ");
 				preparedStatement.add(criteria.getConnectionNumber());
 			}
