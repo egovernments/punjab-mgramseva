@@ -32,6 +32,9 @@ public class SearchCriteria {
 	
 	private Set<String> userIds;
 
+	@JsonProperty("isOpenPaymentSearch")
+	private boolean isOpenPaymentSearch;
+
 	@JsonProperty("status")
 	private String status;
 
