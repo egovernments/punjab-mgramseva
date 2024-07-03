@@ -672,12 +672,12 @@ public class WsQueryBuilder {
 			}
 			addClauseIfRequired(preparedStatement, query);
 			if(criteria.getFromDate()!=null){
-				query.append("conn.createdtime>=?");
+				query.append(" conn.createdtime>=? ");
 				preparedStatement.add(criteria.getFromDate());
 			}
 			addClauseIfRequired(preparedStatement, query);
 			if(criteria.getToDate()!=null){
-				query.append("conn.createdtime<=?");
+				query.append(" conn.createdtime<=?");
 				preparedStatement.add(criteria.getToDate());
 			}
 		}
