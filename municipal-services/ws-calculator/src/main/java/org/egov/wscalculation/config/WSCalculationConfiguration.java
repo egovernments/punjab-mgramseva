@@ -270,4 +270,7 @@ public class WSCalculationConfiguration {
 
 	@Value("${ws.generate.demand.bulk}")
 	private String wsGenerateDemandBulktopic;
+
+	@Value("${kafka.topic.roll.out.dashboard}")
+	private String rollOutDashBoardTopic;
 }
