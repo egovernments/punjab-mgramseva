@@ -854,6 +854,5 @@ public class WaterServiceImpl implements WaterService {
 		}
 		SearchCriteria criteria=SearchCriteria.builder().connectionNoSet(connectionNo).tenantId(tenantId).build();
 		 return search(criteria,requestInfo);
-//		return list;
 	}
 }
