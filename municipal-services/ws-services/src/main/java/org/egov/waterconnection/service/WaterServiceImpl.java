@@ -844,9 +844,16 @@ public class WaterServiceImpl implements WaterService {
 	}
 
 	@Override
-	public List<ConsumersDemandNotGenerated> getConsumersWithDemandNotGenerated(String previousMeterReading, String tenantId ,RequestInfo requestInfo)
+	public WaterConnectionResponse getConsumersWithDemandNotGenerated(String previousMeterReading, String tenantId ,RequestInfo requestInfo)
 	{
 		List<ConsumersDemandNotGenerated> list=waterDaoImpl.getConsumersByPreviousMeterReading(previousMeterReading,tenantId);
-		return list;
+		Set<String> connectionNo=new HashSet<>();
+		for(ConsumersDemandNotGenerated connection:list)
+		{
+			connectionNo.add(connection.getConsumerCode());
+		}
+		SearchCriteria criteria=SearchCriteria.builder().connectionNoSet(connectionNo).tenantId(tenantId).build();
+		 return search(criteria,requestInfo);
+//		return list;
 	}
 }
