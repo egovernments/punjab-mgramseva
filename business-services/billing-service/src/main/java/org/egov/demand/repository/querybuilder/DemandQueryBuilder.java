@@ -262,13 +262,13 @@ public class DemandQueryBuilder {
 
 		if(demandCriteria.getFromDate() != null){
 			addAndClause(demandQuery);
-			demandQuery.append("dmd.createdtime >= ?");
+			demandQuery.append(" dmd.createdtime >= ? ");
 			preparedStatementValues.add(demandCriteria.getFromDate());
 		}
 
 		if(demandCriteria.getToDate() != null){
 			addAndClause(demandQuery);
-			demandQuery.append("dmd.createdtime <= ?");
+			demandQuery.append(" dmd.createdtime <= ? ");
 			preparedStatementValues.add(demandCriteria.getToDate());
 		}
 
