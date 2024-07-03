@@ -109,7 +109,7 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
             </div>
             </div>
             </div>
-            {/*Don't Remove :Chance of Updated Search & Clear All Button*/}
+            {/*Don't Remove : Chance of Updated Search & Clear All Button*/}
             {/* <div className="inbox-action-container">
               {type === "desktop" && !mobileView && (
                 <span style={{ paddingTop: "9px" }} className="clear-search">

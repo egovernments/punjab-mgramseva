@@ -163,32 +163,34 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  HomeBack(
-                      widget: Help(
-                    callBack: () => showGeneralDialog(
-                      barrierLabel: "Label",
-                      barrierDismissible: false,
-                      barrierColor: Colors.black.withOpacity(0.5),
-                      transitionDuration: Duration(milliseconds: 700),
-                      context: context,
-                      pageBuilder: (context, anim1, anim2) {
-                        return ExpenseWalkThroughContainer((index) =>
-                            expenseProvider.incrementindex(
-                                index,
-                                expenseProvider
-                                    .expenseWalkthrougList[index + 1].key));
-                      },
-                      transitionBuilder: (context, anim1, anim2, child) {
-                        return SlideTransition(
-                          position:
-                              Tween(begin: Offset(0, 1), end: Offset(0, 0))
-                                  .animate(anim1),
-                          child: child,
-                        );
-                      },
-                    ),
-                    walkThroughKey: Constants.ADD_EXPENSE_KEY,
-                  )),
+                    // ExpenseWalkThroughContainer Is Removed
+                  // HomeBack(
+                  //     widget: Help(
+                  //   callBack: () => showGeneralDialog(
+                  //     barrierLabel: "Label",
+                  //     barrierDismissible: false,
+                  //     barrierColor: Colors.black.withOpacity(0.5),
+                  //     transitionDuration: Duration(milliseconds: 700),
+                  //     context: context,
+                  //     pageBuilder: (context, anim1, anim2) {
+                  //       return ExpenseWalkThroughContainer((index) =>
+                  //           expenseProvider.incrementindex(
+                  //               index,
+                  //               expenseProvider
+                  //                   .expenseWalkthrougList[index + 1].key));
+                  //     },
+                  //     transitionBuilder: (context, anim1, anim2, child) {
+                  //       return SlideTransition(
+                  //         position:
+                  //             Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                  //                 .animate(anim1),
+                  //         child: child,
+                  //       );
+                  //     },
+                  //   ),
+                  //   walkThroughKey: Constants.ADD_EXPENSE_KEY,
+                  // )),
+                  HomeBack(),
                   Card(
                       child: Consumer<ExpensesDetailsProvider>(
                     builder: (_, expensesDetailsProvider, child) => Form(
