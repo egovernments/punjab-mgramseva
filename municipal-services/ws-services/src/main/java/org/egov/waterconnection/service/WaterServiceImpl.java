@@ -846,11 +846,12 @@ public class WaterServiceImpl implements WaterService {
 	@Override
 	public WaterConnectionResponse getConsumersWithDemandNotGenerated(String previousMeterReading, String tenantId ,RequestInfo requestInfo)
 	{
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate readingDate = LocalDate.parse(previousMeterReading, formatter);
-
-		Long previousReadingEpoch = LocalDateTime.of(readingDate.getYear(), readingDate.getMonth(), readingDate.getDayOfMonth(), 0, 0, 0)
-				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long previousReadingEpoch;
+		try {
+			previousReadingEpoch = Long.parseLong(previousMeterReading);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Invalid format for previousMeterReading. Expected a timestamp in milliseconds.", e);
+		}
 
 		List<ConsumersDemandNotGenerated> list=waterDaoImpl.getConsumersByPreviousMeterReading(previousReadingEpoch,tenantId);
 		Set<String> connectionNo=new HashSet<>();
