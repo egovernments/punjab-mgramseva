@@ -282,7 +282,7 @@ public class WsQueryBuilder {
 			preparedStatement.add(criteria.getOldConnectionNumber());
 		}
 
-		if(ObjectUtils.isEmpty(criteria.isOpenPaymentSearch()) || !criteria.isOpenPaymentSearch()) {
+		if(ObjectUtils.isEmpty(criteria.getIsOpenPaymentSearch()) || !criteria.getIsOpenPaymentSearch()) {
 
 			if (!StringUtils.isEmpty(criteria.getConnectionNumber()) || !StringUtils.isEmpty(criteria.getTextSearch())) {
 				addClauseIfRequired(preparedStatement, query);

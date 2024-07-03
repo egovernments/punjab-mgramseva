@@ -33,7 +33,7 @@ public class SearchCriteria {
 	private Set<String> userIds;
 
 	@JsonProperty("isOpenPaymentSearch")
-	private boolean isOpenPaymentSearch;
+	private Boolean isOpenPaymentSearch;
 
 	@JsonProperty("status")
 	private String status;
