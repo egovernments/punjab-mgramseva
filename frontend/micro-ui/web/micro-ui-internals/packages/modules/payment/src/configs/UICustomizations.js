@@ -31,7 +31,8 @@ export const UICustomizations = {
         // consumerCode,
         tenantId,
         businessService,
-        textSearch:consumerCode
+        connectionNumber:consumerCode,
+        isOpenPaymentSearch:true
       }
       data.params = finalParams
       // data.params.textSearch = finalParams.consumerCode
