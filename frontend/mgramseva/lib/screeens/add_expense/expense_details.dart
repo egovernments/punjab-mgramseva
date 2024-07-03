@@ -464,18 +464,23 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   expenseProvider.expenseWalkthrougList[4].key,
                               key: Keys.expense.EXPENSE_PARTY_DATE,
                             ),
-                            RadioButtonFieldBuilder(
-                                context,
-                                i18.expense.HAS_THIS_BILL_PAID,
-                                expensesDetailsProvider
-                                    .expenditureDetails.isBillPaid,
-                                '',
-                                '',
-                                true,
-                                Constants.EXPENSESTYPE,
-                                expensesDetailsProvider.onChangeOfBillPaid,
-                                isEnabled: expensesDetailsProvider
-                                    .expenditureDetails.allowEdit),
+                            AbsorbPointer(
+                              absorbing: expensesDetailsProvider
+                                                    .expenditureDetails
+                                                    .isBillCancelled == true ? true : false,
+                              child: RadioButtonFieldBuilder(                              
+                                  context,
+                                  i18.expense.HAS_THIS_BILL_PAID,
+                                  expensesDetailsProvider
+                                      .expenditureDetails.isBillPaid,
+                                  '',
+                                  '',
+                                  true,
+                                  Constants.EXPENSESTYPE,
+                                  expensesDetailsProvider.onChangeOfBillPaid,
+                                  isEnabled: expensesDetailsProvider
+                                      .expenditureDetails.allowEdit),
+                            ),
                             if (expensesDetailsProvider.expenditureDetails.isBillPaid ?? false)
                               BasicDateField(i18.expense.PAYMENT_DATE, true,
                                   expensesDetailsProvider.expenditureDetails.paidDateCtrl,
