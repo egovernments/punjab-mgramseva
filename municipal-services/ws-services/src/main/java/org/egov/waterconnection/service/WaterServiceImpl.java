@@ -846,7 +846,13 @@ public class WaterServiceImpl implements WaterService {
 	@Override
 	public WaterConnectionResponse getConsumersWithDemandNotGenerated(String previousMeterReading, String tenantId ,RequestInfo requestInfo)
 	{
-		List<ConsumersDemandNotGenerated> list=waterDaoImpl.getConsumersByPreviousMeterReading(previousMeterReading,tenantId);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDate readingDate = LocalDate.parse(previousMeterReading, formatter);
+
+		Long previousReadingEpoch = LocalDateTime.of(readingDate.getYear(), readingDate.getMonth(), readingDate.getDayOfMonth(), 0, 0, 0)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+		List<ConsumersDemandNotGenerated> list=waterDaoImpl.getConsumersByPreviousMeterReading(previousReadingEpoch,tenantId);
 		Set<String> connectionNo=new HashSet<>();
 		for(ConsumersDemandNotGenerated connection:list)
 		{

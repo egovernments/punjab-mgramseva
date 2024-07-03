@@ -669,7 +669,7 @@ public class WaterDaoImpl implements WaterDao {
          return inactiveConsumerReportList;
     }
 
-	public List<ConsumersDemandNotGenerated> getConsumersByPreviousMeterReading(String previousMeterReading, String tenantId)
+	public List<ConsumersDemandNotGenerated> getConsumersByPreviousMeterReading(Long previousMeterReading, String tenantId)
 	{
 		StringBuilder query=new StringBuilder(wsQueryBuilder.DEMAND_NOT_GENERATED_QUERY);
 
