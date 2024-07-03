@@ -842,4 +842,11 @@ public class WaterServiceImpl implements WaterService {
 		List<InactiveConsumerReportData> inactiveConsumerReport=waterDaoImpl.getInactiveConsumerReport(monthStartDateTime,mothEndDateTime,tenantId,offset,limit);
 		return inactiveConsumerReport;
 	}
+
+	@Override
+	public List<ConsumersDemandNotGenerated> getConsumersWithDemandNotGenerated(String previousMeterReading, String tenantId ,RequestInfo requestInfo)
+	{
+		List<ConsumersDemandNotGenerated> list=waterDaoImpl.getConsumersByPreviousMeterReading(previousMeterReading,tenantId);
+		return list;
+	}
 }

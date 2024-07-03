@@ -53,4 +53,5 @@ public interface WaterService {
 	
 	List<InactiveConsumerReportData> inactiveConsumerReport(String monthStartDate,String monthEndDate,String tenantId, @Valid Integer offset, @Valid Integer limit, RequestInfo requestInfo);
 
+	List<ConsumersDemandNotGenerated> getConsumersWithDemandNotGenerated(String previousMeterReading, String tenantId,RequestInfo requestInfo);
 }
