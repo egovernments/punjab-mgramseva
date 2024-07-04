@@ -157,32 +157,34 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    HomeBack(
-                        widget: Help(
-                      callBack: () => showGeneralDialog(
-                        barrierLabel: "Label",
-                        barrierDismissible: false,
-                        barrierColor: Colors.black.withOpacity(0.5),
-                        transitionDuration: Duration(milliseconds: 700),
-                        context: context,
-                        pageBuilder: (context, anim1, anim2) {
-                          return WalkThroughContainer((index) =>
-                              consumerProvider.incrementIndex(
-                                  index,
-                                  consumerProvider
-                                      .consmerWalkthrougList[index + 1].key));
-                        },
-                        transitionBuilder: (context, anim1, anim2, child) {
-                          return SlideTransition(
-                            position:
-                                Tween(begin: Offset(0, 1), end: Offset(0, 0))
-                                    .animate(anim1),
-                            child: child,
-                          );
-                        },
-                      ),
-                      walkThroughKey: Constants.CREATE_CONSUMER_KEY,
-                    )),
+                    // ConsmerWalkthrougList Is Removed
+                    // HomeBack(
+                    //     widget: Help(
+                    //   callBack: () => showGeneralDialog(
+                    //     barrierLabel: "Label",
+                    //     barrierDismissible: false,
+                    //     barrierColor: Colors.black.withOpacity(0.5),
+                    //     transitionDuration: Duration(milliseconds: 700),
+                    //     context: context,
+                    //     pageBuilder: (context, anim1, anim2) {
+                    //       return WalkThroughContainer((index) =>
+                    //           consumerProvider.incrementIndex(
+                    //               index,
+                    //               consumerProvider
+                    //                   .consmerWalkthrougList[index + 1].key));
+                    //     },
+                    //     transitionBuilder: (context, anim1, anim2, child) {
+                    //       return SlideTransition(
+                    //         position:
+                    //             Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                    //                 .animate(anim1),
+                    //         child: child,
+                    //       );
+                    //     },
+                    //   ),
+                    //   walkThroughKey: Constants.CREATE_CONSUMER_KEY,
+                    // )),
+                    HomeBack(),
                     Card(
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,

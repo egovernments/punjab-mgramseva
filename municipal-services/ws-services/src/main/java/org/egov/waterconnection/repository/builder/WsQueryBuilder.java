@@ -23,6 +23,7 @@ import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -281,23 +282,38 @@ public class WsQueryBuilder {
 			preparedStatement.add(criteria.getOldConnectionNumber());
 		}
 
-		if (!StringUtils.isEmpty(criteria.getConnectionNumber()) || !StringUtils.isEmpty(criteria.getTextSearch())) {
-			addClauseIfRequired(preparedStatement, query);
-			
-			if(!StringUtils.isEmpty(criteria.getConnectionNumber())) {
-				query.append(" conn.connectionno ~*  ? ");
+		if(ObjectUtils.isEmpty(criteria.getIsOpenPaymentSearch()) || !criteria.getIsOpenPaymentSearch()) {
+
+			if (!StringUtils.isEmpty(criteria.getConnectionNumber()) || !StringUtils.isEmpty(criteria.getTextSearch())) {
+				addClauseIfRequired(preparedStatement, query);
+
+				if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
+					query.append(" conn.connectionno ~*  ? ");
+					preparedStatement.add(criteria.getConnectionNumber());
+				} else {
+					query.append(" conn.connectionno ~*  ? ");
+					preparedStatement.add(criteria.getTextSearch());
+				}
+
+
+				if (!CollectionUtils.isEmpty(criteria.getConnectionNoSet())) {
+					query.append(" or conn.connectionno in (").append(createQuery(criteria.getConnectionNoSet())).append(" )");
+					addToPreparedStatement(preparedStatement, criteria.getConnectionNoSet());
+				}
+			}
+		} else {
+
+			if (!StringUtils.isEmpty(criteria.getConnectionNumber())){
+				addClauseIfRequired(preparedStatement, query);
+				query.append(" conn.connectionno =  ? ");
 				preparedStatement.add(criteria.getConnectionNumber());
 			}
-			else {
-				query.append(" conn.connectionno ~*  ? ");
-				preparedStatement.add(criteria.getTextSearch());
-			}
-			
+		}
 
-			if(!CollectionUtils.isEmpty(criteria.getConnectionNoSet())) {
-				query.append(" or conn.connectionno in (").append(createQuery(criteria.getConnectionNoSet())).append(" )");
-				addToPreparedStatement(preparedStatement, criteria.getConnectionNoSet());
-			}
+		if (!CollectionUtils.isEmpty(criteria.getConnectionNoSet())) {
+			addClauseIfRequired(preparedStatement, query);
+			query.append(" conn.connectionno in (").append(createQuery(criteria.getConnectionNoSet())).append(" )");
+			addToPreparedStatement(preparedStatement, criteria.getConnectionNoSet());
 		}
 
 		if (!StringUtils.isEmpty(criteria.getStatus())) {
@@ -653,6 +669,16 @@ public class WsQueryBuilder {
 			} else {
 				query.append(" conn.tenantid = ? ");
 				preparedStatement.add(criteria.getTenantId());
+			}
+			if(criteria.getFromDate()!=null){
+				addClauseIfRequired(preparedStatement, query);
+				query.append(" conn.createdtime>=? ");
+				preparedStatement.add(criteria.getFromDate());
+			}
+			if(criteria.getToDate()!=null){
+				addClauseIfRequired(preparedStatement, query);
+				query.append(" conn.createdtime<=?");
+				preparedStatement.add(criteria.getToDate());
 			}
 		}
 		return query;

@@ -171,8 +171,13 @@ public class EmployeeQueryBuilder {
 		StringBuilder builder = new StringBuilder(EmployeeQueries.HRMS_GET_EMP_IDS_QUERY);
 
 		if(!StringUtils.isEmpty(criteria.getTenantId())) {
-			builder.append(" employee.tenantid = ?");
-			preparedStmtList.add(criteria.getTenantId());
+			if (criteria.getTenantId().equalsIgnoreCase(properties.getStateLevelTenantId())) {
+				builder.append(" employee.tenantid LIKE ? ");
+				preparedStmtList.add('%' + criteria.getTenantId() + '%');
+			} else {
+				builder.append(" employee.tenantid = ? ");
+				preparedStmtList.add(criteria.getTenantId());
+			}
 		}
 		else
 			builder.append(" and employee.tenantid NOTNULL");
