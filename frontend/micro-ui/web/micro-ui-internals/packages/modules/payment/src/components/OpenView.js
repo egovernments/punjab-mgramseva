@@ -38,7 +38,7 @@ const OpenView = () => {
 
   const requestCriteriaForConnectionSearch = {
     url: "/ws-services/wc/_search?",
-    params: { ...queryParams, textSearch: queryParams.consumerCode },
+    params: { tenantId:queryParams.tenantId,businessService:queryParams.businessService, connectionNumber: queryParams.consumerCode,isOpenPaymentSearch:true },
     body: {},
     options: {
       userService: false,
