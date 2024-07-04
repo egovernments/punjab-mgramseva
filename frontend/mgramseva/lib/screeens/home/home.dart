@@ -44,30 +44,31 @@ class _HomeState extends State<Home> {
 
   _buildView(homeProvider, Widget notification) {
     return Column(children: [
-      Align(
-          alignment: Alignment.centerRight,
-          child: Help(
-            callBack: () => showGeneralDialog(
-              barrierLabel: "Label",
-              barrierDismissible: false,
-              barrierColor: Colors.black.withOpacity(0.5),
-              transitionDuration: Duration(milliseconds: 700),
-              context: context,
-              pageBuilder: (context, anim1, anim2) {
-                return HomeWalkThroughContainer((index) =>
-                    homeProvider.incrementIndex(index,
-                        homeProvider.homeWalkthroughList[index + 1].key));
-              },
-              transitionBuilder: (context, anim1, anim2, child) {
-                return SlideTransition(
-                  position: Tween(begin: Offset(0, 1), end: Offset(0, 0))
-                      .animate(anim1),
-                  child: child,
-                );
-              },
-            ),
-            walkThroughKey: Constants.HOME_KEY,
-          )),
+      /* Note : WalkThroughContainer Is Removed */
+      // Align(
+      //     alignment: Alignment.centerRight,
+      //     child: Help(
+      //       callBack: () => showGeneralDialog(
+      //         barrierLabel: "Label",
+      //         barrierDismissible: false,
+      //         barrierColor: Colors.black.withOpacity(0.5),
+      //         transitionDuration: Duration(milliseconds: 700),
+      //         context: context,
+      //         pageBuilder: (context, anim1, anim2) {
+      //           return HomeWalkThroughContainer((index) =>
+      //               homeProvider.incrementIndex(index,
+      //                   homeProvider.homeWalkthroughList[index + 1].key));
+      //         },
+      //         transitionBuilder: (context, anim1, anim2, child) {
+      //           return SlideTransition(
+      //             position: Tween(begin: Offset(0, 1), end: Offset(0, 0))
+      //                 .animate(anim1),
+      //             child: child,
+      //           );
+      //         },
+      //       ),
+      //       walkThroughKey: Constants.HOME_KEY,
+      //     )),
       HomeCard(),
       notification,
       Footer()

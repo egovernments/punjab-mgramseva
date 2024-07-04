@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/reports/WaterConnectionCount.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
@@ -27,18 +29,10 @@ class _CountTableWidgetState extends State<CountTableWidget> {
         children: [
           LayoutBuilder(
             builder: (context, constraints) {
-              if (constraints.maxWidth <= 760) {
                 return Container(
                   width: MediaQuery.of(context).size.width,
-                  child: FittedBox(
-                    child: _buildDataTable(connectionCount!),
-                  ),
+                  child: _buildDataTable(connectionCount!),
                 );
-              } else {
-                return Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: _buildDataTable(connectionCount!));
-              }
             },
           ),
           if (connectionCount!.length > 5)
@@ -96,6 +90,7 @@ class _CountTableWidgetState extends State<CountTableWidget> {
 
     return DataRow(
       color: MaterialStateColor.resolveWith((states) => rowColor!), // Apply alternate row background color
+
       cells: [
         DataCell(
           Text(

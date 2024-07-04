@@ -163,32 +163,34 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  HomeBack(
-                      widget: Help(
-                    callBack: () => showGeneralDialog(
-                      barrierLabel: "Label",
-                      barrierDismissible: false,
-                      barrierColor: Colors.black.withOpacity(0.5),
-                      transitionDuration: Duration(milliseconds: 700),
-                      context: context,
-                      pageBuilder: (context, anim1, anim2) {
-                        return ExpenseWalkThroughContainer((index) =>
-                            expenseProvider.incrementindex(
-                                index,
-                                expenseProvider
-                                    .expenseWalkthrougList[index + 1].key));
-                      },
-                      transitionBuilder: (context, anim1, anim2, child) {
-                        return SlideTransition(
-                          position:
-                              Tween(begin: Offset(0, 1), end: Offset(0, 0))
-                                  .animate(anim1),
-                          child: child,
-                        );
-                      },
-                    ),
-                    walkThroughKey: Constants.ADD_EXPENSE_KEY,
-                  )),
+                    // ExpenseWalkThroughContainer Is Removed
+                  // HomeBack(
+                  //     widget: Help(
+                  //   callBack: () => showGeneralDialog(
+                  //     barrierLabel: "Label",
+                  //     barrierDismissible: false,
+                  //     barrierColor: Colors.black.withOpacity(0.5),
+                  //     transitionDuration: Duration(milliseconds: 700),
+                  //     context: context,
+                  //     pageBuilder: (context, anim1, anim2) {
+                  //       return ExpenseWalkThroughContainer((index) =>
+                  //           expenseProvider.incrementindex(
+                  //               index,
+                  //               expenseProvider
+                  //                   .expenseWalkthrougList[index + 1].key));
+                  //     },
+                  //     transitionBuilder: (context, anim1, anim2, child) {
+                  //       return SlideTransition(
+                  //         position:
+                  //             Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                  //                 .animate(anim1),
+                  //         child: child,
+                  //       );
+                  //     },
+                  //   ),
+                  //   walkThroughKey: Constants.ADD_EXPENSE_KEY,
+                  // )),
+                  HomeBack(),
                   Card(
                       child: Consumer<ExpensesDetailsProvider>(
                     builder: (_, expensesDetailsProvider, child) => Form(
@@ -462,18 +464,23 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   expenseProvider.expenseWalkthrougList[4].key,
                               key: Keys.expense.EXPENSE_PARTY_DATE,
                             ),
-                            RadioButtonFieldBuilder(
-                                context,
-                                i18.expense.HAS_THIS_BILL_PAID,
-                                expensesDetailsProvider
-                                    .expenditureDetails.isBillPaid,
-                                '',
-                                '',
-                                true,
-                                Constants.EXPENSESTYPE,
-                                expensesDetailsProvider.onChangeOfBillPaid,
-                                isEnabled: expensesDetailsProvider
-                                    .expenditureDetails.allowEdit),
+                            AbsorbPointer(
+                              absorbing: expensesDetailsProvider
+                                                    .expenditureDetails
+                                                    .isBillCancelled == true ? true : false,
+                              child: RadioButtonFieldBuilder(                              
+                                  context,
+                                  i18.expense.HAS_THIS_BILL_PAID,
+                                  expensesDetailsProvider
+                                      .expenditureDetails.isBillPaid,
+                                  '',
+                                  '',
+                                  true,
+                                  Constants.EXPENSESTYPE,
+                                  expensesDetailsProvider.onChangeOfBillPaid,
+                                  isEnabled: expensesDetailsProvider
+                                      .expenditureDetails.allowEdit),
+                            ),
                             if (expensesDetailsProvider.expenditureDetails.isBillPaid ?? false)
                               BasicDateField(i18.expense.PAYMENT_DATE, true,
                                   expensesDetailsProvider.expenditureDetails.paidDateCtrl,
