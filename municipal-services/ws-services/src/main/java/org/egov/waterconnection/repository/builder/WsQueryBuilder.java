@@ -670,13 +670,13 @@ public class WsQueryBuilder {
 				query.append(" conn.tenantid = ? ");
 				preparedStatement.add(criteria.getTenantId());
 			}
-			addClauseIfRequired(preparedStatement, query);
 			if(criteria.getFromDate()!=null){
+				addClauseIfRequired(preparedStatement, query);
 				query.append(" conn.createdtime>=? ");
 				preparedStatement.add(criteria.getFromDate());
 			}
-			addClauseIfRequired(preparedStatement, query);
 			if(criteria.getToDate()!=null){
+				addClauseIfRequired(preparedStatement, query);
 				query.append(" conn.createdtime<=?");
 				preparedStatement.add(criteria.getToDate());
 			}
