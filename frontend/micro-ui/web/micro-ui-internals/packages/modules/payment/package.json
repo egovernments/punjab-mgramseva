@@ -1,6 +1,6 @@
 {
   "name": "@egovernments/digit-ui-module-payment",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Open Payments",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
