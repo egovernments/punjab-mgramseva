@@ -38,10 +38,18 @@
       margin-bottom: 24px !important;
       border-left: none;
     }
-    .workbench-bredcrumb {
-      display: none !important;
+    .left .employee-select-wrap {
+      pointer-events: none !important;
+      cursor: default !important;
     }
+    /* .workbench-bredcrumb {
+      display: flex !important;
+    } */
   </style>
+  <script>
+    const firstCrumb = document.querySelector("ul.bread-crumb--list li:first-child");
+    firstCrumb.querySelector("a").href = "https://mgramseva-uat.psegs.in/mgramseva-web/employee/";
+  </script>
 </head>
 
 <body>
