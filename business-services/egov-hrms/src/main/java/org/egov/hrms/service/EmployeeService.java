@@ -222,7 +222,7 @@ public class EmployeeService {
 	 * @param criteria
 	 * @return
 	 */
-	public List<Employee> plainsearch(EmployeePlainSearchCriteria criteria) {
+	public List<Employee> plainsearch(EmployeePlainSearchCriteria criteria,RequestInfo requestInfo) {
 		if (criteria.getLimit() != null && criteria.getLimit() > propertiesManager.getHrmsMaxLimit())
 			criteria.setLimit(propertiesManager.getHrmsMaxLimit());
 
@@ -233,12 +233,31 @@ public class EmployeeService {
 		else
 			employeeIds = criteria.getUuids();
 
+		EmployeePlainSearchCriteria employeePlainSearchCriteria = EmployeePlainSearchCriteria.builder().uuids(employeeIds).build();
+		List<Employee> employees=repository.fetchPlainSearchEmployees(employeePlainSearchCriteria);
+
+		Map<String, User> mapOfUsers = new HashMap<String, User>();
+
+		if(!CollectionUtils.isEmpty(employeeIds)){
+			Map<String, Object> UserSearchCriteria = new HashMap<>();
+			UserSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_UUID,employeeIds);
+			if(mapOfUsers.isEmpty()){
+				UserResponse userResponse = userService.getUser(requestInfo, UserSearchCriteria);
+				if(!CollectionUtils.isEmpty(userResponse.getUser())) {
+					mapOfUsers = userResponse.getUser().stream()
+							.collect(Collectors.toMap(User :: getUuid, Function.identity()));
+				}
+			}
+			for(Employee employee: employees){
+				employee.setUser(mapOfUsers.get(employee.getUuid()));
+			}
+		}
 
 		if(employeeIds.isEmpty())
 			return Collections.emptyList();
 
-		EmployeePlainSearchCriteria employeePlainSearchCriteria = EmployeePlainSearchCriteria.builder().uuids(employeeIds).build();
-		return repository.fetchPlainSearchEmployees(employeePlainSearchCriteria);
+
+		return employees;
 	}
 
 		/**
