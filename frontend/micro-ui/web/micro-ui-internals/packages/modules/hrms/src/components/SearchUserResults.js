@@ -53,6 +53,14 @@ const SearchUserResults = ({isLoading,data,...props}) => {
           return GetSlaCell(`${row.original?.isActive ? "ACTIVE" : "INACTIVE"}`);
         },
       },
+      {
+        Header: t("HR_SU_TENANT"),
+        disableSortBy: false,
+        accessor: "tenantId",
+        Cell: ({ row }) => {
+          return GetCell(`${row.original?.tenantId}`);
+        },
+      },
     ];
   }, [data]);
 

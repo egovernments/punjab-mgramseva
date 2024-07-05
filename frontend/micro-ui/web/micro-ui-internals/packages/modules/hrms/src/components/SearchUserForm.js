@@ -149,7 +149,36 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
         const result = data?.MdmsRes?.tenant?.tenants;
         const filteredResult = filterKeys(result, requiredKeys);
         const resultInTree = buildTree(filteredResult, hierarchy);
-        setRolesOptions(data?.MdmsRes?.["ACCESSCONTROL-ROLES"]?.roles)
+        // setRolesOptions(data?.MdmsRes?.["ACCESSCONTROL-ROLES"]?.roles)
+        //updating to state roles as requested
+        setRolesOptions([
+          // {
+          //   code: "",
+          //   name: "Select All",
+          //   description: "",
+          // },
+          {
+            code: "EMPLOYEE",
+            name: "EMPLOYEE",
+            labelKey: "ACCESSCONTROL_ROLES_ROLES_EMPLOYEE",
+          },
+          {
+            code: "DIV_ADMIN",
+            name: "DIVISION ADMIN",
+            labelKey: "ACCESSCONTROL_ROLES_ROLES_DIV_ADMIN",
+          },
+          {
+            code: "HRMS_ADMIN",
+            name: "HRMS_ADMIN",
+            labelKey: "ACCESSCONTROL_ROLES_ROLES_HRMS_ADMIN",
+          },
+          {
+            code: "MDMS_ADMIN",
+            name: "MDMS Admin",
+            description: "Mdms admin",
+          },
+          
+        ])
         setTree(resultInTree);
         return result;
       },
@@ -268,7 +297,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     //this is the list of tenants under the current subtree
     const listOfUniqueTenants = getUniqueLeafCodes(currentLevel);
     setUniqueTenants(() => listOfUniqueTenants);
-    setUniqueRoles(() => data?.roles?.map(role=> role.code));
+    setUniqueRoles(() => data?.roles?.filter(row=>row.code)?.map(role=> role.code));
   };
 
   const optionsForHierarchy = (level, value) => {
@@ -366,7 +395,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
                         selected={props?.value || []}
                         defaultLabel={t("HR_SU_SELECT_ROLES")}
                         defaultUnit={ t("COMMON_ROLES_SELECTED")}
-                        showSelectAll={true}
+                        // showSelectAll={true}
                         t={t}
                         // config={config}
                         // disable={false}
