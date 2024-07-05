@@ -38,7 +38,7 @@ const OpenView = () => {
 
   const requestCriteriaForConnectionSearch = {
     url: "/ws-services/wc/_search?",
-    params: { ...queryParams, textSearch: queryParams.consumerCode },
+    params: { tenantId:queryParams.tenantId,businessService:queryParams.businessService, connectionNumber: queryParams.consumerCode,isOpenPaymentSearch:true },
     body: {},
     options: {
       userService: false,
@@ -221,7 +221,7 @@ const OpenView = () => {
                 text={connection?.connectionHolders?.[0]?.name ? anonymizeHalfString(connection?.connectionHolders?.[0]?.name) : t("ES_COMMON_NA")}
                 rowContainerStyle={{ border: "none" }}
               />
-              <Row
+              {/* <Row
                 label={t("OP_CONSUMER_PHNO")}
                 text={
                   connection?.connectionHolders?.[0]?.mobileNumber
@@ -229,7 +229,7 @@ const OpenView = () => {
                     : t("ES_COMMON_NA")
                 }
                 rowContainerStyle={{ border: "none" }}
-              />
+              /> */}
               <Row
                 label={t("OP_CONNECTION_TYPE")}
                 text={
@@ -247,8 +247,8 @@ const OpenView = () => {
               <Row
                 label={t("OP_APPLICATION_STATUS")}
                 text={
-                  connection?.applicationStatus
-                    ? t(Digit.Utils.locale.getTransformedLocale(`OP_APPLICATION_STATUS_${connection?.applicationStatus}`))
+                  connection?.status
+                    ? t(Digit.Utils.locale.getTransformedLocale(`OP_APPLICATION_STATUS_${connection?.status}`))
                     : t("ES_COMMON_NA")
                 }
                 rowContainerStyle={{ border: "none" }}
@@ -272,6 +272,7 @@ const OpenView = () => {
                 labelStyle={{ fontWeight: "bold" }}
                 textStyle={{ fontWeight: "bold" }}
                 text={t("ES_PAYMENT_AMOUNT")}
+                rowContainerStyle={{ border: "none" }}
               />
               {/* <hr style={{ width: "40%" }} className="underline" /> */}
               {bill?.billDetails?.[0]?.billAccountDetails
@@ -283,6 +284,7 @@ const OpenView = () => {
                     textStyle={{ textAlign: "right", maxWidth: "100px" }}
                     label={t(`TAX_HC_${amountDetails.taxHeadCode}`)}
                     text={"₹ " + amountDetails.amount?.toFixed(2)}
+                    rowContainerStyle={{ border: "none" }}
                   />
                 ))}
 
@@ -292,6 +294,7 @@ const OpenView = () => {
                   textStyle={{ textAlign: "right", maxWidth: "100px" }}
                   label={t("COMMON_ARREARS")}
                   text={"₹ " + arrears?.toFixed?.(2) || Number(0).toFixed(2)}
+                  rowContainerStyle={{ border: "none" }}
                 />
               ) : null}
 
@@ -301,6 +304,7 @@ const OpenView = () => {
                 labelStyle={{ fontWeight: "bold" }}
                 textStyle={{ fontWeight: "bold", textAlign: "right", maxWidth: "100px" }}
                 text={"₹ " + Number(bill?.totalAmount).toFixed(2)}
+                rowContainerStyle={{ border: "none" }}
               />
             </>
           ) : (
@@ -329,13 +333,14 @@ const OpenView = () => {
                   // labelStyle={{ fontWeight: "bold" }}
                   // textStyle={{ fontWeight: "bold" }}
                   text={payment?.transactionDate ? Digit.DateUtils.ConvertEpochToDate(payment?.transactionDate) : t("ES_COMMON_NA")}
+                  rowContainerStyle={{ border: "none" }}
                 />
-                <Row
+                {/* <Row
                   label={t("OP_TXN_NO")}
                   labelStyle={{ fontWeight: "bold" }}
                   textStyle={{ fontWeight: "bold" }}
                   text={payment?.transactionNumber ? payment?.transactionNumber : t("ES_COMMON_NA")}
-                />
+                /> */}
               </StatusTable>
             </Card>
           );
@@ -352,6 +357,7 @@ const OpenView = () => {
           onClose={() => {
             setShowToast(null);
           }}
+          isDleteBtn={true}
         />
       )}
     </>
