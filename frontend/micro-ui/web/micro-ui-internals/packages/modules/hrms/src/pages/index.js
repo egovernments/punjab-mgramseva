@@ -2,7 +2,7 @@ import { PrivateRoute } from "@egovernments/digit-ui-react-components";
 import React,{ useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Switch, useLocation, useHistory } from "react-router-dom";
-
+import SearchUser from "./SearchUser";
 // const {SixFtApart,Rotate360}=SVG;
 const EmployeeApp = ({ path, url, userType }) => {
   const { t } = useTranslation();
@@ -53,6 +53,7 @@ const EmployeeApp = ({ path, url, userType }) => {
           <PrivateRoute path={`${path}/response`} component={(props) => <HRMSResponse {...props} parentRoute={path} />} />
           <PrivateRoute path={`${path}/details/:tenantId/:id`} component={() => <HRMSDetails />} />
           <PrivateRoute path={`${path}/edit/:tenantId/:id`} component={() => <EditEmpolyee />} />
+          <PrivateRoute path={`${path}/search-user`} component={() => <SearchUser />} />
         </div>
       </React.Fragment>
     </Switch>

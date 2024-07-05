@@ -443,7 +443,8 @@ export const UICustomizations = {
         // consumerCode,
         tenantId,
         businessService,
-        textSearch:consumerCode
+        connectionNumber:consumerCode,
+        isOpenPaymentSearch:true
       }
       data.params = finalParams
       // data.params.textSearch = finalParams.consumerCode
@@ -515,6 +516,10 @@ export const UICustomizations = {
           return <div>
             { value ? t(Digit.Utils.locale.getTransformedLocale(`OP_PROPERTY_TYPE_${value}`)) : t("ES_COMMON_NA")}
           </div>
+        case "OP_PAYER_NAME":
+          return <div>
+            {value ? anonymizeHalfString(value) : t("ES_COMMON_NA")}
+          </div>
           
       
         default:
@@ -572,5 +577,18 @@ export const UICustomizations = {
         },
       };
     },
+    customValidationCheck: (data) => {
+      
+      //checking both to and from date are present
+      const { consumerCode } = data;
+      if(!consumerCode) return false;
+      if(consumerCode.length < 10 || consumerCode.length > 25){
+        return { warning: true, label: "ES_COMMON_ENTER_VALID_CONSUMER_CODE" };
+      }
+      // if ((createdFrom === "" && createdTo !== "") || (createdFrom !== "" && createdTo === ""))
+      //   return { warning: true, label: "ES_COMMON_ENTER_DATE_RANGE" };
+
+      return false;
+    }
   }
 };

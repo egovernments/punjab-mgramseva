@@ -27,6 +27,25 @@ export const OpenSearchConfig =  {
         },
         "fields": [
           {
+            label: "SELECT_TENANT",
+            type: "apidropdown",
+            isMandatory: false,
+            disable: false,
+            populators: {
+              "optionsCustomStyle": {
+                    "top": "2.3rem",
+                    "overflow":"auto",
+                    "maxHeight":"400px"
+                  },
+              name: "tenantId",
+              optionsKey: "updatedCode",
+              allowMultiSelect: false,
+              masterName: "commonUiConfig",
+              moduleName: "OpenPaymentSearch",
+              customfn: "populateReqCriteria",
+            },
+          },
+          {
             "label": "CONNECTION_ID",
             "type": "text",
             "isMandatory": false,
@@ -35,24 +54,11 @@ export const OpenSearchConfig =  {
               "name": "consumerCode",
               "style":{
                 "marginBottom":"0px"
-              }
-            },
-          },
-          {
-            label: "SELECT_TENANT",
-            type: "apidropdown",
-            isMandatory: false,
-            disable: false,
-            populators: {
-              "optionsCustomStyle": {
-                    "top": "2.3rem"
-                  },
-              name: "tenantId",
-              optionsKey: "updatedCode",
-              allowMultiSelect: false,
-              masterName: "commonUiConfig",
-              moduleName: "OpenPaymentSearch",
-              customfn: "populateReqCriteria",
+              },
+              "placeholder":"WS/7141/2024-25/****",
+              // "validation":{
+              //   "maxLength":"1"
+              // }
             },
           },
         ]
@@ -77,7 +83,7 @@ export const OpenSearchConfig =  {
           {
             "label": "OP_PAYER_NAME",
             "jsonPath": "connectionHolders[0].name",
-            // "additionalCustomization": true
+            "additionalCustomization": true
           },
           {
             "label": "OP_APPLICATION_TYPE",
@@ -116,7 +122,7 @@ export const OpenSearchConfig =  {
           // },
           {
             "label": "OP_APPLICATION_STATUS",
-            "jsonPath": "applicationStatus",
+            "jsonPath": "status",
             "additionalCustomization": true
           },
           // {
