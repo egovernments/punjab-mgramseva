@@ -76,6 +76,10 @@ const HRMSCard = () => {
     ],
     links: [
       {
+        label: t("HR_SEARCH_USER"),
+        link: `/${window?.contextPath}/employee/hrms/search-user`,
+      },
+      {
         label: t("HR_HOME_SEARCH_RESULTS_HEADING"),
         link: `/${window?.contextPath}/employee/hrms/inbox`,
       },
