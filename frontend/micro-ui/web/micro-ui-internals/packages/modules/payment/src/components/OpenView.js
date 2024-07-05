@@ -57,7 +57,7 @@ const OpenView = () => {
 
   const requestCriteriaForPayments = {
     url: "/collection-services/payments/WS/_search",
-    params: queryParams,
+    params: {consumerCodes:queryParams.consumerCode,tenantId:queryParams.tenantId,businessService:queryParams.businessService},
     body: {},
     options: {
       userService: false,
