@@ -1,4 +1,4 @@
-
+<!-- TODO: update this -->
 
 # digit-ui-css
 
@@ -39,19 +39,22 @@ frontend/micro-ui/web/public/index.html
   <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css@1.5.22/dist/index.css" />
 
 ```
-## Changelog
+# Changelog
 
-### Summary for Version [1.8.2-beta.1] - 2024-06-05
+```bash
+1.5.31 Corrected the CSS for inbox composers and default core ui
+1.5.30 Updated the css for dynamic drodown filter dss
+1.5.29 layout issues fixed
+1.5.28 Horizontal Bar chart alignment fixes
+1.5.27 DSS UI alignment fixes for Horizontal Metric and bar chart
+1.5.26 added new css class for dss enhancements
+1.5.25 added the css of inbox search composers
+1.5.24 added the readme file
+1.5.23 base version
+```
 
-For a detailed changelog, see the [CHANGELOG.md](./CHANGELOG.md) file.
-
-
-## Contributors
-
-[jagankumar-egov] [nipunarora-eGov] [Tulika-eGov] [Ramkrishna-egov] [nabeelmd-eGov] [anil-egov] [vamshikrishnakole-wtt-egov] 
-
-### Published from DIGIT Frontend 
-DIGIT Frontend Repo (https://github.com/egovernments/Digit-Frontend/tree/develop)
+## Published from DIGIT Core 
+Digit Dev Repo (https://github.com/egovernments/DIGIT-Dev/tree/digit-ui-core)
 
 ## License
 

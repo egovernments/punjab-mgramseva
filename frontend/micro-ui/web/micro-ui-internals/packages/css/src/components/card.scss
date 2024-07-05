@@ -62,7 +62,7 @@
 }
 
 .employeeCard {
-  @apply bg-white shadow-card p-md mb-xl;
+  @apply bg-white shadow-card mb-xl;
   border-radius: 4px;
 
   .card-header {
@@ -135,7 +135,6 @@
   }
 
   .header-content {
-    margin-top: 0.2rem;
   }
 
   .header-end {
@@ -154,7 +153,7 @@
 .submit-bar {
   @apply h-10 bg-primary-main text-center w-full outline-none;
   box-shadow: inset 0px -2px 0px theme(colors.text.primary);
-  cursor: pointer;
+
   &:focus {
     @apply outline-none;
   }
@@ -209,10 +208,8 @@
   }
 
   .employeeCard {
-  /*  TODO need to revisit that we need mx-md NABEEL/ANIL
-     @apply mb-md mx-md !important;
-    */
-    @apply mb-md !important;
+    @apply mb-md mx-md !important;
+
     &.filter {
       margin-left: auto;
       margin-right: auto;
