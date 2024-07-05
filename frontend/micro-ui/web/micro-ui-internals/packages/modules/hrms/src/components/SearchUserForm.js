@@ -117,10 +117,10 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
             ],
           },
           {
-            moduleName: "ACCESSCONTROL-ROLES",
+            moduleName: "ws-services-masters",
             masterDetails: [
               {
-                name: "roles",
+                name: "WSServiceRoles",
               },
             ],
           }
@@ -149,36 +149,37 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
         const result = data?.MdmsRes?.tenant?.tenants;
         const filteredResult = filterKeys(result, requiredKeys);
         const resultInTree = buildTree(filteredResult, hierarchy);
-        // setRolesOptions(data?.MdmsRes?.["ACCESSCONTROL-ROLES"]?.roles)
+        const excludeCodes = ["HRMS_ADMIN", "LOC_ADMIN", "MDMS_ADMIN", "EMPLOYEE", "SYSTEM"];
+        setRolesOptions(data?.MdmsRes?.["ws-services-masters"]?.["WSServiceRoles"]?.filter(row => !excludeCodes.includes(row?.code)))
         //updating to state roles as requested
-        setRolesOptions([
-          // {
-          //   code: "",
-          //   name: "Select All",
-          //   description: "",
-          // },
-          {
-            code: "EMPLOYEE",
-            name: "EMPLOYEE",
-            labelKey: "ACCESSCONTROL_ROLES_ROLES_EMPLOYEE",
-          },
-          {
-            code: "DIV_ADMIN",
-            name: "DIVISION ADMIN",
-            labelKey: "ACCESSCONTROL_ROLES_ROLES_DIV_ADMIN",
-          },
-          {
-            code: "HRMS_ADMIN",
-            name: "HRMS_ADMIN",
-            labelKey: "ACCESSCONTROL_ROLES_ROLES_HRMS_ADMIN",
-          },
-          {
-            code: "MDMS_ADMIN",
-            name: "MDMS Admin",
-            description: "Mdms admin",
-          },
+        // setRolesOptions([
+        //   // {
+        //   //   code: "",
+        //   //   name: "Select All",
+        //   //   description: "",
+        //   // },
+        //   {
+        //     code: "EMPLOYEE",
+        //     name: "EMPLOYEE",
+        //     labelKey: "ACCESSCONTROL_ROLES_ROLES_EMPLOYEE",
+        //   },
+        //   {
+        //     code: "DIV_ADMIN",
+        //     name: "DIVISION ADMIN",
+        //     labelKey: "ACCESSCONTROL_ROLES_ROLES_DIV_ADMIN",
+        //   },
+        //   {
+        //     code: "HRMS_ADMIN",
+        //     name: "HRMS_ADMIN",
+        //     labelKey: "ACCESSCONTROL_ROLES_ROLES_HRMS_ADMIN",
+        //   },
+        //   {
+        //     code: "MDMS_ADMIN",
+        //     name: "MDMS Admin",
+        //     description: "Mdms admin",
+        //   },
           
-        ])
+        // ])
         setTree(resultInTree);
         return result;
       },
