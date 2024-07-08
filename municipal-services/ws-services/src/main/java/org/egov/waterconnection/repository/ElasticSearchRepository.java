@@ -70,7 +70,7 @@ public class ElasticSearchRepository {
         HttpEntity<String> requestEntity = new HttpEntity<>(searchQuery, headers);
         ResponseEntity response = null;
         try {
-             response =  this.esRestTemplate().postForEntity(url, requestEntity, Object.class);
+             response =  this.restTemplate().postForEntity(url, requestEntity, Object.class);
 
         } catch (Exception e) {
         	log.error("Failed to fetch data from ES: "+e.getMessage());
@@ -129,9 +129,8 @@ public class ElasticSearchRepository {
         }
     }
 
-    @Bean(name="esRestTemplate")
     @Primary
-    public RestTemplate esRestTemplate() {
+    public RestTemplate restTemplate() {
         trustSelfSignedSSL();
         return new RestTemplate();
     }
