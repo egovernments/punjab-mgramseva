@@ -1,22 +1,33 @@
 package org.egov.waterconnection.repository;
 
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Base64;
 
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.repository.builder.FuzzySearchQueryBuilder;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.net.ssl.*;
+
+import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
+
+import javax.net.ssl.*;
+
 @Slf4j
 @Component
 public class ElasticSearchRepository {
@@ -26,15 +37,14 @@ public class ElasticSearchRepository {
 
     private FuzzySearchQueryBuilder queryBuilder;
 
-    private RestTemplate restTemplate;
 
     private ObjectMapper mapper;
 
+
     @Autowired
-    public ElasticSearchRepository(WSConfiguration config, FuzzySearchQueryBuilder queryBuilder, RestTemplate restTemplate, ObjectMapper mapper) {
+    public ElasticSearchRepository(WSConfiguration config, FuzzySearchQueryBuilder queryBuilder, ObjectMapper mapper) {
         this.config = config;
         this.queryBuilder = queryBuilder;
-        this.restTemplate = restTemplate;
         this.mapper = mapper;
     }
 
@@ -54,10 +64,13 @@ public class ElasticSearchRepository {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Authorization", getESEncodedCredentials());
+        final HttpEntity entity = new HttpEntity( headers);
+       // response = restTemplate.exchange(url.toString(), HttpMethod.GET, entity, Map.class);
         HttpEntity<String> requestEntity = new HttpEntity<>(searchQuery, headers);
         ResponseEntity response = null;
         try {
-             response = restTemplate.postForEntity(url, requestEntity, Object.class);
+             response =  this.restTemplate().postForEntity(url, requestEntity, Object.class);
 
         } catch (Exception e) {
         	log.error("Failed to fetch data from ES: "+e.getMessage());
@@ -82,7 +95,44 @@ public class ElasticSearchRepository {
 
         return builder.toString();
     }
+    public String getESEncodedCredentials() {
+        String credentials = config.getEsUsername() + ":" + config.getEsPassword();
+        byte[] credentialsBytes = credentials.getBytes();
+        byte[] base64CredentialsBytes = Base64.getEncoder().encode(credentialsBytes);
+        return "Basic " + new String(base64CredentialsBytes);
+    }
+    public static void trustSelfSignedSSL() {
+        try {
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            X509TrustManager tm = new X509TrustManager() {
+                public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException {
+                }
 
+                public void checkServerTrusted(X509Certificate[] xcs, String string) throws CertificateException {
+                }
 
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+            };
+            ctx.init(null, new TrustManager[]{tm}, null);
+            SSLContext.setDefault(ctx);
+
+            // Disable hostname verification
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                public boolean verify(String hostname, javax.net.ssl.SSLSession sslSession) {
+                    return true;
+                }
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Primary
+    public RestTemplate restTemplate() {
+        trustSelfSignedSSL();
+        return new RestTemplate();
+    }
 
 }
