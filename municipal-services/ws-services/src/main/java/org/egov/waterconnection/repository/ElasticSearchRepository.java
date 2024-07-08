@@ -38,6 +38,7 @@ public class ElasticSearchRepository {
 
     private ObjectMapper mapper;
 
+
     @Autowired
     public ElasticSearchRepository(WSConfiguration config, FuzzySearchQueryBuilder queryBuilder, ObjectMapper mapper) {
         this.config = config;
@@ -67,7 +68,6 @@ public class ElasticSearchRepository {
         HttpEntity<String> requestEntity = new HttpEntity<>(searchQuery, headers);
         ResponseEntity response = null;
         try {
-
              response =  this.restTemplate().postForEntity(url, requestEntity, Object.class);
 
         } catch (Exception e) {
@@ -127,7 +127,7 @@ public class ElasticSearchRepository {
         }
     }
 
-    @Bean
+    @Bean(name="esRestTemplate")
     public RestTemplate restTemplate() {
         trustSelfSignedSSL();
         return new RestTemplate();
