@@ -720,11 +720,20 @@ public class DemandService {
 		BigDecimal netdue = BigDecimal.ZERO;
 		BigDecimal netDueWithPenalty = BigDecimal.ZERO;
 		BigDecimal totalApplicablePenalty =BigDecimal.ZERO;
+		BigDecimal currentmonthRoundOff=BigDecimal.ZERO;
+		BigDecimal totalRoundOff=BigDecimal.ZERO;
 
 		currentmonthBill = currentMonthDemandDetailList.stream()
 				.filter(dd -> dd.getTaxHeadMasterCode().equals("10101")) // filter by taxHeadCode
 				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // map to the balance between taxAmount and collectedAmount
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		currentmonthRoundOff = currentMonthDemandDetailList.stream()
+				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_Round_Off")) // filter by taxHeadCode
+				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // map to the balance between taxAmount and collectedAmount
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		log.info("currentmonthRoundOff::::"+currentmonthRoundOff);
+
 		log.info("currentMonthDemandDetailList::::"+currentMonthDemandDetailList);
 		currentMonthPenalty = currentMonthDemandDetailList.stream()
 				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_TIME_PENALTY")) // filter by taxHeadCode
@@ -732,7 +741,8 @@ public class DemandService {
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 		log.info("currentMonthDemandDetailListafter::::"+currentMonthDemandDetailList);
 		log.info("currentMonthPenalty" + currentMonthPenalty);
-		currentmonthTotalDue = currentmonthBill.add(currentMonthPenalty);
+		currentmonthTotalDue = currentmonthBill.add(currentMonthPenalty).add(currentmonthRoundOff);
+		log.info("currentmonthTotalDue" + currentmonthTotalDue);
 		if(currentMonthPenalty.equals(BigDecimal.ZERO)) {
 			List<MasterDetail> masterDetails = new ArrayList<>();
 			MasterDetail masterDetail = new MasterDetail("Penalty", "[?(@)]");
@@ -759,7 +769,13 @@ public class DemandService {
 
 
 		//Tax headcode for WScharges,legacypenalty,legacyarea
-		List<String> taxHeadCodesToFilterWithoutPenalty = Arrays.asList("10102", "10201", "10101");
+		List<String> taxHeadCodesToFilterWithoutPenalty = Arrays.asList("10102", "10201", "10101","WS_Round_Off");
+
+		// Initialize the variable for the sum of taxAmount - collectedAmount specifically for WS_Round_Off
+		totalRoundOff = remainingMonthDemandDetailList.stream()
+				.filter(dd -> "WS_Round_Off".equals(dd.getTaxHeadMasterCode())) // Filter specifically for WS_Round_Off
+				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // Calculate taxAmount - collectedAmount
+				.reduce(BigDecimal.ZERO, BigDecimal::add); // Sum all results
 
 		// Initialize the variable for the sum of taxAmount - collectedAmount for the filtered tax head codes
 		totalAreas = remainingMonthDemandDetailList.stream()
@@ -772,7 +788,7 @@ public class DemandService {
 				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // map to the balance between taxAmount and collectedAmount
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
-		totalAreasWithPenalty = totalAreas.add(penaltyInRemainingMonth);
+		totalAreasWithPenalty = totalAreas.add(penaltyInRemainingMonth).add(totalRoundOff);
 
 
 
