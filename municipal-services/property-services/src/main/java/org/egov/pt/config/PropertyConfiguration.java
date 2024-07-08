@@ -354,4 +354,10 @@ public class PropertyConfiguration {
     @Value("${inbox.property.search.allowed}")
     private Boolean isInboxSearchAllowed;
 
+    @Value("${egov.indexer.es.username}")
+    private String esUsername;
+
+    @Value("${egov.indexer.es.password}")
+    private String esPassword;
+
 }
