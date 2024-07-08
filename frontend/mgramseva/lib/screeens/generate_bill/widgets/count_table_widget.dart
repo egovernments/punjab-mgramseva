@@ -2,14 +2,17 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/reports/WaterConnectionCount.dart';
+import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
+import 'package:provider/provider.dart';
 import '../../../utils/date_formats.dart';
 import '../../../utils/localization/application_localizations.dart';
 
 class CountTableWidget extends StatefulWidget {
   final List<WaterConnectionCount>? waterConnectionCount;
+  final bool? isWCDemandNotGenerated;
 
-  const CountTableWidget({Key? key, this.waterConnectionCount})
+  const CountTableWidget({Key? key, this.waterConnectionCount, this.isWCDemandNotGenerated})
       : super(key: key);
 
   @override
@@ -61,7 +64,7 @@ class _CountTableWidgetState extends State<CountTableWidget> {
         borderRadius: BorderRadius.all(Radius.circular(5)),
         color: Colors.grey, // Set border color to grey
       ),// Set heading row background color to grey
-      headingTextStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold), // Set heading text color to black and bold
+      headingTextStyle: TextStyle(color:   Colors.black, fontWeight: FontWeight.bold), // Set heading text color to black and bold
       columns: [
         DataColumn(
           label: FittedBox(
@@ -84,10 +87,31 @@ class _CountTableWidgetState extends State<CountTableWidget> {
     );
   }
 
+  Widget buildLinkText(int count, bool isWCDemandNotGenerated, {VoidCallback? onTap, Uri? launchUri}) {
+  final Color linkColor = isWCDemandNotGenerated ? Colors.blue : Colors.black;
+  final MouseCursor? hoverCursor = SystemMouseCursors.click; // Optional hand cursor
+
+  return GestureDetector(
+    onTap: () {
+      // onTap?.call();
+
+      // if (launchUri != null) {
+      // }
+    },
+    child: Text(
+      count.toString(),
+      style: TextStyle(
+        color: linkColor,
+        decoration: TextDecoration.underline, // Optional underline
+      ),
+    ),
+  );
+}
+
   DataRow _buildDataRow(WaterConnectionCount count) {
     final bool isEvenRow = widget.waterConnectionCount!.indexOf(count) % 2 == 0;
     final Color? rowColor = isEvenRow ? Colors.grey[100] : Colors.white; // Set alternate row background color to grey
-
+    final status = widget.isWCDemandNotGenerated == true;
     return DataRow(
       color: MaterialStateColor.resolveWith((states) => rowColor!), // Apply alternate row background color
 
@@ -100,7 +124,25 @@ class _CountTableWidgetState extends State<CountTableWidget> {
           ),
         ),
         DataCell(
-          Text(count.count.toString()),
+          MouseRegion(
+  cursor: status ?  SystemMouseCursors.click : SystemMouseCursors.basic,
+    child: GestureDetector(
+      child: 
+       Text(count.count.toString(),
+          style: TextStyle(
+            decoration: status ? TextDecoration.underline :TextDecoration.none ,
+            color: status ? Colors.blue : Colors.black
+          ),         
+          ),
+      onTap: () {
+        if(status){
+           var searchConnectionProvider =
+        Provider.of<SearchConnectionProvider>(context, listen: false);
+          searchConnectionProvider.fetchNonDemandGeneratedConnectionDetails(context,"${count.taxperiodto!}");
+        }
+      },
+    ),
+  ),         
         ),
       ],
     );

@@ -99,6 +99,8 @@ class Url {
       'echallan-services/eChallan/v1/_expenseBillReport';
   static const String WATER_CONNECTION_COUNT =
       'ws-services/wc/_countWCbyDemandGenerationDate';
+  static const String WATER_CONNECTION_DEMAND_NOT_GENERATED =
+      'ws-services/wc/consumers/demand-not-generated';
 }
 
 class UserUrl {
