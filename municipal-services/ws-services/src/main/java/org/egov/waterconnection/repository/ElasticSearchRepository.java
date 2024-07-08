@@ -1,6 +1,7 @@
 package org.egov.waterconnection.repository;
 
 import java.util.List;
+import java.util.Base64;
 
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
@@ -54,6 +55,9 @@ public class ElasticSearchRepository {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Authorization", getESEncodedCredentials());
+        final HttpEntity entity = new HttpEntity( headers);
+       // response = restTemplate.exchange(url.toString(), HttpMethod.GET, entity, Map.class);
         HttpEntity<String> requestEntity = new HttpEntity<>(searchQuery, headers);
         ResponseEntity response = null;
         try {
@@ -82,7 +86,12 @@ public class ElasticSearchRepository {
 
         return builder.toString();
     }
-
+    public String getESEncodedCredentials() {
+        String credentials = config.getEsUsername() + ":" + config.getEsPassword();
+        byte[] credentialsBytes = credentials.getBytes();
+        byte[] base64CredentialsBytes = Base64.getEncoder().encode(credentialsBytes);
+        return "Basic " + new String(base64CredentialsBytes);
+    }
 
 
 }
