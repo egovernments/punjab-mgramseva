@@ -91,7 +91,7 @@ public class PropertiesManager {
 	//Kafka Topics
 	@Value("${kafka.topics.save.service}")
 	public String saveEmployeeTopic;
-	
+
 	@Value("${kafka.topics.update.service}")
 	public String UpdateEmployeeTopic;
 	
@@ -100,7 +100,12 @@ public class PropertiesManager {
 
 	@Value("${kafka.topics.hrms.updateData}")
 	public String updateTopic;
-	
+
+	@Value("${kafka.topics.save.service.index}")
+	public String saveEmployeeIndexTopic;
+
+	@Value("${kafka.topics.update.service.index}")
+	public String UpdateEmployeeIndexTopic;
 	
 	//Variables
 	@Value("${egov.idgen.ack.name}")
@@ -117,4 +122,7 @@ public class PropertiesManager {
 
 	@Value("${sms.user.creation.enabled}")
 	public boolean isSMSForUserCreationEnable;
+
+	@Value("${egov.hrms.max.pagination.limit}")
+	public Integer hrmsMaxLimit;
 }

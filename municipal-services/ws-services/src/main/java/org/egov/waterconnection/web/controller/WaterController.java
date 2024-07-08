@@ -235,4 +235,13 @@ public class WaterController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
+	@PostMapping("/consumers/demand-not-generated")
+	public ResponseEntity<WaterConnectionResponse> getConsumersWithDemandNotGenerated(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,@RequestParam(value="previousMeterReading") String previousMeterReading,@RequestParam (value="tenantId") String tenantId)
+	{
+		WaterConnectionResponse response= waterService.getConsumersWithDemandNotGenerated(previousMeterReading,tenantId,requestInfoWrapper.getRequestInfo());
+		response.setResponseInfo(
+				responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true));
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
 }

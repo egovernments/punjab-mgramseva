@@ -57,6 +57,8 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
               </div>
             )}
             <div className="complaint-input-container" style={{ width: "100%" }}>
+
+              
               {searchFields
                 ?.filter((e) => true)
                 ?.map((input, index) => (
@@ -66,12 +68,12 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
                       {input.type !== "date" ? (
                         <div className="field-container">
                           {input?.componentInFront ? (
-                            <span className="citizen-card-input citizen-card-input--front" style={{ flex: "none" }}>
+                            <span className="citizen-card-input-only  citizen-card-input--front" style={{ flex: "none" }}>
                               {input?.componentInFront}
                             </span>
                           ) : null}
-                          <TextInput {...input} inputRef={register} watch={watch} shouldUpdate={true} />
-                        </div>
+                          <TextInput className="employee-card-input-only" {...input} inputRef={register} watch={watch} shouldUpdate={true} />
+                        </div>  
                       ) : (
                         <Controller
                           render={(props) => <DatePicker date={props.value} onChange={props.onChange} />}
@@ -83,8 +85,14 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
                     </span>
                   </div>
                 ))}
-            </div>
-            <div className="inbox-action-container">
+            {/* Updated Search & Clear All Button */}
+            <div style={{
+            marginTop: "2rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-evenly"
+            }}    >
+            <div className="complaint-input-container">
               {type === "desktop" && !mobileView && (
                 <span style={{ paddingTop: "9px" }} className="clear-search">
                   {clearAll()}
@@ -99,6 +107,24 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
                 />
               )}
             </div>
+            </div>
+            </div>
+            {/*Don't Remove : Chance of Updated Search & Clear All Button*/}
+            {/* <div className="inbox-action-container">
+              {type === "desktop" && !mobileView && (
+                <span style={{ paddingTop: "9px" }} className="clear-search">
+                  {clearAll()}
+                </span>
+              )}
+              {type === "desktop" && !mobileView && (
+                <SubmitBar
+                  style={{ marginTop: "unset" }}
+                  className="submit-bar-search"
+                  label={t("ES_COMMON_SEARCH")}
+                  submit
+                />
+              )}
+            </div> */}
           </div>
         </div>
         {(type === "mobile" || mobileView) && (

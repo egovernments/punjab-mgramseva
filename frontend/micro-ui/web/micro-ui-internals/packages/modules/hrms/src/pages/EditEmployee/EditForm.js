@@ -112,6 +112,25 @@ const EditForm = ({ tenantId, data }) => {
     return validEmail && name.match(Digit.Utils.getPattern("Name"));
   };
 
+
+  function hasUniqueTenantIds(items) {
+    // Create a Set to efficiently store unique tenantIds
+    const uniqueTenantIds = new Set();
+    // Iterate through each item
+    for (const item of items) {
+      const tenantId = item.tenantId;
+      // Check if tenantId already exists in the Set
+      if (uniqueTenantIds.has(tenantId)) {
+        // Duplicate found, return false
+        return false;
+      }
+      // Add unique tenantId to the Set
+      uniqueTenantIds.add(tenantId);
+    }
+    // No duplicates found, all tenantIds are unique
+    return true;
+  }
+
   const onFormValueChange = (setValue = true, formData) => {
     if (formData?.SelectEmployeePhoneNumber?.mobileNumber) {
       setMobileNumber(formData?.SelectEmployeePhoneNumber?.mobileNumber);
@@ -132,15 +151,19 @@ const EditForm = ({ tenantId, data }) => {
         }
       }
     }
-
+    
     if (
       formData?.SelectEmployeeGender?.gender.code &&
       formData?.SelectEmployeeName?.employeeName &&
       formData?.SelectEmployeePhoneNumber?.mobileNumber &&
+      STATE_ADMIN ? 
+      (formData?.Jurisdictions?.length && !formData?.Jurisdictions.some(juris => juris?.division == undefined  || juris?.divisionBoundary?.length === 0 ) )
+      :formData?.Jurisdictions?.length && formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.roles?.length === 0 )      
+      &&       
       checkfield &&
-      // setassigncheck &&
       phonecheck &&
-      checkMailNameNum(formData)
+      checkMailNameNum(formData)&&
+      hasUniqueTenantIds(formData?.Jurisdictions)
     ) {
       setSubmitValve(true);
     } else {

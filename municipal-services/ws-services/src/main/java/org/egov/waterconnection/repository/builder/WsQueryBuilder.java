@@ -23,6 +23,7 @@ import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -168,6 +169,13 @@ public class WsQueryBuilder {
 			+ " connectionno IN (SELECT distinct connectionno FROM eg_ws_connection WHERE status='Inactive' AND"
 			+ " lastmodifiedtime >= ? AND lastmodifiedtime <= ? AND tenantid=?) "
 			+ " order by connectionno,lastmodifiedtime desc";
+
+	public static final String DEMAND_NOT_GENERATED_QUERY="select distinct conn.connectionno as connectionno from eg_ws_connection conn " +
+			"INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id WHERE conn.status='Active' " +
+			"AND  conn.tenantid=? and wc.connectiontype='Non_Metered' and conn.previousreadingdate=? and connectionno NOT IN " +
+			"(select distinct consumercode from egbs_demand_v1 d inner join egbs_demanddetail_v1 dd on dd.demandid = d.id " +
+			"where dd.taxheadcode='10101' and d.status ='ACTIVE' and  d.businessservice='WS' and " +
+			"d.tenantid=?) order by connectionno;";
 			
 	/**
 	 * 
@@ -281,23 +289,38 @@ public class WsQueryBuilder {
 			preparedStatement.add(criteria.getOldConnectionNumber());
 		}
 
-		if (!StringUtils.isEmpty(criteria.getConnectionNumber()) || !StringUtils.isEmpty(criteria.getTextSearch())) {
-			addClauseIfRequired(preparedStatement, query);
-			
-			if(!StringUtils.isEmpty(criteria.getConnectionNumber())) {
-				query.append(" conn.connectionno ~*  ? ");
+		if(ObjectUtils.isEmpty(criteria.getIsOpenPaymentSearch()) || !criteria.getIsOpenPaymentSearch()) {
+
+			if (!StringUtils.isEmpty(criteria.getConnectionNumber()) || !StringUtils.isEmpty(criteria.getTextSearch())) {
+				addClauseIfRequired(preparedStatement, query);
+
+				if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
+					query.append(" conn.connectionno ~*  ? ");
+					preparedStatement.add(criteria.getConnectionNumber());
+				} else {
+					query.append(" conn.connectionno ~*  ? ");
+					preparedStatement.add(criteria.getTextSearch());
+				}
+
+
+				if (!CollectionUtils.isEmpty(criteria.getConnectionNoSet())) {
+					query.append(" or conn.connectionno in (").append(createQuery(criteria.getConnectionNoSet())).append(" )");
+					addToPreparedStatement(preparedStatement, criteria.getConnectionNoSet());
+				}
+			}
+		} else {
+
+			if (!StringUtils.isEmpty(criteria.getConnectionNumber())){
+				addClauseIfRequired(preparedStatement, query);
+				query.append(" conn.connectionno =  ? ");
 				preparedStatement.add(criteria.getConnectionNumber());
 			}
-			else {
-				query.append(" conn.connectionno ~*  ? ");
-				preparedStatement.add(criteria.getTextSearch());
-			}
-			
+		}
 
-			if(!CollectionUtils.isEmpty(criteria.getConnectionNoSet())) {
-				query.append(" or conn.connectionno in (").append(createQuery(criteria.getConnectionNoSet())).append(" )");
-				addToPreparedStatement(preparedStatement, criteria.getConnectionNoSet());
-			}
+		if (!CollectionUtils.isEmpty(criteria.getConnectionNoSet())) {
+			addClauseIfRequired(preparedStatement, query);
+			query.append(" conn.connectionno in (").append(createQuery(criteria.getConnectionNoSet())).append(" )");
+			addToPreparedStatement(preparedStatement, criteria.getConnectionNoSet());
 		}
 
 		if (!StringUtils.isEmpty(criteria.getStatus())) {
@@ -653,6 +676,16 @@ public class WsQueryBuilder {
 			} else {
 				query.append(" conn.tenantid = ? ");
 				preparedStatement.add(criteria.getTenantId());
+			}
+			if(criteria.getFromDate()!=null){
+				addClauseIfRequired(preparedStatement, query);
+				query.append(" conn.createdtime>=? ");
+				preparedStatement.add(criteria.getFromDate());
+			}
+			if(criteria.getToDate()!=null){
+				addClauseIfRequired(preparedStatement, query);
+				query.append(" conn.createdtime<=?");
+				preparedStatement.add(criteria.getToDate());
 			}
 		}
 		return query;
