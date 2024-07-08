@@ -169,6 +169,13 @@ public class WsQueryBuilder {
 			+ " connectionno IN (SELECT distinct connectionno FROM eg_ws_connection WHERE status='Inactive' AND"
 			+ " lastmodifiedtime >= ? AND lastmodifiedtime <= ? AND tenantid=?) "
 			+ " order by connectionno,lastmodifiedtime desc";
+
+	public static final String DEMAND_NOT_GENERATED_QUERY="select distinct conn.connectionno as connectionno from eg_ws_connection conn " +
+			"INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id WHERE conn.status='Active' " +
+			"AND  conn.tenantid=? and wc.connectiontype='Non_Metered' and conn.previousreadingdate=? and connectionno NOT IN " +
+			"(select distinct consumercode from egbs_demand_v1 d inner join egbs_demanddetail_v1 dd on dd.demandid = d.id " +
+			"where dd.taxheadcode='10101' and d.status ='ACTIVE' and  d.businessservice='WS' and " +
+			"d.tenantid=?) order by connectionno;";
 			
 	/**
 	 * 

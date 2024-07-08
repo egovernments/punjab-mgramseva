@@ -50,6 +50,9 @@ import lombok.extern.slf4j.Slf4j;
 public class WaterDaoImpl implements WaterDao {
 
 	@Autowired
+	private DemandNotGeneratedRowMapper demandNotGeneratedRowMapper;
+
+	@Autowired
 	private InactiveConsumerReportRowMapper inactiveConsumerReportRowMapper;
 	@Autowired
 	private WaterConnectionProducer waterConnectionProducer;
@@ -665,4 +668,18 @@ public class WaterDaoImpl implements WaterDao {
 		inactiveConsumerReportList=jdbcTemplate.query(inactive_consumer_query.toString(), preparedStatement.toArray(),inactiveConsumerReportRowMapper);
          return inactiveConsumerReportList;
     }
+
+	public List<ConsumersDemandNotGenerated> getConsumersByPreviousMeterReading(Long previousMeterReading, String tenantId)
+	{
+		StringBuilder query=new StringBuilder(wsQueryBuilder.DEMAND_NOT_GENERATED_QUERY);
+
+		List<Object> preparedStatement=new ArrayList<>();
+		preparedStatement.add(tenantId);
+		preparedStatement.add(previousMeterReading);
+		preparedStatement.add(tenantId);
+
+		log.info("Query for consumer demand not generated "+ query +" prepared statement "+ preparedStatement);
+		List<ConsumersDemandNotGenerated> consumersDemandNotGeneratedList=jdbcTemplate.query(query.toString(),preparedStatement.toArray(),demandNotGeneratedRowMapper);
+		return consumersDemandNotGeneratedList;
+	}
 }

@@ -842,4 +842,24 @@ public class WaterServiceImpl implements WaterService {
 		List<InactiveConsumerReportData> inactiveConsumerReport=waterDaoImpl.getInactiveConsumerReport(monthStartDateTime,mothEndDateTime,tenantId,offset,limit);
 		return inactiveConsumerReport;
 	}
+
+	@Override
+	public WaterConnectionResponse getConsumersWithDemandNotGenerated(String previousMeterReading, String tenantId ,RequestInfo requestInfo)
+	{
+		Long previousReadingEpoch;
+		try {
+			previousReadingEpoch = Long.parseLong(previousMeterReading);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Invalid format for previousMeterReading. Expected a timestamp in milliseconds.", e);
+		}
+
+		List<ConsumersDemandNotGenerated> list=waterDaoImpl.getConsumersByPreviousMeterReading(previousReadingEpoch,tenantId);
+		Set<String> connectionNo=new HashSet<>();
+		for(ConsumersDemandNotGenerated connection:list)
+		{
+			connectionNo.add(connection.getConsumerCode());
+		}
+		SearchCriteria criteria=SearchCriteria.builder().connectionNoSet(connectionNo).tenantId(tenantId).build();
+		 return search(criteria,requestInfo);
+	}
 }
