@@ -10,6 +10,7 @@ import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.repository.builder.FuzzySearchQueryBuilder;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -68,7 +69,7 @@ public class ElasticSearchRepository {
         HttpEntity<String> requestEntity = new HttpEntity<>(searchQuery, headers);
         ResponseEntity response = null;
         try {
-             response =  this.restTemplate().postForEntity(url, requestEntity, Object.class);
+             response =  this.esRestTemplate().postForEntity(url, requestEntity, Object.class);
 
         } catch (Exception e) {
         	log.error("Failed to fetch data from ES: "+e.getMessage());
@@ -128,7 +129,7 @@ public class ElasticSearchRepository {
     }
 
     @Bean(name="esRestTemplate")
-    public RestTemplate restTemplate() {
+    public RestTemplate esRestTemplate() {
         trustSelfSignedSSL();
         return new RestTemplate();
     }
