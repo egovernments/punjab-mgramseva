@@ -78,6 +78,7 @@ const HRMSCard = () => {
       {
         label: t("HR_SEARCH_USER"),
         link: `/${window?.contextPath}/employee/hrms/search-user`,
+        roles:["DIV_ADMIN","STATE_ADMIN"]
       },
       {
         label: t("HR_HOME_SEARCH_RESULTS_HEADING"),
