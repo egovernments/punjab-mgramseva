@@ -29,9 +29,13 @@ public class AggregatedDemandDetailResponse {
 
     private BigDecimal currentmonthTotalDue;
 
+    private BigDecimal currentmonthRoundOff;
+
     private BigDecimal totalAreas;
 
     private BigDecimal totalAreasWithPenalty;
+
+    private BigDecimal totalRoundOff;
 
     private BigDecimal netdue;
 

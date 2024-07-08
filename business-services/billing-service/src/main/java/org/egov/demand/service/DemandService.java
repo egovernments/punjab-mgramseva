@@ -788,7 +788,7 @@ public class DemandService {
 				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // map to the balance between taxAmount and collectedAmount
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
-		totalAreasWithPenalty = totalAreas.add(penaltyInRemainingMonth).add(totalRoundOff);
+		totalAreasWithPenalty = totalAreas.add(penaltyInRemainingMonth);
 
 
 
@@ -824,8 +824,10 @@ public class DemandService {
 				.currentmonthBill(currentmonthBill)
 				.currentMonthPenalty(currentMonthPenalty)
 				.currentmonthTotalDue(currentmonthTotalDue)
+				.currentmonthRoundOff(currentmonthRoundOff)
 				.totalAreas(totalAreas)
 				.totalAreasWithPenalty(totalAreasWithPenalty)
+				.totalRoundOff(totalRoundOff)
 				.netdue(netdue)
 				.netDueWithPenalty(netDueWithPenalty)
 				.advanceAdjusted(advanceAdjusted)
