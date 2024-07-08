@@ -721,7 +721,7 @@ public class DemandService {
 		BigDecimal netDueWithPenalty = BigDecimal.ZERO;
 		BigDecimal totalApplicablePenalty =BigDecimal.ZERO;
 		BigDecimal currentmonthRoundOff=BigDecimal.ZERO;
-		BigDecimal totalRoundOff=BigDecimal.ZERO;
+		BigDecimal totalAreasRoundOff=BigDecimal.ZERO;
 
 		currentmonthBill = currentMonthDemandDetailList.stream()
 				.filter(dd -> dd.getTaxHeadMasterCode().equals("10101")) // filter by taxHeadCode
@@ -772,7 +772,7 @@ public class DemandService {
 		List<String> taxHeadCodesToFilterWithoutPenalty = Arrays.asList("10102", "10201", "10101","WS_Round_Off");
 
 		// Initialize the variable for the sum of taxAmount - collectedAmount specifically for WS_Round_Off
-		totalRoundOff = remainingMonthDemandDetailList.stream()
+		totalAreasRoundOff = remainingMonthDemandDetailList.stream()
 				.filter(dd -> "WS_Round_Off".equals(dd.getTaxHeadMasterCode())) // Filter specifically for WS_Round_Off
 				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // Calculate taxAmount - collectedAmount
 				.reduce(BigDecimal.ZERO, BigDecimal::add); // Sum all results
@@ -815,7 +815,7 @@ public class DemandService {
 		if(remainingAdvance !=BigDecimal.ZERO && currentmonthBill !=BigDecimal.ZERO && advanceAdjusted.equals(BigDecimal.ZERO)) {
 		}
 
-		netdue = currentmonthBill.add(totalAreas).add(remainingAdvance);
+		netdue = currentmonthBill.add(totalAreas).add(remainingAdvance).add(currentmonthRoundOff);
 		netDueWithPenalty = currentmonthTotalDue.add(totalAreasWithPenalty).add(remainingAdvance);
 
 		//BigDecimal currentMonthBill
@@ -827,7 +827,7 @@ public class DemandService {
 				.currentmonthRoundOff(currentmonthRoundOff)
 				.totalAreas(totalAreas)
 				.totalAreasWithPenalty(totalAreasWithPenalty)
-				.totalRoundOff(totalRoundOff)
+				.totalAreasRoundOff(totalAreasRoundOff)
 				.netdue(netdue)
 				.netDueWithPenalty(netDueWithPenalty)
 				.advanceAdjusted(advanceAdjusted)

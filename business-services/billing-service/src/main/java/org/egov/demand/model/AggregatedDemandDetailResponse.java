@@ -35,7 +35,7 @@ public class AggregatedDemandDetailResponse {
 
     private BigDecimal totalAreasWithPenalty;
 
-    private BigDecimal totalRoundOff;
+    private BigDecimal totalAreasRoundOff;
 
     private BigDecimal netdue;
 
