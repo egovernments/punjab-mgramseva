@@ -44,6 +44,8 @@ public class EmployeeSearchCriteria {
 	public List<String> uuids;
 	
 	public List<Long> positions;
+
+	public String textSearch;
 	
 	public Boolean isActive;
 

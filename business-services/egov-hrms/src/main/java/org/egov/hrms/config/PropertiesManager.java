@@ -125,4 +125,31 @@ public class PropertiesManager {
 
 	@Value("${egov.hrms.max.pagination.limit}")
 	public Integer hrmsMaxLimit;
+
+	@Value("${egov.es.host}")
+	private String esHost;
+
+	@Value("${egov.hrms.es.index}")
+	private String esHRMSIndex;
+
+	@Value("${egov.es.search.endpoint}")
+	private String esSearchEndpoint;
+
+	@Value("${egov.waterservice.pagination.default.limit}")
+	private Integer defaultLimit;
+
+	@Value("${egov.waterservice.pagination.default.offset}")
+	private Integer defaultOffset;
+
+	@Value("${egov.waterservice.pagination.max.limit}")
+	private Integer maxLimit;
+
+	@Value("${egov.ws.fuzzy.searh.is.wildcard}")
+	private Boolean isSearchWildcardBased;
+
+	@Value("${egov.ws.search.tenantId.fuziness}")
+	private String tenantFuziness;
+
+	@Value("${egov.ws.search.name.fuziness}")
+	private String nameFuziness;
 }

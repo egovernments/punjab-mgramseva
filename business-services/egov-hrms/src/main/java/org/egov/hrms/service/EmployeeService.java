@@ -60,6 +60,10 @@ import org.egov.hrms.web.contract.*;
 import org.egov.tracer.kafka.LogAwareKafkaTemplate;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -91,18 +95,21 @@ public class EmployeeService {
 
 	@Autowired
 	private HRMSProducer hrmsProducer;
-	
+
 	@Autowired
 	private EmployeeRepository repository;
-	
+
 	@Autowired
 	private HRMSUtils hrmsUtils;
-	
+
 	@Autowired
 	private NotificationService notificationService;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper;
+
+	@Autowired
+	EsService esService;
 
 	/**
 	 * Service method for create employee. Does following:
@@ -110,7 +117,7 @@ public class EmployeeService {
 	 * 2. Enriches the employee object with required parameters
 	 * 3. Creates user in the egov-user service.
 	 * 4. Sends notification upon successful creation
-	 * 
+	 *
 	 * @param employeeRequest
 	 * @return
 	 */
@@ -129,10 +136,10 @@ public class EmployeeService {
 		notificationService.sendNotification(employeeRequest, pwdMap);
 		return generateResponse(employeeRequest);
 	}
-	
+
 	/**
 	 * Searches employees on a given criteria.
-	 * 
+	 *
 	 * @param criteria
 	 * @param requestInfo
 	 * @return
@@ -155,7 +162,6 @@ public class EmployeeService {
 				userSearchCriteria.put(HRMSConstants.HRMS_IS_STATE_LEVEL_SEARCH_CODE, criteria.getIsStateLevelSearch());
 			if(!ObjectUtils.isEmpty(criteria.getIsActive()))
 				userSearchCriteria.put(HRMSConstants.HRMS_IS_ACTIVE_SEARCH_CODE, criteria.getIsActive());
-
             UserResponse userResponse = userService.getUser(requestInfo, userSearchCriteria);
 			userChecked =true;
             if(!CollectionUtils.isEmpty(userResponse.getUser())) {
@@ -176,7 +182,9 @@ public class EmployeeService {
 				for(String name: criteria.getNames()) {
 					Map<String, Object> userSearchCriteria = new HashMap<>();
 					userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_TENANTID,criteria.getTenantId());
-					userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_NAME,name);
+					userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_NAME,criteria.getTextSearch());
+					EmployeeSearchCriteria employeeSearchCriteria = EmployeeSearchCriteria.builder().textSearch(criteria.getTextSearch()).tenantId(criteria.tenantId).build();
+					Object esResponse = esService.fuzzySearchProperties(employeeSearchCriteria,userUUIDs);
 					UserResponse userResponse = userService.getUser(requestInfo, userSearchCriteria);
 					userChecked =true;
 					if(!CollectionUtils.isEmpty(userResponse.getUser())) {
@@ -216,6 +224,25 @@ public class EmployeeService {
 				.employees(employees).build();
 	}
 
+
+	public List<String> fuzzyNameSearchForEmployee(String tenantId, String name) throws Exception {
+			SearchRequest searchRequest = new SearchRequest("hrmsindex");
+
+			// Building the query
+			BoolQueryBuilder boolQuery = new BoolQueryBuilder();
+			boolQuery.must(new MatchQueryBuilder("Data.tenantId", tenantId));
+			boolQuery.must(new PrefixQueryBuilder("Data.user.name.keyword", name));
+
+			SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+			sourceBuilder.query(boolQuery);
+
+			searchRequest.source(sourceBuilder);
+
+			// Executing the search
+			SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+
+			return searchResponse;
+	}
 	/**
 	 * Plain search for employees
 	 *
@@ -266,7 +293,7 @@ public class EmployeeService {
 
 	/**
 	 * Enriches the user object.
-	 * 
+	 *
 	 * @param employee
 	 */
 	private void enrichUser(Employee employee) {
@@ -284,7 +311,7 @@ public class EmployeeService {
 
 	/**
 	 * Enriches employee object by setting parent ids to all the child objects
-	 * 
+	 *
 	 * @param employee
 	 * @param requestInfo
 	 */
@@ -294,7 +321,7 @@ public class EmployeeService {
 				.createdBy(requestInfo.getUserInfo().getUuid())
 				.createdDate(new Date().getTime())
 				.build();
-		
+
 		employee.getJurisdictions().stream().forEach(jurisdiction -> {
 			jurisdiction.setId(UUID.randomUUID().toString());
 			jurisdiction.setAuditDetails(auditDetails);
@@ -339,7 +366,7 @@ public class EmployeeService {
 		employee.setAuditDetails(auditDetails);
 		employee.setIsActive(true);
 	}
-	
+
 	/**
 	 * Fetches next value from the position sequence table
 	 * @return
@@ -352,7 +379,7 @@ public class EmployeeService {
 	 * Service method to update user. Performs the following:
 	 * 1. Enriches the employee object with required parameters.
 	 * 2. Updates user by making call to the user service.
-	 * 
+	 *
 	 * @param employeeRequest
 	 * @return
 	 */
@@ -373,10 +400,10 @@ public class EmployeeService {
 		//notificationService.sendReactivationNotification(employeeRequest);
 		return generateResponse(employeeRequest);
 	}
-	
+
 	/**
 	 * Updates the user by making call to the user service.
-	 * 
+	 *
 	 * @param employee
 	 * @param requestInfo
 	 */
@@ -393,7 +420,7 @@ public class EmployeeService {
 
 	/**
 	 * Enriches update request with required parameters.
-	 * 
+	 *
 	 * @param employee
 	 * @param requestInfo
 	 * @param existingEmployeesData
