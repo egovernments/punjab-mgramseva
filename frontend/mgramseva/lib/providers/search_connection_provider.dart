@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/search_connection.dart';
@@ -54,7 +55,6 @@ class SearchConnectionProvider with ChangeNotifier {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-
     if (formKey.currentState!.validate()) {
       searchconnection.setValues();
       try {
@@ -103,6 +103,51 @@ class SearchConnectionProvider with ChangeNotifier {
       }
     } else {
       autoValidation = true;
+    }
+  }
+
+  void fetchNonDemandGeneratedConnectionDetails(
+      context, String previousMeterReading) async {
+    FocusScope.of(context).unfocus();
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    try {
+      Loaders.showLoadingDialog(context);
+      Map<String, dynamic> query = {
+        'previousMeterReading': previousMeterReading.toString(),
+        'tenantId': commonProvider.userDetails?.selectedtenant?.code
+      };
+      var arguments ={"Mode": "update"};
+      var connectionresults =
+          SearchConnectionRepository().getNonDemandGeneratedWC(query);
+      // popping the loader
+      connectionresults.then(
+          (value) => {
+                Navigator.pop(context),
+                if (value.waterConnectionData!.length > 0 ||
+                    value.waterConnection!.length > 0)
+                  {
+                    waterConnections = value,
+                    Navigator.pushNamed(context, Routes.SEARCH_CONSUMER_RESULT,
+                        arguments: {
+                          ...query,
+                          ...arguments,
+                          "isNameSearch": false
+                        })
+                  }
+                else
+                  {
+                    Notifiers.getToastMessage(context,
+                        i18.searchWaterConnection.NO_CONNECTION_FOUND, "ERROR")
+                  }
+              }, onError: (e, s) {
+        Navigator.pop(context);
+        ErrorHandler().allExceptionsHandler(context, e, s);
+      });
+    } catch (e, s) {
+      Navigator.pop(context);
+      ErrorHandler().allExceptionsHandler(context, e, s);
     }
   }
 }
