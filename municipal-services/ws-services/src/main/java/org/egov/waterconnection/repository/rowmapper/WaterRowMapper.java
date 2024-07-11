@@ -224,7 +224,7 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 
 
 	}
-	public String getTimeStampFromEpoch(long epochTime) {
+	public Date getTimeStampFromEpoch(long epochTime) {
 		String timeStamp = "";
 		Date formatedDate= null;
 		String timeZone = wsConfiguration.getTimeZone();
@@ -239,6 +239,6 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 			log.error("EpochTime to be transformed :" + epochTime);
 			log.error("Exception while transforming epochTime to timestamp: {}", ExceptionUtils.getStackTrace(e));
 		}
-		return timeStamp;
+		return formatedDate;
 	}
 }
