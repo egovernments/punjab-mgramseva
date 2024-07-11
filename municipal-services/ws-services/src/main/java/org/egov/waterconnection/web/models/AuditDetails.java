@@ -33,12 +33,12 @@ public class AuditDetails {
 	private Long createdTime;
 
 	@JsonProperty("createdDate")
-	private Date createdDate;
+	private String  createdDate;
 
 	@JsonProperty("lastModifiedTime")
 	private Long lastModifiedTime;
 
 	@JsonProperty("lastModifiedDate")
-	private Date lastModifiedDate;
+	private String lastModifiedDate;
 
 }

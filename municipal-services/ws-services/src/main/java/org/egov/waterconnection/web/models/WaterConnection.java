@@ -47,16 +47,16 @@ public class WaterConnection extends Connection {
 	@JsonProperty("paymentType")
 	private String paymentType = null;
 
-	public Date getLastDemandGenaratedDate() {
+	public String getLastDemandGenaratedDate() {
 		return lastDemandGenaratedDate;
 	}
 
-	public void setLastDemandGenaratedDate(Date lastDemandGenaratedDate) {
+	public void setLastDemandGenaratedDate(String lastDemandGenaratedDate) {
 		this.lastDemandGenaratedDate = lastDemandGenaratedDate;
 	}
 
 	@JsonProperty("lastDemandGeneratedDate")
-	private Date lastDemandGenaratedDate = null;
+	private String lastDemandGenaratedDate = null;
 
 
 	public WaterConnection waterSource(String waterSource) {
