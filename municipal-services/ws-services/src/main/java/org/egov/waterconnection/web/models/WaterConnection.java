@@ -1,5 +1,6 @@
 package org.egov.waterconnection.web.models;
 
+import java.util.Date;
 import java.util.Objects;
 
 import javax.validation.constraints.Size;
@@ -45,6 +46,19 @@ public class WaterConnection extends Connection {
 
 	@JsonProperty("paymentType")
 	private String paymentType = null;
+
+	@JsonProperty("lastDemandGeneratedDate")
+	public Date getLastDemandGenaratedDate() {
+		return lastDemandGenaratedDate;
+	}
+
+	public void setLastDemandGenaratedDate(Date lastDemandGenaratedDate) {
+		this.lastDemandGenaratedDate = lastDemandGenaratedDate;
+	}
+
+	@JsonProperty("lastDemandGenaratedDate")
+	private Date lastDemandGenaratedDate = null;
+
 
 	public WaterConnection waterSource(String waterSource) {
 		this.waterSource = waterSource;

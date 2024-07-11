@@ -312,5 +312,8 @@ public class WSConfiguration {
 
 	@Value("${sms.feedback.notification.enabled}")
 	private boolean isSMSForFeedbackNotificationEnabled;
+
+	@Value("${egov.timestamp.timeZone}")
+	private String timeZone;
     
 }
