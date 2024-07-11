@@ -47,7 +47,6 @@ public class WaterConnection extends Connection {
 	@JsonProperty("paymentType")
 	private String paymentType = null;
 
-	@JsonProperty("lastDemandGeneratedDate")
 	public Date getLastDemandGenaratedDate() {
 		return lastDemandGenaratedDate;
 	}
@@ -56,7 +55,7 @@ public class WaterConnection extends Connection {
 		this.lastDemandGenaratedDate = lastDemandGenaratedDate;
 	}
 
-	@JsonProperty("lastDemandGenaratedDate")
+	@JsonProperty("lastDemandGeneratedDate")
 	private Date lastDemandGenaratedDate = null;
 
 
