@@ -3,14 +3,14 @@ package org.egov.waterconnection.repository.rowmapper;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.egov.tracer.model.CustomException;
-import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.web.models.*;
 import org.egov.waterconnection.web.models.Connection.StatusEnum;
@@ -29,7 +29,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Component
-@Slf4j
 public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>> {
 
 	@Autowired
@@ -44,9 +43,6 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 	public void setFull_count(int full_count) {
 		this.full_count = full_count;
 	}
-
-	@Autowired
-	private WSConfiguration wsConfiguration;
 	
 	@Override
 	public List<WaterConnection> extractData(ResultSet rs) throws SQLException, DataAccessException {
@@ -114,7 +110,7 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 				additionalDetails.put("lastDemandGeneratedDate", rs.getString("taxperiodto"));
 
 				currentWaterConnection.setAdditionalDetails(additionalDetails);
-				currentWaterConnection.setLastDemandGenaratedDate(getTimeStampFromEpoch(rs.getLong("taxperiodto")));
+				currentWaterConnection.setLastDemandGenaratedDate(rs.getLong("taxperiodto"));
 				currentWaterConnection
 						.processInstance(ProcessInstance.builder().action((rs.getString("action"))).build());
 				currentWaterConnection.setPropertyId(rs.getString("property_id"));
@@ -218,24 +214,5 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 					.ownerType(rs.getString("connectionholdertype")).isPrimaryOwner(isPrimaryOwner).uuid(uuid).build();
 			waterConnection.addConnectionHolderInfo(connectionHolderInfo);
 		}
-
-
-	}
-	public Date getTimeStampFromEpoch(long epochTime) {
-		String timeStamp = "";
-		Date formatedDate= null;
-		String timeZone = wsConfiguration.getTimeZone();
-		try {
-			Date date = new Date(epochTime);
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-			dateFormat.setTimeZone(java.util.TimeZone.getTimeZone(timeZone));
-			timeStamp = dateFormat.format(date);
-			formatedDate= dateFormat.parse(timeStamp);
-
-		} catch (Exception e) {
-			log.error("EpochTime to be transformed :" + epochTime);
-			log.error("Exception while transforming epochTime to timestamp: {}", ExceptionUtils.getStackTrace(e));
-		}
-		return formatedDate;
 	}
 }
