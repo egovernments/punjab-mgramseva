@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Date;
-
 /**
  * Collection of audit related fields used by most models
  */
@@ -32,13 +30,7 @@ public class AuditDetails {
 	@JsonProperty("createdTime")
 	private Long createdTime;
 
-	@JsonProperty("createdDate")
-	private Date  createdDate;
-
 	@JsonProperty("lastModifiedTime")
 	private Long lastModifiedTime;
-
-	@JsonProperty("lastModifiedDate")
-	private Date lastModifiedDate;
 
 }

@@ -32,6 +32,7 @@ import org.egov.waterconnection.producer.WaterConnectionProducer;
 import org.egov.waterconnection.repository.ElasticSearchRepository;
 import org.egov.waterconnection.repository.WaterDaoImpl;
 import org.egov.waterconnection.repository.WaterRepository;
+import org.egov.waterconnection.repository.rowmapper.WaterRowMapper;
 import org.egov.waterconnection.util.WaterServicesUtil;
 import org.egov.waterconnection.validator.ActionValidator;
 import org.egov.waterconnection.validator.MDMSValidator;
@@ -154,6 +155,7 @@ public class WaterServiceImpl implements WaterService {
 		System.out.println("calling save user   ");
 
 		enrichmentService.postStatusEnrichment(waterConnectionRequest);
+		waterConnectionRequest.getWaterConnection().setLastDemandGenaratedDate(new WaterRowMapper().getTimeStampFromEpoch(waterConnectionRequest.getWaterConnection().getPreviousReadingDate()));
 		waterDaoImpl.saveWaterConnection(waterConnectionRequest);
 
 		if (null != waterConnectionRequest.getWaterConnection() && null != waterConnectionRequest.getWaterConnection().getPaymentType()
@@ -281,6 +283,7 @@ public class WaterServiceImpl implements WaterService {
 		userService.createUser(waterConnectionRequest);
 		enrichmentService.postStatusEnrichment(waterConnectionRequest);
 		boolean isStateUpdatable = waterServiceUtil.getStatusForUpdate(businessService, previousApplicationStatus);
+		waterConnectionRequest.getWaterConnection().setLastDemandGenaratedDate(searchResult.getLastDemandGenaratedDate());
 		waterDaoImpl.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
 		postForMeterReading(waterConnectionRequest, WCConstants.UPDATE_APPLICATION);
 		return Arrays.asList(waterConnectionRequest.getWaterConnection());

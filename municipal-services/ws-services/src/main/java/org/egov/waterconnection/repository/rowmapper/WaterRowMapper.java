@@ -125,11 +125,8 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 
 				AuditDetails auditdetails = AuditDetails.builder().createdBy(rs.getString("ws_createdBy"))
 						.createdTime(rs.getLong("ws_createdTime")).lastModifiedBy(rs.getString("ws_lastModifiedBy"))
-						.lastModifiedTime(rs.getLong("ws_lastModifiedTime")).
-						lastModifiedDate(getTimeStampFromEpoch(rs.getLong("ws_lastModifiedTime"))).createdDate(getTimeStampFromEpoch(rs.getLong("ws_createdTime"))).build();
+						.lastModifiedTime(rs.getLong("ws_lastModifiedTime")).build();
 				currentWaterConnection.setAuditDetails(auditdetails);
-
-
 
 				connectionListMap.put(Id, currentWaterConnection);
 			}
