@@ -34,6 +34,8 @@ public class WorkflowNotificationConsumer {
 	public void listen(final HashMap<String, Object> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
 		try {
 			WaterConnectionRequest waterConnectionRequest = mapper.convertValue(record, WaterConnectionRequest.class);
+			log.info("waterConnectionRequest:"+waterConnectionRequest);
+			log.info("waterConnection:"+waterConnectionRequest.getWaterConnection());
 			
 			workflowNotificationService.process(waterConnectionRequest, topic);
 		} catch (Exception ex) {

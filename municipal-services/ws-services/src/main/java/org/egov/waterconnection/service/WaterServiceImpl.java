@@ -282,7 +282,7 @@ public class WaterServiceImpl implements WaterService {
 		userService.createUser(waterConnectionRequest);
 		enrichmentService.postStatusEnrichment(waterConnectionRequest);
 		boolean isStateUpdatable = waterServiceUtil.getStatusForUpdate(businessService, previousApplicationStatus);
-		waterConnectionRequest.getWaterConnection().setLastDemandGenaratedDate(searchResult.getLastDemandGenaratedDate());
+		waterConnectionRequest.getWaterConnection().setLastDemandGenaratedDate(waterConnectionRequest.getWaterConnection().getPreviousReadingDate());
 		waterDaoImpl.updateWaterConnection(waterConnectionRequest, isStateUpdatable);
 		postForMeterReading(waterConnectionRequest, WCConstants.UPDATE_APPLICATION);
 		return Arrays.asList(waterConnectionRequest.getWaterConnection());
