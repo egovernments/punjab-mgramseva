@@ -154,7 +154,6 @@ public class WaterServiceImpl implements WaterService {
 		System.out.println("calling save user   ");
 
 		enrichmentService.postStatusEnrichment(waterConnectionRequest);
-		waterConnectionRequest.getWaterConnection().setLastDemandGenaratedDate(waterConnectionRequest.getWaterConnection().getPreviousReadingDate());
 		waterDaoImpl.saveWaterConnection(waterConnectionRequest);
 
 		if (null != waterConnectionRequest.getWaterConnection() && null != waterConnectionRequest.getWaterConnection().getPaymentType()
