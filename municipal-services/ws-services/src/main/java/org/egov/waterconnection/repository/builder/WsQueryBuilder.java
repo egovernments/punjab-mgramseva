@@ -193,7 +193,7 @@ public class WsQueryBuilder {
 			"AND p.instrumentstatus = 'APPROVED' AND p.paymentstatus NOT IN ('CANCELLED') " +
 			"WHERE dem.consumercode = ? AND conn.tenantId = ? AND conn.status = 'Active' AND dem.status = 'ACTIVE' " +
 			"GROUP BY conn.connectionno, conn.oldconnectionno,dem.id, dem.taxperiodfrom, " +
-			"dem.taxperiodto, dem.createdtime, dd.taxheadcode, dd.taxamount ORDER BY startdate, code, collectiondate;";
+			"dem.taxperiodto, dem.createdtime, dd.taxheadcode, dd.taxamount ORDER BY startdate, code, collectiondate";
 			
 	/**
 	 * 
