@@ -41,6 +41,7 @@
 package org.egov.hrms.web.contract;
 
 import java.util.List;
+import java.util.Map;
 
 import org.egov.common.contract.response.ResponseInfo;
 import org.egov.hrms.model.Employee;
@@ -54,6 +55,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import javax.validation.Valid;
+
 @Builder
 @AllArgsConstructor
 @EqualsAndHashCode
@@ -68,5 +72,8 @@ public class EmployeeResponse {
 
 	@JsonProperty("Employees")
 	private List<Employee> employees;
+
+	@JsonProperty("EmployeeDate")
+	private List<Map<String, Object>> employeeData = null;
 
 }

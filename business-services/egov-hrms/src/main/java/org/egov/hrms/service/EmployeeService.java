@@ -41,6 +41,7 @@
 package org.egov.hrms.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -186,18 +187,10 @@ public class EmployeeService {
 					EmployeeSearchCriteria employeeSearchCriteria = EmployeeSearchCriteria.builder().textSearch(criteria.getTextSearch()).tenantId(criteria.tenantId).build();
 					Object esResponse = esService.fuzzySearchProperties(employeeSearchCriteria,userUUIDs);
 					UserResponse userResponse = userService.getUser(requestInfo, userSearchCriteria);
-					userChecked =true;
-					if(!CollectionUtils.isEmpty(userResponse.getUser())) {
-						mapOfUsers.putAll(userResponse.getUser().stream()
-								.collect(Collectors.toMap(User::getUuid, Function.identity())));
-					}
-					List<String> uuids = userResponse.getUser().stream().map(User :: getUuid).collect(Collectors.toList());
-					userUUIDs.addAll(uuids);
+					List<Map<String, Object>> data=hrmEmployeeSearch(esResponse);
+					return EmployeeResponse.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfo, true))
+							.employeeData(data).build();
 				}
-				if(!CollectionUtils.isEmpty(criteria.getUuids()))
-					criteria.setUuids(criteria.getUuids().stream().filter(userUUIDs::contains).collect(Collectors.toList()));
-				else
-					criteria.setUuids(userUUIDs);
 			}
 		}
 		if(userChecked)
@@ -224,8 +217,31 @@ public class EmployeeService {
 				.employees(employees).build();
 	}
 
+	private List<Map<String, Object>> hrmEmployeeSearch(Object esResponse) {
+		List<Map<String, Object>> data;
+		try {
+			data = hrmsDataResponse(esResponse);
+		} catch (Exception e) {
+			throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND",
+					"Could not find user or water connection details !");
+		}
+		return data;
+	}
 
-	public List<String> fuzzyNameSearchForEmployee(String tenantId, String name) throws Exception {
+	private List<Map<String, Object>> hrmsDataResponse(Object esResponse) {
+
+		List<Map<String, Object>> data;
+		try {
+			data = JsonPath.read(esResponse, "$..Data");
+		} catch (Exception e) {
+			throw new CustomException("PARSING_ERROR", "Failed to extract data from es response");
+		}
+
+		return data;
+	}
+
+
+	/*public List<String> fuzzyNameSearchForEmployee(String tenantId, String name) throws Exception {
 			SearchRequest searchRequest = new SearchRequest("hrmsindex");
 
 			// Building the query
@@ -242,7 +258,7 @@ public class EmployeeService {
 			SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
 
 			return searchResponse;
-	}
+	}*/
 	/**
 	 * Plain search for employees
 	 *

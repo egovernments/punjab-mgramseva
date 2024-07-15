@@ -108,7 +108,7 @@ public class EsService {
             List<JsonNode> fuzzyClauses = new LinkedList<>();
 
             if(StringUtils.isNotBlank(criteria.getTextSearch())) {
-                fuzzyClauses.add(getInnerNode(criteria.getTextSearch(),"Data.connectionHolders.name" , config.getNameFuziness()));
+                fuzzyClauses.add(getInnerNode(criteria.getTextSearch(),"Data.user.name" , config.getNameFuziness()));
             }
 
             if(StringUtils.isNotBlank(criteria.getTenantId())) {
