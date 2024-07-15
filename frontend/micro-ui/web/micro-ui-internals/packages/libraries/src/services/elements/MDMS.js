@@ -63,6 +63,21 @@ const initRequestBody = (tenantId) => ({
     ],
   },
 });
+const initRequestBodyWithOutTenent = (tenantId) => ({
+  MdmsCriteria: {
+    tenantId,
+    moduleDetails: [
+      {
+        moduleName: "common-masters",
+        masterDetails: [{ name: "Department" }, { name: "Designation" }, { name: "StateInfo" }, { name: "wfSlaConfig" }, { name: "uiHomePage" }],
+      },
+      {
+        moduleName: "DIGIT-UI",
+        masterDetails: [{ name: "ApiCachingSettings" }],
+      },
+    ],
+  },
+});
 
 const getCriteria = (tenantId, moduleDetails) => {
   return {
@@ -1475,6 +1490,14 @@ export const MdmsService = {
       serviceName: "mdmsInit",
       url: Urls.MDMS,
       data: initRequestBody(stateCode),
+      useCache: true,
+      params: { tenantId: stateCode },
+    }),
+  initWithOutTenent: (stateCode) =>
+    ServiceRequest({
+      serviceName: "mdmsInit",
+      url: Urls.MDMS,
+      data: initRequestBodyWithOutTenent(stateCode),
       useCache: true,
       params: { tenantId: stateCode },
     }),
