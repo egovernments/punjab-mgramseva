@@ -326,7 +326,7 @@ const OpenView = () => {
       {payments &&
         payments.map((payment) => {
           return (
-            <Card style={{ maxWidth: "95vw", paddingLeft: "1.5rem", marginTop: "2rem" }}>
+            <Card style={{ maxWidth: "95vw",      paddingLeft: "1.5rem", marginTop: "2rem" }}>
               <StatusTable>
                 <Row
                   label={t("OP_RECEIPT_NO")}
@@ -354,7 +354,7 @@ const OpenView = () => {
 
       <ActionBar style={{ display: "flex", justifyContent: "flex-end", alignItems: "baseline" }}>
         {/* {displayMenu ? <Menu localeKeyPrefix={"ES_COMMON"} options={ACTIONS} t={t} onSelect={onActionSelect} /> : null} */}
-        <SubmitBar disabled={Number(bill?.totalAmount) === 0 || !bill} onSubmit={onSubmit} label={t("OP_PROCEED_TO_PAY")} />
+        <SubmitBar disabled={Number(bill?.totalAmount) <= 0  ||Number(bill?.totalAmount) === 0 || !bill} onSubmit={onSubmit} label={t("OP_PROCEED_TO_PAY")} />
       </ActionBar>
       {showToast && (
         <Toast
