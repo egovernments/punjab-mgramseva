@@ -1544,7 +1544,7 @@ public class DemandService {
 					BigDecimal tax = netPayableAmountWithouttax.multiply(taxPercentage.divide(WSCalculationConstant.HUNDRED));
 					//round off to next higest number
 					tax = roundOffTax(tax);
-					if(tax.compareTo(BigDecimal.ZERO) != 0) {
+					if(tax.compareTo(BigDecimal.ZERO) > 0) {
 						DemandDetail timeDemandDetail = DemandDetail.builder().demandId(demand.getId())
 								.taxHeadMasterCode(WSCalculationConstant.WS_TIME_PENALTY)
 								.taxAmount(tax)
