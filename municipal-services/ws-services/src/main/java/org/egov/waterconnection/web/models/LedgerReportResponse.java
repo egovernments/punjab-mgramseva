@@ -12,6 +12,12 @@ public class LedgerReportResponse
     @JsonProperty("ledgerReport")
     private List<LedgerReport> ledgerReport;
 
+    @JsonProperty("tenantName")
+    private String tenantName;
+
+    @JsonProperty("financialYear")
+    private String financialYear;
+
     @JsonProperty("responseInfo")
     private ResponseInfo responseInfo = null;
 }

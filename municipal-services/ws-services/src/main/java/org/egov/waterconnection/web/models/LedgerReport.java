@@ -50,6 +50,18 @@ public class LedgerReport
     @JsonProperty("balanceLeft")
     private BigDecimal balanceLeft;
 
+    @JsonProperty("consumerName")
+    private String consumerName = null;
+
+    @JsonProperty("connectionNo")
+    private String connectionNo = null;
+
+    @JsonProperty("oldConnectionNo")
+    private String oldConnectionNo = null;
+
+    @JsonProperty("userId")
+    private String userId = null;
+
     public LedgerReport(String monthAndYear)
     {
         this.monthAndYear = monthAndYear;

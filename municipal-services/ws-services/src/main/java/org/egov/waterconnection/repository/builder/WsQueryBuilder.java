@@ -177,7 +177,7 @@ public class WsQueryBuilder {
 			"where dd.taxheadcode='10101' and d.status ='ACTIVE' and  d.businessservice='WS' and " +
 			"d.tenantid=?) order by connectionno;";
 
-	public static final String LEDGER_REPORT_QUERY = "SELECT conn.connectionno as connectionNo,conn.oldconnectionno," +
+	public static final String LEDGER_REPORT_QUERY = "SELECT connectionholder.userid as uuid,conn.connectionno as connectionNo,conn.oldconnectionno," +
 			"to_timestamp(dem.taxperiodfrom/1000)::date as startdate,to_timestamp(dem.taxperiodto/1000)::date as enddate," +
 			"to_timestamp(dem.createdtime/1000)::date as demandGenerationDate," +
 			"dd.taxheadcode as code,dd.taxamount as taxamount," +
@@ -192,8 +192,8 @@ public class WsQueryBuilder {
 			"LEFT JOIN egcl_payment p ON p.id = pd.paymentid AND p.tenantid = 'pb.poohlahjgfid' " +
 			"AND p.instrumentstatus = 'APPROVED' AND p.paymentstatus NOT IN ('CANCELLED') " +
 			"WHERE dem.consumercode = ? AND conn.tenantId = ? AND conn.status = 'Active' AND dem.status = 'ACTIVE' " +
-			"GROUP BY conn.connectionno, conn.oldconnectionno,dem.id, dem.taxperiodfrom, " +
-			"dem.taxperiodto, dem.createdtime, dd.taxheadcode, dd.taxamount ORDER BY startdate, code, collectiondate";
+			"GROUP BY conn.connectionno, conn.oldconnectionno,connectionholder.userid,dem.id, dem.taxperiodfrom, " +
+			"dem.taxperiodto, dem.createdtime, dd.taxheadcode, dd.taxamount ORDER BY enddate, code, collectiondate";
 			
 	/**
 	 * 

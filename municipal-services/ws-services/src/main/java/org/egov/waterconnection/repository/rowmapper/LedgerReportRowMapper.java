@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.waterconnection.service.UserService;
 import org.egov.waterconnection.web.models.LedgerReport;
+import org.egov.waterconnection.web.models.OwnerInfo;
+import org.egov.waterconnection.web.models.users.UserDetailResponse;
+import org.egov.waterconnection.web.models.users.UserSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -79,10 +82,36 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
                 ledgerReport.setBalanceLeft(ledgerReport.getTotal_due_amount().subtract(ledgerReport.getPaid()));
                 previousBalanceLeft = ledgerReport.getBalanceLeft();
             }
+            ledgerReport.setConnectionNo(resultSet.getString("connectionno"));
+            ledgerReport.setOldConnectionNo(resultSet.getString("oldconnectionno"));
+            ledgerReport.setUserId(resultSet.getString("uuid"));
             log.info("Data inserted into map "+ledgerReport.toString());
             ledgerReports.put(monthAndYear, ledgerReport);
         }
         ledgerReportList.addAll(ledgerReports.values());
+        if(!ledgerReportList.isEmpty())
+        {
+            enrichConnectionHolderDetails(ledgerReportList);
+        }
         return ledgerReportList;
+    }
+
+    private void enrichConnectionHolderDetails(List<LedgerReport> ledgerReportList) {
+        Set<String> connectionHolderIds = new HashSet<>();
+        for (LedgerReport ledgerReport : ledgerReportList) {
+            connectionHolderIds.add(ledgerReport.getUserId());
+        }
+        UserSearchRequest userSearchRequest = new UserSearchRequest();
+        userSearchRequest.setUuid(connectionHolderIds);
+        UserDetailResponse userDetailResponse = userService.getUser(userSearchRequest);
+        enrichConnectionHolderInfo(userDetailResponse, ledgerReportList);
+    }
+
+    private void enrichConnectionHolderInfo(UserDetailResponse userDetailResponse,
+                                            List<LedgerReport> ledgerReportList) {
+        List<OwnerInfo> connectionHolderInfos = userDetailResponse.getUser();
+        Map<String, OwnerInfo> userIdToConnectionHolderMap = new HashMap<>();
+        connectionHolderInfos.forEach(user -> userIdToConnectionHolderMap.put(user.getUuid(), user));
+        ledgerReportList.forEach(ledgerReport-> ledgerReport.setConsumerName(userIdToConnectionHolderMap.get(ledgerReport.getUserId()).getName()));
     }
 }
