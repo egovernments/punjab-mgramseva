@@ -1,6 +1,7 @@
 package org.egov.waterconnection.repository.rowmapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.egov.waterconnection.service.UserService;
 import org.egov.waterconnection.web.models.LedgerReport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.*;
 import java.time.temporal.ChronoUnit;
 
 
+@Slf4j
 @Component
 public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerReport>> {
 
@@ -77,6 +79,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
                 ledgerReport.setBalanceLeft(ledgerReport.getTotal_due_amount().subtract(ledgerReport.getPaid()));
                 previousBalanceLeft = ledgerReport.getBalanceLeft();
             }
+            log.info("Data inserted into map "+ledgerReport.toString());
             ledgerReports.put(monthAndYear, ledgerReport);
         }
         ledgerReportList.addAll(ledgerReports.values());

@@ -183,7 +183,7 @@ public class WsQueryBuilder {
 			"dd.taxheadcode as code,dd.taxamount as taxamount," +
 			"COALESCE(SUM(p.totaldue), 0) as due,COALESCE(SUM(p.totalamountpaid), 0) as paid," +
 			"MAX(to_timestamp(p.transactiondate/1000))::date as collectiondate," +
-			"MAX(pd.receiptnumber) as receiptno" +
+			"MAX(pd.receiptnumber) as receiptno " +
 			"FROM eg_ws_connection conn INNER JOIN eg_ws_connectionholder connectionholder " +
 			"ON connectionholder.connectionid = conn.id " +
 			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno INNER JOIN " +
