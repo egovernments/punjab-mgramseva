@@ -264,18 +264,15 @@ const OpenView = () => {
               />
             </>
           )}
+        
+        </StatusTable>
+      </Card>
+
+      <Card style={{ maxWidth: "95vw", paddingLeft: "1.5rem",marginTop: "2rem", }}>
+        <StatusTable>
+      
           {bill ? (
-            <>
-              {/* <Row
-                label={t("OP_CONSUMER_NAME")}
-                text={bill?.payerName ? anonymizeHalfString(bill?.payerName) : t("ES_COMMON_NA")}
-                rowContainerStyle={{ border: "none" }}
-              />
-              <Row
-                label={t("OP_CONSUMER_PHNO")}
-                text={bill?.mobileNumber ? anonymizeHalfString(bill?.mobileNumber) : t("ES_COMMON_NA")}
-                rowContainerStyle={{ border: "none" }}
-              /> */}
+            <>             
               <Row
                 label={t("ES_PAYMENT_TAXHEADS")}
                 labelStyle={{ fontWeight: "bold" }}
