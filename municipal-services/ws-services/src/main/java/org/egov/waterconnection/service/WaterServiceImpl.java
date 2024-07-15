@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -861,5 +862,29 @@ public class WaterServiceImpl implements WaterService {
 		}
 		SearchCriteria criteria=SearchCriteria.builder().connectionNoSet(connectionNo).tenantId(tenantId).build();
 		 return search(criteria,requestInfo);
+	}
+
+	@Override
+	public List<LedgerReport> ledgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year) {
+		String[] years = year.split("-");
+		if (years.length != 2) {
+			throw new IllegalArgumentException("Invalid fiscal year format");
+		}
+		int startYear = Integer.parseInt(years[0]);
+		int endYear = Integer.parseInt(years[1]);
+
+		if (endYear != startYear + 1) {
+			throw new IllegalArgumentException("Invalid fiscal year range");
+		}
+
+		LocalDate startDate = LocalDate.of(startYear, 4, 1);
+		LocalDate endDate = LocalDate.of(endYear, 3, 31);
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		String formattedStartDate = startDate.format(formatter);
+		String formattedEndDate = endDate.format(formatter);
+
+		List<LedgerReport> list = waterDaoImpl.getLedgerReport(consumercode, tenantId, limit, offset, formattedStartDate, formattedEndDate);
+		return list;
 	}
 }

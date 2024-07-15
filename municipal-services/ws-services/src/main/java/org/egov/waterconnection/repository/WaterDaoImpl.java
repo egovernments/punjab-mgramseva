@@ -1,6 +1,7 @@
 package org.egov.waterconnection.repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,6 +49,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Repository
 public class WaterDaoImpl implements WaterDao {
+
+	@Autowired
+	private LedgerReportRowMapper ledgerReportRowMapper;
 
 	@Autowired
 	private DemandNotGeneratedRowMapper demandNotGeneratedRowMapper;
@@ -669,17 +673,46 @@ public class WaterDaoImpl implements WaterDao {
          return inactiveConsumerReportList;
     }
 
-	public List<ConsumersDemandNotGenerated> getConsumersByPreviousMeterReading(Long previousMeterReading, String tenantId)
-	{
-		StringBuilder query=new StringBuilder(wsQueryBuilder.DEMAND_NOT_GENERATED_QUERY);
+	public List<ConsumersDemandNotGenerated> getConsumersByPreviousMeterReading(Long previousMeterReading, String tenantId) {
+		StringBuilder query = new StringBuilder(wsQueryBuilder.DEMAND_NOT_GENERATED_QUERY);
 
-		List<Object> preparedStatement=new ArrayList<>();
+		List<Object> preparedStatement = new ArrayList<>();
 		preparedStatement.add(tenantId);
 		preparedStatement.add(previousMeterReading);
 		preparedStatement.add(tenantId);
 
-		log.info("Query for consumer demand not generated "+ query +" prepared statement "+ preparedStatement);
-		List<ConsumersDemandNotGenerated> consumersDemandNotGeneratedList=jdbcTemplate.query(query.toString(),preparedStatement.toArray(),demandNotGeneratedRowMapper);
+		log.info("Query for consumer demand not generated " + query + " prepared statement " + preparedStatement);
+		List<ConsumersDemandNotGenerated> consumersDemandNotGeneratedList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), demandNotGeneratedRowMapper);
 		return consumersDemandNotGeneratedList;
+	}
+
+	public List<LedgerReport> getLedgerReport(String consumercode, String tenantId, Integer limit, Integer offset,String startDate,String endDate) {
+		StringBuilder query = new StringBuilder(wsQueryBuilder.LEDGER_REPORT_QUERY);
+
+		List<Object> preparedStatement = new ArrayList<>();
+		preparedStatement.add(consumercode);
+		preparedStatement.add(tenantId);
+
+		Integer newlimit = wsConfiguration.getDefaultLimit();
+		Integer newoffset = wsConfiguration.getDefaultOffset();
+		if (limit == null && offset == null)
+			newlimit = wsConfiguration.getMaxLimit();
+		if (limit != null && limit <= wsConfiguration.getMaxLimit())
+			newlimit = limit;
+		if (limit != null && limit >= wsConfiguration.getMaxLimit())
+			newlimit = wsConfiguration.getMaxLimit();
+
+		if (offset != null)
+			newoffset = offset;
+
+		if (newlimit > 0) {
+			query.append(" offset ?  limit ? ;");
+			preparedStatement.add(newoffset);
+			preparedStatement.add(newlimit);
+		}
+
+		log.info("Query of ledger report:" + query + "and prepared statement" + preparedStatement);
+		List<LedgerReport> ledgerReportList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), ledgerReportRowMapper);
+		return ledgerReportList;
 	}
 }
