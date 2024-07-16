@@ -873,9 +873,9 @@ public class WaterServiceImpl implements WaterService {
 		int startYear = Integer.parseInt(years[0]);
 		int endYear = Integer.parseInt(years[1]);
 
-		if (endYear != startYear + 1) {
-			throw new IllegalArgumentException("Invalid fiscal year range");
-		}
+//		if (endYear != startYear + 1) {
+//			throw new IllegalArgumentException("Invalid fiscal year range");
+//		}
 
 		LocalDate startDate = LocalDate.of(startYear, 4, 1);
 		LocalDate endDate = LocalDate.of(startYear + 1, 3, 31);

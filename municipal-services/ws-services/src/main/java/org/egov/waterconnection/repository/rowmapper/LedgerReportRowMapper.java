@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.time.temporal.ChronoUnit;
@@ -101,7 +102,10 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
             ledgerReports.put(monthAndYear, ledgerReport);
         }
         for (Map.Entry<String, LedgerReport> entry : ledgerReports.entrySet()) {
-            LocalDate endDate = LocalDate.parse(entry.getKey(), DateTimeFormatter.ofPattern("MMMMyyyy"));
+            String monthAndYear = entry.getKey();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMMyyyy", Locale.ENGLISH);
+            YearMonth yearMonth = YearMonth.parse(monthAndYear, formatter);
+            LocalDate endDate = yearMonth.atDay(1);
             String code = entry.getValue().getCode();
             if (!endDate.isBefore(startDate) && !endDate.isAfter(this.endDate) && code.equals("10101")) {
                 ledgerReportList.add(entry.getValue());
