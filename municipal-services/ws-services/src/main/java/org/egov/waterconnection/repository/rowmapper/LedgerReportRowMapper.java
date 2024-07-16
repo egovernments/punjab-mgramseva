@@ -32,15 +32,17 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
     @Autowired
     private UserService userService;
 
-    LocalDate startDate;
-    LocalDate endDate;
+    LocalDate startDateLocalDate;
+    LocalDate endDateLocalDate;
 
     public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
+        this.startDateLocalDate = startDate;
+        log.info("start date sent from frontend "+startDate.toString());
     }
 
     public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
+        this.endDateLocalDate = endDate;
+        log.info("end date sent from frontend "+endDate.toString());
     }
 
     @Override
@@ -103,14 +105,16 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
         }
         for (Map.Entry<String, LedgerReport> entry : ledgerReports.entrySet()) {
             String monthAndYear = entry.getKey();
+            log.info("Month and year from map "+monthAndYear);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMMyyyy", Locale.ENGLISH);
             YearMonth yearMonth = YearMonth.parse(monthAndYear, formatter);
             LocalDate endDate = yearMonth.atDay(1);
             String code = entry.getValue().getCode();
-            if (!endDate.isBefore(startDate) && !endDate.isAfter(this.endDate) && code.equals("10101")) {
+            if (!endDate.isBefore(startDateLocalDate) && !endDate.isAfter(endDateLocalDate) && code.equals("10101")) {
                 ledgerReportList.add(entry.getValue());
             }
         }
+        log.info("ledger report list"+ledgerReportList);
 //        ledgerReportList.addAll(ledgerReports.values());
         if (!ledgerReportList.isEmpty()) {
             enrichConnectionHolderDetails(ledgerReportList);
