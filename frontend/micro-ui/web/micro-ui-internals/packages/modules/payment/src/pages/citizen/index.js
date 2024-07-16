@@ -15,10 +15,13 @@ const CitizenApp = ({ path }) => {
   
   return (
     <React.Fragment>
-      <div className="engagement-citizen-wrapper" style={{
+      <div className="engagement-citizen-wrapper" 
+      style={{
         width:"95vw",
-        marginTop:"2rem"
-      }}>
+        margin: "0 auto",
+        marginTop:"2rem",
+      }}
+      >
       {!excludeBackBtn?.some(url => location.pathname.includes(url)) && <BackButton>{t("CS_COMMON_BACK")}</BackButton>}
       <Switch>
           <PrivateRoute path={`${path}/sample`} component={() => <div> In Open Payment Module</div> } />

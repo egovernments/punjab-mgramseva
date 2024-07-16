@@ -76,6 +76,14 @@ export const UICustomizations = {
       // delete data.params;
       return data;
     },
+    MobileDetailsOnClick: (row, tenantId) => {
+      let link;
+      Object.keys(row).map((key) => {
+        if (key === "MASTERS_WAGESEEKER_ID")
+          link = `/${window.contextPath}/employee/masters/view-wageseeker?tenantId=${tenantId}&wageseekerId=${row[key]}`;
+      });
+      return link;
+    },
     additionalCustomizations: (row, key, column, value, t, searchResult) => {
 
       switch (key) {

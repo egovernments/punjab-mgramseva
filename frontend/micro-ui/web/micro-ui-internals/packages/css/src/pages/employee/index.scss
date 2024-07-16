@@ -477,8 +477,24 @@
       .hamburger-span {
         display: none;
       }
+
+    }
+    @media (min-width: 780px) {
+      .city{
+        object-fit: fill !important;
+        height: 48px !important;
+        width: 48px !important;
+      }
     }
   }
+
+  .hambuger-back-wrapper .city{
+    border-radius: 5px !important;
+    object-fit: contain !important;
+  }
+
+
+
 }
 
 @screen dt {
