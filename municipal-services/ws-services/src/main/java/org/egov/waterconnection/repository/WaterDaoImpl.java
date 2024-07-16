@@ -712,7 +712,9 @@ public class WaterDaoImpl implements WaterDao {
 		}
 
 		log.info("Query of ledger report:" + query + "and prepared statement" + preparedStatement);
-		ledgerReportRowMapper = new LedgerReportRowMapper(startDate,endDate);
+		ledgerReportRowMapper = new LedgerReportRowMapper();
+		ledgerReportRowMapper.setStartDate(startDate);
+		ledgerReportRowMapper.setEndDate(endDate);
 		return jdbcTemplate.query(query.toString(), preparedStatement.toArray(), ledgerReportRowMapper);
 	}
 }

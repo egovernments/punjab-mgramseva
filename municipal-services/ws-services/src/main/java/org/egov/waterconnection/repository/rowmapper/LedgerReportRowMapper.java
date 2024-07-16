@@ -34,8 +34,11 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
     LocalDate startDate;
     LocalDate endDate;
 
-    public LedgerReportRowMapper(LocalDate startDate, LocalDate endDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
