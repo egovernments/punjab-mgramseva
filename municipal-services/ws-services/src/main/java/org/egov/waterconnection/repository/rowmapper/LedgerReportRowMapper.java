@@ -31,6 +31,14 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
     @Autowired
     private UserService userService;
 
+    LocalDate startDate;
+    LocalDate endDate;
+
+    public LedgerReportRowMapper(LocalDate startDate, LocalDate endDate) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     @Override
     public List<LedgerReport> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         List<LedgerReport> ledgerReportList = new ArrayList<>();
@@ -85,12 +93,19 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
             ledgerReport.setConnectionNo(resultSet.getString("connectionno"));
             ledgerReport.setOldConnectionNo(resultSet.getString("oldconnectionno"));
             ledgerReport.setUserId(resultSet.getString("uuid"));
-            log.info("Data inserted into map "+ledgerReport.toString());
+            ledgerReport.setCode(code);
+            log.info("Data inserted into map " + ledgerReport.toString());
             ledgerReports.put(monthAndYear, ledgerReport);
         }
-        ledgerReportList.addAll(ledgerReports.values());
-        if(!ledgerReportList.isEmpty())
-        {
+        for (Map.Entry<String, LedgerReport> entry : ledgerReports.entrySet()) {
+            LocalDate endDate = LocalDate.parse(entry.getKey(), DateTimeFormatter.ofPattern("MMMMyyyy"));
+            String code = entry.getValue().getCode();
+            if (!endDate.isBefore(startDate) && !endDate.isAfter(this.endDate) && code.equals("10101")) {
+                ledgerReportList.add(entry.getValue());
+            }
+        }
+//        ledgerReportList.addAll(ledgerReports.values());
+        if (!ledgerReportList.isEmpty()) {
             enrichConnectionHolderDetails(ledgerReportList);
         }
         return ledgerReportList;
@@ -112,6 +127,6 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
         List<OwnerInfo> connectionHolderInfos = userDetailResponse.getUser();
         Map<String, OwnerInfo> userIdToConnectionHolderMap = new HashMap<>();
         connectionHolderInfos.forEach(user -> userIdToConnectionHolderMap.put(user.getUuid(), user));
-        ledgerReportList.forEach(ledgerReport-> ledgerReport.setConsumerName(userIdToConnectionHolderMap.get(ledgerReport.getUserId()).getName()));
+        ledgerReportList.forEach(ledgerReport -> ledgerReport.setConsumerName(userIdToConnectionHolderMap.get(ledgerReport.getUserId()).getName()));
     }
 }

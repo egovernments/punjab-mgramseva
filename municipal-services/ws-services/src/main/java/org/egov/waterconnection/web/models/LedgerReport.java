@@ -9,13 +9,15 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LedgerReport
-{
+public class LedgerReport {
     @JsonProperty("month")
     private String monthAndYear;
 
     @JsonProperty("demandGenerationDate")
     private String demandGenerationDate;
+
+    @JsonProperty("code")
+    private String code;
 
     @JsonProperty("monthlyCharges")
     private BigDecimal taxamount;
@@ -62,8 +64,7 @@ public class LedgerReport
     @JsonProperty("userId")
     private String userId = null;
 
-    public LedgerReport(String monthAndYear)
-    {
+    public LedgerReport(String monthAndYear) {
         this.monthAndYear = monthAndYear;
         this.taxamount = BigDecimal.ZERO;
         this.penalty = BigDecimal.ZERO;
