@@ -289,8 +289,6 @@ public class DemandGenerationConsumer {
 		Map<String, Object> masterMap = mDataService.loadMasterData(requestInfo,
 				tenantId);
 
-		log.info("connectionNos" + connectionNos.size());
-		log.info("connectionNos" + connectionNos);
 		log.info("dayStartTime:"+dayStartTime);
 		log.info("dayEndTime"+dayEndTime);
 
@@ -577,9 +575,12 @@ public class DemandGenerationConsumer {
 		String billingPeriod = bulkDemand.getBillingPeriod();
 		if (StringUtils.isEmpty(billingPeriod))
 			throw new CustomException("BILLING_PERIOD_PARSING_ISSUE", "Billing Period can not be empty!!");
-		log.info("CALL FROM TOPIC egov.generate.bulk.demand.manually.topic" );
+		log.info("CALL FROM TOPIC egov.generate.bulk.demand.manually.topic for tenantid:"
+				+bulkDemand.getTenantId()+" BillPeriod:"+billingPeriod+" Start Time:"+System.currentTimeMillis() );
 		generateDemandAndSendnotification(bulkDemand.getRequestInfo(), bulkDemand.getTenantId(), billingPeriod, billingMasterData,
 				isSendMessage, isManual);
+		log.info("System end time for Tenantid:"+bulkDemand.getTenantId()+" BillPeriod:"+billingPeriod+" end Time:"+System.currentTimeMillis());
+
 		
 	}
 	@KafkaListener(topics = {

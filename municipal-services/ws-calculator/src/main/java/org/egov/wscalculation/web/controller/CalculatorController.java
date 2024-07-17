@@ -79,6 +79,7 @@ public class CalculatorController {
 	
 	@PostMapping("/_bulkDemand")
 	public ResponseEntity<BulkDemandResponse> bulkDemand(@Valid @RequestBody BulkDemand bulkDemand) {
+		log.info("got call to generatedemand for tenantid:"+bulkDemand.getTenantId()+" period:"+bulkDemand.getBillingPeriod());
 		wSCalculationService.generateBulkDemandForTenant(bulkDemand);
 		BulkDemandResponse response = BulkDemandResponse.builder().message("Bulk demand generation process stated, you will be notified shortly!")
 				.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(bulkDemand.getRequestInfo(), true)).build();
