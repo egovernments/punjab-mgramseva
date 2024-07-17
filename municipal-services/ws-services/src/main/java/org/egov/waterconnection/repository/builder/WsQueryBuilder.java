@@ -180,20 +180,13 @@ public class WsQueryBuilder {
 	public static final String LEDGER_REPORT_QUERY = "SELECT connectionholder.userid as uuid,conn.connectionno as connectionNo,conn.oldconnectionno," +
 			"to_timestamp(dem.taxperiodfrom/1000)::date as startdate,to_timestamp(dem.taxperiodto/1000)::date as enddate," +
 			"to_timestamp(dem.createdtime/1000)::date as demandGenerationDate," +
-			"dd.taxheadcode as code,dd.taxamount as taxamount," +
-			"COALESCE(SUM(p.totaldue), 0) as due,COALESCE(SUM(p.totalamountpaid), 0) as paid," +
-			"MAX(to_timestamp(p.transactiondate/1000))::date as collectiondate," +
-			"MAX(pd.receiptnumber) as receiptno " +
+			"dd.taxheadcode as code,dd.taxamount as taxamount " +
 			"FROM eg_ws_connection conn INNER JOIN eg_ws_connectionholder connectionholder " +
 			"ON connectionholder.connectionid = conn.id " +
 			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno INNER JOIN " +
-			"egbs_demanddetail_v1 dd ON dd.demandid = dem.id LEFT JOIN egbs_billdetail_v1 bd " +
-			"ON bd.demandid = dem.id LEFT JOIN egcl_paymentdetail pd ON pd.billid = bd.billid " +
-			"LEFT JOIN egcl_payment p ON p.id = pd.paymentid AND p.tenantid = 'pb.poohlahjgfid' " +
-			"AND p.instrumentstatus = 'APPROVED' AND p.paymentstatus NOT IN ('CANCELLED') " +
+			"egbs_demanddetail_v1 dd ON dd.demandid = dem.id " +
 			"WHERE dem.consumercode = ? AND conn.tenantId = ? AND conn.status = 'Active' AND dem.status = 'ACTIVE' " +
-			"GROUP BY conn.connectionno, conn.oldconnectionno,connectionholder.userid,dem.id, dem.taxperiodfrom, " +
-			"dem.taxperiodto, dem.createdtime, dd.taxheadcode, dd.taxamount ORDER BY enddate, code, collectiondate";
+			"ORDER BY startdate";
 			
 	/**
 	 * 

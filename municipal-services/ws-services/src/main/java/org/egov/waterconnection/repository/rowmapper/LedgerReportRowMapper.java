@@ -49,8 +49,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
     public List<LedgerReport> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         List<LedgerReport> ledgerReportList = new ArrayList<>();
         Map<String, LedgerReport> ledgerReports = new HashMap<>();
-        BigDecimal previousBalanceLeft = BigDecimal.ZERO;
-        BigDecimal arrears = BigDecimal.ZERO;
+//        BigDecimal previousBalanceLeft = BigDecimal.ZERO;
+//        BigDecimal arrears = BigDecimal.ZERO;
 
         while (resultSet.next()) {
             LocalDate date = resultSet.getDate("enddate").toLocalDate();
@@ -66,16 +66,17 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
             LedgerReport ledgerReport = ledgerReports.getOrDefault(monthAndYear, new LedgerReport(monthAndYear));
 
             if (code.equals("10102")) {
-                ledgerReport.setArrears(taxamount);
-                ledgerReport.setMonthAndYear(monthAndYear);
-                arrears = resultSet.getBigDecimal("due").subtract(resultSet.getBigDecimal("paid"));
-            } else if (code.equals("WS_TIME_PENALTY") || code.equals("10201")) {
+//                ledgerReport.setArrears(taxamount);
+//                ledgerReport.setMonthAndYear(monthAndYear);
+//                arrears = resultSet.getBigDecimal("due").subtract(resultSet.getBigDecimal("paid"));
+            }
+            else if (code.equals("WS_TIME_PENALTY") || code.equals("10201")) {
                 ledgerReport.setPenalty(taxamount);
                 BigDecimal amount = ledgerReports.get(monthAndYear).getTaxamount() != null ? ledgerReports.get(monthAndYear).getTaxamount() : BigDecimal.ZERO;
                 ledgerReport.setTotalForCurrentMonth(taxamount.add(amount));
                 ledgerReport.setTotal_due_amount(ledgerReport.getTotalForCurrentMonth().add(ledgerReport.getArrears()));
-                ledgerReport.setBalanceLeft(ledgerReport.getTotal_due_amount().subtract(ledgerReport.getPaid()));
-                previousBalanceLeft = ledgerReport.getBalanceLeft();
+//                ledgerReport.setBalanceLeft(ledgerReport.getTotal_due_amount().subtract(ledgerReport.getPaid()));
+//                previousBalanceLeft = ledgerReport.getBalanceLeft();
             } else if (code.equals("10101")) {
                 ledgerReport.setMonthAndYear(monthAndYear);
                 ledgerReport.setDemandGenerationDate(demandGenerationDate);
@@ -83,39 +84,39 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
                 ledgerReport.setTotalForCurrentMonth(ledgerReport.getTaxamount().add(ledgerReport.getPenalty()));
                 ledgerReport.setDueDate(demandGenerationDateLocal.plus(10, ChronoUnit.DAYS).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
                 ledgerReport.setPenaltyAppliedDate(demandGenerationDateLocal.plus(11, ChronoUnit.DAYS).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-                ledgerReport.setCollectionDate(resultSet.getDate("collectiondate") != null ? resultSet.getDate("collectiondate").toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null);
-                ledgerReport.setReceiptNo(resultSet.getString("receiptno"));
-                ledgerReport.setPaid(resultSet.getBigDecimal("paid"));
-                if (arrears.equals(BigDecimal.ZERO)) {
-                    ledgerReport.setArrears(previousBalanceLeft);
-                } else {
-                    ledgerReport.setArrears(arrears);
-                    arrears = BigDecimal.ZERO;
-                }
+//                ledgerReport.setCollectionDate(resultSet.getDate("collectiondate") != null ? resultSet.getDate("collectiondate").toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null);
+//                ledgerReport.setReceiptNo(resultSet.getString("receiptno"));
+//                ledgerReport.setPaid(resultSet.getBigDecimal("paid"));
+//                if (arrears.equals(BigDecimal.ZERO)) {
+//                    ledgerReport.setArrears(previousBalanceLeft);
+//                } else {
+//                    ledgerReport.setArrears(arrears);
+//                    arrears = BigDecimal.ZERO;
+//                }
                 ledgerReport.setTotal_due_amount(ledgerReport.getTotalForCurrentMonth().add(ledgerReport.getArrears()));
-                ledgerReport.setBalanceLeft(ledgerReport.getTotal_due_amount().subtract(ledgerReport.getPaid()));
-                previousBalanceLeft = ledgerReport.getBalanceLeft();
+//                ledgerReport.setBalanceLeft(ledgerReport.getTotal_due_amount().subtract(ledgerReport.getPaid()));
+//                previousBalanceLeft = ledgerReport.getBalanceLeft();
+                ledgerReport.setCode(code);
             }
             ledgerReport.setConnectionNo(resultSet.getString("connectionno"));
             ledgerReport.setOldConnectionNo(resultSet.getString("oldconnectionno"));
             ledgerReport.setUserId(resultSet.getString("uuid"));
-            ledgerReport.setCode(code);
             log.info("Data inserted into map " + ledgerReport.toString());
             ledgerReports.put(monthAndYear, ledgerReport);
         }
-        for (Map.Entry<String, LedgerReport> entry : ledgerReports.entrySet()) {
-            String monthAndYear = entry.getKey();
-            log.info("Month and year from map "+monthAndYear);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMMyyyy", Locale.ENGLISH);
-            YearMonth yearMonth = YearMonth.parse(monthAndYear, formatter);
-            LocalDate endDate = yearMonth.atDay(1);
-            String code = entry.getValue().getCode();
-            if (!endDate.isBefore(startDateLocalDate) && !endDate.isAfter(endDateLocalDate) && code.equals("10101")) {
-                ledgerReportList.add(entry.getValue());
-            }
-        }
+//        for (Map.Entry<String, LedgerReport> entry : ledgerReports.entrySet()) {
+//            String monthAndYear = entry.getKey();
+//            log.info("Month and year from map "+monthAndYear);
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMMyyyy", Locale.ENGLISH);
+//            YearMonth yearMonth = YearMonth.parse(monthAndYear, formatter);
+//            LocalDate endDate = yearMonth.atDay(1);
+//            String code = entry.getValue().getCode();
+//            if (!endDate.isBefore(startDateLocalDate) && !endDate.isAfter(endDateLocalDate) && code.equals("10101")) {
+//                ledgerReportList.add(entry.getValue());
+//            }
+//        }
+        ledgerReportList.addAll(ledgerReports.values());
         log.info("ledger report list"+ledgerReportList);
-//        ledgerReportList.addAll(ledgerReports.values());
         if (!ledgerReportList.isEmpty()) {
             enrichConnectionHolderDetails(ledgerReportList);
         }

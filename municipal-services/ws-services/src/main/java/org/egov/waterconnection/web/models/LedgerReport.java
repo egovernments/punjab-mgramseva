@@ -17,7 +17,7 @@ public class LedgerReport {
     private String demandGenerationDate;
 
     @JsonProperty("code")
-    private String code;
+    private String code=null;
 
     @JsonProperty("monthlyCharges")
     private BigDecimal taxamount;
@@ -40,17 +40,17 @@ public class LedgerReport {
     @JsonProperty("penaltyAppliedOnDate")
     private String penaltyAppliedDate;
 
-    @JsonProperty("paymentCollectionDate")
-    private String collectionDate;
-
-    @JsonProperty("receiptNo")
-    private String receiptNo;
-
-    @JsonProperty("amountPaid")
-    private BigDecimal paid;
-
-    @JsonProperty("balanceLeft")
-    private BigDecimal balanceLeft;
+//    @JsonProperty("paymentCollectionDate")
+//    private String collectionDate;
+//
+//    @JsonProperty("receiptNo")
+//    private String receiptNo;
+//
+//    @JsonProperty("amountPaid")
+//    private BigDecimal paid;
+//
+//    @JsonProperty("balanceLeft")
+//    private BigDecimal balanceLeft;
 
     @JsonProperty("consumerName")
     private String consumerName = null;
@@ -69,8 +69,8 @@ public class LedgerReport {
         this.taxamount = BigDecimal.ZERO;
         this.penalty = BigDecimal.ZERO;
         this.totalForCurrentMonth = BigDecimal.ZERO;
-        this.paid = BigDecimal.ZERO;
-        this.balanceLeft = BigDecimal.ZERO;
+//        this.paid = BigDecimal.ZERO;
+//        this.balanceLeft = BigDecimal.ZERO;
 
     }
 }
