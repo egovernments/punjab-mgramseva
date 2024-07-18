@@ -180,24 +180,72 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   };
 
   const handleAddUnit = () => {
-    setjurisdictions((prev) => [
-      ...prev,
-      {
-        key: prev.length + 1,
-        hierarchy: null,
-        boundaryType: null,
-        boundary: null,
-        division: null,
-        divisionBoundary: [],
-        roles: [],
-      },
-    ]);
+    if(STATE_ADMIN){
+      if(!isEdit){
+        setjurisdictions((prev) => [
+          ...prev,
+          {
+            key: prev.length + 1,
+            hierarchy: null,
+            boundaryType: null,
+            boundary: null,
+            division: null,
+            divisionBoundary: [],
+            roles: [],
+          },
+        ]);
+        setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
+      }else{
+        setJuristictionsData((prev) => [
+          ...prev,
+          {
+            key: prev.length + 1,
+            hierarchy: null,
+            boundaryType: null,
+            boundary: null,
+            division: null,
+            divisionBoundary: [],
+            roles: [],
+          },
+        ]);
+        setJuristictionsData((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
+      }     
+
+    }else{
+      setjurisdictions((prev) => [
+        ...prev,
+        {
+          key: prev.length + 1,
+          hierarchy: null,
+          boundaryType: null,
+          boundary: null,
+          division: null,
+          divisionBoundary: [],
+          roles: [],
+        },
+      ]);
+      setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
+
+    }
+
+
+
   };
   const handleRemoveUnit = (unit) => {
     if(STATE_ADMIN){
-      const updatedJurisdictionsData = jurisdictionsData.filter(
-        (element) => element.key !== unit.key
-      );
+      let updatedJurisdictionsData = [];
+      if(!isEdit){
+         updatedJurisdictionsData = jurisdictions.filter(
+          (element) => element.key !== unit.key
+        );
+      }
+      else{
+         updatedJurisdictionsData = jurisdictionsData.filter(
+          (element) => element.key !== unit.key
+        );
+      }
+
+
       setJuristictionsData(updatedJurisdictionsData);
       setjurisdictions(updatedJurisdictionsData)
       if (FormData.errors?.Jurisdictions?.type == unit.key) {
@@ -206,6 +254,8 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       reviseIndexKeys();
 
     }
+
+
     else{
       if (unit.id) {
         let res = {
@@ -270,6 +320,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   if (isLoading && isUserDataLoading) {
     return <Loader />;
   }
+  console.log((isEdit && STATE_ADMIN),"isEdit && STATE_ADMIN");
   return (
     <div>
       {isEdit && STATE_ADMIN ? (
