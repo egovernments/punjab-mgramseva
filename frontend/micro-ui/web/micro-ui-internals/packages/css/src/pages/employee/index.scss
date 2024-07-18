@@ -369,6 +369,9 @@
       fill: theme(colors.white);
     }
   }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media (min-width: 640px) {

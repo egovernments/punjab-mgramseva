@@ -331,7 +331,7 @@ const OpenView = () => {
 
 
       <Header className="works-header-search" styles={{ marginLeft: "0.5rem",marginTop: "2rem", }}>
-        {t("ES_PAYMENT_TAXHEADS")}
+        {t("ES_PAYMENT_DETAILS_HEADER")}
       </Header>
 
 

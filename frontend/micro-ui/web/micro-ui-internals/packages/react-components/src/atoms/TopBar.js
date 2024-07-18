@@ -37,11 +37,14 @@ const TopBar = ({
   const paymentlogoUrl = isPaymentPath
     ? window?.globalConfigs?.getConfig?.("LOGO_URL") // Show payment logo if path matches
     : logoUrl;
+    console.log(isPaymentPath,"isPaymentPath");
   return (
     <div className="navbar">
       <div className="center-container back-wrapper">
-        <div className="hambuger-back-wrapper" style={{ justifyContent: "center",
-    alignItems: "center"}}>
+        <div className="hambuger-back-wrapper" style={{
+          justifyContent: "center",
+          alignItems: "center"
+        }}>
           {isMobile && !isPaymentPath && <Hamburger handleClick={toggleSidebar} />}
           <img
             className="city"
@@ -49,12 +52,12 @@ const TopBar = ({
             src={paymentlogoUrl || "https://cdn.jsdelivr.net/npm/@egovernments/digit-ui-css@1.0.7/img/m_seva_white_logo.png"}
             alt="mSeva"
           />
-          {  isPaymentPath && <img className="state" src={logoUrl} /> }
-           {!isPaymentPath && <h3>{cityOfCitizenShownBesideLogo}</h3>}
+          {isPaymentPath && <img className="state" src={logoUrl} />}
+          {!isPaymentPath && <h3>{cityOfCitizenShownBesideLogo}</h3>}
         </div>
 
         <div className="RightMostTopBarOptions">
-          {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn ? changeLanguage : null}
+          {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn || isPaymentPath  ? changeLanguage : null}
           {/* {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn ? (
             <div className="EventNotificationWrapper" onClick={onNotificationIconClick}>
               {notificationCountLoaded && notificationCount ? (
