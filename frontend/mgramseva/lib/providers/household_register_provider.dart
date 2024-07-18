@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
@@ -238,7 +239,8 @@ class HouseholdRegisterProvider with ChangeNotifier {
                     : null,
             callBack: onSort),
         TableHeader(i18.householdRegister.ACTIVE_INACTIVE,
-            isSortingRequired: false, apiKey: 'status'),
+            isSortingRequired: false, apiKey: 'leadgerReport'),
+            TableHeader("Ledger", apiKey: '/viewLeadger')
       ];
   List<TableHeader> get collectionHeaderListOLd => [
         TableHeader(i18.common.CONNECTION_ID,
@@ -293,6 +295,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
                     ? sortBy!.isAscending
                     : null,
             callBack: onSort),
+        
       ];
 
   List<TableDataRow> getCollectionsData(List<WaterConnection> list) {
@@ -415,6 +418,15 @@ class HouseholdRegisterProvider with ChangeNotifier {
                       Constants.CONNECTION_STATUS.last
                   ? ColorCodes.ACTIVE_COL
                   : ColorCodes.INACTIVE_COL)),
+      TableData(
+        '${'View'}',
+        apiKey: "viewLeadgerKey",
+        callBack: viewLeadger,        
+        style: TextStyle(
+            decoration:  TextDecoration.underline,
+            color:  Colors.blue 
+          ), 
+      ),
     ]);
   }
 
@@ -427,6 +439,12 @@ class HouseholdRegisterProvider with ChangeNotifier {
           'mode': 'collect',
           'status': waterConnection?.status
         });
+  }
+  viewLeadger(TableData tableData) {
+    log("Call Ledger View Here");
+    
+
+
   }
 
   onSort(TableHeader header) {

@@ -184,27 +184,56 @@ class _BillsTable extends State<BillsTable> {
 
   Widget _generateColumnRow(
       BuildContext context, int index, String input, constraints,
-      {TextStyle? style}) {
-    return Container(
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Text(
-              ApplicationLocalizations.of(context).translate(input),
-              style: style,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
-        ],
-      ),
-      width: widget.leftColumnWidth,
-      height: widget.tableData[index].tableRow.first.label.length > 28
-          ? columnRowIncreasedHeight(index)
-          : columnRowFixedHeight,
-      padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
-      alignment: Alignment.centerLeft,
-    );
+      {TextStyle? style, int? i}) {
+    var data = widget.tableData[index].tableRow[i ?? 0];
+    if (i != null) {
+      return InkWell(
+        onTap: (){
+          data.callBack!(data);
+        },
+        child: Container(
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  ApplicationLocalizations.of(context).translate(input),
+                  style: style,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              )
+            ],
+          ),
+          width: widget.leftColumnWidth,
+          height: widget.tableData[index].tableRow.first.label.length > 28
+              ? columnRowIncreasedHeight(index)
+              : columnRowFixedHeight,
+          padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
+          alignment: Alignment.centerLeft,
+        ),
+      );
+    } else {
+      return Container(
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Text(
+                ApplicationLocalizations.of(context).translate(input),
+                style: style,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+          ],
+        ),
+        width: widget.leftColumnWidth,
+        height: widget.tableData[index].tableRow.first.label.length > 28
+            ? columnRowIncreasedHeight(index)
+            : columnRowFixedHeight,
+        padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
+        alignment: Alignment.centerLeft,
+      );
+    }
   }
 
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
@@ -213,9 +242,20 @@ class _BillsTable extends State<BillsTable> {
     return LayoutBuilder(builder: (context, constraints) {
       var list = <Widget>[];
       for (int i = 1; i < data.tableRow.length; i++) {
-        list.add(_generateColumnRow(
-            context, index, data.tableRow[i].label, constraints,
-            style: data.tableRow[i].style));
+        if (data.tableRow[i].label == "View") {
+          log("${data.tableRow[i].label}");
+          list.add(
+            _generateColumnRow(
+                context, index, data.tableRow[i].label, constraints,
+                style: data.tableRow[i].style, i: i),
+          );
+        } else {
+          list.add(
+            _generateColumnRow(
+                context, index, data.tableRow[i].label, constraints,
+                style: data.tableRow[i].style),
+          );
+        }
       }
       return Container(
           color: index % 2 == 0 ? const Color(0xffEEEEEE) : Colors.white,
