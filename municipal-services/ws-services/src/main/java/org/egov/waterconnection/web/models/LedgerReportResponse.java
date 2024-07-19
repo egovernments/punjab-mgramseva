@@ -5,12 +5,13 @@ import lombok.Builder;
 import org.egov.common.contract.response.ResponseInfo;
 
 import java.util.List;
+import java.util.Map;
 
 @Builder
 public class LedgerReportResponse
 {
     @JsonProperty("ledgerReport")
-    private List<LedgerReport> ledgerReport;
+    private List<Map<String, Object>> ledgerReport;
 
     @JsonProperty("tenantName")
     private String tenantName;

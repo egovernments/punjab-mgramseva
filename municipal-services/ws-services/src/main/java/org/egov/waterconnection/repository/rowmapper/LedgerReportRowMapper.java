@@ -24,7 +24,7 @@ import java.time.temporal.ChronoUnit;
 
 @Slf4j
 @Component
-public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerReport>> {
+public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String, Object>>> {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -46,8 +46,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
 //    }
 
     @Override
-    public List<LedgerReport> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-        List<LedgerReport> ledgerReportList = new ArrayList<>();
+    public List<Map<String, Object>> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+        List<Map<String, Object>> monthlyRecordsList = new ArrayList<>();
         Map<String, LedgerReport> ledgerReports = new HashMap<>();
         BigDecimal previousBalanceLeft = BigDecimal.ZERO;
         BigDecimal arrears = BigDecimal.ZERO;
@@ -115,30 +115,38 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<LedgerRepo
 //                ledgerReportList.add(entry.getValue());
 //            }
 //        }
-        ledgerReportList.addAll(ledgerReports.values());
-        log.info("ledger report list"+ledgerReportList);
-        if (!ledgerReportList.isEmpty()) {
-            enrichConnectionHolderDetails(ledgerReportList);
+        for (Map.Entry<String, LedgerReport> entry : ledgerReports.entrySet()) {
+            Map<String, Object> record = new HashMap<>();
+            record.put(entry.getKey(), entry.getValue());
+            monthlyRecordsList.add(record);
         }
-        return ledgerReportList;
+        log.info("ledger report list"+monthlyRecordsList);
+        if (!monthlyRecordsList.isEmpty()) {
+            enrichConnectionHolderDetails(monthlyRecordsList);
+        }
+        return monthlyRecordsList;
     }
 
-    private void enrichConnectionHolderDetails(List<LedgerReport> ledgerReportList) {
+    private void enrichConnectionHolderDetails(List<Map<String, Object>> monthlyRecordsList) {
         Set<String> connectionHolderIds = new HashSet<>();
-        for (LedgerReport ledgerReport : ledgerReportList) {
+        for (Map<String, Object> record : monthlyRecordsList) {
+            LedgerReport ledgerReport = (LedgerReport) record.values().iterator().next();
             connectionHolderIds.add(ledgerReport.getDemand().getUserId());
         }
         UserSearchRequest userSearchRequest = new UserSearchRequest();
         userSearchRequest.setUuid(connectionHolderIds);
         UserDetailResponse userDetailResponse = userService.getUser(userSearchRequest);
-        enrichConnectionHolderInfo(userDetailResponse, ledgerReportList);
+        enrichConnectionHolderInfo(userDetailResponse, monthlyRecordsList);
     }
 
     private void enrichConnectionHolderInfo(UserDetailResponse userDetailResponse,
-                                            List<LedgerReport> ledgerReportList) {
+                                            List<Map<String, Object>> monthlyRecordsList) {
         List<OwnerInfo> connectionHolderInfos = userDetailResponse.getUser();
         Map<String, OwnerInfo> userIdToConnectionHolderMap = new HashMap<>();
         connectionHolderInfos.forEach(user -> userIdToConnectionHolderMap.put(user.getUuid(), user));
-        ledgerReportList.forEach(ledgerReport -> ledgerReport.getDemand().setConsumerName(userIdToConnectionHolderMap.get(ledgerReport.getDemand().getUserId()).getName()));
+        for (Map<String, Object> record : monthlyRecordsList) {
+            LedgerReport ledgerReport = (LedgerReport) record.values().iterator().next();
+            ledgerReport.getDemand().setConsumerName(userIdToConnectionHolderMap.get(ledgerReport.getDemand().getUserId()).getName());
+        }
     }
 }

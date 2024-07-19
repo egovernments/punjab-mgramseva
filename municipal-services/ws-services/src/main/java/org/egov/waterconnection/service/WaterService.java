@@ -1,6 +1,7 @@
 package org.egov.waterconnection.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -55,5 +56,5 @@ public interface WaterService {
 
 	WaterConnectionResponse getConsumersWithDemandNotGenerated(String previousMeterReading, String tenantId,RequestInfo requestInfo);
 
-	List<LedgerReport> ledgerReport(String consumercode, String tenantId, Integer offset, Integer limit,String year);
+	List<Map<String, Object>> ledgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year);
 }

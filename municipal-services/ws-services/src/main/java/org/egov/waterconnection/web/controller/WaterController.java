@@ -1,6 +1,7 @@
 package org.egov.waterconnection.web.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -246,7 +247,7 @@ public class WaterController {
 
 	@PostMapping("/ledger-report")
 	public ResponseEntity<LedgerReportResponse> getLedgerReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper, @RequestParam String consumercode, @RequestParam String tenantId, @RequestParam Integer offset, @RequestParam Integer limit, @RequestParam String year) {
-		List<LedgerReport> list = waterService.ledgerReport(consumercode, tenantId, offset, limit, year);
+		List<Map<String, Object>> list = waterService.ledgerReport(consumercode, tenantId, offset, limit, year);
 		LedgerReportResponse response = LedgerReportResponse.builder().ledgerReport(list).
 				responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true)).
 				tenantName(tenantId).financialYear(year).build();

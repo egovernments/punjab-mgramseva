@@ -865,7 +865,7 @@ public class WaterServiceImpl implements WaterService {
 	}
 
 	@Override
-	public List<LedgerReport> ledgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year) {
+	public List<Map<String, Object>> ledgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year) {
 		String[] years = year.split("-");
 		if (years.length != 2) {
 			throw new IllegalArgumentException("Invalid fiscal year format");
@@ -884,7 +884,7 @@ public class WaterServiceImpl implements WaterService {
 //		String formattedStartDate = startDate.format(formatter);
 //		String formattedEndDate = endDate.format(formatter);
 
-		List<LedgerReport> list = waterDaoImpl.getLedgerReport(consumercode, tenantId, limit, offset, startDate, endDate);
+		List<Map<String, Object>> list = waterDaoImpl.getLedgerReport(consumercode, tenantId, limit, offset, startDate, endDate);
 		return list;
 	}
 }
