@@ -72,7 +72,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             }
             else if (code.equals("WS_TIME_PENALTY") || code.equals("10201")) {
                 ledgerReport.getDemand().setPenalty(taxamount);
-                BigDecimal amount = ledgerReports.get(monthAndYear).getDemand().getTaxamount() != null ? ledgerReports.get(monthAndYear).getDemand().getTaxamount() : BigDecimal.ZERO;
+                BigDecimal amount = ledgerReport.getDemand().getTaxamount() != null ? ledgerReports.get(monthAndYear).getDemand().getTaxamount() : BigDecimal.ZERO;
                 ledgerReport.getDemand().setTotalForCurrentMonth(taxamount.add(amount));
                 ledgerReport.getDemand().setTotal_due_amount(ledgerReport.getDemand().getTotalForCurrentMonth().add(ledgerReport.getDemand().getArrears()));
 //                ledgerReport.setBalanceLeft(ledgerReport.getTotal_due_amount().subtract(ledgerReport.getPaid()));
