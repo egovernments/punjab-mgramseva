@@ -880,11 +880,11 @@ public class WaterServiceImpl implements WaterService {
 		LocalDate startDate = LocalDate.of(startYear, 4, 1);
 		LocalDate endDate = LocalDate.of(startYear + 1, 3, 31);
 
-//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//		String formattedStartDate = startDate.format(formatter);
-//		String formattedEndDate = endDate.format(formatter);
+		Long startDateTime = LocalDateTime.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth(), 0, 0, 0)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long endDateTime = LocalDateTime.of(endDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
-		List<Map<String, Object>> list = waterDaoImpl.getLedgerReport(consumercode, tenantId, limit, offset, startDate, endDate);
+		List<Map<String, Object>> list = waterDaoImpl.getLedgerReport(consumercode, tenantId, limit, offset, startDateTime, endDateTime);
 		return list;
 	}
 }

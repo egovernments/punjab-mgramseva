@@ -10,8 +10,8 @@ import lombok.*;
 public class LedgerReport
 {
     @JsonProperty("demand")
-    private DemandLedgerReport demand;
+    private DemandLedgerReport demand=null;
 
     @JsonProperty("payment")
-    private PaymentLedgerReport payment;
+    private PaymentLedgerReport payment=null;
 }

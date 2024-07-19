@@ -186,6 +186,7 @@ public class WsQueryBuilder {
 			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno INNER JOIN " +
 			"egbs_demanddetail_v1 dd ON dd.demandid = dem.id " +
 			"WHERE dem.consumercode = ? AND conn.tenantId = ? AND conn.status = 'Active' AND dem.status = 'ACTIVE' " +
+			"AND taxperiodfrom>=? AND taxperiodto<=? "+
 			"ORDER BY startdate";
 			
 	/**

@@ -685,12 +685,14 @@ public class WaterDaoImpl implements WaterDao {
 		return consumersDemandNotGeneratedList;
 	}
 
-	public List<Map<String, Object>> getLedgerReport(String consumercode, String tenantId, Integer limit, Integer offset, LocalDate startDate, LocalDate endDate) {
+	public List<Map<String, Object>> getLedgerReport(String consumercode, String tenantId, Integer limit, Integer offset, Long startDateTime, Long endDateTime) {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.LEDGER_REPORT_QUERY);
 
 		List<Object> preparedStatement = new ArrayList<>();
 		preparedStatement.add(consumercode);
 		preparedStatement.add(tenantId);
+		preparedStatement.add(startDateTime);
+		preparedStatement.add(endDateTime);
 
 		Integer newlimit = wsConfiguration.getDefaultLimit();
 		Integer newoffset = wsConfiguration.getDefaultOffset();
