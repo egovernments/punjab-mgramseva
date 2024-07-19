@@ -247,7 +247,7 @@ public class WaterController {
 
 	@PostMapping("/ledger-report")
 	public ResponseEntity<LedgerReportResponse> getLedgerReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper, @RequestParam String consumercode, @RequestParam String tenantId, @RequestParam Integer offset, @RequestParam Integer limit, @RequestParam String year) {
-		List<Map<String, Object>> list = waterService.ledgerReport(consumercode, tenantId, offset, limit, year);
+		List<Map<String, Object>> list = waterService.ledgerReport(consumercode, tenantId, offset, limit, year,requestInfoWrapper);
 		LedgerReportResponse response = LedgerReportResponse.builder().ledgerReport(list).
 				responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true)).
 				tenantName(tenantId).financialYear(year).build();

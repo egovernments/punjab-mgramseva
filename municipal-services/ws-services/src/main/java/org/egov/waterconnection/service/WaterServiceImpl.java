@@ -865,7 +865,7 @@ public class WaterServiceImpl implements WaterService {
 	}
 
 	@Override
-	public List<Map<String, Object>> ledgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year) {
+	public List<Map<String, Object>> ledgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year,RequestInfoWrapper requestInfoWrapper) {
 		String[] years = year.split("-");
 		if (years.length != 2) {
 			throw new IllegalArgumentException("Invalid fiscal year format");
@@ -884,7 +884,7 @@ public class WaterServiceImpl implements WaterService {
 				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 		Long endDateTime = LocalDateTime.of(endDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
-		List<Map<String, Object>> list = waterDaoImpl.getLedgerReport(consumercode, tenantId, limit, offset, startDateTime, endDateTime);
+		List<Map<String, Object>> list = waterDaoImpl.getLedgerReport(consumercode, tenantId, limit, offset, startDateTime, endDateTime,requestInfoWrapper);
 		return list;
 	}
 }

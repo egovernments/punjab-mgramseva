@@ -685,7 +685,7 @@ public class WaterDaoImpl implements WaterDao {
 		return consumersDemandNotGeneratedList;
 	}
 
-	public List<Map<String, Object>> getLedgerReport(String consumercode, String tenantId, Integer limit, Integer offset, Long startDateTime, Long endDateTime) {
+	public List<Map<String, Object>> getLedgerReport(String consumercode, String tenantId, Integer limit, Integer offset, Long startDateTime, Long endDateTime,RequestInfoWrapper requestInfoWrapper) {
 		StringBuilder query = new StringBuilder(wsQueryBuilder.LEDGER_REPORT_QUERY);
 
 		List<Object> preparedStatement = new ArrayList<>();
@@ -716,6 +716,7 @@ public class WaterDaoImpl implements WaterDao {
 //        LedgerReportRowMapper ledgerReportRowMapper = new LedgerReportRowMapper();
 //		ledgerReportRowMapper.setStartDate(startDate);
 //		ledgerReportRowMapper.setEndDate(endDate);
+		ledgerReportRowMapper.addPaymentDetails(consumercode,tenantId,requestInfoWrapper);
 		List<Map<String, Object>> ledgerReportList= jdbcTemplate.query(query.toString(), preparedStatement.toArray(), ledgerReportRowMapper);
 		return ledgerReportList;
 	}

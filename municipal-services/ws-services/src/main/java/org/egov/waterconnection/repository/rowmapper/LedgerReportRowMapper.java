@@ -2,9 +2,14 @@ package org.egov.waterconnection.repository.rowmapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.egov.waterconnection.repository.ServiceRequestRepository;
 import org.egov.waterconnection.service.UserService;
+import org.egov.waterconnection.util.WaterServicesUtil;
+import org.egov.waterconnection.web.models.DemandLedgerReport;
 import org.egov.waterconnection.web.models.LedgerReport;
 import org.egov.waterconnection.web.models.OwnerInfo;
+import org.egov.waterconnection.web.models.RequestInfoWrapper;
+import org.egov.waterconnection.web.models.collection.PaymentResponse;
 import org.egov.waterconnection.web.models.users.UserDetailResponse;
 import org.egov.waterconnection.web.models.users.UserSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +36,15 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private WaterServicesUtil waterServiceUtil;
+
+    @Autowired
+    private ObjectMapper mapper;
+
+    @Autowired
+    private ServiceRequestRepository serviceRequestRepository;
 
 //    LocalDate startDateLocalDate;
 //    LocalDate endDateLocalDate;
@@ -65,16 +79,21 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 
             LedgerReport ledgerReport = ledgerReports.getOrDefault(monthAndYear, new LedgerReport());
 
+            if (ledgerReport.getDemand() == null) {
+                ledgerReport.setDemand(new DemandLedgerReport());
+            }
+
             if (code.equals("10102")) {
-                ledgerReport.getDemand().setArrears(taxamount);
+                ledgerReport.getDemand().setArrears(taxamount != null ? taxamount : BigDecimal.ZERO);
                 ledgerReport.getDemand().setMonthAndYear(monthAndYear);
-                arrears = resultSet.getBigDecimal("due").subtract(resultSet.getBigDecimal("paid"));
+                arrears = (resultSet.getBigDecimal("due") != null ? resultSet.getBigDecimal("due") : BigDecimal.ZERO)
+                        .subtract(resultSet.getBigDecimal("paid") != null ? resultSet.getBigDecimal("paid") : BigDecimal.ZERO);
             }
             else if (code.equals("WS_TIME_PENALTY") || code.equals("10201")) {
-                ledgerReport.getDemand().setPenalty(taxamount);
-                BigDecimal amount = ledgerReport.getDemand().getTaxamount() != null ? ledgerReports.get(monthAndYear).getDemand().getTaxamount() : BigDecimal.ZERO;
-                ledgerReport.getDemand().setTotalForCurrentMonth(taxamount.add(amount));
-                ledgerReport.getDemand().setTotal_due_amount(ledgerReport.getDemand().getTotalForCurrentMonth().add(ledgerReport.getDemand().getArrears()));
+                ledgerReport.getDemand().setPenalty(taxamount != null ? taxamount : BigDecimal.ZERO);
+                BigDecimal amount = ledgerReport.getDemand().getTaxamount() != null ? ledgerReport.getDemand().getTaxamount() : BigDecimal.ZERO;
+                ledgerReport.getDemand().setTotalForCurrentMonth((taxamount != null ? taxamount : BigDecimal.ZERO).add(amount));
+                ledgerReport.getDemand().setTotal_due_amount(ledgerReport.getDemand().getTotalForCurrentMonth().add(ledgerReport.getDemand().getArrears() != null ? ledgerReport.getDemand().getArrears() : BigDecimal.ZERO));
 //                ledgerReport.setBalanceLeft(ledgerReport.getTotal_due_amount().subtract(ledgerReport.getPaid()));
 //                previousBalanceLeft = ledgerReport.getBalanceLeft();
             } else if (code.equals("10101")) {
@@ -97,6 +116,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 //                ledgerReport.setBalanceLeft(ledgerReport.getTotal_due_amount().subtract(ledgerReport.getPaid()));
 //                previousBalanceLeft = ledgerReport.getBalanceLeft();
                 ledgerReport.getDemand().setCode(code);
+                String consumerCode=resultSet.getString("connectionno");
             }
             ledgerReport.getDemand().setConnectionNo(resultSet.getString("connectionno"));
             ledgerReport.getDemand().setOldConnectionNo(resultSet.getString("oldconnectionno"));
@@ -148,5 +168,17 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             LedgerReport ledgerReport = (LedgerReport) record.values().iterator().next();
             ledgerReport.getDemand().setConsumerName(userIdToConnectionHolderMap.get(ledgerReport.getDemand().getUserId()).getName());
         }
+    }
+
+    public void addPaymentDetails(String consumerCode,String tenantId,RequestInfoWrapper requestInfoWrapper)
+    {
+        String service = "WS";
+        StringBuilder URL = waterServiceUtil.getcollectionURL();
+        URL.append(service).append("/_search").append("?").append("consumerCodes=").append(consumerCode)
+                .append("&").append("tenantId=").append(tenantId);
+//        RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build();
+        Object response = serviceRequestRepository.fetchResult(URL,requestInfoWrapper);
+        PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
+//        return paymentResponse.getPayments().get(0).getPaymentDetails().get(0).getReceiptNumber();
     }
 }
