@@ -234,6 +234,7 @@ public class UserService {
 			dobFormat = "dd/MM/yyyy";
 		try {
 			LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) serviceRequestRepository.fetchResult(uri, userRequest);
+			log.info("line 237 "+responseMap.toString());
 			if (!CollectionUtils.isEmpty(responseMap)) {
 				parseResponse(responseMap, dobFormat);
 				return mapper.convertValue(responseMap, UserDetailResponse.class);
@@ -407,6 +408,7 @@ public class UserService {
 	public UserDetailResponse getUser(UserSearchRequest userSearchRequest) {
 		StringBuilder uri = new StringBuilder(configuration.getUserHost())
 				.append(configuration.getUserSearchEndpoint());
+		log.info("uri is "+uri);
 		UserDetailResponse userDetailResponse = userCall(userSearchRequest, uri);
 		return userDetailResponse;
 	}

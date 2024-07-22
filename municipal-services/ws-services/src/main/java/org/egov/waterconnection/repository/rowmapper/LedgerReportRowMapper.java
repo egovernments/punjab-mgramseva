@@ -178,6 +178,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         }
         UserSearchRequest userSearchRequest = new UserSearchRequest();
         userSearchRequest.setUuid(connectionHolderIds);
+        log.info("User search request"+userSearchRequest.getUuid().toString());
         UserDetailResponse userDetailResponse = userService.getUser(userSearchRequest);
         enrichConnectionHolderInfo(userDetailResponse, monthlyRecordsList);
     }
