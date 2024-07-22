@@ -74,7 +74,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 
             BigDecimal taxamount = resultSet.getBigDecimal("taxamount");
 
-            Long demandGenerationDateLong= resultSet.getLong("demandgenerationdate");
+            Long demandGenerationDateLong = resultSet.getLong("demandgenerationdate");
             LocalDate demandGenerationDateLocal = Instant.ofEpochMilli(demandGenerationDateLong).atZone(ZoneId.systemDefault()).toLocalDate();
 //            String demandGenerationDate = demandGenerationDateLocal.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
@@ -83,8 +83,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             if (ledgerReport.getDemand() == null) {
                 ledgerReport.setDemand(new DemandLedgerReport());
             }
-            if(ledgerReport.getPayment()==null)
-            {
+            if (ledgerReport.getPayment() == null) {
                 ledgerReport.setPayment(new ArrayList<>());
             }
 
@@ -93,8 +92,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 ledgerReport.getDemand().setMonthAndYear(monthAndYear);
 //                arrears = (resultSet.getBigDecimal("due") != null ? resultSet.getBigDecimal("due") : BigDecimal.ZERO)
 //                        .subtract(resultSet.getBigDecimal("paid") != null ? resultSet.getBigDecimal("paid") : BigDecimal.ZERO);
-            }
-            else if (code.equals("WS_TIME_PENALTY") || code.equals("10201")) {
+            } else if (code.equals("WS_TIME_PENALTY") || code.equals("10201")) {
                 ledgerReport.getDemand().setPenalty(taxamount != null ? taxamount : BigDecimal.ZERO);
                 BigDecimal amount = ledgerReport.getDemand().getTaxamount() != null ? ledgerReport.getDemand().getTaxamount() : BigDecimal.ZERO;
                 ledgerReport.getDemand().setTotalForCurrentMonth((taxamount != null ? taxamount : BigDecimal.ZERO).add(amount));
@@ -147,7 +145,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             record.put(entry.getKey(), entry.getValue());
             monthlyRecordsList.add(record);
         }
-        log.info("ledger report list"+monthlyRecordsList);
+        log.info("ledger report list" + monthlyRecordsList);
         if (!monthlyRecordsList.isEmpty()) {
 //            enrichConnectionHolderDetails(monthlyRecordsList);
             addPaymentToLedger(monthlyRecordsList);
@@ -178,7 +176,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         }
         UserSearchRequest userSearchRequest = new UserSearchRequest();
         userSearchRequest.setUuid(connectionHolderIds);
-        log.info("User search request"+userSearchRequest);
+        log.info("User search request" + userSearchRequest);
         UserDetailResponse userDetailResponse = userService.getUser(userSearchRequest);
         enrichConnectionHolderInfo(userDetailResponse, monthlyRecordsList);
     }
@@ -194,28 +192,28 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         }
     }
 
-    public List<Payment> addPaymentDetails(String consumerCode)
-    {
+    public List<Payment> addPaymentDetails(String consumerCode) {
         String service = "WS";
         StringBuilder URL = waterServiceUtil.getcollectionURL();
         URL.append(service).append("/_search").append("?").append("consumerCodes=").append(consumerCode)
                 .append("&").append("tenantId=").append(tenantId);
 //        RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build();
-        Object response = serviceRequestRepository.fetchResult(URL,null);
+        Object response = serviceRequestRepository.fetchResult(URL, null);
         PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
         return paymentResponse.getPayments();
     }
 
-    private void addPaymentToLedger(List<Map<String,Object>> monthlyRecordList)
-    {
-        for(Map<String,Object> record:monthlyRecordList)
-        {
-            LedgerReport ledgerReport=(LedgerReport) record.values().iterator().next();
+    private void addPaymentToLedger(List<Map<String, Object>> monthlyRecordList) {
+        for (Map<String, Object> record : monthlyRecordList) {
+            LedgerReport ledgerReport = (LedgerReport) record.values().iterator().next();
+            if (ledgerReport.getDemand() == null) {
+                log.info("DemandLedgerReport is null for LedgerReport: {}", ledgerReport);
+                continue;
+            }
             String consumerCode = ledgerReport.getDemand().getConnectionNo();
-            List<Payment> payments=addPaymentDetails(consumerCode);
+            List<Payment> payments = addPaymentDetails(consumerCode);
 
-            for(Payment payment:payments)
-            {
+            for (Payment payment : payments) {
                 Long transactionDateLong = payment.getTransactionDate();
                 LocalDate transactionDate = Instant.ofEpochMilli(transactionDateLong).atZone(ZoneId.systemDefault()).toLocalDate();
                 String transactionMonthAndYear = transactionDate.format(DateTimeFormatter.ofPattern("MMMMyyyy"));

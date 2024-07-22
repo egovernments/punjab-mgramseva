@@ -18,7 +18,7 @@ public class PaymentLedgerReport
     private Long collectionDate;
 
     @JsonProperty("receiptNo")
-    private String receiptNo;
+    private String receiptNo=null;
 
     @JsonProperty("amountPaid")
     private BigDecimal paid;
