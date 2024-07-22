@@ -83,6 +83,10 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             if (ledgerReport.getDemand() == null) {
                 ledgerReport.setDemand(new DemandLedgerReport());
             }
+            if(ledgerReport.getPayment()==null)
+            {
+                ledgerReport.setPayment(new ArrayList<>());
+            }
 
             if (code.equals("10102")) {
                 ledgerReport.getDemand().setArrears(taxamount != null ? taxamount : BigDecimal.ZERO);
@@ -155,7 +159,22 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         Set<String> connectionHolderIds = new HashSet<>();
         for (Map<String, Object> record : monthlyRecordsList) {
             LedgerReport ledgerReport = (LedgerReport) record.values().iterator().next();
-            connectionHolderIds.add(ledgerReport.getDemand().getUserId());
+            if (ledgerReport == null) {
+                log.error("LedgerReport is null for record: {}", record);
+                continue;
+            }
+
+            DemandLedgerReport demandLedgerReport = ledgerReport.getDemand();
+            if (demandLedgerReport == null) {
+                log.error("DemandLedgerReport is null for LedgerReport: {}", ledgerReport);
+                continue;
+            }
+            String userId = demandLedgerReport.getUserId();
+            if (userId == null) {
+                log.error("UserId is null for DemandLedgerReport: {}", demandLedgerReport);
+                continue;
+            }
+            connectionHolderIds.add(userId);
         }
         UserSearchRequest userSearchRequest = new UserSearchRequest();
         userSearchRequest.setUuid(connectionHolderIds);
