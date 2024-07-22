@@ -178,8 +178,8 @@ public class WsQueryBuilder {
 			"d.tenantid=?) order by connectionno;";
 
 	public static final String LEDGER_REPORT_QUERY = "SELECT connectionholder.userid as uuid,conn.connectionno as connectionNo,conn.oldconnectionno," +
-			"to_timestamp(dem.taxperiodfrom/1000)::date as startdate,to_timestamp(dem.taxperiodto/1000)::date as enddate," +
-			"to_timestamp(dem.createdtime/1000)::date as demandGenerationDate," +
+			"dem.taxperiodfrom as startdate,dem.taxperiodto as enddate," +
+			"dem.createdtime as demandGenerationDate," +
 			"dd.taxheadcode as code,dd.taxamount as taxamount " +
 			"FROM eg_ws_connection conn INNER JOIN eg_ws_connectionholder connectionholder " +
 			"ON connectionholder.connectionid = conn.id " +

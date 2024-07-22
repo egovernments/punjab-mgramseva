@@ -3,6 +3,8 @@ package org.egov.waterconnection.web.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,5 +15,5 @@ public class LedgerReport
     private DemandLedgerReport demand=null;
 
     @JsonProperty("payment")
-    private PaymentLedgerReport payment=new PaymentLedgerReport();
+    private List<PaymentLedgerReport> payment=null;
 }

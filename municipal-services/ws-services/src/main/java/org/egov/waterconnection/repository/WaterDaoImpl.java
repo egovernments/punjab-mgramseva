@@ -37,6 +37,7 @@ import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
 import org.egov.waterconnection.web.models.WaterConnectionResponse;
+import org.egov.waterconnection.web.models.collection.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -713,10 +714,11 @@ public class WaterDaoImpl implements WaterDao {
 		}
 
 		log.info("Query of ledger report:" + query + "and prepared statement" + preparedStatement);
-//        LedgerReportRowMapper ledgerReportRowMapper = new LedgerReportRowMapper();
-//		ledgerReportRowMapper.setStartDate(startDate);
+        LedgerReportRowMapper ledgerReportRowMapper = new LedgerReportRowMapper();
+		ledgerReportRowMapper.setTenantId(tenantId);
 //		ledgerReportRowMapper.setEndDate(endDate);
-		ledgerReportRowMapper.addPaymentDetails(consumercode,tenantId,requestInfoWrapper);
+//		List<Payment> payments=ledgerReportRowMapper.addPaymentDetails(consumercode,tenantId,requestInfoWrapper);
+
 		List<Map<String, Object>> ledgerReportList= jdbcTemplate.query(query.toString(), preparedStatement.toArray(), ledgerReportRowMapper);
 		return ledgerReportList;
 	}

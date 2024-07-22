@@ -30,7 +30,7 @@ public class DemandLedgerReport {
     private String monthAndYear;
 
     @JsonProperty("demandGenerationDate")
-    private String demandGenerationDate;
+    private Long demandGenerationDate;
 
     @JsonProperty("code")
     private String code = null;
@@ -51,10 +51,10 @@ public class DemandLedgerReport {
     private BigDecimal total_due_amount;
 
     @JsonProperty("dueDateOfPayment")
-    private String dueDate;
+    private Long dueDate;
 
     @JsonProperty("penaltyAppliedOnDate")
-    private String penaltyAppliedDate;
+    private Long penaltyAppliedDate;
 
     public DemandLedgerReport(String monthAndYear) {
         this.monthAndYear = monthAndYear;
