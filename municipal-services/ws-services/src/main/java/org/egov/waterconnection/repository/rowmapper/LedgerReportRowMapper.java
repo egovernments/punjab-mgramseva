@@ -159,18 +159,15 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             LedgerReport ledgerReport = (LedgerReport) record.values().iterator().next();
             if (ledgerReport == null) {
                 log.info("LedgerReport is null for record: {}", record);
-                continue;
             }
 
             DemandLedgerReport demandLedgerReport = ledgerReport.getDemand();
             if (demandLedgerReport == null) {
                 log.info("DemandLedgerReport is null for LedgerReport: {}", ledgerReport);
-                continue;
             }
             String userId = demandLedgerReport.getUserId();
             if (userId == null) {
                 log.info("UserId is null for DemandLedgerReport: {}", demandLedgerReport);
-                continue;
             }
             connectionHolderIds.add(userId);
         }
@@ -199,6 +196,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 .append("&").append("tenantId=").append(tenantId);
 //        RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build();
         Object response = serviceRequestRepository.fetchResult(URL, null);
+        log.info(response.toString());
         PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
         return paymentResponse.getPayments();
     }
@@ -208,7 +206,6 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             LedgerReport ledgerReport = (LedgerReport) record.values().iterator().next();
             if (ledgerReport.getDemand() == null) {
                 log.info("DemandLedgerReport is null for LedgerReport: {}", ledgerReport);
-                continue;
             }
             String consumerCode = ledgerReport.getDemand().getConnectionNo();
             List<Payment> payments = addPaymentDetails(consumerCode);
