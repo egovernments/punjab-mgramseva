@@ -47,16 +47,16 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
     private ServiceRequestRepository serviceRequestRepository;
 
     String tenantId;
-//    LocalDate endDateLocalDate;
+    RequestInfoWrapper requestInfoWrapper;
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
-//
-//    public void setEndDate(LocalDate endDate) {
-//        this.endDateLocalDate = endDate;
+
+    public void setRequestInfo(RequestInfoWrapper requestInfoWrapper) {
+        this.requestInfoWrapper = requestInfoWrapper;
 //        log.info("end date sent from frontend "+endDate.toString());
-//    }
+    }
 
     @Override
     public List<Map<String, Object>> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
@@ -195,7 +195,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         URL.append(service).append("/_search").append("?").append("consumerCodes=").append(consumerCode)
                 .append("&").append("tenantId=").append(tenantId);
 //        RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build();
-        Object response = serviceRequestRepository.fetchResult(URL, null);
+        Object response = serviceRequestRepository.fetchResult(URL, requestInfoWrapper);
         log.info("line 199 response "+response.toString());
         PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
         log.info("paymnent response"+paymentResponse);

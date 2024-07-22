@@ -716,6 +716,7 @@ public class WaterDaoImpl implements WaterDao {
 		log.info("Query of ledger report:" + query + "and prepared statement" + preparedStatement);
 //        LedgerReportRowMapper ledgerReportRowMapper = new LedgerReportRowMapper();
 		ledgerReportRowMapper.setTenantId(tenantId);
+		ledgerReportRowMapper.setRequestInfo(requestInfoWrapper);
 //		ledgerReportRowMapper.setEndDate(endDate);
 //		List<Payment> payments=ledgerReportRowMapper.addPaymentDetails(consumercode,tenantId,requestInfoWrapper);
 
