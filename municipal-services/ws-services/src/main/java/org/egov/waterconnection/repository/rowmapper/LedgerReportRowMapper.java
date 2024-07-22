@@ -160,18 +160,18 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         for (Map<String, Object> record : monthlyRecordsList) {
             LedgerReport ledgerReport = (LedgerReport) record.values().iterator().next();
             if (ledgerReport == null) {
-                log.error("LedgerReport is null for record: {}", record);
+                log.info("LedgerReport is null for record: {}", record);
                 continue;
             }
 
             DemandLedgerReport demandLedgerReport = ledgerReport.getDemand();
             if (demandLedgerReport == null) {
-                log.error("DemandLedgerReport is null for LedgerReport: {}", ledgerReport);
+                log.info("DemandLedgerReport is null for LedgerReport: {}", ledgerReport);
                 continue;
             }
             String userId = demandLedgerReport.getUserId();
             if (userId == null) {
-                log.error("UserId is null for DemandLedgerReport: {}", demandLedgerReport);
+                log.info("UserId is null for DemandLedgerReport: {}", demandLedgerReport);
                 continue;
             }
             connectionHolderIds.add(userId);
