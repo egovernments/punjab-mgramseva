@@ -91,8 +91,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             if (code.equals("10102")) {
                 ledgerReport.getDemand().setArrears(taxamount != null ? taxamount : BigDecimal.ZERO);
                 ledgerReport.getDemand().setMonthAndYear(monthAndYear);
-                arrears = (resultSet.getBigDecimal("due") != null ? resultSet.getBigDecimal("due") : BigDecimal.ZERO)
-                        .subtract(resultSet.getBigDecimal("paid") != null ? resultSet.getBigDecimal("paid") : BigDecimal.ZERO);
+//                arrears = (resultSet.getBigDecimal("due") != null ? resultSet.getBigDecimal("due") : BigDecimal.ZERO)
+//                        .subtract(resultSet.getBigDecimal("paid") != null ? resultSet.getBigDecimal("paid") : BigDecimal.ZERO);
             }
             else if (code.equals("WS_TIME_PENALTY") || code.equals("10201")) {
                 ledgerReport.getDemand().setPenalty(taxamount != null ? taxamount : BigDecimal.ZERO);
