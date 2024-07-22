@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 public class PaymentLedgerReport
 {
     @JsonProperty("paymentCollectionDate")
-    private String collectionDate;
+    private Long collectionDate;
 
     @JsonProperty("receiptNo")
     private String receiptNo;

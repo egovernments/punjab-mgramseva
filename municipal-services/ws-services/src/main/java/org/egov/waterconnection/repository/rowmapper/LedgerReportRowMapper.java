@@ -178,7 +178,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         }
         UserSearchRequest userSearchRequest = new UserSearchRequest();
         userSearchRequest.setUuid(connectionHolderIds);
-        log.info("User search request"+userSearchRequest.getUuid().toString());
+        log.info("User search request"+userSearchRequest);
         UserDetailResponse userDetailResponse = userService.getUser(userSearchRequest);
         enrichConnectionHolderInfo(userDetailResponse, monthlyRecordsList);
     }
@@ -222,7 +222,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 
                 if (ledgerReport.getDemand().getMonthAndYear().equals(transactionMonthAndYear)) {
                     PaymentLedgerReport paymentLedgerReport = new PaymentLedgerReport();
-                    paymentLedgerReport.setCollectionDate(transactionDate.toString());
+                    paymentLedgerReport.setCollectionDate(transactionDateLong);
                     paymentLedgerReport.setReceiptNo(payment.getPaymentDetails().get(0).getReceiptNumber());
                     paymentLedgerReport.setPaid(payment.getTotalAmountPaid());
                     paymentLedgerReport.setBalanceLeft(ledgerReport.getDemand().getTotal_due_amount().subtract(payment.getTotalAmountPaid()));
