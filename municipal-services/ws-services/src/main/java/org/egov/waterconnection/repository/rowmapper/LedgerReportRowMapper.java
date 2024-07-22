@@ -149,7 +149,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         }
         log.info("ledger report list"+monthlyRecordsList);
         if (!monthlyRecordsList.isEmpty()) {
-            enrichConnectionHolderDetails(monthlyRecordsList);
+//            enrichConnectionHolderDetails(monthlyRecordsList);
             addPaymentToLedger(monthlyRecordsList);
         }
         return monthlyRecordsList;
