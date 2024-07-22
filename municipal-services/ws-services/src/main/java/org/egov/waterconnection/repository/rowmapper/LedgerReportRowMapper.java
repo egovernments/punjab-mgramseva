@@ -196,8 +196,9 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 .append("&").append("tenantId=").append(tenantId);
 //        RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build();
         Object response = serviceRequestRepository.fetchResult(URL, null);
-        log.info(response.toString());
+        log.info("line 199 response "+response.toString());
         PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
+        log.info("paymnent response"+paymentResponse);
         return paymentResponse.getPayments();
     }
 
@@ -208,6 +209,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 log.info("DemandLedgerReport is null for LedgerReport: {}", ledgerReport);
             }
             String consumerCode = ledgerReport.getDemand().getConnectionNo();
+            log.info("consumer code is "+consumerCode);
             List<Payment> payments = addPaymentDetails(consumerCode);
 
             for (Payment payment : payments) {
