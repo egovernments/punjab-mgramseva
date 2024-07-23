@@ -725,12 +725,12 @@ public class WaterDaoImpl implements WaterDao {
 //		taxAmountParams.add(consumercode);
 //		taxAmountParams.add(startDateTime);
 //		BigDecimal taxAmountResult = jdbcTemplate.queryForObject(taxAmountQuery.toString(), taxAmountParams.toArray(), BigDecimal.class);
-
-		StringBuilder totalAmountPaidQuery = new StringBuilder(wsQueryBuilder.TOTAL_AMOUNT_PAID_QUERY);
-		List<Object> totalAmountPaidParams = new ArrayList<>();
-		totalAmountPaidParams.add(consumercode);
-		totalAmountPaidParams.add(startDateTime);
-		BigDecimal totalAmountPaidResult = jdbcTemplate.queryForObject(totalAmountPaidQuery.toString(), totalAmountPaidParams.toArray(), BigDecimal.class);
+//
+//		StringBuilder totalAmountPaidQuery = new StringBuilder(wsQueryBuilder.TOTAL_AMOUNT_PAID_QUERY);
+//		List<Object> totalAmountPaidParams = new ArrayList<>();
+//		totalAmountPaidParams.add(consumercode);
+//		totalAmountPaidParams.add(startDateTime);
+//		BigDecimal totalAmountPaidResult = jdbcTemplate.queryForObject(totalAmountPaidQuery.toString(), totalAmountPaidParams.toArray(), BigDecimal.class);
 
 //		ledgerReportRowMapper.setTaxAmountResult(taxAmountResult);
 //		ledgerReportRowMapper.setTotalAmountPaidResult(totalAmountPaidResult);
