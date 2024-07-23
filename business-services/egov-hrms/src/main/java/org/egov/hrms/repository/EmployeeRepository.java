@@ -62,6 +62,8 @@ public class EmployeeRepository {
 		}
 		String query = queryBuilder.getEmployeeSearchQuery(criteria, preparedStmtList);
 		try {
+			log.info("query:" +query);
+			log.info("preparedStmtList:"+preparedStmtList);
 			employees = jdbcTemplate.query(query, preparedStmtList.toArray(),rowMapper);
 		}catch(Exception e) {
 			log.error("Exception while making the db call: ",e);
