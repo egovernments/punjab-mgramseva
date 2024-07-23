@@ -3,6 +3,7 @@ package org.egov.waterconnection.repository.rowmapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.waterconnection.repository.ServiceRequestRepository;
+import org.egov.waterconnection.repository.builder.WsQueryBuilder;
 import org.egov.waterconnection.service.UserService;
 import org.egov.waterconnection.util.WaterServicesUtil;
 import org.egov.waterconnection.web.models.*;
@@ -12,6 +13,7 @@ import org.egov.waterconnection.web.models.users.UserDetailResponse;
 import org.egov.waterconnection.web.models.users.UserSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
 
@@ -46,10 +48,16 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
     @Autowired
     private ServiceRequestRepository serviceRequestRepository;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private WsQueryBuilder wsQueryBuilder;
+
     String tenantId;
     RequestInfoWrapper requestInfoWrapper;
-    BigDecimal taxAmountForArrers;
-    BigDecimal totalAmountPaidForArrers;
+//    BigDecimal taxAmountForArrers;
+//    BigDecimal totalAmountPaidForArrers;
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
@@ -60,22 +68,24 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 //        log.info("end date sent from frontend "+endDate.toString());
     }
 
-    public void setTaxAmountResult(BigDecimal taxAmountResult)
-    {
-        this.taxAmountForArrers=taxAmountResult;
-    }
-
-    public void setTotalAmountPaidResult(BigDecimal totalAmountPaidResult)
-    {
-        this.totalAmountPaidForArrers=totalAmountPaidResult;
-    }
+//    public void setTaxAmountResult(BigDecimal taxAmountResult)
+//    {
+//        this.taxAmountForArrers=taxAmountResult;
+//    }
+//
+//    public void setTotalAmountPaidResult(BigDecimal totalAmountPaidResult)
+//    {
+//        this.totalAmountPaidForArrers=totalAmountPaidResult;
+//    }
 
     @Override
     public List<Map<String, Object>> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         List<Map<String, Object>> monthlyRecordsList = new ArrayList<>();
         Map<String, LedgerReport> ledgerReports = new HashMap<>();
         BigDecimal previousBalanceLeft = BigDecimal.ZERO;
-        BigDecimal arrears = BigDecimal.ZERO;
+//        BigDecimal totalAmountForArrears = taxAmountForArrers != null ? taxAmountForArrers : BigDecimal.ZERO;
+//        BigDecimal amountPaidForArrears = totalAmountPaidForArrers != null ? totalAmountPaidForArrers : BigDecimal.ZERO;
+        BigDecimal arrears =BigDecimal.ZERO;
 
         while (resultSet.next()) {
             Long dateLong = resultSet.getLong("enddate");
@@ -115,7 +125,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 ledgerReport.getDemand().setMonthAndYear(monthAndYear);
                 ledgerReport.getDemand().setDemandGenerationDate(demandGenerationDateLong);
                 ledgerReport.getDemand().setTaxamount(taxamount);
-                ledgerReport.getDemand().setTotalForCurrentMonth(ledgerReport.getDemand().getTaxamount().add(ledgerReport.getDemand().getPenalty()));
+                ledgerReport.getDemand().setTotalForCurrentMonth(ledgerReport.getDemand().getTaxamount().add(ledgerReport.getDemand().getPenalty()!=null ? ledgerReport.getDemand().getPenalty() : BigDecimal.ZERO));
                 long dueDateMillis = demandGenerationDateLocal.plus(10, ChronoUnit.DAYS).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 long penaltyAppliedDateMillis = demandGenerationDateLocal.plus(11, ChronoUnit.DAYS).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 ledgerReport.getDemand().setDueDate(dueDateMillis);
@@ -123,12 +133,16 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 //                ledgerReport.setCollectionDate(resultSet.getDate("collectiondate") != null ? resultSet.getDate("collectiondate").toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null);
 //                ledgerReport.setReceiptNo(resultSet.getString("receiptno"));
 //                ledgerReport.setPaid(resultSet.getBigDecimal("paid"));
-                if (arrears.equals(BigDecimal.ZERO)) {
-                    ledgerReport.getDemand().setArrears(taxAmountForArrers.subtract(totalAmountPaidForArrers));
-                } else {
-                    ledgerReport.getDemand().setArrears(arrears);
-                    arrears = BigDecimal.ZERO;
-                }
+//                if (arrears.equals(BigDecimal.ZERO)) {
+//                } else {
+//                    ledgerReport.getDemand().setArrears(arrears);
+//                    arrears = BigDecimal.ZERO;
+//                }
+                Long startDate = resultSet.getLong("startdate");
+                String connectionno=resultSet.getString("connectionno");
+                BigDecimal taxAmountResult = getMonthlyTaxAmount(startDate,connectionno);
+                BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(startDate,connectionno);
+                ledgerReport.getDemand().setArrears(taxAmountResult.subtract(totalAmountPaidResult));
                 ledgerReport.getDemand().setTotal_due_amount(ledgerReport.getDemand().getTotalForCurrentMonth().add(ledgerReport.getDemand().getArrears()));
 //                ledgerReport.setBalanceLeft(ledgerReport.getTotal_due_amount().subtract(ledgerReport.getPaid()));
 //                previousBalanceLeft = ledgerReport.getBalanceLeft();
@@ -243,5 +257,21 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 }
             }
         }
+    }
+
+    private BigDecimal getMonthlyTaxAmount(Long startDate, String consumerCode) {
+        StringBuilder taxAmountQuery=new StringBuilder(wsQueryBuilder.TAX_AMOUNT_QUERY);
+        List<Object> taxAmountParams=new ArrayList<>();
+        taxAmountParams.add(consumerCode);
+        taxAmountParams.add(startDate);
+        return jdbcTemplate.queryForObject(taxAmountQuery.toString(), taxAmountParams.toArray(), BigDecimal.class);
+    }
+
+    private BigDecimal getMonthlyTotalAmountPaid(Long startDate, String consumerCode) {
+        StringBuilder totalAmountPaidQuery = new StringBuilder(wsQueryBuilder.TOTAL_AMOUNT_PAID_QUERY);
+        List<Object> totalAmountPaidParams = new ArrayList<>();
+        totalAmountPaidParams.add(consumerCode);
+        totalAmountPaidParams.add(startDate);
+        return jdbcTemplate.queryForObject(totalAmountPaidQuery.toString(), totalAmountPaidParams.toArray(), BigDecimal.class);
     }
 }

@@ -21,8 +21,8 @@ public class PaymentLedgerReport
     private String receiptNo=null;
 
     @JsonProperty("amountPaid")
-    private BigDecimal paid;
+    private BigDecimal paid= BigDecimal.ZERO;
 
     @JsonProperty("balanceLeft")
-    private BigDecimal balanceLeft;
+    private BigDecimal balanceLeft=BigDecimal.ZERO;
 }
