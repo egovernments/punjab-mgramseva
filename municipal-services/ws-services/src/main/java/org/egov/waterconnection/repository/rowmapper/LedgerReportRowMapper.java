@@ -48,6 +48,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 
     String tenantId;
     RequestInfoWrapper requestInfoWrapper;
+    BigDecimal taxAmountForArrers;
+    BigDecimal totalAmountPaidForArrers;
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
@@ -56,6 +58,16 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
     public void setRequestInfo(RequestInfoWrapper requestInfoWrapper) {
         this.requestInfoWrapper = requestInfoWrapper;
 //        log.info("end date sent from frontend "+endDate.toString());
+    }
+
+    public void setTaxAmountResult(BigDecimal taxAmountResult)
+    {
+        this.taxAmountForArrers=taxAmountResult;
+    }
+
+    public void setTotalAmountPaidResult(BigDecimal totalAmountPaidResult)
+    {
+        this.totalAmountPaidForArrers=totalAmountPaidResult;
     }
 
     @Override
@@ -112,7 +124,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 //                ledgerReport.setReceiptNo(resultSet.getString("receiptno"));
 //                ledgerReport.setPaid(resultSet.getBigDecimal("paid"));
                 if (arrears.equals(BigDecimal.ZERO)) {
-                    ledgerReport.getDemand().setArrears(previousBalanceLeft);
+                    ledgerReport.getDemand().setArrears(taxAmountForArrers.subtract(totalAmountPaidForArrers));
                 } else {
                     ledgerReport.getDemand().setArrears(arrears);
                     arrears = BigDecimal.ZERO;
