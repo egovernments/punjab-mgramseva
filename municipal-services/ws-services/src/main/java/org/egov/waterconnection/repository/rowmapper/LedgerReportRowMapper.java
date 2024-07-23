@@ -144,7 +144,6 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(startDate,connectionno);
                 ledgerReport.getDemand().setArrears(taxAmountResult.subtract(totalAmountPaidResult));
                 ledgerReport.getDemand().setTotal_due_amount(ledgerReport.getDemand().getTotalForCurrentMonth().add(ledgerReport.getDemand().getArrears()));
-                ledgerReport.getPayment().
 //                ledgerReport.setBalanceLeft(ledgerReport.getTotal_due_amount().subtract(ledgerReport.getPaid()));
 //                previousBalanceLeft = ledgerReport.getBalanceLeft();
 //                String consumerCode=resultSet.getString("connectionno");
