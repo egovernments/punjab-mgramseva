@@ -264,7 +264,10 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         List<Object> taxAmountParams=new ArrayList<>();
         taxAmountParams.add(consumerCode);
         taxAmountParams.add(startDate);
-        return jdbcTemplate.queryForObject(taxAmountQuery.toString(), taxAmountParams.toArray(), BigDecimal.class);
+        BigDecimal ans= jdbcTemplate.queryForObject(taxAmountQuery.toString(), taxAmountParams.toArray(), BigDecimal.class);
+        if(ans!=null)
+            return ans;
+        return BigDecimal.ZERO;
     }
 
     private BigDecimal getMonthlyTotalAmountPaid(Long startDate, String consumerCode) {
@@ -272,6 +275,9 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         List<Object> totalAmountPaidParams = new ArrayList<>();
         totalAmountPaidParams.add(consumerCode);
         totalAmountPaidParams.add(startDate);
-        return jdbcTemplate.queryForObject(totalAmountPaidQuery.toString(), totalAmountPaidParams.toArray(), BigDecimal.class);
+        BigDecimal ans=jdbcTemplate.queryForObject(totalAmountPaidQuery.toString(), totalAmountPaidParams.toArray(), BigDecimal.class);
+        if(ans!=null)
+            return ans;
+        return BigDecimal.ZERO;
     }
 }
