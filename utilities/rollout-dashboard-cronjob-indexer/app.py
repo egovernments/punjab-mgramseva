@@ -19,6 +19,7 @@ def getGPWSCHeirarchy():
     try:
         mdms_url = os.getenv('API_URL')
         state_tenantid = os.getenv('TENANT_ID')
+        url=os.getenv('IFIX_DEP_ENTITY_URL')
         mdms_requestData = {
             "RequestInfo": {
                 "apiId": "mgramseva-common",
