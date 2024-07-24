@@ -248,13 +248,13 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                     paymentLedgerReport.setPaid(payment.getTotalAmountPaid());
                     paymentLedgerReport.setBalanceLeft(ledgerReport.getDemand().getTotal_due_amount().subtract(payment.getTotalAmountPaid()));
                 }
-                else
-                {
-                    paymentLedgerReport.setCollectionDate(null);
-                    paymentLedgerReport.setReceiptNo(null);
-                    paymentLedgerReport.setPaid(BigDecimal.ZERO);
-                    paymentLedgerReport.setBalanceLeft(ledgerReport.getDemand().getTotal_due_amount().subtract(payment.getTotalAmountPaid()));
-                }
+//                else
+//                {
+//                    paymentLedgerReport.setCollectionDate(null);
+//                    paymentLedgerReport.setReceiptNo(null);
+//                    paymentLedgerReport.setPaid(BigDecimal.ZERO);
+//                    paymentLedgerReport.setBalanceLeft(ledgerReport.getDemand().getTotal_due_amount().subtract(payment.getTotalAmountPaid()));
+//                }
 
                 if (ledgerReport.getPayment() == null) {
                     ledgerReport.setPayment(new ArrayList<>());
