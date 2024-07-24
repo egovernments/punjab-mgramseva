@@ -251,8 +251,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                         ledgerReport.setPayment(new ArrayList<>());
                     }
                     ledgerReport.getPayment().add(paymentLedgerReport);
+                    paymentMatched=true;
                 }
-                paymentMatched=true;
             }
             if(!paymentMatched)
             {
