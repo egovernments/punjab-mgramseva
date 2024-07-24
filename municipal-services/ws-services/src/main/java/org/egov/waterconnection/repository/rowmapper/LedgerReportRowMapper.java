@@ -167,7 +167,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 //        }
         for (Map.Entry<String, LedgerReport> entry : ledgerReports.entrySet()) {
             Map<String, Object> record = new HashMap<>();
-            if (entry.getValue().getDemand().getCode().equals("10101")) {
+            if (entry.getValue().getDemand().getTaxamount()!=null) {
                 record.put(entry.getKey(), entry.getValue());
             }
             monthlyRecordsList.add(record);
