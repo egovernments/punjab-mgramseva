@@ -236,30 +236,36 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             String consumerCode = ledgerReport.getDemand().getConnectionNo();
             log.info("consumer code is "+consumerCode);
             List<Payment> payments = addPaymentDetails(consumerCode);
-
+            boolean paymentMatched=false;
             for (Payment payment : payments) {
                 Long transactionDateLong = payment.getTransactionDate();
                 LocalDate transactionDate = Instant.ofEpochMilli(transactionDateLong).atZone(ZoneId.systemDefault()).toLocalDate();
                 String transactionMonthAndYear = transactionDate.format(DateTimeFormatter.ofPattern("MMMMyyyy"));
-                PaymentLedgerReport paymentLedgerReport = new PaymentLedgerReport();
                 if (ledgerReport.getDemand().getMonthAndYear().equals(transactionMonthAndYear)) {
+                    PaymentLedgerReport paymentLedgerReport = new PaymentLedgerReport();
                     paymentLedgerReport.setCollectionDate(transactionDateLong);
                     paymentLedgerReport.setReceiptNo(payment.getPaymentDetails().get(0).getReceiptNumber());
                     paymentLedgerReport.setPaid(payment.getTotalAmountPaid());
                     paymentLedgerReport.setBalanceLeft(ledgerReport.getDemand().getTotal_due_amount().subtract(payment.getTotalAmountPaid()));
+                    if (ledgerReport.getPayment() == null) {
+                        ledgerReport.setPayment(new ArrayList<>());
+                    }
+                    ledgerReport.getPayment().add(paymentLedgerReport);
                 }
-//                else
-//                {
-//                    paymentLedgerReport.setCollectionDate(null);
-//                    paymentLedgerReport.setReceiptNo(null);
-//                    paymentLedgerReport.setPaid(BigDecimal.ZERO);
-//                    paymentLedgerReport.setBalanceLeft(ledgerReport.getDemand().getTotal_due_amount().subtract(payment.getTotalAmountPaid()));
-//                }
+                paymentMatched=true;
+            }
+            if(!paymentMatched)
+            {
+                PaymentLedgerReport defaultPaymentLedgerReport = new PaymentLedgerReport();
+                defaultPaymentLedgerReport.setCollectionDate(null);
+                defaultPaymentLedgerReport.setReceiptNo("N/A");
+                defaultPaymentLedgerReport.setPaid(BigDecimal.ZERO);
+                defaultPaymentLedgerReport.setBalanceLeft(ledgerReport.getDemand().getTotal_due_amount());
 
                 if (ledgerReport.getPayment() == null) {
                     ledgerReport.setPayment(new ArrayList<>());
                 }
-                ledgerReport.getPayment().add(paymentLedgerReport);
+                ledgerReport.getPayment().add(defaultPaymentLedgerReport);
             }
         }
     }
