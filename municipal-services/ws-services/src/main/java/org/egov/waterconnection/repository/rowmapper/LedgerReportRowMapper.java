@@ -85,7 +85,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         BigDecimal previousBalanceLeft = BigDecimal.ZERO;
 //        BigDecimal totalAmountForArrears = taxAmountForArrers != null ? taxAmountForArrers : BigDecimal.ZERO;
 //        BigDecimal amountPaidForArrears = totalAmountPaidForArrers != null ? totalAmountPaidForArrers : BigDecimal.ZERO;
-        BigDecimal arrears =BigDecimal.ZERO;
+        BigDecimal arrears = BigDecimal.ZERO;
 
         while (resultSet.next()) {
             Long dateLong = resultSet.getLong("enddate");
@@ -115,7 +115,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 //                arrears = (resultSet.getBigDecimal("due") != null ? resultSet.getBigDecimal("due") : BigDecimal.ZERO)
 //                        .subtract(resultSet.getBigDecimal("paid") != null ? resultSet.getBigDecimal("paid") : BigDecimal.ZERO);
 //            } else
-                if (code.equals("WS_TIME_PENALTY") || code.equals("10201")) {
+            if (code.equals("WS_TIME_PENALTY") || code.equals("10201")) {
                 ledgerReport.getDemand().setPenalty(taxamount != null ? taxamount : BigDecimal.ZERO);
                 BigDecimal amount = ledgerReport.getDemand().getTaxamount() != null ? ledgerReport.getDemand().getTaxamount() : BigDecimal.ZERO;
                 ledgerReport.getDemand().setTotalForCurrentMonth((taxamount != null ? taxamount : BigDecimal.ZERO).add(amount));
@@ -126,7 +126,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 ledgerReport.getDemand().setMonthAndYear(monthAndYear);
                 ledgerReport.getDemand().setDemandGenerationDate(demandGenerationDateLong);
                 ledgerReport.getDemand().setTaxamount(taxamount);
-                ledgerReport.getDemand().setTotalForCurrentMonth(ledgerReport.getDemand().getTaxamount().add(ledgerReport.getDemand().getPenalty()!=null ? ledgerReport.getDemand().getPenalty() : BigDecimal.ZERO));
+                ledgerReport.getDemand().setTotalForCurrentMonth(ledgerReport.getDemand().getTaxamount().add(ledgerReport.getDemand().getPenalty() != null ? ledgerReport.getDemand().getPenalty() : BigDecimal.ZERO));
                 long dueDateMillis = demandGenerationDateLocal.plus(10, ChronoUnit.DAYS).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 long penaltyAppliedDateMillis = demandGenerationDateLocal.plus(11, ChronoUnit.DAYS).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 ledgerReport.getDemand().setDueDate(dueDateMillis);
@@ -140,9 +140,9 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 //                    arrears = BigDecimal.ZERO;
 //                }
                 Long startDate = resultSet.getLong("startdate");
-                String connectionno=resultSet.getString("connectionno");
-                BigDecimal taxAmountResult = getMonthlyTaxAmount(startDate,connectionno);
-                BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(startDate,connectionno);
+                String connectionno = resultSet.getString("connectionno");
+                BigDecimal taxAmountResult = getMonthlyTaxAmount(startDate, connectionno);
+                BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(startDate, connectionno);
                 ledgerReport.getDemand().setArrears(taxAmountResult.subtract(totalAmountPaidResult));
                 ledgerReport.getDemand().setTotal_due_amount(ledgerReport.getDemand().getTotalForCurrentMonth().add(ledgerReport.getDemand().getArrears()));
 //                ledgerReport.setBalanceLeft(ledgerReport.getTotal_due_amount().subtract(ledgerReport.getPaid()));
@@ -168,7 +168,9 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 //        }
         for (Map.Entry<String, LedgerReport> entry : ledgerReports.entrySet()) {
             Map<String, Object> record = new HashMap<>();
-            record.put(entry.getKey(), entry.getValue());
+            if (entry.getValue().getDemand().getCode().equals("10101")) {
+                record.put(entry.getKey(), entry.getValue());
+            }
             monthlyRecordsList.add(record);
         }
         log.info("ledger report list" + monthlyRecordsList);
@@ -222,9 +224,9 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 .append("&").append("tenantId=").append(tenantId);
 //        RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build();
         Object response = serviceRequestRepository.fetchResult(URL, requestInfoWrapper);
-        log.info("line 199 response "+response.toString());
+        log.info("line 199 response " + response.toString());
         PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
-        log.info("paymnent response"+paymentResponse);
+        log.info("paymnent response" + paymentResponse);
         return paymentResponse.getPayments();
     }
 
@@ -235,9 +237,9 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 log.info("DemandLedgerReport is null for LedgerReport: {}", ledgerReport);
             }
             String consumerCode = ledgerReport.getDemand().getConnectionNo();
-            log.info("consumer code is "+consumerCode);
+            log.info("consumer code is " + consumerCode);
             List<Payment> payments = addPaymentDetails(consumerCode);
-            boolean paymentMatched=false;
+            boolean paymentMatched = false;
             for (Payment payment : payments) {
                 Long transactionDateLong = payment.getTransactionDate();
                 LocalDate transactionDate = Instant.ofEpochMilli(transactionDateLong).atZone(ZoneId.systemDefault()).toLocalDate();
@@ -252,11 +254,10 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                         ledgerReport.setPayment(new ArrayList<>());
                     }
                     ledgerReport.getPayment().add(paymentLedgerReport);
-                    paymentMatched=true;
+                    paymentMatched = true;
                 }
             }
-            if(!paymentMatched)
-            {
+            if (!paymentMatched) {
                 PaymentLedgerReport defaultPaymentLedgerReport = new PaymentLedgerReport();
                 defaultPaymentLedgerReport.setCollectionDate(null);
                 defaultPaymentLedgerReport.setReceiptNo("N/A");
@@ -272,12 +273,12 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
     }
 
     private BigDecimal getMonthlyTaxAmount(Long startDate, String consumerCode) {
-        StringBuilder taxAmountQuery=new StringBuilder(wsQueryBuilder.TAX_AMOUNT_QUERY);
-        List<Object> taxAmountParams=new ArrayList<>();
+        StringBuilder taxAmountQuery = new StringBuilder(wsQueryBuilder.TAX_AMOUNT_QUERY);
+        List<Object> taxAmountParams = new ArrayList<>();
         taxAmountParams.add(consumerCode);
         taxAmountParams.add(startDate);
-        BigDecimal ans= jdbcTemplate.queryForObject(taxAmountQuery.toString(), taxAmountParams.toArray(), BigDecimal.class);
-        if(ans!=null)
+        BigDecimal ans = jdbcTemplate.queryForObject(taxAmountQuery.toString(), taxAmountParams.toArray(), BigDecimal.class);
+        if (ans != null)
             return ans;
         return BigDecimal.ZERO;
     }
@@ -287,8 +288,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         List<Object> totalAmountPaidParams = new ArrayList<>();
         totalAmountPaidParams.add(consumerCode);
         totalAmountPaidParams.add(startDate);
-        BigDecimal ans=jdbcTemplate.queryForObject(totalAmountPaidQuery.toString(), totalAmountPaidParams.toArray(), BigDecimal.class);
-        if(ans!=null)
+        BigDecimal ans = jdbcTemplate.queryForObject(totalAmountPaidQuery.toString(), totalAmountPaidParams.toArray(), BigDecimal.class);
+        if (ans != null)
             return ans;
         return BigDecimal.ZERO;
     }
