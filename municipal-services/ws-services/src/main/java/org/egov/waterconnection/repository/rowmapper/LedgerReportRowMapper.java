@@ -169,8 +169,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             Map<String, Object> record = new HashMap<>();
             if (entry.getValue().getDemand().getTaxamount()!=null) {
                 record.put(entry.getKey(), entry.getValue());
+                monthlyRecordsList.add(record);
             }
-            monthlyRecordsList.add(record);
         }
         log.info("ledger report list" + monthlyRecordsList);
         if (!monthlyRecordsList.isEmpty()) {
@@ -223,9 +223,9 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 .append("&").append("tenantId=").append(tenantId);
 //        RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build();
         Object response = serviceRequestRepository.fetchResult(URL, requestInfoWrapper);
-        log.info("line 199 response " + response.toString());
+        log.info("line 226 response " + response.toString());
         PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
-        log.info("paymnent response" + paymentResponse);
+        log.info("paymnent response" + paymentResponse.toString());
         return paymentResponse.getPayments();
     }
 
