@@ -177,6 +177,19 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 //            enrichConnectionHolderDetails(monthlyRecordsList);
             addPaymentToLedger(monthlyRecordsList);
         }
+        monthlyRecordsList.sort(new Comparator<Map<String, Object>>() {
+            @Override
+            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                String monthAndYear1 = (String) o1.keySet().iterator().next();
+                String monthAndYear2 = (String) o2.keySet().iterator().next();
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMMyyyy", Locale.ENGLISH);
+                YearMonth yearMonth1 = YearMonth.parse(monthAndYear1, formatter);
+                YearMonth yearMonth2 = YearMonth.parse(monthAndYear2, formatter);
+
+                return yearMonth1.compareTo(yearMonth2);
+            }
+        });
         return monthlyRecordsList;
     }
 
