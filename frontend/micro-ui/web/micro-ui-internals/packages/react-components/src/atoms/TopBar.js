@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Hamburger from "./Hamburger";
 import { NotificationBell } from "./svgindex";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import BackButton from "./BackButton";
 
 const TopBar = ({
@@ -20,6 +20,11 @@ const TopBar = ({
   hideNotificationIconOnSomeUrlsWhenNotLoggedIn,
   changeLanguage,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
   const { pathname } = useLocation();
 
   // const showHaburgerorBackButton = () => {
@@ -37,7 +42,7 @@ const TopBar = ({
   const paymentlogoUrl = isPaymentPath
     ? window?.globalConfigs?.getConfig?.("LOGO_URL") // Show payment logo if path matches
     : logoUrl;
-    console.log(isPaymentPath,"isPaymentPath");
+  console.log(isPaymentPath, "isPaymentPath");
   return (
     <div className="navbar">
       <div className="center-container back-wrapper">
@@ -57,7 +62,36 @@ const TopBar = ({
         </div>
 
         <div className="RightMostTopBarOptions">
-          {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn || isPaymentPath  ? changeLanguage : null}
+
+          <div className="dropdown-user">
+            <button className="dropbtn" onClick={handleClick}
+              style={{
+                color: "white",
+                fontSize: "1rem",
+                margin: "10px",
+                backgroundColor: "#efefef00"
+              }}
+            >
+              Login
+            </button>
+            {isOpen && (
+              <div className="dropdown-user-overlay">
+                <ul className="dropdown-user-content">
+                  <li  style={{
+                      borderBottom:"solid 1px",
+                    }}>
+                    <Link className="dropdown-user-link" to="/mgramseva-web/employee/">Admin Login</Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-user-link" to="/mgramseva-web/employee/">Employee Login</Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn || isPaymentPath ? changeLanguage : null}
+
           {/* {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn ? (
             <div className="EventNotificationWrapper" onClick={onNotificationIconClick}>
               {notificationCountLoaded && notificationCount ? (
@@ -68,6 +102,10 @@ const TopBar = ({
               <NotificationBell />
             </div>
           ) : null} */}
+          <div>
+
+          </div>
+
         </div>
       </div>
     </div>
