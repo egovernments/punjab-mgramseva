@@ -926,32 +926,6 @@ def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance,
 def process():
     print("continue is the process")
 
-    try:
-        connection = getConnection()
-        cursor = connection.cursor()
-
-        print("cursor: ", cursor)
-
-        DROPPING_TABLE_QUERY = " drop table if exists roll_out_dashboard "
-        cursor.execute(DROPPING_TABLE_QUERY)
-
-        connection.commit()
-
-        createTableQuery = createTable()
-        cursor.execute(createTableQuery)
-
-        connection.commit()
-
-        print("table dropped")
-    except Exception as exception:
-        print("Exception occurred while connecting to the database")
-        print(exception)
-
-    finally:
-        if connection:
-            cursor.close()
-            connection.close()
-
     tenants = getGPWSCHeirarchy()
     for tenant in tenants:
         print("Tenant:", tenant['tenantId'])
