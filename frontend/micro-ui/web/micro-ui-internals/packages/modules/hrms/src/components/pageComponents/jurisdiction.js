@@ -231,28 +231,44 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
 
 
   };
+
+  function filterJurisdictions(unit, jurisdictions) {
+    const divisionBoundaryCodes = new Set(unit.divisionBoundary.map(item => item.code));
+    return jurisdictions.filter(jurisdiction => {
+      return !divisionBoundaryCodes.has(jurisdiction.boundary.code);
+    });
+  }
   const handleRemoveUnit = (unit) => {
     if(STATE_ADMIN){
-      let updatedJurisdictionsData = [];
       if(!isEdit){
-         updatedJurisdictionsData = jurisdictions.filter(
+        setjurisdictions(jurisdictions.filter(
           (element) => element.key !== unit.key
-        );
+        ));
+        setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
       }
       else{
-         updatedJurisdictionsData = jurisdictionsData.filter(
+        setJuristictionsData(jurisdictionsData.filter(
           (element) => element.key !== unit.key
-        );
+        ));
+        let filterJurisdictionsItems = filterJurisdictions(unit,jurisdictions);
+        setjurisdictions(filterJurisdictionsItems);
+        setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
       }
+      // console.log(jurisdictions,"jurisdictions");
+      // console.log(jurisdictionsData,"jurisdictionsData");
+      // setJuristictionsData((pre) => pre.filter((el) => el.key !== unit.key));
+
+  
 
 
-      setJuristictionsData(updatedJurisdictionsData);
-      setjurisdictions(updatedJurisdictionsData)
+    
+
+      // setjurisdictions(jurisdictions.filter((element) => element.key !== unit.key));
+      // setjurisdictions((prev) => prev.filter((el) => el.key !== unit.key));
       if (FormData.errors?.Jurisdictions?.type == unit.key) {
         clearErrors("Jurisdictions");
       }
       reviseIndexKeys();
-
     }
 
 
