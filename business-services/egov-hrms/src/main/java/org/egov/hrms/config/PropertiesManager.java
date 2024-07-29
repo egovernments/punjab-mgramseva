@@ -125,4 +125,39 @@ public class PropertiesManager {
 
 	@Value("${egov.hrms.max.pagination.limit}")
 	public Integer hrmsMaxLimit;
+
+	//	FuzzyConfigs
+	@Value("${hrms.search.pagination.default.limit}")
+	public Long defaultLimit;
+
+	@Value("${hrms.search.pagination.default.offset}")
+	public Long defaultOffset;
+
+	@Value("${hrms.search.pagination.max.search.limit}")
+	public Long searchLimit;
+
+	@Value("${hrms.search.pagination.max.search.limit}")
+	private Long maxSearchLimit;
+
+	@Value("${hrms.fuzzy.search.is.wildcard}")
+	private Boolean isSearchWildcardBased;
+
+	@Value("${hrms.search.name.fuziness}")
+	private String nameFuziness;
+
+	//	es configs
+	@Value("${elasticsearch.host}")
+	private String esHost;
+
+	@Value("${hrms.es.index}")
+	private String esPTIndex;
+
+	@Value("${elasticsearch.search.endpoint}")
+	private String esSearchEndpoint;
+
+	@Value("${egov.es.username}")
+	private String userName;
+
+	@Value("${egov.es.password}")
+	private String password;
 }

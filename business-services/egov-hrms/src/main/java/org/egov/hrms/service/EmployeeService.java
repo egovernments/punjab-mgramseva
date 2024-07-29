@@ -104,6 +104,9 @@ public class EmployeeService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@Autowired
+	private FuzzySearchService fuzzySearchService;
+
 	/**
 	 * Service method for create employee. Does following:
 	 * 1. Sets ids to all the objects using idgen service.
@@ -138,11 +141,17 @@ public class EmployeeService {
 	 * @return
 	 */
 	public EmployeeResponse search(EmployeeSearchCriteria criteria, RequestInfo requestInfo) {
+
 		boolean  userChecked = false;
 		/*if(null == criteria.getIsActive() || criteria.getIsActive())
 			criteria.setIsActive(true);
 		else
 			criteria.setIsActive(false);*/
+		if(criteria.getName()!=null){
+			List<Employee> fuzzyEmployees = fuzzySearchService.getEmployees(requestInfo, criteria);
+			return EmployeeResponse.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfo, true))
+					.employees(fuzzyEmployees).build();
+		}
         Map<String, User> mapOfUsers = new HashMap<String, User>();
 		if(!StringUtils.isEmpty(criteria.getPhone()) || !CollectionUtils.isEmpty(criteria.getRoles())) {
             Map<String, Object> userSearchCriteria = new HashMap<>();
