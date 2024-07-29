@@ -30,38 +30,38 @@ public class DemandLedgerReport {
     private String monthAndYear;
 
     @JsonProperty("demandGenerationDate")
-    private Long demandGenerationDate;
+    private Long demandGenerationDate= 0L;
 
     @JsonProperty("code")
     private String code = null;
 
     @JsonProperty("monthlyCharges")
-    private BigDecimal taxamount;
+    private BigDecimal taxamount=BigDecimal.ZERO;
 
     @JsonProperty("penalty")
-    private BigDecimal penalty;
+    private BigDecimal penalty=BigDecimal.ZERO;
 
     @JsonProperty("totalForCurrentMonth")
-    private BigDecimal totalForCurrentMonth;
+    private BigDecimal totalForCurrentMonth=BigDecimal.ZERO;
 
     @JsonProperty("previousMonthBalance")
-    private BigDecimal arrears;
+    private BigDecimal arrears=BigDecimal.ZERO;
 
     @JsonProperty("totalDues")
-    private BigDecimal total_due_amount;
+    private BigDecimal total_due_amount=BigDecimal.ZERO;
 
     @JsonProperty("dueDateOfPayment")
-    private Long dueDate;
+    private Long dueDate= 0L;
 
     @JsonProperty("penaltyAppliedOnDate")
-    private Long penaltyAppliedDate;
+    private Long penaltyAppliedDate=0L;
 
-    public DemandLedgerReport(String monthAndYear) {
-        this.monthAndYear = monthAndYear;
-        this.taxamount = BigDecimal.ZERO;
-        this.penalty = BigDecimal.ZERO;
-        this.totalForCurrentMonth = BigDecimal.ZERO;
-        this.arrears = BigDecimal.ZERO;
-        this.total_due_amount = BigDecimal.ZERO;
-    }
+//    public DemandLedgerReport(String monthAndYear) {
+//        this.monthAndYear = monthAndYear;
+//        this.taxamount = BigDecimal.ZERO;
+//        this.penalty = BigDecimal.ZERO;
+//        this.totalForCurrentMonth = BigDecimal.ZERO;
+//        this.arrears = BigDecimal.ZERO;
+//        this.total_due_amount = BigDecimal.ZERO;
+//    }
 }

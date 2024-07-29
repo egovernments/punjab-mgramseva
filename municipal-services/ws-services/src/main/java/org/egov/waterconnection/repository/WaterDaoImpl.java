@@ -2,6 +2,9 @@ package org.egov.waterconnection.repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -686,7 +689,21 @@ public class WaterDaoImpl implements WaterDao {
 		return consumersDemandNotGeneratedList;
 	}
 
-	public List<Map<String, Object>> getLedgerReport(String consumercode, String tenantId, Integer limit, Integer offset, Long startDateTime, Long endDateTime,RequestInfoWrapper requestInfoWrapper) {
+	public List<Map<String, Object>> getLedgerReport(String consumercode, String tenantId, Integer limit, Integer offset, String year,RequestInfoWrapper requestInfoWrapper) {
+		String[] years = year.split("-");
+		if (years.length != 2) {
+			throw new IllegalArgumentException("Invalid fiscal year format");
+		}
+		int startYear = Integer.parseInt(years[0]);
+		int endYear = Integer.parseInt(years[1]);
+
+		LocalDate startDate = LocalDate.of(startYear, 4, 1);
+		LocalDate endDate = LocalDate.of(startYear + 1, 3, 31);
+
+		Long startDateTime = LocalDateTime.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth(), 0, 0, 0)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long endDateTime = LocalDateTime.of(endDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
 		StringBuilder query = new StringBuilder(wsQueryBuilder.LEDGER_REPORT_QUERY);
 
 		List<Object> preparedStatement = new ArrayList<>();
@@ -714,27 +731,10 @@ public class WaterDaoImpl implements WaterDao {
 		}
 
 		log.info("Query of ledger report:" + query + "and prepared statement" + preparedStatement);
-//        LedgerReportRowMapper ledgerReportRowMapper = new LedgerReportRowMapper();
 		ledgerReportRowMapper.setTenantId(tenantId);
 		ledgerReportRowMapper.setRequestInfo(requestInfoWrapper);
-//		ledgerReportRowMapper.setEndDate(endDate);
-//		List<Payment> payments=ledgerReportRowMapper.addPaymentDetails(consumercode,tenantId,requestInfoWrapper);
-
-//		StringBuilder taxAmountQuery=new StringBuilder(wsQueryBuilder.TAX_AMOUNT_QUERY);
-//		List<Object> taxAmountParams=new ArrayList<>();
-//		taxAmountParams.add(consumercode);
-//		taxAmountParams.add(startDateTime);
-//		BigDecimal taxAmountResult = jdbcTemplate.queryForObject(taxAmountQuery.toString(), taxAmountParams.toArray(), BigDecimal.class);
-//
-//		StringBuilder totalAmountPaidQuery = new StringBuilder(wsQueryBuilder.TOTAL_AMOUNT_PAID_QUERY);
-//		List<Object> totalAmountPaidParams = new ArrayList<>();
-//		totalAmountPaidParams.add(consumercode);
-//		totalAmountPaidParams.add(startDateTime);
-//		BigDecimal totalAmountPaidResult = jdbcTemplate.queryForObject(totalAmountPaidQuery.toString(), totalAmountPaidParams.toArray(), BigDecimal.class);
-
-//		ledgerReportRowMapper.setTaxAmountResult(taxAmountResult);
-//		ledgerReportRowMapper.setTotalAmountPaidResult(totalAmountPaidResult);
-
+		ledgerReportRowMapper.setStartDate(startDate);
+		ledgerReportRowMapper.setEndDate(endDate);
 		List<Map<String, Object>> ledgerReportList= jdbcTemplate.query(query.toString(), preparedStatement.toArray(), ledgerReportRowMapper);
 
 		return ledgerReportList;
