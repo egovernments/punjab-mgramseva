@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/reports/InactiveConsumerReportData.dart';
@@ -263,7 +264,6 @@ class ReportsProvider with ChangeNotifier {
 
   void onChangeOfBillYear(val) {
     selectedBillYear = val;
-    print(val.toString());
     billingyearCtrl.text = val.toString();
     billingcycleCtrl.clear();
     selectedBillCycle = null;
@@ -420,6 +420,72 @@ class ReportsProvider with ChangeNotifier {
       return dates;
     }
     return <Map<String,dynamic>>[];
+  }
+
+  Future<void> getLeadgerReport(
+      {bool download = false,
+      int offset = 1,
+      int limit = 10,
+      }) async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+          
+      if (selectedBillYear == null) {
+        throw Exception('${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.SELECT_BILLING_CYCLE)}');
+      }
+      Map<String, dynamic> params = {
+        'tenantId': commonProvider.userDetails!.selectedtenant!.code,
+        'offset': '${offset - 1}',
+        'limit': '${download ? -1 : limit}',
+        // 'consumercode':'${}'
+        'year':selectedBillYear
+      };
+      var response = await ReportsRepo().fetchBillReport(params);
+      if (response != null) {
+        demandreports = response;
+        if (download) {
+          generateExcel(
+              demandHeaderList
+                  .map<String>((e) =>
+                      '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
+                  .toList(),
+              getDemandsData(demandreports!, isExcel: true)
+                      .map<List<String>>(
+                          (e) => e.tableRow.map((e) => e.label).toList())
+                      .toList() ??
+                  [],
+              title:
+                  'DemandReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillPeriod.toString().replaceAll('/', '_')}',
+              optionalData: [
+                'Demand Report',
+                '$selectedBillPeriod',
+                '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)}',
+                '${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
+                'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch, format: 'dd/MMM/yyyy')}'
+              ]);
+        } else {
+          if (demandreports != null && demandreports!.isNotEmpty) {
+            this.limit = limit;
+            this.offset = offset;
+            this.genericTableData = BillsTableData(
+                demandHeaderList, getDemandsData(demandreports!));
+          }
+        }
+        streamController.add(response);
+        callNotifier();
+      } else {
+        streamController.add('error');
+        throw Exception('API Error');
+      }
+      callNotifier();
+    } catch (e, s) {
+      demandreports = [];
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
+      callNotifier();
+    }
   }
 
   Future<void> getDemandReport(

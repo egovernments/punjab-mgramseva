@@ -24,6 +24,7 @@ import 'package:mgramseva/screeens/notifications/notification_screen.dart';
 import 'package:mgramseva/screeens/password_success/password_success.dart';
 import 'package:mgramseva/screeens/privacy_and_terms/PrivacyAndTerms.dart';
 import 'package:mgramseva/screeens/profile/edit_profile.dart';
+import 'package:mgramseva/screeens/leadger_report/ledger_report.dart';
 import 'package:mgramseva/screeens/reports/reports.dart';
 import 'package:mgramseva/screeens/reset_password/reset_password.dart';
 import 'package:mgramseva/screeens/reset_password/update_password.dart';
@@ -370,6 +371,10 @@ class Routing {
         return MaterialPageRoute(
             builder: (_) => Reports(),
             settings: RouteSettings(name: Routes.REPORTS));
+      case Routes.LEDGER_REPORTS:
+        return MaterialPageRoute(
+            builder: (_) => LeadgerReport(),
+            settings: RouteSettings(name: Routes.LEDGER_REPORTS));
       case Routes.PRIVACY_POLICY:
         bool args = settings.arguments==null?false:settings.arguments as bool;
         return MaterialPageRoute(
