@@ -162,6 +162,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
     }
 
     public List<Payment> addPaymentDetails(String consumerCode) {
+        if(consumerCode==null)
+            return null;
         String service = "WS";
         StringBuilder URL = waterServiceUtil.getcollectionURL();
         URL.append(service).append("/_search").append("?").append("consumerCodes=").append(consumerCode)
@@ -183,21 +185,24 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             log.info("consumer code is " + consumerCode);
             List<Payment> payments = addPaymentDetails(consumerCode);
             boolean paymentMatched = false;
-            for (Payment payment : payments) {
-                Long transactionDateLong = payment.getTransactionDate();
-                LocalDate transactionDate = Instant.ofEpochMilli(transactionDateLong).atZone(ZoneId.systemDefault()).toLocalDate();
-                String transactionMonthAndYear = transactionDate.format(DateTimeFormatter.ofPattern("MMMMyyyy"));
-                if (ledgerReport.getDemand().getMonthAndYear().equals(transactionMonthAndYear)) {
-                    PaymentLedgerReport paymentLedgerReport = new PaymentLedgerReport();
-                    paymentLedgerReport.setCollectionDate(transactionDateLong);
-                    paymentLedgerReport.setReceiptNo(payment.getPaymentDetails().get(0).getReceiptNumber());
-                    paymentLedgerReport.setPaid(payment.getTotalAmountPaid());
-                    paymentLedgerReport.setBalanceLeft(ledgerReport.getDemand().getTotal_due_amount().subtract(payment.getTotalAmountPaid()));
-                    if (ledgerReport.getPayment() == null) {
-                        ledgerReport.setPayment(new ArrayList<>());
+            if(payments!=null)
+            {
+                for (Payment payment : payments) {
+                    Long transactionDateLong = payment.getTransactionDate();
+                    LocalDate transactionDate = Instant.ofEpochMilli(transactionDateLong).atZone(ZoneId.systemDefault()).toLocalDate();
+                    String transactionMonthAndYear = transactionDate.format(DateTimeFormatter.ofPattern("MMMMyyyy"));
+                    if (ledgerReport.getDemand().getMonthAndYear().equals(transactionMonthAndYear)) {
+                        PaymentLedgerReport paymentLedgerReport = new PaymentLedgerReport();
+                        paymentLedgerReport.setCollectionDate(transactionDateLong);
+                        paymentLedgerReport.setReceiptNo(payment.getPaymentDetails().get(0).getReceiptNumber());
+                        paymentLedgerReport.setPaid(payment.getTotalAmountPaid());
+                        paymentLedgerReport.setBalanceLeft(ledgerReport.getDemand().getTotal_due_amount().subtract(payment.getTotalAmountPaid()));
+                        if (ledgerReport.getPayment() == null) {
+                            ledgerReport.setPayment(new ArrayList<>());
+                        }
+                        ledgerReport.getPayment().add(paymentLedgerReport);
+                        paymentMatched = true;
                     }
-                    ledgerReport.getPayment().add(paymentLedgerReport);
-                    paymentMatched = true;
                 }
             }
             if (!paymentMatched) {
