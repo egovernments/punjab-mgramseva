@@ -128,18 +128,18 @@ const CreateEmployee = () => {
 
     if (
       formData?.SelectEmployeeGender?.gender.code &&
-      formData?.SelectEmployeeName?.employeeName &&
-      formData?.SelectEmployeePhoneNumber?.mobileNumber &&
-      formData?.Jurisdictions?.length &&
-      STATE_ADMIN ? 
-      (formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.division == undefined  || juris?.divisionBoundary?.length === 0 ) )
-      
-      :formData?.Jurisdictions?.length && formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.roles?.length === 0 )      
-      && 
-      checkfield &&
-      phonecheck &&
-      checkMailNameNum(formData) &&
-      hasUniqueTenantIds(formData?.Jurisdictions)
+        formData?.SelectEmployeeName?.employeeName &&
+        formData?.SelectEmployeePhoneNumber?.mobileNumber &&
+        formData?.Jurisdictions?.length &&
+        STATE_ADMIN ?
+        (formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.division == undefined || juris?.divisionBoundary?.length === 0))
+
+        : formData?.Jurisdictions?.length && formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.roles?.length === 0)
+        &&
+        checkfield &&
+        phonecheck &&
+        checkMailNameNum(formData) &&
+        hasUniqueTenantIds(formData?.Jurisdictions)
     ) {
       setSubmitValve(true);
     } else {
@@ -255,11 +255,13 @@ const CreateEmployee = () => {
         });
       });
     }
-    roles.push({
-      name: "EMPLOYEE",
-      code: "EMPLOYEE",
-      tenantId: "pb",
-    });
+    roles.push(
+      {
+        "code": "EMPLOYEE",
+        "name": "Employee",
+        "tenantId": "pb"
+      });
+
     const mappedroles = [].concat.apply([], roles);
     let dateOfAppointment = new Date();
     dateOfAppointment.setDate(dateOfAppointment.getDate() - 1);

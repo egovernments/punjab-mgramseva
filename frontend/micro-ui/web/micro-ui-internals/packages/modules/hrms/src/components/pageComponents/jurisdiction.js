@@ -37,17 +37,17 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     !isEdit && sessionFormData?.Jurisdictions?.length > 0
       ? makeDefaultValues(sessionFormData)
       : formData?.Jurisdictions || [
-          {
-            id: undefined,
-            key: 1,
-            hierarchy: null,
-            boundaryType: null,
-            boundary: null,
-            division: {},
-            divisionBoundary: [],
-            roles: [],
-          },
-        ]
+        {
+          id: undefined,
+          key: 1,
+          hierarchy: null,
+          boundaryType: null,
+          boundary: null,
+          division: {},
+          divisionBoundary: [],
+          roles: [],
+        },
+      ]
   );
   const [jurisdictionsData, setJuristictionsData] = useState([]);
   let hierarchylist = [];
@@ -169,7 +169,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       config.key,
       [...jurisdictionData, ...inactiveJurisdictions].filter((value) => Object.keys(value).length !== 0)
     );
-    
+
   }, [jurisdictions, data?.MdmsRes]);
   // useEffect(() => {
   //   setJuristictionsData(formData?.Jurisdictions);
@@ -180,8 +180,8 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   };
 
   const handleAddUnit = () => {
-    if(STATE_ADMIN){
-      if(!isEdit){
+    if (STATE_ADMIN) {
+      if (!isEdit) {
         setjurisdictions((prev) => [
           ...prev,
           {
@@ -195,7 +195,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
           },
         ]);
         setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
-      }else{
+      } else {
         setJuristictionsData((prev) => [
           ...prev,
           {
@@ -209,9 +209,9 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
           },
         ]);
         setJuristictionsData((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
-      }     
+      }
 
-    }else{
+    } else {
       setjurisdictions((prev) => [
         ...prev,
         {
@@ -239,32 +239,22 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     });
   }
   const handleRemoveUnit = (unit) => {
-    if(STATE_ADMIN){
-      if(!isEdit){
+    if (STATE_ADMIN) {
+      if (!isEdit) {
         setjurisdictions(jurisdictions.filter(
           (element) => element.key !== unit.key
         ));
         setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
       }
-      else{
+      else {
         setJuristictionsData(jurisdictionsData.filter(
           (element) => element.key !== unit.key
         ));
-        let filterJurisdictionsItems = filterJurisdictions(unit,jurisdictions);
+        let filterJurisdictionsItems = filterJurisdictions(unit, jurisdictions);
         setjurisdictions(filterJurisdictionsItems);
         setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
       }
-      // console.log(jurisdictions,"jurisdictions");
-      // console.log(jurisdictionsData,"jurisdictionsData");
-      // setJuristictionsData((pre) => pre.filter((el) => el.key !== unit.key));
 
-  
-
-
-    
-
-      // setjurisdictions(jurisdictions.filter((element) => element.key !== unit.key));
-      // setjurisdictions((prev) => prev.filter((el) => el.key !== unit.key));
       if (FormData.errors?.Jurisdictions?.type == unit.key) {
         clearErrors("Jurisdictions");
       }
@@ -272,7 +262,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     }
 
 
-    else{
+    else {
       if (unit.id) {
         let res = {
           id: unit?.id,
@@ -299,7 +289,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       if (FormData.errors?.Jurisdictions?.type == unit.key) {
         clearErrors("Jurisdictions");
       }
-  
+
       reviseIndexKeys();
 
     }
@@ -325,9 +315,11 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     } else {
       // Specify the role codes you want to filter
       const roleCodesToFilter = ["HRMS_ADMIN", "DIV_ADMIN", "MDMS_ADMIN", "LOC_ADMIN", "SYSTEM"];
+
       // Use the filter method to extract roles with the specified codes
       return data?.MdmsRes?.["ws-services-masters"].WSServiceRoles?.filter((role) => {
-        return !roleCodesToFilter.includes(role.code);
+        return !roleCodesToFilter.includes(role.code) &&
+          (role?.name === "Secretary" || role?.name === "Sarpanch" || role?.name === "Revenue Collector");
       })?.map((role) => {
         return { code: role.code, name: role?.name ? role?.name : " ", i18text: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
       });
@@ -336,7 +328,6 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   if (isLoading && isUserDataLoading) {
     return <Loader />;
   }
-  console.log((isEdit && STATE_ADMIN),"isEdit && STATE_ADMIN");
   return (
     <div>
       {isEdit && STATE_ADMIN ? (
@@ -419,6 +410,7 @@ function Jurisdiction({
   index,
   Boundary,
 }) {
+
   const [BoundaryType, selectBoundaryType] = useState([]);
   // const [Boundary, selectboundary] = useState([]);
   const [divisionBoundary, setDivisionBoundary] = useState([]);
@@ -426,16 +418,16 @@ function Jurisdiction({
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
   let isMobile = window.Digit.Utils.browser.isMobile();
   const isEdit = window.location.href?.includes("hrms/edit");
-  let defaultjurisdiction = () =>{
+  let defaultjurisdiction = () => {
     let currentTenant = Digit.ULBService.getCurrentTenantId();
     let defaultjurisdiction;
-    Boundary?.map((ele)=>{
-      if (ele.code === currentTenant){
+    Boundary?.map((ele) => {
+      if (ele.code === currentTenant) {
         defaultjurisdiction = ele;
       }
     })
     return defaultjurisdiction;
-  } 
+  }
 
   useEffect(() => {
     setDivision(
@@ -537,7 +529,7 @@ function Jurisdiction({
         [...data].filter((value) => Object.keys(value).length !== 0)
       );
     setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, roles: res } : item)));
-    selectedboundary(jurisdiction?.boundary?jurisdiction?.boundary:defaultjurisdiction());
+    selectedboundary(jurisdiction?.boundary ? jurisdiction?.boundary : defaultjurisdiction());
   };
 
   const selectDivisionBoundary = (e) => {
