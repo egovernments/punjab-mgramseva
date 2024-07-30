@@ -82,6 +82,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             LedgerReport ledgerReport = new LedgerReport();
             ledgerReport.setDemand(new DemandLedgerReport());
             ledgerReport.getDemand().setMonthAndYear(monthAndYear);
+            ledgerReport.getDemand().setConnectionNo(resultSet.getString("connectionno"));
             ledgerReports.put(monthAndYear, ledgerReport);
             currentMonth = currentMonth.plusMonths(1);
         }
@@ -136,10 +137,10 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         }
         for (Map.Entry<String, LedgerReport> entry : ledgerReports.entrySet()) {
             Map<String, Object> record = new HashMap<>();
-            if (entry.getValue().getDemand().getTaxamount()!=null) {
+//            if (entry.getValue().getDemand().getTaxamount()!=null) {
                 record.put(entry.getKey(), entry.getValue());
                 monthlyRecordsList.add(record);
-            }
+//            }
         }
         log.info("ledger report list" + monthlyRecordsList);
         if (!monthlyRecordsList.isEmpty()) {
@@ -171,7 +172,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         Object response = serviceRequestRepository.fetchResult(URL, requestInfoWrapper);
         log.info("line 226 response " + response.toString());
         PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
-        log.info("paymnent response" + paymentResponse.toString());
+//        log.info("paymnent response" + paymentResponse.toString());
         return paymentResponse.getPayments();
     }
 
