@@ -182,7 +182,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
     }
 
     private void addPaymentToLedger(List<Map<String, Object>> monthlyRecordList) {
-        BigDecimal runningBalance=BigDecimal.ZERO;
+//        BigDecimal runningBalance=BigDecimal.ZERO;
 
         for (Map<String, Object> record : monthlyRecordList) {
             LedgerReport ledgerReport = (LedgerReport) record.values().iterator().next();
@@ -207,13 +207,13 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                         BigDecimal totalDueAmount=ledgerReport.getDemand().getTotal_due_amount();
                         if(totalDueAmount.equals(BigDecimal.ZERO))
                         {
-                            paymentLedgerReport.setBalanceLeft(runningBalance);
+                            paymentLedgerReport.setBalanceLeft(payment.getTotalDue().subtract(paymentLedgerReport.getPaid()));
                         }
                         else
                         {
                             paymentLedgerReport.setBalanceLeft(totalDueAmount.subtract(paymentLedgerReport.getPaid()));
                         }
-                        runningBalance=paymentLedgerReport.getBalanceLeft();
+//                        runningBalance=paymentLedgerReport.getBalanceLeft();
                         if (ledgerReport.getPayment() == null) {
                             ledgerReport.setPayment(new ArrayList<>());
                         }
