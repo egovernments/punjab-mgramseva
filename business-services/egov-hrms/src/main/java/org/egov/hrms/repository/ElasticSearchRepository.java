@@ -44,9 +44,8 @@ public class ElasticSearchRepository {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", getESEncodedCredentials());
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.APPLICATION_JSON);
         log.info("Headers: " + headers.toString());
-//        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<>(searchQuery, headers);
         ResponseEntity response = null;
         try {
