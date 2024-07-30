@@ -50,6 +50,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
     RequestInfoWrapper requestInfoWrapper;
     LocalDate startDate;
     LocalDate endDate;
+    String consumerCode;
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
@@ -69,6 +70,12 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         this.endDate=endDate;
     }
 
+
+    public void setConsumerCode(String consumercode)
+    {
+        this.consumerCode=consumercode;
+    }
+
     @Override
     public List<Map<String, Object>> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         List<Map<String, Object>> monthlyRecordsList = new ArrayList<>();
@@ -82,7 +89,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             LedgerReport ledgerReport = new LedgerReport();
             ledgerReport.setDemand(new DemandLedgerReport());
             ledgerReport.getDemand().setMonthAndYear(monthAndYear);
-            ledgerReport.getDemand().setConnectionNo(resultSet.getString("connectionno"));
+            ledgerReport.getDemand().setConnectionNo(consumerCode);
             ledgerReports.put(monthAndYear, ledgerReport);
             currentMonth = currentMonth.plusMonths(1);
         }
@@ -137,10 +144,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         }
         for (Map.Entry<String, LedgerReport> entry : ledgerReports.entrySet()) {
             Map<String, Object> record = new HashMap<>();
-//            if (entry.getValue().getDemand().getTaxamount()!=null) {
                 record.put(entry.getKey(), entry.getValue());
                 monthlyRecordsList.add(record);
-//            }
         }
         log.info("ledger report list" + monthlyRecordsList);
         if (!monthlyRecordsList.isEmpty()) {

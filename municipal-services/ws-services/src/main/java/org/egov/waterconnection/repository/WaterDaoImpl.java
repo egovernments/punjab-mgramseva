@@ -735,6 +735,7 @@ public class WaterDaoImpl implements WaterDao {
 		ledgerReportRowMapper.setRequestInfo(requestInfoWrapper);
 		ledgerReportRowMapper.setStartDate(startDate);
 		ledgerReportRowMapper.setEndDate(endDate);
+		ledgerReportRowMapper.setConsumerCode(consumercode);
 		List<Map<String, Object>> ledgerReportList= jdbcTemplate.query(query.toString(), preparedStatement.toArray(), ledgerReportRowMapper);
 
 		return ledgerReportList;
