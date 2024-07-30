@@ -42,21 +42,20 @@ public class FuzzySearchService {
 
         Object esResponse = elasticSearchRepository.fuzzySearchEmployees(criteria, idsFromDB);
 
-        Map<String, Set<String>> tenantIdToPropertyId = getTenantIdToPropertyIdMap(esResponse);
+        Map<String, Set<String>> tenantIdToEmpId = getTenantIdToEmpIdMap(esResponse);
 
         List<Employee> employees = new LinkedList<>();
 
-        for (Map.Entry<String, Set<String>> entry : tenantIdToPropertyId.entrySet()) {
+        for (Map.Entry<String, Set<String>> entry : tenantIdToEmpId.entrySet()) {
             String tenantId = entry.getKey();
-            Set<String> propertyIds = entry.getValue();
+            Set<String> empIds = entry.getValue();
+            List<String> empList = new ArrayList<>(empIds);
 
-//            EmployeeSearchCriteria employeeSearchCriteria = EmployeeSearchCriteria.builder().tenantId(tenantId).propertyIds(propertyIds).build();
+            EmployeeSearchCriteria employeeSearchCriteria = EmployeeSearchCriteria.builder().tenantId(tenantId).codes(empList).build();
 
             employees.addAll(employeeRepository.fetchEmployees(criteria,requestInfo));
 
         }
-
-//        List<Employee> orderedProperties = orderByESScore(properties, esResponse);
 
         return employees;
     }
@@ -66,10 +65,10 @@ public class FuzzySearchService {
             throw new CustomException("INVALID_SEARCH_CRITERIA","The search criteria is invalid");
 
     }
-    private Map<String, Set<String>> getTenantIdToPropertyIdMap(Object esResponse) {
+    private Map<String, Set<String>> getTenantIdToEmpIdMap(Object esResponse) {
 
         List<Map<String, Object>> data;
-        Map<String, Set<String>> tenantIdToPropertyIds = new LinkedHashMap<>();
+        Map<String, Set<String>> tenantIdToEmpIds = new LinkedHashMap<>();
 
 
         try {
@@ -81,14 +80,13 @@ public class FuzzySearchService {
                 for (Map<String, Object> map : data) {
 
                     String tenantId = JsonPath.read(map, "$.tenantData.code");
-                    String propertyId = JsonPath.read(map, "$.propertyId");
-
-                    if (tenantIdToPropertyIds.containsKey(tenantId))
-                        tenantIdToPropertyIds.get(tenantId).add(propertyId);
+                    String empId = JsonPath.read(map, "$.code");
+                    if (tenantIdToEmpIds.containsKey(tenantId))
+                        tenantIdToEmpIds.get(tenantId).add(empId);
                     else {
-                        Set<String> propertyIds = new HashSet<>();
-                        propertyIds.add(propertyId);
-                        tenantIdToPropertyIds.put(tenantId, propertyIds);
+                        Set<String> empIds = new HashSet<>();
+                        empIds.add(empId);
+                        tenantIdToEmpIds.put(tenantId, empIds);
                     }
 
                 }
@@ -96,9 +94,9 @@ public class FuzzySearchService {
             }
 
         } catch (Exception e) {
-            throw new CustomException("PARSING_ERROR", "Failed to extract propertyIds from es response");
+            throw new CustomException("PARSING_ERROR", "Failed to extract employeeIds from es response");
         }
 
-        return tenantIdToPropertyIds;
+        return tenantIdToEmpIds;
     }
 }
