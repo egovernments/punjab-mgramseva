@@ -373,7 +373,11 @@ class Routing {
             settings: RouteSettings(name: Routes.REPORTS));
       case Routes.LEDGER_REPORTS:
         return MaterialPageRoute(
-            builder: (_) => LeadgerReport(),
+            builder: (_) => LeadgerReport(
+               waterConnection: settings.arguments != null
+                    ? (settings.arguments as Map)['waterconnections']
+                        as WaterConnection
+                    : null),            
             settings: RouteSettings(name: Routes.LEDGER_REPORTS));
       case Routes.PRIVACY_POLICY:
         bool args = settings.arguments==null?false:settings.arguments as bool;

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -441,10 +442,11 @@ class HouseholdRegisterProvider with ChangeNotifier {
         });
   }
   viewLeadger(TableData tableData) {
-    log("${ waterConnectionsDetails?.waterConnection?.first.connectionNo}");
-    log("Call Ledger View Here");
+    log("Call Ledger View Here");   
     Navigator.pushNamed(navigatorKey.currentContext!, Routes.LEDGER_REPORTS,
-                arguments: "${waterConnectionsDetails?.waterConnection?.first.connectionNo}");
+                    arguments: {
+          'waterconnections': waterConnectionsDetails?.waterConnection?.first,
+        });
 
     
 

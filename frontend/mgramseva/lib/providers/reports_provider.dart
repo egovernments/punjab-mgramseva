@@ -65,6 +65,9 @@ class ReportsProvider with ChangeNotifier {
     genericTableData = BillsTableData([], []);
     notifyListeners();
   }
+  void updateDefaultDate() {
+  
+  }
 
   dispose() {
     streamController.close();
@@ -307,6 +310,7 @@ class ReportsProvider with ChangeNotifier {
       billingYearList = res;
       notifyListeners();
       streamController.add(billingYearList);
+      
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       streamController.addError('error');

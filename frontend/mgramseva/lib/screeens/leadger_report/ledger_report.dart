@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/screeens/leadger_report/leadger_view.dart';
 import 'package:mgramseva/screeens/reports/expense_bill_report.dart';
 import 'package:mgramseva/screeens/reports/inactive_consumer_report.dart';
@@ -22,8 +26,9 @@ import '../reports/bill_report.dart';
 import '../reports/collection_report.dart';
 
 class LeadgerReport extends StatefulWidget {
-  const LeadgerReport({Key? key}) : super(key: key);
-
+  final WaterConnection? waterConnection;
+  LeadgerReport({Key? key,this.waterConnection}) : super(key: key);
+  
   @override
   State<StatefulWidget> createState() {
     return _LeadgerReport();
@@ -59,6 +64,8 @@ class _LeadgerReport extends State<LeadgerReport> with SingleTickerProviderState
     reportsProvider.clearBillingSelection();
     reportsProvider.clearBuildTableData();
     reportsProvider.clearTableData();
+    /*start-from here 3333*/
+    reportsProvider.updateDefaultDate();
 
   }
 
@@ -83,7 +90,7 @@ class _LeadgerReport extends State<LeadgerReport> with SingleTickerProviderState
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     // TODO: implement build
     return Scaffold(
       appBar: CustomAppBar(),

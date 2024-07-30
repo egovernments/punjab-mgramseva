@@ -28,7 +28,6 @@ class HouseholdDetail extends StatefulWidget {
   final String? mode;
   final String? status;
   final WaterConnection? waterConnection;
-
   HouseholdDetail(
       {Key? key, this.id, this.mode, this.status, this.waterConnection});
   @override
