@@ -180,7 +180,7 @@ export const OpenSearchConfig =  {
         // "showActionBarMobileCard": true,
         // "actionButtonLabelMobileCard": "TQM_VIEW_RESULTS",
         "enableGlobalSearch": false,
-        "enableColumnSort": true,
+        "enableColumnSort": false,
         "resultsJsonPath": "WaterConnection",
         "tableClassName":"table pqm-table"
       },
