@@ -171,6 +171,9 @@ class ReportsProvider with ChangeNotifier {
     if (type == i18.dashboard.VENDOR_REPORT) {
       getVendorReport(limit: response.limit, offset: response.offset);
     }
+    if (type == i18.dashboard.LEDGER_REPORTS) {
+      getLeadgerReport(limit: response.limit, offset: response.offset);
+    }
   }
 
   List<TableDataRow> getDemandsData(List<BillReportData> list,
@@ -516,7 +519,7 @@ String formatYearMonth(String inputString) {
         'offset': '${offset - 1}',
         'limit': '${download ? -1 : limit}',
         'consumercode':consumerCode,
-        'year':selectedBillYear.financialYear
+        'year':selectedBillYear.financialYear,
       };
       var response = await ReportsRepo().fetchLedgerReport(params);
       if (response != null) {

@@ -44,7 +44,6 @@ class _LeadgerReport extends State<LeadgerReport>
   var takeScreenShot = false;
   bool viewTable = false;
   String tableTitle = 'Table Data';
-  // WaterConnection? waterConnectionItem;
 
   @override
   void dispose() {
@@ -86,7 +85,6 @@ class _LeadgerReport extends State<LeadgerReport>
     setState(() {
       viewTable = status;
       tableTitle = title;
-      // waterConnectionItem = widget.waterConnection;
     });
   }
 
