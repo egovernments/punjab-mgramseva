@@ -1,6 +1,7 @@
 package org.egov.waterconnection.repository.rowmapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.models.auth.In;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.waterconnection.repository.ServiceRequestRepository;
@@ -29,6 +30,7 @@ import java.time.temporal.ChronoUnit;
 
 @Slf4j
 @Component
+@Setter
 public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String, Object>>> {
 
     @Autowired
@@ -48,41 +50,29 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 
     String tenantId;
     RequestInfoWrapper requestInfoWrapper;
-    LocalDate startDate;
-    LocalDate endDate;
+    Integer startYear;
+    Integer endYear;
     String consumerCode;
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-    }
 
     public void setRequestInfo(RequestInfoWrapper requestInfoWrapper) {
         this.requestInfoWrapper = requestInfoWrapper;
-    }
-
-    public void setStartDate(LocalDate startDate)
-    {
-        this.startDate=startDate;
-    }
-
-    public void setEndDate(LocalDate endDate)
-    {
-        this.endDate=endDate;
-    }
-
-
-    public void setConsumerCode(String consumercode)
-    {
-        this.consumerCode=consumercode;
     }
 
     @Override
     public List<Map<String, Object>> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         List<Map<String, Object>> monthlyRecordsList = new ArrayList<>();
         Map<String, LedgerReport> ledgerReports = new HashMap<>();
-        YearMonth startMonth=YearMonth.from(startDate);
-        YearMonth endMonth=YearMonth.now();
-        YearMonth currentMonth=startMonth;
+        YearMonth startMonth = YearMonth.of(startYear, 4);
+        YearMonth endMonth;
+        YearMonth now = YearMonth.now();
+
+        if (startYear == now.getYear() || (startYear == now.getYear() - 1 && now.getMonthValue() <= 3)) {
+            endMonth = now;
+        } else {
+            endMonth = YearMonth.of(startYear + 1, 3);
+        }
+
+        YearMonth currentMonth = startMonth;
 
         while (!currentMonth.isAfter(endMonth)) {
             String monthAndYear = currentMonth.format(DateTimeFormatter.ofPattern("MMMMyyyy"));

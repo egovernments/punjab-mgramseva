@@ -55,6 +55,9 @@ import lombok.extern.slf4j.Slf4j;
 public class WaterDaoImpl implements WaterDao {
 
 	@Autowired
+	private MonthReportRowMapper monthReportRowMapper;
+
+	@Autowired
 	private LedgerReportRowMapper ledgerReportRowMapper;
     @Autowired
 	private DemandNotGeneratedRowMapper demandNotGeneratedRowMapper;
@@ -733,8 +736,8 @@ public class WaterDaoImpl implements WaterDao {
 		log.info("Query of ledger report:" + query + "and prepared statement" + preparedStatement);
 		ledgerReportRowMapper.setTenantId(tenantId);
 		ledgerReportRowMapper.setRequestInfo(requestInfoWrapper);
-		ledgerReportRowMapper.setStartDate(startDate);
-		ledgerReportRowMapper.setEndDate(endDate);
+		ledgerReportRowMapper.setStartYear(startYear);
+		ledgerReportRowMapper.setEndYear(endYear);
 		ledgerReportRowMapper.setConsumerCode(consumercode);
 		List<Map<String, Object>> ledgerReportList= jdbcTemplate.query(query.toString(), preparedStatement.toArray(), ledgerReportRowMapper);
 
