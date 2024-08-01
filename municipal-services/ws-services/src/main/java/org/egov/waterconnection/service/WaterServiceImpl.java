@@ -867,7 +867,7 @@ public class WaterServiceImpl implements WaterService {
 	@Override
 	public List<Map<String, Object>> ledgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year,RequestInfoWrapper requestInfoWrapper)
 	{
-		List<Map<String, Object>> list = waterDaoImpl.getLedgerReport(consumercode, tenantId, limit, offset, year,requestInfoWrapper);
+		List<Map<String, Object>> list = waterDaoImpl.getLedgerReport(consumercode, tenantId, offset, limit, year,requestInfoWrapper);
 		return list;
 	}
 }

@@ -75,7 +75,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         YearMonth currentMonth = startMonth;
 
         while (!currentMonth.isAfter(endMonth)) {
-            String monthAndYear = currentMonth.format(DateTimeFormatter.ofPattern("MMMMyyyy"));
+            String monthAndYear = currentMonth.format(DateTimeFormatter.ofPattern("MMMM yyyy"));
             LedgerReport ledgerReport = new LedgerReport();
             ledgerReport.setDemand(new DemandLedgerReport());
             ledgerReport.getDemand().setMonthAndYear(monthAndYear);
@@ -87,7 +87,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         while (resultSet.next()) {
             Long dateLong = resultSet.getLong("enddate");
             LocalDate date = Instant.ofEpochMilli(dateLong).atZone(ZoneId.systemDefault()).toLocalDate();
-            String monthAndYear = date.format(DateTimeFormatter.ofPattern("MMMMyyyy"));
+            String monthAndYear = date.format(DateTimeFormatter.ofPattern("MMMM yyyy"));
 
             String code = resultSet.getString("code");
 
@@ -147,7 +147,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 String monthAndYear1 = (String) o1.keySet().iterator().next();
                 String monthAndYear2 = (String) o2.keySet().iterator().next();
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMMyyyy", Locale.ENGLISH);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH);
                 YearMonth yearMonth1 = YearMonth.parse(monthAndYear1, formatter);
                 YearMonth yearMonth2 = YearMonth.parse(monthAndYear2, formatter);
 
@@ -188,7 +188,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 for (Payment payment : payments) {
                     Long transactionDateLong = payment.getTransactionDate();
                     LocalDate transactionDate = Instant.ofEpochMilli(transactionDateLong).atZone(ZoneId.systemDefault()).toLocalDate();
-                    String transactionMonthAndYear = transactionDate.format(DateTimeFormatter.ofPattern("MMMMyyyy"));
+                    String transactionMonthAndYear = transactionDate.format(DateTimeFormatter.ofPattern("MMMM yyyy"));
                     if (ledgerReport.getDemand().getMonthAndYear().equals(transactionMonthAndYear)) {
                         PaymentLedgerReport paymentLedgerReport = new PaymentLedgerReport();
                         paymentLedgerReport.setCollectionDate(transactionDateLong);

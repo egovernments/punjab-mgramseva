@@ -692,7 +692,7 @@ public class WaterDaoImpl implements WaterDao {
 		return consumersDemandNotGeneratedList;
 	}
 
-	public List<Map<String, Object>> getLedgerReport(String consumercode, String tenantId, Integer limit, Integer offset, String year,RequestInfoWrapper requestInfoWrapper) {
+	public List<Map<String, Object>> getLedgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year,RequestInfoWrapper requestInfoWrapper) {
 		String[] years = year.split("-");
 		if (years.length != 2) {
 			throw new IllegalArgumentException("Invalid fiscal year format");
