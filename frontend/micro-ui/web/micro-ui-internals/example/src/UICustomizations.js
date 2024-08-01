@@ -8,11 +8,19 @@ var Digit = window.Digit || {};
 
 
 function anonymizeHalfString(input) {
-  // Calculate the midpoint of the string
-  const midpoint = Math.ceil(input.length / 2);
-
-  // Replace the first 50% of the string with asterisks
-  const anonymized = "*".repeat(midpoint) + input.substring(midpoint);
+  // Initialize an empty string to store the anonymized output
+  let anonymized = "";
+  // Loop through each character in the input string
+  for (let i = 0; i < input.length; i++) {
+    // Check if the index (i) is even (0, 2, 4, ...)
+    if (i % 2 === 0) {
+      // Append the original character (keep it)
+      anonymized += input[i];
+    } else {
+      // Append an asterisk to mask the alternate character
+      anonymized += "*";
+    }
+  }
 
   return anonymized;
 }

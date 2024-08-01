@@ -180,32 +180,98 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   };
 
   const handleAddUnit = () => {
-    setjurisdictions((prev) => [
-      ...prev,
-      {
-        key: prev.length + 1,
-        hierarchy: null,
-        boundaryType: null,
-        boundary: null,
-        division: null,
-        divisionBoundary: [],
-        roles: [],
-      },
-    ]);
+    if(STATE_ADMIN){
+      if(!isEdit){
+        setjurisdictions((prev) => [
+          ...prev,
+          {
+            key: prev.length + 1,
+            hierarchy: null,
+            boundaryType: null,
+            boundary: null,
+            division: null,
+            divisionBoundary: [],
+            roles: [],
+          },
+        ]);
+        setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
+      }else{
+        setJuristictionsData((prev) => [
+          ...prev,
+          {
+            key: prev.length + 1,
+            hierarchy: null,
+            boundaryType: null,
+            boundary: null,
+            division: null,
+            divisionBoundary: [],
+            roles: [],
+          },
+        ]);
+        setJuristictionsData((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
+      }     
+
+    }else{
+      setjurisdictions((prev) => [
+        ...prev,
+        {
+          key: prev.length + 1,
+          hierarchy: null,
+          boundaryType: null,
+          boundary: null,
+          division: null,
+          divisionBoundary: [],
+          roles: [],
+        },
+      ]);
+      setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
+
+    }
+
+
+
   };
+
+  function filterJurisdictions(unit, jurisdictions) {
+    const divisionBoundaryCodes = new Set(unit.divisionBoundary.map(item => item.code));
+    return jurisdictions.filter(jurisdiction => {
+      return !divisionBoundaryCodes.has(jurisdiction.boundary.code);
+    });
+  }
   const handleRemoveUnit = (unit) => {
     if(STATE_ADMIN){
-      const updatedJurisdictionsData = jurisdictionsData.filter(
-        (element) => element.key !== unit.key
-      );
-      setJuristictionsData(updatedJurisdictionsData);
-      setjurisdictions(updatedJurisdictionsData)
+      if(!isEdit){
+        setjurisdictions(jurisdictions.filter(
+          (element) => element.key !== unit.key
+        ));
+        setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
+      }
+      else{
+        setJuristictionsData(jurisdictionsData.filter(
+          (element) => element.key !== unit.key
+        ));
+        let filterJurisdictionsItems = filterJurisdictions(unit,jurisdictions);
+        setjurisdictions(filterJurisdictionsItems);
+        setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
+      }
+      // console.log(jurisdictions,"jurisdictions");
+      // console.log(jurisdictionsData,"jurisdictionsData");
+      // setJuristictionsData((pre) => pre.filter((el) => el.key !== unit.key));
+
+  
+
+
+    
+
+      // setjurisdictions(jurisdictions.filter((element) => element.key !== unit.key));
+      // setjurisdictions((prev) => prev.filter((el) => el.key !== unit.key));
       if (FormData.errors?.Jurisdictions?.type == unit.key) {
         clearErrors("Jurisdictions");
       }
       reviseIndexKeys();
-
     }
+
+
     else{
       if (unit.id) {
         let res = {
@@ -270,6 +336,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   if (isLoading && isUserDataLoading) {
     return <Loader />;
   }
+  console.log((isEdit && STATE_ADMIN),"isEdit && STATE_ADMIN");
   return (
     <div>
       {isEdit && STATE_ADMIN ? (
