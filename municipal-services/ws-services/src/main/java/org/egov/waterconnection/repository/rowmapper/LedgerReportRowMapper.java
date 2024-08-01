@@ -81,7 +81,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         List<Map<String, Object>> monthlyRecordsList = new ArrayList<>();
         Map<String, LedgerReport> ledgerReports = new HashMap<>();
         YearMonth startMonth=YearMonth.from(startDate);
-        YearMonth endMonth=YearMonth.from(endDate);
+        YearMonth endMonth=YearMonth.now();
         YearMonth currentMonth=startMonth;
 
         while (!currentMonth.isAfter(endMonth)) {
