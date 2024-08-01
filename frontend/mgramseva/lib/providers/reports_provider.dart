@@ -523,7 +523,7 @@ String formatYearMonth(String inputString) {
         ledgerReport = response;
         if (download) {
           generateExcel(
-              demandHeaderList
+              leadgerHeaderList
                   .map<String>((e) =>
                       '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
                   .toList(),
@@ -533,10 +533,10 @@ String formatYearMonth(String inputString) {
                       .toList() ??
                   [],
               title:
-                  'LedgerReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillPeriod.toString().replaceAll('/', '_')}',
+                  'LedgerReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillYear.toString().replaceAll('/', '_')}',
               optionalData: [
                 'Ledger Report',
-                '$selectedBillPeriod',
+                '$selectedBillYear',
                 '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)}',
                 '${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
                 'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch, format: 'dd/MMM/yyyy')}'
