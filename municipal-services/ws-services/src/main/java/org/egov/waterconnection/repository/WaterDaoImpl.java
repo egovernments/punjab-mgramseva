@@ -740,7 +740,9 @@ public class WaterDaoImpl implements WaterDao {
 		ledgerReportRowMapper.setEndYear(endYear);
 		ledgerReportRowMapper.setConsumerCode(consumercode);
 		List<Map<String, Object>> ledgerReportList= jdbcTemplate.query(query.toString(), preparedStatement.toArray(), ledgerReportRowMapper);
-
-		return ledgerReportList;
+		int fromIndex = Math.min(newoffset, ledgerReportList.size());
+		int toIndex = Math.min(fromIndex + newlimit, ledgerReportList.size());
+		return ledgerReportList.subList(fromIndex, toIndex);
+//		return ledgerReportList;
 	}
 }
