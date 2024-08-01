@@ -3,11 +3,14 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
+import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/leadger_report/leadger_view.dart';
 import 'package:mgramseva/screeens/reports/expense_bill_report.dart';
 import 'package:mgramseva/screeens/reports/inactive_consumer_report.dart';
+import 'package:mgramseva/screeens/reports/leadger_table.dart';
 import 'package:mgramseva/screeens/reports/vendor_report.dart';
 import 'package:mgramseva/screeens/reports/view_table.dart';
+import 'package:mgramseva/widgets/sub_label.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/reports_provider.dart';
@@ -27,19 +30,21 @@ import '../reports/collection_report.dart';
 
 class LeadgerReport extends StatefulWidget {
   final WaterConnection? waterConnection;
-  LeadgerReport({Key? key,this.waterConnection}) : super(key: key);
-  
+  LeadgerReport({Key? key, this.waterConnection}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _LeadgerReport();
   }
 }
 
-class _LeadgerReport extends State<LeadgerReport> with SingleTickerProviderStateMixin {
+class _LeadgerReport extends State<LeadgerReport>
+    with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
   var takeScreenShot = false;
   bool viewTable = false;
   String tableTitle = 'Table Data';
+  // WaterConnection? waterConnectionItem;
 
   @override
   void dispose() {
@@ -60,19 +65,28 @@ class _LeadgerReport extends State<LeadgerReport> with SingleTickerProviderState
     var reportsProvider = Provider.of<ReportsProvider>(
         navigatorKey.currentContext!,
         listen: false);
+    if (widget.waterConnection == null) {
+      Navigator.pushNamed(context, Routes.HOUSEHOLD_REGISTER, arguments: {});
+    }
     reportsProvider.getFinancialYearList();
     reportsProvider.clearBillingSelection();
     reportsProvider.clearBuildTableData();
     reportsProvider.clearTableData();
-    /*start-from here 3333*/
-    reportsProvider.updateDefaultDate();
-
+    Future.delayed(Duration(milliseconds: 500), () async {
+      reportsProvider.updateConsumerCode(widget.waterConnection?.connectionNo);
+      var selectedItem = reportsProvider
+          .getFinancialYearListDropdown(reportsProvider.billingYearList);
+      reportsProvider.updateSelectedBillYear(selectedItem.first);
+      reportsProvider.getLeadgerReport();
+      showTable(true, i18.dashboard.LEDGER_REPORTS);
+    });
   }
 
   showTable(bool status, String title) {
     setState(() {
       viewTable = status;
       tableTitle = title;
+      // waterConnectionItem = widget.waterConnection;
     });
   }
 
@@ -90,7 +104,7 @@ class _LeadgerReport extends State<LeadgerReport> with SingleTickerProviderState
   }
 
   @override
-  Widget build(BuildContext context) {    
+  Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       appBar: CustomAppBar(),
@@ -129,9 +143,10 @@ class _LeadgerReport extends State<LeadgerReport> with SingleTickerProviderState
                                 });
                               },
                             ),
-                            ViewTable(
+                            LeadgerTable(
                               tableTitle: tableTitle,
                               scrollController: scrollController,
+                              waterConnection: widget.waterConnection,
                             ),
                           ],
                         ))
@@ -163,33 +178,34 @@ class _LeadgerReport extends State<LeadgerReport> with SingleTickerProviderState
                                 child: Column(
                                   children: [
                                     Consumer<ReportsProvider>(
-                                        builder: (_, reportProvider, child) =>
-                                            Container(
-                                              child: Column(
-                                                children: [
-                                                  SelectFieldBuilder(
-                                                    i18.demandGenerate
-                                                        .BILLING_YEAR_LABEL,
-                                                    reportProvider
-                                                        .selectedBillYear,
-                                                    '',
-                                                    '',
-                                                    reportProvider
-                                                        .onChangeOfBillYear,
-                                                    reportProvider
-                                                        .getFinancialYearListDropdown(
-                                                            reportProvider
-                                                                .billingYearList),
-                                                    true,
-                                                    readOnly: false,
-                                                    controller: reportProvider
-                                                        .billingyearCtrl,
-                                                    key: Keys.billReport
-                                                        .BILL_REPORT_BILLING_YEAR, itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i.financialYear)}",
-                                                  ),                                                                                                
-                                                ],
-                                              ),
-                                            )),
+                                        builder: (_, reportProvider, child) {
+                                      return Container(
+                                        child: Column(
+                                          children: [
+                                            SelectFieldBuilder(
+                                              i18.demandGenerate
+                                                  .BILLING_YEAR_LABEL,
+                                              reportProvider.selectedBillYear,
+                                              '',
+                                              '',
+                                              reportProvider.onChangeOfBillYear,
+                                              reportProvider
+                                                  .getFinancialYearListDropdown(
+                                                      reportProvider
+                                                          .billingYearList),
+                                              true,
+                                              readOnly: false,
+                                              controller: reportProvider
+                                                  .billingyearCtrl,
+                                              key: Keys.billReport
+                                                  .BILL_REPORT_BILLING_YEAR,
+                                              itemAsString: (i) =>
+                                                  "${ApplicationLocalizations.of(context).translate(i.financialYear)}",
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }),
                                   ],
                                 ),
                               ),
@@ -206,8 +222,17 @@ class _LeadgerReport extends State<LeadgerReport> with SingleTickerProviderState
                                 padding: const EdgeInsets.only(bottom: 10.0),
                                 child: Column(
                                   children: [
+                                    Consumer<ReportsProvider>(
+                                        builder: (_, reportProvider, child) {
+                                      return SubLabelText(
+                                          "${i18.common.LEDGER_CUSTOMER_NAME} : ${widget.waterConnection?.connectionHolders?.first.name}");
+                                    }),
+                                    Consumer<ReportsProvider>(
+                                        builder: (_, reportProvider, child) {
+                                      return SubLabelText(
+                                          "${i18.common.LEDGER_CONN_ID} : ${widget.waterConnection?.connectionNo}");
+                                    }),
                                     LeadgerReportView(onViewClick: showTable),
-                                   
                                   ],
                                 ),
                               ),

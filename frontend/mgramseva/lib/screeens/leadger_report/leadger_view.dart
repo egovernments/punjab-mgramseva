@@ -78,27 +78,28 @@ class _LeadgerReportView extends State<LeadgerReportView>
                             } else {
                               reportProvider.clearTableData();
                               reportProvider.getLeadgerReport();
-                              widget.onViewClick(true, i18.dashboard.BILL_REPORT);
+                              widget.onViewClick(true, i18.dashboard.LEDGER_REPORTS);
                             }
                           },
-                          key: Keys.billReport.BILL_REPORT_VIEW_BUTTON,
+                          key: Keys.billReport.LEDGER_REPORT_VIEW_BUTTON,
                         ),
                       ),
-                      // SizedBox(
-                      //   width: 10,
-                      // ),
-                      // TextButton.icon(
-                      //     onPressed: () {
-                      //       if (reportProvider.selectedBillPeriod == null) {
-                      //         Notifiers.getToastMessage(
-                      //             context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
-                      //       } else {
-                      //         reportProvider.getDemandReport(download: true);
-                      //       }
-                      //     },
-                      //     icon: Icon(Icons.download_sharp),
-                      //     label: Text(ApplicationLocalizations.of(context)
-                      //         .translate(i18.common.CORE_DOWNLOAD))),
+
+                         SizedBox(
+                        width: 10,
+                      ),
+                      TextButton.icon(
+                          onPressed: () {
+                            if (reportProvider.selectedBillYear == null) {
+                              Notifiers.getToastMessage(
+                                  context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
+                            } else {
+                              reportProvider.getLeadgerReport(download: true);
+                            }
+                          },
+                          icon: Icon(Icons.download_sharp),
+                          label: Text(ApplicationLocalizations.of(context)
+                              .translate(i18.common.CORE_DOWNLOAD))),
                     ],
                   ),
                 ],

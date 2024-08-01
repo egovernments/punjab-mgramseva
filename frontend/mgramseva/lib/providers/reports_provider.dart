@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/reports/InactiveConsumerReportData.dart';
+import 'package:mgramseva/model/reports/leadger_report.dart';
 import 'package:mgramseva/model/reports/vendor_report_data.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
@@ -35,15 +37,18 @@ class ReportsProvider with ChangeNotifier {
   var selectedBillYear;
   var selectedBillPeriod;
   var selectedBillCycle;
+  var consumerCode = '';
   var billingyearCtrl = TextEditingController();
   var billingcycleCtrl = TextEditingController();
   List<BillReportData>? demandreports;
+  List<LedgerData>? ledgerReport;
   List<CollectionReportData>? collectionreports;
   List<InactiveConsumerReportData>? inactiveconsumers;
   List<ExpenseBillReportData>? expenseBillReportData;
   List<VendorReportData>? vendorReportData;
   WaterConnectionCountResponse? waterConnectionCount;
   BillsTableData genericTableData = BillsTableData([], []);
+
   int limit = 10;
   int offset = 1;
 
@@ -54,6 +59,7 @@ class ReportsProvider with ChangeNotifier {
     billingcycleCtrl.clear();
     billingyearCtrl.clear();
     demandreports = [];
+    ledgerReport = [];
     collectionreports = [];
     inactiveconsumers = [];
     expenseBillReportData = [];
@@ -65,8 +71,15 @@ class ReportsProvider with ChangeNotifier {
     genericTableData = BillsTableData([], []);
     notifyListeners();
   }
-  void updateDefaultDate() {
-  
+  void updateConsumerCode(val) {
+    consumerCode = val;
+    notifyListeners();
+  }
+
+
+
+  void updateDefaultDate(){
+    onChangeOfBillYear(getFinancialYearListDropdown(billingYearList).first);
   }
 
   dispose() {
@@ -85,6 +98,22 @@ class ReportsProvider with ChangeNotifier {
         TableHeader(i18.billDetails.CORE_PENALTY),
         TableHeader(i18.common.CORE_ADVANCE),
         TableHeader(i18.billDetails.TOTAL_AMOUNT),
+      ];
+  List<TableHeader> get leadgerHeaderList => [
+         TableHeader(i18.common.LEDGER_MONTH),
+        TableHeader(
+          i18.common.LEDGER_DEMAND_GENERATION_DATE),
+        TableHeader(i18.common.LEDGER_MONTHLY_CHARGE),
+        TableHeader(i18.common.LEDGER_PREV_MONTH_BALANCE),
+        TableHeader(i18.common.LEDGER_TOTAL_DUE),
+        TableHeader(i18.common.LEDGER_DUE_DATE_PAYMENT),
+        TableHeader(i18.common.LEDGER_DATE),
+        TableHeader(i18.common.LEDGER_RECIPET_NO),
+        TableHeader(i18.common.LEDGER_AMOUNT),
+        TableHeader(i18.common.LEDGER_BALANCE),
+        TableHeader(i18.common.LEDGER_PENALTY_APPLIED_ON_DATE),
+        TableHeader(i18.common.LEDGER_PENALTY),
+        TableHeader(i18.common.LEDGER_BALANCE_FOR_THE_MONH),
       ];
 
   List<TableHeader> get collectionHeaderList => [
@@ -148,6 +177,42 @@ class ReportsProvider with ChangeNotifier {
       {isExcel = false}) {
     return list.map((e) => getDemandRow(e, isExcel: isExcel)).toList();
   }
+  List<TableDataRow> getLedgerData(List<LedgerData> list,
+      {isExcel = false}) {
+    return list.map((e) => getLedgerRow(e, isExcel: isExcel)).toList();
+  }
+
+ 
+String formatYearMonth(String inputString) {
+  final length = inputString.length;
+  if (length < 4) {
+    return inputString; // Return the original string if length is less than 4
+  } else {
+    return inputString.substring(0, length - 4) + ' - ' + inputString.substring(length - 4);
+  }
+}
+
+    TableDataRow getLedgerRow(LedgerData data, {bool isExcel = false}) {
+    return TableDataRow([
+      TableData(
+        formatYearMonth('${data.months?.values.first.demand?.month}'),
+      ),
+      TableData(
+          '${DateFormats.leadgerTimeStampToDate(data.months?.values.first.demand?.demandGenerationDate)}'),
+      TableData('₹ ${data.months?.values.first.demand?.monthlyCharges}'),
+      TableData('₹ ${data.months?.values.first.demand?.previousMonthBalance}'),
+      TableData('₹ ${data.months?.values.first.demand?.totalDues}'),
+      TableData('${DateFormats.leadgerTimeStampToDate(data.months?.values.first.demand?.dueDateOfPayment)}'),
+      TableData('${DateFormats.leadgerTimeStampToDate( data.months?.values.first.demand?.demandGenerationDate)}'),
+      TableData('${data.months?.values.first.payment?.first.receiptNo}'),
+      TableData('₹ ${data.months?.values.first.payment?.first.amountPaid}'),
+      TableData('₹ ${data.months?.values.first.demand?.previousMonthBalance}'),
+      TableData('${DateFormats.leadgerTimeStampToDate(data.months?.values.first.demand?.penaltyAppliedOnDate)}'),
+      TableData('₹  ${data.months?.values.first.demand?.penalty}'),
+      TableData('₹ ${data.months?.values.first.payment?.first.balanceLeft}'),
+    ]);
+  }
+
 
   TableDataRow getDemandRow(BillReportData data, {bool isExcel = false}) {
     String? name = CommonMethods.truncateWithEllipsis(20, data.consumerName!);
@@ -265,6 +330,11 @@ class ReportsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  updateSelectedBillYear(val){
+    selectedBillYear = val;
+    notifyListeners();
+  }
+
   void onChangeOfBillYear(val) {
     selectedBillYear = val;
     billingyearCtrl.text = val.toString();
@@ -272,6 +342,7 @@ class ReportsProvider with ChangeNotifier {
     selectedBillCycle = null;
     selectedBillPeriod = null;
     demandreports = [];
+    ledgerReport = [];
     collectionreports = [];
     inactiveconsumers = [];
     expenseBillReportData = [];
@@ -293,6 +364,7 @@ class ReportsProvider with ChangeNotifier {
                 .toString(),
             dateFormat: "dd/MM/yyyy");
     demandreports = [];
+    ledgerReport = [];
     collectionreports = [];
     inactiveconsumers = [];
     expenseBillReportData = [];
@@ -443,40 +515,42 @@ class ReportsProvider with ChangeNotifier {
         'tenantId': commonProvider.userDetails!.selectedtenant!.code,
         'offset': '${offset - 1}',
         'limit': '${download ? -1 : limit}',
-        // 'consumercode':'${}'
-        'year':selectedBillYear
+        'consumercode':consumerCode,
+        'year':selectedBillYear.financialYear
       };
-      var response = await ReportsRepo().fetchBillReport(params);
+      var response = await ReportsRepo().fetchLedgerReport(params);
       if (response != null) {
-        demandreports = response;
+        ledgerReport = response;
         if (download) {
           generateExcel(
               demandHeaderList
                   .map<String>((e) =>
                       '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
                   .toList(),
-              getDemandsData(demandreports!, isExcel: true)
+              getLedgerData(ledgerReport!, isExcel: true)
                       .map<List<String>>(
                           (e) => e.tableRow.map((e) => e.label).toList())
                       .toList() ??
                   [],
               title:
-                  'DemandReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillPeriod.toString().replaceAll('/', '_')}',
+                  'LedgerReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillPeriod.toString().replaceAll('/', '_')}',
               optionalData: [
-                'Demand Report',
+                'Ledger Report',
                 '$selectedBillPeriod',
                 '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)}',
                 '${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
                 'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch, format: 'dd/MMM/yyyy')}'
               ]);
         } else {
-          if (demandreports != null && demandreports!.isNotEmpty) {
+          if (ledgerReport != null && ledgerReport!.isNotEmpty) {
             this.limit = limit;
             this.offset = offset;
             this.genericTableData = BillsTableData(
-                demandHeaderList, getDemandsData(demandreports!));
+                leadgerHeaderList, getLedgerData(ledgerReport!));
+               
           }
         }
+
         streamController.add(response);
         callNotifier();
       } else {
@@ -485,7 +559,7 @@ class ReportsProvider with ChangeNotifier {
       }
       callNotifier();
     } catch (e, s) {
-      demandreports = [];
+      ledgerReport = [];
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       streamController.addError('error');
       callNotifier();

@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/widgets/scroll_parent.dart';
@@ -147,37 +148,63 @@ class _BillsTable extends State<BillsTable> {
     //if greater than 28 characters
   }
 
+  String getCurrentRoutePath(BuildContext context) {
+  final currentRoute = ModalRoute.of(context)!;
+  return currentRoute.settings.name ?? '';
+}
+
   Widget _generateFirstColumnRow(BuildContext context, int index) {
+    
     return LayoutBuilder(builder: (context, constraints) {
+      bool showLeadger  = getCurrentRoutePath(context) == "/home/householdRegister";
       var data = widget.tableData[index].tableRow.first;
+      
       return ScrollParent(
           widget.scrollController,
-          InkWell(
-            onTap: () {
-              if (data.callBack != null) {
-                data.callBack!(data);
-              }
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  border: Border(
-                left: tableCellBorder,
-                bottom: tableCellBorder,
-                right: tableCellBorder,
-              )),
-              child: Text(
-                ApplicationLocalizations.of(context)
-                    .translate(widget.tableData[index].tableRow.first.label),
-                style: widget.tableData[index].tableRow.first.style ??
-                    TextStyle(color: Theme.of(context).primaryColor),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              InkWell(
+                onTap: () {
+                  if (data.callBack != null) {
+                    data.callBack!(data);
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                    left: tableCellBorder,
+                    bottom: tableCellBorder,
+                    right: tableCellBorder,
+                  )),
+                  child: Text(
+                    ApplicationLocalizations.of(context).translate(
+                        widget.tableData[index].tableRow.first.label),
+                    style: widget.tableData[index].tableRow.first.style ??
+                        TextStyle(color: Theme.of(context).primaryColor),
+                  ),
+                  width: showLeadger ? widget.leftColumnWidth * 0.55 : widget.leftColumnWidth,
+                  height:
+                      widget.tableData[index].tableRow.first.label.length > 28
+                          ? columnRowIncreasedHeight(index)
+                          : columnRowFixedHeight,
+                  padding:
+                      EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
+                  alignment: Alignment.centerLeft,
+                ),
               ),
-              width: widget.leftColumnWidth,
-              height: widget.tableData[index].tableRow.first.label.length > 28
-                  ? columnRowIncreasedHeight(index)
-                  : columnRowFixedHeight,
-              padding: EdgeInsets.only(left: 17, right: 5, top: 6, bottom: 6),
-              alignment: Alignment.centerLeft,
-            ),
+              if(showLeadger)
+              Tooltip(
+                message: '${i18.dashboard.LEDGER_REPORTS}',
+                
+                child: IconButton(onPressed: () {
+                   if (data.iconButtonCallBack != null) {
+                      data.iconButtonCallBack!(data);
+                    }
+                }, icon: Icon(Icons.insert_chart_outlined)),
+              )
+            ],
           ));
     });
   }
@@ -188,7 +215,7 @@ class _BillsTable extends State<BillsTable> {
     var data = widget.tableData[index].tableRow[i ?? 0];
     if (i != null) {
       return InkWell(
-        onTap: (){
+        onTap: () {
           data.callBack!(data);
         },
         child: Container(
@@ -242,20 +269,13 @@ class _BillsTable extends State<BillsTable> {
     return LayoutBuilder(builder: (context, constraints) {
       var list = <Widget>[];
       for (int i = 1; i < data.tableRow.length; i++) {
-        if (data.tableRow[i].label == "View") {
-          log("${data.tableRow[i].label}");
-          list.add(
-            _generateColumnRow(
-                context, index, data.tableRow[i].label, constraints,
-                style: data.tableRow[i].style, i: i),
-          );
-        } else {
+      
           list.add(
             _generateColumnRow(
                 context, index, data.tableRow[i].label, constraints,
                 style: data.tableRow[i].style),
           );
-        }
+
       }
       return Container(
           color: index % 2 == 0 ? const Color(0xffEEEEEE) : Colors.white,
