@@ -79,9 +79,10 @@ class LeadgerTable extends StatelessWidget {
                         callBack: (pageResponse) =>
                             reportProvider.onChangeOfPageLimit(
                                 pageResponse, tableTitle, context),
-                        isTotalCountVisible: true,
+                          isTotalCountVisible: false,
                         totalCount:
                             reportProvider.genericTableData.tableData.length,
+
                       ),
                     ),
                   )
