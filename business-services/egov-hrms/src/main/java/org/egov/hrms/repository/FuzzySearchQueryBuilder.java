@@ -96,6 +96,7 @@ public class FuzzySearchQueryBuilder {
                 boolQuery.putPOJO("must", fuzzyClauses);
                 insideMatch.putPOJO("bool", boolQuery);
                 finalQuery = mapper.writeValueAsString(node);
+            }
         } catch (Exception e) {
             log.error("ES_ERROR", e);
             throw new CustomException("JSONNODE_ERROR", "Failed to build JSON query for fuzzy search");
