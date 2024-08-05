@@ -196,6 +196,41 @@ public class WsQueryBuilder {
 			"id IN (SELECT paymentid FROM egcl_paymentdetail WHERE billid IN " +
 			"(SELECT billid FROM egbs_billdetail_v1 WHERE consumercode = ?)) AND createdtime < ? AND paymentstatus!='CANCELLED';";
 
+	public static final String TILL_DATE_CONSUMER="select connectionno from eg_ws_connection conn INNER JOIN " +
+			" eg_ws_service wc ON wc.connection_id = conn.id where wc.connectiontype='Non_Metered' and " +
+			" conn.createdtime<=? and conn.tenantid=?;";
+
+	public static final String MONTH_DEMAND_QUERY ="SELECT " +
+			"conn.tenantId as tenantId, " +
+			"conn.connectionno as connectionNo, " +
+			"conn.oldConnectionno as oldConnectionNo, " +
+			"conn.createdTime as consumerCreatedOnDate, " +
+			"connectionholder.name as consumerName, " +
+			"connectionholder.userid as userId, " +
+			"dem.createdtime as demandGenerationDate, " +
+			"SUM(CASE WHEN dd.taxheadcode = 'WS_TIME_PENALTY' THEN dd.taxamount ELSE 0 END) as penalty, " +
+			"SUM(CASE WHEN dd.taxheadcode = '10101' THEN dd.taxamount ELSE 0 END) as demandAmount, " +
+			"SUM(CASE WHEN dd.taxheadcode = 'WS_ADVANCE_CARRYFORWARD' THEN dd.taxamount ELSE 0 END) as advance, " +
+			"SUM(CASE WHEN dd.taxheadcode = 'WS_TIME_PENALTY' THEN dd.taxamount ELSE 0 END + " +
+			"CASE WHEN dd.taxheadcode = '10101' THEN dd.taxamount ELSE 0 END + " +
+			"CASE WHEN dd.taxheadcode = 'WS_ADVANCE_CARRYFORWARD' THEN dd.taxamount ELSE 0 END + " +
+			"CASE WHEN dd.taxheadcode='10201' THEN dd.taxamount ELSE 0 END) as totalAmount " +
+			"FROM eg_ws_connection conn " +
+			"INNER JOIN eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id " +
+			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno " +
+			"INNER JOIN egbs_demanddetail_v1 dd on dd.demandid = dem.id " +
+			"WHERE dem.taxperiodfrom >= ? AND dem.taxperiodto <= ? AND conn.tenantId = ? AND conn.connectionno = ? AND dem.status='ACTIVE' " +
+			"GROUP BY conn.connectionno, conn.tenantId, conn.oldConnectionno, conn.createdTime, connectionholder.name, connectionholder.userid, dem.createdtime " +
+			"ORDER BY conn.connectionno";
+
+	public static final String MONTH_PAYMENT_QUERY="SELECT SUM(p.totalamountpaid) AS totalAmountPaid, MIN(p.transactiondate) " +
+			"FROM egcl_payment p INNER JOIN eg_ws_connection c ON p.tenantid = c.tenantid " +
+			"WHERE p.tenantid = ? AND c.connectionno = ? AND p.transactiondate BETWEEN ? AND ? " +
+			"AND p.id IN (SELECT pd.paymentid FROM egcl_paymentdetail pd WHERE pd.tenantid = ? " +
+			"AND pd.billid IN (SELECT bd.billid FROM egbs_billdetail_v1 bd WHERE bd.consumercode = c.connectionno " +
+			" AND bd.tenantid = ? )) AND p.instrumentstatus = 'APPROVED' " +
+			"AND p.paymentstatus NOT IN ('CANCELLED');";
+
 	/**
 	 * 
 	 * @param criteria          The WaterCriteria

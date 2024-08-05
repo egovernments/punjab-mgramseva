@@ -57,4 +57,6 @@ public interface WaterService {
 	WaterConnectionResponse getConsumersWithDemandNotGenerated(String previousMeterReading, String tenantId,RequestInfo requestInfo);
 
 	List<Map<String, Object>> ledgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year,RequestInfoWrapper requestInfoWrapper);
+
+	List<MonthReport> monthReport(String startDate, String endDate, String tenantId, Integer offset, Integer limit);
 }
