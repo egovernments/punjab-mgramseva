@@ -53,7 +53,7 @@ public class FuzzySearchService {
 
             EmployeeSearchCriteria employeeSearchCriteria = EmployeeSearchCriteria.builder().tenantId(tenantId).codes(empList).build();
 
-            employees.addAll(employeeRepository.fetchEmployees(criteria,requestInfo));
+            employees.addAll(employeeRepository.fetchEmployees(employeeSearchCriteria, requestInfo));
 
         }
 
