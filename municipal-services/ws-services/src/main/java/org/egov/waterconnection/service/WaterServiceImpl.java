@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -861,5 +862,12 @@ public class WaterServiceImpl implements WaterService {
 		}
 		SearchCriteria criteria=SearchCriteria.builder().connectionNoSet(connectionNo).tenantId(tenantId).build();
 		 return search(criteria,requestInfo);
+	}
+
+	@Override
+	public List<Map<String, Object>> ledgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year,RequestInfoWrapper requestInfoWrapper)
+	{
+		List<Map<String, Object>> list = waterDaoImpl.getLedgerReport(consumercode, tenantId, offset, limit, year,requestInfoWrapper);
+		return list;
 	}
 }

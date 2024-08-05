@@ -193,7 +193,26 @@ public class WsQueryBuilder {
 			"(select distinct consumercode from egbs_demand_v1 d inner join egbs_demanddetail_v1 dd on dd.demandid = d.id " +
 			"where dd.taxheadcode='10101' and d.status ='ACTIVE' and  d.businessservice='WS' and " +
 			"d.tenantid=?) order by connectionno;";
-			
+
+	public static final String LEDGER_REPORT_QUERY = "SELECT connectionholder.userid as uuid,conn.connectionno as connectionNo,conn.oldconnectionno," +
+			"dem.taxperiodfrom as startdate,dem.taxperiodto as enddate," +
+			"dem.createdtime as demandGenerationDate," +
+			"dd.taxheadcode as code,dd.taxamount as taxamount " +
+			"FROM eg_ws_connection conn INNER JOIN eg_ws_connectionholder connectionholder " +
+			"ON connectionholder.connectionid = conn.id " +
+			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno INNER JOIN " +
+			"egbs_demanddetail_v1 dd ON dd.demandid = dem.id " +
+			"WHERE dem.consumercode = ? AND conn.tenantId = ? AND dem.status = 'ACTIVE' " +
+			"AND taxperiodfrom>=? AND taxperiodto<=? "+
+			"ORDER BY startdate";
+
+	public static final String TAX_AMOUNT_QUERY="SELECT SUM(taxamount) FROM egbs_demanddetail_v1 WHERE " +
+			"demandid IN (SELECT id FROM egbs_demand_v1 WHERE consumercode = ? AND taxperiodfrom < ? AND status='ACTIVE');";
+
+	public static final String TOTAL_AMOUNT_PAID_QUERY="SELECT SUM(totalamountpaid) FROM egcl_payment WHERE " +
+			"id IN (SELECT paymentid FROM egcl_paymentdetail WHERE billid IN " +
+			"(SELECT billid FROM egbs_billdetail_v1 WHERE consumercode = ?)) AND createdtime < ? AND paymentstatus!='CANCELLED';";
+
 	/**
 	 * 
 	 * @param criteria          The WaterCriteria
