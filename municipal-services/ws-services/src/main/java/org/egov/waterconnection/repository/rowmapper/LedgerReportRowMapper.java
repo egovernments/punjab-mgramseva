@@ -167,13 +167,10 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         Object response = serviceRequestRepository.fetchResult(URL, requestInfoWrapper);
         log.info("line 226 response " + response.toString());
         PaymentResponse paymentResponse = mapper.convertValue(response, PaymentResponse.class);
-//        log.info("paymnent response" + paymentResponse.toString());
         return paymentResponse.getPayments();
     }
 
     private void addPaymentToLedger(List<Map<String, Object>> monthlyRecordList) {
-//        BigDecimal runningBalance=BigDecimal.ZERO;
-
         for (Map<String, Object> record : monthlyRecordList) {
             LedgerReport ledgerReport = (LedgerReport) record.values().iterator().next();
             if (ledgerReport.getDemand() == null) {
@@ -203,7 +200,6 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                         {
                             paymentLedgerReport.setBalanceLeft(totalDueAmount.subtract(paymentLedgerReport.getPaid()));
                         }
-//                        runningBalance=paymentLedgerReport.getBalanceLeft();
                         if (ledgerReport.getPayment() == null) {
                             ledgerReport.setPayment(new ArrayList<>());
                         }
