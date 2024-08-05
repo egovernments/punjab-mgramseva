@@ -63,81 +63,39 @@ public class FuzzySearchQueryBuilder {
             "      }";
 
     public String getFuzzySearchQuery(EmployeeSearchCriteria criteria, List<String> ids) {
-        String finalQuery;
+        String finalQuery = "";
 
         try {
-            // Generate base query with pagination
             String baseQuery = addPagination(criteria);
             JsonNode node = mapper.readTree(baseQuery);
-            ObjectNode rootNode = (ObjectNode) node;
-            ObjectNode insideMatch = (ObjectNode) rootNode.get("query");
+            ObjectNode insideMatch = (ObjectNode)node.get("query");
+            List<JsonNode> fuzzyClauses = new LinkedList<>();
 
-            // Ensure the "bool" node is present
-            ObjectNode boolNode = (ObjectNode) insideMatch.get("bool");
-            if (boolNode == null) {
-                boolNode = mapper.createObjectNode();
-                insideMatch.set("bool", boolNode);
+            if(criteria.getName() != null){
+                fuzzyClauses.add(getInnerNode(criteria.getName(),"Data.user.name",config.getNameFuziness()));
             }
 
-            // Initialize the "must" array if it's not present
-            ArrayNode mustArray = (ArrayNode) boolNode.get("must");
-            if (mustArray == null) {
-                mustArray = mapper.createArrayNode();
-                boolNode.set("must", mustArray);
-            }
+            ArrayNode tenantIdArray = mapper.createArrayNode();
+            tenantIdArray.add("pb");
+            ObjectNode tenantIdFilter = mapper.createObjectNode();
+            tenantIdFilter.putPOJO("terms", mapper.createObjectNode().putPOJO("Data.tenantId.keyword", tenantIdArray));
+            fuzzyClauses.add(tenantIdFilter);
 
-            // Add fuzzy search clause for name if present in criteria
-            if (criteria.getName() != null) {
-                mustArray.add(getInnerNode(criteria.getName(), "Data.user.name", config.getNameFuziness()));
-            }
-
-            // Add filter by IDs if the list is not empty
-            if (!CollectionUtils.isEmpty(ids)) {
-                ObjectNode idsFilterNode = mapper.createObjectNode();
-                idsFilterNode.set("terms", mapper.convertValue(new HashMap<String, List<String>>() {{
-                    put("Data.id.keyword", ids);
-                }}, JsonNode.class));
-                boolNode.set("filter", idsFilterNode);
-            }
-
-            // Add filter for tenantId
-            if (criteria.getTenantId() != null) {
-                ObjectNode tenantFilterNode = mapper.createObjectNode();
-                if (criteria.getTenantIds()!=null) {
-                    // Handle tenantId as a list
-                    JsonNode tenantIdNode = mapper.convertValue(new HashMap<String, List<String>>() {{
-                        put("Data.tenantId", (List<String>) criteria.getTenantIds());
-                    }}, JsonNode.class);
-                    tenantFilterNode.set("terms", tenantIdNode);
-                } else {
-                    // Handle tenantId as a single value
-                    JsonNode tenantIdNode = mapper.convertValue(new HashMap<String, String>() {{
-                        put("Data.tenantId", criteria.getTenantId());
-                    }}, JsonNode.class);
-                    tenantFilterNode.set("term", tenantIdNode);
-                }
-                boolNode.set("filter", tenantFilterNode);
-            }
-
-            // Add filter for roles
-            if (criteria.getRoles()!=null) {
-                ArrayNode roleFilterArray = mapper.createArrayNode();
+            if (criteria.getRoles() != null && !criteria.getRoles().isEmpty()) {
+                ArrayNode roleArray = mapper.createArrayNode();
                 for (String role : criteria.getRoles()) {
-                    ObjectNode roleMatchNode = mapper.createObjectNode();
-                    roleMatchNode.set("match", mapper.convertValue(new HashMap<String, String>() {{
-                        put("Data.user.roles.code", role);
-                    }}, JsonNode.class));
-                    roleFilterArray.add(roleMatchNode);
+                    ObjectNode roleNode = mapper.createObjectNode();
+                    roleNode.put("term", mapper.createObjectNode().put("Data.user.roles.code.keyword", role));
+                    roleArray.add(roleNode);
                 }
-                ObjectNode roleBoolNode = mapper.createObjectNode();
-                roleBoolNode.set("bool", mapper.convertValue(new HashMap<String, Object>() {{
-                    put("should", roleFilterArray);
-                }}, JsonNode.class));
-                mustArray.add(roleBoolNode);
-            }
+                ObjectNode rolesBoolNode = mapper.createObjectNode();
+                rolesBoolNode.putPOJO("bool", mapper.createObjectNode().putPOJO("must", roleArray));
+                fuzzyClauses.add(rolesBoolNode);
 
-            // Convert the final JSON node back to a string
-            finalQuery = mapper.writeValueAsString(node);
+                ObjectNode boolQuery = mapper.createObjectNode();
+                boolQuery.putPOJO("must", fuzzyClauses);
+                insideMatch.putPOJO("bool", boolQuery);
+                finalQuery = mapper.writeValueAsString(node);
         } catch (Exception e) {
             log.error("ES_ERROR", e);
             throw new CustomException("JSONNODE_ERROR", "Failed to build JSON query for fuzzy search");
