@@ -76,10 +76,15 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 
         while (!currentMonth.isAfter(endMonth)) {
             String monthAndYear = currentMonth.format(DateTimeFormatter.ofPattern("MMMM yyyy"));
+            LocalDate startOfMonth = currentMonth.atDay(1);
+            Long epochTime = startOfMonth.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
             LedgerReport ledgerReport = new LedgerReport();
             ledgerReport.setDemand(new DemandLedgerReport());
             ledgerReport.getDemand().setMonthAndYear(monthAndYear);
             ledgerReport.getDemand().setConnectionNo(consumerCode);
+            BigDecimal taxAmountResult = getMonthlyTaxAmount(epochTime, consumerCode);
+            BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(epochTime, consumerCode);
+            ledgerReport.getDemand().setArrears(taxAmountResult.subtract(totalAmountPaidResult));
             ledgerReports.put(monthAndYear, ledgerReport);
             currentMonth = currentMonth.plusMonths(1);
         }
@@ -102,10 +107,11 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 ledgerReport.setPayment(new ArrayList<>());
             }
 
-            if (code.equals("10102")) {
-                ledgerReport.getDemand().setArrears(taxamount != null ? taxamount : BigDecimal.ZERO);
-                ledgerReport.getDemand().setMonthAndYear(monthAndYear);
-            } else if (code.equals("WS_TIME_PENALTY") || code.equals("10201")) {
+//            if (code.equals("10102")) {
+//                ledgerReport.getDemand().setArrears(taxamount != null ? taxamount : BigDecimal.ZERO);
+//                ledgerReport.getDemand().setMonthAndYear(monthAndYear);
+//            } else
+            if (code.equals("WS_TIME_PENALTY") || code.equals("10201")) {
                 ledgerReport.getDemand().setPenalty(taxamount != null ? taxamount : BigDecimal.ZERO);
                 BigDecimal amount = ledgerReport.getDemand().getTaxamount() != null ? ledgerReport.getDemand().getTaxamount() : BigDecimal.ZERO;
                 ledgerReport.getDemand().setTotalForCurrentMonth((taxamount != null ? taxamount : BigDecimal.ZERO).add(amount));
@@ -119,11 +125,6 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 long penaltyAppliedDateMillis = demandGenerationDateLocal.plus(11, ChronoUnit.DAYS).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 ledgerReport.getDemand().setDueDate(dueDateMillis);
                 ledgerReport.getDemand().setPenaltyAppliedDate(penaltyAppliedDateMillis);
-                Long startDate = resultSet.getLong("startdate");
-                String connectionno = resultSet.getString("connectionno");
-                BigDecimal taxAmountResult = getMonthlyTaxAmount(startDate, connectionno);
-                BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(startDate, connectionno);
-                ledgerReport.getDemand().setArrears(taxAmountResult.subtract(totalAmountPaidResult));
                 ledgerReport.getDemand().setTotal_due_amount(ledgerReport.getDemand().getTotalForCurrentMonth().add(ledgerReport.getDemand().getArrears()));
             }
             ledgerReport.getDemand().setConnectionNo(resultSet.getString("connectionno"));
