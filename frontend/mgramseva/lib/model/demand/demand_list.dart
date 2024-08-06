@@ -143,6 +143,8 @@ class AggragateDemandDetails {
   double? currentMonthPenalty;
   @JsonKey(name: "currentmonthTotalDue")
   double? currentmonthTotalDue;
+  @JsonKey(name: "currentmonthRoundOff")
+  double? currentmonthRoundOff;
   @JsonKey(name: "totalAreas")
   double? totalAreas;
   @JsonKey(name: "totalAreasWithPenalty")

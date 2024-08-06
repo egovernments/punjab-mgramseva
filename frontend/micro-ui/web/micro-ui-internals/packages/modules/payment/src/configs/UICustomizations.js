@@ -3,11 +3,20 @@ import _ from "lodash";
 import React from "react";
 
 function anonymizeHalfString(input) {
-  // Calculate the midpoint of the string
-  const midpoint = Math.ceil(input.length / 2);
+  // Initialize an empty string to store the anonymized output
+  let anonymized = "";
 
-  // Replace the first 50% of the string with asterisks
-  const anonymized = "*".repeat(midpoint) + input.substring(midpoint);
+  // Loop through each character in the input string
+  for (let i = 0; i < input.length; i++) {
+    // Check if the index (i) is even (0, 2, 4, ...)
+    if (i % 2 === 0) {
+      // Append the original character (keep it)
+      anonymized += input[i];
+    } else {
+      // Append an asterisk to mask the alternate character
+      anonymized += "*";
+    }
+  }
 
   return anonymized;
 }
@@ -66,6 +75,14 @@ export const UICustomizations = {
       // delete data.body.inbox;
       // delete data.params;
       return data;
+    },
+    MobileDetailsOnClick: (row, tenantId) => {
+      let link;
+      Object.keys(row).map((key) => {
+        if (key === "MASTERS_WAGESEEKER_ID")
+          link = `/${window.contextPath}/employee/masters/view-wageseeker?tenantId=${tenantId}&wageseekerId=${row[key]}`;
+      });
+      return link;
     },
     additionalCustomizations: (row, key, column, value, t, searchResult) => {
 

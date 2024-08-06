@@ -5,11 +5,20 @@ import { makePayment } from "../utils/payGov";
 import $ from "jquery";
 
 function anonymizeHalfString(input) {
-  // Calculate the midpoint of the string
-  const midpoint = Math.ceil(input.length / 2);
+  // Initialize an empty string to store the anonymized output
+  let anonymized = "";
 
-  // Replace the first 50% of the string with asterisks
-  const anonymized = "*".repeat(midpoint) + input.substring(midpoint);
+  // Loop through each character in the input string
+  for (let i = 0; i < input.length; i++) {
+    // Check if the index (i) is even (0, 2, 4, ...)
+    if (i % 2 === 0) {
+      // Append the original character (keep it)
+      anonymized += input[i];
+    } else {
+      // Append an asterisk to mask the alternate character
+      anonymized += "*";
+    }
+  }
 
   return anonymized;
 }
@@ -38,7 +47,7 @@ const OpenView = () => {
 
   const requestCriteriaForConnectionSearch = {
     url: "/ws-services/wc/_search?",
-    params: { tenantId:queryParams.tenantId,businessService:queryParams.businessService, connectionNumber: queryParams.consumerCode,isOpenPaymentSearch:true },
+    params: { tenantId: queryParams.tenantId, businessService: queryParams.businessService, connectionNumber: queryParams.consumerCode, isOpenPaymentSearch: true },
     body: {},
     options: {
       userService: false,
@@ -57,7 +66,7 @@ const OpenView = () => {
 
   const requestCriteriaForPayments = {
     url: "/collection-services/payments/WS/_search",
-    params: {consumerCodes:queryParams.consumerCode,tenantId:queryParams.tenantId,businessService:queryParams.businessService},
+    params: { consumerCodes: queryParams.consumerCode, tenantId: queryParams.tenantId, businessService: queryParams.businessService },
     body: {},
     options: {
       userService: false,
@@ -78,9 +87,40 @@ const OpenView = () => {
     },
   };
 
-  const { isLoading: isLoadingPayments, data: payments, isFetching: isFetchingPayments, error: isErrorPayments } = Digit.Hooks.useCustomAPIHook(
-    requestCriteriaForPayments
+  const requestCriteriaForOnlineTransactions = {
+    url: "/pg-service/transaction/v1/_search",
+    params: { consumerCode: queryParams.consumerCode, tenantId: queryParams.tenantId, businessService: queryParams.businessService },
+    body: {},
+    options: {
+      userService: false,
+      auth: false,
+    },
+    config: {
+      enabled: !!queryParams.consumerCode && !!queryParams.tenantId,
+      select: (data) => {
+        const onlineTransactions = data?.Transaction;
+
+        if (!onlineTransactions) {
+          return null; // Handle undefined or null data gracefully
+        }
+        
+        // Sort onlineTransactions in descending order by createdTime
+        onlineTransactions.sort((a, b) => b.auditDetails.createdTime - a.auditDetails.createdTime);
+        
+        // Return the desired number of latest transactions (up to 5)
+        return onlineTransactions.slice(0, Math.min(onlineTransactions.length, 5));
+      },
+    },
+  };
+
+  const { isLoading: isLoadingTransactions, data: onlineTransactions, isFetching: isFetchingTransactions, error: isErrorTransactions } = Digit.Hooks.useCustomAPIHook(
+    requestCriteriaForOnlineTransactions
   );
+
+  // const { isLoading: isLoadingPayments, data: payments, isFetching: isFetchingPayments, error: isErrorPayments } = Digit.Hooks.useCustomAPIHook(
+  //   requestCriteriaForPayments
+  // );
+
 
   const arrears =
     bill?.billDetails
@@ -198,9 +238,40 @@ const OpenView = () => {
     }
   };
 
-  if (isLoading || isLoadingPayments || isLoadingConnection) {
+  if (isLoading || isLoadingTransactions || isLoadingConnection) {
     return <Loader />;
   }
+
+
+  function convertEpochToDateString(epochTime) {
+    const date = new Date(epochTime);
+
+    // Extract components
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Months are zero-indexed
+    const year = date.getFullYear();
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+
+    // Determine AM/PM
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    // Convert to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+
+    // Pad minutes and seconds with leading zeros
+    const minutesPadded = minutes < 10 ? '0' + minutes : minutes;
+    const secondsPadded = seconds < 10 ? '0' + seconds : seconds;
+
+    // Format date and time
+    const formattedDate = `${day} July ${year} at ${hours}:${minutesPadded}:${secondsPadded} ${ampm}`;
+
+    return formattedDate;
+  }
+
+
 
   return (
     <>
@@ -255,18 +326,19 @@ const OpenView = () => {
               />
             </>
           )}
+        </StatusTable>
+      </Card>
+
+
+      <Header className="works-header-search" styles={{ marginLeft: "0.5rem",marginTop: "2rem", }}>
+        {t("ES_PAYMENT_DETAILS_HEADER")}
+      </Header>
+
+
+      <Card style={{ maxWidth: "95vw", paddingLeft: "1.5rem", marginTop: "2rem", }}>
+        <StatusTable>
           {bill ? (
             <>
-              {/* <Row
-                label={t("OP_CONSUMER_NAME")}
-                text={bill?.payerName ? anonymizeHalfString(bill?.payerName) : t("ES_COMMON_NA")}
-                rowContainerStyle={{ border: "none" }}
-              />
-              <Row
-                label={t("OP_CONSUMER_PHNO")}
-                text={bill?.mobileNumber ? anonymizeHalfString(bill?.mobileNumber) : t("ES_COMMON_NA")}
-                rowContainerStyle={{ border: "none" }}
-              /> */}
               <Row
                 label={t("ES_PAYMENT_TAXHEADS")}
                 labelStyle={{ fontWeight: "bold" }}
@@ -312,43 +384,49 @@ const OpenView = () => {
           )}
         </StatusTable>
       </Card>
-      {payments && (
+      {onlineTransactions && (
         <Header className="works-header-search" styles={{ marginLeft: "0.5rem", marginTop: "2rem", marginBottom: "-0.5rem" }}>
           {t("OP_CONSUMER_RECEIPTS")}
         </Header>
       )}
-      {payments &&
-        payments.map((payment) => {
-          return (
-            <Card style={{ maxWidth: "95vw", paddingLeft: "1.5rem", marginTop: "2rem" }}>
-              <StatusTable>
-                <Row
-                  label={t("OP_RECEIPT_NO")}
-                  text={payment?.paymentDetails?.[0]?.receiptNumber || t("ES_COMMON_NA")}
-                  rowContainerStyle={{ border: "none" }}
-                />
-                <Row label={t("OP_RECEIPT_AMT")} text={payment?.totalAmountPaid || t("ES_COMMON_NA")} rowContainerStyle={{ border: "none" }} />
-                <Row
-                  label={t("OP_RECEIPT_PAID_DATE")}
-                  // labelStyle={{ fontWeight: "bold" }}
-                  // textStyle={{ fontWeight: "bold" }}
-                  text={payment?.transactionDate ? Digit.DateUtils.ConvertEpochToDate(payment?.transactionDate) : t("ES_COMMON_NA")}
-                  rowContainerStyle={{ border: "none" }}
-                />
-                {/* <Row
-                  label={t("OP_TXN_NO")}
-                  labelStyle={{ fontWeight: "bold" }}
-                  textStyle={{ fontWeight: "bold" }}
-                  text={payment?.transactionNumber ? payment?.transactionNumber : t("ES_COMMON_NA")}
-                /> */}
-              </StatusTable>
-            </Card>
-          );
-        })}
+      {onlineTransactions && onlineTransactions.map((item) => {
+        return (
+          <Card style={{ maxWidth: "95vw", paddingLeft: "1.5rem", marginTop: "2rem" }}>
+            <StatusTable>
+              <Row
+                label={t("OP_TRANSACTION_ID")}
+                text={item.txnId || t("ES_COMMON_NA")}
+                rowContainerStyle={{ border: "none" }}
+              />
+              <Row label={t("OP_RECEIPT_AMT")} text={"₹ " + item.txnAmount || t("ES_COMMON_NA")}
 
+                textStyle={{ fontWeight: "500" }}
+
+                rowContainerStyle={{ border: "none" }} />
+              <Row
+                label={t("OP_RECEIPT_PAID_DATE")}
+                text={item?.auditDetails.createdTime ? convertEpochToDateString(item?.auditDetails.createdTime) : t("ES_COMMON_NA")}
+                rowContainerStyle={{ border: "none" }}
+                textStyle={{ color: "#757575", fontWeight: "500" }}
+
+
+              />
+
+              <Row label={t("OP_TRANSACTION_STATUS")} text={item.txnStatus || t("ES_COMMON_NA")}
+                textStyle={
+
+                  item.txnStatus == "FAILURE" ? { color: "#D4351C", fontWeight: "500" } : { color: "#00703C", fontWeight: "500" }}
+                rowContainerStyle={{ border: "none" }} />
+
+            </StatusTable>
+          </Card>
+
+        );
+      })
+      }
       <ActionBar style={{ display: "flex", justifyContent: "flex-end", alignItems: "baseline" }}>
         {/* {displayMenu ? <Menu localeKeyPrefix={"ES_COMMON"} options={ACTIONS} t={t} onSelect={onActionSelect} /> : null} */}
-        <SubmitBar disabled={Number(bill?.totalAmount) === 0 || !bill} onSubmit={onSubmit} label={t("OP_PROCEED_TO_PAY")} />
+        <SubmitBar disabled={Number(bill?.totalAmount) <= 0 || Number(bill?.totalAmount) === 0 || !bill} onSubmit={onSubmit} label={t("OP_PROCEED_TO_PAY")} />
       </ActionBar>
       {showToast && (
         <Toast
