@@ -2,21 +2,28 @@ package org.egov.hrms.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.hrms.config.PropertiesManager;
 import org.egov.hrms.model.Employee;
 import org.egov.hrms.repository.ElasticSearchRepository;
 import org.egov.hrms.repository.EmployeeRepository;
+import org.egov.hrms.utils.HRMSConstants;
+import org.egov.hrms.utils.HRMSUtils;
 import org.egov.hrms.web.contract.EmployeeSearchCriteria;
+import org.egov.hrms.web.contract.User;
+import org.egov.hrms.web.contract.UserResponse;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.egov.hrms.utils.HRMSConstants.ES_DATA_PATH;
 
+@Slf4j
 @Service
 public class FuzzySearchService {
     @Autowired
@@ -27,6 +34,11 @@ public class FuzzySearchService {
     private EmployeeRepository employeeRepository;
     @Autowired
     private PropertiesManager config;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private HRMSUtils hrmsUtils;
+
 
     public List<Employee> getEmployees(RequestInfo requestInfo, EmployeeSearchCriteria criteria) {
 
@@ -54,7 +66,13 @@ public class FuzzySearchService {
             EmployeeSearchCriteria employeeSearchCriteria = EmployeeSearchCriteria.builder().tenantId(tenantId).codes(empList).build();
 
             employees.addAll(employeeRepository.fetchEmployees(employeeSearchCriteria, requestInfo));
-
+            Set<String> uuids = employees.stream().map(Employee::getUuid).collect(Collectors.toSet());
+            Map<String,Object> map = new HashMap<>();
+            map.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_UUID,uuids);
+            UserResponse userResponse = userService.getUser(requestInfo, map);
+            log.info("userResponse {}",userResponse);
+            List<User> users = userResponse.getUser();
+            hrmsUtils.enrichOwner(users, employees);
         }
 
         return employees;
