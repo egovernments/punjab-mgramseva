@@ -1231,6 +1231,7 @@ public class DemandService {
 		demandData.put("billingMasterData", billingMasterData);
 		demandData.put("bulkDemand", bulkDemand);
 		producer.push(config.getGenerateBulkDemandTopic(), demandData);
+		log.info("Pushed TO Genarate demand Bulk manual topic" +bulkDemand.getTenantId()+" Billing period "+bulkDemand.getBillingPeriod());
 //		generateBulkDemandForULB(billingMasterData, bulkDemand);
 	}
 
