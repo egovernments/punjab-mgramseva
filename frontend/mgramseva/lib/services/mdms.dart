@@ -16,7 +16,7 @@ initRequestBody(tenantId) {
         {
           "moduleName": "tenant",
           "masterDetails": [
-            {"name": "tenants"},
+            // {"name": "tenants"},
             {"name": "citymodule"}
           ],
         },
@@ -109,7 +109,7 @@ Map getTenantsMDMS(String tenantId) {
         {
           "moduleName": "tenant",
           "masterDetails": [
-            {"name": "tenants"}
+            // {"name": "tenants"}
           ]
         }
       ]
