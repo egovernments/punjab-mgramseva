@@ -5,6 +5,7 @@ import org.egov.waterconnection.web.models.MonthReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -63,6 +64,7 @@ import java.util.*;
 //        monthReportList.forEach(monthReport-> monthReport.setConsumerName(userIdToConnectionHolderMap.get(monthReport.getUserId()).getName()));
 //    }
 //}
+@Component
 public class MonthReportRowMapper implements RowMapper<MonthReport>
 {
     @Override
