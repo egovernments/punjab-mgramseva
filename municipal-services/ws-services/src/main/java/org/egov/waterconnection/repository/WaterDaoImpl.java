@@ -749,9 +749,8 @@ public class WaterDaoImpl implements WaterDao {
 //		return ledgerReportList;
 	}
 
-	public List<MonthReport> getMonthReport(Long monthStartDateTime, Long monthEndDateTime, String tenantId, Integer offset, Integer limit)
-	{
-		StringBuilder tillDateConsumerQuery=new StringBuilder(wsQueryBuilder.TILL_DATE_CONSUMER);
+	public List<MonthReport> getMonthReport(Long monthStartDateTime, Long monthEndDateTime, String tenantId, Integer offset, Integer limit) {
+		StringBuilder tillDateConsumerQuery = new StringBuilder(wsQueryBuilder.TILL_DATE_CONSUMER);
 
 		List<Object> consumerPreparedStatement = new ArrayList<>();
 		consumerPreparedStatement.add(monthEndDateTime);
@@ -778,44 +777,58 @@ public class WaterDaoImpl implements WaterDao {
 		log.info("Query to fetch consumers: " + tillDateConsumerQuery + " and prepared statement: " + consumerPreparedStatement);
 		List<String> consumerList = jdbcTemplate.queryForList(tillDateConsumerQuery.toString(), consumerPreparedStatement.toArray(), String.class);
 
-		StringBuilder month_demand_query=new StringBuilder(wsQueryBuilder.MONTH_DEMAND_QUERY);
-		StringBuilder month_payment_query=new StringBuilder(wsQueryBuilder.MONTH_PAYMENT_QUERY);
+		StringBuilder month_demand_query = new StringBuilder(wsQueryBuilder.MONTH_DEMAND_QUERY);
+		StringBuilder month_payment_query = new StringBuilder(wsQueryBuilder.MONTH_PAYMENT_QUERY);
 
 		List<MonthReport> reportList = new ArrayList<>();
 
-		for (String connectionNo : consumerList) {
-			List<Object> demandPreparedStatement = new ArrayList<>();
-			demandPreparedStatement.add(monthStartDateTime);
-			demandPreparedStatement.add(monthEndDateTime);
-			demandPreparedStatement.add(tenantId);
-			demandPreparedStatement.add(connectionNo);
+		if (!consumerList.isEmpty()) {
+			for (String connectionNo : consumerList) {
+				List<Object> demandPreparedStatement = new ArrayList<>();
+				demandPreparedStatement.add(monthStartDateTime);
+				demandPreparedStatement.add(monthEndDateTime);
+				demandPreparedStatement.add(tenantId);
+				demandPreparedStatement.add(connectionNo);
 
-			MonthReport monthReport = jdbcTemplate.queryForObject(month_demand_query.toString(), demandPreparedStatement.toArray(),monthReportRowMapper);
+				MonthReport monthReport = jdbcTemplate.queryForObject(month_demand_query.toString(), demandPreparedStatement.toArray(), monthReportRowMapper);
 
-			BigDecimal taxAmountResult = getMonthlyTaxAmount(monthStartDateTime, connectionNo);
-			BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(monthStartDateTime, connectionNo);
+				BigDecimal taxAmountResult = getMonthlyTaxAmount(monthStartDateTime, connectionNo);
 
-            if(monthReport != null)
-			{
-				monthReport.setArrears(taxAmountResult.subtract(totalAmountPaidResult));
+				if(taxAmountResult==null)
+				{
+					taxAmountResult=BigDecimal.ZERO;
+				}
+
+				BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(monthStartDateTime, connectionNo);
+
+				if(totalAmountPaidResult==null)
+				{
+					totalAmountPaidResult=BigDecimal.ZERO;
+				}
+
+				if (monthReport != null) {
+					monthReport.setArrears(taxAmountResult.subtract(totalAmountPaidResult));
+				}
+
+				List<Object> paymentPreparedStatement = new ArrayList<>();
+				paymentPreparedStatement.add(tenantId);
+				paymentPreparedStatement.add(connectionNo);
+				paymentPreparedStatement.add(monthStartDateTime);
+				paymentPreparedStatement.add(monthEndDateTime);
+				paymentPreparedStatement.add(tenantId);
+				paymentPreparedStatement.add(tenantId);
+
+				PaymentMonthReport paymentMonthReport = jdbcTemplate.queryForObject(month_payment_query.toString(), paymentPreparedStatement.toArray(), paymentRowMapper);
+
+				if (monthReport != null && paymentMonthReport != null) {
+					monthReport.setPaid(paymentMonthReport.getTotalAmountPaid()!= null ? paymentMonthReport.getTotalAmountPaid() : BigDecimal.ZERO);
+					monthReport.setPaidDate(paymentMonthReport.getFirstTransactionDate());
+					BigDecimal totalAmount = monthReport.getTotalAmount() != null ? monthReport.getTotalAmount() : BigDecimal.ZERO;
+					BigDecimal totalAmountPaid = paymentMonthReport.getTotalAmountPaid() != null ? paymentMonthReport.getTotalAmountPaid() : BigDecimal.ZERO;
+					monthReport.setRemainingAmount(totalAmount.subtract(totalAmountPaid));
+				}
+				reportList.add(monthReport);
 			}
-
-			List<Object> paymentPreparedStatement = new ArrayList<>();
-			paymentPreparedStatement.add(tenantId);
-			paymentPreparedStatement.add(connectionNo);
-			paymentPreparedStatement.add(monthStartDateTime);
-			paymentPreparedStatement.add(monthEndDateTime);
-			paymentPreparedStatement.add(tenantId);
-			paymentPreparedStatement.add(tenantId);
-
-			PaymentMonthReport paymentMonthReport=jdbcTemplate.queryForObject(month_payment_query.toString(), paymentPreparedStatement.toArray(), paymentRowMapper);
-
-			if (monthReport !=null && paymentMonthReport != null) {
-                monthReport.setPaid(paymentMonthReport.getTotalAmountPaid());
-				monthReport.setPaidDate(paymentMonthReport.getFirstTransactionDate());
-				monthReport.setRemainingAmount(monthReport.getTotalAmount().subtract(paymentMonthReport.getTotalAmountPaid()));
-			}
-			reportList.add(monthReport);
 		}
 		return reportList;
 	}
