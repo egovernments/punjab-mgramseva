@@ -808,12 +808,12 @@ def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,tot
             if connection:
                 cursor.close()
                 connection.close() 
-def is_thursday():
+def is_saturdayday():
     print("DateTime today :",datetime.today().weekday())    
-    return datetime.today().weekday() == 3
+    return datetime.today().weekday() == 5
 
 def get_daterange():
-    if is_thursday():
+    if is_saturdayday():
         return [
             'Last seven days', 'Last 15 days', 'currentMonth-Till date', 'Previous Month',
             'Quarter-1', 'Quarter-2', 'Quarter-3', 'Quarter-4', 
