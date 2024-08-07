@@ -209,7 +209,8 @@ class ReportsProvider with ChangeNotifier {
           '${DateFormats.leadgerTimeStampToDate(data.months?.values.first.payment?.first.paymentCollectionDate)}'),
       TableData('${data.months?.values.first.payment?.first.receiptNo}'),
       TableData('₹ ${data.months?.values.first.payment?.first.amountPaid}'),
-      TableData('₹ ${data.months?.values.first.demand?.previousMonthBalance}'),
+      TableData(
+          '₹ ${(double.parse("${data.months?.values.first.demand?.totalDues}") - double.parse("${data.months?.values.first.payment?.first.amountPaid}"))}'),
       TableData(
           '${DateFormats.leadgerTimeStampToDate(data.months?.values.first.demand?.penaltyAppliedOnDate)}'),
       TableData('₹  ${data.months?.values.first.demand?.penalty}'),
