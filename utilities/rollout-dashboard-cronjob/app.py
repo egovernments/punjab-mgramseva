@@ -809,6 +809,7 @@ def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,tot
                 cursor.close()
                 connection.close() 
 def is_thursday():
+    print("DateTime today :",datetime.today().weekday())    
     return datetime.today().weekday() == 3
 
 def get_daterange():
