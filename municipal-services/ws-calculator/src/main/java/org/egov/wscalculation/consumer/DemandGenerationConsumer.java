@@ -593,6 +593,8 @@ public class DemandGenerationConsumer {
 	@KafkaListener(topics = {
 			"${ws.generate.demand.bulk}" })
 	public void generateDemandInBulkListner(HashMap<Object, Object> messageData) {
+		log.info("GOt call inn ws-gennerate-demand-bulk topic Started time:" +System.currentTimeMillis());
+		Long starttime= System.currentTimeMillis();
 		CalculationReq calculationReq= new CalculationReq();
 		Map<String, Object> masterMap = new HashMap<>();
 		String billingCycle ;
@@ -607,6 +609,10 @@ public class DemandGenerationConsumer {
 
 		log.info("got generate demand call for :"+calculationReq.getCalculationCriteria().get(0).getConnectionNo());
 		generateDemandInBulk(calculationReq,billingCycle,masterMap,isSendMessage,tenantId);
+		log.info("GOt call inn ws-gennerate-demand-bulk topic end time:" +System.currentTimeMillis());
+		Long enndtime=System.currentTimeMillis();
+		long diff= enndtime-starttime;
+		log.info("Time taken to process request for :"+calculationReq.getCalculationCriteria().get(0).getConnectionNo()+" is :"+diff/1000 +" secs");
 	}
 
 }
