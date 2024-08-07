@@ -754,7 +754,7 @@ public class WsQueryBuilder {
 	
 	private String addOrderByClauseForPlaneSearch(SearchCriteria criteria) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(" ORDER BY wc.appCreatedDate ");
+		builder.append(" ORDER BY conn.createdTime");
 		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
 			builder.append(" ASC ");
 		else
