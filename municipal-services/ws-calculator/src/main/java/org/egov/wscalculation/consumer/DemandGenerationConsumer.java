@@ -274,16 +274,7 @@ public class DemandGenerationConsumer {
 
 		
 		
-		Calendar previousFromDate = Calendar.getInstance();
-		Calendar previousToDate = Calendar.getInstance();
-		
-		previousFromDate.setTimeInMillis(dayStartTime);
-		previousToDate.setTimeInMillis(dayEndTime);
 
-		previousFromDate.add(Calendar.MONTH, -1); //assuming billing cycle will be first day of month
-		previousToDate.add(Calendar.MONTH, -1); 
-		int max = previousToDate.getActualMaximum(Calendar.DAY_OF_MONTH);
-		previousToDate.set(Calendar.DAY_OF_MONTH, max);
 		String assessmentYear = estimationService.getAssessmentYear();
 		ArrayList<String> failedConnectionNos = new ArrayList<String>();
 		Map<String, Object> masterMap = mDataService.loadMasterData(requestInfo,
@@ -300,17 +291,16 @@ public class DemandGenerationConsumer {
 			CalculationReq calculationReq = CalculationReq.builder().calculationCriteria(calculationCriteriaList)
 					.requestInfo(requestInfo).isconnectionCalculation(true).isAdvanceCalculation(false).build();
 
-			Set<String> consumerCodes = new LinkedHashSet<String>();
-			consumerCodes.add(connectionNo);
 
-			if (!waterCalculatorDao.isDemandExists(tenantId, previousFromDate.getTimeInMillis(),
+
+			/*if (!waterCalculatorDao.isDemandExists(tenantId, previousFromDate.getTimeInMillis(),
 					previousToDate.getTimeInMillis(), consumerCodes)
 					&& !waterCalculatorDao.isConnectionExists(tenantId, previousFromDate.getTimeInMillis(),
 							previousToDate.getTimeInMillis(), consumerCodes)) {
 				log.warn("this connection doen't have the demand in previous billing cycle :" + connectionNo);
 				failedConnectionNos.add(connectionNo);
 				continue;
-			}
+			}*/
 			HashMap<Object, Object> genarateDemandData = new HashMap<Object, Object>();
 			genarateDemandData.put("calculationReq", calculationReq);
 			genarateDemandData.put("billingCycle",billingCycle);
@@ -577,9 +567,12 @@ public class DemandGenerationConsumer {
 			throw new CustomException("BILLING_PERIOD_PARSING_ISSUE", "Billing Period can not be empty!!");
 		log.info("CALL FROM TOPIC egov.generate.bulk.demand.manually.topic for tenantid:"
 				+bulkDemand.getTenantId()+" BillPeriod:"+billingPeriod+" Start Time:"+System.currentTimeMillis() );
+		Long starTime = System.currentTimeMillis();
 		generateDemandAndSendnotification(bulkDemand.getRequestInfo(), bulkDemand.getTenantId(), billingPeriod, billingMasterData,
 				isSendMessage, isManual);
-		log.info("System end time for Tenantid:"+bulkDemand.getTenantId()+" BillPeriod:"+billingPeriod+" end Time:"+System.currentTimeMillis());
+		long endTime=System.currentTimeMillis();
+		long diff = endTime-starTime;
+		log.info("time takenn to generate demand for Tenantid:"+bulkDemand.getTenantId()+" BillPeriod:"+billingPeriod+" is : "+diff/1000 +" secs");
 
 		
 	}
@@ -607,12 +600,43 @@ public class DemandGenerationConsumer {
 		isSendMessage= (boolean) genarateDemandData.get("isSendMessage");
 		tenantId=(String) genarateDemandData.get("tenantId");
 
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+
+
+		LocalDate fromDate = LocalDate.parse(billingCycle.split("-")[0].trim(), formatter);
+		LocalDate toDate = LocalDate.parse(billingCycle.split("-")[1].trim(), formatter);
+
+		Long dayStartTime = LocalDateTime
+				.of(fromDate.getYear(), fromDate.getMonth(), fromDate.getDayOfMonth(), 0, 0, 0)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long dayEndTime = LocalDateTime
+				.of(toDate.getYear(), toDate.getMonth(), toDate.getDayOfMonth(), 23, 59, 59, 999000000)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Calendar previousFromDate = Calendar.getInstance();
+		Calendar previousToDate = Calendar.getInstance();
+
+		previousFromDate.setTimeInMillis(dayStartTime);
+		previousToDate.setTimeInMillis(dayEndTime);
+
+		previousFromDate.add(Calendar.MONTH, -1); //assuming billing cycle will be first day of month
+		previousToDate.add(Calendar.MONTH, -1);
+		int max = previousToDate.getActualMaximum(Calendar.DAY_OF_MONTH);
+		previousToDate.set(Calendar.DAY_OF_MONTH, max);
 		log.info("got generate demand call for :"+calculationReq.getCalculationCriteria().get(0).getConnectionNo());
-		generateDemandInBulk(calculationReq,billingCycle,masterMap,isSendMessage,tenantId);
-		log.info("GOt call inn ws-gennerate-demand-bulk topic end time:" +System.currentTimeMillis());
-		Long enndtime=System.currentTimeMillis();
-		long diff= enndtime-starttime;
-		log.info("Time taken to process request for :"+calculationReq.getCalculationCriteria().get(0).getConnectionNo()+" is :"+diff/1000 +" secs");
+		Set<String> consumerCodes = new LinkedHashSet<String>();
+		consumerCodes.add(calculationReq.getCalculationCriteria().get(0).getConnectionNo());
+		if (!waterCalculatorDao.isDemandExists(tenantId, previousFromDate.getTimeInMillis(),
+				previousToDate.getTimeInMillis(), consumerCodes)
+				&& !waterCalculatorDao.isConnectionExists(tenantId, previousFromDate.getTimeInMillis(),
+				previousToDate.getTimeInMillis(), consumerCodes)) {
+			log.warn("this connection doen't have the demand in previous billing cycle :" + calculationReq.getCalculationCriteria().get(0).getConnectionNo());
+		} else {
+			generateDemandInBulk(calculationReq, billingCycle, masterMap, isSendMessage, tenantId);
+			log.info("GOt call inn ws-gennerate-demand-bulk topic end time:" + System.currentTimeMillis());
+			Long enndtime = System.currentTimeMillis();
+			long diff = enndtime - starttime;
+			log.info("Time taken to process request for :" + calculationReq.getCalculationCriteria().get(0).getConnectionNo() + " is :" + diff / 1000 + " secs");
+		}
 	}
 
 }
