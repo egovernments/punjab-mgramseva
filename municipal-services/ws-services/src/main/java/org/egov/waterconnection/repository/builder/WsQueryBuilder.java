@@ -198,7 +198,7 @@ public class WsQueryBuilder {
 
 	public static final String TILL_DATE_CONSUMER="select connectionno from eg_ws_connection conn INNER JOIN " +
 			" eg_ws_service wc ON wc.connection_id = conn.id where wc.connectiontype='Non_Metered' and " +
-			" conn.createdtime<=? and conn.tenantid=?;";
+			" conn.createdtime<=? and conn.tenantid=? ";
 
 	public static final String MONTH_DEMAND_QUERY ="SELECT " +
 			"conn.tenantId as tenantId, " +
