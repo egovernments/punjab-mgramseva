@@ -205,7 +205,6 @@ public class WsQueryBuilder {
 			"conn.connectionno as connectionNo, " +
 			"conn.oldConnectionno as oldConnectionNo, " +
 			"conn.createdTime as consumerCreatedOnDate, " +
-			"connectionholder.name as consumerName, " +
 			"connectionholder.userid as userId, " +
 			"dem.createdtime as demandGenerationDate, " +
 			"SUM(CASE WHEN dd.taxheadcode = 'WS_TIME_PENALTY' THEN dd.taxamount ELSE 0 END) as penalty, " +
@@ -220,7 +219,7 @@ public class WsQueryBuilder {
 			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno " +
 			"INNER JOIN egbs_demanddetail_v1 dd on dd.demandid = dem.id " +
 			"WHERE dem.taxperiodfrom >= ? AND dem.taxperiodto <= ? AND conn.tenantId = ? AND conn.connectionno = ? AND dem.status='ACTIVE' " +
-			"GROUP BY conn.connectionno, conn.tenantId, conn.oldConnectionno, conn.createdTime, connectionholder.name, connectionholder.userid, dem.createdtime " +
+			"GROUP BY conn.connectionno, conn.tenantId, conn.oldConnectionno, conn.createdTime, connectionholder.userid, dem.createdtime " +
 			"ORDER BY conn.connectionno";
 
 	public static final String MONTH_PAYMENT_QUERY="SELECT SUM(p.totalamountpaid) AS totalAmountPaid, MIN(p.transactiondate) " +
