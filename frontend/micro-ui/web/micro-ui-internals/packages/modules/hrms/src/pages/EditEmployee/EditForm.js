@@ -296,9 +296,9 @@ const EditForm = ({ tenantId, data }) => {
     // console.log(data?.assignments, "data?.assignments");
     // console.log(input, "INPUT");
 
-    let dataAssignments = data?.assignments[0];
-    dataAssignments.department = input.SelectUserTypeAndDesignation[0]?.department?.code;
-    dataAssignments.designation = input.SelectUserTypeAndDesignation[0]?.designation?.code;
+    let dataAssignments = data?.assignments;
+    dataAssignments[0].department = input.SelectUserTypeAndDesignation[0]?.department?.code;
+    dataAssignments[0].designation = input.SelectUserTypeAndDesignation[0]?.designation?.code;
 
 
     requestdata.assignments = input?.Assignments ? input?.Assignments : dataAssignments;
