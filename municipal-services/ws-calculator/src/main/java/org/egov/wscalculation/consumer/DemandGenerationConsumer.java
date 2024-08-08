@@ -37,6 +37,7 @@ import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.web.models.users.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -70,6 +71,9 @@ public class DemandGenerationConsumer {
 
 	@Autowired
 	private NotificationUtil util;
+
+	@Autowired
+	private KafkaTemplate kafkaTemplate;
 
 	@Autowired
 	private CalculatorUtil calculatorUtils;
@@ -367,7 +371,7 @@ public class DemandGenerationConsumer {
 						.tenantid(tenantId)
 						.category(Category.TRANSACTION).build();
 				if(config.isSmsForDemandEnable()) {
-					producer.push(config.getSmsNotifTopic(), smsRequest);
+					kafkaTemplate.send(config.getSmsNotifTopic(), smsRequest);
 				}
 			}
 
