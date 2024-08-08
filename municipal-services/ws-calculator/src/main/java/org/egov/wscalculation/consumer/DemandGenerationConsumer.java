@@ -336,7 +336,7 @@ public class DemandGenerationConsumer {
 			 */
 			//log.info("sending generate demand for connection no :"+connectionNo);
 			long timetakenToPush= System.currentTimeMillis();
-			producer.push(config.getWsGenerateDemandBulktopic(),genarateDemandData);
+			kafkaTemplate.send(config.getWsGenerateDemandBulktopic(),genarateDemandData);
 			log.info("Time taken for the for push to kafka : "+(System.currentTimeMillis()-timetakenToPush)+ " in ms");
 
 		}
@@ -371,7 +371,7 @@ public class DemandGenerationConsumer {
 						.tenantid(tenantId)
 						.category(Category.TRANSACTION).build();
 				if(config.isSmsForDemandEnable()) {
-					kafkaTemplate.send(config.getSmsNotifTopic(), smsRequest);
+					producer.push(config.getSmsNotifTopic(), smsRequest);
 				}
 			}
 
