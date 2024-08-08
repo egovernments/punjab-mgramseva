@@ -295,7 +295,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		List<Calculation> calculations = new ArrayList<>(request.getCalculationCriteria().size());
 		for (CalculationCriteria criteria : request.getCalculationCriteria()) {
 			Map<String, List> estimationMap = null;
-			log.info("Innside get Calculationn");
+			//.info("Innside get Calculationn");
 			if(request.getIsAdvanceCalculation() == null || (!request.getIsAdvanceCalculation().booleanValue())) {
 				estimationMap	= estimationService.getEstimationMap(criteria, request.getRequestInfo(),
 						masterMap,request.getIsconnectionCalculation(),false);

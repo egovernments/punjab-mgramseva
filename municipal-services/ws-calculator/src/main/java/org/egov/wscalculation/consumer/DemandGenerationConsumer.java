@@ -192,7 +192,7 @@ public class DemandGenerationConsumer {
 			wsCalulationWorkflowValidator.applicationValidation(request.getRequestInfo(), criteria.getTenantId(),
 					criteria.getConnectionNo(), genratedemand);
 		}*/
-		System.out.println("Calling Bulk Demand generation connection Number" + request.getCalculationCriteria().get(0).getConnectionNo());
+		//System.out.println("Calling Bulk Demand generation connection Number" + request.getCalculationCriteria().get(0).getConnectionNo());
 		wSCalculationServiceImpl.bulkDemandGeneration(request, masterMap);
 		/*String connectionNoStrings = request.getCalculationCriteria().stream()
 				.map(criteria -> criteria.getConnectionNo()).collect(Collectors.toSet()).toString();
@@ -296,6 +296,7 @@ public class DemandGenerationConsumer {
 		log.info("connectionNos" + connectionNos.size());
 		long startTimeForLoop= System.currentTimeMillis();
 		for (String connectionNo : connectionNos) {
+			long timeBeforePushToKafka = System.currentTimeMillis();
 			CalculationCriteria calculationCriteria = CalculationCriteria.builder().tenantId(tenantId)
 					.assessmentYear(assessmentYear).connectionNo(connectionNo).from(dayStartTime).to(dayEndTime).build();
 			List<CalculationCriteria> calculationCriteriaList = new ArrayList<>();
@@ -320,6 +321,7 @@ public class DemandGenerationConsumer {
 			genarateDemandData.put("masterMap",masterMap);
 			genarateDemandData.put("isSendMessage",isSendMessage);
 			genarateDemandData.put("tenantId",tenantId);
+			log.info("Time taken before  push to kafka : "+(System.currentTimeMillis()-timeBeforePushToKafka)+ " in ms");
 
 			/*
 			 * List<Demand> demands = demandService.searchDemand(tenantId, consumerCodes,
@@ -328,8 +330,10 @@ public class DemandGenerationConsumer {
 			 * log.warn("this connection doen't have the demand in previous billing cycle :"
 			 * + connectionNo ); continue; }
 			 */
-			log.info("sending generate demand for connection no :"+connectionNo);
+			//log.info("sending generate demand for connection no :"+connectionNo);
+			long timetakenToPush= System.currentTimeMillis();
 			producer.push(config.getWsGenerateDemandBulktopic(),genarateDemandData);
+			log.info("Time taken for the for push to kafka : "+(System.currentTimeMillis()-timetakenToPush)+ " in ms");
 
 		}
 		log.info("Time taken for the for loop : "+(System.currentTimeMillis()-startTimeForLoop)/1000+ " Secondss");
@@ -634,7 +638,7 @@ public class DemandGenerationConsumer {
 		previousToDate.add(Calendar.MONTH, -1);
 		int max = previousToDate.getActualMaximum(Calendar.DAY_OF_MONTH);
 		previousToDate.set(Calendar.DAY_OF_MONTH, max);
-		log.info("got generate demand call for :"+calculationReq.getCalculationCriteria().get(0).getConnectionNo());
+		//log.info("got generate demand call for :"+calculationReq.getCalculationCriteria().get(0).getConnectionNo());
 		Set<String> consumerCodes = new LinkedHashSet<String>();
 		consumerCodes.add(calculationReq.getCalculationCriteria().get(0).getConnectionNo());
 		if (!waterCalculatorDao.isDemandExists(tenantId, previousFromDate.getTimeInMillis(),
