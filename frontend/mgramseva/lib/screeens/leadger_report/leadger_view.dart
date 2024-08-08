@@ -45,20 +45,24 @@ class _LeadgerReportView extends State<LeadgerReportView>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    width: constraints.maxWidth > 344?constraints.maxWidth / 2.5:constraints.maxWidth / 3,
+                    width: constraints.maxWidth > 344
+                        ? constraints.maxWidth / 2.5
+                        : constraints.maxWidth / 3,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "1. ",
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w700),
                         ),
                         Expanded(
                           child: Text(
                             ApplicationLocalizations.of(context)
                                 .translate(i18.dashboard.LEDGER_REPORTS),
                             maxLines: 3,
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w700),
                           ),
                         ),
                       ],
@@ -71,28 +75,32 @@ class _LeadgerReportView extends State<LeadgerReportView>
                         child: Button(
                           ApplicationLocalizations.of(context)
                               .translate(i18.common.VIEW),
-                          () {            
+                          () {
                             if (reportProvider.selectedBillYear == null) {
                               Notifiers.getToastMessage(
-                                  context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
+                                  context,
+                                  '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}',
+                                  'ERROR');
                             } else {
                               reportProvider.clearTableData();
                               reportProvider.getLeadgerReport();
-                              widget.onViewClick(true, i18.dashboard.LEDGER_REPORTS);
+                              widget.onViewClick(
+                                  true, i18.dashboard.LEDGER_REPORTS);
                             }
                           },
                           key: Keys.billReport.LEDGER_REPORT_VIEW_BUTTON,
                         ),
                       ),
-
-                         SizedBox(
+                      SizedBox(
                         width: 10,
                       ),
                       TextButton.icon(
                           onPressed: () {
                             if (reportProvider.selectedBillYear == null) {
                               Notifiers.getToastMessage(
-                                  context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
+                                  context,
+                                  '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}',
+                                  'ERROR');
                             } else {
                               reportProvider.getLeadgerReport(download: true);
                             }
