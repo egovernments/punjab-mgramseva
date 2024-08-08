@@ -16,7 +16,10 @@ class LeadgerTable extends StatelessWidget {
   final ScrollController scrollController;
   final String tableTitle;
   final WaterConnection? waterConnection;
-  LeadgerTable({required this.tableTitle, required this.scrollController,this.waterConnection});
+  LeadgerTable(
+      {required this.tableTitle,
+      required this.scrollController,
+      this.waterConnection});
 
   @override
   Widget build(BuildContext context) {
@@ -32,22 +35,35 @@ class LeadgerTable extends StatelessWidget {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    
                     LabelText(
                         '${ApplicationLocalizations.of(context).translate(tableTitle)}'),
-                    
-                                        
                     Consumer<ReportsProvider>(
-                      builder: (_, reportProvider, child) {
-                        return SubLabelText("${i18.common.LEDGER_CUSTOMER_NAME} : ${waterConnection?.connectionHolders?.first.name}");
-                      }
-                    ),
-                                        
+                        builder: (_, reportProvider, child) {
+                      return SubLabelText(
+                          "${i18.common.LEDGER_CUSTOMER_NAME} : ${waterConnection?.connectionHolders?.first.name}");
+                    }),
                     Consumer<ReportsProvider>(
-                      builder: (_, reportProvider, child) {
-                        return SubLabelText("${i18.common.LEDGER_CONN_ID} : ${waterConnection?.connectionNo}");
+                        builder: (_, reportProvider, child) {
+                      if (constraints.maxWidth < 760) {
+                        return Column(
+                          children: [
+                            SubLabelText(
+                                "${i18.common.LEDGER_CONN_ID} : ${waterConnection?.connectionNo}"),
+                            SubLabelText(
+                                "${i18.common.LEDGER_OLD_CONN_ID} : ${waterConnection?.oldConnectionNo}"),
+                          ],
+                        );
+                      } else {
+                        return Row(
+                          children: [
+                            SubLabelText(
+                                "${i18.common.LEDGER_CONN_ID} : ${waterConnection?.connectionNo}"),
+                            SubLabelText(
+                                "${i18.common.LEDGER_OLD_CONN_ID} : ${waterConnection?.oldConnectionNo}"),
+                          ],
+                        );
                       }
-                    ),
+                    }),
                   ])),
           SizedBox(
             height: 30,
@@ -79,10 +95,9 @@ class LeadgerTable extends StatelessWidget {
                         callBack: (pageResponse) =>
                             reportProvider.onChangeOfPageLimit(
                                 pageResponse, tableTitle, context),
-                          isTotalCountVisible: false,
+                        isTotalCountVisible: false,
                         totalCount:
                             reportProvider.genericTableData.tableData.length,
-
                       ),
                     ),
                   )
