@@ -323,20 +323,20 @@ class BillGenerationProvider with ChangeNotifier {
                   var hhp = Provider.of<HouseHoldProvider>(
                       navigatorKey.currentContext!,
                       listen: false);
-                  if (hhp.aggDemandItems == null) {
-                    await BillingServiceRepository().fetchAggregateDemand({
-                      "tenantId":
-                          commonProvider.userDetails!.selectedtenant!.code,
-                      "consumerCode":
-                          billList.bill?.first.consumerCode.toString(),
-                      "businessService": "WS",
-                    }).then((AggragateDemandDetails? value) {
-                      if (value != null) {
-                        hhp.aggDemandItems = value;
-                        notifyListeners();
-                      }
-                    });
-                  }
+                  // if (hhp.aggDemandItems == null) {
+                  await BillingServiceRepository().fetchAggregateDemand({
+                    "tenantId":
+                        commonProvider.userDetails!.selectedtenant!.code,
+                    "consumerCode":
+                        billList.bill?.first.consumerCode.toString(),
+                    "businessService": "WS",
+                  }).then((AggragateDemandDetails? value) {
+                    if (value != null) {
+                      hhp.aggDemandItems = value;
+                      notifyListeners();
+                    }
+                  });
+                  // }
                   return commonProvider.getFileFromPDFBillService({
                     "BillAndDemand": {
                       "Bill": [billList.bill?.first],
@@ -352,25 +352,25 @@ class BillGenerationProvider with ChangeNotifier {
                       "Download");
                 },
                 callBackWhatsApp: () async {
-                    var hhp = Provider.of<HouseHoldProvider>(
+                  var hhp = Provider.of<HouseHoldProvider>(
                       navigatorKey.currentContext!,
                       listen: false);
-                  if (hhp.aggDemandItems == null) {
-                    await BillingServiceRepository().fetchAggregateDemand({
-                      "tenantId":
-                          commonProvider.userDetails!.selectedtenant!.code,
-                      "consumerCode":
-                          billList.bill?.first.consumerCode.toString(),
-                      "businessService": "WS",
-                    }).then((AggragateDemandDetails? value) {
-                      if (value != null) {
-                        hhp.aggDemandItems = value;
-                        notifyListeners();
-                      }
-                    });
-                  }
+                  // if (hhp.aggDemandItems == null) {
+                  await BillingServiceRepository().fetchAggregateDemand({
+                    "tenantId":
+                        commonProvider.userDetails!.selectedtenant!.code,
+                    "consumerCode":
+                        billList.bill?.first.consumerCode.toString(),
+                    "businessService": "WS",
+                  }).then((AggragateDemandDetails? value) {
+                    if (value != null) {
+                      hhp.aggDemandItems = value;
+                      notifyListeners();
+                    }
+                  });
+                  // }
                   return commonProvider.getFileFromPDFBillService({
-                  "BillAndDemand": {
+                    "BillAndDemand": {
                       "Bill": [billList.bill?.first],
                       "AggregatedDemands": hhp.aggDemandItems
                     }
