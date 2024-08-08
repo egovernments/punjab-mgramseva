@@ -19,6 +19,7 @@ def getGPWSCHeirarchy():
     try:
         mdms_url = os.getenv('API_URL')
         state_tenantid = os.getenv('TENANT_ID')
+        url=os.getenv('IFIX_DEP_ENTITY_URL')
         mdms_requestData = {
             "RequestInfo": {
                 "apiId": "mgramseva-common",
@@ -56,7 +57,7 @@ def getGPWSCHeirarchy():
             if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
                 teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
 
-        url = 'https://mgramseva-dwss.punjab.gov.in/'
+        # url = 'https://mgramseva-dwss.punjab.gov.in/'
         print(url)
         requestData = {
             "requestHeader": {
@@ -925,32 +926,6 @@ def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance,
 
 def process():
     print("continue is the process")
-
-    try:
-        connection = getConnection()
-        cursor = connection.cursor()
-
-        print("cursor: ", cursor)
-
-        DROPPING_TABLE_QUERY = " drop table if exists roll_out_dashboard "
-        cursor.execute(DROPPING_TABLE_QUERY)
-
-        connection.commit()
-
-        createTableQuery = createTable()
-        cursor.execute(createTableQuery)
-
-        connection.commit()
-
-        print("table dropped")
-    except Exception as exception:
-        print("Exception occurred while connecting to the database")
-        print(exception)
-
-    finally:
-        if connection:
-            cursor.close()
-            connection.close()
 
     tenants = getGPWSCHeirarchy()
     for tenant in tenants:
