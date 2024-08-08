@@ -227,10 +227,6 @@ public class WsQueryBuilder {
 			"SUM(CASE WHEN dd.taxheadcode = 'WS_TIME_PENALTY' THEN dd.taxamount ELSE 0 END) as penalty, " +
 			"SUM(CASE WHEN dd.taxheadcode = '10101' THEN dd.taxamount ELSE 0 END) as demandAmount, " +
 			"SUM(CASE WHEN dd.taxheadcode = 'WS_ADVANCE_CARRYFORWARD' THEN dd.taxamount ELSE 0 END) as advance, " +
-			"SUM(CASE WHEN dd.taxheadcode = 'WS_TIME_PENALTY' THEN dd.taxamount ELSE 0 END + " +
-			"CASE WHEN dd.taxheadcode = '10101' THEN dd.taxamount ELSE 0 END + " +
-			"CASE WHEN dd.taxheadcode = 'WS_ADVANCE_CARRYFORWARD' THEN dd.taxamount ELSE 0 END + " +
-			"CASE WHEN dd.taxheadcode='10201' THEN dd.taxamount ELSE 0 END) as totalAmount " +
 			"FROM eg_ws_connection conn " +
 			"INNER JOIN eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id " +
 			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno " +

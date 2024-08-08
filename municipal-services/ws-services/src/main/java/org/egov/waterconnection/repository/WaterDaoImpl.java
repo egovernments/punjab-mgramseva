@@ -43,6 +43,7 @@ import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.egov.waterconnection.web.models.collection.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.stereotype.Repository;
@@ -790,8 +791,12 @@ public class WaterDaoImpl implements WaterDao {
 				demandPreparedStatement.add(tenantId);
 				demandPreparedStatement.add(connectionNo);
 
-				MonthReport monthReport = jdbcTemplate.queryForObject(month_demand_query.toString(), demandPreparedStatement.toArray(), monthReportRowMapper);
-
+				MonthReport monthReport = new MonthReport();
+				try{
+					monthReport=jdbcTemplate.queryForObject(month_demand_query.toString(), demandPreparedStatement.toArray(), monthReportRowMapper);
+				}catch (EmptyResultDataAccessException e) {
+					log.info("No month report found for connection: " + connectionNo);
+				}
 				BigDecimal taxAmountResult = getMonthlyTaxAmount(monthStartDateTime, connectionNo);
 
 				if(taxAmountResult==null)
@@ -808,6 +813,11 @@ public class WaterDaoImpl implements WaterDao {
 
 				if (monthReport != null) {
 					monthReport.setArrears(taxAmountResult.subtract(totalAmountPaidResult));
+					BigDecimal totalAmount = (monthReport.getPenalty() != null ? monthReport.getPenalty() : BigDecimal.ZERO)
+							.add(monthReport.getDemandAmount() != null ? monthReport.getDemandAmount() : BigDecimal.ZERO)
+							.add(monthReport.getAdvance() != null ? monthReport.getAdvance() : BigDecimal.ZERO)
+							.add(monthReport.getArrears()!=null ? monthReport.getArrears():BigDecimal.ZERO);
+					monthReport.setTotalAmount(totalAmount);
 				}
 
 				List<Object> paymentPreparedStatement = new ArrayList<>();

@@ -79,7 +79,6 @@ public class MonthReportRowMapper implements RowMapper<MonthReport>
                 .penalty(rs.getBigDecimal("penalty"))
                 .demandAmount(rs.getBigDecimal("demandAmount"))
                 .advance(rs.getBigDecimal("advance"))
-                .totalAmount(rs.getBigDecimal("totalAmount"))
                 .build();
     }
 }
