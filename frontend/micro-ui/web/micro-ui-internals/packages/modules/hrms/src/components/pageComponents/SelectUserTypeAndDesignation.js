@@ -310,7 +310,6 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
     });
   }
   function getUserTypes() {
-
     return data?.MdmsRes?.["common-masters"]?.Department?.map((ele) => {
       ele["i18key"] = t("COMMON_MASTERS_DEPARTMENT" + ele.code);
       return ele;
@@ -320,7 +319,6 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
   if (isLoading && isUserDataLoading && isLoadingDesignation) {
     return <Loader />;
   }
-  // console.log(dataDesignation, "dataDesignation");
 
   return (
     <div>

@@ -72,6 +72,10 @@ const initRequestBodyWithOutTenent = (tenantId) => ({
         masterDetails: [{ name: "Department" }, { name: "Designation" }, { name: "StateInfo" }, { name: "wfSlaConfig" }, { name: "uiHomePage" }],
       },
       {
+        moduleName: "tenant",
+        masterDetails: [{ name: "citymodule" }],
+      },
+      {
         moduleName: "DIGIT-UI",
         masterDetails: [{ name: "ApiCachingSettings" }],
       },
@@ -1048,24 +1052,24 @@ const GetSlumLocalityMapping = (MdmsRes, tenantId) =>
   MdmsRes["FSM"].Slum.filter((type) => type.active).reduce((prev, curr) => {
     return prev[curr.locality]
       ? {
-          ...prev,
-          [curr.locality]: [
-            ...prev[curr.locality],
-            {
-              ...curr,
-              i18nKey: `${tenantId.toUpperCase().replace(".", "_")}_${curr.locality}_${curr.code}`,
-            },
-          ],
-        }
+        ...prev,
+        [curr.locality]: [
+          ...prev[curr.locality],
+          {
+            ...curr,
+            i18nKey: `${tenantId.toUpperCase().replace(".", "_")}_${curr.locality}_${curr.code}`,
+          },
+        ],
+      }
       : {
-          ...prev,
-          [curr.locality]: [
-            {
-              ...curr,
-              i18nKey: `${tenantId.toUpperCase().replace(".", "_")}_${curr.locality}_${curr.code}`,
-            },
-          ],
-        };
+        ...prev,
+        [curr.locality]: [
+          {
+            ...curr,
+            i18nKey: `${tenantId.toUpperCase().replace(".", "_")}_${curr.locality}_${curr.code}`,
+          },
+        ],
+      };
   }, {});
 
 const GetPropertyOwnerShipCategory = (MdmsRes) =>

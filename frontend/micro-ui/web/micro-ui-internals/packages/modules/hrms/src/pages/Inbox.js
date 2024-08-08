@@ -126,7 +126,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     return [
       {
         label: t("HR_NAME_LABEL"),
-        name: "names",
+        name: "name",
       },
       {
         label: t("HR_MOB_NO_LABEL"),
