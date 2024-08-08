@@ -812,6 +812,7 @@ public class WaterDaoImpl implements WaterDao {
 				}
 
 				if (monthReport != null) {
+					monthReport.setConnectionNo(connectionNo);
 					monthReport.setArrears(taxAmountResult.subtract(totalAmountPaidResult));
 					BigDecimal totalAmount = (monthReport.getPenalty() != null ? monthReport.getPenalty() : BigDecimal.ZERO)
 							.add(monthReport.getDemandAmount() != null ? monthReport.getDemandAmount() : BigDecimal.ZERO)
