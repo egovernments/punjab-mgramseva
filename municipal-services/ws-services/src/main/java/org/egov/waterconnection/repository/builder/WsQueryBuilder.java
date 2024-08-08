@@ -67,6 +67,24 @@ public class WsQueryBuilder {
 			+ "eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id"
 			+ LEFT_OUTER_JOIN_STRING + "eg_ws_roadcuttinginfo roadcuttingInfo ON roadcuttingInfo.wsid = conn.id";
 
+	private static final String WATER_PLANE_SEARCH_QUERY = "SELECT count(*) OVER() AS full_count, conn.*, wc.*, document.*, plumber.*, wc.connectionCategory, wc.connectionType, wc.waterSource,"
+			+ " wc.meterId, wc.meterInstallationDate, wc.pipeSize, wc.noOfTaps, wc.proposedPipeSize, wc.proposedTaps, wc.connection_id as connection_Id, wc.connectionExecutionDate, wc.initialmeterreading, wc.appCreatedDate,"
+			+ " wc.detailsprovidedby, wc.estimationfileStoreId , wc.sanctionfileStoreId , wc.estimationLetterDate,"
+			+ " conn.id as conn_id, conn.tenantid, conn.applicationNo, conn.applicationStatus, conn.status, conn.connectionNo, conn.oldConnectionNo, conn.property_id, conn.roadcuttingarea,"
+			+ " conn.action, conn.adhocpenalty, conn.adhocrebate, conn.adhocpenaltyreason, conn.applicationType, conn.dateEffectiveFrom,"
+			+ " conn.adhocpenaltycomment, conn.adhocrebatereason, conn.adhocrebatecomment, conn.createdBy as ws_createdBy, conn.lastModifiedBy as ws_lastModifiedBy,"
+			+ " conn.createdTime as ws_createdTime, conn.lastModifiedTime as ws_lastModifiedTime,conn.additionaldetails, "
+			+ " conn.locality, conn.isoldapplication, conn.roadtype, document.id as doc_Id, document.documenttype, document.filestoreid, document.active as doc_active, plumber.id as plumber_id,"
+			+ " plumber.name as plumber_name, plumber.licenseno, roadcuttingInfo.id as roadcutting_id, roadcuttingInfo.roadtype as roadcutting_roadtype, roadcuttingInfo.roadcuttingarea as roadcutting_roadcuttingarea, roadcuttingInfo.roadcuttingarea as roadcutting_roadcuttingarea,"
+			+ " roadcuttingInfo.active as roadcutting_active, plumber.mobilenumber as plumber_mobileNumber, plumber.gender as plumber_gender, plumber.fatherorhusbandname, plumber.correspondenceaddress,"
+			+ " plumber.relationship, " + " {holderSelectValues}, " + " COALESCE(0) AS pendingamount, " + " COALESCE(0) AS taxamount, " + "{lastDemandDate}"
+			+ " FROM eg_ws_connection conn " + INNER_JOIN_STRING + " eg_ws_service wc ON wc.connection_id = conn.id"
+			+ LEFT_OUTER_JOIN_STRING + "eg_ws_applicationdocument document ON document.wsid = conn.id"
+			+ LEFT_OUTER_JOIN_STRING + "eg_ws_plumberinfo plumber ON plumber.wsid = conn.id" + LEFT_OUTER_JOIN_STRING
+			+ "eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id"
+			+ LEFT_OUTER_JOIN_STRING + "eg_ws_roadcuttinginfo roadcuttingInfo ON roadcuttingInfo.wsid = conn.id";
+
+
 	private static final String WATER_CONNNECTION_BY_DEMANNDDATE = "SELECT ((select distinct d.taxperiodto as taxperiodto from egbs_demand_v1 d inner join egbs_demanddetail_v1 dd on dd.demandid = d.id ";
 	private static final String WATER_CONNNECTION_BY_DEMANNDDATE_CLAUSE = " and  dd.taxheadcode='10101' and d.status = 'ACTIVE' and d.businessservice = 'WS' and d.consumercode = conn.connectionno order by d.taxperiodto desc limit 1))" +
 			" as taxperiodto, count(*) as count ";
@@ -176,7 +194,26 @@ public class WsQueryBuilder {
 			"(select distinct consumercode from egbs_demand_v1 d inner join egbs_demanddetail_v1 dd on dd.demandid = d.id " +
 			"where dd.taxheadcode='10101' and d.status ='ACTIVE' and  d.businessservice='WS' and " +
 			"d.tenantid=?) order by connectionno;";
-			
+
+	public static final String LEDGER_REPORT_QUERY = "SELECT connectionholder.userid as uuid,conn.connectionno as connectionNo,conn.oldconnectionno," +
+			"dem.taxperiodfrom as startdate,dem.taxperiodto as enddate," +
+			"dem.createdtime as demandGenerationDate," +
+			"dd.taxheadcode as code,dd.taxamount as taxamount " +
+			"FROM eg_ws_connection conn INNER JOIN eg_ws_connectionholder connectionholder " +
+			"ON connectionholder.connectionid = conn.id " +
+			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno INNER JOIN " +
+			"egbs_demanddetail_v1 dd ON dd.demandid = dem.id " +
+			"WHERE dem.consumercode = ? AND conn.tenantId = ? AND dem.status = 'ACTIVE' " +
+			"AND taxperiodfrom>=? AND taxperiodto<=? "+
+			"ORDER BY startdate";
+
+	public static final String TAX_AMOUNT_QUERY="SELECT SUM(taxamount) FROM egbs_demanddetail_v1 WHERE " +
+			"demandid IN (SELECT id FROM egbs_demand_v1 WHERE consumercode = ? AND taxperiodfrom < ? AND status='ACTIVE');";
+
+	public static final String TOTAL_AMOUNT_PAID_QUERY="SELECT SUM(totalamountpaid) FROM egcl_payment WHERE " +
+			"id IN (SELECT paymentid FROM egcl_paymentdetail WHERE billid IN " +
+			"(SELECT billid FROM egbs_billdetail_v1 WHERE consumercode = ?)) AND createdtime < ? AND paymentstatus!='CANCELLED';";
+
 	/**
 	 * 
 	 * @param criteria          The WaterCriteria
@@ -662,7 +699,7 @@ public class WsQueryBuilder {
 			RequestInfo requestInfo) {
 		if (criteria.isEmpty())
 			return null;
-		StringBuilder query = new StringBuilder(WATER_SEARCH_QUERY);
+		StringBuilder query = new StringBuilder(WATER_PLANE_SEARCH_QUERY);
 		query = applyFiltersForPlaneSearch(query, preparedStatement, criteria);
 		return addPaginationWrapperForPlaneSearch(query.toString(), preparedStatement, criteria);
 	}
@@ -736,7 +773,7 @@ public class WsQueryBuilder {
 	
 	private String addOrderByClauseForPlaneSearch(SearchCriteria criteria) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(" ORDER BY wc.appCreatedDate ");
+		builder.append(" ORDER BY conn.createdTime");
 		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
 			builder.append(" ASC ");
 		else

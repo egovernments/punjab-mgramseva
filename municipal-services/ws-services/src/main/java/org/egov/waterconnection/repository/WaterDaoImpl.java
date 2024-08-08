@@ -1,6 +1,10 @@
 package org.egov.waterconnection.repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +40,7 @@ import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnection;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
 import org.egov.waterconnection.web.models.WaterConnectionResponse;
+import org.egov.waterconnection.web.models.collection.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -50,6 +55,8 @@ import lombok.extern.slf4j.Slf4j;
 public class WaterDaoImpl implements WaterDao {
 
 	@Autowired
+	private LedgerReportRowMapper ledgerReportRowMapper;
+    @Autowired
 	private DemandNotGeneratedRowMapper demandNotGeneratedRowMapper;
 
 	@Autowired
@@ -669,17 +676,70 @@ public class WaterDaoImpl implements WaterDao {
          return inactiveConsumerReportList;
     }
 
-	public List<ConsumersDemandNotGenerated> getConsumersByPreviousMeterReading(Long previousMeterReading, String tenantId)
-	{
-		StringBuilder query=new StringBuilder(wsQueryBuilder.DEMAND_NOT_GENERATED_QUERY);
+	public List<ConsumersDemandNotGenerated> getConsumersByPreviousMeterReading(Long previousMeterReading, String tenantId) {
+		StringBuilder query = new StringBuilder(wsQueryBuilder.DEMAND_NOT_GENERATED_QUERY);
 
-		List<Object> preparedStatement=new ArrayList<>();
+		List<Object> preparedStatement = new ArrayList<>();
 		preparedStatement.add(tenantId);
 		preparedStatement.add(previousMeterReading);
 		preparedStatement.add(tenantId);
 
-		log.info("Query for consumer demand not generated "+ query +" prepared statement "+ preparedStatement);
-		List<ConsumersDemandNotGenerated> consumersDemandNotGeneratedList=jdbcTemplate.query(query.toString(),preparedStatement.toArray(),demandNotGeneratedRowMapper);
+		log.info("Query for consumer demand not generated " + query + " prepared statement " + preparedStatement);
+		List<ConsumersDemandNotGenerated> consumersDemandNotGeneratedList = jdbcTemplate.query(query.toString(), preparedStatement.toArray(), demandNotGeneratedRowMapper);
 		return consumersDemandNotGeneratedList;
+	}
+
+	public List<Map<String, Object>> getLedgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year,RequestInfoWrapper requestInfoWrapper) {
+		String[] years = year.split("-");
+		if (years.length != 2) {
+			throw new IllegalArgumentException("Invalid fiscal year format");
+		}
+		int startYear = Integer.parseInt(years[0]);
+		int endYear = Integer.parseInt(years[1]);
+
+		LocalDate startDate = LocalDate.of(startYear, 4, 1);
+		LocalDate endDate = LocalDate.of(startYear + 1, 3, 31);
+
+		Long startDateTime = LocalDateTime.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth(), 0, 0, 0)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long endDateTime = LocalDateTime.of(endDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+		StringBuilder query = new StringBuilder(wsQueryBuilder.LEDGER_REPORT_QUERY);
+
+		List<Object> preparedStatement = new ArrayList<>();
+		preparedStatement.add(consumercode);
+		preparedStatement.add(tenantId);
+		preparedStatement.add(startDateTime);
+		preparedStatement.add(endDateTime);
+
+		Integer newlimit = wsConfiguration.getDefaultLimit();
+		Integer newoffset = wsConfiguration.getDefaultOffset();
+		if (limit == null && offset == null)
+			newlimit = wsConfiguration.getMaxLimit();
+		if (limit != null && limit <= wsConfiguration.getMaxLimit())
+			newlimit = limit;
+		if (limit != null && limit >= wsConfiguration.getMaxLimit())
+			newlimit = wsConfiguration.getMaxLimit();
+
+		if (offset != null)
+			newoffset = offset;
+
+		if (newlimit > 0) {
+			query.append(" offset ?  limit ? ;");
+			preparedStatement.add(newoffset);
+			preparedStatement.add(newlimit);
+		}
+
+		log.info("Query of ledger report:" + query + "and prepared statement" + preparedStatement);
+		ledgerReportRowMapper.setTenantId(tenantId);
+		ledgerReportRowMapper.setRequestInfo(requestInfoWrapper);
+		ledgerReportRowMapper.setStartYear(startYear);
+		ledgerReportRowMapper.setEndYear(endYear);
+		ledgerReportRowMapper.setConsumerCode(consumercode);
+		List<Map<String, Object>> ledgerReportList= jdbcTemplate.query(query.toString(), preparedStatement.toArray(), ledgerReportRowMapper);
+		int fromIndex = Math.min(newoffset, ledgerReportList.size());
+		int toIndex = Math.min(fromIndex + newlimit, ledgerReportList.size());
+		return ledgerReportList.subList(fromIndex, toIndex);
+//		return ledgerReportList;
 	}
 }
