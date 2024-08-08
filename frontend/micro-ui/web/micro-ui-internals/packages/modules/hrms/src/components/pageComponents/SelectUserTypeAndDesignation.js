@@ -398,6 +398,7 @@ function Jurisdiction({
     return defaultjurisdiction;
   }
   useEffect(() => {
+
     if (responseData != null && depamentValue == "") {
       getUserTypes?.forEach((ele) => {
         if (ele.code === responseData?.Employees[0]?.assignments[0]?.department) {
@@ -444,12 +445,12 @@ function Jurisdiction({
     setjurisdictions((pre) => pre.map((item) => (item.key == jurisdiction.key ? { ...item, department: value } : item)));
     const filteredItems = getdesignationdata.filter(val => val.department.includes(value.code));
     setDesignationList(filteredItems);
+    setDesignationValue(filteredItems[0]);
   };
   const selectDesignation = (value) => {
     setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, designation: value } : item)));
+
   };
-
-
 
   return (
     <div key={jurisdiction?.keys} style={{ marginBottom: "16px" }}>
