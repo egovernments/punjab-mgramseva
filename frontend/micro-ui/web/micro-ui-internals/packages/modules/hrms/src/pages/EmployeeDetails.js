@@ -117,8 +117,14 @@ const Details = () => {
               <Row label={t("HR_MOB_NO_LABEL")} text={data?.Employees?.[0]?.user?.mobileNumber || "NA"} textStyle={{ whiteSpace: "pre" }} />
               <Row label={t("HR_GENDER_LABEL")} text={t(data?.Employees?.[0]?.user?.gender) || "NA"} />
               <Row label={t("HR_EMAIL_LABEL")} text={data?.Employees?.[0]?.user?.emailId || "NA"} />
-              <Row label={t("HR_COMMON_DEPARTMENT")} text={data?.Employees?.[0]?.assignments[0]?.department || "NA"} />
-              <Row label={t("HR_COMMON_USER_DESIGNATION")} text={data?.Employees?.[0]?.assignments[0]?.designation || "NA"} />
+              <Row label={t("HR_COMMON_DEPARTMENT")} text={
+
+                t(data?.Employees?.[0]?.assignments[0]?.department)
+                || "NA"} />
+              <Row label={t("HR_COMMON_USER_DESIGNATION")} text={
+                t(data?.Employees?.[0]?.assignments[0]?.designation)
+
+                || "NA"} />
             </StatusTable>
             {data?.Employees?.[0]?.isActive == false ? (
               <StatusTable>
