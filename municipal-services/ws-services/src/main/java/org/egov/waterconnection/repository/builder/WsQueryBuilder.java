@@ -84,6 +84,7 @@ public class WsQueryBuilder {
 			+ "eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id"
 			+ LEFT_OUTER_JOIN_STRING + "eg_ws_roadcuttinginfo roadcuttingInfo ON roadcuttingInfo.wsid = conn.id";
 
+
 	private static final String WATER_CONNNECTION_BY_DEMANNDDATE = "SELECT ((select distinct d.taxperiodto as taxperiodto from egbs_demand_v1 d inner join egbs_demanddetail_v1 dd on dd.demandid = d.id ";
 	private static final String WATER_CONNNECTION_BY_DEMANNDDATE_CLAUSE = " and  dd.taxheadcode='10101' and d.status = 'ACTIVE' and d.businessservice = 'WS' and d.consumercode = conn.connectionno order by d.taxperiodto desc limit 1))" +
 			" as taxperiodto, count(*) as count ";
@@ -772,7 +773,7 @@ public class WsQueryBuilder {
 	
 	private String addOrderByClauseForPlaneSearch(SearchCriteria criteria) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(" ORDER BY wc.appCreatedDate ");
+		builder.append(" ORDER BY conn.createdTime");
 		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
 			builder.append(" ASC ");
 		else
