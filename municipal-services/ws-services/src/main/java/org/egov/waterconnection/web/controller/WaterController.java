@@ -259,7 +259,7 @@ public class WaterController {
 	{
 		List<MonthReport> monthReportList=waterService.monthReport(startDate,endDate,tenantId,offset,limit);
 		MonthReportResponse monthReportResponse=MonthReportResponse.builder().monthReport(monthReportList).
-				tenantName(tenantId).month(startDate.concat(endDate)).
+				tenantName(tenantId).month(startDate.concat("-"+endDate)).
 				responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),true)).build();
 		return new ResponseEntity<>(monthReportResponse,HttpStatus.OK);
 	}
