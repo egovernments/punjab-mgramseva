@@ -269,8 +269,9 @@ public class DemandGenerationConsumer {
 				.of(toDate.getYear(), toDate.getMonth(), toDate.getDayOfMonth(), 23, 59, 59, 999000000)
 				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
-		
+		Long StartTimeForGetConnetion = System.currentTimeMillis();
 		List<String> connectionNos = waterCalculatorDao.getNonMeterConnectionsList(tenantId, dayStartTime, dayEndTime);
+		log.info("Time taken for the for Get Connetions : "+(System.currentTimeMillis()-StartTimeForGetConnetion)/1000+ " Secondss");
 
 		
 		
@@ -286,14 +287,14 @@ public class DemandGenerationConsumer {
 		previousToDate.set(Calendar.DAY_OF_MONTH, max);*/
 		String assessmentYear = estimationService.getAssessmentYear();
 		ArrayList<String> failedConnectionNos = new ArrayList<String>();
+		Long startTimeForMdms= System.
+				currentTimeMillis();
 		Map<String, Object> masterMap = mDataService.loadMasterData(requestInfo,
 				tenantId);
+		log.info("Time taken for the for Get Mdms Data : "+(System.currentTimeMillis()-startTimeForMdms)/1000+ " Secondss");
 
 		log.info("connectionNos" + connectionNos.size());
-		log.info("connectionNos" + connectionNos);
-		log.info("dayStartTime:"+dayStartTime);
-		log.info("dayEndTime"+dayEndTime);
-
+		long startTimeForLoop= System.currentTimeMillis();
 		for (String connectionNo : connectionNos) {
 			CalculationCriteria calculationCriteria = CalculationCriteria.builder().tenantId(tenantId)
 					.assessmentYear(assessmentYear).connectionNo(connectionNo).from(dayStartTime).to(dayEndTime).build();
@@ -331,6 +332,9 @@ public class DemandGenerationConsumer {
 			producer.push(config.getWsGenerateDemandBulktopic(),genarateDemandData);
 
 		}
+		log.info("Time taken for the for loop : "+(System.currentTimeMillis()-startTimeForLoop)/1000+ " Secondss");
+
+		Long starttimeforNotification= System.currentTimeMillis();
 		HashMap<String, String> demandMessage = util.getLocalizationMessage(requestInfo,
 				WSCalculationConstant.mGram_Consumer_NewDemand, tenantId);
 		HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
@@ -364,6 +368,7 @@ public class DemandGenerationConsumer {
 			}
 
 		});
+		log.info("Time taken for notification : "+(System.currentTimeMillis()-starttimeforNotification)/1000+ " Secondss");
 	/*	if (isSendMessage && failedConnectionNos.size() > 0) {
 			List<ActionItem> actionItems = new ArrayList<>();
 			String actionLink = config.getBulkDemandFailedLink();

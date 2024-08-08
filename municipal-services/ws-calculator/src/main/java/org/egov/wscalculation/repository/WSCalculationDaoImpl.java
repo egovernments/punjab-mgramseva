@@ -127,6 +127,8 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 	public List<String> getNonMeterConnectionsList(String tenantId, Long dayStartTime, Long dayEndTime) {
 		List<Object> preparedStatement = new ArrayList<>();
 		String query = queryBuilder.getNonMeteredConnectionsList(tenantId, dayStartTime, dayEndTime, preparedStatement);
+		log.info("Query: "+query );
+		log.info("Prepare Statement : "+preparedStatement.toArray() );
 		return jdbcTemplate.query(query, preparedStatement.toArray(), demandSchedulerRowMapper);
 	}
 
