@@ -76,7 +76,7 @@ public class FuzzySearchQueryBuilder {
             }
 
             ArrayNode tenantIdArray = mapper.createArrayNode();
-            tenantIdArray.add("pb");
+            tenantIdArray.add(criteria.getTenantId());
             ObjectNode tenantIdFilter = mapper.createObjectNode();
             tenantIdFilter.putPOJO("terms", mapper.createObjectNode().putPOJO("Data.tenantId.keyword", tenantIdArray));
             fuzzyClauses.add(tenantIdFilter);
@@ -89,7 +89,7 @@ public class FuzzySearchQueryBuilder {
                     roleArray.add(roleNode);
                 }
                 ObjectNode rolesBoolNode = mapper.createObjectNode();
-                rolesBoolNode.putPOJO("bool", mapper.createObjectNode().putPOJO("must", roleArray));
+                rolesBoolNode.putPOJO("bool", mapper.createObjectNode().putPOJO("should", roleArray));
                 fuzzyClauses.add(rolesBoolNode);
 
                 ObjectNode boolQuery = mapper.createObjectNode();
