@@ -76,7 +76,7 @@ public class FuzzySearchQueryBuilder {
             }
 
             ArrayNode tenantIdArray = mapper.createArrayNode();
-            tenantIdArray.add("pb");
+            tenantIdArray.add(criteria.getTenantId());
             ObjectNode tenantIdFilter = mapper.createObjectNode();
             tenantIdFilter.putPOJO("terms", mapper.createObjectNode().putPOJO("Data.tenantId.keyword", tenantIdArray));
             fuzzyClauses.add(tenantIdFilter);
