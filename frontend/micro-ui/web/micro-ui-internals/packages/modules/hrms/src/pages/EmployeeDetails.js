@@ -42,6 +42,8 @@ const Details = () => {
       }
     });
   });
+  // console.log(data, "data");
+
   useEffect(() => {
     setMutationHappened(false);
     clearSuccessData();
@@ -63,7 +65,7 @@ const Details = () => {
     window.open(documentLink, "_blank");
   };
 
-  const submitAction = (data) => {};
+  const submitAction = (data) => { };
 
   useEffect(() => {
     switch (selectedAction) {
@@ -115,6 +117,14 @@ const Details = () => {
               <Row label={t("HR_MOB_NO_LABEL")} text={data?.Employees?.[0]?.user?.mobileNumber || "NA"} textStyle={{ whiteSpace: "pre" }} />
               <Row label={t("HR_GENDER_LABEL")} text={t(data?.Employees?.[0]?.user?.gender) || "NA"} />
               <Row label={t("HR_EMAIL_LABEL")} text={data?.Employees?.[0]?.user?.emailId || "NA"} />
+              <Row label={t("HR_COMMON_DEPARTMENT")} text={
+
+                t(data?.Employees?.[0]?.assignments[0]?.department)
+                || "NA"} />
+              <Row label={t("HR_COMMON_USER_DESIGNATION")} text={
+                t(data?.Employees?.[0]?.assignments[0]?.designation)
+
+                || "NA"} />
             </StatusTable>
             {data?.Employees?.[0]?.isActive == false ? (
               <StatusTable>
@@ -129,8 +139,8 @@ const Details = () => {
                   text={
                     t(
                       "EGOV_HRMS_DEACTIVATIONREASON_" +
-                        data?.Employees?.[0]?.deactivationDetails?.sort((a, b) => new Date(a.effectiveFrom) - new Date(b.effectiveFrom))[0]
-                          .reasonForDeactivation
+                      data?.Employees?.[0]?.deactivationDetails?.sort((a, b) => new Date(a.effectiveFrom) - new Date(b.effectiveFrom))[0]
+                        .reasonForDeactivation
                     ) || "NA"
                   }
                 />
@@ -173,41 +183,41 @@ const Details = () => {
 
             {data?.Employees?.[0]?.jurisdictions?.length > 0
               ? data?.Employees?.[0]?.jurisdictions?.map((element, index) => {
-                  return (
-                    <StatusTable
-                      key={index}
-                      style={{
-                        maxWidth: "640px",
-                        border: "1px solid rgb(214, 213, 212)",
-                        inset: "0px",
-                        width: "auto",
-                        padding: ".2rem",
-                        marginBottom: "2rem",
-                      }}
-                    >
-                      <div style={{ paddingBottom: "2rem" }}>
-                        {" "}
-                        {t("HR_JURISDICTION")} {index + 1}
-                      </div>
-                      {STATE_ADMIN ? (
-                        <Row
-                          label={t("HR_DIVISIONS_LABEL")}
-                          text={t(Digit.Utils.locale.convertToLocale(element?.division, "EGOV_LOCATION_BOUNDARYTYPE"))}
-                          textStyle={{ whiteSpace: "pre" }}
-                        />
-                      ) : null}
-                      <Row label={t("HR_BOUNDARY_LABEL")} text={t(element?.boundary)} />
-                      {!STATE_ADMIN ? (
-                        <Row
-                          label={t("HR_ROLE_LABEL")}
-                          text={data?.Employees?.[0]?.user.roles
-                            .filter((ele) => ele.tenantId == element?.boundary)
-                            ?.map((ele) => t(`ACCESSCONTROL_ROLES_ROLES_` + ele?.code))}
-                        />
-                      ) : null}
-                    </StatusTable>
-                  );
-                })
+                return (
+                  <StatusTable
+                    key={index}
+                    style={{
+                      maxWidth: "640px",
+                      border: "1px solid rgb(214, 213, 212)",
+                      inset: "0px",
+                      width: "auto",
+                      padding: ".2rem",
+                      marginBottom: "2rem",
+                    }}
+                  >
+                    <div style={{ paddingBottom: "2rem" }}>
+                      {" "}
+                      {t("HR_JURISDICTION")} {index + 1}
+                    </div>
+                    {STATE_ADMIN ? (
+                      <Row
+                        label={t("HR_DIVISIONS_LABEL")}
+                        text={t(Digit.Utils.locale.convertToLocale(element?.division, "EGOV_LOCATION_BOUNDARYTYPE"))}
+                        textStyle={{ whiteSpace: "pre" }}
+                      />
+                    ) : null}
+                    <Row label={t("HR_BOUNDARY_LABEL")} text={t(element?.boundary)} />
+                    {!STATE_ADMIN ? (
+                      <Row
+                        label={t("HR_ROLE_LABEL")}
+                        text={data?.Employees?.[0]?.user.roles
+                          .filter((ele) => ele.tenantId == element?.boundary)
+                          ?.map((ele) => t(`ACCESSCONTROL_ROLES_ROLES_` + ele?.code))}
+                      />
+                    ) : null}
+                  </StatusTable>
+                );
+              })
               : null}
           </Card>
         </div>

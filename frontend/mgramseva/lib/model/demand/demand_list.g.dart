@@ -142,6 +142,8 @@ AggragateDemandDetails _$AggragateDemandDetailsFromJson(
       ..currentMonthPenalty = (json['currentMonthPenalty'] as num?)?.toDouble()
       ..currentmonthTotalDue =
           (json['currentmonthTotalDue'] as num?)?.toDouble()
+      ..currentmonthRoundOff =
+          (json['currentmonthRoundOff'] as num?)?.toDouble()
       ..totalAreas = (json['totalAreas'] as num?)?.toDouble()
       ..totalAreasWithPenalty =
           (json['totalAreasWithPenalty'] as num?)?.toDouble()
@@ -174,6 +176,7 @@ Map<String, dynamic> _$AggragateDemandDetailsToJson(
       'currentmonthBill': instance.currentmonthBill,
       'currentMonthPenalty': instance.currentMonthPenalty,
       'currentmonthTotalDue': instance.currentmonthTotalDue,
+      'currentmonthRoundOff': instance.currentmonthRoundOff,
       'totalAreas': instance.totalAreas,
       'totalAreasWithPenalty': instance.totalAreasWithPenalty,
       'netdue': instance.netdue,

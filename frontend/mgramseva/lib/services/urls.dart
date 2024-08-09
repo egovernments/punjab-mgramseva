@@ -91,6 +91,7 @@ class Url {
       'adapter-master-data/project/v1/_search';
 
   ///Reports
+  static const String LEDGER_REPORT = 'ws-services/wc/ledger-report';
   static const String BILL_REPORT = 'ws-services/wc/_billReport';
   static const String COLLECTION_REPORT = 'ws-services/wc/_collectionReport';
   static const String INACTIVE_CONSUMER_REPORT =

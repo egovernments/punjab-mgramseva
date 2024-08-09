@@ -53,6 +53,7 @@ const EditForm = ({ tenantId, data }) => {
     }
   }, [mobileNumber]);
 
+
   let defaultValues = {
     tenantId: tenantId,
     employeeStatus: "EMPLOYED",
@@ -70,6 +71,11 @@ const EditForm = ({ tenantId, data }) => {
         name: `COMMON_GENDER_${data?.user?.gender}`,
       },
     },
+    SelectUserTypeAndDesignation: {
+      department: data?.assignments[0]?.department,
+      designation: data?.assignments[0]?.designation
+    },
+
 
     SelectDateofBirthEmployment: { dob: convertEpochToDate(data?.user?.dob) },
     Jurisdictions: data?.jurisdictions?.map((ele, index) => {
@@ -132,6 +138,7 @@ const EditForm = ({ tenantId, data }) => {
   }
 
   const onFormValueChange = (setValue = true, formData) => {
+    let isValid = false;
     if (formData?.SelectEmployeePhoneNumber?.mobileNumber) {
       setMobileNumber(formData?.SelectEmployeePhoneNumber?.mobileNumber);
     } else {
@@ -146,24 +153,32 @@ const EditForm = ({ tenantId, data }) => {
       } else {
         if (!STATE_ADMIN) {
           key?.roles?.length > 0 && setcheck(true);
+          if (formData?.SelectUserTypeAndDesignation[0] && formData?.SelectUserTypeAndDesignation[0]?.department != undefined && formData?.SelectUserTypeAndDesignation[0]?.designation != undefined) {
+            isValid = true;
+          }
+          else {
+            isValid = false;
+          }
         } else if (STATE_ADMIN) {
           setcheck(true);
+          isValid = false;
         }
       }
     }
-    
+
     if (
       formData?.SelectEmployeeGender?.gender.code &&
-      formData?.SelectEmployeeName?.employeeName &&
-      formData?.SelectEmployeePhoneNumber?.mobileNumber &&
-      STATE_ADMIN ? 
-      (formData?.Jurisdictions?.length && !formData?.Jurisdictions.some(juris => juris?.division == undefined  || juris?.divisionBoundary?.length === 0 ) )
-      :formData?.Jurisdictions?.length && formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.roles?.length === 0 )      
-      &&       
-      checkfield &&
-      phonecheck &&
-      checkMailNameNum(formData)&&
-      hasUniqueTenantIds(formData?.Jurisdictions)
+        formData?.SelectEmployeeName?.employeeName &&
+        formData?.SelectEmployeePhoneNumber?.mobileNumber &&
+        STATE_ADMIN ?
+        (formData?.Jurisdictions?.length && !formData?.Jurisdictions.some(juris => juris?.division == undefined || juris?.divisionBoundary?.length === 0))
+        : formData?.Jurisdictions?.length && formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.roles?.length === 0)
+        &&
+        isValid &&
+        checkfield &&
+        phonecheck &&
+        checkMailNameNum(formData) &&
+        hasUniqueTenantIds(formData?.Jurisdictions)
     ) {
       setSubmitValve(true);
     } else {
@@ -286,7 +301,16 @@ const EditForm = ({ tenantId, data }) => {
     }
     let requestdata = Object.assign({}, data);
     roles = [].concat.apply([], roles);
-    requestdata.assignments = input?.Assignments ? input?.Assignments : data?.assignments;
+    // console.log(input?.SelectUserTypeAndDesignation, "input?.Assignments");
+    // console.log(data?.assignments, "data?.assignments");
+    // console.log(input, "INPUT");
+
+    let dataAssignments = data?.assignments;
+    dataAssignments[0].department = input.SelectUserTypeAndDesignation[0]?.department?.code;
+    dataAssignments[0].designation = input.SelectUserTypeAndDesignation[0]?.designation?.code;
+
+
+    requestdata.assignments = input?.Assignments ? input?.Assignments : dataAssignments;
     requestdata.dateOfAppointment = Date.parse(input?.SelectDateofEmployment?.dateOfAppointment);
     requestdata.code = input?.SelectEmployeeId?.code ? input?.SelectEmployeeId?.code : data?.code;
     requestdata.jurisdictions = jurisdictions;

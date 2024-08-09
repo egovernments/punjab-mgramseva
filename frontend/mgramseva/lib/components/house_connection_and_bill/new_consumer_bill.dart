@@ -243,10 +243,15 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                           houseHoldProvider.isfirstdemand)
                                         getLabelText(
                                             i18.common.CORE_ADVANCE_ADJUSTED,
+
                                             double.parse(CommonProvider
                                                         .getAdvanceAdjustedAmount(
                                                             widget
-                                                                .demandList)) <=
+                                                                .demandList)) == 0 ? "₹ ${houseHoldProvider.aggDemandItems?.remainingAdvance}" :
+                                            double.parse(CommonProvider
+                                                        .getAdvanceAdjustedAmount(
+                                                            widget
+                                                                .demandList)) <
                                                     0
                                                 ? "₹ ${double.parse(CommonProvider.getAdvanceAdjustedAmount(widget.demandList))}"
                                                 : '- ₹${double.parse(CommonProvider.getAdvanceAdjustedAmount(widget.demandList))}',
@@ -462,6 +467,8 @@ class NewConsumerBillState extends State<NewConsumerBill> {
           .CreatePDF(
               houseHoldProvider.createPDFBody, houseHoldProvider.createPDFPrams)
           .then((value) async {
+            
+
         commonProvider.getFileFromPDFBillService(
           {
             "BillAndDemand": {
