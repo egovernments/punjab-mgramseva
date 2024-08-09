@@ -59,22 +59,22 @@ class LeadgerDemand {
   final String? month;
   final int? demandGenerationDate;
   final String? code;
-  final double? monthlyCharges;
-  final double? penalty;
-  final double? totalForCurrentMonth;
-  final double? previousMonthBalance;
-  final double? totalDues;
+  final num? monthlyCharges;
+  final num? penalty;
+  final num? totalForCurrentMonth;
+  final num? previousMonthBalance;
+  final num? totalDues;
   final int? dueDateOfPayment;
   final int? penaltyAppliedOnDate;
 
   LeadgerDemand({
-    this.consumerName="",
+    this.consumerName = "",
     this.connectionNo,
-    this.oldConnectionNo="",
-    this.userId="",
+    this.oldConnectionNo = "",
+    this.userId = "",
     this.month,
     this.demandGenerationDate,
-    this.code="",
+    this.code = "",
     this.monthlyCharges,
     this.penalty,
     this.totalForCurrentMonth,
@@ -93,11 +93,11 @@ class LeadgerDemand {
       month: json['month'] as String?,
       demandGenerationDate: json['demandGenerationDate'] as int?,
       code: json['code'] as String?,
-      monthlyCharges: json['monthlyCharges'] as double?,
-      penalty: json['penalty'] as double?,
-      totalForCurrentMonth: json['totalForCurrentMonth'] as double?,
-      previousMonthBalance: json['previousMonthBalance'] as double?,
-      totalDues: json['totalDues'] as double?,
+      monthlyCharges: json['monthlyCharges'] as num?,
+      penalty: json['penalty'] as num?,
+      totalForCurrentMonth: json['totalForCurrentMonth'] as num?,
+      previousMonthBalance: json['previousMonthBalance'] as num?,
+      totalDues: json['totalDues'] as num?,
       dueDateOfPayment: json['dueDateOfPayment'] as int?,
       penaltyAppliedOnDate: json['penaltyAppliedOnDate'] as int?,
     );
@@ -107,8 +107,8 @@ class LeadgerDemand {
 class LeadgerPayment {
   final dynamic paymentCollectionDate;
   final String? receiptNo;
-  final double? amountPaid;
-  final double? balanceLeft;
+  final num? amountPaid;
+  final num? balanceLeft;
 
   LeadgerPayment({
     this.paymentCollectionDate,
@@ -121,8 +121,8 @@ class LeadgerPayment {
     return LeadgerPayment(
       paymentCollectionDate: json['paymentCollectionDate'],
       receiptNo: json['receiptNo'] as String?,
-      amountPaid: json['amountPaid'] as double?,
-      balanceLeft: json['balanceLeft'] as double?,
+      amountPaid: json['amountPaid'] as num?,
+      balanceLeft: json['balanceLeft'] as num?,
     );
   }
 }
