@@ -110,6 +110,7 @@ public class FuzzySearchQueryBuilder {
             }
 
             finalQuery = mapper.writeValueAsString(node);
+            log.info("Final Query FOr Fuzzy Search" +finalQuery)
 
         }
         catch (Exception e){
