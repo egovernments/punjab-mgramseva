@@ -193,6 +193,10 @@ class ReportsProvider with ChangeNotifier {
     }
   }
 
+  String formatPaymentReceipts(List<LeadgerPayment>? payments) {
+    return payments?.map((payment) => payment.receiptNo)?.join(', ') ?? '';
+  }
+
   TableDataRow getLedgerRow(LedgerData data, {bool isExcel = false}) {
     return TableDataRow([
       TableData(
@@ -207,10 +211,11 @@ class ReportsProvider with ChangeNotifier {
           '${DateFormats.leadgerTimeStampToDate(data.months?.values.first.demand?.dueDateOfPayment)}'),
       TableData(
           '${DateFormats.leadgerTimeStampToDate(data.months?.values.first.payment?.first.paymentCollectionDate)}'),
-      TableData('${data.months?.values.first.payment?.first.receiptNo}'),
-      TableData('₹ ${data.months?.values.first.payment?.first.amountPaid}'),
+      // TableData('${data.months?.values.first.payment?.first.receiptNo}'),
+      TableData('${formatPaymentReceipts(data.months?.values?.first.payment)}'),
+      TableData('₹ ${data.months?.values.first.totalPaymentInMonth}'),
       TableData(
-          '₹ ${(double.parse("${data.months?.values.first.demand?.totalDues}") - double.parse("${data.months?.values.first.payment?.first.amountPaid}"))}'),
+          '₹ ${(double.parse("${data.months?.values.first.demand?.totalDues}") - double.parse("${data.months?.values.first.totalPaymentInMonth}"))}'),
       TableData(
           '${DateFormats.leadgerTimeStampToDate(data.months?.values.first.demand?.penaltyAppliedOnDate)}'),
       TableData('₹  ${data.months?.values.first.demand?.penalty}'),
