@@ -89,7 +89,6 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             ledgerReports.put(monthAndYear, ledgerReport);
             currentMonth = currentMonth.plusMonths(1);
         }
-
         while (resultSet.next()) {
             Long dateLong = resultSet.getLong("enddate");
             LocalDate date = Instant.ofEpochMilli(dateLong).atZone(ZoneId.systemDefault()).toLocalDate();
@@ -117,10 +116,9 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             {
                 arrers_Penalty=taxamount;
             }
-            BigDecimal ws_round_off=BigDecimal.ZERO;
             if(code.equalsIgnoreCase("WS_Round_Off"))
             {
-                ws_round_off=taxamount;
+                ledgerReport.getDemand().setTaxamount(ledgerReport.getDemand().getTaxamount().add(taxamount));
             }
             if (code.equalsIgnoreCase("WS_TIME_PENALTY")) {
                 ledgerReport.getDemand().setPenalty(taxamount != null ? taxamount : BigDecimal.ZERO);
@@ -129,7 +127,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             } else if (code.equalsIgnoreCase("10101")) {
                 ledgerReport.getDemand().setMonthAndYear(monthAndYear);
                 ledgerReport.getDemand().setDemandGenerationDate(demandGenerationDateLong);
-                ledgerReport.getDemand().setTaxamount(taxamount.add(ws_round_off));
+                ledgerReport.getDemand().setTaxamount(ledgerReport.getDemand().getTaxamount().add(taxamount));
                 ledgerReport.getDemand().setTotalForCurrentMonth(ledgerReport.getDemand().getTaxamount().add(ledgerReport.getDemand().getPenalty() != null ? ledgerReport.getDemand().getPenalty() : BigDecimal.ZERO));
                 long dueDateMillis = demandGenerationDateLocal.plus(10, ChronoUnit.DAYS).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 long penaltyAppliedDateMillis = demandGenerationDateLocal.plus(11, ChronoUnit.DAYS).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
