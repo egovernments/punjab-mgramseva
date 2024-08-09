@@ -85,6 +85,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             BigDecimal taxAmountResult = getMonthlyTaxAmount(epochTime, consumerCode);
             BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(epochTime, consumerCode);
             ledgerReport.getDemand().setArrears(taxAmountResult.subtract(totalAmountPaidResult));
+            log.info("Arrers are "+ledgerReport.getDemand().getArrears()+" and monthandYear"+ ledgerReport.getDemand().getMonthAndYear());
             ledgerReports.put(monthAndYear, ledgerReport);
             currentMonth = currentMonth.plusMonths(1);
         }
@@ -115,7 +116,6 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 ledgerReport.getDemand().setPenalty(taxamount != null ? taxamount : BigDecimal.ZERO);
                 BigDecimal amount = ledgerReport.getDemand().getTaxamount() != null ? ledgerReport.getDemand().getTaxamount() : BigDecimal.ZERO;
                 ledgerReport.getDemand().setTotalForCurrentMonth((taxamount != null ? taxamount : BigDecimal.ZERO).add(amount));
-                ledgerReport.getDemand().setTotal_due_amount(ledgerReport.getDemand().getTotalForCurrentMonth().add(ledgerReport.getDemand().getArrears() != null ? ledgerReport.getDemand().getArrears() : BigDecimal.ZERO));
             } else if (code.equals("10101")) {
                 ledgerReport.getDemand().setMonthAndYear(monthAndYear);
                 ledgerReport.getDemand().setDemandGenerationDate(demandGenerationDateLong);
@@ -125,8 +125,9 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 long penaltyAppliedDateMillis = demandGenerationDateLocal.plus(11, ChronoUnit.DAYS).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 ledgerReport.getDemand().setDueDate(dueDateMillis);
                 ledgerReport.getDemand().setPenaltyAppliedDate(penaltyAppliedDateMillis);
-                ledgerReport.getDemand().setTotal_due_amount(ledgerReport.getDemand().getTotalForCurrentMonth().add(ledgerReport.getDemand().getArrears()));
+//                ledgerReport.getDemand().setTotal_due_amount(ledgerReport.getDemand().getTotalForCurrentMonth().add(ledgerReport.getDemand().getArrears()));
             }
+            ledgerReport.getDemand().setTotal_due_amount(ledgerReport.getDemand().getTotalForCurrentMonth().add(ledgerReport.getDemand().getArrears() != null ? ledgerReport.getDemand().getArrears() : BigDecimal.ZERO));
             ledgerReport.getDemand().setConnectionNo(resultSet.getString("connectionno"));
             ledgerReport.getDemand().setOldConnectionNo(resultSet.getString("oldconnectionno"));
             ledgerReport.getDemand().setUserId(resultSet.getString("uuid"));
