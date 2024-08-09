@@ -38,8 +38,14 @@ class LedgerData {
 class MonthData {
   final LeadgerDemand? demand;
   final List<LeadgerPayment>? payment;
+  final num? totalPaymentInMonth;
+  final num? totalBalanceLeftInMonth;
 
-  MonthData({this.demand, this.payment});
+  MonthData(
+      {this.demand,
+      this.payment,
+      this.totalPaymentInMonth,
+      this.totalBalanceLeftInMonth});
 
   factory MonthData.fromJson(Map<String, dynamic> json) {
     return MonthData(
@@ -47,6 +53,8 @@ class MonthData {
       payment: (json['payment'] as List<dynamic>?)
           ?.map((e) => LeadgerPayment.fromJson(e))
           .toList(),
+      totalPaymentInMonth: json['totalPaymentInMonth'] as num?,
+      totalBalanceLeftInMonth: json['totalBalanceLeftInMonth'] as num?,
     );
   }
 }
