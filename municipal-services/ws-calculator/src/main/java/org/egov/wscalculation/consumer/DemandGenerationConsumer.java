@@ -275,7 +275,6 @@ public class DemandGenerationConsumer {
 
 		Long StartTimeForGetConnetion = System.currentTimeMillis();
 		List<String> connectionNos = waterCalculatorDao.getNonMeterConnectionsList(tenantId, dayStartTime, dayEndTime);
-		log.info("Time taken for the for Get Connetions : "+(System.currentTimeMillis()-StartTimeForGetConnetion)/1000+ " Secondss");
 
 		
 		
@@ -295,7 +294,6 @@ public class DemandGenerationConsumer {
 				currentTimeMillis();
 		Map<String, Object> masterMap = mDataService.loadMasterData(requestInfo,
 				tenantId);
-		log.info("Time taken for the for Get Mdms Data : "+(System.currentTimeMillis()-startTimeForMdms)/1000+ " Secondss");
 
 		log.info("connectionNos" + connectionNos.size());
 		long startTimeForLoop= System.currentTimeMillis();
@@ -325,8 +323,6 @@ public class DemandGenerationConsumer {
 			genarateDemandData.put("masterMap",masterMap);
 			genarateDemandData.put("isSendMessage",isSendMessage);
 			genarateDemandData.put("tenantId",tenantId);
-			log.info("Time taken before  push to kafka : "+(System.currentTimeMillis()-timeBeforePushToKafka)+ " in ms");
-
 			/*
 			 * List<Demand> demands = demandService.searchDemand(tenantId, consumerCodes,
 			 * previousFromDate.getTimeInMillis(), previousToDate.getTimeInMillis(),
@@ -337,7 +333,6 @@ public class DemandGenerationConsumer {
 			//log.info("sending generate demand for connection no :"+connectionNo);
 			long timetakenToPush= System.currentTimeMillis();
 			kafkaTemplate.send(config.getWsGenerateDemandBulktopic(),genarateDemandData);
-			log.info("Time taken for the for push to kafka : "+(System.currentTimeMillis()-timetakenToPush)+ " in ms");
 
 		}
 		log.info("Time taken for the for loop : "+(System.currentTimeMillis()-startTimeForLoop)/1000+ " Secondss");
