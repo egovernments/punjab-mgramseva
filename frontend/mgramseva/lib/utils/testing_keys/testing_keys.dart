@@ -135,6 +135,7 @@ class HouseholdKeys {
 class BillReportKeys {
   const BillReportKeys();
   Key get BILL_REPORT_VIEW_BUTTON => Key("bill_report_view_button");
+  Key get LEDGER_REPORT_VIEW_BUTTON => Key("bill_report_view_button");
   Key get BILL_REPORT_DOWNLOAD_BUTTON => Key("bill_report_download_button");
   Key get COLLECTION_REPORT_VIEW_BUTTON => Key("collection_report_view_button");
   Key get INACTIVE_CONSUMER_REPORT_VIEW_BUTTON =>

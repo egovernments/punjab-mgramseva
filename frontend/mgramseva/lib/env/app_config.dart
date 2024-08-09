@@ -22,6 +22,7 @@ void setEnvironment(Environment env) {
   }
 }
 
+
 dynamic get apiBaseUrl {
   return _config[_baseUrl];
 }

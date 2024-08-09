@@ -1,9 +1,9 @@
 import React from 'react'
 import { useTranslation } from "react-i18next";
-import { Table,Loader,Card } from "@egovernments/digit-ui-react-components";
+import { Table, Loader, Card } from "@egovernments/digit-ui-react-components";
 import { Link } from "react-router-dom";
 
-const SearchUserResults = ({isLoading,data,...props}) => {
+const SearchUserResults = ({ isLoading, data, ...props }) => {
   const { t } = useTranslation();
   const GetCell = (value) => <span className="cell-text">{t(value)}</span>;
   const GetSlaCell = (value) => {
@@ -21,6 +21,8 @@ const SearchUserResults = ({isLoading,data,...props}) => {
         disableSortBy: false,
         accessor: "code",
         Cell: ({ row }) => {
+          console.log(row, "ROW");
+
           return (
             <span className="link">
               <Link to={`/${window?.contextPath}/employee/hrms/details/${row.original.tenantId}/${row.original.code}`}>{row.original.code}</Link>
@@ -35,6 +37,22 @@ const SearchUserResults = ({isLoading,data,...props}) => {
         accessor: "name",
         Cell: ({ row }) => {
           return GetCell(`${row.original?.user?.name}`);
+        },
+      },
+      {
+        Header: t("HR_USER_DEPARTMENT"),
+        disableSortBy: false,
+        accessor: "department",
+        Cell: ({ row }) => {
+          return GetCell(`${row.original?.assignments[0]?.department}`);
+        },
+      },
+      {
+        Header: t("HR_USER_DESIGNATION"),
+        disableSortBy: false,
+        accessor: "designation",
+        Cell: ({ row }) => {
+          return GetCell(`${row.original?.assignments[0]?.designation}`);
         },
       },
       {
@@ -53,6 +71,7 @@ const SearchUserResults = ({isLoading,data,...props}) => {
           return GetSlaCell(`${row.original?.isActive ? "ACTIVE" : "INACTIVE"}`);
         },
       },
+
       {
         Header: t("HR_SU_TENANT"),
         disableSortBy: false,
@@ -84,39 +103,39 @@ const SearchUserResults = ({isLoading,data,...props}) => {
   } else if (data?.length > 0) {
     result = (
       <Table
-      t={t}
-      data={data}
-      columns={columns}
-      getCellProps={(cellInfo) => {
-        return {
-          style: {
-            maxWidth: cellInfo.column.Header == t("HR_EMP_ID_LABEL") ? "150px" : "",
-            padding: "20px 18px",
-            fontSize: "16px",
-            minWidth: "150px",
-          },
-        };
-      }}
-      // onNextPage={onNextPage}
-      // onPrevPage={onPrevPage}
-      // currentPage={currentPage}
-      totalRecords={data ? data.length : 0}
-      // onPageSizeChange={onPageSizeChange}
-      // pageSizeLimit={pageSizeLimit}
-      // onSort={onSort}
-      // sortParams={sortParams}
-      // disableSort={disableSort}
-      autoSort={true}
-      manualPagination={false}
+        t={t}
+        data={data}
+        columns={columns}
+        getCellProps={(cellInfo) => {
+          return {
+            style: {
+              maxWidth: cellInfo.column.Header == t("HR_EMP_ID_LABEL") ? "150px" : "",
+              padding: "20px 18px",
+              fontSize: "16px",
+              minWidth: "150px",
+            },
+          };
+        }}
+        // onNextPage={onNextPage}
+        // onPrevPage={onPrevPage}
+        // currentPage={currentPage}
+        totalRecords={data ? data.length : 0}
+        // onPageSizeChange={onPageSizeChange}
+        // pageSizeLimit={pageSizeLimit}
+        // onSort={onSort}
+        // sortParams={sortParams}
+        // disableSort={disableSort}
+        autoSort={true}
+        manualPagination={false}
       />
     );
   }
 
-    return (
-      <div>
-        {result}
-      </div>
-    )
+  return (
+    <div>
+      {result}
+    </div>
+  )
 }
 
 export default SearchUserResults

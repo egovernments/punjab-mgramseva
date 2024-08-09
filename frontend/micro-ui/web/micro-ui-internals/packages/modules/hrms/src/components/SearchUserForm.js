@@ -92,7 +92,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     { level: "code", value: 7, optionsKey: "name", isMandatory: false },
   ]);
   const [tree, setTree] = useState(null);
-  const [rolesOptions,setRolesOptions] = useState(null)
+  const [rolesOptions, setRolesOptions] = useState(null)
   // const [zones,setZones] = useState([])
   // const [circles,setCircles] = useState([])
   // const [divisions,setDivisions] = useState([])
@@ -150,7 +150,11 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
         const filteredResult = filterKeys(result, requiredKeys);
         const resultInTree = buildTree(filteredResult, hierarchy);
         const excludeCodes = ["HRMS_ADMIN", "LOC_ADMIN", "MDMS_ADMIN", "EMPLOYEE", "SYSTEM"];
-        setRolesOptions(data?.MdmsRes?.["ws-services-masters"]?.["WSServiceRoles"]?.filter(row => !excludeCodes.includes(row?.code)))
+        setRolesOptions(data?.MdmsRes?.["ws-services-masters"]?.["WSServiceRoles"]?.filter(row => !excludeCodes.includes(row?.code)
+          &&
+          (row?.name === "Secretary" || row?.name === "Sarpanch" || row?.name === "Revenue Collector" || row?.name === "DIVISION ADMIN")
+        ))
+
         //updating to state roles as requested
         // setRolesOptions([
         //   // {
@@ -178,7 +182,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
         //     name: "MDMS Admin",
         //     description: "Mdms admin",
         //   },
-          
+
         // ])
         setTree(resultInTree);
         return result;
@@ -211,7 +215,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
       "sectionCode": "",
       "code": "",
       "roles": []
-  },
+    },
   });
 
   const formData = watch();
@@ -225,7 +229,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
       "sectionCode": "",
       "code": "",
       "roles": []
-  });
+    });
     setUniqueRoles(null);
     setUniqueTenants(null);
 
@@ -260,7 +264,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
         return; // Exit the loop early
       }
     });
-    
+
     if (areMandatoryFieldsNotFilled) {
       setShowToast({ warning: true, label: t("ES_COMMON_MIN_SEARCH_CRITERIA_MSG") });
       setTimeout(closeToast, 5000);
@@ -268,7 +272,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     }
 
     //checking roles
-    if(data?.roles?.length === 0 || !data?.roles){
+    if (data?.roles?.length === 0 || !data?.roles) {
       setShowToast({ warning: true, label: t("ES_COMMON_MIN_SEARCH_CRITERIA_MSG") });
       setTimeout(closeToast, 5000);
       return;
@@ -298,7 +302,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     //this is the list of tenants under the current subtree
     const listOfUniqueTenants = getUniqueLeafCodes(currentLevel);
     setUniqueTenants(() => listOfUniqueTenants);
-    setUniqueRoles(() => data?.roles?.filter(row=>row.code)?.map(role=> role.code));
+    setUniqueRoles(() => data?.roles?.filter(row => row.code)?.map(role => role.code));
   };
 
   const optionsForHierarchy = (level, value) => {
@@ -326,9 +330,8 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
   const renderHierarchyFields = useMemo(() => {
     return hierarchy.map(({ level, optionsKey, isMandatory, ...rest }, idx) => (
       <LabelFieldPair>
-        <CardLabel style={{ marginBottom: "0.4rem" }}>{`${t(Digit.Utils.locale.getTransformedLocale(`HR_SU_${level}`))} ${
-          isMandatory ? "*" : ""
-        }`}</CardLabel>
+        <CardLabel style={{ marginBottom: "0.4rem" }}>{`${t(Digit.Utils.locale.getTransformedLocale(`HR_SU_${level}`))} ${isMandatory ? "*" : ""
+          }`}</CardLabel>
         <Controller
           render={(props) => (
             <Dropdown
@@ -395,12 +398,12 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
                         }}
                         selected={props?.value || []}
                         defaultLabel={t("HR_SU_SELECT_ROLES")}
-                        defaultUnit={ t("COMMON_ROLES_SELECTED")}
-                        // showSelectAll={true}
+                        defaultUnit={t("COMMON_ROLES_SELECTED")}
+                        showSelectAll={true}
                         t={t}
-                        // config={config}
-                        // disable={false}
-                        // optionsDisable={config?.optionsDisable}
+                      // config={config}
+                      // disable={false}
+                      // optionsDisable={config?.optionsDisable}
                       />
                     </div>
                   )
