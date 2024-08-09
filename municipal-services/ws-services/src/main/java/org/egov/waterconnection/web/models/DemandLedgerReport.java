@@ -56,12 +56,4 @@ public class DemandLedgerReport {
     @JsonProperty("penaltyAppliedOnDate")
     private Long penaltyAppliedDate=0L;
 
-//    public DemandLedgerReport(String monthAndYear) {
-//        this.monthAndYear = monthAndYear;
-//        this.taxamount = BigDecimal.ZERO;
-//        this.penalty = BigDecimal.ZERO;
-//        this.totalForCurrentMonth = BigDecimal.ZERO;
-//        this.arrears = BigDecimal.ZERO;
-//        this.total_due_amount = BigDecimal.ZERO;
-//    }
 }
