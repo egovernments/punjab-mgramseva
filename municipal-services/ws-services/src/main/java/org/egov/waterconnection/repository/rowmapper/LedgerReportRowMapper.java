@@ -112,14 +112,24 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 //                ledgerReport.getDemand().setArrears(taxamount != null ? taxamount : BigDecimal.ZERO);
 //                ledgerReport.getDemand().setMonthAndYear(monthAndYear);
 //            } else
-            if (code.equals("WS_TIME_PENALTY") || code.equals("10201")) {
+            BigDecimal arrers_Penalty=BigDecimal.ZERO;
+            if(code.equalsIgnoreCase("10201"))
+            {
+                arrers_Penalty=taxamount;
+            }
+            BigDecimal ws_round_off=BigDecimal.ZERO;
+            if(code.equalsIgnoreCase("WS_Round_Off"))
+            {
+                ws_round_off=taxamount;
+            }
+            if (code.equalsIgnoreCase("WS_TIME_PENALTY")) {
                 ledgerReport.getDemand().setPenalty(taxamount != null ? taxamount : BigDecimal.ZERO);
                 BigDecimal amount = ledgerReport.getDemand().getTaxamount() != null ? ledgerReport.getDemand().getTaxamount() : BigDecimal.ZERO;
                 ledgerReport.getDemand().setTotalForCurrentMonth((taxamount != null ? taxamount : BigDecimal.ZERO).add(amount));
-            } else if (code.equals("10101")) {
+            } else if (code.equalsIgnoreCase("10101")) {
                 ledgerReport.getDemand().setMonthAndYear(monthAndYear);
                 ledgerReport.getDemand().setDemandGenerationDate(demandGenerationDateLong);
-                ledgerReport.getDemand().setTaxamount(taxamount);
+                ledgerReport.getDemand().setTaxamount(taxamount.add(ws_round_off));
                 ledgerReport.getDemand().setTotalForCurrentMonth(ledgerReport.getDemand().getTaxamount().add(ledgerReport.getDemand().getPenalty() != null ? ledgerReport.getDemand().getPenalty() : BigDecimal.ZERO));
                 long dueDateMillis = demandGenerationDateLocal.plus(10, ChronoUnit.DAYS).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 long penaltyAppliedDateMillis = demandGenerationDateLocal.plus(11, ChronoUnit.DAYS).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
