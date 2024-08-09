@@ -399,13 +399,15 @@ function Jurisdiction({
   }
   useEffect(() => {
 
-    if (responseData != null && depamentValue == "") {
+    if (responseData != null && depamentValue == "" && isEdit) {
       getUserTypes?.forEach((ele) => {
         if (ele.code === responseData?.Employees[0]?.assignments[0]?.department) {
           setDepamentValue(ele);
           const filteredItems = getdesignationdata.filter(val => val.department.includes(ele.code));
           setDesignationList(filteredItems);
           setjurisdictions((pre) => pre.map((item) => (item.key == jurisdiction.key ? { ...item, department: ele } : item)));
+          // setDesignationValue(filteredItems[0]);
+          // setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, designation: filteredItems[0] } : item)));
         }
       });
     }
@@ -446,6 +448,7 @@ function Jurisdiction({
     const filteredItems = getdesignationdata.filter(val => val.department.includes(value.code));
     setDesignationList(filteredItems);
     setDesignationValue(filteredItems[0]);
+    setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, designation: filteredItems[0] } : item)));
   };
   const selectDesignation = (value) => {
     setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, designation: value } : item)));

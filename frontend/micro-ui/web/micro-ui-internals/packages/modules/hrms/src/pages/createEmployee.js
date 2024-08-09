@@ -104,6 +104,7 @@ const CreateEmployee = () => {
   }
 
   const onFormValueChange = (setValue = true, formData) => {
+    let isValid = false;
     if (!_.isEqual(sessionFormData, formData)) {
       setSessionFormData({ ...sessionFormData, ...formData });
     }
@@ -119,17 +120,32 @@ const CreateEmployee = () => {
         break;
       } else {
         if (!STATE_ADMIN) {
+          if (formData?.SelectUserTypeAndDesignation[0] && formData?.SelectUserTypeAndDesignation[0]?.department != undefined && formData?.SelectUserTypeAndDesignation[0]?.designation != undefined) {
+            isValid = true;
+          }
+          else {
+            isValid = false;
+          }
+
           key?.roles?.length > 0 && setcheck(true);
         } else if (STATE_ADMIN) {
           setcheck(true);
+          isValid = false;
         }
       }
     }
-
-
+    // console.log(formData.
+    //   SelectUserTypeAndDesignation[0].department != undefined
+    //   , "formData");
+    // console.log(formData.
+    //   SelectUserTypeAndDesignation[0].designation != undefined
+    //   , "formData");
+    console.log(isValid, "isValid");
 
 
     if (
+
+
       formData?.SelectEmployeeGender?.gender.code &&
         formData?.SelectEmployeeName?.employeeName &&
         formData?.SelectEmployeePhoneNumber?.mobileNumber &&
@@ -137,12 +153,15 @@ const CreateEmployee = () => {
         STATE_ADMIN ?
         (formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.division == undefined || juris?.divisionBoundary?.length === 0))
 
-        : formData?.Jurisdictions?.length && formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.roles?.length === 0)
-        &&
+        : formData?.Jurisdictions?.length && formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.roles?.length === 0) &&
+
+        isValid &&
+
         checkfield &&
         phonecheck &&
         checkMailNameNum(formData) &&
         hasUniqueTenantIds(formData?.Jurisdictions)
+
     ) {
       setSubmitValve(true);
     } else {
