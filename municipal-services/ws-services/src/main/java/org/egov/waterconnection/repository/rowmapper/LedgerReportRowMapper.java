@@ -213,7 +213,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                         paymentMatched = true;
                     }
                 }
-                ledgerReport.setTotalBalanceLeftInMonth(totalPaymentInMonth);
+                ledgerReport.setTotalBalanceLeftInMonth(totalBalanceLeftInMonth);
                 ledgerReport.setTotalPaymentInMonth(totalPaymentInMonth);
             }
             if (!paymentMatched) {
