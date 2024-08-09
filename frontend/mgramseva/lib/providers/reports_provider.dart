@@ -377,31 +377,22 @@ class ReportsProvider with ChangeNotifier {
 
   TableDataRow getMonthlyLedgerReportDataRow(MonthReportData data,
       {bool isExcel = false}) {
-    // String? vendorName =
-    //     CommonMethods.truncateWithEllipsis(20, data.!);
-    // String? typeOfExpense =
-    //     CommonMethods.truncateWithEllipsis(20, data.typeOfExpense!);
-    // String? billId = CommonMethods.truncateWithEllipsis(20, data.billId!);
     return TableDataRow([
       TableData('${'1'}'),
-      TableData('${data}'),
-      TableData('${'3'}'),
-      TableData('${'4'}'),
-      TableData('${'5'}'),
-      TableData('${'1'}'),
-      TableData('${'2'}'),
-      TableData('${'3'}'),
-      TableData('${'4'}'),
-      TableData('${'5'}'),
-      TableData('${'1'}'),
-      TableData('${'2'}'),
-      TableData('${'3'}'),
-      TableData('${'4'}'),
-      TableData('${'5'}'),
-      // TableData('${vendorName ?? '-'}'),
-      // TableData('${data.mobileNo ?? '-'}'),
-      // TableData(
-      //     '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(typeOfExpense ?? '-')}'),
+      TableData('${data.connectionNo}'),
+      TableData('${data.oldConnectionNo}'),
+      TableData('${data.consumerName}'),
+      TableData('${data.consumerCreatedOnDate}'),
+      TableData('${"PREV OUT STANDING"}'),
+      TableData('${data.advance}'),
+      TableData('${data.penalty}'),
+      TableData('BILL GENERATED FOR THE MONTH'),
+      TableData('${data.demandGenerationDate}'),
+      TableData('${data.totalAmount}'),
+      TableData('${data.amountPaid}'),
+      TableData('${data.paidDate}'),
+      TableData('${data.remainingAmount}'),
+      TableData('SURPLUS AMT'),
     ]);
   }
 
@@ -954,19 +945,19 @@ class ReportsProvider with ChangeNotifier {
         monthlyLedgerReport = response.monthReport;
         if (download) {
           generateExcel(
-              vendorReportHeaderList
+              monthlyLedgerReportHeaderList
                   .map<String>((e) =>
                       '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
                   .toList(),
-              getVendorReportData(vendorReportData!, isExcel: true)
+              getMonthlyReportData(monthlyLedgerReport!, isExcel: true)
                       .map<List<String>>(
                           (e) => e.tableRow.map((e) => e.label).toList())
                       .toList() ??
                   [],
               title:
-                  'VendorReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillPeriod.toString().replaceAll('/', '_')}',
+                  'MonthlyReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillPeriod.toString().replaceAll('/', '_')}',
               optionalData: [
-                'Vendor Report',
+                'Monthly Report',
                 '$selectedBillPeriod',
                 '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)}',
                 '${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
