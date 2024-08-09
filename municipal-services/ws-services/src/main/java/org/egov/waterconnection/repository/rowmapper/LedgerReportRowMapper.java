@@ -192,6 +192,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             boolean paymentMatched = false;
             if(payments!=null)
             {
+                BigDecimal totalPaymentInMonth=BigDecimal.ZERO;
+                BigDecimal totalBalanceLeftInMonth=BigDecimal.ZERO;
                 for (Payment payment : payments) {
                     Long transactionDateLong = payment.getTransactionDate();
                     LocalDate transactionDate = Instant.ofEpochMilli(transactionDateLong).atZone(ZoneId.systemDefault()).toLocalDate();
@@ -201,15 +203,9 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                         paymentLedgerReport.setCollectionDate(transactionDateLong);
                         paymentLedgerReport.setReceiptNo(payment.getPaymentDetails().get(0).getReceiptNumber());
                         paymentLedgerReport.setPaid(payment.getTotalAmountPaid());
-//                        BigDecimal totalDueAmount=payment.getTotalDue();
-//                        if(totalDueAmount.equals(BigDecimal.ZERO))
-//                        {
-                            paymentLedgerReport.setBalanceLeft(payment.getTotalDue().subtract(paymentLedgerReport.getPaid()));
-//                        }
-//                        else
-//                        {
-//                            paymentLedgerReport.setBalanceLeft(totalDueAmount.subtract(paymentLedgerReport.getPaid()));
-//                        }
+                        paymentLedgerReport.setBalanceLeft(payment.getTotalDue().subtract(paymentLedgerReport.getPaid()));
+                        totalPaymentInMonth=totalPaymentInMonth.add(payment.getTotalAmountPaid());
+                        totalBalanceLeftInMonth=totalBalanceLeftInMonth.add(payment.getTotalDue());
                         if (ledgerReport.getPayment() == null) {
                             ledgerReport.setPayment(new ArrayList<>());
                         }
@@ -217,6 +213,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                         paymentMatched = true;
                     }
                 }
+                ledgerReport.setTotalBalanceLeftInMonth(totalPaymentInMonth);
+                ledgerReport.setTotalPaymentInMonth(totalPaymentInMonth);
             }
             if (!paymentMatched) {
                 PaymentLedgerReport defaultPaymentLedgerReport = new PaymentLedgerReport();
