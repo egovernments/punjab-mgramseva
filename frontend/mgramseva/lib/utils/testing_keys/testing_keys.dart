@@ -147,4 +147,6 @@ class BillReportKeys {
   Key get EXPENSE_BILL_REPORT_VIEW_BUTTON =>
       Key("expense_bill_report_view_button");
   Key get VENDOR_REPORT_VIEW_BUTTON => Key("vendor_report_view_button");
+  Key get MONTHLY_LEDGER_REPORT_VIEW_BUTTON =>
+      Key("monthly_ledger_report_view_button");
 }

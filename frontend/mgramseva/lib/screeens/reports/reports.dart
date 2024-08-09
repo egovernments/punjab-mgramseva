@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/screeens/reports/expense_bill_report.dart';
 import 'package:mgramseva/screeens/reports/inactive_consumer_report.dart';
+import 'package:mgramseva/screeens/reports/monthly_ledger_report.dart';
 import 'package:mgramseva/screeens/reports/vendor_report.dart';
 import 'package:mgramseva/screeens/reports/view_table.dart';
 import 'package:provider/provider.dart';
@@ -58,7 +59,6 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
     reportsProvider.clearBillingSelection();
     reportsProvider.clearBuildTableData();
     reportsProvider.clearTableData();
-
   }
 
   showTable(bool status, String title) {
@@ -177,7 +177,9 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                                     controller: reportProvider
                                                         .billingyearCtrl,
                                                     key: Keys.billReport
-                                                        .BILL_REPORT_BILLING_YEAR, itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i.financialYear)}",
+                                                        .BILL_REPORT_BILLING_YEAR,
+                                                    itemAsString: (i) =>
+                                                        "${ApplicationLocalizations.of(context).translate(i.financialYear)}",
                                                   ),
                                                   SelectFieldBuilder(
                                                     i18.demandGenerate
@@ -197,7 +199,9 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                                     controller: reportProvider
                                                         .billingcycleCtrl,
                                                     key: Keys.billReport
-                                                        .BILL_REPORT_BILLING_CYCLE, itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i['name'])}",
+                                                        .BILL_REPORT_BILLING_CYCLE,
+                                                    itemAsString: (i) =>
+                                                        "${ApplicationLocalizations.of(context).translate(i['name'])}",
                                                   ),
                                                 ],
                                               ),
@@ -220,9 +224,18 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                   children: [
                                     BillReport(onViewClick: showTable),
                                     CollectionReport(onViewClick: showTable),
-                                    InactiveConsumerReport(onViewClick: showTable,),
-                                    ExpenseBillReport(onViewClick: showTable,),
-                                    VendorReport(onViewClick: showTable,)
+                                    InactiveConsumerReport(
+                                      onViewClick: showTable,
+                                    ),
+                                    ExpenseBillReport(
+                                      onViewClick: showTable,
+                                    ),
+                                    VendorReport(
+                                      onViewClick: showTable,
+                                    ),
+                                    MonthlyLedgerReport(
+                                      onViewClick: showTable,
+                                    )
                                   ],
                                 ),
                               ),
