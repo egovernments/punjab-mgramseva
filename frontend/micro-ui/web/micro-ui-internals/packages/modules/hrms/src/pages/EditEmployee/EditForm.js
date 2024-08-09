@@ -138,6 +138,7 @@ const EditForm = ({ tenantId, data }) => {
   }
 
   const onFormValueChange = (setValue = true, formData) => {
+    let isValid = false;
     if (formData?.SelectEmployeePhoneNumber?.mobileNumber) {
       setMobileNumber(formData?.SelectEmployeePhoneNumber?.mobileNumber);
     } else {
@@ -152,8 +153,15 @@ const EditForm = ({ tenantId, data }) => {
       } else {
         if (!STATE_ADMIN) {
           key?.roles?.length > 0 && setcheck(true);
+          if (formData?.SelectUserTypeAndDesignation[0] && formData?.SelectUserTypeAndDesignation[0]?.department != undefined && formData?.SelectUserTypeAndDesignation[0]?.designation != undefined) {
+            isValid = true;
+          }
+          else {
+            isValid = false;
+          }
         } else if (STATE_ADMIN) {
           setcheck(true);
+          isValid = false;
         }
       }
     }
@@ -166,6 +174,7 @@ const EditForm = ({ tenantId, data }) => {
         (formData?.Jurisdictions?.length && !formData?.Jurisdictions.some(juris => juris?.division == undefined || juris?.divisionBoundary?.length === 0))
         : formData?.Jurisdictions?.length && formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.roles?.length === 0)
         &&
+        isValid &&
         checkfield &&
         phonecheck &&
         checkMailNameNum(formData) &&
