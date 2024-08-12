@@ -808,6 +808,20 @@ def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,tot
             if connection:
                 cursor.close()
                 connection.close() 
+def is_saturdayday():
+    print("DateTime today :",datetime.today().weekday())    
+    return datetime.today().weekday() == 5
+
+def get_daterange():
+    if is_saturdayday():
+        return [
+            'Last seven days', 'Last 15 days', 'currentMonth-Till date', 'Previous Month',
+            'Quarter-1', 'Quarter-2', 'Quarter-3', 'Quarter-4', 
+            'Consolidated (As on date)', 'FY to date', 
+            'Previous 1st FY (23-24)', 'Previous 2nd FY (22-23)', 'Previous 3rd FY (21-22)'
+        ]
+    else:
+        return ['Last seven days', 'Last 15 days', 'currentMonth-Till date', 'Consolidated (As on date)', 'FY to date']
 
 def process():
     print("continue is the process")
@@ -842,7 +856,7 @@ def process():
     for tenant in tenants:
         print("Tenant:", tenant['tenantId'])
         activeUsersCount= getActiveUsersCount(tenant['tenantId'])
-        daterange = ['Last seven days','Last 15 days','currentMonth-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','Quarter-4','Consolidated (As on date)','FY to date','Previous 1st FY (23-24)','Previous 2nd FY (22-23)','Previous 3rd FY (21-22)']
+        daterange = get_daterange()
         for i,date in enumerate(daterange):
             startdate,enddate= getdaterange(date)
             totalAdvance= getTotalAdvanceCreated(tenant['tenantId'],startdate,enddate)
