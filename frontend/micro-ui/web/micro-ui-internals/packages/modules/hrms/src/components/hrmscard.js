@@ -18,46 +18,46 @@ const HRMSCard = () => {
   let roles = STATE_ADMIN
     ? { roles: "DIV_ADMIN", isStateLevelSearch: true }
     : {
-        roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER, SARPANCH, REVENUE_COLLECTOR, SECRETARY",
-        isStateLevelSearch: false,
-      };
+      roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER, SARPANCH, REVENUE_COLLECTOR, SECRETARY",
+      isStateLevelSearch: false,
+    };
   const { isLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSCount(tenantId, roles);
 
   const moduleForSomeDIVAdmin =
-    
-  DIV_ADMIN && MDMS_ADMIN
+
+    DIV_ADMIN && MDMS_ADMIN
       ? [
-          {
-            label: t("WORK_BENCH_URL_MASTER_DATA"),
-            link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
-          },
-          // {
-          //   label: t("WORK_BENCH_URL_LOCALIZATION"),
-          //   link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
-          // },
-        ]
+        {
+          label: t("WORK_BENCH_URL_MASTER_DATA"),
+          link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
+        },
+        // {
+        //   label: t("WORK_BENCH_URL_LOCALIZATION"),
+        //   link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
+        // },
+      ]
       : [];
 
   const moduleForSomeSTATEUser =
-    STATE_ADMIN && MDMS_ADMIN 
+    STATE_ADMIN && MDMS_ADMIN
       ? [
-          {
-            label: t("WORK_BENCH_URL_VILLAGE_MASTER_DATA"),
-            link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=tenant&masterName=tenants`,
-          },
-        ]
+        {
+          label: t("WORK_BENCH_URL_VILLAGE_MASTER_DATA"),
+          link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=tenant&masterName=tenants`,
+        },
+      ]
       : [];
 
   const moduleForDivisionUser =
-  DIV_ADMIN && MDMS_ADMIN?
-  [
-          {
-            label: t("WORK_BENCH_URL_PENALTY_MASTER_DATA"),
-            link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=Penalty`,
-                                              
-          },
-        ] : [];
-      
+    DIV_ADMIN && MDMS_ADMIN ?
+      [
+        {
+          label: t("WORK_BENCH_URL_PENALTY_MASTER_DATA"),
+          link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=Penalty`,
+
+        },
+      ] : [];
+
 
   const propsForModuleCard = {
     Icon: <PersonIcon />,
@@ -78,7 +78,7 @@ const HRMSCard = () => {
       {
         label: t("HR_SEARCH_USER"),
         link: `/${window?.contextPath}/employee/hrms/search-user`,
-        roles:["DIV_ADMIN","STATE_ADMIN"]
+        roles: ["DIV_ADMIN", "STATE_ADMIN"]
       },
       {
         label: t("HR_HOME_SEARCH_RESULTS_HEADING"),
@@ -88,9 +88,9 @@ const HRMSCard = () => {
         label: STATE_ADMIN ? t("HR_COMMON_CREATE_DIVISION_EMPLOYEE_HEADER") : t("HR_COMMON_CREATE_EMPLOYEE_HEADER"),
         link: `/${window?.contextPath}/employee/hrms/create`,
       },
-      DIV_ADMIN ?  {}: {
+      DIV_ADMIN ? {} : {
         label: t("HR_STATE_ REPORTS"),
-        link: "https://ifix-dwss.psegs.in/digit-ui/employee/dss/dashboard/ifix",
+        link: "https://mgramseva-dwss.punjab.gov.in/kibana/app/r/s/JNF2x?auth_provider_hint=anonymous1",
       },
       ...moduleForSomeDIVAdmin,
       ...moduleForSomeSTATEUser,
