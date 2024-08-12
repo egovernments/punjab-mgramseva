@@ -78,6 +78,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             String monthAndYear = currentMonth.format(DateTimeFormatter.ofPattern("MMMM yyyy"));
             LocalDate startOfMonth = currentMonth.atDay(1);
             Long epochTime = startOfMonth.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            log.info("epoch time is "+epochTime);
             LedgerReport ledgerReport = new LedgerReport();
             ledgerReport.setDemand(new DemandLedgerReport());
             ledgerReport.getDemand().setMonthAndYear(monthAndYear);
