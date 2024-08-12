@@ -1,4 +1,4 @@
-export const OpenSearchConfig =  {
+export const OpenSearchConfig = {
   "label": "OPEN_PAYMENT_SEARCH",
   "type": "search",
   "apiDetails": {
@@ -15,7 +15,7 @@ export const OpenSearchConfig =  {
   "sections": {
     "search": {
       "uiConfig": {
-        "type":"search",
+        "type": "search",
         "headerLabel": "OPEN_PAYMENT_SEARCH",
         "headerStyle": null,
         "primaryLabel": "ES_COMMON_SEARCH",
@@ -33,10 +33,10 @@ export const OpenSearchConfig =  {
             disable: false,
             populators: {
               "optionsCustomStyle": {
-                    "top": "2.3rem",
-                    "overflow":"auto",
-                    "maxHeight":"400px"
-                  },
+                "top": "2.3rem",
+                "overflow": "auto",
+                "maxHeight": "400px"
+              },
               name: "tenantId",
               optionsKey: "updatedCode",
               allowMultiSelect: false,
@@ -52,10 +52,10 @@ export const OpenSearchConfig =  {
             "disable": false,
             "populators": {
               "name": "consumerCode",
-              "style":{
-                "marginBottom":"0px"
+              "style": {
+                "marginBottom": "0px"
               },
-              "placeholder":"WS/7141/2024-25/****",
+              "placeholder": "WS/7141/2024-25/****",
               // "validation":{
               //   "maxLength":"1"
               // }
@@ -182,7 +182,7 @@ export const OpenSearchConfig =  {
         "enableGlobalSearch": false,
         "enableColumnSort": false,
         "resultsJsonPath": "WaterConnection",
-        "tableClassName":"table pqm-table"
+        "tableClassName": "table pqm-table"
       },
       "children": {},
       "show": true
