@@ -83,7 +83,9 @@ const TopBar = ({
                     <Link className="dropdown-user-link" to="/mgramseva-web/employee/user/login">Admin Login</Link>
                   </li>
                   <li>
-                    <Link className="dropdown-user-link" to="/mgramseva/selectLanguage">Employee Login</Link>
+                    <a
+                      href="/mgramseva" target="_blank" rel="noopener noreferrer" className="dropdown-user-link">Login as Employee</a>
+                    {/* <Link className="dropdown-user-link" to="/mgramseva/selectLanguage">Employee Login</Link> */}
                   </li>
                 </ul>
               </div>
