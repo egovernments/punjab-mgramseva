@@ -33,13 +33,10 @@ class ViewTable extends StatelessWidget {
                     LabelText(
                         '${ApplicationLocalizations.of(context).translate(tableTitle)}'),
                     Consumer<ReportsProvider>(
-                      builder: (_, reportProvider, child) {
-                        return SubLabelText("${ApplicationLocalizations.of(navigatorKey.currentContext!)
-                            .translate((Constants.MONTHS[DateFormats.getFormattedDateToDateTime(reportProvider.selectedBillPeriod?.split('-')[0])!.month- 1])) +
-                            " - " +
-      DateFormats.getFormattedDateToDateTime(reportProvider.selectedBillPeriod?.split('-')[0])!.year.toString()}");
-                      }
-                    ),
+                        builder: (_, reportProvider, child) {
+                      return SubLabelText(
+                          "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate((Constants.MONTHS[DateFormats.getFormattedDateToDateTime(reportProvider.selectedBillPeriod?.split('-')[0])!.month - 1])) + " - " + DateFormats.getFormattedDateToDateTime(reportProvider.selectedBillPeriod?.split('-')[0])!.year.toString()}");
+                    }),
                   ])),
           SizedBox(
             height: 30,
@@ -71,7 +68,7 @@ class ViewTable extends StatelessWidget {
                         callBack: (pageResponse) =>
                             reportProvider.onChangeOfPageLimit(
                                 pageResponse, tableTitle, context),
-                        isTotalCountVisible: false,
+                        isTotalCountVisible: true,
                         totalCount:
                             reportProvider.genericTableData.tableData.length,
                       ),

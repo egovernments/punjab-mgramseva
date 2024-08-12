@@ -131,7 +131,7 @@ class ReportsProvider with ChangeNotifier {
         TableHeader(i18.common.ML_AMOUNT_COLLECT_AGAINST_TOTAL),
         TableHeader(i18.common.ML_DATE_OF_AMOUNT_COLLECTED),
         TableHeader(i18.common.ML_REMAINING_AMOUNT_TO_BE_COLLECTED),
-        TableHeader(i18.common.ML_SURPLUS_AMOUNT_COLLECETD),
+        // TableHeader(i18.common.ML_SURPLUS_AMOUNT_COLLECETD),
       ];
 
   List<TableHeader> get collectionHeaderList => [
@@ -391,17 +391,18 @@ class ReportsProvider with ChangeNotifier {
       TableData('${index + 1}'),
       TableData('${data.oldConnectionNo}'),
       TableData('${data.consumerName ?? "NA"}'),
-      TableData('${"data.consumerCreatedOnDate"}'),
-      TableData('${"PREV OUT STANDING"}'),
+      TableData(
+          '${DateFormats.leadgerTimeStampToDate(data.consumerCreatedOnDate)}'),
+      TableData('${data.arrears}'),
       TableData('${data.advance}'),
       TableData('${data.penalty}'),
-      TableData('BILL GENERATED FOR THE MONTH'),
+      TableData('${data.demandAmount}'),
       TableData('${data.demandGenerationDate}'),
       TableData('${data.totalAmount}'),
       TableData('${data.amountPaid}'),
       TableData('${data.paidDate}'),
       TableData('${data.remainingAmount}'),
-      TableData('SURPLUS AMT'),
+      // TableData('SURPLUS AMT'),
     ]);
   }
 

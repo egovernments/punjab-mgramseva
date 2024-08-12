@@ -29,7 +29,7 @@ class MonthReportData {
   final String? tenantName;
   final String? connectionNo;
   final String? oldConnectionNo;
-  // final int? consumerCreatedOnDate;
+  final int? consumerCreatedOnDate;
   final String? consumerName;
   final String? userId;
   final int? demandGenerationDate;
@@ -46,7 +46,7 @@ class MonthReportData {
     this.tenantName,
     this.connectionNo,
     this.oldConnectionNo,
-    // this.consumerCreatedOnDate,
+    this.consumerCreatedOnDate,
     this.consumerName,
     this.userId,
     this.demandGenerationDate,
@@ -65,7 +65,7 @@ class MonthReportData {
       tenantName: json['tenantName'] as String?,
       connectionNo: json['connectionNo'] as String?,
       oldConnectionNo: json['oldConnectionNo'] as String?,
-      // consumerCreatedOnDate: json['consumerCreatedOnDate'] as int?,
+      consumerCreatedOnDate: json['consumerCreatedOnDate'] as int?,
       consumerName: json['consumerName'] as String?,
       userId: json['userId'] as String?,
       demandGenerationDate: json['demandGenerationDate'] as int?,
