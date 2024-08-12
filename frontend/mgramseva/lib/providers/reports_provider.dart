@@ -117,8 +117,8 @@ class ReportsProvider with ChangeNotifier {
       ];
 
   List<TableHeader> get monthlyLedgerReportHeaderList => [
+        // TableHeader(i18.common.ML_NEW_CONN_ID),
         TableHeader(i18.common.ML_SR_NO),
-        TableHeader(i18.common.ML_NEW_CONN_ID),
         TableHeader(i18.common.ML_OLD_CONN_ID),
         TableHeader(i18.common.ML_CONSUMER_NAME),
         TableHeader(i18.common.ML_CONSUMER_ENTERED_DATA),
@@ -369,7 +369,10 @@ class ReportsProvider with ChangeNotifier {
   List<TableDataRow> getMonthlyReportData(List<MonthReportData> list,
       {bool isExcel = false}) {
     return list
-        .map((e) => getMonthlyLedgerReportDataRow(e, isExcel: isExcel))
+        .asMap() // Add index to each element
+        .entries
+        .map((entry) => getMonthlyLedgerReportDataRow(entry.value,
+            index: entry.key, isExcel: isExcel))
         .toList();
   }
 
@@ -381,13 +384,13 @@ class ReportsProvider with ChangeNotifier {
   }
 
   TableDataRow getMonthlyLedgerReportDataRow(MonthReportData data,
-      {bool isExcel = false}) {
+      {bool isExcel = false, int index = 0}) {
     return TableDataRow([
-      TableData('${'1'}'),
       TableData('${data.connectionNo}'),
+      // TableData('${index + 1}'),
       TableData('${data.oldConnectionNo}'),
       TableData('${data.consumerName}'),
-      TableData('${data.consumerCreatedOnDate}'),
+      TableData('${"data.consumerCreatedOnDate"}'),
       TableData('${"PREV OUT STANDING"}'),
       TableData('${data.advance}'),
       TableData('${data.penalty}'),
