@@ -77,13 +77,13 @@ const TopBar = ({
             {isOpen && (
               <div className="dropdown-user-overlay">
                 <ul className="dropdown-user-content">
-                  <li  style={{
-                      borderBottom:"solid 1px",
-                    }}>
-                    <Link className="dropdown-user-link" to="/mgramseva-web/employee/">Admin Login</Link>
+                  <li style={{
+                    borderBottom: "solid 1px grey",
+                  }}>
+                    <Link className="dropdown-user-link" to="/mgramseva-web/employee/user/login">Admin Login</Link>
                   </li>
                   <li>
-                    <Link className="dropdown-user-link" to="/mgramseva-web/employee/">Employee Login</Link>
+                    <Link className="dropdown-user-link" to="/mgramseva/selectLanguage">Employee Login</Link>
                   </li>
                 </ul>
               </div>
