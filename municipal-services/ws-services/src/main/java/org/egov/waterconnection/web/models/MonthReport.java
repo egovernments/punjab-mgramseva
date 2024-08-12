@@ -23,7 +23,7 @@ public class MonthReport
     private String oldConnectionNo = null;
 
     @JsonProperty("consumerCreatedOnDate")
-    private String consumerCreatedOnDate = null;
+    private Long consumerCreatedOnDate = null;
 
     @JsonProperty("consumerName")
     private String consumerName = null;

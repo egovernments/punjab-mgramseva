@@ -73,7 +73,7 @@ public class MonthReportRowMapper implements RowMapper<MonthReport>
                 .tenantName(rs.getString("tenantId"))
                 .connectionNo(rs.getString("connectionNo"))
                 .oldConnectionNo(rs.getString("oldConnectionNo"))
-                .consumerCreatedOnDate(rs.getString("consumerCreatedOnDate"))
+                .consumerCreatedOnDate(rs.getLong("consumerCreatedOnDate"))
                 .userId(rs.getString("userId"))
                 .demandGenerationDate(rs.getLong("demandGenerationDate"))
                 .penalty(rs.getBigDecimal("penalty"))
