@@ -117,7 +117,7 @@ class ReportsProvider with ChangeNotifier {
       ];
 
   List<TableHeader> get monthlyLedgerReportHeaderList => [
-        // TableHeader(i18.common.ML_NEW_CONN_ID),
+        TableHeader(i18.common.ML_NEW_CONN_ID),
         TableHeader(i18.common.ML_SR_NO),
         TableHeader(i18.common.ML_OLD_CONN_ID),
         TableHeader(i18.common.ML_CONSUMER_NAME),
@@ -385,11 +385,12 @@ class ReportsProvider with ChangeNotifier {
 
   TableDataRow getMonthlyLedgerReportDataRow(MonthReportData data,
       {bool isExcel = false, int index = 0}) {
+    log("${data.oldConnectionNo}");
     return TableDataRow([
       TableData('${data.connectionNo}'),
-      // TableData('${index + 1}'),
+      TableData('${index + 1}'),
       TableData('${data.oldConnectionNo}'),
-      TableData('${data.consumerName}'),
+      TableData('${data.consumerName ?? "NA"}'),
       TableData('${"data.consumerCreatedOnDate"}'),
       TableData('${"PREV OUT STANDING"}'),
       TableData('${data.advance}'),
