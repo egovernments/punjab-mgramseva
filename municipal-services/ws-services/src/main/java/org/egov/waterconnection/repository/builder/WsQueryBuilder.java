@@ -207,7 +207,7 @@ public class WsQueryBuilder {
 			"ORDER BY startdate";
 
 	public static final String TAX_AMOUNT_QUERY="SELECT SUM(taxamount) FROM egbs_demanddetail_v1 WHERE " +
-			"demandid IN (SELECT id FROM egbs_demand_v1 WHERE consumercode = ? AND taxperiodfrom < ? AND status='ACTIVE');";
+			"demandid IN (SELECT id FROM egbs_demand_v1 WHERE consumercode = ? AND taxperiodto < ? AND status='ACTIVE') and taxheadcode!= 'WS_ADVANCE_CARRYFORWARD';";
 
 	public static final String TOTAL_AMOUNT_PAID_QUERY="SELECT SUM(totalamountpaid) FROM egcl_payment WHERE " +
 			"id IN (SELECT paymentid FROM egcl_paymentdetail WHERE billid IN " +
