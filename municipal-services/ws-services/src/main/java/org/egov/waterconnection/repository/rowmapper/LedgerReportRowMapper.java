@@ -223,11 +223,12 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 defaultPaymentLedgerReport.setReceiptNo("N/A");
                 defaultPaymentLedgerReport.setPaid(BigDecimal.ZERO);
                 defaultPaymentLedgerReport.setBalanceLeft(ledgerReport.getDemand().getTotal_due_amount());
-
                 if (ledgerReport.getPayment() == null) {
                     ledgerReport.setPayment(new ArrayList<>());
                 }
                 ledgerReport.getPayment().add(defaultPaymentLedgerReport);
+                ledgerReport.setTotalBalanceLeftInMonth(BigDecimal.ZERO);
+                ledgerReport.setTotalPaymentInMonth(BigDecimal.ZERO);
             }
         }
     }
