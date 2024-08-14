@@ -10,11 +10,11 @@ import '../../widgets/pagination.dart';
 import '../../widgets/sub_label.dart';
 import 'generic_report_table.dart';
 
-class ViewTable extends StatelessWidget {
+class MRViewTable extends StatelessWidget {
   final ScrollController scrollController;
   final String tableTitle;
 
-  ViewTable({required this.tableTitle, required this.scrollController});
+  MRViewTable({required this.tableTitle, required this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,7 @@ class ViewTable extends StatelessWidget {
                         callBack: (pageResponse) =>
                             reportProvider.onChangeOfPageLimit(
                                 pageResponse, tableTitle, context),
-                        isTotalCountVisible: false,
+                        isTotalCountVisible: true,
                         totalCount:
                             reportProvider.genericTableData.tableData.length,
                       ),

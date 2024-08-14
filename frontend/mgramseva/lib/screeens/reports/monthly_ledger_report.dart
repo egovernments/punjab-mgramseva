@@ -52,8 +52,8 @@ class _MonthlyLedgerReportState extends State<MonthlyLedgerReport>
                         ),
                         Expanded(
                           child: Text(
-                            ApplicationLocalizations.of(context)
-                                .translate(i18.dashboard.MONTHLY_LEDGER_REPORT),
+                            ApplicationLocalizations.of(context).translate(
+                                i18.dashboard.MONTHLY_LEDGER_REPORT_LABEL),
                             maxLines: 3,
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w700),
@@ -78,8 +78,8 @@ class _MonthlyLedgerReportState extends State<MonthlyLedgerReport>
                             } else {
                               reportProvider.clearTableData();
                               reportProvider.getMonthlyLedgerReport();
-                              widget.onViewClick(
-                                  true, i18.dashboard.MONTHLY_LEDGER_REPORT);
+                              widget.onViewClick(true,
+                                  i18.dashboard.MONTHLY_LEDGER_REPORT_LABEL);
                             }
                           },
                           key:

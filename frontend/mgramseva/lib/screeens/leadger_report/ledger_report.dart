@@ -223,12 +223,12 @@ class _LeadgerReport extends State<LeadgerReport>
                                     Consumer<ReportsProvider>(
                                         builder: (_, reportProvider, child) {
                                       return SubLabelText(
-                                          "${i18.common.LEDGER_CUSTOMER_NAME} : ${widget.waterConnection?.connectionHolders?.first.name}");
+                                          "${ApplicationLocalizations.of(context).translate(i18.common.LEDGER_CUSTOMER_NAME)} : ${widget.waterConnection?.connectionHolders?.first.name}");
                                     }),
                                     Consumer<ReportsProvider>(
                                         builder: (_, reportProvider, child) {
                                       return SubLabelText(
-                                          "${i18.common.LEDGER_CONN_ID} : ${widget.waterConnection?.connectionNo}");
+                                          "${ApplicationLocalizations.of(context).translate(i18.common.LEDGER_CONN_ID)} : ${widget.waterConnection?.connectionNo}");
                                     }),
                                     LeadgerReportView(onViewClick: showTable),
                                   ],

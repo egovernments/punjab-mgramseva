@@ -117,20 +117,20 @@ class ReportsProvider with ChangeNotifier {
       ];
 
   List<TableHeader> get monthlyLedgerReportHeaderList => [
-        TableHeader(i18.common.ML_NEW_CONN_ID),
-        TableHeader(i18.common.ML_SR_NO),
-        TableHeader(i18.common.ML_OLD_CONN_ID),
-        TableHeader(i18.common.ML_CONSUMER_NAME),
-        TableHeader(i18.common.ML_CONSUMER_ENTERED_DATA),
-        TableHeader(i18.common.ML_PREV_OUTSTANIDNG_TILL_LAST_MONTH),
-        TableHeader(i18.common.ML_ADV_AMOUNT_RECEIVED),
-        TableHeader(i18.common.ML_CURR_MONTH_PENALTY),
-        TableHeader(i18.common.ML_BILL_GENERATED_FOR_MONTH),
-        TableHeader(i18.common.ML_DATE_OF_GENERATED),
-        TableHeader(i18.common.ML_TOTAL_AMOUNT),
-        TableHeader(i18.common.ML_AMOUNT_COLLECT_AGAINST_TOTAL),
-        TableHeader(i18.common.ML_DATE_OF_AMOUNT_COLLECTED),
-        TableHeader(i18.common.ML_REMAINING_AMOUNT_TO_BE_COLLECTED),
+        TableHeader(i18.consumer.ML_NEW_CONN_ID),
+        TableHeader(i18.consumer.ML_SR_NO),
+        TableHeader(i18.consumer.ML_OLD_CONN_ID),
+        TableHeader(i18.consumer.ML_CONSUMER_NAME),
+        TableHeader(i18.consumer.ML_CONSUMER_ENTERED_DATA),
+        TableHeader(i18.consumer.ML_PREV_OUTSTANDING_TILL_LAST_MONTH),
+        TableHeader(i18.consumer.ML_ADV_AMOUNT_RECEIVED),
+        TableHeader(i18.consumer.ML_CURR_MONTH_PENALTY),
+        TableHeader(i18.consumer.ML_BILL_GENERATED_FOR_MONTH),
+        TableHeader(i18.consumer.ML_DATE_OF_GENERATED),
+        TableHeader(i18.consumer.ML_TOTAL_AMOUNT),
+        TableHeader(i18.consumer.ML_AMOUNT_COLLECT_AGAINST_TOTAL),
+        TableHeader(i18.consumer.ML_DATE_OF_AMOUNT_COLLECTED),
+        TableHeader(i18.consumer.ML_REMAINING_AMOUNT_TO_BE_COLLECTED),
         // TableHeader(i18.common.ML_SURPLUS_AMOUNT_COLLECETD),
       ];
 
@@ -190,6 +190,9 @@ class ReportsProvider with ChangeNotifier {
     }
     if (type == i18.dashboard.LEDGER_REPORTS) {
       getLeadgerReport(limit: response.limit, offset: response.offset);
+    }
+    if (type == i18.dashboard.MONTHLY_LEDGER_REPORT_LABEL) {
+      getMonthlyLedgerReport(limit: response.limit, offset: response.offset);
     }
   }
 
@@ -397,7 +400,8 @@ class ReportsProvider with ChangeNotifier {
       TableData('${data.advance}'),
       TableData('${data.penalty}'),
       TableData('${data.demandAmount}'),
-      TableData('${data.demandGenerationDate}'),
+      TableData(
+          '${DateFormats.leadgerTimeStampToDate(data.demandGenerationDate)}'),
       TableData('${data.totalAmount}'),
       TableData('${data.amountPaid}'),
       TableData('${data.paidDate}'),
@@ -598,7 +602,7 @@ class ReportsProvider with ChangeNotifier {
   Future<void> getLeadgerReport({
     bool download = false,
     int offset = 1,
-    int limit = 10,
+    int limit = 12,
   }) async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
