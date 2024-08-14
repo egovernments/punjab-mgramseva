@@ -56,6 +56,9 @@ import lombok.extern.slf4j.Slf4j;
 public class WaterDaoImpl implements WaterDao {
 
 	@Autowired
+	private ConsumerRowMapper consumerRowMapper;
+
+	@Autowired
 	private MonthReportRowMapper monthReportRowMapper;
 
 	@Autowired
@@ -776,7 +779,7 @@ public class WaterDaoImpl implements WaterDao {
 		}
 
 		log.info("Query to fetch consumers: " + tillDateConsumerQuery + " and prepared statement: " + consumerPreparedStatement);
-		List<String> consumerList = jdbcTemplate.queryForList(tillDateConsumerQuery.toString(), consumerPreparedStatement.toArray(), String.class);
+		List<MonthReport> consumerList = jdbcTemplate.query(tillDateConsumerQuery.toString(), consumerPreparedStatement.toArray(),consumerRowMapper);
 
 		StringBuilder month_demand_query = new StringBuilder(wsQueryBuilder.MONTH_DEMAND_QUERY);
 		StringBuilder month_payment_query = new StringBuilder(wsQueryBuilder.MONTH_PAYMENT_QUERY);
@@ -784,35 +787,37 @@ public class WaterDaoImpl implements WaterDao {
 		List<MonthReport> reportList = new ArrayList<>();
 
 		if (!consumerList.isEmpty()) {
-			for (String connectionNo : consumerList) {
+			for (MonthReport monthReport : consumerList) {
 				List<Object> demandPreparedStatement = new ArrayList<>();
 				demandPreparedStatement.add(monthStartDateTime);
 				demandPreparedStatement.add(monthEndDateTime);
 				demandPreparedStatement.add(tenantId);
-				demandPreparedStatement.add(connectionNo);
+				demandPreparedStatement.add(monthReport.getConnectionNo());
 
-				MonthReport monthReport = new MonthReport();
 				try{
-					monthReport=jdbcTemplate.queryForObject(month_demand_query.toString(), demandPreparedStatement.toArray(), monthReportRowMapper);
+					MonthReport demandReport=jdbcTemplate.queryForObject(month_demand_query.toString(), demandPreparedStatement.toArray(), monthReportRowMapper);
+					if (demandReport != null) {
+						monthReport.setDemandGenerationDate(demandReport.getDemandGenerationDate());
+						monthReport.setPenalty(demandReport.getPenalty());
+						monthReport.setDemandAmount(demandReport.getDemandAmount());
+						monthReport.setAdvance(demandReport.getAdvance());
+					}
 				}catch (EmptyResultDataAccessException e) {
-					log.info("No month report found for connection: " + connectionNo);
+					log.info("No month report found for connection: " + monthReport.getConnectionNo());
 				}
-				BigDecimal taxAmountResult = getMonthlyTaxAmount(monthStartDateTime, connectionNo);
-
+				BigDecimal taxAmountResult = getMonthlyTaxAmount(monthStartDateTime, monthReport.getConnectionNo());
 				if(taxAmountResult==null)
 				{
 					taxAmountResult=BigDecimal.ZERO;
 				}
-
-				BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(monthStartDateTime, connectionNo);
-
+				BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(monthStartDateTime, monthReport.getConnectionNo());
 				if(totalAmountPaidResult==null)
 				{
 					totalAmountPaidResult=BigDecimal.ZERO;
 				}
 
 				if (monthReport != null) {
-					monthReport.setConnectionNo(connectionNo);
+					monthReport.setConnectionNo(monthReport.getConnectionNo());
 					monthReport.setArrears(taxAmountResult.subtract(totalAmountPaidResult));
 					BigDecimal totalAmount = (monthReport.getPenalty() != null ? monthReport.getPenalty() : BigDecimal.ZERO)
 							.add(monthReport.getDemandAmount() != null ? monthReport.getDemandAmount() : BigDecimal.ZERO)
@@ -823,7 +828,7 @@ public class WaterDaoImpl implements WaterDao {
 
 				List<Object> paymentPreparedStatement = new ArrayList<>();
 				paymentPreparedStatement.add(tenantId);
-				paymentPreparedStatement.add(connectionNo);
+				paymentPreparedStatement.add(monthReport.getConnectionNo());
 				paymentPreparedStatement.add(monthStartDateTime);
 				paymentPreparedStatement.add(monthEndDateTime);
 				paymentPreparedStatement.add(tenantId);

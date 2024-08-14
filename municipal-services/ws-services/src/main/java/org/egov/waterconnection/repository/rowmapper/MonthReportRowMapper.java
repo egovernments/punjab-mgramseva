@@ -1,7 +1,6 @@
 package org.egov.waterconnection.repository.rowmapper;
 
 import org.egov.waterconnection.service.UserService;
-import org.egov.waterconnection.web.models.CollectionReportData;
 import org.egov.waterconnection.web.models.MonthReport;
 import org.egov.waterconnection.web.models.OwnerInfo;
 import org.egov.waterconnection.web.models.users.UserDetailResponse;
@@ -22,11 +21,6 @@ public class MonthReportRowMapper implements RowMapper<MonthReport>
     @Override
     public MonthReport mapRow(ResultSet rs, int rowNum) throws SQLException {
         MonthReport monthReport = MonthReport.builder()
-                .tenantName(rs.getString("tenantId"))
-                .connectionNo(rs.getString("connectionNo"))
-                .oldConnectionNo(rs.getString("oldConnectionNo"))
-                .consumerCreatedOnDate(rs.getLong("consumerCreatedOnDate"))
-                .userId(rs.getString("userId"))
                 .demandGenerationDate(rs.getLong("demandGenerationDate"))
                 .penalty(rs.getBigDecimal("penalty"))
                 .demandAmount(rs.getBigDecimal("demandAmount"))

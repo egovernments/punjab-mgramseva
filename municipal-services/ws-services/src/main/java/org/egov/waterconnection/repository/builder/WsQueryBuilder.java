@@ -213,8 +213,11 @@ public class WsQueryBuilder {
 			"id IN (SELECT paymentid FROM egcl_paymentdetail WHERE billid IN " +
 			"(SELECT billid FROM egbs_billdetail_v1 WHERE consumercode = ?)) AND createdtime < ? AND paymentstatus!='CANCELLED';";
 
-	public static final String TILL_DATE_CONSUMER="select connectionno from eg_ws_connection conn INNER JOIN " +
-			" eg_ws_service wc ON wc.connection_id = conn.id where wc.connectiontype='Non_Metered' and " +
+	public static final String TILL_DATE_CONSUMER="select conn.tenantId as tenantId,conn.connectionno as connectionno, " +
+			" conn.oldconnectionno as oldconnectionno ,conn.createdTime as consumerCreatedOnDate," +
+			" connectionholder.userid as userId from eg_ws_connection conn INNER JOIN " +
+			" eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id " +
+			" INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id where wc.connectiontype='Non_Metered' and " +
 			" conn.createdtime<=? and conn.tenantid=? ";
 
 	public static final String MONTH_DEMAND_QUERY ="SELECT " +
