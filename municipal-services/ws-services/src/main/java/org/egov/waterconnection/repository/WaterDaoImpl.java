@@ -768,6 +768,8 @@ public class WaterDaoImpl implements WaterDao {
 			newlimit = limit;
 		if (limit != null && limit >= wsConfiguration.getMaxLimit())
 			newlimit = wsConfiguration.getMaxLimit();
+		if (limit != null && limit == -1) // Handling the case when limit is -1
+			newlimit = -1;
 
 		if (offset != null)
 			newoffset = offset;
