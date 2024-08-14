@@ -783,9 +783,6 @@ public class WaterDaoImpl implements WaterDao {
 		log.info("Query to fetch consumers: " + tillDateConsumerQuery + " and prepared statement: " + consumerPreparedStatement);
 		List<MonthReport> consumerList = jdbcTemplate.query(tillDateConsumerQuery.toString(), consumerPreparedStatement.toArray(),consumerRowMapper);
 
-		StringBuilder month_demand_query = new StringBuilder(wsQueryBuilder.MONTH_DEMAND_QUERY);
-		StringBuilder month_payment_query = new StringBuilder(wsQueryBuilder.MONTH_PAYMENT_QUERY);
-
 		List<MonthReport> reportList = new ArrayList<>();
 
 		if (!consumerList.isEmpty()) {
@@ -795,6 +792,8 @@ public class WaterDaoImpl implements WaterDao {
 				demandPreparedStatement.add(monthEndDateTime);
 				demandPreparedStatement.add(tenantId);
 				demandPreparedStatement.add(monthReport.getConnectionNo());
+
+				StringBuilder month_demand_query = new StringBuilder(wsQueryBuilder.MONTH_DEMAND_QUERY);
 
 				try{
 					MonthReport demandReport=jdbcTemplate.queryForObject(month_demand_query.toString(), demandPreparedStatement.toArray(), monthReportRowMapper);
@@ -827,6 +826,8 @@ public class WaterDaoImpl implements WaterDao {
 							.add(monthReport.getArrears()!=null ? monthReport.getArrears():BigDecimal.ZERO);
 					monthReport.setTotalAmount(totalAmount);
 				}
+
+				StringBuilder month_payment_query = new StringBuilder(wsQueryBuilder.MONTH_PAYMENT_QUERY);
 
 				List<Object> paymentPreparedStatement = new ArrayList<>();
 				paymentPreparedStatement.add(tenantId);
