@@ -2,10 +2,12 @@ package org.egov.waterconnection.repository.rowmapper;
 
 import org.egov.waterconnection.web.models.MonthReport;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class ConsumerRowMapper implements RowMapper<MonthReport> {
     @Override
     public MonthReport mapRow(ResultSet rs, int rowNum) throws SQLException {
