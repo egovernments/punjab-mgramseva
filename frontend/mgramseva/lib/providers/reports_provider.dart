@@ -404,7 +404,7 @@ class ReportsProvider with ChangeNotifier {
           '${DateFormats.leadgerTimeStampToDate(data.demandGenerationDate)}'),
       TableData('${data.totalAmount}'),
       TableData('${data.amountPaid}'),
-      TableData('${data.paidDate}'),
+      TableData('${DateFormats.leadgerTimeStampToDate(data.paidDate)}'),
       TableData('${data.remainingAmount}'),
       // TableData('SURPLUS AMT'),
     ]);
