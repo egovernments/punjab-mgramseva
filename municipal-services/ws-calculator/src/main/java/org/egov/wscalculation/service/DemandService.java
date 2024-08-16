@@ -492,7 +492,7 @@ public class DemandService {
 
 	private void sendSMSNotification(RequestInfo requestInfo, List<SMSRequest> smsRequests, String billCycle,
 			String consumerCode, List<DemandDetail> demandDetails) {
-		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN"),
+		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN","SARPANCH"),
 				requestInfo.getUserInfo().getTenantId().substring(0,2));
 		for (OwnerInfo ownerInfo : userDetailResponse.getUser()) {
 			String localizationMessage = util.getLocalizationMessages(ownerInfo.getTenantId(), requestInfo);
@@ -1241,7 +1241,7 @@ public class DemandService {
 
 	private Recipient getRecepient(RequestInfo requestInfo, String tenantId) {
 		Recipient recepient = null;
-		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN"),
+		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN","SARPANCH"),
 				tenantId);
 		if (userDetailResponse.getUser().isEmpty())
 			log.error("Recepient is absent");
