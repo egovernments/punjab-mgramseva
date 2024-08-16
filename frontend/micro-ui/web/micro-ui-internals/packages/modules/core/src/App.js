@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
 import CitizenApp from "./pages/citizen";
 import EmployeeApp from "./pages/employee";
+import CommonApp from "./pages/common";
 
 export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData, defaultLanding = "citizen" }) => {
   const history = useHistory();
@@ -71,6 +72,9 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData, de
       </Route>
       <Route path={`/${window?.contextPath}/citizen`}>
         <CitizenApp {...commonProps} />
+      </Route>
+      <Route path={`/${window?.contextPath}/common`}>
+        <CommonApp {...commonProps} />
       </Route>
       <Route>
         <Redirect to={`/${window?.contextPath}/${defaultLanding}`} />

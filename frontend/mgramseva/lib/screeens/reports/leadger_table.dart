@@ -32,12 +32,10 @@ class LeadgerTable extends StatelessWidget {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    LabelText(
-                        '${ApplicationLocalizations.of(context).translate(tableTitle)}'),
                     Consumer<ReportsProvider>(
                         builder: (_, reportProvider, child) {
                       return SubLabelText(
-                          "${i18.common.LEDGER_CUSTOMER_NAME} : ${waterConnection?.connectionHolders?.first.name}");
+                          "${ApplicationLocalizations.of(context).translate(i18.common.LEDGER_CUSTOMER_NAME)} : ${waterConnection?.connectionHolders?.first.name}");
                     }),
                     Consumer<ReportsProvider>(
                         builder: (_, reportProvider, child) {
@@ -45,18 +43,18 @@ class LeadgerTable extends StatelessWidget {
                         return Column(
                           children: [
                             SubLabelText(
-                                "${i18.common.LEDGER_CONN_ID} : ${waterConnection?.connectionNo}"),
+                                "${ApplicationLocalizations.of(context).translate(i18.common.LEDGER_CONN_ID)} : ${waterConnection?.connectionNo}"),
                             SubLabelText(
-                                "${i18.common.LEDGER_OLD_CONN_ID} : ${waterConnection?.oldConnectionNo}"),
+                                "${ApplicationLocalizations.of(context).translate(i18.common.LEDGER_OLD_CONN_ID)} : ${waterConnection?.oldConnectionNo}"),
                           ],
                         );
                       } else {
                         return Row(
                           children: [
                             SubLabelText(
-                                "${i18.common.LEDGER_CONN_ID} : ${waterConnection?.connectionNo}"),
+                                "${ApplicationLocalizations.of(context).translate(i18.common.LEDGER_CONN_ID)} : ${waterConnection?.connectionNo}"),
                             SubLabelText(
-                                "${i18.common.LEDGER_OLD_CONN_ID} : ${waterConnection?.oldConnectionNo}"),
+                                "${ApplicationLocalizations.of(context).translate(i18.common.LEDGER_OLD_CONN_ID)} : ${waterConnection?.oldConnectionNo}"),
                           ],
                         );
                       }
@@ -83,20 +81,21 @@ class LeadgerTable extends StatelessWidget {
                             reportProvider
                                 .genericTableData.tableHeaders.length +
                         2,
-                    child: Visibility(
-                      visible:
-                          reportProvider.genericTableData.tableData.isNotEmpty,
-                      child: Pagination(
-                        limit: reportProvider.limit,
-                        offSet: reportProvider.offset,
-                        callBack: (pageResponse) =>
-                            reportProvider.onChangeOfPageLimit(
-                                pageResponse, tableTitle, context),
-                        isTotalCountVisible: false,
-                        totalCount:
-                            reportProvider.genericTableData.tableData.length,
-                      ),
-                    ),
+                    // child: Visibility(
+                    //   visible:
+                    //       reportProvider.genericTableData.tableData.isNotEmpty,
+                    //   child: Pagination(
+                    //     limit: reportProvider.limit,
+                    //     offSet: reportProvider.offset,
+                    //     callBack: (pageResponse) =>
+                    //         reportProvider.onChangeOfPageLimit(
+                    //             pageResponse, tableTitle, context),
+                    //     isTotalCountVisible: true,
+                    //     isDisabled: true,
+                    //     totalCount:
+                    //         reportProvider.genericTableData.tableData.length,
+                    //   ),
+                    // ),
                   )
                 ],
               );

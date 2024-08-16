@@ -242,7 +242,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
             callBack: onSort),
         TableHeader(i18.householdRegister.ACTIVE_INACTIVE,
             isSortingRequired: false, apiKey: 'leadgerReport'),
-            // TableHeader("Ledger", apiKey: '/viewLeadger')
+        // TableHeader("Ledger", apiKey: '/viewLeadger')
       ];
   List<TableHeader> get collectionHeaderListOLd => [
         TableHeader(i18.common.CONNECTION_ID,
@@ -297,7 +297,6 @@ class HouseholdRegisterProvider with ChangeNotifier {
                     ? sortBy!.isAscending
                     : null,
             callBack: onSort),
-        
       ];
 
   List<TableDataRow> getCollectionsData(List<WaterConnection> list) {
@@ -338,7 +337,6 @@ class HouseholdRegisterProvider with ChangeNotifier {
           callBack: onClickOfCollectionNo,
           iconButtonCallBack: viewLeadger,
           apiKey: connection.connectionNo),
-   
       TableData(
         '${name ?? 'NA'}',
       ),
@@ -423,12 +421,12 @@ class HouseholdRegisterProvider with ChangeNotifier {
           'status': waterConnection?.status
         });
   }
+
   viewLeadger(TableData tableData) {
-    log("Call Ledger View Here");   
-      var waterConnection = waterConnectionsDetails?.waterConnection
+    var waterConnection = waterConnectionsDetails?.waterConnection
         ?.firstWhere((element) => element.connectionNo == tableData.apiKey);
     Navigator.pushNamed(navigatorKey.currentContext!, Routes.LEDGER_REPORTS,
-                    arguments: {
+        arguments: {
           'waterconnections': waterConnection,
         });
   }

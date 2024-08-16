@@ -149,16 +149,16 @@ class _BillsTable extends State<BillsTable> {
   }
 
   String getCurrentRoutePath(BuildContext context) {
-  final currentRoute = ModalRoute.of(context)!;
-  return currentRoute.settings.name ?? '';
-}
+    final currentRoute = ModalRoute.of(context)!;
+    return currentRoute.settings.name ?? '';
+  }
 
   Widget _generateFirstColumnRow(BuildContext context, int index) {
-    
     return LayoutBuilder(builder: (context, constraints) {
-      bool showLeadger  = getCurrentRoutePath(context) == "/home/householdRegister";
+      bool showLeadger =
+          getCurrentRoutePath(context) == "/home/householdRegister";
       var data = widget.tableData[index].tableRow.first;
-      
+
       return ScrollParent(
           widget.scrollController,
           Row(
@@ -184,7 +184,9 @@ class _BillsTable extends State<BillsTable> {
                     style: widget.tableData[index].tableRow.first.style ??
                         TextStyle(color: Theme.of(context).primaryColor),
                   ),
-                  width: showLeadger ? widget.leftColumnWidth * 0.55 : widget.leftColumnWidth,
+                  width: showLeadger
+                      ? widget.leftColumnWidth * 0.55
+                      : widget.leftColumnWidth,
                   height:
                       widget.tableData[index].tableRow.first.label.length > 28
                           ? columnRowIncreasedHeight(index)
@@ -194,16 +196,18 @@ class _BillsTable extends State<BillsTable> {
                   alignment: Alignment.centerLeft,
                 ),
               ),
-              if(showLeadger)
-              Tooltip(
-                message: '${i18.dashboard.LEDGER_REPORTS}',
-                
-                child: IconButton(onPressed: () {
-                   if (data.iconButtonCallBack != null) {
-                      data.iconButtonCallBack!(data);
-                    }
-                }, icon: Icon(Icons.insert_chart_outlined)),
-              )
+              if (showLeadger)
+                Tooltip(
+                  message:
+                      '${ApplicationLocalizations.of(context).translate(i18.dashboard.LEDGER_REPORTS)}',
+                  child: IconButton(
+                      onPressed: () {
+                        if (data.iconButtonCallBack != null) {
+                          data.iconButtonCallBack!(data);
+                        }
+                      },
+                      icon: Icon(Icons.insert_chart_outlined)),
+                )
             ],
           ));
     });
@@ -269,13 +273,11 @@ class _BillsTable extends State<BillsTable> {
     return LayoutBuilder(builder: (context, constraints) {
       var list = <Widget>[];
       for (int i = 1; i < data.tableRow.length; i++) {
-      
-          list.add(
-            _generateColumnRow(
-                context, index, data.tableRow[i].label, constraints,
-                style: data.tableRow[i].style),
-          );
-
+        list.add(
+          _generateColumnRow(
+              context, index, data.tableRow[i].label, constraints,
+              style: data.tableRow[i].style),
+        );
       }
       return Container(
           color: index % 2 == 0 ? const Color(0xffEEEEEE) : Colors.white,
