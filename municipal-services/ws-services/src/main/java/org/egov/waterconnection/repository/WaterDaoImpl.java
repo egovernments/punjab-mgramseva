@@ -43,6 +43,7 @@ import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.egov.waterconnection.web.models.collection.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.stereotype.Repository;
@@ -53,6 +54,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Repository
 public class WaterDaoImpl implements WaterDao {
+
+	@Autowired
+	private ConsumerRowMapper consumerRowMapper;
+
+	@Autowired
+	private MonthReportRowMapper monthReportRowMapper;
+
+	@Autowired
+	private PaymentRowMapper paymentRowMapper;
 
 	@Autowired
 	private LedgerReportRowMapper ledgerReportRowMapper;
@@ -745,5 +755,132 @@ public class WaterDaoImpl implements WaterDao {
 		int toIndex = Math.min(fromIndex + newlimit, ledgerReportList.size());
 		return ledgerReportList.subList(fromIndex, toIndex);
 //		return ledgerReportList;
+	}
+
+
+	public List<MonthReport> getMonthReport(Long monthStartDateTime, Long monthEndDateTime, String tenantId, Integer offset, Integer limit,String sortOrder) {
+		StringBuilder tillDateConsumerQuery = new StringBuilder(wsQueryBuilder.TILL_DATE_CONSUMER);
+
+		List<Object> consumerPreparedStatement = new ArrayList<>();
+		consumerPreparedStatement.add(monthEndDateTime);
+		consumerPreparedStatement.add(tenantId);
+
+		if(sortOrder.equals(SearchCriteria.SortOrder.DESC.name()))
+			tillDateConsumerQuery.append(" DESC ");
+		else
+			tillDateConsumerQuery.append(" ASC ");
+
+		Integer newlimit = wsConfiguration.getDefaultLimit();
+		Integer newoffset = wsConfiguration.getDefaultOffset();
+		if (limit == null && offset == null)
+			newlimit = wsConfiguration.getMaxLimit();
+		if (limit != null && limit <= wsConfiguration.getMaxLimit())
+			newlimit = limit;
+		if (limit != null && limit >= wsConfiguration.getMaxLimit())
+			newlimit = wsConfiguration.getMaxLimit();
+		if (limit != null && limit == -1) // Handling the case when limit is -1
+			newlimit = -1;
+
+		if (offset != null)
+			newoffset = offset;
+
+		if (newlimit > 0) {
+			tillDateConsumerQuery.append(" offset ?  limit ? ;");
+			consumerPreparedStatement.add(newoffset);
+			consumerPreparedStatement.add(newlimit);
+		}
+
+		log.info("Query to fetch consumers: " + tillDateConsumerQuery + " and prepared statement: " + consumerPreparedStatement);
+		List<MonthReport> consumerList = jdbcTemplate.query(tillDateConsumerQuery.toString(), consumerPreparedStatement.toArray(),consumerRowMapper);
+
+		List<MonthReport> reportList = new ArrayList<>();
+
+		if (!consumerList.isEmpty()) {
+			for (MonthReport monthReport : consumerList) {
+				List<Object> demandPreparedStatement = new ArrayList<>();
+				demandPreparedStatement.add(monthStartDateTime);
+				demandPreparedStatement.add(monthEndDateTime);
+				demandPreparedStatement.add(tenantId);
+				demandPreparedStatement.add(monthReport.getConnectionNo());
+
+				StringBuilder month_demand_query = new StringBuilder(wsQueryBuilder.MONTH_DEMAND_QUERY);
+
+				try{
+					MonthReport demandReport=jdbcTemplate.queryForObject(month_demand_query.toString(), demandPreparedStatement.toArray(), monthReportRowMapper);
+					if (demandReport != null) {
+						monthReport.setDemandGenerationDate(demandReport.getDemandGenerationDate());
+						monthReport.setPenalty(demandReport.getPenalty());
+						monthReport.setDemandAmount(demandReport.getDemandAmount());
+						monthReport.setAdvance(demandReport.getAdvance());
+					}
+				}catch (EmptyResultDataAccessException e) {
+					log.info("No month report found for connection: " + monthReport.getConnectionNo());
+				}
+				BigDecimal taxAmountResult = getMonthlyTaxAmount(monthStartDateTime, monthReport.getConnectionNo());
+				if(taxAmountResult==null)
+				{
+					taxAmountResult=BigDecimal.ZERO;
+				}
+				BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(monthStartDateTime, monthReport.getConnectionNo());
+				if(totalAmountPaidResult==null)
+				{
+					totalAmountPaidResult=BigDecimal.ZERO;
+				}
+
+				if (monthReport != null) {
+					monthReport.setConnectionNo(monthReport.getConnectionNo());
+					monthReport.setArrears(taxAmountResult.subtract(totalAmountPaidResult));
+					BigDecimal totalAmount = (monthReport.getPenalty() != null ? monthReport.getPenalty() : BigDecimal.ZERO)
+							.add(monthReport.getDemandAmount() != null ? monthReport.getDemandAmount() : BigDecimal.ZERO)
+							.add(monthReport.getAdvance() != null ? monthReport.getAdvance() : BigDecimal.ZERO)
+							.add(monthReport.getArrears()!=null ? monthReport.getArrears():BigDecimal.ZERO);
+					monthReport.setTotalAmount(totalAmount);
+				}
+
+				StringBuilder month_payment_query = new StringBuilder(wsQueryBuilder.MONTH_PAYMENT_QUERY);
+
+				List<Object> paymentPreparedStatement = new ArrayList<>();
+				paymentPreparedStatement.add(tenantId);
+				paymentPreparedStatement.add(monthReport.getConnectionNo());
+				paymentPreparedStatement.add(monthStartDateTime);
+				paymentPreparedStatement.add(monthEndDateTime);
+				paymentPreparedStatement.add(tenantId);
+				paymentPreparedStatement.add(tenantId);
+
+				PaymentMonthReport paymentMonthReport = jdbcTemplate.queryForObject(month_payment_query.toString(), paymentPreparedStatement.toArray(), paymentRowMapper);
+
+				if (monthReport != null && paymentMonthReport != null) {
+					monthReport.setPaid(paymentMonthReport.getTotalAmountPaid()!= null ? paymentMonthReport.getTotalAmountPaid() : BigDecimal.ZERO);
+					monthReport.setPaidDate(paymentMonthReport.getFirstTransactionDate());
+					BigDecimal totalAmount = monthReport.getTotalAmount() != null ? monthReport.getTotalAmount() : BigDecimal.ZERO;
+					BigDecimal totalAmountPaid = paymentMonthReport.getTotalAmountPaid() != null ? paymentMonthReport.getTotalAmountPaid() : BigDecimal.ZERO;
+					monthReport.setRemainingAmount(totalAmount.subtract(totalAmountPaid));
+				}
+				reportList.add(monthReport);
+			}
+		}
+		return reportList;
+	}
+
+	private BigDecimal getMonthlyTaxAmount(Long startDate, String consumerCode) {
+		StringBuilder taxAmountQuery = new StringBuilder(wsQueryBuilder.TAX_AMOUNT_QUERY);
+		List<Object> taxAmountParams = new ArrayList<>();
+		taxAmountParams.add(consumerCode);
+		taxAmountParams.add(startDate);
+		BigDecimal ans = jdbcTemplate.queryForObject(taxAmountQuery.toString(), taxAmountParams.toArray(), BigDecimal.class);
+		if (ans != null)
+			return ans;
+		return BigDecimal.ZERO;
+	}
+
+	private BigDecimal getMonthlyTotalAmountPaid(Long startDate, String consumerCode) {
+		StringBuilder totalAmountPaidQuery = new StringBuilder(wsQueryBuilder.TOTAL_AMOUNT_PAID_QUERY);
+		List<Object> totalAmountPaidParams = new ArrayList<>();
+		totalAmountPaidParams.add(consumerCode);
+		totalAmountPaidParams.add(startDate);
+		BigDecimal ans = jdbcTemplate.queryForObject(totalAmountPaidQuery.toString(), totalAmountPaidParams.toArray(), BigDecimal.class);
+		if (ans != null)
+			return ans;
+		return BigDecimal.ZERO;
 	}
 }
