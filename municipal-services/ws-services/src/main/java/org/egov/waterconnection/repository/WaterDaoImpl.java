@@ -858,7 +858,7 @@ public class WaterDaoImpl implements WaterDao {
 	}
 
 	private BigDecimal getMonthlyTaxAmount(Long startDate, String consumerCode) {
-		StringBuilder taxAmountQuery = new StringBuilder(wsQueryBuilder.TAX_AMOUNT_QUERY);
+		StringBuilder taxAmountQuery = new StringBuilder(wsQueryBuilder.TAX_AMOUNT_QUERY_MONTH_REPORT);
 		List<Object> taxAmountParams = new ArrayList<>();
 		taxAmountParams.add(consumerCode);
 		taxAmountParams.add(startDate);
