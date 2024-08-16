@@ -214,6 +214,34 @@ public class WsQueryBuilder {
 			"id IN (SELECT paymentid FROM egcl_paymentdetail WHERE billid IN " +
 			"(SELECT billid FROM egbs_billdetail_v1 WHERE consumercode = ?)) AND createdtime < ? AND paymentstatus!='CANCELLED';";
 
+	public static final String TILL_DATE_CONSUMER="select conn.tenantId as tenantId,conn.connectionno as connectionno, " +
+			" conn.oldconnectionno as oldconnectionno ,conn.createdTime as consumerCreatedOnDate," +
+			" connectionholder.userid as userId from eg_ws_connection conn INNER JOIN " +
+			" eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id " +
+			" INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id where wc.connectiontype='Non_Metered' and " +
+			" conn.createdtime<=? and conn.tenantid=? ORDER BY conn.connectionno  ";
+
+	public static final String MONTH_DEMAND_QUERY ="SELECT " +
+			"conn.connectionno as connectionNo, " +
+			"dem.createdtime as demandGenerationDate, " +
+			"SUM(CASE WHEN dd.taxheadcode = 'WS_TIME_PENALTY' THEN dd.taxamount ELSE 0 END) as penalty, " +
+			"SUM(CASE WHEN dd.taxheadcode = '10101' THEN dd.taxamount ELSE 0 END) as demandAmount, " +
+			"SUM(CASE WHEN dd.taxheadcode = 'WS_ADVANCE_CARRYFORWARD' THEN dd.taxamount ELSE 0 END) as advance " +
+			"FROM eg_ws_connection conn " +
+			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno " +
+			"INNER JOIN egbs_demanddetail_v1 dd on dd.demandid = dem.id " +
+			"WHERE dem.taxperiodfrom >= ? AND dem.taxperiodto <= ? AND dem.tenantId = ? AND conn.connectionno = ? AND dem.status='ACTIVE' " +
+			"GROUP BY conn.connectionno, dem.tenantId, conn.createdTime, dem.createdtime ";
+//			"ORDER BY conn.connectionno";
+
+	public static final String MONTH_PAYMENT_QUERY="SELECT SUM(p.totalamountpaid) AS totalAmountPaid, MIN(p.transactiondate) " +
+			"FROM egcl_payment p INNER JOIN eg_ws_connection c ON p.tenantid = c.tenantid " +
+			"WHERE p.tenantid = ? AND c.connectionno = ? AND p.transactiondate BETWEEN ? AND ? " +
+			"AND p.id IN (SELECT pd.paymentid FROM egcl_paymentdetail pd WHERE pd.tenantid = ? " +
+			"AND pd.billid IN (SELECT bd.billid FROM egbs_billdetail_v1 bd WHERE bd.consumercode = c.connectionno " +
+			" AND bd.tenantid = ? )) AND p.instrumentstatus = 'APPROVED' " +
+			"AND p.paymentstatus NOT IN ('CANCELLED');";
+
 	/**
 	 * 
 	 * @param criteria          The WaterCriteria

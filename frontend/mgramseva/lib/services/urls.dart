@@ -92,6 +92,7 @@ class Url {
 
   ///Reports
   static const String LEDGER_REPORT = 'ws-services/wc/ledger-report';
+  static const String MONTHLY_LEDGER_REPORT = 'ws-services/wc/month-report';
   static const String BILL_REPORT = 'ws-services/wc/_billReport';
   static const String COLLECTION_REPORT = 'ws-services/wc/_collectionReport';
   static const String INACTIVE_CONSUMER_REPORT =

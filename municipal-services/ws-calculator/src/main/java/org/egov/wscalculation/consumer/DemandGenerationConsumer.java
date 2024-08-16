@@ -335,7 +335,7 @@ public class DemandGenerationConsumer {
 				WSCalculationConstant.mGram_Consumer_NewDemand, tenantId);
 		HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
 		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
-				Arrays.asList("COLLECTION_OPERATOR"), tenantId);
+				Arrays.asList("COLLECTION_OPERATOR","REVENUE_COLLECTOR"), tenantId);
 		Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 		String msgLink = config.getNotificationUrl() + config.getGpUserDemandLink();
 		for (OwnerInfo userInfo : userDetailResponse.getUser()) {
@@ -479,7 +479,7 @@ public class DemandGenerationConsumer {
 
 			HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
 			UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
-					Arrays.asList("COLLECTION_OPERATOR"), tenantId);
+					Arrays.asList("COLLECTION_OPERATOR","REVENUE_COLLECTOR"), tenantId);
 			Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 
 			String msgLink = config.getNotificationUrl() + config.getGpUserDemandLink();
@@ -549,7 +549,7 @@ public class DemandGenerationConsumer {
 
 	private Recipient getRecepient(RequestInfo requestInfo, String tenantId) {
 		Recipient recepient = null;
-		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN"),
+		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN","SARPANCH"),
 				tenantId);
 		if (userDetailResponse.getUser().isEmpty())
 			log.error("Recepient is absent");

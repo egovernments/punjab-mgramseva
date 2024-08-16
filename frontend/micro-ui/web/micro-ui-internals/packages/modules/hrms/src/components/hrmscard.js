@@ -88,9 +88,14 @@ const HRMSCard = () => {
         label: STATE_ADMIN ? t("HR_COMMON_CREATE_DIVISION_EMPLOYEE_HEADER") : t("HR_COMMON_CREATE_EMPLOYEE_HEADER"),
         link: `/${window?.contextPath}/employee/hrms/create`,
       },
-      DIV_ADMIN ? {} : {
+      DIV_ADMIN ? {} :
+       {
         label: t("HR_STATE_ REPORTS"),
         link: "https://mgramseva-dwss.punjab.gov.in/kibana/app/r/s/JNF2x?auth_provider_hint=anonymous1",
+      },
+       {
+        label: t("HR_RATE_DASHBOARD"),
+        link: "https://mgramseva-dwss.punjab.gov.in/kibana/app/dashboards#/view/22ed8660-39cf-11ef-841e-251f7e3bc6c7?[…]!t,value:60000),time:(from:now-15m,to:now))",
       },
       ...moduleForSomeDIVAdmin,
       ...moduleForSomeSTATEUser,

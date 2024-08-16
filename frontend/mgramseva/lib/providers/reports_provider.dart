@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/reports/InactiveConsumerReportData.dart';
 import 'package:mgramseva/model/reports/leadger_report.dart';
+import 'package:mgramseva/model/reports/monthly_ledger_data.dart';
 import 'package:mgramseva/model/reports/vendor_report_data.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
@@ -46,6 +47,7 @@ class ReportsProvider with ChangeNotifier {
   List<InactiveConsumerReportData>? inactiveconsumers;
   List<ExpenseBillReportData>? expenseBillReportData;
   List<VendorReportData>? vendorReportData;
+  List<MonthReportData>? monthlyLedgerReport;
   WaterConnectionCountResponse? waterConnectionCount;
   BillsTableData genericTableData = BillsTableData([], []);
 
@@ -114,6 +116,24 @@ class ReportsProvider with ChangeNotifier {
         TableHeader(i18.common.LEDGER_BALANCE_FOR_THE_MONH),
       ];
 
+  List<TableHeader> get monthlyLedgerReportHeaderList => [
+        TableHeader(i18.consumer.ML_NEW_CONN_ID),
+        TableHeader(i18.consumer.ML_SR_NO),
+        TableHeader(i18.consumer.ML_OLD_CONN_ID),
+        TableHeader(i18.consumer.ML_CONSUMER_NAME),
+        TableHeader(i18.consumer.ML_CONSUMER_ENTERED_DATA),
+        TableHeader(i18.consumer.ML_PREV_OUTSTANDING_TILL_LAST_MONTH),
+        TableHeader(i18.consumer.ML_ADV_AMOUNT_RECEIVED),
+        TableHeader(i18.consumer.ML_CURR_MONTH_PENALTY),
+        TableHeader(i18.consumer.ML_BILL_GENERATED_FOR_MONTH),
+        TableHeader(i18.consumer.ML_DATE_OF_GENERATED),
+        TableHeader(i18.consumer.ML_TOTAL_AMOUNT),
+        TableHeader(i18.consumer.ML_AMOUNT_COLLECT_AGAINST_TOTAL),
+        TableHeader(i18.consumer.ML_DATE_OF_AMOUNT_COLLECTED),
+        TableHeader(i18.consumer.ML_REMAINING_AMOUNT_TO_BE_COLLECTED),
+        // TableHeader(i18.common.ML_SURPLUS_AMOUNT_COLLECETD),
+      ];
+
   List<TableHeader> get collectionHeaderList => [
         TableHeader(i18.common.CONNECTION_ID),
         TableHeader(
@@ -170,6 +190,9 @@ class ReportsProvider with ChangeNotifier {
     }
     if (type == i18.dashboard.LEDGER_REPORTS) {
       getLeadgerReport(limit: response.limit, offset: response.offset);
+    }
+    if (type == i18.dashboard.MONTHLY_LEDGER_REPORT_LABEL) {
+      getMonthlyLedgerReport(limit: response.limit, offset: response.offset);
     }
   }
 
@@ -346,11 +369,44 @@ class ReportsProvider with ChangeNotifier {
     ]);
   }
 
+  List<TableDataRow> getMonthlyReportData(List<MonthReportData> list,
+      {bool isExcel = false}) {
+    return list
+        .asMap() // Add index to each element
+        .entries
+        .map((entry) => getMonthlyLedgerReportDataRow(entry.value,
+            index: entry.key, isExcel: isExcel))
+        .toList();
+  }
+
   List<TableDataRow> getVendorReportData(List<VendorReportData> list,
       {bool isExcel = false}) {
     return list
         .map((e) => getVendorReportDataRow(e, isExcel: isExcel))
         .toList();
+  }
+
+  TableDataRow getMonthlyLedgerReportDataRow(MonthReportData data,
+      {bool isExcel = false, int index = 0}) {
+    return TableDataRow([
+      TableData('${data.connectionNo}'),
+      TableData('${index + 1}'),
+      TableData('${data.oldConnectionNo}'),
+      TableData('${data.consumerName ?? "NA"}'),
+      TableData(
+          '${DateFormats.leadgerTimeStampToDate(data.consumerCreatedOnDate)}'),
+      TableData('${data.arrears ?? "-"}'),
+      TableData('${data.advance ?? "-"}'),
+      TableData('${data.penalty ?? "-"}'),
+      TableData('${data.demandAmount ?? "-"}'),
+      TableData(
+          '${DateFormats.leadgerTimeStampToDate(data.demandGenerationDate)}'),
+      TableData('${data.totalAmount ?? "-"}'),
+      TableData('${data.amountPaid ?? "-"}'),
+      TableData('${DateFormats.leadgerTimeStampToDate(data.paidDate)}'),
+      TableData('${data.remainingAmount ?? "-"}'),
+      // TableData('SURPLUS AMT'),
+    ]);
   }
 
   TableDataRow getVendorReportDataRow(VendorReportData data,
@@ -545,7 +601,7 @@ class ReportsProvider with ChangeNotifier {
   Future<void> getLeadgerReport({
     bool download = false,
     int offset = 1,
-    int limit = 10,
+    int limit = 12,
   }) async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
@@ -862,6 +918,72 @@ class ReportsProvider with ChangeNotifier {
             this.offset = offset;
             this.genericTableData = BillsTableData(expenseBillReportHeaderList,
                 getExpenseBillReportData(expenseBillReportData!));
+          }
+        }
+        streamController.add(response);
+        callNotifier();
+      } else {
+        streamController.add('error');
+        throw Exception('API Error');
+      }
+    } catch (e, s) {
+      ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
+      streamController.addError('error');
+      callNotifier();
+    }
+  }
+
+  Future<void> getMonthlyLedgerReport({
+    bool download = false,
+    int offset = 1,
+    int limit = 10,
+  }) async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+      if (selectedBillPeriod == null) {
+        throw Exception(
+            '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.SELECT_BILLING_CYCLE)}');
+      }
+      Map<String, dynamic> params = {
+        'tenantId': commonProvider.userDetails!.selectedtenant!.code,
+        'startDate': selectedBillPeriod?.split('-')[0],
+        'endDate': selectedBillPeriod?.split('-')[1],
+        'offset': '${offset - 1}',
+        'limit': '${download ? -1 : limit}',
+        'sortOrder': 'asc'
+      };
+      var response = await ReportsRepo().fetchMonthlyLedgerReport(params);
+      if (response != null) {
+        monthlyLedgerReport = response.monthReport;
+        if (download) {
+          generateExcel(
+              monthlyLedgerReportHeaderList
+                  .map<String>((e) =>
+                      '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
+                  .toList(),
+              getMonthlyReportData(monthlyLedgerReport!, isExcel: true)
+                      .map<List<String>>(
+                          (e) => e.tableRow.map((e) => e.label).toList())
+                      .toList() ??
+                  [],
+              title:
+                  'MonthlyReport_${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}_${selectedBillPeriod.toString().replaceAll('/', '_')}',
+              optionalData: [
+                'Monthly Report',
+                '$selectedBillPeriod',
+                '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(commonProvider.userDetails!.selectedtenant!.code!)}',
+                '${commonProvider.userDetails?.selectedtenant?.code?.substring(3)}',
+                'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch, format: 'dd/MMM/yyyy')}'
+              ]);
+        } else {
+          if (monthlyLedgerReport != null && monthlyLedgerReport!.isNotEmpty) {
+            this.limit = limit;
+            this.offset = offset;
+            this.genericTableData = BillsTableData(
+                monthlyLedgerReportHeaderList,
+                getMonthlyReportData(monthlyLedgerReport!));
           }
         }
         streamController.add(response);
