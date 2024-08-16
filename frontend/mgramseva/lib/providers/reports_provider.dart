@@ -404,7 +404,7 @@ class ReportsProvider with ChangeNotifier {
           '${DateFormats.leadgerTimeStampToDate(data.demandGenerationDate)}'),
       TableData('${data.totalAmount ?? "-"}'),
       TableData('${data.amountPaid ?? "-"}'),
-      TableData('${data.paidDate ?? "-"}'),
+      TableData('${DateFormats.leadgerTimeStampToDate(data.paidDate)}'),
       TableData('${data.remainingAmount ?? "-"}'),
       // TableData('SURPLUS AMT'),
     ]);
@@ -953,6 +953,7 @@ class ReportsProvider with ChangeNotifier {
         'endDate': selectedBillPeriod?.split('-')[1],
         'offset': '${offset - 1}',
         'limit': '${download ? -1 : limit}',
+        'sortOrder': 'asc'
       };
       var response = await ReportsRepo().fetchMonthlyLedgerReport(params);
       if (response != null) {
