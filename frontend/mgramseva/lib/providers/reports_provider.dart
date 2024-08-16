@@ -388,7 +388,6 @@ class ReportsProvider with ChangeNotifier {
 
   TableDataRow getMonthlyLedgerReportDataRow(MonthReportData data,
       {bool isExcel = false, int index = 0}) {
-    log("${data.oldConnectionNo}");
     return TableDataRow([
       TableData('${data.connectionNo}'),
       TableData('${index + 1}'),
