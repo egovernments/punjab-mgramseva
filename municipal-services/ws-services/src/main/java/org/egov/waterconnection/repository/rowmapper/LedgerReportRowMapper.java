@@ -228,6 +228,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                     ledgerReport.setPayment(new ArrayList<>());
                 }
                 ledgerReport.getPayment().add(defaultPaymentLedgerReport);
+                ledgerReport.setTotalBalanceLeftInMonth(BigDecimal.ZERO);
+                ledgerReport.setTotalPaymentInMonth(BigDecimal.ZERO);
             }
         }
     }

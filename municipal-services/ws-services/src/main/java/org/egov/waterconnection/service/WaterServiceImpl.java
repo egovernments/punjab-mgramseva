@@ -870,4 +870,18 @@ public class WaterServiceImpl implements WaterService {
 		List<Map<String, Object>> list = waterDaoImpl.getLedgerReport(consumercode, tenantId, offset, limit, year,requestInfoWrapper);
 		return list;
 	}
+
+
+	@Override
+	public List<MonthReport> monthReport(String startDate, String endDate, String tenantId, Integer offset, Integer limit,String sortOrder)
+	{
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDate monthStartDate = LocalDate.parse(startDate, formatter);
+		LocalDate monthEndDate = LocalDate.parse(endDate, formatter);
+
+		Long monthStartDateTime = LocalDateTime.of(monthStartDate.getYear(), monthStartDate.getMonth(), monthStartDate.getDayOfMonth(), 0, 0, 0)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long monthEndDateTime = LocalDateTime.of(monthEndDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		return waterDaoImpl.getMonthReport(monthStartDateTime,monthEndDateTime,tenantId,offset,limit,sortOrder);
+	}
 }

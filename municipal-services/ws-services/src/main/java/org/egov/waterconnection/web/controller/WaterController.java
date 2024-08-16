@@ -254,4 +254,14 @@ public class WaterController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
+	@PostMapping("/month-report")
+	public ResponseEntity<?> getMonthReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,@RequestParam String startDate,@RequestParam String endDate,@RequestParam String tenantId, @RequestParam Integer offset, @RequestParam Integer limit,@RequestParam String sortOrder)
+	{
+		List<MonthReport> monthReportList=waterService.monthReport(startDate,endDate,tenantId,offset,limit,sortOrder);
+		MonthReportResponse monthReportResponse=MonthReportResponse.builder().monthReport(monthReportList).
+				tenantName(tenantId).month(startDate.concat("-"+endDate)).
+				responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),true)).build();
+		return new ResponseEntity<>(monthReportResponse,HttpStatus.OK);
+	}
+
 }
