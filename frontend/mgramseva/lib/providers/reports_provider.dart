@@ -396,10 +396,10 @@ class ReportsProvider with ChangeNotifier {
       TableData('${data.consumerName ?? "NA"}'),
       TableData(
           '${DateFormats.leadgerTimeStampToDate(data.consumerCreatedOnDate)}'),
-      TableData('${data.arrears}'),
-      TableData('${data.advance}'),
-      TableData('${data.penalty}'),
-      TableData('${data.demandAmount}'),
+      TableData('${data.arrears ?? "-"}'),
+      TableData('${data.advance ?? "-"}'),
+      TableData('${data.penalty ?? "-"}'),
+      TableData('${data.demandAmount ?? "-"}'),
       TableData(
           '${DateFormats.leadgerTimeStampToDate(data.demandGenerationDate)}'),
       TableData('${data.totalAmount}'),
