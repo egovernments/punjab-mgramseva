@@ -4,11 +4,8 @@ import { Redirect, Route, Switch, useLocation, useRouteMatch, useHistory } from 
 import { AppModules } from "../../components/AppModules";
 import ErrorBoundary from "../../components/ErrorBoundaries";
 import TopBarSideBar from "../../components/TopBarSideBar";
-import ChangePassword from "./ChangePassword";
-import ForgotPassword from "./ForgotPassword";
-import LanguageSelection from "./LanguageSelection";
+
 import EmployeeLogin from "./Login";
-import UserProfile from "../citizen/Home/UserProfile";
 import ErrorComponent from "../../components/ErrorComponent";
 import { PrivateRoute, Card, CardText, CardSubHeader, CardLabelError } from "@egovernments/digit-ui-react-components";
 
@@ -17,7 +14,7 @@ import { PrivateRoute, Card, CardText, CardSubHeader, CardLabelError } from "@eg
 
 const userScreensExempted = ["user/profile", "user/error"];
 
-const EmployeeApp = ({
+const CommonApp = ({
   stateInfo,
   userDetails,
   CITIZEN,
@@ -87,7 +84,7 @@ const EmployeeApp = ({
   return (
     <div className="employee">
       <Switch>
-        <Route path={`${path}/user`}>
+        <Route path={`${path}/page`}>
           {isUserProfile && (
             <TopBarSideBar
               t={t}
@@ -111,19 +108,11 @@ const EmployeeApp = ({
             }
           >
             <Switch>
-              <Route path={`${path}/user/login`}>
+              <Route path={`${path}/page/view`}>
                 <EmployeeLogin />
               </Route>
-              <Route path={`${path}/user/forgot-password`}>
-                <ForgotPassword />
-              </Route>
-              <Route path={`${path}/user/change-password`}>
-                <ChangePassword />
-              </Route>
-              <PrivateRoute path={`${path}/user/profile`}>
-                <UserProfile stateCode={stateCode} userType={"employee"} cityDetails={cityDetails} />
-              </PrivateRoute>
-              <Route path={`${path}/user/error`}>
+
+              <Route path={`${path}/page/error`}>
                 <ErrorComponent
                   initData={initData}
                   goToHome={() => {
@@ -131,12 +120,7 @@ const EmployeeApp = ({
                   }}
                 />
               </Route>
-              <Route path={`${path}/user/language-selection`}>
-                <LanguageSelection />
-              </Route>
-              <Route>
-                <Redirect to={`${path}/user/language-selection`} />
-              </Route>
+
             </Switch>
           </div>
         </Route>
@@ -196,4 +180,4 @@ const EmployeeApp = ({
   );
 };
 
-export default EmployeeApp;
+export default CommonApp;

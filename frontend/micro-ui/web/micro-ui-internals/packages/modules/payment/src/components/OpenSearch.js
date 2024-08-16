@@ -72,9 +72,9 @@ const OpenSearch = () => {
   return (
     <React.Fragment>
       <div>
-        <Header className="works-header-search">{t("OPEN_PAYMENT_LOGIN")}</Header>
-        <div className="inbox-search-wrapper">
-          <div className="search-wrapper">
+        {/* <Header className="works-header-search">{t("OPEN_PAYMENT_LOGIN")}</Header> */}
+        {/* <div className="inbox-search-wrapper"> */}
+        {/* <div className="search-wrapper">
 
             <div className="tooltip">
               <Link className="dropdown-user-link links-font-high" to="/mgramseva-web/employee/user/login">{t("OPEN_PAYMENT_LOGIN_ADMIN")}</Link>
@@ -88,7 +88,7 @@ const OpenSearch = () => {
               <span className="tooltiptext" style={{ whiteSpace: "nowrap" }}>{t("OPEN_PAYMENT_LOGIN_EMPLOYEE_TOOL_TIP")}</span>
             </div>
           </div>
-        </div>
+        </div> */}
         <br />
         <Header className="works-header-search">{t(OpenSearchConfig?.label)}</Header>
         <div className="inbox-search-wrapper">

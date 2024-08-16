@@ -54,7 +54,7 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
       }
       const requestData = {
         ...data,
-        username:mobileNumber,
+        username: mobileNumber,
 
         otpReference: otp,
         tenantId,
@@ -73,7 +73,7 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
     history.replace(`/${window?.contextPath}/employee/user/login`);
   };
 
-  const [ password, confirmPassword] = propsConfig.inputs;
+  const [password, confirmPassword] = propsConfig.inputs;
 
 
   const config = [
@@ -84,7 +84,7 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
           type: password.type,
           populators: {
             name: password.name,
-            validation:{
+            validation: {
               maxlength: 10,
             }
           },
@@ -95,7 +95,7 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
           type: confirmPassword.type,
           populators: {
             name: confirmPassword.name,
-            validation:{
+            validation: {
               maxlength: 10,
             }
           },
@@ -103,7 +103,7 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
         },
       ],
     },
-  ];  
+  ];
 
   return (
     <Background>
