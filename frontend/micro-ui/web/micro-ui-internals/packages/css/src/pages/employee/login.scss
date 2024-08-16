@@ -186,16 +186,16 @@
   }
 }
 
+
 .link-list {
-  display: list-item !important;
-  flex-wrap: wrap;
-  justify-content: space-around; /* Adjust as needed */
-  width: 100%; /* Adjust container width */
-  margin: 0 auto;
+  list-style-type: none;
+  padding: 0;
+  display: flex; /* Adjust display for layout preference */
+  justify-content: space-between; /* Adjust spacing as needed */
 }
 
 .link-item {
-  width: calc(25% - 20px); 
+  display: flex;
   align-items: center;
   margin: 10px; /* Adjust margin as needed */
   padding: 10px;
@@ -207,7 +207,7 @@
 }
 
 .link-item:hover {
-  background-color: #f0f0f0;
+  // background-color: #f0f0f0;
   transform: scale(1.05); /* Add scale effect on hover */
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Add slight shadow on hover */
 }
@@ -225,4 +225,3 @@
 .link-item:hover .link-icon {
   transform: rotate(360deg); /* Add rotation animation on hover */
 }
-
