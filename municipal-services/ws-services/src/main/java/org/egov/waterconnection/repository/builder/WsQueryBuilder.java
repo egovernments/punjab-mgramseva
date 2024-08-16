@@ -218,7 +218,7 @@ public class WsQueryBuilder {
 			" connectionholder.userid as userId from eg_ws_connection conn INNER JOIN " +
 			" eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id " +
 			" INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id where wc.connectiontype='Non_Metered' and " +
-			" conn.createdtime<=? and conn.tenantid=? ";
+			" conn.createdtime<=? and conn.tenantid=? ORDER BY conn.connectionno desc ";
 
 	public static final String MONTH_DEMAND_QUERY ="SELECT " +
 			"conn.connectionno as connectionNo, " +
