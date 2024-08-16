@@ -218,7 +218,7 @@ public class WsQueryBuilder {
 			" connectionholder.userid as userId from eg_ws_connection conn INNER JOIN " +
 			" eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id " +
 			" INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id where wc.connectiontype='Non_Metered' and " +
-			" conn.createdtime<=? and conn.tenantid=? ORDER BY conn.connectionno desc ";
+			" conn.createdtime<=? and conn.tenantid=? ORDER BY conn.connectionno  ";
 
 	public static final String MONTH_DEMAND_QUERY ="SELECT " +
 			"conn.connectionno as connectionNo, " +
@@ -230,8 +230,8 @@ public class WsQueryBuilder {
 			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno " +
 			"INNER JOIN egbs_demanddetail_v1 dd on dd.demandid = dem.id " +
 			"WHERE dem.taxperiodfrom >= ? AND dem.taxperiodto <= ? AND dem.tenantId = ? AND conn.connectionno = ? AND dem.status='ACTIVE' " +
-			"GROUP BY conn.connectionno, dem.tenantId, conn.createdTime, dem.createdtime " +
-			"ORDER BY conn.connectionno";
+			"GROUP BY conn.connectionno, dem.tenantId, conn.createdTime, dem.createdtime ";
+//			"ORDER BY conn.connectionno";
 
 	public static final String MONTH_PAYMENT_QUERY="SELECT SUM(p.totalamountpaid) AS totalAmountPaid, MIN(p.transactiondate) " +
 			"FROM egcl_payment p INNER JOIN eg_ws_connection c ON p.tenantid = c.tenantid " +

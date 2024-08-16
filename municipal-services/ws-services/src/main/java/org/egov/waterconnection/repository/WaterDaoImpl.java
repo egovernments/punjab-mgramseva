@@ -753,12 +753,17 @@ public class WaterDaoImpl implements WaterDao {
 //		return ledgerReportList;
 	}
 
-	public List<MonthReport> getMonthReport(Long monthStartDateTime, Long monthEndDateTime, String tenantId, Integer offset, Integer limit) {
+	public List<MonthReport> getMonthReport(Long monthStartDateTime, Long monthEndDateTime, String tenantId, Integer offset, Integer limit,String sortOrder) {
 		StringBuilder tillDateConsumerQuery = new StringBuilder(wsQueryBuilder.TILL_DATE_CONSUMER);
 
 		List<Object> consumerPreparedStatement = new ArrayList<>();
 		consumerPreparedStatement.add(monthEndDateTime);
 		consumerPreparedStatement.add(tenantId);
+
+		if(sortOrder.equals(SearchCriteria.SortOrder.DESC.name()))
+			tillDateConsumerQuery.append(" DESC ");
+		else
+			tillDateConsumerQuery.append(" ASC ");
 
 		Integer newlimit = wsConfiguration.getDefaultLimit();
 		Integer newoffset = wsConfiguration.getDefaultOffset();
