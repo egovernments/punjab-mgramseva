@@ -17,6 +17,7 @@ def getGPWSCHeirarchy():
     try:
         mdms_url = os.getenv('API_URL')
         state_tenantid = os.getenv('TENANT_ID')
+        url=os.getenv('IFIX_DEP_ENTITY_URL')
         mdms_requestData = {
             "RequestInfo": {
                 "apiId": "mgramseva-common",
@@ -54,7 +55,7 @@ def getGPWSCHeirarchy():
             if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
                 teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
 
-        url = 'https://mgramseva-dwss.punjab.gov.in/'
+        
         print(url)
         requestData = {
             "requestHeader": {
@@ -106,7 +107,7 @@ def getGPWSCHeirarchy():
                                         print(formatedTenantId)
                                         obj1 = {"tenantId": formatedTenantId, "zone": zone, "circle": circle,
                                                 "division": division, "subdivision": subdivision,
-                                                "section": section, "projectcode": tenantCode}
+                                                "section": section, "projectcode": tenantCode, "tenantName":tenantName}
                                         dataList.append(obj1)
         print("heirarchy collected")
         return (dataList)
@@ -792,8 +793,8 @@ def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,tot
         createdTime = datetime.now(tz=tzInfo)
         print("createdtime -->", createdTime)
         
-        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, projectcode, zone, circle, division, subdivision, section,active_users_count,total_advance,total_penalty,total_connections,active_connections, last_demand_gen_date, demand_generated_consumer_count,total_demand_amount,collection_till_date,last_collection_date,expense_count,count_of_electricity_expense_bills,no_of_paid_expense_bills,last_expense_txn_date,total_amount_of_expense_bills,total_amount_of_electricity_bills,total_amount_of_paid_expense_bills,date_range,createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        record_to_insert = (tenant['tenantId'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'],activeUsersCount,totalAdvance, totalPenalty,totalConsumerCount,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date, createdTime)
+        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, tenantName, projectcode, zone, circle, division, subdivision, section,active_users_count,total_advance,total_penalty,total_connections,active_connections, last_demand_gen_date, demand_generated_consumer_count,total_demand_amount,collection_till_date,last_collection_date,expense_count,count_of_electricity_expense_bills,no_of_paid_expense_bills,last_expense_txn_date,total_amount_of_expense_bills,total_amount_of_electricity_bills,total_amount_of_paid_expense_bills,date_range,createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        record_to_insert = (tenant['tenantId'],tenant['tenantName'], tenant['projectcode'], tenant['zone'], tenant['circle'], tenant['division'], tenant['subdivision'], tenant['section'],activeUsersCount,totalAdvance, totalPenalty,totalConsumerCount,consumerCount,lastDemandGenratedDate,noOfDemandRaised,totaldemAmount,collectionsMade,lastCollectionDate, expenseCount,countOfElectricityExpenseBills,noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills, totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills,date, createdTime)
         cursor.execute(postgres_insert_query, record_to_insert)
        
         connection.commit()
@@ -807,6 +808,19 @@ def createEntryForRollout(tenant,activeUsersCount,totalAdvance, totalPenalty,tot
             if connection:
                 cursor.close()
                 connection.close() 
+def is_saturdaydayOrSunday():
+    print("DateTime today :",datetime.today().weekday())
+    return datetime.today().weekday() in [5, 6]
+def get_daterange():
+    if is_saturdaydayOrSunday():
+        return [
+            'Last seven days', 'Last 15 days', 'currentMonth-Till date', 'Previous Month',
+            'Quarter-1', 'Quarter-2', 'Quarter-3', 'Quarter-4', 
+            'Consolidated (As on date)', 'FY to date', 
+            'Previous 1st FY (23-24)', 'Previous 2nd FY (22-23)', 'Previous 3rd FY (21-22)'
+        ]
+    else:
+        return ['Last seven days', 'Last 15 days', 'currentMonth-Till date', 'Consolidated (As on date)', 'FY to date']
 
 def process():
     print("continue is the process")
@@ -816,15 +830,27 @@ def process():
         cursor = connection.cursor()
         
         print("cursor: ",cursor)
-       
+        INSERT_INTO_ROLLOUT_LEGACY_QUERY=""" INSERT INTO roll_out_dashboardlegacy(
+        id, tenantid, tenantname, projectcode, zone, circle, division, subdivision, section, active_users_count,
+        total_advance, total_penalty, total_connections, active_connections, last_demand_gen_date,
+        demand_generated_consumer_count, total_demand_amount, collection_till_date, last_collection_date,
+        expense_count, count_of_electricity_expense_bills, no_of_paid_expense_bills, last_expense_txn_date,
+        total_amount_of_expense_bills, total_amount_of_electricity_bills, total_amount_of_paid_expense_bills,
+        date_range, createdtime) select id, tenantid, tenantname, projectcode, zone, circle, division, subdivision, section, active_users_count,
+                                        total_advance, total_penalty, total_connections, active_connections, last_demand_gen_date,
+                                        demand_generated_consumer_count, total_demand_amount, collection_till_date, last_collection_date,
+                                        expense_count, count_of_electricity_expense_bills, no_of_paid_expense_bills, last_expense_txn_date,
+                                        total_amount_of_expense_bills, total_amount_of_electricity_bills, total_amount_of_paid_expense_bills,
+                                        date_range, createdtime from roll_out_dashboard """
+        cursor.execute(INSERT_INTO_ROLLOUT_LEGACY_QUERY)
+        connection.commit()
+
         DROPPING_TABLE_QUERY = " drop table if exists roll_out_dashboard "
         cursor.execute(DROPPING_TABLE_QUERY)
-        
         connection.commit()
         
         createTableQuery = createTable()
         cursor.execute(createTableQuery)
-        
         connection.commit()
         
         print("table dropped")
@@ -841,7 +867,7 @@ def process():
     for tenant in tenants:
         print("Tenant:", tenant['tenantId'])
         activeUsersCount= getActiveUsersCount(tenant['tenantId'])
-        daterange = ['Last seven days','Last 15 days','currentMonth-Till date','Previous Month','Quarter-1','Quarter-2','Quarter-3','Quarter-4','Consolidated (As on date)','FY to date','Previous 1st FY (23-24)','Previous 2nd FY (22-23)','Previous 3rd FY (21-22)']
+        daterange = get_daterange()
         for i,date in enumerate(daterange):
             startdate,enddate= getdaterange(date)
             totalAdvance= getTotalAdvanceCreated(tenant['tenantId'],startdate,enddate)
@@ -893,6 +919,7 @@ def createTable():
     CREATE_TABLE_QUERY = """create table roll_out_dashboard(
         id SERIAL primary key, 	
         tenantid varchar(250) NOT NULL,
+        tenantName varchar(500),
         projectcode varchar(66),
         zone varchar(250),
         circle varchar(250),

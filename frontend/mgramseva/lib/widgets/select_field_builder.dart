@@ -159,6 +159,7 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
               return DropdownSearch(
                 key: widget.suggestionKey,
                 selectedItem: widget.value,
+              
                 itemAsString: widget.itemAsString,
                 items: widget.options,
                 onChanged: widget.widget,

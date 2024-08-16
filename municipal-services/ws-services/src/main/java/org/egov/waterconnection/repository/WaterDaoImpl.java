@@ -730,7 +730,8 @@ public class WaterDaoImpl implements WaterDao {
 			newlimit = limit;
 		if (limit != null && limit >= wsConfiguration.getMaxLimit())
 			newlimit = wsConfiguration.getMaxLimit();
-
+		if (limit != null && limit == -1) // Handling the case when limit is -1
+			newlimit = -1;
 		if (offset != null)
 			newoffset = offset;
 
@@ -747,6 +748,9 @@ public class WaterDaoImpl implements WaterDao {
 		ledgerReportRowMapper.setEndYear(endYear);
 		ledgerReportRowMapper.setConsumerCode(consumercode);
 		List<Map<String, Object>> ledgerReportList= jdbcTemplate.query(query.toString(), preparedStatement.toArray(), ledgerReportRowMapper);
+		if (newlimit == -1) {
+			return ledgerReportList;
+		}
 		int fromIndex = Math.min(newoffset, ledgerReportList.size());
 		int toIndex = Math.min(fromIndex + newlimit, ledgerReportList.size());
 		return ledgerReportList.subList(fromIndex, toIndex);

@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/reports_provider.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/household_register/household_pdf_creator.dart';
@@ -238,7 +241,8 @@ class HouseholdRegisterProvider with ChangeNotifier {
                     : null,
             callBack: onSort),
         TableHeader(i18.householdRegister.ACTIVE_INACTIVE,
-            isSortingRequired: false, apiKey: 'status'),
+            isSortingRequired: false, apiKey: 'leadgerReport'),
+            // TableHeader("Ledger", apiKey: '/viewLeadger')
       ];
   List<TableHeader> get collectionHeaderListOLd => [
         TableHeader(i18.common.CONNECTION_ID,
@@ -293,6 +297,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
                     ? sortBy!.isAscending
                     : null,
             callBack: onSort),
+        
       ];
 
   List<TableDataRow> getCollectionsData(List<WaterConnection> list) {
@@ -323,9 +328,6 @@ class HouseholdRegisterProvider with ChangeNotifier {
   }
 
   TableDataRow getCollectionRow(WaterConnection connection) {
-    var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
     String? name =
         truncateWithEllipsis(connection.connectionHolders?.first.name ?? 'NA');
     String? fatherName = truncateWithEllipsis(
@@ -334,16 +336,9 @@ class HouseholdRegisterProvider with ChangeNotifier {
       TableData(
           '${connection.connectionNo?.split('/').first ?? ''}/...${connection.connectionNo?.split('/').last ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
           callBack: onClickOfCollectionNo,
+          iconButtonCallBack: viewLeadger,
           apiKey: connection.connectionNo),
-      // TableData(
-      //   '${commonProvider.userDetails?.selectedtenant?.city?.code ?? 'NA'}',
-      // ),
-      // TableData(
-      //   '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(connection.tenantId ?? 'NA')}',
-      // ),
-      // TableData(
-      //   '${connection.tenantId ?? 'NA'}',
-      // ),
+   
       TableData(
         '${name ?? 'NA'}',
       ),
@@ -426,6 +421,15 @@ class HouseholdRegisterProvider with ChangeNotifier {
           'waterconnections': waterConnection,
           'mode': 'collect',
           'status': waterConnection?.status
+        });
+  }
+  viewLeadger(TableData tableData) {
+    log("Call Ledger View Here");   
+      var waterConnection = waterConnectionsDetails?.waterConnection
+        ?.firstWhere((element) => element.connectionNo == tableData.apiKey);
+    Navigator.pushNamed(navigatorKey.currentContext!, Routes.LEDGER_REPORTS,
+                    arguments: {
+          'waterconnections': waterConnection,
         });
   }
 

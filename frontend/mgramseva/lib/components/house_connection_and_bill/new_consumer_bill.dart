@@ -462,6 +462,8 @@ class NewConsumerBillState extends State<NewConsumerBill> {
           .CreatePDF(
               houseHoldProvider.createPDFBody, houseHoldProvider.createPDFPrams)
           .then((value) async {
+            
+
         commonProvider.getFileFromPDFBillService(
           {
             "BillAndDemand": {
