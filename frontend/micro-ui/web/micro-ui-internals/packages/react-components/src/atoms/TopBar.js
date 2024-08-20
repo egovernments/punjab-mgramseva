@@ -85,14 +85,16 @@ const TopBar = ({
                   <li>
                     <a
                       href="/mgramseva" target="_blank" rel="noopener noreferrer" className="dropdown-user-link">Login as Employee</a>
-                    {/* <Link className="dropdown-user-link" to="/mgramseva/selectLanguage">Employee Login</Link> */}
+                    
                   </li>
                 </ul>
               </div>
             )}
           </div>
 
+          <div className="rmv-padding">
           {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn || isPaymentPath ? changeLanguage : null}
+          </div>
 
           {/* {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn ? (
             <div className="EventNotificationWrapper" onClick={onNotificationIconClick}>
