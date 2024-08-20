@@ -111,6 +111,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       maxlength: 10,
     };
   }
+
   return isLoading || isStoreLoading ? (
     <Loader />
   ) : (
@@ -118,6 +119,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       <div className="employeeBackbuttonAlign">
         <BackButton variant="white" style={{ borderBottom: "none" }} />
       </div>
+
 
       <FormComposerV2
         onSubmit={onLogin}
