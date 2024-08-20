@@ -370,12 +370,13 @@ class ReportsProvider with ChangeNotifier {
   }
 
   List<TableDataRow> getMonthlyReportData(List<MonthReportData> list,
-      {bool isExcel = false}) {
+      {bool isExcel = false, bool hideSerialNo = false}) {
     return list
         .asMap() // Add index to each element
         .entries
         .map((entry) => getMonthlyLedgerReportDataRow(entry.value,
-            index: entry.key, isExcel: isExcel))
+            index: entry.key, isExcel: isExcel,
+            hideSerialNo: hideSerialNo ))
         .toList();
   }
 
@@ -387,9 +388,10 @@ class ReportsProvider with ChangeNotifier {
   }
 
   TableDataRow getMonthlyLedgerReportDataRow(MonthReportData data,
-      {bool isExcel = false, int index = 0}) {
+      {bool isExcel = false,bool hideSerialNo = false, int index = 0}) {
     return TableDataRow([
       TableData('${data.connectionNo}'),
+      if(!hideSerialNo)
       TableData('${index + 1}'),
       TableData('${data.oldConnectionNo}'),
       TableData('${data.consumerName ?? "NA"}'),
@@ -955,15 +957,18 @@ class ReportsProvider with ChangeNotifier {
         'sortOrder': 'asc'
       };
       var response = await ReportsRepo().fetchMonthlyLedgerReport(params);
+     
       if (response != null) {
         monthlyLedgerReport = response.monthReport;
         if (download) {
-          generateExcel(
-              monthlyLedgerReportHeaderList
+          List<String> headerList = monthlyLedgerReportHeaderList
                   .map<String>((e) =>
                       '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
-                  .toList(),
-              getMonthlyReportData(monthlyLedgerReport!, isExcel: true)
+                  .toList();
+                   headerList.removeAt(1);                   
+          generateExcel(
+              headerList,
+              getMonthlyReportData(monthlyLedgerReport!, isExcel: true,hideSerialNo: true)
                       .map<List<String>>(
                           (e) => e.tableRow.map((e) => e.label).toList())
                       .toList() ??
