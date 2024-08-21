@@ -207,8 +207,7 @@ public class WSCalculatorQueryBuilder {
 	public String getDuplicateBulkDemandCallQuery(String tenantId, String billingPeriod, Timestamp fromTime, List<Object> preparedStatement) {
 		StringBuilder query = new StringBuilder(duplicateBulkDemandCallQuery);
 
-		addClauseIfRequired(preparedStatement,query);
-		query.append(" tenantId = ?");
+		query.append(" and tenantId = ?");
 		preparedStatement.add(tenantId);
 		addClauseIfRequired(preparedStatement,query);
 		query.append(" billingPeriod = ?");
