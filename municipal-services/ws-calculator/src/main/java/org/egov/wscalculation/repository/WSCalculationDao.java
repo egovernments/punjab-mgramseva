@@ -1,5 +1,6 @@
 package org.egov.wscalculation.repository;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,12 @@ public interface WSCalculationDao {
 	Boolean isDemandExists(String tenantId, Long bilingDate,Long endTime, Set<String> connectionNos);
 
 	List<String> getNonMeterConnectionsList(String tenantId, Long dayStartTime, Long dayEndTime);
+
+	Boolean isDuplicateBulkDemandCall(String tenantId, String billingPeriod, Timestamp fromTime);
+
+	void insertBulkDemandCall(String tenantId, String billingPeriod, String status);
+
+	void updateStatusForOldRecords(Timestamp twoHoursAgo);
 
 	Boolean isConnectionExists(String tenantId, Long startTime, Long endTime, Set<String> connectionNos);
 

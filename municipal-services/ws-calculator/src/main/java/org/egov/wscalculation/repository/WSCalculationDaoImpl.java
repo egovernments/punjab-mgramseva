@@ -1,5 +1,6 @@
 package org.egov.wscalculation.repository;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -131,9 +132,31 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 	}
 
 	@Override
+	public Boolean isDuplicateBulkDemandCall(String tenantId, String billingPeriod, Timestamp fromTime) {
+		List<Object> preparedStatement = new ArrayList<>();
+		String query = queryBuilder.getDuplicateBulkDemandCallQuery(tenantId, billingPeriod, fromTime, preparedStatement);
+		int count = jdbcTemplate.queryForObject(query, preparedStatement.toArray(), Integer.class);
+		return count > 0;
+	}
+
+
+	@Override
+	public void insertBulkDemandCall(String tenantId, String billingCycle, String status) {
+		List<Object> preparedStatement = new ArrayList<>();
+		String query = queryBuilder.getInsertBulkDemandCallQuery(tenantId, billingCycle, status, preparedStatement);
+		jdbcTemplate.update(query, preparedStatement.toArray());
+	}
+
+	@Override
 	public List<String> getTenantId() {
 		String query = queryBuilder.getDistinctTenantIds();
 		return jdbcTemplate.queryForList(query, String.class);
+	}
+
+	@Override
+	public void updateStatusForOldRecords(Timestamp twoHoursAgo) {
+		String query = "UPDATE bulk_demand_calls SET status = 'EXPIRED' WHERE createdTime < ?";
+		jdbcTemplate.update(query, twoHoursAgo);
 	}
 
 	@Override
