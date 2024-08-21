@@ -54,7 +54,7 @@ const ChangeCity = (prop) => {
 
     const filteredArray = mdmsData.MdmsRes["tenant"]["tenants"].filter((item) => {
       if (item.code !== "pb") { // Exclude "pb" tenants
-        return tenantIds.includes(item.code);
+        return tenantIds?.includes(item.code);
       } else {
         return item.code === tenantId; // Include "pb" tenants matching tenantId
       }

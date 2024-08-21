@@ -55,7 +55,7 @@ const TopBar = ({
             className="city"
             id="topbar-logo"
             src={paymentlogoUrl || "https://cdn.jsdelivr.net/npm/@egovernments/digit-ui-css@1.0.7/img/m_seva_white_logo.png"}
-            alt="mSeva"
+            alt="mGramSeva"
           />
           {isPaymentPath && <img className="state" src={logoUrl} />}
           {!isPaymentPath && <h3>{cityOfCitizenShownBesideLogo}</h3>}
@@ -85,14 +85,16 @@ const TopBar = ({
                   <li>
                     <a
                       href="/mgramseva" target="_blank" rel="noopener noreferrer" className="dropdown-user-link">Login as Employee</a>
-                    {/* <Link className="dropdown-user-link" to="/mgramseva/selectLanguage">Employee Login</Link> */}
+                    
                   </li>
                 </ul>
               </div>
             )}
           </div>
 
+          <div className="rmv-padding">
           {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn || isPaymentPath ? changeLanguage : null}
+          </div>
 
           {/* {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn ? (
             <div className="EventNotificationWrapper" onClick={onNotificationIconClick}>

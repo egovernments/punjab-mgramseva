@@ -98,7 +98,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         context: context,
         builder: (BuildContext context) {
           var searchController = TextEditingController();
-          var visibleTenants = tenants.asMap().values.toList();
+          var visibleTenants = tenants.asMap().values.where((element) =>element.city?.districtCode != null).toList();
           return StatefulBuilder(
             builder: (context, StateSetter stateSetter) {
               return Stack(children: <Widget>[
