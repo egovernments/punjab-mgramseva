@@ -46,7 +46,7 @@ public class WSCalculatorQueryBuilder {
 
 	private static final String nonmeteredConnectionList = " select distinct(conn.connectionno) from eg_ws_connection conn join eg_ws_service ws on conn.id=ws.connection_id where ws.connectiontype='Non_Metered' and conn.status not IN ('Inactive') and conn.connectionno not in ( select distinct(consumercode) from egbs_demand_v1 d where d.businessservice='WS' and d.status not IN ('CANCELLED') ";
 
-	private static final String duplicateBulkDemandCallQuery = "SELECT COUNT(*) FROM bulk_demand_calls where status='IN_PROGRESS ";
+	private static final String duplicateBulkDemandCallQuery = "SELECT COUNT(*) FROM bulk_demand_calls where status='IN_PROGRESS' ";
 
 	public String getDistinctTenantIds() {
 		return distinctTenantIdsCriteria;
