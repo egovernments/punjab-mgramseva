@@ -954,7 +954,7 @@ class ReportsProvider with ChangeNotifier {
         'endDate': selectedBillPeriod?.split('-')[1],
         'offset': '${offset - 1}',
         'limit': '${download ? -1 : limit}',
-        'sortOrder': 'asc'
+        'sortOrder': 'DESC'
       };
       var response = await ReportsRepo().fetchMonthlyLedgerReport(params);
      
