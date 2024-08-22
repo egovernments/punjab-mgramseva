@@ -50,12 +50,10 @@ class _HouseholdRegister extends State<HouseholdRegister>
     var householdRegisterProvider =
         Provider.of<HouseholdRegisterProvider>(context, listen: false);
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (householdRegisterProvider.removeOverLay(_overlayEntry))
-          return false;
-        return true;
-      },
+    return PopScope(
+      canPop: householdRegisterProvider.removeOverLay(_overlayEntry) ? false: true,
+      onPopInvoked : (didPop){
+  },
       child: GestureDetector(
         onTap: () => householdRegisterProvider.removeOverLay(_overlayEntry),
         child: FocusWatcher(

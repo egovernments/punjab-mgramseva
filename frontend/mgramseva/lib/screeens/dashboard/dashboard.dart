@@ -87,11 +87,12 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (CustomOverlay.removeOverLay()) return false;
-        return true;
-      },
+    return 
+       PopScope(
+      canPop: CustomOverlay.removeOverLay() ? false: true,
+      onPopInvoked : (didPop){
+  },
+    
       child: GestureDetector(
         onTap: () => CustomOverlay.removeOverLay(),
         child: FocusWatcher(
