@@ -154,9 +154,9 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 	}
 
 	@Override
-	public void updateStatusForOldRecords(Timestamp twoHoursAgo) {
-		String query = "UPDATE bulk_demand_calls SET status = 'EXPIRED' WHERE createdTime < ?";
-		jdbcTemplate.update(query, twoHoursAgo);
+	public void updateStatusForOldRecords(String tenantId,Timestamp twoHoursAgo) {
+		String query = "UPDATE bulk_demand_calls SET status = 'EXPIRED' WHERE tenantId = ? AND createdTime < ?";
+		jdbcTemplate.update(query,tenantId, twoHoursAgo);
 	}
 
 	@Override

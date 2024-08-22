@@ -408,7 +408,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 			throw new CustomException("INVALD_TENANT", "Cannot generate bulk dmeand for this tenant");
 		}
 
-		wSCalculationDao.updateStatusForOldRecords(twoHoursAgo);
+		wSCalculationDao.updateStatusForOldRecords(tenantId,twoHoursAgo);
 		// Insert a new record into the table
 		demandService.insertBulkDemandCall(tenantId, billingPeriod, "IN_PROGRESS");
 

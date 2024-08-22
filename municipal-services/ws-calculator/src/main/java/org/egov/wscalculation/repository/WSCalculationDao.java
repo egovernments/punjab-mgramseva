@@ -36,7 +36,7 @@ public interface WSCalculationDao {
 
 	void insertBulkDemandCall(String tenantId, String billingPeriod, String status);
 
-	void updateStatusForOldRecords(Timestamp twoHoursAgo);
+	void updateStatusForOldRecords(String tenantId,Timestamp twoHoursAgo);
 
 	Boolean isConnectionExists(String tenantId, Long startTime, Long endTime, Set<String> connectionNos);
 
