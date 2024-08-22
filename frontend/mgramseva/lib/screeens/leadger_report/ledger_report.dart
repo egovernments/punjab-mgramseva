@@ -76,8 +76,9 @@ class _LeadgerReport extends State<LeadgerReport>
       var selectedItem = reportsProvider
           .getFinancialYearListDropdown(reportsProvider.billingYearList);
       reportsProvider.updateSelectedBillYear(selectedItem.first);
-      reportsProvider.getLeadgerReport();
-      showTable(true, i18.dashboard.LEDGER_REPORTS);
+      // Disable init show table
+      // reportsProvider.getLeadgerReport();
+      // showTable(true, i18.dashboard.LEDGER_REPORTS);
     });
   }
 
