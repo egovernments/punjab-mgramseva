@@ -13,14 +13,17 @@ import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/model/mdms/payment_type.dart';
+import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/model/user/user_details.dart';
 import 'package:mgramseva/model/user_profile/user_profile.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/providers/tenants_provider.dart';
 import 'package:mgramseva/repository/authentication_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/services/local_storage.dart';
 import 'package:mgramseva/services/mdms.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
@@ -991,4 +994,188 @@ class CommonProvider with ChangeNotifier {
     }
     return false;
   }
+
+// App Bar Calls Refreactor
+  void appBarUpdate() {
+     var tenantProvider = Provider.of<TenantsProvider>(navigatorKey.currentContext!, listen: false);
+    
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    
+    if (tenantProvider.tenants != null) {
+      final r = commonProvider.userDetails!.userRequest!.roles!
+          .map((e) => e.tenantId)
+          .toSet()
+          .toList();
+      final result = tenantProvider.tenants!.tenantsList
+          ?.where((element) => r.contains(element.code?.trim()))
+          .toList();
+      if (result?.length == 1 &&
+          commonProvider.userDetails!.selectedtenant == null) {
+        if (result?.isNotEmpty ?? false)
+          commonProvider.setTenant(result?.first);
+    
+        // });
+      } else if (result != null &&
+          result.length > 1 &&
+          commonProvider.userDetails!.selectedtenant == null) {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => showDialogBox(result));
+      }
+    } else {
+      tenantProvider.getTenants().then((value) {
+        final r = commonProvider.userDetails!.userRequest!.roles!
+            .map((e) => e.tenantId)
+            .toSet()
+            .toList();
+        final result = tenantProvider.tenants!.tenantsList
+            ?.where((element) => r.contains(element.code?.trim()))
+            .toList();
+        if (result?.length == 1 &&
+            commonProvider.userDetails!.selectedtenant == null) {
+          if (result?.isNotEmpty ?? false)
+            commonProvider.setTenant(result?.first);
+    
+          // });
+        } else if (result != null &&
+            result.length > 1 &&
+            commonProvider.userDetails!.selectedtenant == null) {
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) => showDialogBox(result));
+        }
+      });
+    }
+  }
+
+    showDialogBox(List<Tenants> tenants) {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    var tenantProvider = Provider.of<TenantsProvider>(navigatorKey.currentContext!, listen: false);
+    final r = commonProvider.userDetails!.userRequest!.roles!
+        .map((e) => e.tenantId)
+        .toSet()
+        .toList();
+    final res = tenantProvider.tenants!.tenantsList!
+        .where((element) => r.contains(element.code?.trim()))
+        .toList();
+    showDialog(
+        barrierDismissible: commonProvider.userDetails!.selectedtenant != null,
+        context: navigatorKey.currentContext!,
+        builder: (BuildContext context) {
+          var searchController = TextEditingController();
+          var visibleTenants = tenants.asMap().values.where((element) =>element.city?.districtCode != null).toList();
+          return StatefulBuilder(
+            builder: (context, StateSetter stateSetter) {
+              return Stack(children: <Widget>[
+                Container(
+                    margin: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width > 720
+                            ? MediaQuery.of(context).size.width -
+                                MediaQuery.of(context).size.width / 3
+                            : 0,
+                        top: 60),
+                    width: MediaQuery.of(context).size.width > 720
+                        ? MediaQuery.of(context).size.width / 3
+                        : MediaQuery.of(context).size.width,
+                    height: (visibleTenants.length * 50 < 300 ?
+                    visibleTenants.length * 50 : 300)+ 60,
+                    color: Colors.white,
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      children: [
+                        Material(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: searchController,
+                              decoration: InputDecoration(
+                                hintText: "${ApplicationLocalizations.of(context)
+                                    .translate(i18.common.SEARCH)}"
+                              ),
+                              onChanged: (text) {
+                                  if(text.isEmpty){
+                                    stateSetter(()=>visibleTenants = tenants.asMap().values.toList()
+                                    );
+                                  }else{
+                                    var tresult = tenants.where((e) => "${ApplicationLocalizations.of(context)
+                                        .translate(e.code!)}-${e.city!.code!}".toLowerCase().trim().contains(text.toLowerCase().trim())).toList();
+                                    stateSetter(()=>visibleTenants = tresult
+                                    );
+                                  }
+                              },
+                            ),
+                          ),
+                        ),
+                        ...List.generate(visibleTenants.length, (index) {
+                        return GestureDetector(
+                            onTap: () {
+                              commonProvider.setTenant(visibleTenants[index]);
+                              Navigator.pop(context);
+                              CommonMethods.home();
+                            },
+                            child: Material(
+                                child: Container(
+                              color: index.isEven
+                                  ? Colors.white
+                                  : Color.fromRGBO(238, 238, 238, 1),
+                              width: MediaQuery.of(context).size.width,
+                              height: 50,
+                              padding: EdgeInsets.all(5),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        ApplicationLocalizations.of(context)
+                                            .translate(visibleTenants[index].code!),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: commonProvider.userDetails!
+                                                            .selectedtenant !=
+                                                        null &&
+                                                    commonProvider
+                                                            .userDetails!
+                                                            .selectedtenant!
+                                                            .city!
+                                                            .code ==
+                                                        visibleTenants[index].city!.code!
+                                                ? Theme.of(context).primaryColor
+                                                : Colors.black),
+                                      ),
+                                      Text(visibleTenants[index].city!.code!,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                              color: commonProvider.userDetails!
+                                                              .selectedtenant !=
+                                                          null &&
+                                                      commonProvider
+                                                              .userDetails!
+                                                              .selectedtenant!
+                                                              .city!
+                                                              .code ==
+                                                          visibleTenants[index].city!.code!
+                                                  ? Theme.of(context).primaryColor
+                                                  : Colors.black))
+                                    ]),
+                              ),
+                            )));
+                      },growable: true)],
+                    ))
+              ]);
+            }
+          );
+        });
+  }
+
+
+// App Bar Calls Refreactor
+
+
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/components/notifications/notifications_list.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -34,12 +36,15 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-  afterViewBuild() {
-    Provider.of<TenantsProvider>(context, listen: false)..getTenants();
+
+  
+
+  afterViewBuild()  {
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
 
     languageProvider.getLocalizationData(context);
+
   }
 
   _buildView(homeProvider, Widget notification) {

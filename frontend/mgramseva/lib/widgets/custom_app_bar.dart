@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -30,55 +32,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
   }
 
   afterViewBuild() {
-    var tenantProvider = Provider.of<TenantsProvider>(context, listen: false);
-
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+   commonProvider.appBarUpdate();    
 
-    if (tenantProvider.tenants != null) {
-      final r = commonProvider.userDetails!.userRequest!.roles!
-          .map((e) => e.tenantId)
-          .toSet()
-          .toList();
-      final result = tenantProvider.tenants!.tenantsList
-          ?.where((element) => r.contains(element.code?.trim()))
-          .toList();
-      if (result?.length == 1 &&
-          commonProvider.userDetails!.selectedtenant == null) {
-        if (result?.isNotEmpty ?? false)
-          commonProvider.setTenant(result?.first);
-
-        // });
-      } else if (result != null &&
-          result.length > 1 &&
-          commonProvider.userDetails!.selectedtenant == null) {
-        WidgetsBinding.instance
-            .addPostFrameCallback((_) => showDialogBox(result));
-      }
-    } else {
-      tenantProvider.getTenants().then((value) {
-        final r = commonProvider.userDetails!.userRequest!.roles!
-            .map((e) => e.tenantId)
-            .toSet()
-            .toList();
-        final result = tenantProvider.tenants!.tenantsList
-            ?.where((element) => r.contains(element.code?.trim()))
-            .toList();
-        if (result?.length == 1 &&
-            commonProvider.userDetails!.selectedtenant == null) {
-          if (result?.isNotEmpty ?? false)
-            commonProvider.setTenant(result?.first);
-
-          // });
-        } else if (result != null &&
-            result.length > 1 &&
-            commonProvider.userDetails!.selectedtenant == null) {
-          WidgetsBinding.instance
-              .addPostFrameCallback((_) => showDialogBox(result));
-        }
-      });
-    }
   }
 
   showDialogBox(List<Tenants> tenants) {
