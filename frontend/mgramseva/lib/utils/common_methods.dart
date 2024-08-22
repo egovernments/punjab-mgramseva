@@ -372,7 +372,8 @@ class CommonMethods {
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return WillPopScope(
+                return PopScope(
+              
                     child: AlertDialog(
                       title: Text('UPDATE AVAILABLE'),
                       content: Text(
@@ -383,15 +384,16 @@ class CommonMethods {
                                 launchPlayStore(uri.toString(), context),
                             child: Text('Update'))
                       ],
-                    ),
-                    onWillPop: () async {
+                    ),                    
+                    canPop: true,
+                    onPopInvoked: (didPop)async {
                       if (Platform.isAndroid) {
                         SystemNavigator.pop();
                       } else if (Platform.isIOS) {
                         exit(0);
-                      }
-                      return true;
-                    });
+                      }                      
+                    },
+                    );
               });
         }
       }

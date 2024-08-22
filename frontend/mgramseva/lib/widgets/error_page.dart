@@ -15,10 +15,10 @@ class ErrorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        CommonMethods.home();
-        return false;
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        CommonMethods.home();        
       },
       child: Scaffold(
         appBar: isWithoutLogin
