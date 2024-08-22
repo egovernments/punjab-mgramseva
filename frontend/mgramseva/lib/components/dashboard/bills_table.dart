@@ -130,7 +130,8 @@ class _BillsTable extends State<BillsTable> {
                 Icon(isAscending
                     ? Icons.arrow_upward
                     : Icons.arrow_downward_sharp),
-                LedgerLabelText
+                if (MediaQuery.of(context).size.width > 720)
+                  LedgerLabelText
               ],
             )
           : textWidget,
