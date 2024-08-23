@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,7 +33,6 @@ import 'package:mgramseva/utils/models.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:universal_html/html.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../model/demand/update_demand_list.dart';
@@ -62,7 +59,7 @@ class CommonProvider with ChangeNotifier {
     dynamic localLabelResponse;
     if (kIsWeb) {
       localLabelResponse =
-          window.localStorage[languageProvider.selectedLanguage?.value ?? ''];
+          html.window.localStorage[languageProvider.selectedLanguage?.value ?? ''];
     } else {
       localLabelResponse = await storage.read(
           key: languageProvider.selectedLanguage?.value ?? '');
@@ -90,7 +87,7 @@ class CommonProvider with ChangeNotifier {
 
   setSelectedTenant(UserDetails? loginDetails) {
     if (kIsWeb) {
-      window.localStorage[Constants.LOGIN_KEY] =
+      html.window.localStorage[Constants.LOGIN_KEY] =
           loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
     } else {
       storage.write(
@@ -108,7 +105,7 @@ class CommonProvider with ChangeNotifier {
 
   void setSelectedState(UserDetails? loginDetails) async {
     if (kIsWeb) {
-      window.localStorage[Constants.LOGIN_KEY] =
+      html.window.localStorage[Constants.LOGIN_KEY] =
           loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
     } else {
       storage.write(
@@ -124,7 +121,7 @@ class CommonProvider with ChangeNotifier {
         listen: false);
     try {
       if (kIsWeb) {
-        window.localStorage[languageProvider.selectedLanguage?.value ?? ''] =
+        html.window.localStorage[languageProvider.selectedLanguage?.value ?? ''] =
             jsonEncode(labels.map((e) => e.toJson()).toList());
       } else {
         await storage.write(
@@ -140,7 +137,7 @@ class CommonProvider with ChangeNotifier {
   set loginCredentials(UserDetails? loginDetails) {
     userDetails = loginDetails;
     if (kIsWeb) {
-      window.localStorage[Constants.LOGIN_KEY] =
+      html.window.localStorage[Constants.LOGIN_KEY] =
           loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
     } else {
       storage.write(
@@ -153,7 +150,7 @@ class CommonProvider with ChangeNotifier {
 
   set userProfile(UserProfile? profile) {
     if (kIsWeb) {
-      window.localStorage[Constants.USER_PROFILE_KEY] =
+      html.window.localStorage[Constants.USER_PROFILE_KEY] =
           profile == null ? '' : jsonEncode(profile.toJson());
     } else {
       storage.write(
@@ -165,7 +162,7 @@ class CommonProvider with ChangeNotifier {
 
   walkThroughCondition(bool? firstTime, String key) {
     if (kIsWeb) {
-      window.localStorage[key] = firstTime.toString();
+      html.window.localStorage[key] = firstTime.toString();
     } else {
       storage.write(key: key, value: firstTime.toString());
     }
@@ -176,7 +173,7 @@ class CommonProvider with ChangeNotifier {
     var userResponse;
     try {
       if (kIsWeb) {
-        userResponse = window.localStorage[key];
+        userResponse = html.window.localStorage[key];
       } else {
         userResponse = (await storage.read(key: key));
       }
@@ -193,7 +190,7 @@ class CommonProvider with ChangeNotifier {
     var userResponse;
     try {
       if (kIsWeb) {
-        userResponse = window.localStorage[Constants.USER_PROFILE_KEY];
+        userResponse = html.window.localStorage[Constants.USER_PROFILE_KEY];
       } else {
         userResponse = await storage.read(key: Constants.USER_PROFILE_KEY);
       }
@@ -211,9 +208,9 @@ class CommonProvider with ChangeNotifier {
     dynamic stateResponse;
     try {
       if (kIsWeb) {
-        loginResponse = window.localStorage[Constants.LOGIN_KEY];
+        loginResponse = html.window.localStorage[Constants.LOGIN_KEY];
 
-        stateResponse = window.localStorage[Constants.STATES_KEY];
+        stateResponse = html.window.localStorage[Constants.STATES_KEY];
       } else {
         var isUpdated = false;
         try {
@@ -282,28 +279,28 @@ class CommonProvider with ChangeNotifier {
     dynamic stateResponse;
 
     var isUpdated = false;
-    if (!window.localStorage.containsKey(Constants.APP_VERSION) ||
-        !window.localStorage.containsKey(Constants.BUILD_NUMBER)) {
-      window.localStorage.clear();
+    if (!html.window.localStorage.containsKey(Constants.APP_VERSION) ||
+        !html.window.localStorage.containsKey(Constants.BUILD_NUMBER)) {
+      html.window.localStorage.clear();
       isUpdated = true;
-      window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
-      window.localStorage[Constants.BUILD_NUMBER] =
+      html.window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
+      html.window.localStorage[Constants.BUILD_NUMBER] =
           packageInfo?.buildNumber ?? '';
     } else {
-      if (window.localStorage[Constants.APP_VERSION] != packageInfo?.version ||
-          window.localStorage[Constants.BUILD_NUMBER] !=
+      if (html.window.localStorage[Constants.APP_VERSION] != packageInfo?.version ||
+          html.window.localStorage[Constants.BUILD_NUMBER] !=
               packageInfo?.buildNumber) {
-        window.localStorage.clear();
+        html.window.localStorage.clear();
         isUpdated = true;
-        window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
-        window.localStorage[Constants.BUILD_NUMBER] =
+        html.window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
+        html.window.localStorage[Constants.BUILD_NUMBER] =
             packageInfo?.buildNumber ?? '';
       }
     }
 
     if (!isUpdated) {
-      loginResponse = window.localStorage[Constants.LOGIN_KEY];
-      stateResponse = window.localStorage[Constants.STATES_KEY];
+      loginResponse = html.window.localStorage[Constants.LOGIN_KEY];
+      stateResponse = html.window.localStorage[Constants.STATES_KEY];
     } else {
       userDetails = null;
     }
