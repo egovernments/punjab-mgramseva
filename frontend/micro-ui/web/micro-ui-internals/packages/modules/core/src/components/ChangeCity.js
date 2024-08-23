@@ -81,7 +81,10 @@ const ChangeCity = (prop) => {
         selected={dropDownData}
         optionKey={"label"}
         select={handleChangeCity}
-        optionCardStyles={{ overflow: "revert", display: "table" }}
+        optionCardStyles={{ overflow: "auto",
+          maxHeight: "400px",
+          minWidth: "20rem"
+        }}
       />
     </div>
   );
