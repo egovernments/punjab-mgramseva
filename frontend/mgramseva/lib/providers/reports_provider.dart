@@ -239,11 +239,11 @@ class ReportsProvider with ChangeNotifier {
       TableData('${formatPaymentReceipts(data.months?.values?.first.payment)}'),
       TableData('₹ ${data.months?.values.first.totalPaymentInMonth}'),
       TableData(
-          '₹ ${(double.parse("${data.months?.values.first.demand?.totalDues}") - double.parse("${data.months?.values.first.totalPaymentInMonth}"))}'),
+          '₹ ${(double.parse("${(data.months?.values.first.demand?.monthlyCharges ?? 0) + (data.months?.values.first.demand?.previousMonthBalance ?? 0)}") - double.parse("${data.months?.values.first.totalPaymentInMonth}"))}'),
       TableData(
           '${DateFormats.leadgerTimeStampToDate(data.months?.values.first.demand?.penaltyAppliedOnDate)}'),
       TableData('₹  ${data.months?.values.first.demand?.penalty}'),
-      TableData('₹ ${((double.parse("${data.months?.values.first.demand?.totalDues}") - double.parse("${data.months?.values.first.totalPaymentInMonth}"))) + double.parse("${data.months?.values.first.demand?.penalty}")}'),
+      TableData('₹ ${((double.parse("${(data.months?.values.first.demand?.monthlyCharges ?? 0) + (data.months?.values.first.demand?.previousMonthBalance ?? 0)}") - double.parse("${data.months?.values.first.totalPaymentInMonth}"))) + double.parse("${data.months?.values.first.demand?.penalty}")}'),
     ]);
   }
 
