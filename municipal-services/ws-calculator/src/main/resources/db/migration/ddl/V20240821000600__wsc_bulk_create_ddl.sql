@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS eg_ws_bulk_demand_batch
   status VARCHAR(50) NOT NULL,
   createdBy character varying(64) NOT NULL,
   lastModifiedBy bigint NOT NULL,
-  lastModifiedTime bigint,
+  lastModifiedTime bigint
 );
 CREATE SEQUENCE seq_eg_ws_bulk_demand_batch
     START WITH 1
