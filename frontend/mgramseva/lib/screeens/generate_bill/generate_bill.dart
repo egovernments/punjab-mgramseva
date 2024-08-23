@@ -78,7 +78,8 @@ class _GenerateBillState extends State<GenerateBill> {
             children: [
           HomeBack(callback: (){
             Provider.of<BillGenerationProvider>(context, listen: false).clearBillYear();
-            Navigator.pop(context);
+            // Navigator.pop(context);
+            Navigator.of(context,rootNavigator: true).pop();
           },),
               widget.id == null ?WaterConnectionCountWidget():Container(),
           Container(

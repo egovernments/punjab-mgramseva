@@ -104,7 +104,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         return GestureDetector(
                             onTap: () {
                               commonProvider.setTenant(visibleTenants[index]);
-                              Navigator.pop(context);
+                              Navigator.of(context,rootNavigator: true).pop();
                               CommonMethods.home();
                             },
                             child: Material(

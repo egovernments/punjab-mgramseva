@@ -1110,7 +1110,7 @@ class CommonProvider with ChangeNotifier {
                         return GestureDetector(
                             onTap: () {
                               commonProvider.setTenant(visibleTenants[index]);
-                              Navigator.pop(context);
+                              Navigator.of(context,rootNavigator: true).pop();
                               CommonMethods.home();
                             },
                             child: Material(
