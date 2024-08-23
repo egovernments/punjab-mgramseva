@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.egov.wscalculation.web.models.MeterConnectionRequest;
-import org.egov.wscalculation.web.models.MeterReading;
-import org.egov.wscalculation.web.models.MeterReadingSearchCriteria;
+import org.egov.wscalculation.web.models.*;
 
 public interface WSCalculationDao {
 
@@ -34,9 +32,9 @@ public interface WSCalculationDao {
 
 	Boolean isDuplicateBulkDemandCall(String tenantId, String billingPeriod, Timestamp fromTime);
 
-	void insertBulkDemandCall(String tenantId, String billingPeriod, String status);
+	void insertBulkDemandCall(String tenantId, String billingPeriod, String status, AuditDetails auditDetails);
 
-	void updateStatusForOldRecords(String tenantId,Timestamp twoHoursAgo);
+	void updateStatusForOldRecords(String tenantId, Timestamp twoHoursAgo, String billingPeriod, AuditDetails auditDetails);
 
 	Boolean isConnectionExists(String tenantId, Long startTime, Long endTime, Set<String> connectionNos);
 

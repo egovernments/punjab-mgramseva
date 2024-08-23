@@ -12,9 +12,7 @@ import org.egov.wscalculation.repository.builder.WSCalculatorQueryBuilder;
 import org.egov.wscalculation.repository.rowmapper.DemandSchedulerRowMapper;
 import org.egov.wscalculation.repository.rowmapper.MeterReadingCurrentReadingRowMapper;
 import org.egov.wscalculation.repository.rowmapper.MeterReadingRowMapper;
-import org.egov.wscalculation.web.models.MeterConnectionRequest;
-import org.egov.wscalculation.web.models.MeterReading;
-import org.egov.wscalculation.web.models.MeterReadingSearchCriteria;
+import org.egov.wscalculation.web.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -141,9 +139,9 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 
 
 	@Override
-	public void insertBulkDemandCall(String tenantId, String billingCycle, String status) {
+	public void insertBulkDemandCall(String tenantId, String billingPeriod, String status, AuditDetails auditDetails) {
 		List<Object> preparedStatement = new ArrayList<>();
-		String query = queryBuilder.getInsertBulkDemandCallQuery(tenantId, billingCycle, status, preparedStatement);
+		String query = queryBuilder.getInsertBulkDemandCallQuery(tenantId, billingPeriod, status, auditDetails, preparedStatement);
 		jdbcTemplate.update(query, preparedStatement.toArray());
 	}
 
@@ -154,9 +152,9 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 	}
 
 	@Override
-	public void updateStatusForOldRecords(String tenantId,Timestamp twoHoursAgo) {
-		String query = "UPDATE eg_ws_bulk_demand_batch SET status = 'EXPIRED' WHERE tenantId = ? AND createdTime < ?";
-		jdbcTemplate.update(query,tenantId, twoHoursAgo);
+	public void updateStatusForOldRecords(String tenantId,Timestamp twoHoursAgo,String billingPeriod, AuditDetails auditDetails) {
+		String query = "UPDATE eg_ws_bulk_demand_batch SET status = 'EXPIRED', lastModifiedBy = ?, lastModifiedTime = ? WHERE tenantId = ? AND billingPeriod = ? AND createdTime < ?";
+		jdbcTemplate.update(query,auditDetails.getLastModifiedBy(), auditDetails.getLastModifiedTime(),tenantId,billingPeriod, twoHoursAgo);
 	}
 
 	@Override

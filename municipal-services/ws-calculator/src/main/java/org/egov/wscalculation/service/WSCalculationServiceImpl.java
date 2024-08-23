@@ -78,6 +78,9 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	@Autowired
 	ObjectMapper mapper;
 
+	@Autowired
+	EnrichmentService enrichmentService;
+
 	/**
 	 * Get CalculationReq and Calculate the Tax Head on Water Charge And Estimation Charge
 	 */
@@ -395,6 +398,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	public void generateBulkDemandForTenant(BulkDemand bulkDemand) {
 		String tenantId = bulkDemand.getTenantId();
 		String billingPeriod = bulkDemand.getBillingPeriod();
+
 		Timestamp twoHoursAgo = Timestamp.from(Instant.now().minus(2, ChronoUnit.HOURS));
 
 		// Check for duplicate calls in the last 2 hours
@@ -408,9 +412,12 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 			throw new CustomException("INVALD_TENANT", "Cannot generate bulk dmeand for this tenant");
 		}
 
-		wSCalculationDao.updateStatusForOldRecords(tenantId,twoHoursAgo);
+		AuditDetails auditDetails=enrichmentService.getAuditDetails(bulkDemand.getRequestInfo().getUserInfo().getUuid(),false);
+		wSCalculationDao.updateStatusForOldRecords(tenantId,twoHoursAgo,billingPeriod,auditDetails);
+
+		auditDetails=enrichmentService.getAuditDetails(bulkDemand.getRequestInfo().getUserInfo().getUuid(),true);
 		// Insert a new record into the table
-		demandService.insertBulkDemandCall(tenantId, billingPeriod, "IN_PROGRESS");
+		demandService.insertBulkDemandCall(tenantId, billingPeriod, "IN_PROGRESS",auditDetails);
 
 	}
 	/**

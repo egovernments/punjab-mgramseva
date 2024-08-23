@@ -18,4 +18,6 @@ public class BulkDemandBatch {
     private Timestamp createdTime;
     private String status;
 
+    private AuditDetails auditDetails;
+
 }

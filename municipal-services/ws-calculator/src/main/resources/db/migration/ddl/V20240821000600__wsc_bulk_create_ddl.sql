@@ -1,10 +1,13 @@
 CREATE TABLE IF NOT EXISTS eg_ws_bulk_demand_batch
 (
   id VARCHAR(64) PRIMARY KEY,
-  tenantId VARCHAR(64),
+  tenantId VARCHAR(64) NOT NULL,
   billingPeriod VARCHAR(64) NOT NULL,
   createdTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  status VARCHAR(50)
+  status VARCHAR(50) NOT NULL
+  createdBy character varying(64) NOT NULL,
+  lastModifiedBy bigint NOT NULL,
+  lastModifiedTime bigint,
 );
 CREATE SEQUENCE seq_eg_ws_bulk_demand_batch
     START WITH 1

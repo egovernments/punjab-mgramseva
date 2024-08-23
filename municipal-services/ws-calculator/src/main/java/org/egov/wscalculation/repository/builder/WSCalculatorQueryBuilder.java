@@ -8,9 +8,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.stream.Collectors;
 
 import org.egov.wscalculation.config.WSCalculationConfiguration;
+import org.egov.wscalculation.web.models.AuditDetails;
 import org.egov.wscalculation.web.models.MeterReadingSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -219,12 +219,17 @@ public class WSCalculatorQueryBuilder {
 		return query.toString();
 	}
 
-	public String getInsertBulkDemandCallQuery(String tenantId, String billingPeriod, String status, List<Object> preparedStatement) {
-		StringBuilder query = new StringBuilder("INSERT INTO eg_ws_bulk_demand_batch (tenantId, billingPeriod, status) VALUES (?, ?, ?)");
+	public String getInsertBulkDemandCallQuery(String tenantId, String billingPeriod, String status, AuditDetails auditDetails, List<Object> preparedStatement) {
+		StringBuilder query = new StringBuilder("INSERT INTO eg_ws_bulk_demand_batch (tenantId, billingPeriod, status, createdBy, lastModifiedBy, createdTime, lastModifiedTime) VALUES (?, ?, ?, ?, ?, ?, ?)");
 
 		preparedStatement.add(tenantId);
 		preparedStatement.add(billingPeriod);
 		preparedStatement.add(status);
+
+		preparedStatement.add(auditDetails.getCreatedBy());
+		preparedStatement.add(auditDetails.getLastModifiedBy());
+		preparedStatement.add(auditDetails.getCreatedTime());
+		preparedStatement.add(auditDetails.getLastModifiedTime());
 
 		return query.toString();
 	}

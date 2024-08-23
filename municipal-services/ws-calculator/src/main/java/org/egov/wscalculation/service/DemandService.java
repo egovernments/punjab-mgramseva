@@ -1239,8 +1239,8 @@ public class DemandService {
 		return waterCalculatorDao.isDuplicateBulkDemandCall(tenantId, billingPeriod, fromTime);
 	}
 
-	public void insertBulkDemandCall(String tenantId, String billingPeriod, String status) {
-		waterCalculatorDao.insertBulkDemandCall(tenantId, billingPeriod, status);
+	public void insertBulkDemandCall(String tenantId, String billingPeriod, String status,AuditDetails auditDetails) {
+		waterCalculatorDao.insertBulkDemandCall(tenantId, billingPeriod, status,auditDetails);
 	}
 
 
