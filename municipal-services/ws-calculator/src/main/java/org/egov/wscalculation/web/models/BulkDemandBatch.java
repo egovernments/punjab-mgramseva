@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Setter
 @Builder
-public class BulkDemandCall {
+public class BulkDemandBatch {
     private String id;
     private String tenantId;
     private String billingPeriod;

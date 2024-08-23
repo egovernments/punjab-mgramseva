@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS eg_bulk_demand_calls
+CREATE TABLE IF NOT EXISTS eg_ws_bulk_demand_batch
 (
   id VARCHAR(64) PRIMARY KEY,
   tenantId VARCHAR(64),
@@ -6,13 +6,13 @@ CREATE TABLE IF NOT EXISTS eg_bulk_demand_calls
   createdTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   status VARCHAR(50)
 );
-CREATE SEQUENCE seq_eg_bulk_demand_calls
+CREATE SEQUENCE seq_eg_ws_bulk_demand_batch
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER TABLE eg_bulk_demand_calls ALTER COLUMN id SET DEFAULT nextval('seq_eg_bulk_demand_calls'::regclass);
+ALTER TABLE eg_ws_bulk_demand_batch ALTER COLUMN id SET DEFAULT nextval('seq_eg_ws_bulk_demand_batch'::regclass);
 
-CREATE INDEX IF NOT EXISTS index_eg_bulk_demand_calls_tenantId ON eg_bulk_demand_calls (tenantId);
-CREATE INDEX IF NOT EXISTS index_eg_bulk_demand_calls_billingPeriod ON eg_bulk_demand_calls (billingPeriod);
+CREATE INDEX IF NOT EXISTS index_eg_ws_bulk_demand_batch_tenantId ON eg_ws_bulk_demand_batch (tenantId);
+CREATE INDEX IF NOT EXISTS index_eg_ws_bulk_demand_batch_billingPeriod ON eg_ws_bulk_demand_batch (billingPeriod);
