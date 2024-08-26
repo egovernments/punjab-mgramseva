@@ -42,7 +42,7 @@ const TopBar = ({
   const paymentlogoUrl = isPaymentPath
     ? window?.globalConfigs?.getConfig?.("LOGO_URL") // Show payment logo if path matches
     : logoUrl;
-  console.log(isPaymentPath, "isPaymentPath");
+  // console.log(isPaymentPath, "isPaymentPath");
   return (
     <div className="navbar">
       <div className="center-container back-wrapper">
