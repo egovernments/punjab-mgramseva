@@ -31,10 +31,11 @@ class _HomeCard extends State<HomeCard> {
             onTap: () => Navigator.pushNamed(context, item.link,
                 arguments: item.arguments),
             child: new Card(
-                key: homeProvider.homeWalkthroughList
-                    .where((element) => element.label == item.label).isNotEmpty?homeProvider.homeWalkthroughList
-                    .where((element) => element.label == item.label).first
-                    .key:Key(item.label),
+              key :Key(item.label),
+                // key: homeProvider.homeWalkthroughList
+                //     .where((element) => element.label == item.label).isNotEmpty?homeProvider.homeWalkthroughList
+                //     .where((element) => element.label == item.label).first
+                //     .key:Key(item.label),
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
