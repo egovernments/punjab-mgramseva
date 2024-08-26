@@ -38,10 +38,10 @@ class CommonSuccess extends StatelessWidget {
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
-         if (didPop) {
+         if (didPop) {    
+          CommonMethods.home(); 
           return;
         }
-        CommonMethods.home();
         
       },
 

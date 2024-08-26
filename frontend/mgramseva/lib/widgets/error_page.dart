@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
@@ -16,12 +18,12 @@ class ErrorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      canPop: true,
       onPopInvoked: (didPop) async {
-         if (didPop) {
+         if (didPop) {    
+          CommonMethods.home(); 
           return;
         }
-        CommonMethods.home();        
       },
       child: Scaffold(
         appBar: isWithoutLogin
