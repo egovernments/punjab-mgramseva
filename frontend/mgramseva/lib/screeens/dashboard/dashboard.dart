@@ -91,6 +91,7 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
        PopScope(
       canPop: CustomOverlay.removeOverLay() ? false: true,
       onPopInvoked : (didPop){
+        
   },
     
       child: GestureDetector(

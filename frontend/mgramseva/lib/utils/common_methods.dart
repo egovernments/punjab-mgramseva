@@ -8,6 +8,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mime/mime.dart';
@@ -20,7 +21,12 @@ import 'models.dart';
 
 class CommonMethods {
   static home() {
-    navigatorKey.currentState?.popUntil((route) => route.isFirst);
+    // navigatorKey.currentState?.popUntil((route) => route.isFirst);
+    Navigator.pushNamedAndRemoveUntil(
+  navigatorKey.currentContext!,
+  Routes.HOME, // Replace with your initial route
+  (Route<dynamic> route) => false,
+);
   }
 
   static String getExtension(String url) {
