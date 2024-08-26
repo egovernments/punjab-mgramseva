@@ -385,11 +385,11 @@ class ConsumerProvider with ChangeNotifier {
           if (result2 != null && result1 != null)
             Notifiers.getToastMessage(
                 context, i18.consumer.UPDATED_SUCCESS, 'SUCCESS');
-          Navigator.pop(context);
+          Navigator.of(context,rootNavigator: true).pop();
           CommonMethods.home();
         }
       } catch (e, s) {
-        Navigator.pop(context);
+        Navigator.of(context,rootNavigator: true).pop();
         ErrorHandler().allExceptionsHandler(context, e, s);
       }
     } else {

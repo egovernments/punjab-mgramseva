@@ -111,7 +111,8 @@ class _BillsTable extends State<BillsTable> {
     var textWidget = Text(ApplicationLocalizations.of(context).translate(label),
         style: TextStyle(
             fontWeight: FontWeight.w700, color: Colors.black, fontSize: 12));
-
+    var LedgerLabelText = Text(ApplicationLocalizations.of(context).translate("ledger_label"),style: TextStyle(
+            fontWeight: FontWeight.w700, color: Colors.black, fontSize: 12));
     return Container(
       decoration: isBorderRequired
           ? BoxDecoration(
@@ -128,7 +129,9 @@ class _BillsTable extends State<BillsTable> {
                 textWidget,
                 Icon(isAscending
                     ? Icons.arrow_upward
-                    : Icons.arrow_downward_sharp)
+                    : Icons.arrow_downward_sharp),
+                if (MediaQuery.of(context).size.width > 720)
+                  LedgerLabelText
               ],
             )
           : textWidget,

@@ -1,8 +1,11 @@
 package org.egov.wscalculation.service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -74,6 +77,9 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 
 	@Autowired
 	ObjectMapper mapper;
+
+	@Autowired
+	EnrichmentService enrichmentService;
 
 	/**
 	 * Get CalculationReq and Calculate the Tax Head on Water Charge And Estimation Charge
@@ -391,12 +397,30 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	
 	public void generateBulkDemandForTenant(BulkDemand bulkDemand) {
 		String tenantId = bulkDemand.getTenantId();
+		String billingPeriod = bulkDemand.getBillingPeriod();
+
+		Integer duplicateHours=config.getDuplicateBulkDemandDurationHours();
+
+		Timestamp durationAgo = Timestamp.from(Instant.now().minus(duplicateHours, ChronoUnit.HOURS));
+
+		// Check for duplicate calls in the last configurable duration
+		boolean isDuplicate = demandService.isDuplicateBulkDemandCall(tenantId, billingPeriod, durationAgo);
+		if (isDuplicate) {
+			throw new CustomException("DUPLICATE_REQUEST", "A bulk demand generation for this tenant and billing Period was already requested in the last "+ duplicateHours +" hours.");
+		}
 		if(tenantId != null && tenantId.split("\\.").length >1) {
 			demandService.generateBulkDemandForTenantId(bulkDemand);
 		}else {
 			throw new CustomException("INVALD_TENANT", "Cannot generate bulk dmeand for this tenant");
 		}
-		
+
+		AuditDetails auditDetails=enrichmentService.getAuditDetails(bulkDemand.getRequestInfo().getUserInfo().getUuid(),false);
+		wSCalculationDao.updateStatusForOldRecords(tenantId,durationAgo,billingPeriod,auditDetails);
+
+		auditDetails=enrichmentService.getAuditDetails(bulkDemand.getRequestInfo().getUserInfo().getUuid(),true);
+		// Insert a new record into the table
+		demandService.insertBulkDemandCall(tenantId, billingPeriod, "IN_PROGRESS",auditDetails);
+
 	}
 	/**
 	 * 

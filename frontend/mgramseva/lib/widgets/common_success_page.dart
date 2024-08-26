@@ -35,11 +35,16 @@ class CommonSuccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        CommonMethods.home();
-        return false;
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+         if (didPop) {    
+          CommonMethods.home(); 
+          return;
+        }
+        
       },
+
       child: Scaffold(
           appBar: isWithoutLogin
               ? AppBar(
