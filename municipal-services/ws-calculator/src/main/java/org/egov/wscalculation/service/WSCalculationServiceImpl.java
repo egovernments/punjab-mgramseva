@@ -399,12 +399,14 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		String tenantId = bulkDemand.getTenantId();
 		String billingPeriod = bulkDemand.getBillingPeriod();
 
-		Timestamp twoHoursAgo = Timestamp.from(Instant.now().minus(2, ChronoUnit.HOURS));
+		Integer duplicateHours=config.getDuplicateBulkDemandDurationHours();
 
-		// Check for duplicate calls in the last 2 hours
-		boolean isDuplicate = demandService.isDuplicateBulkDemandCall(tenantId, billingPeriod, twoHoursAgo);
+		Timestamp durationAgo = Timestamp.from(Instant.now().minus(duplicateHours, ChronoUnit.HOURS));
+
+		// Check for duplicate calls in the last configurable duration
+		boolean isDuplicate = demandService.isDuplicateBulkDemandCall(tenantId, billingPeriod, durationAgo);
 		if (isDuplicate) {
-			throw new CustomException("DUPLICATE_REQUEST", "A bulk demand generation for this tenant and billing Period was already requested in the last 2 hours.");
+			throw new CustomException("DUPLICATE_REQUEST", "A bulk demand generation for this tenant and billing Period was already requested in the last "+ duplicateHours +" hours.");
 		}
 		if(tenantId != null && tenantId.split("\\.").length >1) {
 			demandService.generateBulkDemandForTenantId(bulkDemand);
@@ -413,7 +415,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		}
 
 		AuditDetails auditDetails=enrichmentService.getAuditDetails(bulkDemand.getRequestInfo().getUserInfo().getUuid(),false);
-		wSCalculationDao.updateStatusForOldRecords(tenantId,twoHoursAgo,billingPeriod,auditDetails);
+		wSCalculationDao.updateStatusForOldRecords(tenantId,durationAgo,billingPeriod,auditDetails);
 
 		auditDetails=enrichmentService.getAuditDetails(bulkDemand.getRequestInfo().getUserInfo().getUuid(),true);
 		// Insert a new record into the table

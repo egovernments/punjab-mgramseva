@@ -273,4 +273,7 @@ public class WSCalculationConfiguration {
 
 	@Value("${kafka.topic.roll.out.dashboard}")
 	private String rollOutDashBoardTopic;
+
+	@Value("${bulk.demand.duplicateCheck.duration.hours}")
+	private Integer duplicateBulkDemandDurationHours;
 }
