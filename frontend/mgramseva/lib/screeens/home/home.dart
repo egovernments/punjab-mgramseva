@@ -42,7 +42,10 @@ class _HomeState extends State<Home> {
   afterViewBuild()  {
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
-
+        var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+   commonProvider.appBarUpdate();     
     languageProvider.getLocalizationData(context);
 
   }

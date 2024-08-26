@@ -32,10 +32,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
   }
 
   afterViewBuild() {
-    var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
-   commonProvider.appBarUpdate();    
+  //   var commonProvider = Provider.of<CommonProvider>(
+  //       navigatorKey.currentContext!,
+  //       listen: false);
+  //  commonProvider.appBarUpdate();    
 
   }
 
