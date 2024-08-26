@@ -15,7 +15,7 @@ public class BulkDemandBatch {
     private String id;
     private String tenantId;
     private String billingPeriod;
-    private Timestamp createdTime;
+    private Long createdTime;
     private String status;
 
     private AuditDetails auditDetails;

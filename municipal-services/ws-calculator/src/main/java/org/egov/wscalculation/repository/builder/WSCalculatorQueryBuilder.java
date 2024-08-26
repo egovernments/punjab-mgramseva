@@ -214,7 +214,7 @@ public class WSCalculatorQueryBuilder {
 		preparedStatement.add(billingPeriod);
 		addClauseIfRequired(preparedStatement,query);
 		query.append(" createdTime > ?");
-		preparedStatement.add(fromTime);
+		preparedStatement.add(fromTime.getTime());
 
 		return query.toString();
 	}
