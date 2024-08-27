@@ -62,7 +62,7 @@ const MultiSelectDropdown = ({
         const newStateData = Array.isArray(action?.payload?.[1])
           ? action?.payload?.[1]?.map((items, index) => {
               let obj = {
-                i18text: items?.i18text,
+                [optionsKey]: items?.[optionsKey],
                 propsData: [action.payload?.[0], action.payload?.[1]?.[index]],
               };
               return obj;
@@ -88,12 +88,10 @@ const MultiSelectDropdown = ({
   }, [selected?.length]);
 
   function fnToSelectOptionThroughProvidedSelection(selected) {
-    return selected?.map((e) => (
-      { 
-        [optionsKey]: e?.i18text? e.i18text : `ACCESSCONTROL_ROLES_ROLES_${e.code}`,
-        propsData: [null, e] 
-      }
-    ));
+    return selected?.map((e) => ({
+      [optionsKey]: e?.[optionsKey] ? e[optionsKey] : `ACCESSCONTROL_ROLES_ROLES_${e.code}`,
+      propsData: [null, e],
+    }));
   }
 
   const [alreadyQueuedSelectedState, dispatch] = useReducer(reducer, selected, fnToSelectOptionThroughProvidedSelection);
@@ -107,16 +105,15 @@ const MultiSelectDropdown = ({
     }
   }, [active]);
 
-  useEffect(()=>{
-    if (alreadyQueuedSelectedState?.length === filteredOptions?.length){
-      if(alreadyQueuedSelectedState?.length != 0 &&  filteredOptions?.length != 0){
-      setIsSelected(true)
-      }   
-    }else{
-      setIsSelected(false)
-
+  useEffect(() => {
+    if (alreadyQueuedSelectedState?.length === filteredOptions?.length) {
+      if (alreadyQueuedSelectedState?.length != 0 && filteredOptions?.length != 0) {
+        setIsSelected(true);
+      }
+    } else {
+      setIsSelected(false);
     }
-  },[alreadyQueuedSelectedState])
+  }, [alreadyQueuedSelectedState]);
 
   function handleOutsideClickAndSubmitSimultaneously() {
     setActive(false);
