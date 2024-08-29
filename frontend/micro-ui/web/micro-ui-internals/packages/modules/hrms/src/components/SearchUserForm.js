@@ -5,7 +5,6 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import MultiSelectDropdown from "../components/pageComponents/Multiselect";
 
 const XLSX = require("xlsx");
-const fs = require("fs");
 
 function filterKeys(data, keys) {
   return data.map((item) => {
