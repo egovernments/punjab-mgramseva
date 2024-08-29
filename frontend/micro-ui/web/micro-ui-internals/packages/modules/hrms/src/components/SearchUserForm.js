@@ -3,6 +3,10 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import MultiSelectDropdown from "../components/pageComponents/Multiselect";
+
+const XLSX = require("xlsx");
+const fs = require("fs");
+
 function filterKeys(data, keys) {
   return data.map((item) => {
     const filteredItem = {};
@@ -14,7 +18,40 @@ function filterKeys(data, keys) {
     return filteredItem;
   });
 }
-
+const jsonData = {
+  ResponseInfo: {
+    apiId: "Rainmaker",
+    ver: null,
+    ts: null,
+    resMsgId: "uief87324",
+    msgId: "1724761385030|en_IN",
+    status: "successful",
+  },
+  Employees: [
+    {
+      id: 879116,
+      uuid: "05838362-6f06-42dc-b5f5-19b5bb624eb0",
+      code: "EMP-1013-0944",
+      employeeStatus: "EMPLOYED",
+      employeeType: "PERMANENT",
+      dateOfAppointment: null,
+      jurisdictions: [
+        {
+          id: "b4fffa01-14a2-4c07-b7a1-56c953db386a",
+          hierarchy: "REVENUE",
+          boundary: "pb.balharbinjuhjgfac",
+          boundaryType: "City",
+          tenantId: "pb",
+          auditDetails: {
+            createdBy: "d158721b-5c25-421b-8c26-c63cf5d38825",
+            createdDate: 1708332735415,
+            lastModifiedBy: "4000000001",
+          },
+        },
+      ],
+    },
+  ],
+};
 function getUniqueLeafCodes(tree) {
   const codes = new Set();
 
@@ -79,7 +116,7 @@ function buildTree(data, hierarchy) {
   return tree;
 }
 
-const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles }) => {
+const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles, employeeData }) => {
   const { t } = useTranslation();
   const [showToast, setShowToast] = useState(null);
   const [hierarchy, setHierarchy] = useState([
@@ -93,6 +130,8 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
   ]);
   const [tree, setTree] = useState(null);
   const [rolesOptions, setRolesOptions] = useState(null);
+  const [isShowAllClicked, setIsShowAllClicked] = useState(false);
+
   // const [zones,setZones] = useState([])
   // const [circles,setCircles] = useState([])
   // const [divisions,setDivisions] = useState([])
@@ -249,8 +288,58 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     // })
   };
 
+  useEffect(() => {
+    if (isShowAllClicked && employeeData) {
+      jsonToExcel(employeeData, "employees.xlsx");
+      setIsShowAllClicked(false);
+    }
+  }, [employeeData]);
+
+  function jsonToExcel(employeeData, fileName) {
+    // Extract attributes from JSON data
+    console.log(employeeData);
+    const employees = employeeData.map((employee) => ({
+      "User Id": employee.code,
+      Name: employee.user.name,
+      "Type of User": employee?.assignments[0]?.department,
+      Designation: t(employee?.assignments[0]?.designation),
+      Username: employee?.user?.mobileNumber,
+      Status: employee?.isActive ? "Active" : "Inactive",
+      Tenant: t(employee?.tenantId),
+    }));
+
+    try {
+      console.log("employeeData", employeeData);
+      // Create a new workbook and worksheet
+
+      console.log("JSON to EXcel");
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(employees);
+
+      // Append the worksheet to the workbook
+      XLSX.utils.book_append_sheet(wb, ws, "Employees");
+
+      // Write the file
+      XLSX.writeFile(wb, fileName);
+      console.log("Excel file created successfully");
+    } catch (error) {
+      console.log("Error occurred", error);
+    }
+  }
+
+  const showAllData = () => {
+    clearSearch();
+    setIsShowAllClicked(true);
+    const listOfUniqueTenants = getUniqueLeafCodes(tree);
+
+    setUniqueTenants(() => listOfUniqueTenants);
+    setUniqueRoles(() => rolesOptions?.filter((row) => row.code)?.map((role) => role.code));
+  };
   const onSubmit = (data) => {
     //assuming atleast one hierarchy is entered
+
+    console.log("data", data);
 
     if (Object.keys(data).length === 0 || Object.values(data).every((value) => !value)) {
       //toast message
@@ -329,6 +418,8 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
   const closeToast = () => {
     setShowToast(null);
   };
+
+  // console.log("tenants", getUniqueLeafCodes(tree));
 
   const renderHierarchyFields = useMemo(() => {
     return hierarchy.map(({ level, optionsKey, isMandatory, ...rest }, idx) => (
@@ -428,6 +519,14 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
                 {t("HR_SU_CLEAR_SEARCH")}
               </LinkLabel>
               <SubmitBar label={t("HR_SU_SEARCH")} submit="submit" disabled={false} />
+              <LinkLabel
+                style={{ marginBottom: 0, whiteSpace: "nowrap" }}
+                onClick={() => {
+                  showAllData();
+                }}
+              >
+                {t("SHOW_ALL_DATA")}
+              </LinkLabel>
             </div>
           </div>
         </div>
