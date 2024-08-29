@@ -18,40 +18,7 @@ function filterKeys(data, keys) {
     return filteredItem;
   });
 }
-const jsonData = {
-  ResponseInfo: {
-    apiId: "Rainmaker",
-    ver: null,
-    ts: null,
-    resMsgId: "uief87324",
-    msgId: "1724761385030|en_IN",
-    status: "successful",
-  },
-  Employees: [
-    {
-      id: 879116,
-      uuid: "05838362-6f06-42dc-b5f5-19b5bb624eb0",
-      code: "EMP-1013-0944",
-      employeeStatus: "EMPLOYED",
-      employeeType: "PERMANENT",
-      dateOfAppointment: null,
-      jurisdictions: [
-        {
-          id: "b4fffa01-14a2-4c07-b7a1-56c953db386a",
-          hierarchy: "REVENUE",
-          boundary: "pb.balharbinjuhjgfac",
-          boundaryType: "City",
-          tenantId: "pb",
-          auditDetails: {
-            createdBy: "d158721b-5c25-421b-8c26-c63cf5d38825",
-            createdDate: 1708332735415,
-            lastModifiedBy: "4000000001",
-          },
-        },
-      ],
-    },
-  ],
-};
+
 function getUniqueLeafCodes(tree) {
   const codes = new Set();
 
