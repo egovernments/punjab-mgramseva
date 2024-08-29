@@ -18,40 +18,7 @@ function filterKeys(data, keys) {
     return filteredItem;
   });
 }
-const jsonData = {
-  ResponseInfo: {
-    apiId: "Rainmaker",
-    ver: null,
-    ts: null,
-    resMsgId: "uief87324",
-    msgId: "1724761385030|en_IN",
-    status: "successful",
-  },
-  Employees: [
-    {
-      id: 879116,
-      uuid: "05838362-6f06-42dc-b5f5-19b5bb624eb0",
-      code: "EMP-1013-0944",
-      employeeStatus: "EMPLOYED",
-      employeeType: "PERMANENT",
-      dateOfAppointment: null,
-      jurisdictions: [
-        {
-          id: "b4fffa01-14a2-4c07-b7a1-56c953db386a",
-          hierarchy: "REVENUE",
-          boundary: "pb.balharbinjuhjgfac",
-          boundaryType: "City",
-          tenantId: "pb",
-          auditDetails: {
-            createdBy: "d158721b-5c25-421b-8c26-c63cf5d38825",
-            createdDate: 1708332735415,
-            lastModifiedBy: "4000000001",
-          },
-        },
-      ],
-    },
-  ],
-};
+
 function getUniqueLeafCodes(tree) {
   const codes = new Set();
 
@@ -296,7 +263,6 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
   }, [employeeData]);
 
   function jsonToExcel(employeeData, fileName) {
-    // Extract attributes from JSON data
     console.log(employeeData);
     const employees = employeeData.map((employee) => ({
       "User Id": employee.code,
@@ -309,18 +275,11 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     }));
 
     try {
-      console.log("employeeData", employeeData);
-      // Create a new workbook and worksheet
-
-      console.log("JSON to EXcel");
-
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(employees);
 
-      // Append the worksheet to the workbook
       XLSX.utils.book_append_sheet(wb, ws, "Employees");
 
-      // Write the file
       XLSX.writeFile(wb, fileName);
       console.log("Excel file created successfully");
     } catch (error) {
