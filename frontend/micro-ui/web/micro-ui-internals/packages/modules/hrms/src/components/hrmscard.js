@@ -30,11 +30,9 @@ const HRMSCard = () => {
         {
           label: t("WORK_BENCH_URL_MASTER_DATA"),
           link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
+          category:"Edit Master"
+          
         },
-        // {
-        //   label: t("WORK_BENCH_URL_LOCALIZATION"),
-        //   link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
-        // },
       ]
       : [];
 
@@ -44,6 +42,7 @@ const HRMSCard = () => {
         {
           label: t("WORK_BENCH_URL_VILLAGE_MASTER_DATA"),
           link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=tenant&masterName=tenants`,
+          category:"Dashboard"
         },
       ]
       : [];
@@ -54,7 +53,7 @@ const HRMSCard = () => {
         {
           label: t("WORK_BENCH_URL_PENALTY_MASTER_DATA"),
           link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=Penalty`,
-
+          category:"Edit Master"
         },
       ] : [];
 
@@ -67,35 +66,45 @@ const HRMSCard = () => {
         count: isLoading ? "-" : data?.EmployeCount?.totalEmployee,
         label: t("TOTAL_EMPLOYEES"),
         link: `/${window?.contextPath}/employee/hrms/inbox`,
+        
       },
       {
         count: isLoading ? "-" : data?.EmployeCount?.activeEmployee,
         label: t("ACTIVE_EMPLOYEES"),
         link: `/${window?.contextPath}/employee/hrms/inbox`,
+        
       },
     ],
     links: [
       {
         label: t("HR_SEARCH_USER"),
         link: `/${window?.contextPath}/employee/hrms/search-user`,
-        roles: ["DIV_ADMIN", "STATE_ADMIN"]
+        roles: ["DIV_ADMIN", "STATE_ADMIN"],  
+        category:"Search User"
+
       },
       {
         label: t("HR_HOME_SEARCH_RESULTS_HEADING"),
         link: `/${window?.contextPath}/employee/hrms/inbox`,
+        category:"Search User"
+
       },
       {
         label: STATE_ADMIN ? t("HR_COMMON_CREATE_DIVISION_EMPLOYEE_HEADER") : t("HR_COMMON_CREATE_EMPLOYEE_HEADER"),
         link: `/${window?.contextPath}/employee/hrms/create`,
+        category:"Create User"
       },
       DIV_ADMIN ? {} :
        {
         label: t("HR_STATE_ REPORTS"),
         link: "https://mgramseva-dwss.punjab.gov.in/kibana/app/r/s/JNF2x?auth_provider_hint=anonymous1",
+        category:"Dashboard"
       },
        {
         label: t("HR_RATE_DASHBOARD"),
         link: "https://mgramseva-dwss.punjab.gov.in/kibana/app/dashboards#/view/22ed8660-39cf-11ef-841e-251f7e3bc6c7?[…]!t,value:60000),time:(from:now-15m,to:now))",
+        category:"Dashboard"
+
       },
       ...moduleForSomeDIVAdmin,
       ...moduleForSomeSTATEUser,
