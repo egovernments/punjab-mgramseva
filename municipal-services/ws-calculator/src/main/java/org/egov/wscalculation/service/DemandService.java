@@ -3,6 +3,7 @@ package org.egov.wscalculation.service;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -1233,6 +1234,16 @@ public class DemandService {
 		producer.push(config.getGenerateBulkDemandTopic(), demandData);
 //		generateBulkDemandForULB(billingMasterData, bulkDemand);
 	}
+
+	public boolean isDuplicateBulkDemandCall(String tenantId, String billingPeriod, Timestamp fromTime) {
+		return waterCalculatorDao.isDuplicateBulkDemandCall(tenantId, billingPeriod, fromTime);
+	}
+
+	public void insertBulkDemandCall(String tenantId, String billingPeriod, String status,AuditDetails auditDetails) {
+		waterCalculatorDao.insertBulkDemandCall(tenantId, billingPeriod, status,auditDetails);
+	}
+
+
 
 	private String formatDemandMessage(RequestInfo requestInfo, String tenantId, String string) {
 		// TODO Auto-generated method stub

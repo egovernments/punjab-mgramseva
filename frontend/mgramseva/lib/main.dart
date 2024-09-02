@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
@@ -164,9 +165,6 @@ class _MyAppState extends State<MyApp> {
             CommonProvider.downloadUrl.remove(id);
         }
       }
-      setState(() {
-        // print("Download progress: "+progress.toString());
-      });
     });
     FlutterDownloader.registerCallback(downloadCallback);
   }
@@ -291,8 +289,6 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    var languageProvider =
-        Provider.of<LanguageProvider>(context, listen: false);
     return Scaffold(
       body: StreamBuilder(
           stream: commonProvider.userLoggedStreamCtrl.stream,
