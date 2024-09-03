@@ -589,6 +589,7 @@ export const UICustomizations = {
                 updatedCode:`${row.divisionName} - ${row?.name}`
               }
             });
+            result.sort((a, b) => a.name.trim().localeCompare(b.name.trim()));
             return result;
           },
         },
