@@ -3,7 +3,8 @@ import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Switch, useLocation, useHistory } from "react-router-dom";
 import SearchUser from "./SearchUser";
-import RateDashboard from "./RateDashboard";
+import Dashboard from "./Dashboard";
+
 // const {SixFtApart,Rotate360}=SVG;
 const EmployeeApp = ({ path, url, userType }) => {
   const { t } = useTranslation();
@@ -61,7 +62,7 @@ const EmployeeApp = ({ path, url, userType }) => {
           <PrivateRoute path={`${path}/details/:tenantId/:id`} component={() => <HRMSDetails />} />
           <PrivateRoute path={`${path}/edit/:tenantId/:id`} component={() => <EditEmpolyee />} />
           <PrivateRoute path={`${path}/search-user`} component={() => <SearchUser />} />
-          <PrivateRoute path={`${path}/rate-dashboard`} component={() => <RateDashboard />} />
+          <PrivateRoute path={`${path}/dashboard`} component={() => <Dashboard />} />
         </div>
       </React.Fragment>
     </Switch>

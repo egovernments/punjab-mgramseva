@@ -28,8 +28,6 @@ const IFrameInterface = (props) => {
     enabled: true,
   });
 
-  console.log(data);
-
   const injectCustomHttpInterceptors = (iframeWindow) => {
     // console.log("iframeInInterceptor",iframeWindow)
     const injectCustomHttpInterceptor = () => {
@@ -169,10 +167,14 @@ const IFrameInterface = (props) => {
     const isOrign = pageObject?.["isOrigin"] || false;
     const domain = isOrign
       ? process.env.NODE_ENV === "development"
-        ? "https://unified-dev.digit.org"
-        : document.location.origin
+        ? "https://mgramseva-dwss.punjab.gov.in"
+        : // :
+          // "https://unified-dev.digit.org"
+          document.location.origin
       : pageObject?.["domain"];
     //checking if overwrite time is true then update the url as per filter time else return the url
+    console.log("pageobject", pageObject);
+
     const contextPath = pageObject?.["routePath"]
       ? pageObject?.["overwriteTimeFilter"] && filters?.range?.startDate && filters?.range?.endDate
         ? pageObject["routePath"]
@@ -181,6 +183,7 @@ const IFrameInterface = (props) => {
         : pageObject["routePath"]
       : "";
     const title = pageObject?.["title"] || "";
+    console.log("contextPath", contextPath);
     let url = `${domain}${contextPath}`;
     if (pageObject?.authToken && pageObject?.authToken?.enable) {
       const authKey = pageObject?.authToken?.key || "auth-token";

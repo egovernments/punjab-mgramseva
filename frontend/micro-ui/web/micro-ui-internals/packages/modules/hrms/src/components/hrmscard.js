@@ -91,12 +91,12 @@ const HRMSCard = () => {
         ? {}
         : {
             label: t("HR_STATE_ REPORTS"),
-            link: "https://mgramseva-dwss.punjab.gov.in/kibana/app/r/s/JNF2x?auth_provider_hint=anonymous1",
+            link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=state`,
             category: "Dashboard",
           },
       {
         label: t("HR_RATE_DASHBOARD"),
-        link: `/${window?.contextPath}/employee/hrms/rate-dashboard?moduleName=rate-master&pageName=dashboard`,
+        link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=rate-master`,
         category: "Dashboard",
       },
       ...moduleForSomeDIVAdmin,
