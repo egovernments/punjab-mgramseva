@@ -483,7 +483,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
                   showAllData();
                 }}
               >
-                {t("SHOW_ALL_DATA")}
+                {t("HR_SHOW_ALL_DATA")}
               </LinkLabel>
             </div>
           </div>
