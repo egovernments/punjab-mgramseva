@@ -30,7 +30,7 @@ const HRMSCard = () => {
         {
           label: t("WORK_BENCH_URL_MASTER_DATA"),
           link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
-          category:"Edit Master"
+          category:t("HR_EDIT_MASTER")
           
         },
       ]
@@ -42,7 +42,7 @@ const HRMSCard = () => {
         {
           label: t("WORK_BENCH_URL_VILLAGE_MASTER_DATA"),
           link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=tenant&masterName=tenants`,
-          category:t("HR_DASHBOARD_HEADER")
+          category:t("HR_EDIT_MASTER")
         },
       ]
       : [];
@@ -53,7 +53,7 @@ const HRMSCard = () => {
         {
           label: t("WORK_BENCH_URL_PENALTY_MASTER_DATA"),
           link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=Penalty`,
-          category:"Edit Master"
+          category:t("HR_EDIT_MASTER")
         },
       ] : [];
 
