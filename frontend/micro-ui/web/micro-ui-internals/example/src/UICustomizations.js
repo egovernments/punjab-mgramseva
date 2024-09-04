@@ -583,17 +583,24 @@ export const UICustomizations = {
         config: {
           enabled: true,
           select: (data) => {
-            const result = data?.MdmsRes?.tenant?.tenants?.filter(row => row?.divisionCode && row?.divisionName)?.map(row => {
-              return {
-                ...row,
-                updatedCode:`${row.divisionName} - ${row?.name}`
-              }
-            });            
+
+            
+            console.log("OPS ");
+            console.log("OPS ",result);
+
+            const result = data?.MdmsRes?.tenant?.tenants?.filter(
+              (row) => row?.divisionCode && row?.divisionName
+            )?.map((row) => ({
+              ...row,
+              updatedCode: `${row.divisionName} - ${row?.name}`,
+            }));
+          
             result.sort((a, b) => {
-              const nameA = a.updatedCode ? a.updatedCode : "";
-              const nameB = b?.updatedCode ? b.updatedCode : "";
+              const nameA = (a.name || "").toLowerCase().trim();
+              const nameB = (b?.name || "").toLowerCase().trim();
               return nameA.localeCompare(nameB);
-            });        
+            });
+          
             return result;
           },
         },
