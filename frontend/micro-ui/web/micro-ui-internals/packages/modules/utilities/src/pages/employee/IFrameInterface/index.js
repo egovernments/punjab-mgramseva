@@ -165,7 +165,7 @@ const IFrameInterface = (props) => {
     }
 
     const isOrign = pageObject?.["isOrigin"] || false;
-    const domain = isOrign
+    const domain = isOrigin
       ? process.env.NODE_ENV === "development"
         ? "https://mgramseva-dwss.punjab.gov.in"
         : // :
