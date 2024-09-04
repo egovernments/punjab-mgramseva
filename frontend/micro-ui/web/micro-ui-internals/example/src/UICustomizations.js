@@ -590,10 +590,10 @@ export const UICustomizations = {
               }
             });            
             result.sort((a, b) => {
-              const nameA = a.updatedCode ?? "";
-              const nameB = b?.updatedCode ?? "";
+              const nameA = a.updatedCode ? a.updatedCode : "";
+              const nameB = b?.updatedCode ? b.updatedCode : "";
               return nameA.localeCompare(nameB);
-            });            
+            });        
             return result;
           },
         },
