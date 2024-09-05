@@ -151,6 +151,8 @@ const IFrameInterface = (props) => {
     }
   }, [localStorageKey, sendAuth, location]);
 
+  console.log("data", data);
+
   useEffect(() => {
     const pageObject = data?.[moduleName]?.["iframe-routes"]?.[pageName] || {};
     console.log("pageObject", pageObject);
@@ -164,13 +166,13 @@ const IFrameInterface = (props) => {
       setSendAuth(false);
     }
 
+    console.log("env", process.env);
+
     const isOrign = pageObject?.["isOrigin"] || false;
     const domain = isOrign
       ? process.env.NODE_ENV === "development"
         ? "https://mgramseva-dwss.punjab.gov.in"
-        : // :
-          // "https://unified-dev.digit.org"
-          document.location.origin
+        : document.location.origin
       : pageObject?.["domain"];
     //checking if overwrite time is true then update the url as per filter time else return the url
     console.log("pageobject", pageObject);
@@ -184,7 +186,9 @@ const IFrameInterface = (props) => {
       : "";
     const title = pageObject?.["title"] || "";
     console.log("contextPath", contextPath);
+    console.log(document.location.origin);
     let url = `${domain}${contextPath}`;
+
     if (pageObject?.authToken && pageObject?.authToken?.enable) {
       const authKey = pageObject?.authToken?.key || "auth-token";
       if (pageObject?.authToken?.customFun && Digit.Utils.createFunction(pageObject?.authToken?.customFun)) {
@@ -194,6 +198,7 @@ const IFrameInterface = (props) => {
         url = `${url}&${authKey}=${Digit.UserService.getUser()?.access_token || ""}`;
       }
     }
+    // url += "&output=embed";
     console.log("url", url);
     console.log(url);
     setUrl(url);
