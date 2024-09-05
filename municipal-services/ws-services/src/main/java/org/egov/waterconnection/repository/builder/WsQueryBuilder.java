@@ -226,10 +226,10 @@ public class WsQueryBuilder {
 			"dem.createdtime as demandGenerationDate, " +
 			"SUM(CASE WHEN dd.taxheadcode = 'WS_TIME_PENALTY' THEN dd.taxamount ELSE 0 END) as penalty, " +
 			"SUM(CASE WHEN dd.taxheadcode = '10101' THEN dd.taxamount ELSE 0 END) as demandAmount, " +
-			"SUM(CASE WHEN dd.taxheadcode = 'WS_ADVANCE_CARRYFORWARD' THEN dd.taxamount ELSE 0 END) as advance " +
+			"SUM(CASE WHEN dd.taxheadcode = 'WS_ADVANCE_CARRYFORWARD' AND dd.createdtime BETWEEN dem.taxperiodfrom AND dem.taxperiodto THEN dd.taxamount ELSE 0 END) as advance " +
 			"FROM eg_ws_connection conn " +
 			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno " +
-			"INNER JOIN egbs_demanddetail_v1 dd on dd.demandid = dem.id " +
+				"INNER JOIN egbs_demanddetail_v1 dd on dd.demandid = dem.id " +
 			"WHERE dem.taxperiodfrom >= ? AND dem.taxperiodto <= ? AND dem.tenantId = ? AND conn.connectionno = ? AND dem.status='ACTIVE' " +
 			"GROUP BY conn.connectionno, dem.tenantId, conn.createdTime, dem.createdtime ";
 //			"ORDER BY conn.connectionno";
