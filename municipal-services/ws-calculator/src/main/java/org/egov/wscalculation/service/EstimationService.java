@@ -213,7 +213,9 @@ public class EstimationService {
 		//For Non metered connection calculation on normal connection
 		if (isRangeCalculation(calculationAttribute)) {
 			if (waterConnection.getConnectionType().equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
-				waterCharge = BigDecimal.valueOf(billSlab.getMinimumCharge());
+				if(billSlab.getMinimumCharge() !=0){
+					waterCharge = BigDecimal.valueOf(billSlab.getMinimumCharge());
+				}
 				for (Slab slab : billSlab.getSlabs()) {
 					if (totalUOM > (slab.getTo() - slab.getFrom())) {
 						waterCharge = waterCharge.add(BigDecimal.valueOf(((slab.getTo()) - (slab.getFrom())) * slab.getCharge()));
