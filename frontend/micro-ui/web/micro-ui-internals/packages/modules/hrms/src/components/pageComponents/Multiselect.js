@@ -62,7 +62,7 @@ const MultiSelectDropdown = ({
         const newStateData = Array.isArray(action?.payload?.[1])
           ? action?.payload?.[1]?.map((items, index) => {
               let obj = {
-                [optionsKey]: items?.[optionsKey],
+                i18text: items?.i18text,
                 propsData: [action.payload?.[0], action.payload?.[1]?.[index]],
               };
               return obj;

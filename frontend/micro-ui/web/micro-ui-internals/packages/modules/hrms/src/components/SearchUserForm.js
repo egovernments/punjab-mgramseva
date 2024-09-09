@@ -162,7 +162,6 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
               (row?.name === "Secretary" || row?.name === "Sarpanch" || row?.name === "Revenue Collector" || row?.name === "DIVISION ADMIN")
           )
         );
-
         //updating to state roles as requested
         // setRolesOptions([
         //   // {
@@ -295,7 +294,6 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
   const onSubmit = (data) => {
     //assuming atleast one hierarchy is entered
 
-
     if (Object.keys(data).length === 0 || Object.values(data).every((value) => !value)) {
       //toast message
       setShowToast({ warning: true, label: t("ES_COMMON_MIN_SEARCH_CRITERIA_MSG") });
@@ -374,8 +372,6 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     setShowToast(null);
   };
 
-
-
   const renderHierarchyFields = useMemo(() => {
     return hierarchy.map(({ level, optionsKey, isMandatory, ...rest }, idx) => (
       <LabelFieldPair>
@@ -415,6 +411,12 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     ));
   }, [formData]);
 
+  useEffect(() => {
+    rolesOptions?.forEach((option) => {
+      option.i18text = "ACCESSCONTROL_ROLES_ROLES_" + option?.code;
+    });
+  }, [rolesOptions]);
+
   if (isLoading || !setTree) {
     return <Loader />;
   }
@@ -434,7 +436,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
                     <div style={{ display: "grid", gridAutoFlow: "row" }}>
                       <MultiSelectDropdown
                         options={rolesOptions}
-                        optionsKey={"name"}
+                        optionsKey={"i18text"}
                         props={props} //these are props from Controller
                         isPropsNeeded={true}
                         onSelect={(e) => {
