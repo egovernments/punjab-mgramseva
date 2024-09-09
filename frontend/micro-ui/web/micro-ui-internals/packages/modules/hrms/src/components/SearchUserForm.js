@@ -262,7 +262,6 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
   }, [employeeData]);
 
   function jsonToExcel(employeeData, fileName) {
-    console.log(employeeData);
     const employees = employeeData.map((employee) => ({
       "User Id": employee.code,
       Name: employee.user.name,
@@ -280,7 +279,6 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
       XLSX.utils.book_append_sheet(wb, ws, "Employees");
 
       XLSX.writeFile(wb, fileName);
-      console.log("Excel file created successfully");
     } catch (error) {
       console.log("Error occurred", error);
     }
@@ -297,7 +295,6 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
   const onSubmit = (data) => {
     //assuming atleast one hierarchy is entered
 
-    console.log("data", data);
 
     if (Object.keys(data).length === 0 || Object.values(data).every((value) => !value)) {
       //toast message
@@ -377,7 +374,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     setShowToast(null);
   };
 
-  // console.log("tenants", getUniqueLeafCodes(tree));
+
 
   const renderHierarchyFields = useMemo(() => {
     return hierarchy.map(({ level, optionsKey, isMandatory, ...rest }, idx) => (
