@@ -20,8 +20,6 @@ const IFrameInterface = (props) => {
 
   const { data, isLoading } = Digit.Hooks.dss.useMDMS(stateCode, "common-masters", ["uiCommonConstants"], {
     select: (data) => {
-      // debugger;
-      console.log(data, "data");
       let formattedResponse = data?.["common-masters"]?.["uiCommonConstants"]?.[0] || {};
       return formattedResponse;
     },
@@ -29,7 +27,6 @@ const IFrameInterface = (props) => {
   });
 
   const injectCustomHttpInterceptors = (iframeWindow) => {
-    // console.log("iframeInInterceptor",iframeWindow)
     const injectCustomHttpInterceptor = () => {
       try {
         if (!iframeWindow) {
@@ -151,8 +148,6 @@ const IFrameInterface = (props) => {
     }
   }, [localStorageKey, sendAuth, location]);
 
-  console.log("data", data);
-
   useEffect(() => {
     const pageObject = data?.[moduleName]?.["iframe-routes"]?.[pageName] || {};
     console.log("pageObject", pageObject);
@@ -175,7 +170,6 @@ const IFrameInterface = (props) => {
         : document.location.origin
       : pageObject?.["domain"];
     //checking if overwrite time is true then update the url as per filter time else return the url
-    console.log("pageobject", pageObject);
 
     const contextPath = pageObject?.["routePath"]
       ? pageObject?.["overwriteTimeFilter"] && filters?.range?.startDate && filters?.range?.endDate
@@ -185,8 +179,6 @@ const IFrameInterface = (props) => {
         : pageObject["routePath"]
       : "";
     const title = pageObject?.["title"] || "";
-    console.log("contextPath", contextPath);
-    console.log(document.location.origin);
     let url = `${domain}${contextPath}`;
 
     if (pageObject?.authToken && pageObject?.authToken?.enable) {
@@ -198,10 +190,8 @@ const IFrameInterface = (props) => {
         url = `${url}&${authKey}=${Digit.UserService.getUser()?.access_token || ""}`;
       }
     }
-    // url += "&output=embed";
-    console.log("url", url);
-    console.log(url);
     setUrl(url);
+
     setTitle(title);
   }, [data, moduleName, pageName, location, filters]);
 
