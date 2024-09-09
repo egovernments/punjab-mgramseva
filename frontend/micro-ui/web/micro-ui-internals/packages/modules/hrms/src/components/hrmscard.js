@@ -82,7 +82,7 @@ const HRMSCard = () => {
         category:  t("HR_CREATE_USER_HEADER")
       },
       {
-        label: t("HR_SEARCH_USER"),
+        label: STATE_ADMIN ? t("HR_DIVISION_SEARCH_USER") : t("HR_SEARCH_USER") ,
         link: `/${window?.contextPath}/employee/hrms/search-user`,
         roles: ["DIV_ADMIN", "STATE_ADMIN"],  
         category:t("SEARCH_USER_HEADER")
