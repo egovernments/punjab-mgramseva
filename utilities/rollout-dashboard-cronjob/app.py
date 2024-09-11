@@ -821,7 +821,7 @@ def get_daterange():
         ]
     else:
         return ['Last seven days', 'Last 15 days', 'currentMonth-Till date', 'Consolidated (As on date)', 'FY to date']
-
+        
 def process():
     print("continue is the process")
        
