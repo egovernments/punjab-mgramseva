@@ -43,11 +43,11 @@ public class BillingSlab {
 		this.calculationAttribute = calculationAttribute;
 	}
 
-	public double getMinimumCharge() {
+	public String getMinimumCharge() {
 		return minimumCharge;
 	}
 
-	public void setMinimumCharge(double minimumCharge) {
+	public void setMinimumCharge(String minimumCharge) {
 		this.minimumCharge = minimumCharge;
 	}
 
@@ -60,6 +60,6 @@ public class BillingSlab {
 	}
 
 	private String calculationAttribute = null;
-	private double minimumCharge;
+	private String minimumCharge;
 	private List<Slab> slabs = new ArrayList<>();
 }

@@ -213,8 +213,9 @@ public class EstimationService {
 		//For Non metered connection calculation on normal connection
 		if (isRangeCalculation(calculationAttribute)) {
 			if (waterConnection.getConnectionType().equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
-				if(billSlab.getMinimumCharge() !=0){
-					waterCharge = BigDecimal.valueOf(billSlab.getMinimumCharge());
+				if(billSlab.getMinimumCharge() != null && !billSlab.getMinimumCharge().isEmpty()
+						&& new BigDecimal(billSlab.getMinimumCharge()).compareTo(BigDecimal.ZERO) != 0){
+					waterCharge = new BigDecimal(billSlab.getMinimumCharge());
 				}
 				for (Slab slab : billSlab.getSlabs()) {
 					if (totalUOM > (slab.getTo() - slab.getFrom())) {
@@ -235,15 +236,16 @@ public class EstimationService {
 				for (Slab slab : billSlab.getSlabs()) {
 					if (totalUOM >= slab.getFrom() && totalUOM < slab.getTo()) {
 						waterCharge = BigDecimal.valueOf((totalUOM * slab.getCharge()));
-						if (billSlab.getMinimumCharge() > waterCharge.doubleValue()) {
-							waterCharge = BigDecimal.valueOf(billSlab.getMinimumCharge());
+						if (billSlab.getMinimumCharge() != null && !billSlab.getMinimumCharge().isEmpty()
+								&& new BigDecimal(billSlab.getMinimumCharge()).compareTo(waterCharge) > 0) {
+							waterCharge = new BigDecimal(billSlab.getMinimumCharge());
 						}
 						break;
 					}
 				}
 			}
 		} else {
-			waterCharge = BigDecimal.valueOf(billSlab.getMinimumCharge());
+			waterCharge = new BigDecimal(billSlab.getMinimumCharge());
 		}
 		return waterCharge;
 	}
