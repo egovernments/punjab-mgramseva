@@ -178,8 +178,8 @@ export const UICustomizations = {
               }
             });
             result.sort((a, b) => {
-              const nameA = (a.name || "").toLowerCase().trim();
-              const nameB = (b?.name || "").toLowerCase().trim();
+              const nameA = (a.divisionName || "").toLowerCase().trim();
+              const nameB = (b?.divisionName || "").toLowerCase().trim();
               return nameA.localeCompare(nameB);
             });
             return result;
