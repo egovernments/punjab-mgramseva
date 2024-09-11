@@ -73,8 +73,8 @@ class _HouseholdListState extends State<HouseholdList> {
               leftColumnWidth: width,
               rightColumnWidth:
                   width * (householdProvider.collectionHeaderList.length - 1),
-              height: 58 + (52.0 * tableData.length + 1),
-              scrollPhysics: NeverScrollableScrollPhysics(),
+              height: 58 + (52.0 * (tableData.length < 10 ? tableData.length : 10 ) + 1),
+              scrollPhysics: BouncingScrollPhysics(),
             );
     });
   }

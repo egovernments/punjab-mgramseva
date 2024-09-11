@@ -30,7 +30,7 @@ const HRMSCard = () => {
         {
           label: t("WORK_BENCH_URL_MASTER_DATA"),
           link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
-          category:"Edit Master"
+          category:t("HR_EDIT_MASTER")
           
         },
       ]
@@ -42,7 +42,7 @@ const HRMSCard = () => {
         {
           label: t("WORK_BENCH_URL_VILLAGE_MASTER_DATA"),
           link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=tenant&masterName=tenants`,
-          category:t("HR_DASHBOARD_HEADER")
+          category:t("HR_EDIT_MASTER")
         },
       ]
       : [];
@@ -53,7 +53,7 @@ const HRMSCard = () => {
         {
           label: t("WORK_BENCH_URL_PENALTY_MASTER_DATA"),
           link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=Penalty`,
-          category:"Edit Master"
+          category:t("HR_EDIT_MASTER")
         },
       ] : [];
 
@@ -82,7 +82,7 @@ const HRMSCard = () => {
         category:  t("HR_CREATE_USER_HEADER")
       },
       {
-        label: t("HR_SEARCH_USER"),
+        label: STATE_ADMIN ? t("HR_DIVISION_SEARCH_USER") : t("HR_SEARCH_USER") ,
         link: `/${window?.contextPath}/employee/hrms/search-user`,
         roles: ["DIV_ADMIN", "STATE_ADMIN"],  
         category:t("SEARCH_USER_HEADER")

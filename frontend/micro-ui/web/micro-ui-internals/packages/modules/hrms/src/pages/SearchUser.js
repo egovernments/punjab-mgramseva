@@ -9,6 +9,7 @@ const SearchUser = () => {
   const { t } = useTranslation()
   const [uniqueTenants, setUniqueTenants] = useState(null)
   const [roles, setUniqueRoles] = useState(null)
+  const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
 
   const requestCriteriaForEmployeeSearch = {
     url: "/egov-hrms/employees/_searchListOfEmployee",
@@ -37,7 +38,7 @@ const SearchUser = () => {
   return (
     <div className="inbox-search-component-wrapper">
       <div className={`sections-parent search`}>
-        <Header >{t("HR_SU")}</Header>
+        <Header >{STATE_ADMIN ? t("HR_SDU") :t("HR_SU")}</Header>
         <SearchUserForm uniqueTenants={uniqueTenants} setUniqueTenants={setUniqueTenants} roles={roles} setUniqueRoles={setUniqueRoles} />
       </div>
       <div style={{ marginTop: "1.5rem" }}>
