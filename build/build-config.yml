@@ -91,6 +91,13 @@ config:
       - work-dir: "frontend/micro-ui"
         image-name: "mgramseva-web"
         dockerfile: "frontend/micro-ui/web/docker/Dockerfile"
+  - name: "builds/mGramSeva/core-services/boundary-service"
+    build:
+      - work-dir: "core-services/boundary-service"
+        image-name: "boundary-service"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core-services/boundary-service/src/main/resources/db"
+        image-name: "boundary-service-db"
   - name: "builds/mGramSeva/core-services/user-otp"
     build:
       - work-dir: "core-services/user-otp"
