@@ -150,7 +150,6 @@ const IFrameInterface = (props) => {
 
   useEffect(() => {
     const pageObject = data?.[moduleName]?.["iframe-routes"]?.[pageName] || {};
-    console.log("pageObject", pageObject);
     if (pageObject?.Authorization) {
       if (pageObject?.SendInvalidAuthorization) {
         setSendAuth("invalid");
@@ -160,8 +159,6 @@ const IFrameInterface = (props) => {
     } else {
       setSendAuth(false);
     }
-
-    console.log("env", process.env);
 
     const isOrign = pageObject?.["isOrigin"] || false;
     const domain = isOrign
@@ -231,8 +228,6 @@ const IFrameInterface = (props) => {
             },
           }
         );
-        console.log("response from axios", response);
-        console.log("Response headers axios:", response.headers);
         const setCookie = response.headers["set-cookie"];
         if (setCookie) {
           console.log("axios cookie set", setCookie);

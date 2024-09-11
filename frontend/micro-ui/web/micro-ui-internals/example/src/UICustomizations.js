@@ -583,12 +583,12 @@ export const UICustomizations = {
         config: {
           enabled: true,
           select: (data) => {
-            const result = data?.MdmsRes?.tenant?.tenants?.filter(row => row?.divisionCode && row?.divisionName)?.map(row => {
-              return {
-                ...row,
-                updatedCode:`${row.divisionName} - ${row?.name}`
-              }
-            });
+            const result = data?.MdmsRes?.tenant?.tenants?.filter(
+              (row) => row?.divisionCode && row?.divisionName
+            )?.map((row) => ({
+              ...row,
+              updatedCode: `${row.divisionName} - ${row?.name}`,
+            }));
             return result;
           },
         },
