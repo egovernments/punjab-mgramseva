@@ -74,7 +74,9 @@ class _HouseholdRegister extends State<HouseholdRegister>
                     color: Color.fromRGBO(238, 238, 238, 1),
                     padding: EdgeInsets.only(left: 8, right: 8),
                     height: constraints.maxHeight - 50,
-                    child: CustomScrollView(slivers: [
+                    child: CustomScrollView(   
+              primary: false,                                         
+                      slivers: [
                       SliverList(
                           delegate: SliverChildListDelegate([
                         SizedBox(
@@ -99,6 +101,7 @@ class _HouseholdRegister extends State<HouseholdRegister>
                         ),
                         Container(key: key, child: HouseholdCard()),
                       ])),
+
                       SliverToBoxAdapter(child: HouseholdSearch())
                     ])),
                 Align(
