@@ -83,8 +83,9 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             ledgerReport.setDemand(new DemandLedgerReport());
             ledgerReport.getDemand().setMonthAndYear(monthAndYear);
             ledgerReport.getDemand().setConnectionNo(consumerCode);
-            BigDecimal taxAmountResult = getMonthlyTaxAmount(epochTime, consumerCode);
             BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(epochTime, consumerCode);
+            boolean paymentExists = totalAmountPaidResult != null && totalAmountPaidResult.compareTo(BigDecimal.ZERO) > 0;
+            BigDecimal taxAmountResult = getMonthlyTaxAmount(epochTime, consumerCode,paymentExists);
             ledgerReport.getDemand().setArrears(taxAmountResult.subtract(totalAmountPaidResult));
             log.info("Arrers are "+ledgerReport.getDemand().getArrears()+" and monthandYear"+ ledgerReport.getDemand().getMonthAndYear());
             ledgerReports.put(monthAndYear, ledgerReport);
@@ -234,8 +235,12 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         }
     }
 
-    private BigDecimal getMonthlyTaxAmount(Long startDate, String consumerCode) {
+    private BigDecimal getMonthlyTaxAmount(Long startDate, String consumerCode,boolean paymentExists) {
         StringBuilder taxAmountQuery = new StringBuilder(wsQueryBuilder.TAX_AMOUNT_QUERY);
+        if (paymentExists) {
+            // Exclude WS_ADVANCE_CARRYFORWARD if payments exist
+            taxAmountQuery.append(" AND taxheadcode != 'WS_ADVANCE_CARRYFORWARD'");
+        }
         List<Object> taxAmountParams = new ArrayList<>();
         taxAmountParams.add(consumerCode);
         taxAmountParams.add(startDate);
