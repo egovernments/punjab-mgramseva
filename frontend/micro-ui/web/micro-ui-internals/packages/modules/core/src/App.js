@@ -65,13 +65,22 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData, de
     pathname,
     initData,
   };
+
+  // Do not redirect if it's a payment route under citizen
+  const shouldRedirectToEmployee = () => {
+    if (pathname.startsWith(`/${window?.contextPath}/citizen/payment`)) {
+      return false;
+    }
+    return true;
+  };
+
   return (
     <Switch>
       <Route path={`/${window?.contextPath}/employee`}>
         <EmployeeApp {...commonProps} />
       </Route>
       <Route path={`/${window?.contextPath}/citizen`}>
-        <Redirect to={`/${window?.contextPath}/employee`} />
+        {shouldRedirectToEmployee() ? <Redirect to={`/${window?.contextPath}/employee`} /> : <CitizenApp {...commonProps} />}
       </Route>
       <Route path={`/${window?.contextPath}/common`}>
         <CommonApp {...commonProps} />
