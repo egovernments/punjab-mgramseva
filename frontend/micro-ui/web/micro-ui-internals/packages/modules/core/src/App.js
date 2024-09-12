@@ -4,7 +4,7 @@ import CitizenApp from "./pages/citizen";
 import EmployeeApp from "./pages/employee";
 import CommonApp from "./pages/common";
 
-export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData, defaultLanding = "citizen" }) => {
+export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData, defaultLanding = "employee" }) => {
   const history = useHistory();
   const { pathname } = useLocation();
   const innerWidth = window.innerWidth;
@@ -71,7 +71,7 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData, de
         <EmployeeApp {...commonProps} />
       </Route>
       <Route path={`/${window?.contextPath}/citizen`}>
-        <CitizenApp {...commonProps} />
+        <Redirect to={`/${window?.contextPath}/employee`} />
       </Route>
       <Route path={`/${window?.contextPath}/common`}>
         <CommonApp {...commonProps} />
