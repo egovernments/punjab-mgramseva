@@ -155,11 +155,13 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
         const filteredResult = filterKeys(result, requiredKeys);
         const resultInTree = buildTree(filteredResult, hierarchy);
         const excludeCodes = ["HRMS_ADMIN", "LOC_ADMIN", "MDMS_ADMIN", "EMPLOYEE", "SYSTEM"];
+        const DIV_ADMIN = Digit.UserService.hasAccess(["DIV_ADMIN"]);
+
         setRolesOptions(
           data?.MdmsRes?.["ws-services-masters"]?.["WSServiceRoles"]?.filter(
             (row) =>
               !excludeCodes.includes(row?.code) &&
-              (row?.name === "Secretary" || row?.name === "Sarpanch" || row?.name === "Revenue Collector" || row?.name === "DIVISION ADMIN")
+              (row?.name === "Secretary" || row?.name === "Sarpanch" || row?.name === "Revenue Collector" || !DIV_ADMIN && row?.name === "DIVISION ADMIN")
           )
         );
         //updating to state roles as requested
