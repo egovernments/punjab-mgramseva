@@ -88,9 +88,7 @@ const HRMSCard = () => {
         category: t("SEARCH_USER_HEADER"),
       },
 
-      DIV_ADMIN
-        ? {}
-        : {
+ {
             label: t("HR_STATE_ REPORTS"),
             link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=state`,
             category: t("HR_DASHBOARD_HEADER"),
@@ -98,6 +96,11 @@ const HRMSCard = () => {
       {
         label: t("HR_RATE_DASHBOARD"),
         link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=rate-master`,
+        category: t("HR_DASHBOARD_HEADER"),
+      },
+      {
+        label: t("HR_ROLLOUT_DASHBOARD"),
+        link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=rollout`,
         category: t("HR_DASHBOARD_HEADER"),
       },
       ...moduleForSomeDIVAdmin,
