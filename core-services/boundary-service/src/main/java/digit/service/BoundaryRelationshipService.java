@@ -1,19 +1,25 @@
 package digit.service;
 
+import digit.config.ApplicationProperties;
+import digit.kafka.Producer;
 import digit.repository.BoundaryRelationshipRepository;
 import digit.service.enrichment.BoundaryRelationshipEnricher;
 import digit.service.validator.BoundaryRelationshipValidator;
 import digit.util.HierarchyUtil;
 import digit.web.models.*;
+import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.utils.ResponseInfoUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class BoundaryRelationshipService {
 
     private BoundaryRelationshipValidator boundaryRelationshipValidator;
@@ -23,6 +29,12 @@ public class BoundaryRelationshipService {
     private BoundaryRelationshipRepository boundaryRelationshipRepository;
 
     private HierarchyUtil hierarchyUtil;
+
+    @Autowired
+    private ApplicationProperties config;
+
+    @Autowired
+    private Producer producer;
 
     public BoundaryRelationshipService(BoundaryRelationshipValidator boundaryRelationshipValidator, BoundaryRelationshipEnricher boundaryRelationshipEnricher,
                                        BoundaryRelationshipRepository boundaryRelationshipRepository, HierarchyUtil hierarchyUtil) {
@@ -207,4 +219,129 @@ public class BoundaryRelationshipService {
         boundaries.addAll(childrenBoundaries);
     }
 
+    public void fetchBoundaryAndProcess(String tenantId, String hierarchyType, boolean includeChildren) {
+        StringBuilder url = new StringBuilder();
+
+        // Appending base URL
+        url.append(config.getBoundaryServiceHost()).append(config.getBoundaryServiceUri());
+
+        // Appending query parameters
+        url.append("?tenantId=").append(tenantId);
+        url.append("&hierarchyType=").append(hierarchyType);
+        url.append("&includeChildren=").append(includeChildren);
+
+        RestTemplate restTemplate = new RestTemplate();
+        Map<String, Object> response = restTemplate.getForObject(url.toString(), Map.class);
+
+        if (response != null && response.containsKey("TenantBoundary")) {
+            List<Map<String, Object>> tenantBoundaries = (List<Map<String, Object>>) response.get("TenantBoundary");
+            if (tenantBoundaries != null && !tenantBoundaries.isEmpty()) {
+                processBoundaryData(tenantBoundaries);
+            } else {
+                // Handle empty TenantBoundary case
+                log.info("TenantBoundary is empty for tenantId: " + tenantId);
+            }
+        } else {
+            // Handle response being null or missing TenantBoundary
+            log.info("Invalid response received from boundary service. Response: " + response);
+        }
+    }
+
+    private void processBoundaryData(List<Map<String, Object>> tenantBoundaries) {
+        for (Map<String, Object> tenantBoundary : tenantBoundaries) {
+            List<Map<String, Object>> boundaries = (List<Map<String, Object>>) tenantBoundary.get("boundary");
+            if (boundaries != null && !boundaries.isEmpty()) {
+                searchForVillageBoundaries(boundaries, new HashMap<>());
+            } else {
+                // Handle empty or null boundary list
+                log.info("Boundaries list is empty or null for tenantBoundary: " + tenantBoundary);
+            }
+        }
+    }
+
+    private void searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails) {
+        for (Map<String, Object> boundary : boundaries) {
+            if (boundary == null) {
+                log.info("Boundary object is null, skipping...");
+                continue;
+            }
+
+            String boundaryType = (String) boundary.get("boundaryType");
+            String code = (String) boundary.get("code");
+
+            if (boundaryType == null || code == null) {
+                log.info("BoundaryType or Code is null, skipping boundary: " + boundary);
+                continue;
+            }
+
+            // Store hierarchy details based on boundary type
+            switch (boundaryType) {
+                case "zone":
+                    parentDetails.put("Zone Code", code);
+                    parentDetails.put("Zone Name", extractNameFromCode(code));
+                    break;
+                case "circle":
+                    parentDetails.put("Circle Code", code);
+                    parentDetails.put("Circle Name", extractNameFromCode(code));
+                    break;
+                case "division":
+                    parentDetails.put("Division Code", code);
+                    parentDetails.put("Division Name", extractNameFromCode(code));
+                    break;
+                case "sub division":
+                    parentDetails.put("SubDivision Code", code);
+                    parentDetails.put("SubDivision Name", extractNameFromCode(code));
+                    break;
+                case "section":
+                    parentDetails.put("Section Code", code);
+                    parentDetails.put("Section Name", extractNameFromCode(code));
+                    break;
+            }
+
+            if ("village".equals(boundaryType)) {
+                // Create a map with required village details
+                Map<String, String> villageData = new HashMap<>();
+                villageData.put("code", code);
+                villageData.put("name", extractNameFromCode(code));
+                villageData.put("address", extractNameFromCode(code)); // Address = village name
+                villageData.put("description", extractNameFromCode(code)); // Description = village name
+                villageData.put("DDR Name", extractNameFromCode(code));
+                villageData.put("Scheme Code", code);  // Set scheme code
+                villageData.put("Scheme Name", extractNameFromCode(code));  // Scheme name same as village name
+
+                // Set hierarchy details
+                villageData.put("Zone Code", parentDetails.getOrDefault("Zone Code", ""));
+                villageData.put("Zone Name", parentDetails.getOrDefault("Zone Name", ""));
+                villageData.put("Circle Code", parentDetails.getOrDefault("Circle Code", ""));
+                villageData.put("Circle Name", parentDetails.getOrDefault("Circle Name", ""));
+                villageData.put("Division Code", parentDetails.getOrDefault("Division Code", ""));
+                villageData.put("Division Name", parentDetails.getOrDefault("Division Name", ""));
+                villageData.put("SubDivision Code", parentDetails.getOrDefault("SubDivision Code", ""));
+                villageData.put("SubDivision Name", parentDetails.getOrDefault("SubDivision Name", ""));
+                villageData.put("Section Code", parentDetails.getOrDefault("Section Code", ""));
+                villageData.put("Section Name", parentDetails.getOrDefault("Section Name", ""));
+
+                // Adding office timings for the village
+                Map<String, String> officeTimings = new HashMap<>();
+                officeTimings.put("Mon - Fri", "9.00 AM - 6.00 PM");
+                villageData.put("OfficeTimings", officeTimings.toString());
+
+                // Push data to Kafka
+                producer.push(config.getCreateNewTenantTopic(), villageData);
+            }
+
+            // Recursively check children
+            List<Map<String, Object>> children = (List<Map<String, Object>>) boundary.get("children");
+            if (children != null && !children.isEmpty()) {
+                searchForVillageBoundaries(children, parentDetails);
+            } else {
+                log.info("No children found for boundary: " + boundary);
+            }
+        }
+    }
+
+    private String extractNameFromCode(String code) {
+        String[] parts = code.split("_");
+        return parts[parts.length - 1];  // Extract the last part of the code as the name
+    }
 }

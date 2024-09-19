@@ -107,4 +107,13 @@ public class ApplicationProperties {
 
     @Value("${boundary.max.default.limit}")
     private Integer maxDefaultLimit;
+
+    @Value("${boundary.service.host}")
+    private String boundaryServiceHost;
+
+    @Value("${boundary.service.uri}")
+    private String boundaryServiceUri;
+
+    @Value("${kafka.topics.push.boundary}")
+    private String createNewTenantTopic;
 }
