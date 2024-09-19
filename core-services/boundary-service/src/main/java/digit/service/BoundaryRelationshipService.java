@@ -219,19 +219,14 @@ public class BoundaryRelationshipService {
         boundaries.addAll(childrenBoundaries);
     }
 
-    public void fetchBoundaryAndProcess(String tenantId, String hierarchyType, boolean includeChildren) {
-        StringBuilder url = new StringBuilder();
-
-        // Appending base URL
-        url.append(config.getBoundaryServiceHost()).append(config.getBoundaryServiceUri());
-
-        // Appending query parameters
-        url.append("?tenantId=").append(tenantId);
-        url.append("&hierarchyType=").append(hierarchyType);
-        url.append("&includeChildren=").append(includeChildren);
+    public void fetchBoundaryAndProcess(String tenantId, String hierarchyType, boolean includeChildren,RequestInfo requestInfo) {
+        String url = config.getBoundaryServiceHost() + config.getBoundaryServiceUri() +
+                "?tenantId=" + tenantId +
+                "&hierarchyType=" + hierarchyType +
+                "&includeChildren=" + includeChildren;
 
         RestTemplate restTemplate = new RestTemplate();
-        Map<String, Object> response = restTemplate.getForObject(url.toString(), Map.class);
+        Map<String, Object> response = restTemplate.postForObject(url, requestInfo, Map.class);
 
         if (response != null && response.containsKey("TenantBoundary")) {
             List<Map<String, Object>> tenantBoundaries = (List<Map<String, Object>>) response.get("TenantBoundary");
@@ -248,6 +243,11 @@ public class BoundaryRelationshipService {
     }
 
     private void processBoundaryData(List<Map<String, Object>> tenantBoundaries) {
+
+        if (tenantBoundaries == null || tenantBoundaries.isEmpty()) {
+            log.info("Tenant boundaries list is null or empty.");
+            return;
+        }
         for (Map<String, Object> tenantBoundary : tenantBoundaries) {
             List<Map<String, Object>> boundaries = (List<Map<String, Object>>) tenantBoundary.get("boundary");
             if (boundaries != null && !boundaries.isEmpty()) {
@@ -260,6 +260,12 @@ public class BoundaryRelationshipService {
     }
 
     private void searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails) {
+
+        if (boundaries == null) {
+            log.info("Boundaries list is null, skipping...");
+            return;
+        }
+
         for (Map<String, Object> boundary : boundaries) {
             if (boundary == null) {
                 log.info("Boundary object is null, skipping...");
@@ -341,6 +347,10 @@ public class BoundaryRelationshipService {
     }
 
     private String extractNameFromCode(String code) {
+        if (code == null || code.isEmpty()) {
+            log.info("Code is null or empty, returning empty string.");
+            return "";
+        }
         String[] parts = code.split("_");
         return parts[parts.length - 1];  // Extract the last part of the code as the name
     }
