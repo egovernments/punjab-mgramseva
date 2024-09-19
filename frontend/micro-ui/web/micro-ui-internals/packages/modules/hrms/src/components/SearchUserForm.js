@@ -431,7 +431,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
         ["divisionCode"]: userData[0],
       }));
     }
-  }, [userData]);
+  }, [userData, formData]);
 
   console.log("divisionFormData", divisionFormData);
 
@@ -455,6 +455,8 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     for (let i = 0; i < levelIndex; i++) {
       // console.log("hi");
       // const code = formData[levels[i]]?.[levels[i]];
+      console.log("levels[i]", levels[i]);
+      console.log("divisionFormData", divisionFormData);
       const code = divisionFormData[levels[i]]?.[levels[i]];
       console.log("code", code);
       console.log("currentLevel", currentLevel);
@@ -521,6 +523,8 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
       option.i18text = "ACCESSCONTROL_ROLES_ROLES_" + option?.code;
     });
   }, [rolesOptions]);
+
+  console.log("rolesoptions", rolesOptions);
 
   if (isLoading || !setTree) {
     return <Loader />;
