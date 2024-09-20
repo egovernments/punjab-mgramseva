@@ -219,7 +219,7 @@ public class BoundaryRelationshipService {
         boundaries.addAll(childrenBoundaries);
     }
 
-    public void fetchBoundaryAndProcess(String tenantId, String hierarchyType, boolean includeChildren,RequestInfo requestInfo) {
+    public String fetchBoundaryAndProcess(String tenantId, String hierarchyType, boolean includeChildren,RequestInfo requestInfo) {
         String url = config.getBoundaryServiceHost() + config.getBoundaryServiceUri() +
                 "?tenantId=" + tenantId +
                 "&hierarchyType=" + hierarchyType +
@@ -233,9 +233,10 @@ public class BoundaryRelationshipService {
             List<Map<String, Object>> tenantBoundaries = (List<Map<String, Object>>) response.get("TenantBoundary");
             if (tenantBoundaries != null && !tenantBoundaries.isEmpty()) {
                 processBoundaryData(tenantBoundaries);
+                return "Boundary data processed successfully.";
             } else {
                 // Handle empty TenantBoundary case
-                throw new IllegalStateException("TenantBoundary is empty for hierarchyType: " + hierarchyType);
+                return "No boundary data found for tenantId: " + tenantId;
             }
         } else {
             // Handle response being null or missing TenantBoundary
@@ -244,10 +245,6 @@ public class BoundaryRelationshipService {
     }
 
     private void processBoundaryData(List<Map<String, Object>> tenantBoundaries) {
-//        if (tenantBoundaries == null || tenantBoundaries.isEmpty()) {
-//            log.info("Tenant boundaries list is null or empty.");
-//            return;
-//        }
         for (Map<String, Object> tenantBoundary : tenantBoundaries) {
             List<Map<String, Object>> boundaries = (List<Map<String, Object>>) tenantBoundary.get("boundary");
             if (boundaries != null && !boundaries.isEmpty()) {
@@ -329,16 +326,15 @@ public class BoundaryRelationshipService {
         Map<String, String> villageData = new HashMap<>();
         villageData.put("code", code);
         villageData.put("name", extractNameFromCode(code));
-        villageData.put("address", extractNameFromCode(code)); // Address = village name
-        villageData.put("description", extractNameFromCode(code)); // Description = village name
+        villageData.put("address", extractNameFromCode(code));
+        villageData.put("description", extractNameFromCode(code));
         villageData.put("DDR Name", extractNameFromCode(code));
-        villageData.put("Scheme Code", code);  // Set scheme code
-        villageData.put("Scheme Name", extractNameFromCode(code));  // Scheme name same as village name
+        villageData.put("Scheme Code", code);
+        villageData.put("Scheme Name", extractNameFromCode(code));
 
         // Set hierarchy details
         villageData.putAll(parentDetails);
 
-        // Adding office timings for the village
         Map<String, String> officeTimings = new HashMap<>();
         officeTimings.put("Mon - Fri", "9.00 AM - 6.00 PM");
         villageData.put("OfficeTimings", officeTimings.toString());
@@ -351,6 +347,16 @@ public class BoundaryRelationshipService {
             throw new IllegalArgumentException("Code is null or empty");
         }
         String[] parts = code.split("_");
-        return parts[parts.length - 1];  // Extract the last part of the code as the name
+        String namePart = "";
+        for (int i = parts.length - 1; i >= 0; i--) {
+            if (!parts[i].matches("\\d+")) { // If the part is not numeric
+                namePart = parts[i];
+                break;
+            }
+        }
+        if (namePart.isEmpty()) {
+            throw new IllegalArgumentException("No valid name part found in the code: " + code);
+        }
+        return namePart;
     }
 }
