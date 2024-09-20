@@ -260,13 +260,10 @@ public class BoundaryRelationshipService {
         boolean villageDataPushed = false; // Flag to check if any village data was pushed
         if (boundaries == null || boundaries.isEmpty()) {
             return "No boundaries found.";
-//            throw new IllegalStateException("Boundaries list is null");
         }
-
         for (Map<String, Object> boundary : boundaries) {
             if (boundary == null) {
                 continue;
-//                throw new IllegalArgumentException("Boundary object is null");
             }
 
             String boundaryType = (String) boundary.get("boundaryType");
@@ -275,21 +272,17 @@ public class BoundaryRelationshipService {
             if (boundaryType == null || code == null) {
                 throw new IllegalArgumentException("BoundaryType or Code is null for boundary: " + boundary);
             }
-
             // Store hierarchy details based on boundary type
             updateParentDetails(boundaryType, code, parentDetails);
-
             if ("village".equalsIgnoreCase(boundaryType)) {
                 // Create a map with required village details
                 Map<String, String> villageData = createVillageData(code, parentDetails);
-                // Push data to Kafka
                 producer.push(config.getCreateNewTenantTopic(), villageData);
-                villageDataPushed = true; // Mark that data was pushed
+                villageDataPushed = true;
                 continue;
             }
             // Recursively check children
             List<Map<String, Object>> children = (List<Map<String, Object>>) boundary.get("children");
-            // If no children and not a village, log and continue to the next boundary.
             if (children == null || children.isEmpty()) {
                 log.info("Boundary '" + code + "' at level '" + boundaryType + "' has no children and is not a 'village'. No data pushed.");
                 continue; // Skip and move to the next boundary.
@@ -354,16 +347,6 @@ public class BoundaryRelationshipService {
             throw new IllegalArgumentException("Code is null or empty");
         }
         String[] parts = code.split("_");
-        String namePart = "";
-        for (int i = parts.length - 1; i >= 0; i--) {
-            if (!parts[i].matches("\\d+")) { // If the part is not numeric
-                namePart = parts[i];
-                break;
-            }
-        }
-        if (namePart.isEmpty()) {
-            throw new IllegalArgumentException("No valid name part found in the code: " + code);
-        }
-        return namePart;
+        return parts[parts.length - 1];  // Extract the last part of the code as the name
     }
 }
