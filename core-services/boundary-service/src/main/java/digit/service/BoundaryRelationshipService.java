@@ -236,11 +236,11 @@ public class BoundaryRelationshipService {
                 return "Boundary data processed successfully.";
             } else {
                 // Handle empty TenantBoundary case
-                return "No boundary data found for tenantId: " + tenantId;
+                return "No tenant boundary data found for tenantId: " + tenantId;
             }
         } else {
             // Handle response being null or missing TenantBoundary
-            throw new IllegalStateException("Invalid response received from boundary service. Response: " + response);
+            throw new IllegalStateException("Invalid response received from boundary relationship search service. Response: " + response);
         }
     }
 
@@ -256,9 +256,10 @@ public class BoundaryRelationshipService {
         }
     }
 
-    private void searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails) {
+    private String searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails) {
+        boolean villageDataPushed = false; // Flag to check if any village data was pushed
         if (boundaries == null || boundaries.isEmpty()) {
-            return;
+            return "No boundaries found.";
 //            throw new IllegalStateException("Boundaries list is null");
         }
 
@@ -283,6 +284,7 @@ public class BoundaryRelationshipService {
                 Map<String, String> villageData = createVillageData(code, parentDetails);
                 // Push data to Kafka
                 producer.push(config.getCreateNewTenantTopic(), villageData);
+                villageDataPushed = true; // Mark that data was pushed
                 continue;
             }
             // Recursively check children
@@ -294,6 +296,11 @@ public class BoundaryRelationshipService {
             }
             // Recursively check children
             searchForVillageBoundaries(children, parentDetails);
+        }
+        if (villageDataPushed) {
+            return "Village data processed successfully.";
+        } else {
+            return "No village data found to process.";
         }
     }
 
@@ -347,22 +354,16 @@ public class BoundaryRelationshipService {
             throw new IllegalArgumentException("Code is null or empty");
         }
         String[] parts = code.split("_");
-        StringBuilder namePart = new StringBuilder();
-        boolean foundNonNumeric = false;
-        for (int i = 0; i < parts.length; i++) {
-            if (!foundNonNumeric && !parts[i].matches("\\d+")) { // First non-numeric part
-                foundNonNumeric = true;
-            }
-            if (foundNonNumeric) {
-                if (namePart.length() > 0) {
-                    namePart.append("_");
-                }
-                namePart.append(parts[i]);
+        String namePart = "";
+        for (int i = parts.length - 1; i >= 0; i--) {
+            if (!parts[i].matches("\\d+")) { // If the part is not numeric
+                namePart = parts[i];
+                break;
             }
         }
-        if (namePart.length() == 0) {
+        if (namePart.isEmpty()) {
             throw new IllegalArgumentException("No valid name part found in the code: " + code);
         }
-        return namePart.toString();
+        return namePart;
     }
 }
