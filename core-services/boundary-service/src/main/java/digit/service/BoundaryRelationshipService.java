@@ -224,6 +224,7 @@ public class BoundaryRelationshipService {
                 "?tenantId=" + tenantId +
                 "&hierarchyType=" + hierarchyType +
                 "&includeChildren=" + includeChildren;
+        log.info("Url for search is "+url);
 
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> response = restTemplate.postForObject(url, requestInfo, Map.class);
@@ -234,7 +235,7 @@ public class BoundaryRelationshipService {
                 processBoundaryData(tenantBoundaries);
             } else {
                 // Handle empty TenantBoundary case
-                log.info("TenantBoundary is empty for tenantId: " + tenantId);
+                log.info("TenantBoundary is empty for hierarchyType: " + hierarchyType);
             }
         } else {
             // Handle response being null or missing TenantBoundary
@@ -243,11 +244,10 @@ public class BoundaryRelationshipService {
     }
 
     private void processBoundaryData(List<Map<String, Object>> tenantBoundaries) {
-
-        if (tenantBoundaries == null || tenantBoundaries.isEmpty()) {
-            log.info("Tenant boundaries list is null or empty.");
-            return;
-        }
+//        if (tenantBoundaries == null || tenantBoundaries.isEmpty()) {
+//            log.info("Tenant boundaries list is null or empty.");
+//            return;
+//        }
         for (Map<String, Object> tenantBoundary : tenantBoundaries) {
             List<Map<String, Object>> boundaries = (List<Map<String, Object>>) tenantBoundary.get("boundary");
             if (boundaries != null && !boundaries.isEmpty()) {
@@ -260,8 +260,7 @@ public class BoundaryRelationshipService {
     }
 
     private void searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails) {
-
-        if (boundaries == null) {
+        if (boundaries == null || boundaries.isEmpty()) {
             log.info("Boundaries list is null, skipping...");
             return;
         }
@@ -269,7 +268,6 @@ public class BoundaryRelationshipService {
         for (Map<String, Object> boundary : boundaries) {
             if (boundary == null) {
                 log.info("Boundary object is null, skipping...");
-                continue;
             }
 
             String boundaryType = (String) boundary.get("boundaryType");
@@ -277,73 +275,72 @@ public class BoundaryRelationshipService {
 
             if (boundaryType == null || code == null) {
                 log.info("BoundaryType or Code is null, skipping boundary: " + boundary);
-                continue;
             }
 
             // Store hierarchy details based on boundary type
-            switch (boundaryType) {
-                case "zone":
-                    parentDetails.put("Zone Code", code);
-                    parentDetails.put("Zone Name", extractNameFromCode(code));
-                    break;
-                case "circle":
-                    parentDetails.put("Circle Code", code);
-                    parentDetails.put("Circle Name", extractNameFromCode(code));
-                    break;
-                case "division":
-                    parentDetails.put("Division Code", code);
-                    parentDetails.put("Division Name", extractNameFromCode(code));
-                    break;
-                case "sub division":
-                    parentDetails.put("SubDivision Code", code);
-                    parentDetails.put("SubDivision Name", extractNameFromCode(code));
-                    break;
-                case "section":
-                    parentDetails.put("Section Code", code);
-                    parentDetails.put("Section Name", extractNameFromCode(code));
-                    break;
-            }
+            updateParentDetails(boundaryType, code, parentDetails);
 
-            if ("village".equals(boundaryType)) {
+            if ("village".equalsIgnoreCase(boundaryType)) {
                 // Create a map with required village details
-                Map<String, String> villageData = new HashMap<>();
-                villageData.put("code", code);
-                villageData.put("name", extractNameFromCode(code));
-                villageData.put("address", extractNameFromCode(code)); // Address = village name
-                villageData.put("description", extractNameFromCode(code)); // Description = village name
-                villageData.put("DDR Name", extractNameFromCode(code));
-                villageData.put("Scheme Code", code);  // Set scheme code
-                villageData.put("Scheme Name", extractNameFromCode(code));  // Scheme name same as village name
-
-                // Set hierarchy details
-                villageData.put("Zone Code", parentDetails.getOrDefault("Zone Code", ""));
-                villageData.put("Zone Name", parentDetails.getOrDefault("Zone Name", ""));
-                villageData.put("Circle Code", parentDetails.getOrDefault("Circle Code", ""));
-                villageData.put("Circle Name", parentDetails.getOrDefault("Circle Name", ""));
-                villageData.put("Division Code", parentDetails.getOrDefault("Division Code", ""));
-                villageData.put("Division Name", parentDetails.getOrDefault("Division Name", ""));
-                villageData.put("SubDivision Code", parentDetails.getOrDefault("SubDivision Code", ""));
-                villageData.put("SubDivision Name", parentDetails.getOrDefault("SubDivision Name", ""));
-                villageData.put("Section Code", parentDetails.getOrDefault("Section Code", ""));
-                villageData.put("Section Name", parentDetails.getOrDefault("Section Name", ""));
-
-                // Adding office timings for the village
-                Map<String, String> officeTimings = new HashMap<>();
-                officeTimings.put("Mon - Fri", "9.00 AM - 6.00 PM");
-                villageData.put("OfficeTimings", officeTimings.toString());
-
+                Map<String, String> villageData = createVillageData(code, parentDetails);
                 // Push data to Kafka
                 producer.push(config.getCreateNewTenantTopic(), villageData);
             }
-
             // Recursively check children
             List<Map<String, Object>> children = (List<Map<String, Object>>) boundary.get("children");
             if (children != null && !children.isEmpty()) {
                 searchForVillageBoundaries(children, parentDetails);
-            } else {
-                log.info("No children found for boundary: " + boundary);
             }
+//            else {
+//                log.info("No children found for boundary: " + boundary);
+//            }
         }
+    }
+
+    private void updateParentDetails(String boundaryType, String code, Map<String, String> parentDetails) {
+        switch (boundaryType.toLowerCase()) {
+            case "zone":
+                parentDetails.put("Zone Code", code);
+                parentDetails.put("Zone Name", extractNameFromCode(code));
+                break;
+            case "circle":
+                parentDetails.put("Circle Code", code);
+                parentDetails.put("Circle Name", extractNameFromCode(code));
+                break;
+            case "division":
+                parentDetails.put("Division Code", code);
+                parentDetails.put("Division Name", extractNameFromCode(code));
+                break;
+            case "sub division":
+                parentDetails.put("SubDivision Code", code);
+                parentDetails.put("SubDivision Name", extractNameFromCode(code));
+                break;
+            case "section":
+                parentDetails.put("Section Code", code);
+                parentDetails.put("Section Name", extractNameFromCode(code));
+                break;
+        }
+    }
+
+    private Map<String, String> createVillageData(String code, Map<String, String> parentDetails) {
+        Map<String, String> villageData = new HashMap<>();
+        villageData.put("code", code);
+        villageData.put("name", extractNameFromCode(code));
+        villageData.put("address", extractNameFromCode(code)); // Address = village name
+        villageData.put("description", extractNameFromCode(code)); // Description = village name
+        villageData.put("DDR Name", extractNameFromCode(code));
+        villageData.put("Scheme Code", code);  // Set scheme code
+        villageData.put("Scheme Name", extractNameFromCode(code));  // Scheme name same as village name
+
+        // Set hierarchy details
+        villageData.putAll(parentDetails);
+
+        // Adding office timings for the village
+        Map<String, String> officeTimings = new HashMap<>();
+        officeTimings.put("Mon - Fri", "9.00 AM - 6.00 PM");
+        villageData.put("OfficeTimings", officeTimings.toString());
+
+        return villageData;
     }
 
     private String extractNameFromCode(String code) {
