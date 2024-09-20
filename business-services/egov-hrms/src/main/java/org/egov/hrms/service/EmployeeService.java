@@ -661,11 +661,7 @@ public class EmployeeService {
 				userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_ROLECODES,criteria.getRoles());
 			UserResponse userResponse = userService.getUserByTenantids(requestInfo, userSearchCriteria);
 			userChecked =true;
-			if(CollectionUtils.isEmpty(userResponse.getUser())) {
-				List<Employee> employees = new ArrayList<>();
-				return EmployeeResponse.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfo, true))
-						.employees(employees).build();
-			} else {
+			if(!CollectionUtils.isEmpty(userResponse.getUser())) {
 				mapOfUsers.putAll(userResponse.getUser().stream()
 						.collect(Collectors.toMap(User::getUuid, Function.identity())));
 			}

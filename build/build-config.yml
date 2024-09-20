@@ -91,13 +91,22 @@ config:
       - work-dir: "frontend/micro-ui"
         image-name: "mgramseva-web"
         dockerfile: "frontend/micro-ui/web/docker/Dockerfile"
+
   - name: "builds/mGramSeva/core-services/boundary-service"
     build:
       - work-dir: "core-services/boundary-service"
         image-name: "boundary-service"
-        dockerfile: "build/maven/Dockerfile"
+        dockerfile: "build/maven-java17/Dockerfile"
       - work-dir: "core-services/boundary-service/src/main/resources/db"
         image-name: "boundary-service-db"
+
+  - name: "builds/mGramSeva/utilities/egov-bff"
+    build:
+      - work-dir: "utilities/boundary-bulk-bff"
+        image-name: "boundary-bulk-bff"
+      - work-dir: "utilities/boundary-bulk-bff/migration"
+        image-name: "boundary-bulk-bff-db"
+
   - name: "builds/mGramSeva/core-services/user-otp"
     build:
       - work-dir: "core-services/user-otp"

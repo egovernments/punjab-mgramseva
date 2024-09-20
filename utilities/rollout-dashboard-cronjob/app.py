@@ -812,7 +812,8 @@ def is_saturdaydayOrSunday():
     print("DateTime today :",datetime.today().weekday())
     return datetime.today().weekday() in [5, 6]
 def get_daterange():
-    return [
+    if is_saturdaydayOrSunday():
+        return [
             'Last seven days', 'Last 15 days', 'currentMonth-Till date', 'Previous Month',
             'Quarter-1', 'Quarter-2', 'Quarter-3', 'Quarter-4', 
             'Consolidated (As on date)', 'FY to date', 
@@ -820,7 +821,7 @@ def get_daterange():
         ]
     else:
         return ['Last seven days', 'Last 15 days', 'currentMonth-Till date', 'Consolidated (As on date)', 'FY to date']
-        
+
 def process():
     print("continue is the process")
        

@@ -406,7 +406,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		// Check for duplicate calls in the last configurable duration
 		boolean isDuplicate = demandService.isDuplicateBulkDemandCall(tenantId, billingPeriod, durationAgo);
 		if (isDuplicate) {
-			throw new CustomException("DEMAND_DUPLICATE_REQUEST", "A bulk demand generation for this tenant and billing Period was already requested in the last "+ duplicateHours +" hours.");
+			throw new CustomException("DUPLICATE_REQUEST", "A bulk demand generation for this tenant and billing Period was already requested in the last "+ duplicateHours +" hours.");
 		}
 		if(tenantId != null && tenantId.split("\\.").length >1) {
 			demandService.generateBulkDemandForTenantId(bulkDemand);
