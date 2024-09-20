@@ -235,11 +235,11 @@ public class BoundaryRelationshipService {
                 processBoundaryData(tenantBoundaries);
             } else {
                 // Handle empty TenantBoundary case
-                log.info("TenantBoundary is empty for hierarchyType: " + hierarchyType);
+                throw new IllegalStateException("TenantBoundary is empty for hierarchyType: " + hierarchyType);
             }
         } else {
             // Handle response being null or missing TenantBoundary
-            log.info("Invalid response received from boundary service. Response: " + response);
+            throw new IllegalStateException("Invalid response received from boundary service. Response: " + response);
         }
     }
 
@@ -254,27 +254,26 @@ public class BoundaryRelationshipService {
                 searchForVillageBoundaries(boundaries, new HashMap<>());
             } else {
                 // Handle empty or null boundary list
-                log.info("Boundaries list is empty or null for tenantBoundary: " + tenantBoundary);
+                throw new IllegalStateException("Boundaries list is empty or null for tenantBoundary: " + tenantBoundary);
             }
         }
     }
 
     private void searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails) {
         if (boundaries == null || boundaries.isEmpty()) {
-            log.info("Boundaries list is null, skipping...");
-            return;
+            throw new IllegalStateException("Boundaries list is null");
         }
 
         for (Map<String, Object> boundary : boundaries) {
             if (boundary == null) {
-                log.info("Boundary object is null, skipping...");
+                throw new IllegalArgumentException("Boundary object is null");
             }
 
             String boundaryType = (String) boundary.get("boundaryType");
             String code = (String) boundary.get("code");
 
             if (boundaryType == null || code == null) {
-                log.info("BoundaryType or Code is null, skipping boundary: " + boundary);
+                throw new IllegalArgumentException("BoundaryType or Code is null for boundary: " + boundary);
             }
 
             // Store hierarchy details based on boundary type
@@ -345,8 +344,7 @@ public class BoundaryRelationshipService {
 
     private String extractNameFromCode(String code) {
         if (code == null || code.isEmpty()) {
-            log.info("Code is null or empty, returning empty string.");
-            return "";
+            throw new IllegalArgumentException("Code is null or empty");
         }
         String[] parts = code.split("_");
         return parts[parts.length - 1];  // Extract the last part of the code as the name
