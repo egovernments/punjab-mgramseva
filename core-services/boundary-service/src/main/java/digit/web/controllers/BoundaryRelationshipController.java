@@ -57,11 +57,11 @@ public class BoundaryRelationshipController {
     }
 
     @RequestMapping(value = "/_pushBoundary",method = RequestMethod.POST)
-    public String pushBounsary(@RequestBody RequestInfo requestInfo,@RequestParam String tenantId, @RequestParam String hierarchyType,
+    public ResponseEntity<String> pushBoundary(@RequestBody RequestInfo requestInfo,@RequestParam String tenantId, @RequestParam String hierarchyType,
                                @RequestParam boolean includeChildren)
     {
         boundaryRelationshipService.fetchBoundaryAndProcess(tenantId, hierarchyType, includeChildren,requestInfo);
-        return "Boundary data processed successfully";
+        return new ResponseEntity<>("Boundary data processed successfully.",HttpStatus.ACCEPTED);
     }
 
 }
