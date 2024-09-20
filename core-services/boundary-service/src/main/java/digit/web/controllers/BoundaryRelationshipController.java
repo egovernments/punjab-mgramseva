@@ -1,5 +1,7 @@
 package digit.web.controllers;
 
+import org.egov.common.contract.response.ResponseInfo;
+import org.egov.common.utils.ResponseInfoUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import digit.service.BoundaryRelationshipService;
@@ -57,11 +59,13 @@ public class BoundaryRelationshipController {
     }
 
     @RequestMapping(value = "/_pushBoundary",method = RequestMethod.POST)
-    public ResponseEntity<String> pushBoundary(@RequestBody RequestInfo requestInfo,@RequestParam String tenantId, @RequestParam String hierarchyType,
+    public ResponseEntity<PushBoundaryResponse> pushBoundary(@RequestBody RequestInfo requestInfo,@RequestParam String tenantId, @RequestParam String hierarchyType,
                                @RequestParam boolean includeChildren)
     {
-        boundaryRelationshipService.fetchBoundaryAndProcess(tenantId, hierarchyType, includeChildren,requestInfo);
-        return new ResponseEntity<>("Boundary data processed successfully.",HttpStatus.ACCEPTED);
+        String message=boundaryRelationshipService.fetchBoundaryAndProcess(tenantId, hierarchyType, includeChildren,requestInfo);
+        PushBoundaryResponse pushBoundaryResponse=PushBoundaryResponse.builder().message(message).
+                responseInfo(ResponseInfoUtil.createResponseInfoFromRequestInfo(requestInfo, Boolean.TRUE)).build();
+        return new ResponseEntity<>(pushBoundaryResponse,HttpStatus.ACCEPTED);
     }
 
 }

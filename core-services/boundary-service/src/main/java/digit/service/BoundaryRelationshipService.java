@@ -232,8 +232,8 @@ public class BoundaryRelationshipService {
         if (response != null && response.containsKey("TenantBoundary")) {
             List<Map<String, Object>> tenantBoundaries = (List<Map<String, Object>>) response.get("TenantBoundary");
             if (tenantBoundaries != null && !tenantBoundaries.isEmpty()) {
-                processBoundaryData(tenantBoundaries);
-                return "Boundary data processed successfully.";
+                String message=processBoundaryData(tenantBoundaries);
+                return message;
             } else {
                 // Handle empty TenantBoundary case
                 return "No tenant boundary data found for tenantId: " + tenantId;
@@ -244,16 +244,18 @@ public class BoundaryRelationshipService {
         }
     }
 
-    private void processBoundaryData(List<Map<String, Object>> tenantBoundaries) {
+    private String processBoundaryData(List<Map<String, Object>> tenantBoundaries) {
         for (Map<String, Object> tenantBoundary : tenantBoundaries) {
             List<Map<String, Object>> boundaries = (List<Map<String, Object>>) tenantBoundary.get("boundary");
             if (boundaries != null && !boundaries.isEmpty()) {
-                searchForVillageBoundaries(boundaries, new HashMap<>());
+                String message=searchForVillageBoundaries(boundaries, new HashMap<>());
+                return message;
             } else {
                 // Handle empty or null boundary list
                 throw new IllegalStateException("Boundaries list is empty or null for tenantBoundary: " + tenantBoundary);
             }
         }
+        return "Tenant Boundary is not present";
     }
 
     private String searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails) {
