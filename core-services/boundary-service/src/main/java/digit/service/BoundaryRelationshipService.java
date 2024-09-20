@@ -261,12 +261,14 @@ public class BoundaryRelationshipService {
 
     private void searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails) {
         if (boundaries == null || boundaries.isEmpty()) {
-            throw new IllegalStateException("Boundaries list is null");
+            return;
+//            throw new IllegalStateException("Boundaries list is null");
         }
 
         for (Map<String, Object> boundary : boundaries) {
             if (boundary == null) {
-                throw new IllegalArgumentException("Boundary object is null");
+                continue;
+//                throw new IllegalArgumentException("Boundary object is null");
             }
 
             String boundaryType = (String) boundary.get("boundaryType");
@@ -284,15 +286,17 @@ public class BoundaryRelationshipService {
                 Map<String, String> villageData = createVillageData(code, parentDetails);
                 // Push data to Kafka
                 producer.push(config.getCreateNewTenantTopic(), villageData);
+                continue;
             }
             // Recursively check children
             List<Map<String, Object>> children = (List<Map<String, Object>>) boundary.get("children");
-            if (children != null && !children.isEmpty()) {
-                searchForVillageBoundaries(children, parentDetails);
+            // If no children and not a village, log and continue to the next boundary.
+            if (children == null || children.isEmpty()) {
+                log.info("Boundary '" + code + "' at level '" + boundaryType + "' has no children and is not a 'village'. No data pushed.");
+                continue; // Skip and move to the next boundary.
             }
-//            else {
-//                log.info("No children found for boundary: " + boundary);
-//            }
+            // Recursively check children
+            searchForVillageBoundaries(children, parentDetails);
         }
     }
 
