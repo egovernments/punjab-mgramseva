@@ -347,16 +347,22 @@ public class BoundaryRelationshipService {
             throw new IllegalArgumentException("Code is null or empty");
         }
         String[] parts = code.split("_");
-        String namePart = "";
-        for (int i = parts.length - 1; i >= 0; i--) {
-            if (!parts[i].matches("\\d+")) { // If the part is not numeric
-                namePart = parts[i];
-                break;
+        StringBuilder namePart = new StringBuilder();
+        boolean foundNonNumeric = false;
+        for (int i = 0; i < parts.length; i++) {
+            if (!foundNonNumeric && !parts[i].matches("\\d+")) { // First non-numeric part
+                foundNonNumeric = true;
+            }
+            if (foundNonNumeric) {
+                if (namePart.length() > 0) {
+                    namePart.append("_");
+                }
+                namePart.append(parts[i]);
             }
         }
-        if (namePart.isEmpty()) {
+        if (namePart.length() == 0) {
             throw new IllegalArgumentException("No valid name part found in the code: " + code);
         }
-        return namePart;
+        return namePart.toString();
     }
 }
