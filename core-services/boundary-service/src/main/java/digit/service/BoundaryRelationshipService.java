@@ -219,12 +219,12 @@ public class BoundaryRelationshipService {
         boundaries.addAll(childrenBoundaries);
     }
 
-    public String fetchBoundaryAndProcess(String tenantId, String hierarchyType, boolean includeChildren,RequestInfo requestInfo) {
+    public List<String> fetchBoundaryAndProcess(String tenantId, String hierarchyType, boolean includeChildren, RequestInfo requestInfo) {
         String url = config.getBoundaryServiceHost() + config.getBoundaryServiceUri() +
                 "?tenantId=" + tenantId +
                 "&hierarchyType=" + hierarchyType +
                 "&includeChildren=" + includeChildren;
-        log.info("Url for search is "+url);
+        log.info("Url for search is " + url);
 
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> response = restTemplate.postForObject(url, requestInfo, Map.class);
@@ -232,11 +232,10 @@ public class BoundaryRelationshipService {
         if (response != null && response.containsKey("TenantBoundary")) {
             List<Map<String, Object>> tenantBoundaries = (List<Map<String, Object>>) response.get("TenantBoundary");
             if (tenantBoundaries != null && !tenantBoundaries.isEmpty()) {
-                String message=processBoundaryData(tenantBoundaries);
-                return message;
+                return processBoundaryData(tenantBoundaries);
             } else {
                 // Handle empty TenantBoundary case
-                return "No tenant boundary data found for tenantId: " + tenantId;
+                return List.of("No tenant boundary data found for hierarchyType: " + hierarchyType);
             }
         } else {
             // Handle response being null or missing TenantBoundary
@@ -244,24 +243,27 @@ public class BoundaryRelationshipService {
         }
     }
 
-    private String processBoundaryData(List<Map<String, Object>> tenantBoundaries) {
+    private List<String> processBoundaryData(List<Map<String, Object>> tenantBoundaries) {
+        List<String> messages = new ArrayList<>();
         for (Map<String, Object> tenantBoundary : tenantBoundaries) {
             List<Map<String, Object>> boundaries = (List<Map<String, Object>>) tenantBoundary.get("boundary");
             if (boundaries != null && !boundaries.isEmpty()) {
-                String message=searchForVillageBoundaries(boundaries, new HashMap<>());
-                return message;
+                List<String> boundaryMessages = searchForVillageBoundaries(boundaries, new HashMap<>());
+                messages.addAll(boundaryMessages);
             } else {
                 // Handle empty or null boundary list
                 throw new IllegalStateException("Boundaries list is empty or null for tenantBoundary: " + tenantBoundary);
             }
         }
-        return "Tenant Boundary is not present";
+        return messages;
     }
 
-    private String searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails) {
-        boolean villageDataPushed = false; // Flag to check if any village data was pushed
+    private List<String> searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails) {
+        List<String> pushedVillages = new ArrayList<>();
+        List<String> notPushedVillages = new ArrayList<>();
+        boolean hasVillageLevel = false;
         if (boundaries == null || boundaries.isEmpty()) {
-            return "No boundaries found.";
+            return List.of("No boundaries found.");
         }
         for (Map<String, Object> boundary : boundaries) {
             if (boundary == null) {
@@ -277,26 +279,32 @@ public class BoundaryRelationshipService {
             // Store hierarchy details based on boundary type
             updateParentDetails(boundaryType, code, parentDetails);
             if ("village".equalsIgnoreCase(boundaryType)) {
-                // Create a map with required village details
+                hasVillageLevel = true;
                 Map<String, String> villageData = createVillageData(code, parentDetails);
-                producer.push(config.getCreateNewTenantTopic(), villageData);
-                villageDataPushed = true;
+                try {
+                    producer.push(config.getCreateNewTenantTopic(), villageData);
+                    pushedVillages.add("Village " + code + " pushed successfully.");
+                } catch (Exception e) {
+                    notPushedVillages.add("Village " + code + " failed to push: " + e.getMessage());
+                }
                 continue;
             }
             // Recursively check children
             List<Map<String, Object>> children = (List<Map<String, Object>>) boundary.get("children");
             if (children == null || children.isEmpty()) {
-                log.info("Boundary '" + code + "' at level '" + boundaryType + "' has no children and is not a 'village'. No data pushed.");
+                notPushedVillages.add("Boundary '" + code + "' at level '" + boundaryType + "' has no children and is not a 'village'. No data pushed.");
                 continue; // Skip and move to the next boundary.
             }
-            // Recursively check children
-            searchForVillageBoundaries(children, parentDetails);
+            List<String> childMessages = searchForVillageBoundaries(children, parentDetails);
+            pushedVillages.addAll(childMessages);
         }
-        if (villageDataPushed) {
-            return "Village data processed successfully.";
-        } else {
-            return "No village data found to process.";
+        if (!hasVillageLevel) {
+            return List.of("Cannot push: No village found as the last boundary level.");
         }
+        List<String> resultMessages = new ArrayList<>();
+        resultMessages.addAll(pushedVillages);
+        resultMessages.addAll(notPushedVillages);
+        return resultMessages;
     }
 
     private void updateParentDetails(String boundaryType, String code, Map<String, String> parentDetails) {

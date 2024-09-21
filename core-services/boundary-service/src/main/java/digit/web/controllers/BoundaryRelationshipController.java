@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/boundary-relationships")
 public class BoundaryRelationshipController {
@@ -62,7 +64,7 @@ public class BoundaryRelationshipController {
     public ResponseEntity<PushBoundaryResponse> pushBoundary(@RequestBody RequestInfo requestInfo,@RequestParam String tenantId, @RequestParam String hierarchyType,
                                @RequestParam boolean includeChildren)
     {
-        String message=boundaryRelationshipService.fetchBoundaryAndProcess(tenantId, hierarchyType, includeChildren,requestInfo);
+        List<String> message=boundaryRelationshipService.fetchBoundaryAndProcess(tenantId, hierarchyType, includeChildren,requestInfo);
         PushBoundaryResponse pushBoundaryResponse=PushBoundaryResponse.builder().message(message).
                 responseInfo(ResponseInfoUtil.createResponseInfoFromRequestInfo(requestInfo, Boolean.TRUE)).build();
         return new ResponseEntity<>(pushBoundaryResponse,HttpStatus.ACCEPTED);

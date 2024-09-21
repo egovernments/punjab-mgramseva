@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import lombok.Builder;
 import org.egov.common.contract.response.ResponseInfo;
 
+import java.util.List;
+
 @Builder
 public class PushBoundaryResponse
 {
@@ -12,5 +14,5 @@ public class PushBoundaryResponse
     @Valid
     private ResponseInfo responseInfo = null;
 
-    private String message;
+    private List<String> message;
 }
