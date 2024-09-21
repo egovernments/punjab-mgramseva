@@ -232,7 +232,8 @@ public class BoundaryRelationshipService {
         if (response != null && response.containsKey("TenantBoundary")) {
             List<Map<String, Object>> tenantBoundaries = (List<Map<String, Object>>) response.get("TenantBoundary");
             if (tenantBoundaries != null && !tenantBoundaries.isEmpty()) {
-                return processBoundaryData(tenantBoundaries);
+                List<String> resultMessages = processBoundaryData(tenantBoundaries);
+                return resultMessages;
             } else {
                 // Handle empty TenantBoundary case
                 return List.of("No tenant boundary data found for hierarchyType: " + hierarchyType);
@@ -248,8 +249,7 @@ public class BoundaryRelationshipService {
         for (Map<String, Object> tenantBoundary : tenantBoundaries) {
             List<Map<String, Object>> boundaries = (List<Map<String, Object>>) tenantBoundary.get("boundary");
             if (boundaries != null && !boundaries.isEmpty()) {
-                List<String> boundaryMessages = searchForVillageBoundaries(boundaries, new HashMap<>());
-                messages.addAll(boundaryMessages);
+                searchForVillageBoundaries(boundaries, new HashMap<>(),messages);
             } else {
                 // Handle empty or null boundary list
                 throw new IllegalStateException("Boundaries list is empty or null for tenantBoundary: " + tenantBoundary);
@@ -258,10 +258,7 @@ public class BoundaryRelationshipService {
         return messages;
     }
 
-    private List<String> searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails) {
-        List<String> pushedVillages = new ArrayList<>();
-        List<String> notPushedVillages = new ArrayList<>();
-        boolean hasVillageLevel = false;
+    private List<String> searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails,List<String> messages) {
         if (boundaries == null || boundaries.isEmpty()) {
             return List.of("No boundaries found.");
         }
@@ -279,32 +276,22 @@ public class BoundaryRelationshipService {
             // Store hierarchy details based on boundary type
             updateParentDetails(boundaryType, code, parentDetails);
             if ("village".equalsIgnoreCase(boundaryType)) {
-                hasVillageLevel = true;
                 Map<String, String> villageData = createVillageData(code, parentDetails);
                 try {
                     producer.push(config.getCreateNewTenantTopic(), villageData);
-                    pushedVillages.add("Village " + code + " pushed successfully.");
+                    messages.add("Village " + code + " pushed successfully.");
                 } catch (Exception e) {
-                    notPushedVillages.add("Village " + code + " failed to push: " + e.getMessage());
+                    messages.add("Village " + code + " failed to push: " + e.getMessage());
                 }
-                continue;
             }
             // Recursively check children
             List<Map<String, Object>> children = (List<Map<String, Object>>) boundary.get("children");
-            if (children == null || children.isEmpty()) {
-                notPushedVillages.add("Boundary '" + code + "' at level '" + boundaryType + "' has no children and is not a 'village'. No data pushed.");
-                continue; // Skip and move to the next boundary.
+            if (children != null && !children.isEmpty()) {
+                searchForVillageBoundaries(children, parentDetails,messages);
             }
-            List<String> childMessages = searchForVillageBoundaries(children, parentDetails);
-            pushedVillages.addAll(childMessages);
+            messages.add("Boundary '" + code + "' at level '" + boundaryType + "' has no children and is not a 'village'. No data pushed.");
         }
-        if (!hasVillageLevel) {
-            return List.of("Cannot push: No village found as the last boundary level.");
-        }
-        List<String> resultMessages = new ArrayList<>();
-        resultMessages.addAll(pushedVillages);
-        resultMessages.addAll(notPushedVillages);
-        return resultMessages;
+        return messages;
     }
 
     private void updateParentDetails(String boundaryType, String code, Map<String, String> parentDetails) {
