@@ -2,11 +2,17 @@ package digit.web.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.egov.common.contract.response.ResponseInfo;
 
 import java.util.List;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class PushBoundaryResponse
 {
@@ -14,5 +20,6 @@ public class PushBoundaryResponse
     @Valid
     private ResponseInfo responseInfo = null;
 
-    private List<String> message;
+    @JsonProperty("messages")
+    private List<String> message=null;
 }
