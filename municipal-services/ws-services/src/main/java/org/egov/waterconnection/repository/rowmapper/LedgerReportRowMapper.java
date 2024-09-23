@@ -237,6 +237,19 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 
     private void addPaymentToLedgerChronlogicalOrder(List<Map<String, Object>> monthlyRecordList){
         LedgerReport lastValidDemandReport = null;
+        monthlyRecordList.sort(new Comparator<Map<String, Object>>() {
+            @Override
+            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                String monthAndYear1 = (String) o1.keySet().iterator().next();
+                String monthAndYear2 = (String) o2.keySet().iterator().next();
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH);
+                YearMonth yearMonth1 = YearMonth.parse(monthAndYear1, formatter);
+                YearMonth yearMonth2 = YearMonth.parse(monthAndYear2, formatter);
+
+                return yearMonth1.compareTo(yearMonth2);
+            }
+        });
 
         for (int i = 0; i < monthlyRecordList.size(); i++) {
             Map<String, Object> record = monthlyRecordList.get(i);
@@ -252,7 +265,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             log.info("Processing LedgerReport for Consumer code: " + consumerCode);
             List<Payment> payments = addPaymentDetails(consumerCode);
             boolean paymentMatched = false;
-
+            log.info("Payment:"+payments);
             if (payments != null && !payments.isEmpty()) {
                 BigDecimal totalPaymentInMonth = BigDecimal.ZERO;
                 BigDecimal totalBalanceLeftInMonth = BigDecimal.ZERO;
@@ -262,14 +275,15 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 
                 for (Payment payment : payments) {
                     Long transactionDateLong = payment.getTransactionDate();
-
+                    Long nextMonthDemGenDateLong =getDemandGenerationDateOfNextMonth(monthlyRecordList, i);
+                    log.info("nextMonthDemGenDateLong:"+nextMonthDemGenDateLong);
                     // Check if the payment date falls on or after the current demand's generation date
                     if (transactionDateLong >= currentDemandDate &&
-                            (i + 1 == monthlyRecordList.size() || transactionDateLong < getDemandGenerationDateOfNextMonth(monthlyRecordList, i))) {
+                            (i + 1 == monthlyRecordList.size() || transactionDateLong < nextMonthDemGenDateLong )) {
                         LocalDate transactionDate = Instant.ofEpochMilli(transactionDateLong)
                                 .atZone(ZoneId.systemDefault())
                                 .toLocalDate();
-
+                        log.info("settinng payment for month:"+ledgerReport.getDemand());
                         PaymentLedgerReport paymentLedgerReport = new PaymentLedgerReport();
                         paymentLedgerReport.setCollectionDate(transactionDateLong);
                         paymentLedgerReport.setReceiptNo(payment.getPaymentDetails().get(0).getReceiptNumber());
@@ -282,6 +296,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                         if (ledgerReport.getPayment() == null) {
                             ledgerReport.setPayment(new ArrayList<>());
                         }
+                        log.info("Payment for month:"+paymentLedgerReport);
                         ledgerReport.getPayment().add(paymentLedgerReport);
                         paymentMatched = true;
                     }
@@ -293,6 +308,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 
             if (!paymentMatched) {
                 // Add a default PaymentLedgerReport if no payments matched
+                log.info("If not matched");
                 PaymentLedgerReport defaultPaymentLedgerReport = new PaymentLedgerReport();
                 defaultPaymentLedgerReport.setCollectionDate(null);
                 defaultPaymentLedgerReport.setReceiptNo("N/A");
@@ -309,12 +325,14 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 
             // Keep track of the last valid demand (non-zero demandGenerationDate)
             if (ledgerReport.getDemand().getDemandGenerationDate() != 0) {
+                log.info("Last Valid Demand monnth:"+ledgerReport.getDemand());
                 lastValidDemandReport = ledgerReport;
             }
         }
 
         // Handle payments for months with no valid demands
         if (lastValidDemandReport != null) {
+            log.info("Last month logic:"+lastValidDemandReport);
             // Assign payments to the last valid demand if found
             List<Payment> payments = addPaymentDetails(lastValidDemandReport.getDemand().getConnectionNo());
             if (payments != null && !payments.isEmpty()) {
