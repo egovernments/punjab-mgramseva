@@ -205,8 +205,8 @@ public class EstimationService {
 
 		// WaterCharge Calculation
 		Double totalUOM = getUnitOfMeasurement(waterConnection, calculationAttribute, criteria);
-		if (totalUOM == 0.0)
-			return waterCharge;
+		/*if (totalUOM == 0.0)
+			return waterCharge;*/
 		BillingSlab billSlab = billingSlabs.get(0);
 		// IF calculation type is flat then take flat rate else take slab and calculate the charge
 		//For metered connection calculation on graded fee slab
