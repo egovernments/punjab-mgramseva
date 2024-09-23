@@ -306,7 +306,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 ledgerReport.setTotalPaymentInMonth(totalPaymentInMonth);
             }
 
-            if (!paymentMatched) {
+            /*if (!paymentMatched) {
                 // Add a default PaymentLedgerReport if no payments matched
                 log.info("If not matched");
                 PaymentLedgerReport defaultPaymentLedgerReport = new PaymentLedgerReport();
@@ -321,7 +321,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 ledgerReport.getPayment().add(defaultPaymentLedgerReport);
                 ledgerReport.setTotalBalanceLeftInMonth(BigDecimal.ZERO);
                 ledgerReport.setTotalPaymentInMonth(BigDecimal.ZERO);
-            }
+            }*/
 
             // Keep track of the last valid demand (non-zero demandGenerationDate)
             if (ledgerReport.getDemand().getDemandGenerationDate() != 0) {
