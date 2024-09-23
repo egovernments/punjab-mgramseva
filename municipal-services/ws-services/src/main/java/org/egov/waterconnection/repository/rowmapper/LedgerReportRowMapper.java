@@ -235,18 +235,21 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
     }
 
 
-    private void addPaymentToLedgerChronlogicalOrder(List<Map<String, Object>> monthlyRecordList) {
+    private void addPaymentToLedgerChronlogicalOrder(List<Map<String, Object>> monthlyRecordList){
+        LedgerReport lastValidDemandReport = null;
+
         for (int i = 0; i < monthlyRecordList.size(); i++) {
             Map<String, Object> record = monthlyRecordList.get(i);
             LedgerReport ledgerReport = (LedgerReport) record.values().iterator().next();
 
-            if (ledgerReport.getDemand() == null) {
-                log.info("DemandLedgerReport is null for LedgerReport: {}", ledgerReport);
+            // Skip months where demandGenerationDate is 0 (invalid demands)
+            if (ledgerReport.getDemand() == null || ledgerReport.getDemand().getDemandGenerationDate() == 0) {
+                log.info("Skipping LedgerReport for invalid demand in LedgerReport: {}", ledgerReport);
                 continue;
             }
 
             String consumerCode = ledgerReport.getDemand().getConnectionNo();
-            log.info("Consumer code: " + consumerCode);
+            log.info("Processing LedgerReport for Consumer code: " + consumerCode);
             List<Payment> payments = addPaymentDetails(consumerCode);
             boolean paymentMatched = false;
 
@@ -257,20 +260,11 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 // Get current demand's generation date
                 Long currentDemandDate = ledgerReport.getDemand().getDemandGenerationDate();
 
-                // Get the next demand's generation date if available
-                Long nextDemandDate = null;
-                if (i + 1 < monthlyRecordList.size()) {
-                    LedgerReport nextLedgerReport = (LedgerReport) monthlyRecordList.get(i + 1).values().iterator().next();
-                    nextDemandDate = nextLedgerReport.getDemand().getDemandGenerationDate();
-                }
-
                 for (Payment payment : payments) {
                     Long transactionDateLong = payment.getTransactionDate();
 
-                    // Check if the payment date falls between the current and next demand
-                    if (transactionDateLong >= currentDemandDate &&
-                            (nextDemandDate == null || transactionDateLong < nextDemandDate)) {
-
+                    // Check if the payment date falls on or after the current demand's generation date
+                    if (transactionDateLong >= currentDemandDate) {
                         LocalDate transactionDate = Instant.ofEpochMilli(transactionDateLong)
                                 .atZone(ZoneId.systemDefault())
                                 .toLocalDate();
@@ -297,7 +291,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             }
 
             if (!paymentMatched) {
-                // If no payments matched, add a default PaymentLedgerReport
+                // Add a default PaymentLedgerReport if no payments matched
                 PaymentLedgerReport defaultPaymentLedgerReport = new PaymentLedgerReport();
                 defaultPaymentLedgerReport.setCollectionDate(null);
                 defaultPaymentLedgerReport.setReceiptNo("N/A");
@@ -310,6 +304,36 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 ledgerReport.getPayment().add(defaultPaymentLedgerReport);
                 ledgerReport.setTotalBalanceLeftInMonth(BigDecimal.ZERO);
                 ledgerReport.setTotalPaymentInMonth(BigDecimal.ZERO);
+            }
+
+            // Keep track of the last valid demand (non-zero demandGenerationDate)
+            if (ledgerReport.getDemand().getDemandGenerationDate() != 0) {
+                lastValidDemandReport = ledgerReport;
+            }
+        }
+
+        // Handle payments for months with no valid demands
+        if (lastValidDemandReport != null) {
+            // Assign payments to the last valid demand if found
+            List<Payment> payments = addPaymentDetails(lastValidDemandReport.getDemand().getConnectionNo());
+            if (payments != null && !payments.isEmpty()) {
+                for (Payment payment : payments) {
+                    Long transactionDateLong = payment.getTransactionDate();
+                    if (transactionDateLong >= lastValidDemandReport.getDemand().getDemandGenerationDate()) {
+                        PaymentLedgerReport paymentLedgerReport = new PaymentLedgerReport();
+                        paymentLedgerReport.setCollectionDate(transactionDateLong);
+                        paymentLedgerReport.setReceiptNo(payment.getPaymentDetails().get(0).getReceiptNumber());
+                        paymentLedgerReport.setPaid(payment.getTotalAmountPaid());
+                        paymentLedgerReport.setBalanceLeft(payment.getTotalDue().subtract(paymentLedgerReport.getPaid()));
+
+                        lastValidDemandReport.getPayment().add(paymentLedgerReport);
+                        lastValidDemandReport.setTotalPaymentInMonth(
+                                lastValidDemandReport.getTotalPaymentInMonth().add(payment.getTotalAmountPaid()));
+                        lastValidDemandReport.setTotalBalanceLeftInMonth(
+                                lastValidDemandReport.getTotalBalanceLeftInMonth()
+                                        .add(payment.getTotalDue().subtract(payment.getTotalAmountPaid())));
+                    }
+                }
             }
         }
     }
