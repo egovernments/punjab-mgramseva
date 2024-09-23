@@ -83,8 +83,9 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             ledgerReport.setDemand(new DemandLedgerReport());
             ledgerReport.getDemand().setMonthAndYear(monthAndYear);
             ledgerReport.getDemand().setConnectionNo(consumerCode);
-            BigDecimal taxAmountResult = getMonthlyTaxAmount(epochTime, consumerCode);
             BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(epochTime, consumerCode);
+            boolean paymentExists = totalAmountPaidResult != null && totalAmountPaidResult.compareTo(BigDecimal.ZERO) > 0;
+            BigDecimal taxAmountResult = getMonthlyTaxAmount(epochTime, consumerCode,paymentExists);
             ledgerReport.getDemand().setArrears(taxAmountResult.subtract(totalAmountPaidResult));
             log.info("Arrers are "+ledgerReport.getDemand().getArrears()+" and monthandYear"+ ledgerReport.getDemand().getMonthAndYear());
             ledgerReports.put(monthAndYear, ledgerReport);
@@ -302,11 +303,16 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                     }
                 }
 
-                ledgerReport.setTotalBalanceLeftInMonth(totalBalanceLeftInMonth);
+                ledgerReport.setTotalBalanceLeftInMonth(ledgerReport.getDemand().getTotal_due_amount().subtract(totalPaymentInMonth));
                 ledgerReport.setTotalPaymentInMonth(totalPaymentInMonth);
             }
+            // Keep track of the last valid demand (non-zero demandGenerationDate)
+            if (ledgerReport.getDemand().getDemandGenerationDate() != 0) {
+                log.info("Last Valid Demand monnth:"+ledgerReport.getDemand());
+                lastValidDemandReport = ledgerReport;
+            }
 
-            /*if (!paymentMatched) {
+            if (!paymentMatched && ledgerReport.getDemand().getDemandGenerationDate() != lastValidDemandReport.getDemand().getDemandGenerationDate()) {
                 // Add a default PaymentLedgerReport if no payments matched
                 log.info("If not matched");
                 PaymentLedgerReport defaultPaymentLedgerReport = new PaymentLedgerReport();
@@ -321,13 +327,9 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 ledgerReport.getPayment().add(defaultPaymentLedgerReport);
                 ledgerReport.setTotalBalanceLeftInMonth(BigDecimal.ZERO);
                 ledgerReport.setTotalPaymentInMonth(BigDecimal.ZERO);
-            }*/
-
-            // Keep track of the last valid demand (non-zero demandGenerationDate)
-            if (ledgerReport.getDemand().getDemandGenerationDate() != 0) {
-                log.info("Last Valid Demand monnth:"+ledgerReport.getDemand());
-                lastValidDemandReport = ledgerReport;
             }
+
+
         }
 
         // Handle payments for months with no valid demands
@@ -335,7 +337,11 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             log.info("Last month logic:"+lastValidDemandReport);
             // Assign payments to the last valid demand if found
             List<Payment> payments = addPaymentDetails(lastValidDemandReport.getDemand().getConnectionNo());
+            BigDecimal totalPaymentInMonthlastValidMonth = BigDecimal.ZERO;
+            BigDecimal totalBalanceLeftInMonthLatValidMonth=BigDecimal.ZERO;
+
             if (payments != null && !payments.isEmpty()) {
+
                 for (Payment payment : payments) {
                     Long transactionDateLong = payment.getTransactionDate();
                     if (transactionDateLong >= lastValidDemandReport.getDemand().getDemandGenerationDate()) {
@@ -346,13 +352,12 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                         paymentLedgerReport.setBalanceLeft(payment.getTotalDue().subtract(paymentLedgerReport.getPaid()));
 
                         lastValidDemandReport.getPayment().add(paymentLedgerReport);
-                        lastValidDemandReport.setTotalPaymentInMonth(
-                                lastValidDemandReport.getTotalPaymentInMonth().add(payment.getTotalAmountPaid()));
-                        lastValidDemandReport.setTotalBalanceLeftInMonth(
-                                lastValidDemandReport.getTotalBalanceLeftInMonth()
-                                        .add(payment.getTotalDue().subtract(payment.getTotalAmountPaid())));
+                        totalPaymentInMonthlastValidMonth = totalPaymentInMonthlastValidMonth.add(payment.getTotalAmountPaid());
+                        totalBalanceLeftInMonthLatValidMonth = totalBalanceLeftInMonthLatValidMonth.add(payment.getTotalDue().subtract(payment.getTotalAmountPaid()));
                     }
                 }
+                lastValidDemandReport.setTotalBalanceLeftInMonth(lastValidDemandReport.getDemand().getTotal_due_amount().subtract(totalPaymentInMonthlastValidMonth));
+                lastValidDemandReport.setTotalPaymentInMonth(totalPaymentInMonthlastValidMonth);
             }
         }
     }
@@ -384,8 +389,12 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
     }
 
 
-    private BigDecimal getMonthlyTaxAmount(Long startDate, String consumerCode) {
+    private BigDecimal getMonthlyTaxAmount(Long startDate, String consumerCode,boolean paymentExists) {
         StringBuilder taxAmountQuery = new StringBuilder(wsQueryBuilder.TAX_AMOUNT_QUERY);
+        if (paymentExists) {
+            // Exclude WS_ADVANCE_CARRYFORWARD if payments exist
+            taxAmountQuery.append(" AND taxheadcode != 'WS_ADVANCE_CARRYFORWARD'");
+        }
         List<Object> taxAmountParams = new ArrayList<>();
         taxAmountParams.add(consumerCode);
         taxAmountParams.add(startDate);
