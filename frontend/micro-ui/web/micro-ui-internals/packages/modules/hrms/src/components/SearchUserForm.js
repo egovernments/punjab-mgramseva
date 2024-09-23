@@ -162,11 +162,15 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
         const resultInTree = buildTree(filteredResult, hierarchy);
         const excludeCodes = ["HRMS_ADMIN", "LOC_ADMIN", "MDMS_ADMIN", "EMPLOYEE", "SYSTEM"];
         setRolesOptions(
-          data?.MdmsRes?.["ws-services-masters"]?.["WSServiceRoles"]?.filter(
-            (row) =>
-              !excludeCodes.includes(row?.code) &&
-              (row?.name === "Secretary" || row?.name === "Sarpanch" || row?.name === "Revenue Collector" || row?.name === "DIVISION ADMIN")
-          )
+          data?.MdmsRes?.["ws-services-masters"]?.["WSServiceRoles"]
+            ?.filter(
+              (row) =>
+                !excludeCodes.includes(row?.code) &&
+                (row?.name === "Secretary" || row?.name === "Sarpanch" || row?.name === "Revenue Collector" || row?.name === "DIVISION ADMIN")
+            )
+            .forEach((option) => {
+              option.i18text = "ACCESSCONTROL_ROLES_ROLES_" + option?.code;
+            })
         );
         //updating to state roles as requested
         // setRolesOptions([
@@ -344,6 +348,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     setUniqueTenants(() => listOfUniqueTenants);
     setUniqueRoles(() => rolesOptions?.filter((row) => row.code)?.map((role) => role.code));
   };
+
   const onSubmit = (data) => {
     //assuming atleast one hierarchy is entered
 
@@ -518,11 +523,12 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
       </LabelFieldPair>
     ));
   }, [formData]);
-  useEffect(() => {
-    rolesOptions?.forEach((option) => {
-      option.i18text = "ACCESSCONTROL_ROLES_ROLES_" + option?.code;
-    });
-  }, [rolesOptions]);
+
+  // useEffect(() => {
+  //   rolesOptions?.forEach((option) => {
+  //     option.i18text = "ACCESSCONTROL_ROLES_ROLES_" + option?.code;
+  //   });
+  // }, [rolesOptions]);
 
   console.log("rolesoptions", rolesOptions);
 
