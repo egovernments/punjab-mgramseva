@@ -264,7 +264,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                     Long transactionDateLong = payment.getTransactionDate();
 
                     // Check if the payment date falls on or after the current demand's generation date
-                    if (transactionDateLong >= currentDemandDate) {
+                    if (transactionDateLong >= currentDemandDate &&
+                            (i + 1 == monthlyRecordList.size() || transactionDateLong < getDemandGenerationDateOfNextMonth(monthlyRecordList, i))) {
                         LocalDate transactionDate = Instant.ofEpochMilli(transactionDateLong)
                                 .atZone(ZoneId.systemDefault())
                                 .toLocalDate();
@@ -336,6 +337,32 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 }
             }
         }
+    }
+
+    /**
+     * This method retrieves the demand generation date for the next month in the ledger report.
+     * If the next month is beyond the list size, it returns 0 to indicate no demand for a future month.
+     *
+     * @param monthlyRecordList The list of monthly ledger records.
+     * @param currentIndex The index of the current month.
+     * @return The demand generation date of the next month or 0 if there is no next month.
+     */
+    private Long getDemandGenerationDateOfNextMonth(List<Map<String, Object>> monthlyRecordList, int currentIndex) {
+        // Check if there is a next month in the list
+        if (currentIndex + 1 < monthlyRecordList.size()) {
+            // Get the next month's record
+            Map<String, Object> nextMonthRecord = monthlyRecordList.get(currentIndex + 1);
+
+            // Extract the LedgerReport object for the next month
+            LedgerReport nextMonthLedgerReport = (LedgerReport) nextMonthRecord.values().iterator().next();
+
+            // Return the demand generation date of the next month
+            if (nextMonthLedgerReport != null && nextMonthLedgerReport.getDemand() != null) {
+                return nextMonthLedgerReport.getDemand().getDemandGenerationDate();
+            }
+        }
+        // Return 0 if there is no next month or no valid demand for the next month
+        return 0L;
     }
 
 
