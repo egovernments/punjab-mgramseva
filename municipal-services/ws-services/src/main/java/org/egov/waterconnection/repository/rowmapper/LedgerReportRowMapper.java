@@ -150,7 +150,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         }
         log.info("ledger report list" + monthlyRecordsList);
         if (!monthlyRecordsList.isEmpty()) {
-            addPaymentToLedger(monthlyRecordsList);
+            addPaymentToLedgerChronlogicalOrder(monthlyRecordsList);
         }
         monthlyRecordsList.sort(new Comparator<Map<String, Object>>() {
             @Override
@@ -199,7 +199,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                     Long transactionDateLong = payment.getTransactionDate();
                     LocalDate transactionDate = Instant.ofEpochMilli(transactionDateLong).atZone(ZoneId.systemDefault()).toLocalDate();
                     String transactionMonthAndYear = transactionDate.format(DateTimeFormatter.ofPattern("MMMM yyyy"));
-                    if (ledgerReport.getDemand().getMonthAndYear().equals(transactionMonthAndYear)) {
+                    if (ledgerReport.getDemand().getDemandGenerationDate().compareTo(transactionDateLong)<0 ) {
                         PaymentLedgerReport paymentLedgerReport = new PaymentLedgerReport();
                         paymentLedgerReport.setCollectionDate(transactionDateLong);
                         paymentLedgerReport.setReceiptNo(payment.getPaymentDetails().get(0).getReceiptNumber());
@@ -233,6 +233,87 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             }
         }
     }
+
+
+    private void addPaymentToLedgerChronlogicalOrder(List<Map<String, Object>> monthlyRecordList) {
+        for (int i = 0; i < monthlyRecordList.size(); i++) {
+            Map<String, Object> record = monthlyRecordList.get(i);
+            LedgerReport ledgerReport = (LedgerReport) record.values().iterator().next();
+
+            if (ledgerReport.getDemand() == null) {
+                log.info("DemandLedgerReport is null for LedgerReport: {}", ledgerReport);
+                continue;
+            }
+
+            String consumerCode = ledgerReport.getDemand().getConnectionNo();
+            log.info("Consumer code: " + consumerCode);
+            List<Payment> payments = addPaymentDetails(consumerCode);
+            boolean paymentMatched = false;
+
+            if (payments != null && !payments.isEmpty()) {
+                BigDecimal totalPaymentInMonth = BigDecimal.ZERO;
+                BigDecimal totalBalanceLeftInMonth = BigDecimal.ZERO;
+
+                // Get current demand's generation date
+                Long currentDemandDate = ledgerReport.getDemand().getDemandGenerationDate();
+
+                // Get the next demand's generation date if available
+                Long nextDemandDate = null;
+                if (i + 1 < monthlyRecordList.size()) {
+                    LedgerReport nextLedgerReport = (LedgerReport) monthlyRecordList.get(i + 1).values().iterator().next();
+                    nextDemandDate = nextLedgerReport.getDemand().getDemandGenerationDate();
+                }
+
+                for (Payment payment : payments) {
+                    Long transactionDateLong = payment.getTransactionDate();
+
+                    // Check if the payment date falls between the current and next demand
+                    if (transactionDateLong >= currentDemandDate &&
+                            (nextDemandDate == null || transactionDateLong < nextDemandDate)) {
+
+                        LocalDate transactionDate = Instant.ofEpochMilli(transactionDateLong)
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate();
+
+                        PaymentLedgerReport paymentLedgerReport = new PaymentLedgerReport();
+                        paymentLedgerReport.setCollectionDate(transactionDateLong);
+                        paymentLedgerReport.setReceiptNo(payment.getPaymentDetails().get(0).getReceiptNumber());
+                        paymentLedgerReport.setPaid(payment.getTotalAmountPaid());
+                        paymentLedgerReport.setBalanceLeft(payment.getTotalDue().subtract(paymentLedgerReport.getPaid()));
+
+                        totalPaymentInMonth = totalPaymentInMonth.add(payment.getTotalAmountPaid());
+                        totalBalanceLeftInMonth = totalBalanceLeftInMonth.add(payment.getTotalDue().subtract(payment.getTotalAmountPaid()));
+
+                        if (ledgerReport.getPayment() == null) {
+                            ledgerReport.setPayment(new ArrayList<>());
+                        }
+                        ledgerReport.getPayment().add(paymentLedgerReport);
+                        paymentMatched = true;
+                    }
+                }
+
+                ledgerReport.setTotalBalanceLeftInMonth(totalBalanceLeftInMonth);
+                ledgerReport.setTotalPaymentInMonth(totalPaymentInMonth);
+            }
+
+            if (!paymentMatched) {
+                // If no payments matched, add a default PaymentLedgerReport
+                PaymentLedgerReport defaultPaymentLedgerReport = new PaymentLedgerReport();
+                defaultPaymentLedgerReport.setCollectionDate(null);
+                defaultPaymentLedgerReport.setReceiptNo("N/A");
+                defaultPaymentLedgerReport.setPaid(BigDecimal.ZERO);
+                defaultPaymentLedgerReport.setBalanceLeft(ledgerReport.getDemand().getTotal_due_amount());
+
+                if (ledgerReport.getPayment() == null) {
+                    ledgerReport.setPayment(new ArrayList<>());
+                }
+                ledgerReport.getPayment().add(defaultPaymentLedgerReport);
+                ledgerReport.setTotalBalanceLeftInMonth(BigDecimal.ZERO);
+                ledgerReport.setTotalPaymentInMonth(BigDecimal.ZERO);
+            }
+        }
+    }
+
 
     private BigDecimal getMonthlyTaxAmount(Long startDate, String consumerCode) {
         StringBuilder taxAmountQuery = new StringBuilder(wsQueryBuilder.TAX_AMOUNT_QUERY);
