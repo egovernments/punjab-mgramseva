@@ -92,7 +92,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     { level: "subDivisionCode", value: 4, optionsKey: "subDivisionName", isMandatory: false },
     { level: "sectionCode", value: 5, optionsKey: "sectionName", isMandatory: false },
     // { "level": "schemeCode", "value": 6,"optionsKey":"schemeName" },
-    { level: "code", value: 7, optionsKey: "name", isMandatory: false },
+    { level: "code", value: 7, optionsKey: "code", isMandatory: false },
   ]);
   const [tree, setTree] = useState(null);
   const [rolesOptions, setRolesOptions] = useState(null);
@@ -161,7 +161,10 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
           data?.MdmsRes?.["ws-services-masters"]?.["WSServiceRoles"]?.filter(
             (row) =>
               !excludeCodes.includes(row?.code) &&
-              (row?.name === "Secretary" || row?.name === "Sarpanch" || row?.name === "Revenue Collector" || !DIV_ADMIN && row?.name === "DIVISION ADMIN")
+              (row?.name === "Secretary" ||
+                row?.name === "Sarpanch" ||
+                row?.name === "Revenue Collector" ||
+                (!DIV_ADMIN && row?.name === "DIVISION ADMIN"))
           )
         );
         //updating to state roles as requested
