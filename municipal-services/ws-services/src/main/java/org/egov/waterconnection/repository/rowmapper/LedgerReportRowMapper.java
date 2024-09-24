@@ -83,10 +83,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             ledgerReport.setDemand(new DemandLedgerReport());
             ledgerReport.getDemand().setMonthAndYear(monthAndYear);
             ledgerReport.getDemand().setConnectionNo(consumerCode);
-            BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(epochTime, consumerCode);
-            boolean paymentExists = totalAmountPaidResult != null && totalAmountPaidResult.compareTo(BigDecimal.ZERO) > 0;
-            BigDecimal taxAmountResult = getMonthlyTaxAmount(epochTime, consumerCode,paymentExists);
-            ledgerReport.getDemand().setArrears(taxAmountResult.subtract(totalAmountPaidResult));
+
             log.info("Arrers are "+ledgerReport.getDemand().getArrears()+" and monthandYear"+ ledgerReport.getDemand().getMonthAndYear());
             ledgerReports.put(monthAndYear, ledgerReport);
             currentMonth = currentMonth.plusMonths(1);
@@ -102,8 +99,13 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
 
             Long demandGenerationDateLong = resultSet.getLong("demandgenerationdate");
             LocalDate demandGenerationDateLocal = Instant.ofEpochMilli(demandGenerationDateLong).atZone(ZoneId.systemDefault()).toLocalDate();
+            BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(demandGenerationDateLong, consumerCode);
+            boolean paymentExists = totalAmountPaidResult != null && totalAmountPaidResult.compareTo(BigDecimal.ZERO) > 0;
+            BigDecimal taxAmountResult = getMonthlyTaxAmount(demandGenerationDateLong, consumerCode,paymentExists);
+
 
             LedgerReport ledgerReport = ledgerReports.get(monthAndYear);
+            ledgerReport.getDemand().setArrears(taxAmountResult.subtract(totalAmountPaidResult));
 
             if (ledgerReport.getPayment() == null) {
                 ledgerReport.setPayment(new ArrayList<>());
