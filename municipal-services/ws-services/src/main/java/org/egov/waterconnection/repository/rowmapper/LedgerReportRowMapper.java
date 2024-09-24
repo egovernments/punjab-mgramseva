@@ -351,6 +351,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             BigDecimal totalPaymentInMonthlastValidMonth = BigDecimal.ZERO;
             BigDecimal totalBalanceLeftInMonthLatValidMonth=BigDecimal.ZERO;
             lastValidDemandReport.getPayment().clear();
+            boolean ifLastDemandHavePayments= false;
 
             if (payments != null && !payments.isEmpty()) {
 
@@ -366,10 +367,25 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                         lastValidDemandReport.getPayment().add(paymentLedgerReport);
                         totalPaymentInMonthlastValidMonth = totalPaymentInMonthlastValidMonth.add(payment.getTotalAmountPaid());
                         totalBalanceLeftInMonthLatValidMonth = totalBalanceLeftInMonthLatValidMonth.add(payment.getTotalDue().subtract(payment.getTotalAmountPaid()));
+                        ifLastDemandHavePayments=true;
                     }
                 }
                 lastValidDemandReport.setTotalBalanceLeftInMonth(lastValidDemandReport.getDemand().getTotal_due_amount().subtract(totalPaymentInMonthlastValidMonth));
                 lastValidDemandReport.setTotalPaymentInMonth(totalPaymentInMonthlastValidMonth);
+                if(!ifLastDemandHavePayments){
+                    // Add a default PaymentLedgerReport if no payments matched
+                    log.info("If not matched:"+lastValidDemandReport.getDemand().getMonthAndYear());
+                    PaymentLedgerReport defaultPaymentLedgerReport = new PaymentLedgerReport();
+                    defaultPaymentLedgerReport.setCollectionDate(null);
+                    defaultPaymentLedgerReport.setReceiptNo("N/A");
+                    defaultPaymentLedgerReport.setPaid(BigDecimal.ZERO);
+                    defaultPaymentLedgerReport.setBalanceLeft(lastValidDemandReport.getDemand().getTotal_due_amount());
+
+                    if (lastValidDemandReport.getPayment() == null) {
+                        lastValidDemandReport.setPayment(new ArrayList<>());
+                    }
+                    lastValidDemandReport.getPayment().add(defaultPaymentLedgerReport);
+                }
             }
         }
     }
