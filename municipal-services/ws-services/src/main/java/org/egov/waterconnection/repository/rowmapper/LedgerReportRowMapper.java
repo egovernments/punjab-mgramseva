@@ -101,7 +101,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             LocalDate demandGenerationDateLocal = Instant.ofEpochMilli(demandGenerationDateLong).atZone(ZoneId.systemDefault()).toLocalDate();
             BigDecimal totalAmountPaidResult = getMonthlyTotalAmountPaid(demandGenerationDateLong, consumerCode);
             boolean paymentExists = totalAmountPaidResult != null && totalAmountPaidResult.compareTo(BigDecimal.ZERO) > 0;
-            BigDecimal taxAmountResult = getMonthlyTaxAmount(demandGenerationDateLong, consumerCode,paymentExists);
+            BigDecimal taxAmountResult = getMonthlyTaxAmount(resultSet.getLong("startdate"), consumerCode,paymentExists);
 
 
             LedgerReport ledgerReport = ledgerReports.get(monthAndYear);
@@ -261,6 +261,18 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             // Skip months where demandGenerationDate is 0 (invalid demands)
             if (ledgerReport.getDemand() == null || ledgerReport.getDemand().getDemandGenerationDate() == 0) {
                 log.info("Skipping LedgerReport for invalid demand in LedgerReport: {}", ledgerReport);
+                PaymentLedgerReport defaultPaymentLedgerReport = new PaymentLedgerReport();
+                defaultPaymentLedgerReport.setCollectionDate(null);
+                defaultPaymentLedgerReport.setReceiptNo("N/A");
+                defaultPaymentLedgerReport.setPaid(BigDecimal.ZERO);
+                defaultPaymentLedgerReport.setBalanceLeft(ledgerReport.getDemand().getTotal_due_amount());
+
+                if (ledgerReport.getPayment() == null) {
+                    ledgerReport.setPayment(new ArrayList<>());
+                }
+                ledgerReport.getPayment().add(defaultPaymentLedgerReport);
+                ledgerReport.setTotalBalanceLeftInMonth(BigDecimal.ZERO);
+                ledgerReport.setTotalPaymentInMonth(BigDecimal.ZERO);
                 continue;
             }
 
@@ -313,10 +325,10 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
                 log.info("Last Valid Demand monnth:"+ledgerReport.getDemand());
                 lastValidDemandReport = ledgerReport;
             }
-
+            log.info("paymentMatched"+paymentMatched+" LedgerReport.getDemand().getDemandGenerationDate() != lastValidDemandReport.getDemand().getDemandGenerationDate():" +(ledgerReport.getDemand().getDemandGenerationDate() != lastValidDemandReport.getDemand().getDemandGenerationDate()));
             if (!paymentMatched && ledgerReport.getDemand().getDemandGenerationDate() != lastValidDemandReport.getDemand().getDemandGenerationDate()) {
                 // Add a default PaymentLedgerReport if no payments matched
-                log.info("If not matched");
+                log.info("If not matched:"+ledgerReport.getDemand().getMonthAndYear());
                 PaymentLedgerReport defaultPaymentLedgerReport = new PaymentLedgerReport();
                 defaultPaymentLedgerReport.setCollectionDate(null);
                 defaultPaymentLedgerReport.setReceiptNo("N/A");
