@@ -350,6 +350,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
             List<Payment> payments = addPaymentDetails(lastValidDemandReport.getDemand().getConnectionNo());
             BigDecimal totalPaymentInMonthlastValidMonth = BigDecimal.ZERO;
             BigDecimal totalBalanceLeftInMonthLatValidMonth=BigDecimal.ZERO;
+            lastValidDemandReport.getPayment().clear();
 
             if (payments != null && !payments.isEmpty()) {
 
