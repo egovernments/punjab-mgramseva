@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.models.auth.In;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.repository.ServiceRequestRepository;
 import org.egov.waterconnection.repository.builder.WsQueryBuilder;
 import org.egov.waterconnection.util.WaterServicesUtil;
@@ -53,6 +54,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
     Integer startYear;
     Integer endYear;
     String consumerCode;
+
+    private WSConfiguration cofig;
 
     public void setRequestInfo(RequestInfoWrapper requestInfoWrapper) {
         this.requestInfoWrapper = requestInfoWrapper;
@@ -153,7 +156,11 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         }
         log.info("ledger report list" + monthlyRecordsList);
         if (!monthlyRecordsList.isEmpty()) {
-            addPaymentToLedgerChronlogicalOrder(monthlyRecordsList);
+            if(cofig.isReportRequiredInChronnologicalOrder())
+                addPaymentToLedgerChronlogicalOrder(monthlyRecordsList);
+            else
+                addPaymentToLedger(monthlyRecordsList);
+
         }
         monthlyRecordsList.sort(new Comparator<Map<String, Object>>() {
             @Override
