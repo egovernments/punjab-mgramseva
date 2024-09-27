@@ -55,7 +55,8 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
     Integer endYear;
     String consumerCode;
 
-    private WSConfiguration cofig;
+    @Autowired
+    private WSConfiguration config;
 
     public void setRequestInfo(RequestInfoWrapper requestInfoWrapper) {
         this.requestInfoWrapper = requestInfoWrapper;
@@ -156,7 +157,7 @@ public class LedgerReportRowMapper implements ResultSetExtractor<List<Map<String
         }
         log.info("ledger report list" + monthlyRecordsList);
         if (!monthlyRecordsList.isEmpty()) {
-            if(cofig.isReportRequiredInChronnologicalOrder())
+            if(config.isReportRequiredInChronnologicalOrder())
                 addPaymentToLedgerChronlogicalOrder(monthlyRecordsList);
             else
                 addPaymentToLedger(monthlyRecordsList);

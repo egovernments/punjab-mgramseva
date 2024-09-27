@@ -313,7 +313,7 @@ public class WSConfiguration {
 	@Value("${sms.feedback.notification.enabled}")
 	private boolean isSMSForFeedbackNotificationEnabled;
 
-	@Value("${report.in.chronnological.order}")
+	@Value("${report.in.chronological.order}")
 	private boolean isReportRequiredInChronnologicalOrder;
     
 }
