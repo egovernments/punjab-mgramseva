@@ -82,7 +82,7 @@ function buildTree(data, hierarchy) {
   return tree;
 }
 
-const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles, employeeData }) => {
+const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles, employeeData }) => {
   const { t } = useTranslation();
   const [showToast, setShowToast] = useState(null);
   const [hierarchy, setHierarchy] = useState([
@@ -162,15 +162,11 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
         const resultInTree = buildTree(filteredResult, hierarchy);
         const excludeCodes = ["HRMS_ADMIN", "LOC_ADMIN", "MDMS_ADMIN", "EMPLOYEE", "SYSTEM"];
         setRolesOptions(
-          data?.MdmsRes?.["ws-services-masters"]?.["WSServiceRoles"]
-            ?.filter(
-              (row) =>
-                !excludeCodes.includes(row?.code) &&
-                (row?.name === "Secretary" || row?.name === "Sarpanch" || row?.name === "Revenue Collector" || row?.name === "DIVISION ADMIN")
-            )
-            .forEach((option) => {
-              option.i18text = "ACCESSCONTROL_ROLES_ROLES_" + option?.code;
-            })
+          data?.MdmsRes?.["ws-services-masters"]?.["WSServiceRoles"]?.filter(
+            (row) =>
+              !excludeCodes.includes(row?.code) &&
+              (row?.name === "Secretary" || row?.name === "Sarpanch" || row?.name === "Revenue Collector" || row?.name === "DIVISION ADMIN")
+          )
         );
         //updating to state roles as requested
         // setRolesOptions([
@@ -427,6 +423,18 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
   }, [userData, tree]);
 
   useEffect(() => {
+    if (rolesOptions && rolesOptions.i18text == null) {
+      const updatedRolesOptions = rolesOptions.map((option) => {
+        return {
+          ...option,
+          i18text: "ACCESSCONTROL_ROLES_ROLES_" + option?.code,
+        };
+      });
+      setRolesOptions(updatedRolesOptions);
+    }
+  }, [rolesOptions]);
+
+  useEffect(() => {
     if (userData) {
       setDivisionFormData(formData);
       setDivisionFormData((prevFormData) => ({
@@ -616,6 +624,6 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
       )}
     </div>
   );
-};
+});
 
 export default SearchUserForm;
