@@ -92,7 +92,7 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
     { level: "subDivisionCode", value: 4, optionsKey: "subDivisionName", isMandatory: false },
     { level: "sectionCode", value: 5, optionsKey: "sectionName", isMandatory: false },
     // { "level": "schemeCode", "value": 6,"optionsKey":"schemeName" },
-    { level: "code", value: 7, optionsKey: "name", isMandatory: false },
+    { level: "code", value: 7, optionsKey: "code", isMandatory: false },
   ]);
 
   const [divisionHierarchy, setDivisionHierarchy] = useState([
@@ -328,7 +328,6 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
     //compute current level
     let maxSelectedLevel = levels[0];
 
-    console.log("formdata of showdata", formData);
     levels.forEach((level) => {
       if (formData[level]) {
         maxSelectedLevel = level;
@@ -340,20 +339,14 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
     const levelIndex = levels.indexOf(maxSelectedLevel);
     let currentLevel = tree;
 
-    console.log(levelIndex, currentLevel);
-
     for (let i = 0; i <= levelIndex; i++) {
       const code = formData?.[levels[i]]?.[levels[i]];
       if (!code || !currentLevel[code]) break;
       currentLevel = currentLevel[code];
     }
 
-    console.log("currentLevel: ", currentLevel);
-
     //this is the list of tenants under the current subtree
     const listOfUniqueTenants = getUniqueLeafCodes(currentLevel);
-
-    console.log("listofUniquesTennats", listOfUniqueTenants);
     setUniqueTenants(() => listOfUniqueTenants);
     setUniqueRoles(() => rolesOptions?.filter((row) => row.code)?.map((role) => role.code));
   };
@@ -422,15 +415,12 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
     setUniqueRoles(() => data?.roles?.filter((row) => row.code)?.map((role) => role.code));
   };
   const [divisionTree, setDivisionTree] = useState(null);
-  const [divisionFormData, setDivisionFormData] = useState(null);
 
   useEffect(() => {
     if (userData) {
       const zoneC = userData[0].zoneCode;
       const circleC = userData[0].circleCode;
       const divisionC = userData[0].divisionCode;
-
-      console.log(zoneC, circleC, divisionC);
 
       if (tree && tree[zoneC] && tree[zoneC][circleC]) {
         console.log(tree[zoneC][circleC][divisionC]);
@@ -447,6 +437,7 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
 
   const optionsForHierarchy = (level, value) => {
     if (!tree) return [];
+    if (divisionAdmin && !divisionTree) return [];
 
     const levels = divisionAdmin ? divisionHierarchy.map(({ level }) => level) : hierarchy.map(({ level }) => level);
     const levelIndex = levels.indexOf(level);
@@ -466,7 +457,6 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
   };
 
   const renderHierarchyFields = useMemo(() => {
-    // return hierarchy.map(({ level, optionsKey, isMandatory, ...rest }, idx) => (
     return (divisionAdmin ? divisionHierarchy : hierarchy).map(({ level, optionsKey, isMandatory, ...rest }, idx) => (
       <LabelFieldPair>
         <CardLabel style={{ marginBottom: "0.4rem" }}>{`${t(Digit.Utils.locale.getTransformedLocale(`HR_SU_${level}`))} ${
@@ -508,8 +498,6 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
       </LabelFieldPair>
     ));
   }, [formData]);
-
-  console.log("rolesoptions", rolesOptions);
 
   if (isLoading || !setTree) {
     return <Loader />;
