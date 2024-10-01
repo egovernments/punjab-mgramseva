@@ -971,9 +971,10 @@ public class DemandService {
 			demandRes = demandRepository.updateDemand(requestInfo, demands);
 			finalDemandRes.addAll(demandRes);
 			List<String> billNumbers = fetchBill(demands, waterConnectionRequest.getRequestInfo());
-			Long billDate = fetchBillDate(demands,waterConnectionRequest.getRequestInfo());
-			billDate =billDate + 1296000000l;LocalDate billDateLocal = Instant.ofEpochMilli(billDate).atZone(ZoneId.systemDefault()).toLocalDate();
-			String paymentDueDate = billDateLocal.format(dateTimeFormatter);
+//			Long billDate = fetchBillDate(demands,waterConnectionRequest.getRequestInfo());
+//			billDate =billDate + 1296000000l;
+//			LocalDate billDateLocal = Instant.ofEpochMilli(billDate).atZone(ZoneId.systemDefault()).toLocalDate();
+//			String paymentDueDate = billDateLocal.format(dateTimeFormatter);
 			/*if(isOnlinePaymentAllowed(requestInfo,tenantId)) {
 				if(fetchTotalBillAmount(demands,requestInfo).signum()> 0) {
 					sendPaymentSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,calculation.getConnectionNo(),demands,true,businessService,billCycle,billNumbers,paymentDueDate);
@@ -1327,7 +1328,8 @@ public class DemandService {
 		}
 		if(!CollectionUtils.isEmpty(billDate))
 			return billDate.get(0);
-		return null;
+		else
+			return null;
 	}
 
 	/**
