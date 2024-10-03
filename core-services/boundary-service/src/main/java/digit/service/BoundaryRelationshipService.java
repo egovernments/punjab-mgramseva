@@ -243,7 +243,7 @@ public class BoundaryRelationshipService {
         for (Map<String, Object> tenantBoundary : tenantBoundaries) {
             List<Map<String, Object>> boundaries = (List<Map<String, Object>>) tenantBoundary.get("boundary");
             if (boundaries != null && !boundaries.isEmpty()) {
-                searchForVillageBoundaries(boundaries, new HashMap<>(),messages);
+                searchForVillageBoundaries(boundaries, new HashMap<>(), messages);
             } else {
                 throw new IllegalStateException("Boundaries list is empty or null for tenantBoundary: " + tenantBoundary);
             }
@@ -251,7 +251,7 @@ public class BoundaryRelationshipService {
         return messages;
     }
 
-    private List<String> searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails,List<String> messages) {
+    private List<String> searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails, List<String> messages) {
         for (Map<String, Object> boundary : boundaries) {
             if (boundary == null) {
                 continue;
@@ -277,8 +277,11 @@ public class BoundaryRelationshipService {
                 if (children != null && !children.isEmpty()) {
                     searchForVillageBoundaries(children, parentDetails, messages);
                 }
-                messages.add("Boundary '" + code + "' at level '" + boundaryType + "' has no children and is not a 'village'. No data pushed.");
+//                messages.add("Boundary '" + code + "' at level '" + boundaryType + "' has no children as 'village'. No data pushed.");
             }
+        }
+        if (CollectionUtils.isEmpty(messages)) {
+            messages.add("No data pushed as last level was not found as village");
         }
         return messages;
     }
