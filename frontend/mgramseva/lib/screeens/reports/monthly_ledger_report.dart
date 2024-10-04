@@ -93,15 +93,15 @@ class _MonthlyLedgerReportState extends State<MonthlyLedgerReport>
                         opacity: 0,
                         child: TextButton.icon(
                             onPressed: () {
-                              // if (reportProvider.selectedBillPeriod == null) {
-                              //   Notifiers.getToastMessage(
-                              //       context,
-                              //       '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}',
-                              //       'ERROR');
-                              // } else {
-                              //   reportProvider.getMonthlyLedgerReport(
-                              //       download: true);
-                              // }
+                              if (reportProvider.selectedBillPeriod == null) {
+                                Notifiers.getToastMessage(
+                                    context,
+                                    '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}',
+                                    'ERROR');
+                              } else {
+                                reportProvider.getMonthlyLedgerReport(
+                                    download: true);
+                              }
                             },
                             icon: Icon(Icons.download_sharp),
                             label: Text(ApplicationLocalizations.of(context)
