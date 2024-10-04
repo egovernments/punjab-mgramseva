@@ -89,7 +89,7 @@ class _MonthlyLedgerReportState extends State<MonthlyLedgerReport>
                       SizedBox(
                         width: 10,
                       ),
-                       TextButton.icon(
+                      TextButton.icon(
                           onPressed: () {
                             if (reportProvider.selectedBillPeriod == null) {
                               Notifiers.getToastMessage(
