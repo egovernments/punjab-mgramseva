@@ -232,7 +232,7 @@ public class BoundaryRelationshipService {
             throw new IllegalStateException("Invalid response received from boundary service. Response: " + response);
         }
         List<Map<String, Object>> tenantBoundaries = (List<Map<String, Object>>) response.get("TenantBoundary");
-        if (tenantBoundaries == null || tenantBoundaries.isEmpty()) {
+        if (CollectionUtils.isEmpty(tenantBoundaries)) {
             return List.of("No tenant boundary data found for hierarchyType: " + hierarchyType);
         }
         return processBoundaryData(tenantBoundaries);
@@ -242,7 +242,7 @@ public class BoundaryRelationshipService {
         List<String> messages = new ArrayList<>();
         for (Map<String, Object> tenantBoundary : tenantBoundaries) {
             List<Map<String, Object>> boundaries = (List<Map<String, Object>>) tenantBoundary.get("boundary");
-            if (boundaries != null && !boundaries.isEmpty()) {
+            if (!CollectionUtils.isEmpty(boundaries)) {
                 searchForVillageBoundaries(boundaries, new HashMap<>(), messages);
             } else {
                 throw new IllegalStateException("Boundaries list is empty or null for tenantBoundary: " + tenantBoundary);

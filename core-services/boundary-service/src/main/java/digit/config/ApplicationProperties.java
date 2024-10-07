@@ -59,6 +59,9 @@ public class ApplicationProperties {
     @Value("${egov.mdms.search.endpoint}")
     private String mdmsEndPoint;
 
+    @Value("${rgov.mdms.create.endpoint}")
+    private String mdmsv2Endpoint;
+
 
     //HRMS
     @Value("${egov.hrms.host}")
