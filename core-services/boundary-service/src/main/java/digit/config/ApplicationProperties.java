@@ -59,7 +59,7 @@ public class ApplicationProperties {
     @Value("${egov.mdms.search.endpoint}")
     private String mdmsEndPoint;
 
-    @Value("${rgov.mdms.create.endpoint}")
+    @Value("${egov.mdms.create.endpoint}")
     private String mdmsv2Endpoint;
 
 

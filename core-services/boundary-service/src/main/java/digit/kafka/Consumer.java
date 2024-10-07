@@ -31,20 +31,35 @@ public class Consumer {
     @KafkaListener(topics = {"kafka.topics.push.boundary"})
     public void createTenantWithPushBoundary(final HashMap<String, String> villageData) {
         try {
-            // Convert the villageData to MdmsRequest
-            MdmsRequest mdmsRequest = mapper.convertValue(villageData, MdmsRequest.class);
+            // Convert the villageData to a nested structure
+            Mdms mdms = Mdms.builder()
+                    .tenantId("pb")
+                    .schemaCode("tenant.tenants")
+                    .data(convertToDataStructure(villageData))
+                    .isActive(true)
+                    .build();
+
+            MdmsRequest mdmsRequest = MdmsRequest.builder()
+                    .mdms(mdms)
+                    .build();
+
             log.info(mdmsRequest.toString());
 
             // Call the external API with the constructed MdmsRequest
-//            sendDataToExternalApi(mdmsRequest);
+            sendDataToExternalApi(mdmsRequest);
         } catch (Exception ex) {
             log.error("Error processing village data from topic: kafka.topics.push.boundary", ex);
         }
     }
 
+    private JsonNode convertToDataStructure(Map<String, String> villageData) {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue(villageData, JsonNode.class);
+    }
+
     private void sendDataToExternalApi(MdmsRequest mdmsRequest) {
         try {
-            // Construct the API URL (no query parameters needed)
+            // Construct the API URL
             String url = config.getMdmsHost() + config.getMdmsv2Endpoint()+"/tenant.tenants";
 
             RestTemplate restTemplate = new RestTemplate();
