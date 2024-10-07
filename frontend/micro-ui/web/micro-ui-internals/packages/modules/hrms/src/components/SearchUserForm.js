@@ -82,7 +82,7 @@ function buildTree(data, hierarchy) {
   return tree;
 }
 
-const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles, employeeData }) => {
+const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles, employeeData }) => {
   const { t } = useTranslation();
   const [showToast, setShowToast] = useState(null);
   const [hierarchy, setHierarchy] = useState([
@@ -92,11 +92,19 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     { level: "subDivisionCode", value: 4, optionsKey: "subDivisionName", isMandatory: false },
     { level: "sectionCode", value: 5, optionsKey: "sectionName", isMandatory: false },
     // { "level": "schemeCode", "value": 6,"optionsKey":"schemeName" },
+    { level: "code", value: 7, optionsKey: "code", isMandatory: false },
+  ]);
+
+  const [divisionHierarchy, setDivisionHierarchy] = useState([
+    { level: "subDivisionCode", value: 4, optionsKey: "subDivisionName", isMandatory: false },
+    { level: "sectionCode", value: 5, optionsKey: "sectionName", isMandatory: false },
     { level: "code", value: 7, optionsKey: "name", isMandatory: false },
   ]);
   const [tree, setTree] = useState(null);
   const [rolesOptions, setRolesOptions] = useState(null);
   const [isShowAllClicked, setIsShowAllClicked] = useState(false);
+
+  const divisionAdmin = Digit.UserService.hasAccess(["DIV_ADMIN"]);
 
   // const [zones,setZones] = useState([])
   // const [circles,setCircles] = useState([])
@@ -105,101 +113,6 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
   // const [sections,setSections] = useState([])
   // const [schemes,setSchemes] = useState([])
   // const [codes,setCodes] = useState([])
-
-  const requestCriteria = {
-    url: "/mdms-v2/v1/_search",
-    params: { tenantId: Digit.ULBService.getStateId() },
-    body: {
-      MdmsCriteria: {
-        tenantId: Digit.ULBService.getStateId(),
-        moduleDetails: [
-          {
-            moduleName: "tenant",
-            masterDetails: [
-              {
-                name: "tenants",
-              },
-            ],
-          },
-          {
-            moduleName: "ws-services-masters",
-            masterDetails: [
-              {
-                name: "WSServiceRoles",
-              },
-            ],
-          },
-        ],
-      },
-    },
-    config: {
-      cacheTime: Infinity,
-      select: (data) => {
-        const requiredKeys = [
-          "code",
-          "name",
-          "zoneCode",
-          "zoneName",
-          "circleCode",
-          "circleName",
-          "divisionCode",
-          "divisionName",
-          "subDivisionCode",
-          "subDivisionName",
-          "sectionCode",
-          "sectionName",
-          "schemeCode",
-          "schemeName",
-        ];
-        const result = data?.MdmsRes?.tenant?.tenants;
-        const filteredResult = filterKeys(result, requiredKeys);
-        const resultInTree = buildTree(filteredResult, hierarchy);
-        const excludeCodes = ["HRMS_ADMIN", "LOC_ADMIN", "MDMS_ADMIN", "EMPLOYEE", "SYSTEM"];
-        const DIV_ADMIN = Digit.UserService.hasAccess(["DIV_ADMIN"]);
-
-        setRolesOptions(
-          data?.MdmsRes?.["ws-services-masters"]?.["WSServiceRoles"]?.filter(
-            (row) =>
-              !excludeCodes.includes(row?.code) &&
-              (row?.name === "Secretary" || row?.name === "Sarpanch" || row?.name === "Revenue Collector" || !DIV_ADMIN && row?.name === "DIVISION ADMIN")
-          )
-        );
-        //updating to state roles as requested
-        // setRolesOptions([
-        //   // {
-        //   //   code: "",
-        //   //   name: "Select All",
-        //   //   description: "",
-        //   // },
-        //   {
-        //     code: "EMPLOYEE",
-        //     name: "EMPLOYEE",
-        //     labelKey: "ACCESSCONTROL_ROLES_ROLES_EMPLOYEE",
-        //   },
-        //   {
-        //     code: "DIV_ADMIN",
-        //     name: "DIVISION ADMIN",
-        //     labelKey: "ACCESSCONTROL_ROLES_ROLES_DIV_ADMIN",
-        //   },
-        //   {
-        //     code: "HRMS_ADMIN",
-        //     name: "HRMS_ADMIN",
-        //     labelKey: "ACCESSCONTROL_ROLES_ROLES_HRMS_ADMIN",
-        //   },
-        //   {
-        //     code: "MDMS_ADMIN",
-        //     name: "MDMS Admin",
-        //     description: "Mdms admin",
-        //   },
-
-        // ])
-        setTree(resultInTree);
-        return result;
-      },
-    },
-  };
-
-  const { isLoading, data, revalidate, isFetching, error } = Digit.Hooks.useCustomAPIHook(requestCriteria);
 
   const {
     register,
@@ -255,12 +168,132 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     // })
   };
 
+  const requestCriteria = {
+    url: "/mdms-v2/v1/_search",
+    params: { tenantId: Digit.ULBService.getStateId() },
+    body: {
+      MdmsCriteria: {
+        tenantId: Digit.ULBService.getStateId(),
+        moduleDetails: [
+          {
+            moduleName: "tenant",
+            masterDetails: [
+              {
+                name: "tenants",
+              },
+            ],
+          },
+          {
+            moduleName: "ws-services-masters",
+            masterDetails: [
+              {
+                name: "WSServiceRoles",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    config: {
+      cacheTime: Infinity,
+      select: (data) => {
+        const requiredKeys = [
+          "code",
+          "name",
+          "zoneCode",
+          "zoneName",
+          "circleCode",
+          "circleName",
+          "divisionCode",
+          "divisionName",
+          "subDivisionCode",
+          "subDivisionName",
+          "sectionCode",
+          "sectionName",
+          "schemeCode",
+          "schemeName",
+        ];
+        const result = data?.MdmsRes?.tenant?.tenants;
+        const filteredResult = filterKeys(result, requiredKeys);
+        const resultInTree = buildTree(filteredResult, hierarchy);
+        const excludeCodes = ["HRMS_ADMIN", "LOC_ADMIN", "MDMS_ADMIN", "EMPLOYEE", "SYSTEM"];
+
+        const roles = data?.MdmsRes?.["ws-services-masters"]?.["WSServiceRoles"]
+          ?.filter(
+            (row) =>
+              !excludeCodes.includes(row?.code) &&
+              (row?.name === "Secretary" || row?.name === "Sarpanch" || row?.name === "Revenue Collector" || row?.name === "DIVISION ADMIN")
+          )
+          ?.map((role) => ({
+            ...role,
+            i18text: "ACCESSCONTROL_ROLES_ROLES_" + role?.code,
+          }));
+        setRolesOptions(roles);
+        setTree(resultInTree);
+        return result;
+      },
+    },
+  };
+
+  const requestCriteria2 = {
+    url: "/mdms-v2/v1/_search",
+    params: { tenantId: Digit.ULBService.getStateId() },
+    body: {
+      MdmsCriteria: {
+        tenantId: Digit.ULBService.getStateId(),
+        moduleDetails: [
+          {
+            moduleName: "tenant",
+            masterDetails: [
+              {
+                name: "tenants",
+                filter: `[?(@.code == '${Digit.ULBService.getCurrentTenantId()}')]`,
+              },
+            ],
+          },
+        ],
+      },
+    },
+    changeQueryName: "userData",
+    config: {
+      cacheTime: Infinity,
+      select: (data) => {
+        const requiredKeys = [
+          "code",
+          "name",
+          "zoneCode",
+          "zoneName",
+          "circleCode",
+          "circleName",
+          "divisionCode",
+          "divisionName",
+          "subDivisionCode",
+          "subDivisionName",
+          "sectionCode",
+          "sectionName",
+          "schemeCode",
+          "schemeName",
+        ];
+        const result = data?.MdmsRes?.tenant?.tenants;
+        formData.zoneCode = result[0];
+        formData.circleCode = result[0];
+        formData.divisionCode = result[0];
+
+        const filteredResult = filterKeys(result, requiredKeys);
+        return result;
+      },
+    },
+  };
+
+  const { isLoading, data, revalidate, isFetching, error } = Digit.Hooks.useCustomAPIHook(requestCriteria);
+  const { data: userData } = Digit.Hooks.useCustomAPIHook(requestCriteria2);
+
   useEffect(() => {
     if (isShowAllClicked && employeeData) {
       jsonToExcel(employeeData, "employees.xlsx");
       setIsShowAllClicked(false);
     }
-  }, [employeeData]);
+  }, [employeeData, uniqueTenants]);
 
   function jsonToExcel(employeeData, fileName) {
     const employees = employeeData.map((employee) => ({
@@ -286,16 +319,41 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
   }
 
   const showAllData = () => {
-    clearSearch();
+    // clearSearch();
+    if (divisionAdmin) setRequiredOptions(formData);
     setIsShowAllClicked(true);
-    const listOfUniqueTenants = getUniqueLeafCodes(tree);
+    //here apply a logic to compute the subtree based on the hierarchy selected
+    const levels = hierarchy.map(({ level }) => level);
 
+    //compute current level
+    let maxSelectedLevel = levels[0];
+
+    levels.forEach((level) => {
+      if (formData[level]) {
+        maxSelectedLevel = level;
+      } else {
+        return;
+      }
+    });
+
+    const levelIndex = levels.indexOf(maxSelectedLevel);
+    let currentLevel = tree;
+
+    for (let i = 0; i <= levelIndex; i++) {
+      const code = formData?.[levels[i]]?.[levels[i]];
+      if (!code || !currentLevel[code]) break;
+      currentLevel = currentLevel[code];
+    }
+
+    //this is the list of tenants under the current subtree
+    const listOfUniqueTenants = getUniqueLeafCodes(currentLevel);
     setUniqueTenants(() => listOfUniqueTenants);
     setUniqueRoles(() => rolesOptions?.filter((row) => row.code)?.map((role) => role.code));
   };
+
   const onSubmit = (data) => {
     //assuming atleast one hierarchy is entered
-
+    if (divisionAdmin) setRequiredOptions(data);
     if (Object.keys(data).length === 0 || Object.values(data).every((value) => !value)) {
       //toast message
       setShowToast({ warning: true, label: t("ES_COMMON_MIN_SEARCH_CRITERIA_MSG") });
@@ -320,6 +378,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
 
     //checking roles
     if (data?.roles?.length === 0 || !data?.roles) {
+
       setShowToast({ warning: true, label: t("ES_COMMON_MIN_SEARCH_CRITERIA_MSG") });
       setTimeout(closeToast, 5000);
       return;
@@ -327,6 +386,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
 
     //here apply a logic to compute the subtree based on the hierarchy selected
     const levels = hierarchy.map(({ level }) => level);
+
     //compute current level
     let maxSelectedLevel = levels[0];
     levels.forEach((level) => {
@@ -338,8 +398,8 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     });
 
     const levelIndex = levels.indexOf(maxSelectedLevel);
-
     let currentLevel = tree;
+
     for (let i = 0; i <= levelIndex; i++) {
       const code = data?.[levels[i]]?.[levels[i]];
       if (!code || !currentLevel[code]) return [];
@@ -351,23 +411,41 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
     setUniqueTenants(() => listOfUniqueTenants);
     setUniqueRoles(() => data?.roles?.filter((row) => row.code)?.map((role) => role.code));
   };
+  const [divisionTree, setDivisionTree] = useState(null);
+
+  useEffect(() => {
+    if (userData) {
+      const zoneC = userData[0].zoneCode;
+      const circleC = userData[0].circleCode;
+      const divisionC = userData[0].divisionCode;
+
+      if (tree && tree[zoneC] && tree[zoneC][circleC]) {
+        setDivisionTree(tree[zoneC][circleC][divisionC]);
+      }
+    }
+  }, [userData, tree]);
+
+  const setRequiredOptions = (formData) => {
+    formData.zoneCode = userData[0];
+    formData.circleCode = userData[0];
+    formData.divisionCode = userData[0];
+  };
 
   const optionsForHierarchy = (level, value) => {
     if (!tree) return [];
+    if (divisionAdmin && !divisionTree) return [];
 
-    const levels = hierarchy.map(({ level }) => level);
+    const levels = divisionAdmin ? divisionHierarchy.map(({ level }) => level) : hierarchy.map(({ level }) => level);
     const levelIndex = levels.indexOf(level);
-
-    //zoneCode(1st level(highest parent))
-    if (levelIndex === -1 || levelIndex === 0) return tree.options;
-
-    let currentLevel = tree;
+    if (levelIndex === -1 || levelIndex === 0) return divisionAdmin ? divisionTree.options : tree.options;
+    let currentLevel = divisionAdmin ? divisionTree : tree;
     for (let i = 0; i < levelIndex; i++) {
       const code = formData[levels[i]]?.[levels[i]];
       if (!code || !currentLevel[code]) return [];
       currentLevel = currentLevel[code];
     }
-    return currentLevel.options || [];
+    if (divisionAdmin) setRequiredOptions(formData);
+    return currentLevel?.options || [];
   };
 
   const closeToast = () => {
@@ -375,7 +453,7 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
   };
 
   const renderHierarchyFields = useMemo(() => {
-    return hierarchy.map(({ level, optionsKey, isMandatory, ...rest }, idx) => (
+    return (divisionAdmin ? divisionHierarchy : hierarchy).map(({ level, optionsKey, isMandatory, ...rest }, idx) => (
       <LabelFieldPair>
         <CardLabel style={{ marginBottom: "0.4rem" }}>{`${t(Digit.Utils.locale.getTransformedLocale(`HR_SU_${level}`))} ${
           isMandatory ? "*" : ""
@@ -391,7 +469,11 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
               select={(e) => {
                 props.onChange(e);
                 //clear all child levels
-                const childLevels = hierarchy.slice(hierarchy.findIndex((h) => h.level === level) + 1);
+                // const childLevels = hierarchy.slice(hierarchy.findIndex((h) => h.level === level) + 1);
+                // childLevels.forEach((child) => setValue(child.level, ""));
+                const childLevels = (divisionAdmin ? divisionHierarchy : hierarchy).slice(
+                  (divisionAdmin ? divisionHierarchy : hierarchy).findIndex((h) => h.level === level) + 1
+                );
                 childLevels.forEach((child) => setValue(child.level, ""));
               }}
               selected={props.value}
@@ -412,12 +494,6 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
       </LabelFieldPair>
     ));
   }, [formData]);
-
-  useEffect(() => {
-    rolesOptions?.forEach((option) => {
-      option.i18text = "ACCESSCONTROL_ROLES_ROLES_" + option?.code;
-    });
-  }, [rolesOptions]);
 
   if (isLoading || !setTree) {
     return <Loader />;
@@ -503,6 +579,6 @@ const SearchUserForm = ({ uniqueTenants, setUniqueTenants, roles, setUniqueRoles
       )}
     </div>
   );
-};
+});
 
 export default SearchUserForm;
