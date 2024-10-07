@@ -356,7 +356,6 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
     if (divisionAdmin) setRequiredOptions(data);
     if (Object.keys(data).length === 0 || Object.values(data).every((value) => !value)) {
       //toast message
-      console.log("pakda gaya");
       setShowToast({ warning: true, label: t("ES_COMMON_MIN_SEARCH_CRITERIA_MSG") });
       setTimeout(closeToast, 5000);
       return;
@@ -372,7 +371,6 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
     });
 
     if (areMandatoryFieldsNotFilled) {
-      console.log("I got it");
       setShowToast({ warning: true, label: t("ES_COMMON_MIN_SEARCH_CRITERIA_MSG") });
       setTimeout(closeToast, 5000);
       return;
@@ -380,7 +378,6 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
 
     //checking roles
     if (data?.roles?.length === 0 || !data?.roles) {
-      console.log("I got it:roles");
 
       setShowToast({ warning: true, label: t("ES_COMMON_MIN_SEARCH_CRITERIA_MSG") });
       setTimeout(closeToast, 5000);
@@ -423,7 +420,6 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
       const divisionC = userData[0].divisionCode;
 
       if (tree && tree[zoneC] && tree[zoneC][circleC]) {
-        console.log(tree[zoneC][circleC][divisionC]);
         setDivisionTree(tree[zoneC][circleC][divisionC]);
       }
     }
