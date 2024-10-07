@@ -235,15 +235,15 @@ public class BoundaryRelationshipService {
         if (CollectionUtils.isEmpty(tenantBoundaries)) {
             return List.of("No tenant boundary data found for hierarchyType: " + hierarchyType);
         }
-        return processBoundaryData(tenantBoundaries);
+        return processBoundaryData(tenantBoundaries,requestInfo);
     }
 
-    private List<String> processBoundaryData(List<Map<String, Object>> tenantBoundaries) {
+    private List<String> processBoundaryData(List<Map<String, Object>> tenantBoundaries,RequestInfo requestInfo) {
         List<String> messages = new ArrayList<>();
         for (Map<String, Object> tenantBoundary : tenantBoundaries) {
             List<Map<String, Object>> boundaries = (List<Map<String, Object>>) tenantBoundary.get("boundary");
             if (!CollectionUtils.isEmpty(boundaries)) {
-                searchForVillageBoundaries(boundaries, new HashMap<>(), messages);
+                searchForVillageBoundaries(boundaries, new HashMap<>(), messages,requestInfo);
             } else {
                 throw new IllegalStateException("Boundaries list is empty or null for tenantBoundary: " + tenantBoundary);
             }
@@ -251,7 +251,7 @@ public class BoundaryRelationshipService {
         return messages;
     }
 
-    private List<String> searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails, List<String> messages) {
+    private List<String> searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails, List<String> messages,RequestInfo requestInfo) {
         for (Map<String, Object> boundary : boundaries) {
             if (boundary == null) {
                 continue;
@@ -275,7 +275,7 @@ public class BoundaryRelationshipService {
             } else {
                 List<Map<String, Object>> children = (List<Map<String, Object>>) boundary.get("children");
                 if (children != null && !children.isEmpty()) {
-                    searchForVillageBoundaries(children, parentDetails, messages);
+                    searchForVillageBoundaries(children, parentDetails, messages,requestInfo);
                 }
 //                messages.add("Boundary '" + code + "' at level '" + boundaryType + "' has no children as 'village'. No data pushed.");
             }
@@ -289,24 +289,24 @@ public class BoundaryRelationshipService {
     private void updateParentDetails(String boundaryType, String code, Map<String, String> parentDetails) {
         switch (boundaryType.toLowerCase()) {
             case "zone":
-                parentDetails.put("Zone Code", code);
-                parentDetails.put("Zone Name", extractNameFromCode(code));
+                parentDetails.put("zoneCode", code);
+                parentDetails.put("zoneName", extractNameFromCode(code));
                 break;
             case "circle":
-                parentDetails.put("Circle Code", code);
-                parentDetails.put("Circle Name", extractNameFromCode(code));
+                parentDetails.put("circleCode", code);
+                parentDetails.put("circleName", extractNameFromCode(code));
                 break;
             case "division":
-                parentDetails.put("Division Code", code);
-                parentDetails.put("Division Name", extractNameFromCode(code));
+                parentDetails.put("divisionCode", code);
+                parentDetails.put("divisionName", extractNameFromCode(code));
                 break;
             case "sub division":
-                parentDetails.put("SubDivision Code", code);
-                parentDetails.put("SubDivision Name", extractNameFromCode(code));
+                parentDetails.put("subDivisionCode", code);
+                parentDetails.put("subDivisionName", extractNameFromCode(code));
                 break;
             case "section":
-                parentDetails.put("Section Code", code);
-                parentDetails.put("Section Name", extractNameFromCode(code));
+                parentDetails.put("sectionCode", code);
+                parentDetails.put("sectionName", extractNameFromCode(code));
                 break;
         }
     }
@@ -317,12 +317,10 @@ public class BoundaryRelationshipService {
         villageData.put("name", extractNameFromCode(code));
         villageData.put("address", extractNameFromCode(code));
         villageData.put("description", extractNameFromCode(code));
-        villageData.put("DDR Name", extractNameFromCode(code));
-        villageData.put("Scheme Code", code);
-        villageData.put("Scheme Name", extractNameFromCode(code));
+        villageData.put("schemeCode", code);
+        villageData.put("schemeName", extractNameFromCode(code));
 
         villageData.putAll(parentDetails);
-        villageData.put("OfficeTimings", "Mon - Fri: 9.00 AM - 6.00 PM");
 
         return villageData;
     }

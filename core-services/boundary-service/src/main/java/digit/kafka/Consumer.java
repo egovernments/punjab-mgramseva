@@ -64,14 +64,14 @@ public class Consumer {
 
             RestTemplate restTemplate = new RestTemplate();
             // Send POST request
-            // Map<String, Object> response = restTemplate.postForObject(url, mdmsRequest, Map.class);
+             Map<String, Object> response = restTemplate.postForObject(url, mdmsRequest, Map.class);
 
             // Handle response
-            // if (response != null && !response.isEmpty()) {
-            //     log.info("Successfully pushed data to external API: {}", response);
-            // } else {
-            //     log.info("Failed to push data to external API. Empty or null response.");
-            // }
+             if (response != null && !response.isEmpty()) {
+                 log.info("Successfully pushed data to external API: {}", response);
+             } else {
+                 log.info("Failed to push data to external API. Empty or null response.");
+             }
         } catch (Exception ex) {
             log.info("Error sending data to external API", ex);
         }
