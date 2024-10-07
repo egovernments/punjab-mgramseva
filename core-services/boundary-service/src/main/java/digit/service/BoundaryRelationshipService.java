@@ -270,6 +270,7 @@ public class BoundaryRelationshipService {
                 try {
                     ObjectMapper objectMapper = new ObjectMapper();
                     String requestInfoJson = objectMapper.writeValueAsString(requestInfo);
+                    log.info(requestInfoJson);
                     villageData.put("requestInfo", requestInfoJson);
                     producer.push(config.getCreateNewTenantTopic(), villageData);
                     messages.add("Village " + code + " pushed successfully.");
