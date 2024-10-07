@@ -1,5 +1,6 @@
 package digit.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import digit.config.ApplicationProperties;
 import digit.kafka.Producer;
 import digit.repository.BoundaryRelationshipRepository;
@@ -267,6 +268,9 @@ public class BoundaryRelationshipService {
             if ("village".equalsIgnoreCase(boundaryType)) {
                 Map<String, String> villageData = createVillageData(code, parentDetails);
                 try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String requestInfoJson = objectMapper.writeValueAsString(requestInfo);
+                    villageData.put("requestInfo", requestInfoJson);
                     producer.push(config.getCreateNewTenantTopic(), villageData);
                     messages.add("Village " + code + " pushed successfully.");
                 } catch (Exception e) {
