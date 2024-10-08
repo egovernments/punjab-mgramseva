@@ -60,14 +60,13 @@ public class BoundaryRelationshipController {
         return new ResponseEntity<>(boundaryRelationshipResponse, HttpStatus.ACCEPTED);
     }
 
-    @RequestMapping(value = "/_pushBoundary",method = RequestMethod.POST)
-    public ResponseEntity<PushBoundaryResponse> pushBoundary(@RequestBody RequestInfo requestInfo,@RequestParam String tenantId, @RequestParam String hierarchyType,
-                               @RequestParam boolean includeChildren)
-    {
-        List<String> message=boundaryRelationshipService.fetchBoundaryAndProcess(tenantId, hierarchyType, includeChildren,requestInfo);
-        PushBoundaryResponse pushBoundaryResponse=PushBoundaryResponse.builder().message(message).
-                responseInfo(ResponseInfoUtil.createResponseInfoFromRequestInfo(requestInfo, Boolean.TRUE)).build();
-        return new ResponseEntity<>(pushBoundaryResponse,HttpStatus.ACCEPTED);
+    @RequestMapping(value = "/_pushBoundary", method = RequestMethod.POST)
+    public ResponseEntity<PushBoundaryResponse> pushBoundary(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper, @RequestParam String tenantId, @RequestParam String hierarchyType,
+                                                             @RequestParam boolean includeChildren) {
+        List<String> message = boundaryRelationshipService.fetchBoundaryAndProcess(tenantId, hierarchyType, includeChildren, requestInfoWrapper.getRequestInfo());
+        PushBoundaryResponse pushBoundaryResponse = PushBoundaryResponse.builder().message(message).
+                responseInfo(ResponseInfoUtil.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), Boolean.TRUE)).build();
+        return new ResponseEntity<>(pushBoundaryResponse, HttpStatus.ACCEPTED);
     }
 
 }
