@@ -253,6 +253,7 @@ public class DemandService {
 						detail.setId(UUID.randomUUID().toString());
 						detail.setCollectionAmount(BigDecimal.ZERO);
 					}
+					auditDetail.setCreatedTime(demand.getAuditDetails().getCreatedTime());
 					detail.setAuditDetails(auditDetail);
 					detail.setDemandId(demandId);
 					detail.setTenantId(demand.getTenantId());
