@@ -362,7 +362,7 @@ public class BillService {
 
 			Bill bill = Bill.builder()
 				.taxAndPayments(new ArrayList<>(serviceCodeAndTaxAmountMap.values()))
-				.auditDetails(util.getAuditDetail(requestInfo))
+				.auditDetails(util.getAuditDetail(requestInfo,true))
 				.payerAddress(payer.getPermanentAddress())
 				.mobileNumber(payer.getMobileNumber())
 				.payerName(payer.getName())

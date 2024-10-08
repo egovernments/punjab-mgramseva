@@ -215,7 +215,7 @@ public class AmendmentValidator {
 		amendmentId = amendmentId.replace(Constants.CONSUMERCODE_REPLACE_STRING, amendment.getConsumerCode());
 		amendment.setAmendmentId(amendmentId); 
 		
-		amendment.setAuditDetails(util.getAuditDetail(requestInfo));
+		amendment.setAuditDetails(util.getAuditDetail(requestInfo,true));
 		amendment.getDemandDetails().forEach(detail -> {
 			detail.setId(UUID.randomUUID().toString());
 		});
@@ -286,7 +286,7 @@ public class AmendmentValidator {
 		 * enriching the update object
 		 */
 		amendmentUpdate.setAdditionalDetails(util.jsonMerge(amendments.get(0).getAdditionalDetails(), amendmentUpdate.getAdditionalDetails()));
-		amendmentUpdate.setAuditDetails(util.getAuditDetail(amendmentUpdateRequest.getRequestInfo()));
+		amendmentUpdate.setAuditDetails(util.getAuditDetail(amendmentUpdateRequest.getRequestInfo(),true));
 		return amendments.get(0);
 	}
 	

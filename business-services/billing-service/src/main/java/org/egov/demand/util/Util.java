@@ -112,13 +112,19 @@ public class Util {
 	 * @param requestInfo
 	 * @return
 	 */
-	public AuditDetails getAuditDetail(RequestInfo requestInfo) {
+	public AuditDetails getAuditDetail(RequestInfo requestInfo,Boolean isCreate) {
 
 		String userId = requestInfo.getUserInfo().getUuid();
 		Long currEpochDate = System.currentTimeMillis();
 
-		return AuditDetails.builder().createdBy(userId).createdTime(currEpochDate).lastModifiedBy(userId)
-				.lastModifiedTime(currEpochDate).build();
+		if(isCreate){
+			return AuditDetails.builder().createdBy(userId).createdTime(currEpochDate).lastModifiedBy(userId)
+					.lastModifiedTime(currEpochDate).build();
+		}
+		else{
+			return AuditDetails.builder().createdBy(userId).lastModifiedBy(userId)
+					.lastModifiedTime(currEpochDate).build();
+		}
 	}
 
 	public String getStringVal(Set<String> set) {
