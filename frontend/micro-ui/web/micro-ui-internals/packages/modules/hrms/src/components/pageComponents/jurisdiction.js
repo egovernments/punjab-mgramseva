@@ -87,7 +87,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   }, []);
 
   const uniqueDivisions = divisions?.reduce((unique, obj) => {
-    const isDuplicate = unique.some((item) => item.id === obj.id && item.name === obj.name);
+    const isDuplicate = unique.some((item) => item.id === obj.id && item.code === obj.code);
     if (!isDuplicate) {
       unique.push(obj);
     }
@@ -150,19 +150,20 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       }
       return res;
     });
+
     if (isEdit && STATE_ADMIN) {
-      let divisionData = [];
+      let divisionDataSet = new Set();
       if (isEdit && jurisdictionData.length > 0) {
-        jurisdictionData?.map((jurisdiction) => {
-          if (jurisdiction?.divisionBoundary && jurisdiction?.divisionBoundary?.length > 0 && divisionData.length === 0) {
-            divisionData.push(jurisdiction);
-          } else if (divisionData.length > 0) {
-            if (divisionData[divisionData.length - 1]?.division?.code !== jurisdiction?.division?.code) {
-              divisionData.push(jurisdiction);
+        jurisdictionData?.forEach((jurisdiction) => {
+          if (jurisdiction?.divisionBoundary && jurisdiction?.divisionBoundary?.length > 0) {
+            // If divisionData set doesn't already have this division, add it
+            if (!Array.from(divisionDataSet).some((item) => item.division?.code === jurisdiction?.division?.code)) {
+              divisionDataSet.add(jurisdiction);
             }
           }
         });
       }
+      let divisionData = Array.from(divisionDataSet);
 
       let finalData = [];
       divisionData &&
