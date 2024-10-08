@@ -46,7 +46,7 @@ public class Consumer {
                     .mdms(mdms)
                     .build();
 
-            log.info(mdmsRequest.toString());
+            log.info("MdmsRequest is "+mdmsRequest.toString());
 
             // Call the external API with the constructed MdmsRequest
             sendDataToExternalApi(mdmsRequest);
@@ -104,6 +104,8 @@ public class Consumer {
         try {
             // Construct the API URL
             String url = config.getMdmsHost() + config.getMdmsv2Endpoint() + "/tenant.tenants";
+            log.info("Url is "+url);
+
 
             RestTemplate restTemplate = new RestTemplate();
             // Send POST request
