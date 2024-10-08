@@ -286,7 +286,7 @@ public class AmendmentValidator {
 		 * enriching the update object
 		 */
 		amendmentUpdate.setAdditionalDetails(util.jsonMerge(amendments.get(0).getAdditionalDetails(), amendmentUpdate.getAdditionalDetails()));
-		amendmentUpdate.setAuditDetails(util.getAuditDetail(amendmentUpdateRequest.getRequestInfo(),true));
+		amendmentUpdate.setAuditDetails(util.getAuditDetail(amendmentUpdateRequest.getRequestInfo(),false));
 		return amendments.get(0);
 	}
 	
