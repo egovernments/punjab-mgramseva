@@ -456,7 +456,7 @@ public class BillServicev2 {
 				
 
 					BillV2 bill = BillV2.builder()
-						.auditDetails(util.getAuditDetail(requestInfo))
+						.auditDetails(util.getAuditDetail(requestInfo,true))
 						.payerAddress(payer.getPermanentAddress())
 						.mobileNumber(payer.getMobileNumber())
 						.billDate(System.currentTimeMillis())

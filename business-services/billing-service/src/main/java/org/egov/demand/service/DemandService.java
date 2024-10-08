@@ -144,7 +144,7 @@ public class DemandService {
 
 		RequestInfo requestInfo = demandRequest.getRequestInfo();
 		List<Demand> demands = demandRequest.getDemands();
-		AuditDetails auditDetail = util.getAuditDetail(requestInfo);
+		AuditDetails auditDetail = util.getAuditDetail(requestInfo,true);
 		
 		List<AmendmentUpdate> amendmentUpdates = consumeAmendmentIfExists(demands, auditDetail);
 		generateAndSetIdsForNewDemands(demands, auditDetail);
@@ -228,7 +228,7 @@ public class DemandService {
 
 		RequestInfo requestInfo = demandRequest.getRequestInfo();
 		List<Demand> demands = demandRequest.getDemands();
-		AuditDetails auditDetail = util.getAuditDetail(requestInfo);
+		AuditDetails auditDetail = util.getAuditDetail(requestInfo,false);
 
 		List<Demand> newDemands = new ArrayList<>();
 
