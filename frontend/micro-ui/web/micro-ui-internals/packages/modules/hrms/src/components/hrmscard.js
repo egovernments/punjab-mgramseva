@@ -41,6 +41,18 @@ const HRMSCard = () => {
             link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=tenant&masterName=tenants`,
             category: t("HR_EDIT_MASTER"),
           },
+          {
+            label: t("Boundary Management"),
+            link: `/${window?.contextPath}/employee/hrms/add-boundary`,
+            roles: ["STATE_ADMIN"],
+            category: t("Hierarchy"),
+          },
+          {
+            label: t("Create New Hierarchy"),
+            link: `/${window?.contextPath}/employee/hrms/create-new-hierarchy`,
+            roles: ["STATE_ADMIN"],
+            category: t("Hierarchy"),
+          },
         ]
       : [];
 
@@ -88,16 +100,17 @@ const HRMSCard = () => {
         category: t("SEARCH_USER_HEADER"),
       },
 
- {
-            label: t("HR_STATE_ REPORTS"),
-            link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=state`,
-            category: t("HR_DASHBOARD_HEADER"),
-          },
+      {
+        label: t("HR_STATE_ REPORTS"),
+        link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=state`,
+        category: t("HR_DASHBOARD_HEADER"),
+      },
       {
         label: t("HR_RATE_DASHBOARD"),
         link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=rate-master`,
         category: t("HR_DASHBOARD_HEADER"),
       },
+
       {
         label: t("HR_ROLLOUT_DASHBOARD"),
         link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=rollout`,
