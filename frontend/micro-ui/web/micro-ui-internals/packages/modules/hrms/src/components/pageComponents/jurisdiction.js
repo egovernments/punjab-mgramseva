@@ -87,7 +87,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   }, []);
 
   const uniqueDivisions = divisions?.reduce((unique, obj) => {
-    const isDuplicate = unique.some((item) => item.id === obj.id && item.name === obj.name);
+    const isDuplicate = unique.some((item) => item.id === obj.id && item.code === obj.code);
     if (!isDuplicate) {
       unique.push(obj);
     }
