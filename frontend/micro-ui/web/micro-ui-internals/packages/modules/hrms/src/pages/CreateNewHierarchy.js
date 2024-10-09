@@ -14,7 +14,7 @@ const BoundaryHierarchyTypeAdd = () => {
   const history = useHistory();
 
   const reqCriteriaBoundaryHierarchyTypeAdd = {
-    url: `/boundary-service/boundary-hierarchy-definition/_create`,
+    url: "/boundary-service/boundary-hierarchy-definition/_create",
     params: {},
     body: {},
     config: {
@@ -23,8 +23,6 @@ const BoundaryHierarchyTypeAdd = () => {
   };
 
   const mutation = Digit.Hooks.useCustomAPIMutationHook(reqCriteriaBoundaryHierarchyTypeAdd);
-
-  console.log("mutation", mutation);
 
   const generateDynamicParentType = (data) => {
     const dynamicParentType = {};

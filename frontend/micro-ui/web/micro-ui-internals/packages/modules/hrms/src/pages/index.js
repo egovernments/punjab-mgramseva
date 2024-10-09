@@ -5,6 +5,7 @@ import { Link, Switch, useLocation, useHistory } from "react-router-dom";
 import SearchUser from "./SearchUser";
 import Dashboard from "./Dashboard";
 import CreateNewHierarchy from "./CreateNewHierarchy";
+import CreateBoundaryRelationship from "./CreateBoundaryRelationship";
 
 // const {SixFtApart,Rotate360}=SVG;
 const EmployeeApp = ({ path, url, userType }) => {
@@ -65,7 +66,7 @@ const EmployeeApp = ({ path, url, userType }) => {
           <PrivateRoute path={`${path}/search-user`} component={() => <SearchUser />} />
           <PrivateRoute path={`${path}/dashboard`} component={() => <Dashboard />} />
           <PrivateRoute path={`${path}/create-new-hierarchy`} component={() => <CreateNewHierarchy />} />
-          {/* <PrivateRoute path={`${path}/add-boundary`} component={() => <AddBoundary />} /> */}
+          <PrivateRoute path={`${path}/create-boundary-relationship`} component={() => <CreateBoundaryRelationship />} />
         </div>
       </React.Fragment>
     </Switch>

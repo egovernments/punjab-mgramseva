@@ -42,13 +42,13 @@ const HRMSCard = () => {
             category: t("HR_EDIT_MASTER"),
           },
           {
-            label: t("Boundary Management"),
-            link: `/${window?.contextPath}/employee/hrms/add-boundary`,
+            label: t("CREATE_BOUNDARY_RELATIONSHIP"),
+            link: `/${window?.contextPath}/employee/hrms/create-boundary-relationship`,
             roles: ["STATE_ADMIN"],
             category: t("Hierarchy"),
           },
           {
-            label: t("Create New Hierarchy"),
+            label: t("CREATE_NEW_HIERARCHY"),
             link: `/${window?.contextPath}/employee/hrms/create-new-hierarchy`,
             roles: ["STATE_ADMIN"],
             category: t("Hierarchy"),
