@@ -6,7 +6,8 @@
     "packages/libraries",
     "example",
     "packages/react-components",
-    "packages/modules/*"
+    "packages/modules/*",
+    "packages/css"
   ],
   "author": "JaganKumar <jagan.kumar@egov.org.in>",
   "license": "MIT",
@@ -29,6 +30,7 @@
     "dev:core": "cd packages/modules/core && yarn start",
     "dev:example": "cd example && yarn start",
     "build": "run-p build:**",
+    "build:css": "cd packages/css && yarn build:prod",
     "build:libraries": "cd packages/libraries && yarn build",
     "build:components": "cd packages/react-components && yarn build",
     "build:pgr": "cd packages/modules/pgr && yarn build",
@@ -55,9 +57,9 @@
     "*.{js,css,md}": "prettier --write"
   },
   "dependencies": {
-    "lodash": "4.17.21",
-    "microbundle-crl": "0.13.11",
     "@egovernments/digit-ui-react-components": "^1.3.0",
+    "lodash": "4.17.21",
+    "microbundle-crl": "^0.13.11",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "6.15.8",
