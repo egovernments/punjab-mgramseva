@@ -72,6 +72,7 @@ module.exports = function (app) {
     "/muster-roll",
     "/individual",
     "/mdms-v2",
+    "/boundary-service",
   ].forEach((location) => app.use(location, createProxy));
   ["/pb-egov-assets"].forEach((location) => app.use(location, assetsProxy));
 };
