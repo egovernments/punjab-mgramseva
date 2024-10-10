@@ -1097,10 +1097,11 @@ public class DemandService {
 				if (WSCalculationConstant.TAX_APPLICABLE.contains(detail.getTaxHeadMasterCode())) {
 					waterChargeApplicable = waterChargeApplicable.add(detail.getTaxAmount()).subtract(detail.getCollectionAmount());
 				}
-				if (detail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY)) {
-					oldPenalty = oldPenalty.add(detail.getTaxAmount()).subtract(detail.getCollectionAmount());
-					waterChargeApplicable = waterChargeApplicable.add(oldPenalty);
-				}
+//				here we are adding penalty to water charges which is not req because we are not supposed to add penalty if penalty is already added
+//				if (detail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY)) {
+//					oldPenalty = oldPenalty.add(detail.getTaxAmount()).subtract(detail.getCollectionAmount());
+//					waterChargeApplicable = waterChargeApplicable.add(oldPenalty);
+//				}
 //				if (detail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_INTEREST)) {
 //					oldInterest = oldInterest.add(detail.getTaxAmount());
 //				}
