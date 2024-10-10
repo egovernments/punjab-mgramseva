@@ -98,14 +98,6 @@ config:
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "core-services/boundary-service/src/main/resources/db"
         image-name: "boundary-service-db"
-        
-  - name: "builds/mGramSeva/utilities/egov-bff"
-    build:
-      - work-dir: "utilities/boundary-bulk-bff"
-        image-name: "boundary-bulk-bff"
-      - work-dir: "utilities/boundary-bulk-bff/migration"
-        image-name: "boundary-bulk-bff-db"
-        
   - name: "builds/mGramSeva/core-services/user-otp"
     build:
       - work-dir: "core-services/user-otp"
