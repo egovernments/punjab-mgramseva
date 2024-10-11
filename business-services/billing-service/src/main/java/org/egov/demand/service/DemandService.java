@@ -228,7 +228,10 @@ public class DemandService {
 
 		RequestInfo requestInfo = demandRequest.getRequestInfo();
 		List<Demand> demands = demandRequest.getDemands();
+		AuditDetails currAuditDetails=demands.get(0).getAuditDetails();
 		AuditDetails auditDetail = util.getAuditDetail(requestInfo,false);
+		auditDetail.setCreatedTime(currAuditDetails.getCreatedTime());
+		auditDetail.setLastModifiedTime(currAuditDetails.getLastModifiedTime());
 
 		List<Demand> newDemands = new ArrayList<>();
 
@@ -253,7 +256,6 @@ public class DemandService {
 						detail.setId(UUID.randomUUID().toString());
 						detail.setCollectionAmount(BigDecimal.ZERO);
 					}
-					auditDetail.setCreatedTime(demand.getAuditDetails().getCreatedTime());
 					detail.setAuditDetails(auditDetail);
 					detail.setDemandId(demandId);
 					detail.setTenantId(demand.getTenantId());

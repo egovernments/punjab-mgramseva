@@ -122,7 +122,7 @@ public class Util {
 					.lastModifiedTime(currEpochDate).build();
 		}
 		else{
-			return AuditDetails.builder().createdBy(userId).lastModifiedBy(userId)
+			return AuditDetails.builder().lastModifiedBy(userId)
 					.lastModifiedTime(currEpochDate).build();
 		}
 	}
