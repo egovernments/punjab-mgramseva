@@ -236,6 +236,7 @@ public class WaterServiceImpl implements WaterService {
 		mDMSValidator.validateMISFields(waterConnectionRequest);
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, WCConstants.UPDATE_APPLICATION);
 		List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
+		AuditDetails auditDetails=waterConnection.get(0).getAuditDetails();
 		if(waterConnection != null && waterConnection.size() > 0) {
 			throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
 					"Duplicate Old connection number");
@@ -252,7 +253,7 @@ public class WaterServiceImpl implements WaterService {
 		String previousApplicationStatus = workflowService.getApplicationStatus(waterConnectionRequest.getRequestInfo(),
 				waterConnectionRequest.getWaterConnection().getApplicationNo(),
 				waterConnectionRequest.getWaterConnection().getTenantId(), config.getBusinessServiceValue());
-		enrichmentService.enrichUpdateWaterConnection(waterConnectionRequest);
+		enrichmentService.enrichUpdateWaterConnection(auditDetails, waterConnectionRequest);
 		actionValidator.validateUpdateRequest(waterConnectionRequest, businessService, previousApplicationStatus);
 		waterConnectionValidator.validateUpdate(waterConnectionRequest, searchResult, WCConstants.UPDATE_APPLICATION);
 		userService.updateUser(waterConnectionRequest, searchResult);
