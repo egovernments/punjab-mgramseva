@@ -326,6 +326,7 @@ public class WaterServiceImpl implements WaterService {
 	private List<WaterConnection> updateWaterConnectionForModifyFlow(WaterConnectionRequest waterConnectionRequest) {
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, WCConstants.MODIFY_CONNECTION);
 		List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
+		AuditDetails auditDetails=waterConnection.get(0).getAuditDetails();
 		if(waterConnection != null && waterConnection.size() > 0 && !waterConnectionRequest.getWaterConnection().getConnectionNo()
 				.equalsIgnoreCase(waterConnection.get(0).getConnectionNo())) {
 			throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
@@ -342,7 +343,7 @@ public class WaterServiceImpl implements WaterService {
 		String previousApplicationStatus = workflowService.getApplicationStatus(waterConnectionRequest.getRequestInfo(),
 				waterConnectionRequest.getWaterConnection().getApplicationNo(),
 				waterConnectionRequest.getWaterConnection().getTenantId(), config.getModifyWSBusinessServiceName());
-		enrichmentService.enrichUpdateWaterConnection(waterConnectionRequest);
+		enrichmentService.enrichUpdateWaterConnection(auditDetails, waterConnectionRequest);
 		actionValidator.validateUpdateRequest(waterConnectionRequest, businessService, previousApplicationStatus);
 		userService.updateUser(waterConnectionRequest, searchResult);
 		waterConnectionValidator.validateUpdate(waterConnectionRequest, searchResult, WCConstants.MODIFY_CONNECTION);
