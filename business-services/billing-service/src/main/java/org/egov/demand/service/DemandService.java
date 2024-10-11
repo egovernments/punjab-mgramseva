@@ -230,8 +230,10 @@ public class DemandService {
 		List<Demand> demands = demandRequest.getDemands();
 		AuditDetails currAuditDetails=demands.get(0).getAuditDetails();
 		AuditDetails auditDetail = util.getAuditDetail(requestInfo);
-		auditDetail.setCreatedTime(currAuditDetails.getCreatedTime());
-		auditDetail.setCreatedBy(currAuditDetails.getCreatedBy());
+		if (currAuditDetails != null) {
+			auditDetail.setCreatedTime(currAuditDetails.getCreatedTime());
+			auditDetail.setCreatedBy(currAuditDetails.getCreatedBy());
+		}
 
 		List<Demand> newDemands = new ArrayList<>();
 
