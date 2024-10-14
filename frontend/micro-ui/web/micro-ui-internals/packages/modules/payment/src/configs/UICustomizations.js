@@ -1,6 +1,7 @@
 import { Link, useHistory } from "react-router-dom";
 import _ from "lodash";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 function anonymizeHalfString(input) {
   // Initialize an empty string to store the anonymized output
@@ -136,6 +137,8 @@ export const UICustomizations = {
       }
     },
     populateReqCriteria: () => {
+      const { t } = useTranslation();
+
       const tenantId = Digit.ULBService.getCurrentTenantId();
       return {
         url: "/mdms-v2/v1/_search",

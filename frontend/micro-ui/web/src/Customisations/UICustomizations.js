@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import _ from "lodash";
+import { useTranslation } from "react-i18next";
 
 //create functions here based on module name set in mdms(eg->SearchProjectConfig)
 //how to call these -> Digit?.Customizations?.[masterName]?.[moduleName]
@@ -691,6 +692,8 @@ export const UICustomizations = {
       }
     },
     populateReqCriteria: () => {
+      const { t } = useTranslation();
+
       const tenantId = Digit.ULBService.getCurrentTenantId();
       return {
         url: "/mdms-v2/v1/_search",
