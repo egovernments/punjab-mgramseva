@@ -41,6 +41,7 @@ package org.egov.hrms.web.contract;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.egov.common.contract.response.ResponseInfo;
 
 import lombok.AllArgsConstructor;
@@ -56,6 +57,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class IdGenerationResponse {
 
+    @JsonProperty("ResponseInfo")
     private ResponseInfo responseInfo;
     
 	private List<IdResponse> idResponses;
