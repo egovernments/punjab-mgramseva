@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
-import sun.util.resources.cldr.chr.CalendarData_chr_US;
+
 
 /**
  * Description : IdGenerationService have methods related to the IdGeneration
@@ -91,7 +91,7 @@ public class IdGenerationService {
             idGenerationResponse.setIdResponses(idResponses);
         }
         idGenerationResponse.setResponseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfo, true));
-
+        log.info(idGenerationResponse.toString());
         return idGenerationResponse;
 
     }
