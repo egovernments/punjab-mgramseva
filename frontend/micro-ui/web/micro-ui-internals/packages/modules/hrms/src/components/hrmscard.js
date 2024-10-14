@@ -32,7 +32,8 @@ const HRMSCard = () => {
           },
         ]
       : [];
-
+  
+  // only for state admin
   const moduleForSomeSTATEUser =
     STATE_ADMIN && MDMS_ADMIN
       ? [
