@@ -50,7 +50,7 @@ const BoundaryHierarchyTypeAdd = () => {
       });
 
       if (!allLevelsValid) {
-        setShowToast({ label: `${t("HCM_LEVEL_IS_MANDATORY")}`, isError: true });
+        setShowToast({ label: `${t("HCM_LEVEL_IS_MANDATORY")}`, isWarning: true });
         closeToast();
         return;
       }
@@ -92,17 +92,17 @@ const BoundaryHierarchyTypeAdd = () => {
                 label = label + t(Digit.Utils.locale.getTransformedLocale(err?.code)) + ", ";
               }
             });
-            setShowToast({ label, error: true });
+            setShowToast({ label, isWarning: true });
             closeToast();
           },
           onSuccess: () => {
             setShowToast({ label: `${t("WBH_BOUNDARY_UPSERT_SUCCESS")}` });
             closeToast();
-            setConfig([...addBoundaryHierarchyConfig]); // Resetting form fields
+            setConfig([...addBoundaryHierarchyConfig]);
             setValue("hierarchyType", "");
             setValue("levelcards", null);
             setTimeout(() => {
-              history.push(`/${window?.contextPath}/employee/workbench/upload-boundary`);
+              history.push(`/${window?.contextPath}/employee`);
             }, 2000);
           },
         }
@@ -125,7 +125,15 @@ const BoundaryHierarchyTypeAdd = () => {
         headingStyle={{ marginBottom: "1rem" }}
         descriptionStyle={{ color: "#0B0C0C" }}
       ></FormComposerV2>
-      {showToast && <Toast label={showToast.label} error={showToast?.isError} isDleteBtn={true} onClose={() => setShowToast(null)}></Toast>}
+      {showToast && (
+        <Toast
+          warning={showToast.isWarning}
+          label={showToast.label}
+          isDleteBtn={"true"}
+          onClose={() => setShowToast(false)}
+          style={{ bottom: "8%" }}
+        />
+      )}{" "}
     </React.Fragment>
   );
 };

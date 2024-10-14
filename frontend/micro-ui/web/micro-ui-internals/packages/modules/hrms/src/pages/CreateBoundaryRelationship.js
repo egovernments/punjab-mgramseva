@@ -17,6 +17,7 @@ import { Toast } from "@egovernments/digit-ui-react-components";
 
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { Controller } from "react-hook-form";
 
 const CreateBoundaryRelationship = () => {
   const { t } = useTranslation();
@@ -26,6 +27,9 @@ const CreateBoundaryRelationship = () => {
   const [parent, setParent] = useState(null);
   const [boundaryEntry, setBoundaryEntry] = useState("");
   const stateId = Digit.ULBService.getStateId();
+
+  const [formData, setFormData] = useState(new Map());
+  const formDataRef = useRef(formData);
 
   const history = useHistory();
 
@@ -68,9 +72,12 @@ const CreateBoundaryRelationship = () => {
     url: "/boundary-service/boundary-relationships/_search",
     params: { tenantId: stateId, hierarchyType: null, includeChildren: true },
     body: {},
-    //   config: {
-    //     enabled: true,
-    //   },
+    config: {
+      select: (data) => {
+        const result = data?.TenantBoundary;
+        return result?.[0]?.boundary;
+      },
+    },
     changeQueryName: "relationshipData",
   });
 
@@ -89,6 +96,21 @@ const CreateBoundaryRelationship = () => {
     }
   }, [hierarchyType, level]);
 
+  useEffect(() => {
+    if (level && hierarchyType && hierarchyType.boundaryHierarchy) {
+      const newFormData = new Map();
+
+      for (let i = 0; i < hierarchyType.boundaryHierarchy.length; i++) {
+        const currentType = hierarchyType.boundaryHierarchy[i].boundaryType;
+        if (currentType === level.boundaryType) {
+          break;
+        }
+        newFormData.set(currentType, "");
+      }
+      setFormData(newFormData);
+    }
+  }, [hierarchyType, level]);
+
   const { data: hierarchyTypeData } = Digit.Hooks.useCustomAPIHook(reqCriteriaBoundaryHierarchySearch);
   const relation_mutation = Digit.Hooks.useCustomAPIMutationHook(reqCriteriaBoundaryRelationshipCreate);
   const entity_mutation = Digit.Hooks.useCustomAPIMutationHook(reqCriteriaBoundaryEntityCreate);
@@ -99,12 +121,15 @@ const CreateBoundaryRelationship = () => {
   console.log("level", level);
   console.log("boundaryEntry", boundaryEntry);
   console.log("parent", parent);
+  console.log("relationshipdata", JSON.stringify(relationshipData));
   console.log("relationshipdata", relationshipData);
+  console.log("formData", Array.from(formData));
 
   const handleHierarchyTypeChange = (selectedValue) => {
     setHierarchyType(selectedValue);
     setLevel(null);
     setParent(null);
+    setFormData({});
   };
 
   const handleLevelChange = (selectedValue) => {
@@ -200,6 +225,71 @@ const CreateBoundaryRelationship = () => {
     } catch {}
   };
 
+  const handleSelect = (boundaryType, selectedValue) => {
+    setFormData((prevFormData) => {
+      const updatedFormData = new Map(prevFormData);
+      updatedFormData.set(boundaryType, selectedValue);
+      formDataRef.current = updatedFormData;
+      return updatedFormData;
+    });
+
+    const hierarchyLevels = hierarchyType.boundaryHierarchy.map(({ boundaryType }) => boundaryType);
+    const boundaryIndex = hierarchyLevels.indexOf(boundaryType);
+    const levelIndex = hierarchyType.boundaryHierarchy.indexOf(level);
+
+    if (boundaryIndex === levelIndex - 1) {
+      const lastEntry = Array.from(formDataRef.current).pop();
+      console.log("LastEntry", lastEntry);
+      if (lastEntry) {
+        const [lastKey, lastValue] = lastEntry;
+        setParent(lastValue.code);
+      }
+    }
+    const currentBoundaryTypeIndex = hierarchyType.boundaryHierarchy.findIndex((h) => h.boundaryType === boundaryType);
+
+    const childBoundaryTypes = hierarchyType.boundaryHierarchy.slice(currentBoundaryTypeIndex + 1);
+
+    // setFormData((prevFormData) => {
+    //   const updatedFormData = new Map(prevFormData);
+    //   console.log("check1 passed");
+
+    //   // Clear all child boundaries
+
+    //   childBoundaryTypes.forEach((childBoundary) => {
+    //     console.log("childBoundary", childBoundary);
+    //     console.log("check2 passed");
+
+    //     updatedFormData.set(childBoundary, ""); // Set child boundaries to empty
+
+    //     console.log("check3 passed");
+    //   });
+
+    //   formDataRef.current = updatedFormData; // Update the ref with the new form data
+
+    //   return updatedFormData;
+    // });
+  };
+  const optionsForHierarchy = (boundaryType) => {
+    if (!relationshipData || !hierarchyType || !formData) return [];
+    const hierarchyLevels = hierarchyType.boundaryHierarchy.map(({ boundaryType }) => boundaryType);
+    const boundaryIndex = hierarchyLevels.indexOf(boundaryType);
+
+    console.log("boundaryIndex:", boundaryIndex, boundaryType);
+
+    if (boundaryIndex === -1) return [];
+    let currentOptions = relationshipData;
+
+    for (let i = 0; i < boundaryIndex; i++) {
+      const selectedCode = formData.get(hierarchyLevels[i])?.code;
+      console.log("selectedCode", selectedCode);
+      if (!selectedCode) return [];
+      const foundOption = currentOptions.find((option) => option?.code === selectedCode);
+      console.log("foundOption", foundOption);
+      if (!foundOption) return [];
+      currentOptions = foundOption?.children || [];
+    }
+    return currentOptions;
+  };
   const closeToast = () => {
     setTimeout(() => {
       setShowToast(null);
@@ -224,6 +314,22 @@ const CreateBoundaryRelationship = () => {
             optionKey={"boundaryType"}
           />
         </LabelFieldPair>
+
+        {Array.from(formData).map(([boundaryType, value], index) => (
+          <LabelFieldPair key={index} style={{ alignItems: "flex-start", paddingLeft: "1rem", marginBottom: "1.5rem" }}>
+            <CardLabel style={{ marginBottom: "0.4rem", fontWeight: "700" }}>{t(`MGRAMSEVA_HIERARCHY_${boundaryType?.toUpperCase()}`)} *</CardLabel>
+            <Dropdown
+              className="form-field"
+              option={optionsForHierarchy(boundaryType)}
+              select={(e) => {
+                handleSelect(boundaryType, e); // Call handleSelect to update formData
+              }}
+              selected={formData.get(boundaryType)}
+              optionKey={"code"}
+            />
+          </LabelFieldPair>
+        ))}
+
         {level && (
           <LabelFieldPair style={{ alignItems: "flex-start", paddingLeft: "1rem" }}>
             <CardLabel style={{ marginBottom: "0.4rem", fontWeight: "700" }}>
@@ -232,18 +338,8 @@ const CreateBoundaryRelationship = () => {
             <TextInput onChange={(e) => setBoundaryEntry(e.target.value)} value={boundaryEntry} />
           </LabelFieldPair>
         )}
-
-        {hierarchyType && level && hierarchyType?.boundaryHierarchy?.[0] !== level && (
-          <LabelFieldPair style={{ alignItems: "flex-start", paddingLeft: "1rem", marginBottom: "1.5rem" }}>
-            <CardLabel style={{ marginBottom: "0.4rem", fontWeight: "700" }}>{t(`MGRAMSEVA_HIERARCHY_PARENT`)} *</CardLabel>
-            <Dropdown
-              className="form-field"
-              selected={parent}
-              //   option={hierarchyOptions} selected={selected} select={(value) => select(value, key)} optionKey={optionKey}
-            />
-          </LabelFieldPair>
-        )}
       </Card>
+
       <ActionBar>
         <SubmitBar
           label={t("MGRAMSEVA_BOUNDARY_UPLOAD")}
