@@ -32,13 +32,19 @@ const HRMSCard = () => {
           },
         ]
       : [];
-
+  
+  // only for state admin
   const moduleForSomeSTATEUser =
     STATE_ADMIN && MDMS_ADMIN
       ? [
           {
             label: t("WORK_BENCH_URL_VILLAGE_MASTER_DATA"),
             link: `${window?.location?.origin}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=tenant&masterName=tenants`,
+            category: t("HR_EDIT_MASTER"),
+          },
+          {
+            label: t("WORK_BENCH_URL_LOCALISATION"),
+            link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
             category: t("HR_EDIT_MASTER"),
           },
         ]
@@ -88,11 +94,11 @@ const HRMSCard = () => {
         category: t("SEARCH_USER_HEADER"),
       },
 
- {
-            label: t("HR_STATE_ REPORTS"),
-            link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=state`,
-            category: t("HR_DASHBOARD_HEADER"),
-          },
+      {
+        label: t("HR_STATE_ REPORTS"),
+        link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=state`,
+        category: t("HR_DASHBOARD_HEADER"),
+      },
       {
         label: t("HR_RATE_DASHBOARD"),
         link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=rate-master`,
