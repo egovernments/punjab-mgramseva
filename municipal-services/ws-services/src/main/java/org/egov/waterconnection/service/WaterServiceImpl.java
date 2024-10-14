@@ -240,7 +240,7 @@ public class WaterServiceImpl implements WaterService {
 			throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
 					"Duplicate Old connection number");
 		}
-
+		AuditDetails auditDetails=waterConnection.get(0).getAuditDetails();
 		mDMSValidator.validateMasterData(waterConnectionRequest, WCConstants.UPDATE_APPLICATION);
 		Property property = validateProperty.getOrValidateProperty(waterConnectionRequest);
 		validateProperty.validatePropertyFields(property, waterConnectionRequest.getRequestInfo());
@@ -252,7 +252,7 @@ public class WaterServiceImpl implements WaterService {
 		String previousApplicationStatus = workflowService.getApplicationStatus(waterConnectionRequest.getRequestInfo(),
 				waterConnectionRequest.getWaterConnection().getApplicationNo(),
 				waterConnectionRequest.getWaterConnection().getTenantId(), config.getBusinessServiceValue());
-		enrichmentService.enrichUpdateWaterConnection(waterConnectionRequest);
+		enrichmentService.enrichUpdateWaterConnection(auditDetails, waterConnectionRequest);
 		actionValidator.validateUpdateRequest(waterConnectionRequest, businessService, previousApplicationStatus);
 		waterConnectionValidator.validateUpdate(waterConnectionRequest, searchResult, WCConstants.UPDATE_APPLICATION);
 		userService.updateUser(waterConnectionRequest, searchResult);
@@ -331,6 +331,7 @@ public class WaterServiceImpl implements WaterService {
 			throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
 					"Duplicate Old connection number");
 		}
+		AuditDetails auditDetails=waterConnection.get(0).getAuditDetails();
 		mDMSValidator.validateMasterData(waterConnectionRequest, WCConstants.MODIFY_CONNECTION);
 		BusinessService businessService = workflowService.getBusinessService(
 				waterConnectionRequest.getWaterConnection().getTenantId(), waterConnectionRequest.getRequestInfo(),
@@ -342,7 +343,7 @@ public class WaterServiceImpl implements WaterService {
 		String previousApplicationStatus = workflowService.getApplicationStatus(waterConnectionRequest.getRequestInfo(),
 				waterConnectionRequest.getWaterConnection().getApplicationNo(),
 				waterConnectionRequest.getWaterConnection().getTenantId(), config.getModifyWSBusinessServiceName());
-		enrichmentService.enrichUpdateWaterConnection(waterConnectionRequest);
+		enrichmentService.enrichUpdateWaterConnection(auditDetails, waterConnectionRequest);
 		actionValidator.validateUpdateRequest(waterConnectionRequest, businessService, previousApplicationStatus);
 		userService.updateUser(waterConnectionRequest, searchResult);
 		waterConnectionValidator.validateUpdate(waterConnectionRequest, searchResult, WCConstants.MODIFY_CONNECTION);
