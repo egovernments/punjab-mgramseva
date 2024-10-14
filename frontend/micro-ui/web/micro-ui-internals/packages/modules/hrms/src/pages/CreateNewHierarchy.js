@@ -22,7 +22,7 @@ const BoundaryHierarchyTypeAdd = () => {
     },
   };
 
-  const mutation = Digit.Hooks.useCustomAPIMutationHook(reqCriteriaBoundaryHierarchyTypeAdd);
+  const hierarchy_mutation = Digit.Hooks.useCustomAPIMutationHook(reqCriteriaBoundaryHierarchyTypeAdd);
 
   const generateDynamicParentType = (data) => {
     const dynamicParentType = {};
@@ -50,7 +50,7 @@ const BoundaryHierarchyTypeAdd = () => {
       });
 
       if (!allLevelsValid) {
-        setShowToast({ label: `${t("HCM_LEVEL_IS_MANDATORY")}`, isWarning: true });
+        setShowToast({ label: `${t("MGRAMSEVA_LEVEL_IS_MANDATORY")}`, isWarning: true });
         closeToast();
         return;
       }
@@ -71,7 +71,7 @@ const BoundaryHierarchyTypeAdd = () => {
         })
         .filter(Boolean);
 
-      await mutation.mutate(
+      await hierarchy_mutation.mutate(
         {
           params: {},
           body: {
@@ -99,8 +99,8 @@ const BoundaryHierarchyTypeAdd = () => {
             setShowToast({ label: `${t("WBH_BOUNDARY_UPSERT_SUCCESS")}` });
             closeToast();
             setConfig([...addBoundaryHierarchyConfig]);
-            setValue("hierarchyType", "");
-            setValue("levelcards", null);
+            // setValue("hierarchyType", "");
+            // setValue("levelcards", null);
             setTimeout(() => {
               history.push(`/${window?.contextPath}/employee`);
             }, 2000);

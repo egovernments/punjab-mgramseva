@@ -91,8 +91,6 @@ const CreateBoundaryRelationship = () => {
         },
         changeQueryName: prevState.changeQueryName + "a",
       }));
-
-      console.log("reqss", reqCriteriaBoundaryRelationshipSearch);
     }
   }, [hierarchyType, level]);
 
@@ -115,15 +113,6 @@ const CreateBoundaryRelationship = () => {
   const relation_mutation = Digit.Hooks.useCustomAPIMutationHook(reqCriteriaBoundaryRelationshipCreate);
   const entity_mutation = Digit.Hooks.useCustomAPIMutationHook(reqCriteriaBoundaryEntityCreate);
   const { data: relationshipData, error, isLoading } = Digit.Hooks.useCustomAPIHook(reqCriteriaBoundaryRelationshipSearch);
-
-  console.log("hierarchyData", hierarchyTypeData);
-  console.log("hierarchyType", hierarchyType);
-  console.log("level", level);
-  console.log("boundaryEntry", boundaryEntry);
-  console.log("parent", parent);
-  console.log("relationshipdata", JSON.stringify(relationshipData));
-  console.log("relationshipdata", relationshipData);
-  console.log("formData", Array.from(formData));
 
   const handleHierarchyTypeChange = (selectedValue) => {
     setHierarchyType(selectedValue);
@@ -239,7 +228,6 @@ const CreateBoundaryRelationship = () => {
 
     if (boundaryIndex === levelIndex - 1) {
       const lastEntry = Array.from(formDataRef.current).pop();
-      console.log("LastEntry", lastEntry);
       if (lastEntry) {
         const [lastKey, lastValue] = lastEntry;
         setParent(lastValue.code);
@@ -247,44 +235,32 @@ const CreateBoundaryRelationship = () => {
     }
     const currentBoundaryTypeIndex = hierarchyType.boundaryHierarchy.findIndex((h) => h.boundaryType === boundaryType);
 
-    const childBoundaryTypes = hierarchyType.boundaryHierarchy.slice(currentBoundaryTypeIndex + 1);
+    const childBoundaryTypes = hierarchyType.boundaryHierarchy.slice(currentBoundaryTypeIndex + 1, levelIndex);
 
-    // setFormData((prevFormData) => {
-    //   const updatedFormData = new Map(prevFormData);
-    //   console.log("check1 passed");
+    setFormData((prevFormData) => {
+      const updatedFormData = new Map(prevFormData);
+      childBoundaryTypes.forEach((childBoundary) => {
+        updatedFormData.set(childBoundary.boundaryType, "");
+      });
 
-    //   // Clear all child boundaries
+      formDataRef.current = updatedFormData;
 
-    //   childBoundaryTypes.forEach((childBoundary) => {
-    //     console.log("childBoundary", childBoundary);
-    //     console.log("check2 passed");
-
-    //     updatedFormData.set(childBoundary, ""); // Set child boundaries to empty
-
-    //     console.log("check3 passed");
-    //   });
-
-    //   formDataRef.current = updatedFormData; // Update the ref with the new form data
-
-    //   return updatedFormData;
-    // });
+      return updatedFormData;
+    });
   };
+
   const optionsForHierarchy = (boundaryType) => {
     if (!relationshipData || !hierarchyType || !formData) return [];
     const hierarchyLevels = hierarchyType.boundaryHierarchy.map(({ boundaryType }) => boundaryType);
     const boundaryIndex = hierarchyLevels.indexOf(boundaryType);
-
-    console.log("boundaryIndex:", boundaryIndex, boundaryType);
 
     if (boundaryIndex === -1) return [];
     let currentOptions = relationshipData;
 
     for (let i = 0; i < boundaryIndex; i++) {
       const selectedCode = formData.get(hierarchyLevels[i])?.code;
-      console.log("selectedCode", selectedCode);
       if (!selectedCode) return [];
       const foundOption = currentOptions.find((option) => option?.code === selectedCode);
-      console.log("foundOption", foundOption);
       if (!foundOption) return [];
       currentOptions = foundOption?.children || [];
     }

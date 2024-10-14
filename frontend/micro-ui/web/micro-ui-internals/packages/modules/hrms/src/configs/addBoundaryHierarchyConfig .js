@@ -9,6 +9,7 @@ export const addBoundaryHierarchyConfig = [
         populators: {
           name: "hierarchyType",
           customStyle: { alignItems: "baseline" },
+          required: true,
         },
       },
       {
@@ -18,9 +19,6 @@ export const addBoundaryHierarchyConfig = [
         component: "LevelCards",
         withoutLabel: true,
         disable: false,
-        customProps: {
-          module: "HCM",
-        },
         populators: {
           name: "levelcards",
           required: true,
