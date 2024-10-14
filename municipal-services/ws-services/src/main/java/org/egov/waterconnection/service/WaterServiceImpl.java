@@ -343,7 +343,9 @@ public class WaterServiceImpl implements WaterService {
 		String previousApplicationStatus = workflowService.getApplicationStatus(waterConnectionRequest.getRequestInfo(),
 				waterConnectionRequest.getWaterConnection().getApplicationNo(),
 				waterConnectionRequest.getWaterConnection().getTenantId(), config.getModifyWSBusinessServiceName());
-		enrichmentService.enrichUpdateWaterConnection(auditDetails, waterConnectionRequest);
+		if (auditDetails != null) {
+			enrichmentService.enrichUpdateWaterConnection(auditDetails, waterConnectionRequest);
+		}
 		actionValidator.validateUpdateRequest(waterConnectionRequest, businessService, previousApplicationStatus);
 		userService.updateUser(waterConnectionRequest, searchResult);
 		waterConnectionValidator.validateUpdate(waterConnectionRequest, searchResult, WCConstants.MODIFY_CONNECTION);
