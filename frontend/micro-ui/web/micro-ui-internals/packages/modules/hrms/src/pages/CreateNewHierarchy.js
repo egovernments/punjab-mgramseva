@@ -50,7 +50,7 @@ const BoundaryHierarchyTypeAdd = () => {
       });
 
       if (!allLevelsValid) {
-        setShowToast({ label: `${t("MGRAMSEVA_LEVEL_IS_MANDATORY")}`, isWarning: true });
+        setShowToast({ label: `${t("MGRAMSEVA_LEVEL_IS_MANDATORY")}`, isError: true });
         closeToast();
         return;
       }
@@ -92,7 +92,7 @@ const BoundaryHierarchyTypeAdd = () => {
                 label = label + t(Digit.Utils.locale.getTransformedLocale(err?.code)) + ", ";
               }
             });
-            setShowToast({ label, isWarning: true });
+            setShowToast({ label, isError: true });
             closeToast();
           },
           onSuccess: () => {
@@ -126,13 +126,7 @@ const BoundaryHierarchyTypeAdd = () => {
         descriptionStyle={{ color: "#0B0C0C" }}
       ></FormComposerV2>
       {showToast && (
-        <Toast
-          warning={showToast.isWarning}
-          label={showToast.label}
-          isDleteBtn={"true"}
-          onClose={() => setShowToast(false)}
-          style={{ bottom: "8%" }}
-        />
+        <Toast error={showToast.isError} label={showToast.label} isDleteBtn={"true"} onClose={() => setShowToast(false)} style={{ bottom: "8%" }} />
       )}{" "}
     </React.Fragment>
   );
