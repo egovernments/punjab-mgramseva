@@ -43,6 +43,11 @@ const HRMSCard = () => {
             category: t("HR_EDIT_MASTER"),
           },
           {
+            label: t("WORK_BENCH_URL_LOCALISATION"),
+            link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
+            category: t("HR_EDIT_MASTER"),
+          },
+          {
             label: t("CREATE_BOUNDARY_RELATIONSHIP"),
             link: `/${window?.contextPath}/employee/hrms/create-boundary-relationship`,
             roles: ["STATE_ADMIN"],
@@ -53,9 +58,6 @@ const HRMSCard = () => {
             link: `/${window?.contextPath}/employee/hrms/create-new-hierarchy`,
             roles: ["STATE_ADMIN"],
             category: t("Hierarchy"),
-            label: t("WORK_BENCH_URL_LOCALISATION"),
-            link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
-            category: t("HR_EDIT_MASTER"),
           },
         ]
       : [];
