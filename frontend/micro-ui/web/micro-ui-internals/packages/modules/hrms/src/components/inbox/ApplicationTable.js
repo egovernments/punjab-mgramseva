@@ -15,6 +15,7 @@ const ApplicationTable = ({
   // onSort,
   sortParams,
   disableSort,
+  isPaginationRequired,
 }) => (
   <Table
     t={t}
@@ -31,6 +32,7 @@ const ApplicationTable = ({
     sortParams={sortParams}
     disableSort={disableSort}
     autoSort={true}
+    isPaginationRequired={isPaginationRequired}
   />
 );
 
