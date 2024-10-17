@@ -229,6 +229,14 @@ public class DemandService {
 		RequestInfo requestInfo = demandRequest.getRequestInfo();
 		List<Demand> demands = demandRequest.getDemands();
 		AuditDetails auditDetail = util.getAuditDetail(requestInfo);
+		for (Demand demand : demands) {
+			AuditDetails currAuditDetails = demand.getAuditDetails();
+			if (currAuditDetails != null) {
+				auditDetail.setCreatedTime(currAuditDetails.getCreatedTime());
+				auditDetail.setCreatedBy(currAuditDetails.getCreatedBy());
+			}
+			demand.setAuditDetails(auditDetail);
+		}
 
 		List<Demand> newDemands = new ArrayList<>();
 
