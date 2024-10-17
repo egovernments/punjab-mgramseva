@@ -98,7 +98,7 @@ const BoundaryHierarchyTypeAdd = () => {
           onSuccess: () => {
             setShowToast({ label: `${t("WBH_BOUNDARY_UPSERT_SUCCESS")}` });
             closeToast();
-            setConfig([...addBoundaryHierarchyConfig]);
+            // setConfig([...addBoundaryHierarchyConfig]);
             // setValue("hierarchyType", "");
             // setValue("levelcards", null);
             setTimeout(() => {

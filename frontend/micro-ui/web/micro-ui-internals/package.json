@@ -54,7 +54,7 @@
     "*.{js,css,md}": "prettier --write"
   },
   "dependencies": {
-"@egovernments/digit-ui-components": "0.0.2-beta.43",
+"@egovernments/digit-ui-components": "0.0.2-beta.47",
 "@egovernments/digit-ui-react-components": "1.8.2-beta.13",
 
     "lodash": "4.17.21",
