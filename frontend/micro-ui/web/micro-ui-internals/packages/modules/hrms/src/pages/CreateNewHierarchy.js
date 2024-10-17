@@ -45,15 +45,12 @@ const BoundaryHierarchyTypeAdd = () => {
 
   const handleFormSubmit = async (formData, setValue) => {
     try {
-      const allLevelsValid = formData.levelcards.every((levelCard) => {
-        return levelCard.level.trim() !== "";
-      });
-
-      if (!allLevelsValid) {
-        setShowToast({ label: `${t("MGRAMSEVA_LEVEL_IS_MANDATORY")}`, isWarning: true });
+      if (!formData.levelcards || formData.levelcards.some((card) => card.level.trim() === "")) {
+        setShowToast({ label: `${t("MGRAMSEVA_ALL_LEVELS_MUST_BE_FILLED")}`, isError: true });
         closeToast();
         return;
       }
+
       const parentTypeMapping = generateDynamicParentType(formData);
 
       const boundaryHierarchy = formData.levelcards
@@ -92,7 +89,7 @@ const BoundaryHierarchyTypeAdd = () => {
                 label = label + t(Digit.Utils.locale.getTransformedLocale(err?.code)) + ", ";
               }
             });
-            setShowToast({ label, isWarning: true });
+            setShowToast({ label, isError: true });
             closeToast();
           },
           onSuccess: () => {
@@ -102,7 +99,7 @@ const BoundaryHierarchyTypeAdd = () => {
             // setValue("hierarchyType", "");
             // setValue("levelcards", null);
             setTimeout(() => {
-              history.push(`/${window?.contextPath}/employee`);
+              history.replace(`/${window?.contextPath}/employee/hrms/create-boundary-relationship`);
             }, 2000);
           },
         }
@@ -126,13 +123,7 @@ const BoundaryHierarchyTypeAdd = () => {
         descriptionStyle={{ color: "#0B0C0C" }}
       ></FormComposerV2>
       {showToast && (
-        <Toast
-          warning={showToast.isWarning}
-          label={showToast.label}
-          isDleteBtn={"true"}
-          onClose={() => setShowToast(false)}
-          style={{ bottom: "8%" }}
-        />
+        <Toast error={showToast.isError} label={showToast.label} isDleteBtn={"true"} onClose={() => setShowToast(false)} style={{ bottom: "8%" }} />
       )}{" "}
     </React.Fragment>
   );
