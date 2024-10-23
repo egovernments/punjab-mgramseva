@@ -478,7 +478,7 @@ const CreateBoundaryRelationship = () => {
                 className={"boundaries-pop-module"}
                 type={"default"}
                 subheading={t(`MGRAMSEVA_HIERARCHY_${level?.boundaryType?.toUpperCase()}`)}
-                onOverlayClick={closePopup}
+                // onOverlayClick={closePopup}
                 onClose={closePopup}
                 footerChildren={[
                   <Button
