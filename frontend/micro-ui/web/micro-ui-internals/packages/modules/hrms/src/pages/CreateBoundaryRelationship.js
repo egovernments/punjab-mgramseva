@@ -19,6 +19,11 @@ const CreateBoundaryRelationship = () => {
   const [refetchTrigger, setRefetchTrigger] = useState(0);
   const [paginatedData, setPaginatedData] = useState([]);
 
+  const closePopup = () => {
+    setShowPopUp(false);
+    setBoundaryEntry("");
+  };
+
   const GetCell = (value) => <span className="cell-text">{t(value)}</span>;
 
   const [searchParams, setSearchParams] = useState({
@@ -175,16 +180,14 @@ const CreateBoundaryRelationship = () => {
             });
             setShowToast({ label, isError: true });
             closeToast();
-            setShowPopUp(false);
+            closePopup();
             onFilterChange = { handleFilterChange };
-            setBoundaryEntry("");
           },
           onSuccess: () => {
             setShowToast({ label: `${t("WBH_BOUNDARY_UPSERT_SUCCESS")}` });
             closeToast();
-            setShowPopUp(false);
+            closePopup();
             setRefetchTrigger((prev) => prev + 1);
-            setBoundaryEntry("");
           },
         }
       );
@@ -230,8 +233,7 @@ const CreateBoundaryRelationship = () => {
             });
             setShowToast({ label, isError: true });
             closeToast();
-            setShowPopUp(false);
-            setBoundaryEntry("");
+            closePopup();
           },
           onSuccess: () => {
             createRelationship();
@@ -375,6 +377,8 @@ const CreateBoundaryRelationship = () => {
   };
 
   console.log(searchParams, "serachParams");
+  console.log("showpopup", showPopUp);
+
   let result;
   if (getLevelArray()?.length === 0) {
     result = (
@@ -474,14 +478,8 @@ const CreateBoundaryRelationship = () => {
                 className={"boundaries-pop-module"}
                 type={"default"}
                 subheading={t(`MGRAMSEVA_HIERARCHY_${level?.boundaryType?.toUpperCase()}`)}
-                onOverlayClick={() => {
-                  setShowPopUp(false);
-                  setBoundaryEntry("");
-                }}
-                onClose={() => {
-                  setShowPopUp(false);
-                  setBoundaryEntry("");
-                }}
+                onOverlayClick={closePopup}
+                onClose={closePopup}
                 footerChildren={[
                   <Button
                     type={"button"}
@@ -489,10 +487,7 @@ const CreateBoundaryRelationship = () => {
                     variation={"secondary"}
                     label={t("CLOSE")}
                     textStyles={{ color: "#c84c0e", width: "unset" }}
-                    onClick={() => {
-                      setShowPopUp(false);
-                      setBoundaryEntry("");
-                    }}
+                    onClick={closePopup}
                   />,
                   <Button
                     type={"button"}
@@ -510,7 +505,6 @@ const CreateBoundaryRelationship = () => {
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <TextInput
                     onChange={(e) => {
-                      e.stopPropagation();
                       setBoundaryEntry(e.target.value);
                     }}
                     value={boundaryEntry}
