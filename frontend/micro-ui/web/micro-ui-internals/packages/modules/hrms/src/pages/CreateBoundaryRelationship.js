@@ -476,9 +476,11 @@ const CreateBoundaryRelationship = () => {
                 subheading={t(`MGRAMSEVA_HIERARCHY_${level?.boundaryType?.toUpperCase()}`)}
                 onOverlayClick={() => {
                   setShowPopUp(false);
+                  setBoundaryEntry("");
                 }}
                 onClose={() => {
                   setShowPopUp(false);
+                  setBoundaryEntry("");
                 }}
                 footerChildren={[
                   <Button
@@ -489,6 +491,7 @@ const CreateBoundaryRelationship = () => {
                     textStyles={{ color: "#c84c0e", width: "unset" }}
                     onClick={() => {
                       setShowPopUp(false);
+                      setBoundaryEntry("");
                     }}
                   />,
                   <Button
@@ -505,7 +508,13 @@ const CreateBoundaryRelationship = () => {
                 sortFooterChildren={true}
               >
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <TextInput onChange={(e) => setBoundaryEntry(e.target.value)} value={boundaryEntry} />
+                  <TextInput
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      setBoundaryEntry(e.target.value);
+                    }}
+                    value={boundaryEntry}
+                  />
                 </div>
               </PopUp>
             )}
