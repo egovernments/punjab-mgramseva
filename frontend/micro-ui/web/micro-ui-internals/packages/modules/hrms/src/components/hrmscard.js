@@ -32,7 +32,7 @@ const HRMSCard = () => {
           },
         ]
       : [];
-  
+
   // only for state admin
   const moduleForSomeSTATEUser =
     STATE_ADMIN && MDMS_ADMIN
@@ -46,6 +46,18 @@ const HRMSCard = () => {
             label: t("WORK_BENCH_URL_LOCALISATION"),
             link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
             category: t("HR_EDIT_MASTER"),
+          },
+          {
+            label: t("CREATE_BOUNDARY_RELATIONSHIP"),
+            link: `/${window?.contextPath}/employee/hrms/create-boundary-relationship`,
+            roles: ["STATE_ADMIN"],
+            category: t("Hierarchy"),
+          },
+          {
+            label: t("CREATE_NEW_HIERARCHY"),
+            link: `/${window?.contextPath}/employee/hrms/create-new-hierarchy`,
+            roles: ["STATE_ADMIN"],
+            category: t("Hierarchy"),
           },
         ]
       : [];
@@ -104,6 +116,7 @@ const HRMSCard = () => {
         link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=rate-master`,
         category: t("HR_DASHBOARD_HEADER"),
       },
+
       {
         label: t("HR_ROLLOUT_DASHBOARD"),
         link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=rollout`,
