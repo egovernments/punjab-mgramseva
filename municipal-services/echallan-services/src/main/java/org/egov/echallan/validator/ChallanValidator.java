@@ -91,7 +91,7 @@ public class ChallanValidator {
 		 */
 
 		if (!currentTaxHeadCodes.isEmpty() && !requiredTaxHeadCodes.isEmpty()) {
-			if (!currentTaxHeadCodes.containsAll(requiredTaxHeadCodes))
+			if (!(currentTaxHeadCodes.stream().anyMatch(requiredTaxHeadCodes::contains)))
 				errorMap.put("INVALID_TAXHEAD_CODE_DETAILS",
 						"Mandatory taxhead codes details are not present in request for provided business service");
 		} else
