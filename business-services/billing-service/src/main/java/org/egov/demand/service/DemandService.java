@@ -271,7 +271,6 @@ public class DemandService {
 						updateAuditDetail.setCreatedTime(demandDetailAuditDetail.getCreatedTime());
 						updateAuditDetail.setCreatedBy(demandDetailAuditDetail.getCreatedBy());
 					}
-
 					detail.setAuditDetails(updateAuditDetail);
 					detail.setDemandId(demandId);
 					detail.setTenantId(demand.getTenantId());
