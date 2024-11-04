@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { TextInput, Card, CardLabel, LabelFieldPair, Header, Dropdown, Toast } from "@egovernments/digit-ui-react-components";
+import { Card, CardLabel, LabelFieldPair, Header, Dropdown, Toast } from "@egovernments/digit-ui-react-components";
 
-import { PopUp, Button } from "@egovernments/digit-ui-components";
+import { PopUp, Button, TextInput, FieldV1 } from "@egovernments/digit-ui-components";
 
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
@@ -478,7 +478,6 @@ const CreateBoundaryRelationship = () => {
                 className={"boundaries-pop-module"}
                 type={"default"}
                 subheading={t(`MGRAMSEVA_HIERARCHY_${level?.boundaryType?.toUpperCase()}`)}
-                // onOverlayClick={closePopup}
                 onClose={closePopup}
                 footerChildren={[
                   <Button
@@ -504,6 +503,7 @@ const CreateBoundaryRelationship = () => {
               >
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <TextInput
+                    maxlength="64"
                     onChange={(e) => {
                       setBoundaryEntry(e.target.value);
                     }}

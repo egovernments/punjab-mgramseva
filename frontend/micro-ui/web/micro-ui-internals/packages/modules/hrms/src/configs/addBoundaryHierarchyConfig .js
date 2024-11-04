@@ -10,6 +10,9 @@ export const addBoundaryHierarchyConfig = [
           name: "hierarchyType",
           customStyle: { alignItems: "baseline" },
           required: true,
+          validation: {
+            maxlength: 64,
+          },
         },
       },
       {
