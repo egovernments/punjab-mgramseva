@@ -21,6 +21,8 @@ import CreateEmployee from "./pages/createEmployee";
 import EditEmployee from "./pages/EditEmployee/index";
 import Details from "./pages/EmployeeDetails";
 import Inbox from "./pages/Inbox";
+import LevelCards from "./components/LevelCards";
+
 import Response from "./pages/Response";
 
 export const HRMSModule = ({ stateCode, userType, tenants }) => {
@@ -59,6 +61,7 @@ const componentsToRegister = {
   HRMSResponse: Response,
   HREditEmpolyee: EditEmployee,
   HRCreateEmployee: CreateEmployee,
+  LevelCards,
   HRInbox: Inbox,
   HRMS_INBOX_FILTER: (props) => <InboxFilter {...props} />,
 };

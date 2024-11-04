@@ -12,6 +12,7 @@ import {
   usePaymentUpdate,
   useRecieptSearch,
 } from "./payment";
+import useCustomAPIMutationHook from "./useCustomAPIMutationHook";
 import { useInitStore } from "./store";
 import useAccessControl from "./useAccessControl";
 import { useApplicationsForBusinessServiceSearch } from "./useApplicationForBillSearch";
@@ -182,6 +183,7 @@ const Hooks = {
   useTenants,
   useAccessControl,
   usePrivacyContext,
+  useCustomAPIMutationHook,
   pgr,
 
   dss,
