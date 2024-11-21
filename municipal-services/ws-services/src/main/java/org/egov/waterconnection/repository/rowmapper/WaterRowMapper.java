@@ -110,6 +110,7 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 				additionalDetails.put("lastDemandGeneratedDate", rs.getString("taxperiodto"));
 
 				currentWaterConnection.setAdditionalDetails(additionalDetails);
+				currentWaterConnection.setLastDemandGenaratedDate(rs.getLong("taxperiodto"));
 				currentWaterConnection
 						.processInstance(ProcessInstance.builder().action((rs.getString("action"))).build());
 				currentWaterConnection.setPropertyId(rs.getString("property_id"));
