@@ -41,6 +41,14 @@ public class ChallanQueryBuilder {
 			+ " FROM eg_echallan challan" + " LEFT OUTER JOIN "
 			+ " eg_challan_address chaladdr ON chaladdr.echallanid = challan.id   INNER JOIN eg_vendor vendor on vendor.id = challan.vendor ";
 
+	private static final String PLAINSEARCHQUERY = "SELECT count(*) OVER() AS full_count, challan.*,chaladdr.*,challan.id as challan_id,challan.tenantid as challan_tenantId,challan.lastModifiedTime as "
+			+ "challan_lastModifiedTime,challan.createdBy as challan_createdBy,challan.lastModifiedBy as challan_lastModifiedBy,challan.createdTime as "
+			+ "challan_createdTime,chaladdr.id as chaladdr_id," + "{amount}"
+			+ "challan.accountId as uuid,challan.description as description,challan.typeOfExpense as typeOfExpense, challan.billDate as billDate,  "
+			+ " challan.billIssuedDate as billIssuedDate, challan.paidDate as paidDate, challan.isBillPaid as isBillPaid , challan.vendor as vendor, vendor.name as vendorName "
+			+ " FROM eg_echallan challan" + " LEFT OUTER JOIN "
+			+ " eg_challan_address chaladdr ON chaladdr.echallanid = challan.id   INNER JOIN eg_vendor vendor on vendor.id = challan.vendor ";
+
       private final String paginationWrapper = "{} {orderby} {pagination}";
 
       public static final String FILESTOREID_UPDATE_SQL = "UPDATE eg_echallan SET filestoreid=? WHERE id=?";
@@ -311,7 +319,7 @@ public class ChallanQueryBuilder {
 
 	public String getChallanSearchQueryForPlaneSearch(SearchCriteria criteria, List<Object> preparedStmtList) {
 
-		StringBuilder builder = new StringBuilder(QUERY);
+		StringBuilder builder = new StringBuilder(PLAINSEARCHQUERY);
 		builder = applyFiltersForPlaneSearch(builder, preparedStmtList, criteria);
 		return addPaginationWrapperPlainsearch(builder.toString(), preparedStmtList, criteria);
 	}
@@ -325,8 +333,8 @@ public class ChallanQueryBuilder {
 
 		finalQuery = finalQuery.replace("{orderby}", string);
 
-		finalQuery = finalQuery.replace("{amount}",
-				" 0 as totalamount, ");
+		finalQuery = finalQuery.replace("{amount}", " COALESCE((select sum(bi.totalamount) from egbs_billdetail_v1 bi join egbs_bill_v1 b on bi.billid=b.id where bi.businessservice = challan.businessservice and bi.tenantid=challan.tenantid and bi.consumercode = challan.referenceId and b.status IN ('ACTIVE','PAID' ) group by bi.consumercode), 0) as totalamount, ");
+
 
 		if (criteria.getLimit() != null && criteria.getLimit() != 0) {
 			int limit = 0, offset = 0;
