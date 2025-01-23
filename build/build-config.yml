@@ -70,17 +70,17 @@ config:
   - name: "builds/mGramSeva/business-services/billing-service"
     build:
       - work-dir: "business-services/billing-service"
-        image-name: "billing-service"
+        image-name: "billing-service-mgramseva"
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "business-services/billing-service/src/main/resources/db"
-        image-name: "billing-service-db"
+        image-name: "billing-service-mgramseva-db"
   - name: "builds/mGramSeva/business-services/egov-hrms"
     build:
-      - work-dir: "business-services/egov-hrms"
-        image-name: "egov-hrms"
+      - work-dir: "business-services/egov-hrms-mgramseva"
+        image-name: "egov-hrms-mgramseva"
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "business-services/egov-hrms/src/main/resources/db"
-        image-name: "egov-hrms-db"
+        image-name: "egov-hrms-mgramseva-db"
   - name: "builds/mGramSeva/frontend/frontend-mgramseva"
     build:
       - work-dir: "frontend/mgramseva"
