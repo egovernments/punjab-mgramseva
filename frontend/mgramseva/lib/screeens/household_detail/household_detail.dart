@@ -95,12 +95,24 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
         Provider.of<HouseHoldProvider>(context, listen: false);
 
     return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+       // backgroundColor: Colors.blue,
         appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),
-        body: SingleChildScrollView(
+        body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: FractionalOffset.topCenter,
+                end: FractionalOffset.bottomCenter,
+                colors: [
+                  Color(0xff90c5e5),
+                  Color(0xffeef7f2),
+                  Color(0xffffeca7),
+                ],
+              ),
+            ),
+          child: SingleChildScrollView(
             child: FormWrapper(Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -136,6 +148,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                     }
                   }),
               Footer()
-            ]))));
+              ]))),
+        ));
   }
 }

@@ -67,7 +67,6 @@ public class PropertiesManager {
 
 	@Value("${egov.user.search.tenant.endpoint}")
 	public String userSearchByTenantEndpoint;
-
 	
 	@Value("${egov.user.create.endpoint}")
 	public String userCreateEndpoint;
@@ -91,7 +90,7 @@ public class PropertiesManager {
 	//Kafka Topics
 	@Value("${kafka.topics.save.service}")
 	public String saveEmployeeTopic;
-
+	
 	@Value("${kafka.topics.update.service}")
 	public String UpdateEmployeeTopic;
 	

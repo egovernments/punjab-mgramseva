@@ -63,13 +63,11 @@ public class MasterDataMigrationService {
         tenantIds.stream().forEach(tenantId -> {
                 if (tenantMap.containsKey(tenantId.toLowerCase())) {
                     tenantMap.get(tenantId.toLowerCase()).keySet().forEach(module -> {
-                        if (module.equals("ACCESSCONTROL-ROLEACTIONS")
-                        /*|| module.equals("egf-master") || module.equals("common-masters")
+                        if (module.equals("common-masters")  /*|| module.equals("common-masters")
                         || module.equals("DIGIT-UI") || module.equals("DataSecurity") || module.equals("mseva")*/) {
 
                             tenantMap.get(tenantId.toLowerCase()).get(module).keySet().forEach(master -> {
-                                if (master.equals("roleactions")
-                         /*|| master.equals("HRMSConfigHRMSConfig") ||master.equals("Degree")||
+                                if ( master.equals("uiCommonConstants")  /*||
                              master.equals("EmployeeStatus") || master.equals("Specalization") ||master.equals("EmploymentTest")/*||master.equals("UsageCategory") ||
                               master.equals("PTApplication") ||master.equals("Rebate") || master.equals("OwnerShipCategory") */) {
                                     // Get master data array for current module and master
@@ -105,7 +103,7 @@ public class MasterDataMigrationService {
 
                                                 log.info("mdmsrequest:" + mdmsRequest);
                                                 // TODO - Make call to MDMS Service with the created request
-                                                restTemplate.postForObject("http://localhost:8094/mdms-v2/v2/_create/" + mdmsRequest.getMdms().getSchemaCode(), mdmsRequest, Map.class);
+                                                restTemplate.postForObject("http://localhost:8094/uat/mdms-v2/v2/_create/" + mdmsRequest.getMdms().getSchemaCode(), mdmsRequest, Map.class);
                                            //}
                                         //}
                                     });

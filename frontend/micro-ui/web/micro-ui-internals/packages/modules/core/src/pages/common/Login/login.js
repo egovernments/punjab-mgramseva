@@ -31,9 +31,15 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
   // const getUserType = () => "EMPLOYEE" || Digit.UserService.getType();
 
 
-  console.log(`${window?.location?.origin}/${path}`, "path1");
-  console.log(`${window?.location?.origin}`, "path1.5");
-  console.log(`${path}`, "path2");
+  const getDynamicPart = (url) => {
+    const parsedUrl = new URL(url);
+    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+    return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
+  };
+
+  // console.log(`${window?.location?.origin}/${path}`, "path1");
+  // console.log(`${window?.location?.origin}`, "path1.5");
+  // console.log(`${path}`, "path2");
 
   useEffect(() => {
     if (!user) {
@@ -97,7 +103,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
 
   const links = [
     {
-      href: `${window?.location?.origin}/mgramseva-web/employee/user/login`,
+      href: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}/mgramseva-web/employee/user/login`,
       text: `${t("LINK_State_Division")}`,
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -107,7 +113,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       ),
     },
     {
-      href: `${window?.location?.origin}/mgramseva/`,
+      href: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}/mgramseva/`,
       text: `${t("LINK_Village_Login")}`,
 
 
@@ -126,7 +132,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       ),
     },
     {
-      href: `${window?.location?.origin}/mgramseva-web/citizen/payment/open-search?businessService=WS`,
+      href: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}/mgramseva-web/citizen/payment/open-search?businessService=WS`,
       text:
 
 
@@ -166,7 +172,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
   }
   if (config && config[0].body && config[0].body[1].label === "CORE_LOGIN_PASSWORD") {
     config[0].body[1].populators.validation = {
-      maxlength: 10,
+      maxlength: 20,
     };
   }
   return isLoading || isStoreLoading ? (
@@ -203,7 +209,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
               {links.map((link, index) => (
                 <li key={index} className="link-item">
                   <div className="link" style={{ 
-                    color: "#f47738 !important",
+                    color: "#1f4ac4 !important",
                     marginRight: "8px" }}>
                     {<svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M12.7917 15.7991L14.2223 14.3676C16.5926 11.9959 16.5926 8.15054 14.2223 5.7788C11.8521 3.40707 8.0091 3.40707 5.63885 5.7788L2.77769 8.64174C0.407436 11.0135 0.407436 14.8588 2.77769 17.2306C3.87688 18.3304 5.29279 18.9202 6.73165 19" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
@@ -211,7 +217,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
                     </svg>}
                   </div>
                   <a href={link.href} target="_blank" rel="noopener noreferrer" className="link" style={{ textDecoration: "none",
-                  color: "#f47738",
+                  color: "#1f4ac4",
                   cursor: 'pointer'
 
                    }}>

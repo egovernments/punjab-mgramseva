@@ -52,7 +52,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,15 +120,14 @@ public class EmployeeController {
 		EmployeeResponse employeeResponse = employeeService.search(criteria, requestInfoWrapper.getRequestInfo());
 		return new ResponseEntity<>(employeeResponse,HttpStatus.OK);
 	}
-
 	@PostMapping(value = "/_searchListOfEmployee")
 	@ResponseBody
 	public ResponseEntity<?> _searchListOfEmployee(@RequestBody @Valid EmployeeSearchByTenantRequestWrapper employeeSearchByTenantRequestWrapper) {
+		//validator.validateSearchRequest(requestInfoWrapper.getRequestInfo(), criteria);
+		log.info("criteria::"+ employeeSearchByTenantRequestWrapper.getCriteria());
 		EmployeeResponse employeeResponse = employeeService.searchListOfEmployee(employeeSearchByTenantRequestWrapper.getCriteria(), employeeSearchByTenantRequestWrapper.getRequestInfo());
 		return new ResponseEntity<>(employeeResponse,HttpStatus.OK);
 	}
-
-
 	@PostMapping("_count")
 	@ResponseBody
 	private ResponseEntity<?> count(@RequestParam("tenantId") String tenantId, @RequestBody RequestInfo requestInfo) {
@@ -138,10 +137,9 @@ public class EmployeeController {
 		response = employeeService.getEmployeeCountResponse(requestInfo,tenantId);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
-
 	@PostMapping("v1/_count")
 	@ResponseBody
-	private ResponseEntity<?> countV1(@RequestParam("tenantId") String tenantId, @RequestParam("roles") List<String> roles , @RequestParam("isStateLevelSearch") boolean isStateLevelSearch,  @RequestBody RequestInfo requestInfo) {
+	private ResponseEntity<?> countV1(@RequestParam("tenantId") String tenantId, @RequestParam("roles") List<String> roles , @RequestParam("isStateLevelSearch") boolean isStateLevelSearch, @RequestBody RequestInfo requestInfo) {
 
 		Map<String,Object> response = new HashMap<>();
 		validator.validateEmployeeCountRequest(tenantId);
@@ -151,10 +149,10 @@ public class EmployeeController {
 
 	@PostMapping("/_plainsearch")
 	@ResponseBody
-	private ResponseEntity<?> plainsearch(@RequestBody @Valid RequestInfoWrapper requestInfoWrapper, @ModelAttribute @Valid EmployeePlainSearchCriteria criteria,@RequestBody RequestInfo requestInfo) {
+	private ResponseEntity<?> plainsearch(@RequestBody @Valid RequestInfoWrapper requestInfoWrapper, @ModelAttribute @Valid EmployeePlainSearchCriteria criteria) {
 
 		EmployeeResponse employeeResponse = EmployeeResponse.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true))
-				.employees(employeeService.plainsearch(criteria,requestInfo)).build();
+				.employees(employeeService.plainsearch(criteria,requestInfoWrapper.getRequestInfo())).build();
 		return new ResponseEntity<>(employeeResponse,HttpStatus.OK);
 	}
 

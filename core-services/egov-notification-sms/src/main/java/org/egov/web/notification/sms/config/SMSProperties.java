@@ -93,7 +93,7 @@ public class SMSProperties {
     @Value("${save.sms.entity.enabled}")
     private boolean isSaveSmsEnable;
 
-    @Value("#{'${sms.error.codes}'.split(',')}")
+    @Value("#{'${sms.disabled.tenants.list}'.split(',')}")
     protected List<String> smsDisabledTenantList;
 
     @Setter(AccessLevel.PROTECTED) private List<Pattern> whitelistPatterns;

@@ -91,6 +91,7 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
 
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
+
         return Container(
           key: widget.contextKey,
           margin:
@@ -125,6 +126,14 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
                         onChanged: widget.widget,
                         enabled: !widget.readOnly!,
                         dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(   color: Color.fromRGBO(3, 60, 207, 0.9), width: 1.0),
+                              ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(   color: Color.fromRGBO(3, 60, 207, 0.9), width: 1.0),
+                              ),
+                          ),
                             baseStyle: TextStyle(
                                 color: !widget.readOnly!?Theme.of(context).primaryColorDark:Colors.grey
                             )
@@ -147,6 +156,8 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
           ]),
         );
       } else {
+        
+
         return Container(
           key: widget.contextKey,
           margin: const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
@@ -159,14 +170,13 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
               return DropdownSearch(
                 key: widget.suggestionKey,
                 selectedItem: widget.value,
-              
                 itemAsString: widget.itemAsString,
                 items: widget.options,
                 onChanged: widget.widget,
                 enabled: !widget.readOnly!,
                 dropdownDecoratorProps: DropDownDecoratorProps(
                   baseStyle: TextStyle(
-                    color: !widget.readOnly!?Theme.of(context).primaryColorDark:Colors.grey
+                    color: !widget.readOnly!?Theme.of(context).primaryColorDark:Colors.blue
                   )
                 ),
                 popupProps: PopupProps.menu(

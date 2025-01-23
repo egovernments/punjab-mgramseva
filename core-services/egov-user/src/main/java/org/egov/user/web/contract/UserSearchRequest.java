@@ -72,7 +72,6 @@ public class UserSearchRequest {
 
     @JsonProperty("isStateLevelSearch")
     private Boolean isStateLevelSearch;
-
     @JsonProperty("sort")
     private List<String> sort = Collections.singletonList("name");
 

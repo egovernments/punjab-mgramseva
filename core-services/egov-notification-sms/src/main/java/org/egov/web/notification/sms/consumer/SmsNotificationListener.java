@@ -17,7 +17,6 @@ import org.springframework.kafka.annotation.*;
 import org.springframework.kafka.config.*;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.listener.*;
-import org.springframework.kafka.listener.ErrorHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.util.*;
 import org.springframework.web.client.RestClientException;
@@ -48,6 +47,9 @@ public class SmsNotificationListener {
     @Autowired
     protected SMSProperties smsProperties;
 
+    @Value("${sms.enabled}")
+    Boolean smsEnable;
+
 
     @Autowired
     public SmsNotificationListener(
@@ -67,7 +69,7 @@ public class SmsNotificationListener {
         SMSRequest request = null;
         try {
             request = objectMapper.convertValue(consumerRecord, SMSRequest.class);
-            if(!ObjectUtils.isEmpty(request.getTenantId()) && !smsProperties.getSmsDisabledTenantList().contains(request.getTenantId())) {
+            if(!startsWithOneToFive(request.getMobileNumber())) {
                 if (request.getExpiryTime() != null && request.getCategory() == Category.OTP) {
                     Long expiryTime = request.getExpiryTime();
                     Long currentTime = System.currentTimeMillis();
@@ -82,6 +84,7 @@ public class SmsNotificationListener {
                     smsService.sendSMS(request.toDomain());
                 }
             }
+
         } catch (RestClientException rx) {
             log.info("Going to backup SMS Service", rx);
             if (!StringUtils.isEmpty(backupSmsTopic))
@@ -99,5 +102,10 @@ public class SmsNotificationListener {
                 throw ex;
             }
         }
+    }
+
+    private static boolean startsWithOneToFive(String input) {
+        char firstChar = input.charAt(0);
+        return firstChar >= '1' && firstChar <= '5';
     }
 }

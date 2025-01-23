@@ -4,26 +4,29 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +34,7 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
 import org.egov.mdms.model.MasterDetail;
 import org.egov.mdms.model.MdmsCriteria;
+import org.egov.mdms.model.MdmsCriteriaReq;
 import org.egov.mdms.model.ModuleDetail;
 import org.egov.tracer.model.CustomException;
 import org.egov.wscalculation.config.WSCalculationConfiguration;
@@ -49,6 +53,7 @@ import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.web.models.Demand.StatusEnum;
 import org.egov.wscalculation.web.models.users.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
@@ -59,7 +64,6 @@ import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import org.springframework.http.ResponseEntity;
-import org.apache.http.HttpStatus;
 
 @Service
 @Slf4j
@@ -288,32 +292,30 @@ public class DemandService {
 
 
 			if (!isWSUpdateSMS) {
-				List<BillV2> bills = fetchBill(demands, waterConnectionRequest.getRequestInfo());
-				if (!CollectionUtils.isEmpty(bills)) {
-					String billNumber = bills.get(0).getBillNumber();
-					Long billDate = bills.get(0).getBillDate();
-					billDate = billDate + 1296000000l;
-					LocalDate billDateLocal = Instant.ofEpochMilli(billDate).atZone(ZoneId.systemDefault()).toLocalDate();
-					String paymentDueDate = billDateLocal.format(dateTimeFormatter);
-					BigDecimal totalAmount=bills.get(0).getTotalAmount();
-					if (ObjectUtils.isEmpty(totalAmount) && totalAmount.signum() > 0) {
-						if (isOnlinePaymentAllowed(requestInfo, tenantId)) {
-								sendPaymentSMSNotification(requestInfo, tenantId, owner, waterConnectionRequest, property, demandDetails, consumerCode, demands, isForConnectionNO, businessService, billCycle, billNumber, paymentDueDate,totalAmount);
-								//sendPaymentAndBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers,paymentDueDate,totalAmount);
-						}
-						sendDownloadBillSMSNotification(requestInfo, tenantId, owner, waterConnectionRequest, property, demandDetails, consumerCode, demands, isForConnectionNO, businessService, billCycle, billNumber, paymentDueDate, totalAmount);
+				List<String> billNumbers = fetchBill(demands, waterConnectionRequest.getRequestInfo());
+				Long billDate = fetchBillDate(demands,waterConnectionRequest.getRequestInfo());
+				billDate =billDate + 1296000000l;
+				LocalDate billDateLocal = Instant.ofEpochMilli(billDate).atZone(ZoneId.systemDefault()).toLocalDate();
+				String paymentDueDate = billDateLocal.format(dateTimeFormatter);
+				if(isOnlinePaymentAllowed(requestInfo,tenantId)) {
+					if(fetchTotalBillAmount(demands,requestInfo).signum()> 0) {
+						sendPaymentSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers,paymentDueDate);
+						//sendPaymentAndBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers,paymentDueDate);
 					}
 				}
+				BigDecimal totalAmount=fetchTotalBillAmount(demands,requestInfo);
+				if(totalAmount!=null && totalAmount.signum()> 0) {
+                    sendDownloadBillSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,consumerCode,demands,isForConnectionNO,businessService,billCycle,billNumbers,paymentDueDate,totalAmount);
+                }
 			}
 		}
+		log.info("Demand Object" + demands.toString());
 
 
 		return finalDemandRes;
 	}
 
-	private void sendPaymentSMSNotification(RequestInfo requestInfo, String tenantId, User owner, WaterConnectionRequest waterConnectionRequest,
-											Property property, List<DemandDetail> demandDetails, String consumerCode, List<Demand> demands, Boolean isForConnectionNO,
-											String businessService, String billCycle, String billNumber, String paymentDueDate,BigDecimal totalAmount ) {
+	private void sendPaymentSMSNotification(RequestInfo requestInfo, String tenantId, User owner, WaterConnectionRequest waterConnectionRequest, Property property, List<DemandDetail> demandDetails, String consumerCode, List<Demand> demands, Boolean isForConnectionNO, String businessService, String billCycle, List<String> billNumbers, String paymentDueDate ) {
 		HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo,
 				WSCalculationConstant.mGram_Consumer_Payment, tenantId);
 		String connectionType = null;
@@ -327,17 +329,21 @@ public class DemandService {
 				.replace("$tenantId", property.getTenantId())
 				.replace("$businessService", businessService)
 				.replace("$connectionType", connectionType);
-
+		log.info("Payment Link ::: " + actionLinkPayment);
 
 		String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
+		BigDecimal totalAmount = fetchTotalBillAmount(demands,requestInfo);
 
+		System.out.println("Localization message::" + messageString);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
+			log.info("Demand Object" + demands.toString());
 			messageString = messageString.replace("{ownername}", owner.getName());
 			messageString = messageString.replace("{billamount}",totalAmount.toString());
 			messageString = messageString.replace("{Date}", paymentDueDate);
 			messageString = messageString.replace("{connectionno}", consumerCode);
 			messageString = messageString.replace("{PAY_LINK}", getShortenedUrl(actionLinkPayment));
 
+			System.out.println("payment genaration Message1::" + messageString);
 
 			SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString).tenantid(tenantId)
 					.category(Category.TRANSACTION).build();
@@ -346,7 +352,7 @@ public class DemandService {
 			}
 		}
 	}
-	private void sendDownloadBillSMSNotification(RequestInfo requestInfo, String tenantId, User owner, WaterConnectionRequest waterConnectionRequest, Property property, List<DemandDetail> demandDetails, String consumerCode, List<Demand> demands, Boolean isForConnectionNO, String businessService, String billCycle,String billNumber, String paymentDueDate,BigDecimal totalamount) {
+	private void sendDownloadBillSMSNotification(RequestInfo requestInfo, String tenantId, User owner, WaterConnectionRequest waterConnectionRequest, Property property, List<DemandDetail> demandDetails, String consumerCode, List<Demand> demands, Boolean isForConnectionNO, String businessService, String billCycle,List<String> billNumbers, String paymentDueDate,BigDecimal totalamount) {
 		HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo,
 				WSCalculationConstant.mGram_Consumer_NewBill, tenantId);
 		String actionLink = config.getNotificationUrl()
@@ -365,8 +371,8 @@ public class DemandService {
 		//System.out.println("Localization message get bill::" + messageString);
 		//System.out.println("isForConnectionNO:" + isForConnectionNO);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
-			if (totalamount!=null  && totalamount.signum()>0) {
-				actionLink = actionLink.replace("$billNumber", billNumber);
+			if (totalamount!=null && billNumbers.size() > 0 && totalamount.signum()>0) {
+				actionLink = actionLink.replace("$billNumber", billNumbers.get(0));
 				messageString = messageString.replace("{ownername}", owner.getName());
 				messageString = messageString.replace("{Period}", billCycle);
 				messageString = messageString.replace("{consumerno}", consumerCode);
@@ -418,7 +424,11 @@ public class DemandService {
         BigDecimal totalAmount =  fetchTotalBillAmount(demands, requestInfo);
 		String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 
+		System.out.println("Localization message get payment and bill::" + messageString);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
+			log.info("Demand Object get payment and bill" + demands.toString());
+			log.info("requestInfo get Bill and Payment::" +requestInfo);
+			log.info("Bill Number get payment and bill:: " + billNumbers.toString());
 			if (billNumbers.size() > 0) {
 				actionBillLink = actionBillLink.replace("$billNumber", billNumbers.get(0));
 			}
@@ -447,10 +457,13 @@ public class DemandService {
 				Object result = serviceRequestRepository.fetchResult(
 						calculatorUtils.getFetchBillURL(demand.getTenantId(), demand.getConsumerCode()),
 						RequestInfoWrapper.builder().requestInfo(requestInfo).build());
+				log.debug("response from fetch bill total bill: " + mapper.writeValueAsString(result));
 				List<Map<String, Object>> jsonOutput = JsonPath.read(result, "$.Bill");
+				log.info("Bill Response totalAMount fetch:: " + result);
                 log.info(mapper.writeValueAsString(jsonOutput));
 				totalAmount=new BigDecimal(jsonOutput.get(0).get("totalAmount").toString());
 				//totalAmount = new BigDecimal(JsonPath.read(result, "$.Bill[0].totalAmount").toString());
+				log.info("Bill Response totalAMount:: " + result);
 
 				HashMap<String, Object> billResponse = new HashMap<>();
 
@@ -964,7 +977,7 @@ public class DemandService {
 			}
 			demandRes = demandRepository.updateDemand(requestInfo, demands);
 			finalDemandRes.addAll(demandRes);
-			List<BillV2> bills = fetchBill(demands, waterConnectionRequest.getRequestInfo());
+			List<String> billNumbers = fetchBill(demands, waterConnectionRequest.getRequestInfo());
 //			Long billDate = fetchBillDate(demands,waterConnectionRequest.getRequestInfo());
 //			billDate =billDate + 1296000000l;
 //			LocalDate billDateLocal = Instant.ofEpochMilli(billDate).atZone(ZoneId.systemDefault()).toLocalDate();
@@ -1284,31 +1297,26 @@ public class DemandService {
 		return true;
 	}
 
-	public List<BillV2> fetchBill(List<Demand> demandResponse, RequestInfo requestInfo) {
-		boolean notificationSent = false; new ArrayList<>();
-		List<BillV2> bills =null;
+	public List<String> fetchBill(List<Demand> demandResponse, RequestInfo requestInfo) {
+		boolean notificationSent = false;
+		List<String> billNumber = new ArrayList<>();
 		for (Demand demand : demandResponse) {
 			try {
 				Object result = serviceRequestRepository.fetchResult(
 						calculatorUtils.getFetchBillURL(demand.getTenantId(), demand.getConsumerCode()),
 						RequestInfoWrapper.builder().requestInfo(requestInfo).build());
-				//billNumber = JsonPath.read(result, "$.Bill.*.billNumber");
+				billNumber = JsonPath.read(result, "$.Bill.*.billNumber");
 				HashMap<String, Object> billResponse = new HashMap<>();
 
 				billResponse.put("requestInfo", requestInfo);
 				billResponse.put("billResponse", result);
-				try {
-					bills =  mapper.convertValue(result, BillResponseV2.class).getBill();
-				} catch (IllegalArgumentException e) {
-					throw new CustomException("PARSING_ERROR", "Failed to parse response from Demand Search");
-				}
 				wsCalculationProducer.push(configs.getPayTriggers(), billResponse);
 				notificationSent = true;
 			} catch (Exception ex) {
 				log.error("Fetch Bill Error", ex);
 			}
 		}
-		return bills;
+		return billNumber;
 	}
 
 	public Long fetchBillDate(List<Demand> demandResponse, RequestInfo requestInfo) {
@@ -1445,6 +1453,7 @@ public class DemandService {
 	}
 	public boolean isOnlinePaymentAllowed(RequestInfo requestInfo, String tenantId)
 	{
+		log.info("inside online payment allowed method");
 		List<MasterDetail> masterDetails = new ArrayList<>();
 		MasterDetail masterDetail =new MasterDetail("BusinessService",WSCalculationConstant.FILTER_PAYMENT_METHOD_SEARCH);
 		masterDetails.add(masterDetail);
@@ -1454,8 +1463,12 @@ public class DemandService {
         MdmsCriteria mdmsCriteria = MdmsCriteria.builder().tenantId(tenantId)
 				.moduleDetails(moduleDetails)
 				.build();
+		log.info("mdmscrtiteria:::"+mdmsCriteria.getTenantId());
+		log.info("mdmscrtiteria::::::"+mdmsCriteria.getModuleDetails().get(0).getModuleName());
+		log.info("mdmscrtiteria:::::::::"+mdmsCriteria.getModuleDetails().get(0));
 		Map<String, Object> paymentMasterData = calculatorUtils.getAllowedPaymentForTenantId(tenantId,mdmsCriteria,requestInfo);
 		List<String> paymentModesNotAllowed = (List<String>) paymentMasterData.get(WSCalculationConstant.Payment_Modes_Not_Allowed);
+		log.info("size::" +paymentModesNotAllowed.size());
 		if(paymentModesNotAllowed.contains("ONLINE"))
 			return false;
 		else

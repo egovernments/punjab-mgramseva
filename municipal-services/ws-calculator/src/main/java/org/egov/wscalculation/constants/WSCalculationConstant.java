@@ -328,6 +328,4 @@ public class WSCalculationConstant {
 
 
 
-
-
 }

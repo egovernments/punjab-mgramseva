@@ -141,7 +141,6 @@ public class EmployeeService {
 	 * @return
 	 */
 	public EmployeeResponse search(EmployeeSearchCriteria criteria, RequestInfo requestInfo) {
-
 		boolean  userChecked = false;
 		/*if(null == criteria.getIsActive() || criteria.getIsActive())
 			criteria.setIsActive(true);
@@ -164,7 +163,6 @@ public class EmployeeService {
 				userSearchCriteria.put(HRMSConstants.HRMS_IS_STATE_LEVEL_SEARCH_CODE, criteria.getIsStateLevelSearch());
 			if(!ObjectUtils.isEmpty(criteria.getIsActive()))
 				userSearchCriteria.put(HRMSConstants.HRMS_IS_ACTIVE_SEARCH_CODE, criteria.getIsActive());
-
             UserResponse userResponse = userService.getUser(requestInfo, userSearchCriteria);
 			userChecked =true;
             if(!CollectionUtils.isEmpty(userResponse.getUser())) {
@@ -287,6 +285,7 @@ public class EmployeeService {
 			employee.getUser().setUuid(user.getUuid());
 		}catch(Exception e) {
 			log.error("Exception while creating user: ",e);
+			log.error("request: "+request);
 			throw new CustomException(ErrorConstants.HRMS_USER_CREATION_FAILED_CODE, ErrorConstants.HRMS_USER_CREATION_FAILED_MSG);
 		}
 
@@ -414,6 +413,7 @@ public class EmployeeService {
 			userService.updateUser(request);
 		}catch(Exception e) {
 			log.error("Exception while updating user: ",e);
+			log.error("request: "+request);
 			throw new CustomException(ErrorConstants.HRMS_USER_UPDATION_FAILED_CODE, ErrorConstants.HRMS_USER_UPDATION_FAILED_MSG);
 		}
 
@@ -675,6 +675,7 @@ public class EmployeeService {
 			else
 				criteria.setUuids(userUUIDs);
 		}
+
 		//checks if above criteria met and result is not  null will check for name search if list of names are given as user search on name is not bulk api
 		List <Employee> employees = new ArrayList<>();
 		employees = repository.fetchEmployees(criteria, requestInfo);
@@ -696,5 +697,4 @@ public class EmployeeService {
 		return EmployeeResponse.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfo, true))
 				.employees(employees).build();
 	}
-
 }

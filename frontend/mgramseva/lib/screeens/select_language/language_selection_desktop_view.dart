@@ -17,7 +17,9 @@ class LanguageSelectionDesktopView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BackgroundContainer(Column(
+    return BackgroundContainer(Container(
+      height: MediaQuery.of(context).size.height - 20,
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -58,7 +60,7 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                                   ],
                                 ),
                                 Container(
-                                  width: 55,
+                                    alignment: Alignment.center,
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     textDirection: TextDirection.rtl,
@@ -102,6 +104,7 @@ class LanguageSelectionDesktopView extends StatelessWidget {
         SizedBox(height: 140),
         FooterBanner()
       ],
+      ),
     ));
   }
 }

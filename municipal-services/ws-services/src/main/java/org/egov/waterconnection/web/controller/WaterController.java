@@ -3,7 +3,7 @@ package org.egov.waterconnection.web.controller;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.service.SchedulerService;
@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.swagger.models.parameters.QueryParameter;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

@@ -229,14 +229,6 @@ public class DemandService {
 		RequestInfo requestInfo = demandRequest.getRequestInfo();
 		List<Demand> demands = demandRequest.getDemands();
 		AuditDetails auditDetail = util.getAuditDetail(requestInfo);
-//		for (Demand demand : demands) {
-//			AuditDetails currAuditDetails = demand.getAuditDetails();
-//			if (currAuditDetails != null) {
-//				auditDetail.setCreatedTime(currAuditDetails.getCreatedTime());
-//				auditDetail.setCreatedBy(currAuditDetails.getCreatedBy());
-//			}
-//			demand.setAuditDetails(auditDetail);
-//		}
 
 		List<Demand> newDemands = new ArrayList<>();
 
@@ -250,13 +242,8 @@ public class DemandService {
 				 */
 				newDemands.add(demand);
 			} else {
-				AuditDetails updateAuditDetail = util.getAuditDetail(requestInfo);
-				AuditDetails demandAuditDetails = demand.getAuditDetails();
-				if (demandAuditDetails != null) {
-					updateAuditDetail.setCreatedTime(demandAuditDetails.getCreatedTime());
-					updateAuditDetail.setCreatedBy(demandAuditDetails.getCreatedBy());
-				}
-				demand.setAuditDetails(updateAuditDetail);
+
+				demand.setAuditDetails(auditDetail);
 				for (DemandDetail detail : demand.getDemandDetails()) {
 
 					if (StringUtils.isEmpty(detail.getId())) {
@@ -266,12 +253,7 @@ public class DemandService {
 						detail.setId(UUID.randomUUID().toString());
 						detail.setCollectionAmount(BigDecimal.ZERO);
 					}
-					AuditDetails demandDetailAuditDetail = detail.getAuditDetails();
-					if (demandDetailAuditDetail != null) {
-						updateAuditDetail.setCreatedTime(demandDetailAuditDetail.getCreatedTime());
-						updateAuditDetail.setCreatedBy(demandDetailAuditDetail.getCreatedBy());
-					}
-					detail.setAuditDetails(updateAuditDetail);
+					detail.setAuditDetails(auditDetail);
 					detail.setDemandId(demandId);
 					detail.setTenantId(demand.getTenantId());
 				}

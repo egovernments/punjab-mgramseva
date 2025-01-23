@@ -1,7 +1,6 @@
 import { Link, useHistory } from "react-router-dom";
 import _ from "lodash";
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 function anonymizeHalfString(input) {
   // Initialize an empty string to store the anonymized output
@@ -137,8 +136,6 @@ export const UICustomizations = {
       }
     },
     populateReqCriteria: () => {
-      const { t } = useTranslation();
-
       const tenantId = Digit.ULBService.getCurrentTenantId();
       return {
         url: "/mdms-v2/v1/_search",
@@ -162,16 +159,16 @@ export const UICustomizations = {
           enabled: true,
           select: (data) => {
             const result = data?.MdmsRes?.tenant?.tenants
-              ?.filter((row) => row?.divisionCode && row?.divisionName)
+              ?.filter((row) => row?.blockcode && row?.blockname)
               ?.map((row) => {
                 return {
                   ...row,
-                  updatedCode: `${row?.divisionName} - ${t(row?.code)}`,
+                  updatedCode: `${row.blockname} - ${row?.name}`,
                 };
               });
             result.sort((a, b) => {
-              const nameA = (a.divisionName || "").toLowerCase().trim();
-              const nameB = (b?.divisionName || "").toLowerCase().trim();
+              const nameA = (a.blockname || "").toLowerCase().trim();
+              const nameB = (b?.blockname || "").toLowerCase().trim();
               return nameA.localeCompare(nameB);
             });
             return result;

@@ -7,8 +7,8 @@ import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
 import 'package:mgramseva/widgets/background_container.dart';
 import 'package:mgramseva/widgets/button.dart';
-import 'package:mgramseva/widgets/language_card.dart';
 import 'package:mgramseva/widgets/footer_banner.dart';
+import 'package:mgramseva/widgets/language_card.dart';
 import 'package:provider/provider.dart';
 
 class LanguageSelectMobileView extends StatelessWidget {
@@ -17,16 +17,22 @@ class LanguageSelectMobileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BackgroundContainer(new Stack(children: <Widget>[
-      (new Positioned(
-          bottom: 35.0,
-          child: new Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.all(8),
+    return BackgroundContainer(Container(
+      height: MediaQuery.of(context).size.height - 80,
+      child: new Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            padding: EdgeInsets.only(bottom: 35.0),
               child: Card(
-                  child: (Column(children: [
+              shape: RoundedRectangleBorder(
+                side: BorderSide(color: Color(0x4590c5e5), width: 1.5),
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              child: Column(
+                children: [
                 Container(
-                    width:MediaQuery.of(context).size.width*0.9,
+                    width: MediaQuery.of(context).size.width * 0.9,
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -34,45 +40,53 @@ class LanguageSelectMobileView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0),
                             child: Image(
-                                width: 150,
-                                fit: BoxFit.fill,
+                                width: 120,
+                                fit: BoxFit.contain,
                                 image: NetworkImage(
                                   stateInfo.logoUrl ?? '',
-                                )),
+                                ),
+                              ), //add logo_main.png in s3
                           ),
                           Padding(
                               padding: const EdgeInsets.only(right: 8.0),
                               child: Text(
-                                " | ",
+                                " |",
                                 style: TextStyle(
                                     fontSize: 19,
-                                    color: Color.fromRGBO(0, 0, 0, 1)),
-                              )),
+                                  color: Color.fromRGBO(0, 0, 0, 1),
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                       Container(
-                        width: 55,
+                          alignment: Alignment.center,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           textDirection: TextDirection.rtl,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Padding(
-                                padding: const EdgeInsets.only(left: 0.0),
+                                padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+                                child: FittedBox(
                                 child: Text(
-                                  ApplicationLocalizations.of(context)
-                                      .translate(stateInfo.code!),
+                                    ApplicationLocalizations.of(context).translate(stateInfo.code!),
                                   style: TextStyle(
                                       fontSize: 19,
                                       color: Color.fromRGBO(0, 0, 0, 1),
-                                      fontWeight: FontWeight.w400),
-                                )),
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
                       ),
-                    ])),
+                      ],
+                    ),
+                  ),
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SingleChildScrollView(
@@ -82,9 +96,16 @@ class LanguageSelectMobileView extends StatelessWidget {
                           children: [
                             for (var language in stateInfo.languages ?? [])
                               LanguageCard(
-                                  language, stateInfo.languages ?? [], MediaQuery.of(context).size.width*0.22, 10, 10)
-                          ]),
-                    )),
+                              language,
+                              stateInfo.languages ?? [],
+                              MediaQuery.of(context).size.width * 0.22,
+                              10,
+                              10,
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
                 Padding(
                     padding: EdgeInsets.all(15),
                     child: Consumer<LanguageProvider>(
@@ -93,12 +114,24 @@ class LanguageSelectMobileView extends StatelessWidget {
                         () => Navigator.pushNamed(context, Routes.LOGIN),
                         key: Keys.language.LANGUAGE_PAGE_CONTINUE_BTN,
                       ),
-                    ))
-              ])))))),
-      (new Positioned(
-          bottom: 0.0,
-          left: MediaQuery.of(context).size.width / 4,
-          child: FooterBanner()))
-    ]));
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FooterBanner(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    )
+    );
   }
 }

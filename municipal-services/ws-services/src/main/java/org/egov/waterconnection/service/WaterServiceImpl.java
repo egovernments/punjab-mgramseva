@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
@@ -137,10 +137,23 @@ public class WaterServiceImpl implements WaterService {
 		}
 		mDMSValidator.validateMISFields(waterConnectionRequest);
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, reqType);
-		List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
-		if(waterConnection != null && waterConnection.size() > 0) {
-			throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
-					"Duplicate Old connection number");
+		if (waterConnectionRequest.getWaterConnection().getOldConnectionNo() != null
+				&& !waterConnectionRequest.getWaterConnection().getOldConnectionNo().isEmpty()) {
+			List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
+			if (waterConnection != null && waterConnection.size() > 0) {
+				throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
+						"Duplicate Old connection number");
+			}
+		}
+		if(waterConnectionRequest.getWaterConnection().getImisNumber()!=null
+				&& !waterConnectionRequest.getWaterConnection().getImisNumber().isEmpty())
+		{
+			List<WaterConnection> waterConnectionForImisNUmber=getWaterConnectionForImisNUmber(waterConnectionRequest);
+			if(waterConnectionForImisNUmber!=null && waterConnectionForImisNUmber.size()>0)
+			{
+				throw new CustomException("DUPLICATE_IMIS_NUMBER",
+						"Duplicate IMIS number");
+			}
 		}
 		Property property = validateProperty.getOrValidateProperty(waterConnectionRequest);
 		validateProperty.validatePropertyFields(property, waterConnectionRequest.getRequestInfo());
@@ -177,7 +190,6 @@ public class WaterServiceImpl implements WaterService {
 
 		return Arrays.asList(waterConnectionRequest.getWaterConnection());
 	}
-
 	/**
 	 *
 	 * @param criteria    WaterConnectionSearchCriteria contains search criteria on
@@ -235,12 +247,21 @@ public class WaterServiceImpl implements WaterService {
 		}
 		mDMSValidator.validateMISFields(waterConnectionRequest);
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, WCConstants.UPDATE_APPLICATION);
-		List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
-		if(waterConnection != null && waterConnection.size() > 0) {
-			throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
-					"Duplicate Old connection number");
+
+		if (waterConnectionRequest.getWaterConnection().getOldConnectionNo() != null
+				&& !waterConnectionRequest.getWaterConnection().getOldConnectionNo().isEmpty()) {
+			List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
+			if (waterConnection != null && waterConnection.size() > 0) {
+				throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
+						"Duplicate Old connection number");
+			}
 		}
-		AuditDetails auditDetails=waterConnection.get(0).getAuditDetails();
+		List<WaterConnection> waterConnectionForImisNUmber=getWaterConnectionForImisNUmber(waterConnectionRequest);
+		if (waterConnectionForImisNUmber != null && waterConnectionForImisNUmber.size() > 0 && !waterConnectionRequest.getWaterConnection().getConnectionNo()
+				.equalsIgnoreCase(waterConnectionForImisNUmber.get(0).getConnectionNo())) {
+			throw new CustomException("DUPLICATE_IMIS_NUMBER",
+					"Duplicate IMIS number");
+		}
 		mDMSValidator.validateMasterData(waterConnectionRequest, WCConstants.UPDATE_APPLICATION);
 		Property property = validateProperty.getOrValidateProperty(waterConnectionRequest);
 		validateProperty.validatePropertyFields(property, waterConnectionRequest.getRequestInfo());
@@ -252,7 +273,7 @@ public class WaterServiceImpl implements WaterService {
 		String previousApplicationStatus = workflowService.getApplicationStatus(waterConnectionRequest.getRequestInfo(),
 				waterConnectionRequest.getWaterConnection().getApplicationNo(),
 				waterConnectionRequest.getWaterConnection().getTenantId(), config.getBusinessServiceValue());
-		enrichmentService.enrichUpdateWaterConnection(auditDetails, waterConnectionRequest);
+		enrichmentService.enrichUpdateWaterConnection(waterConnectionRequest);
 		actionValidator.validateUpdateRequest(waterConnectionRequest, businessService, previousApplicationStatus);
 		waterConnectionValidator.validateUpdate(waterConnectionRequest, searchResult, WCConstants.UPDATE_APPLICATION);
 		userService.updateUser(waterConnectionRequest, searchResult);
@@ -323,15 +344,33 @@ public class WaterServiceImpl implements WaterService {
 		return waterConnection.getWaterConnection();
 	}
 
+	private List<WaterConnection> getWaterConnectionForImisNUmber(WaterConnectionRequest waterConnectionRequest) {
+		SearchCriteria criteria = SearchCriteria.builder().tenantId(waterConnectionRequest.getWaterConnection().getTenantId())
+				.imisNumber(waterConnectionRequest.getWaterConnection().getImisNumber()).build();
+		WaterConnectionResponse waterConnection = search(criteria, waterConnectionRequest.getRequestInfo());
+		return waterConnection.getWaterConnection();
+	}
+
 	private List<WaterConnection> updateWaterConnectionForModifyFlow(WaterConnectionRequest waterConnectionRequest) {
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, WCConstants.MODIFY_CONNECTION);
-		List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
-		if(waterConnection != null && waterConnection.size() > 0 && !waterConnectionRequest.getWaterConnection().getConnectionNo()
-				.equalsIgnoreCase(waterConnection.get(0).getConnectionNo())) {
-			throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
-					"Duplicate Old connection number");
+		if (waterConnectionRequest.getWaterConnection().getOldConnectionNo() != null
+				&& !waterConnectionRequest.getWaterConnection().getOldConnectionNo().isEmpty()) {
+			List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
+			if(waterConnection != null && waterConnection.size() > 0 && !waterConnectionRequest.getWaterConnection().getConnectionNo()
+					.equalsIgnoreCase(waterConnection.get(0).getConnectionNo())) {
+				throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
+						"Duplicate Old connection number");
+			}
 		}
-		AuditDetails auditDetails=waterConnection.get(0).getAuditDetails();
+		if (waterConnectionRequest.getWaterConnection().getImisNumber() != null
+				&& !waterConnectionRequest.getWaterConnection().getImisNumber().isEmpty()) {
+			List<WaterConnection> waterConnectionForImisNUmber = getWaterConnectionForImisNUmber(waterConnectionRequest);
+			if (waterConnectionForImisNUmber != null && waterConnectionForImisNUmber.size() > 0 && !waterConnectionRequest.getWaterConnection().getConnectionNo()
+					.equalsIgnoreCase(waterConnectionForImisNUmber.get(0).getConnectionNo())) {
+				throw new CustomException("DUPLICATE_IMIS_NUMBER",
+						"Duplicate IMIS number");
+			}
+		}
 		mDMSValidator.validateMasterData(waterConnectionRequest, WCConstants.MODIFY_CONNECTION);
 		BusinessService businessService = workflowService.getBusinessService(
 				waterConnectionRequest.getWaterConnection().getTenantId(), waterConnectionRequest.getRequestInfo(),
@@ -343,9 +382,7 @@ public class WaterServiceImpl implements WaterService {
 		String previousApplicationStatus = workflowService.getApplicationStatus(waterConnectionRequest.getRequestInfo(),
 				waterConnectionRequest.getWaterConnection().getApplicationNo(),
 				waterConnectionRequest.getWaterConnection().getTenantId(), config.getModifyWSBusinessServiceName());
-		if (auditDetails != null) {
-			enrichmentService.enrichUpdateWaterConnection(auditDetails, waterConnectionRequest);
-		}
+		enrichmentService.enrichUpdateWaterConnection(waterConnectionRequest);
 		actionValidator.validateUpdateRequest(waterConnectionRequest, businessService, previousApplicationStatus);
 		userService.updateUser(waterConnectionRequest, searchResult);
 		waterConnectionValidator.validateUpdate(waterConnectionRequest, searchResult, WCConstants.MODIFY_CONNECTION);

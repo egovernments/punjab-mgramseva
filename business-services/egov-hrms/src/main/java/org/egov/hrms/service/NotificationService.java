@@ -35,7 +35,6 @@ public class NotificationService {
 
 	@Autowired
 	private RestTemplate restTemplate;
-
 	@Autowired
 	private PropertiesManager propertiesManager;
 
@@ -59,6 +58,7 @@ public class NotificationService {
 
 	@Value("${egov.environment.domain}")
 	private String envHost;
+
 
 
 	/**

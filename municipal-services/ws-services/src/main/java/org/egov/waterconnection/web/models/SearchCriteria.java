@@ -53,9 +53,17 @@ public class SearchCriteria {
 	@JsonProperty("oldConnectionNumber")
 	private String oldConnectionNumber;
 
+	@JsonProperty("imisNumber")
+	private String imisNumber;
+
+	@JsonProperty("dataVerified")
+	private Boolean dataVerified = false;
+
+	@JsonProperty("villageId")
+	private String villageId;
+
 	@JsonProperty("mobileNumber")
 	private String mobileNumber;
-	
 
 	@JsonProperty("name")
 	private String name;

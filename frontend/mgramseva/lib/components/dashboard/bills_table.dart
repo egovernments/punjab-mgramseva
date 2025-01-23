@@ -124,12 +124,19 @@ class _BillsTable extends State<BillsTable> {
       child: isAscending != null
           ? Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: WrapAlignment.spaceBetween,
               spacing: 5,
               children: [
-                textWidget,
-                Icon(isAscending
-                    ? Icons.arrow_upward
-                    : Icons.arrow_downward_sharp),
+                Row(
+                  children: [
+                    textWidget,
+                    Icon(isAscending
+                        ? Icons.arrow_upward
+                        : Icons.arrow_downward_sharp,
+                        color: Color(0xff033ccf)
+                        ),
+                  ],
+                ),
                 if (MediaQuery.of(context).size.width > 720)
                   LedgerLabelText
               ],

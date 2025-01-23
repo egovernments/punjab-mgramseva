@@ -105,6 +105,17 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
           backgroundColor: Color.fromRGBO(238, 238, 238, 1),
           body: LayoutBuilder(
             builder: (context, constraints) => Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: FractionalOffset.topCenter,
+                  end: FractionalOffset.bottomCenter,
+                  colors: [
+                    Color(0xff90c5e5),
+                    Color(0xffeef7f2),
+                    Color(0xffffeca7),
+                  ],
+                ),
+              ),
               alignment: Alignment.center,
               margin: constraints.maxWidth < 760
                   ? null

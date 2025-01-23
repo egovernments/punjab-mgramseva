@@ -2,19 +2,26 @@
 <html lang="en">
 
 <head>
+  <script type="application/javascript">
+    // Set Webpack public path before any assets are loaded
+    // __webpack_public_path__ = "uat/mgramseva-web/";
+
+    // console.log("Webpack public path is set to:", __webpack_public_path__);
+  </script>
   <meta charset="utf-8" />
-  <link rel="icon" href="https://cdn.jsdelivr.net/npm/@egovernments/digit-ui-css/img/browser-icon.png" />
+  <link rel="icon" href="https://assam-s3.s3.ap-south-1.amazonaws.com/hrms/favicon.ico" />
   <link
     href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
     rel='stylesheet' type='text/css'>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#00bcd1" />
-  <title>mGramSeva</title>
+  <title>NaljalSeva</title>
   <!-- <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css@1.8.2-beta.3/dist/index.css" /> -->
   <!-- <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css@1.5.50/dist/index.css" /> -->
+  <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-components-css@0.0.2-beta.38/dist/index.css" />
   <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css@1.5.29/dist/index.css" />
   <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css@1.5.53/dist/index.css" />
-  
+  <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-naljal-css@1.0.1/dist/index.css" />
 
   <!-- <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css/dist/index.css"/> -->
   <!-- <script src="https://s3.ap-south-1.amazonaws.com/egov-dev-assets/globalConfigs.js"></script> -->
@@ -43,48 +50,35 @@
     .workbench-bredcrumb {
       display: none !important;
     }
-    .link-list {
-      list-style-type: none;
-      padding: 0;
-      display: flex; /* Adjust display for layout preference */
-      justify-content: space-between; /* Adjust spacing as needed */
+    .link-label{
+      color: #1f4ac4 !important;
+    }
+    .primary-label-btn{
+      color: #1f4ac4 !important;
+    }
+    .label-field-pair .employee-select-wrap .options-card {
+    max-height: 10rem !important;
     }
 
-    .link-item {
-      display: flex;
-      align-items: center;
-      margin: 10px; /* Adjust margin as needed */
-      padding: 10px;
-      border: 1px solid #ccc; /* Adjust border if desired */
-      border-radius: 5px;
-      text-decoration: none;
-      color: #333;
-      transition: all 0.3s ease-in-out; /* Add generic transition for styling */
+    .multi-select-dropdown-wrap .server{
+      max-height: 14rem !important;
     }
 
-    .link-item:hover {
-      transform: scale(1.05); /* Add scale effect on hover */
-      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Add slight shadow on hover */
+    .employee .topbar .right {
+    float: right;
+    margin-top: 0px !important;
     }
 
-    .link-item a {
-      text-decoration: none;
-      color: inherit; /* Inherit color from parent element */
-    }
-
-    .link-icon {
-      margin-right: 10px; /* Adjust margin as needed */
-      transition: transform 0.3s ease-in-out; /* Add transition for icon animation */
-    }
-
-    .link-item:hover .link-icon {
-      transform: rotate(360deg); /* Add rotation animation on hover */
-    }
 
   </style>
 </head>
 
 <body>
+  <!-- <script type="application/javascript">
+    console.log(window?.globalConfigs?.getConfig("CONTEXT_PATH"),"CONTEXTPATHGLOVA EX");
+    window.resourceBasePath = `/${window?.globalConfigs?.getConfig("CONTEXT_PATH")}`;
+  </script>
+  <script type="application/javascript" src="/frontend/micro-ui/web/src/App.js"></script> -->
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
 </body>

@@ -205,11 +205,11 @@ public class DemandQueryBuilder {
 		return demandQuery.toString();
 	}
 
-	public void addDemandCriteria(StringBuilder demandQuery, DemandCriteria demandCriteria, List<Object> preparedStatementValues)
+	public String addDemandCriteria(StringBuilder demandQuery, DemandCriteria demandCriteria, List<Object> preparedStatementValues)
 	{
 		String tenantId = demandCriteria.getTenantId();
 		String[] tenantIdChunks = tenantId.split("\\.");
-
+		
 		if(tenantIdChunks.length == 1){
 			demandQuery.append(" dmd.tenantid LIKE ? ");
 			preparedStatementValues.add(demandCriteria.getTenantId() + '%');
@@ -217,7 +217,7 @@ public class DemandQueryBuilder {
 			demandQuery.append(" dmd.tenantid = ? ");
 			preparedStatementValues.add(demandCriteria.getTenantId());
 		}
-
+		
 
 		if (demandCriteria.getStatus() != null) {
 
@@ -225,7 +225,7 @@ public class DemandQueryBuilder {
 			demandQuery.append("dmd.status=?");
 			preparedStatementValues.add(demandCriteria.getStatus());
 		}
-
+		
 		if (demandCriteria.getDemandId() != null && !demandCriteria.getDemandId().isEmpty()) {
 			addAndClause(demandQuery);
 			demandQuery.append("dmd.id IN (" + getIdQueryForStrings(demandCriteria.getDemandId()) + ")");
@@ -241,19 +241,19 @@ public class DemandQueryBuilder {
 			demandQuery.append("dmd.businessservice=?");
 			preparedStatementValues.add(demandCriteria.getBusinessService());
 		}
-
+		
 		if(demandCriteria.getIsPaymentCompleted() != null){
 			addAndClause(demandQuery);
 			demandQuery.append("dmd.ispaymentcompleted = ?");
 			preparedStatementValues.add(demandCriteria.getIsPaymentCompleted());
 		}
-
+		
 		if (demandCriteria.getPeriodFrom() != null) {
 			addAndClause(demandQuery);
 			demandQuery.append("dmd.taxPeriodFrom >= ?");
 			preparedStatementValues.add(demandCriteria.getPeriodFrom());
 		}
-
+		
 		if(demandCriteria.getPeriodTo() != null){
 			addAndClause(demandQuery);
 			demandQuery.append("dmd.taxPeriodTo <= ?");
@@ -275,11 +275,15 @@ public class DemandQueryBuilder {
 		if (demandCriteria.getConsumerCode() != null && !demandCriteria.getConsumerCode().isEmpty()) {
 			addAndClause(demandQuery);
 			demandQuery.append("dmd.consumercode IN ("
-					+ getIdQueryForStrings(demandCriteria.getConsumerCode()) + ")");
+			+ getIdQueryForStrings(demandCriteria.getConsumerCode()) + ")");
 			addToPreparedStatement(preparedStatementValues, demandCriteria.getConsumerCode());
 		}
-	}
 
+
+		log.info("the query String for demand : " + demandQuery.toString());
+		return demandQuery.toString();
+	}
+	
 	private static void addOrderByClause(StringBuilder demandQueryBuilder,String columnName) {
 		demandQueryBuilder.append(" ORDER BY " + columnName);
 	}
@@ -295,7 +299,7 @@ public class DemandQueryBuilder {
 		queryString.append(" AND ");
 		return true;
 	}
-
+	
 	private static String getIdQueryForStrings(Set<String> idList) {
 
 		StringBuilder builder = new StringBuilder();
@@ -311,11 +315,11 @@ public class DemandQueryBuilder {
 	{
 		ids.forEach(id ->{ preparedStmtList.add(id);});
 	}
-
+	
 	public String getDemandHistoryQuery(DemandCriteria demandCriteria, List<Object> preparedStatementValues) {
 
-		StringBuilder demandQuery = new StringBuilder(BASE_DEMAND_HISTORY_QUERY);
-
+		StringBuilder demandQuery = new StringBuilder(BASE_DEMAND_HISTORY_QUERY);		
+		
 		if( demandCriteria.getTenantId() != null) {
 			demandQuery.append(" dmd.tenantid = ? ");
 			preparedStatementValues.add(demandCriteria.getTenantId());
@@ -325,11 +329,11 @@ public class DemandQueryBuilder {
 			demandQuery.append("dmd.businessservice=?");
 			preparedStatementValues.add(demandCriteria.getBusinessService());
 		}
-
+		
 		if (demandCriteria.getConsumerCode() != null && !demandCriteria.getConsumerCode().isEmpty()) {
 			addAndClause(demandQuery);
 			demandQuery.append("dmd.consumercode IN ("
-					+ getIdQueryForStrings(demandCriteria.getConsumerCode()) + ")");
+			+ getIdQueryForStrings(demandCriteria.getConsumerCode()) + ")");
 			addToPreparedStatement(preparedStatementValues, demandCriteria.getConsumerCode());
 		}
 

@@ -64,6 +64,17 @@ class _HouseholdRegister extends State<HouseholdRegister>
           ),
           body: LayoutBuilder(
             builder: (context, constraints) => Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: FractionalOffset.topCenter,
+                  end: FractionalOffset.bottomCenter,
+                  colors: [
+                    Color(0xff90c5e5),
+                    Color(0xffeef7f2),
+                    Color(0xffffeca7),
+                  ],
+                ),
+              ),
               alignment: Alignment.center,
               margin: constraints.maxWidth < 760
                   ? null
@@ -74,9 +85,7 @@ class _HouseholdRegister extends State<HouseholdRegister>
                     color: Color.fromRGBO(238, 238, 238, 1),
                     padding: EdgeInsets.only(left: 8, right: 8),
                     height: constraints.maxHeight - 50,
-                    child: CustomScrollView(   
-              primary: false,                                         
-                      slivers: [
+                    child: CustomScrollView(slivers: [
                       SliverList(
                           delegate: SliverChildListDelegate([
                         SizedBox(
@@ -101,7 +110,6 @@ class _HouseholdRegister extends State<HouseholdRegister>
                         ),
                         Container(key: key, child: HouseholdCard()),
                       ])),
-
                       SliverToBoxAdapter(child: HouseholdSearch())
                     ])),
                 Align(
@@ -139,17 +147,20 @@ class _HouseholdRegister extends State<HouseholdRegister>
       },
       icon: Image.asset('assets/png/whats_app.png'),
       label: Text(
-          ApplicationLocalizations.of(context).translate(i18.common.SHARE)));
+          ApplicationLocalizations.of(context).translate(i18.common.SHARE),
+          
+          style: TextStyle(
+            color:  Color(0xff033ccf)
+          ),
+          )
+           ,
+          );
 
   Widget get _buildDownload => TextButton.icon(
       onPressed: () => showDownloadList(Constants.DOWNLOAD_OPTIONS, context),
-      icon: Icon(Icons.download_sharp),
+      icon: Icon(Icons.download_sharp,color: Color.fromRGBO(3, 60, 207, 0.7),),
       label: Text(
-        ApplicationLocalizations.of(context).translate(i18.common.DOWNLOAD),
-        maxLines: 1,
-        softWrap: false,
-        overflow: TextOverflow.ellipsis,
-      ));
+          ApplicationLocalizations.of(context).translate(i18.common.DOWNLOAD), style: TextStyle(color: Color.fromRGBO(3, 60, 207, 0.7)),));
 }
 
 showDownloadList(List<String> result, BuildContext context) {

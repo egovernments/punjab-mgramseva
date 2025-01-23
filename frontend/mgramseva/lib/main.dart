@@ -11,10 +11,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mgramseva/env/app_config.dart';
+import 'package:mgramseva/firebase_options.dart';
 import 'package:mgramseva/providers/reports_provider.dart';
 import 'package:mgramseva/routing.dart';
 import 'package:mgramseva/providers/authentication_provider.dart';
-import 'package:mgramseva/providers/bill_generation_details_provider.dart';
+import 'package:mgramseva/providers/bill_generation_details_provider.dart'; 
 import 'package:mgramseva/providers/bill_payments_provider.dart';
 import 'package:mgramseva/providers/change_password_details_provider.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -49,7 +50,6 @@ import 'package:mgramseva/utils/notifiers.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
-
 import 'providers/collect_payment_provider.dart';
 import 'providers/dashboard_provider.dart';
 import 'providers/revenue_dashboard_provider.dart';
@@ -59,7 +59,7 @@ void main() {
   HttpOverrides.global = new MyHttpOverrides();
   setPathUrlStrategy();
   //configureApp();
-  setEnvironment(Environment.dev);
+
   // Register DartPingIOS
   // if (Platform.isIOS) {
   //   DartPingIOS.register();
@@ -74,13 +74,30 @@ void main() {
 
     WidgetsFlutterBinding.ensureInitialized();
     await dotenv.load(fileName: 'assets/.env');
-    if (kIsWeb) {
-      await Firebase.initializeApp(
-          options: FirebaseConfigurations.firebaseOptions);
-    } else {
-      await Firebase.initializeApp();
+ 
+ 
+  // Get API_KEY from --dart-define or fallback to .env if not defined
+  const String apiKeyFromDefine = String.fromEnvironment('API_KEY', defaultValue: '');
+  String apiKey = apiKeyFromDefine.isNotEmpty ? apiKeyFromDefine : dotenv.env['API_KEY'] ?? '';
+
+  // Log the loaded API key and other environment variables
+  print("STATE_LEVEL_TENANT_ID: ${dotenv.env['STATE_LEVEL_TENANT_ID']}");
+  print("API_KEY From ENV : ${dotenv.env['API_KEY']}");
+  log("API_KEY From ENV : ${dotenv.env['API_KEY']}");
+  print("API_KEY: $apiKey");
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
+    await setEnvironment(Environment.dev);
+    // if(kIsWeb){
+    //   await Firebase.initializeApp(options: FirebaseOptions(apiKey: apiKey, appId: "appId", messagingSenderId: "messagingSenderId", projectId: "projectId"));
+    // }else{
+    //   await Firebase.initializeApp();
+    // }
+    if (Firebase.apps.length == 0) {
+
     }
-    if (Firebase.apps.length == 0) {}
 
     if (!kIsWeb) {
       await FlutterDownloader.initialize(
@@ -214,11 +231,12 @@ class _MyAppState extends State<MyApp> {
                   }
                 },
                 child: MaterialApp(
-                  title: 'mGramSeva',
+                  title: 'NalJalSeva',
                   supportedLocales: [
                     Locale('en', 'IN'),
                     Locale('hi', 'IN'),
-                    Locale.fromSubtags(languageCode: 'pn')
+                    Locale.fromSubtags(languageCode: 'pn'),
+                    Locale.fromSubtags(languageCode: 'kn')
                   ],
                   locale: _locale,
                   localizationsDelegates: [

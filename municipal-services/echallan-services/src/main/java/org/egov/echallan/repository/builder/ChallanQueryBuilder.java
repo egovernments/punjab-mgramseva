@@ -98,7 +98,7 @@ public class ChallanQueryBuilder {
 			  " challan.taxperiodto,challan.applicationstatus,challan.paiddate,challan.filestoreid, " +
 			  " challan.lastmodifiedtime,challan.lastmodifiedby,challan.createdtime ORDER BY challan.createdtime DESC ";
 
-	  public String getChallanSearchQuery(SearchCriteria criteria, List<Object> preparedStmtList) {
+		public String getChallanSearchQuery(SearchCriteria criteria, List<Object> preparedStmtList) {
 
 			StringBuilder builder = new StringBuilder(QUERY);
 

@@ -16,4 +16,5 @@ public class SMSRequest {
     private String mobileNumber;
     private String message;
     private String tenantId;
+
 }

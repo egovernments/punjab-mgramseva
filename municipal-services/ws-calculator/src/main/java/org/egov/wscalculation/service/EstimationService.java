@@ -202,6 +202,7 @@ public class EstimationService {
 			throw new CustomException("INVALID_BILLING_SLAB",
 					"More than one billing slab found");
 		billingSlabIds.add(billingSlabs.get(0).getId());
+		log.debug(" Billing Slab Id For Water Charge Calculation --->  " + billingSlabIds.toString());
 
 		// WaterCharge Calculation
 		Double totalUOM = getUnitOfMeasurement(waterConnection, calculationAttribute, criteria);

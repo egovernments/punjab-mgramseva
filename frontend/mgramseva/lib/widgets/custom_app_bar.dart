@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -186,17 +187,28 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   builder: (_, commonProvider, child) =>
                       commonProvider.userDetails?.selectedtenant == null
                           ? Text("")
-                          : Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                  Text(ApplicationLocalizations.of(context)
-                                      .translate(commonProvider
-                                          .userDetails!.selectedtenant!.code!),style: Theme.of(context).textTheme.labelMedium,),
-                                  Text(ApplicationLocalizations.of(context)
-                                      .translate(commonProvider.userDetails!
-                                          .selectedtenant!.city!.code!),style: Theme.of(context).textTheme.labelSmall,)
-                                ])),
+                          : SizedBox(
+                            width:  MediaQuery.of(context).size.width < 720 ?  MediaQuery.of(context).size.width/5 : MediaQuery.of(context).size.width/2,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                Text(
+                                  ApplicationLocalizations.of(context).translate(
+                                      commonProvider
+                                          .userDetails!.selectedtenant!.code!),
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                  style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.black),
+                                ),
+                                Text(
+                                  ApplicationLocalizations.of(context).translate(
+                                      commonProvider.userDetails!.selectedtenant!
+                                          .city!.code!),
+                                  style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.black),
+                                )
+                                  ]),
+                          )),
               Icon(Icons.arrow_drop_down)
             ],
           ),
@@ -211,16 +223,27 @@ class _CustomAppBarState extends State<CustomAppBar> {
         Provider.of<LanguageProvider>(context, listen: false);
     return AppBar(
       titleSpacing: 0,
-      iconTheme: IconThemeData(color: Colors.white),
-      title: Image(
-          width: 130,
-          image: NetworkImage(
-            languageProvider.stateInfo!.logoUrlWhite!,
-          )),
+      iconTheme: IconThemeData(color: Colors.black),
+      title:  Container(
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 0),
+              child: Image.asset("assets/png/svgg.png", //TODO add to MDMS
+                height: kToolbarHeight-5,
+                fit: BoxFit.fill,),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 18),
+              child: Image.asset("assets/png/jal_jeevan.png",//TODO add to MDMS
+              height: kToolbarHeight-5,
+              fit: BoxFit.fill,),
+            ),
+          ],
+        ),
+      ),
       actions: [
         Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width / 3,
             child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -247,7 +270,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               }
                             }
                           })
-                ]))
+                ])),
+        Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: Image.asset(
+            'assets/png/national-emblem-india.png',
+            width: 30,
+          ),
+        ),
       ],
     );
   }

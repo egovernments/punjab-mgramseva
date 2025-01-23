@@ -414,7 +414,9 @@ class BillGenerationProvider with ChangeNotifier {
                   title: Text(
                       '${ApplicationLocalizations.of(context).translate(i18.common.CORE_CONFIRM)}'),
                   content: Container(
-                    height: 370,
+                    height: MediaQuery.of(context).size.height > 760
+                        ? MediaQuery.of(context).size.height / 2.5
+                        : MediaQuery.of(context).size.height / 2,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -424,39 +426,46 @@ class BillGenerationProvider with ChangeNotifier {
                         SizedBox(
                           height: 10,
                         ),
-                        FittedBox(
-                          child: DataTable(
-                            border: TableBorder.all(
-                              width: 0.5,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                              color: Colors.grey,
+                        Container(
+                          height: MediaQuery.of(context).size.height / 3,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: DataTable(
+                                border: TableBorder.all(
+                                  width: 0.5,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                  color: Colors.grey,
+                                ),
+                                columns: [
+                                  DataColumn(
+                                      label: Text(
+                                    "${ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_TYPE)}",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                                  DataColumn(
+                                      label: Text(
+                                    "${ApplicationLocalizations.of(context).translate(i18.common.RATE_PERCENTAGE)}",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                                ],
+                                rows: [
+                                  ...rate
+                                      .map((e) => DataRow(cells: [
+                                            DataCell(Text(
+                                                "${ApplicationLocalizations.of(context).translate("${e.buildingType}")}")),
+                                            DataCell(Text("${e.minimumCharge}"))
+                                          ]))
+                                      .toList()
+                                ],
+                              ),
                             ),
-                            columns: [
-                              DataColumn(
-                                  label: Text(
-                                "${ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_TYPE)}",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                              DataColumn(
-                                  label: Text(
-                                "${ApplicationLocalizations.of(context).translate(i18.common.RATE_PERCENTAGE)}",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                            ],
-                            rows: [
-                              ...rate
-                                  .map((e) => DataRow(cells: [
-                                        DataCell(Text(
-                                            "${ApplicationLocalizations.of(context).translate("${e.buildingType}")}")),
-                                        DataCell(Text("${e.minimumCharge}"))
-                                      ]))
-                                  .toList()
-                            ],
                           ),
                         ),
                         SizedBox(
@@ -551,13 +560,15 @@ class BillGenerationProvider with ChangeNotifier {
                                 }
                               },
                               child: Text(
-                                  '${ApplicationLocalizations.of(context).translate(i18.common.YES)}')),
+                                  '${ApplicationLocalizations.of(context).translate(i18.common.YES)}',
+                                  style: TextStyle(color: Color(0xff033ccf)))),
                           TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
                               child: Text(
-                                  '${ApplicationLocalizations.of(context).translate(i18.common.NO)}')),
+                                  '${ApplicationLocalizations.of(context).translate(i18.common.NO)}',
+                                  style: TextStyle(color: Color(0xff033ccf)))),
                         ],
                 ));
       } else {

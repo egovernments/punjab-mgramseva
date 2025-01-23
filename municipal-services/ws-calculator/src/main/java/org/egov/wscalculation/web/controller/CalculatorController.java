@@ -3,7 +3,7 @@ package org.egov.wscalculation.web.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 import org.egov.wscalculation.web.models.*;
@@ -109,7 +109,7 @@ public class CalculatorController {
 	}
 
 	@PostMapping("/_addPenalty")
-	public ResponseEntity<org.apache.http.HttpStatus> addPenalty(@RequestBody PenaltyRequest penaltyRequest) {
+	public ResponseEntity<HttpStatus> addPenalty(@RequestBody PenaltyRequest penaltyRequest) {
 		return demandService.addPenalty(penaltyRequest.getRequestInfo(),penaltyRequest.getAddPenaltyCriteria());
 
 	}

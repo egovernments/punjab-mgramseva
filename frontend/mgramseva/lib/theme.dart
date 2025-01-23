@@ -6,7 +6,7 @@ ThemeData get theme => ThemeData(
     hintColor: createMaterialColor(Color(0XFF3498DB)),
     primaryColorDark: Color.fromRGBO(11, 12, 12, 1),
     primaryColorLight: Color.fromRGBO(80, 90, 95, 1),
-    primaryColor: Color.fromRGBO(244, 119, 56, 1),
+    primaryColor: Color.fromRGBO(3, 60, 207, 0.9),
     disabledColor: Colors.grey,
     cardTheme: CardTheme(surfaceTintColor: Colors.white,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))),
     datePickerTheme: DatePickerThemeData(
@@ -18,7 +18,7 @@ ThemeData get theme => ThemeData(
     // accentColor:  Color(0xff0B4B66),
 
     appBarTheme: AppBarTheme(
-      backgroundColor: Color(0xff0B4B66),
+      backgroundColor: Color(0xffffffff),
       centerTitle: false,
     ),
     textTheme: TextTheme(
@@ -28,7 +28,7 @@ ThemeData get theme => ThemeData(
       labelMedium: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white), // Elevated Button(Orange)
       labelSmall: TextStyle(fontWeight: FontWeight.w500, fontSize: 10, color: Colors.white), // Elevated Button(Orange)
       titleMedium: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
-      titleSmall: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Color.fromRGBO(244, 119, 56, 1)) // Only for outlined button text
+      titleSmall: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Color.fromRGBO(0, 0, 255, 1)) // Only for outlined button text
     ),
 
     /// Background color
@@ -49,7 +49,7 @@ ThemeData get theme => ThemeData(
         style: OutlinedButton.styleFrom(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
       textStyle: TextStyle(
-          color: Color(0XFFf47738), fontSize: 19, fontWeight: FontWeight.w500),
+          color: Color(0XFF1f4ac4), fontSize: 19, fontWeight: FontWeight.w500),
       padding: EdgeInsets.symmetric(vertical: 15),
     )),
     inputDecorationTheme: InputDecorationTheme(
@@ -75,7 +75,7 @@ ThemeData get theme => ThemeData(
     iconTheme: IconThemeData(
       color: ColorCodes.HOME_ICON,
       // size: 25
-    ), colorScheme: ColorScheme.fromSwatch(primarySwatch: createMaterialColor(Color(0XFFf47738))).copyWith(background: createMaterialColor(Color.fromRGBO(238, 238, 238, 1))));
+    ), colorScheme: ColorScheme.fromSwatch(primarySwatch: createMaterialColor(Color(0XFF1f4ac4))).copyWith(background: createMaterialColor(Color.fromRGBO(238, 238, 238, 1))));
 
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];

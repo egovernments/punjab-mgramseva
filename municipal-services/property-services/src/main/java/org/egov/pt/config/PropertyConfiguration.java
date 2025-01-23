@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -349,15 +349,15 @@ public class PropertyConfiguration {
     @Value("${pt.fuzzy.searh.is.wildcard}")
     private Boolean isSearchWildcardBased;
 
-    // Inbox service Config
-
-    @Value("${inbox.property.search.allowed}")
-    private Boolean isInboxSearchAllowed;
-
     @Value("${egov.indexer.es.username}")
     private String esUsername;
 
     @Value("${egov.indexer.es.password}")
     private String esPassword;
+
+    // Inbox service Config
+
+    @Value("${inbox.property.search.allowed}")
+    private Boolean isInboxSearchAllowed;
 
 }

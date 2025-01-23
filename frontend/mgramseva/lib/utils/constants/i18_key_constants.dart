@@ -307,6 +307,7 @@ class Password {
 class Expense {
   const Expense();
   String get VENDOR_NAME => 'CORE_EXPENSE_VENDOR_NAME';
+  String get INVOICE_DATE => 'INVOICE_DATE';
   String get EXPENSE_TYPE => 'CORE_EXPENSE_TYPE_OF_EXPENSES';
   String get AMOUNT => 'CORE_EXPENSE_AMOUNT';
   String get BILL_DATE => 'CORE_EXPENSE_BILL_DATE';
@@ -461,6 +462,10 @@ class CreateConsumer {
   String get ML_DOWNLOADED_ON => 'ML_DOWNLOADED_ON';
 
   // Monthly Ledger
+  String get CONSUMER_VERIFY_TEXT => 'CONSUMER_VERIFY_TEXT';
+  String get CONSUMER_VERIFIED_BTN_LABEL => 'CONSUMER_VERIFIED_BTN_LABEL';
+  String get CONSUMER_NOT_VERIFIED_BTN_LABEL => 'CONSUMER_NOT_VERIFIED_BTN_LABEL';
+
 }
 
 class SearchWaterConnection {
@@ -766,6 +771,7 @@ class _DashBoard {
   String get MONTHLY_LEDGER_REPORT_LABEL => 'MONTHLY_LEDGER_REPORT_LABEL';
   String get INACTIVE_CONSUMER_REPORT => 'INACTIVE_CONSUMER_REPORT';
   String get GPWSC_RATE_INFO => 'GPWSC_RATE_INFO';
+  String get HRMS_DASHBOARD => 'HRMS_DASHBOARD';
 }
 
 class _ExpenseWalkThroughMsg {
@@ -808,4 +814,5 @@ class HouseholdRegistry {
   String get EXCEL => 'EXCEL';
   String get LAST_BILL_GEN_DATE => 'LAST_BILL_GEN_DATE';
   String get ACTIVE_INACTIVE => 'ACTIVE_INACTIVE';
+  String get DATA_VERIFIED => 'DATA_VERIFIED';
 }

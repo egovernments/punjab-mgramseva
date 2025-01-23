@@ -49,6 +49,17 @@ const userServiceData = () => ({ userInfo: Digit.UserService.getUser()?.info });
 
 window.Digit = window.Digit || {};
 window.Digit = { ...window.Digit, RequestCache: window.Digit.RequestCache || {} };
+
+const getDynamicPart = (url) => {
+  const parsedUrl = new URL(url);
+  const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+  return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
+};
+
+// Set the base URL
+// Axios.defaults.baseURL = `https://naljalseva.jjm.gov.in/uat/`;
+// Axios.defaults.baseURL = `https://naljalseva.jjm.gov.in/${getDynamicPart(window?.location?.href)}/`;
+
 export const Request = async ({
   method = "POST",
   url,
@@ -68,6 +79,8 @@ export const Request = async ({
   multipartData = {},
   reqTimestamp = false,
 }) => {
+  // url = `/${getDynamicPart(window?.location?.href)}${url}`;
+  url =`/assam${url}`;
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
    

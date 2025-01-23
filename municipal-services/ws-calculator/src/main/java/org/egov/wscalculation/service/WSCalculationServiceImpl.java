@@ -282,12 +282,10 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		}
 
 		BigDecimal totalAmount = taxAmt.add(penalty).add(rebate).add(exemption).add(waterCharge).add(fee).add(advance);
-
 		return Calculation.builder().totalAmount(totalAmount).taxAmount(taxAmt).penalty(penalty).exemption(exemption)
 				.charge(waterCharge).advance(advance).fee(fee).waterConnection(waterConnection).rebate(rebate).tenantId(tenantId)
 				.taxHeadEstimates(estimates).billingSlabIds(billingSlabIds).connectionNo(criteria.getConnectionNo()).applicationNO(criteria.getApplicationNo())
 				.build();
-
 	}
 	
 	
@@ -346,6 +344,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 
 	@SuppressWarnings("unchecked")
 	public void getBillingPeriod(ArrayList<?> mdmsResponse, RequestInfo requestInfo, String tenantId) {
+		log.info("Billing Frequency Map" + mdmsResponse.toString());
 		Map<String, Object> master = (Map<String, Object>) mdmsResponse.get(0);
 		LocalDateTime demandStartingDate = LocalDateTime.now();
 		Long demandGenerateDateMillis = (Long) master.get(WSCalculationConstant.Demand_Generate_Date_String);
@@ -406,7 +405,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		// Check for duplicate calls in the last configurable duration
 		boolean isDuplicate = demandService.isDuplicateBulkDemandCall(tenantId, billingPeriod, durationAgo);
 		if (isDuplicate) {
-			throw new CustomException("DEMAND_DUPLICATE_REQUEST", "A bulk demand generation for this tenant and billing Period was already requested in the last "+ duplicateHours +" hours.");
+			throw new CustomException("DUPLICATE_REQUEST", "A bulk demand generation for this tenant and billing Period was already requested in the last "+ duplicateHours +" hours.");
 		}
 		if(tenantId != null && tenantId.split("\\.").length >1) {
 			demandService.generateBulkDemandForTenantId(bulkDemand);
@@ -477,7 +476,6 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		return demandService.updateDemandForAdhocTax(adhocTaxReq.getRequestInfo(), calculations);
 	}
 
-
 	@Override
 	public RollOutDashboard sendDataForRollOut(RollOutDashboardRequest rollOutDashboardRequest) {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -497,5 +495,4 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		}
 		return rollOutDashboardRequest.getRollOutDashboard();
 	}
-	
 }

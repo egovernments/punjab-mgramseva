@@ -3,7 +3,6 @@ package org.egov.echallan.web.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.egov.echallan.model.Amount;
-import org.hibernate.validator.constraints.SafeHtml;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class ExpenseBillReportData
     private Long paidDate;
 
     @JsonProperty("filestoreid")
-    @SafeHtml
+
     private String filestoreid;
 
     @JsonProperty("lastModifiedTime")

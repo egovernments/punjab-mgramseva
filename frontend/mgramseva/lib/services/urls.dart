@@ -4,9 +4,10 @@ class Url {
   static const String LOCALIZATION = 'localization/messages/v1/_search';
 
   static const String MDMS = 'mdms-v2/v1/_search';
+  static const String HRMS = 'mgramseva-web/employee/user/login';
   static const String FILE_UPLOAD = 'filestore/v1/files';
   static const String FILE_FETCH = 'filestore/v1/files/url';
-  static const String URL_SHORTNER = 'eus/shortener';
+  static const String URL_SHORTNER = 'egov-url-shortening/shortener';
   static const String FETCH_FILESTORE_ID_PDF_SERVICE = 'pdf-service/v1/_create';
 
   /// Expenses
@@ -87,7 +88,7 @@ class Url {
   /// GPWSC Details
   static const String IFIX_DEPARTMENT_ENTITY =
       'ifix-department-entity/departmentEntity/v1/_search';
-  static const String ADAPTER_MASTER_DATA_PROJECT_SEARCH =
+  static const String ADAPTER_MASTER_DATA_PROJECT_SEARCH=
       'adapter-master-data/project/v1/_search';
 
   ///Reports
@@ -112,5 +113,5 @@ class UserUrl {
   static const String USER_PROFILE = 'user/_search';
   static const String EDIT_PROFILE = 'user/profile/_update';
   static const String CHANGE_PASSWORD = 'user/password/_update';
-  static const String LOGOUT_USER = 'user/_logout';
+   static const String LOGOUT_USER = 'user/_logout';
 }

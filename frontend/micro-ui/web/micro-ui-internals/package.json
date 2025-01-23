@@ -7,7 +7,7 @@
     "example",
     "packages/react-components",
     "packages/modules/*"
-    ],
+  ],
   "author": "JaganKumar <jagan.kumar@egov.org.in>",
   "license": "MIT",
   "private": true,
@@ -15,11 +15,10 @@
     "node": ">=14"
   },
   "scripts": {
-    "start": "SKIP_PREFLIGHT_CHECK=true  run-s build start:dev",
-    "sprint": "SKIP_PREFLIGHT_CHECK=true  run-s start:script",
+    "start": "run-s build start:dev",
+    "sprint": "run-s start:script",
     "start:dev": "run-p dev:**",
     "start:script": "./scripts/create.sh",
-    "publish:css": "cd packages/css && yarn publish --access public",
     "dev:libraries": "cd packages/libraries && yarn start",
     "dev:components": "cd packages/react-components && yarn start",
     "dev:pgr": "cd packages/modules/pgr && yarn start",
@@ -41,6 +40,7 @@
   "resolutions": {
     "**/@babel/runtime": "7.20.1",
     "**/babel-preset-react-app": "10.0.0",
+    "**/@babel/traverse":"7.25.9",
     "**/polished": "4.2.2"
   },
   "devDependencies": {
@@ -54,9 +54,10 @@
     "*.{js,css,md}": "prettier --write"
   },
   "dependencies": {
-    "@egovernments/digit-ui-react-components": "^1.3.0",
+    "@egovernments/digit-ui-react-components": "1.5.26",
+    "@egovernments/digit-ui-components": "0.0.2-beta.47",
     "lodash": "4.17.21",
-    "microbundle-crl": "^0.13.11",
+    "microbundle-crl": "0.13.11",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "6.15.8",

@@ -68,12 +68,10 @@ class _HouseholdSearchState extends State<HouseholdSearch>
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: SingleChildScrollView(
-              primary: false,
               scrollDirection: Axis.horizontal,
               child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: List.generate(
-
                       tabList.length,
                       (index) => Padding(
                           padding: EdgeInsets.only(

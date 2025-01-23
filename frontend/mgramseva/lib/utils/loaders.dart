@@ -34,7 +34,7 @@ class Loaders {
 //                            controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200)),
                           // ),
                           CircularProgressIndicator(
-                            color: Theme.of(context).primaryColor,
+                            color: Color.fromRGBO(3, 60, 207, 0.9)
                           ),
                           const SizedBox(
                             height: 10,
@@ -156,7 +156,7 @@ class Loaders {
                 alignment: WrapAlignment.center,
                 children: [
                   CircularProgressIndicator(
-                    color: loaderColor??Theme.of(context).primaryColor,
+                    color: Color.fromRGBO(0, 60, 207, 0.8),
                   ),
                   Text(
                     text ??

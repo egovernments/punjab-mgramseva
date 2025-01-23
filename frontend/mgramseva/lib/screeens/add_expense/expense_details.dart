@@ -96,7 +96,18 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
             drawer: DrawerWrapper(
               Drawer(child: SideBar()),
             ),
-            body: SingleChildScrollView(
+            body: Container( decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: FractionalOffset.topCenter,
+                end: FractionalOffset.bottomCenter,
+                colors: [
+                  Color(0xff90c5e5),
+                  Color(0xffeef7f2),
+                  Color(0xffffeca7),
+                ],
+              ),
+            ),
+              child: SingleChildScrollView(
                 child: Column(children: [
               StreamBuilder(
                   stream: expensesDetailsProvider.streamController.stream,
@@ -125,6 +136,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                   }),
               Footer()
             ])),
+            ),
             bottomNavigationBar: Consumer<ExpensesDetailsProvider>(
               builder: (_, expensesDetailsProvider, child) => BottomButtonBar(
                 i18.common.SUBMIT,

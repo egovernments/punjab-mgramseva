@@ -330,7 +330,18 @@ class _GenerateBillState extends State<GenerateBill> {
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),
-        body: SingleChildScrollView(
+        body: Container( decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: FractionalOffset.topCenter,
+            end: FractionalOffset.bottomCenter,
+            colors: [
+              Color(0xff90c5e5),
+              Color(0xffeef7f2),
+              Color(0xffffeca7),
+            ],
+          ),
+        ),
+          child: SingleChildScrollView(
             child: Container(
                 child: Column(children: [
           StreamBuilder(
@@ -353,6 +364,7 @@ class _GenerateBillState extends State<GenerateBill> {
               }),
           Footer()
         ]))),
+        ),
         bottomNavigationBar: BottomButtonBar(
             '${widget.id == null ? i18.demandGenerate.GENERATE_DEMAND_BUTTON : i18.demandGenerate.GENERATE_BILL_BUTTON}',
             () => {billGenerateProvider.onSubmit(context)},

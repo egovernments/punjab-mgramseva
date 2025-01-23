@@ -13,13 +13,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
 import org.springframework.context.annotation.Primary;
 import javax.net.ssl.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
+
+import java.util.List;
 
 @Component
 public class ElasticSearchRepository {
@@ -28,7 +28,6 @@ public class ElasticSearchRepository {
     private PropertyConfiguration config;
 
     private FuzzySearchQueryBuilder queryBuilder;
-
 
     private ObjectMapper mapper;
 
@@ -61,7 +60,7 @@ public class ElasticSearchRepository {
         HttpEntity<String> requestEntity = new HttpEntity<>(searchQuery, headers);
         ResponseEntity response = null;
         try {
-             response = this.restTemplate().postForEntity(url, requestEntity, Object.class);
+            response = this.restTemplate().postForEntity(url, requestEntity, Object.class);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,6 +85,7 @@ public class ElasticSearchRepository {
 
         return builder.toString();
     }
+
     public String getESEncodedCredentials() {
         String credentials = config.getEsUsername() + ":" + config.getEsPassword();
         byte[] credentialsBytes = credentials.getBytes();
@@ -125,6 +125,7 @@ public class ElasticSearchRepository {
         trustSelfSignedSSL();
         return new RestTemplate();
     }
+
 
 
 }

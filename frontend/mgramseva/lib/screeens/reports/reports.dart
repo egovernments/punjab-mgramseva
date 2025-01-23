@@ -56,9 +56,6 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
         navigatorKey.currentContext!,
         listen: false);
     reportsProvider.getFinancialYearList();
-    reportsProvider.clearBillingSelection();
-    reportsProvider.clearBuildTableData();
-    reportsProvider.clearTableData();
   }
 
   showTable(bool status, String title) {
@@ -89,9 +86,19 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),
       ),
-      backgroundColor: Color.fromRGBO(238, 238, 238, 1),
       body: LayoutBuilder(
         builder: (context, constraints) => Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: FractionalOffset.topCenter,
+              end: FractionalOffset.bottomCenter,
+              colors: [
+                Color(0xff90c5e5),
+                Color(0xffeef7f2),
+                Color(0xffffeca7),
+              ],
+            ),
+          ),
           alignment: Alignment.center,
           margin: constraints.maxWidth < 760
               ? null
@@ -101,7 +108,6 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                color: Color.fromRGBO(238, 238, 238, 1),
                 margin: constraints.maxWidth < 760
                     ? null
                     : EdgeInsets.symmetric(
@@ -177,9 +183,7 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                                     controller: reportProvider
                                                         .billingyearCtrl,
                                                     key: Keys.billReport
-                                                        .BILL_REPORT_BILLING_YEAR,
-                                                    itemAsString: (i) =>
-                                                        "${ApplicationLocalizations.of(context).translate(i.financialYear)}",
+                                                        .BILL_REPORT_BILLING_YEAR, itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i.financialYear)}",
                                                   ),
                                                   SelectFieldBuilder(
                                                     i18.demandGenerate
@@ -199,9 +203,7 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                                     controller: reportProvider
                                                         .billingcycleCtrl,
                                                     key: Keys.billReport
-                                                        .BILL_REPORT_BILLING_CYCLE,
-                                                    itemAsString: (i) =>
-                                                        "${ApplicationLocalizations.of(context).translate(i['name'])}",
+                                                        .BILL_REPORT_BILLING_CYCLE, itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i['name'])}",
                                                   ),
                                                 ],
                                               ),
